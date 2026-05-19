@@ -1,0 +1,93 @@
+{
+  "phase": "phase_8_answer_generation",
+  "total_queries": 1,
+  "results": [
+    {
+      "query": "Điều kiện xét học bổng khuyến khích học tập là gì?",
+      "answer": "Để được xét học bổng khuyến khích học tập, sinh viên cần đáp ứng các điều kiện sau:\n\n1.  Là sinh viên đại học chính quy tại Trường theo kế hoạch khóa học, không học quá thời gian học tập chuẩn.\n2.  Trong học kỳ, có kết quả học tập và rèn luyện từ loại khá trở lên, không bị kỷ luật từ mức khiển trách trở lên.\n3.  Tổng số tín chỉ tích lũy trong học kỳ phải từ 15 tín chỉ trở lên theo kế hoạch (tất cả các tín chỉ đều phải đạt, không bao gồm tín chỉ trả nợ, cải thiện, tương đương).\n4.  **Đối với sinh viên năm cuối:**\n    *   **Học kỳ I:** Áp dụng các điều kiện như trên.\n    *   **Học kỳ II:** Đăng ký từ 6 tín chỉ trở lên. Việc xét học bổng sẽ ưu tiên sinh viên thực hiện khóa luận tốt nghiệp có kết quả học tập và rèn luyện xuất sắc, sau đó là xuất sắc và rèn luyện tốt, rồi mới đến các sinh viên còn lại.\n5.  Điểm học bổng được tính theo công thức: (Điểm học tập x 80 + Điểm rèn luyện /25 x 20) /100.\n    *   **Học bổng loại Khá:** Điểm học bổng từ 2.56 đến 3.352 (điểm học tập: 2.50 – 3.19 và điểm rèn luyện >= 70).\n    *   **Học bổng loại Giỏi:** Điểm học bổng từ 3.20 đến 3.672 (điểm học tập: 3.20 – 3.59 và điểm rèn luyện >= 80).\n    *   **Học bổng loại Xuất sắc:** Điểm học bổng từ 3.60 đến 4.0 (điểm học tập: 3.60 – 4.0 và điểm rèn luyện >= 90).\n\nNguồn:\n- Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập, trang 52-53",
+      "status": "answered",
+      "error_type": null,
+      "error_message": null,
+      "intent": "regulation_query",
+      "strategy": "semantic_filtered",
+      "retrieval_query": "Điều kiện xét học bổng khuyến khích học tập là gì?",
+      "citations": [
+        {
+          "chunk_id": "reg_article_28_p52_74_part_1",
+          "chunk_type": "regulation",
+          "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "source_pages": [
+            52,
+            53
+          ],
+          "distance": 0.29020124673843384,
+          "retrieval_purpose": "regulation_query"
+        },
+        {
+          "chunk_id": "reg_article_28_p52_74_part_4",
+          "chunk_type": "regulation",
+          "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "source_pages": [
+            52,
+            53
+          ],
+          "distance": 0.31732308864593506,
+          "retrieval_purpose": "regulation_query"
+        },
+        {
+          "chunk_id": "reg_article_28_p52_74_part_3",
+          "chunk_type": "regulation",
+          "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "source_pages": [
+            52,
+            53
+          ],
+          "distance": 0.31909191608428955,
+          "retrieval_purpose": "regulation_query"
+        },
+        {
+          "chunk_id": "reg_article_28_p52_74_part_2",
+          "chunk_type": "regulation",
+          "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "source_pages": [
+            52,
+            53
+          ],
+          "distance": 0.32345664501190186,
+          "retrieval_purpose": "regulation_query"
+        },
+        {
+          "chunk_id": "reg_article_27_p51_73",
+          "chunk_type": "regulation",
+          "title": "Điều 27. Học bổng",
+          "source_pages": [
+            51,
+            52
+          ],
+          "distance": 0.3294607400894165,
+          "retrieval_purpose": "regulation_query"
+        }
+      ],
+      "citations_used": [
+        {
+          "chunk_id": "reg_article_28_p52_74_part_1",
+          "chunk_type": "regulation",
+          "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "source_pages": [
+            52,
+            53
+          ],
+          "distance": 0.29020124673843384,
+          "retrieval_purpose": "regulation_query"
+        }
+      ],
+      "structured_result": null,
+      "tool_result": null,
+      "llm_called": true,
+      "used_cache": false,
+      "clarification_needed": false,
+      "context_used": "[Nguồn 1]\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nLoại: regulation\nTrang: 52,53\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên đại học chính quy tại Trường theo kế hoạch của\nkhóa học; không xét HBKKHT đối với sinh viên học quá thời gian học\ntập chuẩn được quy định tại khoản 6, Điều 3 của Quy chế đào tạo trình độ\nđại học chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021\ncủa Hiệu trưởng;\nb) Trong học kỳ, sinh viên có kết quả học tập, rèn luyện từ loại khá\ntrở lên, không bị kỷ luật từ mức khiển trách trở lên sẽ được xét, cấp\nHBKKHT trong phạm vi quỹ HBKKHT của Trường;\nc) Tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn\nhoặc bằng 15 tín chỉ theo kế hoạch trong CTĐT của khóa học (tất cả các\ntín chỉ đều phải đạt, không bao gồm các tín chỉ trả nợ, cải thiện, tương\nđương…). Do đó, các khoa cần xây dựng chương trình học phù hợp và\nCVHT cần tư vấn, hướng dẫn sinh viên xây dựng lịch học đảm bảo quyền\nlợi cho sinh viên;\nd) Đối với sinh viên năm cuối, học bổng được xét:\n− Quy định xét học bổng đối với học kỳ I thực hiện theo Điểm a, b,\nc, khoản 1, Điều này.\n− Quy định xét học bổng đối với học kỳ II:\n+ Sinh viên đăng ký từ 6 tín chỉ trở lên;\n+ Trình tự xét HBKKHT cho sinh viên năm cuối theo thứ tự các đối\ntượng như sau:\n• Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện xuất sắc.\n• Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện tốt.\n• Sinh viên còn lại.\n− Điểm học bổng được tính theo Điểm đ, khoản 1, Điều này.\nđ) Điểm học bổng: là điểm để xét học bổng cho sinh viên được xếp\nloại từ cao xuống thấp, tính theo công thức:\n− Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện /25 x 20) /100.\n(Điểm rèn luyện /25 là quy đổi về thang điểm 4)\n− Xếp loại học bổng được xếp thành 03 mức:\n+ Học bổng loại Khá: có điểm học bổng từ 2.56 đến 3.352 (điểm học\ntập: 2.50 – 3.19 và điểm rèn luyện >= 70);\n+ Học bổng loại Giỏi: có điểm học bổng từ 3.20 đến 3.672 (điểm\nhọc tập: 3.20 – 3.59 và điểm rèn luyện >= 80);\n+ Học bổng loại Xuất sắc: có điểm học bổng từ 3.60 đến 4.0 (điểm\nhọc tập: 3.60 – 4.0 và điểm rèn luyện >= 90).\n\n---\n\n[Nguồn 2]\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nLoại: regulation\nTrang: 52,53\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n4. Việc xét học bổng được thống nhất xét theo khóa học và ngành học.\n\n---\n\n[Nguồn 3]\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nLoại: regulation\nTrang: 52,53\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n3. Quỹ HBKKHT: được bố trí tối thiểu bằng kinh phí 8% từ nguồn\nthu học phí và cấp bù học phí (Căn cứ theo Nghị định 84/2020/NĐ-CP\nngày 17/7/2020 của Chính phủ về Quy định chi tiết một số điều của Luật\nGiáo dục).\n\n---\n\n[Nguồn 4]\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nLoại: regulation\nTrang: 52,53\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n2. Mức học bổng: Mức học bổng sẽ được tính hằng năm và theo quy\nđịnh của Nhà nước và thực tế của Trường quy định. HBKKHT được cấp\ntheo từng học kỳ chính và cấp 10 tháng trong năm học. Cụ thể:\n+ Học bổng loại Khá:\nSố tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.0;\n+ Học bổng loại Giỏi:\nSố tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.25;\n+ Học bổng loại Xuất sắc:\nSố tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.5.\nTín chỉ tự nhiên hoặc xã hội được xác định phụ thuộc vào ngành học\ncủa sinh viên được phân loại là tự nhiên hay xã hội.\n\n---\n\n[Nguồn 5]\nTiêu đề: Điều 27. Học bổng\nLoại: regulation\nTrang: 51,52\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 27.\nTiêu đề: Điều 27. Học bổng\nNội dung:\nĐiều 27. Học bổng\n1. Học bổng khuyến khích học tập (HBKKHT)\na) Chế độ HBKKHT cho sinh viên thực hiện theo các quy định hiện\nhành của Bộ Giáo dục và Đào tạo và của Trường;\nb) HBKKHT chỉ được cấp cho sinh viên hệ chính quy đang học tập\ntại Trường; người học liên thông không được xét cấp.\n2. Học bổng chính sách\nHọc bổng chính sách sẽ được cấp theo hợp đồng giữa Trường và cơ\nquan cử sinh viên theo học diện cử tuyển (nếu có).\n3. Học bổng tài trợ\na) Học bổng tài trợ cho sinh viên do các tổ chức và cá nhân trao theo\nnhững điều kiện và quy trình riêng;\nb) Học bổng tài trợ do Phòng CTCT và HSSV hoặc phối hợp với các\nđơn vị khác tiếp nhận và thông báo đến toàn thể sinh viên khi có thông tin\nvề học bổng."
+    }
+  ],
+  "status": "completed"
+}

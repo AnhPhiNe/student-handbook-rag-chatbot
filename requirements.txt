@@ -1,0 +1,11 @@
+streamlit
+google-genai
+sentence-transformers
+chromadb
+torch
+pyyaml
+PyMuPDF
+fastapi
+uvicorn
+requests
+python-dotenv

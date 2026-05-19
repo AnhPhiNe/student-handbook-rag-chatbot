@@ -1,0 +1,1081 @@
+{
+  "phase": "phase_7_query_router_and_retrieval_strategy",
+  "total_test_queries": 10,
+  "intent_count": {
+    "regulation_query": 1,
+    "form_query": 1,
+    "office_query": 2,
+    "faculty_query": 1,
+    "procedure_query": 1,
+    "score_lookup_query": 3,
+    "calculation_query": 1
+  },
+  "strategy_count": {
+    "semantic_filtered": 6,
+    "structured_lookup": 3,
+    "calculator_tool": 1
+  },
+  "results": [
+    {
+      "query": "Điều kiện xét học bổng là gì?",
+      "intent": "regulation_query",
+      "strategy": "semantic_filtered",
+      "target_chunk_types": [
+        "regulation"
+      ],
+      "retrieved_items": [
+        {
+          "chunk_id": "reg_article_28_p52_74_part_1",
+          "distance": 0.3065488338470459,
+          "content": "Tài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên đại học chính quy tại Trường theo kế hoạch của\nkhóa học; không xét HBKKHT đối với sinh viên học quá thời gian học\ntập chuẩn được quy định tại khoản 6, Điều 3 của Quy chế đào tạo trình độ\nđại học chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021\ncủa Hiệu trưởng;\nb) Trong học kỳ, sinh viên có kết quả học tập, rèn luyện từ loại khá\ntrở lên, không bị kỷ luật từ mức khiển trách trở lên sẽ được xét, cấp\nHBKKHT trong phạm vi quỹ HBKKHT của Trường;\nc) Tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn\nhoặc bằng 15 tín chỉ theo kế hoạch trong CTĐT của khóa học (tất cả các\ntín chỉ đều phải đạt, không bao gồm các tín chỉ trả nợ, cải thiện, tương\nđương…). Do đó, các khoa cần xây dựng chương trình học phù hợp và\nCVHT cần tư vấn, hướng dẫn sinh viên xây dựng lịch học đảm bảo quyền\nlợi cho sinh viên;\nd) Đối với sinh viên năm cuối, học bổng được xét:\n− Quy định xét học bổng đối với học kỳ I thực hiện theo Điểm a, b,\nc, khoản 1, Điều này.\n− Quy định xét học bổng đối với học kỳ II:\n+ Sinh viên đăng ký từ 6 tín chỉ trở lên;\n+ Trình tự xét HBKKHT cho sinh viên năm cuối theo thứ tự các đối\ntượng như sau:\n• Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện xuất sắc.\n• Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện tốt.\n• Sinh viên còn lại.\n− Điểm học bổng được tính theo Điểm đ, khoản 1, Điều này.\nđ) Điểm học bổng: là điểm để xét học bổng cho sinh viên được xếp\nloại từ cao xuống thấp, tính theo công thức:\n− Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện /25 x 20) /100.\n(Điểm rèn luyện /25 là quy đổi về thang điểm 4)\n− Xếp loại học bổng được xếp thành 03 mức:\n+ Học bổng loại Khá: có điểm học bổng từ 2.56 đến 3.352 (điểm học\ntập: 2.50 – 3.19 và điểm rèn luyện >= 70);\n+ Học bổng loại Giỏi: có điểm học bổng từ 3.20 đến 3.672 (điểm\nhọc tập: 3.20 – 3.59 và điểm rèn luyện >= 80);\n+ Học bổng loại Xuất sắc: có điểm học bổng từ 3.60 đến 4.0 (điểm\nhọc tập: 3.60 – 4.0 và điểm rèn luyện >= 90).",
+          "metadata": {
+            "chapter": "Chương V",
+            "token_count_approx": 626,
+            "has_table": false,
+            "chunk_id": "reg_article_28_p52_74_part_1",
+            "has_formula": true,
+            "page_end": 53,
+            "content_type": "regulation_text",
+            "page_start": 52,
+            "has_thresholds": true,
+            "has_scoring_rule": true,
+            "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+            "document_title": "QUY CHẾ",
+            "split_strategy": "clause_or_paragraph",
+            "article": "Điều 28.",
+            "source_type": "structured_section",
+            "parent_section_id": "article_28_p52_74",
+            "source_pages": "52,53",
+            "chunk_type": "regulation",
+            "index_mode": "semantic",
+            "part": ""
+          }
+        },
+        {
+          "chunk_id": "reg_article_28_p52_74_part_2",
+          "distance": 0.3186149597167969,
+          "content": "Tài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n2. Mức học bổng: Mức học bổng sẽ được tính hằng năm và theo quy\nđịnh của Nhà nước và thực tế của Trường quy định. HBKKHT được cấp\ntheo từng học kỳ chính và cấp 10 tháng trong năm học. Cụ thể:\n+ Học bổng loại Khá:\nSố tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.0;\n+ Học bổng loại Giỏi:\nSố tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.25;\n+ Học bổng loại Xuất sắc:\nSố tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.5.\nTín chỉ tự nhiên hoặc xã hội được xác định phụ thuộc vào ngành học\ncủa sinh viên được phân loại là tự nhiên hay xã hội.",
+          "metadata": {
+            "document_title": "QUY CHẾ",
+            "has_thresholds": true,
+            "has_table": false,
+            "content_type": "regulation_text",
+            "token_count_approx": 210,
+            "source_pages": "52,53",
+            "has_formula": true,
+            "has_scoring_rule": true,
+            "article": "Điều 28.",
+            "chunk_type": "regulation",
+            "split_strategy": "clause_or_paragraph",
+            "index_mode": "semantic",
+            "page_end": 53,
+            "chapter": "Chương V",
+            "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+            "page_start": 52,
+            "part": "",
+            "chunk_id": "reg_article_28_p52_74_part_2",
+            "source_type": "structured_section",
+            "parent_section_id": "article_28_p52_74"
+          }
+        },
+        {
+          "chunk_id": "reg_article_28_p52_74_part_4",
+          "distance": 0.3259953260421753,
+          "content": "Tài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n4. Việc xét học bổng được thống nhất xét theo khóa học và ngành học.",
+          "metadata": {
+            "source_pages": "52,53",
+            "page_start": 52,
+            "chunk_id": "reg_article_28_p52_74_part_4",
+            "split_strategy": "clause_or_paragraph",
+            "article": "Điều 28.",
+            "token_count_approx": 69,
+            "part": "",
+            "has_table": false,
+            "page_end": 53,
+            "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+            "has_scoring_rule": true,
+            "chapter": "Chương V",
+            "has_formula": true,
+            "parent_section_id": "article_28_p52_74",
+            "has_thresholds": true,
+            "content_type": "regulation_text",
+            "source_type": "structured_section",
+            "document_title": "QUY CHẾ",
+            "chunk_type": "regulation",
+            "index_mode": "semantic"
+          }
+        },
+        {
+          "chunk_id": "reg_article_29_p53_75",
+          "distance": 0.33197951316833496,
+          "content": "Tài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 29.\nTiêu đề: Điều 29. Trình tự và thủ tục xét cấp học bổng\nNội dung:\nĐiều 29. Trình tự và thủ tục xét cấp học bổng\n1. Căn cứ vào quỹ HBKKHT toàn Trường đã xác lập và căn cứ theo\ntỉ lệ số sinh viên của từng khoa, từng khóa, từng ngành học, Phòng CTCT\nvà HSSV phối hợp Phòng Kế hoạch – Tài chính xác định quỹ HBKKHT\ncủa từng ngành học cụ thể ứng với khóa học tương ứng.\n2. Để xét học bổng, CVHT họp lớp đánh giá kết quả rèn luyện của\nsinh viên, khoa xem xét kết quả và nhập điểm rèn luyện vào phần mềm,\nnộp bảng tổng hợp đánh giá kết quả rèn luyện về Phòng CTCT và HSSV\ntheo thời gian quy định.\n3. Căn cứ vào kết quả cập nhật điểm và khóa điểm do Phòng Khảo\nthí và Đảm bảo chất lượng thực hiện, Phòng CTCT và HSSV đối chiếu và\nsử dụng làm cơ sở để xét học bổng.\n4. Học bổng được phân bổ theo thứ tự điểm học bổng giảm dần từ\ncao xuống thấp cho đến hết quỹ học bổng của mỗi ngành học của một\nkhóa học cụ thể.\na) Trường hợp sinh viên có điểm học bổng bằng nhau và kinh phí\nkhông đủ cấp cho tất cả, Trường sẽ ưu tiên xét cấp cho sinh viên có điểm\nhọc tập cao hơn;\nb) Trường hợp có những sinh viên có điểm học tập và điểm rèn\nluyện bằng nhau, Phòng CTCT và HSSV sẽ phân bổ học bổng theo tỉ lệ\nsố tín chỉ. Trường hợp tất cả sinh viên đủ điều kiện trong một ngành học\nđã nhận đủ học bổng mà quỹ còn dư, Phòng CTCT và HSSV sẽ điều phối\nnguồn quỹ này cho các ngành học/khoa khác có sinh viên đủ tiêu chuẩn\ncho đến khi hết nguồn quỹ HBKKHT của toàn Trường.\n5. Việc chi trả HBKKHT theo quyết định của Hiệu trưởng qua tài\nkhoản cá nhân sinh viên đã đăng ký do Phòng Kế hoạch – Tài chính thực hiện.",
+          "metadata": {
+            "chunk_id": "reg_article_29_p53_75",
+            "content_type": "regulation_text",
+            "article": "Điều 29.",
+            "document_title": "QUY CHẾ",
+            "page_end": 54,
+            "chapter": "Chương V",
+            "title": "Điều 29. Trình tự và thủ tục xét cấp học bổng",
+            "chunk_type": "regulation",
+            "part": "",
+            "has_table": false,
+            "has_thresholds": false,
+            "source_type": "structured_section",
+            "source_pages": "53,54",
+            "has_formula": false,
+            "index_mode": "semantic",
+            "page_start": 53,
+            "has_scoring_rule": true,
+            "token_count_approx": 402
+          }
+        },
+        {
+          "chunk_id": "reg_article_27_p51_73",
+          "distance": 0.3358018398284912,
+          "content": "Tài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 27.\nTiêu đề: Điều 27. Học bổng\nNội dung:\nĐiều 27. Học bổng\n1. Học bổng khuyến khích học tập (HBKKHT)\na) Chế độ HBKKHT cho sinh viên thực hiện theo các quy định hiện\nhành của Bộ Giáo dục và Đào tạo và của Trường;\nb) HBKKHT chỉ được cấp cho sinh viên hệ chính quy đang học tập\ntại Trường; người học liên thông không được xét cấp.\n2. Học bổng chính sách\nHọc bổng chính sách sẽ được cấp theo hợp đồng giữa Trường và cơ\nquan cử sinh viên theo học diện cử tuyển (nếu có).\n3. Học bổng tài trợ\na) Học bổng tài trợ cho sinh viên do các tổ chức và cá nhân trao theo\nnhững điều kiện và quy trình riêng;\nb) Học bổng tài trợ do Phòng CTCT và HSSV hoặc phối hợp với các\nđơn vị khác tiếp nhận và thông báo đến toàn thể sinh viên khi có thông tin\nvề học bổng.",
+          "metadata": {
+            "document_title": "QUY CHẾ",
+            "page_start": 51,
+            "article": "Điều 27.",
+            "has_table": false,
+            "chapter": "Chương V",
+            "chunk_type": "regulation",
+            "has_scoring_rule": false,
+            "index_mode": "semantic",
+            "part": "",
+            "chunk_id": "reg_article_27_p51_73",
+            "source_type": "structured_section",
+            "page_end": 52,
+            "token_count_approx": 200,
+            "source_pages": "51,52",
+            "title": "Điều 27. Học bổng",
+            "has_formula": false,
+            "has_thresholds": false,
+            "content_type": "regulation_text"
+          }
+        }
+      ],
+      "citations": [
+        {
+          "chunk_id": "reg_article_28_p52_74_part_1",
+          "chunk_type": "regulation",
+          "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "source_pages": [
+            52,
+            53
+          ],
+          "distance": 0.3065488338470459
+        },
+        {
+          "chunk_id": "reg_article_28_p52_74_part_2",
+          "chunk_type": "regulation",
+          "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "source_pages": [
+            52,
+            53
+          ],
+          "distance": 0.3186149597167969
+        },
+        {
+          "chunk_id": "reg_article_28_p52_74_part_4",
+          "chunk_type": "regulation",
+          "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "source_pages": [
+            52,
+            53
+          ],
+          "distance": 0.3259953260421753
+        },
+        {
+          "chunk_id": "reg_article_29_p53_75",
+          "chunk_type": "regulation",
+          "title": "Điều 29. Trình tự và thủ tục xét cấp học bổng",
+          "source_pages": [
+            53,
+            54
+          ],
+          "distance": 0.33197951316833496
+        },
+        {
+          "chunk_id": "reg_article_27_p51_73",
+          "chunk_type": "regulation",
+          "title": "Điều 27. Học bổng",
+          "source_pages": [
+            51,
+            52
+          ],
+          "distance": 0.3358018398284912
+        }
+      ],
+      "context_for_llm": "[Nguồn 1]\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nLoại: regulation\nTrang: 52,53\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên đại học chính quy tại Trường theo kế hoạch của\nkhóa học; không xét HBKKHT đối với sinh viên học quá thời gian học\ntập chuẩn được quy định tại khoản 6, Điều 3 của Quy chế đào tạo trình độ\nđại học chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021\ncủa Hiệu trưởng;\nb) Trong học kỳ, sinh viên có kết quả học tập, rèn luyện từ loại khá\ntrở lên, không bị kỷ luật từ mức khiển trách trở lên sẽ được xét, cấp\nHBKKHT trong phạm vi quỹ HBKKHT của Trường;\nc) Tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn\nhoặc bằng 15 tín chỉ theo kế hoạch trong CTĐT của khóa học (tất cả các\ntín chỉ đều phải đạt, không bao gồm các tín chỉ trả nợ, cải thiện, tương\nđương…). Do đó, các khoa cần xây dựng chương trình học phù hợp và\nCVHT cần tư vấn, hướng dẫn sinh viên xây dựng lịch học đảm bảo quyền\nlợi cho sinh viên;\nd) Đối với sinh viên năm cuối, học bổng được xét:\n− Quy định xét học bổng đối với học kỳ I thực hiện theo Điểm a, b,\nc, khoản 1, Điều này.\n− Quy định xét học bổng đối với học kỳ II:\n+ Sinh viên đăng ký từ 6 tín chỉ trở lên;\n+ Trình tự xét HBKKHT cho sinh viên năm cuối theo thứ tự các đối\ntượng như sau:\n• Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện xuất sắc.\n• Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện tốt.\n• Sinh viên còn lại.\n− Điểm học bổng được tính theo Điểm đ, khoản 1, Điều này.\nđ) Điểm học bổng: là điểm để xét học bổng cho sinh viên được xếp\nloại từ cao xuống thấp, tính theo công thức:\n− Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện /25 x 20) /100.\n(Điểm rèn luyện /25 là quy đổi về thang điểm 4)\n− Xếp loại học bổng được xếp thành 03 mức:\n+ Học bổng loại Khá: có điểm học bổng từ 2.56 đến 3.352 (điểm học\ntập: 2.50 – 3.19 và điểm rèn luyện >= 70);\n+ Học bổng loại Giỏi: có điểm học bổng từ 3.20 đến 3.672 (điểm\nhọc tập: 3.20 – 3.59 và điểm rèn luyện >= 80);\n+ Học bổng loại Xuất sắc: có điểm học bổng từ 3.60 đến 4.0 (điểm\nhọc tập: 3.60 – 4.0 và điểm rèn luyện >= 90).\n\n---\n\n[Nguồn 2]\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nLoại: regulation\nTrang: 52,53\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n2. Mức học bổng: Mức học bổng sẽ được tính hằng năm và theo quy\nđịnh của Nhà nước và thực tế của Trường quy định. HBKKHT được cấp\ntheo từng học kỳ chính và cấp 10 tháng trong năm học. Cụ thể:\n+ Học bổng loại Khá:\nSố tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.0;\n+ Học bổng loại Giỏi:\nSố tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.25;\n+ Học bổng loại Xuất sắc:\nSố tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.5.\nTín chỉ tự nhiên hoặc xã hội được xác định phụ thuộc vào ngành học\ncủa sinh viên được phân loại là tự nhiên hay xã hội.\n\n---\n\n[Nguồn 3]\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nLoại: regulation\nTrang: 52,53\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n4. Việc xét học bổng được thống nhất xét theo khóa học và ngành học.\n\n---\n\n[Nguồn 4]\nTiêu đề: Điều 29. Trình tự và thủ tục xét cấp học bổng\nLoại: regulation\nTrang: 53,54\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 29.\nTiêu đề: Điều 29. Trình tự và thủ tục xét cấp học bổng\nNội dung:\nĐiều 29. Trình tự và thủ tục xét cấp học bổng\n1. Căn cứ vào quỹ HBKKHT toàn Trường đã xác lập và căn cứ theo\ntỉ lệ số sinh viên của từng khoa, từng khóa, từng ngành học, Phòng CTCT\nvà HSSV phối hợp Phòng Kế hoạch – Tài chính xác định quỹ HBKKHT\ncủa từng ngành học cụ thể ứng với khóa học tương ứng.\n2. Để xét học bổng, CVHT họp lớp đánh giá kết quả rèn luyện của\nsinh viên, khoa xem xét kết quả và nhập điểm rèn luyện vào phần mềm,\nnộp bảng tổng hợp đánh giá kết quả rèn luyện về Phòng CTCT và HSSV\ntheo thời gian quy định.\n3. Căn cứ vào kết quả cập nhật điểm và khóa điểm do Phòng Khảo\nthí và Đảm bảo chất lượng thực hiện, Phòng CTCT và HSSV đối chiếu và\nsử dụng làm cơ sở để xét học bổng.\n4. Học bổng được phân bổ theo thứ tự điểm học bổng giảm dần từ\ncao xuống thấp cho đến hết quỹ học bổng của mỗi ngành học của một\nkhóa học cụ thể.\na) Trường hợp sinh viên có điểm học bổng bằng nhau và kinh phí\nkhông đủ cấp cho tất cả, Trường sẽ ưu tiên xét cấp cho sinh viên có điểm\nhọc tập cao hơn;\nb) Trường hợp có những sinh viên có điểm học tập và điểm rèn\nluyện bằng nhau, Phòng CTCT và HSSV sẽ phân bổ học bổng theo tỉ lệ\nsố tín chỉ. Trường hợp tất cả sinh viên đủ điều kiện trong một ngành học\nđã nhận đủ học bổng mà quỹ còn dư, Phòng CTCT và HSSV sẽ điều phối\nnguồn quỹ này cho các ngành học/khoa khác có sinh viên đủ tiêu chuẩn\ncho đến khi hết nguồn quỹ HBKKHT của toàn Trường.\n5. Việc chi trả HBKKHT theo quyết định của Hiệu trưởng qua tài\nkhoản cá nhân sinh viên đã đăng ký do Phòng Kế hoạch – Tài chính thực hiện.\n\n---\n\n[Nguồn 5]\nTiêu đề: Điều 27. Học bổng\nLoại: regulation\nTrang: 51,52\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 27.\nTiêu đề: Điều 27. Học bổng\nNội dung:\nĐiều 27. Học bổng\n1. Học bổng khuyến khích học tập (HBKKHT)\na) Chế độ HBKKHT cho sinh viên thực hiện theo các quy định hiện\nhành của Bộ Giáo dục và Đào tạo và của Trường;\nb) HBKKHT chỉ được cấp cho sinh viên hệ chính quy đang học tập\ntại Trường; người học liên thông không được xét cấp.\n2. Học bổng chính sách\nHọc bổng chính sách sẽ được cấp theo hợp đồng giữa Trường và cơ\nquan cử sinh viên theo học diện cử tuyển (nếu có).\n3. Học bổng tài trợ\na) Học bổng tài trợ cho sinh viên do các tổ chức và cá nhân trao theo\nnhững điều kiện và quy trình riêng;\nb) Học bổng tài trợ do Phòng CTCT và HSSV hoặc phối hợp với các\nđơn vị khác tiếp nhận và thông báo đến toàn thể sinh viên khi có thông tin\nvề học bổng.",
+      "needs_llm_answer": true
+    },
+    {
+      "query": "Muốn tạm nghỉ học cần mẫu đơn nào?",
+      "intent": "form_query",
+      "strategy": "semantic_filtered",
+      "target_chunk_types": [
+        "form"
+      ],
+      "retrieved_items": [
+        {
+          "chunk_id": "form_form_p176",
+          "distance": 0.27279138565063477,
+          "content": "Biểu mẫu: ĐƠN XIN TẠM NGHỈ HỌC\nMục đích: Dùng khi sinh viên muốn xin tạm nghỉ học.\nThông tin/field phát hiện: Email, Họ tên, Hộ khẩu thường trú, Khoa, Khóa, Kính gửi, Lý do, Lớp, MSSV, Ngày sinh, Địa chỉ\nNguồn: Trang 176\nGhi chú: raw_text biểu mẫu được lưu riêng để hiển thị khi cần.",
+          "metadata": {
+            "review_status": "auto_grouped",
+            "source_type": "form_template",
+            "token_count_approx": 76,
+            "chunk_id": "form_form_p176",
+            "index_mode": "semantic",
+            "chunk_type": "form",
+            "form_id": "form_p176",
+            "form_name": "ĐƠN XIN TẠM NGHỈ HỌC",
+            "raw_text_available": true,
+            "source_pages": "176",
+            "page_end": 176,
+            "page_start": 176
+          }
+        },
+        {
+          "chunk_id": "form_form_p177",
+          "distance": 0.3448830842971802,
+          "content": "Biểu mẫu: ĐƠN XIN HỌC LẠI\nMục đích: Dùng khi sinh viên muốn xin quay lại học sau thời gian tạm nghỉ.\nThông tin/field phát hiện: Email, Họ tên, Hộ khẩu thường trú, Khoa, Khóa, Kính gửi, Lớp, MSSV, Ngành, Ngày sinh, Số điện thoại, Thời gian, Địa chỉ\nNguồn: Trang 177\nGhi chú: raw_text biểu mẫu được lưu riêng để hiển thị khi cần.",
+          "metadata": {
+            "source_type": "form_template",
+            "index_mode": "semantic",
+            "form_name": "ĐƠN XIN HỌC LẠI",
+            "chunk_id": "form_form_p177",
+            "page_end": 177,
+            "source_pages": "177",
+            "review_status": "auto_grouped",
+            "page_start": 177,
+            "raw_text_available": true,
+            "token_count_approx": 86,
+            "form_id": "form_p177",
+            "chunk_type": "form"
+          }
+        },
+        {
+          "chunk_id": "form_form_p178",
+          "distance": 0.3470768928527832,
+          "content": "Biểu mẫu: ĐƠN XIN THÔI HỌC\nMục đích: Dùng khi sinh viên muốn xin thôi học.\nThông tin/field phát hiện: Email, Họ tên, Hộ khẩu thường trú, Khoa, Khóa, Kính gửi, Lý do, Lớp, MSSV, Ngày sinh, Thời gian, Địa chỉ\nNguồn: Trang 178\nGhi chú: raw_text biểu mẫu được lưu riêng để hiển thị khi cần.",
+          "metadata": {
+            "chunk_type": "form",
+            "page_end": 178,
+            "form_id": "form_p178",
+            "token_count_approx": 77,
+            "source_type": "form_template",
+            "raw_text_available": true,
+            "review_status": "auto_grouped",
+            "index_mode": "semantic",
+            "page_start": 178,
+            "form_name": "ĐƠN XIN THÔI HỌC",
+            "source_pages": "178",
+            "chunk_id": "form_form_p178"
+          }
+        },
+        {
+          "chunk_id": "form_form_p182",
+          "distance": 0.41138917207717896,
+          "content": "Biểu mẫu: ĐƠN ĐỀ NGHỊ MIỄN, GIẢM HỌC PHÍ\nMục đích: Dùng khi sinh viên đề nghị miễn, giảm học phí.\nThông tin/field phát hiện: Họ tên, Khoa, Khóa, Kính gửi, Lớp, MSSV, Ngành\nNguồn: Trang 182\nGhi chú: raw_text biểu mẫu được lưu riêng để hiển thị khi cần.",
+          "metadata": {
+            "raw_text_available": true,
+            "form_id": "form_p182",
+            "source_pages": "182",
+            "form_name": "ĐƠN ĐỀ NGHỊ MIỄN, GIẢM HỌC PHÍ",
+            "review_status": "auto_grouped",
+            "page_start": 182,
+            "page_end": 182,
+            "source_type": "form_template",
+            "chunk_type": "form",
+            "token_count_approx": 67,
+            "index_mode": "semantic",
+            "chunk_id": "form_form_p182"
+          }
+        },
+        {
+          "chunk_id": "form_form_p175",
+          "distance": 0.45099854469299316,
+          "content": "Biểu mẫu: ĐƠN XIN CHUYỂN TRƯỜNG\nMục đích: Biểu mẫu phục vụ thủ tục sinh viên.\nThông tin/field phát hiện: Họ tên, Hộ khẩu thường trú, Khoa, Kính gửi, Lý do, Lớp, MSSV, Ngành, Thời gian\nNguồn: Trang 175\nGhi chú: raw_text biểu mẫu được lưu riêng để hiển thị khi cần.",
+          "metadata": {
+            "form_id": "form_p175",
+            "source_pages": "175",
+            "chunk_type": "form",
+            "page_end": 175,
+            "token_count_approx": 69,
+            "raw_text_available": true,
+            "form_name": "ĐƠN XIN CHUYỂN TRƯỜNG",
+            "index_mode": "semantic",
+            "chunk_id": "form_form_p175",
+            "page_start": 175,
+            "source_type": "form_template",
+            "review_status": "auto_grouped"
+          }
+        }
+      ],
+      "citations": [
+        {
+          "chunk_id": "form_form_p176",
+          "chunk_type": "form",
+          "title": "ĐƠN XIN TẠM NGHỈ HỌC",
+          "source_pages": [
+            176
+          ],
+          "distance": 0.27279138565063477
+        },
+        {
+          "chunk_id": "form_form_p177",
+          "chunk_type": "form",
+          "title": "ĐƠN XIN HỌC LẠI",
+          "source_pages": [
+            177
+          ],
+          "distance": 0.3448830842971802
+        },
+        {
+          "chunk_id": "form_form_p178",
+          "chunk_type": "form",
+          "title": "ĐƠN XIN THÔI HỌC",
+          "source_pages": [
+            178
+          ],
+          "distance": 0.3470768928527832
+        },
+        {
+          "chunk_id": "form_form_p182",
+          "chunk_type": "form",
+          "title": "ĐƠN ĐỀ NGHỊ MIỄN, GIẢM HỌC PHÍ",
+          "source_pages": [
+            182
+          ],
+          "distance": 0.41138917207717896
+        },
+        {
+          "chunk_id": "form_form_p175",
+          "chunk_type": "form",
+          "title": "ĐƠN XIN CHUYỂN TRƯỜNG",
+          "source_pages": [
+            175
+          ],
+          "distance": 0.45099854469299316
+        }
+      ],
+      "context_for_llm": "[Nguồn 1]\nTiêu đề: ĐƠN XIN TẠM NGHỈ HỌC\nLoại: form\nTrang: 176\nNội dung:\nBiểu mẫu: ĐƠN XIN TẠM NGHỈ HỌC\nMục đích: Dùng khi sinh viên muốn xin tạm nghỉ học.\nThông tin/field phát hiện: Email, Họ tên, Hộ khẩu thường trú, Khoa, Khóa, Kính gửi, Lý do, Lớp, MSSV, Ngày sinh, Địa chỉ\nNguồn: Trang 176\nGhi chú: raw_text biểu mẫu được lưu riêng để hiển thị khi cần.\n\n---\n\n[Nguồn 2]\nTiêu đề: ĐƠN XIN HỌC LẠI\nLoại: form\nTrang: 177\nNội dung:\nBiểu mẫu: ĐƠN XIN HỌC LẠI\nMục đích: Dùng khi sinh viên muốn xin quay lại học sau thời gian tạm nghỉ.\nThông tin/field phát hiện: Email, Họ tên, Hộ khẩu thường trú, Khoa, Khóa, Kính gửi, Lớp, MSSV, Ngành, Ngày sinh, Số điện thoại, Thời gian, Địa chỉ\nNguồn: Trang 177\nGhi chú: raw_text biểu mẫu được lưu riêng để hiển thị khi cần.\n\n---\n\n[Nguồn 3]\nTiêu đề: ĐƠN XIN THÔI HỌC\nLoại: form\nTrang: 178\nNội dung:\nBiểu mẫu: ĐƠN XIN THÔI HỌC\nMục đích: Dùng khi sinh viên muốn xin thôi học.\nThông tin/field phát hiện: Email, Họ tên, Hộ khẩu thường trú, Khoa, Khóa, Kính gửi, Lý do, Lớp, MSSV, Ngày sinh, Thời gian, Địa chỉ\nNguồn: Trang 178\nGhi chú: raw_text biểu mẫu được lưu riêng để hiển thị khi cần.\n\n---\n\n[Nguồn 4]\nTiêu đề: ĐƠN ĐỀ NGHỊ MIỄN, GIẢM HỌC PHÍ\nLoại: form\nTrang: 182\nNội dung:\nBiểu mẫu: ĐƠN ĐỀ NGHỊ MIỄN, GIẢM HỌC PHÍ\nMục đích: Dùng khi sinh viên đề nghị miễn, giảm học phí.\nThông tin/field phát hiện: Họ tên, Khoa, Khóa, Kính gửi, Lớp, MSSV, Ngành\nNguồn: Trang 182\nGhi chú: raw_text biểu mẫu được lưu riêng để hiển thị khi cần.\n\n---\n\n[Nguồn 5]\nTiêu đề: ĐƠN XIN CHUYỂN TRƯỜNG\nLoại: form\nTrang: 175\nNội dung:\nBiểu mẫu: ĐƠN XIN CHUYỂN TRƯỜNG\nMục đích: Biểu mẫu phục vụ thủ tục sinh viên.\nThông tin/field phát hiện: Họ tên, Hộ khẩu thường trú, Khoa, Kính gửi, Lý do, Lớp, MSSV, Ngành, Thời gian\nNguồn: Trang 175\nGhi chú: raw_text biểu mẫu được lưu riêng để hiển thị khi cần.",
+      "needs_llm_answer": true
+    },
+    {
+      "query": "Phòng Đào tạo xử lý việc gì?",
+      "intent": "office_query",
+      "strategy": "semantic_filtered",
+      "target_chunk_types": [
+        "office_directory"
+      ],
+      "retrieved_items": [
+        {
+          "chunk_id": "office_office_3",
+          "distance": 0.33807873725891113,
+          "content": "Đơn vị/phòng ban: 3. Phòng Đào tạo\nThông tin liên quan:\n3. Phòng Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 141, 142\nEmail\n: phongdt@hcmue.edu.vn\nWebsite\n: phongdt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.106, P.107\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức tuyển sinh các hệ;\n− Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ;\nxây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo\ndõi, giám sát hoạt động dạy và học của giảng viên và sinh viên;\n− Xây dựng và triển khai kế hoạch thực tập, thực tế năm học;\n− Tổ chức xét tuyển ngành học thứ hai (song ngành) cho sinh viên\nđang theo học tại Trường;\n− Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo\nkế hoạch thời gian năm học;\n− Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận\ntốt nghiệp tạm thời, văn bằng tốt nghiệp;\n− Thông báo các nội dung liên quan đến công tác đào tạo trên cổng\nthông tin trực tuyến.\nNguồn: Trang 130-131",
+          "metadata": {
+            "part_index": 1,
+            "unit_name": "3. Phòng Đào tạo",
+            "token_count_approx": 270,
+            "needs_manual_review": false,
+            "chunk_type": "office_directory",
+            "split_from_record": false,
+            "page_end": 131,
+            "chunk_id": "office_office_3",
+            "source_type": "office_directory",
+            "index_mode": "semantic",
+            "source_pages": "130,131",
+            "page_start": 130,
+            "total_parts": 1,
+            "record_id": "office_3"
+          }
+        },
+        {
+          "chunk_id": "office_office_10",
+          "distance": 0.38681983947753906,
+          "content": "Đơn vị/phòng ban: 10. Phòng Thanh tra Đào tạo\nThông tin liên quan:\n10. Phòng Thanh tra Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 160\nEmail\n: phongthanhtra@hcmue.edu.vn\nWebsite\n: phongttdt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.209,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tiếp nhận và giải quyết những phản ánh liên quan đến công tác\nđào tạo;\n− Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên.\nNguồn: Trang 133",
+          "metadata": {
+            "page_end": 133,
+            "token_count_approx": 139,
+            "split_from_record": false,
+            "chunk_type": "office_directory",
+            "part_index": 1,
+            "needs_manual_review": false,
+            "page_start": 133,
+            "unit_name": "10. Phòng Thanh tra Đào tạo",
+            "chunk_id": "office_office_10",
+            "total_parts": 1,
+            "record_id": "office_10",
+            "index_mode": "semantic",
+            "source_pages": "133",
+            "source_type": "office_directory"
+          }
+        },
+        {
+          "chunk_id": "office_office_8",
+          "distance": 0.44336622953414917,
+          "content": "Đơn vị/phòng ban: 8. Phòng Sau Đại học\nThông tin liên quan:\n8. Phòng Sau Đại học\nĐiện thoại liên lạc\n: (028) 38391077 – (028) 38352020\nsố máy nội bộ: 181, 182, 183, 184\nEmail\n: phongsdh@hcmue.edu.vn\nWebsite\n: phongsdh.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng 1, P.102, P.103, P.104,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức ôn tập, tiếp nhận hồ sơ, tổ chức thi tuyển sinh Sau Đại học;\n− Chuyển tiếp sinh đào tạo trình độ Thạc sĩ và Tiến sĩ;\n− Lập hồ sơ xét tuyển nghiên cứu sinh.\nNguồn: Trang 132-133",
+          "metadata": {
+            "unit_name": "8. Phòng Sau Đại học",
+            "token_count_approx": 168,
+            "chunk_id": "office_office_8",
+            "page_start": 132,
+            "page_end": 133,
+            "source_pages": "132,133",
+            "chunk_type": "office_directory",
+            "index_mode": "semantic",
+            "source_type": "office_directory",
+            "split_from_record": false,
+            "total_parts": 1,
+            "needs_manual_review": false,
+            "part_index": 1,
+            "record_id": "office_8"
+          }
+        },
+        {
+          "chunk_id": "office_office_14",
+          "distance": 0.4550046920776367,
+          "content": "Đơn vị/phòng ban: 18. Trung tâm Phát triển kỹ năng Sư phạm\nThông tin liên quan:\n18. Trung tâm Phát triển kỹ năng Sư phạm\nĐiện thoại liên lạc\n: (028) 38397868,\nsố máy nội bộ: 169, 170\nEmail\n: trungtamptknsp@hcmue.edu.vn\nWebsite\n: trungtamptknsp.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.201,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức các hoạt động tập giảng, kiến tập và thực tập giảng tại\ncác phòng học trực tuyến, phòng học ảo và phòng học thông minh;\n− Phối hợp với Phòng Đào tạo và các khoa chuyên môn để xây\ndựng nội dung, kế hoạch, quy chế thực tập và rèn luyện nghiệp vụ cho\nsinh viên;\n− Tổ chức hội thảo khoa học và các hoạt động NCKH về giáo dục\nvà kỹ năng, NVSP;\n− Tổ chức các dịch vụ công về kỹ năng sử dụng các phần mềm dạy\nhọc; các chiến lược và kỹ thuật dạy học trong và ngoài lớp học; kỹ năng\nthiết kế các công cụ dạy học; kỹ năng quản lý hệ thống học tập; kỹ năng\nkiểm tra đánh giá kết quả học tập; phương pháp dạy học tích hợp, phân\nhóa; mô hình và phương pháp dạy – học STEM…\nNguồn: Trang 137",
+          "metadata": {
+            "record_id": "office_14",
+            "source_pages": "137",
+            "chunk_id": "office_office_14",
+            "needs_manual_review": false,
+            "part_index": 1,
+            "token_count_approx": 282,
+            "page_start": 137,
+            "unit_name": "18. Trung tâm Phát triển kỹ năng Sư phạm",
+            "index_mode": "semantic",
+            "page_end": 137,
+            "split_from_record": false,
+            "chunk_type": "office_directory",
+            "source_type": "office_directory",
+            "total_parts": 1
+          }
+        },
+        {
+          "chunk_id": "office_office_1",
+          "distance": 0.45828521251678467,
+          "content": "Đơn vị/phòng ban: 1. Phòng Công nghệ Thông tin\nThông tin liên quan:\n1. Phòng Công nghệ Thông tin\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 166\nEmail\n: phongcntt@hcmue.edu.vn\nWebsite\n: phongcntt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Quản lý email của sinh viên được cấp theo tên miền của Trường\nĐại học Sư phạm Thành phố Hồ Chí Minh;\n– Quản lý trang thông tin điện tử của Trường;\n– Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào\ntạo theo học chế tín chỉ;\n– Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại\nhọc Sư phạm Thành phố Hồ Chí Minh;\n– Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm\ncủa Trường;\n– Các công tác khác có liên quan đến Công nghệ Thông tin.\nNguồn: Trang 129",
+          "metadata": {
+            "source_type": "office_directory",
+            "unit_name": "1. Phòng Công nghệ Thông tin",
+            "total_parts": 1,
+            "page_end": 129,
+            "split_from_record": false,
+            "record_id": "office_1",
+            "index_mode": "semantic",
+            "part_index": 1,
+            "page_start": 129,
+            "token_count_approx": 218,
+            "source_pages": "129",
+            "chunk_type": "office_directory",
+            "needs_manual_review": false,
+            "chunk_id": "office_office_1"
+          }
+        }
+      ],
+      "citations": [
+        {
+          "chunk_id": "office_office_3",
+          "chunk_type": "office_directory",
+          "title": "3. Phòng Đào tạo",
+          "source_pages": [
+            130,
+            131
+          ],
+          "distance": 0.33807873725891113
+        },
+        {
+          "chunk_id": "office_office_10",
+          "chunk_type": "office_directory",
+          "title": "10. Phòng Thanh tra Đào tạo",
+          "source_pages": [
+            133
+          ],
+          "distance": 0.38681983947753906
+        },
+        {
+          "chunk_id": "office_office_8",
+          "chunk_type": "office_directory",
+          "title": "8. Phòng Sau Đại học",
+          "source_pages": [
+            132,
+            133
+          ],
+          "distance": 0.44336622953414917
+        },
+        {
+          "chunk_id": "office_office_14",
+          "chunk_type": "office_directory",
+          "title": "18. Trung tâm Phát triển kỹ năng Sư phạm",
+          "source_pages": [
+            137
+          ],
+          "distance": 0.4550046920776367
+        },
+        {
+          "chunk_id": "office_office_1",
+          "chunk_type": "office_directory",
+          "title": "1. Phòng Công nghệ Thông tin",
+          "source_pages": [
+            129
+          ],
+          "distance": 0.45828521251678467
+        }
+      ],
+      "context_for_llm": "[Nguồn 1]\nTiêu đề: 3. Phòng Đào tạo\nLoại: office_directory\nTrang: 130,131\nNội dung:\nĐơn vị/phòng ban: 3. Phòng Đào tạo\nThông tin liên quan:\n3. Phòng Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 141, 142\nEmail\n: phongdt@hcmue.edu.vn\nWebsite\n: phongdt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.106, P.107\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức tuyển sinh các hệ;\n− Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ;\nxây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo\ndõi, giám sát hoạt động dạy và học của giảng viên và sinh viên;\n− Xây dựng và triển khai kế hoạch thực tập, thực tế năm học;\n− Tổ chức xét tuyển ngành học thứ hai (song ngành) cho sinh viên\nđang theo học tại Trường;\n− Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo\nkế hoạch thời gian năm học;\n− Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận\ntốt nghiệp tạm thời, văn bằng tốt nghiệp;\n− Thông báo các nội dung liên quan đến công tác đào tạo trên cổng\nthông tin trực tuyến.\nNguồn: Trang 130-131\n\n---\n\n[Nguồn 2]\nTiêu đề: 10. Phòng Thanh tra Đào tạo\nLoại: office_directory\nTrang: 133\nNội dung:\nĐơn vị/phòng ban: 10. Phòng Thanh tra Đào tạo\nThông tin liên quan:\n10. Phòng Thanh tra Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 160\nEmail\n: phongthanhtra@hcmue.edu.vn\nWebsite\n: phongttdt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.209,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tiếp nhận và giải quyết những phản ánh liên quan đến công tác\nđào tạo;\n− Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên.\nNguồn: Trang 133\n\n---\n\n[Nguồn 3]\nTiêu đề: 8. Phòng Sau Đại học\nLoại: office_directory\nTrang: 132,133\nNội dung:\nĐơn vị/phòng ban: 8. Phòng Sau Đại học\nThông tin liên quan:\n8. Phòng Sau Đại học\nĐiện thoại liên lạc\n: (028) 38391077 – (028) 38352020\nsố máy nội bộ: 181, 182, 183, 184\nEmail\n: phongsdh@hcmue.edu.vn\nWebsite\n: phongsdh.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng 1, P.102, P.103, P.104,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức ôn tập, tiếp nhận hồ sơ, tổ chức thi tuyển sinh Sau Đại học;\n− Chuyển tiếp sinh đào tạo trình độ Thạc sĩ và Tiến sĩ;\n− Lập hồ sơ xét tuyển nghiên cứu sinh.\nNguồn: Trang 132-133\n\n---\n\n[Nguồn 4]\nTiêu đề: 18. Trung tâm Phát triển kỹ năng Sư phạm\nLoại: office_directory\nTrang: 137\nNội dung:\nĐơn vị/phòng ban: 18. Trung tâm Phát triển kỹ năng Sư phạm\nThông tin liên quan:\n18. Trung tâm Phát triển kỹ năng Sư phạm\nĐiện thoại liên lạc\n: (028) 38397868,\nsố máy nội bộ: 169, 170\nEmail\n: trungtamptknsp@hcmue.edu.vn\nWebsite\n: trungtamptknsp.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.201,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức các hoạt động tập giảng, kiến tập và thực tập giảng tại\ncác phòng học trực tuyến, phòng học ảo và phòng học thông minh;\n− Phối hợp với Phòng Đào tạo và các khoa chuyên môn để xây\ndựng nội dung, kế hoạch, quy chế thực tập và rèn luyện nghiệp vụ cho\nsinh viên;\n− Tổ chức hội thảo khoa học và các hoạt động NCKH về giáo dục\nvà kỹ năng, NVSP;\n− Tổ chức các dịch vụ công về kỹ năng sử dụng các phần mềm dạy\nhọc; các chiến lược và kỹ thuật dạy học trong và ngoài lớp học; kỹ năng\nthiết kế các công cụ dạy học; kỹ năng quản lý hệ thống học tập; kỹ năng\nkiểm tra đánh giá kết quả học tập; phương pháp dạy học tích hợp, phân\nhóa; mô hình và phương pháp dạy – học STEM…\nNguồn: Trang 137\n\n---\n\n[Nguồn 5]\nTiêu đề: 1. Phòng Công nghệ Thông tin\nLoại: office_directory\nTrang: 129\nNội dung:\nĐơn vị/phòng ban: 1. Phòng Công nghệ Thông tin\nThông tin liên quan:\n1. Phòng Công nghệ Thông tin\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 166\nEmail\n: phongcntt@hcmue.edu.vn\nWebsite\n: phongcntt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Quản lý email của sinh viên được cấp theo tên miền của Trường\nĐại học Sư phạm Thành phố Hồ Chí Minh;\n– Quản lý trang thông tin điện tử của Trường;\n– Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào\ntạo theo học chế tín chỉ;\n– Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại\nhọc Sư phạm Thành phố Hồ Chí Minh;\n– Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm\ncủa Trường;\n– Các công tác khác có liên quan đến Công nghệ Thông tin.\nNguồn: Trang 129",
+      "needs_llm_answer": true
+    },
+    {
+      "query": "Email Phòng Công tác chính trị và HSSV là gì?",
+      "intent": "office_query",
+      "strategy": "semantic_filtered",
+      "target_chunk_types": [
+        "office_directory"
+      ],
+      "retrieved_items": [
+        {
+          "chunk_id": "office_office_2",
+          "distance": 0.3531423807144165,
+          "content": "Đơn vị/phòng ban: 2. Phòng Công tác chính trị và Học sinh, sinh viên\nThông tin liên quan:\n2. Phòng Công tác chính trị và Học sinh, sinh viên\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 127, 128, 143\nEmail\n: phongctct@hcmue.edu.vn\nhopthusinhvien@hcmue.edu.vn\nWebsite\n: phongctct.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.108, P.109, P.110\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Công tác giáo dục chính trị tư tưởng;\n− Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội\ncấp Trường;\n− Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh\nviên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên\nquan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng\ntiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến\nsinh viên; theo dõi phát triển Đảng trong sinh viên;\n− Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm\ncho sinh viên.\nNguồn: Trang 129-130",
+          "metadata": {
+            "page_start": 129,
+            "page_end": 130,
+            "split_from_record": false,
+            "source_pages": "129,130",
+            "record_id": "office_2",
+            "total_parts": 1,
+            "source_type": "office_directory",
+            "unit_name": "2. Phòng Công tác chính trị và Học sinh, sinh viên",
+            "token_count_approx": 269,
+            "chunk_type": "office_directory",
+            "chunk_id": "office_office_2",
+            "part_index": 1,
+            "index_mode": "semantic",
+            "needs_manual_review": false
+          }
+        },
+        {
+          "chunk_id": "office_office_1",
+          "distance": 0.40460121631622314,
+          "content": "Đơn vị/phòng ban: 1. Phòng Công nghệ Thông tin\nThông tin liên quan:\n1. Phòng Công nghệ Thông tin\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 166\nEmail\n: phongcntt@hcmue.edu.vn\nWebsite\n: phongcntt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Quản lý email của sinh viên được cấp theo tên miền của Trường\nĐại học Sư phạm Thành phố Hồ Chí Minh;\n– Quản lý trang thông tin điện tử của Trường;\n– Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào\ntạo theo học chế tín chỉ;\n– Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại\nhọc Sư phạm Thành phố Hồ Chí Minh;\n– Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm\ncủa Trường;\n– Các công tác khác có liên quan đến Công nghệ Thông tin.\nNguồn: Trang 129",
+          "metadata": {
+            "chunk_id": "office_office_1",
+            "index_mode": "semantic",
+            "source_pages": "129",
+            "part_index": 1,
+            "source_type": "office_directory",
+            "record_id": "office_1",
+            "page_start": 129,
+            "chunk_type": "office_directory",
+            "split_from_record": false,
+            "unit_name": "1. Phòng Công nghệ Thông tin",
+            "total_parts": 1,
+            "needs_manual_review": false,
+            "page_end": 129,
+            "token_count_approx": 218
+          }
+        },
+        {
+          "chunk_id": "office_office_16_part_2",
+          "distance": 0.41118353605270386,
+          "content": "số máy nội bộ: 208\nEmail\n: vphoisinhvien@hcmue.edu.vn\nPhòng làm việc\n: Nhà A, tầng trệt, P.001,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNguồn: Trang 138-139",
+          "metadata": {
+            "chunk_type": "office_directory",
+            "part_index": 2,
+            "unit_name": "20. Trung tâm Ngoại ngữ",
+            "chunk_id": "office_office_16_part_2",
+            "page_start": 138,
+            "token_count_approx": 51,
+            "index_mode": "semantic",
+            "record_id": "office_16",
+            "page_end": 139,
+            "source_type": "office_directory",
+            "total_parts": 2,
+            "split_from_record": true,
+            "source_pages": "138,139",
+            "needs_manual_review": false
+          }
+        },
+        {
+          "chunk_id": "office_office_9",
+          "distance": 0.43000710010528564,
+          "content": "Đơn vị/phòng ban: 9. Phòng Tổ chức – Hành chính\nThông tin liên quan:\n9. Phòng Tổ chức – Hành chính\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 179, 148, 213\nEmail\n: phongtchc@hcmue.edu.vn\nWebsite\n: phongtchc.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.104, P.105,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Đóng dấu các loại văn bản khi đã có chữ ký của người có thẩm quyền;\n− Nhận và phân loại thư, bưu phẩm chuyển về các khoa cho sinh viên.\nNguồn: Trang 133",
+          "metadata": {
+            "chunk_type": "office_directory",
+            "chunk_id": "office_office_9",
+            "page_end": 133,
+            "source_type": "office_directory",
+            "total_parts": 1,
+            "index_mode": "semantic",
+            "split_from_record": false,
+            "record_id": "office_9",
+            "page_start": 133,
+            "unit_name": "9. Phòng Tổ chức – Hành chính",
+            "part_index": 1,
+            "source_pages": "133",
+            "token_count_approx": 150,
+            "needs_manual_review": false
+          }
+        },
+        {
+          "chunk_id": "office_office_3",
+          "distance": 0.4311021566390991,
+          "content": "Đơn vị/phòng ban: 3. Phòng Đào tạo\nThông tin liên quan:\n3. Phòng Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 141, 142\nEmail\n: phongdt@hcmue.edu.vn\nWebsite\n: phongdt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.106, P.107\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức tuyển sinh các hệ;\n− Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ;\nxây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo\ndõi, giám sát hoạt động dạy và học của giảng viên và sinh viên;\n− Xây dựng và triển khai kế hoạch thực tập, thực tế năm học;\n− Tổ chức xét tuyển ngành học thứ hai (song ngành) cho sinh viên\nđang theo học tại Trường;\n− Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo\nkế hoạch thời gian năm học;\n− Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận\ntốt nghiệp tạm thời, văn bằng tốt nghiệp;\n− Thông báo các nội dung liên quan đến công tác đào tạo trên cổng\nthông tin trực tuyến.\nNguồn: Trang 130-131",
+          "metadata": {
+            "page_start": 130,
+            "part_index": 1,
+            "split_from_record": false,
+            "index_mode": "semantic",
+            "needs_manual_review": false,
+            "token_count_approx": 270,
+            "total_parts": 1,
+            "record_id": "office_3",
+            "chunk_type": "office_directory",
+            "source_pages": "130,131",
+            "chunk_id": "office_office_3",
+            "unit_name": "3. Phòng Đào tạo",
+            "page_end": 131,
+            "source_type": "office_directory"
+          }
+        }
+      ],
+      "citations": [
+        {
+          "chunk_id": "office_office_2",
+          "chunk_type": "office_directory",
+          "title": "2. Phòng Công tác chính trị và Học sinh, sinh viên",
+          "source_pages": [
+            129,
+            130
+          ],
+          "distance": 0.3531423807144165
+        },
+        {
+          "chunk_id": "office_office_1",
+          "chunk_type": "office_directory",
+          "title": "1. Phòng Công nghệ Thông tin",
+          "source_pages": [
+            129
+          ],
+          "distance": 0.40460121631622314
+        },
+        {
+          "chunk_id": "office_office_16_part_2",
+          "chunk_type": "office_directory",
+          "title": "20. Trung tâm Ngoại ngữ",
+          "source_pages": [
+            138,
+            139
+          ],
+          "distance": 0.41118353605270386
+        },
+        {
+          "chunk_id": "office_office_9",
+          "chunk_type": "office_directory",
+          "title": "9. Phòng Tổ chức – Hành chính",
+          "source_pages": [
+            133
+          ],
+          "distance": 0.43000710010528564
+        },
+        {
+          "chunk_id": "office_office_3",
+          "chunk_type": "office_directory",
+          "title": "3. Phòng Đào tạo",
+          "source_pages": [
+            130,
+            131
+          ],
+          "distance": 0.4311021566390991
+        }
+      ],
+      "context_for_llm": "[Nguồn 1]\nTiêu đề: 2. Phòng Công tác chính trị và Học sinh, sinh viên\nLoại: office_directory\nTrang: 129,130\nNội dung:\nĐơn vị/phòng ban: 2. Phòng Công tác chính trị và Học sinh, sinh viên\nThông tin liên quan:\n2. Phòng Công tác chính trị và Học sinh, sinh viên\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 127, 128, 143\nEmail\n: phongctct@hcmue.edu.vn\nhopthusinhvien@hcmue.edu.vn\nWebsite\n: phongctct.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.108, P.109, P.110\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Công tác giáo dục chính trị tư tưởng;\n− Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội\ncấp Trường;\n− Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh\nviên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên\nquan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng\ntiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến\nsinh viên; theo dõi phát triển Đảng trong sinh viên;\n− Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm\ncho sinh viên.\nNguồn: Trang 129-130\n\n---\n\n[Nguồn 2]\nTiêu đề: 1. Phòng Công nghệ Thông tin\nLoại: office_directory\nTrang: 129\nNội dung:\nĐơn vị/phòng ban: 1. Phòng Công nghệ Thông tin\nThông tin liên quan:\n1. Phòng Công nghệ Thông tin\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 166\nEmail\n: phongcntt@hcmue.edu.vn\nWebsite\n: phongcntt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Quản lý email của sinh viên được cấp theo tên miền của Trường\nĐại học Sư phạm Thành phố Hồ Chí Minh;\n– Quản lý trang thông tin điện tử của Trường;\n– Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào\ntạo theo học chế tín chỉ;\n– Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại\nhọc Sư phạm Thành phố Hồ Chí Minh;\n– Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm\ncủa Trường;\n– Các công tác khác có liên quan đến Công nghệ Thông tin.\nNguồn: Trang 129\n\n---\n\n[Nguồn 3]\nTiêu đề: 20. Trung tâm Ngoại ngữ\nLoại: office_directory\nTrang: 138,139\nNội dung:\nsố máy nội bộ: 208\nEmail\n: vphoisinhvien@hcmue.edu.vn\nPhòng làm việc\n: Nhà A, tầng trệt, P.001,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNguồn: Trang 138-139\n\n---\n\n[Nguồn 4]\nTiêu đề: 9. Phòng Tổ chức – Hành chính\nLoại: office_directory\nTrang: 133\nNội dung:\nĐơn vị/phòng ban: 9. Phòng Tổ chức – Hành chính\nThông tin liên quan:\n9. Phòng Tổ chức – Hành chính\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 179, 148, 213\nEmail\n: phongtchc@hcmue.edu.vn\nWebsite\n: phongtchc.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.104, P.105,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Đóng dấu các loại văn bản khi đã có chữ ký của người có thẩm quyền;\n− Nhận và phân loại thư, bưu phẩm chuyển về các khoa cho sinh viên.\nNguồn: Trang 133\n\n---\n\n[Nguồn 5]\nTiêu đề: 3. Phòng Đào tạo\nLoại: office_directory\nTrang: 130,131\nNội dung:\nĐơn vị/phòng ban: 3. Phòng Đào tạo\nThông tin liên quan:\n3. Phòng Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 141, 142\nEmail\n: phongdt@hcmue.edu.vn\nWebsite\n: phongdt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.106, P.107\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức tuyển sinh các hệ;\n− Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ;\nxây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo\ndõi, giám sát hoạt động dạy và học của giảng viên và sinh viên;\n− Xây dựng và triển khai kế hoạch thực tập, thực tế năm học;\n− Tổ chức xét tuyển ngành học thứ hai (song ngành) cho sinh viên\nđang theo học tại Trường;\n− Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo\nkế hoạch thời gian năm học;\n− Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận\ntốt nghiệp tạm thời, văn bằng tốt nghiệp;\n− Thông báo các nội dung liên quan đến công tác đào tạo trên cổng\nthông tin trực tuyến.\nNguồn: Trang 130-131",
+      "needs_llm_answer": true
+    },
+    {
+      "query": "Khoa Công nghệ thông tin có ngành nào?",
+      "intent": "faculty_query",
+      "strategy": "semantic_filtered",
+      "target_chunk_types": [
+        "faculty_program_directory"
+      ],
+      "retrieved_items": [
+        {
+          "chunk_id": "faculty_faculty_1_part_1",
+          "distance": 0.3180633783340454,
+          "content": "Khoa/Tổ: 1. Khoa Công nghệ – Thông tin\nThông tin liên quan:\n1. Khoa Công nghệ – Thông tin\nSố điện thoại liên lạc\n: (028) 38352020\nsố nội bộ: 209, 210\nEmail\n: khoacntt@hcmue.edu.vn\nWebsite\n: khoacntt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 5, P.506, P.507,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNGÀNH SƯ PHẠM TIN HỌC\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn tin học ở các trường\nphổ thông và các cơ sở đào tạo trình độ tương đương;\n– Đảm nhiệm được vị trí chuyên viên công nghệ thông tin trong các\ntrường phổ thông và các cơ sở đào tạo trình độ tương đương: tư vấn, triển\nkhai giải pháp, quản trị công nghệ thông tin;\n– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở bậc cao\nhơn thuộc các chuyên ngành phương pháp giảng dạy tin học, khoa học\nmáy tính, công nghệ phần mềm, hệ thống thông tin.\nNGÀNH CÔNG NGHỆ THÔNG TIN\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm việc trong các công ty chuyên về công nghệ thông tin, đặc\nbiệt trong lĩnh vực sản xuất và gia công phần mềm và nội dung số;\n– Làm chuyên viên trong các cơ quan, đơn vị có ứng dụng công\nnghệ thông tin;\n– Làm quản lý doanh nghiệp có ứng dụng hay phát triển sản phẩm có\nliên quan đến công nghệ thông tin;\n– Làm nghiên cứu viên trong các trường đại học hay viện nghiên cứu\ncó liên quan đến công nghệ thông tin;",
+          "metadata": {
+            "page_start": 141,
+            "token_count_approx": 336,
+            "chunk_type": "faculty_program_directory",
+            "total_parts": 2,
+            "needs_manual_review": false,
+            "record_id": "faculty_1",
+            "faculty_or_unit_name": "1. Khoa Công nghệ – Thông tin",
+            "page_end": 142,
+            "index_mode": "semantic",
+            "source_type": "faculty_program_directory",
+            "part_index": 1,
+            "source_pages": "141,142",
+            "split_from_record": true,
+            "chunk_id": "faculty_faculty_1_part_1"
+          }
+        },
+        {
+          "chunk_id": "faculty_faculty_1_part_2",
+          "distance": 0.4396153688430786,
+          "content": "– Đảm nhiệm được các vị trí công tác cụ thể: lập trình viên, phân\ntích viên, thiết kế chương trình và dữ liệu, quản trị các hệ cơ sở dữ liệu,\nkiểm thử viên phần mềm, kỹ sư quy trình chất lượng, nghiên cứu viên;\n– Có khả năng tự học để hoàn thiện, bổ sung, nâng cao trình độ\nchuyên môn nghiệp vụ công nghệ thông tin;\n– Có khả năng tiếp tục học tập và nghiên cứu chuyên môn ở trình độ\nthạc sĩ, tiến sĩ.\nNguồn: Trang 141-142",
+          "metadata": {
+            "source_type": "faculty_program_directory",
+            "needs_manual_review": false,
+            "faculty_or_unit_name": "1. Khoa Công nghệ – Thông tin",
+            "part_index": 2,
+            "record_id": "faculty_1",
+            "page_start": 141,
+            "split_from_record": true,
+            "page_end": 142,
+            "total_parts": 2,
+            "token_count_approx": 108,
+            "source_pages": "141,142",
+            "chunk_id": "faculty_faculty_1_part_2",
+            "index_mode": "semantic",
+            "chunk_type": "faculty_program_directory"
+          }
+        },
+        {
+          "chunk_id": "faculty_faculty_2",
+          "distance": 0.45326781272888184,
+          "content": "Khoa/Tổ: 2. Khoa Toán – Tin học\nThông tin liên quan:\n2. Khoa Toán – Tin học\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 111\nEmail\n: khoatoantin@hcmue.edu.vn\nWebsite\n: khoatoantin.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n− Giảng dạy Toán ở các Trường phổ thông, Cao đẳng, Đại học.\nNghiên cứu Toán học tại các Trung tâm, Viện nghiên cứu;\n− Làm việc tại các doanh nghiệp có ứng dụng Toán học.\nNguồn: Trang 142",
+          "metadata": {
+            "record_id": "faculty_2",
+            "token_count_approx": 143,
+            "chunk_type": "faculty_program_directory",
+            "faculty_or_unit_name": "2. Khoa Toán – Tin học",
+            "total_parts": 1,
+            "source_pages": "142",
+            "page_start": 142,
+            "part_index": 1,
+            "chunk_id": "faculty_faculty_2",
+            "needs_manual_review": false,
+            "page_end": 142,
+            "index_mode": "semantic",
+            "source_type": "faculty_program_directory",
+            "split_from_record": false
+          }
+        },
+        {
+          "chunk_id": "faculty_faculty_15_part_1",
+          "distance": 0.45960402488708496,
+          "content": "Khoa/Tổ: 15. Khoa Khoa học Giáo dục\nThông tin liên quan:\n15. Khoa Khoa học Giáo dục\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 103, 104\nEmail\n: khoakhgd@hcmue.edu.vn\nWebsite\n: khoakhgd.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 4, P.401, P.402,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNGÀNH QUẢN LÝ GIÁO DỤC\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Chuyên viên hành chính làm công tác quản lý HSSV; quản lý hoạt\nđộng dạy học và giáo dục tại các cơ sở giáo dục: mầm non, phổ thông,\ndạy nghề, cao đẳng, đại học;\n– Trợ lý thanh niên ở các cơ sở giáo dục: mầm non, phổ thông, dạy\nnghề, cao đẳng, đại học;\n– Chuyên viên hành chính làm công tác quản lý giáo dục;\n– Giảng viên về Quản lý Giáo dục ở các cơ sở giáo dục và đào tạo;\nNghiên cứu viên tại các viện NCKH giáo dục;\n– Có khả năng học tập, nghiên cứu chuyên sâu ở các bậc học cao\nhơn tại các cơ sở giáo dục trong và ngoài nước về Khoa học giáo dục ở\ncác chuyên ngành: Quản lý Giáo dục, Giáo dục học, Đo lường và đánh\ngiá giáo dục.\nNGÀNH GIÁO DỤC HỌC\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên giáo dục kỹ năng sống tại các cơ sở giáo dục mầm non\nvà phổ thông;\n– Trợ lý thanh niên ở các cơ sở giáo dục mầm non và phổ thông;\n– Chuyên viên hành chính về công tác quản lý ở các cơ sở giáo dục;",
+          "metadata": {
+            "source_pages": "153,154",
+            "chunk_id": "faculty_faculty_15_part_1",
+            "total_parts": 2,
+            "page_start": 153,
+            "source_type": "faculty_program_directory",
+            "page_end": 154,
+            "part_index": 1,
+            "index_mode": "semantic",
+            "split_from_record": true,
+            "chunk_type": "faculty_program_directory",
+            "needs_manual_review": false,
+            "token_count_approx": 340,
+            "record_id": "faculty_15",
+            "faculty_or_unit_name": "15. Khoa Khoa học Giáo dục"
+          }
+        },
+        {
+          "chunk_id": "faculty_faculty_17",
+          "distance": 0.47903841733932495,
+          "content": "Khoa/Tổ: 17. Khoa Giáo dục Chính trị\nThông tin liên quan:\n17. Khoa Giáo dục Chính trị\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 125, 126\nEmail\n: khoagdct@hcmue.edu.vn\nWebsite\n: khoagdct.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 4, P.411,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy môn Giáo dục công dân ở các\ntrường THCS và THPT; công tác giáo dục chính trị ở các trường trung\nhọc nghề và các cơ sở giáo dục tương đương;\n– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn thuộc các chuyên ngành: Triết học, Kinh tế chính trị, Chủ\nnghĩa xã hội khoa học, Tư tưởng Hồ Chí Minh, Lịch sử Đảng Cộng sản\nViệt Nam, Chính trị học, Lý luận và phương pháp dạy học bộ môn Lý\nluận chính trị…\nNguồn: Trang 156",
+          "metadata": {
+            "part_index": 1,
+            "page_end": 156,
+            "chunk_type": "faculty_program_directory",
+            "faculty_or_unit_name": "17. Khoa Giáo dục Chính trị",
+            "index_mode": "semantic",
+            "split_from_record": false,
+            "token_count_approx": 218,
+            "source_type": "faculty_program_directory",
+            "record_id": "faculty_17",
+            "needs_manual_review": false,
+            "total_parts": 1,
+            "source_pages": "156",
+            "chunk_id": "faculty_faculty_17",
+            "page_start": 156
+          }
+        }
+      ],
+      "citations": [
+        {
+          "chunk_id": "faculty_faculty_1_part_1",
+          "chunk_type": "faculty_program_directory",
+          "title": "1. Khoa Công nghệ – Thông tin",
+          "source_pages": [
+            141,
+            142
+          ],
+          "distance": 0.3180633783340454
+        },
+        {
+          "chunk_id": "faculty_faculty_1_part_2",
+          "chunk_type": "faculty_program_directory",
+          "title": "1. Khoa Công nghệ – Thông tin",
+          "source_pages": [
+            141,
+            142
+          ],
+          "distance": 0.4396153688430786
+        },
+        {
+          "chunk_id": "faculty_faculty_2",
+          "chunk_type": "faculty_program_directory",
+          "title": "2. Khoa Toán – Tin học",
+          "source_pages": [
+            142
+          ],
+          "distance": 0.45326781272888184
+        },
+        {
+          "chunk_id": "faculty_faculty_15_part_1",
+          "chunk_type": "faculty_program_directory",
+          "title": "15. Khoa Khoa học Giáo dục",
+          "source_pages": [
+            153,
+            154
+          ],
+          "distance": 0.45960402488708496
+        },
+        {
+          "chunk_id": "faculty_faculty_17",
+          "chunk_type": "faculty_program_directory",
+          "title": "17. Khoa Giáo dục Chính trị",
+          "source_pages": [
+            156
+          ],
+          "distance": 0.47903841733932495
+        }
+      ],
+      "context_for_llm": "[Nguồn 1]\nTiêu đề: 1. Khoa Công nghệ – Thông tin\nLoại: faculty_program_directory\nTrang: 141,142\nNội dung:\nKhoa/Tổ: 1. Khoa Công nghệ – Thông tin\nThông tin liên quan:\n1. Khoa Công nghệ – Thông tin\nSố điện thoại liên lạc\n: (028) 38352020\nsố nội bộ: 209, 210\nEmail\n: khoacntt@hcmue.edu.vn\nWebsite\n: khoacntt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 5, P.506, P.507,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNGÀNH SƯ PHẠM TIN HỌC\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn tin học ở các trường\nphổ thông và các cơ sở đào tạo trình độ tương đương;\n– Đảm nhiệm được vị trí chuyên viên công nghệ thông tin trong các\ntrường phổ thông và các cơ sở đào tạo trình độ tương đương: tư vấn, triển\nkhai giải pháp, quản trị công nghệ thông tin;\n– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở bậc cao\nhơn thuộc các chuyên ngành phương pháp giảng dạy tin học, khoa học\nmáy tính, công nghệ phần mềm, hệ thống thông tin.\nNGÀNH CÔNG NGHỆ THÔNG TIN\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm việc trong các công ty chuyên về công nghệ thông tin, đặc\nbiệt trong lĩnh vực sản xuất và gia công phần mềm và nội dung số;\n– Làm chuyên viên trong các cơ quan, đơn vị có ứng dụng công\nnghệ thông tin;\n– Làm quản lý doanh nghiệp có ứng dụng hay phát triển sản phẩm có\nliên quan đến công nghệ thông tin;\n– Làm nghiên cứu viên trong các trường đại học hay viện nghiên cứu\ncó liên quan đến công nghệ thông tin;\n\n---\n\n[Nguồn 2]\nTiêu đề: 1. Khoa Công nghệ – Thông tin\nLoại: faculty_program_directory\nTrang: 141,142\nNội dung:\n– Đảm nhiệm được các vị trí công tác cụ thể: lập trình viên, phân\ntích viên, thiết kế chương trình và dữ liệu, quản trị các hệ cơ sở dữ liệu,\nkiểm thử viên phần mềm, kỹ sư quy trình chất lượng, nghiên cứu viên;\n– Có khả năng tự học để hoàn thiện, bổ sung, nâng cao trình độ\nchuyên môn nghiệp vụ công nghệ thông tin;\n– Có khả năng tiếp tục học tập và nghiên cứu chuyên môn ở trình độ\nthạc sĩ, tiến sĩ.\nNguồn: Trang 141-142\n\n---\n\n[Nguồn 3]\nTiêu đề: 2. Khoa Toán – Tin học\nLoại: faculty_program_directory\nTrang: 142\nNội dung:\nKhoa/Tổ: 2. Khoa Toán – Tin học\nThông tin liên quan:\n2. Khoa Toán – Tin học\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 111\nEmail\n: khoatoantin@hcmue.edu.vn\nWebsite\n: khoatoantin.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n− Giảng dạy Toán ở các Trường phổ thông, Cao đẳng, Đại học.\nNghiên cứu Toán học tại các Trung tâm, Viện nghiên cứu;\n− Làm việc tại các doanh nghiệp có ứng dụng Toán học.\nNguồn: Trang 142\n\n---\n\n[Nguồn 4]\nTiêu đề: 15. Khoa Khoa học Giáo dục\nLoại: faculty_program_directory\nTrang: 153,154\nNội dung:\nKhoa/Tổ: 15. Khoa Khoa học Giáo dục\nThông tin liên quan:\n15. Khoa Khoa học Giáo dục\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 103, 104\nEmail\n: khoakhgd@hcmue.edu.vn\nWebsite\n: khoakhgd.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 4, P.401, P.402,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNGÀNH QUẢN LÝ GIÁO DỤC\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Chuyên viên hành chính làm công tác quản lý HSSV; quản lý hoạt\nđộng dạy học và giáo dục tại các cơ sở giáo dục: mầm non, phổ thông,\ndạy nghề, cao đẳng, đại học;\n– Trợ lý thanh niên ở các cơ sở giáo dục: mầm non, phổ thông, dạy\nnghề, cao đẳng, đại học;\n– Chuyên viên hành chính làm công tác quản lý giáo dục;\n– Giảng viên về Quản lý Giáo dục ở các cơ sở giáo dục và đào tạo;\nNghiên cứu viên tại các viện NCKH giáo dục;\n– Có khả năng học tập, nghiên cứu chuyên sâu ở các bậc học cao\nhơn tại các cơ sở giáo dục trong và ngoài nước về Khoa học giáo dục ở\ncác chuyên ngành: Quản lý Giáo dục, Giáo dục học, Đo lường và đánh\ngiá giáo dục.\nNGÀNH GIÁO DỤC HỌC\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên giáo dục kỹ năng sống tại các cơ sở giáo dục mầm non\nvà phổ thông;\n– Trợ lý thanh niên ở các cơ sở giáo dục mầm non và phổ thông;\n– Chuyên viên hành chính về công tác quản lý ở các cơ sở giáo dục;\n\n---\n\n[Nguồn 5]\nTiêu đề: 17. Khoa Giáo dục Chính trị\nLoại: faculty_program_directory\nTrang: 156\nNội dung:\nKhoa/Tổ: 17. Khoa Giáo dục Chính trị\nThông tin liên quan:\n17. Khoa Giáo dục Chính trị\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 125, 126\nEmail\n: khoagdct@hcmue.edu.vn\nWebsite\n: khoagdct.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 4, P.411,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy môn Giáo dục công dân ở các\ntrường THCS và THPT; công tác giáo dục chính trị ở các trường trung\nhọc nghề và các cơ sở giáo dục tương đương;\n– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn thuộc các chuyên ngành: Triết học, Kinh tế chính trị, Chủ\nnghĩa xã hội khoa học, Tư tưởng Hồ Chí Minh, Lịch sử Đảng Cộng sản\nViệt Nam, Chính trị học, Lý luận và phương pháp dạy học bộ môn Lý\nluận chính trị…\nNguồn: Trang 156",
+      "needs_llm_answer": true
+    },
+    {
+      "query": "Quy trình vào ký túc xá như thế nào?",
+      "intent": "procedure_query",
+      "strategy": "semantic_filtered",
+      "target_chunk_types": [
+        "procedure"
+      ],
+      "retrieved_items": [
+        {
+          "chunk_id": "procedure_ktx_admission_procedure_part_1",
+          "distance": 0.2508620023727417,
+          "content": "Quy trình: Quy trình xét sinh viên vào ở Ký túc xá\nCác bước phát hiện:\n- 1. Phó Hiệu trưởng phụ trách Công tác sinh viên – Chủ tịch Hội đồng;\n- 2. Trưởng phòng CTCT và HSSV – Thường trực\n- 3. Giám đốc KTX – Thành viên\n- 4. Các Phó Trưởng phòng CTCT và HSSV – Thành viên\n- 5. Chuyên viên Phòng CTCT và HSSV – Thư ký\n- 1. Anh hùng lực lượng vũ trang nhân dân, anh hùng lao động,\n- 2. Con liệt sĩ, con thương binh, con bệnh binh, con của người hưởng\n- 3. Người có hộ khẩu thường trú tại vùng cao, vùng có điều kiện\n- 4. Người dân tộc thiểu số;\n- 5. Con mồ côi cả cha lẫn mẹ;\n- 6. HSSV trong gia đình thuộc hộ nghèo, cận nghèo theo quy định\n- 7. Sinh viên nữ;\n- 8. HSSV tích cực tham gia các hoạt động do Nhà trường, Đoàn\nNội dung đầy đủ:\nBỘ GIÁO DỤC VÀ ĐÀO TẠO\nTRƯỜNG ĐẠI HỌC SƯ PHẠM\nTHÀNH PHỐ HỒ CHÍ MINH\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\nQUY TRÌNH\nXÉT SINH VIÊN VÀO Ở KÝ TÚC XÁ\nA. Hội đồng gồm:\n1. Phó Hiệu trưởng phụ trách Công tác sinh viên – Chủ tịch Hội đồng;\n2. Trưởng phòng CTCT và HSSV – Thường trực\n3. Giám đốc KTX – Thành viên\n4. Các Phó Trưởng phòng CTCT và HSSV – Thành viên\n5. Chuyên viên Phòng CTCT và HSSV – Thư ký\n* Nguyên tắc làm việc:\n− Căn cứ các tiêu chuẩn của Bộ Giáo dục và Đào tạo và của Trường\nquy định;\n− Trường hợp đặc biệt thảo luận tập thể, Chủ tịch Hội đồng quyết định.\n* Các bước thực hiện:\n− Thông báo nhận hồ sơ vào đầu năm học (trong năm học chỉ giải quyết\ncác trường hợp đặc biệt);\n− Nhập danh sách theo thứ tự ưu tiên; Niêm yết công khai danh sách dự\nkiến đã được tổng hợp trong vòng 07 ngày;\n− Kết quả sẽ được công bố sau khi Hội đồng xét chọn.\nB. Đối tượng sinh viên được xét theo thứ tự ưu tiên\n1. Anh hùng lực lượng vũ trang nhân dân, anh hùng lao động,\nthương binh, bệnh binh, người hưởng chính sách như thương binh, HSSV\nkhuyết tật;\n2. Con liệt sĩ, con thương binh, con bệnh binh, con của người hưởng\nchính sách như thương binh, con của người có công;",
+          "metadata": {
+            "procedure_name": "Quy trình xét sinh viên vào ở Ký túc xá",
+            "chunk_type": "procedure",
+            "chunk_id": "procedure_ktx_admission_procedure_part_1",
+            "total_parts": 2,
+            "index_mode": "semantic",
+            "procedure_id": "ktx_admission_procedure",
+            "source_pages": "161,162",
+            "part_index": 1,
+            "split_from_record": true,
+            "source_type": "procedure",
+            "page_start": 161,
+            "token_count_approx": 494,
+            "review_status": "auto_extracted",
+            "page_end": 162
+          }
+        },
+        {
+          "chunk_id": "procedure_ktx_admission_procedure_part_2",
+          "distance": 0.30991578102111816,
+          "content": "3. Người có hộ khẩu thường trú tại vùng cao, vùng có điều kiện\nkinh tế – xã hội đặc biệt khó khăn;\n4. Người dân tộc thiểu số;\n5. Con mồ côi cả cha lẫn mẹ;\n6. HSSV trong gia đình thuộc hộ nghèo, cận nghèo theo quy định\ncủa Thủ tướng Chính phủ;\n7. Sinh viên nữ;\n8. HSSV tích cực tham gia các hoạt động do Nhà trường, Đoàn\nTNCS Hồ Chí Minh, Hội Sinh viên Việt Nam, khu KTX hoặc các tổ chức\nxã hội.\nC. Thủ tục, hồ sơ\n− Đơn xin vào ở KTX (theo mẫu), trong đó nêu rõ: hoàn cảnh gia\nđình, đối tượng ưu tiên và phải kèm theo các xác nhận của chính quyền\nđịa phương (phường, xã) nơi cư trú;\n− Bản sao có công chứng các giấy tờ ưu tiên (nếu có).\nD. Quy trình xét\n− Nộp đơn và các giấy tờ ưu tiên tại Phòng CTCT và HSSV;\n− Hội đồng tiến hành xét ngay sau khi hết thời gian nhận đơn theo\nquy định;\n− Công bố kết quả (niêm yết tại bảng thông báo của Phòng CTCT\nvà HSSV và trên trang web của Trường);\n− Khi nhận được thông báo kết quả xét duyệt, sinh viên đến Phòng\nCTCT và HSSV nhận giấy giới thiệu đến KTX của Trường tại số 351B\nLạc Long Quân, Quận 11 làm hợp đồng và thủ tục vào ở nội trú theo\nhướng dẫn của Ban Giám đốc KTX;\n− Trong thời hạn 07 ngày, kể từ ngày niêm yết thông báo kết quả\nxét duyệt, sinh viên không đến làm thủ tục vào khu nội trú xem như\nkhông có nhu cầu ở KTX, Phòng CTCT và HSSV sẽ xóa tên khỏi danh\nsách sinh viên ở KTX và xét nhận sinh viên khác.\nKT. HIỆU TRƯỞNG\nPHÓ HIỆU TRƯỞNG\n(đã ký)\nThS. Đặng Chính Nghĩa\nNguồn: Trang 161-162",
+          "metadata": {
+            "page_end": 162,
+            "source_pages": "161,162",
+            "chunk_id": "procedure_ktx_admission_procedure_part_2",
+            "page_start": 161,
+            "procedure_id": "ktx_admission_procedure",
+            "total_parts": 2,
+            "source_type": "procedure",
+            "part_index": 2,
+            "split_from_record": true,
+            "index_mode": "semantic",
+            "chunk_type": "procedure",
+            "procedure_name": "Quy trình xét sinh viên vào ở Ký túc xá",
+            "review_status": "auto_extracted",
+            "token_count_approx": 374
+          }
+        },
+        {
+          "chunk_id": "procedure_faculty_student_services",
+          "distance": 0.43988102674484253,
+          "content": "Quy trình: Một số công việc của các khoa liên quan đến sinh viên\nCác bước phát hiện:\n- – Chỉ định tạm thời hoặc bầu ban cán sự (lớp trưởng và các lớp phó)\n- – Giới thiệu giảng viên phụ trách CVHT để giúp sinh viên đăng ký\n- – Hướng dẫn sinh viên học tập theo hệ thống tín chỉ; xếp thời khóa\n- – Tổ chức lựa chọn sinh viên đi học chuyển tiếp, du học theo hiệp\n- – Tổ chức các hoạt động chính trị – xã hội, nghiệp vụ chuyên môn,\n- – Đánh giá, phân loại sinh viên về học tập, rèn luyện theo từng học\n- – Phối hợp với Phòng CTCT và HSSV thực hiện các chế độ chính\n- – Phối hợp với Phòng Đào tạo xử lý học vụ, rèn luyện chuyên môn,\nNội dung đầy đủ:\nMỘT SỐ CÔNG VIỆC CỦA CÁC KHOA\nLIÊN QUAN ĐẾN SINH VIÊN\n– Chỉ định tạm thời hoặc bầu ban cán sự (lớp trưởng và các lớp phó)\nlớp sinh viên và lớp học phần;\n– Giới thiệu giảng viên phụ trách CVHT để giúp sinh viên đăng ký\nmôn học;\n– Hướng dẫn sinh viên học tập theo hệ thống tín chỉ; xếp thời khóa\nbiểu học tập và thi;\n– Tổ chức lựa chọn sinh viên đi học chuyển tiếp, du học theo hiệp\nđịnh của Nhà nước, Nhà trường (nếu có) theo quy định;\n– Tổ chức các hoạt động chính trị – xã hội, nghiệp vụ chuyên môn,\nvăn hóa – văn nghệ, thể dục – thể thao...;\n– Đánh giá, phân loại sinh viên về học tập, rèn luyện theo từng học\nkỳ, năm học và khóa học;\n– Phối hợp với Phòng CTCT và HSSV thực hiện các chế độ chính\nsách cho sinh viên, xét cấp học bổng các loại, miễn, giảm học phí, công\ntác nội trú, ngoại trú, tham quan thực tế, tạm ngưng tiến độ học tập, buộc\nthôi học... thống kê số liệu sinh viên; theo dõi công tác thi đua khen\nthưởng; thực hiện các thủ tục liên quan đến sinh viên tốt nghiệp;\n– Phối hợp với Phòng Đào tạo xử lý học vụ, rèn luyện chuyên môn,\nnghiệp vụ; theo dõi trả nợ các học phần môn học, cảnh báo học vụ của\nsinh viên.\nNguồn: Trang 160",
+          "metadata": {
+            "total_parts": 1,
+            "chunk_id": "procedure_faculty_student_services",
+            "token_count_approx": 456,
+            "procedure_id": "faculty_student_services",
+            "chunk_type": "procedure",
+            "index_mode": "semantic",
+            "source_pages": "160",
+            "page_start": 160,
+            "source_type": "procedure",
+            "page_end": 160,
+            "review_status": "auto_extracted",
+            "split_from_record": false,
+            "procedure_name": "Một số công việc của các khoa liên quan đến sinh viên",
+            "part_index": 1
+          }
+        }
+      ],
+      "citations": [
+        {
+          "chunk_id": "procedure_ktx_admission_procedure_part_1",
+          "chunk_type": "procedure",
+          "title": "Quy trình xét sinh viên vào ở Ký túc xá",
+          "source_pages": [
+            161,
+            162
+          ],
+          "distance": 0.2508620023727417
+        },
+        {
+          "chunk_id": "procedure_ktx_admission_procedure_part_2",
+          "chunk_type": "procedure",
+          "title": "Quy trình xét sinh viên vào ở Ký túc xá",
+          "source_pages": [
+            161,
+            162
+          ],
+          "distance": 0.30991578102111816
+        },
+        {
+          "chunk_id": "procedure_faculty_student_services",
+          "chunk_type": "procedure",
+          "title": "Một số công việc của các khoa liên quan đến sinh viên",
+          "source_pages": [
+            160
+          ],
+          "distance": 0.43988102674484253
+        }
+      ],
+      "context_for_llm": "[Nguồn 1]\nTiêu đề: Quy trình xét sinh viên vào ở Ký túc xá\nLoại: procedure\nTrang: 161,162\nNội dung:\nQuy trình: Quy trình xét sinh viên vào ở Ký túc xá\nCác bước phát hiện:\n- 1. Phó Hiệu trưởng phụ trách Công tác sinh viên – Chủ tịch Hội đồng;\n- 2. Trưởng phòng CTCT và HSSV – Thường trực\n- 3. Giám đốc KTX – Thành viên\n- 4. Các Phó Trưởng phòng CTCT và HSSV – Thành viên\n- 5. Chuyên viên Phòng CTCT và HSSV – Thư ký\n- 1. Anh hùng lực lượng vũ trang nhân dân, anh hùng lao động,\n- 2. Con liệt sĩ, con thương binh, con bệnh binh, con của người hưởng\n- 3. Người có hộ khẩu thường trú tại vùng cao, vùng có điều kiện\n- 4. Người dân tộc thiểu số;\n- 5. Con mồ côi cả cha lẫn mẹ;\n- 6. HSSV trong gia đình thuộc hộ nghèo, cận nghèo theo quy định\n- 7. Sinh viên nữ;\n- 8. HSSV tích cực tham gia các hoạt động do Nhà trường, Đoàn\nNội dung đầy đủ:\nBỘ GIÁO DỤC VÀ ĐÀO TẠO\nTRƯỜNG ĐẠI HỌC SƯ PHẠM\nTHÀNH PHỐ HỒ CHÍ MINH\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\nQUY TRÌNH\nXÉT SINH VIÊN VÀO Ở KÝ TÚC XÁ\nA. Hội đồng gồm:\n1. Phó Hiệu trưởng phụ trách Công tác sinh viên – Chủ tịch Hội đồng;\n2. Trưởng phòng CTCT và HSSV – Thường trực\n3. Giám đốc KTX – Thành viên\n4. Các Phó Trưởng phòng CTCT và HSSV – Thành viên\n5. Chuyên viên Phòng CTCT và HSSV – Thư ký\n* Nguyên tắc làm việc:\n− Căn cứ các tiêu chuẩn của Bộ Giáo dục và Đào tạo và của Trường\nquy định;\n− Trường hợp đặc biệt thảo luận tập thể, Chủ tịch Hội đồng quyết định.\n* Các bước thực hiện:\n− Thông báo nhận hồ sơ vào đầu năm học (trong năm học chỉ giải quyết\ncác trường hợp đặc biệt);\n− Nhập danh sách theo thứ tự ưu tiên; Niêm yết công khai danh sách dự\nkiến đã được tổng hợp trong vòng 07 ngày;\n− Kết quả sẽ được công bố sau khi Hội đồng xét chọn.\nB. Đối tượng sinh viên được xét theo thứ tự ưu tiên\n1. Anh hùng lực lượng vũ trang nhân dân, anh hùng lao động,\nthương binh, bệnh binh, người hưởng chính sách như thương binh, HSSV\nkhuyết tật;\n2. Con liệt sĩ, con thương binh, con bệnh binh, con của người hưởng\nchính sách như thương binh, con của người có công;\n\n---\n\n[Nguồn 2]\nTiêu đề: Quy trình xét sinh viên vào ở Ký túc xá\nLoại: procedure\nTrang: 161,162\nNội dung:\n3. Người có hộ khẩu thường trú tại vùng cao, vùng có điều kiện\nkinh tế – xã hội đặc biệt khó khăn;\n4. Người dân tộc thiểu số;\n5. Con mồ côi cả cha lẫn mẹ;\n6. HSSV trong gia đình thuộc hộ nghèo, cận nghèo theo quy định\ncủa Thủ tướng Chính phủ;\n7. Sinh viên nữ;\n8. HSSV tích cực tham gia các hoạt động do Nhà trường, Đoàn\nTNCS Hồ Chí Minh, Hội Sinh viên Việt Nam, khu KTX hoặc các tổ chức\nxã hội.\nC. Thủ tục, hồ sơ\n− Đơn xin vào ở KTX (theo mẫu), trong đó nêu rõ: hoàn cảnh gia\nđình, đối tượng ưu tiên và phải kèm theo các xác nhận của chính quyền\nđịa phương (phường, xã) nơi cư trú;\n− Bản sao có công chứng các giấy tờ ưu tiên (nếu có).\nD. Quy trình xét\n− Nộp đơn và các giấy tờ ưu tiên tại Phòng CTCT và HSSV;\n− Hội đồng tiến hành xét ngay sau khi hết thời gian nhận đơn theo\nquy định;\n− Công bố kết quả (niêm yết tại bảng thông báo của Phòng CTCT\nvà HSSV và trên trang web của Trường);\n− Khi nhận được thông báo kết quả xét duyệt, sinh viên đến Phòng\nCTCT và HSSV nhận giấy giới thiệu đến KTX của Trường tại số 351B\nLạc Long Quân, Quận 11 làm hợp đồng và thủ tục vào ở nội trú theo\nhướng dẫn của Ban Giám đốc KTX;\n− Trong thời hạn 07 ngày, kể từ ngày niêm yết thông báo kết quả\nxét duyệt, sinh viên không đến làm thủ tục vào khu nội trú xem như\nkhông có nhu cầu ở KTX, Phòng CTCT và HSSV sẽ xóa tên khỏi danh\nsách sinh viên ở KTX và xét nhận sinh viên khác.\nKT. HIỆU TRƯỞNG\nPHÓ HIỆU TRƯỞNG\n(đã ký)\nThS. Đặng Chính Nghĩa\nNguồn: Trang 161-162\n\n---\n\n[Nguồn 3]\nTiêu đề: Một số công việc của các khoa liên quan đến sinh viên\nLoại: procedure\nTrang: 160\nNội dung:\nQuy trình: Một số công việc của các khoa liên quan đến sinh viên\nCác bước phát hiện:\n- – Chỉ định tạm thời hoặc bầu ban cán sự (lớp trưởng và các lớp phó)\n- – Giới thiệu giảng viên phụ trách CVHT để giúp sinh viên đăng ký\n- – Hướng dẫn sinh viên học tập theo hệ thống tín chỉ; xếp thời khóa\n- – Tổ chức lựa chọn sinh viên đi học chuyển tiếp, du học theo hiệp\n- – Tổ chức các hoạt động chính trị – xã hội, nghiệp vụ chuyên môn,\n- – Đánh giá, phân loại sinh viên về học tập, rèn luyện theo từng học\n- – Phối hợp với Phòng CTCT và HSSV thực hiện các chế độ chính\n- – Phối hợp với Phòng Đào tạo xử lý học vụ, rèn luyện chuyên môn,\nNội dung đầy đủ:\nMỘT SỐ CÔNG VIỆC CỦA CÁC KHOA\nLIÊN QUAN ĐẾN SINH VIÊN\n– Chỉ định tạm thời hoặc bầu ban cán sự (lớp trưởng và các lớp phó)\nlớp sinh viên và lớp học phần;\n– Giới thiệu giảng viên phụ trách CVHT để giúp sinh viên đăng ký\nmôn học;\n– Hướng dẫn sinh viên học tập theo hệ thống tín chỉ; xếp thời khóa\nbiểu học tập và thi;\n– Tổ chức lựa chọn sinh viên đi học chuyển tiếp, du học theo hiệp\nđịnh của Nhà nước, Nhà trường (nếu có) theo quy định;\n– Tổ chức các hoạt động chính trị – xã hội, nghiệp vụ chuyên môn,\nvăn hóa – văn nghệ, thể dục – thể thao...;\n– Đánh giá, phân loại sinh viên về học tập, rèn luyện theo từng học\nkỳ, năm học và khóa học;\n– Phối hợp với Phòng CTCT và HSSV thực hiện các chế độ chính\nsách cho sinh viên, xét cấp học bổng các loại, miễn, giảm học phí, công\ntác nội trú, ngoại trú, tham quan thực tế, tạm ngưng tiến độ học tập, buộc\nthôi học... thống kê số liệu sinh viên; theo dõi công tác thi đua khen\nthưởng; thực hiện các thủ tục liên quan đến sinh viên tốt nghiệp;\n– Phối hợp với Phòng Đào tạo xử lý học vụ, rèn luyện chuyên môn,\nnghiệp vụ; theo dõi trả nợ các học phần môn học, cảnh báo học vụ của\nsinh viên.\nNguồn: Trang 160",
+      "needs_llm_answer": true
+    },
+    {
+      "query": "Điểm rèn luyện 85 là loại gì?",
+      "intent": "score_lookup_query",
+      "strategy": "structured_lookup",
+      "structured_result": {
+        "lookup_type": "conduct_classification",
+        "input_value": 85.0,
+        "result": {
+          "range": "80-dưới 90",
+          "label": "Tốt"
+        },
+        "source_pages": [
+          74
+        ],
+        "table_name": "Phân loại kết quả rèn luyện"
+      },
+      "retrieved_items": [],
+      "citations": [
+        {
+          "chunk_type": "structured_lookup",
+          "title": "Phân loại kết quả rèn luyện",
+          "source_pages": [
+            74
+          ]
+        }
+      ],
+      "context_for_llm": "Kết quả tra cứu bảng: Phân loại kết quả rèn luyện\nGiá trị đầu vào: 85.0\nKết quả: {'range': '80-dưới 90', 'label': 'Tốt'}\nTrang nguồn: [74]",
+      "needs_llm_answer": true
+    },
+    {
+      "query": "GPA 3.4 là loại học lực gì?",
+      "intent": "score_lookup_query",
+      "strategy": "structured_lookup",
+      "structured_result": {
+        "lookup_type": "academic_classification",
+        "input_value": 3.4,
+        "result": {
+          "range": "3.2-dưới 3.6",
+          "label": "Giỏi"
+        },
+        "source_pages": [
+          23
+        ],
+        "table_name": "Xếp loại học lực theo thang điểm 4"
+      },
+      "retrieved_items": [],
+      "citations": [
+        {
+          "chunk_type": "structured_lookup",
+          "title": "Xếp loại học lực theo thang điểm 4",
+          "source_pages": [
+            23
+          ]
+        }
+      ],
+      "context_for_llm": "Kết quả tra cứu bảng: Xếp loại học lực theo thang điểm 4\nGiá trị đầu vào: 3.4\nKết quả: {'range': '3.2-dưới 3.6', 'label': 'Giỏi'}\nTrang nguồn: [23]",
+      "needs_llm_answer": true
+    },
+    {
+      "query": "Điểm A quy đổi sang thang điểm 4 là bao nhiêu?",
+      "intent": "score_lookup_query",
+      "strategy": "structured_lookup",
+      "structured_result": {
+        "lookup_type": "letter_to_grade_4",
+        "input_value": "A",
+        "result": {
+          "letter_grade": "A",
+          "score_4": 4.0
+        },
+        "source_pages": [
+          22
+        ],
+        "table_name": "Quy đổi điểm chữ sang thang điểm 4"
+      },
+      "retrieved_items": [],
+      "citations": [
+        {
+          "chunk_type": "structured_lookup",
+          "title": "Quy đổi điểm chữ sang thang điểm 4",
+          "source_pages": [
+            22
+          ]
+        }
+      ],
+      "context_for_llm": "Kết quả tra cứu bảng: Quy đổi điểm chữ sang thang điểm 4\nGiá trị đầu vào: A\nKết quả: {'letter_grade': 'A', 'score_4': 4.0}\nTrang nguồn: [22]",
+      "needs_llm_answer": true
+    },
+    {
+      "query": "Tính điểm học bổng nếu điểm học tập 3.4 và điểm rèn luyện 85",
+      "intent": "calculation_query",
+      "strategy": "calculator_tool",
+      "tool_result": {
+        "tool_name": "calculate_scholarship_score",
+        "inputs": {
+          "academic_score_4": 3.4,
+          "conduct_score_100": 85.0
+        },
+        "result": 3.4,
+        "note": "Công thức: (Điểm học tập × 80 + Điểm rèn luyện / 25 × 20) / 100"
+      },
+      "retrieved_items": [],
+      "citations": [],
+      "context_for_llm": "Kết quả công cụ tính toán: calculate_scholarship_score\nInput: {'academic_score_4': 3.4, 'conduct_score_100': 85.0}\nKết quả: 3.4\nGhi chú: Công thức: (Điểm học tập × 80 + Điểm rèn luyện / 25 × 20) / 100",
+      "needs_llm_answer": true
+    }
+  ],
+  "status": "completed"
+}

@@ -1,0 +1,77 @@
+from __future__ import annotations
+
+from typing import Any
+
+import streamlit as st
+
+
+CHAT_HISTORY_KEY = "phase9_chat_history"
+PENDING_CLARIFICATION_KEY = "phase9_pending_clarification"
+LAST_RESULT_KEY = "phase9_last_result"
+DEBUG_TOGGLE_KEY = "phase9_show_debug"
+
+
+def initialize_session_state() -> None:
+    st.session_state.setdefault(CHAT_HISTORY_KEY, [])
+    st.session_state.setdefault(PENDING_CLARIFICATION_KEY, None)
+    st.session_state.setdefault(LAST_RESULT_KEY, None)
+    st.session_state.setdefault(DEBUG_TOGGLE_KEY, False)
+
+
+def get_chat_history() -> list[dict[str, Any]]:
+    initialize_session_state()
+    return st.session_state[CHAT_HISTORY_KEY]
+
+
+def append_message(
+    role: str,
+    content: str,
+    result: dict[str, Any] | None = None,
+    pipeline_query: str | None = None,
+) -> None:
+    get_chat_history().append(
+        {
+            "role": role,
+            "content": content,
+            "result": result,
+            "pipeline_query": pipeline_query,
+        }
+    )
+
+
+def clear_chat_history() -> None:
+    st.session_state[CHAT_HISTORY_KEY] = []
+    clear_pending_clarification()
+    st.session_state[LAST_RESULT_KEY] = None
+
+
+def get_pending_clarification() -> dict[str, str] | None:
+    initialize_session_state()
+    pending = st.session_state[PENDING_CLARIFICATION_KEY]
+    return pending if isinstance(pending, dict) else None
+
+
+def set_pending_clarification(original_query: str, question: str) -> None:
+    st.session_state[PENDING_CLARIFICATION_KEY] = {
+        "original_query": original_query,
+        "question": question,
+    }
+
+
+def clear_pending_clarification() -> None:
+    st.session_state[PENDING_CLARIFICATION_KEY] = None
+
+
+def set_last_result(result: dict[str, Any] | None) -> None:
+    st.session_state[LAST_RESULT_KEY] = result
+
+
+def get_last_result() -> dict[str, Any] | None:
+    initialize_session_state()
+    result = st.session_state[LAST_RESULT_KEY]
+    return result if isinstance(result, dict) else None
+
+
+def is_debug_enabled() -> bool:
+    initialize_session_state()
+    return bool(st.session_state[DEBUG_TOGGLE_KEY])

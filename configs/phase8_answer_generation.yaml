@@ -1,0 +1,44 @@
+input:
+  scoring_tables: data/processed/tables/scoring_tables.json
+  entity_registry: data/processed/entities/entity_registry.json
+  query_expansion_rules: data/processed/entities/query_expansion_rules.json
+
+embedding:
+  model_name: BAAI/bge-m3
+  batch_size: 8
+  normalize_embeddings: true
+
+vectorstore:
+  persist_dir: data/vectorstore/chroma
+  collection_name: student_handbook_semantic
+
+retrieval:
+  default_top_k: 5
+
+llm:
+  provider: gemini
+  model_name: gemini-2.5-flash-lite
+  temperature: 0.2
+  max_output_tokens: 1024
+  max_retries: 3
+  retry_base_delay_seconds: 2
+  retry_max_delay_seconds: 20
+  request_timeout_seconds: 60
+  request_sleep_seconds: 2
+  max_context_chars: 12000
+
+cache:
+  enabled: true
+  path: data/cache/phase8_response_cache.json
+
+citations:
+  max_sources: 2
+  prefer_intent_chunk_type: true
+  deduplicate: true
+
+guardrails:
+  skip_llm_on_low_confidence: true
+  allow_deterministic_direct_answer: true
+
+output:
+  test_report: data/processed/metadata/phase8_answer_generation_test_report.json

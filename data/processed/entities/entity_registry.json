@@ -1,0 +1,708 @@
+[
+  {
+    "entity_id": "office_phòng_công_nghệ_thông_tin",
+    "canonical_name": "Phòng Công nghệ Thông tin",
+    "entity_type": "office",
+    "aliases": [
+      "cntt",
+      "công nghệ thông tin",
+      "it",
+      "khoa cntt",
+      "khoa công nghệ thông tin",
+      "phòng công nghệ thông tin"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_1",
+    "source_pages": [
+      129
+    ]
+  },
+  {
+    "entity_id": "office_phòng_công_tác_chính_trị_và_học_sinh_sinh_viên",
+    "canonical_name": "Phòng Công tác chính trị và Học sinh, sinh viên",
+    "entity_type": "office",
+    "aliases": [
+      "ctct",
+      "ctct-hssv",
+      "ctsv",
+      "công tác chính trị và học sinh, sinh viên",
+      "hssv",
+      "phòng ctct",
+      "phòng công tác chính trị và học sinh, sinh viên",
+      "phòng hssv"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_2",
+    "source_pages": [
+      129,
+      130
+    ]
+  },
+  {
+    "entity_id": "office_phòng_đào_tạo",
+    "canonical_name": "Phòng Đào tạo",
+    "entity_type": "office",
+    "aliases": [
+      "học vụ",
+      "pdt",
+      "phongdt",
+      "phòng học vụ",
+      "phòng đào tạo",
+      "đào tạo"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_3",
+    "source_pages": [
+      130,
+      131
+    ]
+  },
+  {
+    "entity_id": "office_phòng_hợp_tác_quốc_tế",
+    "canonical_name": "Phòng Hợp tác Quốc tế",
+    "entity_type": "office",
+    "aliases": [
+      "hợp tác quốc tế",
+      "phòng hợp tác quốc tế"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_4",
+    "source_pages": [
+      131
+    ]
+  },
+  {
+    "entity_id": "office_phòng_khoa_học_công_nghệ_và_môi_trường_-_tạp_chí_khoa_học",
+    "canonical_name": "Phòng Khoa học Công nghệ và Môi trường - Tạp chí Khoa học",
+    "entity_type": "office",
+    "aliases": [
+      "khoa học công nghệ và môi trường - tạp chí khoa học",
+      "phòng học công nghệ và môi trường - tạp chí học",
+      "phòng khoa học công nghệ và môi trường   tạp chí khoa học",
+      "phòng khoa học công nghệ và môi trường - tạp chí khoa học"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_5",
+    "source_pages": [
+      131
+    ]
+  },
+  {
+    "entity_id": "office_phòng_kế_hoạch_-_tài_chính",
+    "canonical_name": "Phòng Kế hoạch - Tài chính",
+    "entity_type": "office",
+    "aliases": [
+      "kế hoạch - tài chính",
+      "phòng kế hoạch   tài chính",
+      "phòng kế hoạch - tài chính"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_6",
+    "source_pages": [
+      132
+    ]
+  },
+  {
+    "entity_id": "office_phòng_quản_trị_-_thiết_bị",
+    "canonical_name": "Phòng Quản trị - Thiết bị",
+    "entity_type": "office",
+    "aliases": [
+      "phòng quản trị   thiết bị",
+      "phòng quản trị - thiết bị",
+      "quản trị - thiết bị"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_7",
+    "source_pages": [
+      132
+    ]
+  },
+  {
+    "entity_id": "office_phòng_sau_đại_học",
+    "canonical_name": "Phòng Sau Đại học",
+    "entity_type": "office",
+    "aliases": [
+      "phòng sau đại học",
+      "sau đại học"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_8",
+    "source_pages": [
+      132,
+      133
+    ]
+  },
+  {
+    "entity_id": "office_phòng_tổ_chức_-_hành_chính",
+    "canonical_name": "Phòng Tổ chức - Hành chính",
+    "entity_type": "office",
+    "aliases": [
+      "phòng tổ chức   hành chính",
+      "phòng tổ chức - hành chính",
+      "tổ chức - hành chính"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_9",
+    "source_pages": [
+      133
+    ]
+  },
+  {
+    "entity_id": "office_phòng_thanh_tra_đào_tạo",
+    "canonical_name": "Phòng Thanh tra Đào tạo",
+    "entity_type": "office",
+    "aliases": [
+      "học vụ",
+      "pdt",
+      "phongdt",
+      "phòng học vụ",
+      "phòng thanh tra đào tạo",
+      "thanh tra đào tạo"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_10",
+    "source_pages": [
+      133
+    ]
+  },
+  {
+    "entity_id": "office_phòng_khảo_thí_và_đảm_bảo_chất_lượng",
+    "canonical_name": "Phòng Khảo thí và Đảm bảo chất lượng",
+    "entity_type": "office",
+    "aliases": [
+      "khảo thí và đảm bảo chất lượng",
+      "phòng khảo thí và đảm bảo chất lượng"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_11",
+    "source_pages": [
+      134
+    ]
+  },
+  {
+    "entity_id": "office_thư_viện",
+    "canonical_name": "Thư viện",
+    "entity_type": "office",
+    "aliases": [
+      "thư viện"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_12",
+    "source_pages": [
+      134,
+      135,
+      136
+    ]
+  },
+  {
+    "entity_id": "office_ký_túc_xá",
+    "canonical_name": "Ký túc xá",
+    "entity_type": "office",
+    "aliases": [
+      "ktx",
+      "kí túc xá",
+      "ký túc xá",
+      "nội trú"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_13",
+    "source_pages": [
+      136
+    ]
+  },
+  {
+    "entity_id": "office_trung_tâm_phát_triển_kỹ_năng_sư_phạm",
+    "canonical_name": "Trung tâm Phát triển kỹ năng Sư phạm",
+    "entity_type": "office",
+    "aliases": [
+      "trung tâm phát triển kỹ năng sư phạm"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_14",
+    "source_pages": [
+      137
+    ]
+  },
+  {
+    "entity_id": "office_trung_tâm_tin_học",
+    "canonical_name": "Trung tâm Tin học",
+    "entity_type": "office",
+    "aliases": [
+      "trung tâm tin học"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_15",
+    "source_pages": [
+      137,
+      138
+    ]
+  },
+  {
+    "entity_id": "office_trung_tâm_ngoại_ngữ",
+    "canonical_name": "Trung tâm Ngoại ngữ",
+    "entity_type": "office",
+    "aliases": [
+      "trung tâm ngoại ngữ"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_16",
+    "source_pages": [
+      138,
+      139
+    ]
+  },
+  {
+    "entity_id": "office_trung_tâm_hỗ_trợ_sinh_viên_và_phát_triển_khởi_nghiệp",
+    "canonical_name": "Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp",
+    "entity_type": "office",
+    "aliases": [
+      "trung tâm hỗ trợ sinh viên và phát triển khởi nghiệp"
+    ],
+    "target_chunk_types": [
+      "office_directory",
+      "regulation"
+    ],
+    "source_record_id": "office_17",
+    "source_pages": [
+      139,
+      140
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_công_nghệ_-_thông_tin",
+    "canonical_name": "Khoa Công nghệ - Thông tin",
+    "entity_type": "faculty",
+    "aliases": [
+      "cntt",
+      "công nghệ - thông tin",
+      "it",
+      "khoa cntt",
+      "khoa công nghệ   thông tin",
+      "khoa công nghệ - thông tin",
+      "khoa công nghệ thông tin"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_1",
+    "source_pages": [
+      141,
+      142
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_toán_-_tin_học",
+    "canonical_name": "Khoa Toán - Tin học",
+    "entity_type": "faculty",
+    "aliases": [
+      "khoa toán   tin học",
+      "khoa toán - tin học",
+      "toán - tin học"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_2",
+    "source_pages": [
+      142
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_vật_lí",
+    "canonical_name": "Khoa Vật lí",
+    "entity_type": "faculty",
+    "aliases": [
+      "khoa vật lí",
+      "vật lí"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_3",
+    "source_pages": [
+      142,
+      143
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_hóa_học",
+    "canonical_name": "Khoa Hóa học",
+    "entity_type": "faculty",
+    "aliases": [
+      "hóa học",
+      "khoa hóa học"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_4",
+    "source_pages": [
+      143,
+      144
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_sinh_học",
+    "canonical_name": "Khoa Sinh học",
+    "entity_type": "faculty",
+    "aliases": [
+      "khoa sinh học",
+      "sinh học"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_5",
+    "source_pages": [
+      144,
+      145
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_ngữ_văn",
+    "canonical_name": "Khoa Ngữ văn",
+    "entity_type": "faculty",
+    "aliases": [
+      "khoa ngữ văn",
+      "ngữ văn"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_6",
+    "source_pages": [
+      145,
+      146
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_lịch_sử",
+    "canonical_name": "Khoa Lịch sử",
+    "entity_type": "faculty",
+    "aliases": [
+      "khoa lịch sử",
+      "lịch sử"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_7",
+    "source_pages": [
+      146,
+      147
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_địa_lí",
+    "canonical_name": "Khoa Địa lí",
+    "entity_type": "faculty",
+    "aliases": [
+      "khoa địa lí",
+      "địa lí"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_8",
+    "source_pages": [
+      147,
+      148
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_tiếng_anh",
+    "canonical_name": "Khoa Tiếng Anh",
+    "entity_type": "faculty",
+    "aliases": [
+      "khoa tiếng anh",
+      "tiếng anh"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_9",
+    "source_pages": [
+      148,
+      149
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_tiếng_pháp",
+    "canonical_name": "Khoa Tiếng Pháp",
+    "entity_type": "faculty",
+    "aliases": [
+      "khoa tiếng pháp",
+      "tiếng pháp"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_10",
+    "source_pages": [
+      149,
+      150
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_tiếng_nga",
+    "canonical_name": "Khoa Tiếng Nga",
+    "entity_type": "faculty",
+    "aliases": [
+      "khoa tiếng nga",
+      "tiếng nga"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_11",
+    "source_pages": [
+      150,
+      151
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_tiếng_trung_quốc",
+    "canonical_name": "Khoa Tiếng Trung Quốc",
+    "entity_type": "faculty",
+    "aliases": [
+      "khoa tiếng trung quốc",
+      "tiếng trung quốc"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_12",
+    "source_pages": [
+      151,
+      152
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_tiếng_hàn_quốc",
+    "canonical_name": "Khoa Tiếng Hàn Quốc",
+    "entity_type": "faculty",
+    "aliases": [
+      "khoa tiếng hàn quốc",
+      "tiếng hàn quốc"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_13",
+    "source_pages": [
+      152
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_tiếng_nhật",
+    "canonical_name": "Khoa Tiếng Nhật",
+    "entity_type": "faculty",
+    "aliases": [
+      "khoa tiếng nhật",
+      "tiếng nhật"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_14",
+    "source_pages": [
+      153
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_khoa_học_giáo_dục",
+    "canonical_name": "Khoa Khoa học Giáo dục",
+    "entity_type": "faculty",
+    "aliases": [
+      "học giáo dục",
+      "khoa khoa học giáo dục"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_15",
+    "source_pages": [
+      153,
+      154
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_tâm_lí_học",
+    "canonical_name": "Khoa Tâm lí học",
+    "entity_type": "faculty",
+    "aliases": [
+      "khoa tâm lí học",
+      "tâm lí học"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_16",
+    "source_pages": [
+      154,
+      155,
+      156
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_giáo_dục_chính_trị",
+    "canonical_name": "Khoa Giáo dục Chính trị",
+    "entity_type": "faculty",
+    "aliases": [
+      "giáo dục chính trị",
+      "khoa giáo dục chính trị"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_17",
+    "source_pages": [
+      156
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_giáo_dục_đặc_biệt",
+    "canonical_name": "Khoa Giáo dục Đặc biệt",
+    "entity_type": "faculty",
+    "aliases": [
+      "giáo dục đặc biệt",
+      "khoa giáo dục đặc biệt"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_18",
+    "source_pages": [
+      156,
+      157
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_giáo_dục_tiểu_học",
+    "canonical_name": "Khoa Giáo dục Tiểu học",
+    "entity_type": "faculty",
+    "aliases": [
+      "giáo dục tiểu học",
+      "khoa giáo dục tiểu học"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_19",
+    "source_pages": [
+      157
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_giáo_dục_mầm_non",
+    "canonical_name": "Khoa Giáo dục Mầm non",
+    "entity_type": "faculty",
+    "aliases": [
+      "giáo dục mầm non",
+      "khoa giáo dục mầm non"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_20",
+    "source_pages": [
+      157,
+      158
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_giáo_dục_quốc_phòng",
+    "canonical_name": "Khoa Giáo dục Quốc phòng",
+    "entity_type": "faculty",
+    "aliases": [
+      "giáo dục quốc phòng",
+      "khoa giáo dục quốc phòng"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_21",
+    "source_pages": [
+      158
+    ]
+  },
+  {
+    "entity_id": "faculty_khoa_giáo_dục_thể_chất",
+    "canonical_name": "Khoa Giáo dục Thể chất",
+    "entity_type": "faculty",
+    "aliases": [
+      "giáo dục thể chất",
+      "khoa giáo dục thể chất"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_22",
+    "source_pages": [
+      159
+    ]
+  },
+  {
+    "entity_id": "faculty_tổ_giáo_dục_nữ_công",
+    "canonical_name": "Tổ Giáo dục Nữ công",
+    "entity_type": "faculty",
+    "aliases": [
+      "tổ giáo dục nữ công"
+    ],
+    "target_chunk_types": [
+      "faculty_program_directory"
+    ],
+    "source_record_id": "faculty_23",
+    "source_pages": [
+      159
+    ]
+  }
+]

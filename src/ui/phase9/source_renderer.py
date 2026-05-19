@@ -1,0 +1,142 @@
+from __future__ import annotations
+
+from html import escape
+from typing import Any
+
+import streamlit as st
+
+
+CHUNK_TYPE_LABELS = {
+    "form": "biểu mẫu",
+    "office_directory": "phòng ban",
+    "faculty_program_directory": "khoa/ngành",
+    "procedure": "quy trình",
+    "regulation": "quy định",
+    "structured_lookup": "bảng tra cứu",
+    "formula": "công thức",
+    "tool": "công cụ",
+}
+
+
+def render_sources(
+    citations: list[dict[str, Any]] | None,
+    intent: str | None = None,
+) -> None:
+    del intent
+    visible_citations = _dedupe_citations(citations or [])
+    if not visible_citations:
+        return
+
+    source_count = len(visible_citations)
+    label = "Nguồn tham khảo" if source_count == 1 else f"Nguồn tham khảo ({source_count})"
+    with st.expander(label, expanded=False):
+        for citation in visible_citations:
+            _render_source_card(citation)
+
+
+def summarize_citation(citation: dict[str, Any]) -> str:
+    title = _citation_title(citation)
+    pages = _format_pages(citation.get("source_pages"))
+    chunk_label = _chunk_type_label(citation)
+    chunk_id = str(citation.get("chunk_id") or "").strip()
+
+    details = []
+    if pages:
+        details.append(f"Trang: {pages}")
+    if chunk_label:
+        details.append(f"Loại: {chunk_label}")
+    if chunk_id:
+        details.append(f"ID: {chunk_id}")
+
+    suffix = f" | {'; '.join(details)}" if details else ""
+    return f"{title}{suffix}".strip()
+
+
+def _render_source_card(citation: dict[str, Any]) -> None:
+    title = escape(_citation_title(citation))
+    pages = escape(_format_pages(citation.get("source_pages")) or "Không rõ")
+    chunk_label = escape(_chunk_type_label(citation) or "nguồn")
+    chunk_id = escape(str(citation.get("chunk_id") or "").strip())
+
+    st.markdown(
+        f"""
+        <div class="phase9-source-card">
+            <div class="phase9-source-title">📄 {title}</div>
+            <div class="phase9-source-meta">
+                <span>Trang: {pages}</span>
+                <span>Loại: {chunk_label}</span>
+            </div>
+            {f'<div class="phase9-source-id">chunk_id: {chunk_id}</div>' if chunk_id else ''}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def _dedupe_citations(citations: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    deduped: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str, str]] = set()
+
+    for citation in citations:
+        if not isinstance(citation, dict):
+            continue
+        key = _citation_key(citation)
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(citation)
+
+    return deduped
+
+
+def _citation_key(citation: dict[str, Any]) -> tuple[str, str, str, str]:
+    chunk_id = str(citation.get("chunk_id") or "").strip()
+    if chunk_id:
+        return ("chunk_id", chunk_id, "", "")
+    return (
+        "metadata",
+        _citation_title(citation).lower(),
+        _format_pages(citation.get("source_pages")).lower(),
+        str(citation.get("chunk_type") or "").strip().lower(),
+    )
+
+
+def _citation_title(citation: dict[str, Any]) -> str:
+    title = (
+        citation.get("article")
+        or citation.get("title")
+        or citation.get("form_name")
+        or citation.get("unit_name")
+        or citation.get("faculty_or_unit_name")
+        or citation.get("procedure_name")
+        or citation.get("chunk_id")
+        or "Nguồn trong Sổ tay sinh viên"
+    )
+    return str(title).strip()
+
+
+def _chunk_type_label(citation: dict[str, Any]) -> str:
+    chunk_type = str(citation.get("chunk_type") or "").strip()
+    return CHUNK_TYPE_LABELS.get(chunk_type, chunk_type)
+
+
+def _format_pages(value: Any) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, int):
+        return str(value)
+    if isinstance(value, float) and value.is_integer():
+        return str(int(value))
+    if isinstance(value, str):
+        return value.strip()
+    if isinstance(value, list | tuple | set):
+        pages = []
+        for item in value:
+            if isinstance(item, int):
+                pages.append(str(item))
+            elif isinstance(item, float) and item.is_integer():
+                pages.append(str(int(item)))
+            elif isinstance(item, str) and item.strip():
+                pages.append(item.strip())
+        return ", ".join(dict.fromkeys(pages))
+    return ""

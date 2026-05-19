@@ -1,0 +1,46 @@
+[
+  {
+    "trigger": ["rớt môn", "trượt môn"],
+    "expand_to": ["không đạt học phần", "học lại học phần", "điểm F"]
+  },
+  {
+    "trigger": ["qua môn", "đậu môn"],
+    "expand_to": ["đạt học phần", "điểm học phần", "thang điểm 10"]
+  },
+  {
+    "trigger": ["bảo lưu"],
+    "expand_to": ["nghỉ học tạm thời", "bảo lưu kết quả học tập", "tiếp nhận trở lại học"]
+  },
+  {
+    "trigger": ["ktx", "nội trú"],
+    "expand_to": ["ký túc xá", "sinh viên nội trú", "xét vào ở ký túc xá"]
+  },
+  {
+    "trigger": ["ctct", "hssv", "ctct-hssv"],
+    "expand_to": ["phòng công tác chính trị và học sinh, sinh viên"]
+  },
+  {
+    "trigger": ["cntt", "it"],
+    "expand_to": ["khoa công nghệ thông tin", "khoa công nghệ – thông tin"]
+  },
+  {
+    "trigger": ["học vụ"],
+    "expand_to": ["phòng đào tạo", "xử lý học vụ", "quyết định xử lý học vụ"]
+  },
+  {
+    "trigger": ["miễn giảm học phí"],
+    "expand_to": ["đơn đề nghị miễn, giảm học phí", "biểu mẫu miễn giảm học phí"]
+  },
+  {
+    "trigger": ["trợ cấp xã hội"],
+    "expand_to": ["đơn xin trợ cấp xã hội", "biểu mẫu trợ cấp xã hội"]
+  },
+  {
+    "trigger": ["hỗ trợ chi phí học tập"],
+    "expand_to": ["đơn đề nghị hỗ trợ chi phí học tập"]
+  },
+  {
+  "trigger": ["đơn gì", "cần đơn gì", "làm đơn gì", "dùng đơn gì"],
+  "expand_to": ["mẫu đơn", "biểu mẫu", "đơn xin"]
+  }
+]

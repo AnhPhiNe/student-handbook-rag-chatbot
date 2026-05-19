@@ -1,6 +1,6 @@
 import unittest
 
-from src.chatbot.phase8.answer_guardrails import detect_ambiguous_query
+from src.generation.answer_guardrails import detect_ambiguous_query
 
 
 def _item(chunk_type: str, score: float, entity_type: str = "") -> dict:

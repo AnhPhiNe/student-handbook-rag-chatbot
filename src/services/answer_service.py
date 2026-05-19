@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from src.chatbot.phase8.phase8_pipeline import DEFAULT_CONFIG_PATH, Phase8AnswerPipeline
+from src.generation.phase8_pipeline import DEFAULT_CONFIG_PATH, Phase8AnswerPipeline
 
 
 class AnswerService:

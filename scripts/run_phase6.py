@@ -1,4 +1,4 @@
-from src.retrieval.phase6.runner import main
+from src.retrieval.vectorstore.runner import main
 
 
 if __name__ == "__main__":

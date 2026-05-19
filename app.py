@@ -3,10 +3,10 @@ from typing import TYPE_CHECKING
 
 import streamlit as st
 
-from src.ui.phase9.api_client import ChatApiClient
-from src.ui.phase9.chat_app import render_chat_app
-from src.ui.phase9.theme import apply_theme
-from src.ui.phase9.ui_components import render_execution_mode_controls
+from src.ui.streamlit.api_client import ChatApiClient
+from src.ui.streamlit.chat_app import render_chat_app
+from src.ui.streamlit.theme import apply_theme
+from src.ui.streamlit.ui_components import render_execution_mode_controls
 from src.common.env_loader import load_project_env
 
 if TYPE_CHECKING:

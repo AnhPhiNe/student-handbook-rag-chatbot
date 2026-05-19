@@ -1,8 +1,8 @@
 import time
 from pathlib import Path
 from typing import Any
-from src.retrieval.phase7.retrieval_pipeline import run_retrieval_pipeline
-from src.retrieval.phase7.vector_retriever import (
+from src.retrieval.core.retrieval_pipeline import run_retrieval_pipeline
+from src.retrieval.core.vector_retriever import (
     get_chroma_collection,
     load_embedding_model,
 )

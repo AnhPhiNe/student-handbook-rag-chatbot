@@ -1,4 +1,4 @@
-from src.retrieval.phase7.runner import main
+from src.retrieval.core.runner import main
 
 
 if __name__ == "__main__":

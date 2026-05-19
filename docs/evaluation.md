@@ -42,5 +42,17 @@ python -m scripts.run_phase8
 python -m scripts.run_phase8_batch --all
 ```
 
+Equivalent direct module entrypoints:
+
+```bash
+python -m src.extraction.runner
+python -m src.chunking.runner
+python -m src.retrieval.vectorstore.runner
+python -m src.retrieval.core.runner
+python -m src.retrieval.core.batch_test_phase7
+python -m src.generation.runner
+python -m src.generation.phase8_test
+```
+
 Phase 6 can rebuild vectorstore data. Phase 8 scripts may call Gemini depending
 on the query and cache state.

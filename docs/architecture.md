@@ -4,11 +4,11 @@ This project keeps the production path small and explicit:
 
 ```text
 app.py
-  -> src.ui.phase9
+  -> src.ui.streamlit
   -> src.services.AnswerService
-  -> src.chatbot.phase8
-  -> src.retrieval.phase7
-  -> src.retrieval.phase6 / ChromaDB
+  -> src.generation
+  -> src.retrieval.core
+  -> src.retrieval.vectorstore / ChromaDB
 ```
 
 The FastAPI entrypoint uses the same service contract:
@@ -23,10 +23,13 @@ src.api.main
 
 - `src/api`: FastAPI application, routes, schemas, and dependency wiring.
 - `src/services`: Shared application service contracts used by UI and API.
-- `src/ui`: Streamlit UI code.
-- `src/chatbot`: Answer-generation pipeline and guardrails.
-- `src/retrieval`: Embedding, vectorstore access, retrieval, reranking, and structured lookup.
-- `src/preprocessing`: Parsing and chunk-building phases.
+- `src/ui/streamlit`: Streamlit UI code.
+- `src/generation`: Answer-generation pipeline and guardrails.
+- `src/retrieval/core`: Retrieval orchestration, reranking, and structured lookup.
+- `src/retrieval/vectorstore`: Embedding and ChromaDB vectorstore access.
+- `src/extraction`: Structured extraction from parsed handbook data.
+- `src/chunking`: Chunk-building and index manifest generation.
+- `src/preprocessing`: Shared preprocessing helpers that are not phase packages.
 - `src/ingestion`: Raw PDF loading.
 - `src/common`: Shared cross-cutting utilities such as environment loading.
 - `configs`: YAML configuration for pipeline phases.
@@ -35,6 +38,6 @@ src.api.main
 
 ## Refactor Notes
 
-Phase folders are intentionally preserved for now. They contain many internal
-relative imports and represent stable milestones in the project history, so
-renaming them should be a separate, tested migration.
+Legacy phase package names were migrated to production-oriented package names in
+the P2 refactor. Historical phase terminology remains only in config/report file
+names and script wrapper names where it documents the original pipeline stages.

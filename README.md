@@ -70,9 +70,13 @@ Current production-oriented layout:
 |-- src/
 |   |-- api/
 |   |-- services/
-|   |-- ui/phase9/
+|   |-- ui/streamlit/
+|   |-- generation/
 |   |-- retrieval/
-|   |-- chatbot/phase8/
+|   |   |-- core/
+|   |   `-- vectorstore/
+|   |-- extraction/
+|   |-- chunking/
 |   |-- ingestion/
 |   |-- preprocessing/
 |   `-- common/
@@ -203,6 +207,18 @@ Optional Phase 8 batch test, using the configured local retrieval pipeline:
 
 ```bash
 python -m scripts.run_phase8_batch --all
+```
+
+Direct module entrypoints after the package refactor:
+
+```bash
+python -m src.extraction.runner
+python -m src.chunking.runner
+python -m src.retrieval.vectorstore.runner
+python -m src.retrieval.core.runner
+python -m src.retrieval.core.batch_test_phase7
+python -m src.generation.runner
+python -m src.generation.phase8_test
 ```
 
 ## Example Questions

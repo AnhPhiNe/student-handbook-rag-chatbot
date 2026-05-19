@@ -1,4 +1,4 @@
-from src.chatbot.phase8.runner import main
+from src.generation.runner import main
 
 
 if __name__ == "__main__":

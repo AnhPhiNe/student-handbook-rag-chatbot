@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -15,13 +16,13 @@ if TYPE_CHECKING:
 load_project_env()
 
 
-APP_TITLE = "HCMUE Student Handbook Assistant"
-APP_SUBTITLE = "Chatbot tra cứu Sổ tay sinh viên bằng RAG, Gemini và ChromaDB."
+APP_TITLE = "Trợ lý Sổ tay sinh viên HCMUE"
+APP_SUBTITLE = "Hỏi đáp nhanh từ Sổ tay sinh viên, kèm nguồn tham khảo rõ ràng."
 DEFAULT_CONFIG_PATH = Path("configs/phase8_answer_generation.yaml")
-DEFAULT_API_BASE_URL = "http://127.0.0.1:8000"
+DEFAULT_API_BASE_URL = os.getenv("STUDENT_RAG_API_BASE_URL", "http://127.0.0.1:8000")
 
 
-@st.cache_resource(show_spinner="Đang tải AnswerService...")
+@st.cache_resource(show_spinner="Đang chuẩn bị trợ lý...")
 def load_answer_service(config_path: str = str(DEFAULT_CONFIG_PATH)) -> "AnswerService":
     """Load the shared answer service once per Streamlit process."""
     from src.services import AnswerService
@@ -38,7 +39,7 @@ def load_api_client(base_url: str) -> ChatApiClient:
 def main() -> None:
     st.set_page_config(
         page_title=APP_TITLE,
-        page_icon="🎓",
+        page_icon="📘",
         layout="wide",
         initial_sidebar_state="expanded",
     )

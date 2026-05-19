@@ -7,12 +7,10 @@ from typing import Any, Protocol
 import streamlit as st
 
 from .clarification_handler import build_pipeline_query, update_clarification_state
-from .debug_renderer import render_debug_info
 from .session_manager import (
     append_message,
     get_chat_history,
     initialize_session_state,
-    is_debug_enabled,
     set_last_result,
 )
 from .source_renderer import render_sources
@@ -34,18 +32,19 @@ class AnswerClient(Protocol):
 def render_chat_app(answer_client: AnswerClient, title: str, subtitle: str) -> None:
     initialize_session_state()
 
-    quick_query = render_sidebar()
+    sidebar_query = render_sidebar()
     render_header(title=title, subtitle=subtitle)
 
     chat_history = get_chat_history()
+    suggested_query = None
     if not chat_history:
-        render_empty_state()
+        suggested_query = render_empty_state()
 
     for message in chat_history:
         _render_chat_message(message)
 
-    typed_query = st.chat_input("Nhập câu hỏi về Sổ tay sinh viên...")
-    submitted_query = quick_query or typed_query
+    typed_query = st.chat_input("Bạn muốn hỏi gì về Sổ tay sinh viên?")
+    submitted_query = sidebar_query or suggested_query or typed_query
 
     if submitted_query:
         _handle_submit(submitted_query, answer_client)
@@ -60,7 +59,7 @@ def _handle_submit(user_query: str, answer_client: AnswerClient) -> None:
     pipeline_query, _ = build_pipeline_query(display_query)
     append_message("user", display_query, pipeline_query=pipeline_query)
 
-    with st.spinner("Đang tìm thông tin trong sổ tay sinh viên..."):
+    with st.spinner("Đang tìm thông tin phù hợp trong Sổ tay sinh viên..."):
         try:
             result = _call_answer_client(answer_client, pipeline_query)
         except Exception as exc:
@@ -75,7 +74,7 @@ def _handle_submit(user_query: str, answer_client: AnswerClient) -> None:
 def _call_answer_client(answer_client: AnswerClient, query: str) -> dict[str, Any]:
     answer_method = answer_client.answer
     if _accepts_include_debug(answer_method):
-        return answer_method(query, include_debug=is_debug_enabled())
+        return answer_method(query, include_debug=False)
     return answer_method(query)
 
 
@@ -92,14 +91,14 @@ def _accepts_include_debug(answer_method: Any) -> bool:
 
 def _render_chat_message(message: dict[str, Any]) -> None:
     role = str(message.get("role") or "assistant")
-    avatar = "🎓" if role == "assistant" else "👤"
+    avatar = "📘" if role == "assistant" else "👤"
     with st.chat_message(role, avatar=avatar):
         content = str(message.get("content") or "").strip()
         result = message.get("result") if isinstance(message.get("result"), dict) else None
 
         render_status_notice(result)
         if should_render_answer_body(result):
-            fallback = "Mình chưa có nội dung trả lời cho câu này."
+            fallback = "Mình chưa có câu trả lời phù hợp cho câu hỏi này."
             if result and result.get("status") == "needs_clarification" and content:
                 st.markdown(f"**{content}**")
             else:
@@ -110,8 +109,6 @@ def _render_chat_message(message: dict[str, Any]) -> None:
                 citations=result.get("citations_used") or [],
                 intent=result.get("intent"),
             )
-            if is_debug_enabled():
-                render_debug_info(result)
 
 
 def _clean_answer_for_chat(answer: str) -> str:

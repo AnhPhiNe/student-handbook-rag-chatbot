@@ -6,7 +6,7 @@ import requests
 
 
 DEFAULT_API_ERROR_ANSWER = (
-    "Không kết nối được API backend. Bạn kiểm tra FastAPI server đã chạy chưa."
+    "Hiện chưa kết nối được máy chủ trả lời. Bạn thử lại sau nhé."
 )
 
 

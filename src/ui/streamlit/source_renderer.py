@@ -7,14 +7,14 @@ import streamlit as st
 
 
 CHUNK_TYPE_LABELS = {
-    "form": "biểu mẫu",
-    "office_directory": "phòng ban",
-    "faculty_program_directory": "khoa/ngành",
-    "procedure": "quy trình",
-    "regulation": "quy định",
-    "structured_lookup": "bảng tra cứu",
-    "formula": "công thức",
-    "tool": "công cụ",
+    "form": "Biểu mẫu",
+    "office_directory": "Phòng ban",
+    "faculty_program_directory": "Khoa/ngành",
+    "procedure": "Quy trình",
+    "regulation": "Quy định",
+    "structured_lookup": "Bảng tra cứu",
+    "formula": "Cách tính",
+    "tool": "Tra cứu tự động",
 }
 
 
@@ -38,15 +38,12 @@ def summarize_citation(citation: dict[str, Any]) -> str:
     title = _citation_title(citation)
     pages = _format_pages(citation.get("source_pages"))
     chunk_label = _chunk_type_label(citation)
-    chunk_id = str(citation.get("chunk_id") or "").strip()
 
     details = []
     if pages:
         details.append(f"Trang: {pages}")
     if chunk_label:
-        details.append(f"Loại: {chunk_label}")
-    if chunk_id:
-        details.append(f"ID: {chunk_id}")
+        details.append(f"Mục: {chunk_label}")
 
     suffix = f" | {'; '.join(details)}" if details else ""
     return f"{title}{suffix}".strip()
@@ -55,18 +52,16 @@ def summarize_citation(citation: dict[str, Any]) -> str:
 def _render_source_card(citation: dict[str, Any]) -> None:
     title = escape(_citation_title(citation))
     pages = escape(_format_pages(citation.get("source_pages")) or "Không rõ")
-    chunk_label = escape(_chunk_type_label(citation) or "nguồn")
-    chunk_id = escape(str(citation.get("chunk_id") or "").strip())
+    chunk_label = escape(_chunk_type_label(citation) or "Thông tin")
 
     st.markdown(
         f"""
         <div class="phase9-source-card">
-            <div class="phase9-source-title">📄 {title}</div>
+            <div class="phase9-source-title">{title}</div>
             <div class="phase9-source-meta">
                 <span>Trang: {pages}</span>
-                <span>Loại: {chunk_label}</span>
+                <span>Mục: {chunk_label}</span>
             </div>
-            {f'<div class="phase9-source-id">chunk_id: {chunk_id}</div>' if chunk_id else ''}
         </div>
         """,
         unsafe_allow_html=True,
@@ -109,7 +104,6 @@ def _citation_title(citation: dict[str, Any]) -> str:
         or citation.get("unit_name")
         or citation.get("faculty_or_unit_name")
         or citation.get("procedure_name")
-        or citation.get("chunk_id")
         or "Nguồn trong Sổ tay sinh viên"
     )
     return str(title).strip()

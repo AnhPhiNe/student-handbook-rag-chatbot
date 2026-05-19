@@ -4,6 +4,10 @@ An AI chatbot for answering questions from the HCMUE student handbook using a lo
 
 This project is built as an AI Engineer Intern portfolio project: the focus is on practical document processing, retrieval quality, guardrails, citations, and a usable Streamlit interface.
 
+The current pipeline is intentionally tailored to the HCMUE student handbook used
+in this repository. It is not a generic "upload any PDF" chatbot without further
+parser, chunking, entity, and routing adaptation.
+
 ## Key Features
 
 - PDF ingestion and structured parsing for a Vietnamese student handbook.
@@ -315,8 +319,17 @@ data/raw/so-tay-sinh-vien-khoa-48.pdf
 
 It is included for learning and demo purposes in this portfolio project. If you
 publish or reuse the repository, review the source document's license/copyright
-status first. Users can replace this file with their own handbook or policy
-document and rerun the preprocessing pipeline to build a new local index.
+status first. The repository does not relicense the source PDF. Adapting the
+system to another handbook or policy document will likely require updating the
+parsing configuration, extraction rules, chunking assumptions, entity registry,
+and query routing rules before rebuilding the local index.
+
+## License Notes
+
+No separate open-source license file is included yet. If a license is added later,
+it should apply to the project code only unless the source document rights are
+also explicitly cleared. The raw handbook PDF remains a demo data artifact from
+its original publisher/source and is not relicensed by this repository.
 
 ## Tech Stack
 

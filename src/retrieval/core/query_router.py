@@ -1,6 +1,8 @@
 import re
 from typing import Any
 
+from .routing_rules import load_query_routing_rules
+
 
 def normalize_query(query: str) -> str:
     query = query.strip().lower()
@@ -15,87 +17,22 @@ def contains_any(text: str, keywords: list[str]) -> bool:
 
 def route_query(query: str) -> dict[str, Any]:
     q = normalize_query(query)
+    rules = load_query_routing_rules()
 
-    has_form_signal = contains_any(q, [
-        "mẫu đơn",
-        "đơn xin",
-        "biểu mẫu",
-        "phiếu",
-        "form",
-        "mẫu",
-        "điền mẫu",
-        "giấy",
-        "giấy xác nhận",
-        "xác nhận sinh viên",
-        "đơn học lại",
-        "theo dõi tiến độ",
-        "trợ cấp",
-        "trợ cấp xã hội",
-        "miễn giảm",
-        "miễn, giảm",
-        "miễn giảm học phí",
-        "hỗ trợ chi phí",
-        "hỗ trợ chi phí học tập",
-        "đơn gì",
-        "cần đơn",
-        "cần đơn gì",
-        "làm đơn",
-        "làm đơn gì",
-        "dùng đơn",
-        "dùng đơn gì",
-    ])
-
-    has_reg_signal = contains_any(q, [
-        "điều kiện",
-        "quy định",
-        "thủ tục",
-        "khi nào",
-        "cần đáp ứng",
-        "tiêu chí",
-        "xét theo",
-        "được phép",
-    ])
-
-    has_contact_question = contains_any(q, [
-        "email",
-        "số điện thoại",
-        "điện thoại",
-        "website",
-        "địa chỉ",
-        "văn phòng",
-        "tầng",
-        "liên hệ",
-        "phòng nào",
-        "đơn vị nào",
-        "ở đâu",
-    ])
-
-    has_ktx_signal = contains_any(q, [
-        "ký túc xá",
-        "kí túc xá",
-        "ktx",
-        "nội trú",
-        "vào ở",
-    ])
-
-    has_faculty_signal = contains_any(q, [
-        "khoa",
-        "ngành",
-        "tổ trực thuộc",
-        "chuyên ngành",
-    ])
-
-    has_explicit_office_entity = contains_any(q, [
-        "phòng",
-        "ban",
-        "trung tâm",
-        "thư viện",
-    ])
+    has_form_signal = contains_any(q, rules["form_signal"])
+    has_reg_signal = contains_any(q, rules["regulation_signal"])
+    has_contact_question = contains_any(q, rules["contact_question"])
+    has_ktx_signal = contains_any(q, rules["ktx_signal"])
+    has_faculty_signal = contains_any(q, rules["faculty_signal"])
+    has_explicit_office_entity = contains_any(q, rules["explicit_office_entity"])
 
     # 1. Calculation query
-    has_calc = contains_any(q, ["tính", "tính giúp", "bao nhiêu nếu"])
-    has_gpa = contains_any(q, ["gpa", "điểm trung bình", "tbc"])
-    has_scholarship_score = "điểm học bổng" in q and contains_any(q, ["tính", "bao nhiêu", "nếu"])
+    has_calc = contains_any(q, rules["calculation_signal"])
+    has_gpa = contains_any(q, rules["gpa_signal"])
+    has_scholarship_score = contains_any(q, rules["scholarship_score_signal"]) and contains_any(
+        q,
+        rules["calculation_signal"],
+    )
 
     if has_calc and (has_gpa or has_scholarship_score):
         return {
@@ -107,14 +44,14 @@ def route_query(query: str) -> dict[str, Any]:
     # 2. KTX/procedure phải bắt trước office.
     # Không xem "ký túc xá" là office entity vì đa số câu KTX hỏi quy trình/tiêu chí/mẫu đơn.
     if has_ktx_signal:
-        if has_form_signal or contains_any(q, ["đơn", "mẫu", "giấy"]):
+        if has_form_signal or contains_any(q, rules["ktx_form_signal"]):
             return {
                 "intent": "mixed_query",
                 "strategy": "semantic_multi_filter",
                 "target_chunk_types": ["form", "procedure"],
             }
 
-        if contains_any(q, ["quy trình", "tiêu chí", "ưu tiên", "điều kiện", "thủ tục", "xét", "hội đồng"]):
+        if contains_any(q, rules["ktx_procedure_signal"]):
             return {
                 "intent": "procedure_query",
                 "strategy": "semantic_filtered_rerank",
@@ -188,7 +125,7 @@ def route_query(query: str) -> dict[str, Any]:
         }
 
     # 8. Các câu điểm qua môn/rớt môn là quy chế, không phải lookup bảng xếp loại
-    if contains_any(q, ["qua môn", "đạt học phần", "rớt môn", "trượt môn", "học lại"]):
+    if contains_any(q, rules["pass_fail_regulation_signal"]):
         return {
             "intent": "regulation_query",
             "strategy": "semantic_filtered",
@@ -196,17 +133,7 @@ def route_query(query: str) -> dict[str, Any]:
         }
 
     # 9. Score lookup chỉ dành cho bảng/range rõ
-    if contains_any(q, [
-        "quy đổi",
-        "xếp loại",
-        "loại gì",
-        "loại học lực",
-        "học lực",
-        "thang điểm 4",
-        "thang 4",
-        "rèn luyện",
-        "điểm chữ",
-    ]):
+    if contains_any(q, rules["score_lookup_signal"]):
         return {
             "intent": "score_lookup_query",
             "strategy": "structured_lookup",

@@ -87,6 +87,8 @@ Current production-oriented layout:
 
 ## Setup
 
+Recommended Python version: **Python 3.11**. The CI workflow also uses Python 3.11.
+
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
@@ -97,6 +99,12 @@ On macOS/Linux, activate the environment with:
 
 ```bash
 source .venv/bin/activate
+```
+
+For local development and offline checks, install the dev requirements:
+
+```bash
+pip install -r requirements-dev.txt
 ```
 
 ## Environment Variables
@@ -203,6 +211,58 @@ Compile check for the production app modules:
 python -m compileall src app.py scripts
 ```
 
+These checks are also configured in GitHub Actions (`.github/workflows/ci.yml`) so
+the public portfolio repo can show whether the offline code path still works.
+
+## Rebuild Local Data Artifacts
+
+To rebuild the generated extraction/chunking/vectorstore artifacts in order:
+
+```bash
+python -m scripts.run_all_preprocessing
+```
+
+This runs Phase 4 extraction, Phase 5 chunking, Phase 6 ChromaDB embedding, and
+the Phase 7 retrieval batch report. It can take several minutes because the
+embedding model and ChromaDB vectorstore are rebuilt locally.
+
+## Retrieval Evaluation
+
+The repository includes a small golden retrieval set in:
+
+```text
+data/eval/golden_queries.json
+```
+
+Run the evaluator after the vectorstore exists:
+
+```bash
+python -m scripts.evaluate_retrieval
+```
+
+The report is written to:
+
+```text
+data/processed/metadata/golden_retrieval_eval_report.json
+```
+
+Current golden evaluation summary:
+
+| Metric | Result |
+|---|---:|
+| Golden queries | 22 |
+| Retrieval cases | 18 |
+| Hit@1 | 83.33% |
+| Hit@3 | 100% |
+| Hit@5 | 100% |
+| MRR | 91.67% |
+| Intent accuracy | 100% |
+| Strategy accuracy | 100% |
+
+This is a small portfolio golden set for regression checks and retrieval-quality
+sanity testing. It is not a production-grade benchmark, and the scores should not
+be read as a claim that the assistant is production-ready.
+
 Optional Phase 8 batch test, using the configured local retrieval pipeline:
 
 ```bash
@@ -232,15 +292,31 @@ python -m src.generation.phase8_test
 - Điểm rèn luyện 85 là loại gì?
 - Email phòng CTCT-HSSV là gì?
 
-## Screenshots
+## Demo Screenshots
 
-Add screenshots before publishing the repository:
+TODO: Add real screenshots before publishing the repository. Do not treat this
+README as having final demo images until those assets are captured from the
+actual Streamlit app.
+
+Recommended demo flow:
+
+1. Ask `CNTT ở đâu?` to show ambiguity detection and clarification.
+2. Ask `Điểm rèn luyện 85 là loại gì?` to show deterministic lookup.
+3. Ask `Email phòng Đào tạo là gì?` to show cited directory retrieval.
+4. Switch Streamlit from Local mode to API mode and ask the same question.
+
+## Data Policy
+
+The tracked raw PDF is:
 
 ```text
-docs/screenshots/chat_home.png
-docs/screenshots/answer_with_sources.png
-docs/screenshots/clarification_flow.png
+data/raw/so-tay-sinh-vien-khoa-48.pdf
 ```
+
+It is included for learning and demo purposes in this portfolio project. If you
+publish or reuse the repository, review the source document's license/copyright
+status first. Users can replace this file with their own handbook or policy
+document and rerun the preprocessing pipeline to build a new local index.
 
 ## Tech Stack
 
@@ -266,8 +342,8 @@ docs/screenshots/clarification_flow.png
 
 ## Future Improvements
 
-- Add more automated retrieval evaluation cases.
+- Expand the golden retrieval evaluation set beyond the current small portfolio benchmark.
 - Add screenshot assets and a short demo GIF for the portfolio README.
 - Add a clean data rebuild script that runs the pipeline phases in order.
+- Continue moving domain heuristics from Python code into YAML configs.
 - Improve entity registry quality for abbreviations and department aliases.
-- Add CI checks for compile and offline unit tests.

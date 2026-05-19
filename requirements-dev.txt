@@ -1,0 +1,4 @@
+-r requirements.txt
+
+# Offline checks and CI helpers.
+pytest>=8.2,<9.0

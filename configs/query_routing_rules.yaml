@@ -1,0 +1,133 @@
+form_signal:
+  - mẫu đơn
+  - đơn xin
+  - biểu mẫu
+  - phiếu
+  - form
+  - mẫu
+  - điền mẫu
+  - giấy
+  - giấy xác nhận
+  - xác nhận sinh viên
+  - đơn học lại
+  - theo dõi tiến độ
+  - trợ cấp
+  - trợ cấp xã hội
+  - miễn giảm
+  - miễn, giảm
+  - miễn giảm học phí
+  - hỗ trợ chi phí
+  - hỗ trợ chi phí học tập
+  - đơn gì
+  - cần đơn
+  - cần đơn gì
+  - làm đơn
+  - làm đơn gì
+  - dùng đơn
+  - dùng đơn gì
+
+regulation_signal:
+  - điều kiện
+  - quy định
+  - thủ tục
+  - khi nào
+  - cần đáp ứng
+  - tiêu chí
+  - xét theo
+  - được phép
+
+contact_question:
+  - email
+  - số điện thoại
+  - điện thoại
+  - website
+  - địa chỉ
+  - văn phòng
+  - tầng
+  - liên hệ
+  - phòng nào
+  - đơn vị nào
+  - ở đâu
+
+ktx_signal:
+  - ký túc xá
+  - kí túc xá
+  - ktx
+  - nội trú
+  - vào ở
+
+faculty_signal:
+  - khoa
+  - ngành
+  - tổ trực thuộc
+  - chuyên ngành
+
+explicit_office_entity:
+  - phòng
+  - ban
+  - trung tâm
+  - thư viện
+
+calculation_signal:
+  - tính
+  - tính giúp
+  - bao nhiêu nếu
+
+gpa_signal:
+  - gpa
+  - điểm trung bình
+  - tbc
+
+scholarship_score_signal:
+  - điểm học bổng
+
+ktx_form_signal:
+  - đơn
+  - mẫu
+  - giấy
+
+ktx_procedure_signal:
+  - quy trình
+  - tiêu chí
+  - ưu tiên
+  - điều kiện
+  - thủ tục
+  - xét
+  - hội đồng
+
+mixed_form_signal:
+  - mẫu đơn
+  - đơn
+  - biểu mẫu
+  - giấy xác nhận
+
+mixed_regulation_signal:
+  - điều kiện
+  - quy định
+  - thủ tục
+  - cần đáp ứng
+
+mixed_office_signal:
+  - liên hệ
+  - phòng nào
+  - email
+  - số điện thoại
+  - địa chỉ
+
+pass_fail_regulation_signal:
+  - qua môn
+  - đạt học phần
+  - rớt môn
+  - trượt môn
+  - học lại
+
+score_lookup_signal:
+  - quy đổi
+  - xếp loại
+  - loại gì
+  - loại học lực
+  - học lực
+  - thang điểm 4
+  - thang 4
+  - rèn luyện
+  - điểm chữ

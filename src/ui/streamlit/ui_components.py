@@ -156,7 +156,7 @@ def render_status_banner(result: dict[str, Any] | None) -> None:
 
     if status in API_CLIENT_ERROR_STATUSES:
         message = str(result.get("answer") or "").strip()
-        st.warning(message or "KhÃ´ng káº¿t ná»‘i Ä‘Æ°á»£c API backend. Báº¡n thá»­ láº¡i sau nhÃ©.")
+        st.warning(message or "Không kết nối được API backend. Bạn thử lại sau nhé.")
         return
 
 

@@ -1,0 +1,48 @@
+# Data Pipeline
+
+This project turns a raw student-handbook PDF into retrieval and answer-generation artifacts for the Streamlit and FastAPI apps.
+
+## Flow
+
+```text
+data/raw/so-tay-sinh-vien-khoa-48.pdf
+  -> PDF/text extraction
+  -> structure parsing
+  -> table, form, formula, procedure, and directory extraction
+  -> semantic and structured chunking
+  -> ChromaDB vectorstore embedding
+  -> query routing, entity linking, retrieval, and reranking
+  -> guarded answer generation or deterministic lookup response
+```
+
+## Main Inputs
+
+- `data/raw/so-tay-sinh-vien-khoa-48.pdf`: source handbook PDF used for the portfolio demo.
+- `configs/structure_parser.yaml`: structure parsing configuration.
+- `configs/phase4_parser.yaml`: extraction configuration.
+- `configs/phase5_chunking.yaml`: chunking configuration.
+- `configs/phase6_embedding.yaml`: embedding/vectorstore configuration.
+- `configs/phase7_retrieval.yaml`: retrieval configuration.
+- `configs/query_routing_rules.yaml`: query routing rules.
+
+## Main Outputs
+
+- `data/processed/metadata/pages.json`: extracted page text.
+- `data/processed/metadata/structured_sections.json`: parsed handbook structure.
+- `data/processed/tables/*.json`: extracted scoring, formula, and threshold tables.
+- `data/processed/forms/form_templates.json`: form templates and related metadata.
+- `data/processed/procedures/procedures.json`: procedure records.
+- `data/processed/directories/*.json`: office, faculty, program, and reference directories.
+- `data/processed/chunks/*.json`: semantic, lookup, table, form, procedure, directory, formula, and tool-rule chunks.
+- `data/vectorstore/`: local ChromaDB vectorstore generated from the chunks.
+- `data/processed/metadata/*_report.json`: phase reports and evaluation outputs.
+
+## Rebuild Command
+
+Run the full local preprocessing pipeline only when you intentionally want to regenerate extraction, chunks, embeddings, and retrieval reports:
+
+```bash
+python -m scripts.run_all_preprocessing
+```
+
+This command rebuilds the local vectorstore and can take several minutes. It should not be part of the lightweight CI path.

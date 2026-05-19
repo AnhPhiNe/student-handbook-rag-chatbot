@@ -12,6 +12,10 @@
     "expand_to": ["nghỉ học tạm thời", "bảo lưu kết quả học tập", "tiếp nhận trở lại học"]
   },
   {
+    "trigger": ["học vượt", "học kỳ phụ", "đăng ký học phần", "khối lượng học tập"],
+    "expand_to": ["đăng ký học phần", "khối lượng học tập tối đa", "học kỳ chính", "học kỳ phụ", "kế hoạch học tập chuẩn"]
+  },
+  {
     "trigger": ["ktx", "nội trú"],
     "expand_to": ["ký túc xá", "sinh viên nội trú", "xét vào ở ký túc xá"]
   },

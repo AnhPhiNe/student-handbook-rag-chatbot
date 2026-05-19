@@ -1,5 +1,8 @@
 from typing import Any
 
+from .query_router import contains_any
+from .routing_rules import load_query_routing_rules
+
 
 def build_retrieval_plan(
     query: str,
@@ -23,8 +26,9 @@ def build_retrieval_plan(
     plans = []
 
     q = query.lower()
+    rules = load_query_routing_rules()
 
-    if any(k in q for k in ["mẫu đơn", "đơn", "biểu mẫu", "giấy xác nhận"]):
+    if contains_any(q, rules["mixed_form_signal"]):
         plans.append(
             {
                 "purpose": "form",
@@ -34,7 +38,7 @@ def build_retrieval_plan(
             }
         )
 
-    if any(k in q for k in ["điều kiện", "quy định", "thủ tục", "cần đáp ứng"]):
+    if contains_any(q, rules["mixed_regulation_signal"]):
         plans.append(
             {
                 "purpose": "regulation",
@@ -44,7 +48,7 @@ def build_retrieval_plan(
             }
         )
 
-    if any(k in q for k in ["ktx", "ký túc xá", "nội trú", "tiêu chí", "xét"]):
+    if contains_any(q, rules["ktx_signal"] + ["tiêu chí", "xét"]):
         plans.append(
             {
                 "purpose": "procedure",
@@ -54,7 +58,7 @@ def build_retrieval_plan(
             }
         )
 
-    if any(k in q for k in ["liên hệ", "phòng nào", "email", "số điện thoại", "địa chỉ"]):
+    if contains_any(q, rules["mixed_office_signal"]):
         plans.append(
             {
                 "purpose": "office",

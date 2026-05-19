@@ -117,7 +117,7 @@ def _render_chat_message(message: dict[str, Any]) -> None:
 def _clean_answer_for_chat(answer: str) -> str:
     cleaned = answer.replace("structured_result", "").replace("tool_result", "")
     cleaned = re.split(
-        r"\n\s*Ngu(?:ồn|on|á»“n|Ã¡Â»â€œn)\s*:",
+        r"\n\s*Ngu(?:ồn|on)\s*:",
         cleaned,
         maxsplit=1,
     )[0]

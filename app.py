@@ -19,7 +19,21 @@ load_project_env()
 APP_TITLE = "Chatbot sổ tay sinh viên HCMUE"
 APP_SUBTITLE = "Hỗ trợ tra cứu nhanh các thông tin cần thiết có trong sổ tay"
 DEFAULT_CONFIG_PATH = Path("configs/phase8_answer_generation.yaml")
-DEFAULT_API_BASE_URL = os.getenv("STUDENT_RAG_API_BASE_URL", "http://127.0.0.1:8000")
+DEFAULT_API_BASE_URL = "http://127.0.0.1:8000"
+DEFAULT_EXECUTION_MODE = "Local"
+
+
+def get_runtime_setting(name: str, default: str) -> str:
+    env_value = os.getenv(name)
+    if env_value:
+        return env_value
+
+    try:
+        secret_value = st.secrets.get(name)
+    except Exception:
+        secret_value = None
+
+    return str(secret_value) if secret_value else default
 
 
 @st.cache_resource(show_spinner="Đang chuẩn bị trợ lý...")
@@ -45,8 +59,17 @@ def main() -> None:
     )
     apply_theme()
 
+    default_api_base_url = get_runtime_setting(
+        "STUDENT_RAG_API_BASE_URL",
+        DEFAULT_API_BASE_URL,
+    )
+    default_execution_mode = get_runtime_setting(
+        "STUDENT_RAG_EXECUTION_MODE",
+        DEFAULT_EXECUTION_MODE,
+    )
     execution_mode, api_base_url = render_execution_mode_controls(
-        default_api_base_url=DEFAULT_API_BASE_URL
+        default_api_base_url=default_api_base_url,
+        default_execution_mode=default_execution_mode,
     )
     answer_client = (
         load_api_client(api_base_url)

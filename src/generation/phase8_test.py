@@ -3,6 +3,7 @@ import time
 from pathlib import Path
 from typing import Any
 
+from src.common.console import configure_utf8_stdio
 from src.common.env_loader import load_project_env
 
 from .io_utils import save_json
@@ -81,6 +82,7 @@ EXPECTED_RESULTS = {
 
 
 def main() -> None:
+    configure_utf8_stdio()
     load_project_env()
 
     parser = argparse.ArgumentParser(description="Run robust Phase 8 batch test.")

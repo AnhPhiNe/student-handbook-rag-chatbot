@@ -55,6 +55,16 @@ class ApiRoutesTest(unittest.TestCase):
             },
         )
 
+    def test_artifact_health_reports_required_paths(self) -> None:
+        response = self.client.get("/health/artifacts")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn(payload["status"], {"ok", "missing_artifacts"})
+        paths = {item["path"] for item in payload["required_artifacts"]}
+        self.assertIn("configs/phase8_answer_generation.yaml", paths)
+        self.assertIn("data/vectorstore/chroma", paths)
+
     def test_chat_maps_answer_service_response_without_debug(self) -> None:
         response = self.client.post(
             "/chat",
@@ -69,6 +79,8 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertEqual(payload["citations_used"], [{"source": "directory", "page": 1}])
         self.assertFalse(payload["llm_called"])
         self.assertTrue(payload["used_cache"])
+        self.assertIsInstance(payload["request_id"], str)
+        self.assertIsInstance(payload["latency_ms"], float)
         self.assertIsNone(payload["debug"])
 
     def test_chat_includes_limited_debug_when_requested(self) -> None:
@@ -83,6 +95,8 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertEqual(debug["context_used_length"], len("short context"))
         self.assertEqual(debug["citations_count"], 1)
         self.assertEqual(debug["citations_used_count"], 1)
+        self.assertIsInstance(debug["request_id"], str)
+        self.assertIsInstance(debug["latency_ms"], float)
         self.assertNotIn("context_used", debug)
 
     def test_chat_rejects_empty_query(self) -> None:

@@ -25,6 +25,7 @@ htmlcov/
 .cache/
 data/cache/
 data/vectorstore/
+data/raw/*.pdf
 *.log
 
 # OS/editor noise

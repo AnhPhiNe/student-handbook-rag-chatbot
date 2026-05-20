@@ -1,7 +1,11 @@
 import re
+import unicodedata
 from typing import Any
 
 from .routing_rules import load_query_routing_rules
+
+
+ASCII_AMBIGUOUS_KEYWORDS = {"ban", "tầng"}
 
 
 def normalize_query(query: str) -> str:
@@ -11,8 +15,34 @@ def normalize_query(query: str) -> str:
     return query
 
 
+def strip_accents(text: str) -> str:
+    text = text.replace("đ", "d").replace("Đ", "D")
+    normalized = unicodedata.normalize("NFKD", text)
+    return "".join(ch for ch in normalized if not unicodedata.combining(ch))
+
+
 def contains_any(text: str, keywords: list[str]) -> bool:
-    return any(keyword in text for keyword in keywords)
+    ascii_text = strip_accents(text)
+    return any(
+        _contains_phrase(text, keyword)
+        or (
+            keyword not in ASCII_AMBIGUOUS_KEYWORDS
+            and _contains_phrase(ascii_text, strip_accents(keyword))
+        )
+        for keyword in keywords
+    )
+
+
+def _contains_phrase(text: str, phrase: str) -> bool:
+    phrase = phrase.strip()
+    if not phrase:
+        return False
+
+    starts_word = phrase[0].isalnum() or phrase[0] == "_"
+    ends_word = phrase[-1].isalnum() or phrase[-1] == "_"
+    prefix = r"(?<!\w)" if starts_word else ""
+    suffix = r"(?!\w)" if ends_word else ""
+    return re.search(prefix + re.escape(phrase) + suffix, text) is not None
 
 
 def route_query(query: str) -> dict[str, Any]:
@@ -22,6 +52,10 @@ def route_query(query: str) -> dict[str, Any]:
     has_form_signal = contains_any(q, rules["form_signal"])
     has_reg_signal = contains_any(q, rules["regulation_signal"])
     has_contact_question = contains_any(q, rules["contact_question"])
+    has_contact_question = has_contact_question or contains_any(
+        q,
+        ["hỏi ai", "hỏi ở đâu", "tìm ai", "gặp ai", "liên hệ ai"],
+    )
     has_ktx_signal = contains_any(q, rules["ktx_signal"])
     has_faculty_signal = contains_any(q, rules["faculty_signal"])
     has_explicit_office_entity = contains_any(q, rules["explicit_office_entity"])
@@ -133,7 +167,25 @@ def route_query(query: str) -> dict[str, Any]:
         }
 
     # 9. Score lookup chỉ dành cho bảng/range rõ
-    if contains_any(q, rules["score_lookup_signal"]):
+    ascii_q = strip_accents(q)
+    asks_failed_grade_policy = bool(re.search(r"\bdiem\s+f\b", ascii_q, flags=re.IGNORECASE)) and contains_any(
+        q,
+        ["bị", "thì sao", "xử lý", "rớt", "trượt"],
+    )
+    if asks_failed_grade_policy:
+        return {
+            "intent": "regulation_query",
+            "strategy": "semantic_filtered",
+            "target_chunk_types": ["regulation"],
+        }
+
+    asks_letter_grade = bool(re.search(r"\bdiem\s+[abcdf]\+?\b", ascii_q, flags=re.IGNORECASE))
+    asks_gpa_classification = has_gpa and contains_any(
+        q,
+        ["loại", "xếp", "xuất sắc", "giỏi", "khá", "trung bình", "yếu"],
+    )
+
+    if contains_any(q, rules["score_lookup_signal"]) or asks_letter_grade or asks_gpa_classification:
         return {
             "intent": "score_lookup_query",
             "strategy": "structured_lookup",

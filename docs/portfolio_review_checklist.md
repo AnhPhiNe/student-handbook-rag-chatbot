@@ -9,8 +9,11 @@ Use this checklist before making the repository public or sending it with a CV.
 - `python -m scripts.evaluate_retrieval` runs after vectorstore rebuild.
 - README has screenshots or a short demo GIF.
 - README includes the latest retrieval metric summary.
+- Dockerfile starts the FastAPI backend with a mounted vectorstore.
 - `.env` and `data/cache/` are not committed.
 - `data/vectorstore/` is not committed unless intentionally publishing a small demo index.
+- Raw PDF redistribution rights are cleared, or raw PDFs are removed from Git tracking before public release.
+- Generated processed artifacts are reviewed because they may contain extracted text from the raw PDF.
 
 ## Demo Script
 

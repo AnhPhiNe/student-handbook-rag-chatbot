@@ -39,9 +39,14 @@ BODYLESS_STATUS_MESSAGES = {
     *API_CLIENT_ERROR_STATUSES,
 }
 
-def render_execution_mode_controls(default_api_base_url: str) -> tuple[str, str]:
+def render_execution_mode_controls(
+    default_api_base_url: str,
+    default_execution_mode: str = "Local",
+) -> tuple[str, str]:
     api_base_url = default_api_base_url
-    execution_mode = "API"
+    default_mode = default_execution_mode.strip().upper()
+    default_index = 1 if default_mode == "API" else 0
+    execution_mode = "API" if default_index == 1 else "Local"
 
     with st.popover("Settings"):
         st.markdown(
@@ -57,7 +62,7 @@ def render_execution_mode_controls(default_api_base_url: str) -> tuple[str, str]
         execution_mode = st.radio(
             "Execution mode",
             options=("Local", "API"),
-            index=1,
+            index=default_index,
             horizontal=True,
             help="Local dùng AnswerService trong app. API dùng máy chủ FastAPI.",
         )

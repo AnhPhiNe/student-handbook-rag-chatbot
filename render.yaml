@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: student-handbook-rag-api
+    runtime: python
+    autoDeploy: false
+    buildCommand: python -m pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: python -m uvicorn src.api.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: STUDENT_RAG_CORS_ORIGINS
+        sync: false

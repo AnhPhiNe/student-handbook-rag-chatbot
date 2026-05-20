@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from src.common.console import configure_utf8_stdio
+
 from .io_utils import load_json, load_yaml, save_json
 from .report_builder import build_phase7_report
 from .retrieval_pipeline import run_retrieval_pipeline
@@ -165,6 +167,8 @@ def simplify_result(result: dict) -> dict:
 
 
 def main() -> None:
+    configure_utf8_stdio()
+
     config = load_yaml(CONFIG_PATH)
     
     entity_registry = load_json(Path(config["input"]["entity_registry"]))

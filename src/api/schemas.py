@@ -13,6 +13,8 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     answer: str
     status: str
+    request_id: str | None = None
+    latency_ms: float | None = None
     citations_used: list[dict[str, Any]] = Field(default_factory=list)
     clarification_needed: bool = False
     intent: str | None = None
@@ -29,3 +31,13 @@ class HealthResponse(BaseModel):
     service: str
     version: str
 
+
+class ArtifactStatus(BaseModel):
+    path: str
+    exists: bool
+    kind: str
+
+
+class ArtifactHealthResponse(BaseModel):
+    status: str
+    required_artifacts: list[ArtifactStatus]

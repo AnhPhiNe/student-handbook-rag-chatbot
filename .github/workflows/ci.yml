@@ -27,3 +27,6 @@ jobs:
 
       - name: Run offline tests
         run: python -m unittest discover -s tests
+
+      - name: Run router behavior evaluation
+        run: python -m scripts.evaluate_router_behavior --fail-under-intent 0.95 --fail-under-strategy 0.95

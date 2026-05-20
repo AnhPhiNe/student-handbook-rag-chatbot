@@ -111,6 +111,16 @@ For local development and offline checks, install the dev requirements:
 pip install -r requirements-dev.txt
 ```
 
+For exact local reproduction of the verified environment, use the generated
+lockfile:
+
+```bash
+pip install -r requirements.lock
+```
+
+The lockfile records one tested local environment. The looser
+`requirements.txt` remains the portable install target for development and CI.
+
 ## Environment Variables
 
 Create a local `.env` file from the example:
@@ -137,7 +147,9 @@ Do not commit `.env` or `.streamlit/secrets.toml`.
 python -m streamlit run app.py --server.fileWatcherType none
 ```
 
-In the Streamlit sidebar, choose:
+The Streamlit app defaults to `Local` mode so a first-time portfolio reviewer can
+try the chatbot without starting the FastAPI server. In the Streamlit sidebar,
+choose:
 
 - `Local` to run Streamlit -> `AnswerService` in the same process.
 - `API` to run Streamlit -> FastAPI `POST /chat`.
@@ -180,6 +192,54 @@ curl -X POST http://127.0.0.1:8000/chat ^
 
 The API reuses `AnswerService`, which lazy-loads the Phase 8 pipeline. `GET /health`
 does not load the retrieval pipeline or call Gemini.
+
+## Run With Docker
+
+The Dockerfile starts the FastAPI backend. Build the image:
+
+```bash
+docker build -t hcmue-handbook-rag .
+```
+
+Run it with your `.env` file and a mounted local vectorstore:
+
+```bash
+docker run --env-file .env -p 8000:8000 \
+  -v "$(pwd)/data/vectorstore:/app/data/vectorstore:ro" \
+  hcmue-handbook-rag
+```
+
+If `data/vectorstore/` does not exist locally yet, run
+`python -m scripts.run_all_preprocessing` first.
+
+## Deployment Workflow
+
+Recommended public demo architecture:
+
+```text
+Streamlit Cloud UI -> FastAPI backend -> ChromaDB vectorstore + Gemini
+```
+
+The simplest non-Docker path is Streamlit Cloud for `app.py` and Render for the
+FastAPI backend. This repo includes `render.yaml` and `runtime.txt` for that
+workflow.
+
+Set the Streamlit Cloud app to API mode:
+
+```text
+STUDENT_RAG_EXECUTION_MODE=API
+STUDENT_RAG_API_BASE_URL=https://your-fastapi-backend.example.com
+```
+
+Set backend secrets/config:
+
+```text
+GEMINI_API_KEY=...
+STUDENT_RAG_CORS_ORIGINS=https://your-streamlit-app.streamlit.app
+```
+
+See `docs/render_streamlit_deploy.md` for the step-by-step Streamlit Cloud +
+Render workflow. See `docs/deployment.md` for the Docker/Docker Compose variant.
 
 ## Local/API Manual Test
 
@@ -226,8 +286,9 @@ To rebuild the generated extraction/chunking/vectorstore artifacts in order:
 python -m scripts.run_all_preprocessing
 ```
 
-This runs Phase 4 extraction, Phase 5 chunking, Phase 6 ChromaDB embedding, and
-the Phase 7 retrieval batch report. It can take several minutes because the
+This runs Phase 1-2 PDF extraction, Phase 3 structure parsing, Phase 4
+structured extraction, Phase 5 chunking, Phase 6 ChromaDB embedding, and the
+Phase 7 retrieval batch report. It can take several minutes because the
 embedding model and ChromaDB vectorstore are rebuilt locally.
 
 ## Retrieval Evaluation
@@ -267,6 +328,39 @@ This is a small portfolio golden set for regression checks and retrieval-quality
 sanity testing. It is not a production-grade benchmark, and the scores should not
 be read as a claim that the assistant is production-ready.
 
+Router behavior coverage is larger and faster because it does not require the
+embedding model or vectorstore:
+
+```bash
+python -m scripts.evaluate_router_behavior --fail-under-intent 0.95 --fail-under-strategy 0.95
+```
+
+Current router behavior set:
+
+| Metric | Result |
+|---|---:|
+| Behavior queries | 110 |
+| Intent accuracy | 100% |
+| Strategy accuracy | 100% |
+| Target chunk-type accuracy | 100% |
+
+Offline answer evaluation checks deterministic exactness, guardrail status, and
+citation selection without calling Gemini:
+
+```bash
+python -m scripts.evaluate_answers --fail-under-pass-rate 1.0
+```
+
+Current offline answer evaluation summary:
+
+| Metric | Result |
+|---|---:|
+| Answer eval cases | 14 |
+| Pass rate | 100% |
+| Status accuracy | 100% |
+| Deterministic exactness | 100% |
+| Citation type/page checks | 100% |
+
 Optional Phase 8 batch test, using the configured local retrieval pipeline:
 
 ```bash
@@ -276,6 +370,8 @@ python -m scripts.run_phase8_batch --all
 Direct module entrypoints after the package refactor:
 
 ```bash
+python -m src.ingestion.pdf_loader
+python -m src.preprocessing.structure_parser
 python -m src.extraction.runner
 python -m src.chunking.runner
 python -m src.retrieval.vectorstore.runner
@@ -283,6 +379,12 @@ python -m src.retrieval.core.runner
 python -m src.retrieval.core.batch_test_phase7
 python -m src.generation.runner
 python -m src.generation.phase8_test
+```
+
+Write a local reproducibility report:
+
+```bash
+python -m scripts.write_reproducibility_report
 ```
 
 ## Example Questions
@@ -317,12 +419,16 @@ The tracked raw PDF is:
 data/raw/so-tay-sinh-vien-khoa-48.pdf
 ```
 
-It is included for learning and demo purposes in this portfolio project. If you
+It is used for learning and demo purposes in this portfolio project. If you
 publish or reuse the repository, review the source document's license/copyright
-status first. The repository does not relicense the source PDF. Adapting the
-system to another handbook or policy document will likely require updating the
-parsing configuration, extraction rules, chunking assumptions, entity registry,
-and query routing rules before rebuilding the local index.
+status first. The repository does not relicense the source PDF. If
+redistribution rights are unclear, remove the PDF from Git tracking before
+making the repository public and keep `data/raw/README.md` as the local data
+placeholder. See `docs/data_policy.md` for the public-release policy.
+
+Adapting the system to another handbook or policy document will likely require
+updating the parsing configuration, extraction rules, chunking assumptions,
+entity registry, and query routing rules before rebuilding the local index.
 
 ## License Notes
 
@@ -352,11 +458,12 @@ its original publisher/source and is not relicensed by this repository.
 - Gemini calls require a valid `GEMINI_API_KEY` in `.env` or the process environment.
 - Some source PDF layouts may require manual validation after parsing.
 - Vectorstore and response cache are local generated artifacts and are not committed by default.
+- Source files are UTF-8. If Vietnamese text appears garbled in Windows PowerShell,
+  read files with `Get-Content -Encoding UTF8 ...` or use a UTF-8 terminal.
 
 ## Future Improvements
 
 - Expand the golden retrieval evaluation set beyond the current small portfolio benchmark.
 - Add screenshot assets and a short demo GIF for the portfolio README.
-- Add a clean data rebuild script that runs the pipeline phases in order.
 - Continue moving domain heuristics from Python code into YAML configs.
 - Improve entity registry quality for abbreviations and department aliases.

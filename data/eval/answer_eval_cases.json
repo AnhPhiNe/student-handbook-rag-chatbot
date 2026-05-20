@@ -1,0 +1,138 @@
+[
+  {
+    "id": "det_score_001",
+    "category": "deterministic_exactness",
+    "query": "Điểm rèn luyện 92 là loại gì?",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_lookup_type": "conduct_classification",
+    "expected_answer_contains": ["92", "Xuất sắc"],
+    "min_citations": 1,
+    "expected_citation_chunk_types": ["structured_lookup"],
+    "expect_sources_section": true
+  },
+  {
+    "id": "det_score_002",
+    "category": "deterministic_exactness",
+    "query": "GPA 2.95 được xếp loại học lực gì?",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_lookup_type": "academic_classification",
+    "expected_answer_contains": ["2.95", "Khá"],
+    "min_citations": 1,
+    "expected_citation_chunk_types": ["structured_lookup"],
+    "expect_sources_section": true
+  },
+  {
+    "id": "det_score_003",
+    "category": "deterministic_exactness",
+    "query": "Điểm B+ quy đổi sang hệ 4 bao nhiêu?",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_lookup_type": "letter_to_grade_4",
+    "expected_answer_contains": ["B+", "3.5"],
+    "min_citations": 1,
+    "expected_citation_chunk_types": ["structured_lookup"],
+    "expect_sources_section": true
+  },
+  {
+    "id": "det_calc_001",
+    "category": "deterministic_exactness",
+    "query": "Tính điểm học bổng nếu GPA 3.2 và rèn luyện 90",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_tool_name": "calculate_scholarship_score",
+    "expected_answer_contains": ["3.28", "calculate_scholarship_score"]
+  },
+  {
+    "id": "guard_amb_001",
+    "category": "guardrail_status",
+    "query": "CNTT ở đâu?",
+    "expected_status": "needs_clarification",
+    "expected_llm_called": false,
+    "expected_answer_contains": ["Bạn muốn liên hệ"]
+  },
+  {
+    "id": "guard_amb_002",
+    "category": "guardrail_status",
+    "query": "Học vụ liên hệ ai?",
+    "expected_status": "needs_clarification",
+    "expected_llm_called": false,
+    "expected_answer_contains": ["Bạn muốn liên hệ"]
+  },
+  {
+    "id": "guard_amb_003",
+    "category": "guardrail_status",
+    "query": "Giấy tờ sinh viên làm ở đâu?",
+    "expected_status": "needs_clarification",
+    "expected_llm_called": false,
+    "expected_answer_contains": ["Bạn muốn liên hệ"]
+  },
+  {
+    "id": "guard_ood_001",
+    "category": "guardrail_status",
+    "query": "Trường có bán bánh tráng trộn không?",
+    "expected_status": "out_of_domain",
+    "expected_llm_called": false,
+    "expected_answer_contains": ["Sổ tay"]
+  },
+  {
+    "id": "guard_ood_002",
+    "category": "guardrail_status",
+    "query": "Làm sao để nấu phở ngon?",
+    "expected_status": "out_of_domain",
+    "expected_llm_called": false,
+    "expected_answer_contains": ["Sổ tay"]
+  },
+  {
+    "id": "cite_form_001",
+    "category": "citation_correctness",
+    "query": "Muốn tạm nghỉ học cần mẫu đơn nào?",
+    "expected_status": "answered",
+    "expected_llm_called": true,
+    "min_citations": 1,
+    "expected_citation_chunk_types": ["form"],
+    "expected_citation_pages": [176],
+    "expect_sources_section": true
+  },
+  {
+    "id": "cite_office_001",
+    "category": "citation_correctness",
+    "query": "Email phòng đào tạo là gì?",
+    "expected_status": "answered",
+    "expected_llm_called": true,
+    "min_citations": 1,
+    "expected_citation_chunk_types": ["office_directory"],
+    "expect_sources_section": true
+  },
+  {
+    "id": "cite_faculty_001",
+    "category": "citation_correctness",
+    "query": "Khoa Công nghệ thông tin có ngành nào?",
+    "expected_status": "answered",
+    "expected_llm_called": true,
+    "min_citations": 1,
+    "expected_citation_chunk_types": ["faculty_program_directory"],
+    "expect_sources_section": true
+  },
+  {
+    "id": "cite_procedure_001",
+    "category": "citation_correctness",
+    "query": "Ai được ưu tiên vào ký túc xá?",
+    "expected_status": "answered",
+    "expected_llm_called": true,
+    "min_citations": 1,
+    "expected_citation_chunk_types": ["procedure"],
+    "expect_sources_section": true
+  },
+  {
+    "id": "cite_reg_001",
+    "category": "citation_correctness",
+    "query": "Điều kiện xét học bổng là gì?",
+    "expected_status": "answered",
+    "expected_llm_called": true,
+    "min_citations": 1,
+    "expected_citation_chunk_types": ["regulation"],
+    "expect_sources_section": true
+  }
+]

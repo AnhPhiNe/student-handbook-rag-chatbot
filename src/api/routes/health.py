@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from fastapi import APIRouter
 
-from src.api.schemas import HealthResponse
+from src.api.schemas import ArtifactHealthResponse, ArtifactStatus, HealthResponse
 
 
 router = APIRouter(tags=["health"])
@@ -16,3 +18,35 @@ def health() -> HealthResponse:
         version="0.1.0",
     )
 
+
+@router.get("/health/artifacts", response_model=ArtifactHealthResponse)
+def artifact_health() -> ArtifactHealthResponse:
+    required = [
+        ArtifactStatus(
+            path="configs/phase8_answer_generation.yaml",
+            exists=Path("configs/phase8_answer_generation.yaml").is_file(),
+            kind="config",
+        ),
+        ArtifactStatus(
+            path="data/processed/tables/scoring_tables.json",
+            exists=Path("data/processed/tables/scoring_tables.json").is_file(),
+            kind="processed_json",
+        ),
+        ArtifactStatus(
+            path="data/processed/entities/entity_registry.json",
+            exists=Path("data/processed/entities/entity_registry.json").is_file(),
+            kind="processed_json",
+        ),
+        ArtifactStatus(
+            path="data/processed/entities/query_expansion_rules.json",
+            exists=Path("data/processed/entities/query_expansion_rules.json").is_file(),
+            kind="processed_json",
+        ),
+        ArtifactStatus(
+            path="data/vectorstore/chroma",
+            exists=Path("data/vectorstore/chroma").is_dir(),
+            kind="vectorstore",
+        ),
+    ]
+    status = "ok" if all(item.exists for item in required) else "missing_artifacts"
+    return ArtifactHealthResponse(status=status, required_artifacts=required)

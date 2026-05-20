@@ -53,6 +53,54 @@ retrieval threshold:
 python -m scripts.evaluate_retrieval --fail-under-hit3 0.75
 ```
 
+## Router Behavior Evaluation
+
+Router behavior cases live in:
+
+```bash
+data/eval/router_behavior_queries.json
+```
+
+This is a larger 100+ query behavioral set covering paraphrases, typo/no-accent
+queries, ambiguity probes, out-of-domain probes, multi-hop routing, and negative
+regression cases. It is intentionally separate from the smaller source-level
+golden retrieval benchmark so source labels do not become self-generated.
+
+```bash
+python -m scripts.evaluate_router_behavior --fail-under-intent 0.95 --fail-under-strategy 0.95
+```
+
+The evaluator writes:
+
+```bash
+data/processed/metadata/router_behavior_eval_report.json
+```
+
+## Offline Answer Evaluation
+
+Answer evaluation cases live in:
+
+```bash
+data/eval/answer_eval_cases.json
+```
+
+This check uses the real retrieval, guardrail, deterministic lookup, and citation
+selection code, but injects an offline mock LLM so it does not call Gemini.
+
+```bash
+python -m scripts.evaluate_answers --fail-under-pass-rate 1.0
+```
+
+The evaluator writes:
+
+```bash
+data/processed/metadata/answer_eval_report.json
+```
+
+Tracked answer checks include deterministic exactness, expected guardrail
+status, citation presence, citation chunk type, citation page, and source-section
+formatting.
+
 ## Local App Smoke Test
 
 Terminal 1:
@@ -75,6 +123,8 @@ question before testing Gemini-backed answer generation.
 These wrappers exist for local development and portfolio reproducibility:
 
 ```bash
+python -m scripts.run_phase1_2
+python -m scripts.run_phase3
 python -m scripts.run_phase4
 python -m scripts.run_phase5
 python -m scripts.run_phase6
@@ -87,6 +137,8 @@ python -m scripts.run_phase8_batch --all
 Equivalent direct module entrypoints:
 
 ```bash
+python -m src.ingestion.pdf_loader
+python -m src.preprocessing.structure_parser
 python -m src.extraction.runner
 python -m src.chunking.runner
 python -m src.retrieval.vectorstore.runner
@@ -96,5 +148,5 @@ python -m src.generation.runner
 python -m src.generation.phase8_test
 ```
 
-Phase 6 can rebuild vectorstore data. Phase 8 scripts may call Gemini depending
-on the query and cache state.
+Phase 1-2 through Phase 7 can rebuild local data and vectorstore artifacts.
+Phase 8 scripts may call Gemini depending on the query and cache state.

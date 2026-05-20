@@ -39,10 +39,33 @@ data/raw/so-tay-sinh-vien-khoa-48.pdf
 
 ## Rebuild Command
 
-Run the full local preprocessing pipeline only when you intentionally want to regenerate extraction, chunks, embeddings, and retrieval reports:
+Run the full local preprocessing pipeline only when you intentionally want to regenerate PDF extraction, structure parsing, structured extraction, chunks, embeddings, and retrieval reports:
 
 ```bash
 python -m scripts.run_all_preprocessing
 ```
 
-This command rebuilds the local vectorstore and can take several minutes. It should not be part of the lightweight CI path.
+This command runs Phase 1-2 through Phase 7 in order, rebuilds the local vectorstore, and can take several minutes. It should not be part of the lightweight CI path.
+
+Individual phase wrappers are also available:
+
+```bash
+python -m scripts.run_phase1_2
+python -m scripts.run_phase3
+python -m scripts.run_phase4
+python -m scripts.run_phase5
+python -m scripts.run_phase6
+python -m scripts.run_phase7_batch
+```
+
+To capture the local package/config/file fingerprint used for a run:
+
+```bash
+python -m scripts.write_reproducibility_report
+```
+
+The report is written to:
+
+```text
+data/processed/metadata/reproducibility_report.json
+```

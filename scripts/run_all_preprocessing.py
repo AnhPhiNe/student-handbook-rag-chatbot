@@ -5,6 +5,8 @@ import sys
 
 
 STEPS = [
+    ("extract PDF pages", ["-m", "scripts.run_phase1_2"]),
+    ("parse structured sections", ["-m", "scripts.run_phase3"]),
     ("extract structured data", ["-m", "scripts.run_phase4"]),
     ("build chunks", ["-m", "scripts.run_phase5"]),
     ("build vectorstore", ["-m", "scripts.run_phase6"]),

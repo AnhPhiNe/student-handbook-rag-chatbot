@@ -6,6 +6,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from src.common.console import configure_utf8_stdio
+
 
 DEFAULT_CONFIG_PATH = Path("configs/phase7_retrieval.yaml")
 DEFAULT_GOLDEN_PATH = Path("data/eval/golden_queries.json")
@@ -158,6 +160,8 @@ def run_evaluation(config_path: Path, golden_path: Path) -> dict[str, Any]:
 
 
 def main() -> None:
+    configure_utf8_stdio()
+
     parser = argparse.ArgumentParser(description="Evaluate retrieval against golden queries.")
     parser.add_argument("--config", default=str(DEFAULT_CONFIG_PATH))
     parser.add_argument("--golden", default=str(DEFAULT_GOLDEN_PATH))

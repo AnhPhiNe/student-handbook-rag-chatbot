@@ -22,7 +22,7 @@ FALLBACK_RULES: dict[str, list[str]] = {
     "calculation_signal": ["tính", "tính giúp", "bao nhiêu nếu"],
     "gpa_signal": ["gpa", "điểm trung bình", "tbc"],
     "scholarship_score_signal": ["điểm học bổng"],
-    "ktx_form_signal": ["đơn", "mẫu", "giấy"],
+    "ktx_form_signal": ["đơn", "mẫu", "giấy", "hồ sơ"],
     "ktx_procedure_signal": ["quy trình", "tiêu chí", "ưu tiên", "điều kiện", "thủ tục", "xét", "hội đồng"],
     "mixed_form_signal": ["mẫu đơn", "đơn", "biểu mẫu", "giấy xác nhận"],
     "mixed_regulation_signal": ["điều kiện", "quy định", "thủ tục", "cần đáp ứng"],

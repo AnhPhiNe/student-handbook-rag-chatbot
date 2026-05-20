@@ -1,4 +1,4 @@
-import argparse
+﻿import argparse
 import time
 from pathlib import Path
 from typing import Any
@@ -125,7 +125,7 @@ def main() -> None:
             time.sleep(float(pipeline.config.get("llm", {}).get("request_sleep_seconds", 2)))
 
     save_json(_build_report(results, validation_errors), output_path)
-    print(f"\nPhase 8 batch test completed. Report saved: {output_path}")
+    print(f"\nAnswer-generation batch evaluation completed. Report saved: {output_path}")
     if validation_errors:
         print("\nValidation errors:")
         for error in validation_errors:
@@ -157,7 +157,7 @@ def _build_report(
         "validation_error_count": len(validation_errors),
     }
     return {
-        "phase": "phase_8_answer_generation_batch_test",
+        "pipeline_stage": "answer_generation_batch_eval",
         "summary": summary,
         "total_queries": summary["total_queries"],
         "answered_count": summary["answered_count"],

@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from html import escape
 from typing import Any
@@ -58,9 +58,9 @@ def _render_source_card(citation: dict[str, Any]) -> None:
 
     st.markdown(
         f"""
-        <div class="phase9-source-card">
-            <div class="phase9-source-title">{title}</div>
-            <div class="phase9-source-meta">
+        <div class="source-card">
+            <div class="source-title">{title}</div>
+            <div class="source-meta">
                 <span>Trang: {pages}</span>
                 <span>Loại: {chunk_label}</span>
             </div>

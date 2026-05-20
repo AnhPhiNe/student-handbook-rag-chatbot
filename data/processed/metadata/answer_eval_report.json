@@ -1,6 +1,6 @@
 {
   "evaluation": "answer_eval_offline",
-  "config_path": "configs\\phase8_answer_generation.yaml",
+  "config_path": "configs\\answer_generation.yaml",
   "cases_path": "data\\eval\\answer_eval_cases.json",
   "llm_provider": "offline_mock",
   "summary": {

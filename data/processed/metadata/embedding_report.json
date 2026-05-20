@@ -1,5 +1,5 @@
-{
-  "phase": "phase_6_embedding_and_vectorstore",
+﻿{
+  "pipeline_stage": "embedding_and_vectorstore",
   "embedding_model": "BAAI/bge-m3",
   "device": "cpu",
   "vectorstore_provider": "chroma",

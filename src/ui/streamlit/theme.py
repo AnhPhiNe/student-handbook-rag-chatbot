@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 
 
 def apply_theme() -> None:
@@ -568,7 +568,7 @@ def apply_theme() -> None:
                 background: #edf6ff;
             }
 
-            .phase9-source-card {
+            .source-card {
                 border: 1px solid var(--ep-border);
                 border-radius: 12px;
                 padding: 0.72rem 0.82rem;
@@ -577,14 +577,14 @@ def apply_theme() -> None:
                 box-shadow: 0 5px 12px rgba(16, 42, 67, 0.035);
             }
 
-            .phase9-source-title {
+            .source-title {
                 font-weight: 760;
                 color: var(--ep-text);
                 margin-bottom: 0.42rem;
                 line-height: 1.35;
             }
 
-            .phase9-source-meta {
+            .source-meta {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 0.42rem;
@@ -592,7 +592,7 @@ def apply_theme() -> None:
                 font-size: 0.82rem;
             }
 
-            .phase9-source-meta span {
+            .source-meta span {
                 background: var(--ep-blue-soft);
                 color: #184d8f;
                 border-radius: 999px;

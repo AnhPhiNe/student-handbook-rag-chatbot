@@ -1,4 +1,4 @@
-import time
+﻿import time
 from pathlib import Path
 from typing import Any
 from src.retrieval.core.retrieval_pipeline import run_retrieval_pipeline
@@ -24,7 +24,7 @@ from .prompt_builder import DEFAULT_MAX_CONTEXT_CHARS, build_answer_prompt, limi
 from .response_cache import ResponseCache
 
 
-DEFAULT_CONFIG_PATH = Path("configs/phase8_answer_generation.yaml")
+DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
 
 class AnswerPipeline:
@@ -48,7 +48,7 @@ class AnswerPipeline:
 
         llm_config = self.config["llm"]
         if llm_config.get("provider") != "gemini":
-            raise ValueError("Phase 8 currently supports only llm.provider='gemini'.")
+            raise ValueError("AnswerPipeline currently supports only llm.provider='gemini'.")
 
         self._llm_client = llm_client
         self.max_context_chars = int(
@@ -59,7 +59,7 @@ class AnswerPipeline:
 
         cache_config = self.config.get("cache", {})
         self.response_cache = ResponseCache(
-            path=cache_config.get("path", "data/cache/phase8_response_cache.json"),
+            path=cache_config.get("path", "data/cache/answer_response_cache.json"),
             enabled=cache_config.get("enabled", True),
         )
 

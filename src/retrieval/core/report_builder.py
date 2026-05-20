@@ -1,4 +1,4 @@
-from typing import Any
+﻿from typing import Any
 
 
 def build_retrieval_report(results: list[dict[str, Any]]) -> dict[str, Any]:
@@ -13,7 +13,7 @@ def build_retrieval_report(results: list[dict[str, Any]]) -> dict[str, Any]:
         strategy_count[strategy] = strategy_count.get(strategy, 0) + 1
 
     return {
-        "phase": "phase_7_query_router_and_retrieval_strategy",
+        "pipeline_stage": "retrieval_orchestration",
         "total_test_queries": len(results),
         "intent_count": intent_count,
         "strategy_count": strategy_count,

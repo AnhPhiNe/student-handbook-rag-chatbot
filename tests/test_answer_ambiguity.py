@@ -1,4 +1,4 @@
-import unittest
+﻿import unittest
 
 from src.generation.answer_guardrails import detect_ambiguous_query
 
@@ -41,7 +41,7 @@ CNTT_CONFLICT_ENTITIES = [
 ]
 
 
-class Phase8AmbiguityTest(unittest.TestCase):
+class AnswerAmbiguityTest(unittest.TestCase):
     def test_cntt_without_scope_needs_clarification(self) -> None:
         retrieval = _retrieval(
             detected_entities=CNTT_CONFLICT_ENTITIES,

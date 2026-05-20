@@ -1,4 +1,4 @@
-input:
+﻿input:
   scoring_tables: data/processed/tables/scoring_tables.json
   formula_rules: data/processed/tables/formula_rules.json
   form_templates: data/processed/forms/form_templates.json
@@ -23,4 +23,4 @@ retrieval:
   filtered_top_k: 5
 
 output:
-  test_report: data/processed/metadata/phase7_retrieval_test_report.json
+  test_report: data/processed/metadata/retrieval_test_report.json

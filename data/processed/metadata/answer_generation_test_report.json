@@ -1,5 +1,5 @@
-{
-  "phase": "phase_8_answer_generation",
+﻿{
+  "pipeline_stage": "answer_generation",
   "total_queries": 1,
   "results": [
     {

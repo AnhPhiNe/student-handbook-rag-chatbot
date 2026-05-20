@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import argparse
 import json
@@ -9,7 +9,7 @@ from typing import Any
 from src.common.console import configure_utf8_stdio
 
 
-DEFAULT_CONFIG_PATH = Path("configs/phase7_retrieval.yaml")
+DEFAULT_CONFIG_PATH = Path("configs/retrieval.yaml")
 DEFAULT_GOLDEN_PATH = Path("data/eval/golden_queries.json")
 DEFAULT_OUTPUT_PATH = Path("data/processed/metadata/golden_retrieval_eval_report.json")
 

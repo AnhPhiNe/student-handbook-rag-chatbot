@@ -1,4 +1,4 @@
-import os
+﻿import os
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -18,7 +18,7 @@ load_project_env()
 
 APP_TITLE = "Chatbot sổ tay sinh viên HCMUE"
 APP_SUBTITLE = "Hỗ trợ tra cứu nhanh các thông tin cần thiết có trong sổ tay"
-DEFAULT_CONFIG_PATH = Path("configs/phase8_answer_generation.yaml")
+DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 DEFAULT_API_BASE_URL = "http://127.0.0.1:8000"
 DEFAULT_EXECUTION_MODE = "Local"
 

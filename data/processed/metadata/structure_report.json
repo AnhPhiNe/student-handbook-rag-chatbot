@@ -1,4 +1,4 @@
-{
+﻿{
   "total_sections": 195,
   "total_article_sections": 135,
   "total_non_article_sections": 60,
@@ -704,7 +704,7 @@
       "page_end": 128
     }
   ],
-  "sections_need_phase4_processing": [
+  "sections_need_structured_extraction": [
     {
       "section_id": "regulation_text_p8_2",
       "title": "QUYẾT ĐỊNH",

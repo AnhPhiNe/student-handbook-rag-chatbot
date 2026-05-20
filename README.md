@@ -1,4 +1,4 @@
-# HCMUE Student Handbook RAG Assistant
+﻿# HCMUE Student Handbook RAG Assistant
 
 An AI chatbot for answering questions from the HCMUE student handbook using a local Retrieval-Augmented Generation (RAG) pipeline, ChromaDB vector search, deterministic lookup tools, and Gemini answer generation.
 
@@ -372,7 +372,7 @@ Current offline answer evaluation summary:
 Optional answer-generation batch test, using the configured local retrieval pipeline:
 
 ```bash
-python -m scripts.run_phase8_batch --all
+python -m scripts.evaluate_answer_batch --all
 ```
 
 Direct module entrypoints after the package refactor:

@@ -1,4 +1,4 @@
-import argparse
+﻿import argparse
 from pathlib import Path
 from typing import Any
 
@@ -46,14 +46,14 @@ def main() -> None:
         print()
 
     report = {
-        "phase": "phase_8_answer_generation",
+        "pipeline_stage": "answer_generation",
         "total_queries": len(results),
         "results": results,
         "status": "completed",
     }
     output_path = Path(pipeline.config["output"]["test_report"])
     save_json(report, output_path)
-    print(f"Phase 8 completed. Report saved: {output_path}")
+    print(f"Answer generation completed. Report saved: {output_path}")
 
 
 def _build_unhandled_error_result(query: str, exc: Exception) -> dict[str, Any]:

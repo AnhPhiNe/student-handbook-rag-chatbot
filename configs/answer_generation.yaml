@@ -1,4 +1,4 @@
-input:
+﻿input:
   scoring_tables: data/processed/tables/scoring_tables.json
   entity_registry: data/processed/entities/entity_registry.json
   query_expansion_rules: data/processed/entities/query_expansion_rules.json
@@ -29,7 +29,7 @@ llm:
 
 cache:
   enabled: true
-  path: data/cache/phase8_response_cache.json
+  path: data/cache/answer_response_cache.json
 
 citations:
   max_sources: 2
@@ -41,4 +41,4 @@ guardrails:
   allow_deterministic_direct_answer: true
 
 output:
-  test_report: data/processed/metadata/phase8_answer_generation_test_report.json
+  test_report: data/processed/metadata/answer_generation_test_report.json

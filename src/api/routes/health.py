@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from pathlib import Path
 
@@ -23,8 +23,8 @@ def health() -> HealthResponse:
 def artifact_health() -> ArtifactHealthResponse:
     required = [
         ArtifactStatus(
-            path="configs/phase8_answer_generation.yaml",
-            exists=Path("configs/phase8_answer_generation.yaml").is_file(),
+            path="configs/answer_generation.yaml",
+            exists=Path("configs/answer_generation.yaml").is_file(),
             kind="config",
         ),
         ArtifactStatus(

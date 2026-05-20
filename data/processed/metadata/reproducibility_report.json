@@ -1,4 +1,4 @@
-{
+﻿{
   "python": {
     "version": "3.12.13 (main, Mar  3 2026, 15:01:35) [MSC v.1944 64 bit (AMD64)]",
     "executable": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\.venv\\Scripts\\python.exe",
@@ -40,23 +40,23 @@
       "exists": true,
       "sha256": "94cc7e633b9b16d02771521522cd08d2d89dfbcc5891a88a188f4ba65effc58e"
     },
-    "configs/phase4_parser.yaml": {
+    "configs/extraction.yaml": {
       "exists": true,
       "sha256": "e76db5e16117ba548de623aa53b2c0389c93b1c7b296b46d264dd61d80e5c194"
     },
-    "configs/phase5_chunking.yaml": {
+    "configs/chunking.yaml": {
       "exists": true,
       "sha256": "a18d30c93ccb0b50f6be149454fd132cd32962f3642a08e62b263c0d2c0347c3"
     },
-    "configs/phase6_embedding.yaml": {
+    "configs/embedding.yaml": {
       "exists": true,
       "sha256": "bcac3a1bb1da900476a583019ad8641fbb9e583726e2dd2fe866f7436bb6625c"
     },
-    "configs/phase7_retrieval.yaml": {
+    "configs/retrieval.yaml": {
       "exists": true,
       "sha256": "a47be2f5373a19f7de6e9fcffe86e5e37ea3e3f28577fff05a5a8686dae324df"
     },
-    "configs/phase8_answer_generation.yaml": {
+    "configs/answer_generation.yaml": {
       "exists": true,
       "sha256": "57b43d1cd34475b769088cdb2662a236e497d6fb31a14f60d780eb8f1756544c"
     },

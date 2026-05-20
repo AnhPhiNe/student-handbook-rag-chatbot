@@ -1,4 +1,4 @@
-from pathlib import Path
+﻿from pathlib import Path
 
 from .directory_parser import (
     extract_faculty_program_directory,
@@ -14,7 +14,7 @@ from .scoring_tables import build_scoring_tables
 from .threshold_rules import extract_threshold_rules
 
 
-CONFIG_PATH = Path("configs/phase4_parser.yaml")
+CONFIG_PATH = Path("configs/extraction.yaml")
 
 
 def main() -> None:
@@ -54,7 +54,7 @@ def main() -> None:
     save_json(procedures, Path(config["output"]["procedures"]))
     save_json(report, Path(config["output"]["report"]))
 
-    print("Phase 4 completed.")
+    print("Structured extraction completed.")
     print(f"Scoring tables: {len(scoring_tables)}")
     print(f"Formula rules: {len(formula_rules)}")
     print(f"Threshold rules: {len(threshold_rules)}")

@@ -1,4 +1,4 @@
-from typing import Any
+﻿from typing import Any
 
 
 def build_embedding_report(
@@ -12,7 +12,7 @@ def build_embedding_report(
     retrieval_tests: list[dict[str, Any]],
 ) -> dict[str, Any]:
     return {
-        "phase": "phase_6_embedding_and_vectorstore",
+        "pipeline_stage": "embedding_and_vectorstore",
         "embedding_model": model_name,
         "device": device,
         "vectorstore_provider": vectorstore_provider,

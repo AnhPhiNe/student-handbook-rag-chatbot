@@ -1,4 +1,4 @@
-from pathlib import Path
+﻿from pathlib import Path
 from typing import Any
 
 from .directory_chunker import build_directory_chunks
@@ -12,7 +12,7 @@ from .table_chunker import build_table_chunks
 from .validator import validate_chunks
 
 
-CONFIG_PATH = Path("configs/phase5_chunking.yaml")
+CONFIG_PATH = Path("configs/chunking.yaml")
 
 
 def split_chunks_by_index_mode(
@@ -27,7 +27,7 @@ def split_chunks_by_index_mode(
 
 def build_index_manifest(config: dict[str, Any]) -> dict[str, Any]:
     """
-    Manifest này dùng để nhắc Phase 6:
+    Manifest này dùng để nhắc Embedding:
     - Chỉ embed semantic_chunks.json
     - Không embed all_chunks.json
     - structured/tool xử lý riêng
@@ -42,7 +42,7 @@ def build_index_manifest(config: dict[str, Any]) -> dict[str, Any]:
             config["output"]["tool_rule_chunks"],
         ],
         "note": (
-            "Phase 6 must embed only semantic_chunks.json. "
+            "Embedding must embed only semantic_chunks.json. "
             "Structured lookup chunks and tool rule chunks are handled separately."
         ),
     }
@@ -129,7 +129,7 @@ def main() -> None:
     save_json(report, Path(config["output"]["report"]))
     save_json(index_manifest, Path(config["output"]["index_manifest"]))
 
-    print("Phase 5 completed.")
+    print("Chunking completed.")
     print(f"Total chunks: {len(all_chunks)}")
     print(f"Semantic chunks: {len(semantic_chunks)}")
     print(f"Structured lookup chunks: {len(structured_lookup_chunks)}")

@@ -1,4 +1,4 @@
-# Data Pipeline
+﻿# Data Pipeline
 
 This project turns a raw student-handbook PDF into retrieval and answer-generation artifacts for the Streamlit and FastAPI apps.
 
@@ -19,10 +19,10 @@ data/raw/so-tay-sinh-vien-khoa-48.pdf
 
 - `data/raw/so-tay-sinh-vien-khoa-48.pdf`: source handbook PDF used for the portfolio demo.
 - `configs/structure_parser.yaml`: structure parsing configuration.
-- `configs/phase4_parser.yaml`: extraction configuration.
-- `configs/phase5_chunking.yaml`: chunking configuration.
-- `configs/phase6_embedding.yaml`: embedding/vectorstore configuration.
-- `configs/phase7_retrieval.yaml`: retrieval configuration.
+- `configs/extraction.yaml`: extraction configuration.
+- `configs/chunking.yaml`: chunking configuration.
+- `configs/embedding.yaml`: embedding/vectorstore configuration.
+- `configs/retrieval.yaml`: retrieval configuration.
 - `configs/query_routing_rules.yaml`: query routing rules.
 
 ## Main Outputs
@@ -49,15 +49,15 @@ This command runs the preprocessing, extraction, chunking, embedding, and
 retrieval-report steps in order, rebuilds the local vectorstore, and can take
 several minutes. It should not be part of the lightweight CI path.
 
-Individual legacy-named wrappers are also available:
+Individual pipeline wrappers are also available:
 
 ```bash
-python -m scripts.run_phase1_2
-python -m scripts.run_phase3
-python -m scripts.run_phase4
-python -m scripts.run_phase5
-python -m scripts.run_phase6
-python -m scripts.run_phase7_batch
+python -m scripts.extract_pdf_pages
+python -m scripts.parse_structure
+python -m scripts.extract_structured_data
+python -m scripts.build_chunks
+python -m scripts.build_vectorstore
+python -m scripts.evaluate_retrieval_batch
 ```
 
 To capture the local package/config/file fingerprint used for a run:

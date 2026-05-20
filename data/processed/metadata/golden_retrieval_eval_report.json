@@ -1,6 +1,6 @@
 {
   "evaluation": "golden_retrieval_eval",
-  "config_path": "configs\\phase7_retrieval.yaml",
+  "config_path": "configs\\retrieval.yaml",
   "golden_path": "data\\eval\\golden_queries.json",
   "summary": {
     "total_cases": 22,

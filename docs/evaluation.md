@@ -1,4 +1,4 @@
-# Evaluation
+﻿# Evaluation
 
 Use these checks before changing README or publishing the portfolio version.
 
@@ -120,18 +120,18 @@ question before testing Gemini-backed answer generation.
 
 ## Optional Pipeline Scripts
 
-These legacy-named wrappers exist for local development and portfolio reproducibility:
+These pipeline wrappers exist for local development and portfolio reproducibility:
 
 ```bash
-python -m scripts.run_phase1_2
-python -m scripts.run_phase3
-python -m scripts.run_phase4
-python -m scripts.run_phase5
-python -m scripts.run_phase6
-python -m scripts.run_phase7
-python -m scripts.run_phase7_batch
-python -m scripts.run_phase8
-python -m scripts.run_phase8_batch --all
+python -m scripts.extract_pdf_pages
+python -m scripts.parse_structure
+python -m scripts.extract_structured_data
+python -m scripts.build_chunks
+python -m scripts.build_vectorstore
+python -m scripts.run_retrieval
+python -m scripts.evaluate_retrieval_batch
+python -m scripts.run_answer_generation
+python -m scripts.evaluate_answer_batch --all
 ```
 
 Equivalent direct module entrypoints:

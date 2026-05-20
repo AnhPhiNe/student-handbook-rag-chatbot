@@ -1,4 +1,4 @@
-import json
+﻿import json
 import re
 from pathlib import Path
 from typing import Any
@@ -237,7 +237,7 @@ def build_document_profile(
 
 def build_extraction_report(pages: list[dict[str, Any]]) -> dict[str, Any]:
     """
-    Report để debug nhanh Phase 1–2.
+    Report để debug nhanh bước PDF extraction.
     """
 
     return {
@@ -305,7 +305,7 @@ def main() -> None:
     save_json(document_profile, OUTPUT_DIR / "document_profile.json")
     save_json(extraction_report, OUTPUT_DIR / "extraction_report.json")
 
-    print("Phase 1–2 completed.")
+    print("PDF extraction completed.")
     print(f"Total pages: {document_profile['total_pages']}")
     print(f"Saved: {OUTPUT_DIR / 'pages.json'}")
     print(f"Saved: {OUTPUT_DIR / 'document_profile.json'}")

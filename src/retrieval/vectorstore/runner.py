@@ -1,4 +1,4 @@
-from pathlib import Path
+﻿from pathlib import Path
 
 from .chroma_store import (
     add_embeddings_to_collection,
@@ -12,7 +12,7 @@ from .report_builder import build_embedding_report
 from .retrieval_tester import run_sample_retrieval_tests
 
 
-CONFIG_PATH = Path("configs/phase6_embedding.yaml")
+CONFIG_PATH = Path("configs/embedding.yaml")
 
 
 def validate_semantic_chunks(chunks: list[dict]) -> None:
@@ -100,7 +100,7 @@ def main() -> None:
 
     save_json(report, Path(config["output"]["report"]))
 
-    print("Phase 6 completed.")
+    print("Embedding completed.")
     print(f"Chunks embedded: {len(chunks)}")
     print(f"Embeddings created: {len(embeddings)}")
     print(f"Collection name: {collection_name}")

@@ -1,4 +1,4 @@
-import json
+﻿import json
 import re
 from pathlib import Path
 from typing import Any, Optional
@@ -236,7 +236,7 @@ def detect_has_thresholds(content: str) -> bool:
     return any(re.search(pattern, lower) for pattern in threshold_patterns)
 
 
-def detect_needs_phase4_processing(content: str, content_type: str) -> bool:
+def detect_needs_structured_extraction(content: str, content_type: str) -> bool:
     return (
         content_type == "scoring_form_table"
         or detect_has_table(content)
@@ -305,7 +305,7 @@ def close_section(
     current_section["has_formula"] = detect_has_formula(content)
     current_section["has_scoring_rule"] = detect_has_scoring_rule(content)
     current_section["has_thresholds"] = detect_has_thresholds(content)
-    current_section["needs_phase4_processing"] = detect_needs_phase4_processing(
+    current_section["needs_structured_extraction"] = detect_needs_structured_extraction(
         content=content,
         content_type=current_section["content_type"],
     )
@@ -553,7 +553,7 @@ def build_structure_report(sections: list[dict[str, Any]]) -> dict[str, Any]:
             for s in sections
             if s["has_thresholds"]
         ],
-        "sections_need_phase4_processing": [
+        "sections_need_structured_extraction": [
             {
                 "section_id": s["section_id"],
                 "title": s["title"],
@@ -562,7 +562,7 @@ def build_structure_report(sections: list[dict[str, Any]]) -> dict[str, Any]:
                 "page_end": s["page_end"],
             }
             for s in sections
-            if s["needs_phase4_processing"]
+            if s["needs_structured_extraction"]
         ],
         "validation_issues": validation_issues,
     }
@@ -588,7 +588,7 @@ def main() -> None:
     save_json(structured_sections, Path(config["output"]["structured_sections"]))
     save_json(structure_report, Path(config["output"]["structure_report"]))
 
-    print("Phase 3 completed.")
+    print("Structure parsing completed.")
     print(f"Line records: {len(line_records)}")
     print(f"Structured sections: {structure_report['total_sections']}")
     print(f"Article sections: {structure_report['total_article_sections']}")

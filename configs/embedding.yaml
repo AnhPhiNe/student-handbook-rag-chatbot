@@ -1,4 +1,4 @@
-input:
+﻿input:
   semantic_chunks: data/processed/chunks/semantic_chunks.json
   index_manifest: data/processed/chunks/index_manifest.json
 
@@ -14,4 +14,4 @@ vectorstore:
   reset_collection: true
 
 output:
-  report: data/processed/metadata/phase6_embedding_report.json
+  report: data/processed/metadata/embedding_report.json

@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import unittest
 
@@ -62,7 +62,7 @@ class ApiRoutesTest(unittest.TestCase):
         payload = response.json()
         self.assertIn(payload["status"], {"ok", "missing_artifacts"})
         paths = {item["path"] for item in payload["required_artifacts"]}
-        self.assertIn("configs/phase8_answer_generation.yaml", paths)
+        self.assertIn("configs/answer_generation.yaml", paths)
         self.assertIn("data/vectorstore/chroma", paths)
 
     def test_chat_maps_answer_service_response_without_debug(self) -> None:

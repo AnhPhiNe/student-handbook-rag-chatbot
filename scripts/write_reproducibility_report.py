@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import hashlib
 import json
@@ -17,11 +17,11 @@ TRACKED_FILES = [
     "requirements.txt",
     "requirements-dev.txt",
     "requirements.lock",
-    "configs/phase4_parser.yaml",
-    "configs/phase5_chunking.yaml",
-    "configs/phase6_embedding.yaml",
-    "configs/phase7_retrieval.yaml",
-    "configs/phase8_answer_generation.yaml",
+    "configs/extraction.yaml",
+    "configs/chunking.yaml",
+    "configs/embedding.yaml",
+    "configs/retrieval.yaml",
+    "configs/answer_generation.yaml",
     "configs/query_routing_rules.yaml",
     "data/eval/golden_queries.json",
     "data/eval/router_behavior_queries.json",

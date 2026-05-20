@@ -5,7 +5,7 @@ def count_tokens_approx(text: str) -> int:
     """
     Ước lượng token đơn giản.
     Với tiếng Việt, tạm dùng số word/punctuation.
-    Phase sau có thể thay bằng tiktoken.
+    Có thể thay bằng tokenizer chính xác hơn như tiktoken nếu cần.
     """
     if not text:
         return 0

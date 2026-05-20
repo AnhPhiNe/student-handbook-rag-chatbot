@@ -1,5 +1,5 @@
-{
-  "phase": "phase_7_query_router_and_retrieval_strategy",
+﻿{
+  "pipeline_stage": "retrieval_orchestration",
   "total_test_queries": 70,
   "intent_count": {
     "regulation_query": 18,

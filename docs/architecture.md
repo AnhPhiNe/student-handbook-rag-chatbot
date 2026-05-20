@@ -35,9 +35,3 @@ src.api.main
 - `configs`: YAML configuration for pipeline stages.
 - `scripts`: Thin local entrypoints for pipeline runners and evaluation scripts.
 - `tests`: Offline unit/API tests that should not call Gemini.
-
-## Refactor Notes
-
-Legacy phase package names were migrated to production-oriented package names in
-the P2 refactor. Historical phase terminology remains only in config/report file
-names and script wrapper names where it documents the original pipeline stages.

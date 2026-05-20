@@ -1,4 +1,4 @@
-input:
+﻿input:
   pages: data/processed/metadata/pages.json
   structured_sections: data/processed/metadata/structured_sections.json
   structure_report: data/processed/metadata/structure_report.json
@@ -12,4 +12,4 @@ output:
   faculty_program_directory: data/processed/directories/faculty_program_directory.json
   reference_directory: data/processed/directories/reference_directory.json
   procedures: data/processed/procedures/procedures.json
-  report: data/processed/metadata/phase4_processing_report.json
+  report: data/processed/metadata/structured_extraction_report.json

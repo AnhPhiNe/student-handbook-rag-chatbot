@@ -1,14 +1,14 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from typing import Any
 
 import streamlit as st
 
 
-CHAT_HISTORY_KEY = "phase9_chat_history"
-PENDING_CLARIFICATION_KEY = "phase9_pending_clarification"
-LAST_RESULT_KEY = "phase9_last_result"
-DEBUG_TOGGLE_KEY = "phase9_show_debug"
+CHAT_HISTORY_KEY = "chat_history"
+PENDING_CLARIFICATION_KEY = "pending_clarification"
+LAST_RESULT_KEY = "last_result"
+DEBUG_TOGGLE_KEY = "show_debug"
 
 
 def initialize_session_state() -> None:

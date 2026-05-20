@@ -1,4 +1,4 @@
-from pathlib import Path
+﻿from pathlib import Path
 
 from src.common.console import configure_utf8_stdio
 
@@ -8,7 +8,7 @@ from .retrieval_pipeline import run_retrieval_pipeline
 from .vector_retriever import get_chroma_collection, load_embedding_model
 
 
-CONFIG_PATH = Path("configs/phase7_retrieval.yaml")
+CONFIG_PATH = Path("configs/retrieval.yaml")
 
 TEST_QUERIES = [
      # =========================
@@ -122,7 +122,7 @@ def simplify_result(result: dict) -> dict:
     """
     Rút gọn result để dễ đọc report.
     Có giữ thêm retrieval_query, detected_entities, retrieval_plan và rerank score
-    để debug Phase 7 chính xác hơn.
+    để debug Retrieval chính xác hơn.
     """
     retrieved_items = result.get("retrieved_items", [])
 
@@ -222,13 +222,13 @@ def main() -> None:
     report = build_retrieval_report(full_results)
 
     output_dir = Path("data/processed/metadata")
-    save_json(report, output_dir / "phase7_retrieval_test_report_50_full.json")
-    save_json(simplified_results, output_dir / "phase7_retrieval_test_report_50_simplified.json")
+    save_json(report, output_dir / "retrieval_batch_eval_full.json")
+    save_json(simplified_results, output_dir / "retrieval_batch_eval_simplified.json")
 
-    print("\nPhase 7 batch test completed.")
+    print("\nRetrieval batch evaluation completed.")
     print(f"Total queries: {len(TEST_QUERIES)}")
-    print("Saved full report: data/processed/metadata/phase7_retrieval_test_report_50_full.json")
-    print("Saved simplified report: data/processed/metadata/phase7_retrieval_test_report_50_simplified.json")
+    print("Saved full report: data/processed/metadata/retrieval_batch_eval_full.json")
+    print("Saved simplified report: data/processed/metadata/retrieval_batch_eval_simplified.json")
 
 
 if __name__ == "__main__":

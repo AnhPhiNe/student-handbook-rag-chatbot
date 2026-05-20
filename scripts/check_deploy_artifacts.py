@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import argparse
 import sys
@@ -8,7 +8,7 @@ from src.common.console import configure_utf8_stdio
 
 
 REQUIRED_ARTIFACTS = [
-    ("configs/phase8_answer_generation.yaml", "file"),
+    ("configs/answer_generation.yaml", "file"),
     ("data/processed/tables/scoring_tables.json", "file"),
     ("data/processed/entities/entity_registry.json", "file"),
     ("data/processed/entities/query_expansion_rules.json", "file"),

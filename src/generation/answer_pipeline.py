@@ -27,7 +27,7 @@ from .response_cache import ResponseCache
 DEFAULT_CONFIG_PATH = Path("configs/phase8_answer_generation.yaml")
 
 
-class Phase8AnswerPipeline:
+class AnswerPipeline:
     def __init__(
         self,
         config_path: str | Path = DEFAULT_CONFIG_PATH,

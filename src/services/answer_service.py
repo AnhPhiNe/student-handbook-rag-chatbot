@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from src.generation.phase8_pipeline import DEFAULT_CONFIG_PATH, Phase8AnswerPipeline
+from src.generation.answer_pipeline import DEFAULT_CONFIG_PATH, AnswerPipeline
 
 
 class AnswerService:
@@ -11,7 +11,7 @@ class AnswerService:
 
     def __init__(
         self,
-        pipeline: Phase8AnswerPipeline | None = None,
+        pipeline: AnswerPipeline | None = None,
         config_path: str | Path | None = None,
     ) -> None:
         self._pipeline = pipeline
@@ -29,12 +29,12 @@ class AnswerService:
         return {
             "status": "ok",
             "service": self.__class__.__name__,
-            "pipeline_class": Phase8AnswerPipeline.__name__,
+            "pipeline_class": AnswerPipeline.__name__,
             "pipeline_loaded": self._pipeline is not None,
             "config_path": str(self.config_path),
         }
 
-    def _get_pipeline(self) -> Phase8AnswerPipeline:
+    def _get_pipeline(self) -> AnswerPipeline:
         if self._pipeline is None:
-            self._pipeline = Phase8AnswerPipeline(config_path=self.config_path)
+            self._pipeline = AnswerPipeline(config_path=self.config_path)
         return self._pipeline

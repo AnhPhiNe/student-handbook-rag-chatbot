@@ -1,7 +1,7 @@
 from typing import Any
 
 
-def build_phase7_report(results: list[dict[str, Any]]) -> dict[str, Any]:
+def build_retrieval_report(results: list[dict[str, Any]]) -> dict[str, Any]:
     intent_count = {}
     strategy_count = {}
 

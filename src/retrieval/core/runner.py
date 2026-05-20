@@ -3,7 +3,7 @@ from pathlib import Path
 from src.common.console import configure_utf8_stdio
 
 from .io_utils import load_json, load_yaml, save_json
-from .report_builder import build_phase7_report
+from .report_builder import build_retrieval_report
 from .retrieval_pipeline import run_retrieval_pipeline
 from .vector_retriever import get_chroma_collection, load_embedding_model
 
@@ -69,7 +69,7 @@ def main() -> None:
 
     
 
-    report = build_phase7_report(results)
+    report = build_retrieval_report(results)
     save_json(report, Path(config["output"]["test_report"]))
 
     print("\nPhase 7 completed.")

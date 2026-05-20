@@ -23,9 +23,8 @@ htmlcov/
 
 # Local runtime/cache artifacts
 .cache/
+.streamlit-run/
 data/cache/
-data/vectorstore/
-data/raw/*.pdf
 *.log
 
 # OS/editor noise

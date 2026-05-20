@@ -8,7 +8,7 @@ from typing import Any
 
 from src.common.console import configure_utf8_stdio
 from src.common.env_loader import load_project_env
-from src.generation.phase8_pipeline import DEFAULT_CONFIG_PATH, Phase8AnswerPipeline
+from src.generation.answer_pipeline import DEFAULT_CONFIG_PATH, AnswerPipeline
 
 
 DEFAULT_CASES_PATH = Path("data/eval/answer_eval_cases.json")
@@ -38,7 +38,7 @@ def save_json(data: Any, path: Path) -> None:
         f.write("\n")
 
 
-def evaluate_case(case: dict[str, Any], pipeline: Phase8AnswerPipeline) -> dict[str, Any]:
+def evaluate_case(case: dict[str, Any], pipeline: AnswerPipeline) -> dict[str, Any]:
     result = pipeline.answer(str(case["query"]))
     answer = str(result.get("answer") or "")
     citations_used = result.get("citations_used") or []
@@ -106,7 +106,7 @@ def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
 
 def run_evaluation(config_path: Path, cases_path: Path) -> dict[str, Any]:
     load_project_env()
-    pipeline = Phase8AnswerPipeline(config_path=config_path, llm_client=OfflineLlmClient())
+    pipeline = AnswerPipeline(config_path=config_path, llm_client=OfflineLlmClient())
     pipeline.response_cache.enabled = False
 
     cases = load_json(cases_path)

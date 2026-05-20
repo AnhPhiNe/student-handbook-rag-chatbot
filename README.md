@@ -8,6 +8,15 @@ The current pipeline is intentionally tailored to the HCMUE student handbook use
 in this repository. It is not a generic "upload any PDF" chatbot without further
 parser, chunking, entity, and routing adaptation.
 
+## Live Demo
+
+- Streamlit Cloud UI: https://student-handbook-rag-hcmue.streamlit.app/
+- Hugging Face Spaces backend: https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api
+
+The public demo uses a two-repository deployment model: Streamlit Cloud hosts
+the UI, and a Hugging Face Docker Space hosts the FastAPI backend with its own
+copy of the prebuilt ChromaDB vectorstore.
+
 ## Key Features
 
 - PDF ingestion and structured parsing for a Vietnamese student handbook.
@@ -43,7 +52,7 @@ Streamlit chatbot UI with Local/API execution modes
 ```
 
 The Streamlit app can run in two execution modes. In Local mode it calls
-`AnswerService` directly, which lazy-loads `Phase8AnswerPipeline`. In API mode it
+`AnswerService` directly, which lazy-loads `AnswerPipeline`. In API mode it
 calls the FastAPI `POST /chat` endpoint through a small `ChatApiClient`, so the
 UI can use the same response schema without duplicating guardrail, retrieval,
 citation, cache, or Gemini logic.
@@ -135,7 +144,7 @@ Then set your Gemini key inside `.env`:
 GEMINI_API_KEY=your_api_key_here
 ```
 
-The Streamlit app, FastAPI backend, and Phase 8 scripts load this project-level
+The Streamlit app, FastAPI backend, and answer-generation scripts load this project-level
 `.env` automatically, so you do not need to run `$env:GEMINI_API_KEY=...` in each
 terminal session.
 
@@ -190,7 +199,7 @@ curl -X POST http://127.0.0.1:8000/chat ^
   -d "{\"query\":\"Email Phong Dao tao la gi?\",\"include_debug\":true}"
 ```
 
-The API reuses `AnswerService`, which lazy-loads the Phase 8 pipeline. `GET /health`
+The API reuses `AnswerService`, which lazy-loads the answer pipeline. `GET /health`
 does not load the retrieval pipeline or call Gemini.
 
 ## Run With Docker
@@ -210,7 +219,8 @@ docker run --env-file .env -p 8000:8000 \
 ```
 
 If `data/vectorstore/` does not exist locally yet, run
-`python -m scripts.run_all_preprocessing` first.
+`python -m scripts.run_all_preprocessing` first, or copy a previously built
+`data/vectorstore/chroma` directory into place.
 
 ## Deployment Workflow
 
@@ -220,9 +230,16 @@ Recommended public demo architecture:
 Streamlit Cloud UI -> FastAPI backend -> ChromaDB vectorstore + Gemini
 ```
 
-The simplest non-Docker path is Streamlit Cloud for `app.py` and Render for the
-FastAPI backend. This repo includes `render.yaml` and `runtime.txt` for that
-workflow.
+The public portfolio demo currently uses Streamlit Cloud for `app.py` and a
+Hugging Face Docker Space for the FastAPI backend:
+
+```text
+UI:      https://student-handbook-rag-hcmue.streamlit.app/
+Backend: https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api
+```
+
+This repository also includes `render.yaml` and `runtime.txt` for an alternative
+Render backend workflow.
 
 Set the Streamlit Cloud app to API mode:
 
@@ -243,6 +260,17 @@ Render workflow. See `docs/deployment.md` for the Docker/Docker Compose variant.
 If Render is too resource-constrained for the embedding model, see
 `docs/huggingface_backend_deploy.md` for deploying the FastAPI backend as a
 Hugging Face Docker Space while keeping Streamlit Cloud as the UI.
+
+For the current two-repository deployment model:
+
+- This main repository includes the demo source PDF and a small prebuilt
+  ChromaDB vectorstore for portfolio reproducibility.
+- The Hugging Face backend repository keeps its own copy of
+  `data/vectorstore/chroma` as a deployment artifact so the API can serve
+  retrieval without rebuilding the index at startup.
+- If the PDF, parser, chunking logic, embedding model, or retrieval config
+  changes, rebuild the processed artifacts and vectorstore with
+  `python -m scripts.run_all_preprocessing`.
 
 ## Local/API Manual Test
 
@@ -379,9 +407,9 @@ python -m src.extraction.runner
 python -m src.chunking.runner
 python -m src.retrieval.vectorstore.runner
 python -m src.retrieval.core.runner
-python -m src.retrieval.core.batch_test_phase7
+python -m src.retrieval.core.retrieval_batch_eval
 python -m src.generation.runner
-python -m src.generation.phase8_test
+python -m src.generation.answer_batch_eval
 ```
 
 Write a local reproducibility report:
@@ -401,13 +429,9 @@ python -m scripts.write_reproducibility_report
 - Điểm rèn luyện 85 là loại gì?
 - Email phòng CTCT-HSSV là gì?
 
-## Demo Screenshots
+## Demo Flow
 
-TODO: Add real screenshots before publishing the repository. Do not treat this
-README as having final demo images until those assets are captured from the
-actual Streamlit app.
-
-Recommended demo flow:
+Recommended manual demo flow:
 
 1. Ask `CNTT ở đâu?` to show ambiguity detection and clarification.
 2. Ask `Điểm rèn luyện 85 là loại gì?` to show deterministic lookup.
@@ -416,29 +440,41 @@ Recommended demo flow:
 
 ## Data Policy
 
-The tracked raw PDF is:
+This repository intentionally includes the demo source PDF at:
 
 ```text
 data/raw/so-tay-sinh-vien-khoa-48.pdf
 ```
 
-It is used for learning and demo purposes in this portfolio project. If you
-publish or reuse the repository, review the source document's license/copyright
-status first. The repository does not relicense the source PDF. If
-redistribution rights are unclear, remove the PDF from Git tracking before
-making the repository public and keep `data/raw/README.md` as the local data
-placeholder. See `docs/data_policy.md` for the public-release policy.
+It is used as the source document for portfolio demonstration, parsing, and
+local reproducibility. The project does not relicense the source document;
+ownership remains with the original publisher/source. If you reuse this project
+with another document, review the source document's license/copyright status
+before publishing the PDF or derived artifacts.
+
+This repository also includes a small prebuilt ChromaDB vectorstore at:
+
+```text
+data/vectorstore/chroma
+```
+
+The vectorstore is generated from the demo PDF so reviewers can run retrieval
+and the chatbot without rebuilding the full preprocessing and embedding
+pipeline. It can be regenerated with:
+
+```bash
+python -m scripts.run_all_preprocessing
+```
 
 Adapting the system to another handbook or policy document will likely require
 updating the parsing configuration, extraction rules, chunking assumptions,
 entity registry, and query routing rules before rebuilding the local index.
 
-## License Notes
+## License
 
-No separate open-source license file is included yet. If a license is added later,
-it should apply to the project code only unless the source document rights are
-also explicitly cleared. The raw handbook PDF remains a demo data artifact from
-its original publisher/source and is not relicensed by this repository.
+Project source code and authored documentation are released under the MIT
+License. The source handbook PDF and generated artifacts derived from it are not
+relicensed by this repository and remain subject to their original rights.
 
 ## Tech Stack
 
@@ -457,10 +493,13 @@ its original publisher/source and is not relicensed by this repository.
 ## Limitations
 
 - The answer quality depends on the parsed handbook data and the local ChromaDB index.
-- The app has not been deployed yet.
+- Public deployment requires a backend that can access `data/vectorstore/chroma`.
 - Gemini calls require a valid `GEMINI_API_KEY` in `.env` or the process environment.
 - Some source PDF layouts may require manual validation after parsing.
-- Vectorstore and response cache are local generated artifacts and are not committed by default.
+- The bundled vectorstore is a generated demo artifact; rebuild it after
+  changing the PDF, configs, chunking logic, or embedding model.
+- The source PDF and generated vectorstore may contain or derive from handbook
+  content, so redistribution rights should be reviewed before public reuse.
 - Source files are UTF-8. If Vietnamese text appears garbled in Windows PowerShell,
   read files with `Get-Content -Encoding UTF8 ...` or use a UTF-8 terminal.
 

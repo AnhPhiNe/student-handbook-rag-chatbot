@@ -143,9 +143,9 @@ python -m src.extraction.runner
 python -m src.chunking.runner
 python -m src.retrieval.vectorstore.runner
 python -m src.retrieval.core.runner
-python -m src.retrieval.core.batch_test_phase7
+python -m src.retrieval.core.retrieval_batch_eval
 python -m src.generation.runner
-python -m src.generation.phase8_test
+python -m src.generation.answer_batch_eval
 ```
 
 Phase 1-2 through Phase 7 can rebuild local data and vectorstore artifacts.

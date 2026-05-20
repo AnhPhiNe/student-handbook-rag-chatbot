@@ -3,7 +3,7 @@ from pathlib import Path
 from src.common.console import configure_utf8_stdio
 
 from .io_utils import load_json, load_yaml, save_json
-from .report_builder import build_phase7_report
+from .report_builder import build_retrieval_report
 from .retrieval_pipeline import run_retrieval_pipeline
 from .vector_retriever import get_chroma_collection, load_embedding_model
 
@@ -219,7 +219,7 @@ def main() -> None:
         full_results.append(result)
         simplified_results.append(simple)
 
-    report = build_phase7_report(full_results)
+    report = build_retrieval_report(full_results)
 
     output_dir = Path("data/processed/metadata")
     save_json(report, output_dir / "phase7_retrieval_test_report_50_full.json")

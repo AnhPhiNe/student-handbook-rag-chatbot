@@ -5,7 +5,7 @@ from typing import Any
 from src.common.env_loader import load_project_env
 
 from .io_utils import save_json
-from .phase8_pipeline import DEFAULT_CONFIG_PATH, Phase8AnswerPipeline
+from .answer_pipeline import DEFAULT_CONFIG_PATH, AnswerPipeline
 
 
 SAMPLE_QUERIES = [
@@ -18,12 +18,12 @@ SAMPLE_QUERIES = [
 def main() -> None:
     load_project_env()
 
-    parser = argparse.ArgumentParser(description="Run Phase 8 answer generation.")
+    parser = argparse.ArgumentParser(description="Run answer generation.")
     parser.add_argument("query", nargs="*", help="Optional query to answer.")
     parser.add_argument("--config", default=str(DEFAULT_CONFIG_PATH), help="Config YAML path.")
     args = parser.parse_args()
 
-    pipeline = Phase8AnswerPipeline(config_path=args.config)
+    pipeline = AnswerPipeline(config_path=args.config)
     queries = [" ".join(args.query)] if args.query else SAMPLE_QUERIES
 
     results: list[dict[str, Any]] = []

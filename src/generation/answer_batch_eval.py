@@ -7,7 +7,7 @@ from src.common.console import configure_utf8_stdio
 from src.common.env_loader import load_project_env
 
 from .io_utils import save_json
-from .phase8_pipeline import DEFAULT_CONFIG_PATH, Phase8AnswerPipeline
+from .answer_pipeline import DEFAULT_CONFIG_PATH, AnswerPipeline
 
 
 TEST_QUERIES = [
@@ -85,13 +85,13 @@ def main() -> None:
     configure_utf8_stdio()
     load_project_env()
 
-    parser = argparse.ArgumentParser(description="Run robust Phase 8 batch test.")
+    parser = argparse.ArgumentParser(description="Run robust answer-generation batch evaluation.")
     parser.add_argument("--config", default=str(DEFAULT_CONFIG_PATH), help="Config YAML path.")
     parser.add_argument("--limit", type=int, default=10, help="Max queries to run by default.")
     parser.add_argument("--all", action="store_true", help="Run all bundled test queries.")
     args = parser.parse_args()
 
-    pipeline = Phase8AnswerPipeline(config_path=args.config)
+    pipeline = AnswerPipeline(config_path=args.config)
     queries = TEST_QUERIES if args.all else TEST_QUERIES[: max(0, args.limit)]
     output_path = Path(pipeline.config["output"]["test_report"])
 

@@ -1,4 +1,4 @@
-from src.retrieval.core.batch_test_phase7 import main
+from src.retrieval.core.retrieval_batch_eval import main
 
 
 if __name__ == "__main__":

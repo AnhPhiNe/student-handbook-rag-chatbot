@@ -57,6 +57,22 @@ calls the FastAPI `POST /chat` endpoint through a small `ChatApiClient`, so the
 UI can use the same response schema without duplicating guardrail, retrieval,
 citation, cache, or Gemini logic.
 
+## Supported Query Scope
+
+The current chatbot is optimized for Vietnamese questions with proper accents
+about the bundled HCMUE student handbook. It is strongest for questions about:
+
+- Regulations and student policies.
+- Forms and administrative procedures.
+- Office, faculty, and contact-directory information.
+- Deterministic score lookups and scholarship-score calculations.
+- Ambiguous or out-of-domain questions that should trigger guardrails.
+
+Accentless Vietnamese queries are partially supported through routing rules,
+entity aliases, and semantic retrieval, but they are not yet guaranteed at the
+same quality level as properly accented Vietnamese. The current evaluation
+tables below report the accented Vietnamese benchmark.
+
 ## Pipeline Overview
 
 - PDF ingestion: Load the handbook PDF and extract page-level text.
@@ -197,7 +213,7 @@ Example chat request:
 ```bash
 curl -X POST http://127.0.0.1:8000/chat ^
   -H "Content-Type: application/json" ^
-  -d "{\"query\":\"Email Phong Dao tao la gi?\",\"include_debug\":true}"
+  -d "{\"query\":\"Email Phòng Đào tạo là gì?\",\"include_debug\":true}"
 ```
 
 The API reuses `AnswerService`, which lazy-loads the answer pipeline. `GET /health`
@@ -266,7 +282,7 @@ python -m streamlit run app.py --server.fileWatcherType none
 
 In Streamlit:
 
-- Select `Local`, then ask: `Email Phong Dao tao la gi?`
+- Select `Local`, then ask: `Email Phòng Đào tạo là gì?`
 - Select `API`, keep `http://127.0.0.1:8000`, then ask the same question.
 - Stop the backend while in API mode and ask again. The UI should show a friendly backend connection message, keep debug fields available, and avoid dumping a traceback.
 
@@ -301,7 +317,7 @@ because the embedding model and ChromaDB vectorstore are rebuilt locally.
 
 ## Retrieval Evaluation
 
-The repository includes a small golden retrieval set in:
+The repository includes a compact golden retrieval set in:
 
 ```text
 data/eval/golden_queries.json
@@ -323,18 +339,22 @@ Current golden evaluation summary:
 
 | Metric | Result |
 |---|---:|
-| Golden queries | 22 |
-| Retrieval cases | 18 |
-| Hit@1 | 83.33% |
-| Hit@3 | 100% |
-| Hit@5 | 100% |
-| MRR | 91.67% |
-| Intent accuracy | 100% |
-| Strategy accuracy | 100% |
+| Golden queries | 50 |
+| Retrieval cases | 43 |
+| Hit@1 | 83.72% |
+| Hit@3 | 93.02% |
+| Hit@5 | 95.35% |
+| MRR | 88.95% |
+| Intent accuracy | 94% |
+| Strategy accuracy | 96% |
 
-This is a small portfolio golden set for regression checks and retrieval-quality
-sanity testing. It is not a production-grade benchmark, and the scores should not
-be read as a claim that the assistant is production-ready.
+This is a compact portfolio golden set for regression checks and retrieval-quality
+sanity testing across regulations, forms, offices, faculties, procedures,
+structured lookups, and calculator-tool routing. It is not a production-grade
+benchmark, and the scores should not be read as a claim that the assistant is
+production-ready. The benchmark currently focuses on properly accented
+Vietnamese questions; accentless Vietnamese should be evaluated as a separate
+robustness track before claiming full support.
 
 Router behavior coverage is larger and faster because it does not require the
 embedding model or vectorstore:
@@ -363,7 +383,7 @@ Current offline answer evaluation summary:
 
 | Metric | Result |
 |---|---:|
-| Answer eval cases | 14 |
+| Answer eval cases | 30 |
 | Pass rate | 100% |
 | Status accuracy | 100% |
 | Deterministic exactness | 100% |
@@ -473,6 +493,8 @@ relicensed by this repository and remain subject to their original rights.
 - Public deployment requires a backend that can access `data/vectorstore/chroma`.
 - Gemini calls require a valid `GEMINI_API_KEY` in `.env` or the process environment.
 - Some source PDF layouts may require manual validation after parsing.
+- Accentless Vietnamese questions are only partially supported today; the most
+  reliable path is still properly accented Vietnamese.
 - The bundled vectorstore is a generated demo artifact; rebuild it after
   changing the PDF, configs, chunking logic, or embedding model.
 - The source PDF and generated vectorstore may contain or derive from handbook
@@ -482,7 +504,9 @@ relicensed by this repository and remain subject to their original rights.
 
 ## Future Improvements
 
-- Expand the golden retrieval evaluation set beyond the current small portfolio benchmark.
+- Broaden the evaluation set with more paraphrases, edge cases, and adversarial questions.
+- Add a dedicated accentless Vietnamese evaluation set and improve normalization
+  before routing and retrieval.
 - Add screenshot assets and a short demo GIF for the portfolio README.
 - Continue moving domain heuristics from Python code into YAML configs.
 - Improve entity registry quality for abbreviations and department aliases.

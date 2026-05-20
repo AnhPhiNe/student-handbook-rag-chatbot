@@ -118,9 +118,9 @@ python -m streamlit run app.py --server.fileWatcherType none
 In Streamlit, verify both Local and API modes with a deterministic lookup style
 question before testing Gemini-backed answer generation.
 
-## Optional Phase Scripts
+## Optional Pipeline Scripts
 
-These wrappers exist for local development and portfolio reproducibility:
+These legacy-named wrappers exist for local development and portfolio reproducibility:
 
 ```bash
 python -m scripts.run_phase1_2
@@ -148,5 +148,6 @@ python -m src.generation.runner
 python -m src.generation.answer_batch_eval
 ```
 
-Phase 1-2 through Phase 7 can rebuild local data and vectorstore artifacts.
-Phase 8 scripts may call Gemini depending on the query and cache state.
+The preprocessing and retrieval wrappers can rebuild local data and vectorstore
+artifacts. Answer-generation wrappers may call Gemini depending on the query and
+cache state.

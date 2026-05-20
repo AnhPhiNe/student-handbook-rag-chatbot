@@ -24,7 +24,7 @@ copy of the prebuilt ChromaDB vectorstore.
 - Sentence-transformer embeddings stored in ChromaDB.
 - Query routing for regulations, forms, offices, faculties, scoring lookup, and calculator-style questions.
 - Entity linking and query expansion for handbook-specific terms.
-- Phase 8 answer guardrails: low-confidence fallback, deterministic lookup answers, citations, and clarification for ambiguous queries.
+- Answer guardrails: low-confidence fallback, deterministic lookup answers, citations, and clarification for ambiguous queries.
 - Streamlit chat UI with source display and optional debug information.
 
 ## Architecture Overview
@@ -42,7 +42,7 @@ chunking -> embeddings -> ChromaDB vectorstore
 query routing + entity linking + retrieval/reranking
         |
         v
-Phase 8 guardrails -> Gemini answer generation or deterministic answer
+answer guardrails -> Gemini answer generation or deterministic answer
         |
         v
 AnswerService shared contract / FastAPI backend
@@ -57,16 +57,17 @@ calls the FastAPI `POST /chat` endpoint through a small `ChatApiClient`, so the
 UI can use the same response schema without duplicating guardrail, retrieval,
 citation, cache, or Gemini logic.
 
-## Pipeline Phases
+## Pipeline Overview
 
-- Phase 1-3: Load the handbook PDF, extract page text, and build structured sections.
-- Phase 4: Extract tables, formulas, thresholds, forms, office directories, faculty directories, and procedures.
-- Phase 5: Build semantic, structured lookup, and tool-rule chunks.
-- Phase 6: Embed semantic chunks and persist them to ChromaDB.
-- Phase 7: Route queries, link entities, expand queries, retrieve, and rerank.
-- Phase 8: Generate answers with guardrails, citations, deterministic lookup, cache, and ambiguity handling.
-- Service layer: Expose a thin `AnswerService` wrapper around Phase 8 for shared UI/API use.
-- Phase 9: Serve the chatbot through a Streamlit UI that can call either
+- PDF ingestion: Load the handbook PDF and extract page-level text.
+- Structure parsing: Build normalized sections and line metadata.
+- Structured extraction: Extract tables, formulas, thresholds, forms, office directories, faculty directories, and procedures.
+- Chunk generation: Build semantic, structured lookup, and tool-rule chunks.
+- Embedding and indexing: Embed semantic chunks and persist them to ChromaDB.
+- Retrieval orchestration: Route queries, link entities, expand queries, retrieve, and rerank.
+- Answer pipeline: Generate answers with guardrails, citations, deterministic lookup, cache, and ambiguity handling.
+- Service layer: Expose a thin `AnswerService` wrapper for shared UI/API use.
+- User interface: Serve the chatbot through a Streamlit UI that can call either
   `AnswerService` directly or the FastAPI `/chat` backend.
 
 ## Project Structure
@@ -169,7 +170,7 @@ API mode shows an `API base URL` field. The default is:
 http://127.0.0.1:8000
 ```
 
-The app expects the configured processed data and ChromaDB vectorstore to exist locally. If the vectorstore is missing, rebuild the preprocessing and embedding phases before running the chatbot. In API mode, start the FastAPI backend before sending chat messages.
+The app expects the configured processed data and ChromaDB vectorstore to exist locally. If the vectorstore is missing, rebuild the local data artifacts before running the chatbot. In API mode, start the FastAPI backend before sending chat messages.
 
 ## Run the FastAPI Backend
 
@@ -294,10 +295,9 @@ To rebuild the generated extraction/chunking/vectorstore artifacts in order:
 python -m scripts.run_all_preprocessing
 ```
 
-This runs Phase 1-2 PDF extraction, Phase 3 structure parsing, Phase 4
-structured extraction, Phase 5 chunking, Phase 6 ChromaDB embedding, and the
-Phase 7 retrieval batch report. It can take several minutes because the
-embedding model and ChromaDB vectorstore are rebuilt locally.
+This runs PDF extraction, structure parsing, structured extraction, chunking,
+ChromaDB embedding, and the retrieval batch report. It can take several minutes
+because the embedding model and ChromaDB vectorstore are rebuilt locally.
 
 ## Retrieval Evaluation
 
@@ -369,7 +369,7 @@ Current offline answer evaluation summary:
 | Deterministic exactness | 100% |
 | Citation type/page checks | 100% |
 
-Optional Phase 8 batch test, using the configured local retrieval pipeline:
+Optional answer-generation batch test, using the configured local retrieval pipeline:
 
 ```bash
 python -m scripts.run_phase8_batch --all

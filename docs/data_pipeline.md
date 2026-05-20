@@ -35,7 +35,7 @@ data/raw/so-tay-sinh-vien-khoa-48.pdf
 - `data/processed/directories/*.json`: office, faculty, program, and reference directories.
 - `data/processed/chunks/*.json`: semantic, lookup, table, form, procedure, directory, formula, and tool-rule chunks.
 - `data/vectorstore/`: local ChromaDB vectorstore generated from the chunks.
-- `data/processed/metadata/*_report.json`: phase reports and evaluation outputs.
+- `data/processed/metadata/*_report.json`: pipeline reports and evaluation outputs.
 
 ## Rebuild Command
 
@@ -45,9 +45,11 @@ Run the full local preprocessing pipeline only when you intentionally want to re
 python -m scripts.run_all_preprocessing
 ```
 
-This command runs Phase 1-2 through Phase 7 in order, rebuilds the local vectorstore, and can take several minutes. It should not be part of the lightweight CI path.
+This command runs the preprocessing, extraction, chunking, embedding, and
+retrieval-report steps in order, rebuilds the local vectorstore, and can take
+several minutes. It should not be part of the lightweight CI path.
 
-Individual phase wrappers are also available:
+Individual legacy-named wrappers are also available:
 
 ```bash
 python -m scripts.run_phase1_2

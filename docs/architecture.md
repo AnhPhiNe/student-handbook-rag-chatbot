@@ -29,11 +29,11 @@ src.api.main
 - `src/retrieval/vectorstore`: Embedding and ChromaDB vectorstore access.
 - `src/extraction`: Structured extraction from parsed handbook data.
 - `src/chunking`: Chunk-building and index manifest generation.
-- `src/preprocessing`: Shared preprocessing helpers that are not phase packages.
+- `src/preprocessing`: Shared preprocessing helpers outside the production runtime path.
 - `src/ingestion`: Raw PDF loading.
 - `src/common`: Shared cross-cutting utilities such as environment loading.
-- `configs`: YAML configuration for pipeline phases.
-- `scripts`: Thin local entrypoints for phase runners and evaluation scripts.
+- `configs`: YAML configuration for pipeline stages.
+- `scripts`: Thin local entrypoints for pipeline runners and evaluation scripts.
 - `tests`: Offline unit/API tests that should not call Gemini.
 
 ## Refactor Notes

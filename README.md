@@ -240,6 +240,9 @@ STUDENT_RAG_CORS_ORIGINS=https://your-streamlit-app.streamlit.app
 
 See `docs/render_streamlit_deploy.md` for the step-by-step Streamlit Cloud +
 Render workflow. See `docs/deployment.md` for the Docker/Docker Compose variant.
+If Render is too resource-constrained for the embedding model, see
+`docs/huggingface_backend_deploy.md` for deploying the FastAPI backend as a
+Hugging Face Docker Space while keeping Streamlit Cloud as the UI.
 
 ## Local/API Manual Test
 

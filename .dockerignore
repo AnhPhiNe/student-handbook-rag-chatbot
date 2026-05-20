@@ -13,7 +13,6 @@ __pycache__/
 .streamlit/secrets.toml
 
 data/cache/
-data/vectorstore/
 .cache/
 
 .pytest_cache/

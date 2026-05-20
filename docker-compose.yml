@@ -6,6 +6,7 @@ services:
     env_file:
       - .env
     environment:
+      PORT: "8000"
       STUDENT_RAG_CORS_ORIGINS: "http://localhost:8501,http://127.0.0.1:8501"
     ports:
       - "8000:8000"

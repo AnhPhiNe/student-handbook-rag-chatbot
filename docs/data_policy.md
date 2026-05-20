@@ -6,17 +6,19 @@ The source PDF remains owned by its original publisher/source.
 
 ## Public Repository Guidance
 
-- Do not publish raw PDFs unless redistribution rights are clear.
-- Keep `data/raw/README.md` in the repository so users know where to place the
-  handbook locally.
-- If the PDF cannot be redistributed, remove it from Git tracking before making
-  the repository public and document where an authorized user can obtain it.
-- Generated processed artifacts may contain extracted text from the source PDF.
-  Review them under the same copyright policy before publishing.
+- This portfolio repository intentionally includes the demo source PDF at
+  `data/raw/so-tay-sinh-vien-khoa-48.pdf` for reproducibility.
+- The repository does not relicense the source handbook. Ownership remains with
+  the original publisher/source.
+- The prebuilt ChromaDB vectorstore at `data/vectorstore/chroma` and generated
+  processed artifacts may contain text or metadata derived from the source PDF.
+- If you reuse the project with another document, review that document's rights
+  before publishing the PDF or derived artifacts.
 
 ## Local Rebuild
 
-After placing the authorized PDF at `data/raw/so-tay-sinh-vien-khoa-48.pdf`, run:
+After changing the source PDF, parser, chunking logic, embedding model, or
+retrieval config, run:
 
 ```bash
 python -m scripts.run_all_preprocessing

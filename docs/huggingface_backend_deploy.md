@@ -26,15 +26,9 @@ Make sure `data/vectorstore/chroma` exists locally:
 OK: data/vectorstore/chroma
 ```
 
-Because `.gitignore` ignores the vectorstore, force-add it if you plan to push
-the backend bundle through Git:
-
-```powershell
-git add -f data/vectorstore/chroma
-```
-
-Review the data/license policy first. ChromaDB may contain text or metadata
-derived from the source handbook.
+The main repository intentionally includes the demo PDF and a small prebuilt
+vectorstore for portfolio reproducibility. Review the data/license policy first:
+ChromaDB may contain text or metadata derived from the source handbook.
 
 ## 2. Create The Hugging Face Space
 
@@ -50,8 +44,9 @@ hcmue-handbook-rag-api
 3. Choose **Docker** as the SDK.
 4. Pick Public or Private.
 
-Hugging Face Docker Spaces expose the port configured by `app_port`. This repo's
-Dockerfile defaults to port `7860`, which matches the Space metadata template in:
+Hugging Face Docker Spaces expose the port configured by `app_port`. The root
+`Dockerfile` defaults to port `7860`, which matches the Space metadata template
+in:
 
 ```text
 deploy/huggingface/backend/README.md
@@ -188,4 +183,3 @@ If Streamlit shows an API connection error:
 - Open the HF backend `/health` URL directly.
 - Confirm `STUDENT_RAG_API_BASE_URL` has no `/docs`, `/health`, or `/chat` suffix.
 - Check the Space logs for a `/chat` request.
-

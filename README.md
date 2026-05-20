@@ -202,26 +202,6 @@ curl -X POST http://127.0.0.1:8000/chat ^
 The API reuses `AnswerService`, which lazy-loads the answer pipeline. `GET /health`
 does not load the retrieval pipeline or call Gemini.
 
-## Run With Docker
-
-The Dockerfile starts the FastAPI backend. Build the image:
-
-```bash
-docker build -t hcmue-handbook-rag .
-```
-
-Run it with your `.env` file and a mounted local vectorstore:
-
-```bash
-docker run --env-file .env -p 8000:8000 \
-  -v "$(pwd)/data/vectorstore:/app/data/vectorstore:ro" \
-  hcmue-handbook-rag
-```
-
-If `data/vectorstore/` does not exist locally yet, run
-`python -m scripts.run_all_preprocessing` first, or copy a previously built
-`data/vectorstore/chroma` directory into place.
-
 ## Deployment Workflow
 
 Recommended public demo architecture:
@@ -238,9 +218,6 @@ UI:      https://student-handbook-rag-hcmue.streamlit.app/
 Backend: https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api
 ```
 
-This repository also includes `render.yaml` and `runtime.txt` for an alternative
-Render backend workflow.
-
 Set the Streamlit Cloud app to API mode:
 
 ```text
@@ -255,11 +232,8 @@ GEMINI_API_KEY=...
 STUDENT_RAG_CORS_ORIGINS=https://your-streamlit-app.streamlit.app
 ```
 
-See `docs/render_streamlit_deploy.md` for the step-by-step Streamlit Cloud +
-Render workflow. See `docs/deployment.md` for the Docker/Docker Compose variant.
-If Render is too resource-constrained for the embedding model, see
-`docs/huggingface_backend_deploy.md` for deploying the FastAPI backend as a
-Hugging Face Docker Space while keeping Streamlit Cloud as the UI.
+See `docs/huggingface_backend_deploy.md` for the backend deployment workflow
+used by the live demo.
 
 For the current two-repository deployment model:
 
@@ -268,6 +242,9 @@ For the current two-repository deployment model:
 - The Hugging Face backend repository keeps its own copy of
   `data/vectorstore/chroma` as a deployment artifact so the API can serve
   retrieval without rebuilding the index at startup.
+- The root `Dockerfile` is kept as the FastAPI backend image template used when
+  preparing the Hugging Face Docker Space repository. Docker Compose and Render
+  deployment files are intentionally not part of the main repo.
 - If the PDF, parser, chunking logic, embedding model, or retrieval config
   changes, rebuild the processed artifacts and vectorstore with
   `python -m scripts.run_all_preprocessing`.

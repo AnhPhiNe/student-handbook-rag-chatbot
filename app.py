@@ -16,8 +16,8 @@ if TYPE_CHECKING:
 load_project_env()
 
 
-APP_TITLE = "Trợ lý Sổ tay sinh viên HCMUE"
-APP_SUBTITLE = "Hỏi đáp nhanh từ Sổ tay sinh viên, kèm nguồn tham khảo rõ ràng."
+APP_TITLE = "Chatbot sổ tay sinh viên HCMUE"
+APP_SUBTITLE = "Hỗ trợ tra cứu nhanh các thông tin cần thiết có trong sổ tay"
 DEFAULT_CONFIG_PATH = Path("configs/phase8_answer_generation.yaml")
 DEFAULT_API_BASE_URL = os.getenv("STUDENT_RAG_API_BASE_URL", "http://127.0.0.1:8000")
 
@@ -39,9 +39,9 @@ def load_api_client(base_url: str) -> ChatApiClient:
 def main() -> None:
     st.set_page_config(
         page_title=APP_TITLE,
-        page_icon="📘",
+        page_icon="assets/chatbot.png",
         layout="wide",
-        initial_sidebar_state="expanded",
+        initial_sidebar_state="collapsed",
     )
     apply_theme()
 

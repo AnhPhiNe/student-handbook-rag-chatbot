@@ -28,15 +28,17 @@ def append_message(
     content: str,
     result: dict[str, Any] | None = None,
     pipeline_query: str | None = None,
+    message_id: str | None = None,
 ) -> None:
-    get_chat_history().append(
-        {
-            "role": role,
-            "content": content,
-            "result": result,
-            "pipeline_query": pipeline_query,
-        }
-    )
+    message = {
+        "role": role,
+        "content": content,
+        "result": result,
+        "pipeline_query": pipeline_query,
+    }
+    if message_id:
+        message["message_id"] = message_id
+    get_chat_history().append(message)
 
 
 def clear_chat_history() -> None:

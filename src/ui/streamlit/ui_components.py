@@ -5,47 +5,20 @@ from typing import Any
 
 import streamlit as st
 
-from .session_manager import clear_chat_history, get_pending_clarification
+from .session_manager import DEBUG_TOGGLE_KEY, clear_chat_history, get_pending_clarification
 
 
-SUGGESTED_QUESTION_GROUPS = {
-    "Học tập": [
-        "Điều kiện xét học bổng là gì?",
-        "Có thể học vượt để ra trường sớm không?",
-        "Một học phần có thể học lại mấy lần?",
-    ],
-    "Biểu mẫu": [
-        "Muốn tạm nghỉ học cần mẫu đơn nào?",
-        "Muốn quay lại học sau bảo lưu thì dùng đơn gì?",
-        "Có mẫu đơn xin trợ cấp xã hội không?",
-    ],
-    "Liên hệ": [
-        "Email phòng Đào tạo là gì?",
-        "Website phòng CNTT là gì?",
-        "Phòng CTCT-HSSV ở tầng mấy?",
-    ],
-    "Ký túc xá": [
-        "Quy trình vào ký túc xá như thế nào?",
-        "Ai được ưu tiên vào ký túc xá?",
-        "Muốn xin vào KTX thì liên hệ phòng nào?",
-    ],
-    "Điểm số": [
-        "Điểm rèn luyện 85 là loại gì?",
-        "GPA 2.95 được xếp loại học lực gì?",
-        "Điểm B+ quy đổi sang hệ 4 bao nhiêu?",
-    ],
-}
+QUICK_QUESTIONS = [
+    "Email của khoa tiếng Anh là gì?",
+    "Khoa công nghệ thông tin ở đâu?",
+    "Khoa tiếng Anh có những ngành gì?",
+    "Mẫu đơn xin học lại nằm ở đâu?",
+    "Trường có bán bánh tráng trộn không?",
+    "Điều kiện xét tốt nghiệp là gì?",
+    "Điều kiện xét học bổng là gì?",
+    "Học bổng KKHT có những mức nào?",
+]
 
-ERROR_STATUSES = {
-    "api_error",
-    "fallback",
-    "gemini_disabled",
-    "low_confidence",
-    "out_of_domain",
-    "rate_limited",
-    "retrieval_error",
-    "ui_error",
-}
 API_CLIENT_ERROR_STATUSES = {
     "api_connection_error",
     "api_timeout",
@@ -53,6 +26,7 @@ API_CLIENT_ERROR_STATUSES = {
     "api_http_error",
     "api_invalid_json",
 }
+
 BODYLESS_STATUS_MESSAGES = {
     "api_error",
     "fallback",
@@ -65,78 +39,150 @@ BODYLESS_STATUS_MESSAGES = {
     *API_CLIENT_ERROR_STATUSES,
 }
 
-
 def render_execution_mode_controls(default_api_base_url: str) -> tuple[str, str]:
-    st.sidebar.markdown("### Trợ lý Sổ tay")
-    st.sidebar.caption("Hỏi đáp từ Sổ tay sinh viên HCMUE, có nguồn tham khảo.")
-    st.sidebar.success("Đang dùng bản online")
-    st.sidebar.info(
-        "Nếu máy chủ trả lời tạm thời gián đoạn, ứng dụng sẽ báo lỗi để bạn thử lại sau."
-    )
+    api_base_url = default_api_base_url
+    execution_mode = "API"
 
-    st.sidebar.divider()
-    return "API", default_api_base_url
+    with st.popover("Settings"):
+        st.markdown(
+            """
+            <div class="ep-settings-title">
+                <strong>Cài đặt</strong>
+                <span>Ẩn các tuỳ chọn vận hành của chatbot.</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        execution_mode = st.radio(
+            "Execution mode",
+            options=("Local", "API"),
+            index=1,
+            horizontal=True,
+            help="Local dùng AnswerService trong app. API dùng máy chủ FastAPI.",
+        )
+
+        st.markdown(
+            f"""
+            <div class="ep-mode-status">
+                <span>Mode đang dùng</span>
+                <strong>{escape(execution_mode)}</strong>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        if execution_mode == "API":
+            api_base_url = (
+                st.text_input(
+                    "API base URL",
+                    value=default_api_base_url,
+                    help="Chỉ dùng khi chạy ở API mode.",
+                ).strip()
+                or default_api_base_url
+            )
+
+        st.toggle("Debug mode", key=DEBUG_TOGGLE_KEY)
+
+        pending = get_pending_clarification()
+        if pending:
+            st.markdown(
+                """
+                <div class="ep-sidebar-note">
+                    <strong>Cần làm rõ</strong>
+                    <span>Trợ lý đang chờ bạn trả lời câu hỏi làm rõ trong khung chat.</span>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        if st.button("Xóa cuộc trò chuyện", use_container_width=True):
+            clear_chat_history()
+            st.rerun()
+
+    return execution_mode, api_base_url
 
 
-def render_sidebar() -> str | None:
-    pending = get_pending_clarification()
-    if pending:
-        st.sidebar.info("Mình đang chờ bạn làm rõ câu hỏi trong khung chat.")
-
-    if st.sidebar.button("Xóa cuộc trò chuyện", use_container_width=True):
-        clear_chat_history()
-        st.rerun()
-
-    return None
-
-
-def render_header(title: str, subtitle: str) -> None:
+def render_header(title: str, subtitle: str, compact: bool = False) -> None:
     safe_title = escape(title)
     safe_subtitle = escape(subtitle)
+    if compact:
+        st.markdown(
+            f"""
+            <section class="ep-chat-header">
+                <div class="ep-mini-mark">H</div>
+                <div>
+                    <h1>{safe_title}</h1>
+                    <p>{safe_subtitle}</p>
+                </div>
+            </section>
+            """,
+            unsafe_allow_html=True,
+        )
+        return
+
     st.markdown(
         f"""
-        <div class="phase9-header">
-            <div class="phase9-avatar">ST</div>
-            <div>
-                <h1>{safe_title}</h1>
-                <p>{safe_subtitle}</p>
+        <section class="ep-landing">
+            <div class="ep-assistant-mark" aria-hidden="true">
+                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span>
             </div>
-        </div>
+            <h1>{safe_title}</h1>
+            <p>{safe_subtitle}</p>
+        </section>
         """,
         unsafe_allow_html=True,
     )
 
 
-def render_empty_state() -> str | None:
+def render_initial_prompt_panel(
+    *,
+    initial_question_key: str,
+    selected_suggestion_key: str,
+) -> None:
     st.markdown(
         """
-        <div class="phase9-empty-state">
-            <strong>Bạn có thể hỏi về học vụ, biểu mẫu, phòng ban, ký túc xá hoặc điểm rèn luyện.</strong>
-            <span>Chọn một câu hỏi bên dưới hoặc tự nhập câu hỏi của bạn.</span>
+        <div class="ep-guide-card">
+            Bạn có thể hỏi về học bổng, học lại, điểm rèn luyện, biểu mẫu, email phòng ban...
         </div>
         """,
         unsafe_allow_html=True,
     )
-    return render_suggested_questions()
+
+    st.pills(
+        "Câu hỏi nhanh",
+        options=QUICK_QUESTIONS,
+        selection_mode="single",
+        key=selected_suggestion_key,
+        label_visibility="collapsed",
+    )
+
+    with st.container():
+        st.chat_input(
+            "Nhập câu hỏi về Sổ tay sinh viên HCMUE...",
+            key=initial_question_key,
+        )
 
 
-def render_suggested_questions() -> str | None:
-    st.markdown("### Câu hỏi thường gặp")
-    selected_question = None
+def render_followup_chat_input(input_key: str | None = None) -> str | None:
+    with st.container(key="hcmue_followup_input"):
+        query = st.chat_input(
+            "Hỏi tiếp về Sổ tay sinh viên HCMUE...",
+            key=input_key,
+        )
+    return query.strip() if query and query.strip() else None
 
-    for group_name, questions in SUGGESTED_QUESTION_GROUPS.items():
-        st.markdown(f'<div class="phase9-question-group">{escape(group_name)}</div>', unsafe_allow_html=True)
-        columns = st.columns(3)
-        for index, question in enumerate(questions):
-            with columns[index % len(columns)]:
-                if st.button(
-                    question,
-                    key=f"suggested_question_{group_name}_{index}",
-                    use_container_width=True,
-                ):
-                    selected_question = question
 
-    return selected_question
+def render_chat_header_actions() -> bool:
+    with st.container(
+        key="hcmue_restart_row",
+        horizontal=True,
+        horizontal_alignment="right",
+        vertical_alignment="center",
+        gap=None,
+    ):
+        return st.button("Restart", type="tertiary", width="content")
 
 
 def render_status_banner(result: dict[str, Any] | None) -> None:
@@ -150,53 +196,77 @@ def render_status_banner(result: dict[str, Any] | None) -> None:
         return
 
     if status == "needs_clarification":
-        st.info("Mình cần bạn làm rõ thêm một chút để tìm đúng thông tin.")
-        return
-
-    if status == "rate_limited":
-        st.warning("Bản demo đang tạm giới hạn lượt hỏi. Bạn thử lại sau ít phút nhé.")
-        return
-
-    if status == "gemini_disabled":
-        st.warning("Phần tạo câu trả lời đang tạm tắt để bảo vệ giới hạn sử dụng của bản demo.")
+        _render_notice(
+            "clarify",
+            "Cần làm rõ thêm",
+            "Mình cần thêm một chi tiết để tìm đúng phần trong Sổ tay.",
+        )
         return
 
     if status == "out_of_domain":
-        st.info("Mình chỉ hỗ trợ các câu hỏi liên quan đến Sổ tay sinh viên HCMUE.")
+        _render_notice(
+            "info",
+            "Ngoài phạm vi Sổ tay",
+            "Mình chỉ hỗ trợ các câu hỏi liên quan đến Sổ tay sinh viên HCMUE.",
+        )
+        return
+
+    if status in API_CLIENT_ERROR_STATUSES:
+        _render_notice(
+            "error",
+            "Chưa kết nối được API",
+            "Kiểm tra lại API base URL hoặc thử chuyển sang Local mode.",
+        )
+        return
+
+    if status == "rate_limited":
+        _render_notice(
+            "warning",
+            "Tạm giới hạn lượt hỏi",
+            "Bạn thử lại sau ít phút nhé.",
+        )
+        return
+
+    if status == "gemini_disabled":
+        _render_notice(
+            "warning",
+            "Tạm tắt phần tạo câu trả lời",
+            "Bạn vẫn có thể xem các nguồn liên quan nếu hệ thống tìm thấy.",
+        )
         return
 
     if status == "api_error":
-        if has_citations:
-            st.warning(
-                "Mình đã tìm thấy nguồn liên quan trong Sổ tay, nhưng phần diễn giải câu trả lời "
-                "đang tạm thời gián đoạn. Bạn có thể xem nguồn tham khảo bên dưới."
-            )
-        else:
-            st.warning("Hệ thống đang bận hoặc tạm thời gián đoạn. Bạn thử lại sau nhé.")
+        body = (
+            "Mình đã tìm thấy nguồn liên quan, nhưng phần diễn giải đang tạm gián đoạn."
+            if has_citations
+            else "Hệ thống đang bận hoặc tạm thời gián đoạn. Bạn thử lại sau nhé."
+        )
+        _render_notice("warning", "Chưa tạo được câu trả lời", body)
         return
 
     if status in {"fallback", "low_confidence"}:
-        if has_citations:
-            st.warning(
-                "Mình tìm thấy một vài nguồn có thể liên quan, nhưng chưa đủ chắc để trả lời "
-                "khẳng định. Bạn có thể xem nguồn bên dưới hoặc hỏi cụ thể hơn."
-            )
-        else:
-            st.warning("Mình chưa tìm thấy thông tin đủ rõ trong Sổ tay sinh viên cho câu hỏi này.")
+        body = (
+            "Mình tìm thấy một vài nguồn có thể liên quan, nhưng chưa đủ chắc để trả lời khẳng định."
+            if has_citations
+            else "Mình chưa tìm thấy thông tin đủ rõ trong Sổ tay sinh viên cho câu hỏi này."
+        )
+        _render_notice("warning", "Chưa đủ thông tin", body)
         return
 
     if status == "retrieval_error":
-        st.warning("Mình chưa tìm được thông tin phù hợp do hệ thống tra cứu đang tạm thời gián đoạn.")
+        _render_notice(
+            "warning",
+            "Tra cứu tạm gián đoạn",
+            "Mình chưa tìm được thông tin phù hợp do hệ thống tra cứu đang gặp sự cố.",
+        )
         return
 
     if status == "ui_error":
-        st.warning("Giao diện đang gặp lỗi tạm thời. Bạn thử lại sau nhé.")
-
-
-    if status in API_CLIENT_ERROR_STATUSES:
-        message = str(result.get("answer") or "").strip()
-        st.warning(message or "Hiện chưa kết nối được máy chủ trả lời. Bạn thử lại sau nhé.")
-        return
+        _render_notice(
+            "error",
+            "Giao diện gặp lỗi",
+            "Bạn thử gửi lại câu hỏi sau nhé.",
+        )
 
 
 def render_status_notice(result: dict[str, Any] | None) -> None:
@@ -225,3 +295,15 @@ def build_unhandled_error_result(error: Exception) -> dict[str, Any]:
         "citations": [],
         "context_used": "",
     }
+
+
+def _render_notice(kind: str, title: str, body: str) -> None:
+    st.markdown(
+        f"""
+        <div class="ep-status-card ep-status-{escape(kind)}">
+            <strong>{escape(title)}</strong>
+            <span>{escape(body)}</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )

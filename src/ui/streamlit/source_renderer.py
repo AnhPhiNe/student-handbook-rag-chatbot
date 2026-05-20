@@ -29,9 +29,11 @@ def render_sources(
 
     source_count = len(visible_citations)
     label = "Nguồn tham khảo" if source_count == 1 else f"Nguồn tham khảo ({source_count})"
-    with st.expander(label, expanded=False):
-        for citation in visible_citations:
-            _render_source_card(citation)
+    _, source_col, _ = st.columns([0.06, 0.88, 0.06])
+    with source_col:
+        with st.expander(label, expanded=False):
+            for citation in visible_citations:
+                _render_source_card(citation)
 
 
 def summarize_citation(citation: dict[str, Any]) -> str:
@@ -43,7 +45,7 @@ def summarize_citation(citation: dict[str, Any]) -> str:
     if pages:
         details.append(f"Trang: {pages}")
     if chunk_label:
-        details.append(f"Mục: {chunk_label}")
+        details.append(f"Loại: {chunk_label}")
 
     suffix = f" | {'; '.join(details)}" if details else ""
     return f"{title}{suffix}".strip()
@@ -60,7 +62,7 @@ def _render_source_card(citation: dict[str, Any]) -> None:
             <div class="phase9-source-title">{title}</div>
             <div class="phase9-source-meta">
                 <span>Trang: {pages}</span>
-                <span>Mục: {chunk_label}</span>
+                <span>Loại: {chunk_label}</span>
             </div>
         </div>
         """,

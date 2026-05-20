@@ -6,7 +6,7 @@ import requests
 
 
 DEFAULT_API_ERROR_ANSWER = (
-    "Hiện chưa kết nối được máy chủ trả lời. Bạn thử lại sau nhé."
+    "Hiện chưa kết nối được API. Bạn kiểm tra lại API base URL hoặc chuyển sang Local mode nhé."
 )
 
 

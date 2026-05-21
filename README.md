@@ -185,14 +185,20 @@ pipeline skips rewriting and runs the existing rule-based routing path.
 Optional runtime safeguards:
 
 ```bash
+STUDENT_RAG_EXECUTION_MODE=Local
+STUDENT_RAG_API_BASE_URL=http://127.0.0.1:8000
+STUDENT_RAG_CORS_ORIGINS=http://localhost:8501,http://127.0.0.1:8501
 STUDENT_RAG_SHOW_DEBUG=false
 STUDENT_RAG_MAX_QUERY_CHARS=500
 STUDENT_RAG_RATE_LIMIT_PER_MINUTE=0
 ```
 
-`STUDENT_RAG_SHOW_DEBUG=true` enables the Streamlit debug toggle. Keep it false
-for the public UI. `STUDENT_RAG_RATE_LIMIT_PER_MINUTE=0` disables the lightweight
-in-memory API rate limit; set a positive value for public backend deployments.
+`STUDENT_RAG_EXECUTION_MODE=API` makes the Streamlit UI call the configured
+FastAPI backend. `STUDENT_RAG_API_BASE_URL` should be the backend runtime URL,
+not the Hugging Face Space repository page. `STUDENT_RAG_SHOW_DEBUG=true`
+enables the Streamlit debug toggle. Keep it false for the public UI.
+`STUDENT_RAG_RATE_LIMIT_PER_MINUTE=0` disables the lightweight in-memory API
+rate limit; set a positive value for public backend deployments.
 
 The Streamlit app, FastAPI backend, and answer-generation scripts load this project-level
 `.env` automatically, so you do not need to run `$env:GEMINI_API_KEY=...` in each
@@ -207,7 +213,7 @@ python -m streamlit run app.py --server.fileWatcherType none
 ```
 
 The Streamlit app defaults to `Local` mode so a first-time portfolio reviewer can
-try the chatbot without starting the FastAPI server. In the Streamlit sidebar,
+try the chatbot without starting the FastAPI server. In the Streamlit Settings popover,
 choose:
 
 - `Local` to run Streamlit -> `AnswerService` in the same process.
@@ -265,22 +271,33 @@ Hugging Face Docker Space for the FastAPI backend:
 
 ```text
 UI:      https://student-handbook-rag-hcmue.streamlit.app/
-Backend: https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api
+Backend Space repo: https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api
+Backend runtime:    https://anhfeee-hcmue-handbook-rag-api.hf.space
 ```
 
 Set the Streamlit Cloud app to API mode:
 
 ```text
 STUDENT_RAG_EXECUTION_MODE=API
-STUDENT_RAG_API_BASE_URL=https://your-fastapi-backend.example.com
+STUDENT_RAG_API_BASE_URL=https://anhfeee-hcmue-handbook-rag-api.hf.space
+STUDENT_RAG_SHOW_DEBUG=false
 ```
 
 Set backend secrets/config:
 
 ```text
 GEMINI_API_KEY=...
-STUDENT_RAG_CORS_ORIGINS=https://your-streamlit-app.streamlit.app
+QUERY_REWRITER_ENABLED=false
+QUERY_REWRITER_API_KEY=...
+STUDENT_RAG_CORS_ORIGINS=https://student-handbook-rag-hcmue.streamlit.app
+STUDENT_RAG_MAX_QUERY_CHARS=500
+STUDENT_RAG_RATE_LIMIT_PER_MINUTE=30
 ```
+
+Set `QUERY_REWRITER_ENABLED=true` only if the backend should call the optional
+query-rewriting LLM before retrieval. If it is false, the backend still uses
+rule-based routing, generated entity aliases, fuzzy entity matching, and vector
+retrieval.
 
 See `docs/huggingface_backend_deploy.md` for the backend deployment workflow
 used by the live demo.

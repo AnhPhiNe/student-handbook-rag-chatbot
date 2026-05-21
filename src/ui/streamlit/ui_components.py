@@ -5,7 +5,12 @@ from typing import Any
 
 import streamlit as st
 
-from .session_manager import DEBUG_TOGGLE_KEY, clear_chat_history, get_pending_clarification
+from .session_manager import (
+    DEBUG_TOGGLE_KEY,
+    clear_chat_history,
+    get_pending_clarification,
+    is_debug_available,
+)
 
 
 QUICK_QUESTIONS = [
@@ -87,7 +92,8 @@ def render_execution_mode_controls(
                 or default_api_base_url
             )
 
-        st.toggle("Debug mode", key=DEBUG_TOGGLE_KEY)
+        if is_debug_available():
+            st.toggle("Debug mode", key=DEBUG_TOGGLE_KEY)
 
         pending = get_pending_clarification()
         if pending:

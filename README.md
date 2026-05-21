@@ -182,6 +182,18 @@ QUERY_REWRITER_API_KEY=your_query_rewriter_api_key_here
 If `QUERY_REWRITER_ENABLED` is false or `QUERY_REWRITER_API_KEY` is missing, the
 pipeline skips rewriting and runs the existing rule-based routing path.
 
+Optional runtime safeguards:
+
+```bash
+STUDENT_RAG_SHOW_DEBUG=false
+STUDENT_RAG_MAX_QUERY_CHARS=500
+STUDENT_RAG_RATE_LIMIT_PER_MINUTE=0
+```
+
+`STUDENT_RAG_SHOW_DEBUG=true` enables the Streamlit debug toggle. Keep it false
+for the public UI. `STUDENT_RAG_RATE_LIMIT_PER_MINUTE=0` disables the lightweight
+in-memory API rate limit; set a positive value for public backend deployments.
+
 The Streamlit app, FastAPI backend, and answer-generation scripts load this project-level
 `.env` automatically, so you do not need to run `$env:GEMINI_API_KEY=...` in each
 terminal session.
@@ -516,6 +528,19 @@ relicensed by this repository and remain subject to their original rights.
 - Requests
 - python-dotenv
 
+## Production Notes
+
+- The system is intentionally domain-specific to the HCMUE student handbook, not
+  a general-purpose "upload any PDF" chatbot.
+- Public UI debug output is hidden unless `STUDENT_RAG_SHOW_DEBUG=true`.
+- The FastAPI backend rejects empty and overlong queries and can enable a simple
+  per-client in-memory rate limit with `STUDENT_RAG_RATE_LIMIT_PER_MINUTE`.
+- API logs include request ID, latency, status, intent, strategy, effective
+  query, retrieval query, cache usage, and LLM usage without logging the full
+  retrieved context.
+- CI runs offline compile, unit tests, and router behavior evaluation without
+  calling Gemini.
+
 ## Limitations
 
 - The answer quality depends on the parsed handbook data and the local ChromaDB index.
@@ -544,4 +569,4 @@ relicensed by this repository and remain subject to their original rights.
   query rewriter against it.
 - Add screenshot assets and a short demo GIF for the portfolio README.
 - Continue moving domain heuristics from Python code into YAML configs.
-- Improve entity registry quality for abbreviations and department aliases.
+- Add persistent production observability if the backend receives real traffic.

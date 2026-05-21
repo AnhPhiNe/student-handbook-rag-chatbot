@@ -12,6 +12,8 @@ Use this checklist before making the repository public or sending it with a CV.
 - Hugging Face backend deployment docs match the current Space-based workflow.
 - `.env` and `data/cache/` are not committed.
 - `data/vectorstore/` is committed intentionally as a small demo index.
+- Public UI debug output is disabled unless `STUDENT_RAG_SHOW_DEBUG=true`.
+- API query length and optional rate-limit environment variables are documented.
 - Raw PDF redistribution rights are reviewed and the README data policy is explicit.
 - Generated processed artifacts are reviewed because they may contain extracted text from the raw PDF.
 
@@ -29,3 +31,5 @@ Use this checklist before making the repository public or sending it with a CV.
 - Deterministic lookup avoids unnecessary LLM calls for table/tool queries.
 - Guardrails cover ambiguity, low confidence, out-of-domain, Gemini failure, and backend connection failure.
 - Retrieval quality is measured with a golden set rather than judged only by manual examples.
+- Entity aliases are generated from faculty/program directories and include
+  accent-folded plus conservative fuzzy matching for light typos.

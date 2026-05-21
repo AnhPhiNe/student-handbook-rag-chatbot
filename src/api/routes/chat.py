@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import logging
+import os
 import time
-from typing import Any
+from collections import defaultdict, deque
+from typing import Any, Deque
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from src.api.deps import get_answer_service
 from src.api.schemas import ChatRequest, ChatResponse
@@ -13,6 +15,8 @@ from src.api.schemas import ChatRequest, ChatResponse
 
 router = APIRouter(tags=["chat"])
 logger = logging.getLogger("student_handbook_rag.api.chat")
+DEFAULT_MAX_QUERY_CHARS = 500
+_RATE_LIMIT_BUCKETS: dict[str, Deque[float]] = defaultdict(deque)
 
 
 def _build_debug_payload(result: dict[str, Any]) -> dict[str, Any]:
@@ -69,6 +73,7 @@ def _to_chat_response(
 @router.post("/chat", response_model=ChatResponse)
 def chat(
     request: ChatRequest,
+    http_request: Request,
     answer_service: Any = Depends(get_answer_service),
 ) -> ChatResponse:
     request_id = uuid4().hex
@@ -76,6 +81,12 @@ def chat(
     query = request.query.strip()
     if not query:
         raise HTTPException(status_code=400, detail="Query must not be empty")
+    if len(query) > _max_query_chars():
+        raise HTTPException(
+            status_code=400,
+            detail=f"Query must be at most {_max_query_chars()} characters",
+        )
+    _enforce_rate_limit(http_request)
 
     try:
         result = answer_service.answer(query)
@@ -98,11 +109,50 @@ def chat(
         extra={
             "request_id": request_id,
             "latency_ms": latency_ms,
+            "query_length": len(query),
             "status": result.get("status"),
             "intent": result.get("intent"),
             "strategy": result.get("strategy"),
+            "effective_query": result.get("effective_query"),
+            "retrieval_query": result.get("retrieval_query"),
+            "llm_called": bool(result.get("llm_called", False)),
             "used_cache": bool(result.get("used_cache", False)),
         },
     )
 
     return _to_chat_response(result, include_debug=request.include_debug)
+
+
+def _max_query_chars() -> int:
+    raw_value = os.getenv("STUDENT_RAG_MAX_QUERY_CHARS", str(DEFAULT_MAX_QUERY_CHARS))
+    try:
+        value = int(raw_value)
+    except ValueError:
+        return DEFAULT_MAX_QUERY_CHARS
+    return max(1, value)
+
+
+def _rate_limit_per_minute() -> int:
+    raw_value = os.getenv("STUDENT_RAG_RATE_LIMIT_PER_MINUTE", "0")
+    try:
+        value = int(raw_value)
+    except ValueError:
+        return 0
+    return max(0, value)
+
+
+def _enforce_rate_limit(request: Request) -> None:
+    limit = _rate_limit_per_minute()
+    if limit <= 0:
+        return
+
+    client_host = request.client.host if request.client else "unknown"
+    now = time.monotonic()
+    bucket = _RATE_LIMIT_BUCKETS[client_host]
+    while bucket and now - bucket[0] >= 60:
+        bucket.popleft()
+
+    if len(bucket) >= limit:
+        raise HTTPException(status_code=429, detail="Rate limit exceeded")
+
+    bucket.append(now)

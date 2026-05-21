@@ -1,6 +1,7 @@
 ﻿from __future__ import annotations
 
 import unittest
+from unittest.mock import patch
 
 try:
     from fastapi.testclient import TestClient
@@ -10,6 +11,7 @@ except ModuleNotFoundError:  # pragma: no cover - exercised only in minimal runt
 if TestClient is not None:
     from src.api.deps import get_answer_service
     from src.api.main import app
+    from src.api.routes import chat as chat_route
 
 
 class FakeAnswerService:
@@ -36,6 +38,7 @@ class ApiRoutesTest(unittest.TestCase):
     def setUp(self) -> None:
         if TestClient is None:
             self.skipTest("fastapi is not installed in this runtime")
+        chat_route._RATE_LIMIT_BUCKETS.clear()
         app.dependency_overrides[get_answer_service] = lambda: FakeAnswerService()
         self.client = TestClient(app)
 
@@ -104,6 +107,25 @@ class ApiRoutesTest(unittest.TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["detail"], "Query must not be empty")
+
+    def test_chat_rejects_query_over_configured_length(self) -> None:
+        with patch.dict("os.environ", {"STUDENT_RAG_MAX_QUERY_CHARS": "10"}):
+            response = self.client.post("/chat", json={"query": "x" * 11})
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["detail"],
+            "Query must be at most 10 characters",
+        )
+
+    def test_chat_applies_optional_rate_limit(self) -> None:
+        with patch.dict("os.environ", {"STUDENT_RAG_RATE_LIMIT_PER_MINUTE": "1"}):
+            first = self.client.post("/chat", json={"query": "Email phong dao tao?"})
+            second = self.client.post("/chat", json={"query": "Email phong dao tao?"})
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 429)
+        self.assertEqual(second.json()["detail"], "Rate limit exceeded")
 
 
 if __name__ == "__main__":

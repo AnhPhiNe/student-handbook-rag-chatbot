@@ -206,6 +206,15 @@ class QueryRewriter:
 
         rewritten_query = _clean_optional_string(payload.get("normalized_query"))
         if rewritten_query and confidence in {"high", "medium"}:
+            if not _is_safe_rewrite(query, rewritten_query):
+                return QueryRewriteResult(
+                    original_query=query,
+                    effective_query=query,
+                    rewritten_query=rewritten_query,
+                    confidence=confidence,
+                    reason="unsafe_rewrite_semantic_drift",
+                    llm_called=True,
+                )
             return QueryRewriteResult(
                 original_query=query,
                 effective_query=rewritten_query,
@@ -233,7 +242,12 @@ Task:
 - Restore Vietnamese accents when the user omits them.
 - Fix light typos and chat shorthand.
 - Expand common abbreviations only when clear: KTX, CNTT, CTCT-HSSV, GPA.
-- Keep the user's intent. Do not answer the question.
+- Preserve the user's original meaning, wording, entities, and sentence structure as much as possible.
+- Do not reinterpret the query, do not infer a different subject, and do not add new entities or nouns.
+- Do not answer the question.
+- If a token can be read in more than one way, choose the reading that changes the fewest words.
+- Do not expand "cau" into "câu lạc bộ" unless the user explicitly writes "clb" or "câu lạc bộ".
+- If you cannot normalize safely, return the original query with restored punctuation only, or ask for clarification.
 - If the query is ambiguous, ask one short Vietnamese clarification question.
 
 Return only valid JSON with this schema:
@@ -251,6 +265,9 @@ Output: {{"normalized_query":"Email Phòng Đào tạo là gì?","needs_clarific
 
 Input: "diem ren luyen 85 la loai j"
 Output: {{"normalized_query":"Điểm rèn luyện 85 là loại gì?","needs_clarification":false,"clarification_question":null,"confidence":"high","reason":"typo_and_accent_restoration"}}
+
+Input: "cau biet khoa tieng Trung o dau khong"
+Output: {{"normalized_query":"Cậu biết Khoa Tiếng Trung ở đâu không?","needs_clarification":false,"clarification_question":null,"confidence":"high","reason":"accent_restoration"}}
 
 Input: "hoc bong hoi ai"
 Output: {{"normalized_query":null,"needs_clarification":true,"clarification_question":"Bạn muốn hỏi điều kiện học bổng, hồ sơ/biểu mẫu học bổng hay đơn vị liên hệ?","confidence":"medium","reason":"ambiguous_scholarship_scope"}}
@@ -309,6 +326,77 @@ def _has_typo_signal(ascii_query: str) -> bool:
     tokens = set(re.findall(r"[a-z0-9]+", ascii_query))
     typo_tokens = {"j", "ko", "khongg", "hok", "hocj", "mun", "mún", "dc", "duocj"}
     return bool(tokens & typo_tokens)
+
+
+def _is_safe_rewrite(original_query: str, rewritten_query: str) -> bool:
+    original_tokens = _tokenize_ascii(original_query)
+    rewritten_tokens = _tokenize_ascii(rewritten_query)
+    if not original_tokens or not rewritten_tokens:
+        return False
+
+    allowed_tokens = set(original_tokens)
+    allowed_tokens.update(_allowed_expansion_tokens(original_tokens))
+
+    added_content_tokens = [
+        token
+        for token in rewritten_tokens
+        if token not in allowed_tokens and len(token) >= 3
+    ]
+    if added_content_tokens:
+        return False
+
+    original_content = {token for token in original_tokens if len(token) >= 3}
+    rewritten_content = {token for token in rewritten_tokens if len(token) >= 3}
+    if original_content:
+        retained_ratio = len(original_content & rewritten_content) / len(original_content)
+        if retained_ratio < 0.7:
+            return False
+
+    if len(rewritten_tokens) > max(len(original_tokens) + 4, int(len(original_tokens) * 1.5)):
+        return False
+
+    return True
+
+
+def _tokenize_ascii(text: str) -> list[str]:
+    return re.findall(r"[a-z0-9]+", _ascii_text(text))
+
+
+def _allowed_expansion_tokens(original_tokens: list[str]) -> set[str]:
+    tokens = set(original_tokens)
+    allowed: set[str] = set()
+    expansion_map = {
+        "j": {"gi"},
+        "ko": {"khong"},
+        "khongg": {"khong"},
+        "hok": {"khong", "hoc"},
+        "mun": {"muon"},
+        "dc": {"duoc"},
+        "duocj": {"duoc"},
+        "ktx": {"ky", "ki", "tuc", "xa"},
+        "cntt": {"cong", "nghe", "thong", "tin"},
+        "pdt": {"phong", "dao", "tao"},
+        "gpa": {"diem", "trung", "binh", "tich", "luy"},
+    }
+    for token, expansion in expansion_map.items():
+        if token in tokens:
+            allowed.update(expansion)
+
+    if "ctct" in tokens or "hssv" in tokens or "ctsv" in tokens:
+        allowed.update(
+            {
+                "phong",
+                "cong",
+                "tac",
+                "chinh",
+                "tri",
+                "hoc",
+                "sinh",
+                "vien",
+            }
+        )
+
+    return allowed
 
 
 def _has_vietnamese_diacritic(text: str) -> bool:

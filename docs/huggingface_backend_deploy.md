@@ -69,6 +69,8 @@ Variables:
 PORT=7860
 STUDENT_RAG_CORS_ORIGINS=https://student-handbook-rag-hcmue.streamlit.app
 QUERY_REWRITER_ENABLED=false
+STUDENT_RAG_MAX_QUERY_CHARS=500
+STUDENT_RAG_RATE_LIMIT_PER_MINUTE=30
 ```
 
 You can temporarily set CORS to `*` while testing, then replace it with the real

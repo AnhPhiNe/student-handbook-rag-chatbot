@@ -55,6 +55,51 @@ class QueryRewriterTest(unittest.TestCase):
         self.assertTrue(result.llm_called)
         self.assertEqual(len(client.prompts), 1)
 
+    def test_preserves_user_meaning_for_casual_accentless_query(self) -> None:
+        client = FakeRewriteClient(
+            '{"normalized_query":"Cậu biết Khoa Tiếng Trung ở đâu không?",'
+            '"needs_clarification":false,'
+            '"clarification_question":null,'
+            '"confidence":"high",'
+            '"reason":"accent_restoration"}'
+        )
+        rewriter = QueryRewriter(enabled=True, client=client)
+
+        with patch.dict("os.environ", {"QUERY_REWRITER_API_KEY": "test-key"}):
+            result = rewriter.rewrite("cau biet khoa tieng Trung o dau khong")
+
+        self.assertEqual(
+            result.effective_query,
+            "Cậu biết Khoa Tiếng Trung ở đâu không?",
+        )
+        self.assertTrue(result.changed)
+        self.assertTrue(result.llm_called)
+
+    def test_rejects_rewrite_that_adds_new_subject(self) -> None:
+        client = FakeRewriteClient(
+            '{"normalized_query":"Câu lạc bộ Khoa Tiếng Trung ở đâu không?",'
+            '"needs_clarification":false,'
+            '"clarification_question":null,'
+            '"confidence":"high",'
+            '"reason":"accent_restoration_and_typo_correction"}'
+        )
+        rewriter = QueryRewriter(enabled=True, client=client)
+
+        with patch.dict("os.environ", {"QUERY_REWRITER_API_KEY": "test-key"}):
+            result = rewriter.rewrite("cau biet khoa tieng Trung o dau khong")
+
+        self.assertEqual(
+            result.effective_query,
+            "cau biet khoa tieng Trung o dau khong",
+        )
+        self.assertEqual(
+            result.rewritten_query,
+            "Câu lạc bộ Khoa Tiếng Trung ở đâu không?",
+        )
+        self.assertFalse(result.changed)
+        self.assertEqual(result.reason, "unsafe_rewrite_semantic_drift")
+        self.assertTrue(result.llm_called)
+
     def test_returns_clarification_when_llm_marks_ambiguous(self) -> None:
         client = FakeRewriteClient(
             '{"normalized_query":null,'

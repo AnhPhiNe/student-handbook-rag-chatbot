@@ -1,5 +1,6 @@
 ﻿from __future__ import annotations
 
+import os
 from typing import Any
 
 import streamlit as st
@@ -76,4 +77,9 @@ def get_last_result() -> dict[str, Any] | None:
 
 def is_debug_enabled() -> bool:
     initialize_session_state()
-    return bool(st.session_state[DEBUG_TOGGLE_KEY])
+    return is_debug_available() and bool(st.session_state[DEBUG_TOGGLE_KEY])
+
+
+def is_debug_available() -> bool:
+    value = os.getenv("STUDENT_RAG_SHOW_DEBUG", "false")
+    return value.strip().lower() in {"1", "true", "yes", "on"}

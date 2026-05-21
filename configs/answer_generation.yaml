@@ -23,7 +23,7 @@ query_rewriter:
   temperature: 0.0
   max_output_tokens: 256
   max_retries: 1
-  request_timeout_seconds: 3
+  request_timeout_seconds: 8
   trigger_on_accentless: true
   trigger_on_short_query: true
   trigger_on_typo_signals: true

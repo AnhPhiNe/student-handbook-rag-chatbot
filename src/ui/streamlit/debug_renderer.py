@@ -12,7 +12,8 @@ DEBUG_FIELDS = [
     "effective_query",
     "query_rewrite",
     "retrieval_query",
-    "llm_called",
+    "rewrite_llm_called",
+    "answer_llm_called",
     "used_cache",
     "error_type",
 ]
@@ -27,9 +28,7 @@ def render_debug_info(result: dict[str, Any] | None) -> None:
     with st.expander("Debug", expanded=False):
         rows = []
         for field in DEBUG_FIELDS:
-            value = result.get(field)
-            if value is None and debug_payload:
-                value = debug_payload.get(field)
+            value = _get_debug_value(field, result, debug_payload)
             rows.append((field, _format_debug_value(value)))
 
         html_rows = "".join(
@@ -37,6 +36,29 @@ def render_debug_info(result: dict[str, Any] | None) -> None:
             for field, value in rows
         )
         st.markdown(f'<div class="ep-debug-grid">{html_rows}</div>', unsafe_allow_html=True)
+
+
+def _get_debug_value(
+    field: str,
+    result: dict[str, Any],
+    debug_payload: dict[str, Any] | None,
+) -> Any:
+    if field == "rewrite_llm_called":
+        rewrite = _get_debug_value("query_rewrite", result, debug_payload)
+        if isinstance(rewrite, dict):
+            return bool(rewrite.get("llm_called", False))
+        return False
+
+    if field == "answer_llm_called":
+        value = result.get("llm_called")
+        if value is None and debug_payload:
+            value = debug_payload.get("llm_called")
+        return value
+
+    value = result.get(field)
+    if value is None and debug_payload:
+        value = debug_payload.get(field)
+    return value
 
 
 def _format_debug_value(value: Any) -> str:

@@ -23,6 +23,8 @@ def _build_debug_payload(result: dict[str, Any]) -> dict[str, Any]:
     return {
         "intent": result.get("intent"),
         "strategy": result.get("strategy"),
+        "effective_query": result.get("effective_query"),
+        "query_rewrite": result.get("query_rewrite"),
         "retrieval_query": result.get("retrieval_query"),
         "llm_called": bool(result.get("llm_called", False)),
         "used_cache": bool(result.get("used_cache", False)),
@@ -48,6 +50,8 @@ def _to_chat_response(
     return ChatResponse(
         answer=str(result.get("answer") or ""),
         status=str(result.get("status") or "unknown"),
+        effective_query=result.get("effective_query"),
+        query_rewrite=result.get("query_rewrite"),
         request_id=result.get("request_id"),
         latency_ms=result.get("latency_ms"),
         citations_used=citations_used if isinstance(citations_used, list) else [],

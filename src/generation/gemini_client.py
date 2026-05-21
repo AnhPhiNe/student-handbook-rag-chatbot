@@ -17,12 +17,14 @@ class GeminiClient:
         retry_base_delay_seconds: float = 2,
         retry_max_delay_seconds: float = 20,
         request_timeout_seconds: float = 60,
+        api_key_env_var: str = "GEMINI_API_KEY",
     ) -> None:
         load_project_env()
-        api_key = os.environ.get("GEMINI_API_KEY")
+        self.api_key_env_var = api_key_env_var
+        api_key = os.environ.get(api_key_env_var)
         if not api_key:
             raise RuntimeError(
-                "Missing GEMINI_API_KEY. Add it to .env or set this environment variable before running Gemini calls."
+                f"Missing {api_key_env_var}. Add it to .env or set this environment variable before running Gemini calls."
             )
 
         try:

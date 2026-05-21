@@ -6,15 +6,29 @@ from src.retrieval.core.query_router import route_query
 class QueryRouterTest(unittest.TestCase):
     def test_core_portfolio_routes(self) -> None:
         cases = {
-            "Email phòng Đào tạo là gì?": ("office_query", "semantic_filtered_rerank"),
-            "Khoa CNTT ở đâu?": ("faculty_query", "semantic_filtered_rerank"),
-            "Muốn tạm nghỉ học cần mẫu đơn nào?": ("form_query", "semantic_filtered_rerank"),
-            "Điểm rèn luyện 85 là loại gì?": ("score_lookup_query", "structured_lookup"),
-            "Tính điểm học bổng nếu GPA 3.2 và rèn luyện 90": (
+            "Email phong Dao tao la gi?": ("office_query", "semantic_filtered_rerank"),
+            "Khoa CNTT o dau?": ("faculty_query", "semantic_filtered_rerank"),
+            "Muon tam nghi hoc can mau don nao?": (
+                "form_query",
+                "semantic_filtered_rerank",
+            ),
+            "Diem ren luyen 85 la loai gi?": (
+                "score_lookup_query",
+                "structured_lookup",
+            ),
+            "Tinh diem hoc bong neu GPA 3.2 va ren luyen 90": (
                 "calculation_query",
                 "calculator_tool",
             ),
-            "Quy trình vào ký túc xá như thế nào?": (
+            "Cong thuc tinh diem GPA la gi?": (
+                "formula_query",
+                "formula_lookup",
+            ),
+            "diem tb tinh kieu j": (
+                "formula_query",
+                "formula_lookup",
+            ),
+            "Quy trinh vao ky tuc xa nhu the nao?": (
                 "procedure_query",
                 "semantic_filtered_rerank",
             ),

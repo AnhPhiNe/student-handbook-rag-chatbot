@@ -10,6 +10,7 @@ INTENT_CHUNK_PRIORITY = {
     "regulation_query": ["regulation"],
     "score_lookup_query": ["structured_lookup"],
     "structured_lookup": ["structured_lookup"],
+    "formula_query": ["formula"],
     "calculation_query": ["formula", "tool"],
     "mixed_query": ["form", "procedure", "regulation", "office_directory", "faculty_program_directory"],
 }
@@ -232,6 +233,7 @@ def _citation_title(citation: dict[str, Any]) -> str:
         or citation.get("unit_name")
         or citation.get("faculty_or_unit_name")
         or citation.get("procedure_name")
+        or citation.get("rule_name")
         or citation.get("chunk_id")
         or ""
     )

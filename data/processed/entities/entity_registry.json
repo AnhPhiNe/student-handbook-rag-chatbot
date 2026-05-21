@@ -5,10 +5,13 @@
     "entity_type": "office",
     "aliases": [
       "cntt",
+      "cong nghe thong tin",
       "công nghệ thông tin",
       "it",
       "khoa cntt",
+      "khoa cong nghe thong tin",
       "khoa công nghệ thông tin",
+      "phong cong nghe thong tin",
       "phòng công nghệ thông tin"
     ],
     "target_chunk_types": [
@@ -25,11 +28,15 @@
     "canonical_name": "Phòng Công tác chính trị và Học sinh, sinh viên",
     "entity_type": "office",
     "aliases": [
+      "cong tac chinh tri va hoc sinh sinh vien",
       "ctct",
       "ctct-hssv",
       "ctsv",
       "công tác chính trị và học sinh, sinh viên",
       "hssv",
+      "phong cong tac chinh tri va hoc sinh sinh vien",
+      "phong ctct",
+      "phong hssv",
       "phòng ctct",
       "phòng công tác chính trị và học sinh, sinh viên",
       "phòng hssv"
@@ -49,8 +56,12 @@
     "canonical_name": "Phòng Đào tạo",
     "entity_type": "office",
     "aliases": [
+      "dao tao",
+      "hoc vu",
       "học vụ",
       "pdt",
+      "phong dao tao",
+      "phong hoc vu",
       "phongdt",
       "phòng học vụ",
       "phòng đào tạo",
@@ -71,7 +82,9 @@
     "canonical_name": "Phòng Hợp tác Quốc tế",
     "entity_type": "office",
     "aliases": [
+      "hop tac quoc te",
       "hợp tác quốc tế",
+      "phong hop tac quoc te",
       "phòng hợp tác quốc tế"
     ],
     "target_chunk_types": [
@@ -88,7 +101,11 @@
     "canonical_name": "Phòng Khoa học Công nghệ và Môi trường - Tạp chí Khoa học",
     "entity_type": "office",
     "aliases": [
+      "khoa hoc cong nghe va moi truong - tap chi khoa hoc",
       "khoa học công nghệ và môi trường - tạp chí khoa học",
+      "phong hoc cong nghe va moi truong - tap chi hoc",
+      "phong khoa hoc cong nghe va moi truong - tap chi khoa hoc",
+      "phong khoa hoc cong nghe va moi truong tap chi khoa hoc",
       "phòng học công nghệ và môi trường - tạp chí học",
       "phòng khoa học công nghệ và môi trường   tạp chí khoa học",
       "phòng khoa học công nghệ và môi trường - tạp chí khoa học"
@@ -107,7 +124,10 @@
     "canonical_name": "Phòng Kế hoạch - Tài chính",
     "entity_type": "office",
     "aliases": [
+      "ke hoach - tai chinh",
       "kế hoạch - tài chính",
+      "phong ke hoach - tai chinh",
+      "phong ke hoach tai chinh",
       "phòng kế hoạch   tài chính",
       "phòng kế hoạch - tài chính"
     ],
@@ -125,8 +145,11 @@
     "canonical_name": "Phòng Quản trị - Thiết bị",
     "entity_type": "office",
     "aliases": [
+      "phong quan tri - thiet bi",
+      "phong quan tri thiet bi",
       "phòng quản trị   thiết bị",
       "phòng quản trị - thiết bị",
+      "quan tri - thiet bi",
       "quản trị - thiết bị"
     ],
     "target_chunk_types": [
@@ -143,7 +166,9 @@
     "canonical_name": "Phòng Sau Đại học",
     "entity_type": "office",
     "aliases": [
+      "phong sau dai hoc",
       "phòng sau đại học",
+      "sau dai hoc",
       "sau đại học"
     ],
     "target_chunk_types": [
@@ -161,8 +186,11 @@
     "canonical_name": "Phòng Tổ chức - Hành chính",
     "entity_type": "office",
     "aliases": [
+      "phong to chuc - hanh chinh",
+      "phong to chuc hanh chinh",
       "phòng tổ chức   hành chính",
       "phòng tổ chức - hành chính",
+      "to chuc - hanh chinh",
       "tổ chức - hành chính"
     ],
     "target_chunk_types": [
@@ -179,11 +207,15 @@
     "canonical_name": "Phòng Thanh tra Đào tạo",
     "entity_type": "office",
     "aliases": [
+      "hoc vu",
       "học vụ",
       "pdt",
+      "phong hoc vu",
+      "phong thanh tra dao tao",
       "phongdt",
       "phòng học vụ",
       "phòng thanh tra đào tạo",
+      "thanh tra dao tao",
       "thanh tra đào tạo"
     ],
     "target_chunk_types": [
@@ -200,7 +232,9 @@
     "canonical_name": "Phòng Khảo thí và Đảm bảo chất lượng",
     "entity_type": "office",
     "aliases": [
+      "khao thi va dam bao chat luong",
       "khảo thí và đảm bảo chất lượng",
+      "phong khao thi va dam bao chat luong",
       "phòng khảo thí và đảm bảo chất lượng"
     ],
     "target_chunk_types": [
@@ -217,6 +251,7 @@
     "canonical_name": "Thư viện",
     "entity_type": "office",
     "aliases": [
+      "thu vien",
       "thư viện"
     ],
     "target_chunk_types": [
@@ -235,9 +270,12 @@
     "canonical_name": "Ký túc xá",
     "entity_type": "office",
     "aliases": [
+      "ki tuc xa",
       "ktx",
+      "ky tuc xa",
       "kí túc xá",
       "ký túc xá",
+      "noi tru",
       "nội trú"
     ],
     "target_chunk_types": [
@@ -254,6 +292,7 @@
     "canonical_name": "Trung tâm Phát triển kỹ năng Sư phạm",
     "entity_type": "office",
     "aliases": [
+      "trung tam phat trien ky nang su pham",
       "trung tâm phát triển kỹ năng sư phạm"
     ],
     "target_chunk_types": [
@@ -270,6 +309,7 @@
     "canonical_name": "Trung tâm Tin học",
     "entity_type": "office",
     "aliases": [
+      "trung tam tin hoc",
       "trung tâm tin học"
     ],
     "target_chunk_types": [
@@ -287,6 +327,7 @@
     "canonical_name": "Trung tâm Ngoại ngữ",
     "entity_type": "office",
     "aliases": [
+      "trung tam ngoai ngu",
       "trung tâm ngoại ngữ"
     ],
     "target_chunk_types": [
@@ -304,6 +345,7 @@
     "canonical_name": "Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp",
     "entity_type": "office",
     "aliases": [
+      "trung tam ho tro sinh vien va phat trien khoi nghiep",
       "trung tâm hỗ trợ sinh viên và phát triển khởi nghiệp"
     ],
     "target_chunk_types": [
@@ -322,12 +364,29 @@
     "entity_type": "faculty",
     "aliases": [
       "cntt",
+      "cong nghe - thong tin",
+      "cong nghe thong tin",
       "công nghệ - thông tin",
+      "công nghệ thông tin",
       "it",
       "khoa cntt",
+      "khoa cong nghe - thong tin",
+      "khoa cong nghe thong tin",
       "khoa công nghệ   thông tin",
       "khoa công nghệ - thông tin",
-      "khoa công nghệ thông tin"
+      "khoa công nghệ thông tin",
+      "khoa su pham tin hoc",
+      "khoa sư phạm tin học",
+      "nganh cong nghe thong tin",
+      "nganh su pham tin hoc",
+      "ngành công nghệ thông tin",
+      "ngành sư phạm tin học",
+      "su pham tin hoc",
+      "sư phạm tin học"
+    ],
+    "program_names": [
+      "Sư Phạm Tin Học",
+      "Công Nghệ Thông Tin"
     ],
     "target_chunk_types": [
       "faculty_program_directory"
@@ -343,10 +402,14 @@
     "canonical_name": "Khoa Toán - Tin học",
     "entity_type": "faculty",
     "aliases": [
+      "khoa toan - tin hoc",
+      "khoa toan tin hoc",
       "khoa toán   tin học",
       "khoa toán - tin học",
+      "toan - tin hoc",
       "toán - tin học"
     ],
+    "program_names": [],
     "target_chunk_types": [
       "faculty_program_directory"
     ],
@@ -360,8 +423,33 @@
     "canonical_name": "Khoa Vật lí",
     "entity_type": "faculty",
     "aliases": [
+      "cu nhan vat li hoc",
+      "cử nhân vật lí học",
+      "khoa cu nhan vat li hoc",
+      "khoa cử nhân vật lí học",
+      "khoa su pham cong nghe",
+      "khoa su pham vat li",
+      "khoa sư phạm công nghệ",
+      "khoa sư phạm vật lí",
+      "khoa vat li",
       "khoa vật lí",
+      "nganh cu nhan vat li hoc",
+      "nganh su pham cong nghe",
+      "nganh su pham vat li",
+      "ngành cử nhân vật lí học",
+      "ngành sư phạm công nghệ",
+      "ngành sư phạm vật lí",
+      "su pham cong nghe",
+      "su pham vat li",
+      "sư phạm công nghệ",
+      "sư phạm vật lí",
+      "vat li",
       "vật lí"
+    ],
+    "program_names": [
+      "Sư Phạm Vật Lí",
+      "Cử Nhân Vật Lí Học",
+      "Sư Phạm Công Nghệ"
     ],
     "target_chunk_types": [
       "faculty_program_directory"
@@ -377,8 +465,33 @@
     "canonical_name": "Khoa Hóa học",
     "entity_type": "faculty",
     "aliases": [
+      "cu nhan hoa hoc",
+      "cử nhân hoá học",
+      "hoa hoc",
       "hóa học",
-      "khoa hóa học"
+      "khoa cu nhan hoa hoc",
+      "khoa cử nhân hoá học",
+      "khoa hoa hoc",
+      "khoa hóa học",
+      "khoa su pham hoa hoc",
+      "khoa su pham khoa hoc tu nhien",
+      "khoa sư phạm hoá học",
+      "khoa sư phạm khoa học tự nhiên",
+      "nganh cu nhan hoa hoc",
+      "nganh su pham hoa hoc",
+      "nganh su pham khoa hoc tu nhien",
+      "ngành cử nhân hoá học",
+      "ngành sư phạm hoá học",
+      "ngành sư phạm khoa học tự nhiên",
+      "su pham hoa hoc",
+      "su pham khoa hoc tu nhien",
+      "sư phạm hoá học",
+      "sư phạm khoa học tự nhiên"
+    ],
+    "program_names": [
+      "Sư Phạm Hoá Học",
+      "Cử Nhân Hoá Học",
+      "Sư Phạm Khoa Học Tự Nhiên"
     ],
     "target_chunk_types": [
       "faculty_program_directory"
@@ -394,9 +507,12 @@
     "canonical_name": "Khoa Sinh học",
     "entity_type": "faculty",
     "aliases": [
+      "khoa sinh hoc",
       "khoa sinh học",
+      "sinh hoc",
       "sinh học"
     ],
+    "program_names": [],
     "target_chunk_types": [
       "faculty_program_directory"
     ],
@@ -411,8 +527,40 @@
     "canonical_name": "Khoa Ngữ văn",
     "entity_type": "faculty",
     "aliases": [
+      "khoa ngu van",
       "khoa ngữ văn",
-      "ngữ văn"
+      "khoa su pham ngu van",
+      "khoa sư phạm ngữ văn",
+      "khoa tieng viet va van hoa viet nam",
+      "khoa tiếng việt và văn hóa việt nam",
+      "khoa van hoc",
+      "khoa viet nam hoc",
+      "khoa việt nam học",
+      "khoa văn học",
+      "nganh su pham ngu van",
+      "nganh tieng viet va van hoa viet nam",
+      "nganh van hoc",
+      "nganh viet nam hoc",
+      "ngu van",
+      "ngành sư phạm ngữ văn",
+      "ngành tiếng việt và văn hóa việt nam",
+      "ngành việt nam học",
+      "ngành văn học",
+      "ngữ văn",
+      "su pham ngu van",
+      "sư phạm ngữ văn",
+      "tieng viet va van hoa viet nam",
+      "tiếng việt và văn hóa việt nam",
+      "van hoc",
+      "viet nam hoc",
+      "việt nam học",
+      "văn học"
+    ],
+    "program_names": [
+      "Sư Phạm Ngữ Văn",
+      "Việt Nam Học",
+      "Văn Học",
+      "Tiếng Việt Và Văn Hóa Việt Nam (Dành Cho Sinh Viên Nước Ngoài)"
     ],
     "target_chunk_types": [
       "faculty_program_directory"
@@ -428,8 +576,26 @@
     "canonical_name": "Khoa Lịch sử",
     "entity_type": "faculty",
     "aliases": [
+      "khoa lich su",
       "khoa lịch sử",
-      "lịch sử"
+      "khoa quoc te hoc",
+      "khoa quốc tế học",
+      "khoa su pham lich su",
+      "khoa sư phạm lịch sử",
+      "lich su",
+      "lịch sử",
+      "nganh quoc te hoc",
+      "nganh su pham lich su",
+      "ngành quốc tế học",
+      "ngành sư phạm lịch sử",
+      "quoc te hoc",
+      "quốc tế học",
+      "su pham lich su",
+      "sư phạm lịch sử"
+    ],
+    "program_names": [
+      "Sư Phạm Lịch Sử",
+      "Quốc Tế Học"
     ],
     "target_chunk_types": [
       "faculty_program_directory"
@@ -445,8 +611,33 @@
     "canonical_name": "Khoa Địa lí",
     "entity_type": "faculty",
     "aliases": [
+      "dia li",
+      "dia li hoc",
+      "khoa dia li",
+      "khoa dia li hoc",
+      "khoa su pham dia li",
+      "khoa su pham lich su va dia li",
+      "khoa sư phạm lịch sử và địa lí",
+      "khoa sư phạm địa lí",
       "khoa địa lí",
-      "địa lí"
+      "khoa địa lí học",
+      "nganh dia li hoc",
+      "nganh su pham dia li",
+      "nganh su pham lich su va dia li",
+      "ngành sư phạm lịch sử và địa lí",
+      "ngành sư phạm địa lí",
+      "ngành địa lí học",
+      "su pham dia li",
+      "su pham lich su va dia li",
+      "sư phạm lịch sử và địa lí",
+      "sư phạm địa lí",
+      "địa lí",
+      "địa lí học"
+    ],
+    "program_names": [
+      "Sư Phạm Địa Lí",
+      "Địa Lí Học",
+      "Sư Phạm Lịch Sử Và Địa Lí"
     ],
     "target_chunk_types": [
       "faculty_program_directory"
@@ -462,8 +653,26 @@
     "canonical_name": "Khoa Tiếng Anh",
     "entity_type": "faculty",
     "aliases": [
+      "khoa ngon ngu anh",
+      "khoa ngôn ngữ anh",
+      "khoa su pham tieng anh",
+      "khoa sư phạm tiếng anh",
+      "khoa tieng anh",
       "khoa tiếng anh",
+      "nganh ngon ngu anh",
+      "nganh su pham tieng anh",
+      "ngon ngu anh",
+      "ngành ngôn ngữ anh",
+      "ngành sư phạm tiếng anh",
+      "ngôn ngữ anh",
+      "su pham tieng anh",
+      "sư phạm tiếng anh",
+      "tieng anh",
       "tiếng anh"
+    ],
+    "program_names": [
+      "Sư Phạm Tiếng Anh",
+      "Ngôn Ngữ Anh"
     ],
     "target_chunk_types": [
       "faculty_program_directory"
@@ -479,8 +688,26 @@
     "canonical_name": "Khoa Tiếng Pháp",
     "entity_type": "faculty",
     "aliases": [
+      "khoa ngon ngu phap",
+      "khoa ngôn ngữ pháp",
+      "khoa su pham tieng phap",
+      "khoa sư phạm tiếng pháp",
+      "khoa tieng phap",
       "khoa tiếng pháp",
+      "nganh ngon ngu phap",
+      "nganh su pham tieng phap",
+      "ngon ngu phap",
+      "ngành ngôn ngữ pháp",
+      "ngành sư phạm tiếng pháp",
+      "ngôn ngữ pháp",
+      "su pham tieng phap",
+      "sư phạm tiếng pháp",
+      "tieng phap",
       "tiếng pháp"
+    ],
+    "program_names": [
+      "Sư Phạm Tiếng Pháp",
+      "Ngôn Ngữ Pháp"
     ],
     "target_chunk_types": [
       "faculty_program_directory"
@@ -496,8 +723,26 @@
     "canonical_name": "Khoa Tiếng Nga",
     "entity_type": "faculty",
     "aliases": [
+      "khoa ngon ngu nga",
+      "khoa ngôn ngữ nga",
+      "khoa su pham tieng nga",
+      "khoa sư phạm tiếng nga",
+      "khoa tieng nga",
       "khoa tiếng nga",
+      "nganh ngon ngu nga",
+      "nganh su pham tieng nga",
+      "ngon ngu nga",
+      "ngành ngôn ngữ nga",
+      "ngành sư phạm tiếng nga",
+      "ngôn ngữ nga",
+      "su pham tieng nga",
+      "sư phạm tiếng nga",
+      "tieng nga",
       "tiếng nga"
+    ],
+    "program_names": [
+      "Sư Phạm Tiếng Nga",
+      "Ngôn Ngữ Nga"
     ],
     "target_chunk_types": [
       "faculty_program_directory"
@@ -513,8 +758,26 @@
     "canonical_name": "Khoa Tiếng Trung Quốc",
     "entity_type": "faculty",
     "aliases": [
+      "khoa ngon ngu trung quoc",
+      "khoa ngôn ngữ trung quốc",
+      "khoa su pham tieng trung quoc",
+      "khoa sư phạm tiếng trung quốc",
+      "khoa tieng trung quoc",
       "khoa tiếng trung quốc",
+      "nganh ngon ngu trung quoc",
+      "nganh su pham tieng trung quoc",
+      "ngon ngu trung quoc",
+      "ngành ngôn ngữ trung quốc",
+      "ngành sư phạm tiếng trung quốc",
+      "ngôn ngữ trung quốc",
+      "su pham tieng trung quoc",
+      "sư phạm tiếng trung quốc",
+      "tieng trung quoc",
       "tiếng trung quốc"
+    ],
+    "program_names": [
+      "Sư Phạm Tiếng Trung Quốc",
+      "Ngôn Ngữ Trung Quốc"
     ],
     "target_chunk_types": [
       "faculty_program_directory"
@@ -530,9 +793,12 @@
     "canonical_name": "Khoa Tiếng Hàn Quốc",
     "entity_type": "faculty",
     "aliases": [
+      "khoa tieng han quoc",
       "khoa tiếng hàn quốc",
+      "tieng han quoc",
       "tiếng hàn quốc"
     ],
+    "program_names": [],
     "target_chunk_types": [
       "faculty_program_directory"
     ],
@@ -546,9 +812,12 @@
     "canonical_name": "Khoa Tiếng Nhật",
     "entity_type": "faculty",
     "aliases": [
+      "khoa tieng nhat",
       "khoa tiếng nhật",
+      "tieng nhat",
       "tiếng nhật"
     ],
+    "program_names": [],
     "target_chunk_types": [
       "faculty_program_directory"
     ],
@@ -562,8 +831,26 @@
     "canonical_name": "Khoa Khoa học Giáo dục",
     "entity_type": "faculty",
     "aliases": [
+      "giao duc hoc",
+      "giáo dục học",
+      "hoc giao duc",
       "học giáo dục",
-      "khoa khoa học giáo dục"
+      "khoa giao duc hoc",
+      "khoa giáo dục học",
+      "khoa khoa hoc giao duc",
+      "khoa khoa học giáo dục",
+      "khoa quan ly giao duc",
+      "khoa quản lý giáo dục",
+      "nganh giao duc hoc",
+      "nganh quan ly giao duc",
+      "ngành giáo dục học",
+      "ngành quản lý giáo dục",
+      "quan ly giao duc",
+      "quản lý giáo dục"
+    ],
+    "program_names": [
+      "Quản Lý Giáo Dục",
+      "Giáo Dục Học"
     ],
     "target_chunk_types": [
       "faculty_program_directory"
@@ -579,8 +866,29 @@
     "canonical_name": "Khoa Tâm lí học",
     "entity_type": "faculty",
     "aliases": [
+      "cong tac xa hoi",
+      "công tác xã hội",
+      "khoa cong tac xa hoi",
+      "khoa công tác xã hội",
+      "khoa tam li hoc",
+      "khoa tam li hoc giao duc",
       "khoa tâm lí học",
-      "tâm lí học"
+      "khoa tâm lí học giáo dục",
+      "nganh cong tac xa hoi",
+      "nganh tam li hoc",
+      "nganh tam li hoc giao duc",
+      "ngành công tác xã hội",
+      "ngành tâm lí học",
+      "ngành tâm lí học giáo dục",
+      "tam li hoc",
+      "tam li hoc giao duc",
+      "tâm lí học",
+      "tâm lí học giáo dục"
+    ],
+    "program_names": [
+      "Tâm Lí Học",
+      "Tâm Lí Học Giáo Dục",
+      "Công Tác Xã Hội"
     ],
     "target_chunk_types": [
       "faculty_program_directory"
@@ -597,9 +905,12 @@
     "canonical_name": "Khoa Giáo dục Chính trị",
     "entity_type": "faculty",
     "aliases": [
+      "giao duc chinh tri",
       "giáo dục chính trị",
+      "khoa giao duc chinh tri",
       "khoa giáo dục chính trị"
     ],
+    "program_names": [],
     "target_chunk_types": [
       "faculty_program_directory"
     ],
@@ -613,9 +924,12 @@
     "canonical_name": "Khoa Giáo dục Đặc biệt",
     "entity_type": "faculty",
     "aliases": [
+      "giao duc dac biet",
       "giáo dục đặc biệt",
+      "khoa giao duc dac biet",
       "khoa giáo dục đặc biệt"
     ],
+    "program_names": [],
     "target_chunk_types": [
       "faculty_program_directory"
     ],
@@ -630,9 +944,12 @@
     "canonical_name": "Khoa Giáo dục Tiểu học",
     "entity_type": "faculty",
     "aliases": [
+      "giao duc tieu hoc",
       "giáo dục tiểu học",
+      "khoa giao duc tieu hoc",
       "khoa giáo dục tiểu học"
     ],
+    "program_names": [],
     "target_chunk_types": [
       "faculty_program_directory"
     ],
@@ -646,9 +963,12 @@
     "canonical_name": "Khoa Giáo dục Mầm non",
     "entity_type": "faculty",
     "aliases": [
+      "giao duc mam non",
       "giáo dục mầm non",
+      "khoa giao duc mam non",
       "khoa giáo dục mầm non"
     ],
+    "program_names": [],
     "target_chunk_types": [
       "faculty_program_directory"
     ],
@@ -663,9 +983,12 @@
     "canonical_name": "Khoa Giáo dục Quốc phòng",
     "entity_type": "faculty",
     "aliases": [
+      "giao duc quoc phong",
       "giáo dục quốc phòng",
+      "khoa giao duc quoc phong",
       "khoa giáo dục quốc phòng"
     ],
+    "program_names": [],
     "target_chunk_types": [
       "faculty_program_directory"
     ],
@@ -679,9 +1002,12 @@
     "canonical_name": "Khoa Giáo dục Thể chất",
     "entity_type": "faculty",
     "aliases": [
+      "giao duc the chat",
       "giáo dục thể chất",
+      "khoa giao duc the chat",
       "khoa giáo dục thể chất"
     ],
+    "program_names": [],
     "target_chunk_types": [
       "faculty_program_directory"
     ],
@@ -695,8 +1021,10 @@
     "canonical_name": "Tổ Giáo dục Nữ công",
     "entity_type": "faculty",
     "aliases": [
+      "to giao duc nu cong",
       "tổ giáo dục nữ công"
     ],
+    "program_names": [],
     "target_chunk_types": [
       "faculty_program_directory"
     ],

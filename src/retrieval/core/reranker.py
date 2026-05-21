@@ -1,4 +1,5 @@
 import re
+import unicodedata
 from typing import Any
 
 
@@ -27,6 +28,9 @@ NEGATIVE_PATTERNS = [
 def normalize_text(text: str) -> str:
     text = text.lower()
     text = text.replace("–", "-")
+    text = text.replace("đ", "d")
+    text = unicodedata.normalize("NFD", text)
+    text = "".join(char for char in text if unicodedata.category(char) != "Mn")
     text = re.sub(r"\s+", " ", text)
     return text.strip()
 
@@ -120,6 +124,7 @@ def keyword_boost(query: str, item: dict[str, Any]) -> float:
     score = 0.0
 
     for keyword in CONTACT_KEYWORDS:
+        keyword = normalize_text(keyword)
         if keyword in q and keyword in text:
             score += 0.08
 
@@ -141,8 +146,10 @@ def negative_penalty(query: str, item: dict[str, Any]) -> float:
     penalty = 0.0
 
     for rule in NEGATIVE_PATTERNS:
-        if any(k in q for k in rule["query_contains"]):
-            if any(k in text for k in rule["bad_chunk_contains"]):
+        query_keywords = [normalize_text(k) for k in rule["query_contains"]]
+        bad_keywords = [normalize_text(k) for k in rule["bad_chunk_contains"]]
+        if any(k in q for k in query_keywords):
+            if any(k in text for k in bad_keywords):
                 penalty += rule["penalty"]
 
     return penalty

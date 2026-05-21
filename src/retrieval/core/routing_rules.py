@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
 
 try:
     import yaml
@@ -13,22 +12,61 @@ except ModuleNotFoundError:  # pragma: no cover - exercised in minimal runtimes.
 DEFAULT_RULES_PATH = Path("configs/query_routing_rules.yaml")
 
 FALLBACK_RULES: dict[str, list[str]] = {
-    "form_signal": ["mẫu đơn", "đơn xin", "biểu mẫu", "phiếu", "form", "mẫu"],
-    "regulation_signal": ["điều kiện", "quy định", "thủ tục", "khi nào"],
-    "contact_question": ["email", "số điện thoại", "điện thoại", "website", "địa chỉ", "liên hệ", "ở đâu"],
-    "ktx_signal": ["ký túc xá", "kí túc xá", "ktx", "nội trú", "vào ở"],
-    "faculty_signal": ["khoa", "ngành", "tổ trực thuộc", "chuyên ngành"],
-    "explicit_office_entity": ["phòng", "ban", "trung tâm", "thư viện"],
-    "calculation_signal": ["tính", "tính giúp", "bao nhiêu nếu"],
-    "gpa_signal": ["gpa", "điểm trung bình", "tbc"],
-    "scholarship_score_signal": ["điểm học bổng"],
-    "ktx_form_signal": ["đơn", "mẫu", "giấy", "hồ sơ"],
-    "ktx_procedure_signal": ["quy trình", "tiêu chí", "ưu tiên", "điều kiện", "thủ tục", "xét", "hội đồng"],
-    "mixed_form_signal": ["mẫu đơn", "đơn", "biểu mẫu", "giấy xác nhận"],
-    "mixed_regulation_signal": ["điều kiện", "quy định", "thủ tục", "cần đáp ứng"],
-    "mixed_office_signal": ["liên hệ", "phòng nào", "email", "số điện thoại", "địa chỉ"],
-    "pass_fail_regulation_signal": ["qua môn", "đạt học phần", "rớt môn", "trượt môn", "học lại"],
-    "score_lookup_signal": ["quy đổi", "xếp loại", "loại gì", "học lực", "thang điểm 4", "thang 4", "rèn luyện", "điểm chữ"],
+    "form_signal": ["mau don", "don xin", "bieu mau", "phieu", "form", "mau"],
+    "regulation_signal": ["dieu kien", "quy dinh", "thu tuc", "khi nao"],
+    "contact_question": [
+        "email",
+        "so dien thoai",
+        "dien thoai",
+        "website",
+        "dia chi",
+        "lien he",
+        "o dau",
+    ],
+    "ktx_signal": ["ky tuc xa", "ki tuc xa", "ktx", "noi tru", "vao o"],
+    "faculty_signal": ["khoa", "nganh", "to truc thuoc", "chuyen nganh"],
+    "explicit_office_entity": ["phong", "ban", "trung tam", "thu vien"],
+    "calculation_signal": ["tinh", "tinh giup", "bao nhieu neu"],
+    "formula_signal": [
+        "cong thuc",
+        "cach tinh",
+        "tinh kieu",
+        "tinh kieu gi",
+        "tinh nhu the nao",
+        "tinh ra sao",
+    ],
+    "gpa_signal": ["gpa", "diem trung binh", "tbc", "tb"],
+    "scholarship_score_signal": ["diem hoc bong"],
+    "ktx_form_signal": ["don", "mau", "giay", "ho so"],
+    "ktx_procedure_signal": [
+        "quy trinh",
+        "tieu chi",
+        "uu tien",
+        "dieu kien",
+        "thu tuc",
+        "xet",
+        "hoi dong",
+    ],
+    "mixed_form_signal": ["mau don", "don", "bieu mau", "giay xac nhan"],
+    "mixed_regulation_signal": ["dieu kien", "quy dinh", "thu tuc", "can dap ung"],
+    "mixed_office_signal": ["lien he", "phong nao", "email", "so dien thoai", "dia chi"],
+    "pass_fail_regulation_signal": [
+        "qua mon",
+        "dat hoc phan",
+        "rot mon",
+        "truot mon",
+        "hoc lai",
+    ],
+    "score_lookup_signal": [
+        "quy doi",
+        "xep loai",
+        "loai gi",
+        "hoc luc",
+        "thang diem 4",
+        "thang 4",
+        "ren luyen",
+        "diem chu",
+    ],
 }
 
 

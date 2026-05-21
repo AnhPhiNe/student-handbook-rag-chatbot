@@ -175,6 +175,7 @@ def main() -> None:
     expansion_rules = load_json(Path(config["input"]["query_expansion_rules"]))
 
     scoring_tables = load_json(Path(config["input"]["scoring_tables"]))
+    formula_rules = load_json(Path(config["input"]["formula_rules"]))
 
     model = load_embedding_model(config["embedding"]["model_name"])
     collection = get_chroma_collection(
@@ -194,6 +195,7 @@ def main() -> None:
             model=model,
             collection=collection,
             scoring_tables=scoring_tables,
+            formula_rules=formula_rules,
             top_k=config["retrieval"]["default_top_k"],
             batch_size=config["embedding"]["batch_size"],
             entity_registry=entity_registry,

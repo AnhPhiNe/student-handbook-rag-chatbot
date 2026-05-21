@@ -13,6 +13,8 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     answer: str
     status: str
+    effective_query: str | None = None
+    query_rewrite: dict[str, Any] | None = None
     request_id: str | None = None
     latency_ms: float | None = None
     citations_used: list[dict[str, Any]] = Field(default_factory=list)

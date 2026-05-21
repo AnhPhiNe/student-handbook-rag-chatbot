@@ -63,12 +63,22 @@ def route_query(query: str) -> dict[str, Any]:
     # 1. Calculation query
     has_calc = contains_any(q, rules["calculation_signal"])
     has_gpa = contains_any(q, rules["gpa_signal"])
-    has_scholarship_score = contains_any(q, rules["scholarship_score_signal"]) and contains_any(
+    has_formula = contains_any(q, rules["formula_signal"])
+    has_raw_scholarship_score = contains_any(q, rules["scholarship_score_signal"])
+    numbers = re.findall(r"\d+(?:[,.]\d+)?", q)
+    has_scholarship_score = has_raw_scholarship_score and contains_any(
         q,
         rules["calculation_signal"],
     )
 
-    if has_calc and (has_gpa or has_scholarship_score):
+    if has_formula and (has_gpa or has_raw_scholarship_score):
+        return {
+            "intent": "formula_query",
+            "strategy": "formula_lookup",
+            "target_chunk_types": [],
+        }
+
+    if has_calc and has_scholarship_score and len(numbers) >= 2:
         return {
             "intent": "calculation_query",
             "strategy": "calculator_tool",

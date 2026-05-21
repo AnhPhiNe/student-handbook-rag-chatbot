@@ -124,6 +124,7 @@ def run_evaluation(config_path: Path, golden_path: Path) -> dict[str, Any]:
     cases = load_json(golden_path)
 
     scoring_tables = load_project_json(Path(config["input"]["scoring_tables"]))
+    formula_rules = load_project_json(Path(config["input"]["formula_rules"]))
     entity_registry = load_project_json(Path(config["input"]["entity_registry"]))
     expansion_rules = load_project_json(Path(config["input"]["query_expansion_rules"]))
 
@@ -142,6 +143,7 @@ def run_evaluation(config_path: Path, golden_path: Path) -> dict[str, Any]:
             model=model,
             collection=collection,
             scoring_tables=scoring_tables,
+            formula_rules=formula_rules,
             entity_registry=entity_registry,
             expansion_rules=expansion_rules,
             top_k=config["retrieval"]["default_top_k"],

@@ -213,6 +213,7 @@ def is_context_empty(retrieval_result: dict[str, Any]) -> bool:
         [
             str(retrieval_result.get("context_for_llm") or "").strip(),
             _has_result(retrieval_result.get("structured_result")),
+            _has_formula_result(retrieval_result.get("formula_result")),
             _has_result(retrieval_result.get("tool_result")),
         ]
     )
@@ -232,8 +233,10 @@ def is_low_confidence(retrieval_result: dict[str, Any]) -> bool:
 
 
 def can_answer_deterministically(retrieval_result: dict[str, Any]) -> bool:
-    return _has_result(retrieval_result.get("structured_result")) or _has_result(
-        retrieval_result.get("tool_result")
+    return (
+        _has_result(retrieval_result.get("structured_result"))
+        or _has_formula_result(retrieval_result.get("formula_result"))
+        or _has_result(retrieval_result.get("tool_result"))
     )
 
 
@@ -245,6 +248,10 @@ def build_deterministic_answer(
     structured_result = retrieval_result.get("structured_result")
     if _has_result(structured_result):
         return _format_structured_result(structured_result)
+
+    formula_result = retrieval_result.get("formula_result")
+    if _has_formula_result(formula_result):
+        return _format_formula_result(formula_result)
 
     tool_result = retrieval_result.get("tool_result")
     if _has_result(tool_result):
@@ -681,6 +688,10 @@ def _has_result(value: Any) -> bool:
     return isinstance(value, dict) and value.get("result") is not None
 
 
+def _has_formula_result(value: Any) -> bool:
+    return isinstance(value, dict) and bool(value.get("formula_text"))
+
+
 def _format_structured_result(structured_result: dict[str, Any]) -> str:
     table_name = structured_result.get("table_name") or "bảng tra cứu"
     input_value = structured_result.get("input_value")
@@ -722,3 +733,16 @@ def _format_tool_result(tool_result: dict[str, Any]) -> str:
     if note:
         answer = f"{answer}\n\n{note}"
     return answer
+
+
+def _format_formula_result(formula_result: dict[str, Any]) -> str:
+    rule_name = formula_result.get("rule_name") or "Công thức"
+    formula_text = formula_result.get("formula_text") or ""
+    variables = formula_result.get("variables") or {}
+
+    variable_text = ""
+    if isinstance(variables, dict) and variables:
+        lines = [f"- {key}: {value}" for key, value in variables.items()]
+        variable_text = "\n\nTrong đó:\n" + "\n".join(lines)
+
+    return f"{rule_name}: {formula_text}.{variable_text}"

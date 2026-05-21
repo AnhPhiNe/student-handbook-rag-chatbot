@@ -22,6 +22,8 @@ copy of the prebuilt ChromaDB vectorstore.
 - PDF ingestion and structured parsing for a Vietnamese student handbook.
 - Semantic chunking by regulations, procedures, forms, scoring tables, and directories.
 - Sentence-transformer embeddings stored in ChromaDB.
+- Optional Gemini Flash-Lite query rewriting for accent restoration, light typo
+  correction, and clarification before retrieval.
 - Query routing for regulations, forms, offices, faculties, scoring lookup, and calculator-style questions.
 - Entity linking and query expansion for handbook-specific terms.
 - Answer guardrails: low-confidence fallback, deterministic lookup answers, citations, and clarification for ambiguous queries.
@@ -37,6 +39,9 @@ PDF/text extraction -> structure parsing -> entity/form/table extraction
         |
         v
 chunking -> embeddings -> ChromaDB vectorstore
+        |
+        v
+optional query rewriting
         |
         v
 query routing + entity linking + retrieval/reranking
@@ -69,9 +74,10 @@ about the bundled HCMUE student handbook. It is strongest for questions about:
 - Ambiguous or out-of-domain questions that should trigger guardrails.
 
 Accentless Vietnamese queries are partially supported through routing rules,
-entity aliases, and semantic retrieval, but they are not yet guaranteed at the
-same quality level as properly accented Vietnamese. The current evaluation
-tables below report the accented Vietnamese benchmark.
+accent-folded entity aliases, conservative fuzzy entity matching, semantic
+retrieval, and an optional LLM query-rewriting layer. They are not yet guaranteed
+at the same quality level as properly accented Vietnamese. The current
+evaluation tables below report the accented Vietnamese benchmark.
 
 ## Pipeline Overview
 
@@ -80,7 +86,11 @@ tables below report the accented Vietnamese benchmark.
 - Structured extraction: Extract tables, formulas, thresholds, forms, office directories, faculty directories, and procedures.
 - Chunk generation: Build semantic, structured lookup, and tool-rule chunks.
 - Embedding and indexing: Embed semantic chunks and persist them to ChromaDB.
-- Retrieval orchestration: Route queries, link entities, expand queries, retrieve, and rerank.
+- Optional query rewriting: Normalize accentless/typo-heavy questions or ask a
+  clarification question before retrieval when enabled.
+- Entity linking: Match office/faculty names, generated faculty-program aliases,
+  accentless aliases, and light typos before retrieval.
+- Retrieval orchestration: Route queries, expand queries, retrieve, and rerank.
 - Answer pipeline: Generate answers with guardrails, citations, deterministic lookup, cache, and ambiguity handling.
 - Service layer: Expose a thin `AnswerService` wrapper for shared UI/API use.
 - User interface: Serve the chatbot through a Streamlit UI that can call either
@@ -160,6 +170,17 @@ Then set your Gemini key inside `.env`:
 ```bash
 GEMINI_API_KEY=your_api_key_here
 ```
+
+Optional query rewriting uses a separate API key variable so it can be enabled,
+disabled, or rotated independently from answer generation:
+
+```bash
+QUERY_REWRITER_ENABLED=true
+QUERY_REWRITER_API_KEY=your_query_rewriter_api_key_here
+```
+
+If `QUERY_REWRITER_ENABLED` is false or `QUERY_REWRITER_API_KEY` is missing, the
+pipeline skips rewriting and runs the existing rule-based routing path.
 
 The Streamlit app, FastAPI backend, and answer-generation scripts load this project-level
 `.env` automatically, so you do not need to run `$env:GEMINI_API_KEY=...` in each
@@ -467,6 +488,14 @@ Adapting the system to another handbook or policy document will likely require
 updating the parsing configuration, extraction rules, chunking assumptions,
 entity registry, and query routing rules before rebuilding the local index.
 
+To regenerate the entity registry after changing faculty or office directory
+data:
+
+```bash
+python src/retrieval/core/build_entity_registry.py
+python -m unittest tests.test_entity_registry_builder tests.test_entity_linker
+```
+
 ## License
 
 Project source code and authored documentation are released under the MIT
@@ -491,10 +520,16 @@ relicensed by this repository and remain subject to their original rights.
 
 - The answer quality depends on the parsed handbook data and the local ChromaDB index.
 - Public deployment requires a backend that can access `data/vectorstore/chroma`.
-- Gemini calls require a valid `GEMINI_API_KEY` in `.env` or the process environment.
+- Gemini answer-generation calls require a valid `GEMINI_API_KEY` in `.env` or
+  the process environment.
+- Optional query rewriting requires `QUERY_REWRITER_ENABLED=true` and
+  `QUERY_REWRITER_API_KEY`; without them, the pipeline falls back to rule-based
+  routing.
 - Some source PDF layouts may require manual validation after parsing.
-- Accentless Vietnamese questions are only partially supported today; the most
-  reliable path is still properly accented Vietnamese.
+- Accentless Vietnamese questions are supported through generated aliases,
+  accent folding, conservative fuzzy entity matching, and optional LLM rewriting,
+  but heavily misspelled queries may still need clarification or a better
+  rewrite.
 - The bundled vectorstore is a generated demo artifact; rebuild it after
   changing the PDF, configs, chunking logic, or embedding model.
 - The source PDF and generated vectorstore may contain or derive from handbook
@@ -505,8 +540,8 @@ relicensed by this repository and remain subject to their original rights.
 ## Future Improvements
 
 - Broaden the evaluation set with more paraphrases, edge cases, and adversarial questions.
-- Add a dedicated accentless Vietnamese evaluation set and improve normalization
-  before routing and retrieval.
+- Add a dedicated accentless Vietnamese evaluation set and tune the optional
+  query rewriter against it.
 - Add screenshot assets and a short demo GIF for the portfolio README.
 - Continue moving domain heuristics from Python code into YAML configs.
 - Improve entity registry quality for abbreviations and department aliases.

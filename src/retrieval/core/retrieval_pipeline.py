@@ -4,10 +4,12 @@ from sentence_transformers import SentenceTransformer
 
 from .calculator_tools import try_calculation
 from .citation_builder import (
+    build_citation_from_formula,
     build_citation_from_lookup,
     build_citations_from_vector_results,
 )
 from .context_builder import (
+    build_context_from_formula,
     build_context_from_lookup,
     build_context_from_tool,
     build_context_from_vector_results,
@@ -17,6 +19,7 @@ from .entity_linker import (
     get_entity_target_chunk_types,
     normalize_query_with_entities,
 )
+from .formula_lookup import formula_lookup
 from .query_expansion import expand_query
 from .query_router import route_query
 from .reranker import rerank_results
@@ -61,6 +64,7 @@ def run_retrieval_pipeline(
     model: SentenceTransformer,
     collection,
     scoring_tables: list[dict[str, Any]],
+    formula_rules: list[dict[str, Any]] | None,
     entity_registry: list[dict[str, Any]],
     expansion_rules: list[dict[str, Any]],
     top_k: int = 5,
@@ -112,6 +116,53 @@ def run_retrieval_pipeline(
             "retrieved_items": [],
             "citations": [],
             "context_for_llm": build_context_from_tool(tool_result) if tool_result else "",
+            "needs_llm_answer": True,
+        }
+
+    if strategy == "formula_lookup":
+        formula_result = formula_lookup(query, formula_rules or [])
+        if formula_result is None:
+            fallback_plan = {
+                "purpose": "formula_fallback",
+                "query": retrieval_query,
+                "chunk_types": ["regulation"],
+                "top_k": top_k,
+            }
+            fallback_results = retrieve_with_plan(
+                query=query,
+                plan=fallback_plan,
+                model=model,
+                collection=collection,
+                batch_size=batch_size,
+                normalize_embeddings=normalize_embeddings,
+                detected_entities=detected_entities,
+            )
+
+            return {
+                "query": query,
+                "retrieval_query": retrieval_query,
+                "detected_entities": detected_entities,
+                "intent": "regulation_query",
+                "strategy": "formula_lookup_fallback_to_vector",
+                "target_chunk_types": ["regulation"],
+                "formula_result": None,
+                "retrieved_items": fallback_results,
+                "citations": build_citations_from_vector_results(fallback_results),
+                "context_for_llm": build_context_from_vector_results(fallback_results),
+                "needs_llm_answer": True,
+            }
+
+        return {
+            "query": query,
+            "retrieval_query": retrieval_query,
+            "detected_entities": detected_entities,
+            "intent": intent,
+            "strategy": strategy,
+            "target_chunk_types": target_chunk_types,
+            "formula_result": formula_result,
+            "retrieved_items": [],
+            "citations": build_citation_from_formula(formula_result),
+            "context_for_llm": build_context_from_formula(formula_result),
             "needs_llm_answer": True,
         }
 

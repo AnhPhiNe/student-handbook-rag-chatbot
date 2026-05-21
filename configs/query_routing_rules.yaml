@@ -73,10 +73,19 @@ calculation_signal:
   - tính giúp
   - bao nhiêu nếu
 
+formula_signal:
+  - công thức
+  - cách tính
+  - tính kiểu
+  - tính kiểu gì
+  - tính như thế nào
+  - tính ra sao
+
 gpa_signal:
   - gpa
   - điểm trung bình
   - tbc
+  - tb
 
 scholarship_score_signal:
   - điểm học bổng

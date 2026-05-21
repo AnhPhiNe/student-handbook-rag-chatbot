@@ -12,6 +12,7 @@ def build_context_from_vector_results(results: list[dict[str, Any]], max_items: 
             or metadata.get("unit_name")
             or metadata.get("faculty_or_unit_name")
             or metadata.get("procedure_name")
+            or metadata.get("rule_name")
             or item.get("chunk_id")
         )
 
@@ -41,4 +42,13 @@ def build_context_from_tool(tool_result: dict[str, Any]) -> str:
         f"Input: {tool_result.get('inputs')}\n"
         f"Kết quả: {tool_result.get('result')}\n"
         f"Ghi chú: {tool_result.get('note')}"
+    )
+def build_context_from_formula(formula_result: dict[str, Any]) -> str:
+    variables = formula_result.get("variables") or {}
+    variable_lines = "\n".join(f"- {key}: {value}" for key, value in variables.items())
+    return (
+        f"Công thức: {formula_result.get('rule_name')}\n"
+        f"Biểu thức: {formula_result.get('formula_text')}\n"
+        f"Biến số:\n{variable_lines}\n"
+        f"Nguồn: {formula_result.get('source_article')}, trang {formula_result.get('source_pages')}"
     )

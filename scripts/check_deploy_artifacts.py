@@ -10,6 +10,7 @@ from src.common.console import configure_utf8_stdio
 REQUIRED_ARTIFACTS = [
     ("configs/answer_generation.yaml", "file"),
     ("data/processed/tables/scoring_tables.json", "file"),
+    ("data/processed/tables/formula_rules.json", "file"),
     ("data/processed/entities/entity_registry.json", "file"),
     ("data/processed/entities/query_expansion_rules.json", "file"),
     ("data/vectorstore/chroma", "dir"),

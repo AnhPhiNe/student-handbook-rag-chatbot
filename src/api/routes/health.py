@@ -33,6 +33,11 @@ def artifact_health() -> ArtifactHealthResponse:
             kind="processed_json",
         ),
         ArtifactStatus(
+            path="data/processed/tables/formula_rules.json",
+            exists=Path("data/processed/tables/formula_rules.json").is_file(),
+            kind="processed_json",
+        ),
+        ArtifactStatus(
             path="data/processed/entities/entity_registry.json",
             exists=Path("data/processed/entities/entity_registry.json").is_file(),
             kind="processed_json",

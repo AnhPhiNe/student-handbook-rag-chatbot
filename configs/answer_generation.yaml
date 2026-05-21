@@ -1,5 +1,6 @@
 ﻿input:
   scoring_tables: data/processed/tables/scoring_tables.json
+  formula_rules: data/processed/tables/formula_rules.json
   entity_registry: data/processed/entities/entity_registry.json
   query_expansion_rules: data/processed/entities/query_expansion_rules.json
 
@@ -14,6 +15,18 @@ vectorstore:
 
 retrieval:
   default_top_k: 5
+
+query_rewriter:
+  enabled: false
+  api_key_env_var: QUERY_REWRITER_API_KEY
+  model_name: gemini-2.5-flash-lite
+  temperature: 0.0
+  max_output_tokens: 256
+  max_retries: 1
+  request_timeout_seconds: 3
+  trigger_on_accentless: true
+  trigger_on_short_query: true
+  trigger_on_typo_signals: true
 
 llm:
   provider: gemini

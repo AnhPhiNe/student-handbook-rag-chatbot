@@ -60,6 +60,7 @@ Secrets:
 
 ```text
 GEMINI_API_KEY=your_real_gemini_key
+QUERY_REWRITER_API_KEY=your_query_rewriter_key
 ```
 
 Variables:
@@ -67,10 +68,14 @@ Variables:
 ```text
 PORT=7860
 STUDENT_RAG_CORS_ORIGINS=https://student-handbook-rag-hcmue.streamlit.app
+QUERY_REWRITER_ENABLED=false
 ```
 
 You can temporarily set CORS to `*` while testing, then replace it with the real
 Streamlit Cloud URL.
+
+Set `QUERY_REWRITER_ENABLED=true` only if you want the backend to call the
+optional Gemini Flash-Lite query rewriter before retrieval.
 
 ## 4. Push Backend Files To The Space
 

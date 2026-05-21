@@ -9,6 +9,9 @@ DEBUG_FIELDS = [
     "status",
     "intent",
     "strategy",
+    "effective_query",
+    "query_rewrite",
+    "retrieval_query",
     "llm_called",
     "used_cache",
     "error_type",
@@ -41,6 +44,19 @@ def _format_debug_value(value: Any) -> str:
         return "None"
     if isinstance(value, bool):
         return "true" if value else "false"
+    if isinstance(value, dict) and "effective_query" in value:
+        parts = [
+            f"changed={str(value.get('changed')).lower()}",
+            f"confidence={value.get('confidence')}",
+            f"reason={value.get('reason')}",
+        ]
+        rewritten_query = value.get("rewritten_query")
+        if rewritten_query:
+            parts.append(f"rewritten={rewritten_query}")
+        error_type = value.get("error_type")
+        if error_type:
+            parts.append(f"error={error_type}")
+        return "; ".join(parts)
     if isinstance(value, (list, tuple, set, dict)):
         return f"{type(value).__name__}({len(value)})"
     return str(value)

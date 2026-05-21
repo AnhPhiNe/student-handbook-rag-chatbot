@@ -21,6 +21,7 @@ from .citation_formatter import format_sources_text, select_relevant_citations
 from .gemini_client import GeminiClient
 from .io_utils import load_json, load_yaml
 from .prompt_builder import DEFAULT_MAX_CONTEXT_CHARS, build_answer_prompt, limit_context
+from .query_rewriter import QueryRewriter, QueryRewriteResult
 from .response_cache import ResponseCache
 
 
@@ -37,6 +38,7 @@ class AnswerPipeline:
         self.config = load_yaml(self.config_path)
 
         self.scoring_tables = load_json(self.config["input"]["scoring_tables"])
+        self.formula_rules = load_json(self.config["input"]["formula_rules"])
         self.entity_registry = load_json(self.config["input"]["entity_registry"])
         self.expansion_rules = load_json(self.config["input"]["query_expansion_rules"])
 
@@ -56,6 +58,7 @@ class AnswerPipeline:
         )
         self.request_sleep_seconds = float(llm_config.get("request_sleep_seconds", 2))
         self._last_llm_call_at = 0.0
+        self.query_rewriter = QueryRewriter.from_config(self.config.get("query_rewriter"))
 
         cache_config = self.config.get("cache", {})
         self.response_cache = ResponseCache(
@@ -64,11 +67,30 @@ class AnswerPipeline:
         )
 
     def answer(self, query: str) -> dict[str, Any]:
+        rewrite_result = self.query_rewriter.rewrite(query)
+        effective_query = rewrite_result.effective_query
+
+        if rewrite_result.needs_clarification and rewrite_result.clarification_question:
+            return self._build_output(
+                query=query,
+                retrieval_result={},
+                final_answer=rewrite_result.clarification_question,
+                context_used="",
+                selected_citations=[],
+                status="needs_clarification",
+                error_type=None,
+                error_message=None,
+                llm_called=False,
+                used_cache=False,
+                clarification_needed=True,
+                query_rewrite=rewrite_result,
+            )
+
         try:
-            retrieval_result = self._run_retrieval(query)
+            retrieval_result = self._run_retrieval(effective_query)
         except Exception as exc:
             final_answer = build_fallback_answer(
-                query=query,
+                query=effective_query,
                 retrieval_result=None,
                 reason="retrieval_error",
             )
@@ -83,6 +105,7 @@ class AnswerPipeline:
                 error_message=str(exc),
                 llm_called=False,
                 used_cache=False,
+                query_rewrite=rewrite_result,
             )
 
         context_used = limit_context(
@@ -90,11 +113,11 @@ class AnswerPipeline:
             max_context_chars=self.max_context_chars,
         )
 
-        if detect_ambiguous_query(query, retrieval_result):
+        if detect_ambiguous_query(effective_query, retrieval_result):
             return self._build_output(
                 query=query,
                 retrieval_result=retrieval_result,
-                final_answer=build_clarification_question(query, retrieval_result),
+                final_answer=build_clarification_question(effective_query, retrieval_result),
                 context_used=context_used,
                 selected_citations=[],
                 status="needs_clarification",
@@ -103,11 +126,12 @@ class AnswerPipeline:
                 llm_called=False,
                 used_cache=False,
                 clarification_needed=True,
+                query_rewrite=rewrite_result,
             )
             
-        if is_out_of_domain_query(query, retrieval_result):
+        if is_out_of_domain_query(effective_query, retrieval_result):
             final_answer = build_fallback_answer(
-                query=query,
+                query=effective_query,
                 retrieval_result=retrieval_result,
                 reason="out_of_domain",
             )
@@ -123,6 +147,7 @@ class AnswerPipeline:
                 error_message=None,
                 llm_called=False,
                 used_cache=False,
+                query_rewrite=rewrite_result,
             )
 
         citations_config = self.config.get("citations", {})
@@ -138,7 +163,7 @@ class AnswerPipeline:
                 max_sources=int(citations_config.get("max_sources", 2)),
             )
             final_answer = format_final_answer(
-                build_deterministic_answer(query, retrieval_result, selected_citations),
+                build_deterministic_answer(effective_query, retrieval_result, selected_citations),
                 selected_citations,
             )
             return self._build_output(
@@ -152,6 +177,7 @@ class AnswerPipeline:
                 error_message=None,
                 llm_called=False,
                 used_cache=False,
+                query_rewrite=rewrite_result,
             )
 
         selected_citations = select_relevant_citations(
@@ -165,7 +191,7 @@ class AnswerPipeline:
             retrieval_result
         ):
             final_answer = format_final_answer(
-                build_fallback_answer(query, retrieval_result, reason="low_confidence"),
+                build_fallback_answer(effective_query, retrieval_result, reason="low_confidence"),
                 selected_citations,
             )
             return self._build_output(
@@ -179,10 +205,11 @@ class AnswerPipeline:
                 error_message="Retrieval returned empty or insufficient context.",
                 llm_called=False,
                 used_cache=False,
+                query_rewrite=rewrite_result,
             )
 
         cache_key = self.response_cache.make_cache_key(
-            query=query,
+            query=effective_query,
             retrieval_result=retrieval_result,
             selected_citations=selected_citations,
         )
@@ -199,10 +226,11 @@ class AnswerPipeline:
                 error_message=cached.get("error_message"),
                 llm_called=False,
                 used_cache=True,
+                query_rewrite=rewrite_result,
             )
 
         prompt = build_answer_prompt(
-            query=query,
+            query=effective_query,
             retrieval_result=retrieval_result,
             selected_citations=selected_citations,
             max_context_chars=self.max_context_chars,
@@ -212,7 +240,7 @@ class AnswerPipeline:
             llm_client = self._get_llm_client()
         except Exception as exc:
             final_answer = format_final_answer(
-                build_fallback_answer(query, retrieval_result, reason="api_error"),
+                build_fallback_answer(effective_query, retrieval_result, reason="api_error"),
                 selected_citations,
             )
             return self._build_output(
@@ -226,6 +254,7 @@ class AnswerPipeline:
                 error_message=str(exc),
                 llm_called=False,
                 used_cache=False,
+                query_rewrite=rewrite_result,
             )
 
         self._throttle_llm_call()
@@ -235,7 +264,7 @@ class AnswerPipeline:
         if not llm_result.get("ok"):
             error_type = llm_result.get("error_type") or "api_error"
             final_answer = format_final_answer(
-                build_fallback_answer(query, retrieval_result, reason=error_type),
+                build_fallback_answer(effective_query, retrieval_result, reason=error_type),
                 selected_citations,
             )
             return self._build_output(
@@ -249,6 +278,7 @@ class AnswerPipeline:
                 error_message=llm_result.get("error_message"),
                 llm_called=True,
                 used_cache=False,
+                query_rewrite=rewrite_result,
             )
 
         final_answer = format_final_response(
@@ -266,6 +296,7 @@ class AnswerPipeline:
             error_message=None,
             llm_called=True,
             used_cache=False,
+            query_rewrite=rewrite_result,
         )
         self.response_cache.set(
             cache_key,
@@ -284,6 +315,7 @@ class AnswerPipeline:
             model=self.model,
             collection=self.collection,
             scoring_tables=self.scoring_tables,
+            formula_rules=self.formula_rules,
             entity_registry=self.entity_registry,
             expansion_rules=self.expansion_rules,
             top_k=self.config["retrieval"]["default_top_k"],
@@ -327,9 +359,15 @@ class AnswerPipeline:
         llm_called: bool,
         used_cache: bool,
         clarification_needed: bool = False,
+        query_rewrite: QueryRewriteResult | None = None,
     ) -> dict[str, Any]:
+        query_rewrite_payload = query_rewrite.to_dict() if query_rewrite else None
         return {
             "query": query,
+            "effective_query": (
+                query_rewrite.effective_query if query_rewrite else retrieval_result.get("query", query)
+            ),
+            "query_rewrite": query_rewrite_payload,
             "answer": final_answer,
             "status": status,
             "error_type": error_type,
@@ -340,6 +378,7 @@ class AnswerPipeline:
             "citations": retrieval_result.get("citations", []),
             "citations_used": selected_citations,
             "structured_result": retrieval_result.get("structured_result"),
+            "formula_result": retrieval_result.get("formula_result"),
             "tool_result": retrieval_result.get("tool_result"),
             "llm_called": llm_called,
             "used_cache": used_cache,

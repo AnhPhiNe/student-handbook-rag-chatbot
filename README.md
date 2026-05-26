@@ -5,12 +5,13 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/actions">
-    <img src="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/actions/workflows/ci.yml/badge.svg" alt="CI">
-  </a>
-  <a href="https://www.python.org/downloads/release/python-3110/">
-    <img src="https://img.shields.io/badge/python-3.11-blue.svg" alt="Python 3.11">
-  </a>
+  <img src="https://img.shields.io/badge/python-3.11-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python 3.11">
+  <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white" alt="Streamlit">
+  <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/ChromaDB-FF914D?style=for-the-badge" alt="ChromaDB">
+  <img src="https://img.shields.io/badge/Google%20Gemini-8E75B2?style=for-the-badge&logo=google&logoColor=white" alt="Gemini">
+  <img src="https://img.shields.io/github/actions/workflow/status/AnhPhiNe/student-handbook-rag-chatbot/ci.yml?style=for-the-badge" alt="CI Status">
 </p>
 
 > **English Summary:** This is a production-oriented Retrieval-Augmented Generation (RAG) system built to answer questions about the Ho Chi Minh City University of Education (HCMUE) student handbook. It features a robust document ingestion pipeline, domain-specific semantic chunking, and multi-strategy query routing. Instead of relying solely on LLMs, it implements deterministic lookup paths for exact score matching and formulas. It includes query guardrails, ambiguity detection for Vietnamese entities, and a comprehensive offline evaluation pipeline (190+ test cases) to measure retrieval and routing accuracy. 
@@ -23,7 +24,7 @@ The current pipeline is intentionally tailored to the HCMUE student handbook use
 in this repository. It is not a generic "upload any PDF" chatbot without further
 parser, chunking, entity, and routing adaptation.
 
-## Live Demo
+## 🚀 Live Demo
 
 - Streamlit Cloud UI: https://student-handbook-rag-hcmue.streamlit.app/
 - Hugging Face Spaces backend: https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api
@@ -32,7 +33,7 @@ The public demo uses a two-repository deployment model: Streamlit Cloud hosts
 the UI, and a Hugging Face Docker Space hosts the FastAPI backend with its own
 copy of the prebuilt ChromaDB vectorstore.
 
-## Key Features
+## ✨ Key Features
 
 - PDF ingestion and structured parsing for a Vietnamese student handbook.
 - Semantic chunking by regulations, procedures, forms, scoring tables, and directories.
@@ -44,7 +45,7 @@ copy of the prebuilt ChromaDB vectorstore.
 - Answer guardrails: low-confidence fallback, deterministic lookup answers, citations, and clarification for ambiguous queries.
 - Streamlit chat UI with source display and optional debug information.
 
-## Architecture Overview
+## 🏗️ Architecture Overview
 
 ```mermaid
 graph LR
@@ -76,7 +77,7 @@ calls the FastAPI `POST /chat` endpoint through a small `ChatApiClient`, so the
 UI can use the same response schema without duplicating guardrail, retrieval,
 citation, cache, or Gemini logic.
 
-## Supported Query Scope
+## 🎯 Supported Query Scope
 
 The current chatbot is optimized for Vietnamese questions with proper accents
 about the bundled HCMUE student handbook. It is strongest for questions about:
@@ -93,7 +94,7 @@ retrieval, and an optional LLM query-rewriting layer. They are not yet guarantee
 at the same quality level as properly accented Vietnamese. The current
 evaluation tables below report the accented Vietnamese benchmark.
 
-## Pipeline Overview
+## ⚙️ Pipeline Overview
 
 - PDF ingestion: Load the handbook PDF and extract page-level text.
 - Structure parsing: Build normalized sections and line metadata.
@@ -110,36 +111,17 @@ evaluation tables below report the accented Vietnamese benchmark.
 - User interface: Serve the chatbot through a Streamlit UI that can call either
   `AnswerService` directly or the FastAPI `/chat` backend.
 
-## Project Structure
+## 📁 Project Structure
+
+<details>
+<summary><b>Click to expand</b></summary>
 
 Current production-oriented layout:
 
-```text
-.
-|-- app.py
-|-- configs/
-|-- data/
-|-- docs/
-|-- scripts/
-|-- src/
-|   |-- api/
-|   |-- services/
-|   |-- ui/streamlit/
-|   |-- generation/
-|   |-- retrieval/
-|   |   |-- core/
-|   |   `-- vectorstore/
-|   |-- extraction/
-|   |-- chunking/
-|   |-- ingestion/
-|   |-- preprocessing/
-|   `-- common/
-|-- tests/
-|-- requirements.txt
-`-- .env.example
-```
+```text\
+</details>
 
-## Setup
+## 🛠️ Setup
 
 Recommended Python version: **Python 3.11**. The CI workflow also uses Python 3.11.
 
@@ -171,7 +153,7 @@ pip install -r requirements.lock
 The lockfile records one tested local environment. The looser
 `requirements.txt` remains the portable install target for development and CI.
 
-## Environment Variables
+## 🔐 Environment Variables
 
 Create a local `.env` file from the example:
 
@@ -220,7 +202,7 @@ terminal session.
 
 Do not commit `.env` or `.streamlit/secrets.toml`.
 
-## Run the Streamlit App
+## 💬 Run the Streamlit App
 
 ```bash
 python -m streamlit run app.py --server.fileWatcherType none
@@ -241,7 +223,7 @@ http://127.0.0.1:8000
 
 The app expects the configured processed data and ChromaDB vectorstore to exist locally. If the vectorstore is missing, rebuild the local data artifacts before running the chatbot. In API mode, start the FastAPI backend before sending chat messages.
 
-## Run the FastAPI Backend
+## ⚡ Run the FastAPI Backend
 
 Start the API server:
 
@@ -272,7 +254,7 @@ curl -X POST http://127.0.0.1:8000/chat ^
 The API reuses `AnswerService`, which lazy-loads the answer pipeline. `GET /health`
 does not load the retrieval pipeline or call Gemini.
 
-## Deployment Workflow
+## ☁️ Deployment Workflow
 
 Recommended public demo architecture:
 
@@ -330,7 +312,7 @@ For the current two-repository deployment model:
   changes, rebuild the processed artifacts and vectorstore with
   `python -m scripts.run_all_preprocessing`.
 
-## Local/API Manual Test
+## 🧪 Local/API Manual Test
 
 Terminal 1:
 
@@ -350,7 +332,7 @@ In Streamlit:
 - Select `API`, keep `http://127.0.0.1:8000`, then ask the same question.
 - Stop the backend while in API mode and ask again. The UI should show a friendly backend connection message, keep debug fields available, and avoid dumping a traceback.
 
-## Run Tests
+## ✅ Run Tests
 
 Fast offline ambiguity tests:
 
@@ -367,7 +349,7 @@ python -m compileall src app.py scripts
 These checks are also configured in GitHub Actions (`.github/workflows/ci.yml`) so
 the public portfolio repo can show whether the offline code path still works.
 
-## Rebuild Local Data Artifacts
+## 🔄 Rebuild Local Data Artifacts
 
 To rebuild the generated extraction/chunking/vectorstore artifacts in order:
 
@@ -379,7 +361,7 @@ This runs PDF extraction, structure parsing, structured extraction, chunking,
 ChromaDB embedding, and the retrieval batch report. It can take several minutes
 because the embedding model and ChromaDB vectorstore are rebuilt locally.
 
-## Retrieval Evaluation
+## 📊 Retrieval Evaluation
 
 The repository includes a compact golden retrieval set in:
 
@@ -479,7 +461,7 @@ Write a local reproducibility report:
 python -m scripts.write_reproducibility_report
 ```
 
-## Example Questions
+## ❓ Example Questions
 
 - CNTT ở đâu?
 - Phòng CNTT ở đâu?
@@ -490,7 +472,7 @@ python -m scripts.write_reproducibility_report
 - Điểm rèn luyện 85 là loại gì?
 - Email phòng CTCT-HSSV là gì?
 
-## Demo Flow
+## 🎬 Demo Flow
 
 Recommended manual demo flow:
 
@@ -499,9 +481,10 @@ Recommended manual demo flow:
 3. Ask `Email phòng Đào tạo là gì?` to show cited directory retrieval.
 4. Switch Streamlit from Local mode to API mode and ask the same question.
 
-## Data Policy
+## ⚠️ Data Policy
 
-This repository intentionally includes the demo source PDF at:
+> [!IMPORTANT]
+> This repository intentionally includes the demo source PDF at:
 
 ```text
 data/raw/so-tay-sinh-vien-khoa-48.pdf
@@ -539,13 +522,13 @@ python src/retrieval/core/build_entity_registry.py
 python -m unittest tests.test_entity_registry_builder tests.test_entity_linker
 ```
 
-## License
+## 📄 License
 
 Project source code and authored documentation are released under the MIT
 License. The source handbook PDF and generated artifacts derived from it are not
 relicensed by this repository and remain subject to their original rights.
 
-## Tech Stack
+## 💻 Tech Stack
 
 - Python
 - Streamlit
@@ -559,9 +542,10 @@ relicensed by this repository and remain subject to their original rights.
 - Requests
 - python-dotenv
 
-## Production Notes
+## 🏭 Production Notes
 
-- The system is intentionally domain-specific to the HCMUE student handbook, not
+> [!NOTE]
+> - The system is intentionally domain-specific to the HCMUE student handbook, not
   a general-purpose "upload any PDF" chatbot.
 - Public UI debug output is hidden unless `STUDENT_RAG_SHOW_DEBUG=true`.
 - The FastAPI backend rejects empty and overlong queries and can enable a simple
@@ -572,9 +556,10 @@ relicensed by this repository and remain subject to their original rights.
 - CI runs offline compile, unit tests, and router behavior evaluation without
   calling Gemini.
 
-## Limitations
+## 🚧 Limitations
 
-- The answer quality depends on the parsed handbook data and the local ChromaDB index.
+> [!WARNING]
+> - The answer quality depends on the parsed handbook data and the local ChromaDB index.
 - Public deployment requires a backend that can access `data/vectorstore/chroma`.
 - Gemini answer-generation calls require a valid `GEMINI_API_KEY` in `.env` or
   the process environment.
@@ -593,7 +578,7 @@ relicensed by this repository and remain subject to their original rights.
 - Source files are UTF-8. If Vietnamese text appears garbled in Windows PowerShell,
   read files with `Get-Content -Encoding UTF8 ...` or use a UTF-8 terminal.
 
-## Future Improvements
+## 🔮 Future Improvements
 
 - Broaden the evaluation set with more paraphrases, edge cases, and adversarial questions.
 - Add a dedicated accentless Vietnamese evaluation set and tune the optional

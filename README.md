@@ -53,7 +53,7 @@ graph LR
     %% Inference Pipeline
     Q[User Query] -.-> G{Optional rewriting}
     G -.-> H(Query routing & Entity linking)
-    H --> E2(Embed Query)
+    H --> E2(Embedding Model)
     E2 --> I(Retrieval / Reranking)
     F --> I
     I --> J{Answer guardrails}

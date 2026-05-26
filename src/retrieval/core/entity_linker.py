@@ -98,6 +98,8 @@ def _best_window_ratio(query_tokens: list[str], alias_tokens: list[str]) -> floa
 
 
 def _threshold_for_alias(alias: str) -> float:
-    if len(alias) <= 12:
+    if len(alias) <= 15:
+        return 0.92
+    if len(alias) <= 25:
         return 0.90
     return 0.88

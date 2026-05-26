@@ -17,6 +17,7 @@ from .session_manager import (
     initialize_session_state,
     is_debug_enabled,
     set_last_result,
+    save_user_feedback,
 )
 from .source_renderer import render_sources
 from .ui_components import (
@@ -198,7 +199,8 @@ def _accepts_include_debug(answer_method: Any) -> bool:
 
 def _render_chat_message(message: dict[str, Any]) -> None:
     role = str(message.get("role") or "assistant")
-    message_context = st.chat_message("user") if role == "user" else st.chat_message("assistant")
+    avatar = "🧑‍🎓" if role == "user" else "🦉"
+    message_context = st.chat_message("user", avatar=avatar) if role == "user" else st.chat_message("assistant", avatar=avatar)
     with message_context:
         content = str(message.get("content") or "").strip()
         result = message.get("result") if isinstance(message.get("result"), dict) else None
@@ -210,8 +212,34 @@ def _render_chat_message(message: dict[str, Any]) -> None:
 
         if role == "assistant":
             _render_assistant_result(content=content, result=result)
+            
+            msg_id = message.get("message_id")
+            if msg_id:
+                feedback_key = f"fb_{msg_id}"
+                saved_key = f"saved_{msg_id}"
+                feedback = st.feedback("thumbs", key=feedback_key)
+                
+                if feedback is not None and not st.session_state.get(saved_key):
+                    is_positive = (feedback == 1)
+                    if is_positive:
+                        save_user_feedback(msg_id, True, "", str(message.get("pipeline_query", "")), content)
+                        st.session_state[saved_key] = True
+                    else:
+                        _show_feedback_dialog(msg_id, str(message.get("pipeline_query", "")), content)
         else:
             st.text(content)
+
+
+@st.dialog("Báo cáo lỗi")
+def _show_feedback_dialog(msg_id: str, pipeline_query: str, content: str) -> None:
+    st.markdown("Cảm ơn bạn đã giúp mình cải thiện! Câu trả lời này bị sai ở đâu vậy?")
+    comment = st.text_area("Góp ý của bạn:", key=f"txt_{msg_id}")
+    if st.button("Gửi báo cáo", type="primary"):
+        save_user_feedback(msg_id, False, comment, pipeline_query, content)
+        st.session_state[f"saved_{msg_id}"] = True
+        st.success("Gửi báo cáo thành công!")
+        time.sleep(1)
+        st.rerun()
 
 
 def _render_assistant_result(

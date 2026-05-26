@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from html import escape
 from typing import Any
@@ -28,7 +28,7 @@ def render_sources(
         return
 
     source_count = len(visible_citations)
-    label = "Nguồn tham khảo" if source_count == 1 else f"Nguồn tham khảo ({source_count})"
+    label = "📚 Xem nguồn trích dẫn từ Sổ tay" if source_count == 1 else f"📚 Xem nguồn trích dẫn ({source_count} tài liệu)"
     _, source_col, _ = st.columns([0.06, 0.88, 0.06])
     with source_col:
         with st.expander(label, expanded=False):

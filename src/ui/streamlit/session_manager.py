@@ -1,7 +1,10 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import os
 from typing import Any
+import json
+from datetime import datetime
+from pathlib import Path
 
 import streamlit as st
 
@@ -83,3 +86,21 @@ def is_debug_enabled() -> bool:
 def is_debug_available() -> bool:
     value = os.getenv("STUDENT_RAG_SHOW_DEBUG", "false")
     return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def save_user_feedback(message_id: str, is_positive: bool, comment: str, pipeline_query: str, answer: str) -> None:
+    feedback_dir = Path("data/processed")
+    feedback_dir.mkdir(parents=True, exist_ok=True)
+    feedback_file = feedback_dir / "user_feedback.jsonl"
+    
+    record = {
+        "timestamp": datetime.now().isoformat(),
+        "message_id": message_id,
+        "is_positive": is_positive,
+        "comment": comment,
+        "pipeline_query": pipeline_query,
+        "answer": answer,
+    }
+    
+    with open(feedback_file, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")

@@ -1,4 +1,4 @@
-﻿import streamlit as st
+import streamlit as st
 
 
 def apply_theme() -> None:
@@ -43,13 +43,13 @@ def apply_theme() -> None:
                 background: transparent;
             }
 
-            footer {
-                visibility: hidden;
+            header[data-testid="stHeader"] {
+                background: transparent;
             }
 
-            [data-testid="stSidebar"],
-            [data-testid="collapsedControl"] {
-                display: none;
+            [data-testid="stSidebar"] {
+                background: #ffffff;
+                border-right: 1px solid var(--ep-border);
             }
 
             [data-testid="stPopover"] {
@@ -643,6 +643,21 @@ def apply_theme() -> None:
 
             .stChatInputContainer textarea {
                 border-radius: 999px;
+            }
+
+            .ep-footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                text-align: center;
+                padding: 0.5rem;
+                background: rgba(247, 248, 251, 0.9);
+                backdrop-filter: blur(4px);
+                color: var(--ep-muted);
+                font-size: 0.8rem;
+                border-top: 1px solid var(--ep-border);
+                z-index: 1000;
             }
 
             @media (max-width: 760px) {

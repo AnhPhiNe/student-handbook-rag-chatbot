@@ -1,3 +1,4 @@
+import chromadb
 from typing import Any
 
 from sentence_transformers import SentenceTransformer
@@ -32,7 +33,7 @@ def retrieve_with_plan(
     query: str,
     plan: dict[str, Any],
     model: SentenceTransformer,
-    collection,
+    collection: chromadb.Collection,
     batch_size: int,
     normalize_embeddings: bool,
     detected_entities: list[dict[str, Any]],
@@ -62,7 +63,7 @@ def retrieve_with_plan(
 def run_retrieval_pipeline(
     query: str,
     model: SentenceTransformer,
-    collection,
+    collection: chromadb.Collection,
     scoring_tables: list[dict[str, Any]],
     formula_rules: list[dict[str, Any]] | None,
     entity_registry: list[dict[str, Any]],

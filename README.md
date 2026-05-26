@@ -1,4 +1,13 @@
-﻿# HCMUE Student Handbook RAG Assistant
+# HCMUE Student Handbook RAG Assistant
+
+[![CI](https://github.com/AnhPhiNe/student-handbook-rag-chatbot/actions/workflows/ci.yml/badge.svg)](https://github.com/AnhPhiNe/student-handbook-rag-chatbot/actions)
+[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
+
+<p align="center">
+  <img src="assets/chatbot.png" alt="HCMUE RAG Chatbot UI Demo" width="800">
+</p>
+
+> **English Summary:** This is a production-oriented Retrieval-Augmented Generation (RAG) system built to answer questions about the Ho Chi Minh City University of Education (HCMUE) student handbook. It features a robust document ingestion pipeline, domain-specific semantic chunking, and multi-strategy query routing. Instead of relying solely on LLMs, it implements deterministic lookup paths for exact score matching and formulas. It includes query guardrails, ambiguity detection for Vietnamese entities, and a comprehensive offline evaluation pipeline (190+ test cases) to measure retrieval and routing accuracy. 
 
 An AI chatbot for answering questions from the HCMUE student handbook using a local Retrieval-Augmented Generation (RAG) pipeline, ChromaDB vector search, deterministic lookup tools, and Gemini answer generation.
 
@@ -31,29 +40,24 @@ copy of the prebuilt ChromaDB vectorstore.
 
 ## Architecture Overview
 
-```text
-Student handbook PDF
-        |
-        v
-PDF/text extraction -> structure parsing -> entity/form/table extraction
-        |
-        v
-chunking -> embeddings -> ChromaDB vectorstore
-        |
-        v
-optional query rewriting
-        |
-        v
-query routing + entity linking + retrieval/reranking
-        |
-        v
-answer guardrails -> Gemini answer generation or deterministic answer
-        |
-        v
-AnswerService shared contract / FastAPI backend
-        |
-        v
-Streamlit chatbot UI with Local/API execution modes
+```mermaid
+graph TD
+    A[Student handbook PDF] --> B(PDF/text extraction)
+    B --> C(Structure parsing)
+    C --> D(Entity/form/table extraction)
+    D --> E(Chunking)
+    E --> F[(ChromaDB vectorstore)]
+    
+    Q[User Query] -.-> G{Optional query rewriting}
+    G -.-> H(Query routing + Entity linking)
+    H --> I(Retrieval / Reranking)
+    F --> I
+    I --> J{Answer guardrails}
+    J --> K(Gemini answer generation)
+    J --> L(Deterministic answer)
+    K --> M[AnswerService shared contract / FastAPI backend]
+    L --> M
+    M --> N(Streamlit chatbot UI)
 ```
 
 The Streamlit app can run in two execution modes. In Local mode it calls

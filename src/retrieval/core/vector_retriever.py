@@ -13,7 +13,7 @@ def load_embedding_model(model_name: str) -> SentenceTransformer:
     return SentenceTransformer(model_name, device=get_device())
 
 
-def get_chroma_collection(persist_dir: str, collection_name: str):
+def get_chroma_collection(persist_dir: str, collection_name: str) -> chromadb.Collection:
     client = chromadb.PersistentClient(path=persist_dir)
     return client.get_collection(name=collection_name)
 
@@ -31,7 +31,7 @@ def build_where_filter(chunk_types: Optional[list[str]]) -> Optional[dict[str, A
 def vector_search(
     query: str,
     model: SentenceTransformer,
-    collection,
+    collection: chromadb.Collection,
     chunk_types: Optional[list[str]] = None,
     top_k: int = 5,
     batch_size: int = 8,

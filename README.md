@@ -1,10 +1,6 @@
 # HCMUE Student Handbook RAG Assistant
 
 <p align="center">
-  <img src="assets/chatbot.png" alt="HCMUE RAG Chatbot UI Demo" width="200">
-</p>
-
-<p align="center">
   <img src="https://img.shields.io/badge/python-3.11-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python 3.11">
   <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white" alt="Streamlit">
   <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI">
@@ -14,15 +10,12 @@
   <img src="https://img.shields.io/github/actions/workflow/status/AnhPhiNe/student-handbook-rag-chatbot/ci.yml?style=for-the-badge" alt="CI Status">
 </p>
 
-> **English Summary:** This is a production-oriented Retrieval-Augmented Generation (RAG) system built to answer questions about the Ho Chi Minh City University of Education (HCMUE) student handbook. It features a robust document ingestion pipeline, domain-specific semantic chunking, and multi-strategy query routing. Instead of relying solely on LLMs, it implements deterministic lookup paths for exact score matching and formulas. It includes query guardrails, ambiguity detection for Vietnamese entities, and a comprehensive offline evaluation pipeline (190+ test cases) to measure retrieval and routing accuracy. 
+An advanced, production-oriented **Retrieval-Augmented Generation (RAG)** assistant designed to answer questions about the Ho Chi Minh City University of Education (HCMUE) student handbook. 
 
-An AI chatbot for answering questions from the HCMUE student handbook using a local Retrieval-Augmented Generation (RAG) pipeline, ChromaDB vector search, deterministic lookup tools, and Gemini answer generation.
+This project is built as an **AI Engineer Intern portfolio project**, featuring a robust document ingestion pipeline, domain-specific semantic chunking, and multi-strategy query routing. Instead of relying solely on LLMs, it implements deterministic lookup paths for exact score matching, includes query guardrails, ambiguity detection for Vietnamese entities, and a comprehensive offline evaluation pipeline to ensure high retrieval and routing accuracy.
 
-This project is built as an AI Engineer Intern portfolio project: the focus is on practical document processing, retrieval quality, guardrails, citations, and a usable Streamlit interface.
-
-The current pipeline is intentionally tailored to the HCMUE student handbook used
-in this repository. It is not a generic "upload any PDF" chatbot without further
-parser, chunking, entity, and routing adaptation.
+> [!NOTE]
+> The current pipeline is intentionally tailored to the HCMUE student handbook used in this repository. It is not a generic "upload any PDF" chatbot without further parser, chunking, entity, and routing adaptation.
 
 ## 🚀 Live Demo
 
@@ -48,7 +41,7 @@ copy of the prebuilt ChromaDB vectorstore.
 ## 🏗️ Architecture Overview
 
 ```mermaid
-graph LR
+graph TD
     subgraph Ingestion Pipeline
         A[Student handbook PDF] --> B(PDF/text extraction)
         B --> C(Structure parsing)

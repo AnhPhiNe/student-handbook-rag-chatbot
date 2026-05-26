@@ -46,7 +46,7 @@ def normalize_query_with_entities(
 
     for entity in detected_entities:
         canonical = entity["canonical_name"]
-        if canonical.lower() not in query.lower():
+        if canonical not in query:
             additions.append(canonical)
 
     if not additions:

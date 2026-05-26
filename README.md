@@ -113,13 +113,32 @@ evaluation tables below report the accented Vietnamese benchmark.
 
 ## 📁 Project Structure
 
-<details>
-<summary><b>Click to expand</b></summary>
-
 Current production-oriented layout:
 
-```text\
-</details>
+```text
+.
+|-- app.py
+|-- configs/
+|-- data/
+|-- docs/
+|-- scripts/
+|-- src/
+|   |-- api/
+|   |-- services/
+|   |-- ui/streamlit/
+|   |-- generation/
+|   |-- retrieval/
+|   |   |-- core/
+|   |   `-- vectorstore/
+|   |-- extraction/
+|   |-- chunking/
+|   |-- ingestion/
+|   |-- preprocessing/
+|   `-- common/
+|-- tests/
+|-- requirements.txt
+`-- .env.example
+```
 
 ## 🛠️ Setup
 

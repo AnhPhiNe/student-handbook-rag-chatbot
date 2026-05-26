@@ -117,27 +117,27 @@ Current production-oriented layout:
 
 ```text
 .
-|-- app.py
-|-- configs/
-|-- data/
-|-- docs/
-|-- scripts/
-|-- src/
-|   |-- api/
-|   |-- services/
-|   |-- ui/streamlit/
-|   |-- generation/
-|   |-- retrieval/
-|   |   |-- core/
-|   |   `-- vectorstore/
-|   |-- extraction/
-|   |-- chunking/
-|   |-- ingestion/
-|   |-- preprocessing/
-|   `-- common/
-|-- tests/
-|-- requirements.txt
-`-- .env.example
+|-- app.py                  # Main Streamlit UI entrypoint
+|-- configs/                # YAML configuration files (routing, guardrails)
+|-- data/                   # Raw PDFs, generated vectorstore, and eval sets
+|-- docs/                   # Additional documentation (e.g., deployment guides)
+|-- scripts/                # CI/CD and offline evaluation scripts
+|-- src/                    # Core application source code
+|   |-- api/                # FastAPI backend endpoints
+|   |-- services/           # Shared AnswerService logic
+|   |-- ui/streamlit/       # Streamlit UI components and logic
+|   |-- generation/         # LLM interaction, guardrails, and answer formatting
+|   |-- retrieval/          
+|   |   |-- core/           # Query routing, retrieval pipeline, and tools
+|   |   `-- vectorstore/    # ChromaDB client and embedding models
+|   |-- extraction/         # Layout-based extraction (forms, tables, faculties)
+|   |-- chunking/           # Domain-specific semantic chunking rules
+|   |-- ingestion/          # PDF loading utilities
+|   |-- preprocessing/      # Structural parsing of raw handbook text
+|   `-- common/             # Shared project utilities
+|-- tests/                  # Offline unit tests
+|-- requirements.txt        # Production dependencies
+`-- .env.example            # Environment variables template
 ```
 
 ## 🛠️ Setup

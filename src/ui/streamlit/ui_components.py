@@ -14,16 +14,12 @@ from .session_manager import (
 )
 import json
 
-
 QUICK_QUESTIONS = [
-    "Email của khoa tiếng Anh là gì?",
-    "Khoa công nghệ thông tin ở đâu?",
-    "Khoa tiếng Anh có những ngành gì?",
-    "Mẫu đơn xin học lại nằm ở đâu?",
-    "Trường có bán bánh tráng trộn không?",
-    "Điều kiện xét tốt nghiệp là gì?",
-    "Điều kiện xét học bổng là gì?",
-    "Học bổng KKHT có những mức nào?",
+    "🎓 Điều kiện để xét Học bổng KKHT?",
+    "📚 Muốn xin bảng điểm thì đến phòng nào?",
+    "📝 Quy định về thời gian đào tạo tối đa?",
+    "🏛️ Trường hợp nào bị cảnh cáo học vụ?",
+    "📧 Trường hợp nào bị buộc thôi học?",
 ]
 
 API_CLIENT_ERROR_STATUSES = {
@@ -55,12 +51,12 @@ def render_execution_mode_controls(
     default_index = 1 if default_mode == "API" else 0
     execution_mode = "API" if default_index == 1 else "Local"
 
-    with st.popover("⚙️ Cài đặt"):
+    with st.sidebar:
+        st.divider()
         st.markdown(
             """
-            <div class="ep-settings-title">
-                <strong>Cài đặt</strong>
-                <span>Ẩn các tuỳ chọn vận hành của chatbot.</span>
+            <div class="ep-settings-title" style="margin-bottom: 8px;">
+                <strong>⚙️ Cài đặt hệ thống</strong>
             </div>
             """,
             unsafe_allow_html=True,
@@ -137,10 +133,7 @@ def render_header(title: str, subtitle: str, compact: bool = False) -> None:
     st.markdown(
         f"""
         <section class="ep-landing">
-            <div class="ep-assistant-mark" aria-hidden="true">
-                🦉
-            </div>
-            <h1>{safe_title}</h1>
+            <h1><span style="color:var(--ep-coral)">✳</span> Trợ lý Sổ tay sinh viên</h1>
             <p>{safe_subtitle}</p>
         </section>
         """,
@@ -156,7 +149,7 @@ def render_initial_prompt_panel(
     st.markdown(
         """
         <div class="ep-guide-card">
-            ✨ Bạn có thể hỏi về: <strong>Học bổng</strong>, <strong>Học lại</strong>, <strong>Điểm rèn luyện</strong>, <strong>Biểu mẫu</strong>, hoặc <strong>Thông tin liên hệ</strong> của các khoa...
+            Hỏi mình bất cứ điều gì về Quy chế, Điểm rèn luyện, hoặc Học bổng nhé.
         </div>
         """,
         unsafe_allow_html=True,
@@ -321,12 +314,25 @@ def _render_notice(kind: str, title: str, body: str) -> None:
     )
 
 
+import base64
+from pathlib import Path
+
+def get_image_base64(path: str) -> str:
+    try:
+        with open(path, "rb") as f:
+            return base64.b64encode(f.read()).decode("utf-8")
+    except Exception:
+        return ""
+
 def render_sidebar() -> None:
+    logo_base64 = get_image_base64("assets/logo_hcmue.png")
+    logo_img_tag = f'<img src="data:image/png;base64,{logo_base64}" style="width:100%; height:100%; object-fit:contain;" />' if logo_base64 else '🦉'
+    
     with st.sidebar:
         st.markdown(
-            """
+            f"""
             <div class="ep-sidebar-brand">
-                <div class="ep-logo-mark">🦉</div>
+                <div class="ep-logo-mark">{logo_img_tag}</div>
                 <div>
                     <strong>Sổ tay HCMUE</strong>
                     <span>Phiên bản 2024-2025</span>
@@ -367,6 +373,7 @@ def render_sidebar() -> None:
 
         st.divider()
         st.markdown("**Liên kết hữu ích**")
+        st.markdown("[📕 **Sổ tay sinh viên HCMUE (Bản gốc)**](https://ctsv.hcmue.edu.vn/vi/thu-vien/van-ban/hcmue/so-tay-sinh-vien-hcmue/so-tay-sinh-vien-truong-dai-hoc-su-pham-thanh-pho-ho-chi-minh-2024-2025)")
         st.markdown("[🌐 Trang chủ HCMUE](https://hcmue.edu.vn)")
         st.markdown("[📧 Phòng Công tác sinh viên](https://ctsv.hcmue.edu.vn)")
 

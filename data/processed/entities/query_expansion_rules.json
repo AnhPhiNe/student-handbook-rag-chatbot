@@ -44,7 +44,15 @@
     "expand_to": ["đơn đề nghị hỗ trợ chi phí học tập"]
   },
   {
-  "trigger": ["đơn gì", "cần đơn gì", "làm đơn gì", "dùng đơn gì"],
-  "expand_to": ["mẫu đơn", "biểu mẫu", "đơn xin"]
+    "trigger": ["đơn gì", "cần đơn gì", "làm đơn gì", "dùng đơn gì"],
+    "expand_to": ["mẫu đơn", "biểu mẫu", "đơn xin"]
+  },
+  {
+    "trigger": ["thời gian đào tạo", "thời gian học tập", "bao lâu thì ra trường", "học mấy năm", "đào tạo hệ chính quy"],
+    "expand_to": ["thời gian học tập chuẩn toàn khóa", "thời gian học tập tối đa", "hình thức đào tạo chính quy"]
+  },
+  {
+    "trigger": ["bị đuổi", "đuổi học", "bị đuổi học", "đuổi"],
+    "expand_to": ["buộc thôi học", "cảnh báo học vụ", "thời gian học tập tối đa"]
   }
 ]

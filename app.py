@@ -63,6 +63,8 @@ def main() -> None:
     )
     apply_theme()
 
+    render_sidebar()
+
     default_api_base_url = get_runtime_setting(
         "STUDENT_RAG_API_BASE_URL",
         DEFAULT_API_BASE_URL,
@@ -86,7 +88,6 @@ def main() -> None:
         subtitle=APP_SUBTITLE,
     )
 
-    render_sidebar()
     render_footer("A Fee - Khoa Công nghệ thông tin")
 
 

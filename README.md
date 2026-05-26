@@ -47,12 +47,14 @@ graph LR
     B --> C(Structure parsing)
     C --> D(Structured extraction)
     D --> E(Chunking)
-    E --> F[(ChromaDB)]
+    E --> V(Embedding Model)
+    V --> F[(ChromaDB)]
 
     %% Inference Pipeline
     Q[User Query] -.-> G{Optional rewriting}
     G -.-> H(Query routing & Entity linking)
-    H --> I(Retrieval / Reranking)
+    H --> E2(Embed Query)
+    E2 --> I(Retrieval / Reranking)
     F --> I
     I --> J{Answer guardrails}
     J --> K(Gemini answer)

@@ -129,7 +129,7 @@ def _handle_pending_response(
     pipeline_query = pending_response.get("pipeline_query") or pending_response.get("display_query") or ""
     result = _build_answer_result(pipeline_query, answer_client)
 
-    with st.chat_message("assistant"):
+    with st.chat_message("assistant", avatar="🦉"):
         _render_assistant_result(content=result["answer"], result=result, stream=True)
 
     _insert_assistant_after_user(

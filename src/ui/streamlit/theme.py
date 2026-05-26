@@ -6,20 +6,20 @@ def apply_theme() -> None:
         """
         <style>
             :root {
-                --ep-bg: #f7f8fb;
+                --ep-bg: #ffffff;
                 --ep-panel: #ffffff;
-                --ep-panel-soft: #fbfdff;
-                --ep-user: #eef6ff;
-                --ep-navy: #102a43;
-                --ep-blue: #2563eb;
-                --ep-blue-soft: #eaf2ff;
-                --ep-text: #1f2937;
-                --ep-muted: #667085;
-                --ep-border: #e4eaf2;
-                --ep-border-strong: #b9cbe5;
-                --ep-danger: #b42318;
-                --ep-shadow: 0 14px 36px rgba(16, 42, 67, 0.08);
-                --ep-shadow-soft: 0 8px 20px rgba(16, 42, 67, 0.055);
+                --ep-panel-soft: #fafafa;
+                --ep-user: #fafafa;
+                --ep-navy: #000000;
+                --ep-blue: #000000;
+                --ep-blue-soft: #fafafa;
+                --ep-text: #000000;
+                --ep-muted: #737373;
+                --ep-border: #e5e5e5;
+                --ep-border-strong: #d4d4d4;
+                --ep-danger: #ff5f56;
+                --ep-shadow: none;
+                --ep-shadow-soft: none;
             }
 
             html, body, [class*="css"] {
@@ -27,76 +27,23 @@ def apply_theme() -> None:
                 letter-spacing: 0;
             }
 
+            h1, h2, h3, h4, h5, h6, .ep-landing h1, .ep-chat-header h1 {
+                font-family: "SF Pro Rounded", "Nunito", -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
+                font-weight: 500;
+            }
+
             .stApp {
-                background:
-                    radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.06), transparent 28rem),
-                    var(--ep-bg);
+                background: var(--ep-bg);
                 color: var(--ep-text);
             }
 
             .block-container {
-                max-width: 930px;
+                max-width: 720px;
                 padding: 1rem 1.25rem 5.75rem;
             }
 
             header[data-testid="stHeader"] {
                 background: transparent;
-            }
-
-            header[data-testid="stHeader"] {
-                background: transparent;
-            }
-
-            [data-testid="stSidebar"] {
-                background: #ffffff;
-                border-right: 1px solid var(--ep-border);
-            }
-
-            [data-testid="stPopover"] {
-                position: fixed;
-                top: 0.72rem;
-                left: 1rem;
-                z-index: 2147483647;
-                width: fit-content !important;
-                max-width: fit-content !important;
-                pointer-events: auto;
-            }
-
-            [data-testid="stPopover"] button {
-                width: auto !important;
-                min-height: 2.25rem;
-                padding-left: 0.9rem;
-                padding-right: 0.9rem;
-                border: 1px solid var(--ep-border);
-                border-radius: 999px;
-                background: rgba(255, 255, 255, 0.9);
-                color: #3f4652;
-                font-weight: 650;
-                box-shadow: none;
-                pointer-events: auto;
-            }
-
-            [data-testid="stPopover"] button:hover {
-                border-color: #c7d6eb;
-                background: #ffffff;
-                color: var(--ep-blue);
-            }
-
-            .ep-settings-title {
-                display: grid;
-                gap: 0.18rem;
-                margin-bottom: 0.8rem;
-            }
-
-            .ep-settings-title strong {
-                color: var(--ep-navy);
-                font-size: 0.98rem;
-            }
-
-            .ep-settings-title span {
-                color: var(--ep-muted);
-                font-size: 0.84rem;
-                line-height: 1.45;
             }
 
             [data-testid="stSidebar"] {
@@ -126,10 +73,11 @@ def apply_theme() -> None:
                 display: grid;
                 place-items: center;
                 border-radius: 12px;
-                background: var(--ep-navy);
-                color: #ffffff;
-                font-weight: 850;
-                box-shadow: var(--ep-shadow-soft);
+                background: var(--ep-panel-soft);
+                color: #000000;
+                font-size: 20px;
+                border: 1px solid var(--ep-border);
+                box-shadow: none;
             }
 
             .ep-logo-mark {
@@ -175,7 +123,7 @@ def apply_theme() -> None:
             }
 
             .ep-mode-status strong {
-                color: var(--ep-blue);
+                color: var(--ep-navy);
                 font-size: 0.9rem;
             }
 
@@ -184,9 +132,9 @@ def apply_theme() -> None:
                 gap: 0.25rem;
                 margin-bottom: 0.85rem;
                 padding: 0.72rem 0.78rem;
-                border: 1px solid #cfe0f5;
+                border: 1px solid var(--ep-border);
                 border-radius: 12px;
-                background: var(--ep-blue-soft);
+                background: var(--ep-panel-soft);
             }
 
             .ep-sidebar-note strong {
@@ -195,25 +143,25 @@ def apply_theme() -> None:
             }
 
             .ep-sidebar-note span {
-                color: #315675;
+                color: var(--ep-muted);
                 font-size: 0.84rem;
                 line-height: 1.45;
             }
 
             [data-testid="stSidebar"] .stButton > button {
                 min-height: 2.55rem;
-                border: 1px solid #ead4d1;
-                border-radius: 12px;
+                border: 1px solid var(--ep-border);
+                border-radius: 9999px;
                 background: #ffffff;
-                color: var(--ep-danger);
-                font-weight: 720;
+                color: var(--ep-text);
+                font-weight: 500;
                 box-shadow: none;
             }
 
             [data-testid="stSidebar"] .stButton > button:hover {
-                border-color: #f0b6b1;
-                background: #fff7f6;
-                color: #912018;
+                border-color: var(--ep-border-strong);
+                background: var(--ep-panel-soft);
+                color: #000000;
             }
 
             .ep-landing {
@@ -232,63 +180,20 @@ def apply_theme() -> None:
             .st-key-hcmue_restart_row button {
                 min-height: 1.9rem;
                 padding: 0.15rem 0.55rem;
-                border-radius: 999px;
+                border-radius: 9999px;
                 color: var(--ep-muted);
+                border: 1px solid var(--ep-border);
             }
 
             .ep-assistant-mark {
-                position: relative;
-                width: 3.9rem;
-                height: 3.9rem;
-                margin-bottom: 1.55rem;
+                font-size: 64px;
+                line-height: 1;
+                margin-bottom: 16px;
             }
-
-            .ep-assistant-mark:before,
-            .ep-assistant-mark:after {
-                content: "";
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                width: 3.15rem;
-                height: 1px;
-                background: #3f4652;
-                transform-origin: center;
-            }
-
-            .ep-assistant-mark:after {
-                transform: translate(-50%, -50%) rotate(90deg);
-            }
-
-            .ep-assistant-mark:before {
-                transform: translate(-50%, -50%);
-                box-shadow:
-                    0 0 0 #3f4652,
-                    0 0 0 #3f4652;
-            }
-
-            .ep-assistant-mark span {
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                width: 0.72rem;
-                height: 0.72rem;
-                background: #3f4652;
-                border-radius: 999px;
-                transform: translate(-50%, -50%);
-            }
-
-            .ep-assistant-mark span:nth-child(1) { transform: translate(-50%, -50%) rotate(0deg) translateX(1.58rem); }
-            .ep-assistant-mark span:nth-child(2) { transform: translate(-50%, -50%) rotate(45deg) translateX(1.58rem); }
-            .ep-assistant-mark span:nth-child(3) { transform: translate(-50%, -50%) rotate(90deg) translateX(1.58rem); }
-            .ep-assistant-mark span:nth-child(4) { transform: translate(-50%, -50%) rotate(135deg) translateX(1.58rem); }
-            .ep-assistant-mark span:nth-child(5) { transform: translate(-50%, -50%) rotate(180deg) translateX(1.58rem); }
-            .ep-assistant-mark span:nth-child(6) { transform: translate(-50%, -50%) rotate(225deg) translateX(1.58rem); }
-            .ep-assistant-mark span:nth-child(7) { transform: translate(-50%, -50%) rotate(270deg) translateX(1.58rem); }
-            .ep-assistant-mark span:nth-child(8) { transform: translate(-50%, -50%) rotate(315deg) translateX(1.58rem); }
 
             .ep-landing h1 {
                 max-width: 780px;
-                color: #3f4652;
+                color: #000000;
                 font-size: clamp(2rem, 4.6vw, 3.05rem);
                 line-height: 1.08;
                 margin: 0;
@@ -333,7 +238,7 @@ def apply_theme() -> None:
                 border: 0;
                 border-radius: 0;
                 background: transparent;
-                color: #465b70;
+                color: var(--ep-muted);
                 line-height: 1.55;
                 text-align: center;
             }
@@ -400,7 +305,7 @@ def apply_theme() -> None:
                 max-width: 100% !important;
                 box-sizing: border-box !important;
                 min-height: 2.75rem !important;
-                border-radius: 999px !important;
+                border-radius: 9999px !important;
                 border: 1px solid var(--ep-border) !important;
                 background: #ffffff !important;
                 box-shadow: none !important;
@@ -413,8 +318,8 @@ def apply_theme() -> None:
             }
 
             [data-testid="stChatInput"] textarea:focus {
-                border-color: #c8d5e6 !important;
-                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08) !important;
+                border-color: #000000 !important;
+                box-shadow: 0 0 0 1px #000000 !important;
             }
 
             [data-testid="stChatInputSubmitButton"] {
@@ -427,15 +332,15 @@ def apply_theme() -> None:
                 padding: 0 !important;
                 transform: translateY(-50%);
                 border: 0 !important;
-                border-radius: 999px !important;
-                background: #eef3f8 !important;
-                color: #6b7280 !important;
+                border-radius: 9999px !important;
+                background: #fafafa !important;
+                color: #a3a3a3 !important;
                 box-shadow: none !important;
             }
 
             [data-testid="stChatInputSubmitButton"]:hover {
-                background: var(--ep-blue-soft) !important;
-                color: var(--ep-blue) !important;
+                background: #000000 !important;
+                color: #ffffff !important;
             }
 
             [data-testid="stChatFloatingInputContainer"] {
@@ -453,27 +358,27 @@ def apply_theme() -> None:
             }
 
             [data-testid="stPills"] button {
-                border: 1px solid var(--ep-border);
-                background: rgba(255, 255, 255, 0.86);
-                color: #26384d;
-                border-radius: 999px;
+                border: none;
+                background: var(--ep-panel-soft);
+                color: var(--ep-text);
+                border-radius: 9999px;
                 min-height: 2.18rem;
-                font-weight: 560;
+                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+                font-size: 14px;
+                font-weight: 400;
                 box-shadow: none;
                 transition: 140ms ease;
             }
 
             [data-testid="stPills"] button:hover {
-                border-color: #9fc0f3;
-                background: var(--ep-blue-soft);
-                color: #1d4ed8;
-                transform: translateY(-1px);
+                background: #ffffff;
+                color: #000000;
+                border: 1px solid #000000;
             }
 
             [data-testid="stPills"] button[aria-selected="true"] {
-                border-color: #8bb8ff;
-                background: #eef5ff;
-                color: var(--ep-blue);
+                background: #000000;
+                color: #ffffff;
             }
 
             .ep-followup-strip {
@@ -494,12 +399,12 @@ def apply_theme() -> None:
                 padding: 0.55rem 0.68rem;
                 margin: 0.46rem 0;
                 background: #ffffff;
-                box-shadow: var(--ep-shadow-soft);
+                box-shadow: none;
             }
 
             [data-testid="stChatMessage"]:has(.ep-message-user) {
                 background: var(--ep-user);
-                border-color: #cfe4fb;
+                border-color: var(--ep-border);
             }
 
             [data-testid="stChatMessage"]:has(.ep-message-assistant) {
@@ -509,12 +414,12 @@ def apply_theme() -> None:
             .ep-message-label {
                 color: var(--ep-muted);
                 font-size: 0.78rem;
-                font-weight: 780;
+                font-weight: 500;
                 margin-bottom: 0.2rem;
             }
 
             .ep-message-user {
-                color: #1c5c9e;
+                color: var(--ep-muted);
             }
 
             .ep-message-assistant {
@@ -529,7 +434,7 @@ def apply_theme() -> None:
             }
 
             .ep-chat-bubble-user {
-                color: #173a5b;
+                color: #525252;
             }
 
             .ep-status-card {
@@ -539,7 +444,7 @@ def apply_theme() -> None:
                 padding: 0.78rem 0.88rem;
                 border-radius: 12px;
                 border: 1px solid var(--ep-border);
-                background: #f8fbff;
+                background: var(--ep-panel-soft);
             }
 
             .ep-status-card strong {
@@ -548,24 +453,24 @@ def apply_theme() -> None:
             }
 
             .ep-status-card span {
-                color: #425b72;
+                color: var(--ep-muted);
                 font-size: 0.9rem;
                 line-height: 1.5;
             }
 
             .ep-status-error {
-                border-color: #f2c7c3;
-                background: #fff8f7;
+                border-color: #ff5f56;
+                background: #fffafa;
             }
 
             .ep-status-warning {
-                border-color: #f2d7a0;
-                background: #fffaf0;
+                border-color: #ffbd2e;
+                background: #fffdfa;
             }
 
             .ep-status-clarify {
-                border-color: #b8d6f7;
-                background: #edf6ff;
+                border-color: var(--ep-border);
+                background: var(--ep-panel-soft);
             }
 
             .source-card {
@@ -574,11 +479,11 @@ def apply_theme() -> None:
                 padding: 0.72rem 0.82rem;
                 margin: 0.52rem 0;
                 background: var(--ep-panel-soft);
-                box-shadow: 0 5px 12px rgba(16, 42, 67, 0.035);
+                box-shadow: none;
             }
 
             .source-title {
-                font-weight: 760;
+                font-weight: 500;
                 color: var(--ep-text);
                 margin-bottom: 0.42rem;
                 line-height: 1.35;
@@ -593,11 +498,12 @@ def apply_theme() -> None:
             }
 
             .source-meta span {
-                background: var(--ep-blue-soft);
-                color: #184d8f;
-                border-radius: 999px;
+                background: #ffffff;
+                color: #525252;
+                border: 1px solid var(--ep-border);
+                border-radius: 9999px;
                 padding: 0.18rem 0.5rem;
-                font-weight: 650;
+                font-weight: 500;
             }
 
             .ep-debug-grid {
@@ -618,7 +524,7 @@ def apply_theme() -> None:
             .ep-debug-grid span {
                 color: var(--ep-muted);
                 font-size: 0.76rem;
-                font-weight: 720;
+                font-weight: 500;
             }
 
             .ep-debug-grid strong {
@@ -631,18 +537,18 @@ def apply_theme() -> None:
             [data-testid="stExpander"] {
                 border-radius: 12px;
                 border: 1px solid var(--ep-border);
-                box-shadow: var(--ep-shadow-soft);
+                box-shadow: none;
             }
 
             textarea,
             input,
             button[kind="primary"],
             .stButton > button {
-                border-radius: 12px;
+                border-radius: 9999px; /* All primary interactive elements are pills */
             }
 
             .stChatInputContainer textarea {
-                border-radius: 999px;
+                border-radius: 9999px;
             }
 
             .ep-footer {
@@ -652,7 +558,7 @@ def apply_theme() -> None:
                 right: 0;
                 text-align: center;
                 padding: 0.5rem;
-                background: rgba(247, 248, 251, 0.9);
+                background: rgba(255, 255, 255, 0.9);
                 backdrop-filter: blur(4px);
                 color: var(--ep-muted);
                 font-size: 0.8rem;

@@ -138,8 +138,7 @@ def render_header(title: str, subtitle: str, compact: bool = False) -> None:
         f"""
         <section class="ep-landing">
             <div class="ep-assistant-mark" aria-hidden="true">
-                <span></span><span></span><span></span><span></span>
-                <span></span><span></span><span></span><span></span>
+                🦉
             </div>
             <h1>{safe_title}</h1>
             <p>{safe_subtitle}</p>

@@ -41,27 +41,25 @@ copy of the prebuilt ChromaDB vectorstore.
 ## 🏗️ Architecture Overview
 
 ```mermaid
-graph TD
-    subgraph Ingestion Pipeline
-        A[Student handbook PDF] --> B(PDF/text extraction)
-        B --> C(Structure parsing)
-        C --> D(Entity/form/table extraction)
-        D --> E(Chunking)
-        E --> F[(ChromaDB)]
-    end
-    
-    subgraph Inference Pipeline
-        Q[User Query] -.-> G{Optional rewriting}
-        G -.-> H(Query routing & Entity linking)
-        H --> I(Retrieval / Reranking)
-        F --> I
-        I --> J{Answer guardrails}
-        J --> K(Gemini answer)
-        J --> L(Deterministic answer)
-        K --> M[AnswerService / FastAPI]
-        L --> M
-        M --> N(Streamlit UI)
-    end
+graph LR
+    %% Ingestion Pipeline
+    A[Handbook PDF] --> B(PDF/text extraction)
+    B --> C(Structure parsing)
+    C --> D(Structured extraction)
+    D --> E(Chunking)
+    E --> F[(ChromaDB)]
+
+    %% Inference Pipeline
+    Q[User Query] -.-> G{Optional rewriting}
+    G -.-> H(Query routing & Entity linking)
+    H --> I(Retrieval / Reranking)
+    F --> I
+    I --> J{Answer guardrails}
+    J --> K(Gemini answer)
+    J --> L(Deterministic answer)
+    K --> M[AnswerService / FastAPI]
+    L --> M
+    M --> N(Streamlit UI)
 ```
 
 The Streamlit app can run in two execution modes. In Local mode it calls

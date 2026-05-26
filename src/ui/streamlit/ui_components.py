@@ -15,11 +15,12 @@ from .session_manager import (
 import json
 
 QUICK_QUESTIONS = [
-    "🎓 Điều kiện để xét Học bổng KKHT?",
-    "📚 Muốn xin bảng điểm thì đến phòng nào?",
-    "📝 Quy định về thời gian đào tạo tối đa?",
-    "🏛️ Trường hợp nào bị cảnh cáo học vụ?",
-    "📧 Trường hợp nào bị buộc thôi học?",
+    "🎓 Xét Học bổng KKHT cần gì?",
+    "📚 Xin bảng điểm ở phòng nào?",
+    "📝 Thời gian đào tạo tối đa?",
+    "🏛️ Khi nào bị cảnh cáo học vụ?",
+    "📧 Khi nào bị buộc thôi học?",
+    "🏢 Điểm rèn luyện để làm gì?",
 ]
 
 API_CLIENT_ERROR_STATUSES = {
@@ -53,61 +54,51 @@ def render_execution_mode_controls(
 
     with st.sidebar:
         st.divider()
-        st.markdown(
-            """
-            <div class="ep-settings-title" style="margin-bottom: 8px;">
-                <strong>⚙️ Cài đặt hệ thống</strong>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        execution_mode = st.radio(
-            "Execution mode",
-            options=("Local", "API"),
-            index=default_index,
-            horizontal=True,
-            help="Local dùng AnswerService trong app. API dùng máy chủ FastAPI.",
-        )
-
-        st.markdown(
-            f"""
-            <div class="ep-mode-status">
-                <span>Mode đang dùng</span>
-                <strong>{escape(execution_mode)}</strong>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        if execution_mode == "API":
-            api_base_url = (
-                st.text_input(
-                    "API base URL",
-                    value=default_api_base_url,
-                    help="Chỉ dùng khi chạy ở API mode.",
-                ).strip()
-                or default_api_base_url
+        with st.expander("⚙️ Cài đặt hệ thống", expanded=False):
+            execution_mode = st.radio(
+                "Execution mode",
+                options=("Local", "API"),
+                index=default_index,
+                horizontal=True,
+                help="Local dùng AnswerService trong app. API dùng máy chủ FastAPI.",
             )
 
-        if is_debug_available():
-            st.toggle("Debug mode", key=DEBUG_TOGGLE_KEY)
-
-        pending = get_pending_clarification()
-        if pending:
             st.markdown(
-                """
-                <div class="ep-sidebar-note">
-                    <strong>Cần làm rõ</strong>
-                    <span>Trợ lý đang chờ bạn trả lời câu hỏi làm rõ trong khung chat.</span>
+                f"""
+                <div class="ep-mode-status">
+                    <span>Mode đang dùng</span>
+                    <strong>{escape(execution_mode)}</strong>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
-        if st.button("Xóa cuộc trò chuyện", use_container_width=True):
-            clear_chat_history()
-            st.rerun()
+            if execution_mode == "API":
+                api_base_url = (
+                    st.text_input(
+                        "API base URL",
+                        value=default_api_base_url,
+                        help="Chỉ dùng khi chạy ở API mode.",
+                    ).strip()
+                    or default_api_base_url
+                )
+
+            if is_debug_available():
+                st.toggle("Debug mode", key=DEBUG_TOGGLE_KEY)
+
+            pending = get_pending_clarification()
+            if pending:
+                st.markdown(
+                    """
+                    <div class="ep-sidebar-note">
+                        <strong>Cần làm rõ</strong>
+                        <span>Trợ lý đang chờ bạn trả lời câu hỏi làm rõ trong khung chat.</span>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+        st.caption("Phiên bản ứng dụng: v1.0 · AI-powered")
 
     return execution_mode, api_base_url
 
@@ -130,10 +121,14 @@ def render_header(title: str, subtitle: str, compact: bool = False) -> None:
         )
         return
 
+    logo_base64 = get_image_base64("assets/logo_hcmue.png")
+    logo_img_tag = f'<div style="text-align: center; margin-bottom: 1.2rem;"><img src="data:image/png;base64,{logo_base64}" style="height: 5.25rem;" /></div>' if logo_base64 else '<div style="text-align: center; margin-bottom: 1.2rem;"><span style="color:var(--ep-coral); font-size: 5.25rem;">✳</span></div>'
+    
     st.markdown(
         f"""
         <section class="ep-landing">
-            <h1><span style="color:var(--ep-coral)">✳</span> Trợ lý Sổ tay sinh viên</h1>
+            {logo_img_tag}
+            <h1 style="text-align: center; margin: 0; padding: 0.25rem 0;">HCMUE AI Assistant</h1>
             <p>{safe_subtitle}</p>
         </section>
         """,
@@ -149,19 +144,21 @@ def render_initial_prompt_panel(
     st.markdown(
         """
         <div class="ep-guide-card">
-            Hỏi mình bất cứ điều gì về Quy chế, Điểm rèn luyện, hoặc Học bổng nhé.
+            Hỏi mình bất cứ thông tin nào trong Sổ tay sinh viên HCMUE (Quy chế, Học vụ, Ký túc xá, Liên hệ...)
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    st.pills(
-        "Câu hỏi nhanh",
-        options=QUICK_QUESTIONS,
-        selection_mode="single",
-        key=selected_suggestion_key,
-        label_visibility="collapsed",
-    )
+    spacer, pills_col = st.columns([0.11, 0.89])
+    with pills_col:
+        st.pills(
+            "Câu hỏi nhanh",
+            options=QUICK_QUESTIONS,
+            selection_mode="single",
+            key=selected_suggestion_key,
+            label_visibility="collapsed",
+        )
 
     with st.container():
         st.chat_input(
@@ -341,41 +338,21 @@ def render_sidebar() -> None:
             """,
             unsafe_allow_html=True,
         )
-        st.markdown(
-            "Chatbot hỗ trợ giải đáp quy chế, học bổng, điểm rèn luyện... Dữ liệu được trích xuất từ Sổ tay sinh viên HCMUE chính thức."
-        )
+        st.caption("Trợ lý AI tra cứu Sổ tay sinh viên HCMUE.")
 
         st.divider()
-        st.markdown("**Tiện ích**")
-        
-        chat_history = get_chat_history()
-        if chat_history:
-            # Drop un-serializable objects from history before exporting
-            export_list = []
-            for msg in chat_history:
-                export_list.append({
-                    "role": msg.get("role"),
-                    "content": msg.get("content"),
-                    "message_id": msg.get("message_id"),
-                })
-            export_data = json.dumps(export_list, ensure_ascii=False, indent=2)
-            st.download_button(
-                label="📥 Tải xuống lịch sử",
-                data=export_data,
-                file_name="hcmue_chat_history.json",
-                mime="application/json",
-                use_container_width=True,
-            )
+        st.markdown("**📎 Liên kết hữu ích**")
+        st.markdown("[📕 Sổ tay sinh viên HCMUE](https://ctsv.hcmue.edu.vn/vi/thu-vien/van-ban/hcmue/so-tay-sinh-vien-hcmue/so-tay-sinh-vien-truong-dai-hoc-su-pham-thanh-pho-ho-chi-minh-2024-2025)")
+        st.markdown("[🌐 Trang chủ HCMUE](https://hcmue.edu.vn)")
+        st.markdown("[📧 Phòng Công tác sinh viên](https://ctsv.hcmue.edu.vn)")
 
+        st.divider()
+
+        chat_history = get_chat_history()
         if st.button("🗑️ Xóa lịch sử", use_container_width=True):
             clear_chat_history()
             st.rerun()
 
-        st.divider()
-        st.markdown("**Liên kết hữu ích**")
-        st.markdown("[📕 **Sổ tay sinh viên HCMUE (Bản gốc)**](https://ctsv.hcmue.edu.vn/vi/thu-vien/van-ban/hcmue/so-tay-sinh-vien-hcmue/so-tay-sinh-vien-truong-dai-hoc-su-pham-thanh-pho-ho-chi-minh-2024-2025)")
-        st.markdown("[🌐 Trang chủ HCMUE](https://hcmue.edu.vn)")
-        st.markdown("[📧 Phòng Công tác sinh viên](https://ctsv.hcmue.edu.vn)")
 
 
 def render_footer(author_name: str) -> None:

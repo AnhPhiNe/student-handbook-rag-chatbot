@@ -38,7 +38,8 @@ def apply_theme() -> None:
             }
 
             .block-container {
-                max-width: 720px;
+                max-width: 820px;
+                margin: 0 auto;
                 padding: 1rem 1.25rem 5.75rem;
             }
 
@@ -59,6 +60,19 @@ def apply_theme() -> None:
             [data-testid="stSidebar"] p {
                 color: var(--ep-text);
                 letter-spacing: 0;
+            }
+
+            /* Remove link underline in sidebar */
+            [data-testid="stSidebar"] a {
+                text-decoration: none !important;
+            }
+
+            /* Always show sidebar collapse/expand buttons */
+            [data-testid="collapsedControl"], 
+            [data-testid="stSidebarCollapseButton"] {
+                display: flex !important;
+                opacity: 1 !important;
+                visibility: visible !important;
             }
 
             .ep-sidebar-brand {
@@ -351,6 +365,21 @@ def apply_theme() -> None:
             [data-testid="stPills"] {
                 max-width: 780px;
                 margin: 0.15rem auto 1rem;
+                padding-left: 90px !important;
+            }
+
+            [data-testid="stPills"] * {
+                justify-content: center !important;
+            }
+            [data-testid="stPills"] > div {
+                width: 100% !important;
+                display: flex !important;
+                flex-wrap: wrap !important;
+            }
+            
+            [data-testid="stPills"] [data-baseweb="button-group"],
+            [data-testid="stPills"] [role="radiogroup"] {
+                padding-left: 90px !important;
             }
 
             [data-testid="stPills"] > label {
@@ -549,6 +578,9 @@ def apply_theme() -> None:
 
             .stChatInputContainer textarea {
                 border-radius: 9999px;
+                min-height: 60px !important;
+                padding-top: 18px !important;
+                padding-bottom: 18px !important;
             }
 
             .ep-footer {

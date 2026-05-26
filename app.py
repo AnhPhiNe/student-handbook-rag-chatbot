@@ -58,7 +58,7 @@ def main() -> None:
     st.set_page_config(
         page_title=APP_TITLE,
         page_icon="assets/chatbot.png",
-        layout="wide",
+        layout="centered",
         initial_sidebar_state="expanded",
     )
     apply_theme()

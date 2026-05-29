@@ -54,5 +54,21 @@
   {
     "trigger": ["bị đuổi", "đuổi học", "bị đuổi học", "đuổi"],
     "expand_to": ["buộc thôi học", "cảnh báo học vụ", "thời gian học tập tối đa"]
+  },
+  {
+    "trigger": ["cảnh cáo học vụ"],
+    "expand_to": ["cảnh báo học tập", "buộc thôi học", "xử lý học vụ"]
+  },
+  {
+    "trigger": ["kkht", "hbkkht"],
+    "expand_to": ["khuyến khích học tập", "học bổng khuyến khích học tập"]
+  },
+  {
+    "trigger": ["cần gì", "cần những gì", "làm sao để được", "phải làm sao", "để được"],
+    "expand_to": ["điều kiện", "tiêu chuẩn"]
+  },
+  {
+    "trigger": ["như thế nào", "các bước", "phải làm gì", "hướng dẫn"],
+    "expand_to": ["quy trình", "trình tự", "thủ tục"]
   }
 ]

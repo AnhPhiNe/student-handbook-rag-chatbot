@@ -1,4 +1,4 @@
-﻿import time
+import time
 from pathlib import Path
 from typing import Any
 from src.retrieval.core.retrieval_pipeline import run_retrieval_pipeline
@@ -113,11 +113,11 @@ class AnswerPipeline:
             max_context_chars=self.max_context_chars,
         )
 
-        if detect_ambiguous_query(effective_query, retrieval_result):
+        if retrieval_result.get("needs_clarification"):
             return self._build_output(
                 query=query,
                 retrieval_result=retrieval_result,
-                final_answer=build_clarification_question(effective_query, retrieval_result),
+                final_answer=retrieval_result.get("clarification_question", "Bạn có thể làm rõ câu hỏi được không?"),
                 context_used=context_used,
                 selected_citations=[],
                 status="needs_clarification",
@@ -129,26 +129,42 @@ class AnswerPipeline:
                 query_rewrite=rewrite_result,
             )
             
-        if is_out_of_domain_query(effective_query, retrieval_result):
-            final_answer = build_fallback_answer(
-                query=effective_query,
-                retrieval_result=retrieval_result,
-                reason="out_of_domain",
-            )
-
-            return self._build_output(
-                query=query,
-                retrieval_result={},
-                final_answer=final_answer,
-                context_used="",
-                selected_citations=[],
-                status="out_of_domain",
-                error_type=None,
-                error_message=None,
-                llm_called=False,
-                used_cache=False,
-                query_rewrite=rewrite_result,
-            )
+        # if detect_ambiguous_query(effective_query, retrieval_result):
+        #     return self._build_output(
+        #         query=query,
+        #         retrieval_result=retrieval_result,
+        #         final_answer=build_clarification_question(effective_query, retrieval_result),
+        #         context_used=context_used,
+        #         selected_citations=[],
+        #         status="needs_clarification",
+        #         error_type=None,
+        #         error_message=None,
+        #         llm_called=False,
+        #         used_cache=False,
+        #         clarification_needed=True,
+        #         query_rewrite=rewrite_result,
+        #     )
+            
+        # if is_out_of_domain_query(effective_query, retrieval_result):
+        #     final_answer = build_fallback_answer(
+        #         query=effective_query,
+        #         retrieval_result=retrieval_result,
+        #         reason="out_of_domain",
+        #     )
+        # 
+        #     return self._build_output(
+        #         query=query,
+        #         retrieval_result={},
+        #         final_answer=final_answer,
+        #         context_used="",
+        #         selected_citations=[],
+        #         status="out_of_domain",
+        #         error_type=None,
+        #         error_message=None,
+        #         llm_called=False,
+        #         used_cache=False,
+        #         query_rewrite=rewrite_result,
+        #     )
 
         citations_config = self.config.get("citations", {})
 

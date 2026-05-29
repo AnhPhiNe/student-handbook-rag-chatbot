@@ -22,7 +22,8 @@ from .entity_linker import (
 )
 from .formula_lookup import formula_lookup
 from .query_expansion import expand_query
-from .query_router import route_query
+# from .query_router import route_query
+from .ai_router import AIRouter
 from .reranker import rerank_results
 from .retrieval_planner import build_retrieval_plan, merge_plan_results
 from .structured_lookup import structured_lookup
@@ -76,27 +77,32 @@ def run_retrieval_pipeline(
     entity_normalized_query = normalize_query_with_entities(query, detected_entities)
     retrieval_query = expand_query(entity_normalized_query, expansion_rules)
 
-    routing = route_query(query)
+    # routing = route_query(query)
+    routing = AIRouter().route(query)
+    
     intent = routing["intent"]
     strategy = routing["strategy"]
+    
+    # Bắt tín hiệu cần làm rõ từ AI Router
+    if routing.get("needs_clarification"):
+        return {
+            "query": query,
+            "retrieval_query": retrieval_query,
+            "detected_entities": detected_entities,
+            "intent": intent,
+            "strategy": strategy,
+            "target_chunk_types": routing.get("target_chunk_types", []),
+            "retrieved_items": [],
+            "citations": [],
+            "context_for_llm": "",
+            "needs_llm_answer": False,
+            "needs_clarification": True,
+            "clarification_question": routing.get("clarification_question")
+        }
 
     entity_chunk_types = get_entity_target_chunk_types(detected_entities)
 
-    # Không để entity linker mở rộng sai chunk_type khi router đã xác định rõ nguồn.
-    # Ví dụ: "Website phòng CNTT" phải giữ office_directory,
-    # không được thêm faculty_program_directory chỉ vì có alias CNTT.
-    STRICT_INTENTS = {
-        "office_query",
-        "faculty_query",
-        "form_query",
-        "procedure_query",
-    }
-
-    if (
-        entity_chunk_types
-        and strategy.startswith("semantic")
-        and intent not in STRICT_INTENTS
-    ):
+    if entity_chunk_types and strategy.startswith("semantic"):
         routing["target_chunk_types"] = list(
             dict.fromkeys(routing.get("target_chunk_types", []) + entity_chunk_types)
         )

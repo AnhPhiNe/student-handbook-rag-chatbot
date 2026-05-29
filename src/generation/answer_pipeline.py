@@ -9,13 +9,10 @@ from src.retrieval.core.vector_retriever import (
 
 from .answer_formatter import format_final_answer, format_final_response
 from .answer_guardrails import (
-    build_clarification_question,
     build_deterministic_answer,
     build_fallback_answer,
     can_answer_deterministically,
-    detect_ambiguous_query,
     is_low_confidence,
-    is_out_of_domain_query,
 )
 from .citation_formatter import format_sources_text, select_relevant_citations
 from .gemini_client import GeminiClient

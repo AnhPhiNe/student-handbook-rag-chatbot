@@ -3,6 +3,8 @@ from __future__ import annotations
 from html import escape
 from typing import Any
 
+import base64
+
 import streamlit as st
 
 from .session_manager import (
@@ -10,9 +12,7 @@ from .session_manager import (
     clear_chat_history,
     get_pending_clarification,
     is_debug_available,
-    get_chat_history,
 )
-import json
 
 QUICK_QUESTIONS = [
     "🎓 Xét Học bổng KKHT cần gì?",
@@ -311,9 +311,6 @@ def _render_notice(kind: str, title: str, body: str) -> None:
     )
 
 
-import base64
-from pathlib import Path
-
 def get_image_base64(path: str) -> str:
     try:
         with open(path, "rb") as f:
@@ -348,7 +345,6 @@ def render_sidebar() -> None:
 
         st.divider()
 
-        chat_history = get_chat_history()
         if st.button("🗑️ Xóa lịch sử", use_container_width=True):
             clear_chat_history()
             st.rerun()

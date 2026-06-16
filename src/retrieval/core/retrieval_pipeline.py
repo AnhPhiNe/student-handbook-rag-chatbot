@@ -48,7 +48,7 @@ def retrieve_with_plan(
     3. Lọc nhiễu: Loại bỏ các document có final_score < 0.70 (Tránh ảo giác cho LLM).
     4. Trả về top_k kết quả tốt nhất.
     """
-    candidate_k = max(plan["top_k"] * 3, 15)
+    candidate_k = max(plan["top_k"] * 4, 20)
 
     # 1. Vector Search (Dense)
     vector_results = vector_search(

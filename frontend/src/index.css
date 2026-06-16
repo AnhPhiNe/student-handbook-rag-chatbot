@@ -1192,7 +1192,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: var(--error);
+  background: var(--danger);
   color: white;
   display: flex;
   align-items: center;
@@ -1249,7 +1249,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .bug-header h3 {
   margin: 0;
   font-size: 1.25rem;
-  color: var(--error);
+  color: var(--danger);
   display: flex;
   align-items: center;
 }
@@ -1278,7 +1278,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
 .bug-body textarea:focus {
   outline: none;
-  border-color: var(--error);
+  border-color: var(--danger);
   box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
 }
 
@@ -1289,7 +1289,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 }
 
 .bug-actions .btn-primary {
-  background: var(--error);
+  background: var(--danger);
 }
 
 .bug-actions .btn-primary:hover {

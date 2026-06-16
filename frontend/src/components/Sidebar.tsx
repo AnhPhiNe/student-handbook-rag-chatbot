@@ -110,6 +110,9 @@ export function Sidebar({ activeTab, onTabChange, onNewChat, isCollapsed, isMobi
           <a href="https://ctsv.hcmue.edu.vn/storage/files/so-tay-sinh-vien-khoa-48.pdf" target="_blank" rel="noreferrer" className="quick-link-item">
             🔖 Sổ tay K48-49
           </a>
+          <a href="mailto:khoacntt@hcmue.edu.vn?subject=Báo%20lỗi%20HCMUE%20Chatbot" className="quick-link-item" style={{ color: '#EF4444', fontWeight: 500, marginTop: '0.5rem' }}>
+            🐞 Góp ý / Báo lỗi
+          </a>
         </div>
 
         <div className="sidebar-footer">

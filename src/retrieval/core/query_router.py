@@ -260,9 +260,8 @@ def route_query(query: str) -> dict[str, Any]:
         }
 
     # 11. Default: unknown (sẽ được xử lý bởi AIRouter)
-    # Default ve regulation de retrieval offline van hoat dong ke ca khi AI Router khong kha dung.
     return {
-        "intent": "regulation_query",
+        "intent": "unknown",
         "strategy": "semantic_filtered",
-        "target_chunk_types": ["regulation"],
+        "target_chunk_types": [],
     }

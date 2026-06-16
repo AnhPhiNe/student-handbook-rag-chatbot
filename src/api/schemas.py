@@ -17,7 +17,13 @@ class ChatResponse(BaseModel):
     effective_query: str | None = None
     query_rewrite: dict[str, Any] | None = None
     request_id: str | None = None
+    run_id: str | None = None
     latency_ms: float | None = None
+
+class ChatFeedbackRequest(BaseModel):
+    run_id: str
+    score: float
+    comment: str | None = None
     citations_used: list[dict[str, Any]] = Field(default_factory=list)
     clarification_needed: bool = False
     intent: str | None = None

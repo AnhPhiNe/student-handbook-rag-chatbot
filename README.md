@@ -1,3 +1,12 @@
+---
+title: HCMUE Student Handbook RAG
+emoji: 🎓
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+---
+
 # HCMUE Student Handbook RAG Assistant
 
 <p align="center">

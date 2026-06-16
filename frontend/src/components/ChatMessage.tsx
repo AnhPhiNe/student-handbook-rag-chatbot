@@ -10,25 +10,15 @@ interface ChatMessageProps {
   thinkingMessage?: string;
   onRegenerate?: () => void;
   onRetry?: () => void;
-  onSendFollowUp?: (text: string) => void;
 }
 
-function getFollowUpSuggestions(content: string): string[] {
-  const suggestions: string[] = [];
-  const lowerContent = content.toLowerCase();
-  if (lowerContent.includes("bảo lưu")) suggestions.push("Thời hạn bảo lưu tối đa?", "Tạm nghỉ học khác gì bảo lưu?");
-  if (lowerContent.includes("học bổng")) suggestions.push("Điều kiện xét KKHT?", "Cách xét học bổng thế nào?");
-  if (lowerContent.includes("học phí")) suggestions.push("Quy định học phí theo tín chỉ?", "Miễn giảm học phí cho ai?");
-  if (suggestions.length === 0) suggestions.push("Cho tôi biết thêm chi tiết", "Liên hệ phòng ban nào?");
-  return suggestions.slice(0, 3);
-}
 
 function getRelativeTime(timestamp: string): string {
   // Simple implementation since timestamp is just HH:MM
   return timestamp;
 }
 
-export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRetry, onSendFollowUp }: ChatMessageProps) {
+export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRetry }: ChatMessageProps) {
   const [showSources, setShowSources] = useState(false);
   const [copied, setCopied] = useState(false);
   const [feedback, setFeedback] = useState<'like'|'dislike'|null>(null);
@@ -130,15 +120,7 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
           </button>
         )}
 
-        {!message.isStreaming && !isErrorMsg && (
-          <div className="follow-up-pills">
-            {(message.suggestions?.length ? message.suggestions : getFollowUpSuggestions(message.content)).map((suggestion, idx) => (
-              <button key={idx} className="follow-up-btn" onClick={() => onSendFollowUp?.(suggestion)}>
-                {suggestion}
-              </button>
-            ))}
-          </div>
-        )}
+
 
         {!message.isStreaming && !isErrorMsg && (
           <div className="message-metadata">

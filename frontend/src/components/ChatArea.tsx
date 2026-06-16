@@ -270,7 +270,6 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
             thinkingMessage={thinkingMessage}
             onRetry={onRetry}
             onRegenerate={onRegenerate}
-            onSendFollowUp={onSendMessage}
           />
         ))}
         <div ref={messagesEndRef} />

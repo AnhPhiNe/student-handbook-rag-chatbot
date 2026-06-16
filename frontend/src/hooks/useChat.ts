@@ -118,7 +118,7 @@ export function useChat() {
                 if (capturedCitations.length > 0) confidence = 'high';
 
                 // Check for fallback error string from Gemini
-                if (currentBotContent.includes("Hiện tại mình chưa gọi được Gemini")) {
+                if (currentBotContent.includes("Hiện tại mình chưa gọi được mô hình AI")) {
                   setSystemStatus('error');
                 } else {
                   setSystemStatus('normal');

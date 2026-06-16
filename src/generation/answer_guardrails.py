@@ -276,7 +276,7 @@ def build_fallback_answer(
 ) -> str:
     if reason in {"api_error", "rate_limit", "timeout"}:
         return (
-            "Hiện tại mình chưa gọi được Gemini để diễn giải câu trả lời. "
+            "Hiện tại mình chưa gọi được mô hình AI để diễn giải câu trả lời. "
             "Bạn có thể thử lại sau; nếu hệ thống đã tìm được nguồn liên quan, "
             "mình vẫn hiển thị nguồn bên dưới để bạn tra nhanh."
         )

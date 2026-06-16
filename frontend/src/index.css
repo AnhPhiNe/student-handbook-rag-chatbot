@@ -990,6 +990,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   width: fit-content;
 }
 
+.cold-start-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
 .cold-start-inline {
   margin: 0;
   max-width: 100%;
@@ -997,8 +1004,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
 .cold-start-spinner {
   width: 16px; height: 16px;
-  border: 2px solid rgba(245, 158, 11, 0.3);
-  border-top-color: var(--warning);
+  border: 2px solid rgba(59, 130, 246, 0.2); /* primary color with opacity */
+  border-top-color: var(--primary-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

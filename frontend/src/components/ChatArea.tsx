@@ -78,7 +78,7 @@ export function ChatArea({ messages, isTyping, onSendMessage, onSendHardcoded, o
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasMessages = messages.length > 0;
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const [showColdStart, setShowColdStart] = useState(false);
+  const [thinkingMessage, setThinkingMessage] = useState("");
   const coldStartTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const scrollToBottom = () => {
@@ -128,18 +128,31 @@ export function ChatArea({ messages, isTyping, onSendMessage, onSendHardcoded, o
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Cold start indicator
+  // Progressive thinking indicator
   useEffect(() => {
     if (isTyping) {
-      coldStartTimer.current = setTimeout(() => {
-        setShowColdStart(true);
-      }, 8000);
+      const messages = [
+        "Đang phân tích câu hỏi của bạn...",
+        "Đang lục lọi trong Sổ tay sinh viên...",
+        "Đang chấm điểm các tài liệu liên quan...",
+        "Sắp xong rồi, đang tổng hợp câu trả lời..."
+      ];
+      setThinkingMessage(messages[0]);
+      
+      let i = 0;
+      coldStartTimer.current = setInterval(() => {
+        i++;
+        if (i < messages.length) {
+          setThinkingMessage(messages[i]);
+        } else {
+          clearInterval(coldStartTimer.current);
+        }
+      }, 5000) as any;
     } else {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setShowColdStart(false);
-      clearTimeout(coldStartTimer.current);
+      setThinkingMessage("");
+      clearInterval(coldStartTimer.current);
     }
-    return () => clearTimeout(coldStartTimer.current);
+    return () => clearInterval(coldStartTimer.current);
   }, [isTyping]);
 
   // ============ EMPTY STATE ============
@@ -201,10 +214,10 @@ export function ChatArea({ messages, isTyping, onSendMessage, onSendHardcoded, o
 
         {/* Input pinned to bottom */}
         <div className="chat-input-pinned">
-          {showColdStart && (
+          {thinkingMessage && (
             <div className="cold-start-banner" style={{ margin: '0 auto 0.75rem', maxWidth: '780px' }}>
               <div className="cold-start-spinner" />
-              <span>Hệ thống đang khởi động, vui lòng chờ thêm 20-30 giây...</span>
+              <span>{thinkingMessage}</span>
             </div>
           )}
           <ChatInput onSend={onSendMessage} disabled={isTyping} />
@@ -247,7 +260,7 @@ export function ChatArea({ messages, isTyping, onSendMessage, onSendHardcoded, o
           <ChatMessage 
             key={msg.id} 
             message={msg} 
-            showColdStart={showColdStart}
+            thinkingMessage={thinkingMessage}
             onRetry={onRetry}
             onRegenerate={onRegenerate}
             onSendFollowUp={onSendMessage}

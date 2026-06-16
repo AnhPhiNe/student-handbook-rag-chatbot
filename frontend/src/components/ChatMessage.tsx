@@ -7,7 +7,7 @@ import logoHcmue from '../assets/logo_hcmue.png';
 
 interface ChatMessageProps {
   message: Message;
-  showColdStart?: boolean;
+  thinkingMessage?: string;
   onRegenerate?: () => void;
   onRetry?: () => void;
   onSendFollowUp?: (text: string) => void;
@@ -28,7 +28,7 @@ function getRelativeTime(timestamp: string): string {
   return timestamp;
 }
 
-export function ChatMessage({ message, showColdStart = false, onRegenerate, onRetry, onSendFollowUp }: ChatMessageProps) {
+export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRetry, onSendFollowUp }: ChatMessageProps) {
   const [showSources, setShowSources] = useState(false);
   const [copied, setCopied] = useState(false);
   const [feedback, setFeedback] = useState<'like'|'dislike'|null>(null);
@@ -74,12 +74,12 @@ export function ChatMessage({ message, showColdStart = false, onRegenerate, onRe
     <div className="message-wrapper bot">
       <img src={logoHcmue} alt="HCMUE AI" className="avatar bot" />
       <div className="message-content">
-        <div className={`${showColdStart && message.isStreaming && !message.content ? 'cold-start-bubble' : 'message-bubble'} ${message.isStreaming && !message.content && !showColdStart ? 'typing-indicator' : ''}`}>
+        <div className={`${thinkingMessage && message.isStreaming && !message.content ? 'cold-start-bubble' : 'message-bubble'} ${message.isStreaming && !message.content && !thinkingMessage ? 'typing-indicator' : ''}`}>
           {message.isStreaming && !message.content ? (
-            showColdStart ? (
-              <div className="cold-start-banner cold-start-inline">
+            thinkingMessage ? (
+              <div className="cold-start-content">
                 <div className="cold-start-spinner" />
-                <span>Hệ thống đang khởi động, vui lòng chờ thêm 20-30 giây...</span>
+                <span>{thinkingMessage}</span>
               </div>
             ) : (
               <>

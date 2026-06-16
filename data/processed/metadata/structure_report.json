@@ -1,0 +1,1130 @@
+﻿{
+  "total_sections": 195,
+  "total_article_sections": 135,
+  "total_non_article_sections": 60,
+  "content_type_count": {
+    "regulation_text": 183,
+    "scoring_form_table": 8,
+    "faculty_student_services": 1,
+    "ktx_admission_procedure": 3
+  },
+  "section_level_count": {
+    "non_article": 60,
+    "article": 135
+  },
+  "sections_with_tables": [
+    {
+      "section_id": "article_3_p11_11",
+      "title": "Điều 3. Chương trình đào tạo và thời gian học tập",
+      "page_start": 11,
+      "page_end": 13
+    },
+    {
+      "section_id": "article_10_p18_20",
+      "title": "Điều 10. Đánh giá và tính điểm học phần",
+      "page_start": 18,
+      "page_end": 21
+    },
+    {
+      "section_id": "article_11_p21_21",
+      "title": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học",
+      "page_start": 21,
+      "page_end": 23
+    },
+    {
+      "section_id": "article_9_p74_119",
+      "title": "Điều 9. Phân loại kết quả rèn luyện",
+      "page_start": 74,
+      "page_end": 74
+    },
+    {
+      "section_id": "scoring_form_table_p82_131",
+      "title": "PHỤ LỤC 1",
+      "page_start": 82,
+      "page_end": 82
+    },
+    {
+      "section_id": "scoring_form_table_p82_132",
+      "title": "PHỤ LỤC 1",
+      "page_start": 82,
+      "page_end": 83
+    },
+    {
+      "section_id": "scoring_form_table_p83_134",
+      "title": "PHỤ LỤC 1",
+      "page_start": 83,
+      "page_end": 84
+    },
+    {
+      "section_id": "scoring_form_table_p84_136",
+      "title": "PHỤ LỤC 1",
+      "page_start": 84,
+      "page_end": 85
+    },
+    {
+      "section_id": "scoring_form_table_p85_137",
+      "title": "PHỤ LỤC 1",
+      "page_start": 85,
+      "page_end": 86
+    },
+    {
+      "section_id": "scoring_form_table_p86_138",
+      "title": "PHỤ LỤC 1",
+      "page_start": 86,
+      "page_end": 86
+    }
+  ],
+  "sections_with_formulas": [
+    {
+      "section_id": "regulation_text_p8_2",
+      "title": "QUYẾT ĐỊNH",
+      "page_start": 8,
+      "page_end": 8
+    },
+    {
+      "section_id": "regulation_text_p10_6",
+      "title": "QUY CHẾ",
+      "page_start": 10,
+      "page_end": 10
+    },
+    {
+      "section_id": "article_9_p17_18",
+      "title": "Điều 9. Tổ chức đăng ký học tập",
+      "page_start": 17,
+      "page_end": 18
+    },
+    {
+      "section_id": "article_11_p21_21",
+      "title": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học",
+      "page_start": 21,
+      "page_end": 23
+    },
+    {
+      "section_id": "article_24_p32_36",
+      "title": "Điều 24. Hiệu lực thi hành",
+      "page_start": 32,
+      "page_end": 34
+    },
+    {
+      "section_id": "regulation_text_p34_37",
+      "title": "QUYẾT ĐỊNH",
+      "page_start": 34,
+      "page_end": 34
+    },
+    {
+      "section_id": "article_28_p52_74",
+      "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+      "page_start": 52,
+      "page_end": 53
+    },
+    {
+      "section_id": "article_30_p54_76",
+      "title": "Điều 30. Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương",
+      "page_start": 54,
+      "page_end": 55
+    },
+    {
+      "section_id": "article_31_p55_77",
+      "title": "Điều 31. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận",
+      "page_start": 55,
+      "page_end": 56
+    },
+    {
+      "section_id": "article_32_p56_78",
+      "title": "Điều 32. Quy định về việc thôi học, chuyển trường, chuyển ngành,",
+      "page_start": 56,
+      "page_end": 57
+    },
+    {
+      "section_id": "article_38_p61_85",
+      "title": "Điều 38. Hội đồng Khen thưởng và Kỷ luật sinh viên",
+      "page_start": 61,
+      "page_end": 62
+    },
+    {
+      "section_id": "article_41_p63_89",
+      "title": "Điều 41. Hiệu lực thi hành",
+      "page_start": 63,
+      "page_end": 64
+    },
+    {
+      "section_id": "article_6_p66_99",
+      "title": "Điều 6. Thời gian và nội dung làm việc với lớp sinh viên",
+      "page_start": 66,
+      "page_end": 67
+    },
+    {
+      "section_id": "regulation_text_p69_104",
+      "title": "QUYẾT ĐỊNH",
+      "page_start": 69,
+      "page_end": 69
+    },
+    {
+      "section_id": "article_18_p81_130",
+      "title": "Điều 18. Điều khoản thi hành",
+      "page_start": 81,
+      "page_end": 81
+    },
+    {
+      "section_id": "regulation_text_p88_141",
+      "title": "QUYẾT ĐỊNH",
+      "page_start": 88,
+      "page_end": 88
+    },
+    {
+      "section_id": "article_2_p88_143",
+      "title": "Điều 2. Quyết định này có hiệu lực kể từ ngày ký.",
+      "page_start": 88,
+      "page_end": 89
+    },
+    {
+      "section_id": "article_3_p89_144",
+      "title": "Điều 3. Các Ông/Bà Trưởng phòng Tổ chức – Hành chính, Khoa học",
+      "page_start": 89,
+      "page_end": 90
+    },
+    {
+      "section_id": "regulation_text_p90_146",
+      "title": "PHẦN I",
+      "page_start": 90,
+      "page_end": 91
+    },
+    {
+      "section_id": "regulation_text_p91_147",
+      "title": "PHẦN I",
+      "page_start": 91,
+      "page_end": 91
+    },
+    {
+      "section_id": "article_7_p93_155",
+      "title": "Điều 7. Quy trình tổ chức và tiến độ triển khai hoạt động nghiên",
+      "page_start": 93,
+      "page_end": 95
+    },
+    {
+      "section_id": "article_16_p101_166",
+      "title": "Điều 16. Điều khoản thi hành",
+      "page_start": 101,
+      "page_end": 102
+    },
+    {
+      "section_id": "regulation_text_p102_167",
+      "title": "PHỤ LỤC",
+      "page_start": 102,
+      "page_end": 102
+    },
+    {
+      "section_id": "regulation_text_p106_172",
+      "title": "phần xây dựng và phát huy truyền thống Nhà trường;",
+      "page_start": 106,
+      "page_end": 106
+    },
+    {
+      "section_id": "article_1_p106_174",
+      "title": "Điều 1. Phạm vi điều chỉnh và đối tượng áp dụng",
+      "page_start": 106,
+      "page_end": 107
+    },
+    {
+      "section_id": "article_3_p108_176",
+      "title": "Điều 3. Xác định nhu cầu đào tạo, giao nhiệm vụ, đặt hàng hoặc",
+      "page_start": 108,
+      "page_end": 109
+    },
+    {
+      "section_id": "article_8_p112_182",
+      "title": "Điều 8. Chi phí bồi hoàn và cách tính chi phí bồi hoàn",
+      "page_start": 112,
+      "page_end": 113
+    },
+    {
+      "section_id": "article_14_p116_190",
+      "title": "Điều 14. Quy định chuyển tiếp",
+      "page_start": 116,
+      "page_end": 116
+    },
+    {
+      "section_id": "article_15_p117_191",
+      "title": "Điều 15. Hiệu lực và trách nhiệm thi hành",
+      "page_start": 117,
+      "page_end": 128
+    },
+    {
+      "section_id": "ktx_admission_procedure_p162_194",
+      "title": "Chương IV",
+      "page_start": 162,
+      "page_end": 162
+    }
+  ],
+  "sections_with_scoring_rules": [
+    {
+      "section_id": "article_2_p10_9",
+      "title": "Điều 2. Tín chỉ và học phần",
+      "page_start": 10,
+      "page_end": 11
+    },
+    {
+      "section_id": "article_10_p18_20",
+      "title": "Điều 10. Đánh giá và tính điểm học phần",
+      "page_start": 18,
+      "page_end": 21
+    },
+    {
+      "section_id": "article_11_p21_21",
+      "title": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học",
+      "page_start": 21,
+      "page_end": 23
+    },
+    {
+      "section_id": "article_12_p23_22",
+      "title": "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy",
+      "page_start": 23,
+      "page_end": 24
+    },
+    {
+      "section_id": "article_13_p24_23",
+      "title": "Điều 13. Xử lý kết quả học tập đối với hình thức đào tạo vừa làm",
+      "page_start": 24,
+      "page_end": 25
+    },
+    {
+      "section_id": "article_15_p25_25",
+      "title": "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+      "page_start": 25,
+      "page_end": 27
+    },
+    {
+      "section_id": "article_16_p27_27",
+      "title": "Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học",
+      "page_start": 27,
+      "page_end": 28
+    },
+    {
+      "section_id": "article_19_p30_30",
+      "title": "Điều 19. Học cùng lúc hai chương trình",
+      "page_start": 30,
+      "page_end": 31
+    },
+    {
+      "section_id": "article_5_p38_48",
+      "title": "Điều 5. Công tác quản lý sinh viên",
+      "page_start": 38,
+      "page_end": 39
+    },
+    {
+      "section_id": "article_25_p50_70",
+      "title": "Điều 25. Lớp sinh viên",
+      "page_start": 50,
+      "page_end": 51
+    },
+    {
+      "section_id": "article_28_p52_74",
+      "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+      "page_start": 52,
+      "page_end": 53
+    },
+    {
+      "section_id": "article_29_p53_75",
+      "title": "Điều 29. Trình tự và thủ tục xét cấp học bổng",
+      "page_start": 53,
+      "page_end": 54
+    },
+    {
+      "section_id": "article_31_p55_77",
+      "title": "Điều 31. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận",
+      "page_start": 55,
+      "page_end": 56
+    },
+    {
+      "section_id": "article_32_p56_78",
+      "title": "Điều 32. Quy định về việc thôi học, chuyển trường, chuyển ngành,",
+      "page_start": 56,
+      "page_end": 57
+    },
+    {
+      "section_id": "article_33_p57_80",
+      "title": "Điều 33. Nội dung, hình thức khen thưởng",
+      "page_start": 57,
+      "page_end": 59
+    },
+    {
+      "section_id": "article_1_p71_109",
+      "title": "Điều 1. Phạm vi điều chỉnh và đối tượng áp dụng",
+      "page_start": 71,
+      "page_end": 71
+    },
+    {
+      "section_id": "article_3_p71_111",
+      "title": "Điều 3. Nội dung đánh giá và thang điểm",
+      "page_start": 71,
+      "page_end": 72
+    },
+    {
+      "section_id": "regulation_text_p72_112",
+      "title": "Chương II",
+      "page_start": 72,
+      "page_end": 72
+    },
+    {
+      "section_id": "article_4_p72_113",
+      "title": "Điều 4. Đánh giá về ý thức học tập",
+      "page_start": 72,
+      "page_end": 72
+    },
+    {
+      "section_id": "article_5_p72_114",
+      "title": "Điều 5. Đánh giá về ý thức và kết quả chấp hành quy chế, nội quy,",
+      "page_start": 72,
+      "page_end": 72
+    },
+    {
+      "section_id": "article_6_p73_115",
+      "title": "Điều 6. Đánh giá về ý thức và kết quả tham gia các hoạt động chính",
+      "page_start": 73,
+      "page_end": 73
+    },
+    {
+      "section_id": "article_7_p73_116",
+      "title": "Điều 7. Đánh giá về phẩm chất công dân và quan hệ với cộng đồng",
+      "page_start": 73,
+      "page_end": 73
+    },
+    {
+      "section_id": "article_8_p73_117",
+      "title": "Điều 8. Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các",
+      "page_start": 73,
+      "page_end": 73
+    },
+    {
+      "section_id": "article_9_p74_119",
+      "title": "Điều 9. Phân loại kết quả rèn luyện",
+      "page_start": 74,
+      "page_end": 74
+    },
+    {
+      "section_id": "article_10_p74_120",
+      "title": "Điều 10. Các trường hợp đánh giá",
+      "page_start": 74,
+      "page_end": 75
+    },
+    {
+      "section_id": "article_11_p75_121",
+      "title": "Điều 11. Quy trình đánh giá kết quả rèn luyện sinh viên",
+      "page_start": 75,
+      "page_end": 76
+    },
+    {
+      "section_id": "article_12_p76_123",
+      "title": "Điều 12. Hội đồng đánh giá kết quả rèn luyện của sinh viên",
+      "page_start": 76,
+      "page_end": 78
+    },
+    {
+      "section_id": "article_13_p78_124",
+      "title": "Điều 13. Thời gian đánh giá kết quả rèn luyện",
+      "page_start": 78,
+      "page_end": 78
+    },
+    {
+      "section_id": "article_14_p78_125",
+      "title": "Điều 14. Sử dụng kết quả rèn luyện",
+      "page_start": 78,
+      "page_end": 78
+    },
+    {
+      "section_id": "article_16_p79_128",
+      "title": "Điều 16. Trách nhiệm của các đơn vị liên quan",
+      "page_start": 79,
+      "page_end": 81
+    },
+    {
+      "section_id": "scoring_form_table_p82_131",
+      "title": "PHỤ LỤC 1",
+      "page_start": 82,
+      "page_end": 82
+    },
+    {
+      "section_id": "scoring_form_table_p82_132",
+      "title": "PHỤ LỤC 1",
+      "page_start": 82,
+      "page_end": 83
+    },
+    {
+      "section_id": "scoring_form_table_p83_134",
+      "title": "PHỤ LỤC 1",
+      "page_start": 83,
+      "page_end": 84
+    },
+    {
+      "section_id": "scoring_form_table_p84_136",
+      "title": "PHỤ LỤC 1",
+      "page_start": 84,
+      "page_end": 85
+    },
+    {
+      "section_id": "scoring_form_table_p85_137",
+      "title": "PHỤ LỤC 1",
+      "page_start": 85,
+      "page_end": 86
+    },
+    {
+      "section_id": "regulation_text_p87_139",
+      "title": "HƯỚNG DẪN LẬP HỒ SƠ",
+      "page_start": 87,
+      "page_end": 87
+    },
+    {
+      "section_id": "article_7_p93_155",
+      "title": "Điều 7. Quy trình tổ chức và tiến độ triển khai hoạt động nghiên",
+      "page_start": 93,
+      "page_end": 95
+    },
+    {
+      "section_id": "article_8_p95_156",
+      "title": "Điều 8. Tổ chức triển khai ứng dụng tiến bộ KH&CN vào thực tiễn",
+      "page_start": 95,
+      "page_end": 95
+    },
+    {
+      "section_id": "article_13_p100_163",
+      "title": "Điều 13. Trách nhiệm và quyền lợi của người hướng dẫn sinh viên",
+      "page_start": 100,
+      "page_end": 100
+    }
+  ],
+  "sections_with_thresholds": [
+    {
+      "section_id": "article_7_p14_16",
+      "title": "Điều 7. Kế hoạch giảng dạy và học tập",
+      "page_start": 14,
+      "page_end": 15
+    },
+    {
+      "section_id": "article_8_p15_17",
+      "title": "Điều 8. Tổ chức giảng dạy và học tập",
+      "page_start": 15,
+      "page_end": 17
+    },
+    {
+      "section_id": "article_9_p17_18",
+      "title": "Điều 9. Tổ chức đăng ký học tập",
+      "page_start": 17,
+      "page_end": 18
+    },
+    {
+      "section_id": "article_10_p18_20",
+      "title": "Điều 10. Đánh giá và tính điểm học phần",
+      "page_start": 18,
+      "page_end": 21
+    },
+    {
+      "section_id": "article_11_p21_21",
+      "title": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học",
+      "page_start": 21,
+      "page_end": 23
+    },
+    {
+      "section_id": "article_12_p23_22",
+      "title": "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy",
+      "page_start": 23,
+      "page_end": 24
+    },
+    {
+      "section_id": "article_13_p24_23",
+      "title": "Điều 13. Xử lý kết quả học tập đối với hình thức đào tạo vừa làm",
+      "page_start": 24,
+      "page_end": 25
+    },
+    {
+      "section_id": "article_14_p25_24",
+      "title": "Điều 14. Công nhận kết quả học tập và chuyển đổi tín chỉ",
+      "page_start": 25,
+      "page_end": 25
+    },
+    {
+      "section_id": "article_15_p25_25",
+      "title": "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+      "page_start": 25,
+      "page_end": 27
+    },
+    {
+      "section_id": "article_16_p27_27",
+      "title": "Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học",
+      "page_start": 27,
+      "page_end": 28
+    },
+    {
+      "section_id": "article_18_p29_29",
+      "title": "Điều 18. Trao đổi sinh viên và hợp tác trong đào tạo",
+      "page_start": 29,
+      "page_end": 30
+    },
+    {
+      "section_id": "article_19_p30_30",
+      "title": "Điều 19. Học cùng lúc hai chương trình",
+      "page_start": 30,
+      "page_end": 31
+    },
+    {
+      "section_id": "article_28_p52_74",
+      "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+      "page_start": 52,
+      "page_end": 53
+    },
+    {
+      "section_id": "article_31_p55_77",
+      "title": "Điều 31. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận",
+      "page_start": 55,
+      "page_end": 56
+    },
+    {
+      "section_id": "article_33_p57_80",
+      "title": "Điều 33. Nội dung, hình thức khen thưởng",
+      "page_start": 57,
+      "page_end": 59
+    },
+    {
+      "section_id": "article_35_p59_82",
+      "title": "Điều 35. Hình thức kỷ luật và nội dung vi phạm",
+      "page_start": 59,
+      "page_end": 60
+    },
+    {
+      "section_id": "article_4_p72_113",
+      "title": "Điều 4. Đánh giá về ý thức học tập",
+      "page_start": 72,
+      "page_end": 72
+    },
+    {
+      "section_id": "article_5_p72_114",
+      "title": "Điều 5. Đánh giá về ý thức và kết quả chấp hành quy chế, nội quy,",
+      "page_start": 72,
+      "page_end": 72
+    },
+    {
+      "section_id": "article_6_p73_115",
+      "title": "Điều 6. Đánh giá về ý thức và kết quả tham gia các hoạt động chính",
+      "page_start": 73,
+      "page_end": 73
+    },
+    {
+      "section_id": "article_7_p73_116",
+      "title": "Điều 7. Đánh giá về phẩm chất công dân và quan hệ với cộng đồng",
+      "page_start": 73,
+      "page_end": 73
+    },
+    {
+      "section_id": "article_8_p73_117",
+      "title": "Điều 8. Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các",
+      "page_start": 73,
+      "page_end": 73
+    },
+    {
+      "section_id": "article_9_p74_119",
+      "title": "Điều 9. Phân loại kết quả rèn luyện",
+      "page_start": 74,
+      "page_end": 74
+    },
+    {
+      "section_id": "scoring_form_table_p82_131",
+      "title": "PHỤ LỤC 1",
+      "page_start": 82,
+      "page_end": 82
+    },
+    {
+      "section_id": "scoring_form_table_p82_132",
+      "title": "PHỤ LỤC 1",
+      "page_start": 82,
+      "page_end": 83
+    },
+    {
+      "section_id": "scoring_form_table_p83_133",
+      "title": "PHỤ LỤC 1",
+      "page_start": 83,
+      "page_end": 83
+    },
+    {
+      "section_id": "scoring_form_table_p83_134",
+      "title": "PHỤ LỤC 1",
+      "page_start": 83,
+      "page_end": 84
+    },
+    {
+      "section_id": "scoring_form_table_p84_135",
+      "title": "PHỤ LỤC 1",
+      "page_start": 84,
+      "page_end": 84
+    },
+    {
+      "section_id": "scoring_form_table_p84_136",
+      "title": "PHỤ LỤC 1",
+      "page_start": 84,
+      "page_end": 85
+    },
+    {
+      "section_id": "article_1_p91_148",
+      "title": "Điều 1. Phạm vi điều chỉnh và đối tượng áp dụng",
+      "page_start": 91,
+      "page_end": 92
+    },
+    {
+      "section_id": "article_7_p93_155",
+      "title": "Điều 7. Quy trình tổ chức và tiến độ triển khai hoạt động nghiên",
+      "page_start": 93,
+      "page_end": 95
+    },
+    {
+      "section_id": "article_14_p100_164",
+      "title": "Điều 14. Chuyển đổi điểm NCKH của sinh viên",
+      "page_start": 100,
+      "page_end": 100
+    },
+    {
+      "section_id": "regulation_text_p102_167",
+      "title": "PHỤ LỤC",
+      "page_start": 102,
+      "page_end": 102
+    },
+    {
+      "section_id": "article_2_p107_175",
+      "title": "Điều 2. Giải thích từ ngữ",
+      "page_start": 107,
+      "page_end": 107
+    },
+    {
+      "section_id": "article_14_p116_190",
+      "title": "Điều 14. Quy định chuyển tiếp",
+      "page_start": 116,
+      "page_end": 116
+    },
+    {
+      "section_id": "article_15_p117_191",
+      "title": "Điều 15. Hiệu lực và trách nhiệm thi hành",
+      "page_start": 117,
+      "page_end": 128
+    }
+  ],
+  "sections_need_structured_extraction": [
+    {
+      "section_id": "regulation_text_p8_2",
+      "title": "QUYẾT ĐỊNH",
+      "content_type": "regulation_text",
+      "page_start": 8,
+      "page_end": 8
+    },
+    {
+      "section_id": "regulation_text_p10_6",
+      "title": "QUY CHẾ",
+      "content_type": "regulation_text",
+      "page_start": 10,
+      "page_end": 10
+    },
+    {
+      "section_id": "article_3_p11_11",
+      "title": "Điều 3. Chương trình đào tạo và thời gian học tập",
+      "content_type": "regulation_text",
+      "page_start": 11,
+      "page_end": 13
+    },
+    {
+      "section_id": "article_7_p14_16",
+      "title": "Điều 7. Kế hoạch giảng dạy và học tập",
+      "content_type": "regulation_text",
+      "page_start": 14,
+      "page_end": 15
+    },
+    {
+      "section_id": "article_8_p15_17",
+      "title": "Điều 8. Tổ chức giảng dạy và học tập",
+      "content_type": "regulation_text",
+      "page_start": 15,
+      "page_end": 17
+    },
+    {
+      "section_id": "article_9_p17_18",
+      "title": "Điều 9. Tổ chức đăng ký học tập",
+      "content_type": "regulation_text",
+      "page_start": 17,
+      "page_end": 18
+    },
+    {
+      "section_id": "article_10_p18_20",
+      "title": "Điều 10. Đánh giá và tính điểm học phần",
+      "content_type": "regulation_text",
+      "page_start": 18,
+      "page_end": 21
+    },
+    {
+      "section_id": "article_11_p21_21",
+      "title": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học",
+      "content_type": "regulation_text",
+      "page_start": 21,
+      "page_end": 23
+    },
+    {
+      "section_id": "article_12_p23_22",
+      "title": "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy",
+      "content_type": "regulation_text",
+      "page_start": 23,
+      "page_end": 24
+    },
+    {
+      "section_id": "article_13_p24_23",
+      "title": "Điều 13. Xử lý kết quả học tập đối với hình thức đào tạo vừa làm",
+      "content_type": "regulation_text",
+      "page_start": 24,
+      "page_end": 25
+    },
+    {
+      "section_id": "article_14_p25_24",
+      "title": "Điều 14. Công nhận kết quả học tập và chuyển đổi tín chỉ",
+      "content_type": "regulation_text",
+      "page_start": 25,
+      "page_end": 25
+    },
+    {
+      "section_id": "article_15_p25_25",
+      "title": "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+      "content_type": "regulation_text",
+      "page_start": 25,
+      "page_end": 27
+    },
+    {
+      "section_id": "article_16_p27_27",
+      "title": "Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học",
+      "content_type": "regulation_text",
+      "page_start": 27,
+      "page_end": 28
+    },
+    {
+      "section_id": "article_18_p29_29",
+      "title": "Điều 18. Trao đổi sinh viên và hợp tác trong đào tạo",
+      "content_type": "regulation_text",
+      "page_start": 29,
+      "page_end": 30
+    },
+    {
+      "section_id": "article_19_p30_30",
+      "title": "Điều 19. Học cùng lúc hai chương trình",
+      "content_type": "regulation_text",
+      "page_start": 30,
+      "page_end": 31
+    },
+    {
+      "section_id": "article_24_p32_36",
+      "title": "Điều 24. Hiệu lực thi hành",
+      "content_type": "regulation_text",
+      "page_start": 32,
+      "page_end": 34
+    },
+    {
+      "section_id": "regulation_text_p34_37",
+      "title": "QUYẾT ĐỊNH",
+      "content_type": "regulation_text",
+      "page_start": 34,
+      "page_end": 34
+    },
+    {
+      "section_id": "article_28_p52_74",
+      "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+      "content_type": "regulation_text",
+      "page_start": 52,
+      "page_end": 53
+    },
+    {
+      "section_id": "article_30_p54_76",
+      "title": "Điều 30. Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương",
+      "content_type": "regulation_text",
+      "page_start": 54,
+      "page_end": 55
+    },
+    {
+      "section_id": "article_31_p55_77",
+      "title": "Điều 31. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận",
+      "content_type": "regulation_text",
+      "page_start": 55,
+      "page_end": 56
+    },
+    {
+      "section_id": "article_32_p56_78",
+      "title": "Điều 32. Quy định về việc thôi học, chuyển trường, chuyển ngành,",
+      "content_type": "regulation_text",
+      "page_start": 56,
+      "page_end": 57
+    },
+    {
+      "section_id": "article_33_p57_80",
+      "title": "Điều 33. Nội dung, hình thức khen thưởng",
+      "content_type": "regulation_text",
+      "page_start": 57,
+      "page_end": 59
+    },
+    {
+      "section_id": "article_35_p59_82",
+      "title": "Điều 35. Hình thức kỷ luật và nội dung vi phạm",
+      "content_type": "regulation_text",
+      "page_start": 59,
+      "page_end": 60
+    },
+    {
+      "section_id": "article_38_p61_85",
+      "title": "Điều 38. Hội đồng Khen thưởng và Kỷ luật sinh viên",
+      "content_type": "regulation_text",
+      "page_start": 61,
+      "page_end": 62
+    },
+    {
+      "section_id": "article_41_p63_89",
+      "title": "Điều 41. Hiệu lực thi hành",
+      "content_type": "regulation_text",
+      "page_start": 63,
+      "page_end": 64
+    },
+    {
+      "section_id": "article_6_p66_99",
+      "title": "Điều 6. Thời gian và nội dung làm việc với lớp sinh viên",
+      "content_type": "regulation_text",
+      "page_start": 66,
+      "page_end": 67
+    },
+    {
+      "section_id": "regulation_text_p69_104",
+      "title": "QUYẾT ĐỊNH",
+      "content_type": "regulation_text",
+      "page_start": 69,
+      "page_end": 69
+    },
+    {
+      "section_id": "article_4_p72_113",
+      "title": "Điều 4. Đánh giá về ý thức học tập",
+      "content_type": "regulation_text",
+      "page_start": 72,
+      "page_end": 72
+    },
+    {
+      "section_id": "article_5_p72_114",
+      "title": "Điều 5. Đánh giá về ý thức và kết quả chấp hành quy chế, nội quy,",
+      "content_type": "regulation_text",
+      "page_start": 72,
+      "page_end": 72
+    },
+    {
+      "section_id": "article_6_p73_115",
+      "title": "Điều 6. Đánh giá về ý thức và kết quả tham gia các hoạt động chính",
+      "content_type": "regulation_text",
+      "page_start": 73,
+      "page_end": 73
+    },
+    {
+      "section_id": "article_7_p73_116",
+      "title": "Điều 7. Đánh giá về phẩm chất công dân và quan hệ với cộng đồng",
+      "content_type": "regulation_text",
+      "page_start": 73,
+      "page_end": 73
+    },
+    {
+      "section_id": "article_8_p73_117",
+      "title": "Điều 8. Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các",
+      "content_type": "regulation_text",
+      "page_start": 73,
+      "page_end": 73
+    },
+    {
+      "section_id": "article_9_p74_119",
+      "title": "Điều 9. Phân loại kết quả rèn luyện",
+      "content_type": "regulation_text",
+      "page_start": 74,
+      "page_end": 74
+    },
+    {
+      "section_id": "article_18_p81_130",
+      "title": "Điều 18. Điều khoản thi hành",
+      "content_type": "regulation_text",
+      "page_start": 81,
+      "page_end": 81
+    },
+    {
+      "section_id": "scoring_form_table_p82_131",
+      "title": "PHỤ LỤC 1",
+      "content_type": "scoring_form_table",
+      "page_start": 82,
+      "page_end": 82
+    },
+    {
+      "section_id": "scoring_form_table_p82_132",
+      "title": "PHỤ LỤC 1",
+      "content_type": "scoring_form_table",
+      "page_start": 82,
+      "page_end": 83
+    },
+    {
+      "section_id": "scoring_form_table_p83_133",
+      "title": "PHỤ LỤC 1",
+      "content_type": "scoring_form_table",
+      "page_start": 83,
+      "page_end": 83
+    },
+    {
+      "section_id": "scoring_form_table_p83_134",
+      "title": "PHỤ LỤC 1",
+      "content_type": "scoring_form_table",
+      "page_start": 83,
+      "page_end": 84
+    },
+    {
+      "section_id": "scoring_form_table_p84_135",
+      "title": "PHỤ LỤC 1",
+      "content_type": "scoring_form_table",
+      "page_start": 84,
+      "page_end": 84
+    },
+    {
+      "section_id": "scoring_form_table_p84_136",
+      "title": "PHỤ LỤC 1",
+      "content_type": "scoring_form_table",
+      "page_start": 84,
+      "page_end": 85
+    },
+    {
+      "section_id": "scoring_form_table_p85_137",
+      "title": "PHỤ LỤC 1",
+      "content_type": "scoring_form_table",
+      "page_start": 85,
+      "page_end": 86
+    },
+    {
+      "section_id": "scoring_form_table_p86_138",
+      "title": "PHỤ LỤC 1",
+      "content_type": "scoring_form_table",
+      "page_start": 86,
+      "page_end": 86
+    },
+    {
+      "section_id": "regulation_text_p88_141",
+      "title": "QUYẾT ĐỊNH",
+      "content_type": "regulation_text",
+      "page_start": 88,
+      "page_end": 88
+    },
+    {
+      "section_id": "article_2_p88_143",
+      "title": "Điều 2. Quyết định này có hiệu lực kể từ ngày ký.",
+      "content_type": "regulation_text",
+      "page_start": 88,
+      "page_end": 89
+    },
+    {
+      "section_id": "article_3_p89_144",
+      "title": "Điều 3. Các Ông/Bà Trưởng phòng Tổ chức – Hành chính, Khoa học",
+      "content_type": "regulation_text",
+      "page_start": 89,
+      "page_end": 90
+    },
+    {
+      "section_id": "regulation_text_p90_146",
+      "title": "PHẦN I",
+      "content_type": "regulation_text",
+      "page_start": 90,
+      "page_end": 91
+    },
+    {
+      "section_id": "regulation_text_p91_147",
+      "title": "PHẦN I",
+      "content_type": "regulation_text",
+      "page_start": 91,
+      "page_end": 91
+    },
+    {
+      "section_id": "article_1_p91_148",
+      "title": "Điều 1. Phạm vi điều chỉnh và đối tượng áp dụng",
+      "content_type": "regulation_text",
+      "page_start": 91,
+      "page_end": 92
+    },
+    {
+      "section_id": "article_7_p93_155",
+      "title": "Điều 7. Quy trình tổ chức và tiến độ triển khai hoạt động nghiên",
+      "content_type": "regulation_text",
+      "page_start": 93,
+      "page_end": 95
+    },
+    {
+      "section_id": "article_14_p100_164",
+      "title": "Điều 14. Chuyển đổi điểm NCKH của sinh viên",
+      "content_type": "regulation_text",
+      "page_start": 100,
+      "page_end": 100
+    },
+    {
+      "section_id": "article_16_p101_166",
+      "title": "Điều 16. Điều khoản thi hành",
+      "content_type": "regulation_text",
+      "page_start": 101,
+      "page_end": 102
+    },
+    {
+      "section_id": "regulation_text_p102_167",
+      "title": "PHỤ LỤC",
+      "content_type": "regulation_text",
+      "page_start": 102,
+      "page_end": 102
+    },
+    {
+      "section_id": "regulation_text_p106_172",
+      "title": "phần xây dựng và phát huy truyền thống Nhà trường;",
+      "content_type": "regulation_text",
+      "page_start": 106,
+      "page_end": 106
+    },
+    {
+      "section_id": "article_1_p106_174",
+      "title": "Điều 1. Phạm vi điều chỉnh và đối tượng áp dụng",
+      "content_type": "regulation_text",
+      "page_start": 106,
+      "page_end": 107
+    },
+    {
+      "section_id": "article_2_p107_175",
+      "title": "Điều 2. Giải thích từ ngữ",
+      "content_type": "regulation_text",
+      "page_start": 107,
+      "page_end": 107
+    },
+    {
+      "section_id": "article_3_p108_176",
+      "title": "Điều 3. Xác định nhu cầu đào tạo, giao nhiệm vụ, đặt hàng hoặc",
+      "content_type": "regulation_text",
+      "page_start": 108,
+      "page_end": 109
+    },
+    {
+      "section_id": "article_8_p112_182",
+      "title": "Điều 8. Chi phí bồi hoàn và cách tính chi phí bồi hoàn",
+      "content_type": "regulation_text",
+      "page_start": 112,
+      "page_end": 113
+    },
+    {
+      "section_id": "article_14_p116_190",
+      "title": "Điều 14. Quy định chuyển tiếp",
+      "content_type": "regulation_text",
+      "page_start": 116,
+      "page_end": 116
+    },
+    {
+      "section_id": "article_15_p117_191",
+      "title": "Điều 15. Hiệu lực và trách nhiệm thi hành",
+      "content_type": "regulation_text",
+      "page_start": 117,
+      "page_end": 128
+    },
+    {
+      "section_id": "ktx_admission_procedure_p162_194",
+      "title": "Chương IV",
+      "content_type": "ktx_admission_procedure",
+      "page_start": 162,
+      "page_end": 162
+    }
+  ],
+  "validation_issues": []
+}

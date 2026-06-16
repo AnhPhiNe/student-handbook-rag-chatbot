@@ -1,0 +1,727 @@
+[
+  {
+    "rule_id": "threshold_article_3_p11_11",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 3.",
+    "source_title": "Điều 3. Chương trình đào tạo và thời gian học tập",
+    "source_pages": [
+      11,
+      12,
+      13
+    ],
+    "threshold_lines": [
+      "6. Thời gian học tập chuẩn toàn khoá và thời gian học tập tối đa của",
+      "a) Thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa đối",
+      "học tập tối đa",
+      "b) Thời gian học tập chuẩn toàn khoá và thời gian học tập tối đa đối",
+      "học tập tối đa"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_7_p14_16",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 7.",
+    "source_title": "Điều 7. Kế hoạch giảng dạy và học tập",
+    "source_pages": [
+      14,
+      15
+    ],
+    "threshold_lines": [
+      "số giờ giảng đối với một học phần bất kỳ không vượt quá 15 giờ/tuần và",
+      "chính, mỗi học kỳ chính có ít nhất 15 tuần thực học và 3 tuần thi. Ngoài",
+      "thêm học kỳ phụ có ít nhất 05 tuần thực học và 01 tuần thi để sinh viên có"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_8_p15_17",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 8.",
+    "source_title": "Điều 8. Tổ chức giảng dạy và học tập",
+    "source_pages": [
+      15,
+      16,
+      17
+    ],
+    "threshold_lines": [
+      "tạo trình Hiệu trưởng quyết định số sinh viên tối thiểu cho mỗi lớp học",
+      "phần khác mà Trường có tổ chức cho đủ số tín chỉ tối thiểu quy định",
+      "a) Tối đa 30% tổng khối lượng của CTĐT có thể được thực hiện"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_9_p17_18",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 9.",
+    "source_title": "Điều 9. Tổ chức đăng ký học tập",
+    "source_pages": [
+      17,
+      18
+    ],
+    "threshold_lines": [
+      "theo thông báo của Trường và phải đảm bảo được khối lượng tối thiểu",
+      "− Khối lượng tối thiểu không ít hơn 2/3 khối lượng trung bình một",
+      "− Khối lượng tối đa không vượt quá 3/2 khối lượng trung bình một"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_10_p18_20",
+    "rule_type": "threshold_rule",
+    "priority": "high",
+    "source_article": "Điều 10.",
+    "source_title": "Điều 10. Đánh giá và tính điểm học phần",
+    "source_pages": [
+      18,
+      19,
+      20,
+      21
+    ],
+    "threshold_lines": [
+      "− Việc chấm thi kết thúc học phần phải do tối thiểu hai giảng viên",
+      "giá đạt loại khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử",
+      "ít nhất 2 giảng viên đảm nhiệm;",
+      "môn gồm ít nhất 3 thành viên;",
+      "8,5 – 10",
+      "7,8 – 8,4",
+      "7,0 – 7,7",
+      "6,3 – 6,9",
+      "5,5 – 6,2",
+      "4,8 – 5,4",
+      "4,0 – 4,7",
+      "3,0 – 3,9",
+      "0,0 – 2,9",
+      "không tính vào điểm trung bình học tập) yêu cầu đạt 5,0 trở lên theo"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_11_p21_21",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 11.",
+    "source_title": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học",
+    "source_pages": [
+      21,
+      22,
+      23
+    ],
+    "threshold_lines": [
+      "Từ 3,6 đến 4,0",
+      "Từ 3,2 đến dưới 3,6",
+      "Từ 2,5 đến dưới 3,2",
+      "Từ 2,0 đến dưới 2,5",
+      "Từ 1,0 đến dưới 2,0",
+      "Dưới 1,0"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_12_p23_22",
+    "rule_type": "threshold_rule",
+    "priority": "high",
+    "source_article": "Điều 12.",
+    "source_title": "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy",
+    "source_pages": [
+      23,
+      24
+    ],
+    "threshold_lines": [
+      "b) Điểm trung bình học kỳ đạt dưới 0,8 đối với học kỳ đầu của khóa",
+      "học, dưới 1,0 đối với các học kỳ tiếp theo;",
+      "c) Điểm trung bình tích lũy đạt dưới 1,2 đối với sinh viên trình độ",
+      "năm thứ nhất, dưới 1,4 đối với sinh viên trình độ năm thứ hai, dưới 1,6",
+      "đối với sinh viên trình độ năm thứ ba, dưới 1,8 đối với sinh viên các năm",
+      "c) Thời gian học tập vượt quá giới hạn tối đa quy định tại Điều 3 của"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_13_p24_23",
+    "rule_type": "threshold_rule",
+    "priority": "high",
+    "source_article": "Điều 13.",
+    "source_title": "Điều 13. Xử lý kết quả học tập đối với hình thức đào tạo vừa làm",
+    "source_pages": [
+      24,
+      25
+    ],
+    "threshold_lines": [
+      "a) Điểm trung bình tích lũy đạt dưới 1,2 đối với sinh viên trình độ",
+      "năm thứ nhất, dưới 1,4 đối với sinh viên trình độ năm thứ hai, dưới 1,6",
+      "đối với sinh viên trình độ năm thứ ba, dưới 1,8 đối với sinh viên các năm",
+      "c) Thời gian học tập vượt quá giới hạn tối đa quy định tại Điều 3 của"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_14_p25_24",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 14.",
+    "source_title": "Điều 14. Công nhận kết quả học tập và chuyển đổi tín chỉ",
+    "source_pages": [
+      25
+    ],
+    "threshold_lines": [
+      "3. Khối lượng tối đa được công nhận, chuyển đổi không vượt quá",
+      "50% khối lượng học tập tối thiểu của CTĐT; riêng đối với ngành đào tạo"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_15_p25_25",
+    "rule_type": "threshold_rule",
+    "priority": "high",
+    "source_article": "Điều 15.",
+    "source_title": "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+    "source_pages": [
+      25,
+      26,
+      27
+    ],
+    "threshold_lines": [
+      "trở lên;",
+      "b) Sinh viên đã bị kỷ luật từ mức cảnh cáo trở lên trong thời gian học.",
+      "4. Sinh viên đã hết thời gian học tập tối đa theo quy định nhưng chưa"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_16_p27_27",
+    "rule_type": "threshold_rule",
+    "priority": "medium",
+    "source_article": "Điều 16.",
+    "source_title": "Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học",
+    "source_pages": [
+      27,
+      28
+    ],
+    "threshold_lines": [
+      "d) Vì lý do cá nhân khác nhưng đã phải học tối thiểu 01 học kỳ và",
+      "học kì trở lên sẽ được Trường hỗ trợ huỷ các học phần đã đăng ký trong",
+      "gửi Phòng CTCT và HSSV ít nhất 2 tuần trước khi học kỳ mới bắt đầu."
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_18_p29_29",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 18.",
+    "source_title": "Điều 18. Trao đổi sinh viên và hợp tác trong đào tạo",
+    "source_pages": [
+      29,
+      30
+    ],
+    "threshold_lines": [
+      "phối hợp đào tạo khác không vượt quá 25% tổng khối lượng của CTĐT."
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_19_p30_30",
+    "rule_type": "threshold_rule",
+    "priority": "high",
+    "source_article": "Điều 19.",
+    "source_title": "Điều 19. Học cùng lúc hai chương trình",
+    "source_pages": [
+      30,
+      31
+    ],
+    "threshold_lines": [
+      "a) Học lực tính theo điểm trung bình tích lũy xếp loại khá trở lên và",
+      "4. Thời gian tối đa được phép học đối với sinh viên học cùng lúc hai",
+      "chương trình là thời gian tối đa quy định cho chương trình thứ nhất, quy"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_28_p52_74",
+    "rule_type": "threshold_rule",
+    "priority": "high",
+    "source_article": "Điều 28.",
+    "source_title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+    "source_pages": [
+      52,
+      53
+    ],
+    "threshold_lines": [
+      "trở lên, không bị kỷ luật từ mức khiển trách trở lên sẽ được xét, cấp",
+      "+ Sinh viên đăng ký từ 6 tín chỉ trở lên;",
+      "+ Học bổng loại Khá: có điểm học bổng từ 2.56 đến 3.352 (điểm học",
+      "tập: 2.50 – 3.19 và điểm rèn luyện >= 70);",
+      "+ Học bổng loại Giỏi: có điểm học bổng từ 3.20 đến 3.672 (điểm",
+      "học tập: 3.20 – 3.59 và điểm rèn luyện >= 80);",
+      "+ Học bổng loại Xuất sắc: có điểm học bổng từ 3.60 đến 4.0 (điểm",
+      "học tập: 3.60 – 4.0 và điểm rèn luyện >= 90).",
+      "3. Quỹ HBKKHT: được bố trí tối thiểu bằng kinh phí 8% từ nguồn"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_31_p55_77",
+    "rule_type": "threshold_rule",
+    "priority": "high",
+    "source_article": "Điều 31.",
+    "source_title": "Điều 31. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận",
+    "source_pages": [
+      55,
+      56
+    ],
+    "threshold_lines": [
+      "b) Về kết quả học tập: Sinh viên phải hoàn thành ít nhất một học kỳ;",
+      "điểm trung bình chung tích lũy từ 2.0 trở lên;",
+      "học kỳ sinh viên muốn trở lại học) ít nhất 2 tuần;"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_33_p57_80",
+    "rule_type": "threshold_rule",
+    "priority": "high",
+    "source_article": "Điều 33.",
+    "source_title": "Điều 33. Nội dung, hình thức khen thưởng",
+    "source_pages": [
+      57,
+      58,
+      59
+    ],
+    "threshold_lines": [
+      "khá trở lên;",
+      "+ Đạt danh hiệu sinh viên Giỏi: nếu xếp loại học tập từ giỏi trở lên",
+      "và xếp loại rèn luyện tốt trở lên;",
+      "+ Có từ 25% sinh viên đạt danh hiệu sinh viên Khá trở lên;",
+      "+ Có cá nhân đạt danh hiệu sinh viên Giỏi trở lên;",
+      "luật từ mức Cảnh cáo trở lên;",
+      "sinh viên giỏi trở lên, có cá nhân đạt danh hiệu sinh viên Xuất sắc."
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_35_p59_82",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 35.",
+    "source_title": "Điều 35. Hình thức kỷ luật và nội dung vi phạm",
+    "source_pages": [
+      59,
+      60
+    ],
+    "threshold_lines": [
+      "2. Hình thức kỷ luật của sinh viên từ cảnh cáo trở lên phải được ghi"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_4_p72_113",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 4.",
+    "source_title": "Điều 4. Đánh giá về ý thức học tập",
+    "source_pages": [
+      72
+    ],
+    "threshold_lines": [
+      "2. Khung điểm đánh giá từ 0 đến 20 điểm."
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_5_p72_114",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 5.",
+    "source_title": "Điều 5. Đánh giá về ý thức và kết quả chấp hành quy chế, nội quy,",
+    "source_pages": [
+      72
+    ],
+    "threshold_lines": [
+      "2. Khung điểm đánh giá từ 0 đến 25 điểm."
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_6_p73_115",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 6.",
+    "source_title": "Điều 6. Đánh giá về ý thức và kết quả tham gia các hoạt động chính",
+    "source_pages": [
+      73
+    ],
+    "threshold_lines": [
+      "2. Khung điểm đánh giá từ 0 đến 20 điểm."
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_7_p73_116",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 7.",
+    "source_title": "Điều 7. Đánh giá về phẩm chất công dân và quan hệ với cộng đồng",
+    "source_pages": [
+      73
+    ],
+    "threshold_lines": [
+      "2. Khung điểm đánh giá từ 0 đến 25 điểm."
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_8_p73_117",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 8.",
+    "source_title": "Điều 8. Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các",
+    "source_pages": [
+      73
+    ],
+    "threshold_lines": [
+      "2. Khung điểm đánh giá từ 0 đến 10 điểm."
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_9_p74_119",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 9.",
+    "source_title": "Điều 9. Phân loại kết quả rèn luyện",
+    "source_pages": [
+      74
+    ],
+    "threshold_lines": [
+      "Từ 90 đến 100 điểm",
+      "Từ 80 đến dưới 90 điểm",
+      "Từ 65 đến dưới 80 điểm",
+      "Từ 50 đến dưới 65 điểm",
+      "Từ 35 đến dưới 50 điểm",
+      "Dưới 35 điểm",
+      "quả rèn luyện không vượt quá loại khá; hoặc vi phạm kỷ luật ở mức cảnh",
+      "cáo trở lên khi phân loại kết quả rèn luyện không được vượt quá loại",
+      "4. Trong toàn khóa học, sinh viên bị kỷ luật từ mức cảnh cáo trở lên"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_10_p74_120",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 10.",
+    "source_title": "Điều 10. Các trường hợp đánh giá",
+    "source_pages": [
+      74,
+      75
+    ],
+    "threshold_lines": [
+      "gian học tập tối đa được thiết kế. Những sinh viên đã hoàn thành chương"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_14_p78_125",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 14.",
+    "source_title": "Điều 14. Sử dụng kết quả rèn luyện",
+    "source_pages": [
+      78
+    ],
+    "threshold_lines": [
+      "thì phải tạm ngừng học ít nhất một học kỳ ở học kỳ tiếp theo và nếu bị"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_scoring_form_table_p82_131",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": null,
+    "source_title": "PHỤ LỤC 1",
+    "source_pages": [
+      82
+    ],
+    "threshold_lines": [
+      "ĐÁNH GIÁ VỀ Ý THỨC THAM GIA HỌC TẬP (Tối đa 20 điểm)"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_scoring_form_table_p82_132",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": null,
+    "source_title": "PHỤ LỤC 1",
+    "source_pages": [
+      82,
+      83
+    ],
+    "threshold_lines": [
+      "đương) trở lên",
+      "trở lên"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_scoring_form_table_p83_133",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": null,
+    "source_title": "PHỤ LỤC 1",
+    "source_pages": [
+      83
+    ],
+    "threshold_lines": [
+      "(Tối đa 25 điểm)"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_scoring_form_table_p83_134",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": null,
+    "source_title": "PHỤ LỤC 1",
+    "source_pages": [
+      83,
+      84
+    ],
+    "threshold_lines": [
+      "NGHỆ, THỂ THAO, PHÒNG CHỐNG TỘI PHẠM VÀ CÁC TỆ NẠN XÃ HỘI (Tối đa 20 điểm)",
+      "+ Cấp Tỉnh/Thành (tương đương) trở lên"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_scoring_form_table_p84_135",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": null,
+    "source_title": "PHỤ LỤC 1",
+    "source_pages": [
+      84
+    ],
+    "threshold_lines": [
+      "ĐÁNH GIÁ VỀ Ý THỨC CÔNG DÂN TRONG QUAN HỆ CỘNG ĐỒNG (Tối đa 25 điểm)"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_scoring_form_table_p84_136",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": null,
+    "source_title": "PHỤ LỤC 1",
+    "source_pages": [
+      84,
+      85
+    ],
+    "threshold_lines": [
+      "+ Cấp Trường (tương đương) trở lên",
+      "+ Cấp Trường (tương đương) trở lên",
+      "RÈN LUYỆN (Tối đa 10 điểm)"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_1_p91_148",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 1.",
+    "source_title": "Điều 1. Phạm vi điều chỉnh và đối tượng áp dụng",
+    "source_pages": [
+      91,
+      92
+    ],
+    "threshold_lines": [
+      "loại học tập đạt từ loại khá trở lên. Các sinh viên khác cũng được khuyến"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_7_p93_155",
+    "rule_type": "threshold_rule",
+    "priority": "high",
+    "source_article": "Điều 7.",
+    "source_title": "Điều 7. Quy trình tổ chức và tiến độ triển khai hoạt động nghiên",
+    "source_pages": [
+      93,
+      94,
+      95
+    ],
+    "threshold_lines": [
+      "Tháng 9 – 10 hằng năm",
+      "của SV chỉ do một người hướng dẫn và tối đa không quá 05 SV tham gia",
+      "đề nghiên cứu (điểm tối đa là 10);",
+      "b) Nội dung nghiên cứu (điểm tối đa là 20);",
+      "c) Phương pháp nghiên cứu (điểm tối đa là 15);",
+      "d) Kết quả nghiên cứu (điểm tối đa là 40);",
+      "đ) Hình thức trình bày báo cáo tổng kết đề tài (điểm tối đa là 05);",
+      "thảo, hội nghị quốc gia, quốc tế có phản biện (điểm tối đa là 05);",
+      "− Bài báo được đăng trên các tạp chí quốc tế uy tín (điểm tối đa là 10);",
+      "phẩm... đã được chứng nhận (điểm tối đa là 10).",
+      "có mặt, đề tài được xếp loại ở mức Xuất sắc: từ 90 điểm trở lên; mức Tốt:",
+      "từ 80 điểm đến dưới 90 điểm; mức Khá: từ 70 điểm đến dưới 80 điểm;",
+      "mức Đạt: từ 50 điểm đến dưới 70 điểm; và Không đạt: dưới 50 điểm;"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_13_p100_163",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 13.",
+    "source_title": "Điều 13. Trách nhiệm và quyền lợi của người hướng dẫn sinh viên",
+    "source_pages": [
+      100
+    ],
+    "threshold_lines": [
+      "2. Được hướng dẫn tối đa ba đề tài NCKH của SV trong cùng thời gian."
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_14_p100_164",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 14.",
+    "source_title": "Điều 14. Chuyển đổi điểm NCKH của sinh viên",
+    "source_pages": [
+      100
+    ],
+    "threshold_lines": [
+      "loại Khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử dụng"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_regulation_text_p102_167",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": null,
+    "source_title": "PHỤ LỤC",
+    "source_pages": [
+      102
+    ],
+    "threshold_lines": [
+      "– Số trang tối đa là 80 trang (không tính mục lục, tài liệu tham khảo",
+      "– Tài liệu tham khảo và phụ lục (nếu có): Tối đa là 40 trang; tên các"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_2_p107_175",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 2.",
+    "source_title": "Điều 2. Giải thích từ ngữ",
+    "source_pages": [
+      107
+    ],
+    "threshold_lines": [
+      "được xác định như sau: số ngày làm việc trong tháng từ 15 ngày trở lên"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_4_p109_178",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 4.",
+    "source_title": "Điều 4. Mức hỗ trợ và thời gian hỗ trợ",
+    "source_pages": [
+      109
+    ],
+    "threshold_lines": [
+      "chỉ không vượt quá mức hỗ trợ quy định cho khóa học theo năm học."
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_6_p110_180",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 6.",
+    "source_title": "Điều 6. Bồi hoàn kinh phí hỗ trợ",
+    "source_pages": [
+      110,
+      111
+    ],
+    "threshold_lines": [
+      "công tác tối thiểu gấp hai lần thời gian đào tạo tính từ ngày được tuyển dụng;",
+      "Nghị định này nhưng thời gian hưởng không vượt quá thời gian tối đa"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_9_p113_183",
+    "rule_type": "threshold_rule",
+    "priority": "medium",
+    "source_article": "Điều 9.",
+    "source_title": "Điều 9. Thu hồi chi phí bồi hoàn",
+    "source_pages": [
+      113,
+      114
+    ],
+    "threshold_lines": [
+      "Thời hạn phải thực hiện nghĩa vụ bồi hoàn kinh phí hỗ trợ tối đa là 4",
+      "hoàn quá thời hạn quy định thì phải chịu lãi suất tối đa áp dụng đối với",
+      "quy định lãi suất tối đa áp dụng đối với tiền gửi không kỳ hạn thì phải"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_14_p116_190",
+    "rule_type": "threshold_rule",
+    "priority": "high",
+    "source_article": "Điều 14.",
+    "source_title": "Điều 14. Quy định chuyển tiếp",
+    "source_pages": [
+      116
+    ],
+    "threshold_lines": [
+      "Sinh viên sư phạm đã trúng tuyển và đào tạo từ năm học 2020 – 2021",
+      "học 2015 – 2016 đến năm học 2020 – 2021 cho đến khi tốt nghiệp."
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_15_p117_191",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 15.",
+    "source_title": "Điều 15. Hiệu lực và trách nhiệm thi hành",
+    "source_pages": [
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128
+    ],
+    "threshold_lines": [
+      "và áp dụng bắt đầu từ khóa tuyển sinh năm học 2021 – 2022.",
+      "năm học 2022 – 2023",
+      "1.3. Sinh viên học văn bằng thứ nhất từ 18 đến 22 tuổi thuộc diện",
+      "định chuẩn hộ nghèo đa chiều giai đoạn 2021 – 2025).",
+      "luật từ mức cảnh cáo trở lên hoặc các sinh viên học lại, học bổ sung trong",
+      "phủ Quy định chuẩn hộ nghèo đa chiều giai đoạn 2021 – 2025).",
+      "định chuẩn hộ nghèo đa chiều giai đoạn 2021 – 2025);"
+    ],
+    "review_status": "auto_extracted"
+  }
+]

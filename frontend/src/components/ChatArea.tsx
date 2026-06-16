@@ -186,15 +186,6 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
               <span>Xóa chat</span>
             </button>
           )}
-          <a 
-            href="mailto:khoacntt@hcmue.edu.vn?subject=Báo%20lỗi%20HCMUE%20Chatbot" 
-            className="theme-toggle" 
-            style={{ marginRight: '0.5rem', color: '#EF4444', textDecoration: 'none' }}
-            title="Góp ý / Báo lỗi"
-          >
-            <Bug size={16} />
-            <span style={{ color: '#EF4444' }}>Báo lỗi</span>
-          </a>
           <button className="theme-toggle" onClick={onToggleTheme}>
             {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
             <span>{theme === 'light' ? 'Chế độ tối' : 'Chế độ sáng'}</span>

@@ -11,6 +11,7 @@ const IS_MAINTENANCE_MODE = false;
 interface ChatAreaProps {
   messages: Message[];
   isTyping: boolean;
+  progressMessage?: string;
   onSendMessage: (text: string) => void;
   onSendHardcoded: (text: string, response: string, suggestions?: string[]) => void;
   onRetry?: () => void;
@@ -73,7 +74,7 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
   }
 };
 
-export function ChatArea({ messages, isTyping, onSendMessage, onSendHardcoded, onRetry, onRegenerate, theme, onToggleTheme, onNavigateTab, onClearChat }: ChatAreaProps) {
+export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, onSendHardcoded, onRetry, onRegenerate, theme, onToggleTheme, onNavigateTab, onClearChat }: ChatAreaProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasMessages = messages.length > 0;
@@ -98,14 +99,14 @@ export function ChatArea({ messages, isTyping, onSendMessage, onSendHardcoded, o
 
   const handleQuickAccess = (id: string) => {
     if (id === 'bieu-mau') {
-      if (onNavigateTab) onNavigateTab('bieu-mau');
+      if (onNavigateTab) onNavigateTab('resources');
       return;
     }
     
     const titles: Record<string, string> = {
-      'hoc-vu': 'Học vụ',
-      'hoc-bong': 'Học bổng',
-      'ktx': 'Ký túc xá và Phòng ban',
+      'hoc-vu': 'Học vụ & Đào tạo',
+      'hoc-bong': 'Học bổng & Học phí',
+      'ktx': 'Phòng ban & Ký túc xá',
       'hanh-chinh': 'Quy trình Hành chính'
     };
     
@@ -128,32 +129,37 @@ export function ChatArea({ messages, isTyping, onSendMessage, onSendHardcoded, o
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Progressive thinking indicator
+  // Progressive thinking indicator based on real backend progress or simulated fallback
   useEffect(() => {
     if (isTyping) {
-      const messages = [
-        "Đang phân tích câu hỏi của bạn...",
-        "Đang lục lọi trong Sổ tay sinh viên...",
-        "Đang chấm điểm các tài liệu liên quan...",
-        "Sắp xong rồi, đang tổng hợp câu trả lời..."
-      ];
-      setThinkingMessage(messages[0]);
-      
-      let i = 0;
-      coldStartTimer.current = setInterval(() => {
-        i++;
-        if (i < messages.length) {
-          setThinkingMessage(messages[i]);
-        } else {
-          clearInterval(coldStartTimer.current);
+      if (progressMessage) {
+        setThinkingMessage(progressMessage);
+        clearInterval(coldStartTimer.current);
+      } else {
+        const messages = [
+          "Hệ thống đang xử lý...",
+          "Đang kết nối đến máy chủ AI...",
+          "Đang chờ phản hồi..."
+        ];
+        if (!thinkingMessage) {
+          setThinkingMessage(messages[0]);
         }
-      }, 5000) as any;
+        
+        let i = 0;
+        clearInterval(coldStartTimer.current);
+        coldStartTimer.current = setInterval(() => {
+          i++;
+          if (i < messages.length) {
+            setThinkingMessage(messages[i]);
+          }
+        }, 5000) as any;
+      }
     } else {
       setThinkingMessage("");
       clearInterval(coldStartTimer.current);
     }
     return () => clearInterval(coldStartTimer.current);
-  }, [isTyping]);
+  }, [isTyping, progressMessage]);
 
   // ============ EMPTY STATE ============
   if (!hasMessages) {

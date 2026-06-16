@@ -77,6 +77,8 @@ def chat_stream(
                     yield _sse_event("metadata", chunk)
                 elif chunk_type == "token":
                     yield _sse_event("token", {"text": chunk.get("text", "")})
+                elif chunk_type == "progress":
+                    yield _sse_event("progress", {"message": chunk.get("message", "")})
                 elif chunk_type == "done":
                     latency_ms = round(
                         (time.perf_counter() - started_at) * 1000, 2

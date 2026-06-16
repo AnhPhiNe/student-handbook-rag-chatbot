@@ -20,7 +20,7 @@ import { useMediaQuery } from './hooks/useMediaQuery';
 import { useLocalStorage } from './hooks/useLocalStorage';
 
 function App() {
-  const { messages, isTyping, sendMessage, sendHardcodedMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat();
+  const { messages, isTyping, progressMessage, sendMessage, sendHardcodedMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat();
   const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('hcmue-theme', 'light');
   const [activeTab, setActiveTab] = useState('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -65,6 +65,7 @@ function App() {
               <ChatArea 
                 messages={messages}
                 isTyping={isTyping}
+                progressMessage={progressMessage}
                 onSendMessage={sendMessage}
                 onSendHardcoded={sendHardcodedMessage}
                 onRetry={retryLastMessage}

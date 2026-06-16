@@ -412,15 +412,9 @@ class AnswerPipeline:
         query: str,
         chat_history: list[dict[str, str]] | None = None,
     ) -> Iterator[dict[str, Any]]:
-        """Luồng tạo câu trả lời dạng Streaming (Server-Sent Events).
+        """Luồng tạo câu trả lời dạng Streaming (Server-Sent Events)."""
+        yield {"type": "progress", "message": "Đang phân tích câu hỏi của bạn..."}
         
-        Quy trình xử lý (Pipeline Flow):
-        1. Query Rewrite (Tiền xử lý): Gửi câu hỏi và lịch sử chat cho Llama (Groq) để dịch lại thành câu hoàn chỉnh.
-        2. Routing & Retrieval: Chạy Router và Vector Search một cách đồng bộ (synchronous).
-        3. Guardrails: Áp dụng các bộ lọc (out_of_domain, needs_clarification).
-        4. Trả về Metadata: Yield một object metadata chứa trạng thái và danh sách citations trước tiên.
-        5. LLM Streaming: Gọi Gemini API và yield từng token văn bản (token-by-token) về cho Frontend.
-        """
         rewrite_result = self.query_rewriter.rewrite(query, chat_history=chat_history)
         effective_query = rewrite_result.effective_query
 
@@ -436,6 +430,7 @@ class AnswerPipeline:
             return
 
         try:
+            yield {"type": "progress", "message": "Đang lục lọi trong Sổ tay sinh viên..."}
             # Retrieval chạy đồng bộ trước, sau đó mới stream token LLM về frontend.
             retrieval_result, rewrite_result = self._run_verified_retrieval(
                 query,
@@ -545,6 +540,7 @@ class AnswerPipeline:
             selected_citations=None, max_context_chars=self.max_context_chars,
         )
 
+        yield {"type": "progress", "message": "Sắp xong rồi, đang tổng hợp câu trả lời..."}
         yield {"type": "metadata", "status": "answered", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": selected_citations, "llm_called": True}
 
         try:

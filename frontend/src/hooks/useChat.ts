@@ -28,6 +28,7 @@ const API_URL = `${API_BASE_URL}/chat/stream`;
 export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [progressMessage, setProgressMessage] = useState<string>('');
   const [systemStatus, setSystemStatus] = useState<'normal' | 'error'>('normal');
 
   const sendMessage = useCallback(async (text: string) => {
@@ -43,6 +44,7 @@ export function useChat() {
     
     setMessages(prev => [...prev, userMsg]);
     setIsTyping(true);
+    setProgressMessage('');
 
     const botMsgId = (Date.now() + 1).toString();
     const startTime = Date.now();
@@ -104,6 +106,8 @@ export function useChat() {
                 if (data.citations_used) {
                   capturedCitations = data.citations_used;
                 }
+              } else if (eventType === 'progress') {
+                setProgressMessage(data.message);
               } else if (eventType === 'token') {
                 currentBotContent += data.text;
                 setMessages(prev => prev.map(m => 
@@ -111,6 +115,7 @@ export function useChat() {
                 ));
               } else if (eventType === 'done' || eventType === 'error') {
                 setIsTyping(false);
+                setProgressMessage('');
                 const responseTimeMs = Date.now() - startTime;
                 
                 // Mock confidence based on citations if not provided
@@ -212,6 +217,7 @@ export function useChat() {
   return {
     messages,
     isTyping,
+    progressMessage,
     sendMessage,
     sendHardcodedMessage,
     clearMessages,

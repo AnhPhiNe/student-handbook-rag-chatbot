@@ -3,7 +3,8 @@ import ReactMarkdown from 'react-markdown';
 import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, X } from 'lucide-react';
 import type { Message } from '../hooks/useChat';
 import { useToast } from './Toast';
-import logoHcmue from '../assets/logo_hcmue.png';
+import userAvatar from '../assets/user_avatar.png';
+import botAvatar from '../assets/bot_avatar.png';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
@@ -80,7 +81,7 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
   if (message.role === 'user') {
     return (
       <div className="message-wrapper user">
-        <div className="avatar user">{message.content[0]?.toUpperCase() || 'U'}</div>
+        <img src={userAvatar} alt="User" className="avatar user" style={{ backgroundColor: 'transparent' }} />
         <div className="message-content">
           <div className="message-header">
             <span className="message-time">{getRelativeTime(message.timestamp)}</span>
@@ -97,7 +98,7 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
 
   return (
     <div className="message-wrapper bot">
-      <img src={logoHcmue} alt="HCMUE AI" className="avatar bot" />
+      <img src={botAvatar} alt="HCMUE AI" className="avatar bot" />
       <div className="message-content">
         <div className={`${thinkingMessage && message.isStreaming && !message.content ? 'cold-start-bubble' : 'message-bubble'} ${message.isStreaming && !message.content && !thinkingMessage ? 'typing-indicator' : ''}`}>
           {message.isStreaming && !message.content ? (

@@ -89,6 +89,22 @@ class QueryRewriter:
         self.trigger_on_typo_signals = bool(trigger_on_typo_signals)
         self._client = client
 
+        # Load dynamic keys
+        keys_str = os.environ.get("GROQ_API_KEYS", os.environ.get("GROQ_API_KEY", ""))
+        self.available_keys = [k.strip() for k in keys_str.split(",") if k.strip()]
+
+        # Build fallback matrix (Model x Key)
+        fallback_models = ["llama-3.1-8b-instant", "qwen-2.5-32b-it"]
+        models = []
+        for m in fallback_models:
+            if m not in models:
+                models.append(m)
+        
+        self.providers = []
+        for m in models:
+            for k in self.available_keys:
+                self.providers.append({"model": m, "api_key": k})
+
     @classmethod
     def from_config(cls, config: dict[str, Any] | None) -> QueryRewriter:
         config = config or {}
@@ -250,142 +266,83 @@ class QueryRewriter:
         # sang ngôn ngữ học thuật của Sổ tay sinh viên.
         return True
 
-    def _resolve_api_key(self) -> str | None:
-        # Uu tien bien rieng cho rewriter de khong vo tinh dung chung key voi LLM tra loi.
-        primary = os.environ.get(self.api_key_env_var)
-        if primary:
-            return primary
-        if self.api_key_env_var != FALLBACK_REWRITER_API_KEY_ENV:
-            return os.environ.get(FALLBACK_REWRITER_API_KEY_ENV)
-        return None
-
-    def _get_client(self) -> Any:
-        if self._client is None:
-            api_key = self._resolve_api_key()
-            if not api_key:
-                raise ValueError(
-                    f"Thiếu API Key cho hệ thống Query Rewriter ({self.api_key_env_var})."
-                )
-            self._client = Groq(api_key=api_key)
-        return self._client
-
     def _call_llm(
         self,
         query: str,
         chat_history: list[dict[str, str]] | None,
     ) -> str:
+        from groq import Groq, RateLimitError, APITimeoutError, InternalServerError, APIConnectionError
+        
         last_error: Exception | None = None
-        attempts = max(1, self.max_retries + 1)
-        for _ in range(attempts):
+        for provider in self.providers:
             try:
-                return self._call_llm_once(query, chat_history, include_timeout=True)
-            except TypeError:
-                try:
-                    return self._call_llm_once(
-                        query,
-                        chat_history,
-                        include_timeout=False,
-                    )
-                except Exception as exc:
-                    last_error = exc
-            except Exception as exc:
-                last_error = exc
+                client = Groq(api_key=provider["api_key"], timeout=5.0, max_retries=0)
+                kwargs: dict[str, Any] = {
+                    "model": provider["model"],
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": _build_rewrite_prompt(
+                                query,
+                                chat_history=chat_history,
+                            ),
+                        }
+                    ],
+                    "temperature": self.temperature,
+                    "max_tokens": self.max_output_tokens,
+                    "response_format": {"type": "json_object"},
+                }
 
-        if last_error is None:
-            raise RuntimeError("Query rewriter failed without an explicit error.")
-        raise last_error
+                llm_result = client.chat.completions.create(**kwargs)
+                raw_text = llm_result.choices[0].message.content
+                if not raw_text:
+                    raise ValueError("Empty response from Groq")
+                return raw_text
+            except (RateLimitError, APITimeoutError, InternalServerError, APIConnectionError, ValueError) as exc:
+                last_error = exc
+                print(f"[Fallback] QueryRewriter (Rewrite) failed with model {provider['model']}. Trying next... Error: {str(exc)}")
+                continue
+
+        raise RuntimeError(f"Query rewriter all fallback providers failed. Last error: {str(last_error)}")
 
     def _call_context_llm(
         self,
         query: str,
         chat_history: list[dict[str, str]] | None,
     ) -> str:
+        from groq import Groq, RateLimitError, APITimeoutError, InternalServerError, APIConnectionError
+        
         last_error: Exception | None = None
-        attempts = max(1, self.max_retries + 1)
-        for _ in range(attempts):
+        for provider in self.providers:
             try:
-                return self._call_context_llm_once(
-                    query,
-                    chat_history,
-                    include_timeout=True,
-                )
-            except TypeError:
-                try:
-                    return self._call_context_llm_once(
-                        query,
-                        chat_history,
-                        include_timeout=False,
-                    )
-                except Exception as exc:
-                    last_error = exc
-            except Exception as exc:
+                client = Groq(api_key=provider["api_key"], timeout=5.0, max_retries=0)
+                kwargs: dict[str, Any] = {
+                    "model": provider["model"],
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": _build_context_resolution_prompt(
+                                query,
+                                chat_history=chat_history,
+                            ),
+                        }
+                    ],
+                    "temperature": self.temperature,
+                    "max_tokens": self.max_output_tokens,
+                    "response_format": {"type": "json_object"},
+                }
+
+                llm_result = client.chat.completions.create(**kwargs)
+                raw_text = llm_result.choices[0].message.content
+                if not raw_text:
+                    raise ValueError("Empty response from Groq")
+                return raw_text
+            except (RateLimitError, APITimeoutError, InternalServerError, APIConnectionError, ValueError) as exc:
                 last_error = exc
+                print(f"[Fallback] QueryRewriter (Context) failed with model {provider['model']}. Trying next... Error: {str(exc)}")
+                continue
 
-        if last_error is None:
-            raise RuntimeError("Context resolver failed without an explicit error.")
-        raise last_error
-
-    def _call_llm_once(
-        self,
-        query: str,
-        chat_history: list[dict[str, str]] | None,
-        *,
-        include_timeout: bool,
-    ) -> str:
-        kwargs: dict[str, Any] = {
-            "model": self.model_name,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": _build_rewrite_prompt(
-                        query,
-                        chat_history=chat_history,
-                    ),
-                }
-            ],
-            "temperature": self.temperature,
-            "max_tokens": self.max_output_tokens,
-            "response_format": {"type": "json_object"},
-        }
-        if include_timeout:
-            kwargs["timeout"] = self.request_timeout_seconds
-
-        llm_result = self._get_client().chat.completions.create(**kwargs)
-        raw_text = llm_result.choices[0].message.content
-        if not raw_text:
-            raise ValueError("Empty response from Groq")
-        return raw_text
-
-    def _call_context_llm_once(
-        self,
-        query: str,
-        chat_history: list[dict[str, str]] | None,
-        *,
-        include_timeout: bool,
-    ) -> str:
-        kwargs: dict[str, Any] = {
-            "model": self.model_name,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": _build_context_resolution_prompt(
-                        query,
-                        chat_history=chat_history,
-                    ),
-                }
-            ],
-            "temperature": self.temperature,
-            "max_tokens": self.max_output_tokens,
-            "response_format": {"type": "json_object"},
-        }
-        if include_timeout:
-            kwargs["timeout"] = self.request_timeout_seconds
-
-        llm_result = self._get_client().chat.completions.create(**kwargs)
-        raw_text = llm_result.choices[0].message.content
-        if not raw_text:
-            raise ValueError("Empty response from Groq")
-        return raw_text
+        raise RuntimeError(f"Context resolver all fallback providers failed. Last error: {str(last_error)}")
 
     def _parse_llm_result(
         self,

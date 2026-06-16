@@ -27,13 +27,21 @@ class AIRouter:
         self.model_name = model_name
         self.temperature = temperature
         
-        api_key = os.environ.get(api_key_env_var)
-        if not api_key:
-            # Khởi tạo tạm bằng một key giả để xử lý lỗi thanh lịch hơn khi gọi API,
-            # tránh ứng dụng bị sập (crash) ngay lúc khởi động do thiếu biến môi trường.
-            self.client = Groq(api_key="MISSING_KEY") if api_key is None else Groq(api_key=api_key)
-        else:
-            self.client = Groq(api_key=api_key)
+        # Load dynamic keys
+        keys_str = os.environ.get("GROQ_API_KEYS", os.environ.get("GROQ_API_KEY", ""))
+        self.available_keys = [k.strip() for k in keys_str.split(",") if k.strip()]
+        
+        # Build fallback matrix (Model x Key)
+        fallback_models = [model_name, "llama-3.1-8b-instant"]
+        models = []
+        for m in fallback_models:
+            if m not in models:
+                models.append(m)
+        
+        self.providers = []
+        for m in models:
+            for k in self.available_keys:
+                self.providers.append({"model": m, "api_key": k})
             
     def route(self, query: str) -> dict[str, Any]:
         """Phân tích câu hỏi và trả về chiến lược tìm kiếm (Routing Strategy).
@@ -43,7 +51,7 @@ class AIRouter:
         - Gọi API LLM để lấy kết quả dạng JSON format.
         - Phân giải JSON để lấy `intent` và `target_chunk_types`.
         """
-        if self.client.api_key == "MISSING_KEY" or not self.client.api_key:
+        if not self.available_keys:
             raise ValueError("Thiếu API Key cho hệ thống AI Router.")
             
         prompt = f"""
@@ -83,38 +91,51 @@ Chỉ trả về JSON hợp lệ:
 Câu hỏi của sinh viên: "{query}"
 """
         
-        try:
-            response = self.client.chat.completions.create(
-                model=self.model_name,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=self.temperature,
-                response_format={"type": "json_object"}
-            )
+        from groq import Groq, RateLimitError, APITimeoutError, InternalServerError, APIConnectionError
+        
+        last_error: Exception | None = None
+        for provider in self.providers:
+            try:
+                client = Groq(api_key=provider["api_key"], timeout=5.0, max_retries=0)
+                response = client.chat.completions.create(
+                    model=provider["model"],
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=self.temperature,
+                    response_format={"type": "json_object"}
+                )
+                
+                raw_text = response.choices[0].message.content
+                if not raw_text:
+                    raise ValueError("Empty response from Groq")
+                    
+                parsed = self._extract_json_object(raw_text)
+                break # Success!
+                
+            except (RateLimitError, APITimeoutError, InternalServerError, APIConnectionError, ValueError) as exc:
+                last_error = exc
+                print(f"[Fallback] AIRouter failed with model {provider['model']}. Trying next... Error: {str(exc)}")
+                continue
+        else:
+            # If the loop completes without break, all providers failed
+            raise RuntimeError(f"All AIRouter fallback providers failed. Last error: {str(last_error)}")
             
-            raw_text = response.choices[0].message.content
-            parsed = self._extract_json_object(raw_text)
-            
-            intent = parsed.get("intent", "regulation_query")
-            strategy = parsed.get("strategy", "semantic_filtered")
-            target_chunk_types = parsed.get("target_chunk_types", ["regulation"])
-            needs_clarification = parsed.get("needs_clarification", False)
-            clarification_question = parsed.get("clarification_question")
-            
-            # Đảm bảo strategy là hợp lệ
-            if "formula" in intent:
-                strategy = "formula_lookup"
-            
-            return {
-                "intent": intent,
-                "strategy": strategy,
-                "target_chunk_types": target_chunk_types,
-                "needs_clarification": needs_clarification,
-                "clarification_question": clarification_question
-            }
-        except Exception as e:
-            # Báo lỗi và ngắt luồng nếu LLM sập
-            print(f"AIRouter error: {e}")
-            raise RuntimeError(f"Lỗi khi kết nối với AI Router: {e}") from e
+        # Continue with parsed result            
+        intent = parsed.get("intent", "regulation_query")
+        strategy = parsed.get("strategy", "semantic_filtered")
+        target_chunk_types = parsed.get("target_chunk_types", ["regulation"])
+        needs_clarification = parsed.get("needs_clarification", False)
+        clarification_question = parsed.get("clarification_question")
+        
+        if "formula" in intent:
+            strategy = "formula_lookup"
+        
+        return {
+            "intent": intent,
+            "strategy": strategy,
+            "target_chunk_types": target_chunk_types,
+            "needs_clarification": needs_clarification,
+            "clarification_question": clarification_question
+        }
 
     def _extract_json_object(self, text: str) -> dict[str, Any]:
         stripped = text.strip()

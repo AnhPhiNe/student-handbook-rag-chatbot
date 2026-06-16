@@ -14,7 +14,7 @@ class LocalReranker:
 
     def _init(self, model_name: str):
         print(f"[Reranker] Loading local Cross-Encoder model: {model_name}...")
-        self.model = CrossEncoder(model_name, max_length=512)
+        self.model = CrossEncoder(model_name, max_length=256)
         print("[Reranker] Model loaded successfully.")
 
     def rerank(self, query: str, results: list[dict[str, Any]], top_n: int = 5) -> list[dict[str, Any]]:

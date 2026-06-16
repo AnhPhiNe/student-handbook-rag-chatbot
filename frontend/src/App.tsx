@@ -26,6 +26,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isBugModalOpen, setIsBugModalOpen] = useState(false);
   
   const isMobile = useMediaQuery('(max-width: 768px)');
 
@@ -47,6 +48,7 @@ function App() {
               onMenuToggle={() => setIsMobileMenuOpen(true)} 
               theme={theme} 
               onToggleTheme={toggleTheme} 
+              onOpenBugReport={() => setIsBugModalOpen(true)}
             />
           )}
           
@@ -58,6 +60,7 @@ function App() {
             isMobileOpen={isMobileMenuOpen}
             onClose={() => setIsMobileMenuOpen(false)}
             onToggleCollapse={() => setSidebarCollapsed(prev => !prev)}
+            onOpenBugReport={() => setIsBugModalOpen(true)}
           />
           
           <div className="content-area">
@@ -95,7 +98,7 @@ function App() {
             />
           )}
 
-          <BugReportModal />
+          <BugReportModal isOpen={isBugModalOpen} setIsOpen={setIsBugModalOpen} />
         </div>
       </ToastProvider>
     </ErrorBoundary>

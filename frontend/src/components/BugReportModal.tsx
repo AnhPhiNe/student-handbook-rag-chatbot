@@ -1,9 +1,14 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Bug, X, Send } from 'lucide-react';
 import { useToast } from './Toast';
 
-export function BugReportModal() {
-  const [isOpen, setIsOpen] = useState(false);
+interface BugReportModalProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+export function BugReportModal({ isOpen, setIsOpen }: BugReportModalProps) {
   const [bugText, setBugText] = useState("");
   const toast = useToast();
 
@@ -25,7 +30,8 @@ export function BugReportModal() {
     toast.show("Đã mở ứng dụng Email để gửi lỗi!", "success");
   };
 
-  return (
+  // Render the FAB and Modal directly into document.body to avoid stacking context issues
+  return createPortal(
     <>
       <button 
         className="bug-fab-btn" 
@@ -65,6 +71,7 @@ export function BugReportModal() {
           </div>
         </div>
       )}
-    </>
+    </>,
+    document.body
   );
 }

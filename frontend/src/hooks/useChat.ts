@@ -19,7 +19,7 @@ export interface Message {
   responseTimeMs?: number;
   confidence?: 'high' | 'medium' | 'low';
   citations?: Citation[];
-  suggestions?: string[];
+  runId?: string;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
@@ -50,6 +50,7 @@ export function useChat() {
     const startTime = Date.now();
     let currentBotContent = "";
     let capturedCitations: Citation[] = [];
+    let capturedRunId: string | null = null;
 
     setMessages(prev => [...prev, { 
       id: botMsgId, 
@@ -106,6 +107,9 @@ export function useChat() {
                 if (data.citations_used) {
                   capturedCitations = data.citations_used;
                 }
+                if (data.run_id) {
+                  capturedRunId = data.run_id;
+                }
               } else if (eventType === 'progress') {
                 setProgressMessage(data.message);
               } else if (eventType === 'token') {
@@ -135,7 +139,8 @@ export function useChat() {
                     isStreaming: false,
                     responseTimeMs,
                     confidence,
-                    citations: capturedCitations
+                    citations: capturedCitations,
+                    runId: capturedRunId || undefined
                   } : m
                 ));
               }
@@ -164,7 +169,7 @@ export function useChat() {
   // sẽ bị kẹt (stale closure) ở trạng thái rỗng ban đầu, dẫn đến việc luôn gửi `chat_history = []`.
   }, [messages, isTyping]);
 
-  const sendHardcodedMessage = useCallback((userText: string, botResponse: string, suggestions?: string[]) => {
+  const sendHardcodedMessage = useCallback((userText: string, botResponse: string) => {
     if (isTyping) return;
     const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     
@@ -183,8 +188,7 @@ export function useChat() {
       content: botResponse,
       isStreaming: false,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      confidence: 'high',
-      suggestions
+      confidence: 'high'
     };
 
     setMessages(prev => [...prev, userMsg, botMsg]);

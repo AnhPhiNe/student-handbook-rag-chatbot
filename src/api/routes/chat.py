@@ -13,7 +13,8 @@ from src.api.chat_controls import (
     validate_chat_query,
 )
 from src.api.deps import get_answer_service
-from src.api.schemas import ChatRequest, ChatResponse
+from src.api.schemas import ChatRequest, ChatResponse, ChatFeedbackRequest
+from langsmith import Client as LangSmithClient
 
 
 router = APIRouter(tags=["chat"])
@@ -58,6 +59,7 @@ def _to_chat_response(
         effective_query=result.get("effective_query"),
         query_rewrite=result.get("query_rewrite"),
         request_id=result.get("request_id"),
+        run_id=result.get("run_id"),
         latency_ms=result.get("latency_ms"),
         citations_used=citations_used if isinstance(citations_used, list) else [],
         clarification_needed=bool(result.get("clarification_needed", False)),
@@ -118,3 +120,23 @@ def chat(
         result,
         include_debug=should_include_debug(request.include_debug),
     )
+
+
+@router.post("/chat/feedback")
+def submit_feedback(request: ChatFeedbackRequest):
+    """Gửi feedback (Like/Dislike) cho một câu trả lời vào LangSmith."""
+    if not request.run_id:
+        raise HTTPException(status_code=400, detail="run_id is required")
+        
+    try:
+        client = LangSmithClient()
+        client.create_feedback(
+            request.run_id,
+            key="user_score",
+            score=request.score,
+            comment=request.comment,
+        )
+        return {"status": "success"}
+    except Exception as exc:
+        logger.exception("feedback_submission_failed", extra={"run_id": request.run_id})
+        raise HTTPException(status_code=500, detail="Failed to submit feedback") from exc

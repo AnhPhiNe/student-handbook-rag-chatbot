@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText } from 'lucide-react';
+import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, X } from 'lucide-react';
 import type { Message } from '../hooks/useChat';
 import { useToast } from './Toast';
 import logoHcmue from '../assets/logo_hcmue.png';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
 interface ChatMessageProps {
   message: Message;
@@ -24,6 +26,10 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
   const [feedback, setFeedback] = useState<'like'|'dislike'|null>(null);
   const toast = useToast();
 
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [feedbackText, setFeedbackText] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleCopy = () => {
     navigator.clipboard.writeText(message.content);
     setCopied(true);
@@ -37,9 +43,38 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
     toast.show("Đã sao chép nội dung để chia sẻ!", "success");
   };
 
-  const handleFeedback = (type: 'like' | 'dislike') => {
+  const submitFeedbackToApi = async (type: 'like' | 'dislike', text: string = "") => {
+    if (!message.runId) return;
+    setIsSubmitting(true);
+    try {
+      await fetch(`${API_BASE_URL}/chat/feedback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          run_id: message.runId,
+          score: type === 'like' ? 1.0 : 0.0,
+          comment: text || undefined
+        })
+      });
+      toast.show("Cảm ơn bạn đã đánh giá!", "success");
+    } catch (err) {
+      toast.show("Có lỗi xảy ra khi gửi đánh giá.", "error");
+    } finally {
+      setIsSubmitting(false);
+      setShowFeedbackModal(false);
+    }
+  };
+
+  const handleFeedbackClick = (type: 'like' | 'dislike') => {
     setFeedback(type);
-    toast.show("Cảm ơn bạn đã đánh giá!", "success");
+    if (type === 'dislike' && message.runId) {
+      setShowFeedbackModal(true);
+      setFeedbackText("");
+    } else if (type === 'like' && message.runId) {
+      submitFeedbackToApi('like');
+    } else {
+      toast.show("Cảm ơn bạn đã đánh giá!", "success");
+    }
   };
 
   if (message.role === 'user') {
@@ -128,10 +163,10 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
               <button className="action-btn" title="Chia sẻ" onClick={handleShare}>
                 <Share2 size={16} />
               </button>
-              <button className={`action-btn ${feedback === 'like' ? 'active' : ''}`} title="Hữu ích" onClick={() => handleFeedback('like')}>
+              <button className={`action-btn ${feedback === 'like' ? 'active' : ''}`} title="Hữu ích" onClick={() => handleFeedbackClick('like')}>
                 <ThumbsUp size={16} />
               </button>
-              <button className={`action-btn ${feedback === 'dislike' ? 'active' : ''}`} title="Chưa chính xác" onClick={() => handleFeedback('dislike')}>
+              <button className={`action-btn ${feedback === 'dislike' ? 'active' : ''}`} title="Chưa chính xác" onClick={() => handleFeedbackClick('dislike')}>
                 <ThumbsDown size={16} />
               </button>
               <button className="action-btn" title="Copy" onClick={handleCopy}>
@@ -140,6 +175,33 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
               <button className="action-btn" title="Tạo lại" onClick={() => onRegenerate?.()}>
                 <RotateCcw size={16} />
               </button>
+            </div>
+          </div>
+        )}
+
+        {showFeedbackModal && (
+          <div className="feedback-modal-overlay" onClick={() => setShowFeedbackModal(false)}>
+            <div className="feedback-modal" onClick={e => e.stopPropagation()}>
+              <div className="feedback-header">
+                <h4>Góp ý câu trả lời</h4>
+                <button className="close-btn" onClick={() => setShowFeedbackModal(false)}>
+                  <X size={16} />
+                </button>
+              </div>
+              <p>Bot đã trả lời sai hoặc thiếu thông tin gì? (Không bắt buộc)</p>
+              <textarea 
+                value={feedbackText} 
+                onChange={e => setFeedbackText(e.target.value)} 
+                placeholder="Ví dụ: Trả lời lan man, sai thông tin học bổng..."
+                rows={3}
+                disabled={isSubmitting}
+              />
+              <div className="feedback-actions">
+                <button className="btn-secondary" onClick={() => setShowFeedbackModal(false)} disabled={isSubmitting}>Bỏ qua</button>
+                <button className="btn-primary" onClick={() => submitFeedbackToApi('dislike', feedbackText)} disabled={isSubmitting}>
+                  {isSubmitting ? "Đang gửi..." : "Gửi góp ý"}
+                </button>
+              </div>
             </div>
           </div>
         )}

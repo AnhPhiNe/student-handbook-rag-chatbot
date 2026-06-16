@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from langsmith import traceable
+from langsmith.run_helpers import get_current_run_tree
 from src.retrieval.core.retrieval_pipeline import run_retrieval_pipeline
 from src.retrieval.core.vector_retriever import (
     get_chroma_collection,
@@ -413,6 +414,9 @@ class AnswerPipeline:
         chat_history: list[dict[str, str]] | None = None,
     ) -> Iterator[dict[str, Any]]:
         """Luồng tạo câu trả lời dạng Streaming (Server-Sent Events)."""
+        run_tree = get_current_run_tree()
+        run_id = str(run_tree.id) if run_tree else None
+        
         yield {"type": "progress", "message": "⏳ Đang phân tích câu hỏi của bạn..."}
         
         rewrite_result = self.query_rewriter.rewrite(query, chat_history=chat_history)
@@ -424,7 +428,7 @@ class AnswerPipeline:
             and rewrite_result.clarification_question
             and self._should_answer_rewrite_clarification(rewrite_result)
         ):
-            yield {"type": "metadata", "status": "needs_clarification", "intent": None, "strategy": None, "citations_used": []}
+            yield {"type": "metadata", "run_id": run_id, "status": "needs_clarification", "intent": None, "strategy": None, "citations_used": []}
             yield {"type": "token", "text": rewrite_result.clarification_question}
             yield {"type": "done"}
             return
@@ -440,7 +444,7 @@ class AnswerPipeline:
             effective_query = rewrite_result.effective_query
         except Exception:
             fallback = build_fallback_answer(query=effective_query, retrieval_result=None, reason="retrieval_error")
-            yield {"type": "metadata", "status": "retrieval_error", "intent": None, "strategy": None, "citations_used": []}
+            yield {"type": "metadata", "run_id": run_id, "status": "retrieval_error", "intent": None, "strategy": None, "citations_used": []}
             yield {"type": "token", "text": fallback}
             yield {"type": "done"}
             return
@@ -450,7 +454,7 @@ class AnswerPipeline:
                 "clarification_question",
                 "Bạn muốn hỏi tiếp nội dung trước đó hay đang chuyển sang một chủ đề mới?",
             )
-            yield {"type": "metadata", "status": "needs_clarification", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": [], "llm_called": False}
+            yield {"type": "metadata", "run_id": run_id, "status": "needs_clarification", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": [], "llm_called": False}
             yield {"type": "token", "text": clarification_msg}
             yield {"type": "done"}
             return
@@ -463,7 +467,7 @@ class AnswerPipeline:
         )
         if retrieval_result.get("needs_clarification") and not query_was_rewritten_from_history:
             clarification_msg = retrieval_result.get("clarification_question", "Bạn có thể làm rõ câu hỏi được không?")
-            yield {"type": "metadata", "status": "needs_clarification", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": []}
+            yield {"type": "metadata", "run_id": run_id, "status": "needs_clarification", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": []}
             yield {"type": "token", "text": clarification_msg}
             yield {"type": "done"}
             return
@@ -471,7 +475,7 @@ class AnswerPipeline:
         # Neu cau hoi mo ho, stream cau hoi lam ro nhu mot token block thay vi goi LLM.
         if detect_ambiguous_query(effective_query, retrieval_result):
             clarification_msg = build_clarification_question(effective_query, retrieval_result)
-            yield {"type": "metadata", "status": "needs_clarification", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": [], "llm_called": False}
+            yield {"type": "metadata", "run_id": run_id, "status": "needs_clarification", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": [], "llm_called": False}
             yield {"type": "token", "text": clarification_msg}
             yield {"type": "done"}
             return
@@ -484,7 +488,7 @@ class AnswerPipeline:
                 "thủ tục hành chính, học bổng, rèn luyện, ký túc xá, thông tin phòng ban và khoa/ngành. "
                 "Bạn có thể hỏi lại theo một nội dung liên quan đến sổ tay nhé!"
             )
-            yield {"type": "metadata", "status": "out_of_domain", "intent": "out_of_domain", "strategy": "none", "citations_used": [], "llm_called": False}
+            yield {"type": "metadata", "run_id": run_id, "status": "out_of_domain", "intent": "out_of_domain", "strategy": "none", "citations_used": [], "llm_called": False}
             yield {"type": "token", "text": out_of_domain_msg}
             yield {"type": "done"}
             return
@@ -495,7 +499,7 @@ class AnswerPipeline:
                 retrieval_result,
                 reason="out_of_domain",
             )
-            yield {"type": "metadata", "status": "out_of_domain", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": [], "llm_called": False}
+            yield {"type": "metadata", "run_id": run_id, "status": "out_of_domain", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": [], "llm_called": False}
             yield {"type": "token", "text": out_of_domain_msg}
             yield {"type": "done"}
             return
@@ -513,7 +517,7 @@ class AnswerPipeline:
                 build_deterministic_answer(effective_query, retrieval_result, selected_citations),
                 selected_citations,
             )
-            yield {"type": "metadata", "status": "answered", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": selected_citations, "llm_called": False}
+            yield {"type": "metadata", "run_id": run_id, "status": "answered", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": selected_citations, "llm_called": False}
             yield {"type": "token", "text": final_answer}
             yield {"type": "done"}
             return
@@ -529,7 +533,7 @@ class AnswerPipeline:
                 build_fallback_answer(effective_query, retrieval_result, reason="low_confidence"),
                 selected_citations,
             )
-            yield {"type": "metadata", "status": "low_confidence", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": selected_citations, "llm_called": False}
+            yield {"type": "metadata", "run_id": run_id, "status": "low_confidence", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": selected_citations, "llm_called": False}
             yield {"type": "token", "text": final_answer}
             yield {"type": "done"}
             return
@@ -542,7 +546,7 @@ class AnswerPipeline:
         )
 
         yield {"type": "progress", "message": "✨ Sắp xong rồi, đang tổng hợp câu trả lời..."}
-        yield {"type": "metadata", "status": "answered", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": selected_citations, "llm_called": True}
+        yield {"type": "metadata", "run_id": run_id, "status": "answered", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": selected_citations, "llm_called": True}
 
         try:
             llm_client = self._get_llm_client()
@@ -735,7 +739,11 @@ class AnswerPipeline:
         query_rewrite: QueryRewriteResult | None = None,
     ) -> dict[str, Any]:
         query_rewrite_payload = query_rewrite.to_dict() if query_rewrite else None
+        run_tree = get_current_run_tree()
+        run_id = str(run_tree.id) if run_tree else None
+
         return {
+            "run_id": run_id,
             "query": query,
             "effective_query": (
                 query_rewrite.effective_query if query_rewrite else retrieval_result.get("query", query)

@@ -1004,6 +1004,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   gap: 0.5rem;
   color: var(--text-secondary);
   font-size: 0.9rem;
+  padding: 10px 0; /* Vertically center with 36px avatar */
 }
 .cold-start-inline {
   margin: 0;

@@ -1,0 +1,80 @@
+﻿{
+  "python": {
+    "version": "3.12.13 (main, Mar  3 2026, 15:01:35) [MSC v.1944 64 bit (AMD64)]",
+    "executable": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\.venv\\Scripts\\python.exe",
+    "implementation": "CPython"
+  },
+  "platform": {
+    "system": "Windows",
+    "release": "11",
+    "machine": "AMD64"
+  },
+  "git": {
+    "commit": "07026eb",
+    "dirty_worktree_expected": true
+  },
+  "packages": {
+    "streamlit": "1.57.0",
+    "fastapi": "0.136.1",
+    "uvicorn": "0.47.0",
+    "sentence-transformers": "5.5.0",
+    "chromadb": "1.5.9",
+    "torch": "2.12.0",
+    "google-genai": "2.4.0",
+    "PyMuPDF": "1.27.2.3",
+    "pydantic": "2.13.4",
+    "requests": "2.34.2",
+    "PyYAML": "6.0.3",
+    "python-dotenv": "1.2.2"
+  },
+  "files": {
+    "requirements.txt": {
+      "exists": true,
+      "sha256": "bac4c53e569f19eee42d50e8192980b6c48722a39c7826db90eeabda32aef01c"
+    },
+    "requirements-dev.txt": {
+      "exists": true,
+      "sha256": "c025f28cf8f4ca0ed31f1051c97d939044b09c7c82272cd5a8e30d8d458f56f1"
+    },
+    "requirements.lock": {
+      "exists": true,
+      "sha256": "94cc7e633b9b16d02771521522cd08d2d89dfbcc5891a88a188f4ba65effc58e"
+    },
+    "configs/extraction.yaml": {
+      "exists": true,
+      "sha256": "e76db5e16117ba548de623aa53b2c0389c93b1c7b296b46d264dd61d80e5c194"
+    },
+    "configs/chunking.yaml": {
+      "exists": true,
+      "sha256": "a18d30c93ccb0b50f6be149454fd132cd32962f3642a08e62b263c0d2c0347c3"
+    },
+    "configs/embedding.yaml": {
+      "exists": true,
+      "sha256": "bcac3a1bb1da900476a583019ad8641fbb9e583726e2dd2fe866f7436bb6625c"
+    },
+    "configs/retrieval.yaml": {
+      "exists": true,
+      "sha256": "a47be2f5373a19f7de6e9fcffe86e5e37ea3e3f28577fff05a5a8686dae324df"
+    },
+    "configs/answer_generation.yaml": {
+      "exists": true,
+      "sha256": "57b43d1cd34475b769088cdb2662a236e497d6fb31a14f60d780eb8f1756544c"
+    },
+    "configs/query_routing_rules.yaml": {
+      "exists": true,
+      "sha256": "99df479654e8888cc5cfc40360d72fb0cae34eb837285c055059cfa938e56f73"
+    },
+    "data/eval/golden_queries.json": {
+      "exists": true,
+      "sha256": "1ec17acf42db3e23d27cce5c2060d1d887e4eed35484bf5b8e090c0bfff16c9d"
+    },
+    "data/eval/router_behavior_queries.json": {
+      "exists": true,
+      "sha256": "e50f1e9e3850d695b8e5052609e26a04a877d2888f6d886e2ee9627fbd5818a4"
+    },
+    "data/eval/answer_eval_cases.json": {
+      "exists": true,
+      "sha256": "d2f707b2d423dc677c35132a42e515111fe8b3a482454ecebc917176136b71bc"
+    }
+  }
+}

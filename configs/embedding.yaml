@@ -1,0 +1,17 @@
+﻿input:
+  semantic_chunks: data/processed/chunks/semantic_chunks.json
+  index_manifest: data/processed/chunks/index_manifest.json
+
+embedding:
+  model_name: BAAI/bge-m3
+  batch_size: 8
+  normalize_embeddings: true
+
+vectorstore:
+  provider: chroma
+  persist_dir: data/vectorstore/chroma
+  collection_name: student_handbook_semantic
+  reset_collection: true
+
+output:
+  report: data/processed/metadata/embedding_report.json

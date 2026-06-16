@@ -1,0 +1,11 @@
+﻿{
+  "embedding_input": "data/processed/chunks/semantic_chunks.json",
+  "structured_lookup_input": "data/processed/chunks/structured_lookup_chunks.json",
+  "tool_rule_input": "data/processed/chunks/tool_rule_chunks.json",
+  "do_not_embed": [
+    "data/processed/chunks/all_chunks.json",
+    "data/processed/chunks/structured_lookup_chunks.json",
+    "data/processed/chunks/tool_rule_chunks.json"
+  ],
+  "note": "Embedding must embed only semantic_chunks.json. Structured lookup chunks and tool rule chunks are handled separately."
+}

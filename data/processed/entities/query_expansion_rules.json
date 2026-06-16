@@ -1,0 +1,74 @@
+[
+  {
+    "trigger": ["rớt môn", "trượt môn"],
+    "expand_to": ["không đạt học phần", "học lại học phần", "điểm F"]
+  },
+  {
+    "trigger": ["qua môn", "đậu môn"],
+    "expand_to": ["đạt học phần", "điểm học phần", "thang điểm 10"]
+  },
+  {
+    "trigger": ["bảo lưu"],
+    "expand_to": ["nghỉ học tạm thời", "bảo lưu kết quả học tập", "tiếp nhận trở lại học"]
+  },
+  {
+    "trigger": ["học vượt", "học kỳ phụ", "đăng ký học phần", "khối lượng học tập"],
+    "expand_to": ["đăng ký học phần", "khối lượng học tập tối đa", "học kỳ chính", "học kỳ phụ", "kế hoạch học tập chuẩn"]
+  },
+  {
+    "trigger": ["ktx", "nội trú"],
+    "expand_to": ["ký túc xá", "sinh viên nội trú", "xét vào ở ký túc xá"]
+  },
+  {
+    "trigger": ["ctct", "hssv", "ctct-hssv"],
+    "expand_to": ["phòng công tác chính trị và học sinh, sinh viên"]
+  },
+  {
+    "trigger": ["cntt", "it"],
+    "expand_to": ["khoa công nghệ thông tin", "khoa công nghệ – thông tin"]
+  },
+  {
+    "trigger": ["học vụ"],
+    "expand_to": ["phòng đào tạo", "xử lý học vụ", "quyết định xử lý học vụ"]
+  },
+  {
+    "trigger": ["miễn giảm học phí"],
+    "expand_to": ["đơn đề nghị miễn, giảm học phí", "biểu mẫu miễn giảm học phí"]
+  },
+  {
+    "trigger": ["trợ cấp xã hội"],
+    "expand_to": ["đơn xin trợ cấp xã hội", "biểu mẫu trợ cấp xã hội"]
+  },
+  {
+    "trigger": ["hỗ trợ chi phí học tập"],
+    "expand_to": ["đơn đề nghị hỗ trợ chi phí học tập"]
+  },
+  {
+    "trigger": ["đơn gì", "cần đơn gì", "làm đơn gì", "dùng đơn gì"],
+    "expand_to": ["mẫu đơn", "biểu mẫu", "đơn xin"]
+  },
+  {
+    "trigger": ["thời gian đào tạo", "thời gian học tập", "bao lâu thì ra trường", "học mấy năm", "đào tạo hệ chính quy"],
+    "expand_to": ["thời gian học tập chuẩn toàn khóa", "thời gian học tập tối đa", "hình thức đào tạo chính quy"]
+  },
+  {
+    "trigger": ["bị đuổi", "đuổi học", "bị đuổi học", "đuổi"],
+    "expand_to": ["buộc thôi học", "cảnh báo học vụ", "thời gian học tập tối đa"]
+  },
+  {
+    "trigger": ["cảnh cáo học vụ"],
+    "expand_to": ["cảnh báo học tập", "buộc thôi học", "xử lý học vụ"]
+  },
+  {
+    "trigger": ["kkht", "hbkkht"],
+    "expand_to": ["khuyến khích học tập", "học bổng khuyến khích học tập"]
+  },
+  {
+    "trigger": ["cần gì", "cần những gì", "làm sao để được", "phải làm sao", "để được"],
+    "expand_to": ["điều kiện", "tiêu chuẩn"]
+  },
+  {
+    "trigger": ["như thế nào", "các bước", "phải làm gì", "hướng dẫn"],
+    "expand_to": ["quy trình", "trình tự", "thủ tục"]
+  }
+]

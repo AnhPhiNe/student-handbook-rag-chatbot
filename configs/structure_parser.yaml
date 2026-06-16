@@ -1,0 +1,13 @@
+input:
+  pages: data/processed/metadata/pages.json
+
+target_content_types:
+  - regulation_text
+  - scoring_form_table
+  - faculty_student_services
+  - ktx_admission_procedure
+
+output:
+  structured_sections: data/processed/metadata/structured_sections.json
+  structure_report: data/processed/metadata/structure_report.json
+  line_records: data/processed/metadata/line_records.json

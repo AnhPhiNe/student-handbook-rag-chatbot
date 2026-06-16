@@ -1,0 +1,27 @@
+{
+  "tables_extracted": 5,
+  "formula_rules_extracted": 2,
+  "threshold_rules_extracted": 42,
+  "threshold_priority_count": {
+    "high": 10,
+    "medium": 2,
+    "low": 30
+  },
+  "form_templates_extracted": 18,
+  "office_records_extracted": 17,
+  "faculty_records_extracted": 23,
+  "reference_records_extracted": 4,
+  "procedures_extracted": 2,
+  "items_need_manual_review": {
+    "tables": [
+      "grade_10_to_letter",
+      "letter_to_grade_4",
+      "academic_classification",
+      "conduct_classification",
+      "scholarship_classification"
+    ],
+    "form_templates": [],
+    "office_directory": [],
+    "faculty_program_directory": []
+  }
+}

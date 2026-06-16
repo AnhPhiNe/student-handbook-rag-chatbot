@@ -1,0 +1,1270 @@
+{
+  "evaluation": "answer_eval_offline",
+  "config_path": "configs\\answer_generation.yaml",
+  "cases_path": "data\\eval\\answer_eval_cases.json",
+  "llm_provider": "offline_mock",
+  "summary": {
+    "total_cases": 30,
+    "pass_rate": 1.0,
+    "passed_cases": 30,
+    "failed_cases": 0,
+    "status_accuracy": 1.0,
+    "deterministic_exactness": 1.0,
+    "citation_count_accuracy": 1.0,
+    "citation_type_accuracy": 1.0,
+    "citation_page_accuracy": 1.0,
+    "source_section_accuracy": 1.0
+  },
+  "cases": [
+    {
+      "id": "det_score_001",
+      "category": "deterministic_exactness",
+      "query": "Điểm rèn luyện 92 là loại gì?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": true,
+        "tool_name_match": null,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "score_lookup_query",
+      "actual_strategy": "structured_lookup",
+      "actual_lookup_type": "conduct_classification",
+      "actual_tool_name": null,
+      "actual_llm_called": false,
+      "citations_used": [
+        {
+          "chunk_type": "structured_lookup",
+          "title": "Phân loại kết quả rèn luyện",
+          "source_pages": [
+            74
+          ]
+        }
+      ],
+      "answer_preview": "Tra theo Phân loại kết quả rèn luyện, giá trị 92.0 được xếp loại: Xuất sắc (khoảng 90-100).\n\nNguồn:\n- Phân loại kết quả rèn luyện, trang 74"
+    },
+    {
+      "id": "det_score_002",
+      "category": "deterministic_exactness",
+      "query": "GPA 2.95 được xếp loại học lực gì?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": true,
+        "tool_name_match": null,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "score_lookup_query",
+      "actual_strategy": "structured_lookup",
+      "actual_lookup_type": "academic_classification",
+      "actual_tool_name": null,
+      "actual_llm_called": false,
+      "citations_used": [
+        {
+          "chunk_type": "structured_lookup",
+          "title": "Xếp loại học lực theo thang điểm 4",
+          "source_pages": [
+            23
+          ]
+        }
+      ],
+      "answer_preview": "Tra theo Xếp loại học lực theo thang điểm 4, giá trị 2.95 được xếp loại: Khá (khoảng 2.5-dưới 3.2).\n\nNguồn:\n- Xếp loại học lực theo thang điểm 4, trang 23"
+    },
+    {
+      "id": "det_score_003",
+      "category": "deterministic_exactness",
+      "query": "Điểm B+ quy đổi sang hệ 4 bao nhiêu?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": true,
+        "tool_name_match": null,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "score_lookup_query",
+      "actual_strategy": "structured_lookup",
+      "actual_lookup_type": "letter_to_grade_4",
+      "actual_tool_name": null,
+      "actual_llm_called": false,
+      "citations_used": [
+        {
+          "chunk_type": "structured_lookup",
+          "title": "Quy đổi điểm chữ sang thang điểm 4",
+          "source_pages": [
+            22
+          ]
+        }
+      ],
+      "answer_preview": "Tra theo Quy đổi điểm chữ sang thang điểm 4, điểm chữ B+ tương ứng thang điểm 4 là 3.5.\n\nNguồn:\n- Quy đổi điểm chữ sang thang điểm 4, trang 22"
+    },
+    {
+      "id": "det_calc_001",
+      "category": "deterministic_exactness",
+      "query": "Tính điểm học bổng nếu GPA 3.2 và rèn luyện 90",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": true,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": null,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": null
+      },
+      "actual_status": "answered",
+      "actual_intent": "calculation_query",
+      "actual_strategy": "calculator_tool",
+      "actual_lookup_type": null,
+      "actual_tool_name": "calculate_scholarship_score",
+      "actual_llm_called": false,
+      "citations_used": [],
+      "answer_preview": "Kết quả từ calculate_scholarship_score với academic_score_4=3.2, conduct_score_100=90.0: 3.28.\n\nCông thức: (Điểm học tập × 80 + Điểm rèn luyện / 25 × 20) / 100"
+    },
+    {
+      "id": "guard_amb_001",
+      "category": "guardrail_status",
+      "query": "CNTT ở đâu?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": null,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": null
+      },
+      "actual_status": "needs_clarification",
+      "actual_intent": "office_query",
+      "actual_strategy": "semantic_filtered_rerank",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": false,
+      "citations_used": [],
+      "answer_preview": "Bạn muốn liên hệ Phòng Công nghệ Thông tin hay Khoa Công nghệ - Thông tin?"
+    },
+    {
+      "id": "guard_amb_002",
+      "category": "guardrail_status",
+      "query": "Học vụ liên hệ ai?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": null,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": null
+      },
+      "actual_status": "needs_clarification",
+      "actual_intent": "office_query",
+      "actual_strategy": "semantic_filtered_rerank",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": false,
+      "citations_used": [],
+      "answer_preview": "Bạn muốn liên hệ về vấn đề gì: học vụ, học bổng, ký túc xá, biểu mẫu/giấy tờ, hay một phòng/khoa cụ thể?"
+    },
+    {
+      "id": "guard_amb_003",
+      "category": "guardrail_status",
+      "query": "Giấy tờ sinh viên làm ở đâu?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": null,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": null
+      },
+      "actual_status": "needs_clarification",
+      "actual_intent": "mixed_query",
+      "actual_strategy": "semantic_multi_filter",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": false,
+      "citations_used": [],
+      "answer_preview": "Bạn muốn liên hệ về vấn đề gì: học vụ, học bổng, ký túc xá, biểu mẫu/giấy tờ, hay một phòng/khoa cụ thể?"
+    },
+    {
+      "id": "guard_ood_001",
+      "category": "guardrail_status",
+      "query": "Trường có bán bánh tráng trộn không?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": null,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": null
+      },
+      "actual_status": "out_of_domain",
+      "actual_intent": "regulation_query",
+      "actual_strategy": "semantic_filtered",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": false,
+      "citations_used": [],
+      "answer_preview": "Mình chưa tìm thấy thông tin phù hợp trong Sổ tay sinh viên cho câu hỏi này. Sổ tay chủ yếu hỗ trợ các nội dung như quy định học vụ, biểu mẫu, điểm rèn luyện, học bổng, ký túc xá, phòng ban và khoa/ngành. Bạn có thể hỏi lại theo một nội dung liên quan đến sổ tay nhé."
+    },
+    {
+      "id": "guard_ood_002",
+      "category": "guardrail_status",
+      "query": "Làm sao để nấu phở ngon?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": null,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": null
+      },
+      "actual_status": "out_of_domain",
+      "actual_intent": "regulation_query",
+      "actual_strategy": "semantic_filtered",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": false,
+      "citations_used": [],
+      "answer_preview": "Mình chưa tìm thấy thông tin phù hợp trong Sổ tay sinh viên cho câu hỏi này. Sổ tay chủ yếu hỗ trợ các nội dung như quy định học vụ, biểu mẫu, điểm rèn luyện, học bổng, ký túc xá, phòng ban và khoa/ngành. Bạn có thể hỏi lại theo một nội dung liên quan đến sổ tay nhé."
+    },
+    {
+      "id": "cite_form_001",
+      "category": "citation_correctness",
+      "query": "Muốn tạm nghỉ học cần mẫu đơn nào?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": true,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "form_query",
+      "actual_strategy": "semantic_filtered_rerank",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "824b3ede-7bfb-77a3-7cb5-a89a3d7ddb69",
+          "chunk_type": "form",
+          "title": "ĐƠN XIN TẠM NGHỈ HỌC",
+          "source_pages": [
+            176
+          ],
+          "distance": 0.2727914,
+          "retrieval_purpose": "form_query"
+        },
+        {
+          "chunk_id": "cde731dd-bf24-c860-361b-5362d6895943",
+          "chunk_type": "form",
+          "title": "ĐƠN XIN HỌC LẠI",
+          "source_pages": [
+            177
+          ],
+          "distance": 0.3448831,
+          "retrieval_purpose": "form_query"
+        },
+        {
+          "chunk_id": "dc55bb8f-cf97-3545-f076-98256badf221",
+          "chunk_type": "form",
+          "title": "ĐƠN XIN THÔI HỌC",
+          "source_pages": [
+            178
+          ],
+          "distance": 0.3470772,
+          "retrieval_purpose": "form_query"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- ĐƠN XIN TẠM NGHỈ HỌC, trang 176\n- ĐƠN XIN HỌC LẠI, trang 177\n- ĐƠN XIN THÔI HỌC, trang 178"
+    },
+    {
+      "id": "cite_office_001",
+      "category": "citation_correctness",
+      "query": "Email phòng đào tạo là gì?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "office_query",
+      "actual_strategy": "semantic_filtered_rerank",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "6e46401f-4226-413f-9a86-64a61bf8654b",
+          "chunk_type": "office_directory",
+          "title": "3. Phòng Đào tạo",
+          "source_pages": [
+            130,
+            131
+          ],
+          "distance": 0.31811356999999996,
+          "retrieval_purpose": "office_query"
+        },
+        {
+          "chunk_id": "f3809b07-f38c-1c51-4638-5d74be67b89a",
+          "chunk_type": "office_directory",
+          "title": "10. Phòng Thanh tra Đào tạo",
+          "source_pages": [
+            133
+          ],
+          "distance": 0.3446395,
+          "retrieval_purpose": "office_query"
+        },
+        {
+          "chunk_id": "5a0157f3-5aef-3f8e-1ba5-6a869f977b82",
+          "chunk_type": "office_directory",
+          "title": "1. Phòng Công nghệ Thông tin",
+          "source_pages": [
+            129
+          ],
+          "distance": 0.36849284000000004,
+          "retrieval_purpose": "office_query"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- 3. Phòng Đào tạo, trang 130-131\n- 10. Phòng Thanh tra Đào tạo, trang 133\n- 1. Phòng Công nghệ Thông tin, trang 129"
+    },
+    {
+      "id": "cite_faculty_001",
+      "category": "citation_correctness",
+      "query": "Khoa Công nghệ thông tin có ngành nào?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "faculty_query",
+      "actual_strategy": "semantic_filtered_rerank",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "f3ea0f1e-1d32-9c45-9af6-0ae2d01662ea",
+          "chunk_type": "faculty_program_directory",
+          "title": "1. Khoa Công nghệ – Thông tin",
+          "source_pages": [
+            141,
+            142
+          ],
+          "distance": 0.29692660000000004,
+          "retrieval_purpose": "faculty_query"
+        },
+        {
+          "chunk_id": "6cbad730-7081-6ecf-552a-1523afb90272",
+          "chunk_type": "faculty_program_directory",
+          "title": "2. Khoa Toán – Tin học",
+          "source_pages": [
+            142
+          ],
+          "distance": 0.42232670000000005,
+          "retrieval_purpose": "faculty_query"
+        },
+        {
+          "chunk_id": "5a0157f3-5aef-3f8e-1ba5-6a869f977b82",
+          "chunk_type": "office_directory",
+          "title": "1. Phòng Công nghệ Thông tin",
+          "source_pages": [
+            129
+          ],
+          "distance": 0.35617334,
+          "retrieval_purpose": "faculty_query"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- 1. Khoa Công nghệ – Thông tin, trang 141-142\n- 2. Khoa Toán – Tin học, trang 142\n- 1. Phòng Công nghệ Thông tin, trang 129"
+    },
+    {
+      "id": "cite_procedure_001",
+      "category": "citation_correctness",
+      "query": "Ai được ưu tiên vào ký túc xá?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "procedure_query",
+      "actual_strategy": "semantic_filtered_rerank",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "d29cd9a5-b9d8-70a5-61de-db7ca5ddf3c0",
+          "chunk_type": "procedure",
+          "title": "Quy trình xét sinh viên vào ở Ký túc xá",
+          "source_pages": [
+            161,
+            162
+          ],
+          "distance": 0.28385484000000005,
+          "retrieval_purpose": "procedure_query"
+        },
+        {
+          "chunk_id": "b1ab48ed-2894-510d-1864-dcc63983f994",
+          "chunk_type": "regulation",
+          "title": "Điều 8. Quyền của sinh viên",
+          "source_pages": [
+            41,
+            42,
+            43
+          ],
+          "distance": 0.29748774,
+          "retrieval_purpose": "procedure_query"
+        },
+        {
+          "chunk_id": "af12f71f-54f6-5f6d-8299-b57884d9f540",
+          "chunk_type": "regulation",
+          "title": "Điều 20. Ký túc xá",
+          "source_pages": [
+            48
+          ],
+          "distance": 0.35714685999999995,
+          "retrieval_purpose": "procedure_query"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- Quy trình xét sinh viên vào ở Ký túc xá, trang 161-162\n- Điều 8. Quyền của sinh viên, trang 41-43\n- Điều 20. Ký túc xá, trang 48"
+    },
+    {
+      "id": "cite_reg_001",
+      "category": "citation_correctness",
+      "query": "Điều kiện xét học bổng là gì?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "regulation_query",
+      "actual_strategy": "semantic_filtered",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "21e40b72-28e4-6cb1-2bae-2ac62dd55b1a",
+          "chunk_type": "regulation",
+          "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "source_pages": [
+            52,
+            53
+          ],
+          "distance": 0.3065487,
+          "retrieval_purpose": "regulation_query"
+        },
+        {
+          "chunk_id": "fb4c0321-3b48-c012-5618-e189f81eaf4c",
+          "chunk_type": "regulation",
+          "title": "Điều 29. Trình tự và thủ tục xét cấp học bổng",
+          "source_pages": [
+            53,
+            54
+          ],
+          "distance": 0.33197940000000004,
+          "retrieval_purpose": "regulation_query"
+        },
+        {
+          "chunk_id": "e0ed2379-f59c-35ba-5310-c242e763b650",
+          "chunk_type": "regulation",
+          "title": "Điều 27. Học bổng",
+          "source_pages": [
+            51,
+            52
+          ],
+          "distance": 0.33580136000000005,
+          "retrieval_purpose": "regulation_query"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập, trang 52-53\n- Điều 29. Trình tự và thủ tục xét cấp học bổng, trang 53-54\n- Điều 27. Học bổng, trang 51-52"
+    },
+    {
+      "id": "det_score_004",
+      "category": "deterministic_exactness",
+      "query": "Điểm rèn luyện 75 là loại gì?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": true,
+        "tool_name_match": null,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "score_lookup_query",
+      "actual_strategy": "structured_lookup",
+      "actual_lookup_type": "conduct_classification",
+      "actual_tool_name": null,
+      "actual_llm_called": false,
+      "citations_used": [
+        {
+          "chunk_type": "structured_lookup",
+          "title": "Phân loại kết quả rèn luyện",
+          "source_pages": [
+            74
+          ]
+        }
+      ],
+      "answer_preview": "Tra theo Phân loại kết quả rèn luyện, giá trị 75.0 được xếp loại: Khá (khoảng 65-dưới 80).\n\nNguồn:\n- Phân loại kết quả rèn luyện, trang 74"
+    },
+    {
+      "id": "det_score_005",
+      "category": "deterministic_exactness",
+      "query": "GPA 3.4 là loại học lực gì?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": true,
+        "tool_name_match": null,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "score_lookup_query",
+      "actual_strategy": "structured_lookup",
+      "actual_lookup_type": "academic_classification",
+      "actual_tool_name": null,
+      "actual_llm_called": false,
+      "citations_used": [
+        {
+          "chunk_type": "structured_lookup",
+          "title": "Xếp loại học lực theo thang điểm 4",
+          "source_pages": [
+            23
+          ]
+        }
+      ],
+      "answer_preview": "Tra theo Xếp loại học lực theo thang điểm 4, giá trị 3.4 được xếp loại: Giỏi (khoảng 3.2-dưới 3.6).\n\nNguồn:\n- Xếp loại học lực theo thang điểm 4, trang 23"
+    },
+    {
+      "id": "det_score_006",
+      "category": "deterministic_exactness",
+      "query": "Điểm C+ quy đổi sang thang 4 là bao nhiêu?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": true,
+        "tool_name_match": null,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "score_lookup_query",
+      "actual_strategy": "structured_lookup",
+      "actual_lookup_type": "letter_to_grade_4",
+      "actual_tool_name": null,
+      "actual_llm_called": false,
+      "citations_used": [
+        {
+          "chunk_type": "structured_lookup",
+          "title": "Quy đổi điểm chữ sang thang điểm 4",
+          "source_pages": [
+            22
+          ]
+        }
+      ],
+      "answer_preview": "Tra theo Quy đổi điểm chữ sang thang điểm 4, điểm chữ C+ tương ứng thang điểm 4 là 2.5.\n\nNguồn:\n- Quy đổi điểm chữ sang thang điểm 4, trang 22"
+    },
+    {
+      "id": "det_calc_002",
+      "category": "deterministic_exactness",
+      "query": "Tính điểm học bổng nếu GPA 3.6 và rèn luyện 95",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": true,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": null,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": null
+      },
+      "actual_status": "answered",
+      "actual_intent": "calculation_query",
+      "actual_strategy": "calculator_tool",
+      "actual_lookup_type": null,
+      "actual_tool_name": "calculate_scholarship_score",
+      "actual_llm_called": false,
+      "citations_used": [],
+      "answer_preview": "Kết quả từ calculate_scholarship_score với academic_score_4=3.6, conduct_score_100=95.0: 3.64.\n\nCông thức: (Điểm học tập × 80 + Điểm rèn luyện / 25 × 20) / 100"
+    },
+    {
+      "id": "cite_form_002",
+      "category": "citation_correctness",
+      "query": "Đơn xin chuyển trường nằm ở trang nào?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": true,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "mixed_query",
+      "actual_strategy": "semantic_multi_filter",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "d3350b81-91db-abc9-575c-5ba0bf8957fe",
+          "chunk_type": "form",
+          "title": "ĐƠN XIN CHUYỂN TRƯỜNG",
+          "source_pages": [
+            175
+          ],
+          "distance": 0.37305546,
+          "retrieval_purpose": "form"
+        },
+        {
+          "chunk_id": "c11b79ca-946b-ec87-9837-7b55c0548db7",
+          "chunk_type": "regulation",
+          "title": "Điều 17. Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo,",
+          "source_pages": [
+            28,
+            29
+          ],
+          "distance": 0.37117809999999996,
+          "retrieval_purpose": "regulation"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- ĐƠN XIN CHUYỂN TRƯỜNG, trang 175\n- Điều 17. Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo,, trang 28-29"
+    },
+    {
+      "id": "cite_form_003",
+      "category": "citation_correctness",
+      "query": "Giấy xác nhận sinh viên nằm ở trang nào?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": true,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "form_query",
+      "actual_strategy": "semantic_filtered_rerank",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "800576a9-3972-b544-f959-569dc57991db",
+          "chunk_type": "form",
+          "title": "GIẤY XÁC NHẬN",
+          "source_pages": [
+            181
+          ],
+          "distance": 0.34443,
+          "retrieval_purpose": "form_query"
+        },
+        {
+          "chunk_id": "1755b853-d927-5486-da05-1204507e75dd",
+          "chunk_type": "form",
+          "title": "ĐƠN ĐỀ NGHỊ",
+          "source_pages": [
+            183
+          ],
+          "distance": 0.39888310000000005,
+          "retrieval_purpose": "form_query"
+        },
+        {
+          "chunk_id": "9a84d9d7-3584-6d56-8904-361283d48280",
+          "chunk_type": "form",
+          "title": "BẢNG KẾT QUẢ ĐÁNH GIÁ RÈN LUYỆN SINH VIÊN",
+          "source_pages": [
+            174
+          ],
+          "distance": 0.4061053,
+          "retrieval_purpose": "form_query"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- GIẤY XÁC NHẬN, trang 181\n- ĐƠN ĐỀ NGHỊ, trang 183\n- BẢNG KẾT QUẢ ĐÁNH GIÁ RÈN LUYỆN SINH VIÊN, trang 174"
+    },
+    {
+      "id": "cite_form_004",
+      "category": "citation_correctness",
+      "query": "Mẫu đơn đề nghị miễn giảm học phí ở trang nào?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": true,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "form_query",
+      "actual_strategy": "semantic_filtered_rerank",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "613fda7a-05c4-7b5f-9177-0217a2a85f0f",
+          "chunk_type": "form",
+          "title": "ĐƠN ĐỀ NGHỊ MIỄN, GIẢM HỌC PHÍ",
+          "source_pages": [
+            182
+          ],
+          "distance": 0.2260628,
+          "retrieval_purpose": "form_query"
+        },
+        {
+          "chunk_id": "dc55bb8f-cf97-3545-f076-98256badf221",
+          "chunk_type": "form",
+          "title": "ĐƠN XIN THÔI HỌC",
+          "source_pages": [
+            178
+          ],
+          "distance": 0.3577606,
+          "retrieval_purpose": "form_query"
+        },
+        {
+          "chunk_id": "23f35830-4ed5-ead4-99a9-b0148b369e28",
+          "chunk_type": "form",
+          "title": "ĐƠN ĐỀ NGHỊ HỖ TRỢ CHI PHÍ HỌC TẬP",
+          "source_pages": [
+            184
+          ],
+          "distance": 0.36563049999999997,
+          "retrieval_purpose": "form_query"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- ĐƠN ĐỀ NGHỊ MIỄN, GIẢM HỌC PHÍ, trang 182\n- ĐƠN XIN THÔI HỌC, trang 178\n- ĐƠN ĐỀ NGHỊ HỖ TRỢ CHI PHÍ HỌC TẬP, trang 184"
+    },
+    {
+      "id": "cite_office_002",
+      "category": "citation_correctness",
+      "query": "Số điện thoại Phòng Sau Đại học là gì?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "office_query",
+      "actual_strategy": "semantic_filtered_rerank",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "0152051f-1436-b914-234b-63d4e3168f14",
+          "chunk_type": "office_directory",
+          "title": "8. Phòng Sau Đại học",
+          "source_pages": [
+            132,
+            133
+          ],
+          "distance": 0.24192579999999997,
+          "retrieval_purpose": "office_query"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- 8. Phòng Sau Đại học, trang 132-133"
+    },
+    {
+      "id": "cite_office_003",
+      "category": "citation_correctness",
+      "query": "Thư viện của trường có thông tin liên hệ nào?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "office_query",
+      "actual_strategy": "semantic_filtered_rerank",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "89e9d653-e6d6-df85-239f-d059c47ba8e5",
+          "chunk_type": "office_directory",
+          "title": "12. Thư viện",
+          "source_pages": [
+            134,
+            135,
+            136
+          ],
+          "distance": 0.3266023,
+          "retrieval_purpose": "office_query"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- 12. Thư viện, trang 134-136"
+    },
+    {
+      "id": "cite_faculty_002",
+      "category": "citation_correctness",
+      "query": "Khoa Hóa học đào tạo những ngành nào?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "faculty_query",
+      "actual_strategy": "semantic_filtered_rerank",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "8d3983b6-d68a-c432-795f-66495c0afb86",
+          "chunk_type": "faculty_program_directory",
+          "title": "4. Khoa Hóa học",
+          "source_pages": [
+            143,
+            144
+          ],
+          "distance": 0.32500625000000005,
+          "retrieval_purpose": "faculty_query"
+        },
+        {
+          "chunk_id": "54e847a7-db42-c6a7-6c87-6a48fc38ae56",
+          "chunk_type": "faculty_program_directory",
+          "title": "15. Khoa Khoa học Giáo dục",
+          "source_pages": [
+            153,
+            154
+          ],
+          "distance": 0.43118690000000004,
+          "retrieval_purpose": "faculty_query"
+        },
+        {
+          "chunk_id": "e608844d-bcd7-e607-49b4-115b78533080",
+          "chunk_type": "regulation",
+          "title": "Điều 11. Phân cấp quản lý hoạt động NCKH của sinh viên",
+          "source_pages": [
+            97,
+            98,
+            99
+          ],
+          "distance": 0.4585338,
+          "retrieval_purpose": "faculty_query"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- 4. Khoa Hóa học, trang 143-144\n- 15. Khoa Khoa học Giáo dục, trang 153-154\n- Điều 11. Phân cấp quản lý hoạt động NCKH của sinh viên, trang 97-99"
+    },
+    {
+      "id": "cite_faculty_003",
+      "category": "citation_correctness",
+      "query": "Khoa Địa lí có website không?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "faculty_query",
+      "actual_strategy": "semantic_filtered_rerank",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "b7b8b755-e18e-e6f6-b29f-948fcc6c3874",
+          "chunk_type": "faculty_program_directory",
+          "title": "8. Khoa Địa lí",
+          "source_pages": [
+            147,
+            148
+          ],
+          "distance": 0.3466264,
+          "retrieval_purpose": "faculty_query"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- 8. Khoa Địa lí, trang 147-148"
+    },
+    {
+      "id": "cite_procedure_002",
+      "category": "citation_correctness",
+      "query": "Quy trình vào ký túc xá như thế nào?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "procedure_query",
+      "actual_strategy": "semantic_filtered_rerank",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "d29cd9a5-b9d8-70a5-61de-db7ca5ddf3c0",
+          "chunk_type": "procedure",
+          "title": "Quy trình xét sinh viên vào ở Ký túc xá",
+          "source_pages": [
+            161,
+            162
+          ],
+          "distance": 0.25463369999999996,
+          "retrieval_purpose": "procedure_query"
+        },
+        {
+          "chunk_id": "af12f71f-54f6-5f6d-8299-b57884d9f540",
+          "chunk_type": "regulation",
+          "title": "Điều 20. Ký túc xá",
+          "source_pages": [
+            48
+          ],
+          "distance": 0.3150159,
+          "retrieval_purpose": "procedure_query"
+        },
+        {
+          "chunk_id": "b1ab48ed-2894-510d-1864-dcc63983f994",
+          "chunk_type": "regulation",
+          "title": "Điều 8. Quyền của sinh viên",
+          "source_pages": [
+            41,
+            42,
+            43
+          ],
+          "distance": 0.3498801,
+          "retrieval_purpose": "procedure_query"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- Quy trình xét sinh viên vào ở Ký túc xá, trang 161-162\n- Điều 20. Ký túc xá, trang 48\n- Điều 8. Quyền của sinh viên, trang 41-43"
+    },
+    {
+      "id": "cite_reg_002",
+      "category": "citation_correctness",
+      "query": "Điều kiện công nhận tốt nghiệp và cấp bằng tốt nghiệp là gì?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "regulation_query",
+      "actual_strategy": "semantic_filtered",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "a72c48e2-a3bf-bf72-6b58-459bbc5d160a",
+          "chunk_type": "regulation",
+          "title": "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+          "source_pages": [
+            25,
+            26,
+            27
+          ],
+          "distance": 0.2421238,
+          "retrieval_purpose": "regulation_query"
+        },
+        {
+          "chunk_id": "8b7281ba-0947-874c-c869-dfded1ee18e4",
+          "chunk_type": "regulation",
+          "title": "Điều 8. Quyền của sinh viên",
+          "source_pages": [
+            41,
+            42,
+            43
+          ],
+          "distance": 0.331962,
+          "retrieval_purpose": "regulation_query"
+        },
+        {
+          "chunk_id": "497706c6-e755-93e7-7710-c4436e92ae82",
+          "chunk_type": "regulation",
+          "title": "Điều 23. Chế độ báo cáo, lưu trữ, công khai thông tin",
+          "source_pages": [
+            32
+          ],
+          "distance": 0.40707499999999996,
+          "retrieval_purpose": "regulation_query"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp, trang 25-27\n- Điều 8. Quyền của sinh viên, trang 41-43\n- Điều 23. Chế độ báo cáo, lưu trữ, công khai thông tin, trang 32"
+    },
+    {
+      "id": "cite_reg_003",
+      "category": "citation_correctness",
+      "query": "Nhiệm vụ của sinh viên gồm những gì?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": null,
+        "citation_count_match": true,
+        "citation_type_match": true,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": true
+      },
+      "actual_status": "answered",
+      "actual_intent": "regulation_query",
+      "actual_strategy": "semantic_filtered",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": true,
+      "citations_used": [
+        {
+          "chunk_id": "793f19fe-b397-e077-333a-eb6339b9232a",
+          "chunk_type": "regulation",
+          "title": "Điều 7. Nhiệm vụ của sinh viên",
+          "source_pages": [
+            40,
+            41
+          ],
+          "distance": 0.24954765999999995,
+          "retrieval_purpose": "regulation_query"
+        },
+        {
+          "chunk_id": "7c4ef415-16eb-ae9a-af35-91aee17c946e",
+          "chunk_type": "regulation",
+          "title": "Điều 3. Nhiệm vụ",
+          "source_pages": [
+            64,
+            65
+          ],
+          "distance": 0.3101119,
+          "retrieval_purpose": "regulation_query"
+        },
+        {
+          "chunk_id": "b7b95d36-725c-f579-e7eb-2b2359b999f8",
+          "chunk_type": "regulation",
+          "title": "Điều 25. Lớp sinh viên",
+          "source_pages": [
+            50,
+            51
+          ],
+          "distance": 0.3362499,
+          "retrieval_purpose": "regulation_query"
+        }
+      ],
+      "answer_preview": "Theo các nguồn được truy xuất từ Sổ tay sinh viên, nội dung trả lời cần được đối chiếu với phần nguồn bên dưới.\n\nNguồn:\n- Điều 7. Nhiệm vụ của sinh viên, trang 40-41\n- Điều 3. Nhiệm vụ, trang 64-65\n- Điều 25. Lớp sinh viên, trang 50-51"
+    },
+    {
+      "id": "guard_amb_004",
+      "category": "guardrail_status",
+      "query": "Học bổng hỏi ai?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": null,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": null
+      },
+      "actual_status": "needs_clarification",
+      "actual_intent": "office_query",
+      "actual_strategy": "semantic_filtered_rerank",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": false,
+      "citations_used": [],
+      "answer_preview": "Bạn muốn liên hệ về vấn đề gì: học vụ, học bổng, ký túc xá, biểu mẫu/giấy tờ, hay một phòng/khoa cụ thể?"
+    },
+    {
+      "id": "guard_ood_003",
+      "category": "guardrail_status",
+      "query": "Thời tiết hôm nay ở TP.HCM thế nào?",
+      "passed": true,
+      "checks": {
+        "status_match": true,
+        "llm_called_match": true,
+        "lookup_type_match": null,
+        "tool_name_match": null,
+        "answer_contains_match": true,
+        "citation_count_match": true,
+        "citation_type_match": null,
+        "citation_page_match": null,
+        "no_context_leak": true,
+        "source_section_match": null
+      },
+      "actual_status": "out_of_domain",
+      "actual_intent": "regulation_query",
+      "actual_strategy": "semantic_filtered",
+      "actual_lookup_type": null,
+      "actual_tool_name": null,
+      "actual_llm_called": false,
+      "citations_used": [],
+      "answer_preview": "Mình chưa tìm thấy thông tin phù hợp trong Sổ tay sinh viên cho câu hỏi này. Sổ tay chủ yếu hỗ trợ các nội dung như quy định học vụ, biểu mẫu, điểm rèn luyện, học bổng, ký túc xá, phòng ban và khoa/ngành. Bạn có thể hỏi lại theo một nội dung liên quan đến sổ tay nhé."
+    }
+  ]
+}

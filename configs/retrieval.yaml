@@ -1,0 +1,26 @@
+﻿input:
+  scoring_tables: data/processed/tables/scoring_tables.json
+  formula_rules: data/processed/tables/formula_rules.json
+  form_templates: data/processed/forms/form_templates.json
+  office_directory: data/processed/directories/office_directory.json
+  faculty_program_directory: data/processed/directories/faculty_program_directory.json
+  procedures: data/processed/procedures/procedures.json
+  entity_registry: data/processed/entities/entity_registry.json
+  query_expansion_rules: data/processed/entities/query_expansion_rules.json
+
+
+embedding:
+  model_name: BAAI/bge-m3
+  batch_size: 8
+  normalize_embeddings: true
+
+vectorstore:
+  persist_dir: data/vectorstore/chroma
+  collection_name: student_handbook_semantic
+
+retrieval:
+  default_top_k: 5
+  filtered_top_k: 5
+
+output:
+  test_report: data/processed/metadata/retrieval_test_report.json

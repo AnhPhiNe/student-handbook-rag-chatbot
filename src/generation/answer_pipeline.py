@@ -413,7 +413,7 @@ class AnswerPipeline:
         chat_history: list[dict[str, str]] | None = None,
     ) -> Iterator[dict[str, Any]]:
         """Luồng tạo câu trả lời dạng Streaming (Server-Sent Events)."""
-        yield {"type": "progress", "message": "Đang phân tích câu hỏi của bạn..."}
+        yield {"type": "progress", "message": "⏳ Đang phân tích câu hỏi của bạn..."}
         
         rewrite_result = self.query_rewriter.rewrite(query, chat_history=chat_history)
         effective_query = rewrite_result.effective_query
@@ -430,12 +430,13 @@ class AnswerPipeline:
             return
 
         try:
-            yield {"type": "progress", "message": "Đang lục lọi trong Sổ tay sinh viên..."}
+            yield {"type": "progress", "message": "📖 Đang lục lọi trong Sổ tay sinh viên..."}
             # Retrieval chạy đồng bộ trước, sau đó mới stream token LLM về frontend.
             retrieval_result, rewrite_result = self._run_verified_retrieval(
                 query,
                 rewrite_result,
             )
+            yield {"type": "progress", "message": "🔍 Đang tìm kiếm các tài liệu liên quan..."}
             effective_query = rewrite_result.effective_query
         except Exception:
             fallback = build_fallback_answer(query=effective_query, retrieval_result=None, reason="retrieval_error")
@@ -540,7 +541,7 @@ class AnswerPipeline:
             selected_citations=None, max_context_chars=self.max_context_chars,
         )
 
-        yield {"type": "progress", "message": "Sắp xong rồi, đang tổng hợp câu trả lời..."}
+        yield {"type": "progress", "message": "✨ Sắp xong rồi, đang tổng hợp câu trả lời..."}
         yield {"type": "metadata", "status": "answered", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": selected_citations, "llm_called": True}
 
         try:

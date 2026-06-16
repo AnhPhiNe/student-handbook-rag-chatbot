@@ -137,9 +137,10 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
         clearInterval(coldStartTimer.current);
       } else {
         const messages = [
-          "Hệ thống đang xử lý...",
-          "Đang kết nối đến máy chủ AI...",
-          "Đang chờ phản hồi..."
+          "⏳ Đang phân tích câu hỏi của bạn...",
+          "📖 Đang lục lọi trong Sổ tay sinh viên...",
+          "🔍 Đang tìm kiếm các tài liệu liên quan...",
+          "✨ Sắp xong rồi, đang tổng hợp câu trả lời..."
         ];
         if (!thinkingMessage) {
           setThinkingMessage(messages[0]);

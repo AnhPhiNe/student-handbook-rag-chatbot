@@ -1,7 +1,11 @@
 import os
 import torch
+import transformers
 from typing import Any
 from sentence_transformers import CrossEncoder
+
+# Tắt cảnh báo "overflowing tokens are not returned" của Tokenizer
+transformers.logging.set_verbosity_error()
 
 class LocalReranker:
     _instance = None

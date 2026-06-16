@@ -1,4 +1,4 @@
-import { Award, Calculator, FileText, GraduationCap, HelpCircle, MessageSquare, Plus, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home } from 'lucide-react';
+import { Award, Calculator, FileText, GraduationCap, HelpCircle, MessageSquare, Plus, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home, Bug } from 'lucide-react';
 import logoHcmue from '../assets/logo_hcmue.png';
 
 interface SidebarProps {
@@ -9,9 +9,10 @@ interface SidebarProps {
   isMobileOpen: boolean;
   onClose: () => void;
   onToggleCollapse: () => void;
+  onOpenBugReport: () => void;
 }
 
-export function Sidebar({ activeTab, onTabChange, onNewChat, isCollapsed, isMobileOpen, onClose, onToggleCollapse }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange, onNewChat, isCollapsed, isMobileOpen, onClose, onToggleCollapse, onOpenBugReport }: SidebarProps) {
   const handleTabClick = (tab: string) => {
     onTabChange(tab);
     onClose(); // close mobile menu on selection
@@ -110,6 +111,25 @@ export function Sidebar({ activeTab, onTabChange, onNewChat, isCollapsed, isMobi
           <a href="https://ctsv.hcmue.edu.vn/storage/files/so-tay-sinh-vien-khoa-48.pdf" target="_blank" rel="noreferrer" className="quick-link-item">
             🔖 Sổ tay K48-49
           </a>
+          <button 
+            onClick={onOpenBugReport} 
+            className="quick-link-item bug-report-link" 
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              width: '100%', 
+              textAlign: 'left', 
+              color: 'var(--danger)', 
+              fontWeight: 500, 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '6px',
+              cursor: 'pointer',
+              marginTop: '0.5rem'
+            }}
+          >
+            <Bug size={14} /> Báo lỗi / Góp ý
+          </button>
         </div>
 
         <div className="sidebar-footer">

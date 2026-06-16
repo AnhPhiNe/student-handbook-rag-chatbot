@@ -6,7 +6,7 @@ from sentence_transformers import CrossEncoder
 class LocalReranker:
     _instance = None
     
-    def __new__(cls, model_name: str = "namdp-ptit/ViRanker"):
+    def __new__(cls, model_name: str = "itdainb/PhoRanker"):
         if cls._instance is None:
             cls._instance = super(LocalReranker, cls).__new__(cls)
             cls._instance._init(model_name)

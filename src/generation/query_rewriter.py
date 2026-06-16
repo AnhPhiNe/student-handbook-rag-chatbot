@@ -505,7 +505,7 @@ def _build_rewrite_prompt(
             if role == "user":
                 lines.append(f"User: {content}")
             else:
-                lines.append(f"Assistant: {content[:200]}")
+                lines.append(f"Assistant: {content[:800]}")
         history_block = f"""
 
 Conversation history (use this only to resolve pronouns and follow-up references):

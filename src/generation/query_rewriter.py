@@ -148,7 +148,7 @@ class QueryRewriter:
                 reason="disabled",
             )
 
-        if not self._resolve_api_key():
+        if not self.available_keys:
             return QueryRewriteResult(
                 original_query=query,
                 effective_query=cleaned_query,

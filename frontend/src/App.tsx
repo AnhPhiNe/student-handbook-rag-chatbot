@@ -18,6 +18,7 @@ import { BottomTabBar } from './components/BottomTabBar';
 import { ToastProvider } from './components/Toast';
 import { useMediaQuery } from './hooks/useMediaQuery';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { BugReportModal } from './components/BugReportModal';
 
 function App() {
   const { messages, isTyping, progressMessage, sendMessage, sendHardcodedMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat();
@@ -93,6 +94,8 @@ function App() {
               onTabChange={setActiveTab} 
             />
           )}
+
+          <BugReportModal />
         </div>
       </ToastProvider>
     </ErrorBoundary>

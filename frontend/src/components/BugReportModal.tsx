@@ -22,7 +22,7 @@ return;
 }
 
 try {
-  await fetch(
+  const response = await fetch(
     'https://script.google.com/macros/s/AKfycbx3XMBqzTArTmlTc2KE7_twFepC5Bg9bqjIeWDAVT3fPv8s1OAlqRvXboMdLiZW2i8w/exec',
     {
       method: 'POST',
@@ -34,6 +34,10 @@ try {
       }),
     }
   );
+
+  if (!response.ok) {
+    throw new Error('Request failed');
+  }
 
   toast.show(
     'Đã gửi phản hồi thành công!',

@@ -27,7 +27,7 @@ try {
     {
       method: 'POST',
       headers: {
-        'Content-Type': 'text/plain',
+        'Content-Type': 'text/plain;charset=utf-8',
       },
       body: JSON.stringify({
         message: bugText,
@@ -36,7 +36,7 @@ try {
   );
 
   if (!response.ok) {
-    throw new Error('Request failed');
+    throw new Error(`HTTP ${response.status}`);
   }
 
   toast.show(
@@ -47,7 +47,7 @@ try {
   setBugText('');
   setIsOpen(false);
 } catch (error) {
-  console.error(error);
+  console.error('Feedback submit error:', error);
 
   toast.show(
     'Không thể gửi phản hồi.',

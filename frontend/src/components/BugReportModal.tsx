@@ -15,41 +15,41 @@ setIsOpen,
 const [bugText, setBugText] = useState('');
 const toast = useToast();
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
 if (!bugText.trim()) {
 toast.show('Vui lòng nhập nội dung lỗi!', 'error');
 return;
 }
 
-const email = 'anhphine1011@gmail.com';
+try {
+  await fetch(
+    'https://script.google.com/macros/s/AKfycbx3XMBqzTArTmlTc2KE7_twFepC5Bg9bqjIeWDAVT3fPv8s1OAlqRvXboMdLiZW2i8w/exec',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      body: JSON.stringify({
+        message: bugText,
+      }),
+    }
+  );
 
-const subject = encodeURIComponent(
-  'Báo lỗi hệ thống HCMUE Chatbot'
-);
+  toast.show(
+    'Đã gửi phản hồi thành công!',
+    'success'
+  );
 
-const body = encodeURIComponent(
-  `Chào nhóm phát triển,
+  setBugText('');
+  setIsOpen(false);
+} catch (error) {
+  console.error(error);
 
-Tôi muốn báo lỗi hoặc góp ý về hệ thống Chatbot với nội dung như sau:
-
-${bugText}
-
----
-
-Thời gian: ${new Date().toLocaleString('vi-VN')}`
-);
-
-window.open(
-  `mailto:${email}?subject=${subject}&body=${body}`
-);
-
-setIsOpen(false);
-setBugText('');
-
-toast.show(
-  'Đã mở ứng dụng Email.',
-  'success'
-);
+  toast.show(
+    'Không thể gửi phản hồi.',
+    'error'
+  );
+}
 
 };
 

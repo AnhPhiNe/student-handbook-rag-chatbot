@@ -40,8 +40,7 @@ export function GuidePage() {
                 </h4>
                 <ul style={{ paddingLeft: '1.25rem', margin: 0, color: 'var(--text-secondary)', lineHeight: '1.7', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   <li><strong>Cụ thể và rõ ràng:</strong> Thay vì hỏi ngắn gọn "Học bổng?", hãy hỏi chi tiết "Điều kiện xét học bổng khuyến khích học tập là gì?"</li>
-                  <li><strong>Nêu rõ ngữ cảnh:</strong> "Em là sinh viên khóa 48, em muốn hỏi về quy định thực tập..."</li>
-                  <li><strong>Luôn kiểm tra nguồn:</strong> Chú ý phần <strong>Nguồn tham khảo</strong> dưới mỗi câu trả lời để đối chiếu với văn bản gốc.</li>
+                  <li><strong>Luôn kiểm tra nguồn:</strong> Chú ý phần <strong>Nguồn tham khảo</strong> dưới mỗi câu trả lời để đối chiếu với văn bản gốc. Chatbot sẽ tham khảo nhiều nguồn nhưng chỉ trả lời dựa trên tài liệu liên quan nên đừng lo nhé !!!</li>
                 </ul>
               </div>
               

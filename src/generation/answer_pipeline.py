@@ -28,6 +28,7 @@ from .io_utils import load_json, load_yaml
 from .prompt_builder import DEFAULT_MAX_CONTEXT_CHARS, build_answer_prompt, limit_context
 from .query_rewriter import QueryRewriter, QueryRewriteResult
 from .response_cache import ResponseCache
+from .semantic_cache import SemanticCache
 
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
@@ -70,6 +71,12 @@ class AnswerPipeline:
             path=cache_config.get("path", "data/cache/answer_response_cache.json"),
             enabled=cache_config.get("enabled", True),
         )
+        
+        semantic_config = self.config.get("semantic_cache", {})
+        self.semantic_cache = SemanticCache(
+            config=semantic_config,
+            embedding_model=self.model
+        )
 
     @traceable(name="Answer Pipeline", run_type="chain")
     def answer(self, query: str, chat_history: list[dict[str, str]] | None = None) -> dict[str, Any]:
@@ -90,6 +97,27 @@ class AnswerPipeline:
         """
         rewrite_result = self.query_rewriter.rewrite(query, chat_history=chat_history)
         effective_query = rewrite_result.effective_query
+
+        # LLM-Evaluated Semantic Cache (before retrieval)
+        is_standalone = not chat_history or len(chat_history) == 0
+        if is_standalone:
+            semantic_cache_key = self.semantic_cache.lookup(query)
+            if semantic_cache_key:
+                cached = self.response_cache.get(semantic_cache_key)
+                if cached:
+                    return self._build_output(
+                        query=query,
+                        retrieval_result={},
+                        final_answer=str(cached.get("answer") or ""),
+                        context_used="",
+                        selected_citations=cached.get("citations") or [],
+                        status=str(cached.get("status") or "answered"),
+                        error_type=cached.get("error_type"),
+                        error_message=cached.get("error_message"),
+                        llm_called=False,
+                        used_cache=True,
+                        query_rewrite=rewrite_result,
+                    )
 
         # Chi cho Query Rewriter hoi lai som khi no dang xu ly follow-up bang history.
         # Cau standalone mo ho se duoc Retrieval/Guardrail ben duoi danh gia bang nguon that.
@@ -403,8 +431,13 @@ class AnswerPipeline:
                 "status": "answered",
                 "error_type": None,
                 "error_message": None,
+                "citations": selected_citations,
             },
         )
+        
+        if is_standalone:
+            self.semantic_cache.store(query, cache_key)
+            
         return output
 
     @traceable(name="Answer Pipeline Stream", run_type="chain")
@@ -421,6 +454,18 @@ class AnswerPipeline:
         
         rewrite_result = self.query_rewriter.rewrite(query, chat_history=chat_history)
         effective_query = rewrite_result.effective_query
+
+        # LLM-Evaluated Semantic Cache (before retrieval)
+        is_standalone = not chat_history or len(chat_history) == 0
+        if is_standalone:
+            semantic_cache_key = self.semantic_cache.lookup(query)
+            if semantic_cache_key:
+                cached = self.response_cache.get(semantic_cache_key)
+                if cached:
+                    yield {"type": "metadata", "run_id": run_id, "status": str(cached.get("status") or "answered"), "intent": None, "strategy": None, "citations_used": cached.get("citations") or [], "llm_called": False, "used_cache": True}
+                    yield {"type": "token", "text": str(cached.get("answer") or "")}
+                    yield {"type": "done"}
+                    return
 
         # Stream path dung cung rule voi sync path: rewriter chi duoc hoi lai som cho follow-up.
         if (

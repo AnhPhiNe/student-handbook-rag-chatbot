@@ -31,7 +31,7 @@ query_rewriter:
 llm:
   provider: groq
   model_name: llama-3.3-70b-versatile
-  temperature: 0.2
+  temperature: 0.0
   max_output_tokens: 4096
   max_retries: 3
   retry_base_delay_seconds: 2
@@ -43,6 +43,16 @@ llm:
 cache:
   enabled: true
   path: data/cache/answer_response_cache.json
+
+semantic_cache:
+  enabled: true
+  persist_dir: data/cache/semantic_cache_chroma
+  collection_name: semantic_query_cache
+  max_distance: 0.15
+  min_query_length: 8
+  verifier_model: llama-3.1-8b-instant
+  verifier_temperature: 0.0
+  verifier_max_tokens: 8
 
 citations:
   max_sources: 3

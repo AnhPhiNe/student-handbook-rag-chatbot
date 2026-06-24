@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 export interface Citation {
   chunk_id: string;
@@ -20,16 +20,31 @@ export interface Message {
   confidence?: 'high' | 'medium' | 'low';
   citations?: Citation[];
   runId?: string;
+  usedCache?: boolean;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 const API_URL = `${API_BASE_URL}/chat/stream`;
 
 export function useChat() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const saved = sessionStorage.getItem('chat_messages');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return [];
+  });
   const [isTyping, setIsTyping] = useState(false);
   const [progressMessage, setProgressMessage] = useState<string>('');
   const [systemStatus, setSystemStatus] = useState<'normal' | 'error'>('normal');
+
+  useEffect(() => {
+    if (!isTyping) {
+      sessionStorage.setItem('chat_messages', JSON.stringify(messages));
+    }
+  }, [messages, isTyping]);
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || isTyping) return;
@@ -51,6 +66,7 @@ export function useChat() {
     let currentBotContent = "";
     let capturedCitations: Citation[] = [];
     let capturedRunId: string | null = null;
+    let capturedUsedCache = false;
 
     setMessages(prev => [...prev, { 
       id: botMsgId, 
@@ -68,11 +84,16 @@ export function useChat() {
           content: m.content
         }));
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: userMsg.content, chat_history: chatHistory })
+        body: JSON.stringify({ query: userMsg.content, chat_history: chatHistory }),
+        signal: controller.signal
       });
+      clearTimeout(timeoutId);
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       if (!response.body) throw new Error("No response body");
@@ -110,6 +131,9 @@ export function useChat() {
                 if (data.run_id) {
                   capturedRunId = data.run_id;
                 }
+                if (data.used_cache) {
+                  capturedUsedCache = data.used_cache;
+                }
               } else if (eventType === 'progress') {
                 setProgressMessage(data.message);
               } else if (eventType === 'token') {
@@ -140,7 +164,8 @@ export function useChat() {
                     responseTimeMs,
                     confidence,
                     citations: capturedCitations,
-                    runId: capturedRunId || undefined
+                    runId: capturedRunId || undefined,
+                    usedCache: capturedUsedCache
                   } : m
                 ));
               }
@@ -150,14 +175,18 @@ export function useChat() {
           }
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Fetch error:", error);
       setSystemStatus('error');
       const responseTimeMs = Date.now() - startTime;
+      const isTimeout = error.name === 'AbortError';
+      const errMsg = isTimeout 
+        ? "Hệ thống AI hiện đang quá tải hoặc phản hồi chậm. Vui lòng thử lại sau nhé!"
+        : "Xin lỗi, đã có lỗi kết nối xảy ra.";
       setMessages(prev => prev.map(m => 
         m.id === botMsgId ? { 
           ...m, 
-          content: "Xin lỗi, đã có lỗi kết nối xảy ra.", 
+          content: errMsg, 
           isStreaming: false,
           responseTimeMs,
           confidence: 'low'
@@ -197,6 +226,7 @@ export function useChat() {
   const clearMessages = useCallback(() => {
     setMessages([]);
     setIsTyping(false);
+    sessionStorage.removeItem('chat_messages');
   }, []);
 
   const retryLastMessage = useCallback(async () => {

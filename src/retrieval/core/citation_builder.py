@@ -35,6 +35,7 @@ def build_citations_from_vector_results(results: list[dict[str, Any]]) -> list[d
                 "source_pages": parse_source_pages(metadata.get("source_pages")),
                 "distance": item.get("distance"),
                 "retrieval_purpose": item.get("retrieval_purpose"),
+                "content": item.get("document") or item.get("content"),
             }
         )
 
@@ -47,6 +48,7 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
             "chunk_type": "structured_lookup",
             "title": lookup_result.get("table_name"),
             "source_pages": lookup_result.get("source_pages", []),
+            "content": str(lookup_result.get("result", lookup_result)),
         }
     ]
 

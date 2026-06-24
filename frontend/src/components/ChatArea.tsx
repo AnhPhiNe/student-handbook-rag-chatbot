@@ -78,6 +78,18 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasMessages = messages.length > 0;
+
+  const handleClearChat = () => {
+    if (onClearChat && window.confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử trò chuyện không?")) {
+      onClearChat();
+    }
+  };
+
+  const hour = new Date().getHours();
+  let greeting = "Xin chào 👋";
+  if (hour < 12) greeting = "Chào buổi sáng 🌅";
+  else if (hour < 18) greeting = "Chào buổi chiều ☀️";
+  else greeting = "Chào buổi tối 🌙";
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [thinkingMessage, setThinkingMessage] = useState("");
   const coldStartTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -181,7 +193,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
         <header className="chat-header">
           <div style={{flex: 1}}></div>
           {hasMessages && (
-            <button className="theme-toggle" onClick={onClearChat} title="Xóa lịch sử chat" style={{ marginRight: '0.5rem' }}>
+            <button className="theme-toggle" onClick={handleClearChat} title="Xóa lịch sử chat" style={{ marginRight: '0.5rem' }}>
               <Trash2 size={16} />
               <span>Xóa chat</span>
             </button>
@@ -198,6 +210,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
             {/* Hero - compact */}
             <div className="empty-hero">
               <img src={logoHcmue} alt="HCMUE" className="hero-logo" />
+              <h2 className="hero-title" style={{ fontSize: '1.5rem', marginTop: '1rem', color: 'var(--primary)' }}>{greeting}</h2>
               <p className="hero-subtitle" style={{ marginTop: '0.5rem', fontSize: '1.125rem' }}>Mình là trợ lý AI của Đại học Sư phạm TP.HCM</p>
               <p className="hero-desc">Bạn cần tìm gì trong sổ tay sinh viên hôm nay?</p>
             </div>
@@ -251,7 +264,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
       <header className="chat-header">
         <h2 className="chat-title">Hội thoại với HCMUE AI</h2>
         <div style={{display: 'flex', gap: '0.5rem'}}>
-          <button className="theme-toggle" onClick={onClearChat} title="Xóa lịch sử chat">
+          <button className="theme-toggle" onClick={handleClearChat} title="Xóa lịch sử chat">
             <Trash2 size={16} />
             <span>Xóa chat</span>
           </button>
@@ -263,15 +276,20 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
       </header>
 
       <div className="chat-messages" ref={chatContainerRef} onScroll={handleScroll}>
-        {messages.map((msg) => (
-          <ChatMessage 
-            key={msg.id} 
-            message={msg} 
-            thinkingMessage={thinkingMessage}
-            onRetry={onRetry}
-            onRegenerate={onRegenerate}
-          />
-        ))}
+        {messages.map((msg, index) => {
+          const prevMsg = index > 0 ? messages[index - 1] : null;
+          const query = msg.role === 'bot' && prevMsg?.role === 'user' ? prevMsg.content : undefined;
+          return (
+            <ChatMessage 
+              key={msg.id} 
+              message={msg} 
+              thinkingMessage={thinkingMessage}
+              onRetry={onRetry}
+              onRegenerate={onRegenerate}
+              query={query}
+            />
+          );
+        })}
         <div ref={messagesEndRef} />
       </div>
 

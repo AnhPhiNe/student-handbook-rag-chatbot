@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
 import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, X } from 'lucide-react';
 import type { Message } from '../hooks/useChat';
 import { useToast } from './Toast';
@@ -12,6 +13,7 @@ interface ChatMessageProps {
   thinkingMessage?: string;
   onRegenerate?: () => void;
   onRetry?: () => void;
+  query?: string;
 }
 
 
@@ -28,16 +30,48 @@ function formatCitationContent(text: string): string {
   }
   
   // Automatically add line breaks before list items to make it readable
-  // Matches " 1. ", " 2. ", etc.
   cleaned = cleaned.replace(/(^|\s)(\d+\.)\s/g, '\n\n**$2** ');
-  // Matches " a) ", " b) ", etc.
   cleaned = cleaned.replace(/(^|\s)([a-z]\))\s/g, '\n\n  *$2* ');
+  cleaned = cleaned.replace(/(^|\s)([-•])\s/g, '\n\n$2 ');
+  cleaned = cleaned.replace(/:\s/g, ':\n\n');
   
   return cleaned.trim();
 }
 
-export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRetry }: ChatMessageProps) {
-  const [showSources, setShowSources] = useState(false);
+function highlightKeywords(text: string, query?: string): string {
+  if (!query) return text;
+  // Remove stop words and short words
+  const stopWords = ['là', 'thì', 'mà', 'ở', 'để', 'có', 'không', 'và', 'hoặc', 'của', 'trong', 'với', 'như', 'thế', 'nào'];
+  const keywords = query.split(/\s+/)
+    .map(w => w.replace(/[?!.,;]/g, '').toLowerCase())
+    .filter(w => w.length > 2 && !stopWords.includes(w));
+    
+  if (keywords.length === 0) return text;
+  
+  // Sort by length descending to match longer phrases first
+  keywords.sort((a, b) => b.length - a.length);
+  
+  let highlightedText = text;
+  for (const kw of keywords) {
+    // Avoid replacing inside HTML tags (like <mark>)
+    const regex = new RegExp(`(?![^<]*>)(${kw})`, 'gi');
+    highlightedText = highlightedText.replace(regex, '<mark>$1</mark>');
+  }
+  return highlightedText;
+}
+
+const SUGGESTION_POOL = [
+  "Giải thích chi tiết hơn",
+  "Cho tôi xem ví dụ cụ thể",
+  "Có ngoại lệ nào không?",
+  "Tóm tắt lại giúp tôi",
+  "Cách đăng ký như thế nào?",
+  "Thời hạn cuối là khi nào?"
+];
+
+export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRetry, query }: ChatMessageProps) {
+  const defaultShowSources = !!(message.citations && message.citations.length > 0 && message.citations.length <= 2);
+  const [showSources, setShowSources] = useState(defaultShowSources);
   const [expandedCitations, setExpandedCitations] = useState<Set<number>>(new Set());
   const [copied, setCopied] = useState(false);
 
@@ -179,7 +213,9 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
                         </div>
                         {isExpanded && cit.content && (
                           <div className="citation-card-content citation-markdown">
-                            <ReactMarkdown>{formatCitationContent(cit.content)}</ReactMarkdown>
+                            <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                              {highlightKeywords(formatCitationContent(cit.content), query)}
+                            </ReactMarkdown>
                           </div>
                         )}
                       </div>
@@ -218,6 +254,31 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
                 <RotateCcw size={16} />
               </button>
             </div>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: 'auto' }}>
+              {message.usedCache && (
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--success)', backgroundColor: 'var(--success-light)', padding: '2px 6px', borderRadius: '4px' }}>
+                  ⚡ Từ bộ nhớ đệm
+                </span>
+              )}
+              {message.responseTimeMs && (
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                  ⏳ Phản hồi trong {(message.responseTimeMs / 1000).toFixed(1)}s
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {!message.isStreaming && !isErrorMsg && message.role === 'bot' && (
+          <div className="suggestion-pills-container">
+            {SUGGESTION_POOL.slice(0, 2).map((sugg, idx) => (
+              <button key={idx} className="suggestion-pill" onClick={() => {
+                // Future integration to auto-send this suggestion
+              }}>
+                {sugg}
+              </button>
+            ))}
           </div>
         )}
 

@@ -785,6 +785,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   background: rgba(255,255,255,0.03);
 }
 
+.citation-markdown p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.citation-markdown p:first-child {
+  margin-top: 0;
+}
+.citation-markdown p:last-child {
+  margin-bottom: 0;
+}
+
 /* Follow-up Pills */
 .follow-up-pills {
   margin-top: 0.75rem;

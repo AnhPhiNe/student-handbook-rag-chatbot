@@ -22,7 +22,20 @@ function getRelativeTime(timestamp: string): string {
 
 export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRetry }: ChatMessageProps) {
   const [showSources, setShowSources] = useState(false);
+  const [expandedCitations, setExpandedCitations] = useState<Set<number>>(new Set());
   const [copied, setCopied] = useState(false);
+
+  const toggleCitation = (idx: number) => {
+    setExpandedCitations(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(idx)) {
+        newSet.delete(idx);
+      } else {
+        newSet.add(idx);
+      }
+      return newSet;
+    });
+  };
   const [feedback, setFeedback] = useState<'like'|'dislike'|null>(null);
   const toast = useToast();
 
@@ -134,15 +147,28 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
               
               {showSources && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
-                  {message.citations.map((cit, idx) => (
-                    <div key={idx} className="citation-card">
-                      <div className="citation-card-icon"><FileText size={16} /></div>
-                      <div className="citation-card-body">
-                        <span className="citation-title">{cit.title || cit.chunk_id}</span>
-                        <span className="citation-pages">Trang {cit.source_pages?.length ? cit.source_pages.join(', ') : 'N/A'}</span>
+                  {message.citations.map((cit, idx) => {
+                    const isExpanded = expandedCitations.has(idx);
+                    return (
+                      <div key={idx} className="citation-card">
+                        <div className="citation-card-header" onClick={() => toggleCitation(idx)}>
+                          <div className="citation-card-icon"><FileText size={16} /></div>
+                          <div className="citation-card-body">
+                            <span className="citation-title">{cit.title || cit.chunk_id}</span>
+                            <span className="citation-pages">Trang {cit.source_pages?.length ? cit.source_pages.join(', ') : 'N/A'}</span>
+                          </div>
+                          <div className="citation-card-toggle">
+                            {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                          </div>
+                        </div>
+                        {isExpanded && cit.content && (
+                          <div className="citation-card-content">
+                            {cit.content}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

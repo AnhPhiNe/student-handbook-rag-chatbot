@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Bug, X, Send } from 'lucide-react';
 import { useToast } from './Toast';
-import { Message } from '../hooks/useChat';
+import type { Message } from '../hooks/useChat';
 
 interface BugReportModalProps {
   isOpen: boolean;

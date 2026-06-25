@@ -61,13 +61,13 @@ export function ToolsPage({ onNavigate }: ToolsPageProps) {
         {TOOLS.map((tool) => {
           const Icon = tool.icon;
           return (
-            <button key={tool.id} className="category-card" onClick={() => onNavigate(tool.id)}>
+            <div key={tool.id} className="category-card" onClick={() => onNavigate(tool.id)} role="button" tabIndex={0}>
               <div className="category-icon" style={{ color: tool.color, backgroundColor: `${tool.color}15` }}>
                 <Icon size={24} />
               </div>
               <h2 className="category-title">{tool.title}</h2>
               <p className="category-desc">{tool.description}</p>
-            </button>
+            </div>
           );
         })}
       </div>

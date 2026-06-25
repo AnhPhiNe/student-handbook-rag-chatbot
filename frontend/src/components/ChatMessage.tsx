@@ -282,7 +282,7 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
 
         {!message.isStreaming && !isErrorMsg && message.role === 'bot' && message.suggestions && message.suggestions.length > 0 && (
           <div className="suggestion-pills-container">
-            {message.suggestions.map((sugg, idx) => (
+            {message.suggestions.slice(0, 3).map((sugg, idx) => (
               <button key={idx} className="suggestion-pill" onClick={() => {
                 if (onSuggestionClick) onSuggestionClick(sugg);
               }}>

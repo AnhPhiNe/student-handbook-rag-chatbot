@@ -5,7 +5,7 @@ import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';
 import logoHcmue from '../assets/logo_hcmue.png';
 
-const IS_MAINTENANCE_MODE = true;
+const IS_MAINTENANCE_MODE = false;
 
 
 interface ChatAreaProps {

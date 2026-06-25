@@ -21,6 +21,7 @@ export interface Message {
   citations?: Citation[];
   runId?: string;
   usedCache?: boolean;
+  suggestions?: string[];
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";

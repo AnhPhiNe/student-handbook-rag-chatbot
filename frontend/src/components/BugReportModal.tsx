@@ -16,6 +16,7 @@ export function BugReportModal({
   messages,
 }: BugReportModalProps) {
   const [bugText, setBugText] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
 
   const handleSubmit = async () => {
@@ -23,6 +24,8 @@ export function BugReportModal({
       toast.show('Vui lòng nhập nội dung lỗi!', 'error');
       return;
     }
+
+    setIsSubmitting(true);
 
     let chatHistory = '';
     if (messages && messages.length > 0) {
@@ -58,16 +61,17 @@ export function BugReportModal({
 
   setBugText('');
   setIsOpen(false);
-} catch (error) {
-  console.error('Feedback submit error:', error);
+    } catch (error) {
+      console.error('Feedback submit error:', error);
 
-  toast.show(
-    'Không thể gửi phản hồi.',
-    'error'
-  );
-}
-
-};
+      toast.show(
+        'Không thể gửi phản hồi.',
+        'error'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
 return createPortal(
 isOpen ? (
@@ -118,6 +122,8 @@ Báo lỗi hệ thống
         <button
           className="btn-secondary"
           onClick={() => setIsOpen(false)}
+          disabled={isSubmitting}
+          style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
         >
           Hủy
         </button>
@@ -125,9 +131,11 @@ Báo lỗi hệ thống
         <button
           className="btn-primary"
           onClick={handleSubmit}
+          disabled={isSubmitting}
+          style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
         >
-          <Send size={16} />
-          Gửi báo lỗi
+          <Send size={16} className={isSubmitting ? "animate-pulse" : ""} />
+          {isSubmitting ? 'Đang gửi...' : 'Gửi báo lỗi'}
         </button>
       </div>
     </div>

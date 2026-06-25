@@ -18,7 +18,7 @@ from src.generation.context_resolver import (
 )
 
 
-DEFAULT_REWRITER_MODEL = "qwen-3.6-27b-it"
+DEFAULT_REWRITER_MODEL = "qwen/qwen3.6-27b"
 DEFAULT_REWRITER_API_KEY_ENV = "QUERY_REWRITER_API_KEY"
 FALLBACK_REWRITER_API_KEY_ENV = "GROQ_API_KEY"
 
@@ -94,7 +94,7 @@ class QueryRewriter:
         self.available_keys = [k.strip() for k in keys_str.split(",") if k.strip()]
 
         # Build fallback matrix (Model x Key)
-        fallback_models = ["llama-3.1-8b-instant", "qwen-2.5-32b-it"]
+        fallback_models = ["llama-3.1-8b-instant", "openai/gpt-oss-20b"]
         models = []
         for m in fallback_models:
             if m not in models:

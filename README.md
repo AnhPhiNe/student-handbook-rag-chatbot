@@ -148,6 +148,17 @@ For the full technical request lifecycle and module responsibilities, see
 - Provider switch between local ChromaDB and Qdrant Cloud via
   `VECTORDB_PROVIDER`.
 
+## 🛡️ Enterprise-Grade Reliability (HA)
+
+To handle production-level traffic and API rate limits on free/developer tiers, this system implements a robust High Availability (HA) architecture:
+
+- **Stateless Load Balancing**: API keys are dynamically shuffled per request. With 4 API keys, the system's burst capacity increases 4x (up to 48,000 Tokens/minute), preventing `RateLimitError` bottlenecks without requiring complex Redis state management.
+- **Cross-Ecosystem Fallback Matrix**: The generation pipeline is backed by a triple-layer safety net spanning three different tech giants:
+  - **Primary**: `llama-3.3-70b-versatile` (Meta) - High performance & reasoning.
+  - **Fallback 1**: `openai/gpt-oss-120b` (OpenAI) - Massive 120B parameter safety net.
+  - **Fallback 2**: `qwen/qwen3.6-27b` (Alibaba) - Outstanding multilingual stability.
+- **Zero-Downtime Bug Tracking**: A serverless feedback endpoint powered by Google Apps Script automatically captures bug reports along with the last 6 turns of the chat history, completely decoupling telemetry from the core backend.
+
 ## 📁 Project Structure
 
 ```text
@@ -182,16 +193,15 @@ For the full technical request lifecycle and module responsibilities, see
 
 ## 💻 Tech Stack
 
-- Python 3.11
-- FastAPI / Uvicorn
-- React 19 + Vite + TypeScript
-- Google Gemini API for answer generation
-- Groq API for context resolution, query rewriting, and optional AI routing
-- Sentence Transformers `BAAI/bge-m3`
-- ChromaDB for local vector search
-- Qdrant Cloud for production vector search
-- PyMuPDF, PyYAML, python-dotenv
-- unittest-based offline regression suite
+- **Backend**: Python 3.11, FastAPI, Uvicorn
+- **Frontend**: React 19, Vite, TypeScript, TailwindCSS
+- **AI/LLM Providers**: Groq API, Google Gemini API, OpenRouter
+- **Model Matrix**: 
+  - Generation: `llama-3.3-70b-versatile`, `openai/gpt-oss-120b`, `qwen/qwen3.6-27b`
+  - NLP Rewriter: `qwen/qwen3.6-27b`, `llama-3.1-8b-instant`, `openai/gpt-oss-20b`
+- **Vector Database**: ChromaDB (Local/Caching), Qdrant (Cloud Production)
+- **Embeddings**: Sentence Transformers `BAAI/bge-m3`
+- **DevOps & Telemetry**: Docker, Google Apps Script (Serverless Feedback), UptimeRobot
 
 ## 🔐 Environment Variables
 

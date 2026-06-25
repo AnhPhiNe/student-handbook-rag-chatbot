@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { Moon, Sun, GraduationCap, Gift, Home, Trash2, ArrowDown, Lock, Calculator, Medal, ClipboardList } from 'lucide-react';
+import { GraduationCap, Gift, Home, Trash2, ArrowDown, Lock, Calculator, Medal, ClipboardList } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';
@@ -94,7 +94,7 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
   }
 };
 
-export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, onSendHardcoded, onRetry, onRegenerate, theme, onToggleTheme, onNavigateTab, onClearChat }: ChatAreaProps) {
+export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, onSendHardcoded, onRetry, onRegenerate, onNavigateTab, onClearChat }: ChatAreaProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasMessages = messages.length > 0;

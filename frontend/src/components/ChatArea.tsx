@@ -210,7 +210,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
           </div>
         )}
 
-        <header className="chat-header">
+        <header className="chat-header" style={{ paddingRight: '140px' }}>
           <div style={{flex: 1}}></div>
           {hasMessages && (
             <button className="theme-toggle" onClick={handleClearChat} title="Xóa lịch sử chat" style={{ marginRight: '0.5rem' }}>
@@ -218,10 +218,6 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
               <span>Xóa chat</span>
             </button>
           )}
-          <button className="theme-toggle" onClick={onToggleTheme}>
-            {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-            <span>{theme === 'light' ? 'Chế độ tối' : 'Chế độ sáng'}</span>
-          </button>
         </header>
 
         {/* Scrollable content area that fills available space */}
@@ -281,16 +277,12 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
         </div>
       )}
 
-      <header className="chat-header">
+      <header className="chat-header" style={{ paddingRight: '140px' }}>
         <h2 className="chat-title">Hội thoại với HCMUE AI</h2>
         <div style={{display: 'flex', gap: '0.5rem'}}>
           <button className="theme-toggle" onClick={handleClearChat} title="Xóa lịch sử chat">
             <Trash2 size={16} />
             <span>Xóa chat</span>
-          </button>
-          <button className="theme-toggle" onClick={onToggleTheme}>
-            {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-            <span>{theme === 'light' ? 'Chế độ tối' : 'Chế độ sáng'}</span>
           </button>
         </div>
       </header>

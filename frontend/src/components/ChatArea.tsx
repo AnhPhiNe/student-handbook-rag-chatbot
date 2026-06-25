@@ -210,7 +210,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
           </div>
         )}
 
-        <header className="chat-header" style={{ paddingRight: '140px' }}>
+        <header className="chat-header" style={{ paddingRight: '180px' }}>
           <div style={{flex: 1}}></div>
           {hasMessages && (
             <button className="theme-toggle" onClick={handleClearChat} title="Xóa lịch sử chat" style={{ marginRight: '0.5rem' }}>
@@ -277,7 +277,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
         </div>
       )}
 
-      <header className="chat-header" style={{ paddingRight: '140px' }}>
+      <header className="chat-header" style={{ paddingRight: '180px' }}>
         <h2 className="chat-title">Hội thoại với HCMUE AI</h2>
         <div style={{display: 'flex', gap: '0.5rem'}}>
           <button className="theme-toggle" onClick={handleClearChat} title="Xóa lịch sử chat">

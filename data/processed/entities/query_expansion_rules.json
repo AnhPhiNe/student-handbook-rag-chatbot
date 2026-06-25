@@ -70,5 +70,29 @@
   {
     "trigger": ["như thế nào", "các bước", "phải làm gì", "hướng dẫn"],
     "expand_to": ["quy trình", "trình tự", "thủ tục"]
+  },
+  {
+    "trigger": ["bch"],
+    "expand_to": ["ban chấp hành"]
+  },
+  {
+    "trigger": ["ctđt"],
+    "expand_to": ["chương trình đào tạo"]
+  },
+  {
+    "trigger": ["cvht"],
+    "expand_to": ["cố vấn học tập"]
+  },
+  {
+    "trigger": ["nckh"],
+    "expand_to": ["nghiên cứu khoa học"]
+  },
+  {
+    "trigger": ["nvsp"],
+    "expand_to": ["nghiệp vụ sư phạm"]
+  },
+  {
+    "trigger": ["tbc"],
+    "expand_to": ["trung bình cộng"]
   }
 ]

@@ -78,10 +78,10 @@ export function Sidebar({ activeTab, onTabChange, onNewChat, isCollapsed, isMobi
             <Target size={18} />
             <span>Mục tiêu môn học</span>
           </button>
-          <button className={`nav-item ${activeTab === 'scholarship' ? 'active' : ''}`} onClick={() => handleTabClick('scholarship')} aria-label="Tính học bổng">
+          <button className={`nav-item ${activeTab === 'scholarship' ? 'active' : ''}`} onClick={() => handleTabClick('scholarship')} aria-label="Tính điểm học bổng">
             {activeTab === 'scholarship' && <div className="active-indicator" />}
             <Award size={18} />
-            <span>Tính học bổng</span>
+            <span>Tính điểm học bổng</span>
           </button>
           <button className={`nav-item ${activeTab === 'tuition' ? 'active' : ''}`} onClick={() => handleTabClick('tuition')} aria-label="Ước tính học phí">
             {activeTab === 'tuition' && <div className="active-indicator" />}

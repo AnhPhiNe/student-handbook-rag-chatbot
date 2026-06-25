@@ -48,7 +48,7 @@ export function ScholarshipPage() {
   return (
     <div className="page-container tool-page">
       <div className="page-header">
-        <h1>Tính học bổng</h1>
+        <h1>Tính điểm học bổng</h1>
         <p>Tính điểm học bổng khuyến khích học tập tham khảo theo công thức trong Sổ tay sinh viên.</p>
       </div>
 

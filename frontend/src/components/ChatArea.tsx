@@ -48,7 +48,7 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
     ]
   },
   'tinh-toan': {
-    response: "## Tính điểm & Công cụ\n\nHệ thống được tích hợp các công cụ tính toán tự động dựa trên quy định của trường. Chatbot có thể tính nhẩm hoặc tính chính xác nếu bạn cung cấp đủ số liệu.\n\n**Bạn có thể yêu cầu:**\n\n- **Tính GPA:** Nhập danh sách điểm chữ hoặc điểm số, chatbot sẽ tính ra GPA hệ 4.\n- **Tính điểm rèn luyện:** Cung cấp tổng điểm, chatbot sẽ phân loại (Xuất sắc, Tốt, Khá...).\n- **Tính học bổng:** So sánh điểm học tập và rèn luyện của bạn với mức chuẩn học bổng.\n\nThử ngay bằng cách chọn các câu hỏi gợi ý bên dưới!",
+    response: "## Tính điểm & Công cụ\n\nHệ thống được tích hợp các công cụ tính toán tự động dựa trên quy định của trường. Chatbot có thể tính nhẩm hoặc tính chính xác nếu bạn cung cấp đủ số liệu.\n\n**Bạn có thể yêu cầu:**\n\n- **Tính GPA:** Nhập danh sách điểm chữ hoặc điểm số, chatbot sẽ tính ra GPA hệ 4.\n- **Tính điểm rèn luyện:** Cung cấp tổng điểm, chatbot sẽ phân loại (Xuất sắc, Tốt, Khá...).\n- **Tính điểm học bổng:** So sánh điểm học tập và rèn luyện của bạn với mức chuẩn học bổng.\n\nThử ngay bằng cách chọn các câu hỏi gợi ý bên dưới!",
     suggestions: [
       "Tính giúp tôi điểm trung bình nếu có 3 điểm A và 2 điểm B+",
       "Điểm rèn luyện 85 là loại gì?",
@@ -205,7 +205,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
                 <Lock size={32} />
               </div>
               <h3>Tính năng đang bảo trì</h3>
-              <p>Trợ lý AI đang tạm nghỉ để nâng cấp dữ liệu. Trong lúc chờ đợi, bạn vẫn có thể dùng thả ga các công cụ <strong>Tính GPA, Mục tiêu GPA, Mục tiêu môn học, Tính học bổng, Ước tính học phí, Kiểm tra hạ bằng, Tra cứu biểu mẫu</strong> và xem <strong>Hướng dẫn</strong> ở menu bên cạnh nhé!</p>
+              <p>Trợ lý AI đang tạm nghỉ để nâng cấp dữ liệu. Trong lúc chờ đợi, bạn vẫn có thể dùng thả ga các công cụ <strong>Tính GPA, Mục tiêu GPA, Mục tiêu môn học, Tính điểm học bổng, Ước tính học phí, Kiểm tra hạ bằng, Tra cứu biểu mẫu</strong> và xem <strong>Hướng dẫn</strong> ở menu bên cạnh nhé!</p>
             </div>
           </div>
         )}
@@ -272,7 +272,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
               <Lock size={32} />
             </div>
             <h3>Tính năng đang bảo trì</h3>
-            <p>Trợ lý AI đang tạm nghỉ để nâng cấp dữ liệu. Trong lúc chờ đợi, bạn vẫn có thể dùng thả ga các công cụ <strong>Tính GPA, Mục tiêu GPA, Mục tiêu môn học, Tính học bổng, Ước tính học phí, Kiểm tra hạ bằng, Tra cứu biểu mẫu</strong> và xem <strong>Hướng dẫn</strong> ở menu bên cạnh nhé!</p>
+            <p>Trợ lý AI đang tạm nghỉ để nâng cấp dữ liệu. Trong lúc chờ đợi, bạn vẫn có thể dùng thả ga các công cụ <strong>Tính GPA, Mục tiêu GPA, Mục tiêu môn học, Tính điểm học bổng, Ước tính học phí, Kiểm tra hạ bằng, Tra cứu biểu mẫu</strong> và xem <strong>Hướng dẫn</strong> ở menu bên cạnh nhé!</p>
           </div>
         </div>
       )}

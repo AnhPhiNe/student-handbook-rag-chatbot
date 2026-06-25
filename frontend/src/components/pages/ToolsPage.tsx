@@ -28,7 +28,7 @@ const TOOLS = [
   },
   {
     id: 'scholarship',
-    title: 'Tính học bổng',
+    title: 'Tính điểm học bổng',
     description: 'Tính điểm học bổng và xếp loại tham khảo.',
     icon: Award,
     color: '#8b5cf6',

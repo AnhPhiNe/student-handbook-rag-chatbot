@@ -620,7 +620,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .avatar {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -628,12 +628,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   font-size: 1rem;
   color: white;
   flex-shrink: 0;
-  object-fit: contain;
+  object-fit: cover;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.avatar.user { background: linear-gradient(135deg, #64748b, #475569); }
-.avatar.bot { background: white; border: 1px solid var(--border-color); padding: 4px; }
-[data-theme='dark'] .avatar.bot { background: #1E293B; }
+.avatar.user { background: transparent; }
+.avatar.bot { background: transparent; border: 1px solid var(--border-color); }
+[data-theme='dark'] .avatar.bot { background: transparent; }
 
 .message-content { flex: 1; min-width: 0; }
 

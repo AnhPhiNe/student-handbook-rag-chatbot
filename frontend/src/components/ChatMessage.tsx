@@ -284,9 +284,9 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
                   ⚡ Từ bộ nhớ đệm
                 </span>
               )}
-              {message.responseTimeMs && (
+              {(message.responseTimeMs && message.responseTimeMs > 5000) && (
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                  ⏳ Phản hồi trong {(message.responseTimeMs / 1000).toFixed(1)}s
+                  ⏳ Phản hồi chậm ({(message.responseTimeMs / 1000).toFixed(1)}s)
                 </span>
               )}
             </div>

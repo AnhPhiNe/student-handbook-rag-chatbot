@@ -540,10 +540,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   align-items: center;
   justify-content: space-between;
   padding: 0 1.5rem;
-  background: var(--bg-secondary);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border-color);
+  background: transparent;
+  border-bottom: none;
   z-index: 10;
 }
 
@@ -944,7 +942,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
   width: 100%;
   max-width: 640px;
 }

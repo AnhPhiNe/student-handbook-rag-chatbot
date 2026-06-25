@@ -37,7 +37,7 @@ class GroqClient:
             ) from exc
 
         # Build fallback matrix (Model x Key)
-        fallback_models = [model_name, "meta-llama/llama-4-scout-17b-16e-instruct", "qwen-2.5-32b-it"]
+        fallback_models = [model_name, "qwen-3.6-27b-it", "qwen-2.5-32b-it"]
         models = []
         for m in fallback_models:
             if m not in models:

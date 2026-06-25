@@ -9,6 +9,8 @@ pinned: false
 
 # HCMUE Student Handbook RAG Assistant
 
+> **Disclaimer**: This is an independent, non-commercial personal project created for the HCMUE student community to easily access handbook information. It is **not** an official application provided or endorsed by Ho Chi Minh City University of Education.
+
 <p align="center">
   <img src="https://img.shields.io/badge/python-3.11-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python 3.11">
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
@@ -33,7 +35,7 @@ entity registry, routing rules, and evaluation set.
 
 ## 🚀 Live Demo
 
-- Frontend: https://student-handbook-rag-chatbot.vercel.app/
+- Frontend: https://hcmuebot.id.vn/
 - Backend Space: https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api
 - Backend health: https://anhfeee-hcmue-handbook-rag-api.hf.space/health
 
@@ -245,7 +247,7 @@ query expansion, and vector retrieval.
 Public backend safeguards:
 
 ```text
-STUDENT_RAG_CORS_ORIGINS=https://student-handbook-rag-chatbot.vercel.app
+STUDENT_RAG_CORS_ORIGINS=https://hcmuebot.id.vn
 STUDENT_RAG_MAX_QUERY_CHARS=500
 STUDENT_RAG_RATE_LIMIT_PER_MINUTE=20
 STUDENT_RAG_SHOW_DEBUG=false
@@ -352,7 +354,7 @@ QUERY_REWRITER_ENABLED=true
 VECTORDB_PROVIDER=qdrant_cloud
 QDRANT_URL=...
 QDRANT_API_KEY=...
-STUDENT_RAG_CORS_ORIGINS=https://student-handbook-rag-chatbot.vercel.app
+STUDENT_RAG_CORS_ORIGINS=https://hcmuebot.id.vn
 STUDENT_RAG_MAX_QUERY_CHARS=500
 STUDENT_RAG_RATE_LIMIT_PER_MINUTE=20
 ```

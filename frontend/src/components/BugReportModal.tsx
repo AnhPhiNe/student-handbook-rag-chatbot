@@ -24,13 +24,12 @@ export function BugReportModal({
       return;
     }
 
-    let finalMessage = bugText;
+    let chatHistory = '';
     if (messages && messages.length > 0) {
       const lastMessages = messages.filter(m => !m.isStreaming).slice(-6);
-      const formattedHistory = lastMessages
+      chatHistory = lastMessages
         .map(m => `[${m.role === 'user' ? 'Sinh viên' : 'Bot'}] ${m.content}`)
         .join('\n\n');
-      finalMessage = `${bugText}\n\n--- LỊCH SỬ CHAT (TỰ ĐỘNG BẮT LỖI) ---\n${formattedHistory}`;
     }
 
     try {
@@ -42,7 +41,8 @@ export function BugReportModal({
             'Content-Type': 'text/plain;charset=utf-8',
           },
           body: JSON.stringify({
-            message: finalMessage,
+            message: bugText,
+            history: chatHistory
           }),
         }
       );

@@ -15,6 +15,7 @@ interface ChatMessageProps {
   onRegenerate?: () => void;
   onRetry?: () => void;
   query?: string;
+  onSuggestionClick?: (text: string) => void;
 }
 
 
@@ -83,16 +84,7 @@ function highlightKeywords(text: string, query?: string): string {
   return text.replace(pattern, '<mark>$1</mark>');
 }
 
-const SUGGESTION_POOL = [
-  "Giải thích chi tiết hơn",
-  "Cho tôi xem ví dụ cụ thể",
-  "Có ngoại lệ nào không?",
-  "Tóm tắt lại giúp tôi",
-  "Cách đăng ký như thế nào?",
-  "Thời hạn cuối là khi nào?"
-];
-
-export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRetry, query }: ChatMessageProps) {
+export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRetry, query, onSuggestionClick }: ChatMessageProps) {
   const defaultShowSources = !!(message.citations && message.citations.length > 0 && message.citations.length <= 2);
   const [showSources, setShowSources] = useState(defaultShowSources);
   const [expandedCitations, setExpandedCitations] = useState<Set<number>>(new Set());
@@ -288,11 +280,11 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
           </div>
         )}
 
-        {!message.isStreaming && !isErrorMsg && message.role === 'bot' && (
+        {!message.isStreaming && !isErrorMsg && message.role === 'bot' && message.suggestions && message.suggestions.length > 0 && (
           <div className="suggestion-pills-container">
-            {SUGGESTION_POOL.slice(0, 2).map((sugg, idx) => (
+            {message.suggestions.map((sugg, idx) => (
               <button key={idx} className="suggestion-pill" onClick={() => {
-                // Future integration to auto-send this suggestion
+                if (onSuggestionClick) onSuggestionClick(sugg);
               }}>
                 {sugg}
               </button>

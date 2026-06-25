@@ -95,15 +95,10 @@ class QueryRewriter:
 
         # Build fallback matrix (Model x Key)
         fallback_models = ["llama-3.1-8b-instant", "openai/gpt-oss-20b"]
-        models = []
+        self.models = []
         for m in fallback_models:
-            if m not in models:
-                models.append(m)
-        
-        self.providers = []
-        for m in models:
-            for k in self.available_keys:
-                self.providers.append({"model": m, "api_key": k})
+            if m not in self.models:
+                self.models.append(m)
 
     @classmethod
     def from_config(cls, config: dict[str, Any] | None) -> QueryRewriter:
@@ -274,7 +269,12 @@ class QueryRewriter:
         from groq import Groq, RateLimitError, APITimeoutError, InternalServerError, APIConnectionError
         
         last_error: Exception | None = None
-        for provider in self.providers:
+        import random
+        keys = list(self.available_keys)
+        random.shuffle(keys)
+        providers = [{"model": m, "api_key": k} for m in self.models for k in keys]
+
+        for provider in providers:
             try:
                 client = Groq(api_key=provider["api_key"], timeout=5.0, max_retries=0)
                 kwargs: dict[str, Any] = {

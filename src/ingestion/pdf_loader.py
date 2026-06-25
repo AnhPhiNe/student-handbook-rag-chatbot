@@ -1,4 +1,5 @@
-﻿import json
+import json
+import os
 import re
 from pathlib import Path
 from typing import Any
@@ -7,7 +8,7 @@ import fitz
 import yaml
 
 
-PDF_PATH = Path("data/raw/so-tay-sinh-vien-khoa-48.pdf")
+PDF_PATH = Path(os.environ.get("PDF_PATH", "data/raw/so-tay-sinh-vien-khoa-48.pdf"))
 CONFIG_PATH = Path("configs/document_sections.yaml")
 OUTPUT_DIR = Path("data/processed/metadata")
 
@@ -296,6 +297,11 @@ def main() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     config = load_yaml_config(CONFIG_PATH)
+    
+    # If not K48-K49, clear the hardcoded page sections to force pattern fallback
+    cohort = os.environ.get("COHORT", "UNKNOWN")
+    if cohort != "K48-K49":
+        config["sections"] = []
 
     pages = extract_pdf_pages(PDF_PATH, config)
     document_profile = build_document_profile(pages, config)

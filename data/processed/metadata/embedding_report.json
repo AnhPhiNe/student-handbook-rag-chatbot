@@ -5,48 +5,50 @@
   "vectorstore_provider": "chroma",
   "persist_dir": "data/vectorstore/chroma",
   "collection_name": "student_handbook_semantic",
-  "total_chunks_loaded": 319,
-  "total_embeddings_created": 319,
+  "total_chunks_loaded": 635,
+  "total_embeddings_created": 635,
   "retrieval_tests_count": 5,
   "retrieval_tests": [
     {
       "query": "Điều kiện xét học bổng là gì?",
       "top_k": [
         {
-          "chunk_id": "reg_article_28_p52_74_part_1",
-          "distance": 0.3065488338470459,
+          "chunk_id": "K50-K51_reg_article_6_p147_238_part_2",
+          "distance": 0.2708110809326172,
           "metadata": {
-            "article": "Điều 28.",
-            "chapter": "Chương V",
-            "chunk_id": "reg_article_28_p52_74_part_1",
+            "article": "Điều 6.",
+            "chapter": "Chương II",
+            "chunk_id": "K50-K51_reg_article_6_p147_238_part_2",
             "chunk_type": "regulation",
+            "cohort": "K50-K51",
             "content_type": "regulation_text",
-            "document_title": "QUY CHẾ",
+            "document_title": "QUY ĐỊNH",
             "has_formula": true,
             "has_scoring_rule": true,
             "has_table": false,
             "has_thresholds": true,
             "index_mode": "semantic",
-            "page_end": 53,
-            "page_start": 52,
-            "parent_section_id": "article_28_p52_74",
+            "page_end": 149,
+            "page_start": 147,
+            "parent_section_id": "article_6_p147_238",
             "part": "",
-            "source_pages": "52,53",
+            "source_pages": "147,148,149",
             "source_type": "structured_section",
             "split_strategy": "clause_or_paragraph",
-            "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
-            "token_count_approx": 626
+            "title": "Điều 6. Tiêu chuẩn đối với sinh viên",
+            "token_count_approx": 241
           },
-          "preview": "Tài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên đại học chính quy tại Trường theo kế hoạch của\nkhóa học; không xét HBKK"
+          "preview": "Tài liệu: QUY ĐỊNH\nPhần:\nChương: Chương II\nĐiều: Điều 6.\nTiêu đề: Điều 6. Tiêu chuẩn đối với sinh viên\nNội dung:\nĐiều 6. Tiêu chuẩn đối với sinh viên\n2. Học bổng phát triển tài năng:\nSinh viên có một trong các thành tích sau được xem xét mức học\nbổng bằng 100% mức thu học phí của từng học kỳ:\n– Được"
         },
         {
-          "chunk_id": "reg_article_28_p52_74_part_2",
-          "distance": 0.3186149597167969,
+          "chunk_id": "K50-K51_reg_article_27_p70_95",
+          "distance": 0.2930034399032593,
           "metadata": {
-            "article": "Điều 28.",
+            "article": "Điều 27.",
             "chapter": "Chương V",
-            "chunk_id": "reg_article_28_p52_74_part_2",
+            "chunk_id": "K50-K51_reg_article_27_p70_95",
             "chunk_type": "regulation",
+            "cohort": "K50-K51",
             "content_type": "regulation_text",
             "document_title": "QUY CHẾ",
             "has_formula": true,
@@ -54,44 +56,43 @@
             "has_table": false,
             "has_thresholds": true,
             "index_mode": "semantic",
-            "page_end": 53,
-            "page_start": 52,
-            "parent_section_id": "article_28_p52_74",
-            "part": "",
-            "source_pages": "52,53",
+            "page_end": 72,
+            "page_start": 70,
+            "part": "phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy",
+            "source_pages": "70,71,72",
             "source_type": "structured_section",
-            "split_strategy": "clause_or_paragraph",
-            "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
-            "token_count_approx": 210
+            "title": "Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+            "token_count_approx": 454
           },
-          "preview": "Tài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n2. Mức học bổng: Mức học bổng sẽ được tính hằng năm và theo quy\nđịnh của Nhà nước và thực tế của Trường q"
+          "preview": "Tài liệu: QUY CHẾ\nPhần: phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy\nChương: Chương V\nĐiều: Điều 27.\nTiêu đề: Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên hệ "
         },
         {
-          "chunk_id": "reg_article_28_p52_74_part_4",
-          "distance": 0.3259953260421753,
+          "chunk_id": "K50-K51_reg_article_7_p149_239_part_2",
+          "distance": 0.29786747694015503,
           "metadata": {
-            "article": "Điều 28.",
-            "chapter": "Chương V",
-            "chunk_id": "reg_article_28_p52_74_part_4",
+            "article": "Điều 7.",
+            "chapter": "Chương II",
+            "chunk_id": "K50-K51_reg_article_7_p149_239_part_2",
             "chunk_type": "regulation",
+            "cohort": "K50-K51",
             "content_type": "regulation_text",
-            "document_title": "QUY CHẾ",
-            "has_formula": true,
+            "document_title": "QUY ĐỊNH",
+            "has_formula": false,
             "has_scoring_rule": true,
             "has_table": false,
             "has_thresholds": true,
             "index_mode": "semantic",
-            "page_end": 53,
-            "page_start": 52,
-            "parent_section_id": "article_28_p52_74",
+            "page_end": 151,
+            "page_start": 149,
+            "parent_section_id": "article_7_p149_239",
             "part": "",
-            "source_pages": "52,53",
+            "source_pages": "149,150,151",
             "source_type": "structured_section",
             "split_strategy": "clause_or_paragraph",
-            "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
-            "token_count_approx": 69
+            "title": "Điều 7. Tiêu chuẩn đối với học viên sau đại học",
+            "token_count_approx": 393
           },
-          "preview": "Tài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n4. Việc xét học bổng được thống nhất xét theo khóa học và ngành học."
+          "preview": "Tài liệu: QUY ĐỊNH\nPhần:\nChương: Chương II\nĐiều: Điều 7.\nTiêu đề: Điều 7. Tiêu chuẩn đối với học viên sau đại học\nNội dung:\nĐiều 7. Tiêu chuẩn đối với học viên sau đại học\n2. Học bổng phát triển tài năng:\n– Sinh viên tốt nghiệp trình độ đại học đúng thời gian học tập chuẩn\nvà đạt thành tích học tập "
         }
       ]
     },
@@ -99,11 +100,12 @@
       "query": "Muốn tạm nghỉ học cần mẫu đơn nào?",
       "top_k": [
         {
-          "chunk_id": "form_form_p176",
-          "distance": 0.27279138565063477,
+          "chunk_id": "K48-K49_form_form_p176",
+          "distance": 0.27279132604599,
           "metadata": {
-            "chunk_id": "form_form_p176",
+            "chunk_id": "K48-K49_form_form_p176",
             "chunk_type": "form",
+            "cohort": "K48-K49",
             "form_id": "form_p176",
             "form_name": "ĐƠN XIN TẠM NGHỈ HỌC",
             "index_mode": "semantic",
@@ -118,13 +120,14 @@
           "preview": "Biểu mẫu: ĐƠN XIN TẠM NGHỈ HỌC\nMục đích: Dùng khi sinh viên muốn xin tạm nghỉ học.\nThông tin/field phát hiện: Email, Họ tên, Hộ khẩu thường trú, Khoa, Khóa, Kính gửi, Lý do, Lớp, MSSV, Ngày sinh, Địa chỉ\nNguồn: Trang 176\nGhi chú: raw_text biểu mẫu được lưu riêng để hiển thị khi cần."
         },
         {
-          "chunk_id": "reg_article_16_p27_27",
-          "distance": 0.34455406665802,
+          "chunk_id": "K50-K51_reg_article_16_p49_55",
+          "distance": 0.3379836082458496,
           "metadata": {
             "article": "Điều 16.",
             "chapter": "Chương IV",
-            "chunk_id": "reg_article_16_p27_27",
+            "chunk_id": "K50-K51_reg_article_16_p49_55",
             "chunk_type": "regulation",
+            "cohort": "K50-K51",
             "content_type": "regulation_text",
             "document_title": "QUY CHẾ",
             "has_formula": false,
@@ -132,34 +135,41 @@
             "has_table": false,
             "has_thresholds": true,
             "index_mode": "semantic",
-            "page_end": 28,
-            "page_start": 27,
+            "page_end": 50,
+            "page_start": 49,
             "part": "phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy",
-            "source_pages": "27,28",
+            "source_pages": "49,50",
             "source_type": "structured_section",
             "title": "Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học",
-            "token_count_approx": 681
+            "token_count_approx": 698
           },
           "preview": "Tài liệu: QUY CHẾ\nPhần: phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy\nChương: Chương IV\nĐiều: Điều 16.\nTiêu đề: Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học\nNội dung:\nĐiều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học\n1. Sinh viên được xin ng"
         },
         {
-          "chunk_id": "form_form_p177",
-          "distance": 0.3448830842971802,
+          "chunk_id": "K50-K51_reg_article_30_p73_98",
+          "distance": 0.33862560987472534,
           "metadata": {
-            "chunk_id": "form_form_p177",
-            "chunk_type": "form",
-            "form_id": "form_p177",
-            "form_name": "ĐƠN XIN HỌC LẠI",
+            "article": "Điều 30.",
+            "chapter": "Chương V",
+            "chunk_id": "K50-K51_reg_article_30_p73_98",
+            "chunk_type": "regulation",
+            "cohort": "K50-K51",
+            "content_type": "regulation_text",
+            "document_title": "QUY CHẾ",
+            "has_formula": true,
+            "has_scoring_rule": true,
+            "has_table": false,
+            "has_thresholds": true,
             "index_mode": "semantic",
-            "page_end": 177,
-            "page_start": 177,
-            "raw_text_available": true,
-            "review_status": "auto_grouped",
-            "source_pages": "177",
-            "source_type": "form_template",
-            "token_count_approx": 86
+            "page_end": 75,
+            "page_start": 73,
+            "part": "phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy",
+            "source_pages": "73,74,75",
+            "source_type": "structured_section",
+            "title": "Điều 30. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp",
+            "token_count_approx": 674
           },
-          "preview": "Biểu mẫu: ĐƠN XIN HỌC LẠI\nMục đích: Dùng khi sinh viên muốn xin quay lại học sau thời gian tạm nghỉ.\nThông tin/field phát hiện: Email, Họ tên, Hộ khẩu thường trú, Khoa, Khóa, Kính gửi, Lớp, MSSV, Ngành, Ngày sinh, Số điện thoại, Thời gian, Địa chỉ\nNguồn: Trang 177\nGhi chú: raw_text biểu mẫu được lưu"
+          "preview": "Tài liệu: QUY CHẾ\nPhần: phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy\nChương: Chương V\nĐiều: Điều 30.\nTiêu đề: Điều 30. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp\nNội dung:\nĐiều 30. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp\nnhận sinh viên trở lại học\n1. Sinh "
         }
       ]
     },
@@ -167,13 +177,14 @@
       "query": "Phòng Đào tạo xử lý việc gì?",
       "top_k": [
         {
-          "chunk_id": "reg_article_15_p47_60",
+          "chunk_id": "K48-K49_reg_article_15_p47_60",
           "distance": 0.2721039652824402,
           "metadata": {
             "article": "Điều 15.",
             "chapter": "Chương IV",
-            "chunk_id": "reg_article_15_p47_60",
+            "chunk_id": "K48-K49_reg_article_15_p47_60",
             "chunk_type": "regulation",
+            "cohort": "K48-K49",
             "content_type": "regulation_text",
             "document_title": "QUY CHẾ",
             "has_formula": false,
@@ -192,11 +203,38 @@
           "preview": "Tài liệu: QUY CHẾ\nPhần:\nChương: Chương IV\nĐiều: Điều 15.\nTiêu đề: Điều 15. Phòng Đào tạo\nNội dung:\nĐiều 15. Phòng Đào tạo\n1. Phối hợp Phòng CTCT và HSSV triển khai việc tiếp nhận sinh viên\ntrúng tuyển vào Trường.\n2. Phối hợp Phòng CTCT và HSSV thực hiện các quyết định xử lý\nhọc vụ có liên quan đến s"
         },
         {
-          "chunk_id": "office_office_3",
-          "distance": 0.33807873725891113,
+          "chunk_id": "K50-K51_reg_article_14_p65_81",
+          "distance": 0.32213884592056274,
           "metadata": {
-            "chunk_id": "office_office_3",
+            "article": "Điều 14.",
+            "chapter": "Chương IV",
+            "chunk_id": "K50-K51_reg_article_14_p65_81",
+            "chunk_type": "regulation",
+            "cohort": "K50-K51",
+            "content_type": "regulation_text",
+            "document_title": "QUY CHẾ",
+            "has_formula": false,
+            "has_scoring_rule": false,
+            "has_table": false,
+            "has_thresholds": false,
+            "index_mode": "semantic",
+            "page_end": 65,
+            "page_start": 65,
+            "part": "phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy",
+            "source_pages": "65",
+            "source_type": "structured_section",
+            "title": "Điều 14. Phòng Đào tạo",
+            "token_count_approx": 136
+          },
+          "preview": "Tài liệu: QUY CHẾ\nPhần: phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy\nChương: Chương IV\nĐiều: Điều 14.\nTiêu đề: Điều 14. Phòng Đào tạo\nNội dung:\nĐiều 14. Phòng Đào tạo\n1. Phối hợp Phòng CTCT&HSSV triển khai việc tiếp nhận sinh viên\ntrúng tuyển vào Trường.\n2. Phối hợp Phòng CT"
+        },
+        {
+          "chunk_id": "K48-K49_office_office_3",
+          "distance": 0.3380787968635559,
+          "metadata": {
+            "chunk_id": "K48-K49_office_office_3",
             "chunk_type": "office_directory",
+            "cohort": "K48-K49",
             "index_mode": "semantic",
             "needs_manual_review": false,
             "page_end": 131,
@@ -211,31 +249,6 @@
             "unit_name": "3. Phòng Đào tạo"
           },
           "preview": "Đơn vị/phòng ban: 3. Phòng Đào tạo\nThông tin liên quan:\n3. Phòng Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 141, 142\nEmail\n: phongdt@hcmue.edu.vn\nWebsite\n: phongdt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.106, P.107\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững c"
-        },
-        {
-          "chunk_id": "reg_article_22_p31_34",
-          "distance": 0.3783998489379883,
-          "metadata": {
-            "article": "Điều 22.",
-            "chapter": "Chương V",
-            "chunk_id": "reg_article_22_p31_34",
-            "chunk_type": "regulation",
-            "content_type": "regulation_text",
-            "document_title": "QUY CHẾ",
-            "has_formula": false,
-            "has_scoring_rule": false,
-            "has_table": false,
-            "has_thresholds": false,
-            "index_mode": "semantic",
-            "page_end": 32,
-            "page_start": 31,
-            "part": "phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy",
-            "source_pages": "31,32",
-            "source_type": "structured_section",
-            "title": "Điều 22. Tổ chức thực hiện",
-            "token_count_approx": 142
-          },
-          "preview": "Tài liệu: QUY CHẾ\nPhần: phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy\nChương: Chương V\nĐiều: Điều 22.\nTiêu đề: Điều 22. Tổ chức thực hiện\nNội dung:\nĐiều 22. Tổ chức thực hiện\n1. Các đơn vị quản lý đào tạo gồm: Phòng Đào tạo; Phòng CTCT và\nHSSV; Phòng Khảo thí và Đảm bảo chất lư"
         }
       ]
     },
@@ -243,11 +256,12 @@
       "query": "Khoa Công nghệ thông tin có ngành nào?",
       "top_k": [
         {
-          "chunk_id": "faculty_faculty_1_part_1",
+          "chunk_id": "K48-K49_faculty_faculty_1_part_1",
           "distance": 0.3180633783340454,
           "metadata": {
-            "chunk_id": "faculty_faculty_1_part_1",
+            "chunk_id": "K48-K49_faculty_faculty_1_part_1",
             "chunk_type": "faculty_program_directory",
+            "cohort": "K48-K49",
             "faculty_or_unit_name": "1. Khoa Công nghệ – Thông tin",
             "index_mode": "semantic",
             "needs_manual_review": false,
@@ -264,11 +278,38 @@
           "preview": "Khoa/Tổ: 1. Khoa Công nghệ – Thông tin\nThông tin liên quan:\n1. Khoa Công nghệ – Thông tin\nSố điện thoại liên lạc\n: (028) 38352020\nsố nội bộ: 209, 210\nEmail\n: khoacntt@hcmue.edu.vn\nWebsite\n: khoacntt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 5, P.506, P.507,\nsố 280 An Dương Vương, Phường 4,\nQuận "
         },
         {
-          "chunk_id": "office_office_1",
-          "distance": 0.4153711795806885,
+          "chunk_id": "K50-K51_reg_article_10_p109_161",
+          "distance": 0.4084654450416565,
           "metadata": {
-            "chunk_id": "office_office_1",
+            "article": "Điều 10.",
+            "chapter": "Chương IV",
+            "chunk_id": "K50-K51_reg_article_10_p109_161",
+            "chunk_type": "regulation",
+            "cohort": "K50-K51",
+            "content_type": "regulation_text",
+            "document_title": "QUY ĐỊNH",
+            "has_formula": true,
+            "has_scoring_rule": false,
+            "has_table": false,
+            "has_thresholds": false,
+            "index_mode": "semantic",
+            "page_end": 109,
+            "page_start": 109,
+            "part": "",
+            "source_pages": "109",
+            "source_type": "structured_section",
+            "title": "Điều 10. Phòng Công nghệ Thông tin",
+            "token_count_approx": 125
+          },
+          "preview": "Tài liệu: QUY ĐỊNH\nPhần:\nChương: Chương IV\nĐiều: Điều 10.\nTiêu đề: Điều 10. Phòng Công nghệ Thông tin\nNội dung:\nĐiều 10. Phòng Công nghệ Thông tin\n1. Đảm bảo hệ thống máy chủ ổn định để sinh viên cập nhật các\nthông tin ngoại trú trên Cổng thông tin điện tử của Trường\n(https://online.hcmue.edu.vn/)"
+        },
+        {
+          "chunk_id": "K48-K49_office_office_1",
+          "distance": 0.41537123918533325,
+          "metadata": {
+            "chunk_id": "K48-K49_office_office_1",
             "chunk_type": "office_directory",
+            "cohort": "K48-K49",
             "index_mode": "semantic",
             "needs_manual_review": false,
             "page_end": 129,
@@ -283,27 +324,6 @@
             "unit_name": "1. Phòng Công nghệ Thông tin"
           },
           "preview": "Đơn vị/phòng ban: 1. Phòng Công nghệ Thông tin\nThông tin liên quan:\n1. Phòng Công nghệ Thông tin\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 166\nEmail\n: phongcntt@hcmue.edu.vn\nWebsite\n: phongcntt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5,"
-        },
-        {
-          "chunk_id": "faculty_faculty_1_part_2",
-          "distance": 0.43961530923843384,
-          "metadata": {
-            "chunk_id": "faculty_faculty_1_part_2",
-            "chunk_type": "faculty_program_directory",
-            "faculty_or_unit_name": "1. Khoa Công nghệ – Thông tin",
-            "index_mode": "semantic",
-            "needs_manual_review": false,
-            "page_end": 142,
-            "page_start": 141,
-            "part_index": 2,
-            "record_id": "faculty_1",
-            "source_pages": "141,142",
-            "source_type": "faculty_program_directory",
-            "split_from_record": true,
-            "token_count_approx": 108,
-            "total_parts": 2
-          },
-          "preview": "– Đảm nhiệm được các vị trí công tác cụ thể: lập trình viên, phân\ntích viên, thiết kế chương trình và dữ liệu, quản trị các hệ cơ sở dữ liệu,\nkiểm thử viên phần mềm, kỹ sư quy trình chất lượng, nghiên cứu viên;\n– Có khả năng tự học để hoàn thiện, bổ sung, nâng cao trình độ\nchuyên môn nghiệp vụ công "
         }
       ]
     },
@@ -311,11 +331,12 @@
       "query": "Quy trình vào ký túc xá như thế nào?",
       "top_k": [
         {
-          "chunk_id": "procedure_ktx_admission_procedure_part_1",
-          "distance": 0.25086197921110254,
+          "chunk_id": "K48-K49_procedure_ktx_admission_procedure_part_1",
+          "distance": 0.25086188316345215,
           "metadata": {
-            "chunk_id": "procedure_ktx_admission_procedure_part_1",
+            "chunk_id": "K48-K49_procedure_ktx_admission_procedure_part_1",
             "chunk_type": "procedure",
+            "cohort": "K48-K49",
             "index_mode": "semantic",
             "page_end": 162,
             "page_start": 161,
@@ -332,11 +353,12 @@
           "preview": "Quy trình: Quy trình xét sinh viên vào ở Ký túc xá\nCác bước phát hiện:\n- 1. Phó Hiệu trưởng phụ trách Công tác sinh viên – Chủ tịch Hội đồng;\n- 2. Trưởng phòng CTCT và HSSV – Thường trực\n- 3. Giám đốc KTX – Thành viên\n- 4. Các Phó Trưởng phòng CTCT và HSSV – Thành viên\n- 5. Chuyên viên Phòng CTCT và"
         },
         {
-          "chunk_id": "procedure_ktx_admission_procedure_part_2",
-          "distance": 0.30991571304739685,
+          "chunk_id": "K48-K49_procedure_ktx_admission_procedure_part_2",
+          "distance": 0.30991578102111816,
           "metadata": {
-            "chunk_id": "procedure_ktx_admission_procedure_part_2",
+            "chunk_id": "K48-K49_procedure_ktx_admission_procedure_part_2",
             "chunk_type": "procedure",
+            "cohort": "K48-K49",
             "index_mode": "semantic",
             "page_end": 162,
             "page_start": 161,
@@ -353,13 +375,14 @@
           "preview": "3. Người có hộ khẩu thường trú tại vùng cao, vùng có điều kiện\nkinh tế – xã hội đặc biệt khó khăn;\n4. Người dân tộc thiểu số;\n5. Con mồ côi cả cha lẫn mẹ;\n6. HSSV trong gia đình thuộc hộ nghèo, cận nghèo theo quy định\ncủa Thủ tướng Chính phủ;\n7. Sinh viên nữ;\n8. HSSV tích cực tham gia các hoạt động "
         },
         {
-          "chunk_id": "reg_article_20_p48_65",
-          "distance": 0.33898162841796875,
+          "chunk_id": "K48-K49_reg_article_20_p48_65",
+          "distance": 0.3389815092086792,
           "metadata": {
             "article": "Điều 20.",
             "chapter": "Chương IV",
-            "chunk_id": "reg_article_20_p48_65",
+            "chunk_id": "K48-K49_reg_article_20_p48_65",
             "chunk_type": "regulation",
+            "cohort": "K48-K49",
             "content_type": "regulation_text",
             "document_title": "QUY CHẾ",
             "has_formula": false,

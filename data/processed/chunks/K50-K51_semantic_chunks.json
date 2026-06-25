@@ -7037,5 +7037,690 @@
       "parent_section_id": "article_15_p155_249",
       "split_strategy": "clause_or_paragraph"
     }
+  },
+  {
+    "chunk_id": "form_form_p104",
+    "chunk_type": "form",
+    "index_mode": "semantic",
+    "content": "Biểu mẫu: bảng kết quả đánh giá rèn luyện sinh viên hệ chính quy toàn Trường.\nMục đích: Biểu mẫu phục vụ thủ tục sinh viên.\nThông tin/field phát hiện: Khoa, Khóa, Lớp, Thời gian\nNguồn: Trang 104-174\nGhi chú: raw_text biểu mẫu được lưu riêng để hiển thị khi cần.",
+    "token_count_approx": 66,
+    "metadata": {
+      "source_type": "form_template",
+      "form_id": "form_p104",
+      "form_name": "bảng kết quả đánh giá rèn luyện sinh viên hệ chính quy toàn Trường.",
+      "source_pages": [
+        104,
+        174
+      ],
+      "review_status": "auto_grouped",
+      "raw_text_available": true
+    }
+  },
+  {
+    "chunk_id": "office_office_1",
+    "chunk_type": "office_directory",
+    "index_mode": "semantic",
+    "content": "Đơn vị/phòng ban: 2. Phòng Khảo thí và Đảm bảo chất lượng thực hiện các nhiệm vụ sau:\nThông tin liên quan:\n2. Phòng Khảo thí và Đảm bảo chất lượng thực hiện các nhiệm vụ sau:\na) Tổng hợp và gửi về Phòng CTCT&HSSV danh sách sinh viên vi\nphạm quy chế thi theo từng học kỳ;\nb) Khóa điểm học tập trên hệ thống đúng thời hạn (đối với những\nsinh viên phúc khảo có thay đổi điểm thì điểm sau phúc khảo là căn cứ để\nHội đồng cấp cơ sở và cấp Trường cập nhật điểm rèn luyện).\nNguồn: Trang 97",
+    "token_count_approx": 122,
+    "metadata": {
+      "source_type": "office_directory",
+      "record_id": "office_1",
+      "unit_name": "2. Phòng Khảo thí và Đảm bảo chất lượng thực hiện các nhiệm vụ sau:",
+      "source_pages": [
+        97
+      ],
+      "needs_manual_review": false,
+      "split_from_record": false,
+      "part_index": 1,
+      "total_parts": 1
+    }
+  },
+  {
+    "chunk_id": "office_office_2",
+    "chunk_type": "office_directory",
+    "index_mode": "semantic",
+    "content": "Đơn vị/phòng ban: 3. Phòng Kế hoạch – Tài chính tiến hành tổng hợp và gửi về Phòng\nThông tin liên quan:\n3. Phòng Kế hoạch – Tài chính tiến hành tổng hợp và gửi về Phòng\nCTCT&HSSV danh sách sinh viên nợ lệ phí, học phí của từng học kỳ.\nNguồn: Trang 97",
+    "token_count_approx": 65,
+    "metadata": {
+      "source_type": "office_directory",
+      "record_id": "office_2",
+      "unit_name": "3. Phòng Kế hoạch – Tài chính tiến hành tổng hợp và gửi về Phòng",
+      "source_pages": [
+        97
+      ],
+      "needs_manual_review": false,
+      "split_from_record": false,
+      "part_index": 1,
+      "total_parts": 1
+    }
+  },
+  {
+    "chunk_id": "office_office_3_part_1",
+    "chunk_type": "office_directory",
+    "index_mode": "semantic",
+    "content": "Đơn vị/phòng ban: 4. Phòng Đào tạo sử dụng kết quả đánh giá rèn luyện vào việc xét tốt\nThông tin liên quan:\n4. Phòng Đào tạo sử dụng kết quả đánh giá rèn luyện vào việc xét tốt\nnghiệp và ghi vào bảng điểm cuối khóa của sinh viên.\n5. KTX tổng hợp và gửi về Phòng CTCT&HSSV danh sách sinh\nviên tham gia các hoạt động rèn luyện tại KTX theo từng học kỳ, bao\ngồm những sinh viên được tuyên dương, khen thưởng, vi phạm nội quy\nKTX; đánh giá mức độ hoàn thành nhiệm vụ của sinh viên là thành viên\nBan Tự quản KTX.\n6. Các khoa và phân hiệu tổ chức thực hiện các nhiệm vụ sau:\na) Trưởng khoa hoặc Giám đốc phân hiệu chỉ đạo tổ chức thực hiện\nviệc chấm điểm rèn luyện sinh viên theo từng học kỳ và thành lập Hội\nđồng cấp cơ sở để thông qua kết quả của từng lớp sinh viên;\nb) Giáo vụ khoa hoặc Tổ Đào tạo – Khảo thí – Công tác sinh viên\n(đối với phân hiệu) có trách nhiệm lập và lưu trữ hồ sơ đánh giá rèn luyện\nsinh viên cấp cơ sở, bao gồm: hồ sơ đánh giá rèn luyện từng lớp sinh\nviên, biên bản họp Hội đồng cấp cơ sở (Thư ký và Chủ tịch Hội đồng cấp\ncơ sở ký biên bản), bảng tổng hợp đánh giá rèn luyện sinh viên đã được\nHội đồng cấp cơ sở thông qua.\nSỔ TAY SINH VIÊN KHÓA 51\nCÁC PHÒNG, TRUNG TÂM VÀ TƯƠNG ĐƯƠNG\nPHỤC VỤ CÔNG TÁC ĐÀO TẠO TẠI CƠ SỞ CHÍNH\n1. Phòng Công nghệ Thông tin\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 166\nEmail\n: phongcntt@hcmue.edu.vn\nVăn phòng làm việc",
+    "token_count_approx": 345,
+    "metadata": {
+      "source_type": "office_directory",
+      "record_id": "office_3",
+      "unit_name": "4. Phòng Đào tạo sử dụng kết quả đánh giá rèn luyện vào việc xét tốt",
+      "source_pages": [
+        97,
+        195
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 1,
+      "total_parts": 2
+    }
+  },
+  {
+    "chunk_id": "office_office_3_part_2",
+    "chunk_type": "office_directory",
+    "index_mode": "semantic",
+    "content": ": Nhà A, tầng 5, P.503,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Quản lý email của sinh viên được cấp theo tên miền của Trường\nĐại học Sư phạm Thành phố Hồ Chí Minh;\n– Quản lý trang thông tin điện tử của Trường;\n– Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào\ntạo theo học chế tín chỉ;\n– Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại\nhọc Sư phạm Thành phố Hồ Chí Minh;\n– Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm\ncủa Trường;\n– Các công tác khác có liên quan đến công nghệ thông tin.\nNguồn: Trang 97-195",
+    "token_count_approx": 156,
+    "metadata": {
+      "source_type": "office_directory",
+      "record_id": "office_3",
+      "unit_name": "4. Phòng Đào tạo sử dụng kết quả đánh giá rèn luyện vào việc xét tốt",
+      "source_pages": [
+        97,
+        195
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 2,
+      "total_parts": 2
+    }
+  },
+  {
+    "chunk_id": "office_office_4",
+    "chunk_type": "office_directory",
+    "index_mode": "semantic",
+    "content": "Đơn vị/phòng ban: 2. Phòng Công tác chính trị và Học sinh, sinh viên\nThông tin liên quan:\n2. Phòng Công tác chính trị và Học sinh, sinh viên\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 127, 128, 143\nEmail\n: hopthusinhvien@hcmue.edu.vn\nWebsite\n: ctsv.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.108, P.109, P.110\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nSỔ TAY SINH VIÊN KHÓA 51\nNhững công việc của đơn vị liên quan đến sinh viên:\nViện thường xuyên tổ chức các lớp bồi dưỡng cho sinh viên như sau:\n– Phương pháp NCKH Giáo dục;\n– Thiết kế bài giảng điện tử;\n– Phương pháp học tập hiệu quả cho sinh viên bậc Đại học.\nNguồn: Trang 195-203",
+    "token_count_approx": 178,
+    "metadata": {
+      "source_type": "office_directory",
+      "record_id": "office_4",
+      "unit_name": "2. Phòng Công tác chính trị và Học sinh, sinh viên",
+      "source_pages": [
+        195,
+        203
+      ],
+      "needs_manual_review": false,
+      "split_from_record": false,
+      "part_index": 1,
+      "total_parts": 1
+    }
+  },
+  {
+    "chunk_id": "office_office_5",
+    "chunk_type": "office_directory",
+    "index_mode": "semantic",
+    "content": "Đơn vị/phòng ban: 17. Trung tâm Phát triển kỹ năng sư phạm\nThông tin liên quan:\n17. Trung tâm Phát triển kỹ năng sư phạm\nĐiện thoại liên lạc\n: (028) 38397868\nsố máy nội bộ: 169, 170\nEmail\n: trungtamptknsp@hcmue.edu.vn\nWebsite\n: trungtamptknsp.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.201,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức các hoạt động tập giảng, kiến tập và thực tập giảng tại các\nphòng học trực tuyến, phòng học ảo và phòng học thông minh;\n– Phối hợp với Phòng Đào tạo và các khoa chuyên môn để xây dựng\nnội dung, kế hoạch, quy chế thực tập và rèn luyện nghiệp vụ cho sinh viên;\n– Tổ chức hội thảo khoa học và các hoạt động NCKH về giáo dục và\nkỹ năng, nghiệp vụ sư phạm;\n– Tổ chức các dịch vụ công về kỹ năng sử dụng các phần mềm dạy\nhọc; các chiến lược và kỹ thuật dạy học trong và ngoài lớp học; kỹ năng\nthiết kế các công cụ dạy học; kỹ năng quản lý hệ thống học tập; kỹ năng\nkiểm tra đánh giá kết quả học tập; phương pháp dạy học tích hợp, phân\nhóa; mô hình và phương pháp dạy – học STEM,…\nNguồn: Trang 203",
+    "token_count_approx": 283,
+    "metadata": {
+      "source_type": "office_directory",
+      "record_id": "office_5",
+      "unit_name": "17. Trung tâm Phát triển kỹ năng sư phạm",
+      "source_pages": [
+        203
+      ],
+      "needs_manual_review": false,
+      "split_from_record": false,
+      "part_index": 1,
+      "total_parts": 1
+    }
+  },
+  {
+    "chunk_id": "office_office_6_part_1",
+    "chunk_type": "office_directory",
+    "index_mode": "semantic",
+    "content": "Đơn vị/phòng ban: 18. Trung tâm Tin học\nThông tin liên quan:\n18. Trung tâm Tin học\nĐiện thoại liên lạc\n: (028) 38392549\nEmail\n: trungtamtinhoc@hcmue.edu.vn\nWebsite\n: thsp.hcmue.edu.vn\nSỔ TAY SINH VIÊN KHÓA 51\nMỘT SỐ CÔNG VIỆC CỦA CÁC KHOA\nVÀ PHÂN HIỆU LIÊN QUAN ĐẾN SINH VIÊN\n– Chỉ định tạm thời hoặc bầu BCS (lớp trưởng và các lớp phó) lớp\nsinh viên và lớp học phần;\n– Giới thiệu giảng viên phụ trách CVHT để giúp sinh viên đăng ký\nmôn học;\n– Hướng dẫn sinh viên học tập theo hệ thống tín chỉ; xếp thời khóa\nbiểu học tập và thi;\n– Tổ chức lựa chọn sinh viên đi học chuyển tiếp, du học theo hiệp\nđịnh của Nhà nước, Nhà trường (nếu có) theo quy định;\n– Tổ chức các hoạt động chính trị – xã hội, nghiệp vụ chuyên môn,\nvăn hóa – văn nghệ, thể dục – thể thao,...;\n– Đánh giá, phân loại sinh viên về học tập, rèn luyện theo từng học\nkỳ, năm học và khóa học;\n– Phối hợp với Phòng CTCT&HSSV thực hiện các chế độ chính\nsách cho sinh viên, xét cấp học bổng các loại, miễn, giảm học phí, công\ntác nội trú, ngoại trú, tham quan thực tế, tạm ngưng tiến độ học tập, buộc\nthôi học... thống kê số liệu sinh viên; theo dõi công tác thi đua khen\nthưởng; thực hiện các thủ tục liên quan đến sinh viên tốt nghiệp;\n– Phối hợp với Phòng Đào tạo xử lý học vụ, rèn luyện chuyên môn,\nnghiệp vụ; theo dõi trả nợ các học phần môn học, cảnh báo học vụ của\nsinh viên.",
+    "token_count_approx": 348,
+    "metadata": {
+      "source_type": "office_directory",
+      "record_id": "office_6",
+      "unit_name": "18. Trung tâm Tin học",
+      "source_pages": [
+        203,
+        225
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 1,
+      "total_parts": 2
+    }
+  },
+  {
+    "chunk_id": "office_office_6_part_2",
+    "chunk_type": "office_directory",
+    "index_mode": "semantic",
+    "content": "Nguồn: Trang 203-225",
+    "token_count_approx": 6,
+    "metadata": {
+      "source_type": "office_directory",
+      "record_id": "office_6",
+      "unit_name": "18. Trung tâm Tin học",
+      "source_pages": [
+        203,
+        225
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 2,
+      "total_parts": 2
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_1",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "Khoa/Tổ: 2. Tổ chức lớp học\nThông tin liên quan:\n2. Tổ chức lớp học\na) Lớp sinh viên và giảng viên phụ trách lớp\n– Lớp sinh viên được tổ chức theo khóa học đối với ngành đào tạo.\nLớp sinh viên được duy trì trong cả khóa đào tạo, có mã số riêng, có hệ\nthống cán bộ lớp, cán bộ đoàn và hội sinh viên. Mỗi lớp có không quá 50\nsinh viên;\n– Giảng viên phụ trách lớp sinh viên đồng thời giữ vai trò CVHT\ncho sinh viên trong lớp về đào tạo như: giúp đỡ sinh viên lập kế hoạch\nhọc tập cho toàn bộ khóa học và kế hoạch cho từng học kỳ;\n– Tổ chức hoạt động của lớp sinh viên và vai trò, trách nhiệm của\ngiảng viên phụ trách lớp được quy định trong Quy chế công tác học sinh,\nsinh viên của Trường.\nb) Lớp học phần\n– Mỗi học phần được tổ chức thành các lớp học phần dựa theo thời\nkhóa biểu chung của Trường. Mỗi lớp học phần có mã số riêng;\n– Tùy theo điều kiện cụ thể của từng học kỳ, Trưởng đơn vị phụ\ntrách đào tạo trình Hiệu trưởng quyết định số sinh viên tối thiểu cho mỗi\nlớp học phần. Nếu số sinh viên đăng ký ít hơn quy định, lớp học phần sẽ\nkhông được tổ chức và sinh viên phải đăng ký chuyển sang học ở những\nlớp học phần khác mà Trường có tổ chức cho đủ số tín chỉ tối thiểu quy\nđịnh trong học kỳ.\n3. Thời khóa biểu và phân công giảng dạy\na) Căn cứ kế hoạch năm học, Trường xây dựng thời khóa biểu cho\ntừng học kỳ; Khoa đào tạo, bộ môn tổ chức phân công giảng viên giảng\ndạy các lớp học phần theo thời khóa biểu;",
+    "token_count_approx": 347,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 1,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_2",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "b) Trong buổi học đầu tiên của học phần, giảng viên có trách nhiệm\nphổ biến cho sinh viên đề cương chi tiết học phần và các quy định khác\nliên quan đến học phần;\n162 SỔ TAY SINH VIÊN KHÓA 51\n– Sau khi bộ phận tiếp nhận xem xét, đối chiếu các hồ sơ minh\nchứng và phản hồi, sinh viên thực hiện nộp hồ sơ bản giấy trực tiếp.\n* Lưu ý: Đăng ký trực tuyến chỉ áp dụng đối với sinh viên đăng ký\nxét lần đầu.\n2.2. Nộp hồ sơ trực tiếp:\n– Trong vòng 30 ngày tính từ đầu học kỳ của năm học, riêng đối với\nsinh viên năm thứ nhất, thời gian tính từ đầu tháng 10/2025. Sinh viên\nthuộc diện được miễn, giảm học phí hoàn tất hồ sơ theo quy định.\n– Đối với sinh viên học tập tại cơ sở chính (280 An Dương Vương,\nphường Chợ Quán, Thành phố Hồ Chí Minh): nộp hồ sơ trực tiếp về\nPhòng CTCT&HSSV, Phòng A.110.\n– Đối với sinh viên học tập tại Phân hiệu Long An (934 Quốc lộ 1,\nphường Khánh Hậu, tỉnh Tây Ninh): nộp hồ sơ trực tiếp về Tổ Đào tạo –\nKhảo thí – Công tác sinh viên.\n– Đối với sinh viên học tập tại Phân hiệu Gia Lai (126 Lê Thánh\nTôn, phường Diên Hồng, tỉnh Gia Lai): nộp hồ sơ trực tiếp về Tổ Đào tạo\n– Khảo thí – Công tác sinh viên.\n3. Trong vòng 10 ngày sau khi kết thúc nhận hồ sơ đề nghị miễn,\ngiảm học phí, Phòng CTCT&HSSV tổng hợp danh sách xét miễn, giảm\ntrình Hiệu trưởng phê duyệt và công bố trên Cổng thông tin điện tử của",
+    "token_count_approx": 342,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 2,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_3",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "Trường và fanpage của Phòng CTCT&HSSV.\nIII. QUY ĐỊNH KHÁC\n1. Sinh viên thuộc diện được miễn, giảm học phí theo quy định mà\ncùng lúc hưởng nhiều chính sách hỗ trợ khác nhau thì chỉ được hưởng\nmột chế độ ưu đãi cao nhất.\n2. Sinh viên thuộc diện được miễn, giảm học phí theo quy định đồng\nthời học cùng lúc nhiều cơ sở giáo dục hoặc nhiều khoa, nhiều ngành\ntrong Trường thì được hưởng một chế độ ưu đãi.\n3. Không áp dụng chính sách miễn, giảm học phí đối với sinh viên\ntrong trường hợp đã hưởng chế độ này tại một cơ sở giáo dục nghề\nnghiệp hoặc cơ sở giáo dục đại học, nay tiếp tục học thêm ở một cơ sở\ngiáo dục nghề nghiệp và giáo dục đại học khác cùng cấp học và trình độ\nđào tạo.\nSỔ TAY SINH VIÊN KHÓA 51\n3. Ngành Công tác xã hội\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Nhân viên công tác xã hội làm việc trong các lĩnh vực công tác\nxã hội nói chung, đặc biệt trong các lĩnh vực công tác xã hội học đường,\ncông tác xã hội trẻ em và công tác xã hội với các đối tượng dễ bị tổn\nthương khác (tại các cơ sở giáo dục và các trung tâm bảo trợ trẻ em như\ncác trung tâm công tác xã hội, trung tâm tư vấn, tham vấn tâm lý, trung\ntâm bảo trợ xã hội, mái ấm, nhà mở, trường giáo dưỡng, các tổ chức\ncộng đồng, các tổ chức phi chính phủ, các tổ chức Nhà nước), các đoàn\nthể (Đoàn Thanh niên, Hội Liên hiệp Phụ nữ, Hội Chữ thập đỏ,…);\n– Nhân viên công tác xã hội làm việc tại các bệnh viện, các cơ sở",
+    "token_count_approx": 347,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 3,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_4",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "tôn giáo, Sở Lao động – Thương binh và Xã hội;\n– Giảng dạy và nghiên cứu công tác xã hội tại các trường, các viện\nnghiên cứu.\n4. Ngành Du lịch\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm việc trong các cơ quan, tổ chức hoạt động du lịch; các viện,\ncác trung tâm nghiên cứu, cơ sở giáo dục du lịch ở trong và ngoài nước;\n– Đảm nhiệm công việc ở bộ phận kinh doanh, cung ứng và phát\ntriển sản phẩm du lịch, làm việc trong các doanh nghiệp du lịch;\n– Có thể tự khởi tạo, quản lý và điều hành các cơ sở kinh doanh\ndịch vụ du lịch – lữ hành, tiếp thị và bán hàng, tổ chức sự kiện,…;\n– Làm hướng dẫn viên du lịch trong các công ty du lịch.\n5. Ngành Địa lý học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Hướng ứng dụng địa lý học trong lĩnh vực dân số, xã hội: chuyên\nviên trong các tổ chức chính trị – xã hội, các cơ quan quản lí nhà nước\nphụ trách các vấn đề dân số, phát triển xã hội, các trung tâm, viện\nnghiên cứu về khoa học xã hội;\n– Hướng ứng dụng địa lý học trong lĩnh vực bản đồ, viễn thám –\nGIS: chuyên viên trong các tổ chức chính trị – xã hội, các cơ quan quản\n180 SỔ TAY SINH VIÊN KHÓA 51\nlí nhà nước phụ trách lĩnh vực đo đạc bản đồ, các trung tâm, viện nghiên\ncứu về kinh tế – xã hội – môi trường.\n6. Ngành Giáo dục Chính trị\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn Giáo dục công dân ở",
+    "token_count_approx": 342,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 4,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_5",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "các trường THCS và Giáo dục kinh tế và pháp luật ở các trường THPT;\ncông tác giáo dục chính trị ở các trường trung học nghề và các cơ sở\ngiáo dục tương đương;\n– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn thuộc các chuyên ngành: Triết học, Kinh tế chính trị, Chủ\nnghĩa xã hội khoa học, Tư tưởng Hồ Chí Minh, Lịch sử Đảng Cộng sản\nViệt Nam, Chính trị học, Lý luận và phương pháp dạy học bộ môn Lý\nluận chính trị, Giáo dục học (Giáo dục chính trị), Luật học,…\n7. Ngành Giáo dục Công dân\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn Giáo dục công dân ở\ncác trường THCS và Giáo dục kinh tế và pháp luật ở các trường THPT;\ncông tác giáo dục chính trị ở các trường trung học nghề và các cơ sở\ngiáo dục tương đương;\n– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn thuộc các chuyên ngành: Triết học, Kinh tế chính trị, Chủ\nnghĩa xã hội khoa học, Tư tưởng Hồ Chí Minh, Lịch sử Đảng Cộng sản\nViệt Nam, Chính trị học, Lý luận và phương pháp dạy học bộ môn Lý\nluận chính trị, Giáo dục học (Giáo dục chính trị), Luật học,…\n8. Ngành Giáo dục Đặc biệt\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy tại các trường chuyên biệt;\n– Giáo viên hỗ trợ hoà nhập tại các trường mầm non và tiểu học;\n– Giáo dục viên tại các cơ sở y tế;",
+    "token_count_approx": 338,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 5,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_6",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "– Nhân viên làm việc tại các cơ sở giáo dục trẻ có nhu cầu đặc biệt\nvà các tổ chức phi chính phủ;\nSỔ TAY SINH VIÊN KHÓA 51\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành Giáo dục Đặc biệt: Giáo dục trẻ\nkhiếm thính, Giáo dục trẻ khiếm thị, Giáo dục trẻ khuyết tật trí tuệ.\n9. Ngành Giáo dục học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên giáo dục kỹ năng sống tại các cơ sở giáo dục mầm non\nvà phổ thông;\n– Trợ lí công tác học sinh, sinh viên ở các cơ sở giáo dục mầm non,\nphổ thông, trung cấp, cao đẳng và đại học;\n– Chuyên viên hành chính ở các cơ sở giáo dục;\n– Giảng viên Giáo dục học ở các cơ sở giáo dục và đào tạo;\n– Nghiên cứu viên tại các viện nghiên cứu về khoa học giáo dục;\n– Học tập, nghiên cứu chuyên sâu ở bậc học sau đại học tại các cơ\nsở giáo dục trong và ngoài nước về khoa học giáo dục: chuyên ngành\nGiáo dục học, Quản lí giáo dục, Đo lường và đánh giá giáo dục.\n10. Ngành Giáo dục Mầm non (trình độ cao đẳng và đại học)\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Trở thành giáo viên mầm non ở nhiều loại hình trường mầm non\nkhác nhau, kể cả trường mầm non với chương trình quốc tế;\n– Tuỳ thuộc vào năng lực và sự lựa chọn các môn học trong chương\ntrình, sinh viên ra trường có thể trở thành giáo viên mầm non đảm trách\nchuyên môn sâu về một lĩnh vực nào đó (âm nhạc, tạo hình, múa) hoặc",
+    "token_count_approx": 342,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 6,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_7",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "bồi dưỡng để trở thành giảng viên về giáo dục mầm non tại các trường\ncao đẳng và đại học, hoặc các cố vấn chuyên môn, các nghiên cứu viên về\ngiáo dục mầm non;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn về chuyên ngành Giáo dục Mầm non.\n11. Ngành Giáo dục Quốc phòng – An ninh\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên dạy bộ môn Giáo dục Quốc phòng và An ninh ở các\ntrường THPT, trung cấp nghề, cao đẳng nghề;\n182 SỔ TAY SINH VIÊN KHÓA 51\n– Chuyên viên công tác quân sự, quốc phòng địa phương;\n– Chuyên viên ở các tổ chức chính trị – xã hội, đoàn thể;\n– Chuyên viên ở các trung tâm Giáo dục Quốc phòng và An ninh.\n12. Ngành Giáo dục Thể chất\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác và giáo dục giảng dạy bộ môn Giáo dục Thể chất ở\ncác trường THPT, trung cấp chuyên nghiệp và dạy nghề;\n– Làm công tác quản lý, huấn luyện trong ngành Thể dục Thể thao;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành về Thể dục Thể thao.\n13. Ngành Giáo dục Tiểu học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên tại các trường tiểu học (công lập, tư thục, quốc tế);\n– Giáo viên dạy bồi dưỡng văn hóa hoặc làm công tác giáo dục tại\ncác cơ sở giáo dục; trung tâm học tập cộng đồng; nghiên cứu viên trong\nlĩnh vực giáo dục tiểu học ở các cơ sở nghiên cứu giáo dục và chuyên",
+    "token_count_approx": 339,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 7,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_8",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "viên phụ trách Giáo dục tiểu học tại các Phòng, Sở Giáo dục và Đào tạo;\n– Có khả năng tham gia các khóa đào tạo sau đại học chuyên ngành\nGiáo dục học tiểu học hoặc các chuyên ngành về khoa học giáo dục,\ntham gia các khóa bồi dưỡng nghiệp vụ Tổng phụ trách Đội, bồi dưỡng\ncán bộ quản lý.\n14. Ngành Hoá học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Có khả năng đáp ứng yêu cầu làm công tác hoá nghiệm tại các xí\nnghiệp; có thể trở thành thành viên của các nhóm nghiên cứu tại các\nviện, trung tâm;\n– Có đủ kiến thức chuyên môn đáp ứng yêu cầu giáo dục và giảng\ndạy hoá học ở các cấp;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành liên quan đến hoá học.\n186 SỔ TAY SINH VIÊN KHÓA 51\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành tiếng Trung Quốc.\nCHƯƠNG TRÌNH LIÊN KẾT QUỐC TẾ SONG NGÀNH 2+2:\nNGÔN NGỮ TRUNG QUỐC, GIÁO DỤC HÁN NGỮ QUỐC TẾ\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Người học sau khi tốt nghiệp có thể làm biên – phiên dịch, trợ lý,\nthương mại,… tại các cơ quan nhà nước, doanh nghiệp trong nước và\nnước ngoài có sử dụng tiếng Trung Quốc;\n– Dạy học bộ môn Tiếng Trung Quốc ở các trường phổ thông, trung\ntâm ngoại ngữ và những cơ sở giáo dục tương đương sau khi bổ túc\nchứng chỉ nghiệp vụ sư phạm.\n21. Ngành Quản lý giáo dục\nCơ hội nghề nghiệp sau khi tốt nghiệp:",
+    "token_count_approx": 335,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 8,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_9",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "– Chuyên viên hành chính làm công tác quản lí học sinh, sinh viên;\nquản lí hoạt động dạy học và giáo dục tại các cơ sở giáo dục công lập và\ntư thục: mầm non, phổ thông, trung cấp, cao đẳng và đại học;\n– Trợ lí công tác học sinh, sinh viên ở các cơ sở giáo dục từ: mầm\nnon, phổ thông, trung cấp, cao đẳng và đại học;\n– Chuyên viên hành chính ở các cơ sở giáo dục công lập và tư thục;\n– Giảng viên về khoa học quản lí giáo dục ở các cơ sở giáo dục và\nđào tạo;\n– Nghiên cứu viên tại các viện nghiên cứu khoa học giáo dục;\n– Học tập, nghiên cứu chuyên sâu ở bậc học sau đại học tại các cơ\nsở giáo dục trong và ngoài nước về khoa học giáo dục: chuyên ngành\nQuản lí Giáo dục, Giáo dục học, Đo lường và đánh giá giáo dục.\n22. Ngành Quốc tế học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác đối ngoại trong các cơ quan Nhà nước, các tổ chức\nphi chính phủ, các công ty, tập đoàn đa quốc gia, quốc tế, các tổ chức xã\nhội nghề nghiệp;\n– Làm các công tác khác có yêu cầu sử dụng kiến thức về quốc tế học\n(báo chí – truyền thông, du lịch, quan hệ công chúng, ngoại thương,…).\n188 SỔ TAY SINH VIÊN KHÓA 51\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành liên quan đến hoá học.\n27. Ngành Sư phạm Khoa học tự nhiên\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm giáo viên môn Khoa học Tự nhiên cấp THCS, giáo viên phụ",
+    "token_count_approx": 350,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 9,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_10",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "trách Hoạt động trải nghiệm cấp THCS;\n– Có khả năng tiếp nhận và vận dụng các tri thức mới về chuyên\nmôn và nghề nghiệp đáp ứng các nhu cầu phát triển của giáo dục để tiếp\ntục học tập, nghiên cứu ở các bậc học cao hơn.\n28. Ngành Sư phạm Lịch sử\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên giảng dạy bộ môn Lịch sử ở các trường THPT, chuyên viên\nphụ trách môn Lịch sử tại các Sở Giáo dục và Đào tạo ở địa phương;\n– Nghiên cứu viên ở các viện nghiên cứu, các cơ quan quản lý giáo\ndục, các cơ sở đào tạo, đặc biệt về lĩnh vực Lịch sử, Lý luận và phương\npháp dạy học bộ môn Lịch sử, Khoa học xã hội.\n29. Ngành Sư phạm Lịch sử – Địa lý\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên dạy môn Lịch sử và Địa lý ở các trường THCS và các\ncơ sở giáo dục tương đương;\n– Chuyên viên phụ trách chuyên môn Lịch sử và Địa lý tại các\nPhòng Giáo dục và Đào tạo;\n– Nghiên cứu viên tại các trung tâm và viện nghiên cứu.\n30. Ngành Sư phạm Ngữ văn\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giảng dạy bộ môn Ngữ văn ở các trường THPT, trung cấp\nchuyên nghiệp, trường dạy nghề;\n– Làm công tác chuyên môn trong các cơ quan, tổ chức đòi hỏi\nkiến thức ngữ văn;\n– Có thể tiếp tục học tập ở các bậc học cao hơn thuộc các chuyên\nngành: Phương pháp giảng dạy, Ngôn ngữ học hoặc Văn học.\nSỔ TAY SINH VIÊN KHÓA 51\n31. Ngành Sư phạm Sinh học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn Sinh học tại các",
+    "token_count_approx": 350,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 10,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_11",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "trường THPT;\n– Có thể trở thành giảng viên ở các trường cao đẳng, đại học;\n– Có thể làm cán bộ nghiên cứu tại các trung tâm nghiên cứu, viện\nnghiên cứu thuộc ngành Sinh học và các cơ sở sản xuất kinh doanh có\nliên quan đến lĩnh vực sinh học;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn thuộc các chuyên ngành Sinh học.\n32. Ngành Sư phạm tiếng Anh\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Có thể làm công tác giáo dục và giảng dạy bộ môn tiếng Anh ở\ncác cấp học từ Tiểu học đến Trung học phổ thông tại các cơ sở công lập và\ncác chương trình học tiếng Anh khác tại các tổ chức giáo dục tư nhân;\n– Có thể làm việc trong lĩnh vực chuyên môn khác có đòi hỏi về\nkiến thức văn hoá, xã hội và khả năng giao tiếp bằng tiếng Anh;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành: Giảng dạy tiếng Anh, Ngôn ngữ\nhọc tiếng Anh và các chuyên ngành liên quan.\n33. Ngành Sư phạm tiếng Nga\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên giảng dạy bộ môn Tiếng Nga ở bậc tiểu học, THCS và\nTHPT hoặc các trung tâm ngoại ngữ, các cơ sở giáo dục quốc tế;\n– Nghiên cứu viên trong các trung tâm nghiên cứu giáo dục, văn\nhoá hoặc ngôn ngữ;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\ncao hơn theo các chuyên ngành Ngôn ngữ Nga, Khoa học giáo dục,\nGiáo dục học, Tâm lý học, Quản lý giáo dục tại các cơ sở giáo dục trong",
+    "token_count_approx": 345,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 11,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_12",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "và ngoài nước; các khóa bồi dưỡng theo chuyên ngành gần để đảm nhận\ncác vị trí thích hợp theo nhu cầu của xã hội.\n190 SỔ TAY SINH VIÊN KHÓA 51\n34. Ngành Sư phạm tiếng Pháp\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên tiếng Pháp bậc tiểu học, THCS và THPT, trung tâm\nngoại ngữ, các cơ sở giáo dục quốc tế;\n– Nghiên cứu viên trong các trung tâm nghiên cứu, văn hóa, ngôn ngữ;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn ở lĩnh vực khoa học ngôn ngữ và khoa học giáo dục.\n35. Ngành Sư phạm tiếng Trung Quốc\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn Tiếng Trung Quốc ở\ncác trường THPT, các cơ sở đào tạo;\n– Làm việc trong các lĩnh vực chuyên môn đòi hỏi kiến thức văn\nhoá, xã hội và khả năng giao tiếp bằng tiếng Trung Quốc;\n– Có khả năng và trình độ để tiếp tục học tập và nghiên cứu ở các\nbậc học cao hơn theo các chuyên ngành giảng dạy tiếng Trung Quốc,\nNgôn ngữ học tiếng Trung Quốc; văn hoá, văn học, lịch sử Trung Quốc.\n36. Ngành Sư phạm Tin học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn Tin học ở các trường\nphổ thông và các cơ sở đào tạo trình độ tương đương;\n– Đảm nhiệm được vị trí chuyên viên công nghệ thông tin trong các\ntrường phổ thông và các cơ sở đào tạo trình độ tương đương: tư vấn,\ntriển khai giải pháp, quản trị công nghệ thông tin;",
+    "token_count_approx": 334,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 12,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_13",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở bậc cao\nhơn thuộc các chuyên ngành phương pháp giảng dạy tin học, khoa học\nmáy tính, công nghệ phần mềm, hệ thống thông tin.\n37. Ngành Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên Toán tại các trường trung học và tương đương. Có khả năng\nhướng dẫn và bồi dưỡng học sinh giỏi Toán học tại các trường phổ thông.\nSỔ TAY SINH VIÊN KHÓA 51\n– Có khả năng học tập tiếp ở các bậc học cao hơn (thạc sĩ, tiến sĩ)\ncác chuyên ngành thuộc lĩnh vực Toán ứng dụng và khoa học dữ liệu.\n– Có khả năng tự học, tự nghiên cứu để hoàn thiện, bổ sung, nâng\ncao trình độ chuyên môn nghiệp vụ nhằm hoàn thành tốt những nhiệm\nvụ giáo dục.\n43. Ngành Văn học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác nghiên cứu ngôn ngữ học hoặc văn học;\n– Làm công tác chuyên môn trong các lĩnh vực liên quan đến ngữ\nvăn: báo chí, xuất bản, quản lý văn hoá…;\n– Có thể giảng dạy bộ môn Ngữ văn ở các trường đại học, cao\nđẳng, trung cấp chuyên nghiệp, dạy nghề sau khi bổ túc chứng chỉ\nnghiệp vụ sư phạm;\n– Có thể tiếp tục học ở các bậc học cao hơn thuộc các chuyên\nngành: Ngôn ngữ học hoặc Văn học.\n44. Ngành Vật lý học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Nghiên cứu viên trong lĩnh vực vật lý học tại các bệnh viện, viện\nnghiên cứu, trung tâm nghiên cứu, các khu công nghiệp;",
+    "token_count_approx": 338,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 13,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_14",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "– Có khả năng giảng dạy tại các trường đại học, cao đẳng và THPT\n(khi học thêm chứng chỉ nghiệp vụ sư phạm).\n45. Ngành Việt Nam học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm việc tại các công ty du lịch lữ hành với tư cách hướng dẫn\nviên du lịch, người thiết kế và điều hành tour;\n– Giảng dạy một số môn thuộc lĩnh vực Văn hoá hay Du lịch lữ\nhành tại các trường cao đẳng và dạy nghề sau khi bổ túc các chứng chỉ\nnghiệp vụ sư phạm;\n– Có thể học ở bậc Thạc sĩ ngành Việt Nam học sau khi học bổ\nsung một số tín chỉ bậc đại học thuộc các chuyên ngành liên quan.\nSỔ TAY SINH VIÊN KHÓA 51\nCác hướng dẫn liên quan đến công tác đào tạo ................................. 156\nThông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh\nviên hệ chính quy năm học 2025 – 2026 ............................................... 157\nThông báo về việc thực hiện chế độ chính sách về học bổng và hỗ trợ\nphương tiện, đồ dùng học tập đối với sinh viên hệ chính quy là người\nkhuyết tật thuộc hộ nghèo, hộ cận nghèo, năm học 2025 – 2026 .......... 164\nThông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với",
+    "token_count_approx": 334,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 14,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_15",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc\nhộ nghèo, hộ cận nghèo, năm học 2025 – 2026 ..................................... 167\nPhần 3. Các quy trình, biểu mẫu liên quan đến công tác sinh viên .... 171\nQuy trình và biểu mẫu các công tác liên quan đến sinh viên\ntại cơ sở chính ........................................................................................ 171\nQuy trình xét sinh viên vào ở ký túc xá ............................................ 173\nQuy trình và biểu mẫu các công tác liên quan đến sinh viên",
+    "token_count_approx": 263,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 15,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_16",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "tại phân hiệu........................................................................................... 176\nPhần 4. Các ngành đào tạo và cơ hội nghề nghiệp sau khi tốt nghiệp .... 177\nPhần 5. Thông tin cần biết về các đơn vị đào tạo và phục vụ đào tạo .... 194\nCác tổ và khoa trực thuộc phân hiệu Long An ................................. 214\nCác tổ và khoa trực thuộc phân hiệu Gia Lai ................................... 218\nMột số công việc của các tổ, phòng và trung tâm liên quan đến\nsinh viên ................................................................................................. 221",
+    "token_count_approx": 344,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 16,
+      "total_parts": 17
+    }
+  },
+  {
+    "chunk_id": "faculty_faculty_1_part_17",
+    "chunk_type": "faculty_program_directory",
+    "index_mode": "semantic",
+    "content": "Một số công việc của các khoa và phân hiệu liên quan đến sinh viên ..... 225\nNguồn: Trang 38-227",
+    "token_count_approx": 27,
+    "metadata": {
+      "source_type": "faculty_program_directory",
+      "record_id": "faculty_1",
+      "faculty_or_unit_name": "2. Tổ chức lớp học",
+      "source_pages": [
+        38,
+        162,
+        179,
+        180,
+        181,
+        182,
+        186,
+        188,
+        189,
+        190,
+        193,
+        227
+      ],
+      "needs_manual_review": false,
+      "split_from_record": true,
+      "part_index": 17,
+      "total_parts": 17
+    }
   }
 ]

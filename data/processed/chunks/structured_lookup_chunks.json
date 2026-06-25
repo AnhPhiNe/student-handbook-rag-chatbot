@@ -1,6 +1,6 @@
 [
   {
-    "chunk_id": "table_grade_10_to_letter",
+    "chunk_id": "K48-K49_table_grade_10_to_letter",
     "chunk_type": "table",
     "index_mode": "structured",
     "content": "Bảng: Quy đổi thang điểm 10 sang điểm chữ\nNguồn: Trang 20\nNội dung bảng:\n- status: Đạt; score_10_range: 8.5-10; letter_grade: A\n- status: Đạt; score_10_range: 7.8-8.4; letter_grade: B+\n- status: Đạt; score_10_range: 7.0-7.7; letter_grade: B\n- status: Đạt; score_10_range: 6.3-6.9; letter_grade: C+\n- status: Đạt; score_10_range: 5.5-6.2; letter_grade: C\n- status: Đạt; score_10_range: 4.8-5.4; letter_grade: D+\n- status: Đạt; score_10_range: 4.0-4.7; letter_grade: D\n- status: Không đạt; score_10_range: 3.0-3.9; letter_grade: F+\n- status: Không đạt; score_10_range: 0.0-2.9; letter_grade: F\nGhi chú: Bảng này ưu tiên dùng structured lookup thay vì để LLM tự suy đoán.",
@@ -13,11 +13,12 @@
         20
       ],
       "review_status": "needs_human_verified",
-      "lookup_preferred": true
+      "lookup_preferred": true,
+      "cohort": "K48-K49"
     }
   },
   {
-    "chunk_id": "table_letter_to_grade_4",
+    "chunk_id": "K48-K49_table_letter_to_grade_4",
     "chunk_type": "table",
     "index_mode": "structured",
     "content": "Bảng: Quy đổi điểm chữ sang thang điểm 4\nNguồn: Trang 22\nNội dung bảng:\n- letter_grade: A; score_4: 4.0\n- letter_grade: B+; score_4: 3.5\n- letter_grade: B; score_4: 3.0\n- letter_grade: C+; score_4: 2.5\n- letter_grade: C; score_4: 2.0\n- letter_grade: D+; score_4: 1.5\n- letter_grade: D; score_4: 1.0\n- letter_grade: F+; score_4: 0.5\n- letter_grade: F; score_4: 0.0\nGhi chú: Bảng này ưu tiên dùng structured lookup thay vì để LLM tự suy đoán.",
@@ -30,11 +31,12 @@
         22
       ],
       "review_status": "needs_human_verified",
-      "lookup_preferred": true
+      "lookup_preferred": true,
+      "cohort": "K48-K49"
     }
   },
   {
-    "chunk_id": "table_academic_classification",
+    "chunk_id": "K48-K49_table_academic_classification",
     "chunk_type": "table",
     "index_mode": "structured",
     "content": "Bảng: Xếp loại học lực theo thang điểm 4\nNguồn: Trang 23\nNội dung bảng:\n- range: 3.6-4.0; label: Xuất sắc\n- range: 3.2-dưới 3.6; label: Giỏi\n- range: 2.5-dưới 3.2; label: Khá\n- range: 2.0-dưới 2.5; label: Trung bình\n- range: 1.0-dưới 2.0; label: Yếu\n- range: dưới 1.0; label: Kém\nGhi chú: Bảng này ưu tiên dùng structured lookup thay vì để LLM tự suy đoán.",
@@ -47,11 +49,12 @@
         23
       ],
       "review_status": "needs_human_verified",
-      "lookup_preferred": true
+      "lookup_preferred": true,
+      "cohort": "K48-K49"
     }
   },
   {
-    "chunk_id": "table_conduct_classification",
+    "chunk_id": "K48-K49_table_conduct_classification",
     "chunk_type": "table",
     "index_mode": "structured",
     "content": "Bảng: Phân loại kết quả rèn luyện\nNguồn: Trang 74\nNội dung bảng:\n- range: 90-100; label: Xuất sắc\n- range: 80-dưới 90; label: Tốt\n- range: 65-dưới 80; label: Khá\n- range: 50-dưới 65; label: Trung bình\n- range: 35-dưới 50; label: Yếu\n- range: dưới 35; label: Kém\nGhi chú: Bảng này ưu tiên dùng structured lookup thay vì để LLM tự suy đoán.",
@@ -64,11 +67,12 @@
         74
       ],
       "review_status": "needs_human_verified",
-      "lookup_preferred": true
+      "lookup_preferred": true,
+      "cohort": "K48-K49"
     }
   },
   {
-    "chunk_id": "table_scholarship_classification",
+    "chunk_id": "K48-K49_table_scholarship_classification",
     "chunk_type": "table",
     "index_mode": "structured",
     "content": "Bảng: Xếp loại học bổng khuyến khích học tập\nNguồn: Trang 53\nNội dung bảng:\n- label: Khá; scholarship_score_range: 2.56-3.352; academic_score_range: 2.50-3.19; conduct_score_condition: >=70\n- label: Giỏi; scholarship_score_range: 3.20-3.672; academic_score_range: 3.20-3.59; conduct_score_condition: >=80\n- label: Xuất sắc; scholarship_score_range: 3.60-4.0; academic_score_range: 3.60-4.0; conduct_score_condition: >=90\nGhi chú: Bảng này ưu tiên dùng structured lookup thay vì để LLM tự suy đoán.",
@@ -81,7 +85,98 @@
         53
       ],
       "review_status": "needs_human_verified",
-      "lookup_preferred": true
+      "lookup_preferred": true,
+      "cohort": "K48-K49"
+    }
+  },
+  {
+    "chunk_id": "K50-K51_table_grade_10_to_letter",
+    "chunk_type": "table",
+    "index_mode": "structured",
+    "content": "Bảng: Quy đổi thang điểm 10 sang điểm chữ\nNguồn: Trang 20\nNội dung bảng:\n- status: Đạt; score_10_range: 8.5-10; letter_grade: A\n- status: Đạt; score_10_range: 7.8-8.4; letter_grade: B+\n- status: Đạt; score_10_range: 7.0-7.7; letter_grade: B\n- status: Đạt; score_10_range: 6.3-6.9; letter_grade: C+\n- status: Đạt; score_10_range: 5.5-6.2; letter_grade: C\n- status: Đạt; score_10_range: 4.8-5.4; letter_grade: D+\n- status: Đạt; score_10_range: 4.0-4.7; letter_grade: D\n- status: Không đạt; score_10_range: 3.0-3.9; letter_grade: F+\n- status: Không đạt; score_10_range: 0.0-2.9; letter_grade: F\nGhi chú: Bảng này ưu tiên dùng structured lookup thay vì để LLM tự suy đoán.",
+    "token_count_approx": 202,
+    "metadata": {
+      "source_type": "scoring_table",
+      "table_id": "grade_10_to_letter",
+      "table_name": "Quy đổi thang điểm 10 sang điểm chữ",
+      "source_pages": [
+        20
+      ],
+      "review_status": "needs_human_verified",
+      "lookup_preferred": true,
+      "cohort": "K50-K51"
+    }
+  },
+  {
+    "chunk_id": "K50-K51_table_letter_to_grade_4",
+    "chunk_type": "table",
+    "index_mode": "structured",
+    "content": "Bảng: Quy đổi điểm chữ sang thang điểm 4\nNguồn: Trang 22\nNội dung bảng:\n- letter_grade: A; score_4: 4.0\n- letter_grade: B+; score_4: 3.5\n- letter_grade: B; score_4: 3.0\n- letter_grade: C+; score_4: 2.5\n- letter_grade: C; score_4: 2.0\n- letter_grade: D+; score_4: 1.5\n- letter_grade: D; score_4: 1.0\n- letter_grade: F+; score_4: 0.5\n- letter_grade: F; score_4: 0.0\nGhi chú: Bảng này ưu tiên dùng structured lookup thay vì để LLM tự suy đoán.",
+    "token_count_approx": 130,
+    "metadata": {
+      "source_type": "scoring_table",
+      "table_id": "letter_to_grade_4",
+      "table_name": "Quy đổi điểm chữ sang thang điểm 4",
+      "source_pages": [
+        22
+      ],
+      "review_status": "needs_human_verified",
+      "lookup_preferred": true,
+      "cohort": "K50-K51"
+    }
+  },
+  {
+    "chunk_id": "K50-K51_table_academic_classification",
+    "chunk_type": "table",
+    "index_mode": "structured",
+    "content": "Bảng: Xếp loại học lực theo thang điểm 4\nNguồn: Trang 23\nNội dung bảng:\n- range: 3.6-4.0; label: Xuất sắc\n- range: 3.2-dưới 3.6; label: Giỏi\n- range: 2.5-dưới 3.2; label: Khá\n- range: 2.0-dưới 2.5; label: Trung bình\n- range: 1.0-dưới 2.0; label: Yếu\n- range: dưới 1.0; label: Kém\nGhi chú: Bảng này ưu tiên dùng structured lookup thay vì để LLM tự suy đoán.",
+    "token_count_approx": 123,
+    "metadata": {
+      "source_type": "scoring_table",
+      "table_id": "academic_classification",
+      "table_name": "Xếp loại học lực theo thang điểm 4",
+      "source_pages": [
+        23
+      ],
+      "review_status": "needs_human_verified",
+      "lookup_preferred": true,
+      "cohort": "K50-K51"
+    }
+  },
+  {
+    "chunk_id": "K50-K51_table_conduct_classification",
+    "chunk_type": "table",
+    "index_mode": "structured",
+    "content": "Bảng: Phân loại kết quả rèn luyện\nNguồn: Trang 74\nNội dung bảng:\n- range: 90-100; label: Xuất sắc\n- range: 80-dưới 90; label: Tốt\n- range: 65-dưới 80; label: Khá\n- range: 50-dưới 65; label: Trung bình\n- range: 35-dưới 50; label: Yếu\n- range: dưới 35; label: Kém\nGhi chú: Bảng này ưu tiên dùng structured lookup thay vì để LLM tự suy đoán.",
+    "token_count_approx": 99,
+    "metadata": {
+      "source_type": "scoring_table",
+      "table_id": "conduct_classification",
+      "table_name": "Phân loại kết quả rèn luyện",
+      "source_pages": [
+        74
+      ],
+      "review_status": "needs_human_verified",
+      "lookup_preferred": true,
+      "cohort": "K50-K51"
+    }
+  },
+  {
+    "chunk_id": "K50-K51_table_scholarship_classification",
+    "chunk_type": "table",
+    "index_mode": "structured",
+    "content": "Bảng: Xếp loại học bổng khuyến khích học tập\nNguồn: Trang 53\nNội dung bảng:\n- label: Khá; scholarship_score_range: 2.56-3.352; academic_score_range: 2.50-3.19; conduct_score_condition: >=70\n- label: Giỏi; scholarship_score_range: 3.20-3.672; academic_score_range: 3.20-3.59; conduct_score_condition: >=80\n- label: Xuất sắc; scholarship_score_range: 3.60-4.0; academic_score_range: 3.60-4.0; conduct_score_condition: >=90\nGhi chú: Bảng này ưu tiên dùng structured lookup thay vì để LLM tự suy đoán.",
+    "token_count_approx": 127,
+    "metadata": {
+      "source_type": "scoring_table",
+      "table_id": "scholarship_classification",
+      "table_name": "Xếp loại học bổng khuyến khích học tập",
+      "source_pages": [
+        53
+      ],
+      "review_status": "needs_human_verified",
+      "lookup_preferred": true,
+      "cohort": "K50-K51"
     }
   }
 ]

@@ -1,105 +1,1827 @@
 {
-  "total_pages": 188,
-  "low_text_pages": [
-    2,
-    4
-  ],
+  "total_pages": 232,
+  "low_text_pages": [],
   "possible_table_pages": [
+    16,
+    17,
     18,
     19,
     20,
     21,
-    22,
-    23,
+    25,
     28,
-    30,
-    38,
-    53,
-    56,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    49,
     57,
-    58,
     71,
     72,
-    73,
     74,
-    75,
-    78,
-    79,
-    82,
-    83,
-    84,
-    85,
+    76,
+    77,
     86,
-    94,
-    95,
+    88,
+    89,
+    90,
+    91,
+    92,
+    96,
+    99,
     100,
-    169,
-    170,
-    171,
-    172,
-    173,
-    174
+    101,
+    102,
+    103,
+    105,
+    115,
+    116,
+    117,
+    121,
+    151,
+    226
   ],
   "form_template_pages": [
-    167,
-    168,
-    169,
-    170,
-    171,
-    172,
-    173,
-    174,
-    175,
-    176,
-    177,
-    178,
+    104,
+    174
+  ],
+  "office_directory_pages": [
+    24,
+    97,
+    195,
+    203,
+    225
+  ],
+  "faculty_program_directory_pages": [
+    4,
+    5,
+    38,
+    162,
     179,
     180,
     181,
     182,
-    183,
-    184,
-    185
-  ],
-  "office_directory_pages": [
-    129,
-    130,
-    131,
-    132,
-    133,
-    134,
-    135,
-    136,
-    137,
-    138,
-    139,
-    140
-  ],
-  "faculty_program_directory_pages": [
-    141,
-    142,
-    143,
-    144,
-    145,
-    146,
-    147,
-    148,
-    149,
-    150,
-    151,
-    152,
-    153,
-    154,
-    155,
-    156,
-    157,
-    158,
-    159
-  ],
-  "toc_or_index_pages": [
     186,
-    187,
-    188
+    188,
+    189,
+    190,
+    193,
+    227
   ],
-  "pages_need_review": []
+  "toc_or_index_pages": [],
+  "pages_need_review": [
+    {
+      "page_number": 1,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 2,
+      "content_type": "abbreviation",
+      "pattern_detected_types": [
+        "abbreviation"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 4,
+      "content_type": "faculty_program_directory",
+      "pattern_detected_types": [
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 5,
+      "content_type": "faculty_program_directory",
+      "pattern_detected_types": [
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 6,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "office_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 8,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 9,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 10,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 11,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 12,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 13,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 14,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 15,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 16,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 17,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 18,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 19,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 20,
+      "content_type": "scoring_table",
+      "pattern_detected_types": [
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 21,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 22,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 23,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 24,
+      "content_type": "office_directory",
+      "pattern_detected_types": [
+        "office_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 25,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table",
+        "form_template"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 26,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "form_template",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 27,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 28,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 29,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "office_directory",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 30,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 31,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 32,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 33,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 34,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 35,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 36,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 37,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 38,
+      "content_type": "faculty_program_directory",
+      "pattern_detected_types": [
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 39,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 40,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 41,
+      "content_type": "scoring_table",
+      "pattern_detected_types": [
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 42,
+      "content_type": "scoring_table",
+      "pattern_detected_types": [
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 43,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 44,
+      "content_type": "scoring_table",
+      "pattern_detected_types": [
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 45,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 46,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 47,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 48,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "office_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 49,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 50,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "form_template"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 51,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 52,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 53,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 54,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 55,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 56,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 57,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 58,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 59,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 60,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 61,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 62,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "office_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 63,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 64,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 65,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 66,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "form_template"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 67,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 68,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "office_directory",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 69,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 70,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 71,
+      "content_type": "scoring_table",
+      "pattern_detected_types": [
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 72,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 73,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 74,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table",
+        "form_template",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 75,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "form_template",
+        "office_directory",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 76,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 77,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 78,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 79,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 80,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "office_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 81,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 82,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 83,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 84,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 85,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 86,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 87,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 88,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 89,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 90,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 91,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 92,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 93,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "form_template"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 94,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 95,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 96,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 97,
+      "content_type": "office_directory",
+      "pattern_detected_types": [
+        "office_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 98,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 99,
+      "content_type": "scoring_table",
+      "pattern_detected_types": [
+        "scoring_table",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 100,
+      "content_type": "scoring_table",
+      "pattern_detected_types": [
+        "scoring_table",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 101,
+      "content_type": "scoring_table",
+      "pattern_detected_types": [
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 102,
+      "content_type": "scoring_table",
+      "pattern_detected_types": [
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 103,
+      "content_type": "scoring_table",
+      "pattern_detected_types": [
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 104,
+      "content_type": "form_template",
+      "pattern_detected_types": [
+        "form_template"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 105,
+      "content_type": "scoring_table",
+      "pattern_detected_types": [
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 106,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 107,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 108,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 109,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 110,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 111,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 112,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 113,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 114,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 115,
+      "content_type": "scoring_table",
+      "pattern_detected_types": [
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 116,
+      "content_type": "scoring_table",
+      "pattern_detected_types": [
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 117,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 118,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 119,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 120,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 121,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table",
+        "office_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 122,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 123,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 124,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 125,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 126,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 127,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 128,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 129,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 130,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 131,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 132,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 133,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 134,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 135,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 136,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 137,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 138,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 139,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 140,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 141,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 142,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 143,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 144,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 145,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 146,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 147,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 148,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 149,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 150,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 151,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "scoring_table",
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 152,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 153,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text",
+        "office_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 154,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 155,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 156,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 157,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 158,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 159,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 160,
+      "content_type": "regulation_text",
+      "pattern_detected_types": [
+        "regulation_text"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 161,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 162,
+      "content_type": "faculty_program_directory",
+      "pattern_detected_types": [
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 163,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 164,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 165,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 166,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 167,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 168,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 169,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 170,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 172,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 173,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 174,
+      "content_type": "form_template",
+      "pattern_detected_types": [
+        "form_template"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 175,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 176,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 178,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 179,
+      "content_type": "faculty_program_directory",
+      "pattern_detected_types": [
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 180,
+      "content_type": "faculty_program_directory",
+      "pattern_detected_types": [
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 181,
+      "content_type": "faculty_program_directory",
+      "pattern_detected_types": [
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 182,
+      "content_type": "faculty_program_directory",
+      "pattern_detected_types": [
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 183,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 184,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 185,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 186,
+      "content_type": "faculty_program_directory",
+      "pattern_detected_types": [
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 187,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 188,
+      "content_type": "faculty_program_directory",
+      "pattern_detected_types": [
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 189,
+      "content_type": "faculty_program_directory",
+      "pattern_detected_types": [
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 190,
+      "content_type": "faculty_program_directory",
+      "pattern_detected_types": [
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 191,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 192,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 193,
+      "content_type": "faculty_program_directory",
+      "pattern_detected_types": [
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 195,
+      "content_type": "office_directory",
+      "pattern_detected_types": [
+        "office_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 196,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 197,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 198,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 199,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 200,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 201,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 202,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 203,
+      "content_type": "office_directory",
+      "pattern_detected_types": [
+        "office_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 204,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 205,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 206,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 207,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 208,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 209,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 210,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 211,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 212,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 213,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 214,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 215,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 216,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 217,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 218,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 219,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 220,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 221,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 222,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 223,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 224,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 225,
+      "content_type": "office_directory",
+      "pattern_detected_types": [
+        "office_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 226,
+      "content_type": "abbreviation",
+      "pattern_detected_types": [
+        "abbreviation",
+        "scoring_table",
+        "faculty_program_directory",
+        "toc_or_index"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 227,
+      "content_type": "faculty_program_directory",
+      "pattern_detected_types": [
+        "faculty_program_directory"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "page_number": 228,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 229,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 230,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 231,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    },
+    {
+      "page_number": 232,
+      "content_type": "unknown",
+      "pattern_detected_types": [],
+      "confidence": 0.4
+    }
+  ]
 }

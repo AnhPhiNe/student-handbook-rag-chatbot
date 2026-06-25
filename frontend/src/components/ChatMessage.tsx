@@ -40,24 +40,46 @@ function formatCitationContent(text: string): string {
 
 function highlightKeywords(text: string, query?: string): string {
   if (!query) return text;
-  // Remove stop words and short words
-  const stopWords = ['là', 'thì', 'mà', 'ở', 'để', 'có', 'không', 'và', 'hoặc', 'của', 'trong', 'với', 'như', 'thế', 'nào'];
-  const keywords = query.split(/\s+/)
-    .map(w => w.replace(/[?!.,;]/g, '').toLowerCase())
-    .filter(w => w.length > 2 && !stopWords.includes(w));
-    
-  if (keywords.length === 0) return text;
   
-  // Sort by length descending to match longer phrases first
-  keywords.sort((a, b) => b.length - a.length);
+  const cleanQuery = query.replace(/[?!.,;]/g, '').toLowerCase().trim();
+  const words = cleanQuery.split(/\s+/);
   
-  let highlightedText = text;
-  for (const kw of keywords) {
-    // Avoid replacing inside HTML tags (like <mark>)
-    const regex = new RegExp(`(?![^<]*>)(${kw})`, 'gi');
-    highlightedText = highlightedText.replace(regex, '<mark>$1</mark>');
+  const phrases: string[] = [];
+  
+  // Create N-grams (from 4 words down to 2 words)
+  const maxN = Math.min(words.length, 4);
+  for (let n = maxN; n >= 2; n--) {
+    for (let i = 0; i <= words.length - n; i++) {
+      phrases.push(words.slice(i, i + n).join(' '));
+    }
   }
-  return highlightedText;
+  
+  // Only add single words if they are long enough (e.g. English keywords like "deadline", "scholarship")
+  // Or if the user only typed exactly 1 word
+  if (words.length === 1) {
+    phrases.push(words[0]);
+  } else {
+    words.forEach(w => {
+      if (w.length > 5) phrases.push(w);
+    });
+  }
+  
+  // Filter out common stop phrases and short phrases
+  const stopPhrases = ['là gì', 'như thế nào', 'ở đâu', 'thế nào', 'khi nào', 'có được', 'không được', 'cho tôi', 'làm sao'];
+  const validPhrases = [...new Set(phrases)]
+    .filter(p => p.length > 2 && !stopPhrases.includes(p))
+    .sort((a, b) => b.length - a.length); // Sort longest first
+    
+  if (validPhrases.length === 0) return text;
+  
+  // Escape regex special chars
+  const escapeRegex = (s: string) => s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  
+  // Build a single Regex with alternation: (phrase1|phrase2|...)
+  // This single-pass replacement prevents nested <mark> tags!
+  const pattern = new RegExp(`(${validPhrases.map(escapeRegex).join('|')})`, 'gi');
+  
+  return text.replace(pattern, '<mark>$1</mark>');
 }
 
 const SUGGESTION_POOL = [

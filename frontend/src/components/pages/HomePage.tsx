@@ -1,4 +1,5 @@
 import { MessageSquare, Wrench, FileText, Navigation } from 'lucide-react';
+import logoHcmue from '../../assets/logo_hcmue.png';
 
 interface HomePageProps {
   onNavigate: (tab: string) => void;
@@ -8,46 +9,57 @@ export function HomePage({ onNavigate }: HomePageProps) {
   return (
     <div className="page-container home-page" style={{ display: 'flex', flexDirection: 'column' }}>
       <div className="article-layout" style={{ margin: 'auto', maxWidth: '1200px', width: '100%' }}>
-        <div className="page-header" style={{ paddingBottom: '0', marginBottom: '2rem' }}>
-          <h1 className="article-title" style={{ fontSize: '2.5rem', marginBottom: '0.75rem', textAlign: 'left', fontWeight: 800 }}>Chào mừng đến với Hệ thống</h1>
-          <p className="article-meta" style={{ fontSize: '1.15rem', maxWidth: '800px', lineHeight: '1.6', textAlign: 'left', color: 'var(--text-secondary)' }}>
-            Khám phá Sổ tay Sinh viên thông minh và bộ công cụ tự động giúp bạn dễ dàng theo dõi điểm số, học phí và giải đáp mọi thắc mắc.
+        <div className="page-header center" style={{ paddingBottom: '0', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0' }}>
+            <img src={logoHcmue} alt="HCMUE Logo" className="animated-logo" style={{ width: '140px', height: '140px', objectFit: 'contain' }} />
+          </div>
+          <h1 className="article-title" style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Sổ tay Sinh viên HCMUE</h1>
+          <p className="article-meta" style={{ fontSize: '0.95rem', maxWidth: '800px', margin: '0 auto', lineHeight: '1.5' }}>
+            Trợ lý AI và bộ công cụ tự động giúp bạn dễ dàng theo dõi điểm số, học phí và giải đáp mọi thắc mắc về quy chế của trường.
           </p>
         </div>
 
         <div className="article-content" style={{ marginTop: 0 }}>
-          <div className="category-grid" style={{ marginBottom: 0, margin: '0' }}>
+          <div className="action-cards-grid" style={{ marginBottom: 0, gap: '0.75rem' }}>
             
-            <div className="category-card" onClick={() => onNavigate('chat')} role="button" tabIndex={0}>
-              <div className="category-icon" style={{ color: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.15)' }}>
-                <MessageSquare size={24} />
+            <div className="action-card" onClick={() => onNavigate('chat')} style={{ flexDirection: 'column', padding: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+                <div style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', padding: '0.5rem', borderRadius: '10px' }}>
+                  <MessageSquare size={20} />
+                </div>
+                <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Trợ lý AI (Chat)</h3>
               </div>
-              <h2 className="category-title">Trợ lý AI (Chat)</h2>
-              <p className="category-desc">Hỏi đáp mọi vấn đề về quy chế, học bổng, ký túc xá, điểm rèn luyện... AI sẽ tự động trích xuất nguồn từ Sổ tay sinh viên.</p>
+              <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.4' }}>Hỏi đáp mọi vấn đề về quy chế, học bổng, ký túc xá, điểm rèn luyện... AI sẽ trích xuất nguồn từ Sổ tay sinh viên.</p>
             </div>
 
-            <div className="category-card" onClick={() => onNavigate('tools')} role="button" tabIndex={0}>
-              <div className="category-icon" style={{ color: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.15)' }}>
-                <Wrench size={24} />
+            <div className="action-card" onClick={() => onNavigate('tools')} style={{ flexDirection: 'column', padding: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+                <div style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', padding: '0.5rem', borderRadius: '10px' }}>
+                  <Wrench size={20} />
+                </div>
+                <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Tiện ích Tự động</h3>
               </div>
-              <h2 className="category-title">Tiện ích Tự động</h2>
-              <p className="category-desc">Không cần bấm máy tính! Hệ thống tự động tính GPA, dự đoán học bổng, cảnh báo rớt môn và ước tính học phí nhanh chóng.</p>
+              <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.4' }}>Không cần bấm máy tính! Hệ thống tự động tính GPA, dự đoán học bổng, cảnh báo rớt môn và ước tính học phí chỉ trong chớp mắt.</p>
             </div>
 
-            <div className="category-card" onClick={() => onNavigate('bieu-mau')} role="button" tabIndex={0}>
-              <div className="category-icon" style={{ color: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.15)' }}>
-                <FileText size={24} />
+            <div className="action-card" onClick={() => onNavigate('bieu-mau')} style={{ flexDirection: 'column', padding: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+                <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '0.5rem', borderRadius: '10px' }}>
+                  <FileText size={20} />
+                </div>
+                <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Kho Biểu mẫu</h3>
               </div>
-              <h2 className="category-title">Kho Biểu mẫu</h2>
-              <p className="category-desc">Tìm kiếm và tải xuống nhanh chóng các loại đơn từ, giấy xác nhận, mẫu nghiên cứu khoa học.</p>
+              <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.4' }}>Tìm kiếm và tải xuống nhanh chóng các loại đơn từ, giấy xác nhận, mẫu nghiên cứu khoa học.</p>
             </div>
 
-            <div className="category-card" onClick={() => onNavigate('huong-dan')} role="button" tabIndex={0}>
-              <div className="category-icon" style={{ color: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.15)' }}>
-                <Navigation size={24} />
+            <div className="action-card" onClick={() => onNavigate('huong-dan')} style={{ flexDirection: 'column', padding: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+                <div style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#8b5cf6', padding: '0.5rem', borderRadius: '10px' }}>
+                  <Navigation size={20} />
+                </div>
+                <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Hướng dẫn sử dụng</h3>
               </div>
-              <h2 className="category-title">Hướng dẫn sử dụng</h2>
-              <p className="category-desc">Bạn mới đến đây lần đầu? Hãy đọc qua hướng dẫn "cầm tay chỉ việc" để sử dụng hệ thống hiệu quả nhất.</p>
+              <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.95rem' }}>Bạn mới đến đây lần đầu? Hãy đọc qua hướng dẫn "cầm tay chỉ việc" để sử dụng web hiệu quả nhất.</p>
             </div>
 
           </div>

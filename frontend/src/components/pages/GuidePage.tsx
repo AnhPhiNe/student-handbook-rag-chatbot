@@ -74,7 +74,7 @@ export function GuidePage() {
               {[
                 { icon: GraduationCap, title: 'Tính điểm GPA', desc: 'Nhập điểm các môn học để tính toán chính xác điểm trung bình tích lũy hệ 4 và hệ 10.', color: '#3b82f6' },
                 { icon: Target, title: 'Mục tiêu GPA & Môn học', desc: 'Hệ thống sẽ tính toán và "kê đơn" cho bạn cần đạt bao nhiêu điểm trong kỳ tới để đạt được mức GPA mục tiêu (VD: Bằng Giỏi, Xuất sắc).', color: '#10b981' },
-                { icon: Award, title: 'Tính học bổng', desc: 'Dự đoán khả năng đạt học bổng và ước tính số tiền nhận được dựa trên điểm học tập và điểm rèn luyện của bạn.', color: '#f59e0b' },
+                { icon: Award, title: 'Tính điểm học bổng', desc: 'Dự đoán khả năng đạt học bổng và ước tính số tiền nhận được dựa trên điểm học tập và điểm rèn luyện của bạn.', color: '#f59e0b' },
                 { icon: Calculator, title: 'Ước tính học phí', desc: 'Tra cứu nhanh mức học phí tín chỉ tùy theo ngành học và khóa học của bạn một cách chính xác.', color: '#8b5cf6' },
                 { icon: ShieldAlert, title: 'Cảnh báo rủi ro hạ bằng', desc: 'Kiểm tra xem số tín chỉ học lại của bạn đã vượt quá giới hạn 5% dẫn đến nguy cơ bị hạ bậc bằng tốt nghiệp hay chưa.', color: '#ef4444' }
               ].map((tool, idx) => (

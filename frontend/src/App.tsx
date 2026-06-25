@@ -98,7 +98,7 @@ function App() {
             />
           )}
 
-          <BugReportModal isOpen={isBugModalOpen} setIsOpen={setIsBugModalOpen} />
+          <BugReportModal isOpen={isBugModalOpen} setIsOpen={setIsBugModalOpen} messages={messages} />
         </div>
       </ToastProvider>
     </ErrorBoundary>

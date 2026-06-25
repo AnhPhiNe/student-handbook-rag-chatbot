@@ -2,38 +2,50 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Bug, X, Send } from 'lucide-react';
 import { useToast } from './Toast';
+import { Message } from '../hooks/useChat';
 
 interface BugReportModalProps {
-isOpen: boolean;
-setIsOpen: (isOpen: boolean) => void;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  messages?: Message[];
 }
 
 export function BugReportModal({
-isOpen,
-setIsOpen,
+  isOpen,
+  setIsOpen,
+  messages,
 }: BugReportModalProps) {
-const [bugText, setBugText] = useState('');
-const toast = useToast();
+  const [bugText, setBugText] = useState('');
+  const toast = useToast();
 
-const handleSubmit = async () => {
-if (!bugText.trim()) {
-toast.show('Vui lòng nhập nội dung lỗi!', 'error');
-return;
-}
-
-try {
-  const response = await fetch(
-    'https://script.google.com/macros/s/AKfycbx3XMBqzTArTmlTc2KE7_twFepC5Bg9bqjIeWDAVT3fPv8s1OAlqRvXboMdLiZW2i8w/exec',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8',
-      },
-      body: JSON.stringify({
-        message: bugText,
-      }),
+  const handleSubmit = async () => {
+    if (!bugText.trim()) {
+      toast.show('Vui lòng nhập nội dung lỗi!', 'error');
+      return;
     }
-  );
+
+    let finalMessage = bugText;
+    if (messages && messages.length > 0) {
+      const lastMessages = messages.filter(m => !m.isStreaming).slice(-6);
+      const formattedHistory = lastMessages
+        .map(m => `[${m.role === 'user' ? 'Sinh viên' : 'Bot'}] ${m.content}`)
+        .join('\n\n');
+      finalMessage = `${bugText}\n\n--- LỊCH SỬ CHAT (TỰ ĐỘNG BẮT LỖI) ---\n${formattedHistory}`;
+    }
+
+    try {
+      const response = await fetch(
+        'https://script.google.com/macros/s/AKfycbx3XMBqzTArTmlTc2KE7_twFepC5Bg9bqjIeWDAVT3fPv8s1OAlqRvXboMdLiZW2i8w/exec',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+          },
+          body: JSON.stringify({
+            message: finalMessage,
+          }),
+        }
+      );
 
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}`);
@@ -96,7 +108,7 @@ Báo lỗi hệ thống
         <textarea
           value={bugText}
           onChange={(e) => setBugText(e.target.value)}
-          placeholder="Ví dụ: Nút tính điểm học bổng không hoạt động, bot trả lời sai ở câu hỏi nào đó..."
+          placeholder="Mô tả lỗi (Ví dụ: Bot trả lời sai quy định học bổng). Lịch sử chat sẽ được tự động đính kèm để Admin kiểm tra!"
           rows={5}
           autoFocus
         />

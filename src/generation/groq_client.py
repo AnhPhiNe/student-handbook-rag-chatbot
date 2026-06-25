@@ -37,7 +37,7 @@ class GroqClient:
             ) from exc
 
         # Build fallback matrix (Model x Key)
-        fallback_models = [model_name, "qwen-3.6-27b-it", "qwen-2.5-32b-it"]
+        fallback_models = [model_name, "openai/gpt-oss-120b", "qwen/qwen3.6-27b"]
         models = []
         for m in fallback_models:
             if m not in models:

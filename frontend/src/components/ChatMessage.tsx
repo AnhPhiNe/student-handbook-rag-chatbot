@@ -116,7 +116,7 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
   };
 
   const handleShare = () => {
-    const text = `📚 HCMUE AI Assistant\n\n💬 ${message.content}\n\n🔗 https://student-handbook-rag-chatbot.vercel.app`;
+    const text = `📚 HCMUE AI Assistant\n\n💬 ${message.content}\n\n🔗 https://hcmuebot.id.vn`;
     navigator.clipboard.writeText(text);
     toast.show("Đã sao chép nội dung để chia sẻ!", "success");
   };

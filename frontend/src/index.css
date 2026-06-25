@@ -944,7 +944,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   align-items: center;
   gap: 1rem;
   width: 100%;
-  max-width: 860px;
+  max-width: 780px;
 }
 
 .empty-hero {

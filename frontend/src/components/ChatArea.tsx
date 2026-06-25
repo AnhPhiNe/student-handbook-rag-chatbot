@@ -287,6 +287,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
               onRetry={onRetry}
               onRegenerate={onRegenerate}
               query={query}
+              onSuggestionClick={onSendMessage}
             />
           );
         })}

@@ -1398,14 +1398,49 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.bug-actions button {
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  transition: all var(--transition-fast);
+}
+
+.bug-actions .btn-secondary {
+  background: var(--border-color);
+  color: var(--text-primary);
+}
+
+.bug-actions .btn-secondary:hover {
+  background: #cbd5e1;
 }
 
 .bug-actions .btn-primary {
   background: var(--danger);
+  color: white;
 }
 
 .bug-actions .btn-primary:hover {
   background: #DC2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.2);
+}
+
+[data-theme='dark'] .bug-actions .btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+[data-theme='dark'] .bug-actions .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 @keyframes bounceIn {

@@ -4,7 +4,10 @@ import chromadb
 
 def get_chroma_client(persist_dir: str):
     Path(persist_dir).mkdir(parents=True, exist_ok=True)
-    return chromadb.PersistentClient(path=persist_dir)
+    return chromadb.PersistentClient(
+        path=persist_dir,
+        settings=chromadb.Settings(anonymized_telemetry=False)
+    )
 
 
 def get_or_create_collection(

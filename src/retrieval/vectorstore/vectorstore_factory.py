@@ -50,7 +50,10 @@ def _create_chroma_collection(persist_dir: str, collection_name: str) -> Any:
     """Create a local ChromaDB collection (current default)."""
     import chromadb
 
-    client = chromadb.PersistentClient(path=persist_dir)
+    client = chromadb.PersistentClient(
+        path=persist_dir,
+        settings=chromadb.Settings(anonymized_telemetry=False)
+    )
     return client.get_collection(name=collection_name)
 
 

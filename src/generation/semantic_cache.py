@@ -22,7 +22,10 @@ class SemanticCache:
         collection_name = config.get("collection_name", "semantic_query_cache")
         
         Path(persist_dir).mkdir(parents=True, exist_ok=True)
-        self.chroma_client = chromadb.PersistentClient(path=persist_dir)
+        self.chroma_client = chromadb.PersistentClient(
+            path=persist_dir,
+            settings=chromadb.Settings(anonymized_telemetry=False)
+        )
         self.collection = self.chroma_client.get_or_create_collection(
             name=collection_name,
             metadata={"hnsw:space": "cosine"}

@@ -18,7 +18,7 @@ from src.generation.context_resolver import (
 )
 
 
-DEFAULT_REWRITER_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
+DEFAULT_REWRITER_MODEL = "qwen-3.6-27b-it"
 DEFAULT_REWRITER_API_KEY_ENV = "QUERY_REWRITER_API_KEY"
 FALLBACK_REWRITER_API_KEY_ENV = "GROQ_API_KEY"
 

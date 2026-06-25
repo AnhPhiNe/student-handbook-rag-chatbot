@@ -280,13 +280,8 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: 'auto' }}>
               {message.usedCache && (
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--success)', backgroundColor: 'var(--success-light)', padding: '2px 6px', borderRadius: '4px' }}>
+                <span className="metadata-badge cache" title="Câu trả lời được lấy từ bộ nhớ đệm giúp tốc độ phản hồi tức thì">
                   ⚡ Từ bộ nhớ đệm
-                </span>
-              )}
-              {(message.responseTimeMs && message.responseTimeMs > 5000) && (
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                  ⏳ Phản hồi chậm ({(message.responseTimeMs / 1000).toFixed(1)}s)
                 </span>
               )}
             </div>

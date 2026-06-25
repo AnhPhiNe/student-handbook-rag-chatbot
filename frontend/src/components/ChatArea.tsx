@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { Moon, Sun, GraduationCap, FileText, Gift, Home, Trash2, ArrowDown, Lock } from 'lucide-react';
+import { Moon, Sun, GraduationCap, FileText, Gift, Home, Trash2, ArrowDown, Lock, Calculator, Medal, ClipboardList } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';
@@ -23,10 +23,12 @@ interface ChatAreaProps {
 }
 
 const ACTION_CARDS = [
-  { id: 'hoc-vu', label: 'Học vụ & Đào tạo', icon: GraduationCap, color: '#3b82f6', desc: 'Hỏi về điểm số, học vượt, bảo lưu...' },
-  { id: 'hoc-bong', label: 'Học bổng & Học phí', icon: Gift, color: '#8b5cf6', desc: 'Điều kiện, thời hạn, chính sách...' },
-  { id: 'ktx', label: 'Phòng ban & KTX', icon: Home, color: '#f59e0b', desc: 'Thông tin liên hệ, nội quy, giờ làm việc...' },
-  { id: 'hanh-chinh', label: 'Quy trình Hành chính', icon: FileText, color: '#10b981', desc: 'Hỏi cách làm thủ tục, nộp đơn từ...' }
+  { id: 'hoc-vu', label: 'Học vụ & Đào tạo', icon: GraduationCap, color: '#3b82f6', desc: 'Điểm số, qua môn, học lại, bảo lưu...' },
+  { id: 'tinh-toan', label: 'Tính điểm & Công cụ', icon: Calculator, color: '#ec4899', desc: 'Tính GPA, rèn luyện, học bổng...' },
+  { id: 'hoc-bong', label: 'Học bổng & Học phí', icon: Gift, color: '#8b5cf6', desc: 'Điều kiện xét, mức thưởng, miễn giảm...' },
+  { id: 'ren-luyen', label: 'Rèn luyện & Khen thưởng', icon: Medal, color: '#ef4444', desc: 'Điểm rèn luyện, kỷ luật, danh hiệu...' },
+  { id: 'ktx', label: 'Phòng ban & Liên hệ', icon: Home, color: '#f59e0b', desc: 'SĐT, email, địa chỉ, KTX...' },
+  { id: 'hanh-chinh', label: 'Quy trình Hành chính', icon: ClipboardList, color: '#10b981', desc: 'Thủ tục, nộp đơn, mẫu biểu...' }
 ];
 
 type QuickAccessResponse = {
@@ -37,39 +39,57 @@ type QuickAccessResponse = {
 // Local-only responses for quick access cards. These do not call the backend.
 const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
   'hoc-vu': {
-    response: "## Học vụ & Đào tạo\n\nBạn có thể hỏi các quy định học vụ có trong Sổ tay sinh viên, nhất là nội dung về điểm học phần và kết quả học tập.\n\n**Bạn có thể hỏi về:**\n\n- **Điểm học phần:** điểm quá trình, điểm thi kết thúc học phần, thang điểm 10.\n- **Xếp loại điểm chữ:** A, B+, B, C+, C, D+, D, F+, F và quy đổi hệ 4.\n- **Qua môn/học lại:** học phần đạt từ D trở lên; F+ và F là không đạt.\n- **Điểm rèn luyện:** phân loại theo thang điểm trong sổ tay.",
+    response: "## Học vụ & Đào tạo\n\nBạn có thể hỏi các quy định học vụ có trong Sổ tay sinh viên, nhất là nội dung về điểm học phần và kết quả học tập.\n\n**Bạn có thể hỏi về:**\n\n- **Điểm học phần:** điểm quá trình, điểm thi, thang điểm 10.\n- **Xếp loại điểm chữ:** A, B+, B, C+, C, D+, D, F+, F và quy đổi hệ 4.\n- **Qua môn/học lại:** học phần đạt từ D trở lên; F+ và F là không đạt.\n- **Nghỉ học tạm thời:** quy định và điều kiện bảo lưu kết quả.",
     suggestions: [
       "Mấy điểm thì qua môn?",
       "Mấy điểm thì được điểm A?",
       "Điểm B+ quy đổi sang hệ 4 bao nhiêu?",
-      "Điểm rèn luyện 85 là loại gì?"
+      "Xin bảo lưu kết quả thì cần điều kiện gì?"
+    ]
+  },
+  'tinh-toan': {
+    response: "## Tính điểm & Công cụ\n\nHệ thống được tích hợp các công cụ tính toán tự động dựa trên quy định của trường. Chatbot có thể tính nhẩm hoặc tính chính xác nếu bạn cung cấp đủ số liệu.\n\n**Bạn có thể yêu cầu:**\n\n- **Tính GPA:** Nhập danh sách điểm chữ hoặc điểm số, chatbot sẽ tính ra GPA hệ 4.\n- **Tính điểm rèn luyện:** Cung cấp tổng điểm, chatbot sẽ phân loại (Xuất sắc, Tốt, Khá...).\n- **Tính học bổng:** So sánh điểm học tập và rèn luyện của bạn với mức chuẩn học bổng.\n\nThử ngay bằng cách chọn các câu hỏi gợi ý bên dưới!",
+    suggestions: [
+      "Tính giúp tôi điểm trung bình nếu có 3 điểm A và 2 điểm B+",
+      "Điểm rèn luyện 85 là loại gì?",
+      "Học kỳ này mình được 3.2 GPA và 90 rèn luyện thì có được học bổng không?",
+      "Muốn đạt học bổng loại Xuất sắc cần điều kiện gì?"
     ]
   },
   'hoc-bong': {
-    response: "## Học bổng & Học phí\n\nBạn có thể hỏi các nội dung tài chính sinh viên được nêu trong Sổ tay sinh viên.\n\n**Bạn có thể hỏi về:**\n\n- **Học bổng khuyến khích học tập:** điều kiện xét, xếp loại và thông tin liên quan đến học tập/rèn luyện.\n- **Cách tính điểm học bổng:** công thức khi sổ tay có đủ dữ liệu cần thiết.\n- **Học phí:** quy định chung theo số tín chỉ đăng ký từng học kỳ.\n- **Miễn giảm, trợ cấp và hỗ trợ chi phí học tập:** thông tin chính sách khi sổ tay có đề cập.\n\nNếu bạn cần tải mẫu đơn, hãy dùng mục **Biểu mẫu** ở sidebar.",
+    response: "## Học bổng & Học phí\n\nBạn có thể hỏi các nội dung tài chính sinh viên được nêu trong Sổ tay sinh viên.\n\n**Bạn có thể hỏi về:**\n\n- **Học bổng khuyến khích học tập:** điều kiện xét, mức thưởng và cách phân loại.\n- **Học phí:** quy định chung, phương thức và thời hạn đóng học phí.\n- **Miễn giảm học phí:** các đối tượng được miễn, giảm hoặc hỗ trợ chi phí học tập.\n- **Vay vốn:** hướng dẫn làm thủ tục vay vốn sinh viên.",
     suggestions: [
       "Điều kiện xét học bổng khuyến khích học tập là gì?",
-      "Cách tính điểm học bổng như thế nào?",
-      "Học phí được quy định ra sao?",
-      "Miễn giảm học phí áp dụng cho ai?"
+      "Học bổng loại Giỏi được bao nhiêu tiền?",
+      "Đối tượng nào được miễn học phí?",
+      "Sinh viên sư phạm có được hỗ trợ chi phí học tập không?"
+    ]
+  },
+  'ren-luyen': {
+    response: "## Rèn luyện & Khen thưởng\n\nBạn có thể hỏi về các quy định đánh giá rèn luyện, khen thưởng và xử lý kỷ luật.\n\n**Bạn có thể hỏi về:**\n\n- **Đánh giá rèn luyện:** các tiêu chí, thang điểm, và cách xếp loại kết quả rèn luyện.\n- **Khen thưởng:** các danh hiệu (Sinh viên 5 tốt, Sao tháng Giêng) và quy định tuyên dương.\n- **Kỷ luật:** các mức kỷ luật (khiển trách, cảnh cáo, buộc thôi học) và cách thức xóa kỷ luật.",
+    suggestions: [
+      "Tiêu chí đánh giá kết quả rèn luyện gồm những gì?",
+      "Làm sao để đạt danh hiệu Sinh viên 5 tốt?",
+      "Bị kỷ luật khiển trách thì bao lâu được xóa?",
+      "Quay cóp trong phòng thi bị xử lý thế nào?"
     ]
   },
   'ktx': {
-    response: "## Phòng ban & Ký túc xá\n\nBạn có thể hỏi thông tin liên hệ và một số nội dung KTX có trong Sổ tay sinh viên.\n\n**Bạn có thể hỏi về:**\n\n- **Phòng ban:** số điện thoại, email, website, địa chỉ/văn phòng làm việc và nhiệm vụ chính.\n- **Khoa/ngành:** thông tin liên hệ của khoa, văn phòng khoa và website khi sổ tay có dữ liệu.\n- **Ký túc xá:** đăng ký, điều kiện, nội quy hoặc thông tin liên quan được sổ tay đề cập.",
+    response: "## Phòng ban & Liên hệ\n\nBạn có thể hỏi thông tin liên hệ của các đơn vị chức năng và Ký túc xá.\n\n**Bạn có thể hỏi về:**\n\n- **Phòng ban chức năng:** số điện thoại, email, địa chỉ của Phòng Đào tạo, Phòng CTCT-HSSV, Trạm y tế...\n- **Ký túc xá:** thông tin liên hệ, điều kiện đăng ký, nội quy sinh hoạt tại KTX.\n- **Đoàn - Hội:** liên hệ Đoàn Thanh niên, Hội Sinh viên trường.",
     suggestions: [
-      "Phòng Đào tạo email là gì?",
-      "Phòng CNTT ở đâu?",
-      "Khoa Công nghệ Thông tin ở đâu?",
-      "Điều kiện vào ký túc xá là gì?"
+      "Cho mình xin số điện thoại Phòng Đào tạo",
+      "Trạm y tế của trường nằm ở đâu?",
+      "Ai được ưu tiên xếp vào Ký túc xá?",
+      "Email của Phòng Công tác Chính trị là gì?"
     ]
   },
   'hanh-chinh': {
-    response: "## Quy trình Hành chính\n\nBạn có thể hỏi các nội dung giấy tờ và thủ tục mà Sổ tay sinh viên có đề cập rõ.\n\n**Bạn có thể hỏi về:**\n\n- **Thông tin giấy tờ/xác nhận:** thông tin hoặc đơn vị liên quan nếu sổ tay có nêu.\n- **Thủ tục học vụ có dữ liệu:** học lại, cải thiện điểm, bảo lưu/tạm nghỉ hoặc quy định liên quan.\n- **Đơn vị phụ trách:** phòng ban/khoa liên quan khi sổ tay có thông tin đủ rõ.\n\nNếu sổ tay không nêu rõ nơi nộp, thời hạn hoặc từng bước làm thủ tục, chatbot sẽ không tự đoán. Nếu bạn cần tìm hoặc tải mẫu đơn, hãy dùng mục **Biểu mẫu** ở sidebar.",
+    response: "## Quy trình Hành chính\n\nBạn có thể hỏi các quy trình nộp đơn, xin giấy xác nhận hoặc làm thủ tục hành chính.\n\n**Bạn có thể hỏi về:**\n\n- **Giấy xác nhận:** xin giấy xác nhận sinh viên, vay vốn, tạm hoãn nghĩa vụ quân sự.\n- **Thủ tục học vụ:** đăng ký học lại, học vượt, chuyển ngành, xin bảng điểm.\n- **Quy trình:** các bước thực hiện và đơn vị tiếp nhận hồ sơ.\n\nNếu bạn cần mẫu đơn, hãy dùng mục **Biểu mẫu** ở thanh công cụ bên trái.",
     suggestions: [
-      "Muốn bảo lưu kết quả học tập thì quy định thế nào?",
-      "Học lại và cải thiện điểm khác nhau thế nào?",
-      "Khi nào sinh viên bị buộc thôi học?",
-      "Xin bảng điểm thì liên hệ phòng nào?"
+      "Quy trình xin giấy xác nhận sinh viên như thế nào?",
+      "Làm thủ tục xin bảng điểm ở đâu?",
+      "Cách làm thẻ sinh viên bị mất",
+      "Quy trình phúc khảo điểm thi"
     ]
   }
 };

@@ -198,7 +198,7 @@ export function useChat() {
   // sẽ bị kẹt (stale closure) ở trạng thái rỗng ban đầu, dẫn đến việc luôn gửi `chat_history = []`.
   }, [messages, isTyping]);
 
-  const sendHardcodedMessage = useCallback((userText: string, botResponse: string) => {
+  const sendHardcodedMessage = useCallback((userText: string, botResponse: string, suggestions?: string[]) => {
     if (isTyping) return;
     const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     
@@ -217,7 +217,8 @@ export function useChat() {
       content: botResponse,
       isStreaming: false,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      confidence: 'high'
+      confidence: 'high',
+      suggestions
     };
 
     setMessages(prev => [...prev, userMsg, botMsg]);

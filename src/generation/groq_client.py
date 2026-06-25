@@ -38,15 +38,11 @@ class GroqClient:
 
         # Build fallback matrix (Model x Key)
         fallback_models = [model_name, "openai/gpt-oss-120b", "qwen/qwen3.6-27b"]
-        models = []
+        self.models = []
         for m in fallback_models:
-            if m not in models:
-                models.append(m)
-        
-        self.providers = []
-        for m in models:
-            for k in self.available_keys:
-                self.providers.append({"model": m, "api_key": k})
+            if m not in self.models:
+                self.models.append(m)
+
 
         self._config = {
             "temperature": temperature,
@@ -56,9 +52,15 @@ class GroqClient:
     @traceable(name="Groq Generation", run_type="llm")
     def generate(self, prompt: str) -> dict[str, Any]:
         from groq import Groq, RateLimitError, APITimeoutError, InternalServerError, APIConnectionError
+        import random
         
         last_error = None
-        for provider in self.providers:
+        
+        keys = list(self.available_keys)
+        random.shuffle(keys)
+        providers = [{"model": m, "api_key": k} for m in self.models for k in keys]
+        
+        for provider in providers:
             try:
                 client = Groq(api_key=provider["api_key"], timeout=15.0, max_retries=0)
                 response = client.chat.completions.create(
@@ -88,16 +90,22 @@ class GroqClient:
             "text": None,
             "error_type": "api_error",
             "error_message": str(last_error),
-            "attempts": len(self.providers),
+            "attempts": len(providers),
         }
 
     @traceable(name="Groq Generation Stream", run_type="llm")
     def generate_stream(self, prompt: str) -> Iterator[str]:
         """Yield text chunks as Groq generates them in real-time, with Double Loop Fallback and TTFT."""
         from groq import Groq, RateLimitError, APITimeoutError, InternalServerError, APIConnectionError
+        import random
         
         last_error = None
-        for provider in self.providers:
+        
+        keys = list(self.available_keys)
+        random.shuffle(keys)
+        providers = [{"model": m, "api_key": k} for m in self.models for k in keys]
+        
+        for provider in providers:
             try:
                 # HTTP timeout 10.0s will implicitly act as TTFT timeout
                 client = Groq(api_key=provider["api_key"], timeout=10.0, max_retries=0)

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Sun, Moon } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { ChatArea } from './components/ChatArea';
 import { useChat } from './hooks/useChat';
@@ -64,7 +65,17 @@ function App() {
             onOpenBugReport={() => setIsBugModalOpen(true)}
           />
           
-          <div className="content-area">
+          <div className="content-area" style={{ position: 'relative' }}>
+            {/* Global Theme Toggle */}
+            {!isMobile && (
+              <div style={{ position: 'absolute', top: '16px', right: '24px', zIndex: 100 }}>
+                <button className="theme-toggle" onClick={toggleTheme}>
+                  {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+                  <span>{theme === 'light' ? 'Chế độ tối' : 'Chế độ sáng'}</span>
+                </button>
+              </div>
+            )}
+            
             {activeTab === 'home' && <HomePage onNavigate={setActiveTab} />}
             {activeTab === 'chat' && (
               <ChatArea 

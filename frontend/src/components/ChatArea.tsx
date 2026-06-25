@@ -68,7 +68,7 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
     suggestions: [
       "Muốn bảo lưu kết quả học tập thì quy định thế nào?",
       "Học lại và cải thiện điểm khác nhau thế nào?",
-      "Xin giấy xác nhận sinh viên liên hệ đơn vị nào?",
+      "Khi nào sinh viên bị buộc thôi học?",
       "Xin bảng điểm thì liên hệ phòng nào?"
     ]
   }

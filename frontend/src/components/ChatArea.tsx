@@ -229,14 +229,14 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
           <div className="empty-state-content">
             {/* Hero - compact */}
             <div className="empty-hero" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
-              <img src={botAvatarImg} alt="HCMUE AI" className="bot-avatar-animated" />
+              <img src={botAvatarImg} alt="HCMUE AI" className="bot-avatar-animated" style={{ width: '96px', height: '96px', objectFit: 'contain', flexShrink: 0, borderRadius: '50%' }} />
               <h2 className="hero-title" style={{ fontSize: '1.75rem', marginTop: '1.5rem', color: 'var(--primary)' }}>{greeting}</h2>
               <p className="hero-subtitle" style={{ marginTop: '0.5rem', fontSize: '1.125rem' }}>Mình là trợ lý AI của Đại học Sư phạm TP.HCM</p>
               <p className="hero-desc">Bạn cần tìm gì trong sổ tay sinh viên hôm nay?</p>
             </div>
 
             {/* Action Cards Grid */}
-            <div className="action-cards-grid">
+            <div className="chat-action-cards-grid">
               {ACTION_CARDS.map(item => (
                 <button key={item.id} className="action-card" onClick={() => handleQuickAccess(item.id)}>
                   <div className="action-icon" style={{ backgroundColor: `${item.color}15`, color: item.color }}>

@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { Moon, Sun, GraduationCap, FileText, Gift, Home, Trash2, ArrowDown, Lock, Calculator, Medal, ClipboardList } from 'lucide-react';
+import { Moon, Sun, GraduationCap, Gift, Home, Trash2, ArrowDown, Lock, Calculator, Medal, ClipboardList } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';

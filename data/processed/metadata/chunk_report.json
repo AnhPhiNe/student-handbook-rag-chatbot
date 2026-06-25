@@ -1,29 +1,38 @@
 {
-  "total_chunks": 326,
-  "regulation_chunks": 242,
+  "total_chunks": 324,
+  "regulation_chunks": 290,
   "table_chunks": 5,
-  "formula_chunks": 2,
-  "form_chunks": 18,
-  "directory_chunks": 56,
-  "procedure_chunks": 3,
+  "formula_chunks": 3,
+  "form_chunks": 1,
+  "directory_chunks": 25,
+  "procedure_chunks": 0,
   "chunk_type_count": {
-    "regulation": 242,
+    "regulation": 290,
     "table": 5,
-    "formula": 2,
-    "form": 18,
-    "office_directory": 20,
-    "faculty_program_directory": 31,
-    "reference_directory": 5,
-    "procedure": 3
+    "formula": 3,
+    "form": 1,
+    "office_directory": 8,
+    "faculty_program_directory": 17
   },
   "index_mode_count": {
-    "semantic": 319,
+    "semantic": 316,
     "structured": 5,
-    "tool": 2
+    "tool": 3
   },
-  "avg_token_count_approx": 219.86,
-  "max_token_count_approx": 850,
+  "avg_token_count_approx": 234.68,
+  "max_token_count_approx": 831,
   "overlong_chunks_count": 0,
   "overlong_chunks": [],
-  "validation_issues": []
+  "validation_issues": [
+    {
+      "issue": "duplicate_chunk_id",
+      "severity": "high",
+      "chunk_id": "formula_gpa_weighted_average"
+    },
+    {
+      "issue": "duplicate_chunk_id",
+      "severity": "high",
+      "chunk_id": "formula_gpa_weighted_average"
+    }
+  ]
 }

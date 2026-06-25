@@ -29,7 +29,7 @@ about the Ho Chi Minh City University of Education (HCMUE) student handbook.
 
 The system combines deterministic tools, rule-based routing, semantic retrieval,
 LLM-based context resolution, safe query rewriting, answer guardrails, citations,
-and offline evaluation. It is intentionally domain-specific to the bundled HCMUE handbook;
+and offline evaluation. It is intentionally domain-specific to the bundled HCMUE handbooks (K48-K49 & K50-K51);
 adapting it to another document requires updating the parser, chunking rules,
 entity registry, routing rules, and evaluation set.
 
@@ -86,10 +86,10 @@ Runtime request flow
 ```mermaid
 graph LR
     subgraph Offline["Offline data preparation"]
-        A["Handbook PDF"] --> B["PDF ingestion"]
+        A["Handbook PDFs (K48-K49, K50-K51)"] --> B["PDF ingestion"]
         B --> C["Structure parsing"]
         C --> D["Structured extraction"]
-        D --> E["Chunking"]
+        D --> E["Chunking & Cohort Tagging"]
         E --> F["Embeddings"]
         F --> V["VectorDB: Chroma local / Qdrant Cloud"]
     end
@@ -128,6 +128,7 @@ For the full technical request lifecycle and module responsibilities, see
 
 ## ✨ Core Features
 
+- **Multi-Cohort Architecture**: Seamlessly handles different academic regulations for K48-K49 vs K50-K51 with cohort-based routing and extraction.
 - Vietnamese handbook question answering with citations.
 - Accentless and typo-heavy query normalization through optional Groq-based
   query rewriting.

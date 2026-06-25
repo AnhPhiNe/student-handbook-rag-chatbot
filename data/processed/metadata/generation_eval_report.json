@@ -1,0 +1,791 @@
+{
+  "evaluation": "generation_quality_llm_judge",
+  "config_path": "configs\\answer_generation.yaml",
+  "cases_path": "data\\eval\\generation_eval_cases.json",
+  "pipeline_model": "llama-3.3-70b-versatile",
+  "judge_model": "openai/gpt-oss-120b",
+  "summary": {
+    "total_cases": 65,
+    "answered_cases": 60,
+    "faithfulness": 0.8167,
+    "relevancy": 0.9417,
+    "correctness": 0.775
+  },
+  "cases": [
+    {
+      "case_id": "gen_case_001",
+      "query": "Em đang học năm nhất trường mình, em muốn tham gia hoạt động nghiên cứu khoa học nhưng không biết trường có hỗ trợ gì không, và em có thể tham gia những hoạt động nào ngoài học tập?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.6,
+        "relevancy": 0.9,
+        "correctness": 0.7
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 0.9, \"correctness\": 0.7}"
+    },
+    {
+      "case_id": "gen_case_002",
+      "query": "Trường mình đào tạo chính quy và vừa làm vừa học có khác gì nhau không, em muốn biết để chọn hình thức đào tạo phù hợp?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_003",
+      "query": "Em đang học năm cuối trường mình, kết quả rèn luyện có ảnh hưởng đến việc tốt nghiệp không?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_004",
+      "query": "Em muốn biết trường mình đánh giá kết quả rèn luyện của sinh viên như thế nào?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_005",
+      "query": "Em muốn biết thông tin về các buổi họp lớp và nội dung làm việc với lớp sinh viên trong học kỳ, có quy định gì không?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_006",
+      "query": "Trường mình có hỗ trợ sinh viên về học bổng và các chế độ khác không?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.4,
+        "relevancy": 1.0,
+        "correctness": 0.7
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.4, \"relevancy\": 1.0, \"correctness\": 0.7}"
+    },
+    {
+      "case_id": "gen_case_007",
+      "query": "Trường mình có những công tác quản lý sinh viên nào và thực hiện như thế nào?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.8,
+        "relevancy": 1.0,
+        "correctness": 0.9
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 0.9}"
+    },
+    {
+      "case_id": "gen_case_008",
+      "query": "Trường mình có những nguồn lực nào để hỗ trợ sinh viên?",
+      "status": "needs_clarification",
+      "error_type": null,
+      "metrics": {
+        "faithfulness": 0.0,
+        "relevancy": 0.0,
+        "correctness": 0.0
+      }
+    },
+    {
+      "case_id": "gen_case_009",
+      "query": "Ai là người chịu trách nhiệm thi hành quyết định của trường?",
+      "status": "answered",
+      "intent": "office_query",
+      "metrics": {
+        "faithfulness": 0.9,
+        "relevancy": 1.0,
+        "correctness": 0.9
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 0.9}"
+    },
+    {
+      "case_id": "gen_case_010",
+      "query": "Em muốn biết sau khi tốt nghiệp ngành Tâm lý học giáo dục và Công tác xã hội thì có thể làm việc ở đâu và làm gì?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.9,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_011",
+      "query": "Em là con của một cán bộ công nhân viên chức, bố em bị tai nạn lao động và đang hưởng trợ cấp thường xuyên, vậy em có được giảm học phí không và cần những giấy tờ gì?",
+      "status": "answered",
+      "intent": "form_query",
+      "metrics": {
+        "faithfulness": 0.5,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.5, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_012",
+      "query": "Trường mình có quy định gì về việc giám sát nội bộ và cải tiến chất lượng giảng dạy không, mình có thể đóng góp ý kiến như thế nào?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 0.8
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.8}"
+    },
+    {
+      "case_id": "gen_case_013",
+      "query": "Em muốn biết về kế hoạch giảng dạy và học tập của trường mình, bao gồm cả việc tổ chức học kỳ và thời khóa biểu như thế nào?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.6,
+        "relevancy": 1.0,
+        "correctness": 0.8
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 1.0, \"correctness\": 0.8}"
+    },
+    {
+      "case_id": "gen_case_014",
+      "query": "Quy chế sinh viên của trường mình áp dụng cho ai vậy? Liệu mình là sinh viên năm cuối ở HCMUE có phải tuân theo không?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_015",
+      "query": "Em là lớp trưởng, em có quyền yêu cầu báo cáo tình hình lớp không và em có thể tham gia những hoạt động nào của trường?",
+      "status": "answered",
+      "intent": "procedure_query",
+      "metrics": {
+        "faithfulness": 0.0,
+        "relevancy": 0.8,
+        "correctness": 0.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.0, \"relevancy\": 0.8, \"correctness\": 0.0}"
+    },
+    {
+      "case_id": "gen_case_016",
+      "query": "Trường mình có quy chế đánh giá kết quả rèn luyện sinh viên hệ chính quy không? Nội dung và căn cứ pháp lý của nó là gì?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.4,
+        "relevancy": 0.9,
+        "correctness": 0.3
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.4, \"relevancy\": 0.9, \"correctness\": 0.3}"
+    },
+    {
+      "case_id": "gen_case_017",
+      "query": "Em muốn xin hỗ trợ chi phí học tập thì cần làm đơn đề nghị gì và cung cấp những thông tin gì?",
+      "status": "answered",
+      "intent": "form_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_018",
+      "query": "Trường mình có chương trình liên kết đào tạo không? Nó áp dụng cho hình thức vừa làm vừa học như thế nào?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.2,
+        "relevancy": 0.8,
+        "correctness": 0.5
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.2, \"relevancy\": 0.8, \"correctness\": 0.5}"
+    },
+    {
+      "case_id": "gen_case_020",
+      "query": "Em bị kỷ luật oan, trường mình có quy định nào về việc khiếu nại không?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.9,
+        "relevancy": 0.9,
+        "correctness": 0.2
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 0.9, \"correctness\": 0.2}"
+    },
+    {
+      "case_id": "gen_case_021",
+      "query": "Trường mình có danh sách bảo tàng nào tại TP.HCM không, mình muốn tham khảo?",
+      "status": "out_of_domain",
+      "error_type": null,
+      "metrics": {
+        "faithfulness": 0.0,
+        "relevancy": 0.0,
+        "correctness": 0.0
+      }
+    },
+    {
+      "case_id": "gen_case_023",
+      "query": "Em muốn biết về trách nhiệm và quyền lợi của cố vấn học tập đối với lớp sinh viên như thế nào?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 0.5
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.5}"
+    },
+    {
+      "case_id": "gen_case_024",
+      "query": "Em đang nhận học bổng hỗ trợ chi phí học tập, nhưng em phải nghỉ học vì lý do cá nhân thì có bị dừng cấp học bổng không?",
+      "status": "answered",
+      "intent": "form_query",
+      "metrics": {
+        "faithfulness": 0.8,
+        "relevancy": 1.0,
+        "correctness": 0.9
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 0.9}"
+    },
+    {
+      "case_id": "gen_case_025",
+      "query": "Em muốn biết về quy định chung khi thực hiện các hoạt động tại trường mình, có quy định nào về tổ chức thực hiện không?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.6,
+        "relevancy": 1.0,
+        "correctness": 0.5
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 1.0, \"correctness\": 0.5}"
+    },
+    {
+      "case_id": "gen_case_026",
+      "query": "Quyết định này có hiệu lực từ ngày nào và áp dụng cho những khóa tuyển sinh nào?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.7,
+        "relevancy": 0.6,
+        "correctness": 0.7
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 0.6, \"correctness\": 0.7}"
+    },
+    {
+      "case_id": "gen_case_027",
+      "query": "Em muốn biết cố vấn học tập của trường mình làm gì, nếu em muốn thay đổi kế hoạch học tập hoặc khiếu nại điểm rớt môn thì nên liên hệ ai và quy trình như thế nào?",
+      "status": "needs_clarification",
+      "error_type": null,
+      "metrics": {
+        "faithfulness": 0.0,
+        "relevancy": 0.0,
+        "correctness": 0.0
+      }
+    },
+    {
+      "case_id": "gen_case_028",
+      "query": "Em muốn học về Giáo dục Quốc phòng thì cần liên hệ với khoa nào và cơ hội việc làm sau khi tốt nghiệp là gì?",
+      "status": "answered",
+      "intent": "mixed_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_030",
+      "query": "Em muốn học ngành Sư phạm Tiếng Nga tại trường mình thì sau khi tốt nghiệp có thể làm những công việc gì?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_031",
+      "query": "Bạn ơi, trường mình có trạm y tế không? Khi mình ốm hay bị thương trong thời gian học, trường có hỗ trợ khám sức khỏe, chăm sóc sơ cứu và bảo hiểm y tế không?",
+      "status": "out_of_domain",
+      "error_type": null,
+      "metrics": {
+        "faithfulness": 0.0,
+        "relevancy": 0.0,
+        "correctness": 0.0
+      }
+    },
+    {
+      "case_id": "gen_case_033",
+      "query": "Trường mình có tổ chức hoạt động thông tin khoa học và công nghệ cho sinh viên không, và nếu có thì hoạt động đó bao gồm những gì?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.8,
+        "relevancy": 0.6,
+        "correctness": 0.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 0.6, \"correctness\": 0.0}"
+    },
+    {
+      "case_id": "gen_case_034",
+      "query": "Trường mình có danh sách di tích lịch sử trên địa bàn thành phố Hồ Chí Minh không, và có những di tích nào?",
+      "status": "out_of_domain",
+      "error_type": null,
+      "metrics": {
+        "faithfulness": 0.0,
+        "relevancy": 0.0,
+        "correctness": 0.0
+      }
+    },
+    {
+      "case_id": "gen_case_035",
+      "query": "Sau khi tốt nghiệp Khoa Giáo dục Đặc biệt, mình có thể làm những công việc gì?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.8,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_037",
+      "query": "Trường mình có công tác gì để hỗ trợ sinh viên không?",
+      "status": "answered",
+      "intent": "office_query",
+      "metrics": {
+        "faithfulness": 0.4,
+        "relevancy": 0.9,
+        "correctness": 0.6
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.4, \"relevancy\": 0.9, \"correctness\": 0.6}"
+    },
+    {
+      "case_id": "gen_case_038",
+      "query": "Em đang làm đề tài nghiên cứu khoa học và muốn biết giáo viên hướng dẫn của em có trách nhiệm gì và được hưởng những quyền lợi gì?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_039",
+      "query": "Trường mình hỗ trợ sinh viên nghiên cứu khoa học như thế nào?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.8,
+        "relevancy": 0.8,
+        "correctness": 0.2
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 0.8, \"correctness\": 0.2}"
+    },
+    {
+      "case_id": "gen_case_040",
+      "query": "Mình đang bị kỷ luật mức khiển trách, mình có thể được xếp loại rèn luyện loại giỏi được không?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.9,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_042",
+      "query": "Em là sinh viên dân tộc thiểu số rất ít người, muốn xin hỗ trợ chi phí học tập thì cần những giấy tờ gì?",
+      "status": "answered",
+      "intent": "form_query",
+      "metrics": {
+        "faithfulness": 0.7,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_044",
+      "query": "Em muốn biết trường mình sẽ thông báo những thông tin gì cho sinh viên vào đầu mỗi học kỳ?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_045",
+      "query": "Trường mình có quy định chung nào về việc xây dựng và phát huy truyền thống không ạ?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.8,
+        "relevancy": 0.5,
+        "correctness": 0.2
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 0.5, \"correctness\": 0.2}"
+    },
+    {
+      "case_id": "gen_case_046",
+      "query": "Em đang học hệ chính quy và muốn biết quy chế đào tạo mới của trường mình có hiệu lực từ khi nào và áp dụng cho những khóa nào?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_048",
+      "query": "Trường mình có trả thưởng cho sinh viên nghiên cứu khoa học giành giải cấp trường hoặc cấp Bộ không? Mức thưởng được tính như thế nào?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.6,
+        "relevancy": 1.0,
+        "correctness": 0.8
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 1.0, \"correctness\": 0.8}"
+    },
+    {
+      "case_id": "gen_case_049",
+      "query": "Em có hành vi vi phạm quy định của trường, vậy trình tự và thủ tục xét kỷ luật như thế nào?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_051",
+      "query": "Em đang học môn này và điểm thi là 6,5 thì em được điểm chữ là gì và em có đạt môn này không?",
+      "status": "answered",
+      "intent": "score_lookup_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 0.3,
+        "correctness": 0.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 0.3, \"correctness\": 0.0}"
+    },
+    {
+      "case_id": "gen_case_052",
+      "query": "Mình muốn biết mình được hưởng những quyền lợi gì theo quy định của trường và Bộ GD&ĐT?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.2,
+        "relevancy": 0.8,
+        "correctness": 0.1
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.2, \"relevancy\": 0.8, \"correctness\": 0.1}"
+    },
+    {
+      "case_id": "gen_case_053",
+      "query": "Em muốn biết trách nhiệm của các khoa trong việc đánh giá rèn luyện sinh viên như thế nào?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.9,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_055",
+      "query": "Trường mình có ngành nào liên quan đến công tác xã hội không, và sinh viên tốt nghiệp có thể làm việc ở đâu?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.7,
+        "relevancy": 1.0,
+        "correctness": 0.8
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 1.0, \"correctness\": 0.8}"
+    },
+    {
+      "case_id": "gen_case_058",
+      "query": "Em muốn học ngành Lịch sử hoặc Quốc tế học ở trường mình thì sau khi tốt nghiệp có cơ hội nghề nghiệp gì?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_059",
+      "query": "Mình là sinh viên dân tộc thiểu số, gia đình thuộc hộ nghèo, đang học hệ chính quy và đã trúng tuyển theo quy chế của Bộ GD&ĐT, mình có được xếp vào diện hỗ trợ của trường không?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.6,
+        "relevancy": 0.9,
+        "correctness": 0.7
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 0.9, \"correctness\": 0.7}"
+    },
+    {
+      "case_id": "gen_case_060",
+      "query": "Khi nào thì quyết định về quy định tổ chức hoạt động nghiên cứu khoa học của sinh viên trường mình có hiệu lực?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_061",
+      "query": "Anh/chị ơi, lớp học phần là gì vậy? Ai được làm đại diện lớp và họ phải làm gì?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_063",
+      "query": "Em muốn tham gia nghiên cứu khoa học thì có những quyền và trách nhiệm gì?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.8,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_064",
+      "query": "Em là sinh viên hệ đại học chính quy, không biết công tác cố vấn học tập được quy định như thế nào?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.7,
+        "relevancy": 0.8,
+        "correctness": 0.4
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 0.8, \"correctness\": 0.4}"
+    },
+    {
+      "case_id": "gen_case_065",
+      "query": "Em muốn biết trường mình có hỗ trợ sinh viên nào đạt đề tài NCKH xuất sắc để đưa kết quả vào thực tiễn không ạ?",
+      "status": "answered",
+      "intent": "mixed_query",
+      "metrics": {
+        "faithfulness": 0.9,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_066",
+      "query": "Trường mình quản lý công tác sinh viên như thế nào?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.7,
+        "relevancy": 1.0,
+        "correctness": 0.5
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 1.0, \"correctness\": 0.5}"
+    },
+    {
+      "case_id": "gen_case_068",
+      "query": "Em thuộc diện hộ nghèo, nếu gia đình em thoát nghèo trong năm học thì phải làm gì để dừng việc chi trả chi phí học tập cho kỳ tiếp theo?",
+      "status": "answered",
+      "intent": "mixed_query",
+      "metrics": {
+        "faithfulness": 0.9,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_070",
+      "query": "Em muốn tham gia hoạt động nghiên cứu khoa học của trường, vậy những nội dung hoạt động nghiên cứu khoa học của sinh viên là gì?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_071",
+      "query": "Giáo viên có phải đưa ra đề cương chi tiết học phần và các quy định liên quan trong buổi học đầu tiên không? Và việc phân công giảng viên dạy, hướng dẫn thí nghiệm, thực tập được thực hiện như thế nào?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_072",
+      "query": "Trường mình có quy định gì về hoạt động nghiên cứu khoa học của sinh viên không?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.7,
+        "relevancy": 1.0,
+        "correctness": 0.5
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 1.0, \"correctness\": 0.5}"
+    },
+    {
+      "case_id": "gen_case_074",
+      "query": "Khi nào thì quyết định của trường mình có hiệu lực thi hành?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_076",
+      "query": "Trường mình có biểu mẫu nào để theo dõi tiến độ học tập không?",
+      "status": "answered",
+      "intent": "form_query",
+      "metrics": {
+        "faithfulness": 0.9,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_077",
+      "query": "Em mới nhập học vào trường mình, bây giờ em có thể xem được những quy định và quy chế nào của trường và Bộ Giáo dục?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_078",
+      "query": "Trường mình có quy chế công tác sinh viên cho chương trình đại học hệ chính quy không? Quy chế này dựa trên những văn bản nào?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 0.3
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.3}"
+    },
+    {
+      "case_id": "gen_case_079",
+      "query": "Em là cán bộ hội tụ nhiều năm, nếu em hoàn thành xuất sắc nhiệm vụ thì sẽ được khen thưởng như thế nào?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_081",
+      "query": "Trường mình tổ chức và quản lý công tác sinh viên như thế nào?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.9,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_082",
+      "query": "Em là sinh viên dân tộc thiểu số, thuộc dân tộc La Hủ, vậy em có được hưởng chính sách gì không?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_083",
+      "query": "Anh/chị ơi, mục tiêu của hoạt động nghiên cứu khoa học sinh viên ở trường mình là gì vậy?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    }
+  ]
+}

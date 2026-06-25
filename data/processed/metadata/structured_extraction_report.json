@@ -1,17 +1,17 @@
 {
   "tables_extracted": 5,
-  "formula_rules_extracted": 2,
-  "threshold_rules_extracted": 42,
+  "formula_rules_extracted": 3,
+  "threshold_rules_extracted": 52,
   "threshold_priority_count": {
-    "high": 10,
-    "medium": 2,
-    "low": 30
+    "high": 15,
+    "medium": 6,
+    "low": 31
   },
-  "form_templates_extracted": 18,
-  "office_records_extracted": 17,
-  "faculty_records_extracted": 23,
-  "reference_records_extracted": 4,
-  "procedures_extracted": 2,
+  "form_templates_extracted": 1,
+  "office_records_extracted": 6,
+  "faculty_records_extracted": 1,
+  "reference_records_extracted": 0,
+  "procedures_extracted": 0,
   "items_need_manual_review": {
     "tables": [
       "grade_10_to_letter",

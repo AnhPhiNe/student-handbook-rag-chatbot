@@ -9,7 +9,7 @@ from fastapi import HTTPException, Request
 
 
 DEFAULT_MAX_QUERY_CHARS = 500
-DEFAULT_RATE_LIMIT_PER_MINUTE = 20
+DEFAULT_RATE_LIMIT_PER_MINUTE = 10
 _RATE_LIMIT_BUCKETS: dict[str, Deque[float]] = defaultdict(deque)
 
 

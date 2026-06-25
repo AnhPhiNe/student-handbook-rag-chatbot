@@ -247,7 +247,7 @@ export function CourseTargetPage() {
                     alignItems: 'center', 
                     justifyContent: 'space-between',
                     padding: '0.875rem 1rem',
-                    background: target.status === 'impossible' ? 'rgba(0,0,0,0.03)' : '#ffffff',
+                    background: target.status === 'impossible' ? 'transparent' : 'var(--bg-primary)',
                     border: `1px solid ${target.status === 'impossible' ? 'var(--border-color)' : target.color}40`,
                     borderRadius: '8px',
                     opacity: target.status === 'impossible' ? 0.6 : 1,

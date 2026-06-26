@@ -19,9 +19,10 @@ def main():
         for i, cit in enumerate(res.get("citations", [])):
             print(f"--- Chunk {i+1} ---")
             print(f"Title: {cit.get('title')}")
-            print(f"Content: {cit.get('content')[:150]}...")
+            print(f"Content: {str(cit.get('content') or '')[:150]}...")
             print(f"Score: {cit.get('score')}")
-            print(f"Cohort: {cit.get('metadata', {}).get('cohort')}")
+            print(f"Cohort: {cit.get('metadata', {}).get('cohort') if 'metadata' in cit else 'N/A'}")
+            print(f"Pages: {cit.get('metadata', {}).get('source_pages') if 'metadata' in cit else cit.get('source_pages')}")
             print()
         print("Success")
     except Exception as e:

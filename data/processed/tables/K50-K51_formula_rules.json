@@ -1,0 +1,66 @@
+[
+  {
+    "rule_id": "gpa_weighted_average",
+    "rule_name": "Công thức tính điểm trung bình chung",
+    "rule_type": "formula",
+    "calculation_type": "weighted_average",
+    "formula_text": "A = Σ(ai × ni) / Σ(ni)",
+    "variables": {
+      "A": "Điểm trung bình chung học kỳ, năm học hoặc điểm trung bình chung tích lũy",
+      "ai": "Điểm của học phần thứ i",
+      "ni": "Số tín chỉ của học phần thứ i"
+    },
+    "calculator_function": "calculate_gpa",
+    "source_article": "Điều 11.",
+    "source_title": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học",
+    "source_pages": [
+      19,
+      20,
+      21
+    ],
+    "review_status": "needs_human_verified",
+    "raw_excerpt": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học\n1. Kết quả học tập của sinh viên được đánh giá sau từng học kỳ\nchính hoặc sau từng năm học dựa trên kết quả các học phần nằm trong\nyêu cầu của CTĐT mà sinh viên đã học và có điểm theo các tiêu chí\nsau đây:\na) Tổng số tín chỉ của các học phần mà sinh viên không đạt trong\nmột học kỳ, trong một năm học, hoặc nợ đọng từ đầu khóa học;\nb) Tổng số tín chỉ của các học phần mà sinh viên đã đạt từ đầu khóa\nhọc (số tín chỉ tích lũy), tính cả các học phần được miễn học, được công\nnhận tín chỉ;\nc) Điểm trung bình của những học phần mà sinh viên đã học trong\nmột học kỳ (điểm trung bình học kỳ), trong một năm học (điểm trung\nbình năm học) hoặc tính từ đầu khóa học (điểm trung bình tích lũy),\ntính theo điểm chính thức của học phần và trọng số là số tín chỉ của học\nphần đó.\n5 Điểm này đã được sửa đổi tại khoản 4, Điều 1, Quyết định số 4743/QĐ-ĐHSP ngày 31/12/2024 của Hiệu trưởng về\nsửa đổi, bổ sung một số điểm của Quy chế đào tạo trình độ đại học ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày\n09/8/2021, áp dụng từ khoá tuyển sinh năm 2025 trở về sau. Cụ thể như sau:\n“b) Sinh viên có điểm học phần đạt được đăng ký học lại chính học phần đó để cải thiện điểm. Điểm đánh giá\ncao nhất trong những điểm mà sinh viên đã đạt của học phần là điểm chính thức của học phần.”\n20 SỔ TAY SINH VIÊN KHÓA 51\n2. Kết quả học tập trong học kỳ phụ được gộp vào kết quả học tập\ntrong học kỳ chính ngay trước học kỳ phụ để đánh giá.\n3. Để tính điểm trung bình, đ"
+  },
+  {
+    "rule_id": "gpa_weighted_average",
+    "rule_name": "Công thức tính điểm trung bình chung",
+    "rule_type": "formula",
+    "calculation_type": "weighted_average",
+    "formula_text": "A = Σ(ai × ni) / Σ(ni)",
+    "variables": {
+      "A": "Điểm trung bình chung học kỳ, năm học hoặc điểm trung bình chung tích lũy",
+      "ai": "Điểm của học phần thứ i",
+      "ni": "Số tín chỉ của học phần thứ i"
+    },
+    "calculator_function": "calculate_gpa",
+    "source_article": "Điều 11.",
+    "source_title": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học",
+    "source_pages": [
+      43,
+      44,
+      45
+    ],
+    "review_status": "needs_human_verified",
+    "raw_excerpt": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học\n1. Kết quả học tập của sinh viên được đánh giá sau từng học kỳ chính\nhoặc sau từng năm học dựa trên kết quả các học phần nằm trong yêu cầu của\nCTĐT mà sinh viên đã học và có điểm theo các tiêu chí sau đây:\na) Tổng số tín chỉ của các học phần mà sinh viên không đạt trong\nmột học kỳ, trong một năm học, hoặc nợ đọng từ đầu khóa học;\nb) Tổng số tín chỉ của các học phần mà sinh viên đã đạt từ đầu khóa\nhọc (số tín chỉ tích lũy), tính cả các học phần được miễn học, được công\nnhận tín chỉ;\nc) Điểm trung bình của những học phần mà sinh viên đã học trong\nmột học kỳ (điểm trung bình học kỳ), trong một năm học (điểm trung bình\nnăm học) hoặc tính từ đầu khóa học (điểm trung bình tích lũy), tính theo\nđiểm chính thức của học phần và trọng số là số tín chỉ của học phần đó.\n2. Kết quả học tập trong học kỳ phụ được gộp vào kết quả học tập\ntrong học kỳ chính ngay trước học kỳ phụ để đánh giá.\n3. Để tính điểm trung bình, điểm chữ của học phần được quy đổi về\nđiểm số như dưới đây:\n44 SỔ TAY SINH VIÊN KHÓA 51\nThang điểm chữ\nThang điểm 4\nA\n4,0\nB+\n3,5\nB\n3,0\nC+\n2,5\nC\n2,0\nD+\n1,5\nD\n1,0\nF+\n0,5\nF\n0,0\n4. Những điểm chữ không được quy định tại khoản 3 Điều này\nkhông được tính vào các điểm trung bình học kỳ, năm học hoặc tích lũy.\nNhững học phần không nằm trong yêu cầu của CTĐT không được tính\nvào các tiêu chí đánh giá kết quả học tập của sinh viên.\n5. Điểm trung bình chung học kỳ, năm học và điểm trung bình chung\ntích lũy được tính theo công thức sau v"
+  },
+  {
+    "rule_id": "scholarship_score",
+    "rule_name": "Công thức tính điểm học bổng",
+    "rule_type": "formula",
+    "calculation_type": "weighted_score",
+    "formula_text": "Điểm học bổng = (Điểm học tập × 80 + Điểm rèn luyện / 25 × 20) / 100",
+    "variables": {
+      "diem_hoc_tap": "Điểm học tập theo thang điểm 4",
+      "diem_ren_luyen": "Điểm rèn luyện theo thang điểm 100"
+    },
+    "calculator_function": "calculate_scholarship_score",
+    "source_article": "Điều 28.",
+    "source_title": "Điều 28. Trình tự và thủ tục xét cấp học bổng",
+    "source_pages": [
+      72,
+      73
+    ],
+    "review_status": "needs_human_verified",
+    "raw_excerpt": "Điều 28. Trình tự và thủ tục xét cấp học bổng\n1. Căn cứ vào quỹ HBKKHT toàn Trường đã xác lập và căn cứ theo\ntỉ lệ số sinh viên của từng khoa, phân hiệu, từng khóa, từng ngành học,\nPhòng CTCT&HSSV phối hợp Phòng Kế hoạch – Tài chính xác định quỹ\nHBKKHT của từng ngành học cụ thể ứng với khóa học tương ứng.\n2. Để xét học bổng, CVHT họp lớp đánh giá kết quả rèn luyện của\nsinh viên, khoa hoặc phân hiệu xem xét kết quả và nhập điểm rèn luyện\nvào phần mềm, nộp bảng tổng hợp đánh giá kết quả rèn luyện về Phòng\nCTCT&HSSV theo thời gian quy định.\n3. Căn cứ vào kết quả cập nhật điểm và khóa điểm do Phòng Khảo\nthí và Đảm bảo chất lượng thực hiện, Phòng CTCT&HSSV đối chiếu và\nsử dụng làm cơ sở để xét học bổng.\n4. Học bổng được phân bổ theo thứ tự điểm học bổng giảm dần từ\ncao xuống thấp cho đến hết quỹ học bổng của mỗi ngành học của một\nkhóa học cụ thể.\na) Trường hợp sinh viên có điểm học bổng bằng nhau và kinh phí\nkhông đủ cấp cho tất cả, Trường sẽ ưu tiên xét cấp cho sinh viên có điểm\nhọc tập cao hơn;\nb) Trường hợp có những sinh viên có điểm học tập và điểm rèn\nluyện bằng nhau, Phòng CTCT&HSSV sẽ phân bổ học bổng theo tỉ lệ số\ntín chỉ. Trường hợp tất cả sinh viên đủ điều kiện trong một ngành học đã\nnhận đủ học bổng mà quỹ còn dư, Phòng CTCT&HSSV sẽ điều phối\nnguồn quỹ này cho các ngành học/khoa khác có sinh viên đủ tiêu chuẩn\ncho đến khi hết nguồn quỹ HBKKHT của toàn Trường.\nSỔ TAY SINH VIÊN KHÓA 51\n5. Việc chi trả HBKKHT theo quyết định của Hiệu trưởng qua tài khoản\ncá nhân sinh viên đã đăng ký do Phòng Kế hoạch – Tài chính thực hiện."
+  }
+]

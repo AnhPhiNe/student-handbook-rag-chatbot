@@ -5,10 +5,13 @@ import unicodedata
 from typing import Any
 
 
-def formula_lookup(query: str, formula_rules: list[dict[str, Any]]) -> dict[str, Any] | None:
+def formula_lookup(query: str, formula_rules: list[dict[str, Any]], cohort: str | None = None) -> dict[str, Any] | None:
     ascii_query = _ascii_text(query)
     if not _asks_for_formula(ascii_query):
         return None
+
+    if cohort:
+        formula_rules = [r for r in formula_rules if r.get("cohort") == cohort]
 
     preferred_rule_id = _preferred_rule_id(ascii_query)
     if preferred_rule_id:

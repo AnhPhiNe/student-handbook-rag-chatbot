@@ -96,7 +96,7 @@ def retrieve_with_plan(
         top_n=plan["top_k"]
     )
     
-    # 5. Lọc nhiễu (Dựa vào điểm Cohere)
+    # 5. Lọc nhiễu
     filtered = [doc for doc in reranked if doc["rerank"]["final_score"] >= 0.20]
     return filtered[: plan["top_k"]]
 
@@ -260,6 +260,24 @@ def run_retrieval_pipeline(
                 "needs_llm_answer": True,
             }
 
+        # Vẫn tiếp tục vector search để lấy thêm các quy định/văn bản xung quanh
+        supplement_plan = {
+            "purpose": "formula_supplement",
+            "query": retrieval_query,
+            "chunk_types": ["regulation"],
+            "top_k": top_k,
+        }
+        supplement_results = retrieve_with_plan(
+            query=query,
+            plan=supplement_plan,
+            model=model,
+            collection=collection,
+            batch_size=batch_size,
+            normalize_embeddings=normalize_embeddings,
+            detected_entities=detected_entities,
+            cohort=cohort,
+        )
+
         return {
             "query": query,
             "retrieval_query": retrieval_query,
@@ -268,9 +286,9 @@ def run_retrieval_pipeline(
             "strategy": strategy,
             "target_chunk_types": target_chunk_types,
             "formula_result": formula_result,
-            "retrieved_items": [],
-            "citations": build_citation_from_formula(formula_result),
-            "context_for_llm": build_context_from_formula(formula_result),
+            "retrieved_items": supplement_results,
+            "citations": build_citation_from_formula(formula_result) + build_citations_from_vector_results(supplement_results),
+            "context_for_llm": build_context_from_formula(formula_result) + "\n\n---\n\n" + build_context_from_vector_results(supplement_results),
             "needs_llm_answer": True,
         }
 
@@ -311,6 +329,23 @@ def run_retrieval_pipeline(
                 "needs_llm_answer": True,
             }
 
+        supplement_plan = {
+            "purpose": "structured_supplement",
+            "query": retrieval_query,
+            "chunk_types": ["regulation"],
+            "top_k": top_k,
+        }
+        supplement_results = retrieve_with_plan(
+            query=query,
+            plan=supplement_plan,
+            model=model,
+            collection=collection,
+            batch_size=batch_size,
+            normalize_embeddings=normalize_embeddings,
+            detected_entities=detected_entities,
+            cohort=cohort,
+        )
+
         return {
             "query": query,
             "retrieval_query": retrieval_query,
@@ -319,9 +354,9 @@ def run_retrieval_pipeline(
             "strategy": strategy,
             "target_chunk_types": target_chunk_types,
             "structured_result": lookup_result,
-            "retrieved_items": [],
-            "citations": build_citation_from_lookup(lookup_result),
-            "context_for_llm": build_context_from_lookup(lookup_result),
+            "retrieved_items": supplement_results,
+            "citations": build_citation_from_lookup(lookup_result) + build_citations_from_vector_results(supplement_results),
+            "context_for_llm": build_context_from_lookup(lookup_result) + "\n\n---\n\n" + build_context_from_vector_results(supplement_results),
             "needs_llm_answer": True,
         }
 

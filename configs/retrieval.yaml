@@ -1,4 +1,4 @@
-﻿input:
+input:
   scoring_tables: data/processed/tables/scoring_tables.json
   formula_rules: data/processed/tables/formula_rules.json
   form_templates: data/processed/forms/form_templates.json
@@ -16,7 +16,7 @@ embedding:
 
 vectorstore:
   persist_dir: data/vectorstore/chroma
-  collection_name: student_handbook_semantic
+  collection_name: student_handbook_semantic_v2
 
 retrieval:
   default_top_k: 5

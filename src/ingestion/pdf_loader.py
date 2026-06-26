@@ -296,12 +296,11 @@ def save_json(data: Any, output_path: Path) -> None:
 def main() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    config = load_yaml_config(CONFIG_PATH)
-    
-    # If not K48-K49, clear the hardcoded page sections to force pattern fallback
     cohort = os.environ.get("COHORT", "UNKNOWN")
-    if cohort != "K48-K49":
-        config["sections"] = []
+    if cohort == "K50-K51":
+        config = load_yaml_config(Path("configs/document_sections_k50_k51.yaml"))
+    else:
+        config = load_yaml_config(CONFIG_PATH)
 
     pages = extract_pdf_pages(PDF_PATH, config)
     document_profile = build_document_profile(pages, config)

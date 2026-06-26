@@ -1,6 +1,6 @@
 [
   {
-    "rule_id": "threshold_article_3_p9_8",
+    "rule_id": "threshold_article_3_p9_7",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 3.",
@@ -23,7 +23,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_7_p12_13",
+    "rule_id": "threshold_article_7_p12_12",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 7.",
@@ -40,7 +40,25 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_9_p15_15",
+    "rule_id": "threshold_article_8_p13_13",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 8.",
+    "source_title": "Điều 8. Tổ chức giảng dạy và học tập",
+    "source_pages": [
+      13,
+      14,
+      15
+    ],
+    "threshold_lines": [
+      "tạo trình Hiệu trưởng quyết định số sinh viên tối thiểu cho mỗi lớp học",
+      "phần khác mà Trường có tổ chức cho đủ số tín chỉ tối thiểu quy định",
+      "a) Tối đa 30% tổng khối lượng của CTĐT có thể được thực hiện"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_9_p15_14",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 9.",
@@ -57,7 +75,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_10_p16_17",
+    "rule_id": "threshold_article_10_p16_16",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 10.",
@@ -104,7 +122,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_11_p19_18",
+    "rule_id": "threshold_article_11_p19_17",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 11.",
@@ -125,7 +143,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_12_p21_19",
+    "rule_id": "threshold_article_12_p21_18",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 12.",
@@ -145,7 +163,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_13_p22_20",
+    "rule_id": "threshold_article_13_p22_19",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 13.",
@@ -163,7 +181,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_14_p23_21",
+    "rule_id": "threshold_article_14_p23_20",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 14.",
@@ -178,7 +196,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_15_p23_22",
+    "rule_id": "threshold_article_15_p23_21",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 15.",
@@ -189,12 +207,14 @@
       25
     ],
     "threshold_lines": [
-      "trở lên;"
+      "trở lên;",
+      "b) Sinh viên đã bị kỷ luật từ mức cảnh cáo trở lên trong thời gian học.",
+      "4. Sinh viên đã hết thời gian học tập tối đa theo quy định nhưng chưa"
     ],
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_16_p25_24",
+    "rule_id": "threshold_article_16_p25_23",
     "rule_type": "threshold_rule",
     "priority": "medium",
     "source_article": "Điều 16.",
@@ -211,7 +231,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_18_p27_26",
+    "rule_id": "threshold_article_18_p27_25",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 18.",
@@ -225,7 +245,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_19_p27_27",
+    "rule_id": "threshold_article_19_p27_26",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 19.",
@@ -242,7 +262,28 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_6_p35_42",
+    "rule_id": "threshold_article_3_p32_38",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": "Điều 3.",
+    "source_title": "Điều 3. Chương trình đào tạo và thời gian học tập",
+    "source_pages": [
+      32,
+      33,
+      34
+    ],
+    "threshold_lines": [
+      "thức tối thiểu, yêu cầu về năng lực mà người học đạt được sau khi tốt",
+      "đào tạo vừa làm vừa học dài hơn tối thiểu 20% so với hình thức đào tạo",
+      "5. Thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa của",
+      "a) Thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa đối",
+      "học tập tối đa",
+      "tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_6_p35_41",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 6.",
@@ -260,7 +301,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_7_p36_44",
+    "rule_id": "threshold_article_7_p36_43",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 7.",
@@ -277,7 +318,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_8_p37_45",
+    "rule_id": "threshold_article_8_p37_44",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 8.",
@@ -288,12 +329,15 @@
       39
     ],
     "threshold_lines": [
+      "kiến thức tối thiểu, yêu cầu về năng lực mà người học đạt được sau khi",
+      "trách đào tạo trình Hiệu trưởng quyết định số sinh viên tối thiểu cho mỗi",
+      "lớp học phần khác mà Trường có tổ chức cho đủ số tín chỉ tối thiểu quy",
       "a) Tối đa 30% tổng khối lượng của CTĐT có thể được thực hiện"
     ],
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_9_p39_46",
+    "rule_id": "threshold_article_9_p39_45",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 9.",
@@ -310,7 +354,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_10_p40_48",
+    "rule_id": "threshold_article_10_p40_47",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 10.",
@@ -322,12 +366,25 @@
       43
     ],
     "threshold_lines": [
+      "– Việc chấm thi kết thúc học phần phải do tối thiểu hai giảng viên",
+      "giá đạt loại khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử",
+      "ít nhất 02 giảng viên đảm nhiệm;",
+      "gồm ít nhất 03 thành viên;",
+      "8,5 – 10",
+      "7,8 – 8,4",
+      "7,0 – 7,7",
+      "6,3 – 6,9",
+      "5,5 – 6,2",
+      "4,8 – 5,4",
+      "4,0 – 4,7",
+      "3,0 – 3,9",
+      "0,0 – 2,9",
       "không tính vào điểm trung bình học tập) yêu cầu đạt 5,0 trở lên theo"
     ],
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_11_p43_49",
+    "rule_id": "threshold_article_11_p43_48",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 11.",
@@ -348,7 +405,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_12_p45_50",
+    "rule_id": "threshold_article_12_p45_49",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 12.",
@@ -368,7 +425,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_13_p46_51",
+    "rule_id": "threshold_article_13_p46_50",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 13.",
@@ -386,7 +443,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_14_p47_52",
+    "rule_id": "threshold_article_14_p47_51",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 14.",
@@ -401,7 +458,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_15_p47_53",
+    "rule_id": "threshold_article_15_p47_52",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 15.",
@@ -419,7 +476,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_16_p49_55",
+    "rule_id": "threshold_article_16_p49_54",
     "rule_type": "threshold_rule",
     "priority": "medium",
     "source_article": "Điều 16.",
@@ -436,7 +493,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_18_p51_57",
+    "rule_id": "threshold_article_18_p51_56",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 18.",
@@ -450,7 +507,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_27_p70_95",
+    "rule_id": "threshold_article_27_p70_94",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 27.",
@@ -464,12 +521,15 @@
       "học tập, rèn luyện từ loại khá trở lên, không bị kỷ luật từ mức khiển trách",
       "trở lên sẽ được xem xét, cấp HBKKHT.",
       "Tốt trở lên",
-      "Khá trở lên"
+      "Khá trở lên",
+      "tích luỹ từ 11 tín chỉ trở lên. Đối với các khóa tuyển sinh từ năm 2021 về",
+      "trước, sinh viên phải tích luỹ từ 06 tín chỉ trở lên;",
+      "3. Quỹ HBKKHT: được bố trí tối thiểu bằng kinh phí 8% từ nguồn"
     ],
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_30_p73_98",
+    "rule_id": "threshold_article_30_p73_97",
     "rule_type": "threshold_rule",
     "priority": "medium",
     "source_article": "Điều 30.",
@@ -487,7 +547,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_32_p76_101",
+    "rule_id": "threshold_article_32_p76_100",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 32.",
@@ -508,7 +568,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_34_p78_103",
+    "rule_id": "threshold_article_34_p78_102",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 34.",
@@ -523,7 +583,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_4_p89_129",
+    "rule_id": "threshold_article_4_p89_128",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 4.",
@@ -537,7 +597,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_5_p89_130",
+    "rule_id": "threshold_article_5_p89_129",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 5.",
@@ -552,7 +612,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_6_p90_131",
+    "rule_id": "threshold_article_6_p90_130",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 6.",
@@ -566,7 +626,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_7_p90_132",
+    "rule_id": "threshold_article_7_p90_131",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 7.",
@@ -580,7 +640,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_8_p90_133",
+    "rule_id": "threshold_article_8_p90_132",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 8.",
@@ -595,7 +655,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_9_p91_135",
+    "rule_id": "threshold_article_9_p91_134",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 9.",
@@ -615,7 +675,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_10_p91_136",
+    "rule_id": "threshold_article_10_p91_135",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 10.",
@@ -630,7 +690,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_14_p95_141",
+    "rule_id": "threshold_article_14_p95_140",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 14.",
@@ -645,7 +705,50 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_6_p107_155",
+    "rule_id": "threshold_scoring_form_table_p99_146",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": null,
+    "source_title": "Chương V",
+    "source_pages": [
+      99
+    ],
+    "threshold_lines": [
+      "(tương đương) trở lên"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_scoring_form_table_p100_149",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": null,
+    "source_title": "QUY CHẾ, QUY ĐỊNH TRONG TRƯỜNG",
+    "source_pages": [
+      100,
+      101
+    ],
+    "threshold_lines": [
+      "+ Cấp tỉnh/thành (tương đương) trở lên"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_scoring_form_table_p102_151",
+    "rule_type": "threshold_rule",
+    "priority": "low",
+    "source_article": null,
+    "source_title": "QUY CHẾ, QUY ĐỊNH TRONG TRƯỜNG",
+    "source_pages": [
+      102
+    ],
+    "threshold_lines": [
+      "+ Cấp Trường (tương đương) trở lên"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_article_6_p107_167",
     "rule_type": "threshold_rule",
     "priority": "medium",
     "source_article": "Điều 6.",
@@ -660,7 +763,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_1_p112_169",
+    "rule_id": "threshold_article_1_p112_184",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 1.",
@@ -675,9 +778,9 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_7_p114_176",
+    "rule_id": "threshold_article_7_p114_191",
     "rule_type": "threshold_rule",
-    "priority": "low",
+    "priority": "high",
     "source_article": "Điều 7.",
     "source_title": "Điều 7. Quy trình tổ chức và tiến độ triển khai hoạt động nghiên",
     "source_pages": [
@@ -687,12 +790,24 @@
       117
     ],
     "threshold_lines": [
-      "Tháng 9 – 10 hằng năm"
+      "Tháng 9 – 10 hằng năm",
+      "viên chỉ do một người hướng dẫn và tối đa không quá 05 sinh viên tham",
+      "đề nghiên cứu (điểm tối đa là 10);",
+      "b) Nội dung nghiên cứu (điểm tối đa là 20);",
+      "c) Phương pháp nghiên cứu (điểm tối đa là 15);",
+      "d) Kết quả nghiên cứu (điểm tối đa là 40);",
+      "đ) Hình thức trình bày báo cáo tổng kết đề tài (điểm tối đa là 05);",
+      "hội nghị quốc gia, quốc tế có phản biện (điểm tối đa là 05);",
+      "– Bài báo được đăng trên các tạp chí quốc tế uy tín (điểm tối đa là 10);",
+      "phẩm,... đã được chứng nhận (điểm tối đa là 10).",
+      "xếp loại ở mức Xuất sắc: từ 90 điểm trở lên; mức Tốt: từ 80 điểm đến",
+      "dưới 90 điểm; mức Khá: từ 70 điểm đến dưới 80 điểm; mức Đạt: từ 50",
+      "điểm đến dưới 70 điểm; và Không đạt: dưới 50 điểm;"
     ],
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_13_p121_184",
+    "rule_id": "threshold_article_13_p121_199",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 13.",
@@ -706,7 +821,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_14_p121_185",
+    "rule_id": "threshold_article_14_p121_200",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 14.",
@@ -721,7 +836,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_8_p125_197",
+    "rule_id": "threshold_article_8_p125_212",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 8.",
@@ -736,7 +851,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_11_p126_201",
+    "rule_id": "threshold_article_11_p126_216",
     "rule_type": "threshold_rule",
     "priority": "medium",
     "source_article": "Điều 11.",
@@ -751,7 +866,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_2_p132_213",
+    "rule_id": "threshold_article_2_p132_228",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 2.",
@@ -765,7 +880,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_4_p134_216",
+    "rule_id": "threshold_article_4_p134_231",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 4.",
@@ -779,7 +894,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_6_p135_218",
+    "rule_id": "threshold_article_6_p135_233",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 6.",
@@ -795,7 +910,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_9_p138_221",
+    "rule_id": "threshold_article_9_p138_236",
     "rule_type": "threshold_rule",
     "priority": "medium",
     "source_article": "Điều 9.",
@@ -813,7 +928,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_14_p143_228",
+    "rule_id": "threshold_article_14_p143_243",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 14.",
@@ -828,7 +943,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_15_p143_229",
+    "rule_id": "threshold_article_15_p143_244",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 15.",
@@ -844,7 +959,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_6_p147_238",
+    "rule_id": "threshold_article_6_p147_253",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 6.",
@@ -867,7 +982,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_7_p149_239",
+    "rule_id": "threshold_article_7_p149_254",
     "rule_type": "threshold_rule",
     "priority": "high",
     "source_article": "Điều 7.",
@@ -895,7 +1010,7 @@
     "review_status": "auto_extracted"
   },
   {
-    "rule_id": "threshold_article_15_p155_249",
+    "rule_id": "threshold_article_15_p155_264",
     "rule_type": "threshold_rule",
     "priority": "low",
     "source_article": "Điều 15.",
@@ -906,10 +1021,42 @@
       157,
       158,
       159,
-      160
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170
     ],
     "threshold_lines": [
-      "chiều giai đoạn 2021 – 2025)"
+      "cho sinh viên hệ chính quy năm học 2025 – 2026",
+      "cho sinh viên hệ chính quy, năm học 2025 – 2026 với những nội dung,",
+      "chiều giai đoạn 2021 – 2025)",
+      "giai đoạn 2021 – 2025, vào mỗi năm học phải bổ sung bản sao (có chứng",
+      "thuộc hộ nghèo, hộ cận nghèo, năm học 2025 – 2026",
+      "Quy định chuẩn hộ nghèo đa chiều giai đoạn 2021 – 2025).",
+      "thuộc hộ nghèo, hộ cận nghèo, năm học 2025 – 2026",
+      "trở lên; trường hợp"
+    ],
+    "review_status": "auto_extracted"
+  },
+  {
+    "rule_id": "threshold_ktx_admission_procedure_p174_266",
+    "rule_type": "threshold_rule",
+    "priority": "medium",
+    "source_article": null,
+    "source_title": "Chương IV",
+    "source_pages": [
+      174,
+      175
+    ],
+    "threshold_lines": [
+      "chính xác của các loại hồ sơ. Hồ sơ đăng ký nội trú tối thiểu bao gồm:"
     ],
     "review_status": "auto_extracted"
   }

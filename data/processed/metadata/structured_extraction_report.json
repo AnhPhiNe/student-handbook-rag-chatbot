@@ -1,17 +1,17 @@
 {
   "tables_extracted": 5,
   "formula_rules_extracted": 3,
-  "threshold_rules_extracted": 52,
+  "threshold_rules_extracted": 58,
   "threshold_priority_count": {
-    "high": 15,
-    "medium": 6,
-    "low": 31
+    "high": 16,
+    "medium": 7,
+    "low": 35
   },
   "form_templates_extracted": 1,
-  "office_records_extracted": 6,
-  "faculty_records_extracted": 1,
+  "office_records_extracted": 16,
+  "faculty_records_extracted": 32,
   "reference_records_extracted": 0,
-  "procedures_extracted": 0,
+  "procedures_extracted": 2,
   "items_need_manual_review": {
     "tables": [
       "grade_10_to_letter",
@@ -20,7 +20,9 @@
       "conduct_classification",
       "scholarship_classification"
     ],
-    "form_templates": [],
+    "form_templates": [
+      "form_p171"
+    ],
     "office_directory": [],
     "faculty_program_directory": []
   }

@@ -1,1 +1,87 @@
-[]
+[
+  {
+    "chunk_id": "procedure_ktx_admission_procedure_part_1",
+    "chunk_type": "procedure",
+    "index_mode": "semantic",
+    "content": "Quy trình: Quy trình xét sinh viên vào ở Ký túc xá\nCác bước phát hiện:\n- 1. Lưu đồ quy trình\n- 2. Diễn giải quy trình và các bước thực hiện\n- – Địa điểm nội trú cho sinh viên;\n- – Số lượng chỗ ở;\n- – Đối tượng ưu tiên tiếp nhận ở nội trú KTX;\n- – Thời gian tiếp nhận ở nội trú KTX;\n- – Thủ tục, quy trình tiếp nhận.\n- – Viên chức thuộc Ban Quản lý KTX được phân công tiếp nhận hồ\n- – Khi tiếp nhận, nhân viên tiếp nhận phải xem xét tính đầy đủ và\n- – Kê khai hồ sơ nội trú;\n- – Ký kết hợp đồng;\n- – Bàn giao phòng ở.\n- – Phổ biến nội quy;\n- – Phổ biến hợp đồng nội trú;\n- – Lưu trữ hồ sơ các sinh viên được tiếp nhận nội trú.\n- 1. Quy trình và biểu mẫu, mẫu đơn về\n- 2. Quy trình và biểu mẫu, mẫu đơn về\n- 3. Quy trình và biểu mẫu, mẫu đơn về\n- 4. Quy trình xét sinh viên vào ở ký túc xá\nNội dung đầy đủ:\nSỔ TAY SINH VIÊN KHÓA 51\nBỘ GIÁO DỤC VÀ ĐÀO TẠO\nTRƯỜNG ĐẠI HỌC SƯ PHẠM\nTHÀNH PHỐ HỒ CHÍ MINH\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\nQUY TRÌNH\nXÉT SINH VIÊN VÀO Ở KÝ TÚC XÁ\n1. Lưu đồ quy trình\nSTT\nTiến trình\nChịu trách nhiệm\nBan Giám đốc\nKTX\nPhòng\nCTCT&HSSV\nBan Giám đốc\nKTX\nBan Giám đốc\nKTX\nPhòng\nCTCT&HSSV\nPhòng\nCTCT&HSSV\nHội đồng\nPhòng\nCTCT&HSSV\nBan Giám đốc\nKTX\nPhòng\nCTCT&HSSV\nBan Giám đốc\nKTX\nBan Giám đốc\nKTX\nPhòng\nCTCT&HSSV\nKiểm tra tình trạng và\nsố lượng chỗ nội trú\nThông báo đăng ký nội trú\nNhận hồ sơ và rà soát\nđiều kiện theo quy định\nXem xét, trình Hội đồng\nphê duyệt danh sách\nHọp Hội đồng\nTiếp nhận sinh viên\nCông bố Quyết định\n174 SỔ TAY SINH VIÊN KHÓA 51\n2. Diễn giải quy trình và các bước thực hiện\nBước 1: Kiểm tra tình trạng và số lượng chỗ nội trú\nCăn cứ điều kiện cơ sở vật chất và số lượng thực tế phòng ở hiện tại\ncủa KTX Trường Đại học Sư phạm Thành phố Hồ Chí Minh.\nBước 2: Thông báo đăng ký nội trú\n– Địa điểm nội trú cho sinh viên;\n– Số lượng chỗ ở;\n– Đối tượng ưu tiên tiếp nhận ở nội trú KTX;\n– Thời gian tiếp nhận ở nội trú KTX;",
+    "token_count_approx": 493,
+    "metadata": {
+      "source_type": "procedure",
+      "procedure_id": "ktx_admission_procedure",
+      "procedure_name": "Quy trình xét sinh viên vào ở Ký túc xá",
+      "source_pages": [
+        173,
+        174,
+        175,
+        176
+      ],
+      "review_status": "auto_extracted",
+      "split_from_record": true,
+      "part_index": 1,
+      "total_parts": 3
+    }
+  },
+  {
+    "chunk_id": "procedure_ktx_admission_procedure_part_2",
+    "chunk_type": "procedure",
+    "index_mode": "semantic",
+    "content": "– Thủ tục, quy trình tiếp nhận.\nBước 3: Nhận hồ sơ và rà soát điều kiện theo quy định\n– Viên chức thuộc Ban Quản lý KTX được phân công tiếp nhận hồ\nsơ trong thời hạn được thông báo chính thức tại Văn phòng KTX.\n– Khi tiếp nhận, nhân viên tiếp nhận phải xem xét tính đầy đủ và\nchính xác của các loại hồ sơ. Hồ sơ đăng ký nội trú tối thiểu bao gồm:\n+ Đơn xin ở nội trú;\n+ Thông báo nhập học, bản photo chứng thực (đối với sinh viên vừa\ntrúng tuyển);\n+ Thẻ sinh viên (đối với sinh viên các khóa sau);\n+ Biên nhận hồ sơ nhập học;\n+ Các giấy tờ liên quan xác nhận thuộc diện ưu tiên (bản sao);\n+ Hợp đồng ở nội trú;\n+ Bản khai nhân khẩu;\n+ Bản sao căn cước công dân (không cần chứng thực, mang theo bản\nchính để đối chiếu);\n+ 03 tấm ảnh 2x3.\nSỔ TAY SINH VIÊN KHÓA 51\nBước 4: Xem xét, trình Hội đồng phê duyệt danh sách\nPhòng CTCT&HSSV trình danh sách sinh viên đảm bảo tiêu chuẩn\nvào KTX cho Hội đồng xem xét và thông qua.\nBước 5: Họp Hội đồng\nPhòng CTCT&HSSV căn cứ kết quả xét của Hội đồng, tham mưu\nQuyết định trình Hiệu trưởng phê duyệt.\nBước 6: Công bố Quyết định\nPhòng CTCT&HSSV và Ban Giám đốc KTX thông tin rộng rãi\nQuyết định của Hiệu trưởng về việc phê duyệt danh sách sinh viên được\nxét vào nội trú KTX.\nBước 7: Tiếp nhận sinh viên\n❖ Các thủ tục ban đầu liên quan đến quản lý hành chính:\n– Kê khai hồ sơ nội trú;\n– Ký kết hợp đồng;\n– Bàn giao phòng ở.\n❖ Hướng dẫn hội nhập ban đầu:\n– Phổ biến nội quy;\n– Phổ biến hợp đồng nội trú;\n– Lưu trữ hồ sơ các sinh viên được tiếp nhận nội trú.\n176 SỔ TAY SINH VIÊN KHÓA 51\nQUY TRÌNH VÀ BIỂU MẪU\nCÁC CÔNG TÁC LIÊN QUAN ĐẾN SINH VIÊN\nTẠI PHÂN HIỆU\n1. Quy trình và biểu mẫu, mẫu đơn về\ncác công việc của Bộ phận Đào tạo\nSinh viên truy cập đường dẫn\nhttp://tracuu.hcmue.edu.vn/daotao-ph hoặc quét mã\nQR kế bên để đọc thông tin.\n2. Quy trình và biểu mẫu, mẫu đơn về\ncác công việc của Bộ phận Khảo thí\nSinh viên truy cập đường dẫn\nhttp://tracuu.hcmue.edu.vn/khaothi-ph hoặc quét mã",
+    "token_count_approx": 499,
+    "metadata": {
+      "source_type": "procedure",
+      "procedure_id": "ktx_admission_procedure",
+      "procedure_name": "Quy trình xét sinh viên vào ở Ký túc xá",
+      "source_pages": [
+        173,
+        174,
+        175,
+        176
+      ],
+      "review_status": "auto_extracted",
+      "split_from_record": true,
+      "part_index": 2,
+      "total_parts": 3
+    }
+  },
+  {
+    "chunk_id": "procedure_ktx_admission_procedure_part_3",
+    "chunk_type": "procedure",
+    "index_mode": "semantic",
+    "content": "QR kế bên để đọc thông tin.\n3. Quy trình và biểu mẫu, mẫu đơn về\ncác công việc của Bộ phận Công tác sinh viên\nSinh viên truy cập đường dẫn\nhttp://tracuu.hcmue.edu.vn/ctsv-ph hoặc quét mã\nQR kế bên để đọc thông tin.\n4. Quy trình xét sinh viên vào ở ký túc xá\nSinh viên truy cập đường dẫn\nhttp://tracuu.hcmue.edu.vn/quytrinh-ktx-ph hoặc\nquét mã QR kế bên để đọc thông tin.\nNguồn: Trang 173-176",
+    "token_count_approx": 113,
+    "metadata": {
+      "source_type": "procedure",
+      "procedure_id": "ktx_admission_procedure",
+      "procedure_name": "Quy trình xét sinh viên vào ở Ký túc xá",
+      "source_pages": [
+        173,
+        174,
+        175,
+        176
+      ],
+      "review_status": "auto_extracted",
+      "split_from_record": true,
+      "part_index": 3,
+      "total_parts": 3
+    }
+  },
+  {
+    "chunk_id": "procedure_faculty_student_services",
+    "chunk_type": "procedure",
+    "index_mode": "semantic",
+    "content": "Quy trình: Một số công việc của các khoa liên quan đến sinh viên\nCác bước phát hiện:\n- – Chỉ định tạm thời hoặc bầu BCS (lớp trưởng và các lớp phó) lớp\n- – Giới thiệu giảng viên phụ trách CVHT để giúp sinh viên đăng ký\n- – Hướng dẫn sinh viên học tập theo hệ thống tín chỉ; xếp thời khóa\n- – Tổ chức lựa chọn sinh viên đi học chuyển tiếp, du học theo hiệp\n- – Tổ chức các hoạt động chính trị – xã hội, nghiệp vụ chuyên môn,\n- – Đánh giá, phân loại sinh viên về học tập, rèn luyện theo từng học\n- – Phối hợp với Phòng CTCT&HSSV thực hiện các chế độ chính\n- – Phối hợp với Phòng Đào tạo xử lý học vụ, rèn luyện chuyên môn,\nNội dung đầy đủ:\nSỔ TAY SINH VIÊN KHÓA 51\nMỘT SỐ CÔNG VIỆC CỦA CÁC KHOA\nVÀ PHÂN HIỆU LIÊN QUAN ĐẾN SINH VIÊN\n– Chỉ định tạm thời hoặc bầu BCS (lớp trưởng và các lớp phó) lớp\nsinh viên và lớp học phần;\n– Giới thiệu giảng viên phụ trách CVHT để giúp sinh viên đăng ký\nmôn học;\n– Hướng dẫn sinh viên học tập theo hệ thống tín chỉ; xếp thời khóa\nbiểu học tập và thi;\n– Tổ chức lựa chọn sinh viên đi học chuyển tiếp, du học theo hiệp\nđịnh của Nhà nước, Nhà trường (nếu có) theo quy định;\n– Tổ chức các hoạt động chính trị – xã hội, nghiệp vụ chuyên môn,\nvăn hóa – văn nghệ, thể dục – thể thao,...;\n– Đánh giá, phân loại sinh viên về học tập, rèn luyện theo từng học\nkỳ, năm học và khóa học;\n– Phối hợp với Phòng CTCT&HSSV thực hiện các chế độ chính\nsách cho sinh viên, xét cấp học bổng các loại, miễn, giảm học phí, công\ntác nội trú, ngoại trú, tham quan thực tế, tạm ngưng tiến độ học tập, buộc\nthôi học... thống kê số liệu sinh viên; theo dõi công tác thi đua khen\nthưởng; thực hiện các thủ tục liên quan đến sinh viên tốt nghiệp;\n– Phối hợp với Phòng Đào tạo xử lý học vụ, rèn luyện chuyên môn,\nnghiệp vụ; theo dõi trả nợ các học phần môn học, cảnh báo học vụ của\nsinh viên.\nNguồn: Trang 225",
+    "token_count_approx": 463,
+    "metadata": {
+      "source_type": "procedure",
+      "procedure_id": "faculty_student_services",
+      "procedure_name": "Một số công việc của các khoa liên quan đến sinh viên",
+      "source_pages": [
+        225
+      ],
+      "review_status": "auto_extracted",
+      "split_from_record": false,
+      "part_index": 1,
+      "total_parts": 1
+    }
+  }
+]

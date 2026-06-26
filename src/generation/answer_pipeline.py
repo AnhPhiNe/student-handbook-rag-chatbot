@@ -79,7 +79,7 @@ class AnswerPipeline:
         )
 
     @traceable(name="Answer Pipeline", run_type="chain")
-    def answer(self, query: str, chat_history: list[dict[str, str]] | None = None) -> dict[str, Any]:
+    def answer(self, query: str, chat_history: list[dict[str, str]] | None = None, cohort: str | None = None) -> dict[str, Any]:
         """Bộ Não Sinh Ngôn Ngữ: Lấy dữ liệu từ Retrieval và biến thành câu trả lời (Sync Mode).
         
         Quy trình hoạt động:
@@ -147,6 +147,7 @@ class AnswerPipeline:
             retrieval_result, rewrite_result = self._run_verified_retrieval(
                 query,
                 rewrite_result,
+                cohort,
             )
             effective_query = rewrite_result.effective_query
         except Exception as exc:
@@ -360,6 +361,7 @@ class AnswerPipeline:
             retrieval_result=retrieval_result,
             selected_citations=None,
             max_context_chars=self.max_context_chars,
+            cohort=cohort,
         )
 
         try:
@@ -445,6 +447,7 @@ class AnswerPipeline:
         self,
         query: str,
         chat_history: list[dict[str, str]] | None = None,
+        cohort: str | None = None,
     ) -> Iterator[dict[str, Any]]:
         """Luồng tạo câu trả lời dạng Streaming (Server-Sent Events)."""
         run_tree = get_current_run_tree()
@@ -481,6 +484,7 @@ class AnswerPipeline:
             retrieval_result, rewrite_result = self._run_verified_retrieval(
                 query,
                 rewrite_result,
+                cohort=cohort,
             )
             effective_query = rewrite_result.effective_query
         except Exception:
@@ -584,6 +588,7 @@ class AnswerPipeline:
         prompt = build_answer_prompt(
             query=effective_query, retrieval_result=retrieval_result,
             selected_citations=None, max_context_chars=self.max_context_chars,
+            cohort=cohort,
         )
 
         yield {"type": "metadata", "run_id": run_id, "status": "answered", "intent": retrieval_result.get("intent"), "strategy": retrieval_result.get("strategy"), "citations_used": selected_citations, "llm_called": True}
@@ -605,7 +610,7 @@ class AnswerPipeline:
 
         yield {"type": "done"}
 
-    def _run_retrieval(self, query: str) -> dict[str, Any]:
+    def _run_retrieval(self, query: str, cohort: str | None = None) -> dict[str, Any]:
         return run_retrieval_pipeline(
             query=query,
             model=self.model,
@@ -617,15 +622,17 @@ class AnswerPipeline:
             top_k=self.config["retrieval"]["default_top_k"],
             batch_size=self.config["embedding"]["batch_size"],
             normalize_embeddings=self.config["embedding"]["normalize_embeddings"],
+            cohort=cohort,
         )
 
     def _run_verified_retrieval(
         self,
         original_query: str,
         rewrite_result: QueryRewriteResult,
+        cohort: str | None = None,
     ) -> tuple[dict[str, Any], QueryRewriteResult]:
         effective_query = rewrite_result.effective_query
-        rewritten_result = self._run_retrieval(effective_query)
+        rewritten_result = self._run_retrieval(effective_query, cohort=cohort)
 
         if (
             not self._query_was_rewritten_from_history(rewrite_result)

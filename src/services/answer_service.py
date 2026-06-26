@@ -23,16 +23,17 @@ class AnswerService:
         else:
             self.config_path = DEFAULT_CONFIG_PATH
 
-    def answer(self, query: str, chat_history: list[dict[str, str]] | None = None) -> dict[str, Any]:
-        return self._get_pipeline().answer(query, chat_history=chat_history)
+    def answer(self, query: str, chat_history: list[dict[str, str]] | None = None, cohort: str | None = None) -> dict[str, Any]:
+        return self._get_pipeline().answer(query, chat_history=chat_history, cohort=cohort)
 
     def answer_stream(
         self,
         query: str,
         chat_history: list[dict[str, str]] | None = None,
+        cohort: str | None = None,
     ) -> Iterator[dict[str, Any]]:
         """Stream answer chunks from the pipeline."""
-        yield from self._get_pipeline().answer_stream(query, chat_history=chat_history)
+        yield from self._get_pipeline().answer_stream(query, chat_history=chat_history, cohort=cohort)
 
     def health(self) -> dict[str, Any]:
         return {

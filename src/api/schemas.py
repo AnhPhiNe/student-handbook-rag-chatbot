@@ -9,6 +9,7 @@ class ChatRequest(BaseModel):
     query: str
     include_debug: bool = False
     chat_history: list[dict[str, str]] | None = None
+    cohort: str | None = None
 
 
 class ChatResponse(BaseModel):

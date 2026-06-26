@@ -18,14 +18,28 @@ def get_chroma_collection(persist_dir: str, collection_name: str) -> Any:
     return create_collection(persist_dir, collection_name)
 
 
-def build_where_filter(chunk_types: Optional[list[str]]) -> Optional[dict[str, Any]]:
-    if not chunk_types:
+def build_where_filter(
+    chunk_types: Optional[list[str]],
+    cohort: Optional[str] = None
+) -> Optional[dict[str, Any]]:
+    conditions = []
+    
+    if chunk_types:
+        if len(chunk_types) == 1:
+            conditions.append({"chunk_type": chunk_types[0]})
+        else:
+            conditions.append({"chunk_type": {"$in": chunk_types}})
+            
+    if cohort:
+        conditions.append({"cohort": cohort})
+        
+    if not conditions:
         return None
-
-    if len(chunk_types) == 1:
-        return {"chunk_type": chunk_types[0]}
-
-    return {"chunk_type": {"$in": chunk_types}}
+        
+    if len(conditions) == 1:
+        return conditions[0]
+        
+    return {"$and": conditions}
 
 
 def vector_search(
@@ -36,6 +50,7 @@ def vector_search(
     top_k: int = 5,
     batch_size: int = 8,
     normalize_embeddings: bool = True,
+    cohort: Optional[str] = None,
 ) -> list[dict[str, Any]]:
     query_embedding = model.encode(
         [query],
@@ -43,7 +58,7 @@ def vector_search(
         normalize_embeddings=normalize_embeddings,
     ).tolist()
 
-    where_filter = build_where_filter(chunk_types)
+    where_filter = build_where_filter(chunk_types, cohort)
 
     response = collection.query(
         query_embeddings=query_embedding,

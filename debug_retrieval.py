@@ -1,7 +1,5 @@
-import asyncio
-import os
 import sys
-import traceback
+import os
 from dotenv import load_dotenv
 
 sys.stdout.reconfigure(encoding='utf-8')
@@ -9,23 +7,27 @@ load_dotenv()
 
 from src.generation.answer_pipeline import AnswerPipeline
 
-async def main():
+def main():
     pipeline = AnswerPipeline()
-    query = "tui cần in bảng điểm thì đến đâu mới đúng"
+    query = sys.argv[1] if len(sys.argv) > 1 else "Cho mình xin số điện thoại Phòng Đào tạo"
+    cohort = sys.argv[2] if len(sys.argv) > 2 else "K50-K51"
     
+    print(f"Query: {query}")
+    print(f"Cohort: {cohort}")
     try:
-        from src.generation.query_rewriter import QueryRewriteResult
-        rewrite_result = QueryRewriteResult(
-            original_query=query,
-            effective_query=query,
-            reason="test"
-        )
-        # Call the private method to see the exact exception
-        res, _ = pipeline._run_verified_retrieval(query, rewrite_result)
+        res = pipeline._run_retrieval(query, cohort=cohort)
+        for i, cit in enumerate(res.get("citations", [])):
+            print(f"--- Chunk {i+1} ---")
+            print(f"Title: {cit.get('title')}")
+            print(f"Content: {cit.get('content')[:150]}...")
+            print(f"Score: {cit.get('score')}")
+            print(f"Cohort: {cit.get('metadata', {}).get('cohort')}")
+            print()
         print("Success")
     except Exception as e:
+        import traceback
         print("EXCEPTION IN RETRIEVAL:")
         traceback.print_exc()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

@@ -46,9 +46,13 @@ def build_context_from_tool(tool_result: dict[str, Any]) -> str:
 def build_context_from_formula(formula_result: dict[str, Any]) -> str:
     variables = formula_result.get("variables") or {}
     variable_lines = "\n".join(f"- {key}: {value}" for key, value in variables.items())
+    raw_excerpt = formula_result.get("raw_excerpt", "")
+    excerpt_text = f"\n\nTrích dẫn quy định chi tiết:\n{raw_excerpt}" if raw_excerpt else ""
+    
     return (
         f"Công thức: {formula_result.get('rule_name')}\n"
         f"Biểu thức: {formula_result.get('formula_text')}\n"
         f"Biến số:\n{variable_lines}\n"
         f"Nguồn: {formula_result.get('source_article')}, trang {formula_result.get('source_pages')}"
+        f"{excerpt_text}"
     )

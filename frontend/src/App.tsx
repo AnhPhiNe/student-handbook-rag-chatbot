@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, Trash2 } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { ChatArea } from './components/ChatArea';
 import { useChat } from './hooks/useChat';
@@ -22,9 +22,12 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import { BugReportModal } from './components/BugReportModal';
 
 function App() {
-  const { messages, isTyping, progressMessage, sendMessage, sendHardcodedMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat();
   const defaultTheme = (new Date().getHours() >= 18 || new Date().getHours() < 6) ? 'dark' : 'light';
   const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('hcmue-theme', defaultTheme);
+  const [cohort, setCohort] = useLocalStorage<'K48-K49' | 'K50-K51'>('hcmue-cohort', 'K48-K49');
+  
+  const { messages, isTyping, progressMessage, sendMessage, sendHardcodedMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat(cohort);
+
   const [activeTab, setActiveTab] = useState('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -51,6 +54,8 @@ function App() {
               theme={theme} 
               onToggleTheme={toggleTheme} 
               onOpenBugReport={() => setIsBugModalOpen(true)}
+              cohort={cohort}
+              onCohortChange={setCohort}
             />
           )}
           
@@ -66,9 +71,28 @@ function App() {
           />
           
           <div className="content-area" style={{ position: 'relative' }}>
-            {/* Global Theme Toggle */}
+            {/* Global Controls */}
             {!isMobile && (
-              <div style={{ position: 'absolute', top: '16px', right: '24px', zIndex: 100 }}>
+              <div style={{ position: 'absolute', top: '16px', right: '24px', zIndex: 100, display: 'flex', gap: '12px', alignItems: 'center' }}>
+                {activeTab === 'chat' && messages.length > 0 && (
+                  <button className="theme-toggle" onClick={() => {
+                    if (window.confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử chat không?")) {
+                      clearMessages();
+                    }
+                  }} title="Xóa lịch sử chat">
+                    <Trash2 size={16} />
+                    <span>Xóa chat</span>
+                  </button>
+                )}
+                <select 
+                  className="theme-toggle cohort-selector" 
+                  value={cohort} 
+                  onChange={(e) => setCohort(e.target.value as 'K48-K49' | 'K50-K51')}
+                  style={{ cursor: 'pointer', outline: 'none' }}
+                >
+                  <option value="K48-K49">Khóa 48 - 49</option>
+                  <option value="K50-K51">Khóa 50 - 51</option>
+                </select>
                 <button className="theme-toggle" onClick={toggleTheme}>
                   {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
                   <span>{theme === 'light' ? 'Chế độ tối' : 'Chế độ sáng'}</span>

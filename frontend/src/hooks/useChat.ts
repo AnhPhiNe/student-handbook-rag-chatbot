@@ -27,7 +27,7 @@ export interface Message {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 const API_URL = `${API_BASE_URL}/chat/stream`;
 
-export function useChat() {
+export function useChat(cohort: string = 'K48-K49') {
   const [messages, setMessages] = useState<Message[]>(() => {
     const saved = sessionStorage.getItem('chat_messages');
     if (saved) {
@@ -91,7 +91,7 @@ export function useChat() {
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: userMsg.content, chat_history: chatHistory }),
+        body: JSON.stringify({ query: userMsg.content, chat_history: chatHistory, cohort }),
         signal: controller.signal
       });
       clearTimeout(timeoutId);
@@ -195,9 +195,8 @@ export function useChat() {
       ));
       setIsTyping(false);
     }
-  // BẮT BUỘC phải truyền `messages` vào dependency array. Nếu không, hàm sendMessage 
-  // sẽ bị kẹt (stale closure) ở trạng thái rỗng ban đầu, dẫn đến việc luôn gửi `chat_history = []`.
-  }, [messages, isTyping]);
+  // BẮT BUỘC phải truyền `messages` và `cohort` vào dependency array.
+  }, [messages, isTyping, cohort]);
 
   const sendHardcodedMessage = useCallback((userText: string, botResponse: string, suggestions?: string[]) => {
     if (isTyping) return;

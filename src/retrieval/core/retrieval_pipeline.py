@@ -39,6 +39,7 @@ def retrieve_with_plan(
     batch_size: int,
     normalize_embeddings: bool,
     detected_entities: list[dict[str, Any]],
+    cohort: str | None = None,
 ) -> list[dict[str, Any]]:
     """Tìm kiếm Vector dựa trên bản kế hoạch (Retrieval Plan) và Xếp hạng lại (Reranking).
     
@@ -59,6 +60,7 @@ def retrieve_with_plan(
         top_k=candidate_k,
         batch_size=batch_size,
         normalize_embeddings=normalize_embeddings,
+        cohort=cohort,
     )
 
     # 2. BM25 Search (Sparse)
@@ -110,6 +112,7 @@ def run_retrieval_pipeline(
     top_k: int = 5,
     batch_size: int = 8,
     normalize_embeddings: bool = True,
+    cohort: str | None = None,
 ) -> dict[str, Any]:
     """Hàm lõi điều phối toàn bộ quá trình Tìm kiếm dữ liệu (Retrieval Pipeline).
     
@@ -240,6 +243,7 @@ def run_retrieval_pipeline(
                 batch_size=batch_size,
                 normalize_embeddings=normalize_embeddings,
                 detected_entities=detected_entities,
+                cohort=cohort,
             )
 
             return {
@@ -290,6 +294,7 @@ def run_retrieval_pipeline(
                 batch_size=batch_size,
                 normalize_embeddings=normalize_embeddings,
                 detected_entities=detected_entities,
+                cohort=cohort,
             )
 
             return {
@@ -339,6 +344,7 @@ def run_retrieval_pipeline(
             batch_size=batch_size,
             normalize_embeddings=normalize_embeddings,
             detected_entities=detected_entities,
+            cohort=cohort,
         )
 
         results_by_plan.append(

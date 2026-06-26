@@ -10,6 +10,7 @@ def build_answer_prompt(
     retrieval_result: dict[str, Any],
     selected_citations: list[dict[str, Any]] | None = None,
     max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS,
+    cohort: str | None = None,
 ) -> str:
     context = _selected_context_or_fallback(
         retrieval_result=retrieval_result,
@@ -18,11 +19,15 @@ def build_answer_prompt(
     )
     structured_result = _to_pretty_json(retrieval_result.get("structured_result"))
     tool_result = _to_pretty_json(retrieval_result.get("tool_result"))
-    return f"""Bạn là chatbot tra cứu Sổ tay sinh viên.
+    cohort_str = ""
+    if cohort:
+        cohort_str = f" Sinh viên đang hỏi thuộc nhóm khóa: {cohort} (Lưu ý ánh xạ năm nhập học: K48=2022, K49=2023, K50=2024, K51=2025). NẾU TRONG TÀI LIỆU CÓ QUY ĐỊNH ÁP DỤNG THEO NĂM, HÃY ĐỐI CHIẾU NĂM ĐỂ TRẢ LỜI ĐÚNG CHO SINH VIÊN."
+        
+    return f"""Bạn là chatbot tra cứu Sổ tay sinh viên.{cohort_str}
 
 Nguyên tắc bắt buộc:
 - Chỉ trả lời dựa trên CONTEXT, STRUCTURED_RESULT, TOOL_RESULT và CITATIONS bên dưới.
-- Đọc kỹ TOÀN BỘ các đoạn văn trong CONTEXT từ trên xuống dưới trước khi trả lời để tổng hợp thông tin đầy đủ, tuyệt đối không chỉ đọc đoạn đầu tiên rồi vội vàng kết luận (đặc biệt khi các khoản/điều luật bị tách làm nhiều đoạn).
+- Đọc kỹ TOÀN BỘ các đoạn văn trong CONTEXT từ trên xuống dưới trước khi trả lời. ĐẶC BIỆT LƯU Ý các chú thích (footnote) hoặc dòng ghi chú sửa đổi (VD: "áp dụng từ khóa tuyển sinh năm 2025") để chọn đúng quy định áp dụng cho khóa của sinh viên. KHÔNG dùng quy định cũ nếu đã có chú thích sửa đổi cho khóa hiện tại.
 - Không bịa, không suy đoán ngoài dữ liệu được cung cấp, không tự tạo nguồn ngoài context.
 - ĐẶC BIỆT LƯU Ý: Nếu câu hỏi hỏi về một khái niệm (VD: học phí), nhưng CONTEXT chỉ chứa thông tin về khái niệm "tương tự" (VD: hỗ trợ chi phí, học bổng, tín chỉ), TUYỆT ĐỐI KHÔNG được dùng để trả lời. Bạn phải nói rõ: "Sổ tay sinh viên không đề cập cụ thể thông tin này." Tuy nhiên, đối với các TỪ LÓNG phổ biến của sinh viên (như "bảo lưu" tương đương với "nghỉ học tạm thời", "rớt môn" tương đương "học lại"), hãy linh hoạt cung cấp thông tin của thuật ngữ chính thức và giải thích nhẹ nhàng.
 - Nếu dữ liệu không đủ rõ, nói rằng chưa tìm thấy thông tin rõ trong Sổ tay sinh viên.
@@ -66,12 +71,14 @@ def build_prompt(
     query: str,
     retrieval_result: dict[str, Any],
     max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS,
+    cohort: str | None = None,
 ) -> str:
     return build_answer_prompt(
         query=query,
         retrieval_result=retrieval_result,
         selected_citations=retrieval_result.get("citations"),
         max_context_chars=max_context_chars,
+        cohort=cohort,
     )
 
 

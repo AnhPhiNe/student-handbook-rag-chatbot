@@ -85,7 +85,7 @@ def chat(
     enforce_chat_rate_limit(http_request)
 
     try:
-        result = answer_service.answer(query, chat_history=request.chat_history)
+        result = answer_service.answer(query, chat_history=request.chat_history, cohort=request.cohort)
     except Exception as exc:
         latency_ms = round((time.perf_counter() - started_at) * 1000, 2)
         logger.exception(

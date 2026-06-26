@@ -13,6 +13,11 @@ API_VERSION = "0.1.0"
 
 load_project_env()
 
+import sys
+
+if sys.stdout and sys.stdout.encoding.lower() != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8')
+
 from contextlib import asynccontextmanager
 
 @asynccontextmanager

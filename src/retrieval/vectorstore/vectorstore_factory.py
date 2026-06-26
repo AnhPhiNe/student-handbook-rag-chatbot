@@ -65,11 +65,11 @@ def _ensure_payload_indexes(client: Any, collection_name: str) -> None:
     """
     from qdrant_client.http.models import PayloadSchemaType
 
-    # Danh sách các field cần tạo Index để filter
     required_indexes = {
         "chunk_type": PayloadSchemaType.KEYWORD,
         "source": PayloadSchemaType.KEYWORD,
         "title": PayloadSchemaType.TEXT,
+        "cohort": PayloadSchemaType.KEYWORD,
     }
 
     try:
@@ -144,24 +144,30 @@ class QdrantCollectionAdapter:
         from qdrant_client.models import Filter, FieldCondition, MatchAny
 
         qdrant_filter = None
-        if where and "chunk_type" in where:
-            chunk_type_filter = where["chunk_type"]
-            chunk_types = []
+        if where:
+            from qdrant_client.models import Filter, FieldCondition, MatchAny, MatchValue
             
-            if isinstance(chunk_type_filter, str):
-                chunk_types = [chunk_type_filter]
-            elif isinstance(chunk_type_filter, dict):
-                chunk_types = chunk_type_filter.get("$in", [])
-                
-            if chunk_types:
-                qdrant_filter = Filter(
-                    must=[
-                        FieldCondition(
-                            key="chunk_type",
-                            match=MatchAny(any=chunk_types),
-                        )
-                    ]
-                )
+            must_conditions = []
+            
+            def parse_condition(key, val):
+                if key == "chunk_type":
+                    if isinstance(val, str):
+                        must_conditions.append(FieldCondition(key="chunk_type", match=MatchAny(any=[val])))
+                    elif isinstance(val, dict) and "$in" in val:
+                        must_conditions.append(FieldCondition(key="chunk_type", match=MatchAny(any=val["$in"])))
+                elif key == "cohort":
+                    must_conditions.append(FieldCondition(key="cohort", match=MatchValue(value=val)))
+            
+            if "$and" in where:
+                for cond in where["$and"]:
+                    for k, v in cond.items():
+                        parse_condition(k, v)
+            else:
+                for k, v in where.items():
+                    parse_condition(k, v)
+                    
+            if must_conditions:
+                qdrant_filter = Filter(must=must_conditions)
 
         results = self.client.query_points(
             collection_name=self.collection_name,

@@ -67,6 +67,7 @@ def chat_stream(
             stream = answer_service.answer_stream(
                 query,
                 chat_history=request.chat_history,
+                cohort=request.cohort,
             )
             for chunk in stream:
                 chunk_type = chunk.get("type", "")

@@ -1,4 +1,4 @@
-﻿input:
+input:
   semantic_chunks: data/processed/chunks/semantic_chunks.json
   index_manifest: data/processed/chunks/index_manifest.json
 
@@ -8,9 +8,9 @@ embedding:
   normalize_embeddings: true
 
 vectorstore:
-  provider: chroma
+  provider: qdrant_cloud
   persist_dir: data/vectorstore/chroma
-  collection_name: student_handbook_semantic
+  collection_name: student_handbook_semantic_v2
   reset_collection: true
 
 output:

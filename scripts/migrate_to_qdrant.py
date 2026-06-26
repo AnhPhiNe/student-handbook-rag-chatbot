@@ -28,6 +28,7 @@ def get_qdrant_client(url: str, api_key: str):
     return QdrantClient(url=url, api_key=api_key, timeout=60.0)
 
 def main():
+    sys.stdout.reconfigure(encoding='utf-8')
     parser = argparse.ArgumentParser(description="Chuyển dữ liệu từ ChromaDB (Local) sang Qdrant (Cloud)")
     parser.add_argument("--config", type=str, default="configs/embedding.yaml", help="Đường dẫn file config")
     parser.add_argument("--batch-size", type=int, default=30, help="Batch size để đẩy dữ liệu lên Qdrant")
@@ -42,7 +43,7 @@ def main():
     collection_name = config.get("vectorstore", {}).get("collection_name", "student_handbook_semantic")
     
     print(f"   Thư mục ChromaDB: {chroma_dir}")
-    print(f"   Tên Collection: {collection_name}")
+    print(f"   Tên Collection nguồn: {collection_name}")
 
     # 2. Lấy dữ liệu từ ChromaDB
     print("\n2. Kết nối ChromaDB và trích xuất dữ liệu...")
@@ -85,16 +86,17 @@ def main():
     from qdrant_client.models import Distance, VectorParams, PointStruct
     
     vector_size = len(embeddings[0])
+    qdrant_collection = collection_name
     
-    if qdrant_client.collection_exists(collection_name):
-        print(f"   Collection '{collection_name}' đã tồn tại trên Qdrant. Đang xóa để nạp lại...")
-        qdrant_client.delete_collection(collection_name)
+    if qdrant_client.collection_exists(qdrant_collection):
+        print(f"   Collection '{qdrant_collection}' đã tồn tại trên Qdrant. Đang xóa để nạp lại...")
+        qdrant_client.delete_collection(qdrant_collection)
         
     qdrant_client.create_collection(
-        collection_name=collection_name,
+        collection_name=qdrant_collection,
         vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
     )
-    print(f"   Đã tạo thành công Collection '{collection_name}' với vector_size={vector_size}")
+    print(f"   Đã tạo thành công Collection '{qdrant_collection}' với vector_size={vector_size}")
 
     # 5. Đẩy dữ liệu lên Qdrant
     print("\n5. Bắt đầu đẩy dữ liệu lên Qdrant Cloud...")
@@ -120,12 +122,12 @@ def main():
     for i in tqdm(range(0, total_chunks, args.batch_size), desc="Đang upload"):
         batch = points[i:i + args.batch_size]
         qdrant_client.upsert(
-            collection_name=collection_name,
+            collection_name=qdrant_collection,
             points=batch
         )
 
-    print(f"\n✅ HOÀN TẤT! Đã đẩy thành công {total_chunks} chunks lên Qdrant Cloud.")
-    print("Bây giờ bạn chỉ cần đặt VECTORDB_PROVIDER=qdrant_cloud trong .env là hệ thống sẽ tự dùng Cloud.")
+    print(f"\n✅ HOÀN TẤT! Đã đẩy thành công {total_chunks} chunks lên Qdrant Cloud (Collection: {qdrant_collection}).")
+    print("Bây giờ bạn chỉ cần cấu hình VECTORDB_PROVIDER=qdrant_cloud và cập nhật collection_name=_v2 trong embedding.yaml.")
 
 if __name__ == "__main__":
     main()

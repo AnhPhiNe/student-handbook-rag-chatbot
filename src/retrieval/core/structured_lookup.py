@@ -151,9 +151,12 @@ def should_use_structured_lookup(query: str) -> bool:
     return any(phrase in q for phrase in lookup_phrases)
 
 
-def structured_lookup(query: str, tables: list[dict[str, Any]]) -> Optional[dict[str, Any]]:
+def structured_lookup(query: str, tables: list[dict[str, Any]], cohort: str | None = None) -> Optional[dict[str, Any]]:
     if not should_use_structured_lookup(query):
         return None
+
+    if cohort:
+        tables = [t for t in tables if t.get("cohort") == cohort]
 
     q = query.lower()
 

@@ -226,7 +226,7 @@ def run_retrieval_pipeline(
         }
 
     if strategy == "formula_lookup":
-        formula_result = formula_lookup(query, formula_rules or [])
+        formula_result = formula_lookup(query, formula_rules or [], cohort=cohort)
         if formula_result is None:
             # Neu khong tim thay cong thuc cung, fallback sang regulation de user van co nguon tham khao.
             fallback_plan = {
@@ -275,7 +275,7 @@ def run_retrieval_pipeline(
         }
 
     if strategy == "structured_lookup":
-        lookup_result = structured_lookup(query, scoring_tables)
+        lookup_result = structured_lookup(query, scoring_tables, cohort=cohort)
 
         if lookup_result is None:
             # Cau duoc route vao lookup nhung bang tra khong match, fallback sang regulation thay vi tra rong.

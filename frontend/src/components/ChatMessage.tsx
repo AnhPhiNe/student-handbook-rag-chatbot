@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
-import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, X } from 'lucide-react';
+import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, X, Brain } from 'lucide-react';
 import type { Message } from '../hooks/useChat';
 import { useToast } from './Toast';
 import userAvatarImg from '../assets/user_avatar.png';
@@ -107,6 +107,7 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [feedbackText, setFeedbackText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showThinking, setShowThinking] = useState(false);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(message.content);
@@ -173,12 +174,25 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
 
   const isErrorMsg = !message.isStreaming && message.content.includes("Xin lỗi, đã có lỗi");
 
+  let displayContent = message.content;
+  let thinkContent = "";
+  
+  const thinkMatch = displayContent.match(/<think>([\s\S]*?)<\/think>/);
+  if (thinkMatch) {
+    thinkContent = thinkMatch[1].trim();
+    displayContent = displayContent.replace(/<think>[\s\S]*?<\/think>/, '').trim();
+  } else if (displayContent.includes('<think>')) {
+    const parts = displayContent.split('<think>');
+    displayContent = parts[0].trim();
+    thinkContent = parts[1].trim();
+  }
+
   return (
     <div className="message-wrapper bot">
       <img src={botAvatarImg} alt="HCMUE AI" className="avatar bot" />
       <div className="message-content">
-        <div className={`${thinkingMessage && message.isStreaming && !message.content ? 'cold-start-bubble' : 'message-bubble'} ${message.isStreaming && !message.content && !thinkingMessage ? 'typing-indicator' : ''}`}>
-          {message.isStreaming && !message.content ? (
+        <div className={`${thinkingMessage && message.isStreaming && !displayContent && !thinkContent ? 'cold-start-bubble' : 'message-bubble'} ${message.isStreaming && !displayContent && !thinkContent && !thinkingMessage ? 'typing-indicator' : ''}`}>
+          {message.isStreaming && !displayContent && !thinkContent ? (
             thinkingMessage ? (
               <div className="cold-start-content">
                 <div className="cold-start-spinner" />
@@ -192,10 +206,30 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
               </>
             )
           ) : (
-            <ReactMarkdown>{message.content}</ReactMarkdown>
+            <>
+              {thinkContent && (
+                <div className="thinking-block" style={{ marginBottom: '1rem', borderLeft: '3px solid var(--border-color)', paddingLeft: '0.75rem' }}>
+                  <div 
+                    className="thinking-header" 
+                    onClick={() => setShowThinking(!showThinking)}
+                    style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: showThinking ? '0.5rem' : '0' }}
+                  >
+                    <Brain size={16} />
+                    <span>Quá trình suy luận</span>
+                    {showThinking ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                  </div>
+                  {showThinking && (
+                    <div className="thinking-content" style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', fontStyle: 'italic', whiteSpace: 'pre-wrap' }}>
+                      {thinkContent}
+                    </div>
+                  )}
+                </div>
+              )}
+              {displayContent && <ReactMarkdown>{displayContent}</ReactMarkdown>}
+            </>
           )}
           
-          {message.isStreaming && message.content && (
+          {message.isStreaming && displayContent && (
             <span style={{ display: 'inline-block', width: '8px', height: '16px', background: 'var(--accent-color)', animation: 'blink 1s step-end infinite', marginLeft: '4px', verticalAlign: 'middle' }}></span>
           )}
 

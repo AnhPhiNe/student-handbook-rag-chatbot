@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { GraduationCap, Gift, Home, Trash2, ArrowDown, Lock, Calculator, Medal, ClipboardList } from 'lucide-react';
+import { GraduationCap, Gift, Home, Trash2, ArrowDown, Lock, Calculator, Medal, ClipboardList, ArrowLeft } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';
@@ -48,28 +48,28 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
     ]
   },
   'tinh-toan': {
-    response: "## Tính điểm & Công cụ\n\nHệ thống được tích hợp các công cụ tính toán tự động dựa trên quy định của trường. Chatbot có thể tính nhẩm hoặc tính chính xác nếu bạn cung cấp đủ số liệu.\n\n**Bạn có thể yêu cầu:**\n\n- **Tính GPA:** Nhập danh sách điểm chữ hoặc điểm số, chatbot sẽ tính ra GPA hệ 4.\n- **Tính điểm rèn luyện:** Cung cấp tổng điểm, chatbot sẽ phân loại (Xuất sắc, Tốt, Khá...).\n- **Tính điểm học bổng:** So sánh điểm học tập và rèn luyện của bạn với mức chuẩn học bổng.\n\nThử ngay bằng cách chọn các câu hỏi gợi ý bên dưới!",
+    response: "## Tính điểm & Đánh giá\n\nBạn có thể hỏi AI về các quy định tính điểm, xếp loại học lực và rèn luyện. \n\n*(Lưu ý: Nếu bạn cần công cụ tính toán tự động như tính GPA hay điểm học bổng, hãy sử dụng tab **Công cụ** ở thanh menu bên trái nhé!)*\n\n**Bạn có thể hỏi AI về:**\n\n- **Xếp loại học lực:** mức điểm trung bình tích lũy để đạt loại Khá, Giỏi, Xuất sắc.\n- **Xếp loại rèn luyện:** khung điểm rèn luyện tương ứng với các mức xếp loại.\n- **Quy đổi điểm:** cách chuyển đổi từ thang điểm 10 sang thang điểm chữ và thang điểm 4.\n\nThử ngay bằng cách chọn các câu hỏi gợi ý bên dưới!",
     suggestions: [
-      "Tính giúp tôi điểm trung bình nếu có 3 điểm A và 2 điểm B+",
+      "Điểm trung bình tích lũy 3.2 thì xếp loại học lực gì?",
       "Điểm rèn luyện 85 là loại gì?",
-      "Học kỳ này mình được 3.2 GPA và 90 rèn luyện thì có được học bổng không?",
-      "Muốn đạt học bổng loại Xuất sắc cần điều kiện gì?"
+      "Làm sao để được xếp loại học lực Xuất sắc?",
+      "Công thức tính điểm trung bình học kỳ như thế nào?"
     ]
   },
   'hoc-bong': {
     response: "## Học bổng & Học phí\n\nBạn có thể hỏi các nội dung tài chính sinh viên được nêu trong Sổ tay sinh viên.\n\n**Bạn có thể hỏi về:**\n\n- **Học bổng khuyến khích học tập:** điều kiện xét, mức thưởng và cách phân loại.\n- **Học phí:** quy định chung, phương thức và thời hạn đóng học phí.\n- **Miễn giảm học phí:** các đối tượng được miễn, giảm hoặc hỗ trợ chi phí học tập.\n- **Vay vốn:** hướng dẫn làm thủ tục vay vốn sinh viên.",
     suggestions: [
       "Điều kiện xét học bổng khuyến khích học tập là gì?",
-      "Học bổng loại Giỏi được bao nhiêu tiền?",
+      "Sinh viên bị kỷ luật có được xét học bổng không?",
       "Đối tượng nào được miễn học phí?",
-      "Sinh viên sư phạm có được hỗ trợ chi phí học tập không?"
+      "Sinh viên sư phạm có được hỗ trợ chi phí sinh hoạt không?"
     ]
   },
   'ren-luyen': {
     response: "## Rèn luyện & Khen thưởng\n\nBạn có thể hỏi về các quy định đánh giá rèn luyện, khen thưởng và xử lý kỷ luật.\n\n**Bạn có thể hỏi về:**\n\n- **Đánh giá rèn luyện:** các tiêu chí, thang điểm, và cách xếp loại kết quả rèn luyện.\n- **Khen thưởng:** các danh hiệu (Sinh viên 5 tốt, Sao tháng Giêng) và quy định tuyên dương.\n- **Kỷ luật:** các mức kỷ luật (khiển trách, cảnh cáo, buộc thôi học) và cách thức xóa kỷ luật.",
     suggestions: [
       "Tiêu chí đánh giá kết quả rèn luyện gồm những gì?",
-      "Làm sao để đạt danh hiệu Sinh viên 5 tốt?",
+      "Sinh viên vi phạm quy chế thi bị xử lý như thế nào?",
       "Bị kỷ luật khiển trách thì bao lâu được xóa?",
       "Quay cóp trong phòng thi bị xử lý thế nào?"
     ]
@@ -119,7 +119,11 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
   };
 
   useEffect(() => {
-    scrollToBottom();
+    // Tránh tự động cuộn xuống đáy ở lượt hội thoại đầu tiên 
+    // để người dùng luôn nhìn thấy câu hỏi của mình ở trên cùng
+    if (messages.length > 2) {
+      scrollToBottom();
+    }
   }, [messages, isTyping]);
 
   const handleScroll = () => {
@@ -139,7 +143,9 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
       'hoc-vu': 'Học vụ & Đào tạo',
       'hoc-bong': 'Học bổng & Học phí',
       'ktx': 'Phòng ban & Ký túc xá',
-      'hanh-chinh': 'Quy trình Hành chính'
+      'hanh-chinh': 'Quy trình Hành chính',
+      'tinh-toan': 'Tính điểm & Đánh giá',
+      'ren-luyen': 'Rèn luyện & Khen thưởng'
     };
     
     const userPrompt = `Cho tôi biết thông tin về ${titles[id]}`;
@@ -160,6 +166,16 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  const handleBackToTopics = () => {
+    if (messages.length <= 2) {
+      if (onClearChat) onClearChat();
+    } else {
+      if (window.confirm("Quay lại màn hình chính sẽ làm mới đoạn chat hiện tại. Bạn có chắc chắn không?")) {
+        if (onClearChat) onClearChat();
+      }
+    }
+  };
 
   // Progressive thinking indicator based on real backend progress or simulated fallback
   useEffect(() => {
@@ -210,14 +226,8 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
           </div>
         )}
 
-        <header className="chat-header" style={{ paddingRight: '180px' }}>
+        <header className="chat-header">
           <div style={{flex: 1}}></div>
-          {hasMessages && (
-            <button className="theme-toggle" onClick={handleClearChat} title="Xóa lịch sử chat" style={{ marginRight: '0.5rem' }}>
-              <Trash2 size={16} />
-              <span>Xóa chat</span>
-            </button>
-          )}
         </header>
 
         {/* Scrollable content area that fills available space */}
@@ -277,13 +287,17 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
         </div>
       )}
 
-      <header className="chat-header" style={{ paddingRight: '180px' }}>
-        <h2 className="chat-title">Hội thoại với HCMUE AI</h2>
-        <div style={{display: 'flex', gap: '0.5rem'}}>
-          <button className="theme-toggle" onClick={handleClearChat} title="Xóa lịch sử chat">
-            <Trash2 size={16} />
-            <span>Xóa chat</span>
+      <header className="chat-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <button 
+            className="back-btn" 
+            onClick={handleBackToTopics} 
+            title="Quay lại danh sách thẻ gợi ý"
+          >
+            <ArrowLeft size={16} />
+            <span>Quay lại</span>
           </button>
+          <h2 className="chat-title" style={{ margin: 0 }}>Hội thoại với HCMUE AI</h2>
         </div>
       </header>
 

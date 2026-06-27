@@ -659,21 +659,7 @@ class AnswerPipeline:
             yield {"type": "done"}
             return
 
-        # Yield progress based on detected intent
-        intent = retrieval_result.get("intent", "regulation_query")
-        intent_progress_messages = {
-            "formula_query": "Đang đối chiếu công thức tính điểm và học tập...",
-            "calculation_query": "Đang thực hiện tính toán số liệu học tập...",
-            "procedure_query": "Đang tra cứu các quy trình thủ tục hành chính...",
-            "faculty_query": "Đang tìm kiếm thông tin về Khoa và Ngành học...",
-            "form_query": "Đang trích xuất thông tin biểu mẫu và hồ sơ...",
-            "office_query": "Đang định vị địa chỉ liên hệ và phòng ban...",
-            "score_lookup_query": "Đang xếp loại điểm rèn luyện và học tập...",
-            "regulation_query": "Đang đối chiếu các quy chế đào tạo...",
-            "mixed_query": "Đang tổng hợp dữ liệu từ nhiều chuyên mục...",
-        }
-        progress_msg = intent_progress_messages.get(intent, "Đang phân tích tài liệu tìm được...")
-        yield {"type": "progress", "message": progress_msg}
+        yield {"type": "progress", "message": "Đang phân tích tài liệu tìm được..."}
 
         citations_config = self.config.get("citations", {})
         guardrails_config = self.config.get("guardrails", {})

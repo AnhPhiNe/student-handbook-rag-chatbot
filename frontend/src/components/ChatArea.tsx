@@ -108,6 +108,11 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [thinkingMessage, setThinkingMessage] = useState("");
   const coldStartTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  
+  const [loadingSeconds, setLoadingSeconds] = useState(0);
+  const loadingTimer = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
+
+  const displayThinkingMessage = thinkingMessage ? `${thinkingMessage} (${loadingSeconds}s)` : "";
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -120,6 +125,19 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
       scrollToBottom();
     }
   }, [messages, isTyping]);
+
+  useEffect(() => {
+    if (isTyping) {
+      setLoadingSeconds(0);
+      loadingTimer.current = setInterval(() => {
+        setLoadingSeconds(prev => prev + 1);
+      }, 1000) as ReturnType<typeof setInterval>;
+    } else {
+      setLoadingSeconds(0);
+      clearInterval(loadingTimer.current);
+    }
+    return () => clearInterval(loadingTimer.current);
+  }, [isTyping]);
 
   const handleScroll = () => {
     if (!chatContainerRef.current) return;
@@ -257,10 +275,10 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
 
         {/* Input pinned to bottom */}
         <div className="chat-input-pinned">
-          {thinkingMessage && (
+          {displayThinkingMessage && (
             <div className="cold-start-banner" style={{ margin: '0 auto 0.75rem', maxWidth: '780px' }}>
               <div className="cold-start-spinner" />
-              <span>{thinkingMessage}</span>
+              <span>{displayThinkingMessage}</span>
             </div>
           )}
           <ChatInput onSend={onSendMessage} disabled={isTyping} />
@@ -306,7 +324,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
             <ChatMessage 
               key={msg.id} 
               message={msg} 
-              thinkingMessage={thinkingMessage}
+              thinkingMessage={displayThinkingMessage}
               onRetry={onRetry}
               onRegenerate={onRegenerate}
               query={query}

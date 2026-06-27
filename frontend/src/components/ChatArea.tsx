@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { GraduationCap, Gift, Home, Trash2, ArrowDown, Lock, Calculator, Medal, ClipboardList, ArrowLeft } from 'lucide-react';
+import { GraduationCap, Gift, Home, ArrowDown, Lock, Calculator, Medal, ClipboardList, ArrowLeft } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';
@@ -98,12 +98,6 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasMessages = messages.length > 0;
-
-  const handleClearChat = () => {
-    if (onClearChat && window.confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử trò chuyện không?")) {
-      onClearChat();
-    }
-  };
 
   const hour = new Date().getHours();
   let greeting = "Xin chào 👋";

@@ -41,7 +41,7 @@ xcopy /s /i /y data\eval "%TEMP_DIR%\data\eval"
 if errorlevel 1 goto :error
 
 echo [4/5] Preparing Hugging Face configuration...
-xcopy /y deploy\huggingface\backend\README.md "%TEMP_DIR%\README.md"
+copy /y deploy\huggingface\backend\README.md "%TEMP_DIR%\README.md"
 if errorlevel 1 goto :error
 
 echo [5/5] Initializing clean Git repository and pushing...

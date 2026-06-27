@@ -29,6 +29,10 @@ def run_pipeline_for_pdf(pdf_path: Path, cohort: str):
     env = os.environ.copy()
     env["PDF_PATH"] = str(pdf_path)
     env["COHORT"] = cohort
+    if cohort == "K50-K51":
+        env["CONFIG_PATH"] = "configs/document_sections_k50_k51.yaml"
+    else:
+        env["CONFIG_PATH"] = "configs/document_sections.yaml"
     
     for label, command in STEPS:
         print(f"\n==> {label} ({cohort})")
@@ -46,11 +50,30 @@ def merge_chunks(cohort_files, output_path):
                     chunk["metadata"] = {}
                 chunk["metadata"]["cohort"] = cohort
                 chunk["chunk_id"] = f"{cohort}_{chunk['chunk_id']}"
+                if "parent_id" in chunk["metadata"]:
+                    chunk["metadata"]["parent_id"] = f"{cohort}_{chunk['metadata']['parent_id']}"
             all_chunks.extend(chunks)
     
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(all_chunks, f, ensure_ascii=False, indent=2)
+
+def merge_docstore(cohort_files, output_path):
+    all_docs = []
+    for cohort, path in cohort_files.items():
+        if not path.exists():
+            continue
+        with open(path, "r", encoding="utf-8") as f:
+            docs = json.load(f)
+            for doc in docs:
+                doc["cohort"] = cohort
+                if "_id" in doc:
+                    doc["_id"] = f"{cohort}_{doc['_id']}"
+            all_docs.extend(docs)
+    
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(all_docs, f, ensure_ascii=False, indent=2)
 
 def merge_structured_data(cohort_files, output_path):
     all_items = []
@@ -80,6 +103,7 @@ def main():
     semantic_outputs = {}
     structured_outputs = {}
     tool_outputs = {}
+    docstore_outputs = {}
     formula_outputs = {}
     threshold_outputs = {}
     scoring_outputs = {}
@@ -94,10 +118,12 @@ def main():
         sem_dest = chunk_dir / f"{cohort}_semantic_chunks.json"
         struc_dest = chunk_dir / f"{cohort}_structured_lookup_chunks.json"
         tool_dest = chunk_dir / f"{cohort}_tool_rule_chunks.json"
+        docstore_dest = chunk_dir / f"{cohort}_docstore_items.json"
         
         shutil.copy(chunk_dir / "semantic_chunks.json", sem_dest)
         shutil.copy(chunk_dir / "structured_lookup_chunks.json", struc_dest)
         shutil.copy(chunk_dir / "tool_rule_chunks.json", tool_dest)
+        shutil.copy(chunk_dir / "docstore_items.json", docstore_dest)
         
         formula_dest = table_dir / f"{cohort}_formula_rules.json"
         threshold_dest = table_dir / f"{cohort}_threshold_rules.json"
@@ -112,6 +138,7 @@ def main():
         semantic_outputs[cohort] = sem_dest
         structured_outputs[cohort] = struc_dest
         tool_outputs[cohort] = tool_dest
+        docstore_outputs[cohort] = docstore_dest
         formula_outputs[cohort] = formula_dest
         threshold_outputs[cohort] = threshold_dest
         scoring_outputs[cohort] = scoring_dest
@@ -121,6 +148,7 @@ def main():
     merge_chunks(semantic_outputs, chunk_dir / "semantic_chunks.json")
     merge_chunks(structured_outputs, chunk_dir / "structured_lookup_chunks.json")
     merge_chunks(tool_outputs, chunk_dir / "tool_rule_chunks.json")
+    merge_docstore(docstore_outputs, chunk_dir / "docstore_items.json")
     
     print(f"\n{'='*50}\n--- MERGING STRUCTURED DATA ---\n{'='*50}")
     merge_structured_data(formula_outputs, table_dir / "formula_rules.json")
@@ -130,6 +158,10 @@ def main():
     
     print(f"\n{'='*50}\n--- BUILDING UNIFIED VECTOR STORE ---\n{'='*50}")
     subprocess.run([sys.executable, "-m", "scripts.build_vectorstore"], check=True)
+    
+    print(f"\n{'='*50}\n--- PUSHING TO MONGODB & QDRANT CLOUD ---\n{'='*50}")
+    subprocess.run([sys.executable, "-m", "scripts.push_to_mongo"], check=True)
+    subprocess.run([sys.executable, "-m", "scripts.migrate_to_qdrant"], check=True)
     
     print("\nMulti-cohort preprocessing completed successfully!")
 

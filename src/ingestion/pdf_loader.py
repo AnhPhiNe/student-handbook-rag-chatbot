@@ -9,7 +9,7 @@ import yaml
 
 
 PDF_PATH = Path(os.environ.get("PDF_PATH", "data/raw/so-tay-sinh-vien-khoa-48.pdf"))
-CONFIG_PATH = Path("configs/document_sections.yaml")
+CONFIG_PATH = Path(os.environ.get("CONFIG_PATH", "configs/document_sections.yaml"))
 OUTPUT_DIR = Path("data/processed/metadata")
 
 

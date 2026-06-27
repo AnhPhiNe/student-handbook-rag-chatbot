@@ -35,6 +35,11 @@ class MongoDocStore:
     def get_document_by_id(self, doc_id: str) -> Optional[Dict[str, Any]]:
         return self.collection.find_one({"_id": doc_id})
 
+    def drop_collection(self) -> None:
+        """Drops the entire collection. Use with caution."""
+        self.collection.drop()
+        logger.info(f"Dropped collection {self.collection.name}.")
+
 def get_mongo_store() -> MongoDocStore:
     load_project_env()
     uri = os.environ.get("MONGODB_URL")

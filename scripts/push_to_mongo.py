@@ -29,6 +29,9 @@ def main():
     print("Connecting to MongoDB Atlas...")
     mongo_store = get_mongo_store()
     
+    print("Dropping old collection to avoid orphaned data...")
+    mongo_store.drop_collection()
+    
     print("Inserting documents into MongoDB...")
     mongo_store.insert_documents(docstore_items)
     print("MongoDB push completed successfully!")

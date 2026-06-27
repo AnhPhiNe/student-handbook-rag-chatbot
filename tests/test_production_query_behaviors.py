@@ -11,6 +11,7 @@ from src.retrieval.core.query_router import route_query
 ENTITY_REGISTRY_PATH = Path("data/processed/entities/entity_registry.json")
 
 
+@unittest.skipIf(not ENTITY_REGISTRY_PATH.exists(), "Requires processed entity registry")
 class ProductionQueryBehaviorsTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:

@@ -90,7 +90,10 @@ class QueryRewriter:
         self._client = client
 
         # Load dynamic keys
-        keys_str = os.environ.get("GROQ_API_KEYS", os.environ.get("GROQ_API_KEY", ""))
+        keys_str = os.environ.get(
+            self.api_key_env_var, 
+            os.environ.get("GROQ_API_KEYS", os.environ.get("GROQ_API_KEY", ""))
+        )
         self.available_keys = [k.strip() for k in keys_str.split(",") if k.strip()]
 
         # Build fallback matrix (Model x Key)
@@ -284,7 +287,7 @@ class QueryRewriter:
 
         for provider in providers:
             try:
-                client = Groq(api_key=provider["api_key"], timeout=5.0, max_retries=0)
+                client = self._client or Groq(api_key=provider["api_key"], timeout=5.0, max_retries=0)
                 kwargs: dict[str, Any] = {
                     "model": provider["model"],
                     "messages": [
@@ -335,10 +338,16 @@ class QueryRewriter:
             APIConnectionError,
         )
 
+        import random
         last_error: Exception | None = None
-        for provider in self.providers:
+
+        keys = list(self.available_keys)
+        random.shuffle(keys)
+        providers = [{"model": m, "api_key": k} for m in self.models for k in keys]
+
+        for provider in providers:
             try:
-                client = Groq(api_key=provider["api_key"], timeout=5.0, max_retries=0)
+                client = self._client or Groq(api_key=provider["api_key"], timeout=5.0, max_retries=0)
                 kwargs: dict[str, Any] = {
                     "model": provider["model"],
                     "messages": [

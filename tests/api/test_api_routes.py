@@ -15,7 +15,7 @@ if TestClient is not None:
 
 
 class FakeAnswerService:
-    def answer(self, query: str, chat_history: list | None = None) -> dict:
+    def answer(self, query: str, chat_history: list | None = None, cohort: str | None = None) -> dict:
         return {
             "query": query,
             "answer": "Email Phong Dao tao la pdt@example.edu.vn.",
@@ -33,7 +33,7 @@ class FakeAnswerService:
             "error_message": None,
         }
 
-    def answer_stream(self, query: str, chat_history: list | None = None):
+    def answer_stream(self, query: str, chat_history: list | None = None, cohort: str | None = None):
         yield {
             "type": "metadata",
             "status": "answered",
@@ -175,9 +175,9 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertEqual(second.status_code, 429)
         self.assertEqual(second.json()["detail"], "Rate limit exceeded")
 
-    def test_chat_rate_limit_defaults_to_20(self) -> None:
+    def test_chat_rate_limit_defaults_to_10(self) -> None:
         with patch.dict("os.environ", {}, clear=True):
-            self.assertEqual(chat_controls.rate_limit_per_minute(), 20)
+            self.assertEqual(chat_controls.rate_limit_per_minute(), 10)
 
     def test_chat_stream_rejects_empty_query(self) -> None:
         response = self.client.post("/chat/stream", json={"query": "   "})

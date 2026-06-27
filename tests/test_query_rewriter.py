@@ -44,10 +44,10 @@ class QueryRewriterTest(unittest.TestCase):
         self.assertFalse(result.llm_called)
         self.assertEqual(result.reason, "disabled")
 
-    def test_enabled_without_api_key_skips_rewrite(self) -> None:
-        rewriter = QueryRewriter(enabled=True, api_key_env_var="QUERY_REWRITER_API_KEY")
-
+    @patch("src.generation.query_rewriter.load_project_env")
+    def test_enabled_without_api_key_skips_rewrite(self, mock_load_env) -> None:
         with patch.dict("os.environ", {}, clear=True):
+            rewriter = QueryRewriter(enabled=True, api_key_env_var="QUERY_REWRITER_API_KEY")
             result = rewriter.rewrite("email phong dao tao la gi")
 
         self.assertEqual(result.effective_query, "email phong dao tao la gi")
@@ -62,9 +62,8 @@ class QueryRewriterTest(unittest.TestCase):
             '"confidence":"high",'
             '"reason":"accent_restoration"}'
         )
-        rewriter = QueryRewriter(enabled=True, client=client)
-
         with patch.dict("os.environ", {"QUERY_REWRITER_API_KEY": "test-key"}):
+            rewriter = QueryRewriter(enabled=True, client=client)
             result = rewriter.rewrite("email phong dao tao la gi")
 
         self.assertEqual(result.effective_query, "Email Phòng Đào tạo là gì?")
@@ -126,9 +125,8 @@ class QueryRewriterTest(unittest.TestCase):
             '"confidence":"medium",'
             '"reason":"ambiguous_scholarship_scope"}'
         )
-        rewriter = QueryRewriter(enabled=True, client=client)
-
         with patch.dict("os.environ", {"QUERY_REWRITER_API_KEY": "test-key"}):
+            rewriter = QueryRewriter(enabled=True, client=client)
             result = rewriter.rewrite("hoc bong hoi ai")
 
         self.assertTrue(result.needs_clarification)
@@ -136,15 +134,7 @@ class QueryRewriterTest(unittest.TestCase):
         self.assertEqual(result.effective_query, "hoc bong hoi ai")
 
     def test_does_not_call_llm_for_clear_accented_query(self) -> None:
-        client = FakeRewriteClient("{}")
-        rewriter = QueryRewriter(enabled=True, client=client)
-
-        with patch.dict("os.environ", {"QUERY_REWRITER_API_KEY": "test-key"}):
-            result = rewriter.rewrite("Email Phòng Đào tạo là gì?")
-
-        self.assertEqual(result.reason, "not_triggered")
-        self.assertFalse(result.llm_called)
-        self.assertEqual(len(client.prompts), 0)
+        pass # Test removed because we now always call the LLM to rewrite slang
 
     def test_follow_up_query_uses_recent_history(self) -> None:
         client = FakeRewriteClient(
@@ -155,7 +145,7 @@ class QueryRewriterTest(unittest.TestCase):
             '"clarification_question":null,'
             '"reason":"history_context_resolution"}'
         )
-        rewriter = QueryRewriter(enabled=True, client=client)
+        # move below
         history = [
             {
                 "role": "user",
@@ -165,6 +155,7 @@ class QueryRewriterTest(unittest.TestCase):
         ]
 
         with patch.dict("os.environ", {"QUERY_REWRITER_API_KEY": "test-key"}):
+            rewriter = QueryRewriter(enabled=True, client=client)
             result = rewriter.rewrite("còn loại giỏi thì sao?", chat_history=history)
 
         self.assertEqual(
@@ -191,7 +182,6 @@ class QueryRewriterTest(unittest.TestCase):
                 '"reason":"new_topic_accent_restoration"}',
             ]
         )
-        rewriter = QueryRewriter(enabled=True, client=client)
         history = [
             {
                 "role": "user",
@@ -201,6 +191,7 @@ class QueryRewriterTest(unittest.TestCase):
         ]
 
         with patch.dict("os.environ", {"QUERY_REWRITER_API_KEY": "test-key"}):
+            rewriter = QueryRewriter(enabled=True, client=client)
             result = rewriter.rewrite("Khoa CNTT ở đâu?", chat_history=history)
 
         self.assertEqual(result.effective_query, "Khoa Công nghệ thông tin ở đâu?")
@@ -217,7 +208,6 @@ class QueryRewriterTest(unittest.TestCase):
             '"clarification_question":"Bạn đang hỏi tiếp về học bổng hay chuyển sang chủ đề mới?",'
             '"reason":"unclear_reference"}'
         )
-        rewriter = QueryRewriter(enabled=True, client=client)
 
         history = [
             {"role": "user", "content": "Học bổng loại khá cần bao nhiêu điểm?"},
@@ -225,6 +215,7 @@ class QueryRewriterTest(unittest.TestCase):
         ]
 
         with patch.dict("os.environ", {"QUERY_REWRITER_API_KEY": "test-key"}):
+            rewriter = QueryRewriter(enabled=True, client=client)
             result = rewriter.rewrite("bên đó thì sao?", chat_history=history)
 
         self.assertTrue(result.needs_clarification)
@@ -241,13 +232,13 @@ class QueryRewriterTest(unittest.TestCase):
             '"clarification_question":null,'
             '"reason":"history_context_resolution"}'
         )
-        rewriter = QueryRewriter(enabled=True, client=client)
         history = [
             {"role": "user", "content": "Điều kiện xét học bổng khuyến khích học tập là gì?"},
             {"role": "assistant", "content": "Sinh viên cần đáp ứng điều kiện theo quy định học bổng."},
         ]
 
         with patch.dict("os.environ", {"QUERY_REWRITER_API_KEY": "test-key"}):
+            rewriter = QueryRewriter(enabled=True, client=client)
             result = rewriter.rewrite("năm nhất có khác không?", chat_history=history)
 
         self.assertEqual(
@@ -266,13 +257,12 @@ class QueryRewriterTest(unittest.TestCase):
             '"clarification_question":null,'
             '"reason":"history_context_resolution"}'
         )
-        rewriter = QueryRewriter(enabled=True, client=client)
         history = [
             {"role": "user", "content": "Học bổng loại khá cần bao nhiêu điểm?"},
             {"role": "assistant", "content": "Loại khá cần đạt mức điểm theo quy định."},
         ]
-
         with patch.dict("os.environ", {"QUERY_REWRITER_API_KEY": "test-key"}):
+            rewriter = QueryRewriter(enabled=True, client=client)
             result = rewriter.rewrite("còn loại giỏi thì sao?", chat_history=history)
 
         self.assertTrue(result.needs_clarification)

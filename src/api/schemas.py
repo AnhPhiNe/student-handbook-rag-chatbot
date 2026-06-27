@@ -52,6 +52,16 @@ class ChatResponse(BaseModel):
     request_id: str | None = None
     run_id: str | None = None
     latency_ms: float | None = None
+    intent: str | None = None
+    strategy: str | None = None
+    citations: list[dict[str, Any]] | None = None
+    citations_used: list[dict[str, Any]] | None = None
+    llm_called: bool = False
+    used_cache: bool = False
+    clarification_needed: bool = False
+    error_type: str | None = None
+    error_message: str | None = None
+    debug: dict[str, Any] | None = None
 
 
 class ChatFeedbackRequest(BaseModel):

@@ -1,5 +1,6 @@
 import hashlib
 import json
+import logging
 import os
 import tempfile
 import threading
@@ -173,3 +174,69 @@ def _release_file_lock(lock_file: Any) -> None:
         msvcrt.locking(lock_file.fileno(), msvcrt.LK_UNLCK, 1)
     else:
         fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+
+
+class RedisResponseCache(ResponseCache):
+    def __init__(
+        self,
+        redis_url: str,
+        path: str | Path,
+        enabled: bool = True,
+        ttl_seconds: int = DEFAULT_CACHE_TTL_SECONDS,
+    ) -> None:
+        super().__init__(path=path, enabled=enabled, ttl_seconds=ttl_seconds)
+        self.redis_url = redis_url
+        import redis
+        self.client = redis.from_url(self.redis_url)
+
+    def get(self, key: str) -> dict[str, Any] | None:
+        if not self.enabled:
+            return None
+        try:
+            cached_json = self.client.get(key)
+            if cached_json:
+                print(f"[Redis Cache] HIT for key {key[:8]}...")
+                entry = json.loads(cached_json)
+                return self._unwrap_entry(entry)
+        except Exception as e:
+            logging.warning(f"Redis get failed: {e}. Falling back to local cache.")
+        
+        # If not in Redis (or Redis failed), fallback to local
+        return super().get(key)
+
+    def set(self, key: str, value: dict[str, Any]) -> None:
+        if not self.enabled:
+            return
+        
+        entry = {
+            "created_at": time.time(),
+            "value": value,
+        }
+        try:
+            self.client.set(key, json.dumps(entry, ensure_ascii=False, default=str), ex=self.ttl_seconds)
+            print(f"[Redis Cache] Wrote key {key[:8]}...")
+        except Exception as e:
+            logging.warning(f"Redis set failed: {e}. Falling back to local cache.")
+            
+        # Write to local cache as well (Two-Tier caching)
+        super().set(key, value)
+
+
+def get_response_cache(
+    path: str | Path,
+    enabled: bool = True,
+    ttl_seconds: int = DEFAULT_CACHE_TTL_SECONDS,
+) -> ResponseCache:
+    redis_url = os.environ.get("REDIS_URL")
+    if redis_url:
+        try:
+            import redis
+            r = redis.from_url(redis_url)
+            r.ping()
+            print("[Cache] Connected to Redis. Enabling Two-Tier Caching.")
+            return RedisResponseCache(redis_url, path, enabled, ttl_seconds)
+        except Exception as e:
+            print(f"[Cache] Redis connection failed: {e}. Falling back to Local JSON.")
+    
+    print("[Cache] Using Local JSON Caching.")
+    return ResponseCache(path, enabled, ttl_seconds)

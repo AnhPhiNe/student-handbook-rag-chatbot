@@ -27,7 +27,7 @@ from .gemini_client import GeminiClient
 from .io_utils import load_json, load_yaml
 from .prompt_builder import DEFAULT_MAX_CONTEXT_CHARS, build_answer_prompt, limit_context
 from .query_rewriter import QueryRewriter, QueryRewriteResult
-from .response_cache import ResponseCache
+from .response_cache import ResponseCache, get_response_cache
 from .semantic_cache import SemanticCache
 
 
@@ -66,10 +66,10 @@ class AnswerPipeline:
         self._last_llm_call_at = 0.0
         self.query_rewriter = QueryRewriter.from_config(self.config.get("query_rewriter"))
 
-        cache_config = self.config.get("cache", {})
-        self.response_cache = ResponseCache(
-            path=cache_config.get("path", "data/cache/answer_response_cache.json"),
-            enabled=cache_config.get("enabled", True),
+        self.response_cache = get_response_cache(
+            path=Path("data/processed/cache/response_cache.json"),
+            enabled=self.config.get("cache", {}).get("enabled", True),
+            ttl_seconds=self.config.get("cache", {}).get("ttl_seconds", 86400)
         )
         
         semantic_config = self.config.get("semantic_cache", {})
@@ -97,6 +97,12 @@ class AnswerPipeline:
         """
         rewrite_result = self.query_rewriter.rewrite(query, chat_history=chat_history)
         effective_query = rewrite_result.effective_query
+
+        # Override cohort from query if explicitly mentioned to prevent UI state mismatch
+        import re
+        cohort_match = re.search(r"(?i)\bk(?:hóa)?\s*(\d{2})\b", query)
+        if cohort_match:
+            cohort = f"K{cohort_match.group(1)}"
 
         # LLM-Evaluated Semantic Cache (before retrieval)
         is_standalone = not chat_history or len(chat_history) == 0
@@ -409,8 +415,10 @@ class AnswerPipeline:
                 query_rewrite=rewrite_result,
             )
 
+        llm_text = str(llm_result.get("text") or "").strip()
+
         final_answer = format_final_response(
-            str(llm_result.get("text") or ""),
+            llm_text,
             sources_text=format_sources_text(selected_citations),
         )
         output = self._build_output(

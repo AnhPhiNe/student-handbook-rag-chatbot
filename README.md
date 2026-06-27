@@ -136,7 +136,7 @@ student_handbook_rag/
     ├── api/                 # FastAPI controllers, routes, and Pydantic schemas
     ├── chunking/            # Layout-aware semantic chunking logic
     ├── common/              # Shared utilities (Logging, Environment loading)
-    ├── extraction/          # OCR parsing and metadata extraction from PDFs
+    ├── extraction/          # Structured data parsing (scoring tables, form templates, directories)
     ├── generation/          # LLM orchestration, Query Rewriting, and text generation
     ├── ingestion/           # Data loading pipelines (reading PDFs -> processing -> Vector DB)
     ├── preprocessing/       # Text cleaning and normalization
@@ -149,7 +149,7 @@ student_handbook_rag/
 - **`src/common/`**: Essential shared modules for the system such as robust logging (`logger.py`) and environment loading (`env_loader.py`).
 - **`src/retrieval/`**: The core RAG retrieval engine featuring Intent Routing, Context Building, and Cross-Encoder Reranking logic.
 - **`src/generation/`**: LLM orchestration layer managing Prompt Injection, Query Rewriting, and Double-Loop Fallback generation.
-- **`src/chunking/` & `src/extraction/`**: Autonomous offline data pipelines responsible for layout-aware PDF parsing and Parent-Child chunk generation.
+- **`src/chunking/` & `src/extraction/`**: Autonomous offline data pipelines responsible for layout-aware PDF parsing (via PyMuPDF) and extracting complex structured business rules (formulas, tables, directories).
 - **`src/services/`**: High-level business logic binding the Retrieval and Generation modules.
 
 ---

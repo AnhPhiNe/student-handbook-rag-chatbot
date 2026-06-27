@@ -46,9 +46,9 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
     return [
         {
             "chunk_type": "structured_lookup",
-            "title": lookup_result.get("table_name"),
+            "title": lookup_result.get("table_name") or "Bảng quy chế (Trích xuất tự động)",
             "source_pages": lookup_result.get("source_pages", []),
-            "content": str(lookup_result.get("result", lookup_result)),
+            "content": "Dữ liệu được trích xuất trực tiếp từ Cơ sở dữ liệu Bảng quy chế trong Sổ tay Sinh viên HCMUE.",
         }
     ]
 

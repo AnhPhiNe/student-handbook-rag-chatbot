@@ -241,10 +241,21 @@ def is_low_confidence(retrieval_result: dict[str, Any]) -> bool:
 
 
 def can_answer_deterministically(retrieval_result: dict[str, Any]) -> bool:
-    # Ba nhom nay co the tra loi bang logic/bang tra cuu, khong can LLM dien giai.
+    if retrieval_result.get("out_of_domain") or retrieval_result.get("needs_clarification"):
+        return True
+
+    structured_res = retrieval_result.get("structured_result")
+    if _has_result(structured_res):
+        row = structured_res.get("result")
+        # NẾU LÀ DICT (kết quả 1 dòng ngắn gọn), ta CHẮC CHẮN không cần LLM.
+        if isinstance(row, dict):
+            return True
+        # NẾU LÀ LIST (bảng biểu lớn), bắt buộc dùng LLM để đọc bảng và trả lời câu hỏi.
+        if isinstance(row, list):
+            return False
+
     return (
-        _has_result(retrieval_result.get("structured_result"))
-        or _has_formula_result(retrieval_result.get("formula_result"))
+        _has_formula_result(retrieval_result.get("formula_result"))
         or _has_result(retrieval_result.get("tool_result"))
     )
 

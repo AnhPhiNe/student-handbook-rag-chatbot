@@ -197,7 +197,18 @@ def route_query(query: str) -> dict[str, Any]:
             "target_chunk_types": ["faculty_program_directory"],
         }
 
-    # 8. Các câu điểm qua môn/rớt môn là quy chế, không phải lookup bảng xếp loại
+    # 8. Các câu điểm qua môn/rớt môn
+    # Nếu hỏi TỪ KHÓA ĐIỂM + RỚT/QUA MÔN -> Tra cứu JSON
+    # Nếu hỏi RỚT MÔN chung chung (học lại, xử lý, etc) -> Regulation
+    asks_passing_score = contains_any(q, rules["pass_fail_regulation_signal"]) and contains_any(q, ["mấy điểm", "bao nhiêu điểm", "thang điểm", "quy đổi"])
+    if asks_passing_score:
+        return {
+            "intent": "score_lookup_query",
+            "strategy": "structured_lookup",
+            "target_chunk_types": [],
+        }
+
+    # Nếu chỉ hỏi về quy chế rớt/qua mà không hỏi điểm cụ thể
     if contains_any(q, rules["pass_fail_regulation_signal"]):
         return {
             "intent": "regulation_query",
@@ -224,7 +235,7 @@ def route_query(query: str) -> dict[str, Any]:
         ["loại", "xếp", "xuất sắc", "giỏi", "khá", "trung bình", "yếu"],
     )
 
-    # Score lookup chi danh cho cau hoi tra bang diem/range, khong dung cho quy che rot/qua mon.
+    # Score lookup chi danh cho cau hoi tra bang diem/range.
     if contains_any(q, rules["score_lookup_signal"]) or asks_letter_grade or asks_gpa_classification:
         return {
             "intent": "score_lookup_query",

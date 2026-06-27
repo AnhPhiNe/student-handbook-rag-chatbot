@@ -10,7 +10,7 @@ _ENV_LOADED = False
 def load_project_env(
     env_path: str | Path | None = None,
     *,
-    override: bool = False,
+    override: bool = True,
 ) -> Path | None:
     """Load project-level environment variables from .env if the file exists."""
     global _ENV_LOADED

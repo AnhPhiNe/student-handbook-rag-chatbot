@@ -202,8 +202,8 @@
     "cohort": "K48-K49"
   },
   {
-    "table_id": "grade_10_to_letter",
-    "table_name": "Quy đổi thang điểm 10 sang điểm chữ",
+    "table_id": "grade_10_to_letter_general",
+    "table_name": "Quy đổi thang điểm 10 sang điểm chữ (Học phần Giáo dục đại cương / Nền tảng)",
     "source_pages": [
       20
     ],
@@ -241,6 +241,62 @@
       },
       {
         "status": "Đạt",
+        "score_10_range": "4.0-4.7",
+        "letter_grade": "D"
+      },
+      {
+        "status": "Không đạt",
+        "score_10_range": "3.0-3.9",
+        "letter_grade": "F+"
+      },
+      {
+        "status": "Không đạt",
+        "score_10_range": "0.0-2.9",
+        "letter_grade": "F"
+      }
+    ],
+    "cohort": "K50-K51"
+  },
+  {
+    "table_id": "grade_10_to_letter_major",
+    "table_name": "Quy đổi thang điểm 10 sang điểm chữ (Các Học phần còn lại / Chuyên ngành)",
+    "source_pages": [
+      20
+    ],
+    "review_status": "needs_human_verified",
+    "rows": [
+      {
+        "status": "Đạt",
+        "score_10_range": "8.5-10",
+        "letter_grade": "A"
+      },
+      {
+        "status": "Đạt",
+        "score_10_range": "7.8-8.4",
+        "letter_grade": "B+"
+      },
+      {
+        "status": "Đạt",
+        "score_10_range": "7.0-7.7",
+        "letter_grade": "B"
+      },
+      {
+        "status": "Đạt",
+        "score_10_range": "6.3-6.9",
+        "letter_grade": "C+"
+      },
+      {
+        "status": "Đạt",
+        "score_10_range": "5.5-6.2",
+        "letter_grade": "C"
+      },
+      {
+        "status": "Không đạt",
+        "score_10_range": "4.8-5.4",
+        "letter_grade": "D+"
+      },
+      {
+        "status": "Không đạt",
         "score_10_range": "4.0-4.7",
         "letter_grade": "D"
       },

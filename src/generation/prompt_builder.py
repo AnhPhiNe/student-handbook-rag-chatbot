@@ -2,7 +2,7 @@ import json
 from typing import Any
 
 
-DEFAULT_MAX_CONTEXT_CHARS = 12000
+DEFAULT_MAX_CONTEXT_CHARS = 4000
 
 
 def build_answer_prompt(
@@ -12,10 +12,18 @@ def build_answer_prompt(
     max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS,
     cohort: str | None = None,
 ) -> str:
+    structured_result_data = retrieval_result.get("structured_result")
+    
+    # Giảm mạnh Context (xuống còn 1500 chars ~ 400 tokens) nếu đã có Structured Result (bảng điểm)
+    # để tránh làm cho Prompt quá dài, vượt quá Token Limit (như lỗi 413 của Groq).
+    if structured_result_data:
+        max_context_chars = min(max_context_chars, 1500)
+        
     context = _selected_context_or_fallback(
         retrieval_result=retrieval_result,
         selected_citations=selected_citations or [],
         max_context_chars=max_context_chars,
+
     )
     structured_result = _to_pretty_json(retrieval_result.get("structured_result"))
     tool_result = _to_pretty_json(retrieval_result.get("tool_result"))
@@ -27,7 +35,7 @@ def build_answer_prompt(
 
 Nguyên tắc bắt buộc:
 - Chỉ trả lời dựa trên CONTEXT, STRUCTURED_RESULT, TOOL_RESULT và CITATIONS bên dưới.
-- Đọc kỹ TOÀN BỘ các đoạn văn trong CONTEXT từ trên xuống dưới trước khi trả lời. ĐẶC BIỆT LƯU Ý các chú thích (footnote) hoặc dòng ghi chú sửa đổi (VD: "áp dụng từ khóa tuyển sinh năm 2025") để chọn đúng quy định áp dụng cho khóa của sinh viên. KHÔNG dùng quy định cũ nếu đã có chú thích sửa đổi cho khóa hiện tại.
+- Đọc kỹ TOÀN BỘ các đoạn văn trong CONTEXT từ trên xuống dưới trước khi trả lời. ĐẶC BIỆT LƯU Ý các chú thích (footnote) hoặc phụ lục sửa đổi (VD: "áp dụng từ khóa tuyển sinh năm 2025"). Nếu quy định có sự phân chia thành nhiều trường hợp (ví dụ: điểm cho từng loại môn học, mức học bổng cho từng loại sinh viên...), BẠN PHẢI trình bày rõ ràng và tách bạch tất cả các trường hợp đó. Tuyệt đối không được gộp chung hoặc bỏ sót trường hợp. KHÔNG dùng quy định cũ nếu đã có chú thích sửa đổi cho khóa hiện tại.
 - Không bịa, không suy đoán ngoài dữ liệu được cung cấp, không tự tạo nguồn ngoài context.
 - ĐẶC BIỆT LƯU Ý: Nếu câu hỏi hỏi về một khái niệm (VD: học phí), nhưng CONTEXT chỉ chứa thông tin về khái niệm "tương tự" (VD: hỗ trợ chi phí, học bổng, tín chỉ), TUYỆT ĐỐI KHÔNG được dùng để trả lời. Bạn phải nói rõ: "Sổ tay sinh viên không đề cập cụ thể thông tin này." Tuy nhiên, đối với các TỪ LÓNG phổ biến của sinh viên (như "bảo lưu" tương đương với "nghỉ học tạm thời", "rớt môn" tương đương "học lại"), hãy linh hoạt cung cấp thông tin của thuật ngữ chính thức và giải thích nhẹ nhàng.
 - Nếu dữ liệu không đủ rõ, nói rằng chưa tìm thấy thông tin rõ trong Sổ tay sinh viên.
@@ -44,7 +52,8 @@ Quy tắc theo loại câu hỏi:
 - Câu hỏi về form: nêu đúng tên form/mẫu đơn và thông tin cần thiết nếu context có.
 - Câu hỏi về phòng ban: nêu tên đơn vị, email/số điện thoại/địa chỉ/website nếu context có.
 - Câu hỏi về quy định/thủ tục: PHẢI TỔNG HỢP toàn bộ quy trình từ TẤT CẢ các tài liệu. Phân biệt rõ nơi cấp giấy tờ và NƠI NỘP HỒ SƠ chính thức. Không bỏ sót nơi nộp hồ sơ. NẾU Sổ tay sinh viên KHÔNG GHI RÕ phòng ban nộp hồ sơ/thực hiện thủ tục, PHẢI TRẢ LỜI LÀ "Sổ tay sinh viên không quy định chi tiết phòng ban nộp đơn/thủ tục này", tuyệt đối KHÔNG tự ý suy diễn hoặc lấy thông tin từ danh bạ phòng ban để đoán bừa.
-- Câu hỏi về điểm/range: dùng STRUCTURED_RESULT và trả kết quả trực tiếp.
+
+- Câu hỏi về điểm, thang điểm, xếp loại, qua môn: Nếu có STRUCTURED_RESULT, TUYỆT ĐỐI ƯU TIÊN lấy các bảng từ đó để trả lời và KHÔNG ĐƯỢC lấy dữ liệu điểm số từ CONTEXT để pha trộn vào. (Tuy nhiên, trong trường hợp STRUCTURED_RESULT báo "không có", bạn vẫn được phép dùng CONTEXT để trả lời như bình thường).
 - Câu hỏi tính điểm: dùng TOOL_RESULT, nêu kết quả và công thức/ghi chú có sẵn; không tự tính lại.
 
 USER_QUESTION:
@@ -57,6 +66,7 @@ RETRIEVAL_METADATA:
 
 STRUCTURED_RESULT:
 {structured_result if structured_result else "(không có)"}
+[LƯU Ý QUAN TRỌNG CHO AI: Nếu STRUCTURED_RESULT trả về NHIỀU BẢNG dữ liệu, BẠN BẮT BUỘC PHẢI LIỆT KÊ ĐẦY ĐỦ TẤT CẢ CÁC BẢNG, KHÔNG ĐƯỢC BỎ SÓT. Tuyệt đối tôn trọng các trường dữ liệu trong JSON. Không tự ý gộp chung hay phân loại sai lệch (ví dụ: TUYỆT ĐỐI không biến 'Không đạt' thành 'Đạt'). KHÔNG sử dụng Markdown table (bảng) để trình bày vì dễ bị lỗi hiển thị, chỉ được dùng danh sách gạch đầu dòng (bullet points) rõ ràng. TUYỆT ĐỐI KHÔNG tự ý chèn thêm phần "Tóm tắt" hay "Giải thích chung" có nội dung cào bằng (VD: cấm tự kết luận "điểm đạt từ 4.0 trở lên" nếu có bảng yêu cầu 5.5 mới đạt). Hãy để các con số trong từng bảng tự lên tiếng.]
 
 TOOL_RESULT:
 {tool_result if tool_result else "(không có)"}
@@ -151,4 +161,4 @@ def _to_pretty_json(data: Any) -> str:
     if not data:
         return ""
 
-    return json.dumps(data, ensure_ascii=False, indent=2, default=str)
+    return json.dumps(data, ensure_ascii=False, default=str)

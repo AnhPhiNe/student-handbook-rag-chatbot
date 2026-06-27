@@ -26,12 +26,14 @@ xcopy /s /i /y data\eval %TEMP_DIR%\data\eval >nul
 
 echo [4/5] Preparing Hugging Face configuration...
 > %TEMP_DIR%\README.md echo ---
->> %TEMP_DIR%\README.md echo title: Hcmue Handbook Rag Api
->> %TEMP_DIR%\README.md echo emoji: 📚
+>> %TEMP_DIR%\README.md echo title: HCMUE Student Handbook RAG
+>> %TEMP_DIR%\README.md echo emoji: 🎓
 >> %TEMP_DIR%\README.md echo colorFrom: blue
 >> %TEMP_DIR%\README.md echo colorTo: indigo
 >> %TEMP_DIR%\README.md echo sdk: docker
+>> %TEMP_DIR%\README.md echo python_version: "3.11"
 >> %TEMP_DIR%\README.md echo app_port: 7860
+>> %TEMP_DIR%\README.md echo pinned: false
 >> %TEMP_DIR%\README.md echo ---
 type README.md >> %TEMP_DIR%\README.md
 

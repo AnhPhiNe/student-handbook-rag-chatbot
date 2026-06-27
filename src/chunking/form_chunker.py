@@ -1,4 +1,3 @@
-import typing
 from typing import Any
 
 from .chunk_schema import create_chunk

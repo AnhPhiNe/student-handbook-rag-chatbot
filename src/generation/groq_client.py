@@ -30,7 +30,7 @@ class GroqClient:
             )
 
         try:
-            import groq
+            import groq  # noqa: F401
         except ImportError as exc:
             raise RuntimeError(
                 "Missing dependency groq. Install it with: pip install groq"

@@ -1,7 +1,6 @@
 import json
 import random
 from pathlib import Path
-import os
 from src.generation.groq_client import GroqClient
 
 CHUNKS_PATH = Path("data/processed/chunks/all_chunks.json")

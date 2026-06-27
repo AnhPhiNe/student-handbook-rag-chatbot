@@ -7,7 +7,8 @@ def augment_data(file_path, target_count):
     
     current_count = len(cases)
     needed = target_count - current_count
-    if needed <= 0: return
+    if needed <= 0:
+        return
     
     new_cases = []
     

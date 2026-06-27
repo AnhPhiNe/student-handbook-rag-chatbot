@@ -3,13 +3,13 @@
   "config_path": "configs\\answer_generation.yaml",
   "cases_path": "data\\eval\\generation_eval_cases.json",
   "pipeline_model": "llama-3.3-70b-versatile",
-  "judge_model": "openai/gpt-oss-120b",
+  "judge_model": "gemini-3.1-flash-lite",
   "summary": {
-    "total_cases": 65,
-    "answered_cases": 60,
-    "faithfulness": 0.8167,
-    "relevancy": 0.9417,
-    "correctness": 0.775
+    "total_cases": 100,
+    "answered_cases": 91,
+    "faithfulness": 0.7714,
+    "relevancy": 0.922,
+    "correctness": 0.7154
   },
   "cases": [
     {
@@ -18,11 +18,11 @@
       "status": "answered",
       "intent": "faculty_query",
       "metrics": {
-        "faithfulness": 0.6,
-        "relevancy": 0.9,
-        "correctness": 0.7
+        "faithfulness": 0.2,
+        "relevancy": 0.8,
+        "correctness": 0.3
       },
-      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 0.9, \"correctness\": 0.7}"
+      "judge_raw_output": "{\"faithfulness\": 0.2, \"relevancy\": 0.8, \"correctness\": 0.3}"
     },
     {
       "case_id": "gen_case_002",
@@ -30,11 +30,11 @@
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 1.0,
+        "faithfulness": 0.8,
         "relevancy": 1.0,
-        "correctness": 1.0
+        "correctness": 0.9
       },
-      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 0.9}"
     },
     {
       "case_id": "gen_case_003",
@@ -56,9 +56,9 @@
       "metrics": {
         "faithfulness": 1.0,
         "relevancy": 1.0,
-        "correctness": 1.0
+        "correctness": 0.6
       },
-      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.6}"
     },
     {
       "case_id": "gen_case_005",
@@ -78,17 +78,29 @@
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 0.4,
-        "relevancy": 1.0,
-        "correctness": 0.7
+        "faithfulness": 1.0,
+        "relevancy": 0.9,
+        "correctness": 0.6
       },
-      "judge_raw_output": "{\"faithfulness\": 0.4, \"relevancy\": 1.0, \"correctness\": 0.7}"
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 0.9, \"correctness\": 0.6}"
     },
     {
       "case_id": "gen_case_007",
       "query": "Trường mình có những công tác quản lý sinh viên nào và thực hiện như thế nào?",
       "status": "answered",
       "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.4,
+        "relevancy": 0.8,
+        "correctness": 0.2
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.4, \"relevancy\": 0.8, \"correctness\": 0.2}"
+    },
+    {
+      "case_id": "gen_case_008",
+      "query": "Trường mình có những nguồn lực nào để hỗ trợ sinh viên?",
+      "status": "answered",
+      "intent": "office_query",
       "metrics": {
         "faithfulness": 0.8,
         "relevancy": 1.0,
@@ -97,27 +109,16 @@
       "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 0.9}"
     },
     {
-      "case_id": "gen_case_008",
-      "query": "Trường mình có những nguồn lực nào để hỗ trợ sinh viên?",
-      "status": "needs_clarification",
-      "error_type": null,
-      "metrics": {
-        "faithfulness": 0.0,
-        "relevancy": 0.0,
-        "correctness": 0.0
-      }
-    },
-    {
       "case_id": "gen_case_009",
       "query": "Ai là người chịu trách nhiệm thi hành quyết định của trường?",
       "status": "answered",
       "intent": "office_query",
       "metrics": {
-        "faithfulness": 0.9,
+        "faithfulness": 1.0,
         "relevancy": 1.0,
-        "correctness": 0.9
+        "correctness": 0.7
       },
-      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 0.9}"
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.7}"
     },
     {
       "case_id": "gen_case_010",
@@ -125,11 +126,11 @@
       "status": "answered",
       "intent": "faculty_query",
       "metrics": {
-        "faithfulness": 0.9,
+        "faithfulness": 0.8,
         "relevancy": 1.0,
-        "correctness": 1.0
+        "correctness": 0.9
       },
-      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 0.9}"
     },
     {
       "case_id": "gen_case_011",
@@ -137,11 +138,11 @@
       "status": "answered",
       "intent": "form_query",
       "metrics": {
-        "faithfulness": 0.5,
+        "faithfulness": 0.2,
         "relevancy": 1.0,
         "correctness": 1.0
       },
-      "judge_raw_output": "{\"faithfulness\": 0.5, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.2, \"relevancy\": 1.0, \"correctness\": 1.0}"
     },
     {
       "case_id": "gen_case_012",
@@ -149,11 +150,11 @@
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 1.0,
+        "faithfulness": 0.8,
         "relevancy": 1.0,
         "correctness": 0.8
       },
-      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.8}"
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 0.8}"
     },
     {
       "case_id": "gen_case_013",
@@ -161,11 +162,11 @@
       "status": "answered",
       "intent": "faculty_query",
       "metrics": {
-        "faithfulness": 0.6,
-        "relevancy": 1.0,
-        "correctness": 0.8
+        "faithfulness": 0.5,
+        "relevancy": 0.8,
+        "correctness": 0.7
       },
-      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 1.0, \"correctness\": 0.8}"
+      "judge_raw_output": "{\"faithfulness\": 0.5, \"relevancy\": 0.8, \"correctness\": 0.7}"
     },
     {
       "case_id": "gen_case_014",
@@ -183,13 +184,13 @@
       "case_id": "gen_case_015",
       "query": "Em là lớp trưởng, em có quyền yêu cầu báo cáo tình hình lớp không và em có thể tham gia những hoạt động nào của trường?",
       "status": "answered",
-      "intent": "procedure_query",
+      "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 0.0,
-        "relevancy": 0.8,
-        "correctness": 0.0
+        "faithfulness": 0.8,
+        "relevancy": 1.0,
+        "correctness": 0.9
       },
-      "judge_raw_output": "{\"faithfulness\": 0.0, \"relevancy\": 0.8, \"correctness\": 0.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 0.9}"
     },
     {
       "case_id": "gen_case_016",
@@ -197,11 +198,11 @@
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 0.4,
-        "relevancy": 0.9,
-        "correctness": 0.3
+        "faithfulness": 0.6,
+        "relevancy": 1.0,
+        "correctness": 0.4
       },
-      "judge_raw_output": "{\"faithfulness\": 0.4, \"relevancy\": 0.9, \"correctness\": 0.3}"
+      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 1.0, \"correctness\": 0.4}"
     },
     {
       "case_id": "gen_case_017",
@@ -209,23 +210,23 @@
       "status": "answered",
       "intent": "form_query",
       "metrics": {
-        "faithfulness": 1.0,
-        "relevancy": 1.0,
-        "correctness": 1.0
+        "faithfulness": 0.4,
+        "relevancy": 0.9,
+        "correctness": 0.7
       },
-      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.4, \"relevancy\": 0.9, \"correctness\": 0.7}"
     },
     {
       "case_id": "gen_case_018",
       "query": "Trường mình có chương trình liên kết đào tạo không? Nó áp dụng cho hình thức vừa làm vừa học như thế nào?",
       "status": "answered",
-      "intent": "faculty_query",
+      "intent": "mixed_query",
       "metrics": {
-        "faithfulness": 0.2,
+        "faithfulness": 0.9,
         "relevancy": 0.8,
-        "correctness": 0.5
+        "correctness": 0.7
       },
-      "judge_raw_output": "{\"faithfulness\": 0.2, \"relevancy\": 0.8, \"correctness\": 0.5}"
+      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 0.8, \"correctness\": 0.7}"
     },
     {
       "case_id": "gen_case_020",
@@ -233,11 +234,11 @@
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 0.9,
-        "relevancy": 0.9,
-        "correctness": 0.2
+        "faithfulness": 1.0,
+        "relevancy": 0.8,
+        "correctness": 0.0
       },
-      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 0.9, \"correctness\": 0.2}"
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 0.8, \"correctness\": 0.0}"
     },
     {
       "case_id": "gen_case_021",
@@ -258,9 +259,9 @@
       "metrics": {
         "faithfulness": 1.0,
         "relevancy": 1.0,
-        "correctness": 0.5
+        "correctness": 0.8
       },
-      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.5}"
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.8}"
     },
     {
       "case_id": "gen_case_024",
@@ -268,11 +269,11 @@
       "status": "answered",
       "intent": "form_query",
       "metrics": {
-        "faithfulness": 0.8,
-        "relevancy": 1.0,
-        "correctness": 0.9
+        "faithfulness": 0.5,
+        "relevancy": 0.5,
+        "correctness": 0.0
       },
-      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 0.9}"
+      "judge_raw_output": "{\"faithfulness\": 0.5, \"relevancy\": 0.5, \"correctness\": 0.0}"
     },
     {
       "case_id": "gen_case_025",
@@ -280,11 +281,11 @@
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 0.6,
+        "faithfulness": 1.0,
         "relevancy": 1.0,
-        "correctness": 0.5
+        "correctness": 0.8
       },
-      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 1.0, \"correctness\": 0.5}"
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.8}"
     },
     {
       "case_id": "gen_case_026",
@@ -292,11 +293,11 @@
       "status": "answered",
       "intent": "faculty_query",
       "metrics": {
-        "faithfulness": 0.7,
-        "relevancy": 0.6,
+        "faithfulness": 0.8,
+        "relevancy": 0.9,
         "correctness": 0.7
       },
-      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 0.6, \"correctness\": 0.7}"
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 0.9, \"correctness\": 0.7}"
     },
     {
       "case_id": "gen_case_027",
@@ -350,11 +351,11 @@
       "status": "answered",
       "intent": "faculty_query",
       "metrics": {
-        "faithfulness": 0.8,
-        "relevancy": 0.6,
-        "correctness": 0.0
+        "faithfulness": 0.5,
+        "relevancy": 1.0,
+        "correctness": 0.8
       },
-      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 0.6, \"correctness\": 0.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.5, \"relevancy\": 1.0, \"correctness\": 0.8}"
     },
     {
       "case_id": "gen_case_034",
@@ -373,23 +374,22 @@
       "status": "answered",
       "intent": "faculty_query",
       "metrics": {
-        "faithfulness": 0.8,
+        "faithfulness": 0.7,
         "relevancy": 1.0,
         "correctness": 1.0
       },
-      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 1.0, \"correctness\": 1.0}"
     },
     {
       "case_id": "gen_case_037",
       "query": "Trường mình có công tác gì để hỗ trợ sinh viên không?",
-      "status": "answered",
-      "intent": "office_query",
+      "status": "needs_clarification",
+      "error_type": null,
       "metrics": {
-        "faithfulness": 0.4,
-        "relevancy": 0.9,
-        "correctness": 0.6
-      },
-      "judge_raw_output": "{\"faithfulness\": 0.4, \"relevancy\": 0.9, \"correctness\": 0.6}"
+        "faithfulness": 0.0,
+        "relevancy": 0.0,
+        "correctness": 0.0
+      }
     },
     {
       "case_id": "gen_case_038",
@@ -410,10 +410,10 @@
       "intent": "faculty_query",
       "metrics": {
         "faithfulness": 0.8,
-        "relevancy": 0.8,
-        "correctness": 0.2
+        "relevancy": 1.0,
+        "correctness": 1.0
       },
-      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 0.8, \"correctness\": 0.2}"
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 1.0}"
     },
     {
       "case_id": "gen_case_040",
@@ -421,11 +421,11 @@
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 0.9,
+        "faithfulness": 1.0,
         "relevancy": 1.0,
         "correctness": 1.0
       },
-      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
     },
     {
       "case_id": "gen_case_042",
@@ -433,11 +433,11 @@
       "status": "answered",
       "intent": "form_query",
       "metrics": {
-        "faithfulness": 0.7,
+        "faithfulness": 0.5,
         "relevancy": 1.0,
-        "correctness": 1.0
+        "correctness": 0.8
       },
-      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.5, \"relevancy\": 1.0, \"correctness\": 0.8}"
     },
     {
       "case_id": "gen_case_044",
@@ -458,10 +458,10 @@
       "intent": "regulation_query",
       "metrics": {
         "faithfulness": 0.8,
-        "relevancy": 0.5,
-        "correctness": 0.2
+        "relevancy": 0.2,
+        "correctness": 0.0
       },
-      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 0.5, \"correctness\": 0.2}"
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 0.2, \"correctness\": 0.0}"
     },
     {
       "case_id": "gen_case_046",
@@ -470,10 +470,10 @@
       "intent": "faculty_query",
       "metrics": {
         "faithfulness": 1.0,
-        "relevancy": 1.0,
-        "correctness": 1.0
+        "relevancy": 0.9,
+        "correctness": 0.8
       },
-      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 0.9, \"correctness\": 0.8}"
     },
     {
       "case_id": "gen_case_048",
@@ -481,11 +481,11 @@
       "status": "answered",
       "intent": "faculty_query",
       "metrics": {
-        "faithfulness": 0.6,
-        "relevancy": 1.0,
-        "correctness": 0.8
+        "faithfulness": 1.0,
+        "relevancy": 0.8,
+        "correctness": 0.4
       },
-      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 1.0, \"correctness\": 0.8}"
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 0.8, \"correctness\": 0.4}"
     },
     {
       "case_id": "gen_case_049",
@@ -505,11 +505,11 @@
       "status": "answered",
       "intent": "score_lookup_query",
       "metrics": {
-        "faithfulness": 1.0,
-        "relevancy": 0.3,
+        "faithfulness": 0.0,
+        "relevancy": 0.2,
         "correctness": 0.0
       },
-      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 0.3, \"correctness\": 0.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.0, \"relevancy\": 0.2, \"correctness\": 0.0}"
     },
     {
       "case_id": "gen_case_052",
@@ -517,11 +517,11 @@
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 0.2,
+        "faithfulness": 0.4,
         "relevancy": 0.8,
-        "correctness": 0.1
+        "correctness": 0.3
       },
-      "judge_raw_output": "{\"faithfulness\": 0.2, \"relevancy\": 0.8, \"correctness\": 0.1}"
+      "judge_raw_output": "{\"faithfulness\": 0.4, \"relevancy\": 0.8, \"correctness\": 0.3}"
     },
     {
       "case_id": "gen_case_053",
@@ -529,11 +529,11 @@
       "status": "answered",
       "intent": "faculty_query",
       "metrics": {
-        "faithfulness": 0.9,
+        "faithfulness": 0.7,
         "relevancy": 1.0,
-        "correctness": 1.0
+        "correctness": 0.9
       },
-      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 1.0, \"correctness\": 0.9}"
     },
     {
       "case_id": "gen_case_055",
@@ -541,11 +541,11 @@
       "status": "answered",
       "intent": "faculty_query",
       "metrics": {
-        "faithfulness": 0.7,
-        "relevancy": 1.0,
-        "correctness": 0.8
+        "faithfulness": 0.4,
+        "relevancy": 0.9,
+        "correctness": 0.6
       },
-      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 1.0, \"correctness\": 0.8}"
+      "judge_raw_output": "{\"faithfulness\": 0.4, \"relevancy\": 0.9, \"correctness\": 0.6}"
     },
     {
       "case_id": "gen_case_058",
@@ -553,11 +553,11 @@
       "status": "answered",
       "intent": "faculty_query",
       "metrics": {
-        "faithfulness": 1.0,
+        "faithfulness": 0.7,
         "relevancy": 1.0,
         "correctness": 1.0
       },
-      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 1.0, \"correctness\": 1.0}"
     },
     {
       "case_id": "gen_case_059",
@@ -565,11 +565,11 @@
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 0.6,
-        "relevancy": 0.9,
-        "correctness": 0.7
+        "faithfulness": 0.7,
+        "relevancy": 1.0,
+        "correctness": 0.8
       },
-      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 0.9, \"correctness\": 0.7}"
+      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 1.0, \"correctness\": 0.8}"
     },
     {
       "case_id": "gen_case_060",
@@ -579,9 +579,9 @@
       "metrics": {
         "faithfulness": 1.0,
         "relevancy": 1.0,
-        "correctness": 1.0
+        "correctness": 0.8
       },
-      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.8}"
     },
     {
       "case_id": "gen_case_061",
@@ -589,11 +589,11 @@
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 1.0,
-        "relevancy": 1.0,
-        "correctness": 1.0
+        "faithfulness": 0.6,
+        "relevancy": 0.9,
+        "correctness": 0.8
       },
-      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 0.9, \"correctness\": 0.8}"
     },
     {
       "case_id": "gen_case_063",
@@ -601,11 +601,11 @@
       "status": "answered",
       "intent": "faculty_query",
       "metrics": {
-        "faithfulness": 0.8,
+        "faithfulness": 1.0,
         "relevancy": 1.0,
         "correctness": 1.0
       },
-      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
     },
     {
       "case_id": "gen_case_064",
@@ -613,23 +613,23 @@
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 0.7,
-        "relevancy": 0.8,
+        "faithfulness": 0.6,
+        "relevancy": 0.9,
         "correctness": 0.4
       },
-      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 0.8, \"correctness\": 0.4}"
+      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 0.9, \"correctness\": 0.4}"
     },
     {
       "case_id": "gen_case_065",
       "query": "Em muốn biết trường mình có hỗ trợ sinh viên nào đạt đề tài NCKH xuất sắc để đưa kết quả vào thực tiễn không ạ?",
       "status": "answered",
-      "intent": "mixed_query",
+      "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 0.9,
+        "faithfulness": 1.0,
         "relevancy": 1.0,
         "correctness": 1.0
       },
-      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
     },
     {
       "case_id": "gen_case_066",
@@ -637,11 +637,11 @@
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 0.7,
+        "faithfulness": 0.6,
         "relevancy": 1.0,
         "correctness": 0.5
       },
-      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 1.0, \"correctness\": 0.5}"
+      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 1.0, \"correctness\": 0.5}"
     },
     {
       "case_id": "gen_case_068",
@@ -649,11 +649,11 @@
       "status": "answered",
       "intent": "mixed_query",
       "metrics": {
-        "faithfulness": 0.9,
+        "faithfulness": 1.0,
         "relevancy": 1.0,
         "correctness": 1.0
       },
-      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
     },
     {
       "case_id": "gen_case_070",
@@ -661,11 +661,11 @@
       "status": "answered",
       "intent": "faculty_query",
       "metrics": {
-        "faithfulness": 1.0,
+        "faithfulness": 0.6,
         "relevancy": 1.0,
-        "correctness": 1.0
+        "correctness": 0.8
       },
-      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 1.0, \"correctness\": 0.8}"
     },
     {
       "case_id": "gen_case_071",
@@ -685,11 +685,11 @@
       "status": "answered",
       "intent": "faculty_query",
       "metrics": {
-        "faithfulness": 0.7,
+        "faithfulness": 1.0,
         "relevancy": 1.0,
         "correctness": 0.5
       },
-      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 1.0, \"correctness\": 0.5}"
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.5}"
     },
     {
       "case_id": "gen_case_074",
@@ -697,11 +697,11 @@
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 1.0,
-        "relevancy": 1.0,
-        "correctness": 1.0
+        "faithfulness": 0.5,
+        "relevancy": 0.8,
+        "correctness": 0.7
       },
-      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.5, \"relevancy\": 0.8, \"correctness\": 0.7}"
     },
     {
       "case_id": "gen_case_076",
@@ -709,18 +709,6 @@
       "status": "answered",
       "intent": "form_query",
       "metrics": {
-        "faithfulness": 0.9,
-        "relevancy": 1.0,
-        "correctness": 1.0
-      },
-      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
-    },
-    {
-      "case_id": "gen_case_077",
-      "query": "Em mới nhập học vào trường mình, bây giờ em có thể xem được những quy định và quy chế nào của trường và Bộ Giáo dục?",
-      "status": "answered",
-      "intent": "regulation_query",
-      "metrics": {
         "faithfulness": 1.0,
         "relevancy": 1.0,
         "correctness": 1.0
@@ -728,16 +716,28 @@
       "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
     },
     {
+      "case_id": "gen_case_077",
+      "query": "Em mới nhập học vào trường mình, bây giờ em có thể xem được những quy định và quy chế nào của trường và Bộ Giáo dục?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.7,
+        "relevancy": 0.9,
+        "correctness": 0.9
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 0.9, \"correctness\": 0.9}"
+    },
+    {
       "case_id": "gen_case_078",
       "query": "Trường mình có quy chế công tác sinh viên cho chương trình đại học hệ chính quy không? Quy chế này dựa trên những văn bản nào?",
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
-        "faithfulness": 1.0,
-        "relevancy": 1.0,
-        "correctness": 0.3
+        "faithfulness": 0.4,
+        "relevancy": 0.8,
+        "correctness": 0.2
       },
-      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.3}"
+      "judge_raw_output": "{\"faithfulness\": 0.4, \"relevancy\": 0.8, \"correctness\": 0.2}"
     },
     {
       "case_id": "gen_case_079",
@@ -755,17 +755,149 @@
       "case_id": "gen_case_081",
       "query": "Trường mình tổ chức và quản lý công tác sinh viên như thế nào?",
       "status": "answered",
-      "intent": "regulation_query",
+      "intent": "office_query",
       "metrics": {
-        "faithfulness": 0.9,
-        "relevancy": 1.0,
-        "correctness": 1.0
+        "faithfulness": 0.6,
+        "relevancy": 0.9,
+        "correctness": 0.4
       },
-      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
+      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 0.9, \"correctness\": 0.4}"
     },
     {
       "case_id": "gen_case_082",
       "query": "Em là sinh viên dân tộc thiểu số, thuộc dân tộc La Hủ, vậy em có được hưởng chính sách gì không?",
+      "status": "api_error",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 0.0,
+        "correctness": 0.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 0.0, \"correctness\": 0.0}"
+    },
+    {
+      "case_id": "gen_case_083",
+      "query": "Anh/chị ơi, mục tiêu của hoạt động nghiên cứu khoa học sinh viên ở trường mình là gì vậy?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_k50_001",
+      "query": "Khóa K50 thi môn chuyên ngành được 5.0 điểm thì có qua môn không?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.8,
+        "relevancy": 1.0,
+        "correctness": 0.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 0.0}"
+    },
+    {
+      "case_id": "gen_case_k51_002",
+      "query": "Sinh viên khóa K51 thi học phần Giáo dục đại cương được 4.5 thì được điểm chữ gì và có qua môn không?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.5,
+        "relevancy": 1.0,
+        "correctness": 0.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.5, \"relevancy\": 1.0, \"correctness\": 0.0}"
+    },
+    {
+      "case_id": "gen_case_072_aug_0",
+      "query": "Trường mình có quy định gì về hoạt động nghiên cứu khoa học của SV không?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.4,
+        "relevancy": 1.0,
+        "correctness": 0.5
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.4, \"relevancy\": 1.0, \"correctness\": 0.5}"
+    },
+    {
+      "case_id": "gen_case_013_aug_1",
+      "query": "Em muốn biết về kế hoạch giảng dạy và học tập của trường mình, bao gồm cả việc tổ chức học kỳ và thời khóa biểu như thế nào? cụ thể là sao ạ?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.8,
+        "relevancy": 1.0,
+        "correctness": 0.9
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 0.9}"
+    },
+    {
+      "case_id": "gen_case_020_aug_2",
+      "query": "Em bị kỷ luật oan, trường mình có quy định nào về việc khiếu nại không? cụ thể là sao ạ?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.8,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_015_aug_3",
+      "query": "Em là lớp trưởng, em có quyền yêu cầu báo cáo tình hình lớp không và em có thể tham gia những hoạt động nào của trường? cho em hỏi với.",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.8,
+        "relevancy": 1.0,
+        "correctness": 0.9
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 0.9}"
+    },
+    {
+      "case_id": "gen_case_024_aug_4",
+      "query": "Em đang nhận học bổng hỗ trợ chi phí học tập, nhưng em phải nghỉ học vì lý do cá nhân thì có bị dừng cấp học bổng không? ạ?",
+      "status": "answered",
+      "intent": "form_query",
+      "metrics": {
+        "faithfulness": 0.4,
+        "relevancy": 0.5,
+        "correctness": 0.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.4, \"relevancy\": 0.5, \"correctness\": 0.0}"
+    },
+    {
+      "case_id": "gen_case_031_aug_5",
+      "query": "Bạn ơi, trường mình có trạm y tế không? Khi mình ốm hay bị thương trong thời gian học, trường có hỗ trợ khám sức khỏe, chăm sóc sơ cứu và bảo hiểm y tế không? hả phòng đào tạo?",
+      "status": "answered",
+      "intent": "office_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_002_aug_6",
+      "query": "Trường mình đào tạo chính quy và vừa làm vừa học có khác gì nhau không, em muốn biết để chọn hình thức đào tạo phù hợp? hả phòng đào tạo?",
+      "status": "answered",
+      "intent": "office_query",
+      "metrics": {
+        "faithfulness": 0.7,
+        "relevancy": 1.0,
+        "correctness": 0.9
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 1.0, \"correctness\": 0.9}"
+    },
+    {
+      "case_id": "gen_case_061_aug_7",
+      "query": "Anh/chị ơi, lớp học phần là gì vậy? Ai được làm đại diện lớp và họ phải làm gì? ạ?",
       "status": "answered",
       "intent": "regulation_query",
       "metrics": {
@@ -776,10 +908,295 @@
       "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
     },
     {
-      "case_id": "gen_case_083",
-      "query": "Anh/chị ơi, mục tiêu của hoạt động nghiên cứu khoa học sinh viên ở trường mình là gì vậy?",
+      "case_id": "gen_case_082_aug_8",
+      "query": "Em là người học dân tộc thiểu số, thuộc dân tộc La Hủ, vậy em có được hưởng chính sách gì không?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.9,
+        "relevancy": 0.9,
+        "correctness": 0.7
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 0.9, \"correctness\": 0.7}"
+    },
+    {
+      "case_id": "gen_case_001_aug_9",
+      "query": "Em đang học năm nhất trường mình, em muốn tham gia hoạt động nghiên cứu khoa học nhưng không biết trường có hỗ trợ gì không, và em có thể tham gia những hoạt động nào ngoài học tập? hả phòng đào tạo?",
+      "status": "answered",
+      "intent": "mixed_query",
+      "metrics": {
+        "faithfulness": 0.6,
+        "relevancy": 0.9,
+        "correctness": 0.7
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 0.9, \"correctness\": 0.7}"
+    },
+    {
+      "case_id": "gen_case_009_aug_10",
+      "query": "Ai là người chịu trách nhiệm thi hành quyết định của trường? cho em hỏi với.",
+      "status": "answered",
+      "intent": "office_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 0.7
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.7}"
+    },
+    {
+      "case_id": "gen_case_040_aug_11",
+      "query": "Mình đang bị kỷ luật mức khiển trách, mình có thể được xếp loại rèn luyện loại giỏi được không? hả phòng đào tạo?",
+      "status": "answered",
+      "intent": "office_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_063_aug_12",
+      "query": "Em muốn tham gia nghiên cứu khoa học thì có những quyền và trách nhiệm gì? tư vấn giúp mình nhé!",
       "status": "answered",
       "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.8,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_083_aug_13",
+      "query": "Anh/chị ơi, mục tiêu của hoạt động nghiên cứu khoa học bạn học ở trường mình là gì vậy?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_015_aug_14",
+      "query": "Em là lớp trưởng, em có quyền yêu cầu báo cáo tình hình lớp không và em có thể tham gia những hoạt động nào của trường? hả phòng đào tạo?",
+      "status": "needs_clarification",
+      "error_type": null,
+      "metrics": {
+        "faithfulness": 0.0,
+        "relevancy": 0.0,
+        "correctness": 0.0
+      }
+    },
+    {
+      "case_id": "gen_case_055_aug_15",
+      "query": "Trường mình có ngành nào liên quan đến công tác xã hội không, và tân sinh viên tốt nghiệp có thể làm việc ở đâu?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 0.2,
+        "relevancy": 0.9,
+        "correctness": 0.3
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.2, \"relevancy\": 0.9, \"correctness\": 0.3}"
+    },
+    {
+      "case_id": "gen_case_031_aug_16",
+      "query": "Bạn ơi, trường mình có trạm y tế không? Khi mình ốm hay bị thương trong thời gian học, trường có hỗ trợ khám sức khỏe, chăm sóc sơ cứu và bảo hiểm y tế không? tư vấn giúp mình nhé!",
+      "status": "answered",
+      "intent": "office_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_072_aug_17",
+      "query": "Trường mình có quy định gì về hoạt động nghiên cứu khoa học của hssv không?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 0.5
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.5}"
+    },
+    {
+      "case_id": "gen_case_025_aug_18",
+      "query": "Em muốn biết về quy định chung khi thực hiện các hoạt động tại trường mình, có quy định nào về tổ chức thực hiện không? hả phòng đào tạo?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.2,
+        "relevancy": 0.2,
+        "correctness": 0.1
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.2, \"relevancy\": 0.2, \"correctness\": 0.1}"
+    },
+    {
+      "case_id": "gen_case_074_aug_19",
+      "query": "Khi nào thì quyết định của trường mình có hiệu lực thi hành? ạ?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.6,
+        "relevancy": 0.7,
+        "correctness": 0.5
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 0.7, \"correctness\": 0.5}"
+    },
+    {
+      "case_id": "gen_case_030_aug_20",
+      "query": "Em muốn học ngành Sư phạm Tiếng Nga tại trường mình thì sau khi tốt nghiệp có thể làm những công việc gì? ạ?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_008_aug_21",
+      "query": "Trường mình có những nguồn lực nào để hỗ trợ hssv?",
+      "status": "needs_clarification",
+      "error_type": null,
+      "metrics": {
+        "faithfulness": 0.0,
+        "relevancy": 0.0,
+        "correctness": 0.0
+      }
+    },
+    {
+      "case_id": "gen_case_k50_001_aug_22",
+      "query": "Khóa K51 thi môn chuyên ngành được 5.0 điểm thì có qua môn không?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 0.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.0}"
+    },
+    {
+      "case_id": "gen_case_071_aug_23",
+      "query": "Giáo viên có phải đưa ra đề cương chi tiết học phần và các quy định liên quan trong buổi học đầu tiên không? Và việc phân công giảng viên dạy, hướng dẫn thí nghiệm, thực tập được thực hiện như thế nào? tư vấn giúp mình nhé!",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_018_aug_24",
+      "query": "Trường mình có chương trình liên kết đào tạo không? Nó áp dụng cho hình thức vừa làm vừa học như thế nào? ạ?",
+      "status": "answered",
+      "intent": "mixed_query",
+      "metrics": {
+        "faithfulness": 0.8,
+        "relevancy": 0.9,
+        "correctness": 0.9
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.8, \"relevancy\": 0.9, \"correctness\": 0.9}"
+    },
+    {
+      "case_id": "gen_case_068_aug_25",
+      "query": "Em thuộc diện hộ nghèo, nếu gia đình em thoát nghèo trong năm học thì phải làm gì để dừng việc chi trả chi phí học tập cho kỳ tiếp theo? cụ thể là sao ạ?",
+      "status": "answered",
+      "intent": "mixed_query",
+      "metrics": {
+        "faithfulness": 0.7,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.7, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_009_aug_26",
+      "query": "Ai là người chịu trách nhiệm thi hành quyết định của trường? cho em hỏi với.",
+      "status": "answered",
+      "intent": "office_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 0.8
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 0.8}"
+    },
+    {
+      "case_id": "gen_case_060_aug_27",
+      "query": "Khi nào thì quyết định về quy định tổ chức hoạt động nghiên cứu khoa học của hssv trường mình có hiệu lực?",
+      "status": "answered",
+      "intent": "faculty_query",
+      "metrics": {
+        "faithfulness": 1.0,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 1.0, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_052_aug_28",
+      "query": "Mình muốn biết mình được hưởng những quyền lợi gì theo quy định của trường và Bộ GD&ĐT? cho em hỏi với.",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.4,
+        "relevancy": 0.8,
+        "correctness": 0.3
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.4, \"relevancy\": 0.8, \"correctness\": 0.3}"
+    },
+    {
+      "case_id": "gen_case_059_aug_29",
+      "query": "Mình là tân sinh viên dân tộc thiểu số, gia đình thuộc hộ nghèo, đang học hệ chính quy và đã trúng tuyển theo quy chế của Bộ GD&ĐT, mình có được xếp vào diện hỗ trợ của trường không?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.9,
+        "relevancy": 1.0,
+        "correctness": 1.0
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.9, \"relevancy\": 1.0, \"correctness\": 1.0}"
+    },
+    {
+      "case_id": "gen_case_064_aug_30",
+      "query": "Em là hssv hệ đại học chính quy, không biết công tác cố vấn học tập được quy định như thế nào?",
+      "status": "answered",
+      "intent": "regulation_query",
+      "metrics": {
+        "faithfulness": 0.6,
+        "relevancy": 0.9,
+        "correctness": 0.4
+      },
+      "judge_raw_output": "{\"faithfulness\": 0.6, \"relevancy\": 0.9, \"correctness\": 0.4}"
+    },
+    {
+      "case_id": "gen_case_021_aug_31",
+      "query": "Trường mình có danh sách bảo tàng nào tại TP.HCM không, mình muốn tham khảo? ạ?",
+      "status": "out_of_domain",
+      "error_type": null,
+      "metrics": {
+        "faithfulness": 0.0,
+        "relevancy": 0.0,
+        "correctness": 0.0
+      }
+    },
+    {
+      "case_id": "gen_case_015_aug_32",
+      "query": "Em là lớp trưởng, em có quyền yêu cầu báo cáo tình hình lớp không và em có thể tham gia những hoạt động nào của trường? tư vấn giúp mình nhé!",
+      "status": "answered",
+      "intent": "regulation_query",
       "metrics": {
         "faithfulness": 1.0,
         "relevancy": 1.0,

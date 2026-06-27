@@ -147,9 +147,8 @@ def run_evaluation(config_path: Path, cases_path: Path) -> dict[str, Any]:
     load_project_env()
     cases = load_json(cases_path)
     
-    # Sử dụng Gemini 3.1 Flash Lite siêu tốc độ
-    generator = GeminiClient(model_name="gemini-3.1-flash-lite")
-    pipeline = AnswerPipeline(config_path=config_path, llm_client=generator)
+    # Khởi tạo pipeline sử dụng LLM mặc định từ config (Llama trên Groq)
+    pipeline = AnswerPipeline(config_path=config_path)
     pipeline.response_cache.enabled = False
     
     # Dùng Gemini 3.1 Flash Lite làm Giám khảo
@@ -162,15 +161,15 @@ def run_evaluation(config_path: Path, cases_path: Path) -> dict[str, Any]:
         m = result["metrics"]
         print(f"   -> F:{m['faithfulness']:.2f} | R:{m['relevancy']:.2f} | C:{m['correctness']:.2f}")
         case_results.append(result)
-        time.sleep(10) # Nghỉ 10 giây để đảm bảo 2 requests/câu không vượt quá 15 RPM
+        time.sleep(5) # Nghỉ 5 giây (an toàn với 15 RPM của Gemini và 5 API Keys của Groq)
         
     summary = build_summary(case_results)
     return {
         "evaluation": "generation_quality_llm_judge",
         "config_path": str(config_path),
         "cases_path": str(cases_path),
-        "pipeline_model": "llama-3.3-70b-versatile",
-        "judge_model": "openai/gpt-oss-120b",
+        "pipeline_model": pipeline.config.get("llm", {}).get("model_name", "llama-3.3-70b-versatile"),
+        "judge_model": "gemini-3.1-flash-lite",
         "summary": summary,
         "cases": case_results,
     }

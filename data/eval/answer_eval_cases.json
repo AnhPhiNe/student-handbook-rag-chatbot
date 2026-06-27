@@ -1,390 +1,652 @@
 [
-  {
-    "id": "det_score_001",
-    "category": "deterministic_exactness",
-    "query": "Điểm rèn luyện 92 là loại gì?",
-    "expected_status": "answered",
-    "expected_llm_called": false,
-    "expected_lookup_type": "conduct_classification",
-    "expected_answer_contains": [
-      "92",
-      "Xuất sắc"
-    ],
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "structured_lookup"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "det_score_002",
-    "category": "deterministic_exactness",
-    "query": "GPA 2.95 được xếp loại học lực gì?",
-    "expected_status": "answered",
-    "expected_llm_called": false,
-    "expected_lookup_type": "academic_classification",
-    "expected_answer_contains": [
-      "2.95",
-      "Khá"
-    ],
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "structured_lookup"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "det_score_003",
-    "category": "deterministic_exactness",
-    "query": "Điểm B+ quy đổi sang hệ 4 bao nhiêu?",
-    "expected_status": "answered",
-    "expected_llm_called": false,
-    "expected_lookup_type": "letter_to_grade_4",
-    "expected_answer_contains": [
-      "B+",
-      "3.5"
-    ],
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "structured_lookup"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "det_calc_001",
-    "category": "deterministic_exactness",
-    "query": "Tính điểm học bổng nếu GPA 3.2 và rèn luyện 90",
-    "expected_status": "answered",
-    "expected_llm_called": false,
-    "expected_tool_name": "calculate_scholarship_score",
-    "expected_answer_contains": [
-      "3.28",
-      "calculate_scholarship_score"
-    ]
-  },
-  {
-    "id": "guard_amb_001",
-    "category": "guardrail_status",
-    "query": "CNTT ở đâu?",
-    "expected_status": "needs_clarification",
-    "expected_llm_called": false,
-    "expected_answer_contains": [
-      "Bạn muốn liên hệ"
-    ]
-  },
-  {
-    "id": "guard_amb_002",
-    "category": "guardrail_status",
-    "query": "Học vụ liên hệ ai?",
-    "expected_status": "needs_clarification",
-    "expected_llm_called": false,
-    "expected_answer_contains": [
-      "Bạn muốn liên hệ"
-    ]
-  },
-  {
-    "id": "guard_amb_003",
-    "category": "guardrail_status",
-    "query": "Giấy tờ sinh viên làm ở đâu?",
-    "expected_status": "needs_clarification",
-    "expected_llm_called": false,
-    "expected_answer_contains": [
-      "Bạn muốn liên hệ"
-    ]
-  },
-  {
-    "id": "guard_ood_001",
-    "category": "guardrail_status",
-    "query": "Trường có bán bánh tráng trộn không?",
-    "expected_status": "out_of_domain",
-    "expected_llm_called": false,
-    "expected_answer_contains": [
-      "Sổ tay"
-    ]
-  },
-  {
-    "id": "guard_ood_002",
-    "category": "guardrail_status",
-    "query": "Làm sao để nấu phở ngon?",
-    "expected_status": "out_of_domain",
-    "expected_llm_called": false,
-    "expected_answer_contains": [
-      "Sổ tay"
-    ]
-  },
-  {
-    "id": "cite_form_001",
-    "category": "citation_correctness",
-    "query": "Muốn tạm nghỉ học cần mẫu đơn nào?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "form"
-    ],
-    "expected_citation_pages": [
-      176
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "cite_office_001",
-    "category": "citation_correctness",
-    "query": "Email phòng đào tạo là gì?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "office_directory"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "cite_faculty_001",
-    "category": "citation_correctness",
-    "query": "Khoa Công nghệ thông tin có ngành nào?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "cite_procedure_001",
-    "category": "citation_correctness",
-    "query": "Ai được ưu tiên vào ký túc xá?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "procedure"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "cite_reg_001",
-    "category": "citation_correctness",
-    "query": "Điều kiện xét học bổng là gì?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "regulation"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "det_score_004",
-    "category": "deterministic_exactness",
-    "query": "Điểm rèn luyện 75 là loại gì?",
-    "expected_status": "answered",
-    "expected_llm_called": false,
-    "expected_lookup_type": "conduct_classification",
-    "expected_answer_contains": [
-      "75",
-      "Khá"
-    ],
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "structured_lookup"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "det_score_005",
-    "category": "deterministic_exactness",
-    "query": "GPA 3.4 là loại học lực gì?",
-    "expected_status": "answered",
-    "expected_llm_called": false,
-    "expected_lookup_type": "academic_classification",
-    "expected_answer_contains": [
-      "3.4",
-      "Giỏi"
-    ],
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "structured_lookup"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "det_score_006",
-    "category": "deterministic_exactness",
-    "query": "Điểm C+ quy đổi sang thang 4 là bao nhiêu?",
-    "expected_status": "answered",
-    "expected_llm_called": false,
-    "expected_lookup_type": "letter_to_grade_4",
-    "expected_answer_contains": [
-      "C+",
-      "2.5"
-    ],
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "structured_lookup"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "det_calc_002",
-    "category": "deterministic_exactness",
-    "query": "Tính điểm học bổng nếu GPA 3.6 và rèn luyện 95",
-    "expected_status": "answered",
-    "expected_llm_called": false,
-    "expected_tool_name": "calculate_scholarship_score",
-    "expected_answer_contains": [
-      "3.64",
-      "calculate_scholarship_score"
-    ]
-  },
-  {
-    "id": "cite_form_002",
-    "category": "citation_correctness",
-    "query": "Đơn xin chuyển trường nằm ở trang nào?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "form"
-    ],
-    "expected_citation_pages": [
-      175
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "cite_form_003",
-    "category": "citation_correctness",
-    "query": "Giấy xác nhận sinh viên nằm ở trang nào?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "form"
-    ],
-    "expected_citation_pages": [
-      181
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "cite_form_004",
-    "category": "citation_correctness",
-    "query": "Mẫu đơn đề nghị miễn giảm học phí ở trang nào?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "form"
-    ],
-    "expected_citation_pages": [
-      182
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "cite_office_002",
-    "category": "citation_correctness",
-    "query": "Số điện thoại Phòng Sau Đại học là gì?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "office_directory"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "cite_office_003",
-    "category": "citation_correctness",
-    "query": "Thư viện của trường có thông tin liên hệ nào?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "office_directory"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "cite_faculty_002",
-    "category": "citation_correctness",
-    "query": "Khoa Hóa học đào tạo những ngành nào?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "cite_faculty_003",
-    "category": "citation_correctness",
-    "query": "Khoa Địa lí có website không?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "cite_procedure_002",
-    "category": "citation_correctness",
-    "query": "Quy trình vào ký túc xá như thế nào?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "procedure"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "cite_reg_002",
-    "category": "citation_correctness",
-    "query": "Điều kiện công nhận tốt nghiệp và cấp bằng tốt nghiệp là gì?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "regulation"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "cite_reg_003",
-    "category": "citation_correctness",
-    "query": "Nhiệm vụ của sinh viên gồm những gì?",
-    "expected_status": "answered",
-    "expected_llm_called": true,
-    "min_citations": 1,
-    "expected_citation_chunk_types": [
-      "regulation"
-    ],
-    "expect_sources_section": true
-  },
-  {
-    "id": "guard_amb_004",
-    "category": "guardrail_status",
-    "query": "Học bổng hỏi ai?",
-    "expected_status": "needs_clarification",
-    "expected_llm_called": false,
-    "expected_answer_contains": [
-      "Bạn muốn liên hệ"
-    ]
-  },
-  {
-    "id": "guard_ood_003",
-    "category": "guardrail_status",
-    "query": "Thời tiết hôm nay ở TP.HCM thế nào?",
-    "expected_status": "out_of_domain",
-    "expected_llm_called": false,
-    "expected_answer_contains": [
-      "Sổ tay"
-    ]
-  }
+    {
+        "id": "det_score_001",
+        "category": "deterministic_exactness",
+        "query": "Điểm rèn luyện 92 là loại gì?",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_lookup_type": "conduct_classification",
+        "expected_answer_contains": [
+            "92",
+            "Xuất sắc"
+        ],
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "structured_lookup"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "det_score_002",
+        "category": "deterministic_exactness",
+        "query": "GPA 2.95 được xếp loại học lực gì?",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_lookup_type": "academic_classification",
+        "expected_answer_contains": [
+            "2.95",
+            "Khá"
+        ],
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "structured_lookup"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "det_score_003",
+        "category": "deterministic_exactness",
+        "query": "Điểm B+ quy đổi sang hệ 4 bao nhiêu?",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_lookup_type": "letter_to_grade_4",
+        "expected_answer_contains": [
+            "B+",
+            "3.5"
+        ],
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "structured_lookup"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "det_calc_001",
+        "category": "deterministic_exactness",
+        "query": "Tính điểm học bổng nếu GPA 3.2 và rèn luyện 90",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_tool_name": "calculate_scholarship_score",
+        "expected_answer_contains": [
+            "3.28",
+            "calculate_scholarship_score"
+        ]
+    },
+    {
+        "id": "guard_amb_001",
+        "category": "guardrail_status",
+        "query": "CNTT ở đâu?",
+        "expected_status": "needs_clarification",
+        "expected_llm_called": false,
+        "expected_answer_contains": [
+            "Bạn muốn liên hệ"
+        ]
+    },
+    {
+        "id": "guard_amb_002",
+        "category": "guardrail_status",
+        "query": "Học vụ liên hệ ai?",
+        "expected_status": "needs_clarification",
+        "expected_llm_called": false,
+        "expected_answer_contains": [
+            "Bạn muốn liên hệ"
+        ]
+    },
+    {
+        "id": "guard_amb_003",
+        "category": "guardrail_status",
+        "query": "Giấy tờ sinh viên làm ở đâu?",
+        "expected_status": "needs_clarification",
+        "expected_llm_called": false,
+        "expected_answer_contains": [
+            "Bạn muốn liên hệ"
+        ]
+    },
+    {
+        "id": "guard_ood_001",
+        "category": "guardrail_status",
+        "query": "Trường có bán bánh tráng trộn không?",
+        "expected_status": "out_of_domain",
+        "expected_llm_called": false,
+        "expected_answer_contains": [
+            "Sổ tay"
+        ]
+    },
+    {
+        "id": "guard_ood_002",
+        "category": "guardrail_status",
+        "query": "Làm sao để nấu phở ngon?",
+        "expected_status": "out_of_domain",
+        "expected_llm_called": false,
+        "expected_answer_contains": [
+            "Sổ tay"
+        ]
+    },
+    {
+        "id": "cite_form_001",
+        "category": "citation_correctness",
+        "query": "Muốn tạm nghỉ học cần mẫu đơn nào?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "form"
+        ],
+        "expected_citation_pages": [
+            176
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_office_001",
+        "category": "citation_correctness",
+        "query": "Email phòng đào tạo là gì?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "office_directory"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_faculty_001",
+        "category": "citation_correctness",
+        "query": "Khoa Công nghệ thông tin có ngành nào?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_procedure_001",
+        "category": "citation_correctness",
+        "query": "Ai được ưu tiên vào ký túc xá?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "procedure"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_reg_001",
+        "category": "citation_correctness",
+        "query": "Điều kiện xét học bổng là gì?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "regulation"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "det_score_004",
+        "category": "deterministic_exactness",
+        "query": "Điểm rèn luyện 75 là loại gì?",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_lookup_type": "conduct_classification",
+        "expected_answer_contains": [
+            "75",
+            "Khá"
+        ],
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "structured_lookup"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "det_score_005",
+        "category": "deterministic_exactness",
+        "query": "GPA 3.4 là loại học lực gì?",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_lookup_type": "academic_classification",
+        "expected_answer_contains": [
+            "3.4",
+            "Giỏi"
+        ],
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "structured_lookup"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "det_score_006",
+        "category": "deterministic_exactness",
+        "query": "Điểm C+ quy đổi sang thang 4 là bao nhiêu?",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_lookup_type": "letter_to_grade_4",
+        "expected_answer_contains": [
+            "C+",
+            "2.5"
+        ],
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "structured_lookup"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "det_calc_002",
+        "category": "deterministic_exactness",
+        "query": "Tính điểm học bổng nếu GPA 3.6 và rèn luyện 95",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_tool_name": "calculate_scholarship_score",
+        "expected_answer_contains": [
+            "3.64",
+            "calculate_scholarship_score"
+        ]
+    },
+    {
+        "id": "cite_form_002",
+        "category": "citation_correctness",
+        "query": "Đơn xin chuyển trường nằm ở trang nào?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "form"
+        ],
+        "expected_citation_pages": [
+            175
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_form_003",
+        "category": "citation_correctness",
+        "query": "Giấy xác nhận sinh viên nằm ở trang nào?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "form"
+        ],
+        "expected_citation_pages": [
+            181
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_form_004",
+        "category": "citation_correctness",
+        "query": "Mẫu đơn đề nghị miễn giảm học phí ở trang nào?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "form"
+        ],
+        "expected_citation_pages": [
+            182
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_office_002",
+        "category": "citation_correctness",
+        "query": "Số điện thoại Phòng Sau Đại học là gì?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "office_directory"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_office_003",
+        "category": "citation_correctness",
+        "query": "Thư viện của trường có thông tin liên hệ nào?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "office_directory"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_faculty_002",
+        "category": "citation_correctness",
+        "query": "Khoa Hóa học đào tạo những ngành nào?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_faculty_003",
+        "category": "citation_correctness",
+        "query": "Khoa Địa lí có website không?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_procedure_002",
+        "category": "citation_correctness",
+        "query": "Quy trình vào ký túc xá như thế nào?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "procedure"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_reg_002",
+        "category": "citation_correctness",
+        "query": "Điều kiện công nhận tốt nghiệp và cấp bằng tốt nghiệp là gì?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "regulation"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_reg_003",
+        "category": "citation_correctness",
+        "query": "Nhiệm vụ của sinh viên gồm những gì?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "regulation"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "guard_amb_004",
+        "category": "guardrail_status",
+        "query": "Học bổng hỏi ai?",
+        "expected_status": "needs_clarification",
+        "expected_llm_called": false,
+        "expected_answer_contains": [
+            "Bạn muốn liên hệ"
+        ]
+    },
+    {
+        "id": "guard_ood_003",
+        "category": "guardrail_status",
+        "query": "Thời tiết hôm nay ở TP.HCM thế nào?",
+        "expected_status": "out_of_domain",
+        "expected_llm_called": false,
+        "expected_answer_contains": [
+            "Sổ tay"
+        ]
+    },
+    {
+        "id": "det_calc_002_aug_0",
+        "category": "deterministic_exactness",
+        "query": "Tính điểm học bổng nếu GPA 3.6 và rèn luyện 95 cụ thể là sao ạ?",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_tool_name": "calculate_scholarship_score",
+        "expected_answer_contains": [
+            "3.64",
+            "calculate_scholarship_score"
+        ]
+    },
+    {
+        "id": "det_score_006_aug_1",
+        "category": "deterministic_exactness",
+        "query": "Điểm C+ quy đổi sang thang 4 là bao nhiêu? cụ thể là sao ạ?",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_lookup_type": "letter_to_grade_4",
+        "expected_answer_contains": [
+            "C+",
+            "2.5"
+        ],
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "structured_lookup"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_office_001_aug_2",
+        "category": "citation_correctness",
+        "query": "Email phòng đào tạo là gì? cụ thể là sao ạ?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "office_directory"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "guard_amb_004_aug_3",
+        "category": "guardrail_status",
+        "query": "Học bổng hỏi ai? hả phòng đào tạo?",
+        "expected_status": "needs_clarification",
+        "expected_llm_called": false,
+        "expected_answer_contains": [
+            "Bạn muốn liên hệ"
+        ]
+    },
+    {
+        "id": "det_score_006_aug_4",
+        "category": "deterministic_exactness",
+        "query": "Điểm C+ quy đổi sang thang 4 là bao nhiêu? cụ thể là sao ạ?",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_lookup_type": "letter_to_grade_4",
+        "expected_answer_contains": [
+            "C+",
+            "2.5"
+        ],
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "structured_lookup"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_reg_003_aug_5",
+        "category": "citation_correctness",
+        "query": "Nhiệm vụ của tân sinh viên gồm những gì?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "regulation"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "det_score_003_aug_6",
+        "category": "deterministic_exactness",
+        "query": "Điểm B+ quy đổi sang hệ 4 bao nhiêu? hả phòng đào tạo?",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_lookup_type": "letter_to_grade_4",
+        "expected_answer_contains": [
+            "B+",
+            "3.5"
+        ],
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "structured_lookup"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_reg_001_aug_7",
+        "category": "citation_correctness",
+        "query": "Điều kiện xét học bổng là gì? hả phòng đào tạo?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "regulation"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "det_score_001_aug_8",
+        "category": "deterministic_exactness",
+        "query": "điểm đánh giá rèn luyện 92 là loại gì?",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_lookup_type": "conduct_classification",
+        "expected_answer_contains": [
+            "92",
+            "Xuất sắc"
+        ],
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "structured_lookup"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "guard_amb_003_aug_9",
+        "category": "guardrail_status",
+        "query": "Giấy tờ người học làm ở đâu?",
+        "expected_status": "needs_clarification",
+        "expected_llm_called": false,
+        "expected_answer_contains": [
+            "Bạn muốn liên hệ"
+        ]
+    },
+    {
+        "id": "cite_form_003_aug_10",
+        "category": "citation_correctness",
+        "query": "Giấy xác nhận tân sinh viên nằm ở trang nào?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "form"
+        ],
+        "expected_citation_pages": [
+            181
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "cite_form_001_aug_11",
+        "category": "citation_correctness",
+        "query": "Muốn tạm nghỉ học cần mẫu đơn nào? cụ thể là sao ạ?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "form"
+        ],
+        "expected_citation_pages": [
+            176
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "guard_amb_001_aug_12",
+        "category": "guardrail_status",
+        "query": "CNTT ở đâu? cụ thể là sao ạ?",
+        "expected_status": "needs_clarification",
+        "expected_llm_called": false,
+        "expected_answer_contains": [
+            "Bạn muốn liên hệ"
+        ]
+    },
+    {
+        "id": "guard_ood_003_aug_13",
+        "category": "guardrail_status",
+        "query": "Thời tiết hôm nay ở TP.HCM thế nào? hả phòng đào tạo?",
+        "expected_status": "out_of_domain",
+        "expected_llm_called": false,
+        "expected_answer_contains": [
+            "Sổ tay"
+        ]
+    },
+    {
+        "id": "det_score_003_aug_14",
+        "category": "deterministic_exactness",
+        "query": "Điểm B+ quy đổi sang hệ 4 bao nhiêu? tư vấn giúp mình nhé!",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_lookup_type": "letter_to_grade_4",
+        "expected_answer_contains": [
+            "B+",
+            "3.5"
+        ],
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "structured_lookup"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "det_score_002_aug_15",
+        "category": "deterministic_exactness",
+        "query": "GPA 2.95 được xếp loại học lực gì? tư vấn giúp mình nhé!",
+        "expected_status": "answered",
+        "expected_llm_called": false,
+        "expected_lookup_type": "academic_classification",
+        "expected_answer_contains": [
+            "2.95",
+            "Khá"
+        ],
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "structured_lookup"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "guard_amb_001_aug_16",
+        "category": "guardrail_status",
+        "query": "CNTT ở đâu? hả phòng đào tạo?",
+        "expected_status": "needs_clarification",
+        "expected_llm_called": false,
+        "expected_answer_contains": [
+            "Bạn muốn liên hệ"
+        ]
+    },
+    {
+        "id": "guard_ood_001_aug_17",
+        "category": "guardrail_status",
+        "query": "Trường có bán bánh tráng trộn không? tư vấn giúp mình nhé!",
+        "expected_status": "out_of_domain",
+        "expected_llm_called": false,
+        "expected_answer_contains": [
+            "Sổ tay"
+        ]
+    },
+    {
+        "id": "cite_procedure_001_aug_18",
+        "category": "citation_correctness",
+        "query": "Ai được ưu tiên vào ký túc xá? ạ?",
+        "expected_status": "answered",
+        "expected_llm_called": true,
+        "min_citations": 1,
+        "expected_citation_chunk_types": [
+            "procedure"
+        ],
+        "expect_sources_section": true
+    },
+    {
+        "id": "guard_amb_001_aug_19",
+        "category": "guardrail_status",
+        "query": "CNTT ở đâu? tư vấn giúp mình nhé!",
+        "expected_status": "needs_clarification",
+        "expected_llm_called": false,
+        "expected_answer_contains": [
+            "Bạn muốn liên hệ"
+        ]
+    }
 ]

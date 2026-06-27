@@ -121,25 +121,34 @@ The codebase adheres strictly to **Clean Architecture** principles and is fully 
 
 ```text
 student_handbook_rag/
+├── configs/                 # Project configurations (e.g., yaml/json files for model parameters)
 ├── data/
-│   ├── raw/                 # Original PDF handbooks (K48, K51)
-│   └── processed/           # Extracted JSONs, structured chunks
-├── frontend/                # React/Vite UI
-├── scripts/                 # CLI tools for ingestion & evaluation
+│   ├── raw/                 # Original PDF handbooks (e.g., K48, K51)
+│   └── processed/           # Extracted data (text extracts, entity registry, structured chunks)
+├── deploy/                  # Configuration and scripts for deployment (e.g., to HuggingFace)
+├── docs/                    # Project documentation (architecture, design, processes)
+├── frontend/                # React/Vite UI source code
+├── logs/                    # System runtime logs
+├── models/                  # Local storage for downloaded AI models
+├── scripts/                 # CLI utilities for data augmentation, evaluation, and preprocessing
+├── tests/                   # Comprehensive Unit and Integration Test suite
 └── src/
-    ├── api/                 # FastAPI controllers, Server-Sent Events (SSE), Pydantic schemas
+    ├── api/                 # FastAPI controllers, routes, and Pydantic schemas
     ├── chunking/            # Layout-aware semantic chunking logic
-    ├── extraction/          # OCR parsing & metadata extraction
-    ├── generation/          # LLM orchestration (Groq, Gemini), Prompt matrices
-    ├── ingestion/           # Data loading pipelines
-    ├── preprocessing/       # Text cleaning & normalization
-    ├── retrieval/           # RAG Engine (Vector Search, Intent Router, Cross-Encoder)
-    └── services/            # Core business logic binding Retrieval & Generation
+    ├── common/              # Shared utilities (Logging, Environment loading)
+    ├── extraction/          # OCR parsing and metadata extraction from PDFs
+    ├── generation/          # LLM orchestration, Query Rewriting, and text generation
+    ├── ingestion/           # Data loading pipelines (reading PDFs -> processing -> Vector DB)
+    ├── preprocessing/       # Text cleaning and normalization
+    ├── retrieval/           # Core RAG engine (Vector Search, Intent Router, Entity Linker)
+    └── services/            # Core business logic binding Retrieval and Generation
 ```
 
+- **`tests/`**: Over 56 automated Unit and Integration tests ensuring stability across the LLM and API logic.
 - **`src/api/`**: Asynchronous FastAPI controllers, Server-Sent Events (SSE) for streaming, and Pydantic models for request/response validation.
+- **`src/common/`**: Essential shared modules for the system such as robust logging (`logger.py`) and environment loading (`env_loader.py`).
 - **`src/retrieval/`**: The core RAG retrieval engine featuring Intent Routing, Context Building, and Cross-Encoder Reranking logic.
-- **`src/generation/`**: LLM orchestration layer managing Prompt Injection, Citation Formatting, and Double-Loop Fallback generation.
+- **`src/generation/`**: LLM orchestration layer managing Prompt Injection, Query Rewriting, and Double-Loop Fallback generation.
 - **`src/chunking/` & `src/extraction/`**: Autonomous offline data pipelines responsible for layout-aware PDF parsing and Parent-Child chunk generation.
 - **`src/services/`**: High-level business logic binding the Retrieval and Generation modules.
 

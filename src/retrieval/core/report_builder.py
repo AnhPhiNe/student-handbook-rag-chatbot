@@ -1,4 +1,4 @@
-﻿from typing import Any
+from typing import Any
 
 
 def build_retrieval_report(results: list[dict[str, Any]]) -> dict[str, Any]:

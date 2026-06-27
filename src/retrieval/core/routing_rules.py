@@ -13,7 +13,14 @@ DEFAULT_RULES_PATH = Path("configs/query_routing_rules.yaml")
 
 FALLBACK_RULES: dict[str, list[str]] = {
     "form_signal": ["mau don", "don xin", "bieu mau", "phieu", "form", "mau", "ho so"],
-    "regulation_signal": ["dieu kien", "quy dinh", "thu tuc", "khi nao", "chuyen truong", "chuyen nganh"],
+    "regulation_signal": [
+        "dieu kien",
+        "quy dinh",
+        "thu tuc",
+        "khi nao",
+        "chuyen truong",
+        "chuyen nganh",
+    ],
     "contact_question": [
         "email",
         "so dien thoai",
@@ -48,8 +55,21 @@ FALLBACK_RULES: dict[str, list[str]] = {
         "hoi dong",
     ],
     "mixed_form_signal": ["mau don", "don", "bieu mau", "giay xac nhan", "ho so"],
-    "mixed_regulation_signal": ["dieu kien", "quy dinh", "thu tuc", "can dap ung", "chuyen truong", "chuyen nganh"],
-    "mixed_office_signal": ["lien he", "phong nao", "email", "so dien thoai", "dia chi"],
+    "mixed_regulation_signal": [
+        "dieu kien",
+        "quy dinh",
+        "thu tuc",
+        "can dap ung",
+        "chuyen truong",
+        "chuyen nganh",
+    ],
+    "mixed_office_signal": [
+        "lien he",
+        "phong nao",
+        "email",
+        "so dien thoai",
+        "dia chi",
+    ],
     "pass_fail_regulation_signal": [
         "qua mon",
         "dat hoc phan",
@@ -71,7 +91,9 @@ FALLBACK_RULES: dict[str, list[str]] = {
 
 
 @lru_cache(maxsize=1)
-def load_query_routing_rules(path: str | Path = DEFAULT_RULES_PATH) -> dict[str, list[str]]:
+def load_query_routing_rules(
+    path: str | Path = DEFAULT_RULES_PATH,
+) -> dict[str, list[str]]:
     rules_path = Path(path)
     if yaml is None or not rules_path.exists():
         return FALLBACK_RULES

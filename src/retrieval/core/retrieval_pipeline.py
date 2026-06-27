@@ -6,11 +6,13 @@ from src.retrieval.vectorstore.mongo_store import get_mongo_store
 logger = logging.getLogger(__name__)
 _mongo_store = None
 
+
 def _get_docstore():
     global _mongo_store
     if _mongo_store is None:
         _mongo_store = get_mongo_store()
     return _mongo_store
+
 
 from sentence_transformers import SentenceTransformer
 
@@ -53,7 +55,7 @@ def retrieve_with_plan(
     cohort: str | None = None,
 ) -> list[dict[str, Any]]:
     """Tìm kiếm Vector dựa trên bản kế hoạch (Retrieval Plan) và Xếp hạng lại (Reranking).
-    
+
     Quy trình:
     1. Quét mở rộng danh sách candidate: Gấp 3 lần top_k (hoặc tối thiểu 10) từ VectorDB.
     2. Chạy thuật toán Heuristic Reranking: Chấm điểm lại (re-score) các document dựa vào keyword, regex, và loại tài liệu.
@@ -87,41 +89,45 @@ def retrieve_with_plan(
     for rank, doc in enumerate(vector_results):
         doc_id = doc["chunk_id"]
         docs_map[doc_id] = doc
-        combined_scores[doc_id] = combined_scores.get(doc_id, 0.0) + 1.0 / (rrf_k + rank + 1)
+        combined_scores[doc_id] = combined_scores.get(doc_id, 0.0) + 1.0 / (
+            rrf_k + rank + 1
+        )
 
     for rank, doc in enumerate(sparse_results):
         doc_id = doc["chunk_id"]
         # If document is only in BM25 results, keep its metadata structure
         if doc_id not in docs_map:
             docs_map[doc_id] = doc
-        combined_scores[doc_id] = combined_scores.get(doc_id, 0.0) + 1.0 / (rrf_k + rank + 1)
+        combined_scores[doc_id] = combined_scores.get(doc_id, 0.0) + 1.0 / (
+            rrf_k + rank + 1
+        )
 
     # Sort combined results by RRF score
-    sorted_ids = sorted(combined_scores.keys(), key=lambda x: combined_scores[x], reverse=True)
+    sorted_ids = sorted(
+        combined_scores.keys(), key=lambda x: combined_scores[x], reverse=True
+    )
     fused_results = [docs_map[doc_id] for doc_id in sorted_ids[:candidate_k]]
 
     # 4. Local Cross-Encoder Reranking
     reranked = rerank_with_cross_encoder(
-        query=query,
-        results=fused_results,
-        top_n=plan["top_k"]
+        query=query, results=fused_results, top_n=plan["top_k"]
     )
-    
+
     # 5. Lọc nhiễu
     filtered = [doc for doc in reranked if doc["rerank"]["final_score"] >= 0.20]
-    
+
     # 6. Small-to-Big Deduplication
     final_docs = []
     seen_parents = set()
-    
+
     for doc in filtered:
         parent_id = doc.get("metadata", {}).get("parent_section_id")
-        
+
         if parent_id:
             if parent_id in seen_parents:
                 continue
             seen_parents.add(parent_id)
-            
+
             try:
                 store = _get_docstore()
                 parent_doc = store.get_document_by_id(parent_id)
@@ -136,8 +142,9 @@ def retrieve_with_plan(
             seen_parents.add(chunk_id)
 
         final_docs.append(doc)
-    
+
     return final_docs[: plan["top_k"]]
+
 
 @traceable(name="Retrieval Pipeline", run_type="retriever")
 def run_retrieval_pipeline(
@@ -154,26 +161,26 @@ def run_retrieval_pipeline(
     cohort: str | None = None,
 ) -> dict[str, Any]:
     """Hàm lõi điều phối toàn bộ quá trình Tìm kiếm dữ liệu (Retrieval Pipeline).
-    
+
     Quy trình hoạt động (Workflow):
     1. Tiền xử lý (Preprocessing): Nhận diện thực thể (Entity Linking) và mở rộng câu hỏi (Query Expansion).
-    2. Định tuyến (Routing): 
+    2. Định tuyến (Routing):
        - Chạy Rule-based Router siêu tốc độ (0 chi phí).
        - Nếu không hiểu (unknown), gọi AI Router (LLM) để phân tích sâu.
-    3. Tra cứu có cấu trúc (Structured / Formula Lookup): 
+    3. Tra cứu có cấu trúc (Structured / Formula Lookup):
        - Nếu là câu hỏi tính điểm/rèn luyện -> Dùng công thức cứng thay vì tìm văn bản.
     4. Lập kế hoạch & Tìm kiếm Vector (Retrieval Planner & Vector Search):
        - Chạy nhiều luồng tìm kiếm song song vào VectorDB (Chroma/Qdrant).
-    5. Xếp hạng lại (Heuristic Reranking): 
+    5. Xếp hạng lại (Heuristic Reranking):
        - Dùng thuật toán tự viết để cộng/trừ điểm các tài liệu dựa vào mức độ trùng khớp từ khóa.
-       
+
     Args:
         query: Câu hỏi gốc của người dùng.
         model: Mô hình Embedding (bge-m3).
         collection: Đối tượng VectorDB (Chroma hoặc Qdrant Adapter).
         scoring_tables, formula_rules, entity_registry, expansion_rules: Các tệp metadata luật.
         top_k: Số lượng tài liệu trả về tối đa.
-        
+
     Returns:
         dict chứa context, citations, và các kết quả có cấu trúc (nếu có).
     """
@@ -185,7 +192,7 @@ def run_retrieval_pipeline(
 
     # 1. Chạy Rule-based Router siêu tốc độ trước
     routing = route_query(query)
-    
+
     # 2. Nếu Rule-based không hiểu, dùng AI Router để phân tích sâu
     if routing["intent"] == "unknown":
         try:
@@ -198,10 +205,10 @@ def run_retrieval_pipeline(
                 "target_chunk_types": ["regulation"],
                 "router_error": str(exc),
             }
-    
+
     intent = routing["intent"]
     strategy = routing["strategy"]
-    
+
     # Bắt tín hiệu cần làm rõ từ AI Router
     if routing.get("needs_clarification"):
         return {
@@ -216,7 +223,7 @@ def run_retrieval_pipeline(
             "context_for_llm": "",
             "needs_llm_answer": False,
             "needs_clarification": True,
-            "clarification_question": routing.get("clarification_question")
+            "clarification_question": routing.get("clarification_question"),
         }
 
     # Câu hỏi nằm ngoài phạm vi Sổ tay sinh viên → từ chối thẳng
@@ -260,7 +267,9 @@ def run_retrieval_pipeline(
             "tool_result": tool_result,
             "retrieved_items": [],
             "citations": [],
-            "context_for_llm": build_context_from_tool(tool_result) if tool_result else "",
+            "context_for_llm": build_context_from_tool(tool_result)
+            if tool_result
+            else "",
             "needs_llm_answer": True,
         }
 
@@ -326,8 +335,11 @@ def run_retrieval_pipeline(
             "target_chunk_types": target_chunk_types,
             "formula_result": formula_result,
             "retrieved_items": supplement_results,
-            "citations": build_citation_from_formula(formula_result) + build_citations_from_vector_results(supplement_results),
-            "context_for_llm": build_context_from_formula(formula_result) + "\n\n---\n\n" + build_context_from_vector_results(supplement_results),
+            "citations": build_citation_from_formula(formula_result)
+            + build_citations_from_vector_results(supplement_results),
+            "context_for_llm": build_context_from_formula(formula_result)
+            + "\n\n---\n\n"
+            + build_context_from_vector_results(supplement_results),
             "needs_llm_answer": True,
         }
 
@@ -394,8 +406,11 @@ def run_retrieval_pipeline(
             "target_chunk_types": target_chunk_types,
             "structured_result": lookup_result,
             "retrieved_items": supplement_results,
-            "citations": build_citation_from_lookup(lookup_result) + build_citations_from_vector_results(supplement_results),
-            "context_for_llm": build_context_from_lookup(lookup_result) + "\n\n---\n\n" + build_context_from_vector_results(supplement_results),
+            "citations": build_citation_from_lookup(lookup_result)
+            + build_citations_from_vector_results(supplement_results),
+            "context_for_llm": build_context_from_lookup(lookup_result)
+            + "\n\n---\n\n"
+            + build_context_from_vector_results(supplement_results),
             "needs_llm_answer": True,
         }
 

@@ -98,17 +98,15 @@ def exact_entity_mismatch_penalty(
         canonical = normalize_text(entity.get("canonical_name", ""))
         aliases = [normalize_text(a) for a in entity.get("aliases", [])]
 
-        query_mentions_entity = (
-            bool(canonical and canonical in q)
-            or any(alias and alias in q for alias in aliases)
+        query_mentions_entity = bool(canonical and canonical in q) or any(
+            alias and alias in q for alias in aliases
         )
 
         if not query_mentions_entity:
             continue
 
-        item_matches_entity = (
-            bool(canonical and canonical in text)
-            or any(alias and alias in text for alias in aliases)
+        item_matches_entity = bool(canonical and canonical in text) or any(
+            alias and alias in text for alias in aliases
         )
 
         if not item_matches_entity:
@@ -119,7 +117,7 @@ def exact_entity_mismatch_penalty(
 
 def exact_phrase_boost(query: str, item: dict[str, Any]) -> float:
     """Boost chunks that contain exact multi-word phrases from the query.
-    
+
     Ví dụ: Câu hỏi chứa 'tài khoản sinh viên' → chunk nào chứa đúng cụm này
     sẽ được cộng điểm lớn, thắng các chunk chỉ chứa 'sinh viên' riêng lẻ.
     """
@@ -133,7 +131,7 @@ def exact_phrase_boost(query: str, item: dict[str, Any]) -> float:
 
     for length in range(min(5, len(words)), 1, -1):  # Ưu tiên cụm dài hơn
         for i in range(len(words) - length + 1):
-            phrase = " ".join(words[i:i + length])
+            phrase = " ".join(words[i : i + length])
             if len(phrase) < 6:  # Bỏ qua cụm quá ngắn
                 continue
             # Kiểm tra cụm này không phải là sub-phrase của cụm đã match
@@ -193,7 +191,7 @@ def rerank_results(
     detected_entities: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     """Bộ Xếp Hạng Siêu Tốc (Heuristic Reranker).
-    
+
     Thay vì dùng mô hình Machine Learning (Cross-Encoder) nặng nề chậm chạp,
     hàm này chấm điểm lại (Rerank) các tài liệu lấy từ VectorDB dựa trên luật (Rules):
     - Cộng điểm (Boost) nếu tài liệu chứa đúng Thực thể (Tên phòng ban) người dùng hỏi.

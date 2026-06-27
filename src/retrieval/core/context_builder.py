@@ -1,7 +1,9 @@
 from typing import Any
 
 
-def build_context_from_vector_results(results: list[dict[str, Any]], max_items: int = 5) -> str:
+def build_context_from_vector_results(
+    results: list[dict[str, Any]], max_items: int = 5
+) -> str:
     blocks = []
 
     for idx, item in enumerate(results[:max_items], start=1):
@@ -43,12 +45,16 @@ def build_context_from_tool(tool_result: dict[str, Any]) -> str:
         f"Kết quả: {tool_result.get('result')}\n"
         f"Ghi chú: {tool_result.get('note')}"
     )
+
+
 def build_context_from_formula(formula_result: dict[str, Any]) -> str:
     variables = formula_result.get("variables") or {}
     variable_lines = "\n".join(f"- {key}: {value}" for key, value in variables.items())
     raw_excerpt = formula_result.get("raw_excerpt", "")
-    excerpt_text = f"\n\nTrích dẫn quy định chi tiết:\n{raw_excerpt}" if raw_excerpt else ""
-    
+    excerpt_text = (
+        f"\n\nTrích dẫn quy định chi tiết:\n{raw_excerpt}" if raw_excerpt else ""
+    )
+
     return (
         f"Công thức: {formula_result.get('rule_name')}\n"
         f"Biểu thức: {formula_result.get('formula_text')}\n"

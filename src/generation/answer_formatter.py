@@ -33,7 +33,9 @@ def append_sources(answer: str, sources_text: str) -> str:
     return f"{answer}\n\n{sources_text}".strip()
 
 
-def format_final_answer(answer: str, selected_citations: list[dict[str, Any]] | None) -> str:
+def format_final_answer(
+    answer: str, selected_citations: list[dict[str, Any]] | None
+) -> str:
     sources_text = format_sources_text(selected_citations)
     return append_sources(answer, sources_text)
 

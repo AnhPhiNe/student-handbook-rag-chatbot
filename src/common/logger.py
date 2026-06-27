@@ -20,10 +20,20 @@ class JSONFormatter(logging.Formatter):
         if record.exc_info and record.exc_info[0] is not None:
             log_entry["exception"] = self.formatException(record.exc_info)
         extra_keys = [
-            "intent", "strategy", "latency_ms", "query_length",
-            "effective_query", "retrieval_query", "llm_called",
-            "used_cache", "status", "step", "duration_ms",
-            "chunk_count", "error_type", "error_message",
+            "intent",
+            "strategy",
+            "latency_ms",
+            "query_length",
+            "effective_query",
+            "retrieval_query",
+            "llm_called",
+            "used_cache",
+            "status",
+            "step",
+            "duration_ms",
+            "chunk_count",
+            "error_type",
+            "error_message",
         ]
         for key in extra_keys:
             value = getattr(record, key, None)

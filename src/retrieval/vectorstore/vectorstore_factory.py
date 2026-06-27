@@ -39,7 +39,9 @@ def create_collection(
     provider = get_vectordb_provider()
 
     if provider == "qdrant_cloud":
-        print(f"☁️  [VectorDB] Đang kết nối đến Qdrant Cloud cho collection '{collection_name}'...")
+        print(
+            f"☁️  [VectorDB] Đang kết nối đến Qdrant Cloud cho collection '{collection_name}'..."
+        )
         return _create_qdrant_collection(collection_name)
 
     print(f"📁 [VectorDB] Đang sử dụng ChromaDB Local tại '{persist_dir}'...")
@@ -51,8 +53,7 @@ def _create_chroma_collection(persist_dir: str, collection_name: str) -> Any:
     import chromadb
 
     client = chromadb.PersistentClient(
-        path=persist_dir,
-        settings=chromadb.Settings(anonymized_telemetry=False)
+        path=persist_dir, settings=chromadb.Settings(anonymized_telemetry=False)
     )
     return client.get_collection(name=collection_name)
 
@@ -74,7 +75,11 @@ def _ensure_payload_indexes(client: Any, collection_name: str) -> None:
 
     try:
         collection_info = client.get_collection(collection_name)
-        existing_indexes = set(collection_info.payload_schema.keys()) if collection_info.payload_schema else set()
+        existing_indexes = (
+            set(collection_info.payload_schema.keys())
+            if collection_info.payload_schema
+            else set()
+        )
 
         for field_name, field_type in required_indexes.items():
             if field_name not in existing_indexes:
@@ -145,19 +150,32 @@ class QdrantCollectionAdapter:
 
         qdrant_filter = None
         if where:
-            from qdrant_client.models import Filter, FieldCondition, MatchAny, MatchValue
-            
+            from qdrant_client.models import (
+                Filter,
+                FieldCondition,
+                MatchAny,
+                MatchValue,
+            )
+
             must_conditions = []
-            
+
             def parse_condition(key, val):
                 if key == "chunk_type":
                     if isinstance(val, str):
-                        must_conditions.append(FieldCondition(key="chunk_type", match=MatchAny(any=[val])))
+                        must_conditions.append(
+                            FieldCondition(key="chunk_type", match=MatchAny(any=[val]))
+                        )
                     elif isinstance(val, dict) and "$in" in val:
-                        must_conditions.append(FieldCondition(key="chunk_type", match=MatchAny(any=val["$in"])))
+                        must_conditions.append(
+                            FieldCondition(
+                                key="chunk_type", match=MatchAny(any=val["$in"])
+                            )
+                        )
                 elif key == "cohort":
-                    must_conditions.append(FieldCondition(key="cohort", match=MatchValue(value=val)))
-            
+                    must_conditions.append(
+                        FieldCondition(key="cohort", match=MatchValue(value=val))
+                    )
+
             if "$and" in where:
                 for cond in where["$and"]:
                     for k, v in cond.items():
@@ -165,7 +183,7 @@ class QdrantCollectionAdapter:
             else:
                 for k, v in where.items():
                     parse_condition(k, v)
-                    
+
             if must_conditions:
                 qdrant_filter = Filter(must=must_conditions)
 

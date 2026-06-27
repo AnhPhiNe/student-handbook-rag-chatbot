@@ -1,4 +1,4 @@
-﻿import json
+import json
 import re
 from pathlib import Path
 from typing import Any, Optional
@@ -499,7 +499,9 @@ def build_structure_report(sections: list[dict[str, Any]]) -> dict[str, Any]:
         section_level = section["section_level"]
 
         content_type_count[content_type] = content_type_count.get(content_type, 0) + 1
-        section_level_count[section_level] = section_level_count.get(section_level, 0) + 1
+        section_level_count[section_level] = (
+            section_level_count.get(section_level, 0) + 1
+        )
 
     validation_issues = validate_sections(sections)
 

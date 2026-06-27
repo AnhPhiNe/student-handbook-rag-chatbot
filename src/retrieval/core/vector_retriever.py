@@ -19,26 +19,25 @@ def get_chroma_collection(persist_dir: str, collection_name: str) -> Any:
 
 
 def build_where_filter(
-    chunk_types: Optional[list[str]],
-    cohort: Optional[str] = None
+    chunk_types: Optional[list[str]], cohort: Optional[str] = None
 ) -> Optional[dict[str, Any]]:
     conditions = []
-    
+
     if chunk_types:
         if len(chunk_types) == 1:
             conditions.append({"chunk_type": chunk_types[0]})
         else:
             conditions.append({"chunk_type": {"$in": chunk_types}})
-            
+
     if cohort:
         conditions.append({"cohort": cohort})
-        
+
     if not conditions:
         return None
-        
+
     if len(conditions) == 1:
         return conditions[0]
-        
+
     return {"$and": conditions}
 
 

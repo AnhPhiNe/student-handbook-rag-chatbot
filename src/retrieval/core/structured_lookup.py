@@ -42,7 +42,9 @@ def in_range(value: float, range_text: str) -> bool:
     return False
 
 
-def lookup_conduct_classification(query: str, tables: list[dict[str, Any]]) -> Optional[dict[str, Any]]:
+def lookup_conduct_classification(
+    query: str, tables: list[dict[str, Any]]
+) -> Optional[dict[str, Any]]:
     # Tra bang diem ren luyen: input la mot so diem, output la xep loai.
     value = extract_number(query)
     if value is None:
@@ -65,7 +67,9 @@ def lookup_conduct_classification(query: str, tables: list[dict[str, Any]]) -> O
     return None
 
 
-def lookup_academic_classification(query: str, tables: list[dict[str, Any]]) -> Optional[dict[str, Any]]:
+def lookup_academic_classification(
+    query: str, tables: list[dict[str, Any]]
+) -> Optional[dict[str, Any]]:
     # Tra bang hoc luc theo GPA/thang 4.
     value = extract_number(query)
     if value is None:
@@ -88,7 +92,9 @@ def lookup_academic_classification(query: str, tables: list[dict[str, Any]]) -> 
     return None
 
 
-def lookup_letter_grade(query: str, tables: list[dict[str, Any]]) -> Optional[dict[str, Any]]:
+def lookup_letter_grade(
+    query: str, tables: list[dict[str, Any]]
+) -> Optional[dict[str, Any]]:
     # Tra diem chu sang thang 4, vi day la bang co ket qua deterministic.
     table = find_table(tables, "letter_to_grade_4")
     if not table:
@@ -113,22 +119,30 @@ def lookup_letter_grade(query: str, tables: list[dict[str, Any]]) -> Optional[di
     return None
 
 
-def lookup_grade_10_to_letter(query: str, tables: list[dict[str, Any]]) -> Optional[dict[str, Any]]:
-    matching_tables = [t for t in tables if "grade_10_to_letter" in t.get("table_id", "")]
+def lookup_grade_10_to_letter(
+    query: str, tables: list[dict[str, Any]]
+) -> Optional[dict[str, Any]]:
+    matching_tables = [
+        t for t in tables if "grade_10_to_letter" in t.get("table_id", "")
+    ]
     if not matching_tables:
         return None
-    
+
     # Return all matching tables (general and major if split) so LLM can read them
     if len(matching_tables) == 1:
         table_name = matching_tables[0].get("table_name", "Quy đổi thang điểm 10")
     else:
-        table_name = "Các bảng: " + " | ".join(t.get("table_name", "Bảng quy đổi") for t in matching_tables)
-        
+        table_name = "Các bảng: " + " | ".join(
+            t.get("table_name", "Bảng quy đổi") for t in matching_tables
+        )
+
     return {
         "lookup_type": "grade_10_to_letter",
         "input_value": query,
         "result": [t for t in matching_tables],
-        "source_pages": list(set(p for t in matching_tables for p in t.get("source_pages", []))),
+        "source_pages": list(
+            set(p for t in matching_tables for p in t.get("source_pages", []))
+        ),
         "table_name": table_name,
     }
 
@@ -172,7 +186,9 @@ def should_use_structured_lookup(query: str) -> bool:
     return any(phrase in q for phrase in lookup_phrases)
 
 
-def structured_lookup(query: str, tables: list[dict[str, Any]], cohort: str | None = None) -> Optional[dict[str, Any]]:
+def structured_lookup(
+    query: str, tables: list[dict[str, Any]], cohort: str | None = None
+) -> Optional[dict[str, Any]]:
     if not should_use_structured_lookup(query):
         return None
 
@@ -188,10 +204,25 @@ def structured_lookup(query: str, tables: list[dict[str, Any]], cohort: str | No
     if any(k in q for k in ["gpa", "học lực", "điểm trung bình"]):
         return lookup_academic_classification(query, tables)
 
-    if any(k in q for k in ["điểm a", "điểm b", "điểm c", "điểm d", "thang điểm 4", "thang 4", "quy đổi", "điểm chữ"]):
+    if any(
+        k in q
+        for k in [
+            "điểm a",
+            "điểm b",
+            "điểm c",
+            "điểm d",
+            "thang điểm 4",
+            "thang 4",
+            "quy đổi",
+            "điểm chữ",
+        ]
+    ):
         return lookup_letter_grade(query, tables)
 
-    if any(k in q for k in ["qua môn", "rớt môn", "bao nhiêu điểm", "mấy điểm", "thang điểm 10"]):
+    if any(
+        k in q
+        for k in ["qua môn", "rớt môn", "bao nhiêu điểm", "mấy điểm", "thang điểm 10"]
+    ):
         return lookup_grade_10_to_letter(query, tables)
 
     # Neu keyword khong ro, thu lan luot cac bang deterministic truoc khi fallback vector.

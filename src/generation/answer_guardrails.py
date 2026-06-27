@@ -17,7 +17,6 @@ DOMAIN_SIGNALS = [
     "canh bao",
     "buoc thoi hoc",
     "tot nghiep",
-
     # điểm / xếp loại
     "diem",
     "gpa",
@@ -28,7 +27,6 @@ DOMAIN_SIGNALS = [
     "hoc bong",
     "cntt",
     "cong nghe thong tin",
-
     # biểu mẫu / thủ tục
     "mau don",
     "bieu mau",
@@ -39,7 +37,6 @@ DOMAIN_SIGNALS = [
     "ho so",
     "thu tuc",
     "quy trinh",
-
     # đơn vị / liên hệ
     "phong",
     "khoa",
@@ -51,7 +48,6 @@ DOMAIN_SIGNALS = [
     "so dien thoai",
     "dia chi",
     "van phong",
-
     # sinh viên / dịch vụ sinh viên
     "sinh vien",
     "ktx",
@@ -84,7 +80,6 @@ GENERIC_CONTACT_ONLY_PATTERNS = [
     "hoi o dau",
     "gap ai",
     "gap o dau",
-
     # Hỏi đơn vị xử lý nhưng thiếu vấn đề cụ thể
     "phong nao xu ly",
     "phong nao phu trach",
@@ -92,7 +87,6 @@ GENERIC_CONTACT_ONLY_PATTERNS = [
     "don vi nao phu trach",
     "bo phan nao xu ly",
     "bo phan nao phu trach",
-
     # Câu cực mơ hồ, không có entity rõ
     "o dau vay",
     "lam o dau",
@@ -109,7 +103,6 @@ CONTACT_SIGNALS = [
     "sdt",
     "dien thoai",
     "hotline",
-
     # Hỏi vị trí / nơi xử lý
     "o dau",
     "dia chi",
@@ -117,7 +110,6 @@ CONTACT_SIGNALS = [
     "phong lam viec",
     "tang",
     "toa nha",
-
     # Hỏi đơn vị phụ trách
     "phong nao",
     "don vi nao",
@@ -241,7 +233,9 @@ def is_low_confidence(retrieval_result: dict[str, Any]) -> bool:
 
 
 def can_answer_deterministically(retrieval_result: dict[str, Any]) -> bool:
-    if retrieval_result.get("out_of_domain") or retrieval_result.get("needs_clarification"):
+    if retrieval_result.get("out_of_domain") or retrieval_result.get(
+        "needs_clarification"
+    ):
         return True
 
     structured_res = retrieval_result.get("structured_result")
@@ -254,9 +248,8 @@ def can_answer_deterministically(retrieval_result: dict[str, Any]) -> bool:
         if isinstance(row, list):
             return False
 
-    return (
-        _has_formula_result(retrieval_result.get("formula_result"))
-        or _has_result(retrieval_result.get("tool_result"))
+    return _has_formula_result(retrieval_result.get("formula_result")) or _has_result(
+        retrieval_result.get("tool_result")
     )
 
 
@@ -277,7 +270,9 @@ def build_deterministic_answer(
     if _has_result(tool_result):
         return _format_tool_result(tool_result)
 
-    return build_fallback_answer(query, retrieval_result, reason="no_deterministic_result")
+    return build_fallback_answer(
+        query, retrieval_result, reason="no_deterministic_result"
+    )
 
 
 def build_fallback_answer(
@@ -298,7 +293,7 @@ def build_fallback_answer(
             "Bạn thử lại sau hoặc hỏi hẹp hơn theo biểu mẫu, phòng ban, "
             "quy định hay mốc điểm cần tra nhé."
         )
-        
+
     if reason == "out_of_domain":
         return (
             "Mình chưa tìm thấy thông tin phù hợp trong Sổ tay sinh viên cho câu hỏi này. "
@@ -321,6 +316,7 @@ def detect_ambiguous_query(query: str, retrieval_result: dict[str, Any]) -> bool
 
     return _ambiguity_kind(query, retrieval_result) is not None
 
+
 def is_out_of_domain_query(query: str, retrieval_result: dict[str, Any]) -> bool:
     """
     Disabled guardrail: Trust the AI Router and Query Rewriter instead of hardcoded keywords.
@@ -331,9 +327,7 @@ def is_out_of_domain_query(query: str, retrieval_result: dict[str, Any]) -> bool
 def _has_domain_signal(ascii_query: str) -> bool:
     # "ban" can mean a department, "bán" (sell), or "bạn" (you) after ASCII
     # normalization, so only count it in explicit organizational phrases.
-    strong_domain_signals = [
-        signal for signal in DOMAIN_SIGNALS if signal != "ban"
-    ]
+    strong_domain_signals = [signal for signal in DOMAIN_SIGNALS if signal != "ban"]
     return _contains_any(ascii_query, strong_domain_signals) or _contains_any(
         ascii_query,
         ORGANIZATIONAL_BAN_SIGNALS,
@@ -352,15 +346,11 @@ def build_clarification_question(query: str, retrieval_result: dict[str, Any]) -
 
     if ambiguity_kind == "information_technology":
         return (
-            "Bạn muốn liên hệ Phòng Công nghệ Thông tin hay "
-            "Khoa Công nghệ - Thông tin?"
+            "Bạn muốn liên hệ Phòng Công nghệ Thông tin hay Khoa Công nghệ - Thông tin?"
         )
 
     if ambiguity_kind == "student_documents":
-        return (
-            "Bạn muốn hỏi giấy xác nhận sinh viên, giấy vay vốn, "
-            "hay biểu mẫu khác?"
-        )
+        return "Bạn muốn hỏi giấy xác nhận sinh viên, giấy vay vốn, hay biểu mẫu khác?"
 
     if ambiguity_kind == "scholarship":
         return (
@@ -378,10 +368,7 @@ def build_clarification_question(query: str, retrieval_result: dict[str, Any]) -
     if len(options) >= 2:
         return f"Bạn muốn hỏi về {', '.join(options[:-1])} hay {options[-1]}?"
 
-    return (
-        "Bạn muốn hỏi cụ thể về thủ tục, biểu mẫu, quy định "
-        "hay đơn vị liên hệ?"
-    )
+    return "Bạn muốn hỏi cụ thể về thủ tục, biểu mẫu, quy định hay đơn vị liên hệ?"
 
 
 def build_ambiguity_note(query: str, retrieval_result: dict[str, Any]) -> str:
@@ -406,6 +393,7 @@ def build_ambiguity_note(query: str, retrieval_result: dict[str, Any]) -> str:
         f"({readable_types}), nên mình tách các ý chính theo nguồn tìm được."
     )
 
+
 def _is_generic_contact_query(ascii_query: str) -> bool:
     has_contact = _contains_any(ascii_query, CONTACT_SIGNALS)
     has_entity_scope = _contains_any(
@@ -428,6 +416,7 @@ def _is_generic_contact_query(ascii_query: str) -> bool:
         return True
 
     return False
+
 
 def _ambiguity_kind(query: str, retrieval_result: dict[str, Any]) -> str | None:
     normalized_query = _normalize_query(query)
@@ -484,7 +473,9 @@ def _ambiguity_kind(query: str, retrieval_result: dict[str, Any]) -> str | None:
     return None
 
 
-def _has_query_entity_conflict(ascii_query: str, retrieval_result: dict[str, Any]) -> bool:
+def _has_query_entity_conflict(
+    ascii_query: str, retrieval_result: dict[str, Any]
+) -> bool:
     # Mot alias trong query nhung map ra nhieu entity_type la dau hieu can lam ro.
     detected_entities = retrieval_result.get("detected_entities") or []
     entity_types_by_alias: dict[str, set[str]] = {}
@@ -502,7 +493,9 @@ def _has_query_entity_conflict(ascii_query: str, retrieval_result: dict[str, Any
         for alias in aliases:
             normalized_alias = _ascii_text(_normalize_query(str(alias)))
             if normalized_alias and normalized_alias in ascii_query:
-                entity_types_by_alias.setdefault(normalized_alias, set()).add(entity_type)
+                entity_types_by_alias.setdefault(normalized_alias, set()).add(
+                    entity_type
+                )
 
     return any(len(entity_types) > 1 for entity_types in entity_types_by_alias.values())
 
@@ -538,7 +531,9 @@ def _retrieval_has_close_conflict(retrieval_result: dict[str, Any]) -> bool:
     if len(items) < 2:
         return False
 
-    return _has_close_group_competition(items, _chunk_type_group) or _has_close_group_competition(
+    return _has_close_group_competition(
+        items, _chunk_type_group
+    ) or _has_close_group_competition(
         items,
         _entity_type_group,
     )
@@ -603,7 +598,9 @@ def _relevance_score(item: dict[str, Any]) -> float | None:
     return None
 
 
-def _clarification_options_from_retrieval(retrieval_result: dict[str, Any]) -> list[str]:
+def _clarification_options_from_retrieval(
+    retrieval_result: dict[str, Any],
+) -> list[str]:
     options: list[str] = []
     for chunk_type in _retrieved_chunk_types(retrieval_result):
         label = CHUNK_TYPE_LABELS.get(chunk_type)
@@ -661,7 +658,9 @@ def _normalize_query(query: str) -> str:
 def _ascii_text(text: str) -> str:
     text = text.replace("đ", "d").replace("Đ", "D")
     decomposed = unicodedata.normalize("NFD", text)
-    stripped = "".join(char for char in decomposed if unicodedata.category(char) != "Mn")
+    stripped = "".join(
+        char for char in decomposed if unicodedata.category(char) != "Mn"
+    )
     stripped = re.sub(r"[^a-zA-Z0-9]+", " ", stripped)
     return re.sub(r"\s+", " ", stripped.lower()).strip()
 
@@ -709,7 +708,9 @@ def _format_tool_result(tool_result: dict[str, Any]) -> str:
 
     input_text = ""
     if isinstance(inputs, dict) and inputs:
-        input_text = " với " + ", ".join(f"{key}={value}" for key, value in inputs.items())
+        input_text = " với " + ", ".join(
+            f"{key}={value}" for key, value in inputs.items()
+        )
 
     answer = f"Kết quả từ {tool_name}{input_text}: {result}."
     if note:

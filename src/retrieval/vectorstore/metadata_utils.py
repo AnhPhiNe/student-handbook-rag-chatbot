@@ -26,7 +26,9 @@ def flatten_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
     return flat
 
 
-def prepare_chroma_payload(chunks: list[dict[str, Any]]) -> tuple[list[str], list[str], list[dict]]:
+def prepare_chroma_payload(
+    chunks: list[dict[str, Any]],
+) -> tuple[list[str], list[str], list[dict]]:
     ids = []
     documents = []
     metadatas = []

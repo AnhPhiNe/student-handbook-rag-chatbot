@@ -26,7 +26,9 @@ def detect_entities(
         aliases = [normalize_text(a) for a in entity.get("aliases", [])]
 
         # Exact phrase match duoc uu tien truoc, co boundary de alias ngan khong match nham trong tu dai.
-        if _contains_phrase(q, canonical) or any(_contains_phrase(q, alias) for alias in aliases):
+        if _contains_phrase(q, canonical) or any(
+            _contains_phrase(q, alias) for alias in aliases
+        ):
             detected.append(entity)
             continue
 
@@ -81,7 +83,9 @@ def _has_fuzzy_alias_match(query: str, aliases: list[str]) -> bool:
         if len(alias_tokens) < 2 or len(alias) < 8:
             continue
 
-        if _best_window_ratio(query_tokens, alias_tokens) >= _threshold_for_alias(alias):
+        if _best_window_ratio(query_tokens, alias_tokens) >= _threshold_for_alias(
+            alias
+        ):
             return True
 
     return False

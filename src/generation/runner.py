@@ -1,4 +1,4 @@
-﻿import argparse
+import argparse
 from pathlib import Path
 from typing import Any
 
@@ -20,7 +20,9 @@ def main() -> None:
 
     parser = argparse.ArgumentParser(description="Run answer generation.")
     parser.add_argument("query", nargs="*", help="Optional query to answer.")
-    parser.add_argument("--config", default=str(DEFAULT_CONFIG_PATH), help="Config YAML path.")
+    parser.add_argument(
+        "--config", default=str(DEFAULT_CONFIG_PATH), help="Config YAML path."
+    )
     args = parser.parse_args()
 
     pipeline = AnswerPipeline(config_path=args.config)

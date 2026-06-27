@@ -31,7 +31,18 @@ logger = logging.getLogger("student_handbook_rag.api.chat_stream")
 
 
 def _sse_event(event_type: str, data: dict[str, Any]) -> str:
-    """Format a single Server-Sent Event."""
+    """Định dạng một sự kiện Server-Sent Event (SSE) thành chuỗi theo chuẩn.
+
+    Hàm này nhận vào loại sự kiện và dữ liệu, sau đó chuyển đổi dữ liệu thành
+    chuỗi JSON và định dạng nó theo chuẩn SSE để gửi về client.
+
+    Args:
+        event_type (str): Loại sự kiện (ví dụ: "metadata", "token", "done", "error").
+        data (dict[str, Any]): Dữ liệu của sự kiện, sẽ được chuyển đổi thành JSON.
+
+    Returns:
+        str: Chuỗi đã định dạng của sự kiện SSE, sẵn sàng để gửi đi.
+    """
     payload = json.dumps(data, ensure_ascii=False, default=str)
     return f"event: {event_type}\ndata: {payload}\n\n"
 
@@ -42,12 +53,29 @@ def chat_stream(
     http_request: Request,
     answer_service: Any = Depends(get_answer_service),
 ) -> StreamingResponse:
-    """Stream chat responses as Server-Sent Events (SSE).
+    """Xử lý yêu cầu chat và trả về các phản hồi theo thời gian thực dưới dạng Server-Sent Events (SSE).
 
-    The client receives:
-    1. An `event: metadata` with intent, strategy, and citations.
-    2. Multiple `event: token` with text chunks as Gemini generates them.
-    3. A final `event: done` to signal completion.
+    Endpoint này cho phép client nhận từng phần của câu trả lời ngay khi chúng được tạo ra
+    bởi mô hình ngôn ngữ lớn (LLM), mang lại trải nghiệm giống như ChatGPT với phản hồi
+    trực quan tức thì.
+
+    Client sẽ nhận được các loại sự kiện sau:
+    1.  `event: metadata`: Chứa thông tin về ý định, chiến lược và các trích dẫn (được gửi đầu tiên).
+    2.  `event: token`: Chứa các đoạn văn bản nhỏ (token) khi Gemini tạo ra chúng.
+    3.  `event: done`: Tín hiệu cho biết luồng dữ liệu đã hoàn tất.
+    4.  `event: error`: Tín hiệu cho biết có lỗi xảy ra trong quá trình xử lý.
+
+    Args:
+        request (ChatRequest): Dữ liệu yêu cầu chat từ client, bao gồm câu hỏi,
+            lịch sử chat và nhóm người dùng (cohort).
+        http_request (Request): Đối tượng yêu cầu HTTP từ FastAPI, được sử dụng
+            để kiểm tra giới hạn tốc độ truy cập.
+        answer_service (Any): Dịch vụ xử lý câu trả lời, được cung cấp thông qua
+            hệ thống Dependency Injection của FastAPI.
+
+    Returns:
+        StreamingResponse: Một phản hồi streaming, gửi các sự kiện SSE về cho client
+            theo thời gian thực.
     """
     query = validate_chat_query(request.query)
     enforce_chat_rate_limit(http_request)
@@ -55,7 +83,17 @@ def chat_stream(
     request_id = uuid4().hex
 
     def event_generator():
-        """Yield Server-Sent Events as the answer pipeline produces chunks."""
+        """Một hàm generator tạo ra các sự kiện Server-Sent Events (SSE) dựa trên luồng dữ liệu.
+
+        Hàm này kết nối với dịch vụ trả lời (answer_service) để nhận các phần của câu trả lời
+        theo thời gian thực. Mỗi phần sẽ được định dạng thành một sự kiện SSE và được gửi
+        về client. Nó xử lý các loại chunk khác nhau như metadata, token, progress, done
+        và cả các trường hợp lỗi.
+
+        Yields:
+            str: Một chuỗi đã định dạng theo chuẩn SSE, đại diện cho một phần của câu trả lời
+                hoặc thông báo trạng thái (ví dụ: metadata, token, done, error).
+        """
         started_at = time.perf_counter()
         final_status = "unknown"
         final_metadata: dict[str, Any] = {}
@@ -81,9 +119,7 @@ def chat_stream(
                 elif chunk_type == "progress":
                     yield _sse_event("progress", {"message": chunk.get("message", "")})
                 elif chunk_type == "done":
-                    latency_ms = round(
-                        (time.perf_counter() - started_at) * 1000, 2
-                    )
+                    latency_ms = round((time.perf_counter() - started_at) * 1000, 2)
                     logger.info(
                         "chat_stream_completed",
                         extra={

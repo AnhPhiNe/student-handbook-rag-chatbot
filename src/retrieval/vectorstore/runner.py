@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 
 from .chroma_store import (
     add_embeddings_to_collection,

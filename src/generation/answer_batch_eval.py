@@ -1,4 +1,4 @@
-﻿import argparse
+import argparse
 import time
 from pathlib import Path
 from typing import Any
@@ -85,10 +85,18 @@ def main() -> None:
     configure_utf8_stdio()
     load_project_env()
 
-    parser = argparse.ArgumentParser(description="Run robust answer-generation batch evaluation.")
-    parser.add_argument("--config", default=str(DEFAULT_CONFIG_PATH), help="Config YAML path.")
-    parser.add_argument("--limit", type=int, default=10, help="Max queries to run by default.")
-    parser.add_argument("--all", action="store_true", help="Run all bundled test queries.")
+    parser = argparse.ArgumentParser(
+        description="Run robust answer-generation batch evaluation."
+    )
+    parser.add_argument(
+        "--config", default=str(DEFAULT_CONFIG_PATH), help="Config YAML path."
+    )
+    parser.add_argument(
+        "--limit", type=int, default=10, help="Max queries to run by default."
+    )
+    parser.add_argument(
+        "--all", action="store_true", help="Run all bundled test queries."
+    )
     args = parser.parse_args()
 
     pipeline = AnswerPipeline(config_path=args.config)
@@ -122,10 +130,14 @@ def main() -> None:
             print("Validation:", error)
 
         if result.get("llm_called"):
-            time.sleep(float(pipeline.config.get("llm", {}).get("request_sleep_seconds", 2)))
+            time.sleep(
+                float(pipeline.config.get("llm", {}).get("request_sleep_seconds", 2))
+            )
 
     save_json(_build_report(results, validation_errors), output_path)
-    print(f"\nAnswer-generation batch evaluation completed. Report saved: {output_path}")
+    print(
+        f"\nAnswer-generation batch evaluation completed. Report saved: {output_path}"
+    )
     if validation_errors:
         print("\nValidation errors:")
         for error in validation_errors:
@@ -140,20 +152,33 @@ def _build_report(
     validation_errors = validation_errors or []
     summary = {
         "total_queries": len(results),
-        "answered_count": sum(1 for result in results if result.get("status") == "answered"),
+        "answered_count": sum(
+            1 for result in results if result.get("status") == "answered"
+        ),
         "needs_clarification_count": sum(
             1 for result in results if result.get("status") == "needs_clarification"
         ),
         "fallback_count": sum(
             1
             for result in results
-            if result.get("status") in {"fallback", "api_error", "retrieval_error", "low_confidence"}
+            if result.get("status")
+            in {"fallback", "api_error", "retrieval_error", "low_confidence"}
         ),
-        "api_error_count": sum(1 for result in results if result.get("status") == "api_error"),
-        "cache_hit_count": sum(1 for result in results if result.get("used_cache") is True),
-        "llm_call_count": sum(1 for result in results if result.get("llm_called") is True),
-        "low_confidence_count": sum(1 for result in results if result.get("status") == "low_confidence"),
-        "retrieval_error_count": sum(1 for result in results if result.get("status") == "retrieval_error"),
+        "api_error_count": sum(
+            1 for result in results if result.get("status") == "api_error"
+        ),
+        "cache_hit_count": sum(
+            1 for result in results if result.get("used_cache") is True
+        ),
+        "llm_call_count": sum(
+            1 for result in results if result.get("llm_called") is True
+        ),
+        "low_confidence_count": sum(
+            1 for result in results if result.get("status") == "low_confidence"
+        ),
+        "retrieval_error_count": sum(
+            1 for result in results if result.get("status") == "retrieval_error"
+        ),
         "validation_error_count": len(validation_errors),
     }
     return {

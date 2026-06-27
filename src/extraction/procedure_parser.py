@@ -19,8 +19,7 @@ def extract_procedures(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
             continue
 
         full_text = "\n\n".join(
-            normalize_text(page.get("text", ""))
-            for page in related_pages
+            normalize_text(page.get("text", "")) for page in related_pages
         )
 
         source_pages = [page["page_number"] for page in related_pages]
@@ -35,7 +34,11 @@ def extract_procedures(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
         for line in full_text.splitlines():
             line = line.strip()
 
-            if re.match(r"^\d+\.", line) or line.startswith("-") or line.startswith("–"):
+            if (
+                re.match(r"^\d+\.", line)
+                or line.startswith("-")
+                or line.startswith("–")
+            ):
                 steps_detected.append(line)
 
         procedures.append(

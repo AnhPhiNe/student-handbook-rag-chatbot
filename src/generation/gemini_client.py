@@ -77,7 +77,9 @@ class GeminiClient:
                 last_error_type = self._classify_error(exc)
                 last_error_message = str(exc)
 
-                if attempt_index >= self.max_retries or not self._should_retry(last_error_type):
+                if attempt_index >= self.max_retries or not self._should_retry(
+                    last_error_type
+                ):
                     break
 
                 time.sleep(self._retry_delay(attempt_index))
@@ -115,7 +117,7 @@ class GeminiClient:
         return (getattr(response, "text", None) or "").strip()
 
     def _retry_delay(self, attempt_index: int) -> float:
-        exponential_delay = self.retry_base_delay_seconds * (2 ** attempt_index)
+        exponential_delay = self.retry_base_delay_seconds * (2**attempt_index)
         capped_delay = min(exponential_delay, self.retry_max_delay_seconds)
         jitter = random.uniform(0, min(1.0, capped_delay * 0.25))
         return capped_delay + jitter
@@ -130,9 +132,21 @@ class GeminiClient:
             return "timeout"
 
         text = f"{type(exc).__name__}: {exc}".lower()
-        if any(token in text for token in ["429", "resource_exhausted", "quota", "rate limit", "ratelimit"]):
+        if any(
+            token in text
+            for token in [
+                "429",
+                "resource_exhausted",
+                "quota",
+                "rate limit",
+                "ratelimit",
+            ]
+        ):
             return "rate_limit"
-        if any(token in text for token in ["503", "unavailable", "deadline", "temporarily", "transient"]):
+        if any(
+            token in text
+            for token in ["503", "unavailable", "deadline", "temporarily", "transient"]
+        ):
             return "api_error"
         if any(token in text for token in ["timeout", "timed out"]):
             return "timeout"

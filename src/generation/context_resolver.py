@@ -78,7 +78,9 @@ def resolve_query_context(
         llm_payload.get("clarification_question")
     )
     referenced_turns = _clean_referenced_turns(llm_payload.get("referenced_turns"))
-    reason = _clean_optional_string(llm_payload.get("reason")) or "llm_context_resolution"
+    reason = (
+        _clean_optional_string(llm_payload.get("reason")) or "llm_context_resolution"
+    )
 
     if decision == "follow_up" and confidence == "high" and standalone_query:
         return ContextResolution(

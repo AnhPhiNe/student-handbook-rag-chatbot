@@ -7,11 +7,15 @@ def calculate_gpa(courses: list[dict[str, float]]) -> float:
     if total_credits <= 0:
         raise ValueError("Total credits must be greater than 0")
 
-    total_weighted_score = sum(course["score_4"] * course["credits"] for course in courses)
+    total_weighted_score = sum(
+        course["score_4"] * course["credits"] for course in courses
+    )
     return round(total_weighted_score / total_credits, 2)
 
 
-def calculate_scholarship_score(academic_score_4: float, conduct_score_100: float) -> float:
+def calculate_scholarship_score(
+    academic_score_4: float, conduct_score_100: float
+) -> float:
     if not 0 <= academic_score_4 <= 4:
         raise ValueError("academic_score_4 must be between 0 and 4")
 

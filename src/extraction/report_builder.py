@@ -17,7 +17,9 @@ def build_report(
         "threshold_rules_extracted": len(threshold_rules),
         "threshold_priority_count": {
             "high": sum(1 for item in threshold_rules if item["priority"] == "high"),
-            "medium": sum(1 for item in threshold_rules if item["priority"] == "medium"),
+            "medium": sum(
+                1 for item in threshold_rules if item["priority"] == "medium"
+            ),
             "low": sum(1 for item in threshold_rules if item["priority"] == "low"),
         },
         "form_templates_extracted": len(form_templates),

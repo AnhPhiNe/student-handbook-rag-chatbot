@@ -13,24 +13,23 @@ def build_answer_prompt(
     cohort: str | None = None,
 ) -> str:
     structured_result_data = retrieval_result.get("structured_result")
-    
+
     # Giảm mạnh Context (xuống còn 1500 chars ~ 400 tokens) nếu đã có Structured Result (bảng điểm)
     # để tránh làm cho Prompt quá dài, vượt quá Token Limit (như lỗi 413 của Groq).
     if structured_result_data:
         max_context_chars = min(max_context_chars, 1500)
-        
+
     context = _selected_context_or_fallback(
         retrieval_result=retrieval_result,
         selected_citations=selected_citations or [],
         max_context_chars=max_context_chars,
-
     )
     structured_result = _to_pretty_json(retrieval_result.get("structured_result"))
     tool_result = _to_pretty_json(retrieval_result.get("tool_result"))
     cohort_str = ""
     if cohort:
         cohort_str = f" Sinh viên đang hỏi thuộc nhóm khóa: {cohort} (Lưu ý ánh xạ năm nhập học: K48=2022, K49=2023, K50=2024, K51=2025). NẾU TRONG TÀI LIỆU CÓ QUY ĐỊNH ÁP DỤNG THEO NĂM, HÃY ĐỐI CHIẾU NĂM ĐỂ TRẢ LỜI ĐÚNG CHO SINH VIÊN."
-        
+
     return f"""Bạn là chatbot tra cứu Sổ tay sinh viên.{cohort_str}
 
 Nguyên tắc bắt buộc:
@@ -92,7 +91,9 @@ def build_prompt(
     )
 
 
-def limit_context(context: str, max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS) -> str:
+def limit_context(
+    context: str, max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS
+) -> str:
     context = (context or "").strip()
     if len(context) <= max_context_chars:
         return context
@@ -134,7 +135,11 @@ def _selected_context_or_fallback(
 
         if selected_chunk_ids and chunk_id not in selected_chunk_ids:
             continue
-        if not selected_chunk_ids and selected_titles and title.lower() not in selected_titles:
+        if (
+            not selected_chunk_ids
+            and selected_titles
+            and title.lower() not in selected_titles
+        ):
             continue
 
         blocks.append(
@@ -149,7 +154,9 @@ def _selected_context_or_fallback(
         )
 
     if blocks:
-        return limit_context("\n\n---\n\n".join(blocks), max_context_chars=max_context_chars)
+        return limit_context(
+            "\n\n---\n\n".join(blocks), max_context_chars=max_context_chars
+        )
 
     return limit_context(
         str(retrieval_result.get("context_for_llm") or ""),

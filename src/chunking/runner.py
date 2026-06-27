@@ -95,8 +95,8 @@ def main() -> None:
         + procedure_chunks
     )
 
-    semantic_chunks, structured_lookup_chunks, tool_rule_chunks = split_chunks_by_index_mode(
-        all_chunks
+    semantic_chunks, structured_lookup_chunks, tool_rule_chunks = (
+        split_chunks_by_index_mode(all_chunks)
     )
 
     validation_issues = validate_chunks(all_chunks)
@@ -122,7 +122,9 @@ def main() -> None:
     save_json(procedure_chunks, Path(config["output"]["procedure_chunks"]))
 
     save_json(semantic_chunks, Path(config["output"]["semantic_chunks"]))
-    save_json(structured_lookup_chunks, Path(config["output"]["structured_lookup_chunks"]))
+    save_json(
+        structured_lookup_chunks, Path(config["output"]["structured_lookup_chunks"])
+    )
     save_json(tool_rule_chunks, Path(config["output"]["tool_rule_chunks"]))
     save_json(all_chunks, Path(config["output"]["all_chunks"]))
     save_json(docstore_items, Path(config["output"]["docstore_items"]))

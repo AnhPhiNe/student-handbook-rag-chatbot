@@ -7,16 +7,18 @@ from src.common.env_loader import load_project_env
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3-32b"
 
+
 class AIRouter:
     """
     Người Gác Cổng (AI Router) - Sử dụng LLM (Groq) để phân tích ý định (Intent) phức tạp.
-    
+
     Trong mô hình kiến trúc, AI Router được kích hoạt khi các luật (Rules) tĩnh không
     thể giải quyết triệt để câu hỏi của người dùng. AI Router giúp:
     1. Lọc bỏ các câu hỏi rác (out_of_domain).
     2. Yêu cầu làm rõ các câu hỏi quá mơ hồ (needs_clarification).
     3. Trích xuất chính xác các loại tài liệu cần tìm (target_chunk_types) để tối ưu hoá VectorDB.
     """
+
     def __init__(
         self,
         model_name: str = DEFAULT_ROUTER_MODEL,
@@ -26,26 +28,26 @@ class AIRouter:
         load_project_env(override=True)
         self.model_name = model_name
         self.temperature = temperature
-        
+
         # Load dynamic keys
         keys_str = os.environ.get("GROQ_API_KEYS", os.environ.get("GROQ_API_KEY", ""))
         self.available_keys = [k.strip() for k in keys_str.split(",") if k.strip()]
-        
+
         # Build fallback matrix (Model x Key)
         fallback_models = [model_name, "llama-3.1-8b-instant"]
         models = []
         for m in fallback_models:
             if m not in models:
                 models.append(m)
-        
+
         self.providers = []
         for m in models:
             for k in self.available_keys:
                 self.providers.append({"model": m, "api_key": k})
-            
+
     def route(self, query: str) -> dict[str, Any]:
         """Phân tích câu hỏi và trả về chiến lược tìm kiếm (Routing Strategy).
-        
+
         Luồng xử lý:
         - Xây dựng prompt chứa các chỉ thị (guidelines) phân loại.
         - Gọi API LLM để lấy kết quả dạng JSON format.
@@ -53,7 +55,7 @@ class AIRouter:
         """
         if not self.available_keys:
             raise ValueError("Thiếu API Key cho hệ thống AI Router.")
-            
+
         prompt = f"""
 Bạn là AI Router của ứng dụng Sổ tay Sinh viên HCMUE. Nhiệm vụ của bạn là phân tích câu hỏi và trả về cấu trúc JSON để hệ thống biết cần tìm kiếm tài liệu nào.
 Mục tiêu là tránh các quy tắc từ khóa cứng ngắc và hiểu đúng ý người dùng.
@@ -90,9 +92,14 @@ Chỉ trả về JSON hợp lệ:
 
 Câu hỏi của sinh viên: "{query}"
 """
-        
-        from groq import Groq, RateLimitError, APITimeoutError, InternalServerError, APIConnectionError
-        
+
+        from groq import (
+            RateLimitError,
+            APITimeoutError,
+            InternalServerError,
+            APIConnectionError,
+        )
+
         last_error: Exception | None = None
         for provider in self.providers:
             try:
@@ -101,40 +108,50 @@ Câu hỏi của sinh viên: "{query}"
                     model=provider["model"],
                     messages=[{"role": "user", "content": prompt}],
                     temperature=self.temperature,
-                    response_format={"type": "json_object"}
+                    response_format={"type": "json_object"},
                 )
-                
+
                 raw_text = response.choices[0].message.content
                 if not raw_text:
                     raise ValueError("Empty response from Groq")
-                    
+
                 parsed = self._extract_json_object(raw_text)
-                break # Success!
-                
-            except (RateLimitError, APITimeoutError, InternalServerError, APIConnectionError, ValueError) as exc:
+                break  # Success!
+
+            except (
+                RateLimitError,
+                APITimeoutError,
+                InternalServerError,
+                APIConnectionError,
+                ValueError,
+            ) as exc:
                 last_error = exc
-                print(f"[Fallback] AIRouter failed with model {provider['model']}. Trying next... Error: {str(exc)}")
+                print(
+                    f"[Fallback] AIRouter failed with model {provider['model']}. Trying next... Error: {str(exc)}"
+                )
                 continue
         else:
             # If the loop completes without break, all providers failed
-            raise RuntimeError(f"All AIRouter fallback providers failed. Last error: {str(last_error)}")
-            
-        # Continue with parsed result            
+            raise RuntimeError(
+                f"All AIRouter fallback providers failed. Last error: {str(last_error)}"
+            )
+
+        # Continue with parsed result
         intent = parsed.get("intent", "regulation_query")
         strategy = parsed.get("strategy", "semantic_filtered")
         target_chunk_types = parsed.get("target_chunk_types", ["regulation"])
         needs_clarification = parsed.get("needs_clarification", False)
         clarification_question = parsed.get("clarification_question")
-        
+
         if "formula" in intent:
             strategy = "formula_lookup"
-        
+
         return {
             "intent": intent,
             "strategy": strategy,
             "target_chunk_types": target_chunk_types,
             "needs_clarification": needs_clarification,
-            "clarification_question": clarification_question
+            "clarification_question": clarification_question,
         }
 
     def _extract_json_object(self, text: str) -> dict[str, Any]:

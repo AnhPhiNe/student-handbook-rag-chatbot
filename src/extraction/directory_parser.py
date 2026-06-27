@@ -14,9 +14,7 @@ FACULTY_HEADING_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
-BULLET_PATTERN = re.compile(
-    r"^\s*[-–−+•]\s+"
-)
+BULLET_PATTERN = re.compile(r"^\s*[-–−+•]\s+")
 
 SECTION_TITLE_PATTERNS = [
     re.compile(r"^CÁC PHÒNG, BAN", re.IGNORECASE),

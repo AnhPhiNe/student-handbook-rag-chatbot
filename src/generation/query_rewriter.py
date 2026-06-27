@@ -217,7 +217,9 @@ class QueryRewriter:
                 context_resolution=context_resolution.to_dict(),
             )
 
-        rewrite_needed = self._should_rewrite(cleaned_query) or context_resolution.history_used
+        rewrite_needed = (
+            self._should_rewrite(cleaned_query) or context_resolution.history_used
+        )
         if not rewrite_needed:
             return QueryRewriteResult(
                 original_query=query,
@@ -257,7 +259,7 @@ class QueryRewriter:
         )
 
     def _should_rewrite(self, query: str) -> bool:
-        # Luôn luôn kích hoạt LLM để dịch ngôn ngữ người dùng (bao gồm từ lóng) 
+        # Luôn luôn kích hoạt LLM để dịch ngôn ngữ người dùng (bao gồm từ lóng)
         # sang ngôn ngữ học thuật của Sổ tay sinh viên.
         return True
 
@@ -266,10 +268,16 @@ class QueryRewriter:
         query: str,
         chat_history: list[dict[str, str]] | None,
     ) -> str:
-        from groq import Groq, RateLimitError, APITimeoutError, InternalServerError, APIConnectionError
-        
+        from groq import (
+            RateLimitError,
+            APITimeoutError,
+            InternalServerError,
+            APIConnectionError,
+        )
+
         last_error: Exception | None = None
         import random
+
         keys = list(self.available_keys)
         random.shuffle(keys)
         providers = [{"model": m, "api_key": k} for m in self.models for k in keys]
@@ -298,20 +306,35 @@ class QueryRewriter:
                 if not raw_text:
                     raise ValueError("Empty response from Groq")
                 return raw_text
-            except (RateLimitError, APITimeoutError, InternalServerError, APIConnectionError, ValueError) as exc:
+            except (
+                RateLimitError,
+                APITimeoutError,
+                InternalServerError,
+                APIConnectionError,
+                ValueError,
+            ) as exc:
                 last_error = exc
-                print(f"[Fallback] QueryRewriter (Rewrite) failed with model {provider['model']}. Trying next... Error: {str(exc)}")
+                print(
+                    f"[Fallback] QueryRewriter (Rewrite) failed with model {provider['model']}. Trying next... Error: {str(exc)}"
+                )
                 continue
 
-        raise RuntimeError(f"Query rewriter all fallback providers failed. Last error: {str(last_error)}")
+        raise RuntimeError(
+            f"Query rewriter all fallback providers failed. Last error: {str(last_error)}"
+        )
 
     def _call_context_llm(
         self,
         query: str,
         chat_history: list[dict[str, str]] | None,
     ) -> str:
-        from groq import Groq, RateLimitError, APITimeoutError, InternalServerError, APIConnectionError
-        
+        from groq import (
+            RateLimitError,
+            APITimeoutError,
+            InternalServerError,
+            APIConnectionError,
+        )
+
         last_error: Exception | None = None
         for provider in self.providers:
             try:
@@ -337,12 +360,22 @@ class QueryRewriter:
                 if not raw_text:
                     raise ValueError("Empty response from Groq")
                 return raw_text
-            except (RateLimitError, APITimeoutError, InternalServerError, APIConnectionError, ValueError) as exc:
+            except (
+                RateLimitError,
+                APITimeoutError,
+                InternalServerError,
+                APIConnectionError,
+                ValueError,
+            ) as exc:
                 last_error = exc
-                print(f"[Fallback] QueryRewriter (Context) failed with model {provider['model']}. Trying next... Error: {str(exc)}")
+                print(
+                    f"[Fallback] QueryRewriter (Context) failed with model {provider['model']}. Trying next... Error: {str(exc)}"
+                )
                 continue
 
-        raise RuntimeError(f"Context resolver all fallback providers failed. Last error: {str(last_error)}")
+        raise RuntimeError(
+            f"Context resolver all fallback providers failed. Last error: {str(last_error)}"
+        )
 
     def _parse_llm_result(
         self,
@@ -650,7 +683,9 @@ def _is_safe_rewrite(
             return False
 
     if not has_history:
-        if len(rewritten_tokens) > max(len(original_tokens) + 4, int(len(original_tokens) * 1.5)):
+        if len(rewritten_tokens) > max(
+            len(original_tokens) + 4, int(len(original_tokens) * 1.5)
+        ):
             return False
         return True
 
@@ -778,7 +813,9 @@ def _has_vietnamese_diacritic(text: str) -> bool:
 def _ascii_text(text: str) -> str:
     text = text.replace("đ", "d").replace("Đ", "D")
     decomposed = unicodedata.normalize("NFD", text)
-    stripped = "".join(char for char in decomposed if unicodedata.category(char) != "Mn")
+    stripped = "".join(
+        char for char in decomposed if unicodedata.category(char) != "Mn"
+    )
     stripped = re.sub(r"[^a-zA-Z0-9]+", " ", stripped)
     return re.sub(r"\s+", " ", stripped.lower()).strip()
 

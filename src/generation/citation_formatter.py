@@ -12,7 +12,13 @@ INTENT_CHUNK_PRIORITY = {
     "structured_lookup": ["structured_lookup"],
     "formula_query": ["formula"],
     "calculation_query": ["formula", "tool"],
-    "mixed_query": ["form", "procedure", "regulation", "office_directory", "faculty_program_directory"],
+    "mixed_query": [
+        "form",
+        "procedure",
+        "regulation",
+        "office_directory",
+        "faculty_program_directory",
+    ],
 }
 
 
@@ -48,7 +54,9 @@ def parse_source_pages(value: Any) -> list[int]:
     return []
 
 
-def deduplicate_citations(citations: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
+def deduplicate_citations(
+    citations: list[dict[str, Any]] | None,
+) -> list[dict[str, Any]]:
     if not citations:
         return []
 
@@ -79,7 +87,10 @@ def select_relevant_citations(
 
     retrieval_result = retrieval_result or {}
 
-    if _has_result(retrieval_result.get("tool_result")) or intent == "calculation_query":
+    if (
+        _has_result(retrieval_result.get("tool_result"))
+        or intent == "calculation_query"
+    ):
         return []
 
     if _has_result(retrieval_result.get("structured_result")) or intent in {
@@ -87,13 +98,17 @@ def select_relevant_citations(
         "structured_lookup",
     }:
         lookup_citations = [
-            citation for citation in deduped if _chunk_type(citation) == "structured_lookup"
+            citation
+            for citation in deduped
+            if _chunk_type(citation) == "structured_lookup"
         ]
         return lookup_citations[:1]
 
     if any(_chunk_type(citation) in {"tool", "formula"} for citation in deduped):
         tool_citations = [
-            citation for citation in deduped if _chunk_type(citation) in {"tool", "formula"}
+            citation
+            for citation in deduped
+            if _chunk_type(citation) in {"tool", "formula"}
         ]
         return tool_citations[:1]
 

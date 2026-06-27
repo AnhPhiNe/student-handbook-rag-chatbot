@@ -22,7 +22,9 @@ def parse_source_pages(value: Any) -> list[int]:
     return []
 
 
-def build_citations_from_vector_results(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def build_citations_from_vector_results(
+    results: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
     citations = []
 
     for item in results:
@@ -31,7 +33,12 @@ def build_citations_from_vector_results(results: list[dict[str, Any]]) -> list[d
             {
                 "chunk_id": item.get("chunk_id"),
                 "chunk_type": metadata.get("chunk_type"),
-                "title": metadata.get("title") or metadata.get("form_name") or metadata.get("unit_name") or metadata.get("faculty_or_unit_name") or metadata.get("procedure_name") or metadata.get("rule_name"),
+                "title": metadata.get("title")
+                or metadata.get("form_name")
+                or metadata.get("unit_name")
+                or metadata.get("faculty_or_unit_name")
+                or metadata.get("procedure_name")
+                or metadata.get("rule_name"),
                 "source_pages": parse_source_pages(metadata.get("source_pages")),
                 "distance": item.get("distance"),
                 "retrieval_purpose": item.get("retrieval_purpose"),
@@ -46,7 +53,8 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
     return [
         {
             "chunk_type": "structured_lookup",
-            "title": lookup_result.get("table_name") or "Bảng quy chế (Trích xuất tự động)",
+            "title": lookup_result.get("table_name")
+            or "Bảng quy chế (Trích xuất tự động)",
             "source_pages": lookup_result.get("source_pages", []),
             "content": "Dữ liệu được trích xuất trực tiếp từ Cơ sở dữ liệu Bảng quy chế trong Sổ tay Sinh viên HCMUE.",
         }

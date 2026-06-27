@@ -5,7 +5,9 @@ import unicodedata
 from typing import Any
 
 
-def formula_lookup(query: str, formula_rules: list[dict[str, Any]], cohort: str | None = None) -> dict[str, Any] | None:
+def formula_lookup(
+    query: str, formula_rules: list[dict[str, Any]], cohort: str | None = None
+) -> dict[str, Any] | None:
     ascii_query = _ascii_text(query)
     if not _asks_for_formula(ascii_query):
         return None
@@ -70,6 +72,8 @@ def _asks_for_formula(ascii_query: str) -> bool:
 def _ascii_text(text: str) -> str:
     text = text.replace("đ", "d").replace("Đ", "D")
     decomposed = unicodedata.normalize("NFD", text)
-    stripped = "".join(char for char in decomposed if unicodedata.category(char) != "Mn")
+    stripped = "".join(
+        char for char in decomposed if unicodedata.category(char) != "Mn"
+    )
     stripped = re.sub(r"[^a-zA-Z0-9]+", " ", stripped)
     return re.sub(r"\s+", " ", stripped.lower()).strip()

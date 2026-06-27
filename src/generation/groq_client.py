@@ -1,10 +1,10 @@
 import os
-import time
 from collections.abc import Iterator
 from typing import Any
 
 from langsmith import traceable
 from src.common.env_loader import load_project_env
+
 
 class GroqClient:
     def __init__(
@@ -19,11 +19,11 @@ class GroqClient:
         api_key_env_var: str = "GROQ_API_KEY",
     ) -> None:
         load_project_env()
-        
+
         # Load dynamic keys (comma separated)
         keys_str = os.environ.get("GROQ_API_KEYS", os.environ.get("GROQ_API_KEY", ""))
         self.available_keys = [k.strip() for k in keys_str.split(",") if k.strip()]
-        
+
         if not self.available_keys:
             raise RuntimeError(
                 "Missing GROQ_API_KEYS or GROQ_API_KEY. Add it to .env or set this environment variable."
@@ -37,12 +37,16 @@ class GroqClient:
             ) from exc
 
         # Build fallback matrix (Model x Key)
-        fallback_models = [model_name, "openai/gpt-oss-120b", "qwen/qwen3.6-27b", "llama-3.1-8b-instant"]
+        fallback_models = [
+            model_name,
+            "openai/gpt-oss-120b",
+            "qwen/qwen3.6-27b",
+            "llama-3.1-8b-instant",
+        ]
         self.models = []
         for m in fallback_models:
             if m not in self.models:
                 self.models.append(m)
-
 
         self._config = {
             "temperature": temperature,
@@ -51,15 +55,15 @@ class GroqClient:
 
     @traceable(name="Groq Generation", run_type="llm")
     def generate(self, prompt: str) -> dict[str, Any]:
-        from groq import Groq, RateLimitError, APITimeoutError, InternalServerError, APIConnectionError
+        from groq import Groq
         import random
-        
+
         last_error = None
-        
+
         keys = list(self.available_keys)
         random.shuffle(keys)
         providers = [{"model": m, "api_key": k} for m in self.models for k in keys]
-        
+
         for provider in providers:
             try:
                 client = Groq(api_key=provider["api_key"], timeout=15.0, max_retries=0)
@@ -78,13 +82,15 @@ class GroqClient:
                     "text": text,
                     "error_type": None,
                     "error_message": None,
-                    "attempts": 1, 
+                    "attempts": 1,
                 }
             except Exception as exc:
                 last_error = exc
-                print(f"[Fallback] Groq generation failed with model {provider['model']}. Trying next... Error: {str(exc)}")
+                print(
+                    f"[Fallback] Groq generation failed with model {provider['model']}. Trying next... Error: {str(exc)}"
+                )
                 continue
-                
+
         return {
             "ok": False,
             "text": None,
@@ -96,15 +102,15 @@ class GroqClient:
     @traceable(name="Groq Generation Stream", run_type="llm")
     def generate_stream(self, prompt: str) -> Iterator[str]:
         """Yield text chunks as Groq generates them in real-time, with Double Loop Fallback and TTFT."""
-        from groq import Groq, RateLimitError, APITimeoutError, InternalServerError, APIConnectionError
+        from groq import Groq
         import random
-        
+
         last_error = None
-        
+
         keys = list(self.available_keys)
         random.shuffle(keys)
         providers = [{"model": m, "api_key": k} for m in self.models for k in keys]
-        
+
         for provider in providers:
             try:
                 # HTTP timeout 10.0s will implicitly act as TTFT timeout
@@ -116,28 +122,36 @@ class GroqClient:
                     max_tokens=self._config["max_tokens"],
                     stream=True,
                 )
-                
+
                 # Fetch first chunk to verify TTFT and API health
                 iterator = iter(response)
                 try:
                     first_chunk = next(iterator)
                 except StopIteration:
                     first_chunk = None
-                    
-                if first_chunk and first_chunk.choices and first_chunk.choices[0].delta.content:
+
+                if (
+                    first_chunk
+                    and first_chunk.choices
+                    and first_chunk.choices[0].delta.content
+                ):
                     yield first_chunk.choices[0].delta.content
-                
+
                 # Yield remaining chunks
                 for chunk in iterator:
                     if chunk.choices and chunk.choices[0].delta.content:
                         yield chunk.choices[0].delta.content
-                        
-                return # Successfully finished streaming
-                
+
+                return  # Successfully finished streaming
+
             except Exception as exc:
                 last_error = exc
-                print(f"[Fallback] Groq stream failed with model {provider['model']}. Trying next... Error: {str(exc)}")
+                print(
+                    f"[Fallback] Groq stream failed with model {provider['model']}. Trying next... Error: {str(exc)}"
+                )
                 continue
-                
+
         # If all providers fail
-        raise RuntimeError(f"All Groq fallback providers failed. Last error: {str(last_error)}")
+        raise RuntimeError(
+            f"All Groq fallback providers failed. Last error: {str(last_error)}"
+        )

@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 
 from src.common.console import configure_utf8_stdio
 
@@ -11,10 +11,9 @@ from .vector_retriever import get_chroma_collection, load_embedding_model
 CONFIG_PATH = Path("configs/retrieval.yaml")
 
 TEST_QUERIES = [
-     # =========================
+    # =========================
     # A. Regulation / học vụ
     # =========================
-
     "Nếu bị điểm F thì sao?",
     "Sinh viên bị cảnh báo học tập khi nào vậy?",
     "Điểm D có được tính đạt không?",
@@ -25,11 +24,9 @@ TEST_QUERIES = [
     "Bao nhiêu tín chỉ thì bị chậm tiến độ?",
     "Điểm trung bình tích lũy dùng để làm gì?",
     "Khi nào thì bị xóa tên khỏi danh sách sinh viên?",
-
     # =========================
     # B. Lookup / scoring
     # =========================
-
     "Điểm rèn luyện 92 là loại gì?",
     "GPA 2.95 được xếp loại học lực gì?",
     "Điểm B+ quy đổi sang hệ 4 bao nhiêu?",
@@ -40,11 +37,9 @@ TEST_QUERIES = [
     "3.6 GPA là xuất sắc hay giỏi?",
     "Điểm A có tương đương 4.0 không?",
     "Rèn luyện 75 là khá hay tốt?",
-
     # =========================
     # C. Form queries
     # =========================
-
     "Muốn quay lại học sau bảo lưu thì dùng đơn gì?",
     "Có mẫu đơn xin trợ cấp xã hội không?",
     "Mẫu đơn xin ở ký túc xá nằm ở đâu?",
@@ -55,11 +50,9 @@ TEST_QUERIES = [
     "Có form theo dõi tiến độ học tập không?",
     "Đơn học lại yêu cầu thông tin gì?",
     "Muốn xin hỗ trợ chi phí học tập thì điền mẫu gì?",
-
     # =========================
     # D. Office queries
     # =========================
-
     "Email phòng đào tạo là gì?",
     "Phòng CTCT-HSSV ở tầng mấy?",
     "Muốn hỏi về học phí thì liên hệ đơn vị nào?",
@@ -70,11 +63,9 @@ TEST_QUERIES = [
     "Đơn vị nào xử lý công tác sinh viên?",
     "Phòng Kế hoạch – Tài chính làm gì?",
     "Muốn giải quyết giấy tờ sinh viên thì tìm ai?",
-
     # =========================
     # E. Faculty queries
     # =========================
-
     "Khoa CNTT đào tạo gì?",
     "Ngành Công nghệ thông tin học xong làm nghề gì?",
     "Khoa Tiếng Pháp nằm ở đâu?",
@@ -85,11 +76,9 @@ TEST_QUERIES = [
     "Ngành tiếng Anh ra trường có thể làm gì?",
     "Khoa Địa lí có website không?",
     "Tổ trực thuộc nào liên quan công nghệ?",
-
     # =========================
     # F. Procedure / KTX
     # =========================
-
     "Ai được ưu tiên vào ký túc xá?",
     "Quy trình xét KTX gồm những bước nào?",
     "Muốn ở nội trú thì làm sao?",
@@ -100,11 +89,9 @@ TEST_QUERIES = [
     "KTX xét theo tiêu chí nào?",
     "Thủ tục vào ở nội trú như thế nào?",
     "Con hộ nghèo có ưu tiên KTX không?",
-
     # =========================
     # G. Mixed / khó hơn
     # =========================
-
     "Muốn bảo lưu thì vừa cần điều kiện gì vừa cần mẫu đơn nào?",
     "Nếu GPA thấp thì còn được học bổng không?",
     "Muốn xin vào KTX thì liên hệ phòng nào và dùng mẫu gì?",
@@ -114,7 +101,7 @@ TEST_QUERIES = [
     "Muốn miễn giảm học phí thì liên hệ ai?",
     "Nếu rớt môn thì học lại bằng cách nào?",
     "Muốn vay vốn sinh viên thì cần giấy xác nhận gì?",
-    "Muốn giải quyết học vụ và xin học lại thì phải làm gì?"
+    "Muốn giải quyết học vụ và xin học lại thì phải làm gì?",
 ]
 
 
@@ -170,7 +157,7 @@ def main() -> None:
     configure_utf8_stdio()
 
     config = load_yaml(CONFIG_PATH)
-    
+
     entity_registry = load_json(Path(config["input"]["entity_registry"]))
     expansion_rules = load_json(Path(config["input"]["query_expansion_rules"]))
 
@@ -216,7 +203,12 @@ def main() -> None:
             print("Tool result:", simple["tool_result"])
 
         if simple["top_items"]:
-            print("Top 1:", simple["top_items"][0]["chunk_id"], "|", simple["top_items"][0]["title"])
+            print(
+                "Top 1:",
+                simple["top_items"][0]["chunk_id"],
+                "|",
+                simple["top_items"][0]["title"],
+            )
 
         full_results.append(result)
         simplified_results.append(simple)
@@ -230,7 +222,9 @@ def main() -> None:
     print("\nRetrieval batch evaluation completed.")
     print(f"Total queries: {len(TEST_QUERIES)}")
     print("Saved full report: data/processed/metadata/retrieval_batch_eval_full.json")
-    print("Saved simplified report: data/processed/metadata/retrieval_batch_eval_simplified.json")
+    print(
+        "Saved simplified report: data/processed/metadata/retrieval_batch_eval_simplified.json"
+    )
 
 
 if __name__ == "__main__":

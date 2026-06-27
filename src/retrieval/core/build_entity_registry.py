@@ -104,9 +104,8 @@ def make_program_aliases(program_names: list[str]) -> list[str]:
 def _is_program_heading(line: str) -> bool:
     if not line:
         return False
-    return (
-        line.startswith("NGÀNH ")
-        or line.startswith("TIẾNG VIỆT VÀ VĂN HÓA VIỆT NAM")
+    return line.startswith("NGÀNH ") or line.startswith(
+        "TIẾNG VIỆT VÀ VĂN HÓA VIỆT NAM"
     )
 
 
@@ -140,7 +139,9 @@ def add_manual_aliases(entity: dict[str, Any]) -> dict[str, Any]:
     aliases = set(entity["aliases"])
 
     if "công tác chính trị" in name:
-        aliases.update(["ctct", "hssv", "ctct-hssv", "phòng ctct", "phòng hssv", "ctsv"])
+        aliases.update(
+            ["ctct", "hssv", "ctct-hssv", "phòng ctct", "phòng hssv", "ctsv"]
+        )
 
     if "đào tạo" in name:
         aliases.update(["pdt", "phongdt", "phòng học vụ", "học vụ"])

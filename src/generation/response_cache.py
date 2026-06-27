@@ -69,7 +69,9 @@ class ResponseCache:
                 )
                 try:
                     with os.fdopen(fd, "w", encoding="utf-8") as f:
-                        json.dump(self._data, f, ensure_ascii=False, indent=2, default=str)
+                        json.dump(
+                            self._data, f, ensure_ascii=False, indent=2, default=str
+                        )
                         f.write("\n")
                     os.replace(tmp_name, self.path)
                 except Exception:
@@ -100,7 +102,9 @@ class ResponseCache:
             "structured_result": retrieval_result.get("structured_result"),
             "tool_result": retrieval_result.get("tool_result"),
         }
-        stable_json = json.dumps(payload, ensure_ascii=False, sort_keys=True, default=str)
+        stable_json = json.dumps(
+            payload, ensure_ascii=False, sort_keys=True, default=str
+        )
         return hashlib.sha256(stable_json.encode("utf-8")).hexdigest()
 
     def _load(self) -> None:
@@ -187,6 +191,7 @@ class RedisResponseCache(ResponseCache):
         super().__init__(path=path, enabled=enabled, ttl_seconds=ttl_seconds)
         self.redis_url = redis_url
         import redis
+
         self.client = redis.from_url(self.redis_url)
 
     def get(self, key: str) -> dict[str, Any] | None:
@@ -200,24 +205,28 @@ class RedisResponseCache(ResponseCache):
                 return self._unwrap_entry(entry)
         except Exception as e:
             logging.warning(f"Redis get failed: {e}. Falling back to local cache.")
-        
+
         # If not in Redis (or Redis failed), fallback to local
         return super().get(key)
 
     def set(self, key: str, value: dict[str, Any]) -> None:
         if not self.enabled:
             return
-        
+
         entry = {
             "created_at": time.time(),
             "value": value,
         }
         try:
-            self.client.set(key, json.dumps(entry, ensure_ascii=False, default=str), ex=self.ttl_seconds)
+            self.client.set(
+                key,
+                json.dumps(entry, ensure_ascii=False, default=str),
+                ex=self.ttl_seconds,
+            )
             print(f"[Redis Cache] Wrote key {key[:8]}...")
         except Exception as e:
             logging.warning(f"Redis set failed: {e}. Falling back to local cache.")
-            
+
         # Write to local cache as well (Two-Tier caching)
         super().set(key, value)
 
@@ -231,12 +240,13 @@ def get_response_cache(
     if redis_url:
         try:
             import redis
+
             r = redis.from_url(redis_url)
             r.ping()
             print("[Cache] Connected to Redis. Enabling Two-Tier Caching.")
             return RedisResponseCache(redis_url, path, enabled, ttl_seconds)
         except Exception as e:
             print(f"[Cache] Redis connection failed: {e}. Falling back to Local JSON.")
-    
+
     print("[Cache] Using Local JSON Caching.")
     return ResponseCache(path, enabled, ttl_seconds)

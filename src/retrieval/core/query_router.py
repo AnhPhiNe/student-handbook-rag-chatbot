@@ -157,7 +157,6 @@ def route_query(query: str) -> dict[str, Any]:
         }
     # -----------------------------------
 
-
     # 4. Form query
     if has_form_signal:
         return {
@@ -180,9 +179,7 @@ def route_query(query: str) -> dict[str, Any]:
     # 6. Office/contact query
     # Ví dụ: "Website Phòng Công nghệ Thông tin là gì?"
     # Không đưa "ký túc xá" vào office entity ở đây.
-    if has_explicit_office_entity or (
-        has_contact_question and not has_faculty_signal
-    ):
+    if has_explicit_office_entity or (has_contact_question and not has_faculty_signal):
         return {
             "intent": "office_query",
             "strategy": "semantic_filtered_rerank",
@@ -200,7 +197,9 @@ def route_query(query: str) -> dict[str, Any]:
     # 8. Các câu điểm qua môn/rớt môn
     # Nếu hỏi TỪ KHÓA ĐIỂM + RỚT/QUA MÔN -> Tra cứu JSON
     # Nếu hỏi RỚT MÔN chung chung (học lại, xử lý, etc) -> Regulation
-    asks_passing_score = contains_any(q, rules["pass_fail_regulation_signal"]) and contains_any(q, ["mấy điểm", "bao nhiêu điểm", "thang điểm", "quy đổi"])
+    asks_passing_score = contains_any(
+        q, rules["pass_fail_regulation_signal"]
+    ) and contains_any(q, ["mấy điểm", "bao nhiêu điểm", "thang điểm", "quy đổi"])
     if asks_passing_score:
         return {
             "intent": "score_lookup_query",
@@ -218,7 +217,9 @@ def route_query(query: str) -> dict[str, Any]:
 
     # 9. Score lookup chỉ dành cho bảng/range rõ
     ascii_q = strip_accents(q)
-    asks_failed_grade_policy = bool(re.search(r"\bdiem\s+f\b", ascii_q, flags=re.IGNORECASE)) and contains_any(
+    asks_failed_grade_policy = bool(
+        re.search(r"\bdiem\s+f\b", ascii_q, flags=re.IGNORECASE)
+    ) and contains_any(
         q,
         ["bị", "thì sao", "xử lý", "rớt", "trượt"],
     )
@@ -229,14 +230,20 @@ def route_query(query: str) -> dict[str, Any]:
             "target_chunk_types": ["regulation"],
         }
 
-    asks_letter_grade = bool(re.search(r"\bdiem\s+[abcdf]\+?\b", ascii_q, flags=re.IGNORECASE))
+    asks_letter_grade = bool(
+        re.search(r"\bdiem\s+[abcdf]\+?\b", ascii_q, flags=re.IGNORECASE)
+    )
     asks_gpa_classification = has_gpa and contains_any(
         q,
         ["loại", "xếp", "xuất sắc", "giỏi", "khá", "trung bình", "yếu"],
     )
 
     # Score lookup chi danh cho cau hoi tra bang diem/range.
-    if contains_any(q, rules["score_lookup_signal"]) or asks_letter_grade or asks_gpa_classification:
+    if (
+        contains_any(q, rules["score_lookup_signal"])
+        or asks_letter_grade
+        or asks_gpa_classification
+    ):
         return {
             "intent": "score_lookup_query",
             "strategy": "structured_lookup",

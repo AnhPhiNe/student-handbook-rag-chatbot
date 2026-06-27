@@ -14,6 +14,20 @@ router = APIRouter(tags=["health"])
 
 @router.api_route("/health", methods=["GET", "HEAD"], response_model=HealthResponse)
 def health() -> HealthResponse:
+    """
+    Kiểm tra trạng thái hoạt động của dịch vụ.
+
+    Hàm này cung cấp một điểm cuối (endpoint) để kiểm tra xem dịch vụ có đang chạy
+    và phản hồi bình thường hay không. Nó trả về thông tin cơ bản về trạng thái
+    của dịch vụ.
+
+    Returns:
+        HealthResponse: Một đối tượng chứa thông tin về trạng thái của dịch vụ,
+                        bao gồm:
+                        - `status`: Trạng thái chung của dịch vụ (ví dụ: "ok").
+                        - `service`: Tên của dịch vụ (ví dụ: "student_handbook_rag").
+                        - `version`: Phiên bản hiện tại của dịch vụ (ví dụ: "0.1.0").
+    """
     return HealthResponse(
         status="ok",
         service="student_handbook_rag",
@@ -27,6 +41,33 @@ def health() -> HealthResponse:
     dependencies=[Depends(verify_admin_api_key)],
 )
 def artifact_health() -> ArtifactHealthResponse:
+    """
+    Kiểm tra trạng thái của các tài nguyên (artifacts) cần thiết cho dịch vụ.
+
+    Hàm này kiểm tra sự tồn tại của các file cấu hình, dữ liệu đã xử lý và
+    kho vector (vectorstore) mà dịch vụ cần để hoạt động. Nó cũng kiểm tra
+    các biến môi trường cần thiết nếu dịch vụ sử dụng kho vector đám mây.
+    Chỉ những người dùng có quyền quản trị (admin) mới có thể truy cập điểm cuối này.
+
+    Returns:
+        ArtifactHealthResponse: Một đối tượng chứa thông tin về trạng thái của
+                                các tài nguyên, bao gồm:
+                                - `status`: Trạng thái chung của các tài nguyên
+                                            ("ok" nếu tất cả đều tồn tại,
+                                            "missing_artifacts" nếu có cái bị thiếu).
+                                - `required_artifacts`: Một danh sách các đối tượng
+                                                        `ArtifactStatus`, mỗi đối tượng
+                                                        mô tả một tài nguyên cụ thể:
+                                                        - `path`: Đường dẫn hoặc tên
+                                                                  của tài nguyên.
+                                                        - `exists`: `True` nếu tài nguyên
+                                                                    tồn tại, `False` nếu
+                                                                    không.
+                                                        - `kind`: Loại của tài nguyên
+                                                                  (ví dụ: "config",
+                                                                  "processed_json",
+                                                                  "vectorstore", "env").
+    """
     required = [
         ArtifactStatus(
             path="configs/answer_generation.yaml",

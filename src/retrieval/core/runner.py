@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 
 from src.common.console import configure_utf8_stdio
 
@@ -6,8 +6,6 @@ from .io_utils import load_json, load_yaml, save_json
 from .report_builder import build_retrieval_report
 from .retrieval_pipeline import run_retrieval_pipeline
 from .vector_retriever import get_chroma_collection, load_embedding_model
-
-
 
 
 CONFIG_PATH = Path("configs/retrieval.yaml")
@@ -31,7 +29,7 @@ def main() -> None:
     configure_utf8_stdio()
 
     config = load_yaml(CONFIG_PATH)
-    
+
     entity_registry = load_json(Path(config["input"]["entity_registry"]))
     expansion_rules = load_json(Path(config["input"]["query_expansion_rules"]))
 
@@ -68,8 +66,6 @@ def main() -> None:
         print("Strategy:", result["strategy"])
         print("Citations:", result["citations"][:2])
         print("Context preview:", result["context_for_llm"][:500])
-
-    
 
     report = build_retrieval_report(results)
     save_json(report, Path(config["output"]["test_report"]))

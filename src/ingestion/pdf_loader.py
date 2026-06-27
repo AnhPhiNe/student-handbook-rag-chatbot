@@ -77,13 +77,19 @@ def detect_by_pattern(text: str) -> list[str]:
     lower_text = text.lower()
     matched = []
 
-    if re.search(r"\bchương\s+[ivxlcdm]+", lower_text) or re.search(r"\bđiều\s+\d+", lower_text):
+    if re.search(r"\bchương\s+[ivxlcdm]+", lower_text) or re.search(
+        r"\bđiều\s+\d+", lower_text
+    ):
         matched.append("regulation_text")
 
     if "quy ước viết tắt" in lower_text:
         matched.append("abbreviation")
 
-    if "thang điểm" in lower_text or "xếp loại" in lower_text or "khung điểm" in lower_text:
+    if (
+        "thang điểm" in lower_text
+        or "xếp loại" in lower_text
+        or "khung điểm" in lower_text
+    ):
         matched.append("scoring_table")
 
     if "nội dung đánh giá" in lower_text and "điểm đánh giá" in lower_text:
@@ -92,7 +98,11 @@ def detect_by_pattern(text: str) -> list[str]:
     if "phiếu đánh giá kết quả rèn luyện sinh viên" in lower_text:
         matched.append("form_template")
 
-    if "kính gửi" in lower_text or "người làm đơn" in lower_text or "đơn xin" in lower_text:
+    if (
+        "kính gửi" in lower_text
+        or "người làm đơn" in lower_text
+        or "đơn xin" in lower_text
+    ):
         matched.append("form_template")
 
     if "phòng đào tạo" in lower_text or "phòng công tác chính trị" in lower_text:
@@ -108,9 +118,7 @@ def detect_by_pattern(text: str) -> list[str]:
 
 
 def estimate_confidence(
-    range_type: str,
-    pattern_types: list[str],
-    char_count: int
+    range_type: str, pattern_types: list[str], char_count: int
 ) -> tuple[float, bool, str]:
     """
     Tính confidence đơn giản:
@@ -146,9 +154,8 @@ def has_table_hint(text: str, pattern_types: list[str]) -> bool:
 
     lower_text = text.lower()
 
-    return (
-        "scoring_table" in pattern_types
-        or any(keyword in lower_text for keyword in table_keywords)
+    return "scoring_table" in pattern_types or any(
+        keyword in lower_text for keyword in table_keywords
     )
 
 
@@ -171,7 +178,7 @@ def extract_pdf_pages(pdf_path: Path, config: dict[str, Any]) -> list[dict[str, 
         confidence, needs_review, detection_source = estimate_confidence(
             range_type=range_type,
             pattern_types=pattern_types,
-            char_count=len(cleaned_text)
+            char_count=len(cleaned_text),
         )
 
         final_content_type = range_type
@@ -200,8 +207,7 @@ def extract_pdf_pages(pdf_path: Path, config: dict[str, Any]) -> list[dict[str, 
 
 
 def build_document_profile(
-    pages: list[dict[str, Any]],
-    config: dict[str, Any]
+    pages: list[dict[str, Any]], config: dict[str, Any]
 ) -> dict[str, Any]:
     content_type_count = {}
     low_text_pages = []
@@ -244,24 +250,16 @@ def build_extraction_report(pages: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "total_pages": len(pages),
         "low_text_pages": [
-            p["page_number"]
-            for p in pages
-            if p["content_type"] == "low_text_or_blank"
+            p["page_number"] for p in pages if p["content_type"] == "low_text_or_blank"
         ],
         "possible_table_pages": [
-            p["page_number"]
-            for p in pages
-            if p["has_table_hint"]
+            p["page_number"] for p in pages if p["has_table_hint"]
         ],
         "form_template_pages": [
-            p["page_number"]
-            for p in pages
-            if p["content_type"] == "form_template"
+            p["page_number"] for p in pages if p["content_type"] == "form_template"
         ],
         "office_directory_pages": [
-            p["page_number"]
-            for p in pages
-            if p["content_type"] == "office_directory"
+            p["page_number"] for p in pages if p["content_type"] == "office_directory"
         ],
         "faculty_program_directory_pages": [
             p["page_number"]
@@ -269,9 +267,7 @@ def build_extraction_report(pages: list[dict[str, Any]]) -> dict[str, Any]:
             if p["content_type"] == "faculty_program_directory"
         ],
         "toc_or_index_pages": [
-            p["page_number"]
-            for p in pages
-            if p["content_type"] == "toc_or_index"
+            p["page_number"] for p in pages if p["content_type"] == "toc_or_index"
         ],
         "pages_need_review": [
             {

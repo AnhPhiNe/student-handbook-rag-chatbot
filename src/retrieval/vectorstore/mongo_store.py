@@ -6,8 +6,14 @@ from src.common.env_loader import load_project_env
 
 logger = logging.getLogger(__name__)
 
+
 class MongoDocStore:
-    def __init__(self, uri: str, db_name: str = "chatbotHCMUE", collection_name: str = "parent_docs"):
+    def __init__(
+        self,
+        uri: str,
+        db_name: str = "chatbotHCMUE",
+        collection_name: str = "parent_docs",
+    ):
         self.client = MongoClient(uri)
         self.db = self.client[db_name]
         self.collection = self.db[collection_name]
@@ -21,16 +27,14 @@ class MongoDocStore:
             if "_id" not in doc:
                 continue
             operations.append(
-                UpdateOne(
-                    {"_id": doc["_id"]},
-                    {"$set": doc},
-                    upsert=True
-                )
+                UpdateOne({"_id": doc["_id"]}, {"$set": doc}, upsert=True)
             )
 
         if operations:
             result = self.collection.bulk_write(operations)
-            logger.info(f"Inserted/Updated {result.upserted_count + result.modified_count} docs into MongoDB.")
+            logger.info(
+                f"Inserted/Updated {result.upserted_count + result.modified_count} docs into MongoDB."
+            )
 
     def get_document_by_id(self, doc_id: str) -> Optional[Dict[str, Any]]:
         return self.collection.find_one({"_id": doc_id})
@@ -39,6 +43,7 @@ class MongoDocStore:
         """Drops the entire collection. Use with caution."""
         self.collection.drop()
         logger.info(f"Dropped collection {self.collection.name}.")
+
 
 def get_mongo_store() -> MongoDocStore:
     load_project_env()

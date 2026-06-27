@@ -16,8 +16,16 @@ def build_scoring_tables() -> list[dict[str, Any]]:
                 {"status": "Đạt", "score_10_range": "5.5-6.2", "letter_grade": "C"},
                 {"status": "Đạt", "score_10_range": "4.8-5.4", "letter_grade": "D+"},
                 {"status": "Đạt", "score_10_range": "4.0-4.7", "letter_grade": "D"},
-                {"status": "Không đạt", "score_10_range": "3.0-3.9", "letter_grade": "F+"},
-                {"status": "Không đạt", "score_10_range": "0.0-2.9", "letter_grade": "F"},
+                {
+                    "status": "Không đạt",
+                    "score_10_range": "3.0-3.9",
+                    "letter_grade": "F+",
+                },
+                {
+                    "status": "Không đạt",
+                    "score_10_range": "0.0-2.9",
+                    "letter_grade": "F",
+                },
             ],
         },
         {

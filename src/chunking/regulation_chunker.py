@@ -35,7 +35,7 @@ def split_by_clause(content: str) -> list[str]:
 
     chunks = []
 
-    intro = content[:matches[0].start()].strip()
+    intro = content[: matches[0].start()].strip()
     for idx, match in enumerate(matches):
         start = match.start()
         end = matches[idx + 1].start() if idx + 1 < len(matches) else len(content)
@@ -82,11 +82,13 @@ def build_regulation_chunks(
         }
 
         full_content = build_regulation_chunk_content(section, content)
-        docstore_items.append({
-            "_id": section["section_id"],
-            "content": full_content,
-            "metadata": base_metadata,
-        })
+        docstore_items.append(
+            {
+                "_id": section["section_id"],
+                "content": full_content,
+                "metadata": base_metadata,
+            }
+        )
 
         if count_tokens_approx(full_content) <= max_tokens:
             chunks.append(

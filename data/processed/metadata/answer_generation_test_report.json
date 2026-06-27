@@ -1,92 +1,319 @@
-﻿{
+{
   "pipeline_stage": "answer_generation",
   "total_queries": 1,
   "results": [
     {
-      "query": "Điều kiện xét học bổng khuyến khích học tập là gì?",
-      "answer": "Để được xét học bổng khuyến khích học tập, sinh viên cần đáp ứng các điều kiện sau:\n\n1.  Là sinh viên đại học chính quy tại Trường theo kế hoạch khóa học, không học quá thời gian học tập chuẩn.\n2.  Trong học kỳ, có kết quả học tập và rèn luyện từ loại khá trở lên, không bị kỷ luật từ mức khiển trách trở lên.\n3.  Tổng số tín chỉ tích lũy trong học kỳ phải từ 15 tín chỉ trở lên theo kế hoạch (tất cả các tín chỉ đều phải đạt, không bao gồm tín chỉ trả nợ, cải thiện, tương đương).\n4.  **Đối với sinh viên năm cuối:**\n    *   **Học kỳ I:** Áp dụng các điều kiện như trên.\n    *   **Học kỳ II:** Đăng ký từ 6 tín chỉ trở lên. Việc xét học bổng sẽ ưu tiên sinh viên thực hiện khóa luận tốt nghiệp có kết quả học tập và rèn luyện xuất sắc, sau đó là xuất sắc và rèn luyện tốt, rồi mới đến các sinh viên còn lại.\n5.  Điểm học bổng được tính theo công thức: (Điểm học tập x 80 + Điểm rèn luyện /25 x 20) /100.\n    *   **Học bổng loại Khá:** Điểm học bổng từ 2.56 đến 3.352 (điểm học tập: 2.50 – 3.19 và điểm rèn luyện >= 70).\n    *   **Học bổng loại Giỏi:** Điểm học bổng từ 3.20 đến 3.672 (điểm học tập: 3.20 – 3.59 và điểm rèn luyện >= 80).\n    *   **Học bổng loại Xuất sắc:** Điểm học bổng từ 3.60 đến 4.0 (điểm học tập: 3.60 – 4.0 và điểm rèn luyện >= 90).\n\nNguồn:\n- Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập, trang 52-53",
-      "status": "answered",
-      "error_type": null,
-      "error_message": null,
-      "intent": "regulation_query",
-      "strategy": "semantic_filtered",
-      "retrieval_query": "Điều kiện xét học bổng khuyến khích học tập là gì?",
+      "run_id": "019f06c3-e208-7ff0-b2dc-5a30ca478096",
+      "query": "mấy điểm thì qua môn",
+      "effective_query": "Mấy điểm thì qua môn?",
+      "query_rewrite": {
+        "original_query": "mấy điểm thì qua môn",
+        "effective_query": "Mấy điểm thì qua môn?",
+        "rewritten_query": "Mấy điểm thì qua môn?",
+        "changed": true,
+        "needs_clarification": false,
+        "clarification_question": null,
+        "confidence": "high",
+        "reason": "no_action_needed",
+        "llm_called": true,
+        "error_type": null,
+        "error_message": null,
+        "context_resolution": {
+          "history_used": false,
+          "history_message_count": 0,
+          "reason": "no_history",
+          "decision": "standalone_new_topic",
+          "confidence": "none",
+          "standalone_query": null,
+          "needs_clarification": false,
+          "clarification_question": null,
+          "referenced_turns": [],
+          "llm_called": false,
+          "error_type": null,
+          "error_message": null
+        }
+      },
+      "answer": "Hiện tại mình chưa gọi được mô hình AI để diễn giải câu trả lời. Bạn có thể thử lại sau; nếu hệ thống đã tìm được nguồn liên quan, mình vẫn hiển thị nguồn bên dưới để bạn tra nhanh.\n\nNguồn:\n- Các bảng: Quy đổi thang điểm 10 sang điểm chữ | Quy đổi thang điểm 10 sang điểm chữ (Học phần Giáo dục đại cương / Nền tảng) | Quy đổi thang điểm 10 sang điểm chữ (Các Học phần còn lại / Chuyên ngành), trang 20",
+      "status": "api_error",
+      "error_type": "api_error",
+      "error_message": "Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organization `org_01ksc4qzr2fm2aq5s8257f2k71` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 6038, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "intent": "score_lookup_query",
+      "strategy": "structured_lookup",
+      "retrieval_query": "Mấy điểm thì qua môn? đạt học phần điểm học phần thang điểm 10",
       "citations": [
         {
-          "chunk_id": "reg_article_28_p52_74_part_1",
-          "chunk_type": "regulation",
-          "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "chunk_type": "structured_lookup",
+          "title": "Các bảng: Quy đổi thang điểm 10 sang điểm chữ | Quy đổi thang điểm 10 sang điểm chữ (Học phần Giáo dục đại cương / Nền tảng) | Quy đổi thang điểm 10 sang điểm chữ (Các Học phần còn lại / Chuyên ngành)",
           "source_pages": [
-            52,
-            53
+            20
           ],
-          "distance": 0.29020124673843384,
-          "retrieval_purpose": "regulation_query"
+          "content": "Dữ liệu được trích xuất trực tiếp từ Cơ sở dữ liệu Bảng quy chế trong Sổ tay Sinh viên HCMUE."
         },
         {
-          "chunk_id": "reg_article_28_p52_74_part_4",
-          "chunk_type": "regulation",
-          "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "chunk_id": "K48-K49_reg_article_10_p18_20_part_1",
+          "chunk_type": null,
+          "title": "Điều 10. Đánh giá và tính điểm học phần",
           "source_pages": [
-            52,
-            53
+            18,
+            19,
+            20,
+            21
           ],
-          "distance": 0.31732308864593506,
-          "retrieval_purpose": "regulation_query"
+          "distance": 0.0,
+          "retrieval_purpose": null,
+          "content": "Tài liệu: QUY CHẾ\nPhần: phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy\nChương: Chương III\nĐiều: Điều 10.\nTiêu đề: Điều 10. Đánh giá và tính điểm học phần\nNội dung:\nĐiều 10. Đánh giá và tính điểm học phần\n1. Đánh giá học phần\na) Đối với mỗi học phần, sinh viên được đánh giá qua hai điểm\nthành phần (điểm đánh giá quá trình và điểm thi kết thúc học phần), đối\nvới các học phần ít hơn 02 tín chỉ có thể chỉ có một điểm đánh giá kết\nthúc học phần. Các điểm thành phần được đánh giá theo thang điểm 10.\nPhương pháp đánh giá, hình thức đánh giá và trọng số của mỗi điểm\nthành phần được quy định trong đề cương chi tiết của mỗi học phần và\nđược giảng viên công bố cho sinh viên biết trước khi bắt đầu giảng dạy\nhọc phần. Việc đánh giá và tính điểm học phần phải công bằng đối với tất\ncả sinh viên trong từng lớp học phần, giữa các lớp học phần, các khoá\nhọc và các hình thức đào tạo.\nb) Đánh giá quá trình\n− Giảng viên phụ trách học phần trực tiếp ra đề thi, đề kiểm tra và\ncho điểm đánh giá quá trình;\n− Điểm đánh giá quá trình không được bảo lưu và không được\nphúc khảo.\nc) Thi kết thúc học phần\n− Cuối mỗi học kỳ, Trường tổ chức một kỳ thi chính. Căn cứ điều\nkiện cụ thể từng năm học, Hiệu trưởng quyết định tổ chức các kỳ thi phụ;\n− Việc chấm thi kết thúc học phần phải do tối thiểu hai giảng viên\nđảm nhiệm, trừ trường hợp chấm thi theo hình thức trắc nghiệm;\n− Điểm thi kết thúc học phần có thể được phúc khảo;\n− Sinh viên là tác giả chính của đề tài sinh viên NCKH được đánh\ngiá đạt loại khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử\ndụng điểm đánh giá đề tài NCKH thay thế cho điểm thi kết thúc học phần\n(không quá 3 tín chỉ) liên quan gần với đề tài.\nd) Đánh giá đồ án, khoá luận, tiểu luận tốt nghiệp\n− Việc đánh giá mỗi đồ án, khóa luận, tiểu luận tốt nghiệp phải do\nít nhất 2 giảng viên đảm nhiệm;\n− Sinh viên có đồ án, khoá luận, tiểu luận tốt nghiệp bị điểm dưới\nC, phải đăng ký học một số học phần chuyên môn để thay thế.\ne) Hình thức đánh giá trực tuyến được áp dụng khi đảm bảo trung\nthực, công bằng và khách quan như đánh giá trực tiếp và đóng góp không\nquá 50% trọng số điểm học phần. Riêng việc tổ chức bảo vệ và đánh giá\nđồ án, khóa luận, tiểu luận được thực hiện trực tuyến với trọng số cao hơn\nkhi đáp ứng thêm các điều kiện sau đây:\n− Việc đánh giá được thực hiện thông qua một hội đồng chuyên\nmôn gồm ít nhất 3 thành viên;\n− Hình thức bảo vệ và đánh giá trực tuyến được sự đồng thuận của\ncác thành viên hội đồng và người học;\n− Diễn biến của buổi bảo vệ trực tuyến được ghi hình, ghi âm đầy\nđủ và lưu trữ đúng theo quy định.\nf) Sinh viên vắng mặt trong buổi thi, đánh giá không có lý do chính\nđáng phải nhận điểm 0. Sinh viên vắng mặt có lý do chính đáng phải viết\nđơn kèm theo các minh chứng cần thiết gửi Trưởng khoa xác nhận và nộp\nvề Phòng Khảo thí và Đảm bảo chất lượng; nếu được Trường cho phép,\nsinh viên sẽ được bố trí thi bổ sung vào đợt khác và được tính điểm\nlần đầu.\ng) Các nội dung chi tiết về việc tổ chức đánh giá quá trình học tập\nvà tổ chức thi kết thúc học phần được thực hiện theo các quy định hiện\nhành của Trường.\n2. Cách tính điểm học phần\nĐiểm học phần được tính từ tổng các điểm thành phần nhân với\ntrọng số tương ứng, được làm tròn tới một chữ số thập phân và xếp loại\nđiểm chữ như dưới đây, trừ các trường hợp được quy định tại Điểm c\nkhoản này.\na) Hệ thống các điểm đạt có phân mức (áp dụng cho các học phần\nđược tính vào điểm trung bình học tập) và điểm không đạt được quy định\nnhư sau:\nLoại\nThang điểm 10\nThang điểm chữ\nĐạt\n8,5 – 10\nA\n7,8 – 8,4\nB+\n7,0 – 7,7\nB\n6,3 – 6,9\nC+\n5,5 – 6,2\nC\n4,8 – 5,4\nD+\n4,0 – 4,7\nD\nKhông đạt\n3,0 – 3,9\nF+\n0,0 – 2,9\nF\nb) Các học phần thuộc loại đạt không phân mức (chỉ yêu cầu đạt,\nkhông tính vào điểm trung bình học tập) yêu cầu đạt 5,0 trở lên theo\nthang điểm 10, và được quy đổi ra điểm chữ là P.\nc) Một số trường hợp đặc biệt sử dụng các điểm chữ xếp loại, không\nđược tính vào điểm trung bình học tập:\nI: Điểm chưa hoàn thiện do được phép hoãn thi, kiểm tra;\nX: Điểm chưa hoàn thiện do chưa đủ dữ liệu;\nR: Điểm học phần được miễn học và công nhận tín chỉ.\n3. Học lại và học cải thiện điểm\na) Sinh viên có điểm học phần không đạt phải đăng ký học lại theo\nquy định tại Điều 4 của Quy chế này, trừ trường hợp quy định tại Điểm c\nkhoản này; điểm lần học cuối là điểm chính thức của học phần;\nb) Sinh viên có điểm học phần đạt, được đăng ký học lại chính học\nphần đó để cải thiện điểm, điểm lần học cuối là điểm chính thức của\nhọc phần."
         },
         {
-          "chunk_id": "reg_article_28_p52_74_part_3",
+          "chunk_id": "14fed050-b0cb-4241-c9f2-26b3a7e6eafd",
           "chunk_type": "regulation",
-          "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "title": "Điều 10. Đánh giá và tính điểm học phần",
           "source_pages": [
-            52,
-            53
+            18,
+            19,
+            20,
+            21
           ],
-          "distance": 0.31909191608428955,
-          "retrieval_purpose": "regulation_query"
+          "distance": 0.34302299999999997,
+          "retrieval_purpose": null,
+          "content": "Tài liệu: QUY CHẾ\nPhần: phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy\nChương: Chương III\nĐiều: Điều 10.\nTiêu đề: Điều 10. Đánh giá và tính điểm học phần\nNội dung:\nĐiều 10. Đánh giá và tính điểm học phần\n1. Đánh giá học phần\na) Đối với mỗi học phần, sinh viên được đánh giá qua hai điểm\nthành phần (điểm đánh giá quá trình và điểm thi kết thúc học phần), đối\nvới các học phần ít hơn 02 tín chỉ có thể chỉ có một điểm đánh giá kết\nthúc học phần. Các điểm thành phần được đánh giá theo thang điểm 10.\nPhương pháp đánh giá, hình thức đánh giá và trọng số của mỗi điểm\nthành phần được quy định trong đề cương chi tiết của mỗi học phần và\nđược giảng viên công bố cho sinh viên biết trước khi bắt đầu giảng dạy\nhọc phần. Việc đánh giá và tính điểm học phần phải công bằng đối với tất\ncả sinh viên trong từng lớp học phần, giữa các lớp học phần, các khoá\nhọc và các hình thức đào tạo.\nb) Đánh giá quá trình\n− Giảng viên phụ trách học phần trực tiếp ra đề thi, đề kiểm tra và\ncho điểm đánh giá quá trình;\n− Điểm đánh giá quá trình không được bảo lưu và không được\nphúc khảo.\nc) Thi kết thúc học phần\n− Cuối mỗi học kỳ, Trường tổ chức một kỳ thi chính. Căn cứ điều\nkiện cụ thể từng năm học, Hiệu trưởng quyết định tổ chức các kỳ thi phụ;\n− Việc chấm thi kết thúc học phần phải do tối thiểu hai giảng viên\nđảm nhiệm, trừ trường hợp chấm thi theo hình thức trắc nghiệm;\n− Điểm thi kết thúc học phần có thể được phúc khảo;\n− Sinh viên là tác giả chính của đề tài sinh viên NCKH được đánh\ngiá đạt loại khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử\ndụng điểm đánh giá đề tài NCKH thay thế cho điểm thi kết thúc học phần\n(không quá 3 tín chỉ) liên quan gần với đề tài.\nd) Đánh giá đồ án, khoá luận, tiểu luận tốt nghiệp\n− Việc đánh giá mỗi đồ án, khóa luận, tiểu luận tốt nghiệp phải do\nít nhất 2 giảng viên đảm nhiệm;\n− Sinh viên có đồ án, khoá luận, tiểu luận tốt nghiệp bị điểm dưới\nC, phải đăng ký học một số học phần chuyên môn để thay thế.\ne) Hình thức đánh giá trực tuyến được áp dụng khi đảm bảo trung\nthực, công bằng và khách quan như đánh giá trực tiếp và đóng góp không\nquá 50% trọng số điểm học phần. Riêng việc tổ chức bảo vệ và đánh giá\nđồ án, khóa luận, tiểu luận được thực hiện trực tuyến với trọng số cao hơn\nkhi đáp ứng thêm các điều kiện sau đây:\n− Việc đánh giá được thực hiện thông qua một hội đồng chuyên\nmôn gồm ít nhất 3 thành viên;\n− Hình thức bảo vệ và đánh giá trực tuyến được sự đồng thuận của\ncác thành viên hội đồng và người học;\n− Diễn biến của buổi bảo vệ trực tuyến được ghi hình, ghi âm đầy\nđủ và lưu trữ đúng theo quy định.\nf) Sinh viên vắng mặt trong buổi thi, đánh giá không có lý do chính\nđáng phải nhận điểm 0. Sinh viên vắng mặt có lý do chính đáng phải viết\nđơn kèm theo các minh chứng cần thiết gửi Trưởng khoa xác nhận và nộp\nvề Phòng Khảo thí và Đảm bảo chất lượng; nếu được Trường cho phép,\nsinh viên sẽ được bố trí thi bổ sung vào đợt khác và được tính điểm\nlần đầu.\ng) Các nội dung chi tiết về việc tổ chức đánh giá quá trình học tập\nvà tổ chức thi kết thúc học phần được thực hiện theo các quy định hiện\nhành của Trường."
         },
         {
-          "chunk_id": "reg_article_28_p52_74_part_2",
+          "chunk_id": "4f283aeb-be2d-729a-d38c-39d28f5d07d3",
           "chunk_type": "regulation",
-          "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "title": "Điều 10. Đánh giá và tính điểm học phần",
           "source_pages": [
-            52,
-            53
+            16,
+            17,
+            18,
+            19
           ],
-          "distance": 0.32345664501190186,
-          "retrieval_purpose": "regulation_query"
+          "distance": 0.34334260000000005,
+          "retrieval_purpose": null,
+          "content": "Tài liệu: QUY CHẾ\nPhần: phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy\nChương: Chương III\nĐiều: Điều 10.\nTiêu đề: Điều 10. Đánh giá và tính điểm học phần\nNội dung:\nĐiều 10. Đánh giá và tính điểm học phần\n1. Đánh giá học phần\na) Đối với mỗi học phần, sinh viên được đánh giá qua hai điểm\nthành phần (điểm đánh giá quá trình và điểm thi kết thúc học phần), đối\nvới các học phần ít hơn 02 tín chỉ có thể chỉ có một điểm đánh giá kết\nthúc học phần. Các điểm thành phần được đánh giá theo thang điểm 10.\nPhương pháp đánh giá, hình thức đánh giá và trọng số của mỗi điểm\nthành phần được quy định trong đề cương chi tiết của mỗi học phần và\nđược giảng viên công bố cho sinh viên biết trước khi bắt đầu giảng dạy\nhọc phần. Việc đánh giá và tính điểm học phần phải công bằng đối với tất\ncả sinh viên trong từng lớp học phần, giữa các lớp học phần, các khóa\nhọc và các hình thức đào tạo.\nb) Đánh giá quá trình\n– Giảng viên phụ trách học phần trực tiếp ra đề thi, đề kiểm tra và\ncho điểm đánh giá quá trình;\n– Điểm đánh giá quá trình không được bảo lưu và không được phúc khảo.\nc) Thi kết thúc học phần\n– Cuối mỗi học kỳ, Trường tổ chức một kỳ thi chính. Căn cứ điều\nkiện cụ thể từng năm học, Hiệu trưởng quyết định tổ chức các kỳ thi phụ;\n– Việc chấm thi kết thúc học phần phải do tối thiểu hai giảng viên\nđảm nhiệm, trừ trường hợp chấm thi theo hình thức trắc nghiệm;\nSỔ TAY SINH VIÊN KHÓA 51\n– Điểm thi kết thúc học phần có thể được phúc khảo;\n– Sinh viên là tác giả chính của đề tài sinh viên NCKH được đánh\ngiá đạt loại khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử\ndụng điểm đánh giá đề tài NCKH thay thế cho điểm thi kết thúc học phần\n(không quá 03 tín chỉ) liên quan gần với đề tài.\nd)2 Đánh giá đồ án, khóa luận, tiểu luận tốt nghiệp\n– Việc đánh giá mỗi đồ án, khóa luận, tiểu luận tốt nghiệp phải do ít\nnhất 02 giảng viên đảm nhiệm;\n– Sinh viên có đồ án, khóa luận, tiểu luận tốt nghiệp bị điểm dưới C\nphải đăng ký học một số học phần chuyên môn để thay thế.\nđ)3 Hình thức đánh giá trực tuyến được áp dụng khi đảm bảo trung\nthực, công bằng và khách quan như đánh giá trực tiếp và đóng góp không\nquá 50% trọng số điểm học phần. Riêng việc tổ chức bảo vệ và đánh giá\nđồ án, khóa luận, tiểu luận được thực hiện trực tuyến với trọng số cao hơn\nkhi đáp ứng thêm các điều kiện sau đây:\n– Việc đánh giá được thực hiện thông qua một hội đồng chuyên môn\ngồm ít nhất 03 thành viên;\n– Hình thức bảo vệ và đánh giá trực tuyến được sự đồng thuận của\ncác thành viên hội đồng và người học;\n– Diễn biến của buổi bảo vệ trực tuyến được ghi hình, ghi âm đầy đủ\nvà lưu trữ đúng theo quy định.\ne) Sinh viên vắng mặt trong buổi thi, đánh giá không có lý do chính\nđáng phải nhận điểm 0. Sinh viên vắng mặt có lý do chính đáng phải viết đơn\nkèm theo các minh chứng cần thiết gửi Trưởng khoa xác nhận và nộp về\nPhòng Khảo thí và Đảm bảo chất lượng; nếu được Trường cho phép, sinh\nviên sẽ được bố trí thi bổ sung vào đợt khác và được tính điểm lần đầu.\n2 Điểm này được sửa đổi tại khoản 2, Điều 1, Quyết định số 4743/QĐ-ĐHSP ngày 31/12/2024 của Hiệu trưởng\nvề sửa đổi, bổ sung một số điểm của Quy chế đào tạo trình độ đại học ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP\nngày 09/8/2021, áp dụng từ khoá tuyển sinh năm 2025 trở về sau. Cụ thể như sau:\n“d) Đánh giá các học phần tốt nghiệp thực hiện theo hướng dẫn, quy định hiện hành của Trường. Sinh viên có học"
         },
         {
-          "chunk_id": "reg_article_27_p51_73",
-          "chunk_type": "regulation",
-          "title": "Điều 27. Học bổng",
+          "chunk_id": "K50-K51_reg_article_10_p16_16_part_1",
+          "chunk_type": null,
+          "title": "Điều 10. Đánh giá và tính điểm học phần",
           "source_pages": [
-            51,
-            52
+            16,
+            17,
+            18,
+            19
           ],
-          "distance": 0.3294607400894165,
-          "retrieval_purpose": "regulation_query"
+          "distance": 0.0,
+          "retrieval_purpose": null,
+          "content": "Tài liệu: QUY CHẾ\nPhần: phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy\nChương: Chương III\nĐiều: Điều 10.\nTiêu đề: Điều 10. Đánh giá và tính điểm học phần\nNội dung:\nĐiều 10. Đánh giá và tính điểm học phần\n1. Đánh giá học phần\na) Đối với mỗi học phần, sinh viên được đánh giá qua hai điểm\nthành phần (điểm đánh giá quá trình và điểm thi kết thúc học phần), đối\nvới các học phần ít hơn 02 tín chỉ có thể chỉ có một điểm đánh giá kết\nthúc học phần. Các điểm thành phần được đánh giá theo thang điểm 10.\nPhương pháp đánh giá, hình thức đánh giá và trọng số của mỗi điểm\nthành phần được quy định trong đề cương chi tiết của mỗi học phần và\nđược giảng viên công bố cho sinh viên biết trước khi bắt đầu giảng dạy\nhọc phần. Việc đánh giá và tính điểm học phần phải công bằng đối với tất\ncả sinh viên trong từng lớp học phần, giữa các lớp học phần, các khóa\nhọc và các hình thức đào tạo.\nb) Đánh giá quá trình\n– Giảng viên phụ trách học phần trực tiếp ra đề thi, đề kiểm tra và\ncho điểm đánh giá quá trình;\n– Điểm đánh giá quá trình không được bảo lưu và không được phúc khảo.\nc) Thi kết thúc học phần\n– Cuối mỗi học kỳ, Trường tổ chức một kỳ thi chính. Căn cứ điều\nkiện cụ thể từng năm học, Hiệu trưởng quyết định tổ chức các kỳ thi phụ;\n– Việc chấm thi kết thúc học phần phải do tối thiểu hai giảng viên\nđảm nhiệm, trừ trường hợp chấm thi theo hình thức trắc nghiệm;\nSỔ TAY SINH VIÊN KHÓA 51\n– Điểm thi kết thúc học phần có thể được phúc khảo;\n– Sinh viên là tác giả chính của đề tài sinh viên NCKH được đánh\ngiá đạt loại khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử\ndụng điểm đánh giá đề tài NCKH thay thế cho điểm thi kết thúc học phần\n(không quá 03 tín chỉ) liên quan gần với đề tài.\nd)2 Đánh giá đồ án, khóa luận, tiểu luận tốt nghiệp\n– Việc đánh giá mỗi đồ án, khóa luận, tiểu luận tốt nghiệp phải do ít\nnhất 02 giảng viên đảm nhiệm;\n– Sinh viên có đồ án, khóa luận, tiểu luận tốt nghiệp bị điểm dưới C\nphải đăng ký học một số học phần chuyên môn để thay thế.\nđ)3 Hình thức đánh giá trực tuyến được áp dụng khi đảm bảo trung\nthực, công bằng và khách quan như đánh giá trực tiếp và đóng góp không\nquá 50% trọng số điểm học phần. Riêng việc tổ chức bảo vệ và đánh giá\nđồ án, khóa luận, tiểu luận được thực hiện trực tuyến với trọng số cao hơn\nkhi đáp ứng thêm các điều kiện sau đây:\n– Việc đánh giá được thực hiện thông qua một hội đồng chuyên môn\ngồm ít nhất 03 thành viên;\n– Hình thức bảo vệ và đánh giá trực tuyến được sự đồng thuận của\ncác thành viên hội đồng và người học;\n– Diễn biến của buổi bảo vệ trực tuyến được ghi hình, ghi âm đầy đủ\nvà lưu trữ đúng theo quy định.\ne) Sinh viên vắng mặt trong buổi thi, đánh giá không có lý do chính\nđáng phải nhận điểm 0. Sinh viên vắng mặt có lý do chính đáng phải viết đơn\nkèm theo các minh chứng cần thiết gửi Trưởng khoa xác nhận và nộp về\nPhòng Khảo thí và Đảm bảo chất lượng; nếu được Trường cho phép, sinh\nviên sẽ được bố trí thi bổ sung vào đợt khác và được tính điểm lần đầu.\n2 Điểm này được sửa đổi tại khoản 2, Điều 1, Quyết định số 4743/QĐ-ĐHSP ngày 31/12/2024 của Hiệu trưởng\nvề sửa đổi, bổ sung một số điểm của Quy chế đào tạo trình độ đại học ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP\nngày 09/8/2021, áp dụng từ khoá tuyển sinh năm 2025 trở về sau. Cụ thể như sau:\n“d) Đánh giá các học phần tốt nghiệp thực hiện theo hướng dẫn, quy định hiện hành của Trường. Sinh viên có học\nphần tốt nghiệp bị điểm dưới C, phải thực hiện lại học phần tốt nghiệp tương ứng.”\n3 Điểm này được bổ sung thêm nội dung tại khoản 2, Điều 1, Quyết định số 4743/QĐ-ĐHSP ngày 31/12/2024 của\nHiệu trưởng về sửa đổi, bổ sung một số điểm của Quy chế đào tạo trình độ đại học ban hành kèm theo Quyết định số\n1410/QĐ-ĐHSP ngày 09/8/2021, áp dụng từ khoá tuyển sinh năm 2025 trở về sau. Cụ thể như sau:\n“Đối với các học phần thực tập, việc đánh giá học phần được thực hiện theo quy định trong Quy chế thực tập hiện\nhành của Trường.”\n18 SỔ TAY SINH VIÊN KHÓA 51\ng) Các nội dung chi tiết về việc tổ chức đánh giá quá trình học tập và\ntổ chức thi kết thúc học phần được thực hiện theo các quy định hiện hành\ncủa Trường.\n2. Cách tính điểm học phần\nĐiểm học phần được tính từ tổng các điểm thành phần nhân với\ntrọng số tương ứng, được làm tròn tới một chữ số thập phân và xếp loại\nđiểm chữ như dưới đây, trừ các trường hợp được quy định tại điểm c\nkhoản này.\na)4 Hệ thống các điểm đạt có phân mức (áp dụng cho các học phần\nđược tính vào điểm trung bình học tập) và điểm không đạt được quy định\nnhư sau:\nLoại\nThang điểm 10\nThang điểm chữ\nĐạt\n8,5 – 10\nA\n7,8 – 8,4\nB+\n7,0 – 7,7\nB\n6,3 – 6,9\nC+\n5,5 – 6,2\nC\n4,8 – 5,4\nD+\n4,0 – 4,7\nD\nKhông đạt\n3,0 – 3,9\nF+\n0,0 – 2,9\nF\n4 Điểm này đã được sửa đổi tại khoản 3, Điều 1, Quyết định số 4743/QĐ-ĐHSP ngày 31/12/2024 của Hiệu trưởng về\nsửa đổi, bổ sung một số điểm của Quy chế đào tạo trình độ đại học ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày\n09/8/2021, áp dụng từ khoá tuyển sinh năm 2025 trở về sau. Cụ thể như sau:\n“a) Hệ thống các điểm đạt có phân mức (áp dụng cho các học phần được tính vào điểm trung bình học tập) và\ncác điểm không đạt được quy định như sau:\nĐối với các học phần giáo dục đại cương hay\ncòn gọi là học phần chung thuộc nhóm học phần nền tảng\nLoại\nThang điểm 10\nThang điểm chữ\nĐạt\n8,5 – 10\nA\n7,8 – 8,4\nB+\n7,0 – 7,7\nB\n6,3 – 6,9\nC+\n5,5 – 6,2\nC\n4,8 – 5,4\nD+\n4,0 – 4,7\nD\nKhông\nđạt\n3,0 – 3,9\nF+\n0,0 – 2,9\nF\nĐối với các học phần còn lại\nLoại\nThang điểm 10\nThang điểm chữ\nĐạt\n8,5 – 10\nA\n7,8 – 8,4\nB+\n7,0 – 7,7\nB\n6,3 – 6,9\nC+\n5,5 – 6,2\nC\nKhông\nđạt\n4,8 – 5,4\nD+\n4,0 – 4,7\nD\n3,0 – 3,9\nF+\n0,0 – 2,9\nF\nSỔ TAY SINH VIÊN KHÓA 51\nb) Các học phần thuộc loại đạt không phân mức (chỉ yêu cầu đạt,\nkhông tính vào điểm trung bình học tập) yêu cầu đạt 5,0 trở lên theo\nthang điểm 10, và được quy đổi ra điểm chữ là P;\nc) Một số trường hợp đặc biệt sử dụng các điểm chữ xếp loại, không\nđược tính vào điểm trung bình học tập:\nI: Điểm chưa hoàn thiện do được phép hoãn thi, kiểm tra;\nX: Điểm chưa hoàn thiện do chưa đủ dữ liệu;\nR: Điểm học phần được miễn học và công nhận tín chỉ.\n3. Học lại và học cải thiện điểm\na) Sinh viên có điểm học phần không đạt phải đăng ký học lại theo\nquy định tại Điều 4 của Quy chế này, trừ trường hợp quy định tại điểm c\nkhoản này; điểm lần học cuối là điểm chính thức của học phần;\nb)5 Sinh viên có điểm học phần đạt, được đăng ký học lại chính học\nphần đó để cải thiện điểm, điểm lần học cuối là điểm chính thức của\nhọc phần."
+        },
+        {
+          "chunk_id": "K50-K51_reg_article_10_p40_47_part_1",
+          "chunk_type": null,
+          "title": "Điều 10. Đánh giá và tính điểm học phần",
+          "source_pages": [
+            40,
+            41,
+            42,
+            43
+          ],
+          "distance": 0.0,
+          "retrieval_purpose": null,
+          "content": "Tài liệu: QUY CHẾ\nPhần: phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy\nChương: Chương III\nĐiều: Điều 10.\nTiêu đề: Điều 10. Đánh giá và tính điểm học phần\nNội dung:\nĐiều 10. Đánh giá và tính điểm học phần\n1. Đánh giá học phần\na) Đối với mỗi học phần, sinh viên được đánh giá qua hai điểm\nthành phần (điểm đánh giá quá trình và điểm thi kết thúc học phần), đối\nSỔ TAY SINH VIÊN KHÓA 51\nvới các học phần ít hơn 02 tín chỉ có thể chỉ có một điểm đánh giá kết\nthúc học phần. Các điểm thành phần được đánh giá theo thang điểm 10.\nPhương pháp đánh giá, hình thức đánh giá và trọng số của mỗi điểm\nthành phần được quy định trong đề cương chi tiết của mỗi học phần và\nđược giảng viên công bố cho sinh viên biết trước khi bắt đầu giảng dạy\nhọc phần. Việc đánh giá và tính điểm học phần phải công bằng đối với tất\ncả sinh viên trong từng lớp học phần, giữa các lớp học phần, các khóa\nhọc và các hình thức đào tạo;\nb) Đánh giá quá trình\n– Giảng viên phụ trách học phần trực tiếp ra đề thi, đề kiểm tra và\ncho điểm đánh giá quá trình;\n– Điểm đánh giá quá trình không được bảo lưu và không được\nphúc khảo.\nc) Thi kết thúc học phần\n– Cuối mỗi học kỳ, Trường tổ chức một kỳ thi chính. Căn cứ điều\nkiện cụ thể từng năm học, Hiệu trưởng quyết định tổ chức các kỳ thi phụ;\n– Việc chấm thi kết thúc học phần phải do tối thiểu hai giảng viên\nđảm nhiệm, trừ trường hợp chấm thi theo hình thức trắc nghiệm;\n– Điểm thi kết thúc học phần có thể được phúc khảo;\n– Sinh viên là tác giả chính của đề tài sinh viên NCKH được đánh\ngiá đạt loại khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử\ndụng điểm đánh giá đề tài NCKH thay thế cho điểm thi kết thúc học phần\n(không quá 03 tín chỉ) liên quan gần với đề tài.\nd) Đánh giá khóa luận tốt nghiệp, sản phẩm NCKH\n– Việc đánh giá mỗi khóa luận tốt nghiệp, sản phẩm NCKH phải do\nít nhất 02 giảng viên đảm nhiệm;\n– Sinh viên có khóa luận tốt nghiệp, sản phẩm NCKH bị điểm dưới C\nphải đăng ký học một số học phần chuyên môn để thay thế.\nđ) Hình thức đánh giá trực tuyến được áp dụng khi đảm bảo trung\nthực, công bằng và khách quan như đánh giá trực tiếp và đóng góp không\nquá 50% trọng số điểm học phần. Riêng việc tổ chức bảo vệ và đánh giá\nkhóa luận tốt nghiệp, sản phẩm NCKH được thực hiện trực tuyến với\ntrọng số cao hơn khi đáp ứng thêm các điều kiện sau đây:\n42 SỔ TAY SINH VIÊN KHÓA 51\n– Việc đánh giá được thực hiện thông qua một hội đồng chuyên môn\ngồm ít nhất 03 thành viên;\n– Hình thức bảo vệ và đánh giá trực tuyến được sự đồng thuận của\ncác thành viên hội đồng và người học;\n– Diễn biến của buổi bảo vệ trực tuyến được ghi hình, ghi âm đầy đủ\nvà lưu trữ đúng theo quy định.\ne) Sinh viên vắng mặt trong buổi thi, đánh giá không có lý do chính\nđáng phải nhận điểm 0. Sinh viên vắng mặt có lý do chính đáng phải viết\nđơn kèm theo các minh chứng cần thiết gửi Trưởng khoa/bộ môn xác\nnhận và nộp về đơn vị phụ trách khảo thí của Trường; nếu được Trường\ncho phép, sinh viên sẽ được bố trí thi bổ sung vào đợt khác và được tính\nđiểm lần đầu;\ng) Các nội dung chi tiết về việc tổ chức đánh giá quá trình học tập và\ntổ chức thi kết thúc học phần được thực hiện theo các quy định hiện hành\ncủa Trường.\n2. Cách tính điểm học phần\nĐiểm học phần được tính từ tổng các điểm thành phần nhân với\ntrọng số tương ứng, được làm tròn tới một chữ số thập phân và xếp loại\nđiểm chữ như dưới đây, trừ các trường hợp được quy định tại điểm c\nkhoản này.\na) Hệ thống các điểm đạt có phân mức (áp dụng cho các học phần\nđược tính vào điểm trung bình học tập) và điểm không đạt được quy định\nnhư sau:\nLoại\nThang điểm 10\nThang điểm chữ\nĐạt\n8,5 – 10\nA\n7,8 – 8,4\nB+\n7,0 – 7,7\nB\n6,3 – 6,9\nC+\n5,5 – 6,2\nC\n4,8 – 5,4\nD+\n4,0 – 4,7\nD\nKhông đạt\n3,0 – 3,9\nF+\n0,0 – 2,9\nF\nSỔ TAY SINH VIÊN KHÓA 51\nb) Các học phần thuộc loại đạt không phân mức (chỉ yêu cầu đạt,\nkhông tính vào điểm trung bình học tập) yêu cầu đạt 5,0 trở lên theo\nthang điểm 10, và được quy đổi ra điểm chữ là P;\nc) Một số trường hợp đặc biệt sử dụng các điểm chữ xếp loại, không\nđược tính vào điểm trung bình học tập:\nI: Điểm chưa hoàn thiện do được phép hoãn thi, kiểm tra;\nX: Điểm chưa hoàn thiện do chưa đủ dữ liệu;\nR: Điểm học phần được miễn học và công nhận tín chỉ.\n3. Học lại và học cải thiện điểm\na) Sinh viên có điểm học phần không đạt phải đăng ký học lại theo\nquy định tại Điều 4 của Quy chế này, trừ trường hợp quy định tại điểm c\nkhoản này; điểm lần học cuối là điểm chính thức của học phần;\nb) Sinh viên có điểm học phần đạt, được đăng ký học lại chính học phần\nđó để cải thiện điểm, điểm lần học cuối là điểm chính thức của học phần."
         }
       ],
       "citations_used": [
         {
-          "chunk_id": "reg_article_28_p52_74_part_1",
-          "chunk_type": "regulation",
-          "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "chunk_type": "structured_lookup",
+          "title": "Các bảng: Quy đổi thang điểm 10 sang điểm chữ | Quy đổi thang điểm 10 sang điểm chữ (Học phần Giáo dục đại cương / Nền tảng) | Quy đổi thang điểm 10 sang điểm chữ (Các Học phần còn lại / Chuyên ngành)",
           "source_pages": [
-            52,
-            53
+            20
           ],
-          "distance": 0.29020124673843384,
-          "retrieval_purpose": "regulation_query"
+          "content": "Dữ liệu được trích xuất trực tiếp từ Cơ sở dữ liệu Bảng quy chế trong Sổ tay Sinh viên HCMUE."
         }
       ],
-      "structured_result": null,
+      "structured_result": {
+        "lookup_type": "grade_10_to_letter",
+        "input_value": "Mấy điểm thì qua môn?",
+        "result": [
+          {
+            "table_id": "grade_10_to_letter",
+            "table_name": "Quy đổi thang điểm 10 sang điểm chữ",
+            "source_pages": [
+              20
+            ],
+            "review_status": "needs_human_verified",
+            "rows": [
+              {
+                "status": "Đạt",
+                "score_10_range": "8.5-10",
+                "letter_grade": "A"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "7.8-8.4",
+                "letter_grade": "B+"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "7.0-7.7",
+                "letter_grade": "B"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "6.3-6.9",
+                "letter_grade": "C+"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "5.5-6.2",
+                "letter_grade": "C"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "4.8-5.4",
+                "letter_grade": "D+"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "4.0-4.7",
+                "letter_grade": "D"
+              },
+              {
+                "status": "Không đạt",
+                "score_10_range": "3.0-3.9",
+                "letter_grade": "F+"
+              },
+              {
+                "status": "Không đạt",
+                "score_10_range": "0.0-2.9",
+                "letter_grade": "F"
+              }
+            ],
+            "cohort": "K48-K49"
+          },
+          {
+            "table_id": "grade_10_to_letter_general",
+            "table_name": "Quy đổi thang điểm 10 sang điểm chữ (Học phần Giáo dục đại cương / Nền tảng)",
+            "source_pages": [
+              20
+            ],
+            "review_status": "needs_human_verified",
+            "rows": [
+              {
+                "status": "Đạt",
+                "score_10_range": "8.5-10",
+                "letter_grade": "A"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "7.8-8.4",
+                "letter_grade": "B+"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "7.0-7.7",
+                "letter_grade": "B"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "6.3-6.9",
+                "letter_grade": "C+"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "5.5-6.2",
+                "letter_grade": "C"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "4.8-5.4",
+                "letter_grade": "D+"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "4.0-4.7",
+                "letter_grade": "D"
+              },
+              {
+                "status": "Không đạt",
+                "score_10_range": "3.0-3.9",
+                "letter_grade": "F+"
+              },
+              {
+                "status": "Không đạt",
+                "score_10_range": "0.0-2.9",
+                "letter_grade": "F"
+              }
+            ],
+            "cohort": "K50-K51"
+          },
+          {
+            "table_id": "grade_10_to_letter_major",
+            "table_name": "Quy đổi thang điểm 10 sang điểm chữ (Các Học phần còn lại / Chuyên ngành)",
+            "source_pages": [
+              20
+            ],
+            "review_status": "needs_human_verified",
+            "rows": [
+              {
+                "status": "Đạt",
+                "score_10_range": "8.5-10",
+                "letter_grade": "A"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "7.8-8.4",
+                "letter_grade": "B+"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "7.0-7.7",
+                "letter_grade": "B"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "6.3-6.9",
+                "letter_grade": "C+"
+              },
+              {
+                "status": "Đạt",
+                "score_10_range": "5.5-6.2",
+                "letter_grade": "C"
+              },
+              {
+                "status": "Không đạt",
+                "score_10_range": "4.8-5.4",
+                "letter_grade": "D+"
+              },
+              {
+                "status": "Không đạt",
+                "score_10_range": "4.0-4.7",
+                "letter_grade": "D"
+              },
+              {
+                "status": "Không đạt",
+                "score_10_range": "3.0-3.9",
+                "letter_grade": "F+"
+              },
+              {
+                "status": "Không đạt",
+                "score_10_range": "0.0-2.9",
+                "letter_grade": "F"
+              }
+            ],
+            "cohort": "K50-K51"
+          }
+        ],
+        "source_pages": [
+          20
+        ],
+        "table_name": "Các bảng: Quy đổi thang điểm 10 sang điểm chữ | Quy đổi thang điểm 10 sang điểm chữ (Học phần Giáo dục đại cương / Nền tảng) | Quy đổi thang điểm 10 sang điểm chữ (Các Học phần còn lại / Chuyên ngành)"
+      },
+      "formula_result": null,
       "tool_result": null,
       "llm_called": true,
       "used_cache": false,
       "clarification_needed": false,
-      "context_used": "[Nguồn 1]\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nLoại: regulation\nTrang: 52,53\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên đại học chính quy tại Trường theo kế hoạch của\nkhóa học; không xét HBKKHT đối với sinh viên học quá thời gian học\ntập chuẩn được quy định tại khoản 6, Điều 3 của Quy chế đào tạo trình độ\nđại học chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021\ncủa Hiệu trưởng;\nb) Trong học kỳ, sinh viên có kết quả học tập, rèn luyện từ loại khá\ntrở lên, không bị kỷ luật từ mức khiển trách trở lên sẽ được xét, cấp\nHBKKHT trong phạm vi quỹ HBKKHT của Trường;\nc) Tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn\nhoặc bằng 15 tín chỉ theo kế hoạch trong CTĐT của khóa học (tất cả các\ntín chỉ đều phải đạt, không bao gồm các tín chỉ trả nợ, cải thiện, tương\nđương…). Do đó, các khoa cần xây dựng chương trình học phù hợp và\nCVHT cần tư vấn, hướng dẫn sinh viên xây dựng lịch học đảm bảo quyền\nlợi cho sinh viên;\nd) Đối với sinh viên năm cuối, học bổng được xét:\n− Quy định xét học bổng đối với học kỳ I thực hiện theo Điểm a, b,\nc, khoản 1, Điều này.\n− Quy định xét học bổng đối với học kỳ II:\n+ Sinh viên đăng ký từ 6 tín chỉ trở lên;\n+ Trình tự xét HBKKHT cho sinh viên năm cuối theo thứ tự các đối\ntượng như sau:\n• Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện xuất sắc.\n• Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện tốt.\n• Sinh viên còn lại.\n− Điểm học bổng được tính theo Điểm đ, khoản 1, Điều này.\nđ) Điểm học bổng: là điểm để xét học bổng cho sinh viên được xếp\nloại từ cao xuống thấp, tính theo công thức:\n− Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện /25 x 20) /100.\n(Điểm rèn luyện /25 là quy đổi về thang điểm 4)\n− Xếp loại học bổng được xếp thành 03 mức:\n+ Học bổng loại Khá: có điểm học bổng từ 2.56 đến 3.352 (điểm học\ntập: 2.50 – 3.19 và điểm rèn luyện >= 70);\n+ Học bổng loại Giỏi: có điểm học bổng từ 3.20 đến 3.672 (điểm\nhọc tập: 3.20 – 3.59 và điểm rèn luyện >= 80);\n+ Học bổng loại Xuất sắc: có điểm học bổng từ 3.60 đến 4.0 (điểm\nhọc tập: 3.60 – 4.0 và điểm rèn luyện >= 90).\n\n---\n\n[Nguồn 2]\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nLoại: regulation\nTrang: 52,53\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n4. Việc xét học bổng được thống nhất xét theo khóa học và ngành học.\n\n---\n\n[Nguồn 3]\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nLoại: regulation\nTrang: 52,53\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n3. Quỹ HBKKHT: được bố trí tối thiểu bằng kinh phí 8% từ nguồn\nthu học phí và cấp bù học phí (Căn cứ theo Nghị định 84/2020/NĐ-CP\nngày 17/7/2020 của Chính phủ về Quy định chi tiết một số điều của Luật\nGiáo dục).\n\n---\n\n[Nguồn 4]\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nLoại: regulation\nTrang: 52,53\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 28.\nTiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\nNội dung:\nĐiều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n2. Mức học bổng: Mức học bổng sẽ được tính hằng năm và theo quy\nđịnh của Nhà nước và thực tế của Trường quy định. HBKKHT được cấp\ntheo từng học kỳ chính và cấp 10 tháng trong năm học. Cụ thể:\n+ Học bổng loại Khá:\nSố tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.0;\n+ Học bổng loại Giỏi:\nSố tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.25;\n+ Học bổng loại Xuất sắc:\nSố tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.5.\nTín chỉ tự nhiên hoặc xã hội được xác định phụ thuộc vào ngành học\ncủa sinh viên được phân loại là tự nhiên hay xã hội.\n\n---\n\n[Nguồn 5]\nTiêu đề: Điều 27. Học bổng\nLoại: regulation\nTrang: 51,52\nNội dung:\nTài liệu: QUY CHẾ\nPhần:\nChương: Chương V\nĐiều: Điều 27.\nTiêu đề: Điều 27. Học bổng\nNội dung:\nĐiều 27. Học bổng\n1. Học bổng khuyến khích học tập (HBKKHT)\na) Chế độ HBKKHT cho sinh viên thực hiện theo các quy định hiện\nhành của Bộ Giáo dục và Đào tạo và của Trường;\nb) HBKKHT chỉ được cấp cho sinh viên hệ chính quy đang học tập\ntại Trường; người học liên thông không được xét cấp.\n2. Học bổng chính sách\nHọc bổng chính sách sẽ được cấp theo hợp đồng giữa Trường và cơ\nquan cử sinh viên theo học diện cử tuyển (nếu có).\n3. Học bổng tài trợ\na) Học bổng tài trợ cho sinh viên do các tổ chức và cá nhân trao theo\nnhững điều kiện và quy trình riêng;\nb) Học bổng tài trợ do Phòng CTCT và HSSV hoặc phối hợp với các\nđơn vị khác tiếp nhận và thông báo đến toàn thể sinh viên khi có thông tin\nvề học bổng."
+      "context_used": "Kết quả tra cứu bảng: Các bảng: Quy đổi thang điểm 10 sang điểm chữ | Quy đổi thang điểm 10 sang điểm chữ (Học phần Giáo dục đại cương / Nền tảng) | Quy đổi thang điểm 10 sang điểm chữ (Các Học phần còn lại / Chuyên ngành)\nGiá trị đầu vào: Mấy điểm thì qua môn?\nKết quả: [{'table_id': 'grade_10_to_letter', 'table_name': 'Quy đổi thang điểm 10 sang điểm chữ', 'source_pages': [20], 'review_status': 'needs_human_verified', 'rows': [{'status': 'Đạt', 'score_10_range': '8.5-10', 'letter_grade': 'A'}, {'status': 'Đạt', 'score_10_range': '7.8-8.4', 'letter_grade': 'B+'}, {'status': 'Đạt', 'score_10_range': '7.0-7.7', 'letter_grade': 'B'}, {'status': 'Đạt', 'score_10_range': '6.3-6.9', 'letter_grade': 'C+'}, {'status': 'Đạt', 'score_10_range': '5.5-6.2', 'letter_grade': 'C'}, {'status': 'Đạt', 'score_10_range': '4.8-5.4', 'letter_grade': 'D+'}, {'status': 'Đạt', 'score_10_range': '4.0-4.7', 'letter_grade': 'D'}, {'status': 'Không đạt', 'score_10_range': '3.0-3.9', 'letter_grade': 'F+'}, {'status': 'Không đạt', 'score_10_range': '0.0-2.9', 'letter_grade': 'F'}], 'cohort': 'K48-K49'}, {'table_id': 'grade_10_to_letter_general', 'table_name': 'Quy đổi thang điểm 10 sang điểm chữ (Học phần Giáo dục đại cương / Nền tảng)', 'source_pages': [20], 'review_status': 'needs_human_verified', 'rows': [{'status': 'Đạt', 'score_10_range': '8.5-10', 'letter_grade': 'A'}, {'status': 'Đạt', 'score_10_range': '7.8-8.4', 'letter_grade': 'B+'}, {'status': 'Đạt', 'score_10_range': '7.0-7.7', 'letter_grade': 'B'}, {'status': 'Đạt', 'score_10_range': '6.3-6.9', 'letter_grade': 'C+'}, {'status': 'Đạt', 'score_10_range': '5.5-6.2', 'letter_grade': 'C'}, {'status': 'Đạt', 'score_10_range': '4.8-5.4', 'letter_grade': 'D+'}, {'status': 'Đạt', 'score_10_range': '4.0-4.7', 'letter_grade': 'D'}, {'status': 'Không đạt', 'score_10_range': '3.0-3.9', 'letter_grade': 'F+'}, {'status': 'Không đạt', 'score_10_range': '0.0-2.9', 'letter_grade': 'F'}], 'cohort': 'K50-K51'}, {'table_id': 'grade_10_to_letter_major', 'table_name': 'Quy đổi thang điểm 10 sang điểm chữ (Các Học phần còn lại / Chuyên ngành)', 'source_pages': [20], 'review_status': 'needs_human_verified', 'rows': [{'status': 'Đạt', 'score_10_range': '8.5-10', 'letter_grade': 'A'}, {'status': 'Đạt', 'score_10_range': '7.8-8.4', 'letter_grade': 'B+'}, {'status': 'Đạt', 'score_10_range': '7.0-7.7', 'letter_grade': 'B'}, {'status': 'Đạt', 'score_10_range': '6.3-6.9', 'letter_grade': 'C+'}, {'status': 'Đạt', 'score_10_range': '5.5-6.2', 'letter_grade': 'C'}, {'status': 'Không đạt', 'score_10_range': '4.8-5.4', 'letter_grade': 'D+'}, {'status': 'Không đạt', 'score_10_range': '4.0-4.7', 'letter_grade': 'D'}, {'status': 'Không đạt', 'score_10_range': '3.0-3.9', 'letter_grade': 'F+'}, {'status': 'Không đạt', 'score_10_range': '0.0-2.9', 'letter_grade': 'F'}], 'cohort': 'K50-K51'}]\nTrang nguồn: [20]\n\n---\n\n[Nguồn 1]\nTiêu đề: Điều 10. Đánh giá và tính điểm học phần\nLoại: None\nTrang: [18, 19, 20, 21]\nNội dung:\nTài liệu: QUY CHẾ\nPhần: phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy\nChương: Chương III\nĐiều: Điều 10.\nTiêu đề: Điều 10. Đánh giá và tính điểm học phần\nNội dung:\nĐiều 10. Đánh giá và tính điểm học phần\n1. Đánh giá học phần\na) Đối với mỗi học phần, sinh viên được đánh giá qua hai điểm\nthành phần (điểm đánh giá quá trình và điểm thi kết thúc học phần), đối\nvới các học phần ít hơn 02 tín chỉ có thể chỉ có một điểm đánh giá kết\nthúc học phần. Các điểm thành phần được đánh giá theo thang điểm 10.\nPhương pháp đánh giá, hình thức đánh giá và trọng số của mỗi điểm\nthành phần được quy định trong đề cương chi tiết của mỗi học phần và\nđược giảng viên công bố cho sinh viên biết trước khi bắt đầu giảng dạy\nhọc phần. Việc đánh giá và tính điểm học phần phải công bằng đối với tất\ncả sinh viên trong từng lớp học phần, giữa các lớp học phần, các khoá\nhọc và các hình thức đào tạo.\nb) Đánh giá quá trình\n− Giảng viên phụ trách học phần trực tiếp ra đề thi, đề kiểm tra và\ncho điểm đánh giá quá trình;\n− Điểm đánh giá quá trình không được bảo lưu và không được\nphúc khảo.\nc) Thi kết thúc học phần\n− Cuối mỗi học kỳ, Trường tổ chức một kỳ thi chính. Căn cứ điều\nkiện cụ thể từng năm học, Hiệu trưởng quyết định tổ chức các kỳ thi phụ;\n− Việc chấm thi kết thúc học phần phải do tối thiểu hai giảng viên\nđảm nhiệm, trừ trường hợp chấm thi theo hình thức trắc nghiệm;\n− Điểm thi kết thúc học phần có thể được phúc khảo;\n− Sinh viên là tác giả chính của đề tài sinh viên NCKH được đánh\ngiá đạt loại khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử\ndụng điểm đánh giá đề tài NCKH thay thế cho điểm thi kết thúc học phần\n(không quá 3 tín chỉ) liên quan gần với đề tài.\nd) Đánh giá đồ án, khoá luận, tiểu luận tốt nghiệp\n− Việc đánh giá mỗi đồ án, khóa luận, tiểu luận tốt nghiệp phải do\nít nhất 2 giảng viên đảm nhiệm;\n− Sinh viên có đồ án, khoá luận, tiểu luận tốt nghiệp bị điểm dưới\nC, phải đăng ký học một số học phần chuyên môn để thay thế.\ne) Hình thức đánh giá trực tuyến được áp dụng khi đảm bảo trung\nthực, công bằng và khách quan như đánh giá trực tiếp và đóng góp không\nquá 50% trọng số điểm học phần. Riêng việc tổ chức bảo vệ và đánh giá\nđồ án, khóa luận, tiểu luận được thực hiện trực tuyến với trọng số cao hơn\nkhi đáp ứng thêm các điều kiện sau đây:\n− Việc đánh giá được thực hiện thông qua một hội đồng chuyên\nmôn gồm ít nhất 3 thành viên;\n− Hình thức bảo vệ và đánh giá trực tuyến được sự đồng thuận của\ncác thành viên hội đồng và người học;\n− Diễn biến của buổi bảo vệ trực tuyến được ghi hình, ghi âm đầy\nđủ và lưu trữ đúng theo quy định.\nf) Sinh viên vắng mặt trong buổi thi, đánh giá không có lý do chính\nđáng phải nhận điểm 0. Sinh viên vắng mặt có lý do chính đáng phải viết\nđơn kèm theo các minh chứng cần thiết gửi Trưởng khoa xác nhận và nộp\nvề Phòng Khảo thí và Đảm bảo chất lượng; nếu được Trường cho phép,\nsinh viên sẽ được bố trí thi bổ sung vào đợt khác và được tính điểm\nlần đầu.\ng) Các nội dung chi tiết về việc tổ chức đánh giá quá trình học tập\nvà tổ chức thi kết thúc học phần được thực hiện theo các quy định hiện\nhành của Trường.\n2. Cách tính điểm học phần\nĐiểm học phần được tính từ tổng các điểm thành phần nhân với\ntrọng số tương ứng, được làm tròn tới một chữ số thập phân và xếp loại\nđiểm chữ như dưới đây, trừ các trường hợp được quy định tại Điểm c\nkhoản này.\na) Hệ thống các điểm đạt có phân mức (áp dụng cho các học phần\nđược tính vào điểm trung bình học tập) và điểm không đạt được quy định\nnhư sau:\nLoại\nThang điểm 10\nThang điểm chữ\nĐạt\n8,5 – 10\nA\n7,8 – 8,4\nB+\n7,0 – 7,7\nB\n6,3 – 6,9\nC+\n5,5 – 6,2\nC\n4,8 – 5,4\nD+\n4,0 – 4,7\nD\nKhông đạt\n3,0 – 3,9\nF+\n0,0 – 2,9\nF\nb) Các học phần thuộc loại đạt không phân mức (chỉ yêu cầu đạt,\nkhông tính vào điểm trung bình học tập) yêu cầu đạt 5,0 trở lên theo\nthang điểm 10, và được quy đổi ra điểm chữ là P.\nc) Một số trường hợp đặc biệt sử dụng các điểm chữ xếp loại, không\nđược tính vào điểm trung bình học tập:\nI: Điểm chưa hoàn thiện do được phép hoãn thi, kiểm tra;\nX: Điểm chưa hoàn thiện do chưa đủ dữ liệu;\nR: Điểm học phần được miễn học và công nhận tín chỉ.\n3. Học lại và học cải thiện điểm\na) Sinh viên có điểm học phần không đạt phải đăng ký học lại theo\nquy định tại Điều 4 của Quy chế này, trừ trường hợp quy định tại Điểm c\nkhoản này; điểm lần học cuối là điểm chính thức của học phần;\nb) Sinh viên có điểm học phần đạt, được đăng ký học lại chính học\nphần đó để cải thiện điểm, điểm lần học cuối là điểm chính thức của\nhọc phần.\n\n---\n\n[Nguồn 2]\nTiêu đề: Điều 10. Đánh giá và tính điểm học phần\nLoại: regulation\nTrang: 18,19,20,21\nNội dung:\nTài liệu: QUY CHẾ\nPhần: phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy\nChương: Chương III\nĐiều: Điều 10.\nTiêu đề: Điều 10. Đánh giá và tính điểm học phần\nNội dung:\nĐiều 10. Đánh giá và tính điểm học phần\n1. Đánh giá học phần\na) Đối với mỗi học phần, sinh viên được đánh giá qua hai điểm\nthành phần (điểm đánh giá quá trình và điểm thi kết thúc học phần), đối\nvới các học phần ít hơn 02 tín chỉ có thể chỉ có một điểm đánh giá kết\nthúc học phần. Các điểm thành phần được đánh giá theo thang điểm 10.\nPhương pháp đánh giá, hình thức đánh giá và trọng số của mỗi điểm\nthành phần được quy định trong đề cương chi tiết của mỗi học phần và\nđược giảng viên công bố cho sinh viên biết trước khi bắt đầu giảng dạy\nhọc phần. Việc đánh giá và tính điểm học phần phải công bằng đối với tất\ncả sinh viên trong từng lớp học phần, giữa các lớp học phần, các khoá\nhọc và các hình thức đào tạo.\nb) Đánh giá quá trình\n− Giảng viên phụ trách học phần trực tiếp ra đề thi, đề kiểm tra và\ncho điểm đánh giá quá trình;\n− Điểm đánh giá quá trình không được bảo lưu và không được\nphúc khảo.\nc) Thi kết thúc học phần\n− Cuối mỗi học kỳ, Trường tổ chức một kỳ thi chính. Căn cứ điều\nkiện cụ thể từng năm học, Hiệu trưởng quyết định tổ chức các kỳ thi phụ;\n− Việc chấm thi kết thúc học phần phải do tối thiểu hai giảng viên\nđảm nhiệm, trừ trường hợp chấm thi theo hình thức trắc nghiệm;\n− Điểm thi kết thúc học phần có thể được phúc khảo;\n− Sinh viên là tác giả chính của đề tài sinh viên NCKH được đánh\ngiá đạt loại khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử\ndụng điểm đánh giá đề tài NCKH thay thế cho điểm thi kết thúc học phần\n(không quá 3 tín chỉ) liên quan gần với đề tài.\nd) Đánh giá đồ án, khoá luận, tiểu luận tốt nghiệp\n− Việc đánh giá mỗi đồ án, khóa luận, tiểu luận tốt nghiệp phải do\nít nhất 2 giảng viên đảm nhiệm;\n− Sinh viên có đồ án, khoá luận, tiểu luận tốt nghiệp bị điểm dưới\nC, phải đăng ký học một số học phần chuyên môn để thay thế.\ne) Hình thức đánh giá trực tuyến được áp dụng khi đảm bảo trung\nthực, công bằng và khách quan như đánh giá trực tiếp và đóng góp không\nquá 50% trọng số điểm học phần. Riêng việc tổ chức bảo vệ và đánh giá\nđồ án, khóa luận, tiểu luận được thực hiện trực tuyến với trọng số cao hơn\nkhi đáp ứng thêm các điều kiện sau đây:\n− Việc đánh giá được thực hiện thông qua một hội đồng chuyên\nmôn gồm ít nhất 3 thành viên;\n− Hình thức bảo vệ và đánh giá trực tuyến được sự đồng thuận của\ncác thành viên hội đồng và người học;\n− Diễn biến của buổi bảo vệ trực tuyến được ghi hình, ghi âm đầy\nđủ và lưu trữ đúng theo quy định.\nf) Sinh viên vắng mặt trong buổi thi, đánh giá không có lý do chính\nđáng phải nhận điểm 0. Sinh viên vắng mặt có lý do chính đáng phải viết\nđơn kèm theo các minh chứng cần thiết gửi Trưởng khoa xác nhận và nộp\nvề Phòng Khảo thí và Đảm bảo chất lượng; nếu được Trường cho phép,\nsinh viên sẽ được bố trí thi bổ sung vào đợt khác và được tính điểm\nlần đầu.\ng) Các nội dung chi tiết về việc tổ chức đánh giá quá trình học tập\nvà tổ chức thi kết thúc học phần được thực hiện theo các quy định hiện\nhành của Trường.\n\n---\n\n[Nguồn 3]\nTiêu đề: Điều 10. Đánh giá và tính điểm học phần\nLoại: regulation\nTrang: 16,17,18,19\nNội dung:\nTài liệu: QUY CHẾ\nPhần: phần có thời lượng và nội dung tương đương nhau. Sinh viên tích lũy\nChương: Chương III\nĐiều: Điều 10.\nTiêu đề: Điều 10. Đánh giá và tính điểm học phần\nNội dung:\nĐiều 10. Đánh giá và tính điểm học phần\n1. Đánh giá học phần\na) Đối với mỗi học phần, sinh viên được đánh giá qua hai điểm\nthành phần (điểm đánh giá quá trình và điểm thi kết thúc học phần), đối\nvới các học phần ít hơn 02 tín chỉ có thể chỉ có một điểm đánh giá kết\nthúc học phần. Các điểm thành phần được đánh giá theo thang điểm 10.\nPhương pháp đánh giá, hình thức đánh giá và trọng số của mỗi điểm\nthành phần được quy định trong đề cương chi tiết của mỗi học phần và\nđược giảng viên công bố cho sinh viên biết trước khi bắt đầu giảng dạy\nhọc phần. Việc đánh giá và tính điểm học phần phải công bằng đối với tất\ncả sinh viên trong từng lớp học phần, giữa các lớp học phần, các khóa\nhọc và các hình thức đào tạo.\nb) Đánh giá quá trình\n– Giảng viên phụ trách học phần trực tiếp ra đề thi, đề kiểm tra và\ncho điểm đánh giá quá trình;\n– Điểm đánh giá quá trình không được bảo lưu và không được phúc khảo.\nc) Thi kết thúc học phần\n– Cuối mỗi học kỳ, Trường tổ chức một kỳ thi chính. Căn cứ điều\nkiện cụ thể từng năm học, Hiệu trưởng quyết định tổ chức các kỳ thi phụ;\n– Việc chấm thi kết thúc học phần ph\n\n[Context đã được rút gọn để tránh prompt quá dài.]"
     }
   ],
   "status": "completed"

@@ -1,26 +1,26 @@
-﻿{
+{
   "python": {
-    "version": "3.12.13 (main, Mar  3 2026, 15:01:35) [MSC v.1944 64 bit (AMD64)]",
-    "executable": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\.venv\\Scripts\\python.exe",
+    "version": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "executable": "C:\\Users\\A Fee\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
     "implementation": "CPython"
   },
   "platform": {
     "system": "Windows",
-    "release": "11",
+    "release": "10",
     "machine": "AMD64"
   },
   "git": {
-    "commit": "07026eb",
+    "commit": "e770ab01",
     "dirty_worktree_expected": true
   },
   "packages": {
     "streamlit": "1.57.0",
-    "fastapi": "0.136.1",
-    "uvicorn": "0.47.0",
-    "sentence-transformers": "5.5.0",
-    "chromadb": "1.5.9",
+    "fastapi": "0.136.3",
+    "uvicorn": "0.48.0",
+    "sentence-transformers": "3.4.1",
+    "chromadb": "0.6.3",
     "torch": "2.12.0",
-    "google-genai": "2.4.0",
+    "google-genai": "1.75.0",
     "PyMuPDF": "1.27.2.3",
     "pydantic": "2.13.4",
     "requests": "2.34.2",
@@ -30,43 +30,43 @@
   "files": {
     "requirements.txt": {
       "exists": true,
-      "sha256": "bac4c53e569f19eee42d50e8192980b6c48722a39c7826db90eeabda32aef01c"
+      "sha256": "6facc9bc0e39abc4d48940c3bdcc2fa08d72e68e3b02f68a52ff3663c7be0ab6"
     },
     "requirements-dev.txt": {
       "exists": true,
-      "sha256": "c025f28cf8f4ca0ed31f1051c97d939044b09c7c82272cd5a8e30d8d458f56f1"
+      "sha256": "a1d5b8d7272fa83be573d92ed3a71ba696f058b2abefc377da73ac87bc79c129"
     },
     "requirements.lock": {
       "exists": true,
-      "sha256": "94cc7e633b9b16d02771521522cd08d2d89dfbcc5891a88a188f4ba65effc58e"
+      "sha256": "13361359b7b0cb45527a9aa7e6d46b15b9799ba8c26fb9ed5a3b333a21b30f11"
     },
     "configs/extraction.yaml": {
       "exists": true,
-      "sha256": "e76db5e16117ba548de623aa53b2c0389c93b1c7b296b46d264dd61d80e5c194"
+      "sha256": "19db217059f67364c0cd196ec381737416507c91e709d5be6c25c86b1da9e362"
     },
     "configs/chunking.yaml": {
       "exists": true,
-      "sha256": "a18d30c93ccb0b50f6be149454fd132cd32962f3642a08e62b263c0d2c0347c3"
+      "sha256": "50b562e488fc40617bd7596bda4c46a37ce0d1a38ee0fd749e944903c9f5cc44"
     },
     "configs/embedding.yaml": {
       "exists": true,
-      "sha256": "bcac3a1bb1da900476a583019ad8641fbb9e583726e2dd2fe866f7436bb6625c"
+      "sha256": "0fb9627d9e3ac0f13f4cf30264431c85c450ccae838ab08dc3e9f1958562449f"
     },
     "configs/retrieval.yaml": {
       "exists": true,
-      "sha256": "a47be2f5373a19f7de6e9fcffe86e5e37ea3e3f28577fff05a5a8686dae324df"
+      "sha256": "f3e717e599e303d1309562e0d1b70f5f70de857543607076c87233463a7a4578"
     },
     "configs/answer_generation.yaml": {
       "exists": true,
-      "sha256": "57b43d1cd34475b769088cdb2662a236e497d6fb31a14f60d780eb8f1756544c"
+      "sha256": "3b93b3e998196f41c297448f860cb0fc71b347d97f0aeb388eac17361b474dd6"
     },
     "configs/query_routing_rules.yaml": {
       "exists": true,
-      "sha256": "99df479654e8888cc5cfc40360d72fb0cae34eb837285c055059cfa938e56f73"
+      "sha256": "c6de11e404526fb2568b776e68ff414a1374f6e08fb5beecac4652751dd91eb3"
     },
     "data/eval/golden_queries.json": {
       "exists": true,
-      "sha256": "1ec17acf42db3e23d27cce5c2060d1d887e4eed35484bf5b8e090c0bfff16c9d"
+      "sha256": "030d2b44ddf19a0c3eddb5d6f15f9890adfa51932bb9c6d68a5e7ec9191e15a5"
     },
     "data/eval/router_behavior_queries.json": {
       "exists": true,
@@ -74,7 +74,7 @@
     },
     "data/eval/answer_eval_cases.json": {
       "exists": true,
-      "sha256": "d2f707b2d423dc677c35132a42e515111fe8b3a482454ecebc917176136b71bc"
+      "sha256": "d33a3aa289e6ff6b30549c24f1bef5923b6c8ffe84cdcba78cd834c836f29607"
     }
   }
 }

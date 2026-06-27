@@ -1,409 +1,875 @@
 [
-  {
-    "query": "Điều kiện xét học bổng là gì?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_chunk_ids": [
-      "reg_article_28_p52_74_part_1"
-    ]
-  },
-  {
-    "query": "Sinh viên bị cảnh báo học tập khi nào vậy?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_chunk_ids": [
-      "reg_article_12_p23_22",
-      "reg_article_13_p24_23"
-    ]
-  },
-  {
-    "query": "Muốn học vượt thì cần điều kiện gì?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_chunk_ids": [
-      "reg_article_9_p17_18",
-      "reg_article_7_p14_16"
-    ]
-  },
-  {
-    "query": "Một học phần có thể học lại mấy lần?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_chunk_ids": [
-      "reg_article_10_p18_20_part_3",
-      "reg_article_4_p13_12"
-    ]
-  },
-  {
-    "query": "Muốn tạm nghỉ học cần mẫu đơn nào?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "form_form_p176"
-    ]
-  },
-  {
-    "query": "Muốn quay lại học sau bảo lưu thì dùng đơn gì?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "form_form_p177"
-    ]
-  },
-  {
-    "query": "Có mẫu đơn xin trợ cấp xã hội không?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "form_form_p179"
-    ]
-  },
-  {
-    "query": "Mẫu đơn xin ở ký túc xá nằm ở đâu?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_chunk_ids": [
-      "form_form_p180",
-      "procedure_ktx_admission_procedure_part_2"
-    ]
-  },
-  {
-    "query": "Điểm rèn luyện 92 là loại gì?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_lookup_type": "conduct_classification"
-  },
-  {
-    "query": "GPA 2.95 được xếp loại học lực gì?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_lookup_type": "academic_classification"
-  },
-  {
-    "query": "Điểm B+ quy đổi sang hệ 4 bao nhiêu?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_lookup_type": "letter_to_grade_4"
-  },
-  {
-    "query": "Tính điểm học bổng nếu GPA 3.2 và rèn luyện 90",
-    "expected_intent": "calculation_query",
-    "expected_strategy": "calculator_tool",
-    "expected_tool_name": "calculate_scholarship_score"
-  },
-  {
-    "query": "Email phòng đào tạo là gì?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "office_office_3"
-    ]
-  },
-  {
-    "query": "Website phòng CNTT là gì?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "office_office_1"
-    ]
-  },
-  {
-    "query": "Phòng CTCT-HSSV ở tầng mấy?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "office_office_2"
-    ]
-  },
-  {
-    "query": "Khoa Công nghệ thông tin có ngành nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "faculty_faculty_1_part_1"
-    ]
-  },
-  {
-    "query": "Khoa Tiếng Anh có những ngành nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "faculty_faculty_9"
-    ]
-  },
-  {
-    "query": "Khoa Toán - Tin học có email không?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "faculty_faculty_2"
-    ]
-  },
-  {
-    "query": "Quy trình vào ký túc xá như thế nào?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "procedure_ktx_admission_procedure_part_1"
-    ]
-  },
-  {
-    "query": "Ai được ưu tiên vào ký túc xá?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "procedure_ktx_admission_procedure_part_2"
-    ]
-  },
-  {
-    "query": "Muốn bảo lưu thì vừa cần điều kiện gì vừa cần mẫu đơn nào?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_chunk_ids": [
-      "reg_article_16_p27_27",
-      "form_form_p176"
-    ]
-  },
-  {
-    "query": "Muốn xin vào KTX thì liên hệ phòng nào và dùng mẫu gì?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_chunk_ids": [
-      "procedure_ktx_admission_procedure_part_2",
-      "form_form_p180",
-      "office_office_13"
-    ]
-  },
-  {
-    "query": "Điều kiện công nhận tốt nghiệp và cấp bằng tốt nghiệp là gì?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_chunk_ids": [
-      "reg_article_15_p25_25"
-    ]
-  },
-  {
-    "query": "Sinh viên có được học cùng lúc hai chương trình không?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_chunk_ids": [
-      "reg_article_19_p30_30"
-    ]
-  },
-  {
-    "query": "Quy chế Điều 17 quy định điều kiện chuyển ngành, chuyển nơi học như thế nào?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_chunk_ids": [
-      "reg_article_17_p28_28"
-    ]
-  },
-  {
-    "query": "Sinh viên có những quyền gì?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_chunk_ids": [
-      "reg_article_8_p41_52_part_1",
-      "reg_article_8_p41_52_part_2",
-      "reg_article_8_p41_52_part_3",
-      "reg_article_8_p41_52_part_4",
-      "reg_article_8_p41_52_part_5",
-      "reg_article_8_p41_52_part_6",
-      "reg_article_8_p41_52_part_7",
-      "reg_article_8_p41_52_part_8",
-      "reg_article_8_p41_52_part_9"
-    ]
-  },
-  {
-    "query": "Nhiệm vụ của sinh viên gồm những gì?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_chunk_ids": [
-      "reg_article_7_p40_51"
-    ]
-  },
-  {
-    "query": "Theo quy định cố vấn học tập, nhiệm vụ của cố vấn học tập là gì?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_chunk_ids": [
-      "reg_article_3_p64_95"
-    ]
-  },
-  {
-    "query": "Quy chế Điều 30 quy định chính sách miễn giảm học phí và hỗ trợ chi phí học tập ra sao?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_chunk_ids": [
-      "reg_article_30_p54_76"
-    ]
-  },
-  {
-    "query": "Hình thức kỷ luật sinh viên gồm những gì?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_chunk_ids": [
-      "reg_article_35_p59_82"
-    ]
-  },
-  {
-    "query": "Đơn xin chuyển trường nằm ở trang nào?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "form_form_p175"
-    ]
-  },
-  {
-    "query": "Đơn xin thôi học cần dùng mẫu nào?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "form_form_p178"
-    ]
-  },
-  {
-    "query": "Giấy xác nhận sinh viên nằm ở trang nào?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "form_form_p181"
-    ]
-  },
-  {
-    "query": "Mẫu đơn đề nghị miễn giảm học phí ở trang nào?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "form_form_p182"
-    ]
-  },
-  {
-    "query": "Phiếu theo dõi tiến độ học tập nằm ở trang nào?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "form_form_p185"
-    ]
-  },
-  {
-    "query": "Phòng Kế hoạch - Tài chính phụ trách những công việc gì?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "office_office_6"
-    ]
-  },
-  {
-    "query": "Số điện thoại Phòng Sau Đại học là gì?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "office_office_8"
-    ]
-  },
-  {
-    "query": "Thư viện của trường có thông tin liên hệ nào?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "office_office_12_part_1",
-      "office_office_12_part_2"
-    ]
-  },
-  {
-    "query": "Phòng Khảo thí và Đảm bảo chất lượng phụ trách gì?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "office_office_11"
-    ]
-  },
-  {
-    "query": "Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp ở đâu?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "office_office_17_part_1",
-      "office_office_17_part_2"
-    ]
-  },
-  {
-    "query": "Khoa Hóa học đào tạo những ngành nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "faculty_faculty_4_part_1",
-      "faculty_faculty_4_part_2"
-    ]
-  },
-  {
-    "query": "Khoa Sinh học có thông tin liên hệ gì?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "faculty_faculty_5"
-    ]
-  },
-  {
-    "query": "Khoa Địa lí có website không?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "faculty_faculty_8"
-    ]
-  },
-  {
-    "query": "Khoa Tiếng Pháp đào tạo ngành nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "faculty_faculty_10_part_1",
-      "faculty_faculty_10_part_2"
-    ]
-  },
-  {
-    "query": "Khoa Tâm lí học có những ngành nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "faculty_faculty_16_part_1",
-      "faculty_faculty_16_part_2",
-      "faculty_faculty_16_part_3"
-    ]
-  },
-  {
-    "query": "Quy trình công việc của các khoa liên quan đến sinh viên gồm những bước nào?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "procedure_faculty_student_services"
-    ]
-  },
-  {
-    "query": "Hội đồng xét ký túc xá gồm những ai?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_chunk_ids": [
-      "procedure_ktx_admission_procedure_part_2"
-    ]
-  },
-  {
-    "query": "Điểm rèn luyện 75 là loại gì?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_lookup_type": "conduct_classification"
-  },
-  {
-    "query": "GPA 3.4 là loại học lực gì?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_lookup_type": "academic_classification"
-  },
-  {
-    "query": "Điểm C+ quy đổi sang thang 4 là bao nhiêu?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_lookup_type": "letter_to_grade_4"
-  }
+    {
+        "query": "Điều kiện xét học bổng là gì?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_28_p52_74_part_1"
+        ]
+    },
+    {
+        "query": "Sinh viên bị cảnh báo học tập khi nào vậy?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_12_p23_22",
+            "reg_article_13_p24_23"
+        ]
+    },
+    {
+        "query": "Muốn học vượt thì cần điều kiện gì?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_9_p17_18",
+            "reg_article_7_p14_16"
+        ]
+    },
+    {
+        "query": "Một học phần có thể học lại mấy lần?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_10_p18_20_part_3",
+            "reg_article_4_p13_12"
+        ]
+    },
+    {
+        "query": "Muốn tạm nghỉ học cần mẫu đơn nào?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p176"
+        ]
+    },
+    {
+        "query": "Muốn quay lại học sau bảo lưu thì dùng đơn gì?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p177"
+        ]
+    },
+    {
+        "query": "Có mẫu đơn xin trợ cấp xã hội không?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p179"
+        ]
+    },
+    {
+        "query": "Mẫu đơn xin ở ký túc xá nằm ở đâu?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_chunk_ids": [
+            "form_form_p180",
+            "procedure_ktx_admission_procedure_part_2"
+        ]
+    },
+    {
+        "query": "Điểm rèn luyện 92 là loại gì?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_lookup_type": "conduct_classification"
+    },
+    {
+        "query": "GPA 2.95 được xếp loại học lực gì?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_lookup_type": "academic_classification"
+    },
+    {
+        "query": "Điểm B+ quy đổi sang hệ 4 bao nhiêu?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_lookup_type": "letter_to_grade_4"
+    },
+    {
+        "query": "Tính điểm học bổng nếu GPA 3.2 và rèn luyện 90",
+        "expected_intent": "calculation_query",
+        "expected_strategy": "calculator_tool",
+        "expected_tool_name": "calculate_scholarship_score"
+    },
+    {
+        "query": "Email phòng đào tạo là gì?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_3"
+        ]
+    },
+    {
+        "query": "Website phòng CNTT là gì?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_1"
+        ]
+    },
+    {
+        "query": "Phòng CTCT-HSSV ở tầng mấy?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_2"
+        ]
+    },
+    {
+        "query": "Khoa Công nghệ thông tin có ngành nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_1_part_1"
+        ]
+    },
+    {
+        "query": "Khoa Tiếng Anh có những ngành nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_9"
+        ]
+    },
+    {
+        "query": "Khoa Toán - Tin học có email không?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_2"
+        ]
+    },
+    {
+        "query": "Quy trình vào ký túc xá như thế nào?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "procedure_ktx_admission_procedure_part_1"
+        ]
+    },
+    {
+        "query": "Ai được ưu tiên vào ký túc xá?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "procedure_ktx_admission_procedure_part_2"
+        ]
+    },
+    {
+        "query": "Muốn bảo lưu thì vừa cần điều kiện gì vừa cần mẫu đơn nào?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_chunk_ids": [
+            "reg_article_16_p27_27",
+            "form_form_p176"
+        ]
+    },
+    {
+        "query": "Muốn xin vào KTX thì liên hệ phòng nào và dùng mẫu gì?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_chunk_ids": [
+            "procedure_ktx_admission_procedure_part_2",
+            "form_form_p180",
+            "office_office_13"
+        ]
+    },
+    {
+        "query": "Điều kiện công nhận tốt nghiệp và cấp bằng tốt nghiệp là gì?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_15_p25_25"
+        ]
+    },
+    {
+        "query": "Sinh viên có được học cùng lúc hai chương trình không?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_19_p30_30"
+        ]
+    },
+    {
+        "query": "Quy chế Điều 17 quy định điều kiện chuyển ngành, chuyển nơi học như thế nào?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_17_p28_28"
+        ]
+    },
+    {
+        "query": "Sinh viên có những quyền gì?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_8_p41_52_part_1",
+            "reg_article_8_p41_52_part_2",
+            "reg_article_8_p41_52_part_3",
+            "reg_article_8_p41_52_part_4",
+            "reg_article_8_p41_52_part_5",
+            "reg_article_8_p41_52_part_6",
+            "reg_article_8_p41_52_part_7",
+            "reg_article_8_p41_52_part_8",
+            "reg_article_8_p41_52_part_9"
+        ]
+    },
+    {
+        "query": "Nhiệm vụ của sinh viên gồm những gì?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_7_p40_51"
+        ]
+    },
+    {
+        "query": "Theo quy định cố vấn học tập, nhiệm vụ của cố vấn học tập là gì?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_3_p64_95"
+        ]
+    },
+    {
+        "query": "Quy chế Điều 30 quy định chính sách miễn giảm học phí và hỗ trợ chi phí học tập ra sao?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_30_p54_76"
+        ]
+    },
+    {
+        "query": "Hình thức kỷ luật sinh viên gồm những gì?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_35_p59_82"
+        ]
+    },
+    {
+        "query": "Đơn xin chuyển trường nằm ở trang nào?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p175"
+        ]
+    },
+    {
+        "query": "Đơn xin thôi học cần dùng mẫu nào?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p178"
+        ]
+    },
+    {
+        "query": "Giấy xác nhận sinh viên nằm ở trang nào?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p181"
+        ]
+    },
+    {
+        "query": "Mẫu đơn đề nghị miễn giảm học phí ở trang nào?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p182"
+        ]
+    },
+    {
+        "query": "Phiếu theo dõi tiến độ học tập nằm ở trang nào?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p185"
+        ]
+    },
+    {
+        "query": "Phòng Kế hoạch - Tài chính phụ trách những công việc gì?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_6"
+        ]
+    },
+    {
+        "query": "Số điện thoại Phòng Sau Đại học là gì?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_8"
+        ]
+    },
+    {
+        "query": "Thư viện của trường có thông tin liên hệ nào?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_12_part_1",
+            "office_office_12_part_2"
+        ]
+    },
+    {
+        "query": "Phòng Khảo thí và Đảm bảo chất lượng phụ trách gì?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_11"
+        ]
+    },
+    {
+        "query": "Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp ở đâu?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_17_part_1",
+            "office_office_17_part_2"
+        ]
+    },
+    {
+        "query": "Khoa Hóa học đào tạo những ngành nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_4_part_1",
+            "faculty_faculty_4_part_2"
+        ]
+    },
+    {
+        "query": "Khoa Sinh học có thông tin liên hệ gì?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_5"
+        ]
+    },
+    {
+        "query": "Khoa Địa lí có website không?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_8"
+        ]
+    },
+    {
+        "query": "Khoa Tiếng Pháp đào tạo ngành nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_10_part_1",
+            "faculty_faculty_10_part_2"
+        ]
+    },
+    {
+        "query": "Khoa Tâm lí học có những ngành nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_16_part_1",
+            "faculty_faculty_16_part_2",
+            "faculty_faculty_16_part_3"
+        ]
+    },
+    {
+        "query": "Quy trình công việc của các khoa liên quan đến sinh viên gồm những bước nào?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "procedure_faculty_student_services"
+        ]
+    },
+    {
+        "query": "Hội đồng xét ký túc xá gồm những ai?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "procedure_ktx_admission_procedure_part_2"
+        ]
+    },
+    {
+        "query": "Điểm rèn luyện 75 là loại gì?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_lookup_type": "conduct_classification"
+    },
+    {
+        "query": "GPA 3.4 là loại học lực gì?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_lookup_type": "academic_classification"
+    },
+    {
+        "query": "Điểm C+ quy đổi sang thang 4 là bao nhiêu?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_lookup_type": "letter_to_grade_4"
+    },
+    {
+        "query": "Trung tâm Hỗ trợ người học và Phát triển khởi nghiệp ở đâu?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_17_part_1",
+            "office_office_17_part_2"
+        ],
+        "id": "case_aug_0"
+    },
+    {
+        "query": "Thư viện của trường có thông tin liên hệ nào? tư vấn giúp mình nhé!",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_12_part_1",
+            "office_office_12_part_2"
+        ],
+        "id": "case_aug_1"
+    },
+    {
+        "query": "Email phòng đào tạo là gì? tư vấn giúp mình nhé!",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_3"
+        ],
+        "id": "case_aug_2"
+    },
+    {
+        "query": "Mẫu đơn xin ở ký túc xá nằm ở đâu? tư vấn giúp mình nhé!",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_chunk_ids": [
+            "form_form_p180",
+            "procedure_ktx_admission_procedure_part_2"
+        ],
+        "id": "case_aug_3"
+    },
+    {
+        "query": "Đơn xin chuyển trường nằm ở trang nào? cho em hỏi với.",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p175"
+        ],
+        "id": "case_aug_4"
+    },
+    {
+        "query": "Hội đồng xét ký túc xá gồm những ai? cho em hỏi với.",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "procedure_ktx_admission_procedure_part_2"
+        ],
+        "id": "case_aug_5"
+    },
+    {
+        "query": "Hội đồng xét ký túc xá gồm những ai? tư vấn giúp mình nhé!",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "procedure_ktx_admission_procedure_part_2"
+        ],
+        "id": "case_aug_6"
+    },
+    {
+        "query": "Khoa Sinh học có thông tin liên hệ gì? tư vấn giúp mình nhé!",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_5"
+        ],
+        "id": "case_aug_7"
+    },
+    {
+        "query": "Có mẫu đơn xin trợ cấp xã hội không? cho em hỏi với.",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p179"
+        ],
+        "id": "case_aug_8"
+    },
+    {
+        "query": "Phòng Kế hoạch - Tài chính phụ trách những công việc gì? tư vấn giúp mình nhé!",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_6"
+        ],
+        "id": "case_aug_9"
+    },
+    {
+        "query": "Website phòng CNTT là gì? tư vấn giúp mình nhé!",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_1"
+        ],
+        "id": "case_aug_10"
+    },
+    {
+        "query": "Tính điểm học bổng nếu GPA 3.2 và rèn luyện 90 ạ?",
+        "expected_intent": "calculation_query",
+        "expected_strategy": "calculator_tool",
+        "expected_tool_name": "calculate_scholarship_score",
+        "id": "case_aug_11"
+    },
+    {
+        "query": "Ai được ưu tiên vào ký túc xá? tư vấn giúp mình nhé!",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "procedure_ktx_admission_procedure_part_2"
+        ],
+        "id": "case_aug_12"
+    },
+    {
+        "query": "Website phòng CNTT là gì? ạ?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_1"
+        ],
+        "id": "case_aug_13"
+    },
+    {
+        "query": "Khoa Địa lí có website không? cụ thể là sao ạ?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_8"
+        ],
+        "id": "case_aug_14"
+    },
+    {
+        "query": "Muốn quay lại học sau nghỉ học tạm thời thì dùng đơn gì?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p177"
+        ],
+        "id": "case_aug_15"
+    },
+    {
+        "query": "Muốn quay lại học sau tạm nghỉ học thì dùng đơn gì?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p177"
+        ],
+        "id": "case_aug_16"
+    },
+    {
+        "query": "Đơn xin chuyển trường nằm ở trang nào? cho em hỏi với.",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p175"
+        ],
+        "id": "case_aug_17"
+    },
+    {
+        "query": "Phòng Kế hoạch - Tài chính phụ trách những công việc gì? hả phòng đào tạo?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_6"
+        ],
+        "id": "case_aug_18"
+    },
+    {
+        "query": "Trung tâm Hỗ trợ tân sinh viên và Phát triển khởi nghiệp ở đâu?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_17_part_1",
+            "office_office_17_part_2"
+        ],
+        "id": "case_aug_19"
+    },
+    {
+        "query": "Khoa Tâm lí học có những ngành nào? cho em hỏi với.",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_16_part_1",
+            "faculty_faculty_16_part_2",
+            "faculty_faculty_16_part_3"
+        ],
+        "id": "case_aug_20"
+    },
+    {
+        "query": "Đơn xin thôi học cần dùng mẫu nào? cho em hỏi với.",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p178"
+        ],
+        "id": "case_aug_21"
+    },
+    {
+        "query": "Muốn xin vào KTX thì liên hệ phòng nào và dùng mẫu gì? cụ thể là sao ạ?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_chunk_ids": [
+            "procedure_ktx_admission_procedure_part_2",
+            "form_form_p180",
+            "office_office_13"
+        ],
+        "id": "case_aug_22"
+    },
+    {
+        "query": "Điều kiện xét học bổng là gì? ạ?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_28_p52_74_part_1"
+        ],
+        "id": "case_aug_23"
+    },
+    {
+        "query": "Khoa Tiếng Anh có những ngành nào? ạ?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_9"
+        ],
+        "id": "case_aug_24"
+    },
+    {
+        "query": "bạn học có những quyền gì?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_8_p41_52_part_1",
+            "reg_article_8_p41_52_part_2",
+            "reg_article_8_p41_52_part_3",
+            "reg_article_8_p41_52_part_4",
+            "reg_article_8_p41_52_part_5",
+            "reg_article_8_p41_52_part_6",
+            "reg_article_8_p41_52_part_7",
+            "reg_article_8_p41_52_part_8",
+            "reg_article_8_p41_52_part_9"
+        ],
+        "id": "case_aug_25"
+    },
+    {
+        "query": "Muốn học vượt thì cần điều kiện gì? hả phòng đào tạo?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_9_p17_18",
+            "reg_article_7_p14_16"
+        ],
+        "id": "case_aug_26"
+    },
+    {
+        "query": "Một học phần có thể học lại mấy lần? hả phòng đào tạo?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_10_p18_20_part_3",
+            "reg_article_4_p13_12"
+        ],
+        "id": "case_aug_27"
+    },
+    {
+        "query": "Thư viện của trường có thông tin liên hệ nào? cụ thể là sao ạ?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_12_part_1",
+            "office_office_12_part_2"
+        ],
+        "id": "case_aug_28"
+    },
+    {
+        "query": "Điểm B+ quy đổi sang hệ 4 bao nhiêu? tư vấn giúp mình nhé!",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_lookup_type": "letter_to_grade_4",
+        "id": "case_aug_29"
+    },
+    {
+        "query": "Khoa Hóa học đào tạo những ngành nào? ạ?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_4_part_1",
+            "faculty_faculty_4_part_2"
+        ],
+        "id": "case_aug_30"
+    },
+    {
+        "query": "Quy chế Điều 17 quy định điều kiện chuyển ngành, chuyển nơi học như thế nào? cụ thể là sao ạ?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_17_p28_28"
+        ],
+        "id": "case_aug_31"
+    },
+    {
+        "query": "Số điện thoại Phòng Sau Đại học là gì? hả phòng đào tạo?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "office_office_8"
+        ],
+        "id": "case_aug_32"
+    },
+    {
+        "query": "Nhiệm vụ của người học gồm những gì?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_7_p40_51"
+        ],
+        "id": "case_aug_33"
+    },
+    {
+        "query": "Khoa Tiếng Anh có những ngành nào? cụ thể là sao ạ?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_9"
+        ],
+        "id": "case_aug_34"
+    },
+    {
+        "query": "GPA 3.4 là loại học lực gì? ạ?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_lookup_type": "academic_classification",
+        "id": "case_aug_35"
+    },
+    {
+        "query": "SV bị cảnh báo học tập khi nào vậy?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_12_p23_22",
+            "reg_article_13_p24_23"
+        ],
+        "id": "case_aug_36"
+    },
+    {
+        "query": "Khoa Toán - Tin học có email không? ạ?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_2"
+        ],
+        "id": "case_aug_37"
+    },
+    {
+        "query": "SV bị cảnh báo học tập khi nào vậy?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_12_p23_22",
+            "reg_article_13_p24_23"
+        ],
+        "id": "case_aug_38"
+    },
+    {
+        "query": "Điểm C+ quy đổi sang thang 4 là bao nhiêu? cụ thể là sao ạ?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_lookup_type": "letter_to_grade_4",
+        "id": "case_aug_39"
+    },
+    {
+        "query": "Muốn quay lại học sau nghỉ học tạm thời thì dùng đơn gì?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p177"
+        ],
+        "id": "case_aug_40"
+    },
+    {
+        "query": "SV có được học cùng lúc hai chương trình không?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_19_p30_30"
+        ],
+        "id": "case_aug_41"
+    },
+    {
+        "query": "Điều kiện công nhận tốt nghiệp và cấp bằng tốt nghiệp là gì? tư vấn giúp mình nhé!",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_chunk_ids": [
+            "reg_article_15_p25_25"
+        ],
+        "id": "case_aug_42"
+    },
+    {
+        "query": "Khoa Tiếng Pháp đào tạo ngành nào? cụ thể là sao ạ?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_10_part_1",
+            "faculty_faculty_10_part_2"
+        ],
+        "id": "case_aug_43"
+    },
+    {
+        "query": "Khoa Sinh học có thông tin liên hệ gì? cụ thể là sao ạ?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_5"
+        ],
+        "id": "case_aug_44"
+    },
+    {
+        "query": "GPA 3.4 là loại học lực gì? hả phòng đào tạo?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_lookup_type": "academic_classification",
+        "id": "case_aug_45"
+    },
+    {
+        "query": "Mẫu đơn xin ở ký túc xá nằm ở đâu? cho em hỏi với.",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_chunk_ids": [
+            "form_form_p180",
+            "procedure_ktx_admission_procedure_part_2"
+        ],
+        "id": "case_aug_46"
+    },
+    {
+        "query": "Muốn xin vào KTX thì liên hệ phòng nào và dùng mẫu gì? cho em hỏi với.",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_chunk_ids": [
+            "procedure_ktx_admission_procedure_part_2",
+            "form_form_p180",
+            "office_office_13"
+        ],
+        "id": "case_aug_47"
+    },
+    {
+        "query": "Muốn quay lại học sau tạm nghỉ học thì dùng đơn gì?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "form_form_p177"
+        ],
+        "id": "case_aug_48"
+    },
+    {
+        "query": "Khoa Toán - Tin học có email không? ạ?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_chunk_ids": [
+            "faculty_faculty_2"
+        ],
+        "id": "case_aug_49"
+    }
 ]

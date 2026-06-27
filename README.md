@@ -121,24 +121,24 @@ The codebase adheres strictly to **Clean Architecture** principles and is fully 
 
 ```text
 student_handbook_rag/
-├── configs/                 # Project configurations (e.g., yaml/json files for model hyperparameters, routing thresholds)
+├── configs/                 # Project configurations and routing thresholds
 ├── data/
-│   ├── raw/                 # Original PDF handbooks (e.g., K48, K51)
-│   └── processed/           # Extracted data (text extracts, entity registry, structured chunks)
-├── deploy/                  # Configuration and scripts for deployment (e.g., to HuggingFace Spaces)
-├── docs/                    # Project documentation (architecture, design, processes)
+│   ├── raw/                 # Original PDF handbooks
+│   └── processed/           # Extracted texts, entity registries, and structured chunks
+├── deploy/                  # Scripts and configurations for deployment
+├── docs/                    # Project documentation
 ├── frontend/                # React/Vite UI source code
 ├── logs/                    # System runtime logs
 ├── scripts/                 # CLI utilities for data ingestion, evaluation, and system management
 ├── tests/                   # Comprehensive Unit and Integration Test suite
 └── src/
     ├── api/                 # FastAPI controllers, routes, and Pydantic schemas
-    ├── chunking/            # Layout-aware and semantic chunking logic (tables, forms, procedures)
-    ├── common/              # Shared utilities (Logging, Environment loading)
-    ├── extraction/          # Structured data parsing (scoring tables, form templates, directories)
+    ├── chunking/            # Layout-aware semantic chunking logic
+    ├── common/              # Shared utilities like logging and environment loaders
+    ├── extraction/          # Structured data parsing and metadata extraction
     ├── generation/          # LLM orchestration, Query Rewriting, and text generation
-    ├── ingestion/           # Data loading pipelines (reading PDFs via PyMuPDF -> Vector DB)
-    ├── preprocessing/       # Hierarchical document parsing (Parts, Chapters, Articles) and text cleaning
+    ├── ingestion/           # Data loading pipelines
+    ├── preprocessing/       # Hierarchical document parsing and text cleaning
     ├── retrieval/           # Core RAG engine (Vector Search, Intent Router, Entity Linker)
     └── services/            # Core business logic orchestrating Retrieval and Generation
 ```

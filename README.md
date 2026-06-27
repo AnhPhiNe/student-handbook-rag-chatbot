@@ -17,6 +17,7 @@ pinned: false
   <img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" alt="Vite">
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
   <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
   <img src="https://img.shields.io/badge/ChromaDB-FF914D?style=for-the-badge" alt="ChromaDB">
   <img src="https://img.shields.io/badge/Qdrant-E21727?style=for-the-badge&logo=Qdrant&logoColor=white" alt="Qdrant">
   <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis">
@@ -43,9 +44,14 @@ This project is built with a strictly **Production-Ready, Enterprise-Grade** arc
 ### 3. 🛡️ Intelligent Guardrails & Router
 - Rejects jailbreaks, out-of-domain queries, and generic greetings in less than `500ms`, saving LLM tokens and computation resources.
 
-### 4. ☁️ Vector Storage & Observability
-- **Qdrant Cloud:** Migrated from local disk structures to a managed Qdrant Cloud VectorDB for sub-millisecond similarity search.
+### 4. ☁️ Multi-Cohort Parent-Child Storage Architecture
+- **MongoDB Atlas (DocStore):** Acts as the centralized "Parent" storage holding full, uncut regulation documents for both K48 and K51 cohorts, guaranteeing that the LLM is fed 100% of the context without arbitrary chunking truncations.
+- **Qdrant Cloud (VectorDB):** Stores highly-focused, overlapping 200-token "Child" chunks that act as semantic pointers to the MongoDB documents, achieving sub-millisecond similarity search accuracy while dodging vector dilution.
 - **LangSmith Tracing:** Integrated end-to-end tracing capturing chunk relevance, LLM latency, context length, and exact token costs per query.
+
+### 5. 🧬 Dynamic Multi-Cohort Pipeline
+- Fully autonomous ingestion pipeline capable of parsing multiple student handbooks (e.g., K48, K51) simultaneously.
+- Intelligent prefixing and collision-free ID management across MongoDB and Qdrant allow the Chatbot to effortlessly contrast and compare regulations across different school years.
 
 ---
 
@@ -94,6 +100,9 @@ QDRANT_API_KEY="your_qdrant_key"
 
 # Two-Tier Cache (Upstash Redis)
 REDIS_URL="rediss://default:your_password@your_upstash_url:6379"
+
+# Document Store (MongoDB Atlas)
+MONGODB_URL="mongodb+srv://user:pass@cluster.mongodb.net/?appName=chatbotHCMUE"
 
 # Observability (LangSmith)
 LANGCHAIN_TRACING_V2=true

@@ -305,10 +305,19 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
             </div>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: 'auto' }}>
-              {message.usedCache && (
+              {message.usedCache ? (
                 <span className="metadata-badge cache" title="Câu trả lời được lấy từ bộ nhớ đệm giúp tốc độ phản hồi tức thì">
                   ⚡ Từ bộ nhớ đệm
                 </span>
+              ) : (
+                message.responseTimeMs && (
+                  <span 
+                    className="metadata-badge latency" 
+                    title={`Tổng thời gian phản hồi: ${(message.responseTimeMs / 1000).toFixed(2)}s${message.ttftMs ? ` (Từ đầu tiên: ${(message.ttftMs / 1000).toFixed(2)}s)` : ''}`}
+                  >
+                    ⏱️ {(message.responseTimeMs / 1000).toFixed(1)}s
+                  </span>
+                )
               )}
             </div>
           </div>

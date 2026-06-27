@@ -489,6 +489,7 @@ class AnswerPipeline:
         run_tree = get_current_run_tree()
         run_id = str(run_tree.id) if run_tree else None
 
+        yield {"type": "progress", "message": "Đang tối ưu hóa câu hỏi..."}
         rewrite_result = self.query_rewriter.rewrite(query, chat_history=chat_history)
         effective_query = rewrite_result.effective_query
 
@@ -499,6 +500,7 @@ class AnswerPipeline:
             if semantic_cache_key:
                 cached = self.response_cache.get(semantic_cache_key)
                 if cached:
+                    yield {"type": "progress", "message": "Đang truy xuất từ bộ nhớ đệm..."}
                     yield {
                         "type": "metadata",
                         "run_id": run_id,
@@ -531,6 +533,7 @@ class AnswerPipeline:
             yield {"type": "done"}
             return
 
+        yield {"type": "progress", "message": "Đang tìm kiếm thông tin trong Sổ tay..."}
         try:
             # Retrieval chạy đồng bộ trước, sau đó mới stream token LLM về frontend.
             retrieval_result, rewrite_result = self._run_verified_retrieval(
@@ -656,6 +659,22 @@ class AnswerPipeline:
             yield {"type": "done"}
             return
 
+        # Yield progress based on detected intent
+        intent = retrieval_result.get("intent", "regulation_query")
+        intent_progress_messages = {
+            "formula_query": "Đang đối chiếu công thức tính điểm và học tập...",
+            "calculation_query": "Đang thực hiện tính toán số liệu học tập...",
+            "procedure_query": "Đang tra cứu các quy trình thủ tục hành chính...",
+            "faculty_query": "Đang tìm kiếm thông tin về Khoa và Ngành học...",
+            "form_query": "Đang trích xuất thông tin biểu mẫu và hồ sơ...",
+            "office_query": "Đang định vị địa chỉ liên hệ và phòng ban...",
+            "score_lookup_query": "Đang xếp loại điểm rèn luyện và học tập...",
+            "regulation_query": "Đang đối chiếu các quy chế đào tạo...",
+            "mixed_query": "Đang tổng hợp dữ liệu từ nhiều chuyên mục...",
+        }
+        progress_msg = intent_progress_messages.get(intent, "Đang phân tích tài liệu tìm được...")
+        yield {"type": "progress", "message": progress_msg}
+
         citations_config = self.config.get("citations", {})
         guardrails_config = self.config.get("guardrails", {})
 
@@ -728,6 +747,7 @@ class AnswerPipeline:
             cohort=cohort,
         )
 
+        yield {"type": "progress", "message": "Đang tổng hợp câu trả lời..."}
         yield {
             "type": "metadata",
             "run_id": run_id,

@@ -17,6 +17,7 @@ export interface Message {
   isStreaming?: boolean;
   timestamp: string;
   responseTimeMs?: number;
+  ttftMs?: number;
   confidence?: 'high' | 'medium' | 'low';
   citations?: Citation[];
   runId?: string;
@@ -66,6 +67,7 @@ export function useChat(cohort: string = 'K48-K49') {
 
     const botMsgId = (Date.now() + 1).toString();
     const startTime = Date.now();
+    let ttftMs: number | null = null;
     let currentBotContent = "";
     let capturedCitations: Citation[] = [];
     let capturedRunId: string | null = null;
@@ -140,6 +142,9 @@ export function useChat(cohort: string = 'K48-K49') {
               } else if (eventType === 'progress') {
                 setProgressMessage(data.message);
               } else if (eventType === 'token') {
+                if (ttftMs === null) {
+                  ttftMs = Date.now() - startTime;
+                }
                 currentBotContent += data.text;
                 setMessages(prev => prev.map(m => 
                   m.id === botMsgId ? { ...m, content: currentBotContent } : m
@@ -165,6 +170,7 @@ export function useChat(cohort: string = 'K48-K49') {
                     ...m, 
                     isStreaming: false,
                     responseTimeMs,
+                    ttftMs: ttftMs || undefined,
                     confidence,
                     citations: capturedCitations,
                     runId: capturedRunId || undefined,

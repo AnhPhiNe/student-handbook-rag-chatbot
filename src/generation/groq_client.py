@@ -37,7 +37,7 @@ class GroqClient:
             ) from exc
 
         # Build fallback matrix (Model x Key)
-        fallback_models = [model_name, "openai/gpt-oss-120b", "qwen/qwen3.6-27b"]
+        fallback_models = [model_name, "openai/gpt-oss-120b", "qwen/qwen3.6-27b", "llama-3.1-8b-instant"]
         self.models = []
         for m in fallback_models:
             if m not in self.models:
@@ -80,7 +80,7 @@ class GroqClient:
                     "error_message": None,
                     "attempts": 1, 
                 }
-            except (RateLimitError, APITimeoutError, InternalServerError, APIConnectionError) as exc:
+            except Exception as exc:
                 last_error = exc
                 print(f"[Fallback] Groq generation failed with model {provider['model']}. Trying next... Error: {str(exc)}")
                 continue
@@ -134,7 +134,7 @@ class GroqClient:
                         
                 return # Successfully finished streaming
                 
-            except (RateLimitError, APITimeoutError, InternalServerError, APIConnectionError) as exc:
+            except Exception as exc:
                 last_error = exc
                 print(f"[Fallback] Groq stream failed with model {provider['model']}. Trying next... Error: {str(exc)}")
                 continue

@@ -51,8 +51,8 @@ def split_by_clause(content: str) -> list[str]:
 
 def build_regulation_chunks(
     sections: list[dict[str, Any]],
-    max_tokens: int = 850,
-    overlap_tokens: int = 80,
+    max_tokens: int = 200,
+    overlap_tokens: int = 40,
 ) -> list[dict[str, Any]]:
     chunks = []
 
@@ -113,6 +113,7 @@ def build_regulation_chunks(
                 metadata = dict(base_metadata)
                 metadata["parent_section_id"] = section["section_id"]
                 metadata["split_strategy"] = "clause_or_paragraph"
+                metadata["parent_content"] = full_content
 
                 chunks.append(
                     create_chunk(

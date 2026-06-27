@@ -98,7 +98,29 @@ def retrieve_with_plan(
     
     # 5. Lọc nhiễu
     filtered = [doc for doc in reranked if doc["rerank"]["final_score"] >= 0.20]
-    return filtered[: plan["top_k"]]
+    
+    # 6. Small-to-Big Deduplication
+    final_docs = []
+    seen_parents = set()
+    
+    for doc in filtered:
+        parent_id = doc.get("metadata", {}).get("parent_section_id")
+        parent_content = doc.get("metadata", {}).get("parent_content")
+        
+        if parent_id and parent_content:
+            if parent_id in seen_parents:
+                continue
+            seen_parents.add(parent_id)
+            doc["content"] = parent_content
+        else:
+            chunk_id = doc.get("chunk_id")
+            if chunk_id in seen_parents:
+                continue
+            seen_parents.add(chunk_id)
+
+        final_docs.append(doc)
+    
+    return final_docs[: plan["top_k"]]
 
 @traceable(name="Retrieval Pipeline", run_type="retriever")
 def run_retrieval_pipeline(

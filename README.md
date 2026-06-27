@@ -121,27 +121,27 @@ The codebase adheres strictly to **Clean Architecture** principles and is fully 
 
 ```text
 student_handbook_rag/
-├── configs/                 # Project configurations (e.g., yaml/json files for model parameters)
+├── configs/                 # Project configurations (e.g., yaml/json files for model hyperparameters, routing thresholds)
 ├── data/
 │   ├── raw/                 # Original PDF handbooks (e.g., K48, K51)
 │   └── processed/           # Extracted data (text extracts, entity registry, structured chunks)
-├── deploy/                  # Configuration and scripts for deployment (e.g., to HuggingFace)
+├── deploy/                  # Configuration and scripts for deployment (e.g., to HuggingFace Spaces)
 ├── docs/                    # Project documentation (architecture, design, processes)
 ├── frontend/                # React/Vite UI source code
 ├── logs/                    # System runtime logs
-├── models/                  # Local storage for downloaded AI models
-├── scripts/                 # CLI utilities for data augmentation, evaluation, and preprocessing
+├── models/                  # Local storage for downloaded AI models (e.g., ONNX rerankers)
+├── scripts/                 # CLI utilities for data ingestion, evaluation, and system management
 ├── tests/                   # Comprehensive Unit and Integration Test suite
 └── src/
     ├── api/                 # FastAPI controllers, routes, and Pydantic schemas
-    ├── chunking/            # Layout-aware semantic chunking logic
+    ├── chunking/            # Layout-aware and semantic chunking logic (tables, forms, procedures)
     ├── common/              # Shared utilities (Logging, Environment loading)
     ├── extraction/          # Structured data parsing (scoring tables, form templates, directories)
     ├── generation/          # LLM orchestration, Query Rewriting, and text generation
-    ├── ingestion/           # Data loading pipelines (reading PDFs -> processing -> Vector DB)
-    ├── preprocessing/       # Text cleaning and normalization
+    ├── ingestion/           # Data loading pipelines (reading PDFs via PyMuPDF -> Vector DB)
+    ├── preprocessing/       # Hierarchical document parsing (Parts, Chapters, Articles) and text cleaning
     ├── retrieval/           # Core RAG engine (Vector Search, Intent Router, Entity Linker)
-    └── services/            # Core business logic binding Retrieval and Generation
+    └── services/            # Core business logic orchestrating Retrieval and Generation
 ```
 
 - **`tests/`**: Over 56 automated Unit and Integration tests ensuring stability across the LLM and API logic.

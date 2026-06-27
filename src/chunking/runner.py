@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 from typing import Any
 
 from .directory_chunker import build_directory_chunks
@@ -64,7 +64,7 @@ def main() -> None:
     directory_config = config["chunking"]["directory_summary"]
     procedure_config = config["chunking"]["procedure_summary"]
 
-    regulation_chunks = build_regulation_chunks(
+    regulation_chunks, docstore_items = build_regulation_chunks(
         sections=structured_sections,
         max_tokens=regulation_config["max_tokens"],
         overlap_tokens=regulation_config["overlap_tokens"],
@@ -125,6 +125,7 @@ def main() -> None:
     save_json(structured_lookup_chunks, Path(config["output"]["structured_lookup_chunks"]))
     save_json(tool_rule_chunks, Path(config["output"]["tool_rule_chunks"]))
     save_json(all_chunks, Path(config["output"]["all_chunks"]))
+    save_json(docstore_items, Path(config["output"]["docstore_items"]))
 
     save_json(report, Path(config["output"]["report"]))
     save_json(index_manifest, Path(config["output"]["index_manifest"]))
@@ -136,6 +137,7 @@ def main() -> None:
     print(f"Tool rule chunks: {len(tool_rule_chunks)}")
     print(f"Validation issues: {len(validation_issues)}")
     print(f"Overlong chunks: {report.get('overlong_chunks_count', 0)}")
+    print(f"Docstore items saved: {len(docstore_items)}")
     print(f"Index manifest saved: {config['output']['index_manifest']}")
 
 

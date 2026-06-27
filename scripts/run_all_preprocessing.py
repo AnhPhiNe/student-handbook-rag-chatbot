@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import subprocess
 import sys
@@ -10,6 +10,7 @@ STEPS = [
     ("extract structured data", ["-m", "scripts.extract_structured_data"]),
     ("build chunks", ["-m", "scripts.build_chunks"]),
     ("build vectorstore", ["-m", "scripts.build_vectorstore"]),
+    ("push docstore to mongodb", ["-m", "scripts.push_to_mongo"]),
     ("run retrieval batch report", ["-m", "scripts.evaluate_retrieval_batch"]),
 ]
 

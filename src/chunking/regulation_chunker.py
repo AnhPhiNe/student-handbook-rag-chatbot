@@ -53,8 +53,9 @@ def build_regulation_chunks(
     sections: list[dict[str, Any]],
     max_tokens: int = 200,
     overlap_tokens: int = 40,
-) -> list[dict[str, Any]]:
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     chunks = []
+    docstore_items = []
 
     for section in sections:
         if section.get("content_type") != "regulation_text":
@@ -81,6 +82,11 @@ def build_regulation_chunks(
         }
 
         full_content = build_regulation_chunk_content(section, content)
+        docstore_items.append({
+            "_id": section["section_id"],
+            "content": full_content,
+            "metadata": base_metadata,
+        })
 
         if count_tokens_approx(full_content) <= max_tokens:
             chunks.append(
@@ -113,7 +119,6 @@ def build_regulation_chunks(
                 metadata = dict(base_metadata)
                 metadata["parent_section_id"] = section["section_id"]
                 metadata["split_strategy"] = "clause_or_paragraph"
-                metadata["parent_content"] = full_content
 
                 chunks.append(
                     create_chunk(
@@ -126,4 +131,4 @@ def build_regulation_chunks(
                 )
                 sub_index += 1
 
-    return chunks
+    return chunks, docstore_items

@@ -1,5 +1,16 @@
 from typing import Any
+import logging
 from langsmith import traceable
+from src.retrieval.vectorstore.mongo_store import get_mongo_store
+
+logger = logging.getLogger(__name__)
+_mongo_store = None
+
+def _get_docstore():
+    global _mongo_store
+    if _mongo_store is None:
+        _mongo_store = get_mongo_store()
+    return _mongo_store
 
 from sentence_transformers import SentenceTransformer
 
@@ -105,13 +116,19 @@ def retrieve_with_plan(
     
     for doc in filtered:
         parent_id = doc.get("metadata", {}).get("parent_section_id")
-        parent_content = doc.get("metadata", {}).get("parent_content")
         
-        if parent_id and parent_content:
+        if parent_id:
             if parent_id in seen_parents:
                 continue
             seen_parents.add(parent_id)
-            doc["content"] = parent_content
+            
+            try:
+                store = _get_docstore()
+                parent_doc = store.get_document_by_id(parent_id)
+                if parent_doc and "content" in parent_doc:
+                    doc["content"] = parent_doc["content"]
+            except Exception as e:
+                logger.error(f"Error fetching parent doc {parent_id} from MongoDB: {e}")
         else:
             chunk_id = doc.get("chunk_id")
             if chunk_id in seen_parents:

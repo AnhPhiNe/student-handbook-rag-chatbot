@@ -37,3 +37,18 @@ $RECYCLE.BIN/
 .Trashes/
 .vscode/
 .idea/
+
+# Data and Models
+data/processed/
+data/vectorstore/
+models/
+scratch/
+*.onnx
+*.onnx_data
+*.bin
+*.sqlite3
+
+# Temp files
+out.*
+temp_matches.txt
+test_viranker.py

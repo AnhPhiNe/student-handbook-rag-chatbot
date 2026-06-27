@@ -129,7 +129,6 @@ student_handbook_rag/
 ├── docs/                    # Project documentation (architecture, design, processes)
 ├── frontend/                # React/Vite UI source code
 ├── logs/                    # System runtime logs
-├── models/                  # Local storage for downloaded AI models (e.g., ONNX rerankers)
 ├── scripts/                 # CLI utilities for data ingestion, evaluation, and system management
 ├── tests/                   # Comprehensive Unit and Integration Test suite
 └── src/

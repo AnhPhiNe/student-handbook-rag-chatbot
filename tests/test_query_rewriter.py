@@ -80,9 +80,8 @@ class QueryRewriterTest(unittest.TestCase):
             '"confidence":"high",'
             '"reason":"accent_restoration"}'
         )
-        rewriter = QueryRewriter(enabled=True, client=client)
-
         with patch.dict("os.environ", {"QUERY_REWRITER_API_KEY": "test-key"}):
+            rewriter = QueryRewriter(enabled=True, client=client)
             result = rewriter.rewrite("cau biet khoa tieng Trung o dau khong")
 
         self.assertEqual(
@@ -100,9 +99,8 @@ class QueryRewriterTest(unittest.TestCase):
             '"confidence":"high",'
             '"reason":"accent_restoration_and_typo_correction"}'
         )
-        rewriter = QueryRewriter(enabled=True, client=client)
-
         with patch.dict("os.environ", {"QUERY_REWRITER_API_KEY": "test-key"}):
+            rewriter = QueryRewriter(enabled=True, client=client)
             result = rewriter.rewrite("cau biet khoa tieng Trung o dau khong")
 
         self.assertEqual(

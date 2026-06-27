@@ -26,9 +26,32 @@ pinned: false
 
 ## 🌟 Overview
 
-The **HCMUE Student Handbook RAG** is an advanced Retrieval-Augmented Generation (RAG) system designed to answer complex questions regarding the student handbook of Ho Chi Minh City University of Education. It acts as an intelligent academic advisor, parsing regulations, tuition fees, and university policies to deliver precise, grounded, and citable answers.
+The **HCMUE Student Handbook RAG** is an advanced Retrieval-Augmented Generation (RAG) system designed to answer complex questions regarding the student handbook of Ho Chi Minh City University of Education. By leveraging a multi-cohort pipeline, it provides year-specific insights, acting as an intelligent academic advisor that parses regulations, tuition fees, and policies for various student generations (e.g., K48, K51) to deliver precise, grounded, and citable answers.
 
-## 🏗️ High-Availability (HA) Architecture
+## 🏛️ High-Availability (HA) Architecture
+
+```mermaid
+graph TD
+    User([👨‍🎓 Student]) -->|Asks Question| Frontend[React / Vite UI]
+    Frontend -->|API Request| Backend[FastAPI Backend]
+    
+    subgraph Multi-Cohort RAG Pipeline
+        Backend --> Router{Intent Router}
+        Router -->|Out of Domain| Reject[Guardrail Rejection]
+        Router -->|Valid Query| Cache[(Redis L1 Cache)]
+        
+        Cache -.->|Miss| Embed[BAAI/bge-m3 Embedding]
+        Embed --> VectorSearch[(Qdrant Cloud v3)]
+        
+        VectorSearch -->|Returns 200-token Child Chunks| DocFetch[Fetch Parent_ID]
+        DocFetch --> Mongo[(MongoDB Atlas)]
+        Mongo -->|Returns Full Parent Doc| LLM[Groq / Gemini LLM]
+        
+        LLM -->|Generates Answer + Citations| Cache
+    end
+    
+    Cache -->|Returns Answer| Frontend
+```
 
 This project is built with a strictly **Production-Ready, Enterprise-Grade** architecture, capable of serving thousands of concurrent students while preventing downtimes or API limit blockades.
 

@@ -33,7 +33,9 @@ export function useChat(cohort: string = 'K48-K49') {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch (e) {}
+      } catch {
+        // Ignore parse error
+      }
     }
     return [];
   });
@@ -176,11 +178,11 @@ export function useChat(cohort: string = 'K48-K49') {
           }
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Fetch error:", error);
       setSystemStatus('error');
       const responseTimeMs = Date.now() - startTime;
-      const isTimeout = error.name === 'AbortError';
+      const isTimeout = error instanceof Error && error.name === 'AbortError';
       const errMsg = isTimeout 
         ? "Hệ thống AI hiện đang quá tải hoặc phản hồi chậm. Vui lòng thử lại sau nhé!"
         : "Xin lỗi, đã có lỗi kết nối xảy ra.";

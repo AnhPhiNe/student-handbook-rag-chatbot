@@ -75,7 +75,7 @@ function highlightKeywords(text: string, query?: string): string {
   if (validPhrases.length === 0) return text;
   
   // Escape regex special chars
-  const escapeRegex = (s: string) => s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  const escapeRegex = (s: string) => s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
   
   // Build a single Regex with alternation: (phrase1|phrase2|...)
   // This single-pass replacement prevents nested <mark> tags!
@@ -136,7 +136,7 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
         })
       });
       toast.show("Cảm ơn bạn đã đánh giá!", "success");
-    } catch (err) {
+    } catch {
       toast.show("Có lỗi xảy ra khi gửi đánh giá.", "error");
     } finally {
       setIsSubmitting(false);

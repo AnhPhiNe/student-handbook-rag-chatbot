@@ -100,10 +100,11 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
   const hasMessages = messages.length > 0;
 
   const hour = new Date().getHours();
-  let greeting = "Xin chào 👋";
+  let greeting: string;
   if (hour < 12) greeting = "Chào buổi sáng 🌅";
   else if (hour < 18) greeting = "Chào buổi chiều ☀️";
   else greeting = "Chào buổi tối 🌙";
+
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [thinkingMessage, setThinkingMessage] = useState("");
   const coldStartTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -175,6 +176,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
   useEffect(() => {
     if (isTyping) {
       if (progressMessage) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setThinkingMessage(progressMessage);
         clearInterval(coldStartTimer.current);
       } else {
@@ -195,13 +197,14 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
           if (i < messages.length) {
             setThinkingMessage(messages[i]);
           }
-        }, 1200) as any;
+        }, 1200) as ReturnType<typeof setInterval>;
       }
     } else {
       setThinkingMessage("");
       clearInterval(coldStartTimer.current);
     }
     return () => clearInterval(coldStartTimer.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTyping, progressMessage]);
 
   // ============ EMPTY STATE ============

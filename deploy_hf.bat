@@ -15,7 +15,7 @@ echo [1/5] Cleaning up old temp directory...
 if exist "%TEMP_DIR%" rmdir /s /q "%TEMP_DIR%"
 mkdir "%TEMP_DIR%"
 if errorlevel 1 goto :error
-set XCOPY_EXCLUDE=%TEMP_DIR%\xcopy_exclude.txt
+set XCOPY_EXCLUDE=%ROOT_DIR%\%TEMP_DIR%\xcopy_exclude.txt
 > "%XCOPY_EXCLUDE%" (
 echo \__pycache__\
 echo .pyc

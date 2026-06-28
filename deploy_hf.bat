@@ -15,21 +15,11 @@ echo [1/5] Cleaning up old temp directory...
 if exist "%TEMP_DIR%" rmdir /s /q "%TEMP_DIR%"
 mkdir "%TEMP_DIR%"
 if errorlevel 1 goto :error
-set XCOPY_EXCLUDE=%ROOT_DIR%\%TEMP_DIR%\xcopy_exclude.txt
-> "%XCOPY_EXCLUDE%" (
-echo \__pycache__\
-echo .pyc
-echo .pytest_cache
-echo .ruff_cache
-echo \cache\
-echo .lock
-)
-if errorlevel 1 goto :error
 
 echo [2/5] Copying essential backend files...
-xcopy /s /i /y /exclude:"%XCOPY_EXCLUDE%" src "%TEMP_DIR%\src"
+call :copy_dir src "%TEMP_DIR%\src"
 if errorlevel 1 goto :error
-xcopy /s /i /y /exclude:"%XCOPY_EXCLUDE%" configs "%TEMP_DIR%\configs"
+call :copy_dir configs "%TEMP_DIR%\configs"
 if errorlevel 1 goto :error
 xcopy /y Dockerfile "%TEMP_DIR%\"
 if errorlevel 1 goto :error
@@ -45,9 +35,9 @@ if errorlevel 1 goto :error
 echo [3/5] Copying JSON data (excluding binary vector databases)...
 mkdir "%TEMP_DIR%\data"
 if errorlevel 1 goto :error
-xcopy /s /i /y /exclude:"%XCOPY_EXCLUDE%" data\processed "%TEMP_DIR%\data\processed"
+call :copy_dir data\processed "%TEMP_DIR%\data\processed"
 if errorlevel 1 goto :error
-xcopy /s /i /y /exclude:"%XCOPY_EXCLUDE%" data\eval "%TEMP_DIR%\data\eval"
+call :copy_dir data\eval "%TEMP_DIR%\data\eval"
 if errorlevel 1 goto :error
 
 echo [4/5] Preparing Hugging Face configuration...
@@ -81,6 +71,11 @@ echo.
 echo ==============================================
 echo  Deployment Successful!
 echo ==============================================
+exit /b 0
+
+:copy_dir
+robocopy "%~1" "%~2" /E /XD __pycache__ .pytest_cache .ruff_cache cache /XF *.pyc *.lock
+if %ERRORLEVEL% GEQ 8 exit /b 1
 exit /b 0
 
 :error

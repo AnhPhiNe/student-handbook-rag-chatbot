@@ -96,6 +96,9 @@ def main():
         collection_name=qdrant_collection,
         vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
     )
+    from src.retrieval.vectorstore.vectorstore_factory import ensure_payload_indexes
+
+    ensure_payload_indexes(qdrant_client, qdrant_collection)
     print(f"   Đã tạo thành công Collection '{qdrant_collection}' với vector_size={vector_size}")
 
     # 5. Đẩy dữ liệu lên Qdrant

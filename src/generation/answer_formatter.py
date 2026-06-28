@@ -5,7 +5,7 @@ from .citation_formatter import format_sources_text
 
 
 SOURCE_SECTION_PATTERN = re.compile(
-    r"(?ims)\n?\s*(?:#+\s*)?(?:nguồn|nguon|sources?)\s*:\s*.*$"
+    r"(?ims)\n?\s*(?:#+\s*)?(?:nguồn|nguon|tham khảo|tham khao|sources?)\s*:\s*.*$"
 )
 
 

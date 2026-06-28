@@ -23,6 +23,13 @@ def get_vectordb_provider() -> str:
     return os.environ.get("VECTORDB_PROVIDER", "chroma").strip().lower()
 
 
+def _env_bool(name: str, default: bool = False) -> bool:
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
 def create_collection(
     persist_dir: str,
     collection_name: str,
@@ -58,7 +65,7 @@ def _create_chroma_collection(persist_dir: str, collection_name: str) -> Any:
     return client.get_collection(name=collection_name)
 
 
-def _ensure_payload_indexes(client: Any, collection_name: str) -> None:
+def ensure_payload_indexes(client: Any, collection_name: str) -> None:
     """Tự động tạo các Payload Index cần thiết trên Qdrant Cloud.
 
     Qdrant (khác với ChromaDB) yêu cầu phải khai báo Index tường minh
@@ -118,7 +125,8 @@ def _create_qdrant_collection(collection_name: str) -> Any:
     client = QdrantClient(url=url, api_key=api_key, timeout=60.0)
 
     # Tự động tạo payload index nếu chưa có
-    _ensure_payload_indexes(client, collection_name)
+    if _env_bool("QDRANT_CREATE_PAYLOAD_INDEXES", default=False):
+        ensure_payload_indexes(client, collection_name)
     print("   ✅ Kết nối Qdrant Cloud thành công!")
 
     # Return a thin wrapper that matches the ChromaDB collection interface

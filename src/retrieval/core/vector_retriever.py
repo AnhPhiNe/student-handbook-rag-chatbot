@@ -3,6 +3,7 @@ from typing import Any, Optional
 import torch
 from sentence_transformers import SentenceTransformer
 
+from src.common.cohort import normalize_cohort
 from src.retrieval.vectorstore.vectorstore_factory import create_collection
 
 
@@ -29,6 +30,7 @@ def build_where_filter(
         else:
             conditions.append({"chunk_type": {"$in": chunk_types}})
 
+    cohort = normalize_cohort(cohort)
     if cohort:
         conditions.append({"cohort": cohort})
 

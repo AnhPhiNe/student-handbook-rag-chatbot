@@ -1,6 +1,8 @@
 import re
 from typing import Any, Optional
 
+from src.common.cohort import normalize_cohort
+
 
 def extract_number(query: str) -> Optional[float]:
     match = re.search(r"\d+(?:[,.]\d+)?", query)
@@ -123,7 +125,10 @@ def lookup_grade_10_to_letter(
     query: str, tables: list[dict[str, Any]]
 ) -> Optional[dict[str, Any]]:
     matching_tables = [
-        t for t in tables if "grade_10_to_letter" in t.get("table_id", "")
+        t
+        for t in tables
+        if t.get("lookup_group") == "grade_10_to_letter"
+        or "grade_10_to_letter" in t.get("table_id", "")
     ]
     if not matching_tables:
         return None
@@ -192,6 +197,7 @@ def structured_lookup(
     if not should_use_structured_lookup(query):
         return None
 
+    cohort = normalize_cohort(cohort)
     if cohort:
         tables = [t for t in tables if t.get("cohort") == cohort]
 

@@ -77,11 +77,15 @@ Variables:
 ```text
 PORT=7860
 VECTORDB_PROVIDER=qdrant_cloud
+QDRANT_CREATE_PAYLOAD_INDEXES=false
 QUERY_REWRITER_ENABLED=true
 STUDENT_RAG_CORS_ORIGINS=https://hcmuebot.id.vn
 STUDENT_RAG_MAX_QUERY_CHARS=500
 STUDENT_RAG_RATE_LIMIT_PER_MINUTE=20
 STUDENT_RAG_SHOW_DEBUG=false
+MONGODB_PARENT_LOOKUP_ENABLED=true
+MONGODB_TIMEOUT_MS=3000
+MONGODB_FAILURE_BACKOFF_SECONDS=300
 ```
 
 `configs/answer_generation.yaml` currently sets `query_rewriter.enabled: true`,
@@ -195,6 +199,11 @@ If `/chat` is slow:
 
 - Wait for the first embedding-model load.
 - Check Space logs for model download/load progress.
+- If logs show MongoDB SSL or server selection timeouts, confirm `MONGODB_URL`
+  and MongoDB Atlas Network Access, or temporarily set
+  `MONGODB_PARENT_LOOKUP_ENABLED=false`.
+- Keep `MONGODB_TIMEOUT_MS` low, for example `3000`, so parent-document lookup
+  cannot block answers for tens of seconds when MongoDB is unreachable.
 - Consider upgrading Space hardware if cold starts are too slow.
 
 If the React UI cannot connect:

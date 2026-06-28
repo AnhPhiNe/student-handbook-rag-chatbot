@@ -86,9 +86,11 @@ class ResponseCache:
         query: str,
         retrieval_result: dict[str, Any],
         selected_citations: list[dict[str, Any]] | None,
+        cohort: str | None = None,
     ) -> str:
         payload = {
             "query": query,
+            "cohort": cohort,
             "retrieval_query": retrieval_result.get("retrieval_query"),
             "citations": [
                 {

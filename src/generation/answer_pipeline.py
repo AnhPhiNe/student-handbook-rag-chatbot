@@ -6,6 +6,7 @@ from typing import Any
 
 from langsmith import traceable
 from langsmith.run_helpers import get_current_run_tree
+from src.common.cohort import resolve_cohort_from_query
 from src.retrieval.core.retrieval_pipeline import run_retrieval_pipeline
 from src.retrieval.core.vector_retriever import (
     get_chroma_collection,
@@ -110,17 +111,13 @@ class AnswerPipeline:
         rewrite_result = self.query_rewriter.rewrite(query, chat_history=chat_history)
         effective_query = rewrite_result.effective_query
 
-        # Override cohort from query if explicitly mentioned to prevent UI state mismatch
-        import re
-
-        cohort_match = re.search(r"(?i)\bk(?:hóa)?\s*(\d{2})\b", query)
-        if cohort_match:
-            cohort = f"K{cohort_match.group(1)}"
+        # Let an explicit cohort in the query win over the UI selector.
+        cohort = resolve_cohort_from_query(query, cohort)
 
         # LLM-Evaluated Semantic Cache (before retrieval)
         is_standalone = not chat_history or len(chat_history) == 0
         if is_standalone:
-            semantic_cache_key = self.semantic_cache.lookup(query)
+            semantic_cache_key = self.semantic_cache.lookup(query, cohort=cohort)
             if semantic_cache_key:
                 cached = self.response_cache.get(semantic_cache_key)
                 if cached:
@@ -367,6 +364,7 @@ class AnswerPipeline:
             query=effective_query,
             retrieval_result=retrieval_result,
             selected_citations=selected_citations,
+            cohort=cohort,
         )
         cached = self.response_cache.get(cache_key)
         if cached:
@@ -474,7 +472,7 @@ class AnswerPipeline:
         )
 
         if is_standalone:
-            self.semantic_cache.store(query, cache_key)
+            self.semantic_cache.store(query, cache_key, cohort=cohort)
 
         return output
 
@@ -492,11 +490,12 @@ class AnswerPipeline:
         yield {"type": "progress", "message": "Đang tối ưu hóa câu hỏi..."}
         rewrite_result = self.query_rewriter.rewrite(query, chat_history=chat_history)
         effective_query = rewrite_result.effective_query
+        cohort = resolve_cohort_from_query(query, cohort)
 
         # LLM-Evaluated Semantic Cache (before retrieval)
         is_standalone = not chat_history or len(chat_history) == 0
         if is_standalone:
-            semantic_cache_key = self.semantic_cache.lookup(query)
+            semantic_cache_key = self.semantic_cache.lookup(query, cohort=cohort)
             if semantic_cache_key:
                 cached = self.response_cache.get(semantic_cache_key)
                 if cached:

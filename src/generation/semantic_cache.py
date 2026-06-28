@@ -35,7 +35,7 @@ class SemanticCache:
             max_output_tokens=int(config.get("verifier_max_tokens", 8)),
         )
 
-    def lookup(self, query: str) -> str | None:
+    def lookup(self, query: str, cohort: str | None = None) -> str | None:
         """Tìm cache_key nếu câu hỏi tương đồng ngữ nghĩa và được LLM phê duyệt."""
         if not self.enabled or len(query.strip()) < self.min_query_length:
             return None
@@ -45,10 +45,14 @@ class SemanticCache:
             query_embedding = self.embedding_model.encode(query).tolist()
 
             # 2. Tìm kiếm trong ChromaDB
-            results = self.collection.query(
-                query_embeddings=[query_embedding],
-                n_results=3,  # Lấy 3 ứng viên phòng hờ
-            )
+            query_kwargs: dict[str, Any] = {
+                "query_embeddings": [query_embedding],
+                "n_results": 3,
+            }
+            if cohort:
+                query_kwargs["where"] = {"cohort": cohort}
+
+            results = self.collection.query(**query_kwargs)
 
             if not results["ids"] or not results["ids"][0]:
                 return None
@@ -77,18 +81,22 @@ class SemanticCache:
             print(f"[Semantic Cache] Lookup error: {e}")
             return None
 
-    def store(self, query: str, cache_key: str) -> None:
+    def store(self, query: str, cache_key: str, cohort: str | None = None) -> None:
         """Lưu vector câu hỏi và cache_key vào ChromaDB."""
         if not self.enabled or len(query.strip()) < self.min_query_length:
             return
 
         try:
             query_embedding = self.embedding_model.encode(query).tolist()
+            metadata = {"cache_key": cache_key, "created_at": time.time()}
+            if cohort:
+                metadata["cohort"] = cohort
+
             self.collection.add(
                 ids=[str(uuid.uuid4())],
                 documents=[query],
                 embeddings=[query_embedding],
-                metadatas=[{"cache_key": cache_key, "created_at": time.time()}],
+                metadatas=[metadata],
             )
         except Exception as e:
             print(f"[Semantic Cache] Store error: {e}")

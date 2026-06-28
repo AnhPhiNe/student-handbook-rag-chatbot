@@ -4,6 +4,8 @@ import re
 import unicodedata
 from typing import Any
 
+from src.common.cohort import normalize_cohort
+
 
 def formula_lookup(
     query: str, formula_rules: list[dict[str, Any]], cohort: str | None = None
@@ -12,6 +14,7 @@ def formula_lookup(
     if not _asks_for_formula(ascii_query):
         return None
 
+    cohort = normalize_cohort(cohort)
     if cohort:
         formula_rules = [r for r in formula_rules if r.get("cohort") == cohort]
 

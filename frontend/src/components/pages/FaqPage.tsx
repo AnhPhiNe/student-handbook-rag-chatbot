@@ -21,12 +21,18 @@ export function FaqPage({ cohort, onAskQuestion }: FaqPageProps) {
       const matchesCategory = activeCategory === 'Tất cả' || item.category === activeCategory;
       const matchesSearch =
         !normalizedSearch ||
-        `${item.question} ${item.shortAnswer} ${item.category}`.toLowerCase().includes(normalizedSearch);
+        `${item.question} ${item.shortAnswer} ${item.aiPrompt} ${item.category}`.toLowerCase().includes(normalizedSearch);
       return matchesCategory && matchesSearch;
     });
   }, [activeCategory, allItems, searchTerm]);
 
-  const featuredItems = allItems.slice(0, 3);
+  const featuredIds =
+    cohort === 'K50-K51'
+      ? ['pass-score-k50', 'd-plus-k50', 'retake-final-grade-k50']
+      : ['pass-score-k48', 'grade-4-conversion', 'retake-final-grade'];
+  const featuredItems = featuredIds
+    .map((id) => allItems.find((item) => item.id === id))
+    .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
   const openFeaturedItem = (id: string, category: string) => {
     setSearchTerm('');
@@ -41,7 +47,7 @@ export function FaqPage({ cohort, onAskQuestion }: FaqPageProps) {
     <div className="page-container faq-page">
       <div className="page-header">
         <h1>Câu hỏi phổ biến</h1>
-        <p>Các câu hỏi hay gặp được lọc theo {cohort}. Mở nhanh để xem tóm tắt hoặc gửi thẳng câu hỏi vào HCMUE AI.</p>
+        <p>Chọn nhanh câu hỏi theo {cohort}, xem tóm tắt hoặc gửi thẳng vào HCMUE AI để nhận câu trả lời có nguồn.</p>
       </div>
 
       <section className="faq-spotlight" aria-label="Câu hỏi nổi bật">
@@ -50,9 +56,9 @@ export function FaqPage({ cohort, onAskQuestion }: FaqPageProps) {
             <Sparkles size={20} />
           </div>
           <div>
-            <span>FAQ theo nguyên tắc 20/80</span>
-            <h2>{allItems.length} câu hỏi sinh viên hay gặp cho {cohort}</h2>
-            <p>Ưu tiên câu trả lời ngắn, có ngưỡng điểm, biểu mẫu hoặc phòng ban cụ thể để sinh viên tự xử lý nhanh.</p>
+            <span>Câu hỏi nổi bật</span>
+            <h2>{allItems.length} câu hỏi phổ biến cho {cohort}</h2>
+            <p>Các câu hỏi thường cần tra nhanh về điểm số, học lại, học bổng, học phí, biểu mẫu và phòng ban phụ trách.</p>
           </div>
         </div>
         <div className="faq-spotlight-list">

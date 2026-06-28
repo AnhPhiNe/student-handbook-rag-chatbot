@@ -34,7 +34,7 @@ function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isBugModalOpen, setIsBugModalOpen] = useState(false);
   
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useMediaQuery('(max-width: 900px)');
 
   // Sync theme with HTML data attribute
   useEffect(() => {

@@ -1,4 +1,4 @@
-﻿import unittest
+import unittest
 
 from src.generation.answer_guardrails import detect_ambiguous_query
 

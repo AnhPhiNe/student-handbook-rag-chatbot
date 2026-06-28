@@ -8,7 +8,7 @@ from src.generation.answer_pipeline import DEFAULT_CONFIG_PATH, AnswerPipeline
 
 
 class AnswerService:
-    """Thin service contract shared by UI and future API adapters."""
+    """Lớp dịch vụ mỏng dùng chung cho UI và các adapter API."""
 
     def __init__(
         self,
@@ -39,7 +39,7 @@ class AnswerService:
         chat_history: list[dict[str, str]] | None = None,
         cohort: str | None = None,
     ) -> Iterator[dict[str, Any]]:
-        """Stream answer chunks from the pipeline."""
+        """Trả dần các phần câu trả lời từ pipeline."""
         yield from self._get_pipeline().answer_stream(
             query, chat_history=chat_history, cohort=cohort
         )

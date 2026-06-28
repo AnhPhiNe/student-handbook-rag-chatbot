@@ -1,10 +1,10 @@
-"""Factory for creating vector store connections.
+"""Factory tạo kết nối vector store.
 
-Supports ChromaDB (local, default) and Qdrant Cloud.
-Controlled via environment variable VECTORDB_PROVIDER.
+Hỗ trợ ChromaDB (local, mặc định) và Qdrant Cloud.
+Điều khiển bằng biến môi trường VECTORDB_PROVIDER.
 
-Usage:
-    # In .env:
+Ví dụ:
+    # Trong .env:
     # VECTORDB_PROVIDER=chroma  (default, local ChromaDB)
     # VECTORDB_PROVIDER=qdrant_cloud
     # QDRANT_URL=https://xxx.qdrant.io
@@ -18,7 +18,7 @@ from src.common.env_loader import load_project_env
 
 
 def get_vectordb_provider() -> str:
-    """Return the configured vector database provider name."""
+    """Trả về tên provider vector database đang được cấu hình."""
     load_project_env()
     return os.environ.get("VECTORDB_PROVIDER", "chroma").strip().lower()
 
@@ -34,14 +34,14 @@ def create_collection(
     persist_dir: str,
     collection_name: str,
 ) -> Any:
-    """Create a vector store collection based on the configured provider.
+    """Tạo collection vector store theo provider đang được cấu hình.
 
-    For ChromaDB (default):
-        Uses local persistent storage at *persist_dir*.
+    Với ChromaDB (mặc định):
+        Dùng lưu trữ local bền vững tại *persist_dir*.
 
-    For Qdrant Cloud:
-        Requires QDRANT_URL and QDRANT_API_KEY environment variables.
-        *persist_dir* is ignored; the collection is stored in the cloud.
+    Với Qdrant Cloud:
+        Cần biến môi trường QDRANT_URL và QDRANT_API_KEY.
+        *persist_dir* bị bỏ qua vì collection nằm trên cloud.
     """
     provider = get_vectordb_provider()
 
@@ -56,7 +56,7 @@ def create_collection(
 
 
 def _create_chroma_collection(persist_dir: str, collection_name: str) -> Any:
-    """Create a local ChromaDB collection (current default)."""
+    """Tạo collection ChromaDB local, hiện là mặc định."""
     import chromadb
 
     client = chromadb.PersistentClient(
@@ -101,11 +101,11 @@ def ensure_payload_indexes(client: Any, collection_name: str) -> None:
 
 
 def _create_qdrant_collection(collection_name: str) -> Any:
-    """Create a Qdrant Cloud collection.
+    """Tạo collection Qdrant Cloud.
 
-    Requires:
+    Yêu cầu:
         pip install qdrant-client
-        QDRANT_URL and QDRANT_API_KEY in .env
+        QDRANT_URL và QDRANT_API_KEY trong .env
     """
     try:
         from qdrant_client import QdrantClient
@@ -135,11 +135,10 @@ def _create_qdrant_collection(collection_name: str) -> Any:
 
 
 class QdrantCollectionAdapter:
-    """Adapter to make Qdrant client match the ChromaDB collection.query() interface.
+    """Adapter giúp Qdrant client khớp interface collection.query() của ChromaDB.
 
-    This allows the existing vector_retriever.py to work with Qdrant
-    without changing its code. The adapter translates query() calls
-    to Qdrant's search API.
+    Nhờ đó vector_retriever.py hiện tại có thể chạy với Qdrant mà không cần đổi code.
+    Adapter này dịch các lệnh query() sang API search của Qdrant.
     """
 
     def __init__(self, client: Any, collection_name: str) -> None:
@@ -153,7 +152,7 @@ class QdrantCollectionAdapter:
         where: dict[str, Any] | None = None,
         include: list[str] | None = None,
     ) -> dict[str, Any]:
-        """Translate ChromaDB-style query to Qdrant search."""
+        """Dịch query kiểu ChromaDB sang truy vấn Qdrant."""
         from qdrant_client.models import Filter, FieldCondition, MatchAny
 
         qdrant_filter = None

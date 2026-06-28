@@ -24,7 +24,7 @@ class LocalReranker:
     def rerank(
         self, query: str, results: list[dict[str, Any]], top_n: int = 5
     ) -> list[dict[str, Any]]:
-        """Rerank documents using local Cross-Encoder."""
+        """Xếp hạng lại tài liệu bằng Cross-Encoder cục bộ."""
         if not results:
             return []
 

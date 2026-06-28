@@ -101,7 +101,7 @@ class GroqClient:
 
     @traceable(name="Groq Generation Stream", run_type="llm")
     def generate_stream(self, prompt: str) -> Iterator[str]:
-        """Yield text chunks as Groq generates them in real-time, with Double Loop Fallback and TTFT."""
+        """Trả dần văn bản từ Groq theo thời gian thực, kèm fallback hai vòng và TTFT."""
         from groq import Groq
         import random
 

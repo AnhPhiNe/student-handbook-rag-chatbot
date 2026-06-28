@@ -91,7 +91,7 @@ class MongoDocStore:
             return None
 
     def drop_collection(self) -> None:
-        """Drops the entire collection. Use with caution."""
+        """Xóa toàn bộ collection. Cần dùng thận trọng."""
         self.collection.drop()
         logger.info(f"Dropped collection {self.collection.name}.")
 

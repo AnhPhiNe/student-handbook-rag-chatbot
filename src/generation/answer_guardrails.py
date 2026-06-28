@@ -319,7 +319,7 @@ def detect_ambiguous_query(query: str, retrieval_result: dict[str, Any]) -> bool
 
 def is_out_of_domain_query(query: str, retrieval_result: dict[str, Any]) -> bool:
     """
-    Disabled guardrail: Trust the AI Router and Query Rewriter instead of hardcoded keywords.
+    Guardrail đã tắt: ưu tiên AI Router và Query Rewriter thay vì keyword hardcode.
     """
     return False
 

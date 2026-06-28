@@ -59,7 +59,7 @@ class QueryRewriteResult:
 
 
 class QueryRewriter:
-    """Optional LLM layer that normalizes noisy user questions before retrieval."""
+    """Lớp LLM tùy chọn để chuẩn hóa câu hỏi nhiễu trước khi truy xuất."""
 
     def __init__(
         self,

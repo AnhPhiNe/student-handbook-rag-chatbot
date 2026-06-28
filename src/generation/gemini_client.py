@@ -156,11 +156,10 @@ class GeminiClient:
 
     @traceable(name="Gemini Generation Stream", run_type="llm")
     def generate_stream(self, prompt: str) -> Iterator[str]:
-        """Yield text chunks as Gemini generates them in real-time.
+        """Trả dần các đoạn văn bản khi Gemini sinh ra theo thời gian thực.
 
-        Unlike generate() which waits for the full response, this method
-        streams tokens back as soon as they are produced by the API.
-        Used by the streaming answer pipeline and SSE endpoint.
+        Khác với generate() phải đợi đủ câu trả lời, phương thức này stream token
+        ngay khi API tạo ra. Được dùng bởi streaming answer pipeline và endpoint SSE.
         """
         try:
             yield from self._generate_stream_once(prompt)

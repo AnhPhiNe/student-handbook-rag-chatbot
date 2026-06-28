@@ -1,1 +1,1 @@
-"""Answer generation layer."""
+"""Lớp sinh câu trả lời."""

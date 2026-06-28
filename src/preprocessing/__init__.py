@@ -1,1 +1,1 @@
-"""Preprocessing helpers for document structure parsing."""
+"""Các helper tiền xử lý để phân tích cấu trúc tài liệu."""

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
-import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, X, Brain } from 'lucide-react';
-import type { Message } from '../hooks/useChat';
+import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, X, Brain, ExternalLink } from 'lucide-react';
+import type { Citation, Message } from '../hooks/useChat';
 import { useToast } from './Toast';
 import userAvatarImg from '../assets/user_avatar.png';
 import botAvatarImg from '../assets/bot_avatar.png';
@@ -38,6 +38,35 @@ function formatCitationContent(text: string): string {
   cleaned = cleaned.replace(/:\s/g, ':\n\n');
   
   return cleaned.trim();
+}
+
+function getCitationTypeLabel(citation: Citation): string {
+  if (citation.source_label) return citation.source_label;
+  switch (citation.chunk_type) {
+    case 'structured_lookup':
+      return 'Bảng quy định';
+    case 'formula':
+      return 'Công thức/quy tắc';
+    case 'form':
+      return 'Biểu mẫu';
+    case 'contact':
+      return 'Liên hệ';
+    case 'procedure':
+      return 'Quy trình';
+    case 'rule':
+      return 'Quy định';
+    default:
+      return 'Nguồn tham khảo';
+  }
+}
+
+function getCompactExcerpt(text: string, maxLength = 220): string {
+  const plain = formatCitationContent(text)
+    .replace(/\*\*/g, '')
+    .replace(/\n+/g, ' ')
+    .trim();
+  if (plain.length <= maxLength) return plain;
+  return `${plain.slice(0, maxLength).trim()}...`;
 }
 
 function highlightKeywords(text: string, query?: string): string {
@@ -248,14 +277,39 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
                   {message.citations.map((cit, idx) => {
                     const isExpanded = expandedCitations.has(idx);
+                    const pagesLabel = cit.source_pages?.length ? `Trang ${cit.source_pages.join(', ')}` : '';
+                    const excerpt = cit.content ? getCompactExcerpt(cit.content) : '';
                     return (
                       <div key={idx} className="citation-card">
                         <div className="citation-card-header" onClick={() => toggleCitation(idx)}>
                           <div className="citation-card-icon"><FileText size={16} /></div>
                           <div className="citation-card-body">
                             <span className="citation-title">{cit.title || cit.chunk_id}</span>
-                            <span className="citation-pages">Trang {cit.source_pages?.length ? cit.source_pages.join(', ') : 'N/A'}</span>
+                            <div className="citation-meta-row">
+                              <span className="citation-badge">{getCitationTypeLabel(cit)}</span>
+                              {cit.cohort && <span className="citation-badge">{cit.cohort}</span>}
+                              {pagesLabel && <span className="citation-pages">{pagesLabel}</span>}
+                            </div>
+                            {cit.applicability && <span className="citation-applicability">{cit.applicability}</span>}
+                            {!isExpanded && excerpt && (
+                              <div className="citation-excerpt-wrap">
+                                <span className="citation-excerpt-label">Trích đoạn liên quan</span>
+                                <p className="citation-excerpt">{excerpt}</p>
+                              </div>
+                            )}
                           </div>
+                          {cit.source_url && (
+                            <a
+                              className="citation-source-link"
+                              href={cit.source_url}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              <ExternalLink size={14} />
+                              <span>Mở nguồn</span>
+                            </a>
+                          )}
                           <div className="citation-card-toggle">
                             {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                           </div>
@@ -289,6 +343,7 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
             <div className="meta-actions">
               <button className="action-btn" title="Chia sẻ" onClick={handleShare}>
                 <Share2 size={16} />
+                <span className="action-btn-label">Chia sẻ</span>
               </button>
               <button className={`action-btn ${feedback === 'like' ? 'active' : ''}`} title="Hữu ích" onClick={() => handleFeedbackClick('like')}>
                 <ThumbsUp size={16} />
@@ -298,9 +353,11 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
               </button>
               <button className="action-btn" title="Copy" onClick={handleCopy}>
                 {copied ? <Check size={16} style={{color: 'var(--success)'}}/> : <Copy size={16} />}
+                <span className="action-btn-label">{copied ? 'Đã copy' : 'Copy'}</span>
               </button>
               <button className="action-btn" title="Tạo lại" onClick={() => onRegenerate?.()}>
                 <RotateCcw size={16} />
+                <span className="action-btn-label">Tạo lại</span>
               </button>
             </div>
             

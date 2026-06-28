@@ -1,11 +1,23 @@
+export type Cohort = 'K48-K49' | 'K50-K51';
+export type CourseGroup = 'foundation' | 'remaining';
 export type LetterGrade = 'A' | 'B+' | 'B' | 'C+' | 'C' | 'D+' | 'D' | 'F+' | 'F';
+export type GradeStatus = 'Đạt' | 'Không đạt';
 
 export type GradeScaleRow = {
   letter: LetterGrade;
   score4: number;
   min10: number;
   max10: number;
-  status: 'Đạt' | 'Không đạt';
+  status: GradeStatus;
+};
+
+export type GradeScaleDefinition = {
+  id: CourseGroup;
+  label: string;
+  shortLabel: string;
+  applicability: string;
+  passThreshold: number;
+  rows: GradeScaleRow[];
 };
 
 export type CourseInput = {
@@ -15,36 +27,120 @@ export type CourseInput = {
   inputType: 'score10' | 'letter';
   score10: string;
   letter: LetterGrade;
+  courseGroup?: CourseGroup;
 };
 
-export const GRADE_SCALE: GradeScaleRow[] = [
-  { letter: 'A', score4: 4.0, min10: 8.5, max10: 10.0, status: 'Đạt' },
-  { letter: 'B+', score4: 3.5, min10: 7.8, max10: 8.4, status: 'Đạt' },
-  { letter: 'B', score4: 3.0, min10: 7.0, max10: 7.7, status: 'Đạt' },
-  { letter: 'C+', score4: 2.5, min10: 6.3, max10: 6.9, status: 'Đạt' },
-  { letter: 'C', score4: 2.0, min10: 5.5, max10: 6.2, status: 'Đạt' },
-  { letter: 'D+', score4: 1.5, min10: 4.8, max10: 5.4, status: 'Đạt' },
-  { letter: 'D', score4: 1.0, min10: 4.0, max10: 4.7, status: 'Đạt' },
-  { letter: 'F+', score4: 0.5, min10: 3.0, max10: 3.9, status: 'Không đạt' },
-  { letter: 'F', score4: 0.0, min10: 0.0, max10: 2.9, status: 'Không đạt' },
+const SCORE4_BY_LETTER: Record<LetterGrade, number> = {
+  A: 4.0,
+  'B+': 3.5,
+  B: 3.0,
+  'C+': 2.5,
+  C: 2.0,
+  'D+': 1.5,
+  D: 1.0,
+  'F+': 0.5,
+  F: 0.0,
+};
+
+const SCORE_RANGES: Array<Omit<GradeScaleRow, 'score4' | 'status'>> = [
+  { letter: 'A', min10: 8.5, max10: 10.0 },
+  { letter: 'B+', min10: 7.8, max10: 8.4 },
+  { letter: 'B', min10: 7.0, max10: 7.7 },
+  { letter: 'C+', min10: 6.3, max10: 6.9 },
+  { letter: 'C', min10: 5.5, max10: 6.2 },
+  { letter: 'D+', min10: 4.8, max10: 5.4 },
+  { letter: 'D', min10: 4.0, max10: 4.7 },
+  { letter: 'F+', min10: 3.0, max10: 3.9 },
+  { letter: 'F', min10: 0.0, max10: 2.9 },
 ];
 
-export function convertScore10ToGrade(score: number): GradeScaleRow | null {
+function makeRows(passThreshold: number): GradeScaleRow[] {
+  return SCORE_RANGES.map((row) => ({
+    ...row,
+    score4: SCORE4_BY_LETTER[row.letter],
+    status: row.max10 >= passThreshold ? 'Đạt' : 'Không đạt',
+  }));
+}
+
+export const GRADE_SCALE_BY_COHORT: Record<Cohort, GradeScaleDefinition[]> = {
+  'K48-K49': [
+    {
+      id: 'foundation',
+      label: 'Bảng quy đổi chung K48-K49',
+      shortLabel: 'Bảng chung',
+      applicability: 'Áp dụng chung cho các học phần có đánh giá theo thang điểm 10.',
+      passThreshold: 4.0,
+      rows: makeRows(4.0),
+    },
+  ],
+  'K50-K51': [
+    {
+      id: 'foundation',
+      label: 'Môn chung / nhóm học phần nền tảng',
+      shortLabel: 'Môn chung',
+      applicability: 'Học phần giáo dục đại cương hoặc học phần chung thuộc nhóm học phần nền tảng.',
+      passThreshold: 4.0,
+      rows: makeRows(4.0),
+    },
+    {
+      id: 'remaining',
+      label: 'Môn chuyên ngành / các học phần còn lại',
+      shortLabel: 'Môn chuyên ngành',
+      applicability: 'Các học phần còn lại. D và D+ vẫn quy đổi hệ 4, nhưng không được xem là đạt học phần.',
+      passThreshold: 5.5,
+      rows: makeRows(5.5),
+    },
+  ],
+};
+
+export const GRADE_SCALE = GRADE_SCALE_BY_COHORT['K48-K49'][0].rows;
+
+export function getDefaultCourseGroup(cohort: Cohort): CourseGroup {
+  return cohort === 'K50-K51' ? 'remaining' : 'foundation';
+}
+
+export function getCourseGroupOptions(cohort: Cohort): GradeScaleDefinition[] {
+  return GRADE_SCALE_BY_COHORT[cohort];
+}
+
+export function getGradeScales(cohort: Cohort): GradeScaleDefinition[] {
+  return GRADE_SCALE_BY_COHORT[cohort];
+}
+
+export function getGradeScale(cohort: Cohort, courseGroup?: CourseGroup): GradeScaleDefinition {
+  const scales = GRADE_SCALE_BY_COHORT[cohort];
+  const fallback = scales[0];
+  return scales.find((scale) => scale.id === (courseGroup ?? getDefaultCourseGroup(cohort))) ?? fallback;
+}
+
+export function convertScore10ToGrade(
+  score: number,
+  cohort: Cohort = 'K48-K49',
+  courseGroup?: CourseGroup,
+): GradeScaleRow | null {
   if (!Number.isFinite(score) || score < 0 || score > 10) return null;
-  return GRADE_SCALE.find((row) => score >= row.min10 && score <= row.max10) ?? null;
+  const scale = getGradeScale(cohort, courseGroup);
+  return scale.rows.find((row) => score >= row.min10 && score <= row.max10) ?? null;
 }
 
-export function convertLetterToScore4(letter: LetterGrade): GradeScaleRow {
-  return GRADE_SCALE.find((row) => row.letter === letter) ?? GRADE_SCALE[GRADE_SCALE.length - 1];
+export function convertLetterToScore4(
+  letter: LetterGrade,
+  cohort: Cohort = 'K48-K49',
+  courseGroup?: CourseGroup,
+): GradeScaleRow {
+  const scale = getGradeScale(cohort, courseGroup);
+  return scale.rows.find((row) => row.letter === letter) ?? scale.rows[scale.rows.length - 1];
 }
 
-export function getCourseGrade(course: CourseInput): GradeScaleRow | null {
-  if (course.inputType === 'letter') return convertLetterToScore4(course.letter);
+export function getCourseGrade(course: CourseInput, cohort: Cohort = 'K48-K49'): GradeScaleRow | null {
+  if (course.inputType === 'letter') {
+    return convertLetterToScore4(course.letter, cohort, course.courseGroup);
+  }
   const score = Number(course.score10);
-  return convertScore10ToGrade(score);
+  return convertScore10ToGrade(score, cohort, course.courseGroup);
 }
 
-export function calculateGpa(courses: CourseInput[]): {
+export function calculateGpa(courses: CourseInput[], cohort: Cohort = 'K48-K49'): {
   gpa: number;
   totalCredits: number;
   countedCourses: number;
@@ -56,7 +152,7 @@ export function calculateGpa(courses: CourseInput[]): {
 
   for (const course of courses) {
     const credits = Number(course.credits);
-    const grade = getCourseGrade(course);
+    const grade = getCourseGrade(course, cohort);
     const hasStarted =
       course.name.trim() ||
       course.credits.trim() ||

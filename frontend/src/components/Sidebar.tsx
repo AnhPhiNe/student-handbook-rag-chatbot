@@ -1,4 +1,4 @@
-import { Award, Calculator, FileText, GraduationCap, HelpCircle, MessageSquare, Plus, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home, Bug } from 'lucide-react';
+import { Award, Calculator, FileText, GraduationCap, HelpCircle, MessageSquare, Plus, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home, Bug, MessageSquareText } from 'lucide-react';
 import logoHcmue from '../assets/logo_hcmue.png';
 
 interface SidebarProps {
@@ -27,9 +27,10 @@ export function Sidebar({ activeTab, onTabChange, onNewChat, isCollapsed, isMobi
           {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
 
-        <div 
+        <button
+          type="button"
           className="sidebar-logo" 
-          onClick={() => { onNewChat(); handleTabClick('chat'); }}
+          onClick={() => handleTabClick('home')}
           title="Trang chủ"
         >
           <img src={logoHcmue} alt="HCMUE" className="sidebar-logo-img" />
@@ -40,7 +41,7 @@ export function Sidebar({ activeTab, onTabChange, onNewChat, isCollapsed, isMobi
             </h2>
             <p>AI Assistant</p>
           </div>
-        </div>
+        </button>
 
         <button className="new-chat-btn" onClick={() => { onNewChat(); handleTabClick('chat'); }}>
           <Plus size={18} />
@@ -92,6 +93,11 @@ export function Sidebar({ activeTab, onTabChange, onNewChat, isCollapsed, isMobi
             {activeTab === 'credits' && <div className="active-indicator" />}
             <ShieldCheck size={18} />
             <span>Kiểm tra hạ bằng</span>
+          </button>
+          <button className={`nav-item ${activeTab === 'faq' ? 'active' : ''}`} onClick={() => handleTabClick('faq')} aria-label="Câu hỏi phổ biến">
+            {activeTab === 'faq' && <div className="active-indicator" />}
+            <MessageSquareText size={18} />
+            <span>Câu hỏi phổ biến</span>
           </button>
           <button className={`nav-item ${activeTab === 'huong-dan' ? 'active' : ''}`} onClick={() => handleTabClick('huong-dan')} aria-label="Hướng dẫn">
             {activeTab === 'huong-dan' && <div className="active-indicator" />}

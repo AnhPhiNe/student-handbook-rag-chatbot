@@ -1,4 +1,4 @@
-import { MessageSquare, Wrench, FileText, Navigation } from 'lucide-react';
+import { MessageSquare, Wrench, FileText, Navigation, CircleHelp } from 'lucide-react';
 import logoHcmue from '../../assets/logo_hcmue.png';
 
 interface HomePageProps {
@@ -50,6 +50,16 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Kho Biểu mẫu</h3>
               </div>
               <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.4' }}>Tìm kiếm và tải xuống nhanh chóng các loại đơn từ, giấy xác nhận, mẫu nghiên cứu khoa học.</p>
+            </div>
+
+            <div className="action-card" onClick={() => onNavigate('faq')} style={{ flexDirection: 'column', padding: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+                <div style={{ background: 'rgba(14, 165, 233, 0.1)', color: '#0ea5e9', padding: '0.5rem', borderRadius: '10px' }}>
+                  <CircleHelp size={20} />
+                </div>
+                <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Câu hỏi phổ biến</h3>
+              </div>
+              <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.4' }}>Xem nhanh các câu hỏi hay gặp theo Khóa đang chọn, hoặc gửi câu hỏi đó vào AI để nhận câu trả lời có nguồn.</p>
             </div>
 
             <div className="action-card" onClick={() => onNavigate('huong-dan')} style={{ flexDirection: 'column', padding: '1rem' }}>

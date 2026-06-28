@@ -1,8 +1,10 @@
 import { useRef, useEffect, useState } from 'react';
-import { GraduationCap, Gift, Home, ArrowDown, Lock, Calculator, Medal, ClipboardList, ArrowLeft } from 'lucide-react';
+import { GraduationCap, Gift, Home, ArrowDown, Lock, Calculator, Medal, ClipboardList, ArrowLeft, FileText, MessageSquareText, Wrench } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';
+import { getFaqItemsForCohort } from '../data/faq';
+import type { Cohort } from '../utils/gradeScale';
 import botAvatarImg from '../assets/bot_avatar.png';
 
 const IS_MAINTENANCE_MODE = false;
@@ -20,6 +22,7 @@ interface ChatAreaProps {
   onToggleTheme: () => void;
   onNavigateTab?: (tabId: string) => void;
   onClearChat?: () => void;
+  cohort: Cohort;
 }
 
 const ACTION_CARDS = [
@@ -29,6 +32,12 @@ const ACTION_CARDS = [
   { id: 'ren-luyen', label: 'Rèn luyện & Khen thưởng', icon: Medal, color: '#ef4444', desc: 'Điểm rèn luyện, kỷ luật, danh hiệu...' },
   { id: 'ktx', label: 'Phòng ban & Liên hệ', icon: Home, color: '#f59e0b', desc: 'SĐT, email, địa chỉ, KTX...' },
   { id: 'hanh-chinh', label: 'Quy trình Hành chính', icon: ClipboardList, color: '#10b981', desc: 'Thủ tục, nộp đơn, mẫu biểu...' }
+];
+
+const NAV_CARDS = [
+  { id: 'tools', label: 'Dùng công cụ', icon: Wrench, desc: 'GPA, mục tiêu môn học, học phí, học bổng' },
+  { id: 'bieu-mau', label: 'Tra biểu mẫu', icon: FileText, desc: 'Mẫu đơn, giấy xác nhận, thủ tục hành chính' },
+  { id: 'faq', label: 'Xem FAQ', icon: MessageSquareText, desc: 'Câu hỏi 20/80 theo khóa đang chọn' }
 ];
 
 type QuickAccessResponse = {
@@ -94,10 +103,11 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
   }
 };
 
-export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, onSendHardcoded, onRetry, onRegenerate, onNavigateTab, onClearChat }: ChatAreaProps) {
+export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, onSendHardcoded, onRetry, onRegenerate, onNavigateTab, onClearChat, cohort }: ChatAreaProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasMessages = messages.length > 0;
+  const faqSuggestions = getFaqItemsForCohort(cohort).slice(0, 4);
 
   const hour = new Date().getHours();
   let greeting: string;
@@ -128,6 +138,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
 
   useEffect(() => {
     if (isTyping) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoadingSeconds(0);
       loadingTimer.current = setInterval(() => {
         setLoadingSeconds(prev => prev + 1);
@@ -148,7 +159,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
 
   const handleQuickAccess = (id: string) => {
     if (id === 'bieu-mau') {
-      if (onNavigateTab) onNavigateTab('resources');
+      if (onNavigateTab) onNavigateTab('bieu-mau');
       return;
     }
     
@@ -256,6 +267,18 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
               <p className="hero-desc">Bạn cần tìm gì trong sổ tay sinh viên hôm nay?</p>
             </div>
 
+            <div className="chat-nav-cards-grid">
+              {NAV_CARDS.map((item) => (
+                <button key={item.id} className="chat-nav-card" onClick={() => onNavigateTab?.(item.id)}>
+                  <item.icon size={18} />
+                  <div>
+                    <strong>{item.label}</strong>
+                    <span>{item.desc}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+
             {/* Action Cards Grid */}
             <div className="chat-action-cards-grid">
               {ACTION_CARDS.map(item => (
@@ -269,6 +292,24 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
                   </div>
                 </button>
               ))}
+            </div>
+
+            <div className="empty-faq-suggestions">
+              <div className="empty-faq-header">
+                <div>
+                  <span>Câu hỏi phổ biến cho {cohort}</span>
+                  <p>Chọn nhanh các câu sinh viên hay hỏi nhất</p>
+                </div>
+                <button onClick={() => onNavigateTab?.('faq')}>Xem tất cả</button>
+              </div>
+              <div className="empty-faq-grid">
+                {faqSuggestions.map((item) => (
+                  <button key={item.id} className="empty-faq-card" onClick={() => onSendMessage(item.aiPrompt)}>
+                    <span>{item.category}</span>
+                    <strong>{item.question}</strong>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>

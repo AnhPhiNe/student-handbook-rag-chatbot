@@ -13,6 +13,7 @@ import { CourseTargetPage } from './components/pages/CourseTargetPage';
 import { ScholarshipPage } from './components/pages/ScholarshipPage';
 import { ToolsPage } from './components/pages/ToolsPage';
 import { TuitionPage } from './components/pages/TuitionPage';
+import { FaqPage } from './components/pages/FaqPage';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { MobileHeader } from './components/MobileHeader';
 import { BottomTabBar } from './components/BottomTabBar';
@@ -42,6 +43,11 @@ function App() {
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
+  const handleAskFaqQuestion = (question: string) => {
+    setActiveTab('chat');
+    void sendMessage(question);
   };
 
   return (
@@ -114,16 +120,18 @@ function App() {
                 onToggleTheme={toggleTheme}
                 onNavigateTab={setActiveTab}
                 onClearChat={clearMessages}
+                cohort={cohort}
               />
             )}
             {activeTab === 'bieu-mau' && <FormPage />}
             {activeTab === 'tools' && <ToolsPage onNavigate={setActiveTab} />}
-            {activeTab === 'gpa' && <GpaPage />}
+            {activeTab === 'gpa' && <GpaPage key={cohort} cohort={cohort} />}
             {activeTab === 'target-gpa' && <TargetGpaPage />}
-            {activeTab === 'course-target' && <CourseTargetPage />}
+            {activeTab === 'course-target' && <CourseTargetPage key={cohort} cohort={cohort} />}
             {activeTab === 'scholarship' && <ScholarshipPage />}
             {activeTab === 'tuition' && <TuitionPage />}
             {activeTab === 'credits' && <CreditsPage />}
+            {activeTab === 'faq' && <FaqPage cohort={cohort} onAskQuestion={handleAskFaqQuestion} />}
             {activeTab === 'huong-dan' && <GuidePage />}
           </div>
 

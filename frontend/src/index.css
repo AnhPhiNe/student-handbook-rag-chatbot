@@ -172,6 +172,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .sidebar.collapsed { width: 80px; }
 
 .sidebar-logo {
+  background: transparent;
+  border: 0;
+  color: inherit;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -179,7 +182,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   margin-bottom: 1.25rem;
   cursor: pointer;
   overflow: hidden;
+  text-align: left;
   white-space: nowrap;
+  width: 100%;
 }
 
 .sidebar-logo-img {
@@ -807,12 +812,25 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
+  gap: 0.35rem;
   transition: all var(--transition-fast);
 }
 .action-btn:hover { background-color: var(--bg-secondary); border-color: var(--border-color); color: var(--primary); }
 .action-btn:active { transform: scale(0.92); }
 .action-btn.active { color: var(--primary); background-color: rgba(27,58,92,0.1); }
 [data-theme='dark'] .action-btn.active { background-color: rgba(59,130,246,0.2); color: #60A5FA; }
+
+.action-btn-label {
+  display: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+@media (min-width: 900px) {
+  .action-btn-label {
+    display: inline;
+  }
+}
 
 /* Citations Card Based */
 .citation-container {
@@ -845,6 +863,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   user-select: none;
 }
 
+.citation-card-header:focus-within {
+  outline: 2px solid rgba(59, 130, 246, 0.35);
+  outline-offset: -2px;
+}
+
 .citation-card-icon {
   color: var(--accent-warm);
   padding-top: 2px;
@@ -856,10 +879,86 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   gap: 2px;
   font-size: 0.8125rem;
   flex: 1;
+  min-width: 0;
 }
 
 .citation-title { font-weight: 600; color: var(--text-primary); line-height: 1.4; }
 .citation-pages { color: var(--text-secondary); font-size: 0.75rem; }
+
+.citation-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+.citation-badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 0.15rem 0.45rem;
+  background: rgba(59, 130, 246, 0.08);
+  color: var(--primary);
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.citation-applicability,
+.citation-excerpt {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.citation-applicability {
+  margin-top: 0.2rem;
+}
+
+.citation-excerpt-wrap {
+  margin-top: 0.4rem;
+}
+
+.citation-excerpt-label {
+  color: var(--text-secondary);
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.citation-excerpt {
+  margin: 0.15rem 0 0;
+}
+
+.citation-source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  color: var(--primary);
+  background: var(--bg-secondary);
+  padding: 0.3rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.citation-source-link:hover {
+  border-color: var(--primary);
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.citation-source-link:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, 0.35);
+  outline-offset: 2px;
+}
 
 .citation-card-toggle {
   color: var(--text-secondary);
@@ -876,6 +975,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   color: var(--text-secondary);
   border-top: 1px dashed var(--border-color);
   background: rgba(0,0,0,0.015);
+  animation: citationExpand 0.18s ease-out;
 }
 [data-theme='dark'] .citation-card-content {
   background: rgba(255,255,255,0.03);
@@ -890,6 +990,32 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 }
 .citation-markdown p:last-child {
   margin-bottom: 0;
+}
+
+@keyframes citationExpand {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .citation-card-header {
+    flex-wrap: wrap;
+  }
+
+  .citation-source-link {
+    order: 3;
+    margin-left: 1.75rem;
+  }
+
+  .citation-card-toggle {
+    margin-left: auto;
+  }
 }
 
 /* Follow-up Pills */
@@ -1085,6 +1211,150 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   max-width: 900px;
 }
 
+.chat-nav-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 900px;
+}
+
+.chat-nav-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  min-height: 76px;
+  padding: 0.85rem;
+  text-align: left;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.chat-nav-card svg {
+  color: var(--primary);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.chat-nav-card strong,
+.chat-nav-card span {
+  display: block;
+}
+
+.chat-nav-card strong {
+  font-size: 0.88rem;
+  margin-bottom: 0.2rem;
+}
+
+.chat-nav-card span {
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.chat-nav-card:hover,
+.chat-nav-card:focus-visible {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.empty-faq-suggestions {
+  width: 100%;
+  max-width: 900px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.empty-faq-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.7rem;
+}
+
+.empty-faq-header div {
+  min-width: 0;
+}
+
+.empty-faq-header span {
+  color: var(--text-primary);
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.empty-faq-header p {
+  margin: 0.15rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.empty-faq-header button {
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg-secondary);
+  color: var(--primary);
+  padding: 0.4rem 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.empty-faq-header button:hover,
+.empty-faq-header button:focus-visible {
+  border-color: var(--primary);
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.empty-faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.empty-faq-card {
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  color: var(--text-primary);
+  padding: 0.75rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-fast);
+}
+
+.empty-faq-card span {
+  display: block;
+  color: var(--primary);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.empty-faq-card strong {
+  display: block;
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.empty-faq-card:hover,
+.empty-faq-card:focus-visible {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
 .action-card {
   display: flex;
   align-items: flex-start;
@@ -1252,7 +1522,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   .chat-input-wrapper { padding: 0.75rem 1rem 1rem; }
   .empty-state { padding: 1rem 1rem 120px; }
   .action-cards-grid { grid-template-columns: 1fr; }
+  .chat-nav-cards-grid { grid-template-columns: 1fr; }
   .chat-action-cards-grid { grid-template-columns: 1fr; }
+  .empty-faq-grid { grid-template-columns: 1fr; }
   .action-card { padding: 1rem; }
   .hero-logo { width: 96px; height: auto; margin-bottom: 0.5rem; }
   .hero-subtitle { font-size: 0.875rem; }
@@ -1587,4 +1859,3 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   background-color: rgba(156, 163, 175, 0.2);
   color: var(--text-secondary);
 }
-

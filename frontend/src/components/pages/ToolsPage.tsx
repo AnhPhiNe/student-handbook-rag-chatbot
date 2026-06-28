@@ -1,4 +1,4 @@
-import { Award, Calculator, GraduationCap, ShieldCheck, TrendingUp, Target } from 'lucide-react';
+import { Award, Calculator, CircleHelp, GraduationCap, ShieldCheck, TrendingUp, Target } from 'lucide-react';
 
 interface ToolsPageProps {
   onNavigate: (tab: string) => void;
@@ -47,6 +47,13 @@ const TOOLS = [
     icon: ShieldCheck,
     color: '#10b981',
   },
+  {
+    id: 'faq',
+    title: 'Câu hỏi phổ biến',
+    description: 'Xem nhanh các câu hỏi hay gặp và gửi câu hỏi vào AI khi cần giải thích chi tiết.',
+    icon: CircleHelp,
+    color: '#0ea5e9',
+  },
 ];
 
 export function ToolsPage({ onNavigate }: ToolsPageProps) {
@@ -61,13 +68,13 @@ export function ToolsPage({ onNavigate }: ToolsPageProps) {
         {TOOLS.map((tool) => {
           const Icon = tool.icon;
           return (
-            <div key={tool.id} className="category-card" onClick={() => onNavigate(tool.id)} role="button" tabIndex={0}>
+            <button key={tool.id} className="category-card" onClick={() => onNavigate(tool.id)}>
               <div className="category-icon" style={{ color: tool.color, backgroundColor: `${tool.color}15` }}>
                 <Icon size={24} />
               </div>
               <h2 className="category-title">{tool.title}</h2>
               <p className="category-desc">{tool.description}</p>
-            </div>
+            </button>
           );
         })}
       </div>

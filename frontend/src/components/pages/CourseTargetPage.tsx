@@ -1,5 +1,17 @@
 import { useMemo, useState } from 'react';
 import { Target, Plus, Trash2, AlertCircle } from 'lucide-react';
+import {
+  getCourseGroupOptions,
+  getDefaultCourseGroup,
+  getGradeScale,
+  type Cohort,
+  type CourseGroup,
+  type LetterGrade,
+} from '../../utils/gradeScale';
+
+interface CourseTargetPageProps {
+  cohort: Cohort;
+}
 
 interface ScoreComponent {
   id: string;
@@ -8,21 +20,29 @@ interface ScoreComponent {
   score: string;
 }
 
-const TARGET_GRADES = [
-  { letter: 'A', name: 'Xuất sắc', minScore: 8.5, color: '#ec4899', emoji: '🏆' },
-  { letter: 'B+', name: 'Giỏi', minScore: 7.8, color: '#8b5cf6', emoji: '🚀' },
-  { letter: 'B', name: 'Khá', minScore: 7.0, color: '#3b82f6', emoji: '🟢' },
-  { letter: 'C+', name: 'Trung bình Khá', minScore: 6.3, color: '#10b981', emoji: '🍀' },
-  { letter: 'C', name: 'Trung bình', minScore: 5.5, color: '#f59e0b', emoji: '🟡' },
-  { letter: 'D+', name: 'Trung bình Yếu', minScore: 4.8, color: '#f97316', emoji: '🟠' },
-  { letter: 'D', name: 'Qua môn', minScore: 4.0, color: '#ef4444', emoji: '⚠️' },
-];
+type TargetStatus = 'possible' | 'achieved' | 'impossible' | 'error';
 
-export function CourseTargetPage() {
+const GRADE_META: Record<LetterGrade, { name: string; color: string }> = {
+  A: { name: 'Xuất sắc', color: '#ec4899' },
+  'B+': { name: 'Giỏi', color: '#8b5cf6' },
+  B: { name: 'Khá', color: '#3b82f6' },
+  'C+': { name: 'Trung bình Khá', color: '#10b981' },
+  C: { name: 'Trung bình', color: '#f59e0b' },
+  'D+': { name: 'Trung bình Yếu', color: '#f97316' },
+  D: { name: 'Qua môn', color: '#ef4444' },
+  'F+': { name: 'Không đạt', color: '#94a3b8' },
+  F: { name: 'Không đạt', color: '#64748b' },
+};
+
+export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
+  const [courseGroup, setCourseGroup] = useState<CourseGroup>(getDefaultCourseGroup(cohort));
   const [components, setComponents] = useState<ScoreComponent[]>([
     { id: 'comp-1', name: 'Quá trình', weight: '20', score: '' },
     { id: 'comp-2', name: 'Giữa kỳ', weight: '20', score: '' },
   ]);
+
+  const activeGroup = cohort === 'K50-K51' ? courseGroup : getDefaultCourseGroup(cohort);
+  const scale = getGradeScale(cohort, activeGroup);
 
   const addComponent = () => {
     setComponents((curr) => [
@@ -46,45 +66,55 @@ export function CourseTargetPage() {
     let totalWeight = 0;
     let accumulatedScore = 0;
     let hasInvalidWeight = false;
+    let hasInvalidScore = false;
 
     for (const comp of components) {
       const w = Number(comp.weight);
       const s = Number(comp.score);
-      
+
       if (!comp.weight) continue;
-      
-      if (w < 0 || w > 100) hasInvalidWeight = true;
+
+      if (!Number.isFinite(w) || w < 0 || w > 100) hasInvalidWeight = true;
       totalWeight += w;
 
-      if (comp.score && !isNaN(s)) {
-        accumulatedScore += (s * w) / 100;
+      if (comp.score) {
+        if (!Number.isFinite(s) || s < 0 || s > 10) {
+          hasInvalidScore = true;
+        } else {
+          accumulatedScore += (s * w) / 100;
+        }
       }
     }
 
     const remainingWeight = 100 - totalWeight;
-    const isError = totalWeight > 100 || hasInvalidWeight;
+    const isError = totalWeight > 100 || hasInvalidWeight || hasInvalidScore;
 
-    const targets = TARGET_GRADES.map((grade) => {
-      if (isError) return { ...grade, requiredScore: null, status: 'error' };
-      
-      const missingScore = grade.minScore - accumulatedScore;
-      
+    const targets = scale.rows.filter((row) => row.status === 'Đạt').map((grade) => {
+      const meta = GRADE_META[grade.letter];
+      if (isError) {
+        return { ...grade, ...meta, requiredScore: null, status: 'error' as TargetStatus };
+      }
+
+      const missingScore = grade.min10 - accumulatedScore;
+
       if (remainingWeight === 0) {
         return {
           ...grade,
+          ...meta,
           requiredScore: null,
-          status: missingScore <= 0 ? 'achieved' : 'impossible',
+          status: missingScore <= 0 ? 'achieved' as TargetStatus : 'impossible' as TargetStatus,
         };
       }
 
       const requiredScoreOnFinal = (missingScore * 100) / remainingWeight;
-      
-      let status = 'possible';
+
+      let status: TargetStatus = 'possible';
       if (requiredScoreOnFinal > 10.0) status = 'impossible';
       else if (requiredScoreOnFinal <= 0) status = 'achieved';
 
       return {
         ...grade,
+        ...meta,
         requiredScore: requiredScoreOnFinal,
         status,
       };
@@ -97,24 +127,42 @@ export function CourseTargetPage() {
       isError,
       targets,
     };
-  }, [components]);
+  }, [components, scale]);
 
   return (
     <div className="page-container tool-page">
       <div className="page-header">
         <h1>Mục tiêu môn học</h1>
-        <p>Tính điểm thi cuối kỳ cần đạt dựa trên các cột điểm thành phần linh hoạt.</p>
+        <p>Tính điểm thi cuối kỳ cần đạt dựa trên các cột điểm thành phần và bảng quy đổi của {cohort}.</p>
       </div>
 
       <div className="tool-layout split">
         <div className="tool-input-section" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <section className="tool-panel">
-            <h2 className="section-title">Thành phần điểm đã có</h2>
-            <p className="tool-desc" style={{ marginBottom: '1.5rem' }}>
-              Nhập điểm quá trình, chuyên cần hoặc giữa kỳ của bạn. Bạn có thể thêm bao nhiêu cột điểm cũng được.
-            </p>
+            <div className="tool-panel-header">
+              <div>
+                <h2>Thành phần điểm đã có</h2>
+                <p>Nhập điểm quá trình, chuyên cần hoặc giữa kỳ. Trọng số thi cuối kỳ sẽ được tính từ phần còn lại.</p>
+              </div>
+            </div>
 
-            <div className="scroll-hint">Vuốt ngang để xem bảng 👉</div>
+            {cohort === 'K50-K51' && (
+              <div className="tool-field-block">
+                <label>Nhóm học phần</label>
+                <select
+                  className="tool-select"
+                  value={courseGroup}
+                  onChange={(event) => setCourseGroup(event.target.value as CourseGroup)}
+                >
+                  {getCourseGroupOptions(cohort).map((option) => (
+                    <option key={option.id} value={option.id}>{option.label}</option>
+                  ))}
+                </select>
+                <p>{scale.applicability}</p>
+              </div>
+            )}
+
+            <div className="scroll-hint">Vuốt ngang để xem bảng</div>
             <div className="tool-table-wrap">
               <table className="tool-table gpa-table" style={{ width: '100%', minWidth: '400px' }}>
                 <thead>
@@ -200,16 +248,16 @@ export function CourseTargetPage() {
               <span>Thêm cột điểm</span>
             </button>
           </section>
-          
+
           <div className="tool-callout info" style={{ margin: 0 }}>
-            <h2>💡 Mẹo tính Trọng số thi cuối kỳ</h2>
+            <h2>Mẹo tính trọng số thi cuối kỳ</h2>
             <p>
-              Bạn không cần nhập Trọng số thi cuối kỳ. Hệ thống sẽ <strong>tự động tính toán</strong> theo công thức:
+              Bạn không cần nhập trọng số thi cuối kỳ. Hệ thống sẽ <strong>tự động tính toán</strong> theo công thức:
             </p>
             <div className="formula-box">
-              Trọng số thi = 100% - (Tổng các trọng số bạn đã nhập ở trên)
+              Trọng số thi = 100% - tổng trọng số đã nhập
             </div>
-            <p style={{ marginTop: '0.5rem' }}>Hãy đảm bảo bạn nhập chính xác các trọng số thành phần nhé!</p>
+            <p style={{ marginTop: '0.5rem' }}>Ngưỡng qua môn hiện dùng: từ {scale.passThreshold.toFixed(1)} điểm cho {scale.shortLabel.toLowerCase()}.</p>
           </div>
         </div>
 
@@ -233,18 +281,18 @@ export function CourseTargetPage() {
             <div style={{ padding: '1rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '8px', color: 'var(--danger)', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
               <AlertCircle size={20} style={{ flexShrink: 0, marginTop: '2px' }} />
               <div>
-                <strong>Lỗi trọng số</strong>
-                <p style={{ margin: '0.25rem 0 0', fontSize: '0.9rem' }}>Tổng trọng số các cột điểm đã vượt quá 100%. Vui lòng kiểm tra lại!</p>
+                <strong>Lỗi dữ liệu</strong>
+                <p style={{ margin: '0.25rem 0 0', fontSize: '0.9rem' }}>Vui lòng kiểm tra trọng số và điểm thành phần. Tổng trọng số không được vượt quá 100% và điểm phải nằm trong khoảng 0-10.</p>
               </div>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {result.targets.map((target) => (
-                <div 
-                  key={target.letter} 
-                  style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
+                <div
+                  key={target.letter}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
                     justifyContent: 'space-between',
                     padding: '0.875rem 1rem',
                     background: target.status === 'impossible' ? 'transparent' : 'var(--bg-primary)',
@@ -255,13 +303,12 @@ export function CourseTargetPage() {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <span style={{ fontSize: '1.25rem' }}>{target.emoji}</span>
                     <div>
                       <div style={{ fontWeight: 600, color: target.status === 'impossible' ? 'var(--text-secondary)' : target.color }}>
                         Điểm {target.letter}
                       </div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                        {target.name}
+                        {target.name} · từ {target.min10.toFixed(1)}
                       </div>
                     </div>
                   </div>

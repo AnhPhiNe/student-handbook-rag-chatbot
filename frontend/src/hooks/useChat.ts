@@ -7,6 +7,10 @@ export interface Citation {
   score?: number;
   title?: string;
   source_pages?: number[];
+  source_label?: string;
+  source_url?: string;
+  cohort?: string;
+  applicability?: string;
   chunk_type?: string;
 }
 

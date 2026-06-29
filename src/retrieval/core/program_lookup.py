@@ -82,6 +82,27 @@ def _sort_programs(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     )
 
 
+def _dedupe_programs(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    deduped: dict[tuple[str, str], dict[str, Any]] = {}
+    for record in records:
+        key = (
+            normalize_text(record.get("program_name")),
+            _normalize_faculty_name(record.get("faculty_name")),
+        )
+        if key not in deduped:
+            deduped[key] = dict(record)
+            continue
+
+        pages = {
+            int(page)
+            for page in (deduped[key].get("source_pages") or [])
+            + (record.get("source_pages") or [])
+            if str(page).isdigit()
+        }
+        deduped[key]["source_pages"] = sorted(pages)
+    return list(deduped.values())
+
+
 def _source_pages(records: list[dict[str, Any]]) -> list[int]:
     pages = {
         int(page)
@@ -138,6 +159,13 @@ def _filter_by_program_name(
         for record in records
         if normalize_text(record.get("program_name")) in text
     ]
+    if len(matches) > 1:
+        max_len = max(len(normalize_text(record.get("program_name"))) for record in matches)
+        matches = [
+            record
+            for record in matches
+            if len(normalize_text(record.get("program_name"))) == max_len
+        ]
     return matches
 
 
@@ -194,11 +222,11 @@ def program_lookup(
         if not candidates:
             return None
 
-    if asks_faculty_programs and not asks_school_programs:
+    if asks_faculty_programs and not asks_school_programs and not routed_to_program_faculty:
         candidates = _filter_by_faculty(candidates, faculty_entities)
         lookup_scope = "faculty"
 
-    candidates = _sort_programs(candidates)
+    candidates = _sort_programs(_dedupe_programs(candidates))
     if not candidates:
         return None
 

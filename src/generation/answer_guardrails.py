@@ -244,6 +244,10 @@ def can_answer_deterministically(retrieval_result: dict[str, Any]) -> bool:
     if _has_result(structured_res):
         if structured_res.get("lookup_type") == "program_directory":
             return True
+        if structured_res.get("lookup_type") == "form_template":
+            return True
+        if structured_res.get("lookup_type") == "grade_10_to_letter":
+            return True
         row = structured_res.get("result")
         # NẾU LÀ DICT (kết quả 1 dòng ngắn gọn), ta CHẮC CHẮN không cần LLM.
         if isinstance(row, dict):
@@ -680,6 +684,10 @@ def _has_formula_result(value: Any) -> bool:
 def _format_structured_result(structured_result: dict[str, Any]) -> str:
     if structured_result.get("lookup_type") == "program_directory":
         return _format_program_directory_result(structured_result)
+    if structured_result.get("lookup_type") == "form_template":
+        return _format_form_template_result(structured_result)
+    if structured_result.get("lookup_type") == "grade_10_to_letter":
+        return _format_grade_10_to_letter_result(structured_result)
 
     table_name = structured_result.get("table_name") or "bảng tra cứu"
     input_value = structured_result.get("input_value")
@@ -705,6 +713,115 @@ def _format_structured_result(structured_result: dict[str, Any]) -> str:
         return f"Tra theo {table_name}, giá trị {input_value} có kết quả: {fields}."
 
     return f"Tra theo {table_name}, giá trị {input_value} có kết quả: {row}."
+
+
+def _format_form_template_result(structured_result: dict[str, Any]) -> str:
+    forms = structured_result.get("result") or []
+    if not forms:
+        return "Mình chưa tìm thấy biểu mẫu phù hợp trong danh mục biểu mẫu hiện có."
+
+    lines = ["Mình tìm thấy biểu mẫu phù hợp trong trang Biểu mẫu:"]
+    for form in forms[:3]:
+        name = form.get("form_name") or "Biểu mẫu"
+        summary = _compact_text(form.get("summary"), limit=140)
+        pages = form.get("source_pages") or []
+        page_text = f" (trang {', '.join(str(page) for page in pages)})" if pages else ""
+        if summary and summary != name:
+            lines.append(f"- {name}{page_text}: {summary}")
+        else:
+            lines.append(f"- {name}{page_text}")
+
+    input_value = structured_result.get("input_value")
+    if input_value:
+        lines.insert(0, f"Với yêu cầu “{input_value}”:")
+    lines.append("Bạn có thể mở trang Biểu mẫu để tìm, lọc và tải đúng mẫu cần dùng.")
+    return "\n".join(lines)
+
+
+def _compact_text(value: Any, limit: int = 140) -> str:
+    text = " ".join(str(value or "").split())
+    if len(text) <= limit:
+        return text
+    return text[: limit - 3].rstrip() + "..."
+
+
+def _display_text(value: Any) -> str:
+    return str(value or "").replace("–", "-").replace("—", "-")
+
+
+def _format_grade_10_to_letter_result(structured_result: dict[str, Any]) -> str:
+    tables = structured_result.get("result") or []
+    cohort = structured_result.get("cohort")
+    requested_grade = structured_result.get("requested_letter_grade")
+    requested_rows = structured_result.get("requested_grade_rows") or []
+    grade_4 = structured_result.get("letter_grade_4") or {}
+
+    prefix = "Theo bảng quy đổi điểm"
+    if cohort:
+        prefix += f" áp dụng cho {cohort}"
+
+    if requested_grade and requested_rows:
+        lines = [f"{prefix}, điểm chữ {requested_grade} có kết quả như sau:"]
+        if grade_4.get("score_4") is not None:
+            lines.append(
+                f"- Quy đổi hệ 4: {requested_grade} = {grade_4.get('score_4')}."
+            )
+        for item in requested_rows:
+            row = item.get("row") or {}
+            applicability = item.get("applicability") or item.get("table_name")
+            status = row.get("status")
+            score_range = row.get("score_10_range")
+            threshold = item.get("pass_threshold")
+            parts = [f"- {applicability}: {requested_grade}"]
+            if score_range:
+                parts.append(f"khoảng điểm {score_range}")
+            if status:
+                parts.append(f"trạng thái {status}")
+            if threshold:
+                parts.append(f"ngưỡng qua môn {threshold}")
+            lines.append("; ".join(parts) + ".")
+        return "\n".join(lines)
+
+    if tables:
+        lines = [f"{prefix}, ngưỡng đạt/qua môn được tóm tắt như sau:"]
+        for table in tables:
+            applicability = table.get("applicability") or table.get("table_name")
+            threshold = table.get("pass_threshold")
+            if threshold:
+                lines.append(f"- {applicability}: {threshold}.")
+
+        rows = tables[0].get("rows") or []
+        passed_rows = [
+            row for row in rows if str(row.get("status") or "").lower() == "đạt"
+        ]
+        failed_rows = [
+            row
+            for row in rows
+            if str(row.get("status") or "").lower() == "không đạt"
+        ]
+        if passed_rows and failed_rows and len(tables) == 1:
+            lines.append(
+                "Đạt: "
+                + ", ".join(
+                    f"{row.get('letter_grade')} ({row.get('score_10_range')})"
+                    for row in passed_rows
+                )
+                + "."
+            )
+            lines.append(
+                "Không đạt: "
+                + ", ".join(
+                    f"{row.get('letter_grade')} ({row.get('score_10_range')})"
+                    for row in failed_rows
+                )
+                + "."
+            )
+        return "\n".join(lines)
+
+    return (
+        f"Tra theo {structured_result.get('table_name') or 'bảng quy đổi điểm'}, "
+        f"kết quả: {structured_result.get('result')}."
+    )
 
 
 def _format_program_directory_result(structured_result: dict[str, Any]) -> str:

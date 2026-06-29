@@ -131,7 +131,7 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
         first_form = forms[0] if forms else {}
         return [
             {
-                "chunk_type": "form",
+                "chunk_type": "form_template",
                 "title": first_form.get("form_name") or lookup_result.get("table_name"),
                 "source_pages": lookup_result.get("source_pages", []),
                 "source_label": lookup_result.get("source_label")

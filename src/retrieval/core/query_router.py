@@ -115,6 +115,49 @@ def infer_program_lookup_metadata(query: str) -> dict[str, str] | None:
     }
 
 
+def infer_score_lookup_metadata(query: str) -> bool:
+    """Nhan dien nhom cau hoi diem/bang quy doi nen tra cuu bang du lieu bang."""
+    ascii_query = strip_accents(query)
+    score_cues = [
+        "diem",
+        "d+",
+        "d",
+        "c+",
+        "c",
+        "b+",
+        "b",
+        "a",
+        "f+",
+        "f",
+        "he 4",
+        "thang 4",
+        "thang diem",
+        "quy doi",
+        "ren luyen",
+        "hoc luc",
+        "gpa",
+        "trung binh",
+    ]
+    action_cues = [
+        "qua mon",
+        "rot mon",
+        "dat",
+        "khong dat",
+        "bao nhieu",
+        "may diem",
+        "xep loai",
+        "loai gi",
+        "quy doi",
+        "sang he 4",
+        "thang 4",
+    ]
+    has_letter_grade = re.search(r"(?<!\w)(a|b\+?|c\+?|d\+?|f\+?)(?!\w)", ascii_query)
+    return (contains_any(ascii_query, score_cues) or bool(has_letter_grade)) and contains_any(
+        ascii_query,
+        action_cues,
+    )
+
+
 def _contains_phrase(text: str, phrase: str) -> bool:
     phrase = phrase.strip()
     if not phrase:
@@ -128,9 +171,67 @@ def _contains_phrase(text: str, phrase: str) -> bool:
     return re.search(prefix + re.escape(phrase) + suffix, text) is not None
 
 
+def _is_obvious_out_of_domain(query: str) -> bool:
+    ascii_query = strip_accents(query)
+    food_or_cooking = [
+        "nau pho",
+        "an gi",
+        "banh trang",
+        "ban do an",
+        "quan an",
+    ]
+    weather = ["thoi tiet", "hom nay mua", "troi mua", "nhiet do"]
+    return contains_any(ascii_query, food_or_cooking + weather)
+
+
+def _clarification_question(query: str) -> str | None:
+    ascii_query = strip_accents(query)
+    contact_cues = ["hoi ai", "lien he ai", "gap ai", "o dau", "lam o dau"]
+    if "cntt" in ascii_query and contains_any(ascii_query, ["o dau"]):
+        return (
+            "Bạn muốn liên hệ về Khoa Công nghệ Thông tin, Phòng Công nghệ Thông tin, "
+            "hay ngành Công nghệ Thông tin?"
+        )
+    if "hoc bong" in ascii_query and contains_any(ascii_query, contact_cues):
+        return (
+            "Bạn muốn liên hệ về điều kiện học bổng, kết quả xét học bổng, "
+            "hay phòng ban phụ trách học bổng?"
+        )
+    if "hoc vu" in ascii_query and contains_any(ascii_query, contact_cues):
+        return (
+            "Bạn muốn liên hệ về chương trình đào tạo, điểm số, học lại, "
+            "hay một thủ tục học vụ cụ thể?"
+        )
+    if any(term in ascii_query for term in ["giay to", "giay xac nhan"]) and contains_any(
+        ascii_query, contact_cues
+    ):
+        return (
+            "Bạn muốn liên hệ về giấy xác nhận sinh viên, biểu mẫu cần nộp, "
+            "hay phòng ban tiếp nhận hồ sơ?"
+        )
+    return None
+
+
 def route_query(query: str) -> dict[str, Any]:
     q = normalize_query(query)
     rules = load_query_routing_rules()
+    clarification = _clarification_question(q)
+    if clarification:
+        return {
+            "intent": "needs_clarification",
+            "strategy": "none",
+            "target_chunk_types": [],
+            "needs_clarification": True,
+            "clarification_question": clarification,
+        }
+
+    if _is_obvious_out_of_domain(q):
+        return {
+            "intent": "out_of_domain",
+            "strategy": "none",
+            "target_chunk_types": [],
+        }
+
     program_metadata = infer_program_lookup_metadata(q)
 
     has_form_signal = contains_any(q, rules["form_signal"])
@@ -172,6 +273,21 @@ def route_query(query: str) -> dict[str, Any]:
 
     # 2. KTX/procedure phải bắt trước office.
     # Không xem "ký túc xá" là office entity vì đa số câu KTX hỏi quy trình/tiêu chí/mẫu đơn.
+    if program_metadata and program_metadata.get("action") == "resolve_faculty":
+        return {
+            "intent": "faculty_query",
+            "strategy": "program_lookup",
+            "target_chunk_types": ["program_directory"],
+            **program_metadata,
+        }
+
+    if infer_score_lookup_metadata(q):
+        return {
+            "intent": "score_lookup_query",
+            "strategy": "structured_lookup",
+            "target_chunk_types": [],
+        }
+
     if has_ktx_signal:
         if has_form_signal or contains_any(q, rules["ktx_form_signal"]):
             return {
@@ -191,6 +307,14 @@ def route_query(query: str) -> dict[str, Any]:
             "intent": "procedure_query",
             "strategy": "semantic_filtered_rerank",
             "target_chunk_types": ["procedure"],
+        }
+
+    if program_metadata:
+        return {
+            "intent": "faculty_query",
+            "strategy": "program_lookup",
+            "target_chunk_types": ["program_directory"],
+            **program_metadata,
         }
 
     has_office_signal = has_contact_question or has_explicit_office_entity

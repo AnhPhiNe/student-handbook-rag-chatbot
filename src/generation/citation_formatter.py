@@ -99,7 +99,12 @@ def select_relevant_citations(
         "score_lookup_query",
         "structured_lookup",
     }:
-        structured_chunk_types = {"structured_lookup", "program_directory", "form"}
+        structured_chunk_types = {
+            "structured_lookup",
+            "program_directory",
+            "form",
+            "form_template",
+        }
         lookup_citations = [
             citation
             for citation in deduped

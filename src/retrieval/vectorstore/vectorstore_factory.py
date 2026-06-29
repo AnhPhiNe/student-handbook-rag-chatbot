@@ -20,7 +20,11 @@ from src.common.env_loader import load_project_env
 def get_vectordb_provider() -> str:
     """Trả về tên provider vector database đang được cấu hình."""
     load_project_env()
-    return os.environ.get("VECTORDB_PROVIDER", "chroma").strip().lower()
+    provider = os.environ.get("EVAL_VECTORDB_PROVIDER") or os.environ.get(
+        "VECTORDB_PROVIDER",
+        "chroma",
+    )
+    return provider.strip().lower()
 
 
 def _env_bool(name: str, default: bool = False) -> bool:

@@ -9,7 +9,10 @@ output:
   threshold_rules: data/processed/tables/threshold_rules.json
   form_templates: data/processed/forms/form_templates.json
   office_directory: data/processed/directories/office_directory.json
+  faculty_directory: data/processed/directories/faculty_directory.json
+  program_directory: data/processed/directories/program_directory.json
   faculty_program_directory: data/processed/directories/faculty_program_directory.json
   reference_directory: data/processed/directories/reference_directory.json
   procedures: data/processed/procedures/procedures.json
   report: data/processed/metadata/structured_extraction_report.json
+  content_audit_report: data/processed/metadata/content_audit_report.json

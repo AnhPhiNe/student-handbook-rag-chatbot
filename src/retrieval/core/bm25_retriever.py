@@ -4,6 +4,7 @@ import re
 from typing import Any
 from pathlib import Path
 from rank_bm25 import BM25Okapi
+from src.common.cohort import normalize_cohort
 from .io_utils import load_json
 
 
@@ -67,7 +68,13 @@ class BM25Retriever:
         self.bm25 = BM25Okapi(tokenized_corpus)
         print(f"[BM25] Indexed {len(self.chunks)} chunks.")
 
-    def sparse_search(self, query: str, top_k: int = 15) -> list[dict[str, Any]]:
+    def sparse_search(
+        self,
+        query: str,
+        top_k: int = 15,
+        chunk_types: list[str] | None = None,
+        cohort: str | None = None,
+    ) -> list[dict[str, Any]]:
         if not self.bm25 or not self.chunks:
             return []
 
@@ -77,10 +84,23 @@ class BM25Retriever:
         # Get scores for all documents
         scores = self.bm25.get_scores(tokenized_query)
 
-        # Get top-k indices
-        top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[
-            :top_k
-        ]
+        cohort = normalize_cohort(cohort)
+        allowed_types = set(chunk_types or [])
+
+        candidate_indices = []
+        for idx, chunk in enumerate(self.chunks):
+            metadata = chunk.get("metadata", {})
+            if cohort and metadata.get("cohort") != cohort:
+                continue
+            if allowed_types and chunk.get("chunk_type") not in allowed_types:
+                continue
+            candidate_indices.append(idx)
+
+        top_indices = sorted(
+            candidate_indices,
+            key=lambda i: scores[i],
+            reverse=True,
+        )[:top_k]
 
         results = []
         for idx in top_indices:

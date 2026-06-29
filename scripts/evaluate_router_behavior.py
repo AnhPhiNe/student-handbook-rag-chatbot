@@ -43,6 +43,7 @@ def evaluate_case(case: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": case.get("id"),
         "category": case.get("category"),
+        "cohort": case.get("cohort", "all"),
         "query": case["query"],
         "expected_intent": expected_intent,
         "actual_intent": routing.get("intent"),
@@ -58,8 +59,10 @@ def evaluate_case(case: dict[str, Any]) -> dict[str, Any]:
 
 def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
     by_category: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    by_cohort: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for result in results:
         by_category[str(result.get("category") or "uncategorized")].append(result)
+        by_cohort[str(result.get("cohort") or "all")].append(result)
 
     return {
         "total_cases": len(results),
@@ -74,6 +77,15 @@ def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
                 "target_accuracy": _mean_bool(items, "target_match"),
             }
             for category, items in sorted(by_category.items())
+        },
+        "cohort_breakdown": {
+            cohort: {
+                "cases": len(items),
+                "intent_accuracy": _mean_bool(items, "intent_match"),
+                "strategy_accuracy": _mean_bool(items, "strategy_match"),
+                "target_accuracy": _mean_bool(items, "target_match"),
+            }
+            for cohort, items in sorted(by_cohort.items())
         },
     }
 

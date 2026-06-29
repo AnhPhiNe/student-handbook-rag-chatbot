@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Any
+import os
 
 from .directory_chunker import build_directory_chunks
 from .form_chunker import build_form_chunks
@@ -9,10 +10,42 @@ from .procedure_chunker import build_procedure_chunks
 from .regulation_chunker import build_regulation_chunks
 from .report_builder import build_chunk_report
 from .table_chunker import build_table_chunks
-from .validator import validate_chunks
+from .validator import validate_chunks, validate_parent_links
 
 
 CONFIG_PATH = Path("configs/chunking.yaml")
+DOCUMENT_ID_BY_COHORT = {
+    "K48-K49": "so_tay_sinh_vien_khoa_48",
+    "K50-K51": "so_tay_sinh_vien_khoa_51",
+}
+
+
+def attach_cohort_metadata(
+    chunks: list[dict[str, Any]],
+    docstore_items: list[dict[str, Any]],
+    cohort: str | None,
+    document_id: str | None = None,
+) -> None:
+    """Gắn cohort cho mọi chunk và parent doc được sinh từ một sổ tay."""
+    if not cohort and not document_id:
+        return
+
+    for chunk in chunks:
+        metadata = chunk.setdefault("metadata", {})
+        if cohort:
+            metadata["cohort"] = cohort
+        if document_id:
+            metadata["document_id"] = document_id
+
+    for item in docstore_items:
+        if cohort:
+            item["cohort"] = cohort
+        metadata = item.setdefault("metadata", {})
+        if cohort:
+            metadata["cohort"] = cohort
+        if document_id:
+            item.setdefault("document_id", document_id)
+            metadata["document_id"] = document_id
 
 
 def split_chunks_by_index_mode(
@@ -52,11 +85,26 @@ def main() -> None:
     config = load_yaml(CONFIG_PATH)
 
     structured_sections = load_json(Path(config["input"]["structured_sections"]))
+    document_id = next(
+        (
+            section.get("document_id")
+            for section in structured_sections
+            if section.get("document_id")
+        ),
+        None,
+    )
     scoring_tables = load_json(Path(config["input"]["scoring_tables"]))
     formula_rules = load_json(Path(config["input"]["formula_rules"]))
     form_templates = load_json(Path(config["input"]["form_templates"]))
     office_directory = load_json(Path(config["input"]["office_directory"]))
-    faculty_directory = load_json(Path(config["input"]["faculty_program_directory"]))
+    faculty_path = Path(
+        config["input"].get(
+            "faculty_directory",
+            config["input"]["faculty_program_directory"],
+        )
+    )
+    faculty_directory = load_json(faculty_path)
+    program_directory = load_json(Path(config["input"]["program_directory"]))
     reference_directory = load_json(Path(config["input"]["reference_directory"]))
     procedures = load_json(Path(config["input"]["procedures"]))
 
@@ -77,6 +125,7 @@ def main() -> None:
     directory_chunks = build_directory_chunks(
         office_records=office_directory,
         faculty_records=faculty_directory,
+        program_records=program_directory,
         reference_records=reference_directory,
         directory_max_tokens=directory_config["max_tokens"],
     )
@@ -94,12 +143,21 @@ def main() -> None:
         + directory_chunks
         + procedure_chunks
     )
+    attach_cohort_metadata(
+        chunks=all_chunks,
+        docstore_items=docstore_items,
+        cohort=os.environ.get("COHORT"),
+        document_id=document_id or DOCUMENT_ID_BY_COHORT.get(os.environ.get("COHORT")),
+    )
 
     semantic_chunks, structured_lookup_chunks, tool_rule_chunks = (
         split_chunks_by_index_mode(all_chunks)
     )
 
-    validation_issues = validate_chunks(all_chunks)
+    validation_issues = validate_chunks(all_chunks) + validate_parent_links(
+        all_chunks,
+        docstore_items,
+    )
 
     report = build_chunk_report(
         regulation_chunks=regulation_chunks,

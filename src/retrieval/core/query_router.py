@@ -34,6 +34,87 @@ def contains_any(text: str, keywords: list[str]) -> bool:
     )
 
 
+def infer_program_lookup_metadata(query: str) -> dict[str, str] | None:
+    """Nhan dien thao tac tra cuu nganh dao tao o tang router."""
+    ascii_query = strip_accents(query)
+    if not contains_any(query, ["ngành", "nganh", "chuyên ngành", "chuyen nganh"]):
+        return None
+
+    asks_list = contains_any(
+        query,
+        [
+            "có những",
+            "co nhung",
+            "có các",
+            "co cac",
+            "những ngành",
+            "nhung nganh",
+            "các ngành",
+            "cac nganh",
+            "ngành nào",
+            "nganh nao",
+            "ngành gì",
+            "nganh gi",
+            "danh sách",
+            "danh sach",
+            "liệt kê",
+            "liet ke",
+            "bao nhiêu ngành",
+            "bao nhieu nganh",
+            "đào tạo ngành",
+            "dao tao nganh",
+        ],
+    )
+    asks_program_faculty = contains_any(
+        query,
+        [
+            "thuộc khoa",
+            "thuoc khoa",
+            "khoa nào",
+            "khoa nao",
+            "khoa phụ trách",
+            "khoa phu trach",
+            "phụ trách",
+            "phu trach",
+        ],
+    )
+    if asks_program_faculty:
+        return {
+            "content_type": "program_directory",
+            "action": "resolve_faculty",
+            "scope": "program",
+        }
+
+    if not asks_list:
+        return None
+
+    school_scope = contains_any(
+        query,
+        [
+            "trường",
+            "truong",
+            "hcmue",
+            "đại học sư phạm",
+            "dai hoc su pham",
+        ],
+    )
+    faculty_scope = contains_any(query, ["khoa", "faculty"])
+
+    scope = "school"
+    if faculty_scope and not school_scope:
+        scope = "faculty"
+    elif school_scope:
+        scope = "school"
+    elif re.search(r"\b(cntt|toan|van|anh|phap|nga|trung|han|nhat)\b", ascii_query):
+        scope = "faculty"
+
+    return {
+        "content_type": "program_directory",
+        "action": "list",
+        "scope": scope,
+    }
+
+
 def _contains_phrase(text: str, phrase: str) -> bool:
     phrase = phrase.strip()
     if not phrase:
@@ -50,6 +131,7 @@ def _contains_phrase(text: str, phrase: str) -> bool:
 def route_query(query: str) -> dict[str, Any]:
     q = normalize_query(query)
     rules = load_query_routing_rules()
+    program_metadata = infer_program_lookup_metadata(q)
 
     has_form_signal = contains_any(q, rules["form_signal"])
     has_reg_signal = contains_any(q, rules["regulation_signal"])
@@ -112,14 +194,45 @@ def route_query(query: str) -> dict[str, Any]:
         }
 
     has_office_signal = has_contact_question or has_explicit_office_entity
+    has_pass_score_signal = contains_any(
+        q,
+        ["may diem", "máº¥y Ä‘iá»ƒm", "bao nhieu diem", "bao nhiÃªu Ä‘iá»ƒm", "d+", "diem d", "Ä‘iá»ƒm d"],
+    ) and contains_any(q, ["qua mon", "qua mÃ´n", "dat", "Ä‘áº¡t"])
+    has_pass_score_signal = has_pass_score_signal or bool(
+        re.search(
+            r"\b(khoa\s*)?(48|49|50|51)\b.*\b(may|bao).*\bdiem\b.*\b(dat|qua)\b",
+            strip_accents(q),
+        )
+    )
 
     # Faculty duoc uu tien neu user noi ro "khoa/nganh".
     # Vi du "Khoa CNTT o dau?" khong nen bi route thanh office chi vi co "o dau".
-    if has_faculty_signal and not has_explicit_office_entity:
-        return {
+    if has_faculty_signal and not has_explicit_office_entity and not has_pass_score_signal:
+        route = {
             "intent": "faculty_query",
             "strategy": "semantic_filtered_rerank",
-            "target_chunk_types": ["faculty_program_directory"],
+            "target_chunk_types": ["faculty_directory", "program_directory"],
+        }
+        if program_metadata:
+            route.update(program_metadata)
+            route["strategy"] = "program_lookup"
+            route["target_chunk_types"] = ["program_directory"]
+        return route
+
+    if has_form_signal and not has_reg_signal and not has_ktx_signal and not has_faculty_signal:
+        return {
+            "intent": "form_query",
+            "strategy": "form_lookup",
+            "target_chunk_types": ["form"],
+        }
+
+    if contains_any(q, ["phuc khao", "phÃºc kháº£o"]) and contains_any(
+        q, ["quy trinh", "quy trÃ¬nh", "thu tuc", "thá»§ tá»¥c"]
+    ):
+        return {
+            "intent": "procedure_query",
+            "strategy": "semantic_filtered_rerank",
+            "target_chunk_types": ["procedure"],
         }
 
     # --- 1. CONFLICT DETECTION LOGIC ---
@@ -147,6 +260,8 @@ def route_query(query: str) -> dict[str, Any]:
             target_chunk_types.append("office_directory")
         if has_ktx_signal:
             target_chunk_types.append("procedure")
+        if has_faculty_signal:
+            target_chunk_types.extend(["faculty_directory", "program_directory"])
 
         # Conflict phổ biến là câu hỏi nhiều ý; xử lý bằng multi-filter trước.
         # Multi-filter giu lai nhieu loai chunk de reranker tu chon nguon tot nhat.
@@ -161,7 +276,7 @@ def route_query(query: str) -> dict[str, Any]:
     if has_form_signal:
         return {
             "intent": "form_query",
-            "strategy": "semantic_filtered_rerank",
+            "strategy": "form_lookup",
             "target_chunk_types": ["form"],
         }
 
@@ -169,12 +284,17 @@ def route_query(query: str) -> dict[str, Any]:
     # trừ khi query cũng nói rõ "phòng".
     # Ví dụ: "Khoa Tiếng Anh ở đâu?" -> faculty
     # Nhưng: "Website phòng CNTT là gì?" -> office
-    if has_faculty_signal and not has_explicit_office_entity:
-        return {
+    if has_faculty_signal and not has_explicit_office_entity and not has_pass_score_signal:
+        route = {
             "intent": "faculty_query",
             "strategy": "semantic_filtered_rerank",
-            "target_chunk_types": ["faculty_program_directory"],
+            "target_chunk_types": ["faculty_directory", "program_directory"],
         }
+        if program_metadata:
+            route.update(program_metadata)
+            route["strategy"] = "program_lookup"
+            route["target_chunk_types"] = ["program_directory"]
+        return route
 
     # 6. Office/contact query
     # Ví dụ: "Website Phòng Công nghệ Thông tin là gì?"
@@ -186,13 +306,34 @@ def route_query(query: str) -> dict[str, Any]:
             "target_chunk_types": ["office_directory"],
         }
 
+    if has_form_signal and not has_reg_signal and not has_ktx_signal and not has_faculty_signal:
+        return {
+            "intent": "form_query",
+            "strategy": "form_lookup",
+            "target_chunk_types": ["form"],
+        }
+
+    if contains_any(q, ["phuc khao", "phÃºc kháº£o"]) and contains_any(
+        q, ["quy trinh", "quy trÃ¬nh", "thu tuc", "thá»§ tá»¥c"]
+    ):
+        return {
+            "intent": "procedure_query",
+            "strategy": "semantic_filtered_rerank",
+            "target_chunk_types": ["procedure"],
+        }
+
     # 7. Faculty query còn lại
     if has_faculty_signal:
-        return {
+        route = {
             "intent": "faculty_query",
             "strategy": "semantic_filtered_rerank",
-            "target_chunk_types": ["faculty_program_directory"],
+            "target_chunk_types": ["faculty_directory", "program_directory"],
         }
+        if program_metadata:
+            route.update(program_metadata)
+            route["strategy"] = "program_lookup"
+            route["target_chunk_types"] = ["program_directory"]
+        return route
 
     # 8. Các câu điểm qua môn/rớt môn
     # Nếu hỏi TỪ KHÓA ĐIỂM + RỚT/QUA MÔN -> Tra cứu JSON
@@ -200,6 +341,10 @@ def route_query(query: str) -> dict[str, Any]:
     asks_passing_score = contains_any(
         q, rules["pass_fail_regulation_signal"]
     ) and contains_any(q, ["mấy điểm", "bao nhiêu điểm", "thang điểm", "quy đổi"])
+    asks_passing_score = asks_passing_score or (
+        contains_any(q, ["diem", "d+", "d", "Ä‘iá»ƒm"])
+        and contains_any(q, ["qua mon", "qua mÃ´n", "dat", "Ä‘áº¡t", "khong dat", "khÃ´ng Ä‘áº¡t"])
+    )
     if asks_passing_score:
         return {
             "intent": "score_lookup_query",

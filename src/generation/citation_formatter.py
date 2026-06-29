@@ -5,7 +5,7 @@ from typing import Any
 INTENT_CHUNK_PRIORITY = {
     "form_query": ["form"],
     "office_query": ["office_directory"],
-    "faculty_query": ["faculty_program_directory"],
+    "faculty_query": ["program_directory", "faculty_directory", "faculty_program_directory"],
     "procedure_query": ["procedure"],
     "regulation_query": ["regulation"],
     "score_lookup_query": ["structured_lookup"],
@@ -17,6 +17,8 @@ INTENT_CHUNK_PRIORITY = {
         "procedure",
         "regulation",
         "office_directory",
+        "program_directory",
+        "faculty_directory",
         "faculty_program_directory",
     ],
 }
@@ -97,12 +99,13 @@ def select_relevant_citations(
         "score_lookup_query",
         "structured_lookup",
     }:
+        structured_chunk_types = {"structured_lookup", "program_directory", "form"}
         lookup_citations = [
             citation
             for citation in deduped
-            if _chunk_type(citation) == "structured_lookup"
+            if _chunk_type(citation) in structured_chunk_types
         ]
-        return lookup_citations[:1]
+        return lookup_citations[:max_sources]
 
     if any(_chunk_type(citation) in {"tool", "formula"} for citation in deduped):
         tool_citations = [
@@ -247,6 +250,8 @@ def _citation_title(citation: dict[str, Any]) -> str:
         or citation.get("form_name")
         or citation.get("unit_name")
         or citation.get("faculty_or_unit_name")
+        or citation.get("program_name")
+        or citation.get("faculty_name")
         or citation.get("procedure_name")
         or citation.get("rule_name")
         or citation.get("chunk_id")

@@ -1,6 +1,8 @@
 input:
   scoring_tables: data/processed/tables/scoring_tables.json
   formula_rules: data/processed/tables/formula_rules.json
+  form_templates: data/processed/forms/form_templates.json
+  program_directory: data/processed/directories/program_directory.json
   entity_registry: data/processed/entities/entity_registry.json
   query_expansion_rules: data/processed/entities/query_expansion_rules.json
 
@@ -47,7 +49,7 @@ cache:
 semantic_cache:
   enabled: true
   persist_dir: data/cache/semantic_cache_chroma
-  collection_name: semantic_query_cache
+  collection_name: semantic_query_cache_v2
   max_distance: 0.15
   min_query_length: 8
   verifier_model: llama-3.1-8b-instant

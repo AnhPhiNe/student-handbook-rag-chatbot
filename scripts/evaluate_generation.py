@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -75,7 +76,8 @@ def format_context(citations: list[dict[str, Any]]) -> str:
 
 def evaluate_case(case: dict[str, Any], pipeline: AnswerPipeline, judge: GroqClient) -> dict[str, Any]:
     query = str(case["query"])
-    result = pipeline.answer(query)
+    cohort = case.get("cohort")
+    result = pipeline.answer(query, cohort=str(cohort) if cohort else None)
     answer = str(result.get("answer") or "")
     
     # Get all context used for the answer
@@ -86,6 +88,7 @@ def evaluate_case(case: dict[str, Any], pipeline: AnswerPipeline, judge: GroqCli
         # Failed to retrieve or answer
         return {
             "case_id": case.get("id"),
+            "cohort": cohort,
             "query": query,
             "status": result.get("status"),
             "error_type": result.get("error_type"),
@@ -115,6 +118,7 @@ def evaluate_case(case: dict[str, Any], pipeline: AnswerPipeline, judge: GroqCli
         
     return {
         "case_id": case.get("id"),
+        "cohort": cohort,
         "query": query,
         "status": result.get("status"),
         "intent": result.get("intent"),
@@ -124,14 +128,45 @@ def evaluate_case(case: dict[str, Any], pipeline: AnswerPipeline, judge: GroqCli
 
 def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
     valid_cases = [r for r in results if r.get("status") == "answered"]
+    by_cohort: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for item in results:
+        by_cohort[str(item.get("cohort") or "all")].append(item)
     
     if not valid_cases:
-        return {"total_cases": len(results), "valid_cases": 0}
+        return {
+            "total_cases": len(results),
+            "valid_cases": 0,
+            "cohort_breakdown": {
+                cohort: _summary_for_group(items)
+                for cohort, items in sorted(by_cohort.items())
+            },
+        }
         
     faith_sum = sum(r["metrics"]["faithfulness"] for r in valid_cases)
     rel_sum = sum(r["metrics"]["relevancy"] for r in valid_cases)
     corr_sum = sum(r["metrics"]["correctness"] for r in valid_cases)
     
+    return {
+        "total_cases": len(results),
+        "answered_cases": len(valid_cases),
+        "faithfulness": round(faith_sum / len(valid_cases), 4),
+        "relevancy": round(rel_sum / len(valid_cases), 4),
+        "correctness": round(corr_sum / len(valid_cases), 4),
+        "cohort_breakdown": {
+            cohort: _summary_for_group(items)
+            for cohort, items in sorted(by_cohort.items())
+        },
+    }
+
+
+def _summary_for_group(results: list[dict[str, Any]]) -> dict[str, Any]:
+    valid_cases = [r for r in results if r.get("status") == "answered"]
+    if not valid_cases:
+        return {"total_cases": len(results), "answered_cases": 0}
+
+    faith_sum = sum(r["metrics"]["faithfulness"] for r in valid_cases)
+    rel_sum = sum(r["metrics"]["relevancy"] for r in valid_cases)
+    corr_sum = sum(r["metrics"]["correctness"] for r in valid_cases)
     return {
         "total_cases": len(results),
         "answered_cases": len(valid_cases),

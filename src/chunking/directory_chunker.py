@@ -171,13 +171,63 @@ def build_faculty_chunks(
             chunks.append(
                 create_chunk(
                     chunk_id=f"faculty_{record['record_id']}{suffix}",
-                    chunk_type="faculty_program_directory",
+                    chunk_type="faculty_directory",
                     index_mode="semantic",
                     content=part,
                     metadata={
-                        "source_type": "faculty_program_directory",
+                        "source_type": "faculty_directory",
                         "record_id": record.get("record_id"),
                         "faculty_or_unit_name": faculty_name,
+                        "source_pages": source_pages,
+                        "needs_manual_review": record.get("needs_manual_review"),
+                        "split_from_record": len(parts) > 1,
+                        "part_index": idx,
+                        "total_parts": len(parts),
+                    },
+                )
+            )
+
+    return chunks
+
+
+def build_program_chunks(
+    program_records: list[dict[str, Any]],
+    max_tokens: int = 350,
+) -> list[dict[str, Any]]:
+    """Tạo chunk ngắn cho ngành đào tạo và cơ hội nghề nghiệp."""
+    chunks = []
+
+    for record in program_records:
+        source_pages = record.get("source_pages", [])
+        program_name = record.get("program_name", "")
+        faculty_name = record.get("faculty_name") or "Chưa xác định từ nguồn"
+
+        content = build_directory_content(
+            title=f"Ngành đào tạo: {program_name}",
+            raw_text=join_non_empty(
+                [
+                    f"Khoa phụ trách: {faculty_name}",
+                    record.get("raw_text", ""),
+                ]
+            ),
+            source_pages=source_pages,
+        )
+
+        parts = split_long_directory_content(content, max_tokens=max_tokens)
+
+        for idx, part in enumerate(parts, start=1):
+            suffix = f"_part_{idx}" if len(parts) > 1 else ""
+            chunks.append(
+                create_chunk(
+                    chunk_id=f"program_{record['record_id']}{suffix}",
+                    chunk_type="program_directory",
+                    index_mode="semantic",
+                    content=part,
+                    metadata={
+                        "source_type": "program_directory",
+                        "record_id": record.get("record_id"),
+                        "program_name": program_name,
+                        "faculty_name": record.get("faculty_name"),
                         "source_pages": source_pages,
                         "needs_manual_review": record.get("needs_manual_review"),
                         "split_from_record": len(parts) > 1,
@@ -234,10 +284,11 @@ def build_reference_chunks(
                 create_chunk(
                     chunk_id=f"reference_{record['record_id']}{suffix}",
                     chunk_type="reference_directory",
-                    index_mode="semantic",
+                    index_mode="structured",
                     content=part,
                     metadata={
                         "source_type": "reference_directory",
+                        "content_mode": "archive_only",
                         "record_id": record.get("record_id"),
                         "name": record.get("name"),
                         "source_pages": source_pages,
@@ -254,6 +305,7 @@ def build_reference_chunks(
 def build_directory_chunks(
     office_records: list[dict[str, Any]],
     faculty_records: list[dict[str, Any]],
+    program_records: list[dict[str, Any]],
     reference_records: list[dict[str, Any]],
     directory_max_tokens: int = 350,
 ) -> list[dict[str, Any]]:
@@ -280,5 +332,6 @@ def build_directory_chunks(
     return (
         build_office_chunks(office_records, max_tokens=directory_max_tokens)
         + build_faculty_chunks(faculty_records, max_tokens=directory_max_tokens)
+        + build_program_chunks(program_records, max_tokens=directory_max_tokens)
         + build_reference_chunks(reference_records, max_tokens=directory_max_tokens)
     )

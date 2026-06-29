@@ -163,6 +163,8 @@ def main() -> None:
 
     scoring_tables = load_json(Path(config["input"]["scoring_tables"]))
     formula_rules = load_json(Path(config["input"]["formula_rules"]))
+    form_templates = load_json(Path(config["input"]["form_templates"]))
+    program_directory = load_json(Path(config["input"]["program_directory"]))
 
     model = load_embedding_model(config["embedding"]["model_name"])
     collection = get_chroma_collection(
@@ -183,6 +185,8 @@ def main() -> None:
             collection=collection,
             scoring_tables=scoring_tables,
             formula_rules=formula_rules,
+            form_templates=form_templates,
+            program_directory=program_directory,
             top_k=config["retrieval"]["default_top_k"],
             batch_size=config["embedding"]["batch_size"],
             entity_registry=entity_registry,

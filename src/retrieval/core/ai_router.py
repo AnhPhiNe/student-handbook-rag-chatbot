@@ -65,7 +65,8 @@ Các loại tài liệu (target_chunk_types):
 - "procedure": quy trình, thủ tục (ví dụ: làm thế nào, quy trình xét học bổng)
 - "regulation": quy định, điều kiện, điểm số, học vụ, cảnh cáo, thôi học, học phí
 - "office_directory": thông tin liên hệ phòng ban, trung tâm, địa chỉ, số điện thoại
-- "faculty_program_directory": thông tin khoa, ngành học
+- "faculty_directory": thông tin khoa/tổ, email, website, địa chỉ
+- "program_directory": thông tin ngành đào tạo, cơ hội nghề nghiệp
 
 Các quy tắc (Intent):
 - formula_query: Câu hỏi cần tính toán công thức (điểm trung bình, học phí)
@@ -86,9 +87,19 @@ Chỉ trả về JSON hợp lệ:
   "intent": "tên_intent",
   "strategy": "semantic_filtered",
   "target_chunk_types": ["danh sách chunk types phù hợp"],
+  "content_type": null,
+  "action": null,
+  "scope": null,
   "needs_clarification": false,
   "clarification_question": null
 }}
+
+Nếu câu hỏi đang yêu cầu liệt kê danh sách ngành đào tạo, hãy trả:
+- content_type = "program_directory"
+- action = "list"
+- scope = "school" nếu hỏi toàn trường/HCMUE/trường có ngành nào
+- scope = "faculty" nếu hỏi một khoa cụ thể có ngành nào
+Không tự liệt kê ngành trong router; router chỉ phân loại để hệ thống tra cứu structured data.
 
 Câu hỏi của sinh viên: "{query}"
 """
@@ -140,6 +151,9 @@ Câu hỏi của sinh viên: "{query}"
         intent = parsed.get("intent", "regulation_query")
         strategy = parsed.get("strategy", "semantic_filtered")
         target_chunk_types = parsed.get("target_chunk_types", ["regulation"])
+        content_type = parsed.get("content_type")
+        action = parsed.get("action")
+        scope = parsed.get("scope")
         needs_clarification = parsed.get("needs_clarification", False)
         clarification_question = parsed.get("clarification_question")
 
@@ -150,6 +164,9 @@ Câu hỏi của sinh viên: "{query}"
             "intent": intent,
             "strategy": strategy,
             "target_chunk_types": target_chunk_types,
+            "content_type": content_type,
+            "action": action,
+            "scope": scope,
             "needs_clarification": needs_clarification,
             "clarification_question": clarification_question,
         }

@@ -4,10 +4,24 @@ from difflib import SequenceMatcher
 from typing import Any
 
 
+GENERIC_ENTITY_TOKENS = {
+    "ban",
+    "bo",
+    "hoc",
+    "khoa",
+    "nganh",
+    "phong",
+    "tam",
+    "to",
+    "trung",
+    "vien",
+}
+
+
 def normalize_text(text: str) -> str:
-    text = text.lower()
+    text = str(text).lower()
     text = text.replace("–", "-")
-    text = text.replace("đ", "d")
+    text = text.replace("đ", "d").replace("Đ", "D")
     text = unicodedata.normalize("NFD", text)
     text = "".join(char for char in text if unicodedata.category(char) != "Mn")
     text = re.sub(r"\s+", " ", text)
@@ -25,14 +39,14 @@ def detect_entities(
         canonical = normalize_text(entity["canonical_name"])
         aliases = [normalize_text(a) for a in entity.get("aliases", [])]
 
-        # Exact phrase match duoc uu tien truoc, co boundary de alias ngan khong match nham trong tu dai.
+        # Exact phrase match được ưu tiên trước, có boundary để alias ngắn không match nhầm.
         if _contains_phrase(q, canonical) or any(
             _contains_phrase(q, alias) for alias in aliases
         ):
             detected.append(entity)
             continue
 
-        # Fuzzy match chi dung cho alias dai, giup bat typo nhe nhung tranh false positive voi alias ngan.
+        # Fuzzy chỉ dùng cho alias đủ dài và có token nội dung trùng nhau.
         if _has_fuzzy_alias_match(q, [canonical, *aliases]):
             detected.append(entity)
 
@@ -43,14 +57,11 @@ def normalize_query_with_entities(
     query: str,
     detected_entities: list[dict[str, Any]],
 ) -> str:
-    """
-    Không replace query gốc, chỉ append canonical name để retrieval dễ bắt đúng entity.
-    """
+    """Giữ query gốc và nối thêm tên chuẩn của entity để retrieval bắt đúng vùng dữ liệu."""
     additions = []
 
     for entity in detected_entities:
         canonical = entity["canonical_name"]
-        # Append canonical name de embedding co them tu khoa chuan, nhung van giu nguyen cau user.
         if canonical not in query:
             additions.append(canonical)
 
@@ -76,11 +87,16 @@ def _has_fuzzy_alias_match(query: str, aliases: list[str]) -> bool:
     if len(query_tokens) < 2:
         return False
 
+    query_content_tokens = set(query_tokens) - GENERIC_ENTITY_TOKENS
+
     for alias in aliases:
         alias = normalize_text(alias)
         alias_tokens = re.findall(r"\w+", alias)
-        # Alias qua ngan rat de match nham, nen khong fuzzy cho cac alias ngan.
         if len(alias_tokens) < 2 or len(alias) < 8:
+            continue
+
+        alias_content_tokens = set(alias_tokens) - GENERIC_ENTITY_TOKENS
+        if alias_content_tokens and not (alias_content_tokens & query_content_tokens):
             continue
 
         if _best_window_ratio(query_tokens, alias_tokens) >= _threshold_for_alias(
@@ -96,7 +112,6 @@ def _contains_phrase(text: str, phrase: str) -> bool:
     if not phrase:
         return False
 
-    # Boundary giup "hoc vu" khong match vao "hoc vuot", va "CNTT" khong match trong token la.
     starts_word = phrase[0].isalnum() or phrase[0] == "_"
     ends_word = phrase[-1].isalnum() or phrase[-1] == "_"
     prefix = r"(?<!\w)" if starts_word else ""
@@ -109,7 +124,6 @@ def _best_window_ratio(query_tokens: list[str], alias_tokens: list[str]) -> floa
     min_size = max(1, len(alias_tokens) - 1)
     max_size = min(len(query_tokens), len(alias_tokens) + 1)
 
-    # So alias voi tung cua so token trong query de bat typo/thieu mot tu.
     for size in range(min_size, max_size + 1):
         for start in range(0, len(query_tokens) - size + 1):
             window = " ".join(query_tokens[start : start + size])

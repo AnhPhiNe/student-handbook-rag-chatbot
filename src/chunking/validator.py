@@ -77,3 +77,26 @@ def validate_chunks(chunks: list[dict[str, Any]]) -> list[dict[str, Any]]:
             )
 
     return issues
+
+
+def validate_parent_links(
+    chunks: list[dict[str, Any]],
+    docstore_items: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Kiểm tra child chunks có trỏ được về parent doc trong docstore hay không."""
+    issues = []
+    parent_ids = {item.get("_id") for item in docstore_items if item.get("_id")}
+
+    for chunk in chunks:
+        parent_id = chunk.get("metadata", {}).get("parent_section_id")
+        if parent_id and parent_id not in parent_ids:
+            issues.append(
+                {
+                    "issue": "missing_parent_doc",
+                    "severity": "high",
+                    "chunk_id": chunk.get("chunk_id"),
+                    "parent_section_id": parent_id,
+                }
+            )
+
+    return issues

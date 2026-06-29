@@ -238,6 +238,15 @@ def get_response_cache(
     enabled: bool = True,
     ttl_seconds: int = DEFAULT_CACHE_TTL_SECONDS,
 ) -> ResponseCache:
+    if os.environ.get("STUDENT_RAG_DISABLE_REDIS", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }:
+        print("[Cache] Redis disabled by STUDENT_RAG_DISABLE_REDIS. Using Local JSON.")
+        return ResponseCache(path, enabled, ttl_seconds)
+
     redis_url = os.environ.get("REDIS_URL")
     if redis_url:
         try:

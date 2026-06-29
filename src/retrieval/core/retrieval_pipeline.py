@@ -1,10 +1,53 @@
-from typing import Any
 import logging
+import os
+from typing import Any
 from langsmith import traceable
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
 
 logger = logging.getLogger(__name__)
 _mongo_store = None
+
+
+def _env_bool(name: str, default: bool = False) -> bool:
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+CHUNK_TYPE_ALIASES = {
+    "faculty_program_directory": ["faculty_directory", "program_directory"],
+}
+
+COMPATIBLE_ENTITY_CHUNK_TYPES = {
+    "office_query": {"office_directory", "regulation"},
+    "faculty_query": {"faculty_directory", "program_directory"},
+    "procedure_query": {"procedure", "office_directory", "regulation"},
+    "form_query": {"form", "procedure", "office_directory"},
+    "regulation_query": {"regulation", "office_directory"},
+    "mixed_query": {
+        "faculty_directory",
+        "form",
+        "office_directory",
+        "procedure",
+        "program_directory",
+        "regulation",
+    },
+}
+
+
+def normalize_chunk_types(chunk_types: list[str] | None) -> list[str]:
+    normalized: list[str] = []
+    for chunk_type in chunk_types or []:
+        normalized.extend(CHUNK_TYPE_ALIASES.get(chunk_type, [chunk_type]))
+    return list(dict.fromkeys(normalized))
+
+
+def filter_entity_chunk_types(intent: str, chunk_types: list[str]) -> list[str]:
+    allowed = COMPATIBLE_ENTITY_CHUNK_TYPES.get(intent)
+    if not allowed:
+        return chunk_types
+    return [chunk_type for chunk_type in chunk_types if chunk_type in allowed]
 
 
 def _get_docstore():
@@ -34,6 +77,8 @@ from .entity_linker import (
     normalize_query_with_entities,
 )
 from .formula_lookup import formula_lookup
+from .form_lookup import form_lookup
+from .program_lookup import program_lookup
 from .query_expansion import expand_query
 from .query_router import route_query
 from .ai_router import AIRouter
@@ -78,7 +123,12 @@ def retrieve_with_plan(
 
     # 2. BM25 Search (Sparse)
     bm25_retriever = get_bm25_retriever()
-    sparse_results = bm25_retriever.sparse_search(plan["query"], top_k=candidate_k)
+    sparse_results = bm25_retriever.sparse_search(
+        plan["query"],
+        top_k=candidate_k,
+        chunk_types=plan["chunk_types"],
+        cohort=cohort,
+    )
 
     # 3. Reciprocal Rank Fusion (RRF)
     # Combine results from both retrievers using RRF
@@ -155,6 +205,8 @@ def run_retrieval_pipeline(
     formula_rules: list[dict[str, Any]] | None,
     entity_registry: list[dict[str, Any]],
     expansion_rules: list[dict[str, Any]],
+    form_templates: list[dict[str, Any]] | None = None,
+    program_directory: list[dict[str, Any]] | None = None,
     top_k: int = 5,
     batch_size: int = 8,
     normalize_embeddings: bool = True,
@@ -194,7 +246,7 @@ def run_retrieval_pipeline(
     routing = route_query(query)
 
     # 2. Nếu Rule-based không hiểu, dùng AI Router để phân tích sâu
-    if routing["intent"] == "unknown":
+    if routing["intent"] == "unknown" and not _env_bool("STUDENT_RAG_DISABLE_AI_ROUTER"):
         try:
             routing = AIRouter().route(query)
         except Exception as exc:
@@ -205,6 +257,13 @@ def run_retrieval_pipeline(
                 "target_chunk_types": ["regulation"],
                 "router_error": str(exc),
             }
+    elif routing["intent"] == "unknown":
+        routing = {
+            "intent": "regulation_query",
+            "strategy": "semantic_filtered",
+            "target_chunk_types": ["regulation"],
+            "router_error": "AI Router disabled by STUDENT_RAG_DISABLE_AI_ROUTER",
+        }
 
     intent = routing["intent"]
     strategy = routing["strategy"]
@@ -243,7 +302,10 @@ def run_retrieval_pipeline(
             "out_of_domain": True,
         }
 
-    entity_chunk_types = get_entity_target_chunk_types(detected_entities)
+    entity_chunk_types = filter_entity_chunk_types(
+        intent,
+        get_entity_target_chunk_types(detected_entities),
+    )
 
     if entity_chunk_types and strategy.startswith("semantic"):
         # Neu entity da biet loai chunk muc tieu, ep retrieval tim dung vung du lieu cua entity do.
@@ -251,7 +313,87 @@ def run_retrieval_pipeline(
             dict.fromkeys(routing.get("target_chunk_types", []) + entity_chunk_types)
         )
 
+    routing["target_chunk_types"] = normalize_chunk_types(
+        routing.get("target_chunk_types", [])
+    )
     target_chunk_types = routing.get("target_chunk_types", [])
+
+    program_lookup_result = program_lookup(
+        query,
+        program_directory or [],
+        cohort=cohort,
+        detected_entities=detected_entities,
+        routing=routing,
+    )
+    if program_lookup_result is not None:
+        return {
+            "query": query,
+            "retrieval_query": retrieval_query,
+            "detected_entities": detected_entities,
+            "intent": "faculty_query",
+            "strategy": "program_lookup",
+            "target_chunk_types": ["program_directory"],
+            "structured_result": program_lookup_result,
+            "retrieved_items": [],
+            "citations": build_citation_from_lookup(program_lookup_result),
+            "context_for_llm": build_context_from_lookup(program_lookup_result),
+            "needs_llm_answer": False,
+        }
+
+    form_lookup_result = None
+    if intent == "form_query" or "form" in target_chunk_types:
+        form_lookup_result = form_lookup(
+            query,
+            form_templates or [],
+            cohort=cohort,
+        )
+
+    if intent == "form_query":
+        if form_lookup_result is not None:
+            return {
+                "query": query,
+                "retrieval_query": retrieval_query,
+                "detected_entities": detected_entities,
+                "intent": intent,
+                "strategy": "form_lookup",
+                "target_chunk_types": target_chunk_types,
+                "structured_result": form_lookup_result,
+                "retrieved_items": [],
+                "citations": build_citation_from_lookup(form_lookup_result),
+                "context_for_llm": build_context_from_lookup(form_lookup_result),
+                "needs_llm_answer": True,
+            }
+
+        fallback_plan = {
+            "purpose": "form_fallback",
+            "query": retrieval_query,
+            "chunk_types": ["procedure", "regulation"],
+            "top_k": top_k,
+        }
+        fallback_results = retrieve_with_plan(
+            query=query,
+            plan=fallback_plan,
+            model=model,
+            collection=collection,
+            batch_size=batch_size,
+            normalize_embeddings=normalize_embeddings,
+            detected_entities=detected_entities,
+            cohort=cohort,
+        )
+
+        return {
+            "query": query,
+            "retrieval_query": retrieval_query,
+            "detected_entities": detected_entities,
+            "intent": intent,
+            "strategy": "form_lookup_fallback_to_vector",
+            "target_chunk_types": target_chunk_types,
+            "structured_result": None,
+            "retrieved_items": fallback_results,
+            "citations": build_citations_from_vector_results(fallback_results),
+            "context_for_llm": build_context_from_vector_results(fallback_results),
+            "needs_llm_answer": True,
+        }
 
     if strategy == "calculator_tool":
         # Calculator tra ket qua co cau truc, khong can vector search.
@@ -444,6 +586,15 @@ def run_retrieval_pipeline(
         )
 
     merged_results = merge_plan_results(results_by_plan)
+    citations = build_citations_from_vector_results(merged_results)
+    context_blocks = []
+    if form_lookup_result is not None:
+        citations = build_citation_from_lookup(form_lookup_result) + citations
+        context_blocks.append(build_context_from_lookup(form_lookup_result))
+
+    vector_context = build_context_from_vector_results(merged_results)
+    if vector_context:
+        context_blocks.append(vector_context)
 
     return {
         "query": query,
@@ -453,8 +604,9 @@ def run_retrieval_pipeline(
         "strategy": strategy,
         "target_chunk_types": target_chunk_types,
         "retrieval_plan": retrieval_plan,
+        "structured_result": form_lookup_result,
         "retrieved_items": merged_results,
-        "citations": build_citations_from_vector_results(merged_results),
-        "context_for_llm": build_context_from_vector_results(merged_results),
+        "citations": citations,
+        "context_for_llm": "\n\n---\n\n".join(context_blocks),
         "needs_llm_answer": True,
     }

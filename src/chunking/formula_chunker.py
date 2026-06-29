@@ -51,8 +51,9 @@ def build_formula_chunks(formulas: list[dict[str, Any]]) -> list[dict[str, Any]]
     """
     chunks = []
 
-    for formula in formulas:
+    for index, formula in enumerate(formulas, start=1):
         source_pages = formula.get("source_pages", [])
+        source_page_key = "_".join(str(page) for page in source_pages[:2]) or str(index)
 
         content = join_non_empty(
             [
@@ -68,7 +69,7 @@ def build_formula_chunks(formulas: list[dict[str, Any]]) -> list[dict[str, Any]]
 
         chunks.append(
             create_chunk(
-                chunk_id=f"formula_{formula['rule_id']}",
+                chunk_id=f"formula_{formula['rule_id']}_{source_page_key}_{index}",
                 chunk_type="formula",
                 index_mode="tool",
                 content=content,

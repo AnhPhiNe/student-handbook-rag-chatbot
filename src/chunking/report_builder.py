@@ -20,6 +20,8 @@ def get_max_token_limits() -> dict[str, int]:
         "table": 250,
         "formula": 180,
         "office_directory": 350,
+        "faculty_directory": 350,
+        "program_directory": 350,
         "faculty_program_directory": 350,
         "reference_directory": 350,
         "procedure": 500,

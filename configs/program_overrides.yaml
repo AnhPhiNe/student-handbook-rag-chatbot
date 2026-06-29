@@ -1,0 +1,46 @@
+program_policy:
+  K48-K49:
+    source_cohort: K50-K51
+    document_id: so_tay_sinh_vien_khoa_48
+    exclusions:
+      - toan ung dung
+      - cong nghe giao duc
+    review_status: derived_from_k50_minus_exclusions
+    derived_rule: K48-K49 dùng danh sách ngành K50-K51, trừ Toán ứng dụng và Công nghệ Giáo dục.
+
+expected_counts:
+  program_directory:
+    K48-K49: 42
+    K50-K51: 44
+
+program_faculty_overrides:
+  cong nghe giao duc: Khoa Công nghệ Thông tin
+  cong nghe thong tin: Khoa Công nghệ Thông tin
+  dia ly hoc: Khoa Địa lý
+  du lich: Khoa Địa lý
+  giao duc chinh tri: Khoa Giáo dục Chính trị
+  giao duc cong dan: Khoa Giáo dục Chính trị
+  giao duc dac biet: Khoa Giáo dục Đặc biệt
+  giao duc hoc: Khoa Khoa học Giáo dục
+  giao duc mam non trinh do cao dang va dai hoc: Khoa Giáo dục Mầm non
+  giao duc quoc phong an ninh: Khoa Giáo dục Quốc phòng
+  giao duc the chat: Khoa Giáo dục Thể chất
+  giao duc tieu hoc: Khoa Giáo dục Tiểu học
+  hoa hoc: Khoa Hóa học
+  ngon ngu han quoc: Khoa Tiếng Hàn Quốc
+  ngon ngu nhat: Khoa Tiếng Nhật
+  quan ly giao duc: Khoa Khoa học Giáo dục
+  sinh hoc ung dung: Khoa Sinh học
+  su pham cong nghe: Khoa Vật lý
+  su pham dia ly: Khoa Địa lý
+  su pham lich su dia ly: Khoa Địa lý
+  su pham hoa hoc: Khoa Hóa học
+  su pham sinh hoc: Khoa Sinh học
+  su pham tin hoc: Khoa Công nghệ Thông tin
+  su pham toan hoc: Khoa Toán - Tin học
+  su pham toan hoc tieng viet va song ngu viet anh: Khoa Toán - Tin học
+  su pham vat ly: Khoa Vật lý
+  tam ly hoc: Khoa Tâm lý học
+  tam ly hoc giao duc: Khoa Tâm lý học
+  toan ung dung: Khoa Toán - Tin học
+  vat ly hoc: Khoa Vật lý

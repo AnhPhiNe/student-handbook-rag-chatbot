@@ -76,7 +76,7 @@ class QueryRewriter:
         trigger_on_typo_signals: bool = True,
         client: Any | None = None,
     ) -> None:
-        load_project_env()
+        load_project_env(override=not _env_bool("STUDENT_RAG_OFFLINE_EVAL"))
         self.enabled = enabled
         self.model_name = model_name
         self.api_key_env_var = api_key_env_var

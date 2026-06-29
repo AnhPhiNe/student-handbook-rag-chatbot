@@ -197,6 +197,8 @@ SPECIFIC_ACTION_SIGNALS = [
 CHUNK_TYPE_LABELS = {
     "form": "biểu mẫu/giấy tờ",
     "office_directory": "đơn vị/phòng ban liên hệ",
+    "faculty_directory": "khoa/tổ",
+    "program_directory": "ngành đào tạo",
     "faculty_program_directory": "khoa/ngành đào tạo",
     "procedure": "quy trình/thủ tục",
     "regulation": "điều kiện/quy định",
@@ -240,6 +242,8 @@ def can_answer_deterministically(retrieval_result: dict[str, Any]) -> bool:
 
     structured_res = retrieval_result.get("structured_result")
     if _has_result(structured_res):
+        if structured_res.get("lookup_type") == "program_directory":
+            return True
         row = structured_res.get("result")
         # NẾU LÀ DICT (kết quả 1 dòng ngắn gọn), ta CHẮC CHẮN không cần LLM.
         if isinstance(row, dict):
@@ -579,7 +583,7 @@ def _entity_type_group(item: dict[str, Any]) -> str:
     chunk_type = str(metadata.get("chunk_type") or "").strip()
     if chunk_type == "office_directory":
         return "office"
-    if chunk_type == "faculty_program_directory":
+    if chunk_type in {"faculty_directory", "program_directory", "faculty_program_directory"}:
         return "faculty"
     return ""
 
@@ -674,6 +678,9 @@ def _has_formula_result(value: Any) -> bool:
 
 
 def _format_structured_result(structured_result: dict[str, Any]) -> str:
+    if structured_result.get("lookup_type") == "program_directory":
+        return _format_program_directory_result(structured_result)
+
     table_name = structured_result.get("table_name") or "bảng tra cứu"
     input_value = structured_result.get("input_value")
     row = structured_result.get("result")
@@ -698,6 +705,43 @@ def _format_structured_result(structured_result: dict[str, Any]) -> str:
         return f"Tra theo {table_name}, giá trị {input_value} có kết quả: {fields}."
 
     return f"Tra theo {table_name}, giá trị {input_value} có kết quả: {row}."
+
+
+def _format_program_directory_result(structured_result: dict[str, Any]) -> str:
+    programs = structured_result.get("result") or []
+    cohort = structured_result.get("cohort")
+    scope = structured_result.get("lookup_scope")
+
+    if not programs:
+        return "Mình chưa tìm thấy danh sách ngành phù hợp trong dữ liệu sổ tay."
+
+    title = "Các ngành đào tạo"
+    if cohort:
+        title += f" áp dụng cho {cohort}"
+    if scope == "faculty":
+        first_faculty = programs[0].get("faculty_name")
+        if first_faculty:
+            title = f"{first_faculty} có các ngành đào tạo"
+
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for program in programs:
+        faculty = str(program.get("faculty_name") or "Chưa xác định khoa phụ trách")
+        grouped.setdefault(faculty, []).append(program)
+
+    lines = [f"{title} ({len(programs)} ngành):"]
+    for faculty, items in grouped.items():
+        lines.append("")
+        lines.append(f"{faculty}:")
+        for item in items:
+            pages = item.get("source_pages") or []
+            page_text = (
+                f" (trang {', '.join(str(page) for page in pages)})"
+                if pages
+                else ""
+            )
+            lines.append(f"- {item.get('program_name')}{page_text}")
+
+    return "\n".join(lines)
 
 
 def _format_tool_result(tool_result: dict[str, Any]) -> str:

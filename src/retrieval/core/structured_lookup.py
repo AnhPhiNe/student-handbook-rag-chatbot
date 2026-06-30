@@ -331,6 +331,11 @@ def structured_lookup(
     if asks_scale_4:
         return lookup_letter_grade(query, tables)
 
+    if re.search(r"\d+(?:[,.]\d+)?", query) and any(
+        k in ascii_q for k in ["diem chu", "tuong ung", "quy doi"]
+    ):
+        return lookup_grade_10_to_letter(query, tables)
+
     # Thu tu uu tien giup query co keyword ro di vao dung bang truoc.
     if "rèn luyện" in q:
         return lookup_conduct_classification(query, tables)

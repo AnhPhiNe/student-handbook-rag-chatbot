@@ -7,6 +7,10 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 from src.common.console import configure_utf8_stdio
 from src.retrieval.core.query_router import route_query
 

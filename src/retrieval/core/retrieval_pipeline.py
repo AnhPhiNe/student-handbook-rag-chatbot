@@ -1,5 +1,7 @@
 import logging
 import os
+import re
+import unicodedata
 from typing import Any
 from langsmith import traceable
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
@@ -20,9 +22,9 @@ CHUNK_TYPE_ALIASES = {
 }
 
 COMPATIBLE_ENTITY_CHUNK_TYPES = {
-    "office_query": {"office_directory", "regulation"},
+    "office_query": {"office_directory"},
     "faculty_query": {"faculty_directory", "program_directory"},
-    "procedure_query": {"procedure", "office_directory", "regulation"},
+    "procedure_query": {"procedure", "office_directory"},
     "form_query": {"form", "procedure", "office_directory"},
     "regulation_query": {"regulation", "office_directory"},
     "mixed_query": {
@@ -55,6 +57,144 @@ def _get_docstore():
     if _mongo_store is None:
         _mongo_store = get_mongo_store()
     return _mongo_store
+
+
+def _normalize_text(text: Any) -> str:
+    value = str(text or "").lower().replace("–", "-")
+    value = value.replace("đ", "d").replace("Đ", "D")
+    value = unicodedata.normalize("NFD", value)
+    value = "".join(ch for ch in value if unicodedata.category(ch) != "Mn")
+    value = re.sub(r"[^\w\s+-]", " ", value)
+    value = re.sub(r"\s+", " ", value)
+    return value.strip()
+
+
+def _metadata_text(doc: dict[str, Any]) -> str:
+    metadata = doc.get("metadata") or {}
+    parts = [
+        doc.get("chunk_id"),
+        doc.get("chunk_type"),
+        metadata.get("chunk_type"),
+        metadata.get("source_type"),
+        metadata.get("content_type"),
+        metadata.get("title"),
+        metadata.get("document_title"),
+        metadata.get("chapter"),
+        metadata.get("article"),
+        metadata.get("source_section"),
+        metadata.get("unit_name"),
+        metadata.get("faculty_or_unit_name"),
+        metadata.get("procedure_name"),
+        metadata.get("form_name"),
+    ]
+    return _normalize_text(" ".join(str(part) for part in parts if part))
+
+
+def _infer_chunk_type(doc: dict[str, Any]) -> str | None:
+    metadata = doc.get("metadata") or {}
+    explicit = doc.get("chunk_type") or metadata.get("chunk_type")
+    if explicit:
+        return str(explicit)
+
+    source_type = str(metadata.get("source_type") or "")
+    content_type = str(metadata.get("content_type") or "")
+    chunk_id = str(doc.get("chunk_id") or "")
+
+    if source_type in {
+        "faculty_directory",
+        "office_directory",
+        "program_directory",
+        "procedure",
+        "form",
+    }:
+        return source_type
+    if source_type == "structured_section" or content_type == "regulation_text":
+        return "regulation"
+
+    id_markers = {
+        "_reg_": "regulation",
+        "_faculty_": "faculty_directory",
+        "_office_": "office_directory",
+        "_program_": "program_directory",
+        "_procedure_": "procedure",
+        "_form_": "form",
+    }
+    for marker, chunk_type in id_markers.items():
+        if marker in chunk_id:
+            return chunk_type
+    return None
+
+
+def _ensure_chunk_type_metadata(doc: dict[str, Any]) -> dict[str, Any]:
+    metadata = dict(doc.get("metadata") or {})
+    chunk_type = _infer_chunk_type({**doc, "metadata": metadata})
+    if chunk_type:
+        metadata["chunk_type"] = chunk_type
+        doc["chunk_type"] = chunk_type
+    doc["metadata"] = metadata
+    return doc
+
+
+def _entity_aliases(detected_entities: list[dict[str, Any]]) -> list[str]:
+    aliases: list[str] = []
+    for entity in detected_entities:
+        aliases.append(str(entity.get("canonical_name") or ""))
+        aliases.extend(str(alias) for alias in entity.get("aliases") or [])
+    return [_normalize_text(alias) for alias in aliases if str(alias).strip()]
+
+
+def _metadata_boost(
+    query: str,
+    doc: dict[str, Any],
+    plan: dict[str, Any],
+    detected_entities: list[dict[str, Any]],
+    cohort: str | None = None,
+) -> float:
+    metadata = doc.get("metadata") or {}
+    metadata_text = _metadata_text(doc)
+    query_text = _normalize_text(query)
+    boost = 0.0
+
+    doc_type = _infer_chunk_type(doc)
+    if doc_type in set(plan.get("chunk_types") or []):
+        boost += 0.05
+
+    purpose_to_type = {
+        "faculty": {"faculty_directory", "program_directory"},
+        "faculty_query": {"faculty_directory", "program_directory"},
+        "office": {"office_directory"},
+        "office_query": {"office_directory"},
+        "procedure": {"procedure"},
+        "procedure_query": {"procedure"},
+        "regulation": {"regulation"},
+        "regulation_query": {"regulation"},
+    }
+    preferred_types = purpose_to_type.get(str(plan.get("purpose")), set())
+    if doc_type in preferred_types:
+        boost += 0.08
+
+    if cohort and metadata.get("cohort") == cohort:
+        boost += 0.04
+
+    for alias in _entity_aliases(detected_entities):
+        if len(alias) >= 5 and alias in metadata_text:
+            boost += 0.12
+            break
+
+    query_terms = {
+        term
+        for term in re.findall(r"\w+", query_text)
+        if len(term) >= 4 and term not in {"nhung", "nganh", "khoa", "phong", "truong"}
+    }
+    if query_terms:
+        matches = sum(1 for term in query_terms if term in metadata_text)
+        boost += min(matches * 0.025, 0.10)
+
+    article_match = re.search(r"\b(?:dieu|article)\s*(\d+)\b", query_text)
+    if article_match and article_match.group(1) in metadata_text:
+        boost += 0.18
+
+    return min(boost, 0.30)
 
 
 from sentence_transformers import SentenceTransformer
@@ -98,6 +238,8 @@ def retrieve_with_plan(
     normalize_embeddings: bool,
     detected_entities: list[dict[str, Any]],
     cohort: str | None = None,
+    candidate_multiplier: int = 5,
+    min_candidates: int = 25,
 ) -> list[dict[str, Any]]:
     """Tìm kiếm Vector dựa trên bản kế hoạch (Retrieval Plan) và Xếp hạng lại (Reranking).
 
@@ -107,10 +249,12 @@ def retrieve_with_plan(
     3. Lọc nhiễu: Loại bỏ các document có final_score < 0.70 (Tránh ảo giác cho LLM).
     4. Trả về top_k kết quả tốt nhất.
     """
-    candidate_k = max(plan["top_k"] * 4, 20)
+    candidate_k = max(plan["top_k"] * candidate_multiplier, min_candidates)
 
     # 1. Vector Search (Dense)
-    vector_results = vector_search(
+    vector_results = [
+        _ensure_chunk_type_metadata(doc)
+        for doc in vector_search(
         query=plan["query"],
         model=model,
         collection=collection,
@@ -119,16 +263,20 @@ def retrieve_with_plan(
         batch_size=batch_size,
         normalize_embeddings=normalize_embeddings,
         cohort=cohort,
-    )
+        )
+    ]
 
     # 2. BM25 Search (Sparse)
     bm25_retriever = get_bm25_retriever()
-    sparse_results = bm25_retriever.sparse_search(
+    sparse_results = [
+        _ensure_chunk_type_metadata(doc)
+        for doc in bm25_retriever.sparse_search(
         plan["query"],
         top_k=candidate_k,
         chunk_types=plan["chunk_types"],
         cohort=cohort,
-    )
+        )
+    ]
 
     # 3. Reciprocal Rank Fusion (RRF)
     # Combine results from both retrievers using RRF
@@ -156,12 +304,34 @@ def retrieve_with_plan(
     sorted_ids = sorted(
         combined_scores.keys(), key=lambda x: combined_scores[x], reverse=True
     )
-    fused_results = [docs_map[doc_id] for doc_id in sorted_ids[:candidate_k]]
+    fused_results = [
+        _ensure_chunk_type_metadata(docs_map[doc_id]) for doc_id in sorted_ids[:candidate_k]
+    ]
 
     # 4. Local Cross-Encoder Reranking
     reranked = rerank_with_cross_encoder(
-        query=query, results=fused_results, top_n=plan["top_k"]
+        query=query, results=fused_results, top_n=candidate_k
     )
+    reranked = [_ensure_chunk_type_metadata(doc) for doc in reranked]
+    for doc in reranked:
+        rerank = dict(doc.get("rerank") or {})
+        semantic_score = float(rerank.get("final_score") or 0.0)
+        boost = _metadata_boost(
+            query=query,
+            doc=doc,
+            plan=plan,
+            detected_entities=detected_entities,
+            cohort=cohort,
+        )
+        rerank["semantic_score"] = semantic_score
+        rerank["metadata_boost"] = boost
+        rerank["final_score"] = min(semantic_score + boost, 1.0)
+        doc["rerank"] = rerank
+    reranked = sorted(
+        reranked,
+        key=lambda item: item.get("rerank", {}).get("final_score", 0.0),
+        reverse=True,
+    )[: plan["top_k"]]
 
     # 5. Lọc nhiễu
     filtered = [doc for doc in reranked if doc["rerank"]["final_score"] >= 0.20]
@@ -211,6 +381,8 @@ def run_retrieval_pipeline(
     batch_size: int = 8,
     normalize_embeddings: bool = True,
     cohort: str | None = None,
+    candidate_multiplier: int = 5,
+    min_candidates: int = 25,
 ) -> dict[str, Any]:
     """Hàm lõi điều phối toàn bộ quá trình Tìm kiếm dữ liệu (Retrieval Pipeline).
 
@@ -317,6 +489,10 @@ def run_retrieval_pipeline(
         routing.get("target_chunk_types", [])
     )
     target_chunk_types = routing.get("target_chunk_types", [])
+    candidate_options = {
+        "candidate_multiplier": candidate_multiplier,
+        "min_candidates": min_candidates,
+    }
 
     program_lookup_result = program_lookup(
         query,
@@ -379,6 +555,7 @@ def run_retrieval_pipeline(
             normalize_embeddings=normalize_embeddings,
             detected_entities=detected_entities,
             cohort=cohort,
+            **candidate_options,
         )
 
         return {
@@ -434,6 +611,7 @@ def run_retrieval_pipeline(
                 normalize_embeddings=normalize_embeddings,
                 detected_entities=detected_entities,
                 cohort=cohort,
+                **candidate_options,
             )
 
             return {
@@ -466,6 +644,7 @@ def run_retrieval_pipeline(
             normalize_embeddings=normalize_embeddings,
             detected_entities=detected_entities,
             cohort=cohort,
+            **candidate_options,
         )
 
         return {
@@ -506,6 +685,7 @@ def run_retrieval_pipeline(
                 normalize_embeddings=normalize_embeddings,
                 detected_entities=detected_entities,
                 cohort=cohort,
+                **candidate_options,
             )
 
             return {
@@ -537,6 +717,7 @@ def run_retrieval_pipeline(
             normalize_embeddings=normalize_embeddings,
             detected_entities=detected_entities,
             cohort=cohort,
+            **candidate_options,
         )
 
         return {
@@ -576,6 +757,7 @@ def run_retrieval_pipeline(
             normalize_embeddings=normalize_embeddings,
             detected_entities=detected_entities,
             cohort=cohort,
+            **candidate_options,
         )
 
         results_by_plan.append(

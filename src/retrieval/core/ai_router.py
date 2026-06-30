@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import re
 from typing import Any
 from groq import Groq
@@ -34,16 +35,16 @@ class AIRouter:
         self.available_keys = [k.strip() for k in keys_str.split(",") if k.strip()]
 
         # Build fallback matrix (Model x Key)
-        fallback_models = [model_name, "llama-3.1-8b-instant"]
+        fallback_models = [
+            model_name,
+            "qwen/qwen3.6-27b",
+            "llama-3.1-8b-instant",
+        ]
         models = []
         for m in fallback_models:
             if m not in models:
                 models.append(m)
-
-        self.providers = []
-        for m in models:
-            for k in self.available_keys:
-                self.providers.append({"model": m, "api_key": k})
+        self.models = models
 
     def route(self, query: str) -> dict[str, Any]:
         """Phân tích câu hỏi và trả về chiến lược tìm kiếm (Routing Strategy).
@@ -111,8 +112,13 @@ Câu hỏi của sinh viên: "{query}"
             APIConnectionError,
         )
 
+        keys = list(self.available_keys)
+        random.shuffle(keys)
+        providers = [{"model": m, "api_key": k} for m in self.models for k in keys]
+
         last_error: Exception | None = None
-        for provider in self.providers:
+        model_used: str | None = None
+        for provider in providers:
             try:
                 client = Groq(api_key=provider["api_key"], timeout=5.0, max_retries=0)
                 response = client.chat.completions.create(
@@ -127,6 +133,8 @@ Câu hỏi của sinh viên: "{query}"
                     raise ValueError("Empty response from Groq")
 
                 parsed = self._extract_json_object(raw_text)
+                model_used = provider["model"]
+                print(f"[AIRouter] model_used={model_used}")
                 break  # Success!
 
             except (
@@ -169,6 +177,7 @@ Câu hỏi của sinh viên: "{query}"
             "scope": scope,
             "needs_clarification": needs_clarification,
             "clarification_question": clarification_question,
+            "model_used": model_used,
         }
 
     def _extract_json_object(self, text: str) -> dict[str, Any]:

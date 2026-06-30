@@ -23,6 +23,8 @@ vectorstore:
 retrieval:
   default_top_k: 5
   filtered_top_k: 5
+  candidate_multiplier: 5
+  min_candidates: 25
 
 output:
   test_report: data/processed/metadata/retrieval_test_report.json

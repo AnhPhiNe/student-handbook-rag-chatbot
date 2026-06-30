@@ -77,12 +77,14 @@ class GroqClient:
                 text = response.choices[0].message.content
                 if not text:
                     raise RuntimeError("Groq API returned an empty response.")
+                print(f"[GroqClient] mode=generate model_used={provider['model']}")
                 return {
                     "ok": True,
                     "text": text,
                     "error_type": None,
                     "error_message": None,
                     "attempts": 1,
+                    "model_used": provider["model"],
                 }
             except Exception as exc:
                 last_error = exc
@@ -97,6 +99,7 @@ class GroqClient:
             "error_type": "api_error",
             "error_message": str(last_error),
             "attempts": len(providers),
+            "model_used": None,
         }
 
     @traceable(name="Groq Generation Stream", run_type="llm")
@@ -122,6 +125,7 @@ class GroqClient:
                     max_tokens=self._config["max_tokens"],
                     stream=True,
                 )
+                print(f"[GroqClient] mode=stream model_used={provider['model']}")
 
                 # Fetch first chunk to verify TTFT and API health
                 iterator = iter(response)

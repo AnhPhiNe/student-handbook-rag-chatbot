@@ -17,11 +17,13 @@ vectorstore:
 
 retrieval:
   default_top_k: 5
+  candidate_multiplier: 5
+  min_candidates: 25
 
 query_rewriter:
   enabled: true
   api_key_env_var: QUERY_REWRITER_API_KEY
-  model_name: llama-3.3-70b-versatile
+  model_name: llama-3.1-8b-instant
   temperature: 0.0
   max_output_tokens: 256
   max_retries: 1
@@ -40,7 +42,7 @@ llm:
   retry_max_delay_seconds: 20
   request_timeout_seconds: 60
   request_sleep_seconds: 2
-  max_context_chars: 12000
+  max_context_chars: 6000
 
 cache:
   enabled: true

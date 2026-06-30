@@ -192,6 +192,8 @@ def main() -> None:
             entity_registry=entity_registry,
             expansion_rules=expansion_rules,
             normalize_embeddings=config["embedding"]["normalize_embeddings"],
+            candidate_multiplier=config["retrieval"].get("candidate_multiplier", 5),
+            min_candidates=config["retrieval"].get("min_candidates", 25),
         )
 
         simple = simplify_result(result)

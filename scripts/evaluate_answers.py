@@ -8,6 +8,10 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
 os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 os.environ["LANGSMITH_TRACING"] = "false"
@@ -45,8 +49,8 @@ from src.common.env_loader import load_project_env
 from src.generation.answer_pipeline import DEFAULT_CONFIG_PATH, AnswerPipeline
 
 
-DEFAULT_CASES_PATH = Path("data/eval/answer_eval_cases.json")
-DEFAULT_OUTPUT_PATH = Path("data/processed/metadata/answer_eval_report.json")
+DEFAULT_CASES_PATH = Path("data/eval/structured_eval_cases.json")
+DEFAULT_OUTPUT_PATH = Path("data/processed/metadata/structured_answer_eval_report.json")
 
 
 class OfflineLlmClient:
@@ -135,6 +139,8 @@ def evaluate_case(case: dict[str, Any], pipeline: AnswerPipeline) -> dict[str, A
     return {
         "id": case.get("id"),
         "category": case.get("category"),
+        "eval_type": case.get("eval_type") or "structured",
+        "content_type": case.get("content_type"),
         "cohort": cohort,
         "query": case["query"],
         "passed": passed,
@@ -154,15 +160,19 @@ def _cohort_arg(value: Any) -> str | None:
     if value is None:
         return None
     text = str(value).strip()
-    if not text or text.lower() == "all":
+    if not text or text.lower() in {"all", "general"}:
         return None
     return text
 
 
 def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
     by_cohort: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    by_content_type: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    by_eval_type: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for item in results:
-        by_cohort[str(item.get("cohort") or "all")].append(item)
+        by_cohort[str(item.get("cohort") or "general")].append(item)
+        by_content_type[str(item.get("content_type") or "unknown")].append(item)
+        by_eval_type[str(item.get("eval_type") or "unknown")].append(item)
 
     return {
         "total_cases": len(results),
@@ -185,6 +195,14 @@ def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
             results,
             "structured_item_count_match",
         ),
+        "eval_type_breakdown": {
+            eval_type: _summary_for_group(items)
+            for eval_type, items in sorted(by_eval_type.items())
+        },
+        "content_type_breakdown": {
+            content_type: _summary_for_group(items)
+            for content_type, items in sorted(by_content_type.items())
+        },
         "cohort_breakdown": {
             cohort: _summary_for_group(items)
             for cohort, items in sorted(by_cohort.items())

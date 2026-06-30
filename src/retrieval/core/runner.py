@@ -60,6 +60,8 @@ def main() -> None:
             normalize_embeddings=config["embedding"]["normalize_embeddings"],
             entity_registry=entity_registry,
             expansion_rules=expansion_rules,
+            candidate_multiplier=config["retrieval"].get("candidate_multiplier", 5),
+            min_candidates=config["retrieval"].get("min_candidates", 25),
         )
 
         results.append(result)

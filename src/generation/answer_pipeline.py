@@ -792,6 +792,8 @@ class AnswerPipeline:
             batch_size=self.config["embedding"]["batch_size"],
             normalize_embeddings=self.config["embedding"]["normalize_embeddings"],
             cohort=cohort,
+            candidate_multiplier=self.config["retrieval"].get("candidate_multiplier", 5),
+            min_candidates=self.config["retrieval"].get("min_candidates", 25),
         )
 
     def _run_verified_retrieval(

@@ -9,6 +9,10 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
 os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 os.environ["LANGSMITH_TRACING"] = "false"
@@ -45,8 +49,8 @@ from src.common.console import configure_utf8_stdio
 
 
 DEFAULT_CONFIG_PATH = Path("configs/retrieval.yaml")
-DEFAULT_GOLDEN_PATH = Path("data/eval/golden_queries.json")
-DEFAULT_OUTPUT_PATH = Path("data/processed/metadata/golden_retrieval_eval_report.json")
+DEFAULT_GOLDEN_PATH = Path("data/eval/true_rag_eval_cases.json")
+DEFAULT_OUTPUT_PATH = Path("data/processed/metadata/true_rag_retrieval_eval_report.json")
 
 
 def load_json(path: Path) -> Any:
@@ -106,7 +110,35 @@ def expected_list(case: dict[str, Any], key: str) -> list[str]:
     return [text] if text else []
 
 
+def normalize_content_type(value: Any) -> str:
+    aliases = {
+        "faculty": "faculty_directory",
+        "form": "form_templates",
+        "office": "office_directory",
+        "procedure": "procedures",
+        "program": "program_directory",
+        "regulation": "regulation_sections",
+    }
+    text = str(value or "").strip()
+    return aliases.get(text, text)
+
+
+def normalize_chunk_type(value: Any) -> str:
+    aliases = {
+        "faculty": "faculty_directory",
+        "form_templates": "form",
+        "office": "office_directory",
+        "procedures": "procedure",
+        "program": "program_directory",
+        "regulation_sections": "regulation",
+    }
+    text = str(value or "").strip()
+    return aliases.get(text, text)
+
+
 def has_retrieval_expectation(case: dict[str, Any]) -> bool:
+    if str(case.get("eval_type") or "").strip() == "structured":
+        return False
     return any(
         case.get(key)
         for key in (
@@ -123,7 +155,7 @@ def cohort_arg(value: Any) -> str | None:
     if value is None:
         return None
     text = str(value).strip()
-    if not text or text.lower() == "all":
+    if not text or text.lower() in {"all", "general"}:
         return None
     return text
 
@@ -137,12 +169,17 @@ def metadata_relevance(item: dict[str, Any], case: dict[str, Any]) -> bool:
 
     checks: list[bool] = []
 
-    expected_content_types = set(expected_list(case, "expected_content_types"))
+    expected_content_types = {
+        normalize_chunk_type(item)
+        for item in expected_list(case, "expected_content_types")
+    }
     if expected_content_types:
-        checks.append(str(metadata.get("chunk_type")) in expected_content_types)
+        checks.append(
+            normalize_chunk_type(metadata.get("chunk_type")) in expected_content_types
+        )
 
     expected_cohort = str(case.get("expected_cohort") or case.get("cohort") or "").strip()
-    if expected_cohort and expected_cohort.lower() != "all":
+    if expected_cohort and expected_cohort.lower() not in {"all", "general"}:
         checks.append(str(metadata.get("cohort")) == expected_cohort)
 
     expected_document_id = str(case.get("expected_document_id") or "").strip()
@@ -207,6 +244,11 @@ def evaluate_case(case: dict[str, Any], result: dict[str, Any]) -> dict[str, Any
 
     return {
         "query": case["query"],
+        "id": case.get("id"),
+        "eval_type": case.get("eval_type") or (
+            "true_rag" if has_retrieval_expectation(case) else "structured"
+        ),
+        "content_type": case.get("content_type"),
         "cohort": case.get("cohort"),
         "expected_intent": case.get("expected_intent"),
         "actual_intent": result.get("intent"),
@@ -255,6 +297,12 @@ def evaluate_case(case: dict[str, Any], result: dict[str, Any]) -> dict[str, Any
 
 
 def build_summary(case_results: list[dict[str, Any]]) -> dict[str, Any]:
+    true_rag_cases = [
+        item for item in case_results if item.get("eval_type") == "true_rag"
+    ]
+    structured_tool_cases = [
+        item for item in case_results if item.get("eval_type") == "structured"
+    ]
     retrieval_cases = [
         item for item in case_results if item.get("is_retrieval_case")
     ]
@@ -270,9 +318,13 @@ def build_summary(case_results: list[dict[str, Any]]) -> dict[str, Any]:
 
     return {
         "total_cases": len(case_results),
+        "true_rag_cases": len(true_rag_cases),
+        "structured_tool_cases": len(structured_tool_cases),
         "retrieval_cases": len(retrieval_cases),
         "intent_accuracy": _mean_bool(case_results, "intent_match"),
         "strategy_accuracy": _mean_bool(case_results, "strategy_match"),
+        "true_rag_summary": _retrieval_metric_summary(retrieval_cases),
+        "structured_tool_summary": _structured_tool_summary(structured_tool_cases),
         "hit_at_1": _mean_bool(retrieval_cases, "hit_at_1"),
         "hit_at_3": _mean_bool(retrieval_cases, "hit_at_3"),
         "hit_at_5": _mean_bool(retrieval_cases, "hit_at_5"),
@@ -301,6 +353,12 @@ def _summary_for_group(case_results: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "total_cases": len(case_results),
         "retrieval_cases": len(retrieval_cases),
+        "true_rag_cases": sum(
+            1 for item in case_results if item.get("eval_type") == "true_rag"
+        ),
+        "structured_tool_cases": sum(
+            1 for item in case_results if item.get("eval_type") == "structured"
+        ),
         "intent_accuracy": _mean_bool(case_results, "intent_match"),
         "strategy_accuracy": _mean_bool(case_results, "strategy_match"),
         "hit_at_3": _mean_bool(retrieval_cases, "hit_at_3"),
@@ -311,12 +369,41 @@ def _summary_for_group(case_results: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def _retrieval_metric_summary(case_results: list[dict[str, Any]]) -> dict[str, Any]:
+    return {
+        "cases": len(case_results),
+        "hit_at_1": _mean_bool(case_results, "hit_at_1"),
+        "hit_at_3": _mean_bool(case_results, "hit_at_3"),
+        "hit_at_5": _mean_bool(case_results, "hit_at_5"),
+        "mrr": _mean_float(case_results, "reciprocal_rank"),
+        "ndcg_at_5": _mean_float(case_results, "ndcg_at_5"),
+    }
+
+
+def _structured_tool_summary(case_results: list[dict[str, Any]]) -> dict[str, Any]:
+    lookup_cases = [
+        item for item in case_results if item.get("expected_lookup_type")
+    ]
+    tool_cases = [
+        item for item in case_results if item.get("expected_tool_name")
+    ]
+    return {
+        "cases": len(case_results),
+        "lookup_cases": len(lookup_cases),
+        "tool_cases": len(tool_cases),
+        "lookup_accuracy": _mean_bool(lookup_cases, "lookup_match"),
+        "tool_accuracy": _mean_bool(tool_cases, "tool_match"),
+    }
+
+
 def _content_type_breakdown(case_results: list[dict[str, Any]]) -> dict[str, Any]:
     groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for item in case_results:
-        content_types = item.get("expected_content_types") or ["unknown"]
+        content_types = item.get("expected_content_types") or [
+            item.get("content_type") or "unknown"
+        ]
         for content_type in content_types:
-            groups[str(content_type)].append(item)
+            groups[_normalize_report_content_type(str(content_type))].append(item)
 
     return {
         content_type: {
@@ -327,6 +414,19 @@ def _content_type_breakdown(case_results: list[dict[str, Any]]) -> dict[str, Any
         }
         for content_type, items in sorted(groups.items())
     }
+
+
+def _normalize_report_content_type(content_type: str) -> str:
+    aliases = {
+        "faculty": "faculty_directory",
+        "form": "form_templates",
+        "office": "office_directory",
+        "procedure": "procedures",
+        "program": "program_directory",
+        "regulation": "regulation_sections",
+        "scoring_table": "scoring_tables",
+    }
+    return aliases.get(content_type, content_type)
 
 
 def run_evaluation(config_path: Path, golden_path: Path) -> dict[str, Any]:
@@ -385,7 +485,9 @@ def run_evaluation(config_path: Path, golden_path: Path) -> dict[str, Any]:
             top_k=config["retrieval"]["default_top_k"],
             batch_size=config["embedding"]["batch_size"],
             normalize_embeddings=config["embedding"]["normalize_embeddings"],
-        cohort=cohort_arg(cohort),
+            cohort=cohort_arg(cohort),
+            candidate_multiplier=config["retrieval"].get("candidate_multiplier", 5),
+            min_candidates=config["retrieval"].get("min_candidates", 25),
         )
         case_results.append(evaluate_case(case, result))
 

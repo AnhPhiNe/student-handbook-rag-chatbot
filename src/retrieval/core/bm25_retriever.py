@@ -21,13 +21,23 @@ def normalize_text_for_bm25(text: str) -> str:
 
 def get_searchable_text(item: dict[str, Any]) -> str:
     metadata = item.get("metadata", {})
+    source_pages = metadata.get("source_pages") or []
     parts = [
         item.get("content", ""),
         metadata.get("title", ""),
+        metadata.get("document_title", ""),
+        metadata.get("chapter", ""),
+        metadata.get("article", ""),
+        metadata.get("source_section", ""),
+        metadata.get("source_type", ""),
+        metadata.get("content_type", ""),
+        item.get("chunk_type", ""),
+        metadata.get("chunk_type", ""),
         metadata.get("form_name", ""),
         metadata.get("unit_name", ""),
         metadata.get("faculty_or_unit_name", ""),
         metadata.get("procedure_name", ""),
+        " ".join(f"trang {page}" for page in source_pages),
     ]
     return " ".join(str(p) for p in parts if p)
 

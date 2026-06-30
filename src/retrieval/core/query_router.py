@@ -5,7 +5,7 @@ from typing import Any
 from .routing_rules import load_query_routing_rules
 
 
-ASCII_AMBIGUOUS_KEYWORDS = {"ban", "tầng"}
+ASCII_AMBIGUOUS_KEYWORDS = {"ban", "khoa", "tầng"}
 
 
 def normalize_query(query: str) -> str:
@@ -78,7 +78,9 @@ def infer_program_lookup_metadata(query: str) -> dict[str, str] | None:
             "phu trach",
         ],
     )
-    if asks_program_faculty:
+    faculty_scope = contains_any(query, ["khoa", "faculty"])
+
+    if asks_program_faculty and not (asks_list and faculty_scope):
         return {
             "content_type": "program_directory",
             "action": "resolve_faculty",
@@ -98,8 +100,6 @@ def infer_program_lookup_metadata(query: str) -> dict[str, str] | None:
             "dai hoc su pham",
         ],
     )
-    faculty_scope = contains_any(query, ["khoa", "faculty"])
-
     scope = "school"
     if faculty_scope and not school_scope:
         scope = "faculty"
@@ -152,6 +152,9 @@ def infer_score_lookup_metadata(query: str) -> bool:
         "thang 4",
     ]
     has_letter_grade = re.search(r"(?<!\w)(a|b\+?|c\+?|d\+?|f\+?)(?!\w)", ascii_query)
+    if "gpa" in ascii_query and "hoc luc" in ascii_query:
+        return True
+
     return (contains_any(ascii_query, score_cues) or bool(has_letter_grade)) and contains_any(
         ascii_query,
         action_cues,
@@ -182,6 +185,51 @@ def _is_obvious_out_of_domain(query: str) -> bool:
     ]
     weather = ["thoi tiet", "hom nay mua", "troi mua", "nhiet do"]
     return contains_any(ascii_query, food_or_cooking + weather)
+
+
+def _has_regulation_priority_signal(query: str) -> bool:
+    """Nhận diện câu hỏi quy định nên ưu tiên RAG trước tín hiệu khoa/ngành."""
+    ascii_query = strip_accents(query)
+    return bool(re.search(r"\b(dieu|article)\s*\d+\b", ascii_query)) or contains_any(
+        query,
+        [
+            "quy chế",
+            "quy định",
+            "điều kiện",
+            "chuyển ngành",
+            "chuyển nơi học",
+            "chuyển trường",
+            "học vượt",
+            "học lại",
+            "miễn giảm học phí",
+            "nghiên cứu khoa học",
+            "thông tin khoa học",
+            "khoa học và công nghệ",
+            "kế hoạch giảng dạy",
+            "kế hoạch học tập",
+            "học kỳ",
+            "thời khóa biểu",
+            "có được giảm học phí",
+            "có được miễn giảm",
+            "có được hỗ trợ chi phí",
+        ],
+    )
+
+
+def _has_office_support_signal(query: str) -> bool:
+    """Nhận diện câu hỏi về nguồn lực/phòng ban hỗ trợ sinh viên."""
+    return contains_any(
+        query,
+        [
+            "nguồn lực hỗ trợ",
+            "hỗ trợ sinh viên",
+            "dịch vụ hỗ trợ",
+            "đơn vị hỗ trợ",
+            "phòng ban hỗ trợ",
+            "liên hệ ở đâu",
+            "liên hệ phòng nào",
+        ],
+    )
 
 
 def _clarification_question(query: str) -> str | None:
@@ -244,6 +292,13 @@ def route_query(query: str) -> dict[str, Any]:
     has_ktx_signal = contains_any(q, rules["ktx_signal"])
     has_faculty_signal = contains_any(q, rules["faculty_signal"])
     has_explicit_office_entity = contains_any(q, rules["explicit_office_entity"])
+    has_reg_priority_signal = _has_regulation_priority_signal(q)
+    has_office_support_signal = _has_office_support_signal(q)
+
+    if has_reg_priority_signal:
+        program_metadata = None
+        has_faculty_signal = False
+        has_reg_signal = True
 
     # 1. Calculation query
     # Calculator chi kich hoat khi co tin hieu tinh toan va du so dau vao.
@@ -307,6 +362,23 @@ def route_query(query: str) -> dict[str, Any]:
             "intent": "procedure_query",
             "strategy": "semantic_filtered_rerank",
             "target_chunk_types": ["procedure"],
+        }
+
+    if contains_any(q, ["quy trình", "trình tự", "các bước"]) and contains_any(
+        q,
+        ["sinh viên", "khoa", "phòng", "đơn vị", "công việc"],
+    ):
+        return {
+            "intent": "procedure_query",
+            "strategy": "semantic_filtered_rerank",
+            "target_chunk_types": ["procedure"],
+        }
+
+    if has_office_support_signal and not has_reg_priority_signal:
+        return {
+            "intent": "office_query",
+            "strategy": "semantic_filtered_rerank",
+            "target_chunk_types": ["office_directory"],
         }
 
     if program_metadata:

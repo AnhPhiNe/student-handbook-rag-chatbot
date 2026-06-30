@@ -234,6 +234,12 @@ def _select_distinct_chunk_types(
 
 
 def _distance_score(citation: dict[str, Any]) -> float:
+    rerank = citation.get("rerank")
+    if isinstance(rerank, dict):
+        final_score = rerank.get("final_score")
+        if isinstance(final_score, int | float):
+            return -float(final_score)
+
     distance = citation.get("distance")
     if isinstance(distance, int | float):
         return float(distance)

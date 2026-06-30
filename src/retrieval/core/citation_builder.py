@@ -89,6 +89,7 @@ def build_citations_from_vector_results(
                 "source_section": metadata.get("source_section"),
                 "applicability": metadata.get("applicability"),
                 "distance": item.get("distance"),
+                "rerank": item.get("rerank"),
                 "retrieval_purpose": item.get("retrieval_purpose"),
                 "content": item.get("document") or item.get("content"),
             }

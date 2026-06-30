@@ -143,6 +143,60 @@ def _entity_aliases(detected_entities: list[dict[str, Any]]) -> list[str]:
     return [_normalize_text(alias) for alias in aliases if str(alias).strip()]
 
 
+def _query_phrase_match_count(query_text: str, metadata_text: str) -> int:
+    generic_phrases = {
+        "dao tao",
+        "hinh thuc",
+        "hoc tap",
+        "ket qua",
+        "nha truong",
+        "sinh vien",
+    }
+    stopwords = {
+        "ban",
+        "bi",
+        "cua",
+        "cho",
+        "co",
+        "duoc",
+        "em",
+        "gi",
+        "khong",
+        "la",
+        "minh",
+        "nao",
+        "neu",
+        "oan",
+        "quy",
+        "thi",
+        "truong",
+        "ve",
+        "viec",
+    }
+    tokens = [
+        token
+        for token in re.findall(r"\w+", query_text)
+        if token not in stopwords and len(token) >= 2
+    ]
+    if len(tokens) < 2:
+        return 0
+
+    matches = 0
+    matched_phrases: set[str] = set()
+    for size in range(min(4, len(tokens)), 1, -1):
+        for index in range(0, len(tokens) - size + 1):
+            phrase = " ".join(tokens[index : index + size])
+            if phrase in matched_phrases:
+                continue
+            if phrase in generic_phrases:
+                continue
+            if phrase in metadata_text:
+                matched_phrases.add(phrase)
+                matches += 1
+
+    return matches
+
+
 def _metadata_boost(
     query: str,
     doc: dict[str, Any],
@@ -190,11 +244,17 @@ def _metadata_boost(
         matches = sum(1 for term in query_terms if term in metadata_text)
         boost += min(matches * 0.025, 0.10)
 
+    phrase_matches = _query_phrase_match_count(query_text, metadata_text)
+    if phrase_matches:
+        boost += min(phrase_matches * 0.12, 0.24)
+        if phrase_matches >= 2:
+            boost += 0.10
+
     article_match = re.search(r"\b(?:dieu|article)\s*(\d+)\b", query_text)
     if article_match and article_match.group(1) in metadata_text:
         boost += 0.18
 
-    return min(boost, 0.30)
+    return min(boost, 0.50)
 
 
 from sentence_transformers import SentenceTransformer

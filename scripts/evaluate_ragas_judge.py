@@ -54,6 +54,13 @@ DEFAULT_CASES_PATH = Path("data/eval/ragas_judge_cases.json")
 DEFAULT_OUTPUT_PATH = Path("data/processed/metadata/ragas_judge_report.json")
 DEFAULT_ANSWER_CACHE_PATH = Path("data/processed/metadata/ragas_answer_cache.json")
 DEFAULT_JUDGE_MODEL = "gemini-3.1-flash-lite"
+STRUCTURED_TOOL_CONTENT_TYPES = {
+    "form_templates",
+    "formula_rules",
+    "program_directory",
+    "scoring_tables",
+    "threshold_rules",
+}
 
 JUDGE_PROMPT_TEMPLATE = """Bạn là giám khảo đánh giá hệ thống RAG cho Sổ tay sinh viên HCMUE.
 
@@ -114,6 +121,7 @@ class MockJudgeClient:
                 },
                 ensure_ascii=False,
             ),
+            "model_used": "mock-judge",
         }
 
 
@@ -125,6 +133,7 @@ class MockAnswerClient:
                 "Theo nguồn được truy xuất từ Sổ tay sinh viên, câu trả lời cần "
                 "được đối chiếu với phần nguồn đi kèm trong hệ thống."
             ),
+            "model_used": "mock-answer",
         }
 
 
@@ -211,6 +220,16 @@ def cohort_arg(value: Any) -> str | None:
     return text
 
 
+def eval_bucket(eval_type: Any, content_type: Any) -> str:
+    eval_type_text = str(eval_type or "").strip()
+    content_type_text = str(content_type or "").strip()
+    if eval_type_text in {"structured", "tool", "structured_tool"}:
+        return "structured_tool"
+    if content_type_text in STRUCTURED_TOOL_CONTENT_TYPES:
+        return "structured_tool"
+    return "true_rag"
+
+
 def case_cache_key(case: dict[str, Any], index: int) -> str:
     return str(case.get("id") or f"case_{index:03d}")
 
@@ -267,6 +286,7 @@ def answer_record_from_case(
         "query": query,
         "cohort": cohort,
         "eval_type": case.get("eval_type"),
+        "eval_bucket": eval_bucket(case.get("eval_type"), case.get("content_type")),
         "content_type": case.get("content_type"),
         "ground_truth": case.get("ground_truth", ""),
         "status": status,
@@ -275,6 +295,7 @@ def answer_record_from_case(
         "intent": result.get("intent"),
         "strategy": result.get("strategy"),
         "llm_called": result.get("llm_called"),
+        "model_used": result.get("model_used"),
         "citation_count": len(citations),
         "citations": citations,
         "context": format_context(citations),
@@ -292,6 +313,7 @@ def generate_answer_cache(
     resume: bool,
     mock_answers: bool,
     stop_on_failure: bool,
+    disable_answer_fallback: bool,
 ) -> dict[str, Any]:
     os.environ["HF_HUB_OFFLINE"] = "1"
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
@@ -305,6 +327,8 @@ def generate_answer_cache(
     os.environ["LANGCHAIN_API_KEY"] = ""
     os.environ["MONGODB_PARENT_LOOKUP_ENABLED"] = "false"
     os.environ["STUDENT_RAG_DISABLE_AI_ROUTER"] = "1"
+    if disable_answer_fallback:
+        os.environ["STUDENT_RAG_DISABLE_GROQ_FALLBACK"] = "1"
     if mock_answers:
         os.environ["STUDENT_RAG_OFFLINE_EVAL"] = "1"
 
@@ -361,6 +385,7 @@ def generate_answer_cache(
         "generated_this_run": generated,
         "skipped_cached": skipped,
         "failed_this_run": failed,
+        "disable_answer_fallback": disable_answer_fallback,
     }
     return report
 
@@ -396,11 +421,14 @@ def judge_cached_case(
         "query": record.get("query"),
         "cohort": record.get("cohort"),
         "eval_type": record.get("eval_type"),
+        "eval_bucket": record.get("eval_bucket")
+        or eval_bucket(record.get("eval_type"), record.get("content_type")),
         "content_type": record.get("content_type"),
         "status": record.get("status"),
         "intent": record.get("intent"),
         "strategy": record.get("strategy"),
         "llm_called": record.get("llm_called"),
+        "model_used": record.get("model_used"),
         "citation_count": record.get("citation_count"),
         "metrics": metrics,
         "answer_preview": str(record.get("answer") or "")[:700],
@@ -490,10 +518,13 @@ def evaluate_case(
             "query": query,
             "cohort": cohort,
             "eval_type": case.get("eval_type"),
+            "eval_bucket": eval_bucket(case.get("eval_type"), case.get("content_type")),
             "content_type": case.get("content_type"),
             "status": result.get("status"),
             "intent": result.get("intent"),
             "strategy": result.get("strategy"),
+            "llm_called": result.get("llm_called"),
+            "model_used": result.get("model_used"),
             "metrics": _zero_metrics(),
             "judge_raw_output": "empty answer",
         }
@@ -523,11 +554,13 @@ def evaluate_case(
         "query": query,
         "cohort": cohort,
         "eval_type": case.get("eval_type"),
+        "eval_bucket": eval_bucket(case.get("eval_type"), case.get("content_type")),
         "content_type": case.get("content_type"),
         "status": result.get("status"),
         "intent": result.get("intent"),
         "strategy": result.get("strategy"),
         "llm_called": result.get("llm_called"),
+        "model_used": result.get("model_used"),
         "citation_count": len(citations),
         "metrics": metrics,
         "answer_preview": answer[:700],
@@ -538,11 +571,19 @@ def evaluate_case(
 def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
     by_cohort: dict[str, list[dict[str, Any]]] = defaultdict(list)
     by_eval_type: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    by_eval_bucket: dict[str, list[dict[str, Any]]] = defaultdict(list)
     by_content_type: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    by_model_used: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for item in results:
         by_cohort[str(item.get("cohort") or "general")].append(item)
         by_eval_type[str(item.get("eval_type") or "unknown")].append(item)
+        bucket = str(
+            item.get("eval_bucket")
+            or eval_bucket(item.get("eval_type"), item.get("content_type"))
+        )
+        by_eval_bucket[bucket].append(item)
         by_content_type[str(item.get("content_type") or "unknown")].append(item)
+        by_model_used[str(item.get("model_used") or "unknown")].append(item)
 
     return {
         "total_cases": len(results),
@@ -556,10 +597,23 @@ def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
             eval_type: _metric_group_summary(items)
             for eval_type, items in sorted(by_eval_type.items())
         },
+        "eval_bucket_breakdown": {
+            eval_bucket_name: _metric_group_summary(items)
+            for eval_bucket_name, items in sorted(by_eval_bucket.items())
+        },
         "content_type_breakdown": {
             content_type: _metric_group_summary(items)
             for content_type, items in sorted(by_content_type.items())
         },
+        "model_used_breakdown": {
+            model_used: _metric_group_summary(items)
+            for model_used, items in sorted(by_model_used.items())
+        },
+        "true_rag_summary": _metric_group_summary(by_eval_bucket.get("true_rag", [])),
+        "structured_tool_summary": _metric_group_summary(
+            by_eval_bucket.get("structured_tool", [])
+        ),
+        "lowest_scored_cases": _lowest_scored_cases(results, limit=15),
     }
 
 
@@ -584,6 +638,39 @@ def _metric_means(results: list[dict[str, Any]]) -> dict[str, float | None]:
     return output
 
 
+def _lowest_scored_cases(
+    results: list[dict[str, Any]],
+    *,
+    limit: int,
+) -> list[dict[str, Any]]:
+    scored = sorted(results, key=_case_quality_score)
+    return [
+        {
+            "id": item.get("id"),
+            "query": item.get("query"),
+            "cohort": item.get("cohort"),
+            "eval_type": item.get("eval_type"),
+            "eval_bucket": item.get("eval_bucket")
+            or eval_bucket(item.get("eval_type"), item.get("content_type")),
+            "content_type": item.get("content_type"),
+            "model_used": item.get("model_used"),
+            "score": round(_case_quality_score(item), 4),
+            "metrics": item.get("metrics"),
+        }
+        for item in scored[:limit]
+    ]
+
+
+def _case_quality_score(item: dict[str, Any]) -> float:
+    metrics = item.get("metrics") or {}
+    values = [
+        float(metrics.get(metric_name))
+        for metric_name in _zero_metrics()
+        if isinstance(metrics.get(metric_name), int | float)
+    ]
+    return sum(values) / len(values) if values else 0.0
+
+
 def ragas_package_available() -> bool:
     try:
         import ragas  # noqa: F401
@@ -600,6 +687,7 @@ def run_evaluation(
     limit: int | None,
     mock_judge: bool,
     mock_answers: bool,
+    disable_answer_fallback: bool,
 ) -> dict[str, Any]:
     os.environ["HF_HUB_OFFLINE"] = "1"
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
@@ -613,6 +701,8 @@ def run_evaluation(
     os.environ["LANGCHAIN_API_KEY"] = ""
     os.environ["MONGODB_PARENT_LOOKUP_ENABLED"] = "false"
     os.environ["STUDENT_RAG_DISABLE_AI_ROUTER"] = "1"
+    if disable_answer_fallback:
+        os.environ["STUDENT_RAG_DISABLE_GROQ_FALLBACK"] = "1"
     if mock_answers:
         os.environ["STUDENT_RAG_OFFLINE_EVAL"] = "1"
     load_project_env()
@@ -628,6 +718,8 @@ def run_evaluation(
     os.environ["LANGCHAIN_API_KEY"] = ""
     os.environ["MONGODB_PARENT_LOOKUP_ENABLED"] = "false"
     os.environ["STUDENT_RAG_DISABLE_AI_ROUTER"] = "1"
+    if disable_answer_fallback:
+        os.environ["STUDENT_RAG_DISABLE_GROQ_FALLBACK"] = "1"
     cases = load_json(cases_path)
     if limit is not None:
         cases = cases[:limit]
@@ -679,6 +771,7 @@ def run_evaluation(
         "cases_path": str(cases_path),
         "judge_model": "mock" if mock_judge else judge_model,
         "answer_model": "mock" if mock_answers else pipeline.config.get("llm", {}).get("model_name"),
+        "disable_answer_fallback": disable_answer_fallback,
         "sleep_seconds": sleep_seconds,
         "ragas_package_available": ragas_package_available(),
         "summary": build_summary(results),
@@ -702,6 +795,11 @@ def main() -> None:
     parser.add_argument("--judge-from-cache", action="store_true")
     parser.add_argument("--no-resume", action="store_true")
     parser.add_argument("--stop-on-generation-failure", action="store_true")
+    parser.add_argument(
+        "--disable-answer-fallback",
+        action="store_true",
+        help="Use only the configured answer model while generating answers.",
+    )
     parser.add_argument("--fail-under-faithfulness", type=float, default=None)
     args = parser.parse_args()
 
@@ -714,6 +812,7 @@ def main() -> None:
             resume=not args.no_resume,
             mock_answers=args.mock_answers,
             stop_on_failure=args.stop_on_generation_failure,
+            disable_answer_fallback=args.disable_answer_fallback,
         )
         save_json(report, Path(args.output))
         print("\nRAGAS answer cache generation")
@@ -741,6 +840,7 @@ def main() -> None:
             limit=args.limit,
             mock_judge=args.mock_judge,
             mock_answers=args.mock_answers,
+            disable_answer_fallback=args.disable_answer_fallback,
         )
     save_json(report, Path(args.output))
 

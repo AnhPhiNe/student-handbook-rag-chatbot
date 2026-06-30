@@ -36,13 +36,22 @@ class GroqClient:
                 "Missing dependency groq. Install it with: pip install groq"
             ) from exc
 
-        # Build fallback matrix (Model x Key)
-        fallback_models = [
-            model_name,
-            "openai/gpt-oss-120b",
-            "qwen/qwen3.6-27b",
-            "llama-3.1-8b-instant",
-        ]
+        # Build fallback matrix (Model x Key). Eval runs can disable fallback
+        # to compare model behavior cleanly without changing production config.
+        if os.environ.get("STUDENT_RAG_DISABLE_GROQ_FALLBACK", "").strip().lower() in {
+            "1",
+            "true",
+            "yes",
+            "on",
+        }:
+            fallback_models = [model_name]
+        else:
+            fallback_models = [
+                model_name,
+                "openai/gpt-oss-120b",
+                "qwen/qwen3.6-27b",
+                "llama-3.1-8b-instant",
+            ]
         self.models = []
         for m in fallback_models:
             if m not in self.models:

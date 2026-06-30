@@ -72,6 +72,7 @@ class GeminiClient:
                     "error_type": None,
                     "error_message": None,
                     "attempts": attempts,
+                    "model_used": self.model_name,
                 }
             except Exception as exc:
                 last_error_type = self._classify_error(exc)
@@ -90,6 +91,7 @@ class GeminiClient:
             "error_type": last_error_type or "unknown",
             "error_message": last_error_message or "Unknown Gemini API error.",
             "attempts": attempts,
+            "model_used": self.model_name,
         }
 
     def _generate_once(self, prompt: str) -> str:

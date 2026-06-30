@@ -460,6 +460,7 @@ class AnswerPipeline:
                 llm_called=True,
                 used_cache=False,
                 query_rewrite=rewrite_result,
+                model_used=llm_result.get("model_used"),
             )
 
         llm_text = str(llm_result.get("text") or "").strip()
@@ -480,6 +481,7 @@ class AnswerPipeline:
             llm_called=True,
             used_cache=False,
             query_rewrite=rewrite_result,
+            model_used=llm_result.get("model_used"),
         )
         self.response_cache.set(
             cache_key,
@@ -975,10 +977,16 @@ class AnswerPipeline:
         used_cache: bool,
         clarification_needed: bool = False,
         query_rewrite: QueryRewriteResult | None = None,
+        model_used: str | None = None,
     ) -> dict[str, Any]:
         query_rewrite_payload = query_rewrite.to_dict() if query_rewrite else None
         run_tree = get_current_run_tree()
         run_id = str(run_tree.id) if run_tree else None
+        if model_used is None:
+            if used_cache:
+                model_used = "cache"
+            elif not llm_called:
+                model_used = "deterministic"
 
         return {
             "run_id": run_id,
@@ -1002,6 +1010,7 @@ class AnswerPipeline:
             "formula_result": retrieval_result.get("formula_result"),
             "tool_result": retrieval_result.get("tool_result"),
             "llm_called": llm_called,
+            "model_used": model_used,
             "used_cache": used_cache,
             "clarification_needed": clarification_needed,
             "context_used": context_used,

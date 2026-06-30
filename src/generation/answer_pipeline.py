@@ -25,12 +25,12 @@ from .answer_guardrails import (
     is_out_of_domain_query,
 )
 from .citation_formatter import format_sources_text, select_relevant_citations
+from .context_allocation import ContextAllocationConfig, build_context_for_prompt
 from .gemini_client import GeminiClient
 from .io_utils import load_json, load_yaml
 from .prompt_builder import (
     DEFAULT_MAX_CONTEXT_CHARS,
     build_answer_prompt,
-    limit_context,
 )
 from .query_rewriter import QueryRewriter, QueryRewriteResult
 from .response_cache import get_response_cache
@@ -83,6 +83,9 @@ class AnswerPipeline:
         self._llm_client = llm_client
         self.max_context_chars = int(
             llm_config.get("max_context_chars", DEFAULT_MAX_CONTEXT_CHARS)
+        )
+        self.context_allocation = ContextAllocationConfig.from_config(
+            self.config.get("context_allocation")
         )
         self.request_sleep_seconds = float(llm_config.get("request_sleep_seconds", 2))
         self._last_llm_call_at = 0.0
@@ -201,9 +204,10 @@ class AnswerPipeline:
                 query_rewrite=rewrite_result,
             )
 
-        context_used = limit_context(
-            str(retrieval_result.get("context_for_llm") or ""),
+        context_used = build_context_for_prompt(
+            retrieval_result,
             max_context_chars=self.max_context_chars,
+            allocation_config=self.context_allocation,
         )
 
         if retrieval_result.get("rewrite_verification_needs_clarification"):
@@ -380,6 +384,7 @@ class AnswerPipeline:
             retrieval_result=retrieval_result,
             selected_citations=selected_citations,
             cohort=cohort,
+            context_fingerprint=self.context_allocation.cache_fingerprint(),
         )
         cached = self.response_cache.get(cache_key)
         if cached:
@@ -405,6 +410,7 @@ class AnswerPipeline:
             selected_citations=None,
             max_context_chars=self.max_context_chars,
             cohort=cohort,
+            context_allocation=self.context_allocation,
         )
 
         try:
@@ -745,6 +751,7 @@ class AnswerPipeline:
             selected_citations=None,
             max_context_chars=self.max_context_chars,
             cohort=cohort,
+            context_allocation=self.context_allocation,
         )
 
         yield {"type": "progress", "message": "Đang tổng hợp câu trả lời..."}

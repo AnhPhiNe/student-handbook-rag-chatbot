@@ -44,6 +44,13 @@ llm:
   request_sleep_seconds: 2
   max_context_chars: 6000
 
+context_allocation:
+  strategy: score_weighted
+  min_chars_per_doc: 400
+  max_chars_per_doc: 1800
+  sentence_boundary: true
+  cache_version: context_alloc_v1
+
 cache:
   enabled: true
   path: data/cache/answer_response_cache.json

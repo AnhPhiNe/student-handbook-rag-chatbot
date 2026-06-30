@@ -1,6 +1,8 @@
 import json
 from typing import Any
 
+from .context_allocation import ContextAllocationConfig, build_context_for_prompt
+
 
 DEFAULT_MAX_CONTEXT_CHARS = 4000
 
@@ -11,6 +13,7 @@ def build_answer_prompt(
     selected_citations: list[dict[str, Any]] | None = None,
     max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS,
     cohort: str | None = None,
+    context_allocation: ContextAllocationConfig | dict[str, Any] | None = None,
 ) -> str:
     structured_result_data = retrieval_result.get("structured_result")
 
@@ -19,10 +22,11 @@ def build_answer_prompt(
     if structured_result_data:
         max_context_chars = min(max_context_chars, 1500)
 
-    context = _selected_context_or_fallback(
+    context = build_context_for_prompt(
         retrieval_result=retrieval_result,
         selected_citations=selected_citations or [],
         max_context_chars=max_context_chars,
+        allocation_config=context_allocation,
     )
     structured_result = _to_pretty_json(retrieval_result.get("structured_result"))
     tool_result = _to_pretty_json(retrieval_result.get("tool_result"))
@@ -81,6 +85,7 @@ def build_prompt(
     retrieval_result: dict[str, Any],
     max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS,
     cohort: str | None = None,
+    context_allocation: ContextAllocationConfig | dict[str, Any] | None = None,
 ) -> str:
     return build_answer_prompt(
         query=query,
@@ -88,6 +93,7 @@ def build_prompt(
         selected_citations=retrieval_result.get("citations"),
         max_context_chars=max_context_chars,
         cohort=cohort,
+        context_allocation=context_allocation,
     )
 
 

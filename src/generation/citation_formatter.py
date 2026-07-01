@@ -5,7 +5,7 @@ from typing import Any
 INTENT_CHUNK_PRIORITY = {
     "form_query": ["form"],
     "office_query": ["office_directory"],
-    "faculty_query": ["faculty_program_directory"],
+    "faculty_query": ["program_directory", "faculty_directory", "faculty_program_directory"],
     "procedure_query": ["procedure"],
     "regulation_query": ["regulation"],
     "score_lookup_query": ["structured_lookup"],
@@ -17,6 +17,8 @@ INTENT_CHUNK_PRIORITY = {
         "procedure",
         "regulation",
         "office_directory",
+        "program_directory",
+        "faculty_directory",
         "faculty_program_directory",
     ],
 }
@@ -97,12 +99,18 @@ def select_relevant_citations(
         "score_lookup_query",
         "structured_lookup",
     }:
+        structured_chunk_types = {
+            "structured_lookup",
+            "program_directory",
+            "form",
+            "form_template",
+        }
         lookup_citations = [
             citation
             for citation in deduped
-            if _chunk_type(citation) == "structured_lookup"
+            if _chunk_type(citation) in structured_chunk_types
         ]
-        return lookup_citations[:1]
+        return lookup_citations[:max_sources]
 
     if any(_chunk_type(citation) in {"tool", "formula"} for citation in deduped):
         tool_citations = [
@@ -120,6 +128,7 @@ def select_relevant_citations(
         enumerate(deduped),
         key=lambda item: (
             _priority_index(item[1], priorities),
+            -_metadata_match_score(item[1], retrieval_result),
             _distance_score(item[1]),
             item[0],
         ),
@@ -226,10 +235,46 @@ def _select_distinct_chunk_types(
 
 
 def _distance_score(citation: dict[str, Any]) -> float:
+    rerank = citation.get("rerank")
+    if isinstance(rerank, dict):
+        final_score = rerank.get("final_score")
+        if isinstance(final_score, int | float):
+            return -float(final_score)
+
     distance = citation.get("distance")
     if isinstance(distance, int | float):
         return float(distance)
     return 999.0
+
+
+def _metadata_match_score(
+    citation: dict[str, Any],
+    retrieval_result: dict[str, Any],
+) -> float:
+    score = 0.0
+
+    expected_cohort = str(retrieval_result.get("selected_cohort") or "").strip()
+    citation_cohort = str(citation.get("cohort") or "").strip()
+    if expected_cohort and citation_cohort == expected_cohort:
+        score += 2.0
+
+    target_chunk_types = {
+        str(item).strip()
+        for item in retrieval_result.get("target_chunk_types") or []
+        if str(item).strip()
+    }
+    if target_chunk_types and _chunk_type(citation) in target_chunk_types:
+        score += 1.5
+
+    source_section = str(citation.get("source_section") or "").strip()
+    if source_section:
+        score += 0.25
+
+    pages = parse_source_pages(citation.get("source_pages"))
+    if pages:
+        score += 0.25
+
+    return score
 
 
 def _chunk_type(citation: dict[str, Any]) -> str:
@@ -247,6 +292,8 @@ def _citation_title(citation: dict[str, Any]) -> str:
         or citation.get("form_name")
         or citation.get("unit_name")
         or citation.get("faculty_or_unit_name")
+        or citation.get("program_name")
+        or citation.get("faculty_name")
         or citation.get("procedure_name")
         or citation.get("rule_name")
         or citation.get("chunk_id")

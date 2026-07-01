@@ -87,10 +87,12 @@ class ResponseCache:
         retrieval_result: dict[str, Any],
         selected_citations: list[dict[str, Any]] | None,
         cohort: str | None = None,
+        context_fingerprint: dict[str, Any] | None = None,
     ) -> str:
         payload = {
             "query": query,
             "cohort": cohort,
+            "context_fingerprint": context_fingerprint or {},
             "retrieval_query": retrieval_result.get("retrieval_query"),
             "citations": [
                 {
@@ -238,6 +240,15 @@ def get_response_cache(
     enabled: bool = True,
     ttl_seconds: int = DEFAULT_CACHE_TTL_SECONDS,
 ) -> ResponseCache:
+    if os.environ.get("STUDENT_RAG_DISABLE_REDIS", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }:
+        print("[Cache] Redis disabled by STUDENT_RAG_DISABLE_REDIS. Using Local JSON.")
+        return ResponseCache(path, enabled, ttl_seconds)
+
     redis_url = os.environ.get("REDIS_URL")
     if redis_url:
         try:

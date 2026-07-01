@@ -18,7 +18,7 @@ from src.generation.context_resolver import (
 )
 
 
-DEFAULT_REWRITER_MODEL = "qwen/qwen3.6-27b"
+DEFAULT_REWRITER_MODEL = "llama-3.1-8b-instant"
 DEFAULT_REWRITER_API_KEY_ENV = "QUERY_REWRITER_API_KEY"
 FALLBACK_REWRITER_API_KEY_ENV = "GROQ_API_KEY"
 
@@ -76,7 +76,7 @@ class QueryRewriter:
         trigger_on_typo_signals: bool = True,
         client: Any | None = None,
     ) -> None:
-        load_project_env()
+        load_project_env(override=not _env_bool("STUDENT_RAG_OFFLINE_EVAL"))
         self.enabled = enabled
         self.model_name = model_name
         self.api_key_env_var = api_key_env_var
@@ -97,7 +97,10 @@ class QueryRewriter:
         self.available_keys = [k.strip() for k in keys_str.split(",") if k.strip()]
 
         # Build fallback matrix (Model x Key)
-        fallback_models = ["llama-3.1-8b-instant", "openai/gpt-oss-20b"]
+        fallback_models = [
+            model_name,
+            "qwen/qwen3.6-27b",
+        ]
         self.models = []
         for m in fallback_models:
             if m not in self.models:
@@ -308,6 +311,7 @@ class QueryRewriter:
                 raw_text = llm_result.choices[0].message.content
                 if not raw_text:
                     raise ValueError("Empty response from Groq")
+                print(f"[QueryRewriter] phase=rewrite model_used={provider['model']}")
                 return raw_text
             except (
                 RateLimitError,
@@ -368,6 +372,7 @@ class QueryRewriter:
                 raw_text = llm_result.choices[0].message.content
                 if not raw_text:
                     raise ValueError("Empty response from Groq")
+                print(f"[QueryRewriter] phase=context model_used={provider['model']}")
                 return raw_text
             except (
                 RateLimitError,

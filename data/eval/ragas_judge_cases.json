@@ -1,0 +1,1899 @@
+[
+  {
+    "query": "Em đang học năm nhất trường mình, em muốn tham gia hoạt động nghiên cứu khoa học nhưng không biết trường có hỗ trợ gì không, và em có thể tham gia những hoạt động nào ngoài học tập?",
+    "ground_truth": "Sinh viên trường Đại học Sư phạm TP.HCM được tạo điều kiện trong học tập, nghiên cứu khoa học và rèn luyện. Cụ thể, sinh viên được sử dụng hệ thống thư viện, các trang thiết bị và phương tiện phục vụ các hoạt động học tập, nghiên cứu khoa học, văn hóa văn nghệ, thể dục thể thao. Ngoài ra, sinh viên cũng có thể tham gia nghiên cứu khoa học, thi sáng tạo khoa học, kỹ thuật, thi Olympic các môn học trong và ngoài nước. Sinh viên cũng được chăm lo, bảo vệ sức khỏe theo chế độ hiện hành và có thể đăng ký dự tuyển đi học, tham gia các hoạt động giao lưu, trao đổi sinh viên ở nước ngoài, học chuyển tiếp ở các trình độ đào tạo cao hơn theo quy định hiện hành. Ngoài học tập, sinh viên cũng có thể tham gia hoạt động trong tổ chức Đảng Cộng sản Việt Nam, Đoàn Thanh niên Cộng sản Hồ Chí Minh, Hội Sinh viên Việt Nam, tham gia các hoạt động xã hội, các hoạt động văn hóa văn nghệ, thể dục thể thao lành mạnh, phù hợp với mục tiêu đào tạo của Trường.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_001",
+    "chunk_id": "reg_article_8_p41_52_part_2",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình đào tạo chính quy và vừa làm vừa học có khác gì nhau không, em muốn biết để chọn hình thức đào tạo phù hợp?",
+    "ground_truth": "Đào tạo chính quy và vừa làm vừa học tại trường mình có một số điểm khác biệt. Đối với đào tạo chính quy, các hoạt động giảng dạy được thực hiện tại các cơ sở đào tạo của trường, trừ những hoạt động thực hành, thực tập, trải nghiệm thực tế và giảng dạy trực tuyến có thể được thực hiện ngoài cơ sở đào tạo. Thời gian tổ chức hoạt động giảng dạy thường từ 06 giờ đến 20 giờ các ngày trong tuần từ thứ 2 đến thứ 7. Đối với đào tạo vừa làm vừa học, các hoạt động giảng dạy có thể được thực hiện tại trường hoặc tại cơ sở phối hợp đào tạo, và thời gian tổ chức hoạt động giảng dạy linh hoạt hơn.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_002",
+    "chunk_id": "reg_article_5_p14_13",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em đang học năm cuối trường mình, kết quả rèn luyện có ảnh hưởng đến việc tốt nghiệp không?",
+    "ground_truth": "Kết quả đánh giá rèn luyện toàn khóa học của sinh viên được lưu trong hồ sơ quản lý sinh viên, làm căn cứ để xét thi tốt nghiệp, làm khóa luận tốt nghiệp. Ngoài ra, kết quả đánh giá rèn luyện toàn khóa học cũng được ghi chung vào bảng điểm kết quả học tập và lưu trong hồ sơ của sinh viên khi tốt nghiệp ra trường.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_003",
+    "chunk_id": "reg_article_14_p78_125",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn biết trường mình đánh giá kết quả rèn luyện của sinh viên như thế nào?",
+    "ground_truth": "Trường Đại học Sư phạm TP.HCM đánh giá kết quả rèn luyện của sinh viên dựa trên các nguyên tắc sau: thực hiện nghiêm túc quy trình và các tiêu chí đánh giá, đảm bảo khách quan, công khai, công bằng, chính xác; đảm bảo yếu tố bình đẳng, dân chủ, tôn trọng quyền làm chủ của sinh viên được đánh giá; tạo điều kiện, định hướng để sinh viên rèn luyện, chủ động xây dựng kế hoạch rèn luyện; phối hợp đồng bộ, chặt chẽ các bộ phận, các đơn vị có liên quan trong Trường tham gia công tác đánh giá kết quả rèn luyện của sinh viên.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_004",
+    "chunk_id": "reg_article_2_p71_110",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn biết thông tin về các buổi họp lớp và nội dung làm việc với lớp sinh viên trong học kỳ, có quy định gì không?",
+    "ground_truth": "Theo quy định của trường, định kì làm việc với ban cán sự lớp sẽ diễn ra 1 lần/tháng và họp với lớp phụ trách 2 lần/học kỳ. Các buổi họp lớp phải ghi biên bản và báo cáo với Trưởng khoa. Nội dung làm việc với lớp sinh viên bao gồm công bố thành phần ban cán sự lớp, xây dựng và phổ biến công tác của học kỳ, hướng dẫn sinh viên cách thức tìm hiểu và truy cập thông tin về các Quy chế, Quy định liên quan đến sinh viên, và các công việc khác theo yêu cầu quản lý của Trường, khoa có liên quan đến lớp.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_005",
+    "chunk_id": "reg_article_6_p66_99",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có hỗ trợ sinh viên về học bổng và các chế độ khác không?",
+    "ground_truth": "Có, Phòng Công tác chính trị và Học sinh, sinh viên của trường sẽ hướng dẫn và thực hiện các chế độ chính sách của Nhà nước quy định đối với sinh viên về học bổng, học phí, miễn, giảm học phí, trợ cấp xã hội, bảo hiểm và các chế độ khác có liên quan đến sinh viên. Ngoài ra, trường cũng thực hiện tín dụng sinh viên, hình thành quỹ hỗ trợ học bổng và trợ cấp khó khăn cho sinh viên.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_006",
+    "chunk_id": "reg_article_14_p45_59",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có những công tác quản lý sinh viên nào và thực hiện như thế nào?",
+    "ground_truth": "Trường Đại học Sư phạm TP.HCM thực hiện công tác quản lý sinh viên thông qua các hoạt động như công tác hành chính, công tác khen thưởng và kỷ luật, công tác sinh viên nội trú, ngoại trú, công tác bảo đảm an ninh, trật tự trường học và thực hiện các chế độ, chính sách đối với sinh viên. Cụ thể, công tác hành chính bao gồm tổ chức tiếp nhận thí sinh trúng tuyển, sắp xếp, bố trí sinh viên vào các lớp, chỉ định Ban cán sự lớp, thống kê, tổng hợp dữ liệu và quản lý, lưu trữ hồ sơ liên quan đến sinh viên. Công tác khen thưởng và kỷ luật bao gồm theo dõi, đánh giá ý thức học tập, tổ chức đánh giá kết quả rèn luyện, phân loại, xếp loại sinh viên, phát động, tổ chức các phong trào thi đua, đánh giá, bình bầu và khen thưởng cho tập thể, cá nhân sinh viên đạt thành tích xuất sắc. Công tác sinh viên nội trú, ngoại trú được thực hiện theo quy định. Công tác bảo đảm an ninh, trật tự trường học bao gồm ban hành nội quy, xây dựng kế hoạch, tổ chức kiểm tra, giám sát việc thực hiện các quy định về công tác bảo đảm an ninh, trật tự an toàn xã hội, phòng, chống tội phạm, tệ nạn xã hội trong sinh viên. Trường cũng thực hiện các chế độ, chính sách đối với sinh viên theo quy định của Nhà nước.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_007",
+    "chunk_id": "reg_article_5_p38_48",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có những nguồn lực nào để hỗ trợ sinh viên?",
+    "ground_truth": "Trường Đại học Sư phạm TP.HCM có nhiều nguồn lực để hỗ trợ sinh viên, giúp sinh viên có thể tiếp cận và tận dụng các nguồn lực của xã hội.",
+    "expected_intent": "office_directory_query",
+    "id": "gen_case_008",
+    "chunk_id": "office_office_17_part_2",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "office_directory",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Ai là người chịu trách nhiệm thi hành quyết định của trường?",
+    "ground_truth": "Các ông, bà Trưởng phòng Công tác chính trị và Học sinh, sinh viên, Đào tạo, Tổ chức – Hành chính, Kế hoạch – Tài chính, các đơn vị và cá nhân có liên quan chịu trách nhiệm thi hành Quyết định này.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_009",
+    "chunk_id": "reg_article_3_p35_40",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn biết sau khi tốt nghiệp ngành Tâm lý học giáo dục và Công tác xã hội thì có thể làm việc ở đâu và làm gì?",
+    "ground_truth": "Sau khi tốt nghiệp ngành Tâm lý học giáo dục, bạn có thể làm việc tại các trường phổ thông, cơ sở giáo dục nghề nghiệp, phòng khám tâm lý, trường học, cơ sở giáo dục chuyên biệt với vai trò như chuyên viên thực hiện công tác đánh giá và hỗ trợ tâm lý, giáo viên dạy kỹ năng sống, giảng dạy các chuyên đề về Tâm lý học giáo dục. Ngoài ra, bạn cũng có thể làm việc tại các tổ chức đoàn thể, tổ chức xã hội - nghề nghiệp, tổ chức phi chính phủ, các cơ sở dịch vụ Tâm lý - Giáo dục. Còn với ngành Công tác xã hội, bạn có thể làm việc trong các lĩnh vực công tác xã hội nói chung, đặc biệt trong các lĩnh vực công tác xã hội học đường, công tác xã hội trẻ em và công tác xã hội với các đối tượng dễ bị tổn thương khác tại các cơ sở giáo dục, trung tâm bảo trợ trẻ em, trung tâm công tác xã hội, tổ chức cộng đồng, tổ chức phi chính phủ, tổ chức Nhà nước, các đoàn thể.",
+    "expected_intent": "faculty_program_directory_query",
+    "id": "gen_case_010",
+    "chunk_id": "faculty_faculty_16_part_2",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "program_directory",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em là con của một cán bộ công nhân viên chức, bố em bị tai nạn lao động và đang hưởng trợ cấp thường xuyên, vậy em có được giảm học phí không và cần những giấy tờ gì?",
+    "ground_truth": "Sinh viên là con của cán bộ, công nhân, viên chức mà cha hoặc mẹ bị tai nạn lao động hoặc mắc bệnh nghề nghiệp được hưởng trợ cấp thường xuyên sẽ được giảm 50% học phí. Để được giảm học phí, em cần nộp đơn xin miễn, giảm học phí theo mẫu, bản sao giấy khai sinh và bản sao có chứng thực sổ hưởng trợ cấp hằng tháng của cha hoặc mẹ do tổ chức bảo hiểm xã hội cấp do tai nạn lao động hoặc mắc bệnh nghề nghiệp.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_011",
+    "chunk_id": "reg_article_15_p117_191_part_6",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có quy định gì về việc giám sát nội bộ và cải tiến chất lượng giảng dạy không, mình có thể đóng góp ý kiến như thế nào?",
+    "ground_truth": "Theo Quy chế của Trường (Chương II, Điều 8) việc tổ chức giảng dạy và học tập phải được thanh tra, giám sát nội bộ (điểm c). Đồng thời, Trường thực hiện hệ thống cải tiến chất lượng dựa trên việc thu thập và đánh giá ý kiến phản hồi của người học (điểm d). Vì vậy, Trường có quy định rằng mọi hoạt động giảng dạy sẽ được kiểm tra, giám sát bởi các đơn vị thanh tra nội bộ của Trường để đảm bảo tuân thủ quy định và nâng cao hiệu quả đào tạo. Đối với sinh viên, Trường khuyến khích đóng góp ý kiến thông qua các kênh được quy định hiện hành của Trường, chẳng hạn như các phiếu khảo sát cuối học kỳ, hộp góp ý tại các khoa, hoặc hệ thống phản hồi trực tuyến của Trường. Những ý kiến này sẽ được thu thập, đánh giá và dùng để cải tiến chất lượng giảng dạy và học tập theo quy trình đã đề ra.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_012",
+    "chunk_id": "reg_article_8_p15_17_part_1",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn biết về kế hoạch giảng dạy và học tập của trường mình, bao gồm cả việc tổ chức học kỳ và thời khóa biểu như thế nào?",
+    "ground_truth": "Kế hoạch giảng dạy và học tập của trường được chi tiết hóa theo năm học, học kỳ, phù hợp với hình thức đào tạo chính quy hoặc vừa làm vừa học. Kế hoạch năm học thể hiện những mốc thời gian chính của các hoạt động đào tạo, được công bố kịp thời tới các bên liên quan trước khi bắt đầu năm học. Kế hoạch học kỳ bao gồm kế hoạch mở lớp, hình thức giảng dạy và học tập, kế hoạch đăng ký học phần, rút bớt học phần, lịch học, lịch thi của các học phần. Thời khóa biểu thể hiện thời gian, địa điểm, hoạt động dạy và học của từng lớp. Đối với hình thức đào tạo chính quy, một năm học có hai học kỳ chính, mỗi học kỳ chính có ít nhất 15 tuần thực học và 3 tuần thi. Ngoài hai học kỳ chính, trường có thể tổ chức thêm học kỳ phụ để sinh viên có điều kiện được học lại, học bù hoặc học vượt.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_013",
+    "chunk_id": "reg_article_7_p14_16",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Quy chế sinh viên của trường mình áp dụng cho ai vậy? Liệu mình là sinh viên năm cuối ở HCMUE có phải tuân theo không?",
+    "ground_truth": "Quy chế này quy định toàn bộ quyền và nghĩa vụ của sinh viên, các hình thức khen thưởng và kỷ luật, nội dung công tác sinh viên, cũng như hệ thống tổ chức và cơ chế quản lý công tác sinh viên và tổ chức thực hiện. Nó được áp dụng cho tất cả sinh viên hệ đại học chính quy đang học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh (HCMUE), bao gồm cả sinh viên năm cuối, và cũng áp dụng cho các đơn vị thuộc, trực thuộc Trường.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_014",
+    "chunk_id": "reg_article_1_p36_43",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em là lớp trưởng, em có quyền yêu cầu báo cáo tình hình lớp không và em có thể tham gia những hoạt động nào của trường?",
+    "ground_truth": "Là lớp trưởng, bạn có quyền yêu cầu ban cán sự lớp báo cáo định kỳ và đột xuất tình hình của lớp để có biện pháp chỉ đạo, góp ý kịp thời các hoạt động của lớp. Bạn cũng được quyền đề nghị Trưởng khoa và các đơn vị liên quan cung cấp tài liệu và các thông tin cần thiết để tham khảo, phục vụ cho công tác quản lý sinh viên của lớp mình. Ngoài ra, bạn được quyền tham gia các phiên họp của Hội đồng các cấp có liên quan đến sinh viên của lớp phụ trách và có quyền tổ chức họp lớp sinh viên để thực hiện trách nhiệm được phân công.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_015",
+    "chunk_id": "reg_article_4_p65_96",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có quy chế đánh giá kết quả rèn luyện sinh viên hệ chính quy không? Nội dung và căn cứ pháp lý của nó là gì?",
+    "ground_truth": "Có, Trường Đại học Sư phạm Thành phố Hồ Chí Minh đã ban hành Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy. Quy chế này được ban hành bởi Hiệu trưởng Trường và dựa trên các căn cứ pháp lý sau: \n- Quyết định số 426-TTg ngày 27/10/1976 của Thủ tướng Chính phủ về việc thành lập Trường Đại học Sư phạm Thành phố Hồ Chí Minh; \n- Nghị định số 99/2019/NĐ-CP ngày 30/12/2019 của Chính phủ quy định chi tiết và hướng dẫn thi hành một số điều của Luật sửa đổi, bổ sung một số điều của Luật Giáo dục đại học; \n- Thông tư số 16/2015/TT-BGDĐT ngày 12/8/2015 của Bộ trưởng Bộ Giáo dục và Đào tạo về việc ban hành Quy chế đánh giá kết quả rèn luyện của người học được đào tạo trình độ đại học hệ chính quy; \n- Thông tư số 10/2016/TT-BGDĐT ngày 05/6/2016 của Bộ trưởng Bộ Giáo dục và Đào tạo về việc ban hành Quy chế Công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy; \n- Quyết định số 989/QĐ-ĐHSP ngày 28/3/2022 của Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh về việc ban hành Quy chế Công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh; \n- Đề nghị của Trưởng phòng Công tác chính trị và Học sinh, sinh viên. \nQuy chế này quy định cách thức, tiêu chuẩn và tiêu chí đánh giá kết quả rèn luyện của sinh viên đang học chương trình đại học hệ chính quy tại trường, nhằm đảm bảo việc rèn luyện và đánh giá được thực hiện đồng bộ, công bằng và phù hợp với các quy định của Bộ Giáo dục và Đào tạo và pháp luật hiện hành.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_016",
+    "chunk_id": "reg_regulation_text_p69_104",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn xin hỗ trợ chi phí học tập thì cần làm đơn đề nghị gì và cung cấp những thông tin gì?",
+    "ground_truth": "Để xin hỗ trợ chi phí học tập, bạn cần làm đơn đề nghị hỗ trợ chi phí học tập. Trong đơn, bạn cần cung cấp các thông tin như họ tên, khoa, khóa, lớp, mã số sinh viên, ngành học và kính gửi đến bộ phận phụ trách.",
+    "expected_intent": "form_query",
+    "id": "gen_case_017",
+    "chunk_id": "form_form_p184",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "form_templates",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có chương trình liên kết đào tạo không? Nó áp dụng cho hình thức vừa làm vừa học như thế nào?",
+    "ground_truth": "Liên kết đào tạo tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh chỉ được thực hiện đối với hình thức đào tạo \"vừa làm vừa học\". Theo quy định, hình thức này được quy định tại khoản 22 Điều 1 của Luật Giáo dục đại học (sửa đổi, bổ sung một số điều). Việc tổ chức và thực hiện liên kết đào tạo được thực hiện theo quy định riêng của Trường về liên kết đào tạo, tức là Trường sẽ có các quy chế, hướng dẫn chi tiết về cách thức đăng ký, điều kiện tham gia, thời gian thực hiện và các quyền lợi, nghĩa vụ của sinh viên và doanh nghiệp hoặc cơ sở thực tập. Vì vậy, nếu bạn muốn tham gia chương trình liên kết đào tạo, bạn cần tuân thủ các quy định của Luật và các quy định nội bộ của Trường về hình thức vừa làm vừa học.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_018",
+    "chunk_id": "reg_article_6_p14_14",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em bị kỷ luật oan, trường mình có quy định nào về việc khiếu nại không?",
+    "ground_truth": "Cá nhân và tập thể sinh viên nếu xét thấy các hình thức khen thưởng và kỷ luật không thỏa đáng có quyền khiếu nại lên Hiệu trưởng hoặc nếu Hiệu trưởng đã xem xét lại mà chưa thỏa đáng có thể khiếu nại lên cấp có thẩm quyền theo quy định của pháp luật về khiếu nại, tố cáo.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_020",
+    "chunk_id": "reg_article_39_p62_86",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có danh sách bảo tàng nào tại TP.HCM không, mình muốn tham khảo?",
+    "ground_truth": "Có, trường mình có danh sách các bảo tàng tại TP.HCM như sau: Bảo tàng Lịch sử Việt Nam – Thành phố Hồ Chí Minh, Bảo tàng Thành phố Hồ Chí Minh, Bảo tàng Chứng tích Chiến tranh, Bảo tàng Hồ Chí Minh – Chi nhánh Thành phố Hồ Chí Minh, Bảo tàng Tôn Đức Thắng, Bảo tàng Chiến dịch Hồ Chí Minh, Bảo tàng Phụ nữ Nam bộ, Bảo tàng Lực lượng Vũ trang miền Đông Nam bộ, Bảo tàng Mỹ thuật – Thành phố Hồ Chí Minh, Bảo tàng Địa chất, Bảo tàng Y học Cổ truyền Việt Nam, Bảo tàng Áo dài, Bảo tàng Tranh 3D Artinus.",
+    "expected_intent": "reference_directory_query",
+    "id": "gen_case_021",
+    "chunk_id": "reference_reference_p163",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "office_directory",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn biết về trách nhiệm và quyền lợi của cố vấn học tập đối với lớp sinh viên như thế nào?",
+    "ground_truth": "Trách nhiệm và quyền lợi của cố vấn học tập đối với lớp sinh viên được quy định tại Chương III của quy định, bao gồm các trách nhiệm và quyền lợi cụ thể để hỗ trợ và tư vấn cho sinh viên trong quá trình học tập.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_023",
+    "chunk_id": "reg_regulation_text_p66_97",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em đang nhận học bổng hỗ trợ chi phí học tập, nhưng em phải nghỉ học vì lý do cá nhân thì có bị dừng cấp học bổng không?",
+    "ground_truth": "Sinh viên nghỉ học vì lý do cá nhân, bỏ học hoặc bị kỷ luật buộc thôi học thì không được nhận kinh phí hỗ trợ kể từ thời điểm quyết định có hiệu lực. Nếu sinh viên tạm nghỉ học vì lý do cá nhân hoặc bị đình chỉ học tập (có thời hạn) thì không được nhận kinh phí hỗ trợ trong thời gian tạm nghỉ học hoặc bị đình chỉ học tập.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_024",
+    "chunk_id": "reg_article_15_p117_191_part_19",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn biết về quy định chung khi thực hiện các hoạt động tại trường mình, có quy định nào về tổ chức thực hiện không?",
+    "ground_truth": "Tổ chức thực hiện là một phần quan trọng trong quy định chung của trường Đại học Sư phạm TP.HCM. Theo quy định, việc tổ chức thực hiện các hoạt động tại trường phải được thực hiện một cách nghiêm túc và có trách nhiệm. Tuy nhiên, đoạn văn bản này không cung cấp thông tin chi tiết về quy định cụ thể, nhưng nó đề cập đến Chương V với tiêu đề 'TỔ CHỨC THỰC HIỆN', cho thấy rằng trường có quy định về việc này.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_025",
+    "chunk_id": "reg_regulation_text_p79_127",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Quyết định này có hiệu lực từ ngày nào và áp dụng cho những khóa tuyển sinh nào?",
+    "ground_truth": "Quyết định này có hiệu lực thi hành kể từ ngày ký. Nó sẽ được áp dụng cho các khóa tuyển sinh trình độ đại học sau ngày quyết định có hiệu lực, tức là mọi khóa tuyển sinh đại học diễn ra sau ngày ký quyết định sẽ phải tuân theo nội dung của quyết định này.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_026",
+    "chunk_id": "reg_article_2_p9_4",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn biết cố vấn học tập của trường mình làm gì, nếu em muốn thay đổi kế hoạch học tập hoặc khiếu nại điểm rớt môn thì nên liên hệ ai và quy trình như thế nào?",
+    "ground_truth": "Cố vấn học tập tại HCMUE có các nhiệm vụ chính như sau: \n1. Tư vấn và hướng dẫn sinh viên xây dựng kế hoạch học tập cho từng học kỳ và cho toàn khóa học, giúp sinh viên xác định mục tiêu, lựa chọn môn học phù hợp và sắp xếp thời gian học. \n2. Quản lý lớp sinh viên và thông tin cá nhân của sinh viên; giới thiệu, đề xuất các ứng cử viên cho vị trí ban cán sự lớp, sau khi có kết quả bầu cử sẽ đề nghị Trưởng khoa phê duyệt. \n3. Dựa trên kết quả học tập của sinh viên, cố vấn sẽ tư vấn, hướng dẫn sinh viên đăng ký môn học hoặc điều chỉnh kế hoạch học tập sao cho phù hợp với năng lực và hoàn cảnh cá nhân. \n4. Hướng dẫn, khuyến khích và tạo điều kiện cho sinh viên tham gia các hoạt động học thuật, nghiên cứu khoa học (NCKH) và các hoạt động giáo dục khác. \n5. Nắm tình hình chung của lớp phụ trách, thường xuyên cập nhật các quy chế, quy định mới về công tác sinh viên và truyền đạt tới sinh viên. \n6. Hướng dẫn sinh viên cách điều chỉnh, khiếu nại kết quả học tập, rèn luyện, khen thưởng, kỷ luật (nếu có); chủ trì các buổi họp lớp để xét khen thưởng, kỷ luật và gửi kết quả lên khoa đào tạo. \n7. Thực hiện chế độ báo cáo theo yêu cầu của Trưởng khoa. \n\nVì vậy, nếu em muốn thay đổi kế hoạch học tập hoặc có nhu cầu khiếu nại điểm rớt môn, em nên liên hệ trực tiếp với cố vấn học tập của mình. Cố vấn sẽ: \n- Xem xét kết quả học tập hiện tại của em, \n- Tư vấn cách điều chỉnh kế hoạch đăng ký môn học hoặc đề xuất các môn thay thế, \n- Hướng dẫn quy trình khiếu nại (nộp đơn khiếu nại, cung cấp bằng chứng, thời hạn nộp), \n- Theo dõi tiến độ và hỗ trợ em trong việc gửi hồ sơ lên khoa đào tạo hoặc các phòng ban liên quan. \nNếu cần, cố vấn còn có thể hỗ trợ đề xuất việc bầu chọn hoặc thay đổi thành viên ban cán sự lớp để có người đại diện tốt hơn cho lớp. Tổng kết, mọi vấn đề về kế hoạch học tập, đăng ký môn, khiếu nại điểm hay các hoạt động học thuật đều được cố vấn học tập chịu trách nhiệm hướng dẫn và hỗ trợ.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_027",
+    "chunk_id": "reg_article_24_p49_69",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn học về Giáo dục Quốc phòng thì cần liên hệ với khoa nào và cơ hội việc làm sau khi tốt nghiệp là gì?",
+    "ground_truth": "Để học về Giáo dục Quốc phòng, em cần liên hệ với Khoa Giáo dục Quốc phòng. Thông tin liên lạc của khoa này bao gồm số điện thoại (028) 38352020, số máy nội bộ 165, 167, email khoagdqp@hcmue.edu.vn, và website khoagdqp.hcmue.edu.vn. Văn phòng làm việc của khoa đặt tại Nhà C, tầng 1, P.106, P.108, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM. Sau khi tốt nghiệp, em có thể trở thành giáo viên dạy môn Giáo dục Quốc phòng và An ninh ở các trường THPT, trung cấp nghề, cao đẳng nghề; chuyên viên công tác quân sự, quốc phòng địa phương; chuyên viên ở các tổ chức chính trị – xã hội, đoàn thể; hoặc chuyên viên ở các Trung tâm Giáo dục Quốc phòng và An ninh.",
+    "expected_intent": "faculty_program_directory_query",
+    "id": "gen_case_028",
+    "chunk_id": "faculty_faculty_21",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "program_directory",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn học ngành Sư phạm Tiếng Nga tại trường mình thì sau khi tốt nghiệp có thể làm những công việc gì?",
+    "ground_truth": "Sau khi tốt nghiệp ngành Sư phạm Tiếng Nga tại trường Đại học Sư phạm TP.HCM, em có thể làm công tác giáo dục và giảng dạy bộ môn Tiếng Nga ở các trường THPT, làm việc trong các lĩnh vực chuyên môn đòi hỏi kiến thức văn hoá, xã hội và khả năng giao tiếp bằng tiếng Nga, có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc học cao hơn theo các chuyên ngành giảng dạy tiếng Nga và Ngôn ngữ học tiếng Nga, cũng như có khả năng và trình độ để theo học các khoá bồi dưỡng theo chuyên ngành gần để đảm nhận các vị trí thích hợp theo nhu cầu của xã hội.",
+    "expected_intent": "faculty_program_directory_query",
+    "id": "gen_case_030",
+    "chunk_id": "faculty_faculty_11_part_1",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "program_directory",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Bạn ơi, trường mình có trạm y tế không? Khi mình ốm hay bị thương trong thời gian học, trường có hỗ trợ khám sức khỏe, chăm sóc sơ cứu và bảo hiểm y tế không?",
+    "ground_truth": "Trường Đại học Sư phạm TP.HCM có Trạm Y tế, chịu trách nhiệm thực hiện công tác y tế trường học. Trạm Y tế quản lý việc khám sức khoẻ đầu vào và định kỳ cho sinh viên, thực hiện chăm sóc, phòng, chống dịch bệnh, và giải quyết các trường hợp sơ cấp cứu ban đầu cho sinh viên trong thời gian học tập. Ngoài ra, Trạm Y tế còn báo cáo những trường hợp sinh viên không đủ tiêu chuẩn sức khỏe. Về bảo hiểm, Trạm Y tế triển khai công tác bảo hiểm y tế và các loại bảo hiểm tự nguyện khác cho sinh viên, phối hợp với cơ quan bảo hiểm và các phòng chức năng liên quan để giải quyết các trường hợp sinh viên bị ốm đau hoặc tai nạn.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_031",
+    "chunk_id": "reg_article_22_p48_67",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có tổ chức hoạt động thông tin khoa học và công nghệ cho sinh viên không, và nếu có thì hoạt động đó bao gồm những gì?",
+    "ground_truth": "Trường và Khoa tổ chức hoạt động thu thập, xử lý, lưu giữ, phổ biến thông tin khoa học và công nghệ của sinh viên, bao gồm xuất bản các tập san, thông báo khoa học, kỷ yếu đề tài nghiên cứu khoa học của sinh viên, quản lý, lưu giữ các đề tài nghiên cứu khoa học của sinh viên trong Thư viện của Trường, và đăng tải kết quả nghiên cứu khoa học của sinh viên trên Trang thông tin điện tử của Trường và các phương tiện thông tin đại chúng khác.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_033",
+    "chunk_id": "reg_article_9_p96_157",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có danh sách di tích lịch sử trên địa bàn thành phố Hồ Chí Minh không, và có những di tích nào?",
+    "ground_truth": "Có, trường mình có danh sách di tích lịch sử trên địa bàn thành phố Hồ Chí Minh. Danh sách này bao gồm 2 di tích lịch sử cấp quốc gia đặc biệt và 24 di tích lịch sử cấp quốc gia. 2 di tích lịch sử cấp quốc gia đặc biệt là Hội trường Thống Nhất (Dinh Độc Lập) và Di tích lịch sử Địa đạo Củ Chi. 24 di tích lịch sử cấp quốc gia bao gồm các địa điểm như Tòa Đại sứ Mỹ, Nơi thành lập Kỳ bộ Việt Nam Thanh niên cách mạng đồng chí Hội, Nơi thành lập An Nam Cộng sản Đảng, Trụ sở báo Dân Chúng, Địa điểm lưu niệm Chủ tịch Tôn Đức Thắng, và Cơ sở Ban Tuyên huấn Xứ ủy Nam bộ.",
+    "expected_intent": "reference_directory_query",
+    "id": "gen_case_034",
+    "chunk_id": "reference_reference_p164",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "office_directory",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Sau khi tốt nghiệp Khoa Giáo dục Đặc biệt, mình có thể làm những công việc gì?",
+    "ground_truth": "Sau khi tốt nghiệp Khoa Giáo dục Đặc biệt, sinh viên có thể làm các công việc sau: \n- Công tác giáo dục và giảng dạy tại các trường chuyên biệt; \n- Giáo viên hỗ trợ hòa nhập tại các trường mầm non và tiểu học; \n- Giáo dục viên tại các cơ sở y tế; \n- Nhân viên làm việc tại các cơ sở giáo dục trẻ có nhu cầu đặc biệt và các tổ chức phi chính phủ; \n- Tiếp tục học tập, nghiên cứu ở các bậc học cao hơn theo các chuyên ngành Giáo dục Đặc biệt như giáo dục trẻ khiếm thính, giáo dục trẻ khiếm thị, và giáo dục trẻ khuyết tật trí tuệ.",
+    "expected_intent": "faculty_program_directory_query",
+    "id": "gen_case_035",
+    "chunk_id": "faculty_faculty_18",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "program_directory",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có công tác gì để hỗ trợ sinh viên không?",
+    "ground_truth": "Công tác sinh viên là một trong những công tác trọng tâm của Trường, bao gồm tổng thể các hoạt động giáo dục, tuyên truyền, quản lý, hỗ trợ và dịch vụ đối với sinh viên nhằm đảm bảo các mục tiêu của giáo dục đại học. Công tác này phải thực hiện đúng đường lối của Đảng, chính sách, pháp luật của Nhà nước và các quy chế, quy định của Bộ Giáo dục và Đào tạo, đồng thời bảo đảm khách quan, công bằng, công khai, minh bạch trong các vấn đề có liên quan đến sinh viên.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_037",
+    "chunk_id": "reg_article_3_p36_45",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em đang làm đề tài nghiên cứu khoa học và muốn biết giáo viên hướng dẫn của em có trách nhiệm gì và được hưởng những quyền lợi gì?",
+    "ground_truth": "Giáo viên hướng dẫn của em có trách nhiệm tham gia hướng dẫn sinh viên nghiên cứu khoa học và chịu trách nhiệm về nội dung của đề tài được phân công hướng dẫn. Họ được hướng dẫn tối đa ba đề tài nghiên cứu khoa học của sinh viên trong cùng thời gian. Sau khi hoàn thành việc hướng dẫn, họ sẽ được tính giờ nghiên cứu khoa học dựa trên kết quả nghiên cứu khoa học của sinh viên. Nếu có thành tích hướng dẫn sinh viên thực hiện đề tài nghiên cứu khoa học được đánh giá xếp loại Xuất sắc hoặc được triển khai ứng dụng vào thực tiễn, họ sẽ được ưu tiên xét các danh hiệu thi đua và hình thức khen thưởng.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_038",
+    "chunk_id": "reg_article_13_p100_163",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình hỗ trợ sinh viên nghiên cứu khoa học như thế nào?",
+    "ground_truth": "Trường hỗ trợ sinh viên nghiên cứu khoa học thông qua các khoa đào tạo. Cụ thể, các khoa đào tạo sẽ định hướng về chuyên môn và tạo điều kiện thuận lợi cho hoạt động nghiên cứu khoa học của sinh viên. Các hỗ trợ bao gồm: tổ chức hội nghị, hội thảo khoa học; tổ chức các cuộc thi học thuật của sinh viên; giới thiệu sinh viên đến các đơn vị trong và ngoài Trường để thu thập tư liệu cho nghiên cứu khoa học; phân công giảng viên hoặc mời người hướng dẫn sinh viên nghiên cứu khoa học; tổ chức việc đánh giá và xét chọn đề tài nghiên cứu khoa học của sinh viên tham gia giải thưởng, cuộc thi nghiên cứu khoa học cấp Khoa/Trường.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_039",
+    "chunk_id": "reg_article_11_p97_160_part_2",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Mình đang bị kỷ luật mức khiển trách, mình có thể được xếp loại rèn luyện loại giỏi được không?",
+    "ground_truth": "Theo quy định chung, Điều 10 quy định rằng trong thời gian sinh viên bị kỷ luật mức khiển trách, khi đánh giá kết quả rèn luyện không được vượt quá loại khá. Vì vậy, khi bạn đang ở mức kỷ luật khiển trách, mức xếp loại rèn luyện tối đa bạn có thể đạt được là \"khá\"; bạn không được xếp loại \"giỏi\" cho đến khi mức kỷ luật được hạ xuống mức thấp hơn (ví dụ: không còn kỷ luật hoặc chỉ còn mức cảnh cáo). Nếu muốn đạt loại giỏi, bạn cần chờ cho thời gian kỷ luật khiển trách kết thúc và sau đó thực hiện các yêu cầu rèn luyện để được đánh giá lại.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_040",
+    "chunk_id": "reg_article_10_p74_120",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em là sinh viên dân tộc thiểu số rất ít người, muốn xin hỗ trợ chi phí học tập thì cần những giấy tờ gì?",
+    "ground_truth": "Để xin hỗ trợ chi phí học tập, em cần chuẩn bị hồ sơ gồm: Đơn xin hỗ trợ chi phí học tập (theo mẫu), Bản sao có công chứng Giấy chứng nhận hộ nghèo, hộ cận nghèo do ủy ban nhân dân xã (phường, thị trấn) cấp, và Bản sao có công chứng Giấy khai sinh.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_042",
+    "chunk_id": "reg_article_15_p117_191_part_25",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn biết trường mình sẽ thông báo những thông tin gì cho sinh viên vào đầu mỗi học kỳ?",
+    "ground_truth": "Trường sẽ thông báo các thông tin sau cho sinh viên vào đầu mỗi học kỳ: kế hoạch tổ chức giảng dạy, danh sách các học phần và danh sách giảng viên giảng dạy học phần, thời khóa biểu dự kiến các học phần được mở trong học kỳ, mức học phí, các thay đổi trong xử lý học vụ và công tác đào tạo các khóa học, cũng như các thông tin hướng dẫn cần thiết khác để sắp xếp kế hoạch học tập. Ngoài ra, khi bắt đầu học một học phần, sinh viên sẽ được giảng viên giới thiệu đề cương chi tiết, hướng dẫn về mục đích, yêu cầu của học phần, cách học, cách kiểm tra đánh giá, danh sách các giáo trình, tài liệu tham khảo liên quan phục vụ cho việc học tập học phần đó.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_044",
+    "chunk_id": "reg_article_8_p41_52_part_8",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có quy định chung nào về việc xây dựng và phát huy truyền thống không ạ?",
+    "ground_truth": "Trong Sổ tay sinh viên, các quy định chung về việc xây dựng và phát huy truyền thống của Trường được ghi trong phần \"Phụ Lục\", cụ thể là phần \"phần xây dựng và phát huy truyền thống Nhà trường\". Các quy định này được tập hợp trong Chương I, có tiêu đề là \"NHỮNG QUY ĐỊNH CHUNG\". Đây là nội dung quy định chung liên quan đến việc duy trì, phát triển các giá trị truyền thống và phong cách của Trường Đại học Sư phạm TP.HCM.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_045",
+    "chunk_id": "reg_regulation_text_p106_173",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em đang học hệ chính quy và muốn biết quy chế đào tạo mới của trường mình có hiệu lực từ khi nào và áp dụng cho những khóa nào?",
+    "ground_truth": "Quy chế đào tạo mới của trường Đại học Sư phạm TP.HCM có hiệu lực thi hành kể từ ngày ký, tức là ngày 29 tháng 3 năm 2022, và áp dụng đối với các khóa tuyển sinh sau ngày Quy chế có hiệu lực. Đối với các khóa tuyển sinh trước khi Quy chế có hiệu lực, sẽ được thực hiện theo Quyết định số 2045/QĐ-ĐHSP ngày 05/9/2016 và Quyết định 3672/QĐ-ĐHSP ngày 20/12/2018 của Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_046",
+    "chunk_id": "reg_article_24_p32_36",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có trả thưởng cho sinh viên nghiên cứu khoa học giành giải cấp trường hoặc cấp Bộ không? Mức thưởng được tính như thế nào?",
+    "ground_truth": "Có. Theo Điều 15 của Quy định chung, Trường thực hiện chi khen thưởng cho sinh viên nghiên cứu khoa học (SV NCKH) đạt giải cấp Trường và cấp Bộ. Mức chi thưởng được quy định trong Quy chế chi tiêu nội bộ của Trường, tức là các khoản tiền thưởng sẽ được tính theo các mức đã được Ban Giám Hiệu ban hành trong quy chế này. Ngoài ra, giảng viên hướng dẫn SV NCKH đạt giải cấp Trường, cấp Bộ cũng được hưởng khoản chi khen thưởng theo cùng quy chế. Nếu có vi phạm các quy định về hoạt động NCKH hoặc không thực hiện hợp đồng NCKH mà không có lý do chính đáng, cá nhân hoặc tập thể sẽ bị xử lý kỷ luật tùy theo tính chất và mức độ vi phạm, theo quy định hiện hành.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_048",
+    "chunk_id": "reg_article_15_p100_165",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em có hành vi vi phạm quy định của trường, vậy trình tự và thủ tục xét kỷ luật như thế nào?",
+    "ground_truth": "Trình tự và thủ tục xét kỷ luật tại trường Đại học Sư phạm TP.HCM được thực hiện như sau: Sinh viên có hành vi vi phạm phải làm bản tự kiểm điểm. Nếu sinh viên không chấp hành việc làm bản tự kiểm điểm, Hội đồng vẫn họp để xử lý trên cơ sở các chứng cứ thu thập được. CVHT sẽ phân tích và đề nghị hình thức kỷ luật gửi về Khoa. Khoa xem xét và chuyển hồ sơ về Phòng CTCT và HSSV. Phòng CTCT và HSSV chủ trì việc trình Hiệu trưởng thành lập Hội đồng Khen thưởng và Kỷ luật sinh viên cấp Trường. Hội đồng này sẽ tổ chức họp để xét kỷ luật, bao gồm các thành viên của Hội đồng, CVHT, đại diện tập thể lớp sinh viên có sinh viên vi phạm và sinh viên có hành vi vi phạm. Nếu sinh viên vi phạm không đến dự họp mà không có lý do chính đáng, Hội đồng vẫn tiến hành họp và xét thêm khuyết điểm thiếu ý thức tổ chức kỷ luật. Cuối cùng, Hội đồng sẽ kiến nghị hình thức kỷ luật và đề nghị Hiệu trưởng ra quyết định kỷ luật.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_049",
+    "chunk_id": "reg_article_36_p60_83",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em đang học môn này và điểm thi là 6,5 thì em được điểm chữ là gì và em có đạt môn này không?",
+    "ground_truth": "Theo quy định của trường, điểm học phần được tính từ tổng các điểm thành phần nhân với trọng số tương ứng và được làm tròn tới một chữ số thập phân. Với điểm 6,5, em sẽ được điểm chữ C+. Vì điểm này nằm trong khoảng từ 6,3 đến 6,9, nên em đạt môn này.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_051",
+    "chunk_id": "reg_article_10_p18_20_part_2",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Mình muốn biết mình được hưởng những quyền lợi gì theo quy định của trường và Bộ GD&ĐT?",
+    "ground_truth": "Theo Điều 8 của Quy định, sinh viên (cũng như giảng viên) sẽ được hưởng các quyền lợi được quy định trong Quy định Chế độ làm việc của giảng viên của Bộ Giáo dục và Đào tạo và trong các quy định nội bộ của Trường Đại học Sư phạm TP.HCM. Vì vậy, mọi quyền lợi mà bạn có thể nhận được đều được quy định chi tiết trong hai tài liệu này, bao gồm các chế độ về lương, phụ cấp, bảo hiểm, nghỉ phép, và các ưu đãi khác theo quy định của Bộ GD&ĐT và của Trường.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_052",
+    "chunk_id": "reg_article_8_p67_101",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn biết trách nhiệm của các khoa trong việc đánh giá rèn luyện sinh viên như thế nào?",
+    "ground_truth": "Các khoa có trách nhiệm tổ chức thực hiện việc chấm điểm rèn luyện sinh viên theo từng học kỳ và thành lập Hội đồng cấp khoa để thông qua kết quả của từng lớp sinh viên. Cụ thể, trưởng khoa chỉ đạo tổ chức thực hiện việc chấm điểm rèn luyện sinh viên, còn trợ lý tổ chức có trách nhiệm lập và lưu trữ hồ sơ đánh giá rèn luyện sinh viên cấp khoa, bao gồm hồ sơ đánh giá rèn luyện của từng lớp sinh viên, biên bản họp Hội đồng cấp khoa và bảng tổng hợp kết quả đánh giá rèn luyện của sinh viên đã được Hội đồng cấp khoa thông qua.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_053",
+    "chunk_id": "reg_article_16_p79_128_part_6",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có ngành nào liên quan đến công tác xã hội không, và sinh viên tốt nghiệp có thể làm việc ở đâu?",
+    "ground_truth": "Ngành công tác xã hội tại trường mình có thể liên quan đến giảng dạy và nghiên cứu tại các trường, các viện nghiên cứu, hoặc làm việc tại sở lao động thương binh và xã hội.",
+    "expected_intent": "faculty_program_directory_query",
+    "id": "gen_case_055",
+    "chunk_id": "faculty_faculty_16_part_3",
+    "cohort": "general",
+    "eval_type": "structured",
+    "content_type": "program_directory",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn học ngành Lịch sử hoặc Quốc tế học ở trường mình thì sau khi tốt nghiệp có cơ hội nghề nghiệp gì?",
+    "ground_truth": "Khi học ngành Sư phạm Lịch sử, em có thể trở thành giáo viên giảng dạy môn Lịch sử ở các trường THPT, hoặc chuyên viên phụ trách môn Lịch sử tại các Sở Giáo dục và Đào tạo ở địa phương. Ngoài ra, em cũng có thể làm nghiên cứu viên ở các Viện nghiên cứu, các cơ quan quản lý giáo dục, các cơ sở đào tạo, đặc biệt về lĩnh vực Lịch sử, Lý luận và phương pháp dạy học bộ môn Lịch sử; khoa học xã hội. Còn nếu em học ngành Quốc tế học, em có thể làm công tác đối ngoại trong các cơ quan Nhà nước, các tổ chức phi chính phủ, các công ty, tập đoàn đa quốc gia, quốc tế, các tổ chức xã hội nghề nghiệp; hoặc làm các công tác khác có yêu cầu sử dụng kiến thức về quốc tế học như báo chí – truyền thông, du lịch, quan hệ công chúng, ngoại thương…",
+    "expected_intent": "faculty_program_directory_query",
+    "id": "gen_case_058",
+    "chunk_id": "faculty_faculty_7",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "program_directory",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Mình là sinh viên dân tộc thiểu số, gia đình thuộc hộ nghèo, đang học hệ chính quy và đã trúng tuyển theo quy chế của Bộ GD&ĐT, mình có được xếp vào diện hỗ trợ của trường không?",
+    "ground_truth": "Theo Điều 15 của phần \"Xây dựng và phát huy truyền thống Nhà trường\" trong Sổ tay sinh viên, sinh viên thuộc diện hỗ trợ là sinh viên dân tộc thiểu số thuộc hộ nghèo hoặc hộ cận nghèo theo quy định của Thủ tướng Chính phủ. Để được xếp vào diện này, sinh viên phải đáp ứng các điều kiện sau: 1) là sinh viên dân tộc thiểu số; 2) thuộc hộ nghèo hoặc hộ cận nghèo theo tiêu chuẩn do Thủ tướng Chính phủ quy định; 3) là sinh viên hệ chính quy (học toàn thời gian); 4) đạt điểm trúng tuyển vào Trường theo Quy chế của Bộ Giáo dục và Đào tạo. Nếu bạn đáp ứng đầy đủ cả bốn tiêu chí trên, bạn sẽ được coi là sinh viên thuộc diện hỗ trợ và có quyền lợi theo các chính sách hỗ trợ của trường.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_059",
+    "chunk_id": "reg_article_15_p117_191_part_22",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Khi nào thì quyết định về quy định tổ chức hoạt động nghiên cứu khoa học của sinh viên trường mình có hiệu lực?",
+    "ground_truth": "Quyết định về quy định tổ chức hoạt động nghiên cứu khoa học của sinh viên trường Đại học Sư phạm TP.HCM có hiệu lực kể từ ngày ký. Quyết định này thay thế cho Quyết định số 1673/ĐHSP-KHCN&MT-TCKH ngày 11/9/2012 của Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh về việc ban hành quy định tổ chức hoạt động NCKH của sinh viên.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_060",
+    "chunk_id": "reg_article_16_p101_166",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Anh/chị ơi, lớp học phần là gì vậy? Ai được làm đại diện lớp và họ phải làm gì?",
+    "ground_truth": "Theo Quy chế, lớp học phần là tập hợp các sinh viên đăng ký cùng học một học phần và được tổ chức theo thời gian học của học phần đó, nhằm theo dõi, quản lý học tập và kỷ luật của sinh viên trong giờ học. Đại diện lớp học phần do giảng viên phụ trách lớp chỉ định. Nhiệm vụ của đại diện là báo cáo việc chấp hành nội quy, quy định, quy chế của sinh viên với khoa.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_061",
+    "chunk_id": "reg_article_26_p51_71",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn tham gia nghiên cứu khoa học thì có những quyền và trách nhiệm gì?",
+    "ground_truth": "Sinh viên tham gia nghiên cứu khoa học có trách nhiệm và quyền theo quy định chung của trường, bao gồm cả việc thực hiện nghiên cứu khoa học và tham gia hoạt động hướng dẫn của người hướng dẫn. Để biết thêm thông tin chi tiết, sinh viên có thể tham khảo chương IV của quy định chung về trách nhiệm, quyền của sinh viên tham gia nghiên cứu khoa học và người hướng dẫn.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_063",
+    "chunk_id": "reg_regulation_text_p99_161",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em là sinh viên hệ đại học chính quy, không biết công tác cố vấn học tập được quy định như thế nào?",
+    "ground_truth": "Văn bản này quy định chế độ làm việc đối với giảng viên được phân công làm Công tác CVHT cho sinh viên hệ đại học chính quy, bao gồm: Nhiệm vụ và quyền hạn; Thời gian và nội dung làm việc với lớp; Chế độ báo cáo; Quyền lợi; Khen thưởng và kỷ luật.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_064",
+    "chunk_id": "reg_article_1_p64_92",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn biết trường mình có hỗ trợ sinh viên nào đạt đề tài NCKH xuất sắc để đưa kết quả vào thực tiễn không ạ?",
+    "ground_truth": "Theo Quy định chung, Chương II, Điều 8, Trường và các Khoa phải tạo điều kiện cho sinh viên triển khai ứng dụng tiến bộ khoa học và công nghệ vào thực tiễn khi kết quả của đề tài nghiên cứu khoa học (NCKH) của sinh viên được đánh giá xếp loại \"Xuất sắc\". Đồng thời, các chủ nhiệm đề tài NCKH ở mọi cấp cũng phải tạo điều kiện cho sinh viên tham gia thực hiện đề tài và triển khai ứng dụng tiến bộ KH&CN vào thực tiễn. Vì vậy, nếu sinh viên có đề tài NCKH được xếp loại xuất sắc, trường và Khoa sẽ hỗ trợ tạo môi trường, nguồn lực và cơ hội để sinh viên đưa kết quả nghiên cứu vào thực tiễn, và các giảng viên/chủ nhiệm đề tài cũng sẽ hỗ trợ sinh viên tham gia và áp dụng kết quả đó.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_065",
+    "chunk_id": "reg_article_8_p95_156",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình quản lý công tác sinh viên như thế nào?",
+    "ground_truth": "Hệ thống tổ chức, quản lý công tác sinh viên tại trường Đại học Sư phạm TP.HCM được quy định trong Chương IV của Quy chế. Chương này bao gồm các quy định về tổ chức, quản lý và các vấn đề liên quan đến công tác sinh viên.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_066",
+    "chunk_id": "reg_regulation_text_p45_56",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em thuộc diện hộ nghèo, nếu gia đình em thoát nghèo trong năm học thì phải làm gì để dừng việc chi trả chi phí học tập cho kỳ tiếp theo?",
+    "ground_truth": "Nếu gia đình sinh viên thuộc diện hộ nghèo đã thoát nghèo trong năm học, thì sinh viên có trách nhiệm nộp văn bản chứng nhận hộ đã thoát nghèo để dừng việc chi trả chi phí học tập cho kỳ tiếp theo.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_068",
+    "chunk_id": "reg_article_15_p117_191_part_29",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn tham gia hoạt động nghiên cứu khoa học của trường, vậy những nội dung hoạt động nghiên cứu khoa học của sinh viên là gì?",
+    "ground_truth": "Nội dung hoạt động nghiên cứu khoa học của sinh viên bao gồm: Thực hiện đề tài nghiên cứu khoa học thuộc lĩnh vực được đào tạo và các lĩnh vực khác phù hợp với khả năng của sinh viên; Tham gia các hội nghị, hội thảo khoa học, sinh hoạt học thuật, hội thi sáng tạo khoa học công nghệ, câu lạc bộ khoa học sinh viên, các giải thưởng khoa học và công nghệ ở trong, ngoài nước và các hình thức hoạt động khoa học và công nghệ khác của sinh viên; Tham gia triển khai ứng dụng tiến bộ khoa học và công nghệ vào thực tiễn trong các lĩnh vực giáo dục và đào tạo, kinh tế – xã hội, an ninh, quốc phòng; Công bố kết quả nghiên cứu, ứng dụng kết quả nghiên cứu vào thực tiễn kinh tế – xã hội dưới các dạng khác được công nhận chính thức; và các hoạt động nghiên cứu khoa học khác.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_070",
+    "chunk_id": "reg_article_4_p92_151",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Giáo viên có phải đưa ra đề cương chi tiết học phần và các quy định liên quan trong buổi học đầu tiên không? Và việc phân công giảng viên dạy, hướng dẫn thí nghiệm, thực tập được thực hiện như thế nào?",
+    "ground_truth": "Theo quy chế của Trường, trong buổi học đầu tiên của mỗi học phần, giảng viên có trách nhiệm phổ biến cho sinh viên đề cương chi tiết của học phần cùng với các quy định khác liên quan đến học phần đó. Việc xây dựng thời khóa biểu cho từng học kỳ dựa trên kế hoạch năm học do Trường soạn thảo. Sau khi thời khóa biểu được ban hành, Khoa đào tạo và các bộ môn sẽ tổ chức phân công giảng viên giảng dạy các lớp học phần theo thời khóa biểu đã có. Ngoài ra, việc phân công giảng viên phụ trách lớp, giảng viên giảng dạy, giảng viên hướng dẫn sinh viên thực hiện thí nghiệm, thực hành, thực tập, đồ án, khóa luận và các hoạt động học tập khác được thực hiện theo các quy định hiện hành của Trường và dựa trên kế hoạch đào tạo được ban hành cho từng học kỳ. Trách nhiệm, quyền hạn của giảng viên, các đơn vị chuyên môn, các đơn vị quản lý, hỗ trợ và của sinh viên khi tham dự các hoạt động học tập cũng được quy định rõ trong các quy định hiện hành của Trường.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_071",
+    "chunk_id": "reg_article_8_p15_17_part_3",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có quy định gì về hoạt động nghiên cứu khoa học của sinh viên không?",
+    "ground_truth": "Có, trường Đại học Sư phạm TP.HCM đã ban hành Quy định về tổ chức hoạt động nghiên cứu khoa học của sinh viên dựa trên các căn cứ như Quyết định số 426/TTg ngày 27/10/1976 của Thủ tướng Chính phủ, Văn bản hợp nhất Luật Giáo dục đại học số 42/VBHN-VPQH ngày 10/12/2018 của Văn phòng Quốc hội, Nghị định số 99/2014/NĐ-CP ngày 25/10/2014 của Chính phủ và Thông tư số 45/2020/TT-BGDĐT ngày 11/11/2020 của Bộ trưởng Bộ Giáo dục và Đào tạo.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_072",
+    "chunk_id": "reg_regulation_text_p88_141",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Khi nào thì quyết định của trường mình có hiệu lực thi hành?",
+    "ground_truth": "Quyết định này có hiệu lực thi hành kể từ ngày ký.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_074",
+    "chunk_id": "reg_article_2_p35_39",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có biểu mẫu nào để theo dõi tiến độ học tập không?",
+    "ground_truth": "Có, trường mình có biểu mẫu PHIẾU THEO DÕI TIẾN ĐỘ HỌC TẬP, biểu mẫu này phục vụ thủ tục sinh viên và bao gồm các thông tin như Họ tên, Khoa, Khóa, Lớp, Ngành.",
+    "expected_intent": "form_query",
+    "id": "gen_case_076",
+    "chunk_id": "form_form_p185",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "form_templates",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em mới nhập học vào trường mình, bây giờ em có thể xem được những quy định và quy chế nào của trường và Bộ Giáo dục?",
+    "ground_truth": "Sau khi hoàn thành thủ tục nhập học, sinh viên được tiếp cận các văn bản quy phạm pháp luật của Bộ Giáo dục và Đào tạo và quy chế, quy định, nội quy của Trường liên quan đến trách nhiệm và quyền lợi cơ bản của sinh viên trong quá trình học tập và sinh hoạt rèn luyện tại Trường. Ngoài ra, sinh viên cũng có thể xem chương trình đào tạo của khóa học bao gồm cả nội dung tóm tắt các học phần có trong chương trình đào tạo.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_077",
+    "chunk_id": "reg_article_8_p41_52_part_7",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có quy chế công tác sinh viên cho chương trình đại học hệ chính quy không? Quy chế này dựa trên những văn bản nào?",
+    "ground_truth": "Có. Trường Đại học Sư phạm Thành phố Hồ Chí Minh đã ban hành Quy chế Công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy. Quy chế này được ban hành bởi Hiệu trưởng Trường dựa trên: \n- Quyết định số 426-TTg ngày 27/10/1976 của Thủ tướng Chính phủ về việc thành lập Trường; \n- Luật Giáo dục đại học ngày 18/06/2012 và Luật sửa đổi, bổ sung một số điều của Luật Giáo dục đại học số 34/2018/QH14 ngày 19/11/2018; \n- Nghị định số 99/2019/NĐ-CP ngày 30/12/2019 của Chính phủ quy định chi tiết và hướng dẫn thi hành một số điều của Luật sửa đổi, bổ sung một số điều của Luật Giáo dục đại học; \n- Thông tư số 10/2016/TT-BGDĐT ngày 05/06/2016 của Bộ Giáo dục và Đào tạo về việc ban hành Quy chế Công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy; \n- Thông tư số 08/2021/TT-BGDĐT ngày 18/03/2021 của Bộ Giáo dục và Đào tạo ban hành Quy chế đào tạo trình độ đại học; \n- Đề nghị của Trưởng phòng Công tác chính trị và Học sinh, sinh viên. \nDo đó, quy chế này áp dụng cho toàn thể sinh viên đang theo học chương trình đại học hệ chính quy tại HCMUE.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_078",
+    "chunk_id": "reg_regulation_text_p34_37",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em là cán bộ hội tụ nhiều năm, nếu em hoàn thành xuất sắc nhiệm vụ thì sẽ được khen thưởng như thế nào?",
+    "ground_truth": "Nếu bạn hoàn thành xuất sắc nhiệm vụ trong nhiều năm, bạn sẽ được đề nghị khen thưởng, bình chọn danh hiệu thi đua các cấp và được xem xét nâng lương trước thời hạn.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_079",
+    "chunk_id": "reg_article_9_p68_103",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình tổ chức và quản lý công tác sinh viên như thế nào?",
+    "ground_truth": "Hệ thống tổ chức, quản lý công tác sinh viên của Trường gồm: Hiệu trưởng (hoặc Phó Hiệu trưởng phụ trách công tác học sinh, sinh viên), các đơn vị phụ trách công tác sinh viên, khoa, CVHT và lớp sinh viên.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_081",
+    "chunk_id": "reg_article_12_p45_57",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em là sinh viên dân tộc thiểu số, thuộc dân tộc La Hủ, vậy em có được hưởng chính sách gì không?",
+    "ground_truth": "Theo quy định của trường, sinh viên dân tộc thiểu số rất ít người, bao gồm 16 dân tộc như La Hủ, La Ha, Pà Thẻn, Lự, Ngái, Chứt, Lô Hô, Mảng, Cống, Cờ Lao, Bố Y, Si La, Pu Péo, Rơ Măm, Brâu, Ơ Đu, sẽ được hưởng các chính sách hỗ trợ theo quy định của nhà trường.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_082",
+    "chunk_id": "reg_article_15_p117_191_part_26",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Anh/chị ơi, mục tiêu của hoạt động nghiên cứu khoa học sinh viên ở trường mình là gì vậy?",
+    "ground_truth": "Mục tiêu của hoạt động nghiên cứu khoa học sinh viên tại Trường Đại học Sư phạm TP.HCM được quy định gồm ba nội dung chính: 1) Hỗ trợ học tập, giúp sinh viên gắn lý thuyết với thực tiễn từ các môn học trong chương trình đào tạo; 2) Phát huy tính năng động, sáng tạo, khả năng thực hiện nghiên cứu khoa học độc lập và làm việc nhóm, đồng thời hình thành năng lực tự học cho sinh viên; 3) Góp phần nâng cao chất lượng đào tạo, thông qua nghiên cứu khoa học để nhà trường phát hiện và bồi dưỡng tài năng trẻ trong lĩnh vực NCKH.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_083",
+    "chunk_id": "reg_article_2_p92_149",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Khóa K50 thi môn chuyên ngành được 5.0 điểm thì có qua môn không?",
+    "ground_truth": "Theo quy định dành cho khóa K50-K51, đối với các học phần còn lại / Chuyên ngành, điểm 5.0 tương ứng với điểm chữ D+ và được xếp vào loại Không đạt. Do đó, bạn sẽ không qua môn và phải học lại.",
+    "expected_intent": "scoring_lookup",
+    "id": "gen_case_k50_001",
+    "cohort": "K50-K51",
+    "eval_type": "true_rag",
+    "content_type": "scoring_tables",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Sinh viên khóa K51 thi học phần Giáo dục đại cương được 4.5 thì được điểm chữ gì và có qua môn không?",
+    "ground_truth": "Theo quy định dành cho khóa K50-K51, đối với học phần Giáo dục đại cương / Nền tảng, điểm 4.5 tương ứng với điểm chữ D và được xếp vào loại Đạt. Do đó, bạn đã qua môn học này.",
+    "expected_intent": "scoring_lookup",
+    "id": "gen_case_k51_002",
+    "cohort": "K50-K51",
+    "eval_type": "true_rag",
+    "content_type": "scoring_tables",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có quy định gì về hoạt động nghiên cứu khoa học của SV không?",
+    "ground_truth": "Có, trường Đại học Sư phạm TP.HCM đã ban hành Quy định về tổ chức hoạt động nghiên cứu khoa học của sinh viên dựa trên các căn cứ như Quyết định số 426/TTg ngày 27/10/1976 của Thủ tướng Chính phủ, Văn bản hợp nhất Luật Giáo dục đại học số 42/VBHN-VPQH ngày 10/12/2018 của Văn phòng Quốc hội, Nghị định số 99/2014/NĐ-CP ngày 25/10/2014 của Chính phủ và Thông tư số 45/2020/TT-BGDĐT ngày 11/11/2020 của Bộ trưởng Bộ Giáo dục và Đào tạo.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_072_aug_0",
+    "chunk_id": "reg_regulation_text_p88_141",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn biết về kế hoạch giảng dạy và học tập của trường mình, bao gồm cả việc tổ chức học kỳ và thời khóa biểu như thế nào? cụ thể là sao ạ?",
+    "ground_truth": "Kế hoạch giảng dạy và học tập của trường được chi tiết hóa theo năm học, học kỳ, phù hợp với hình thức đào tạo chính quy hoặc vừa làm vừa học. Kế hoạch năm học thể hiện những mốc thời gian chính của các hoạt động đào tạo, được công bố kịp thời tới các bên liên quan trước khi bắt đầu năm học. Kế hoạch học kỳ bao gồm kế hoạch mở lớp, hình thức giảng dạy và học tập, kế hoạch đăng ký học phần, rút bớt học phần, lịch học, lịch thi của các học phần. Thời khóa biểu thể hiện thời gian, địa điểm, hoạt động dạy và học của từng lớp. Đối với hình thức đào tạo chính quy, một năm học có hai học kỳ chính, mỗi học kỳ chính có ít nhất 15 tuần thực học và 3 tuần thi. Ngoài hai học kỳ chính, trường có thể tổ chức thêm học kỳ phụ để sinh viên có điều kiện được học lại, học bù hoặc học vượt.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_013_aug_1",
+    "chunk_id": "reg_article_7_p14_16",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em bị kỷ luật oan, trường mình có quy định nào về việc khiếu nại không? cụ thể là sao ạ?",
+    "ground_truth": "Cá nhân và tập thể sinh viên nếu xét thấy các hình thức khen thưởng và kỷ luật không thỏa đáng có quyền khiếu nại lên Hiệu trưởng hoặc nếu Hiệu trưởng đã xem xét lại mà chưa thỏa đáng có thể khiếu nại lên cấp có thẩm quyền theo quy định của pháp luật về khiếu nại, tố cáo.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_020_aug_2",
+    "chunk_id": "reg_article_39_p62_86",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em là lớp trưởng, em có quyền yêu cầu báo cáo tình hình lớp không và em có thể tham gia những hoạt động nào của trường? cho em hỏi với.",
+    "ground_truth": "Là lớp trưởng, bạn có quyền yêu cầu ban cán sự lớp báo cáo định kỳ và đột xuất tình hình của lớp để có biện pháp chỉ đạo, góp ý kịp thời các hoạt động của lớp. Bạn cũng được quyền đề nghị Trưởng khoa và các đơn vị liên quan cung cấp tài liệu và các thông tin cần thiết để tham khảo, phục vụ cho công tác quản lý sinh viên của lớp mình. Ngoài ra, bạn được quyền tham gia các phiên họp của Hội đồng các cấp có liên quan đến sinh viên của lớp phụ trách và có quyền tổ chức họp lớp sinh viên để thực hiện trách nhiệm được phân công.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_015_aug_3",
+    "chunk_id": "reg_article_4_p65_96",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em đang nhận học bổng hỗ trợ chi phí học tập, nhưng em phải nghỉ học vì lý do cá nhân thì có bị dừng cấp học bổng không? ạ?",
+    "ground_truth": "Sinh viên nghỉ học vì lý do cá nhân, bỏ học hoặc bị kỷ luật buộc thôi học thì không được nhận kinh phí hỗ trợ kể từ thời điểm quyết định có hiệu lực. Nếu sinh viên tạm nghỉ học vì lý do cá nhân hoặc bị đình chỉ học tập (có thời hạn) thì không được nhận kinh phí hỗ trợ trong thời gian tạm nghỉ học hoặc bị đình chỉ học tập.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_024_aug_4",
+    "chunk_id": "reg_article_15_p117_191_part_19",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Bạn ơi, trường mình có trạm y tế không? Khi mình ốm hay bị thương trong thời gian học, trường có hỗ trợ khám sức khỏe, chăm sóc sơ cứu và bảo hiểm y tế không? hả phòng đào tạo?",
+    "ground_truth": "Trường Đại học Sư phạm TP.HCM có Trạm Y tế, chịu trách nhiệm thực hiện công tác y tế trường học. Trạm Y tế quản lý việc khám sức khoẻ đầu vào và định kỳ cho sinh viên, thực hiện chăm sóc, phòng, chống dịch bệnh, và giải quyết các trường hợp sơ cấp cứu ban đầu cho sinh viên trong thời gian học tập. Ngoài ra, Trạm Y tế còn báo cáo những trường hợp sinh viên không đủ tiêu chuẩn sức khỏe. Về bảo hiểm, Trạm Y tế triển khai công tác bảo hiểm y tế và các loại bảo hiểm tự nguyện khác cho sinh viên, phối hợp với cơ quan bảo hiểm và các phòng chức năng liên quan để giải quyết các trường hợp sinh viên bị ốm đau hoặc tai nạn.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_031_aug_5",
+    "chunk_id": "reg_article_22_p48_67",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình đào tạo chính quy và vừa làm vừa học có khác gì nhau không, em muốn biết để chọn hình thức đào tạo phù hợp? hả phòng đào tạo?",
+    "ground_truth": "Đào tạo chính quy và vừa làm vừa học tại trường mình có một số điểm khác biệt. Đối với đào tạo chính quy, các hoạt động giảng dạy được thực hiện tại các cơ sở đào tạo của trường, trừ những hoạt động thực hành, thực tập, trải nghiệm thực tế và giảng dạy trực tuyến có thể được thực hiện ngoài cơ sở đào tạo. Thời gian tổ chức hoạt động giảng dạy thường từ 06 giờ đến 20 giờ các ngày trong tuần từ thứ 2 đến thứ 7. Đối với đào tạo vừa làm vừa học, các hoạt động giảng dạy có thể được thực hiện tại trường hoặc tại cơ sở phối hợp đào tạo, và thời gian tổ chức hoạt động giảng dạy linh hoạt hơn.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_002_aug_6",
+    "chunk_id": "reg_article_5_p14_13",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Anh/chị ơi, lớp học phần là gì vậy? Ai được làm đại diện lớp và họ phải làm gì? ạ?",
+    "ground_truth": "Theo Quy chế, lớp học phần là tập hợp các sinh viên đăng ký cùng học một học phần và được tổ chức theo thời gian học của học phần đó, nhằm theo dõi, quản lý học tập và kỷ luật của sinh viên trong giờ học. Đại diện lớp học phần do giảng viên phụ trách lớp chỉ định. Nhiệm vụ của đại diện là báo cáo việc chấp hành nội quy, quy định, quy chế của sinh viên với khoa.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_061_aug_7",
+    "chunk_id": "reg_article_26_p51_71",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em là người học dân tộc thiểu số, thuộc dân tộc La Hủ, vậy em có được hưởng chính sách gì không?",
+    "ground_truth": "Theo quy định của trường, sinh viên dân tộc thiểu số rất ít người, bao gồm 16 dân tộc như La Hủ, La Ha, Pà Thẻn, Lự, Ngái, Chứt, Lô Hô, Mảng, Cống, Cờ Lao, Bố Y, Si La, Pu Péo, Rơ Măm, Brâu, Ơ Đu, sẽ được hưởng các chính sách hỗ trợ theo quy định của nhà trường.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_082_aug_8",
+    "chunk_id": "reg_article_15_p117_191_part_26",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em đang học năm nhất trường mình, em muốn tham gia hoạt động nghiên cứu khoa học nhưng không biết trường có hỗ trợ gì không, và em có thể tham gia những hoạt động nào ngoài học tập? hả phòng đào tạo?",
+    "ground_truth": "Sinh viên trường Đại học Sư phạm TP.HCM được tạo điều kiện trong học tập, nghiên cứu khoa học và rèn luyện. Cụ thể, sinh viên được sử dụng hệ thống thư viện, các trang thiết bị và phương tiện phục vụ các hoạt động học tập, nghiên cứu khoa học, văn hóa văn nghệ, thể dục thể thao. Ngoài ra, sinh viên cũng có thể tham gia nghiên cứu khoa học, thi sáng tạo khoa học, kỹ thuật, thi Olympic các môn học trong và ngoài nước. Sinh viên cũng được chăm lo, bảo vệ sức khỏe theo chế độ hiện hành và có thể đăng ký dự tuyển đi học, tham gia các hoạt động giao lưu, trao đổi sinh viên ở nước ngoài, học chuyển tiếp ở các trình độ đào tạo cao hơn theo quy định hiện hành. Ngoài học tập, sinh viên cũng có thể tham gia hoạt động trong tổ chức Đảng Cộng sản Việt Nam, Đoàn Thanh niên Cộng sản Hồ Chí Minh, Hội Sinh viên Việt Nam, tham gia các hoạt động xã hội, các hoạt động văn hóa văn nghệ, thể dục thể thao lành mạnh, phù hợp với mục tiêu đào tạo của Trường.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_001_aug_9",
+    "chunk_id": "reg_article_8_p41_52_part_2",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Ai là người chịu trách nhiệm thi hành quyết định của trường? cho em hỏi với.",
+    "ground_truth": "Các ông, bà Trưởng phòng Công tác chính trị và Học sinh, sinh viên, Đào tạo, Tổ chức – Hành chính, Kế hoạch – Tài chính, các đơn vị và cá nhân có liên quan chịu trách nhiệm thi hành Quyết định này.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_009_aug_10",
+    "chunk_id": "reg_article_3_p35_40",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Mình đang bị kỷ luật mức khiển trách, mình có thể được xếp loại rèn luyện loại giỏi được không? hả phòng đào tạo?",
+    "ground_truth": "Theo quy định chung, Điều 10 quy định rằng trong thời gian sinh viên bị kỷ luật mức khiển trách, khi đánh giá kết quả rèn luyện không được vượt quá loại khá. Vì vậy, khi bạn đang ở mức kỷ luật khiển trách, mức xếp loại rèn luyện tối đa bạn có thể đạt được là \"khá\"; bạn không được xếp loại \"giỏi\" cho đến khi mức kỷ luật được hạ xuống mức thấp hơn (ví dụ: không còn kỷ luật hoặc chỉ còn mức cảnh cáo). Nếu muốn đạt loại giỏi, bạn cần chờ cho thời gian kỷ luật khiển trách kết thúc và sau đó thực hiện các yêu cầu rèn luyện để được đánh giá lại.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_040_aug_11",
+    "chunk_id": "reg_article_10_p74_120",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn tham gia nghiên cứu khoa học thì có những quyền và trách nhiệm gì? tư vấn giúp mình nhé!",
+    "ground_truth": "Sinh viên tham gia nghiên cứu khoa học có trách nhiệm và quyền theo quy định chung của trường, bao gồm cả việc thực hiện nghiên cứu khoa học và tham gia hoạt động hướng dẫn của người hướng dẫn. Để biết thêm thông tin chi tiết, sinh viên có thể tham khảo chương IV của quy định chung về trách nhiệm, quyền của sinh viên tham gia nghiên cứu khoa học và người hướng dẫn.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_063_aug_12",
+    "chunk_id": "reg_regulation_text_p99_161",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Anh/chị ơi, mục tiêu của hoạt động nghiên cứu khoa học bạn học ở trường mình là gì vậy?",
+    "ground_truth": "Mục tiêu của hoạt động nghiên cứu khoa học sinh viên tại Trường Đại học Sư phạm TP.HCM được quy định gồm ba nội dung chính: 1) Hỗ trợ học tập, giúp sinh viên gắn lý thuyết với thực tiễn từ các môn học trong chương trình đào tạo; 2) Phát huy tính năng động, sáng tạo, khả năng thực hiện nghiên cứu khoa học độc lập và làm việc nhóm, đồng thời hình thành năng lực tự học cho sinh viên; 3) Góp phần nâng cao chất lượng đào tạo, thông qua nghiên cứu khoa học để nhà trường phát hiện và bồi dưỡng tài năng trẻ trong lĩnh vực NCKH.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_083_aug_13",
+    "chunk_id": "reg_article_2_p92_149",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em là lớp trưởng, em có quyền yêu cầu báo cáo tình hình lớp không và em có thể tham gia những hoạt động nào của trường? hả phòng đào tạo?",
+    "ground_truth": "Là lớp trưởng, bạn có quyền yêu cầu ban cán sự lớp báo cáo định kỳ và đột xuất tình hình của lớp để có biện pháp chỉ đạo, góp ý kịp thời các hoạt động của lớp. Bạn cũng được quyền đề nghị Trưởng khoa và các đơn vị liên quan cung cấp tài liệu và các thông tin cần thiết để tham khảo, phục vụ cho công tác quản lý sinh viên của lớp mình. Ngoài ra, bạn được quyền tham gia các phiên họp của Hội đồng các cấp có liên quan đến sinh viên của lớp phụ trách và có quyền tổ chức họp lớp sinh viên để thực hiện trách nhiệm được phân công.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_015_aug_14",
+    "chunk_id": "reg_article_4_p65_96",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có ngành nào liên quan đến công tác xã hội không, và tân sinh viên tốt nghiệp có thể làm việc ở đâu?",
+    "ground_truth": "Ngành công tác xã hội tại trường mình có thể liên quan đến giảng dạy và nghiên cứu tại các trường, các viện nghiên cứu, hoặc làm việc tại sở lao động thương binh và xã hội.",
+    "expected_intent": "faculty_program_directory_query",
+    "id": "gen_case_055_aug_15",
+    "chunk_id": "faculty_faculty_16_part_3",
+    "cohort": "general",
+    "eval_type": "structured",
+    "content_type": "program_directory",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Bạn ơi, trường mình có trạm y tế không? Khi mình ốm hay bị thương trong thời gian học, trường có hỗ trợ khám sức khỏe, chăm sóc sơ cứu và bảo hiểm y tế không? tư vấn giúp mình nhé!",
+    "ground_truth": "Trường Đại học Sư phạm TP.HCM có Trạm Y tế, chịu trách nhiệm thực hiện công tác y tế trường học. Trạm Y tế quản lý việc khám sức khoẻ đầu vào và định kỳ cho sinh viên, thực hiện chăm sóc, phòng, chống dịch bệnh, và giải quyết các trường hợp sơ cấp cứu ban đầu cho sinh viên trong thời gian học tập. Ngoài ra, Trạm Y tế còn báo cáo những trường hợp sinh viên không đủ tiêu chuẩn sức khỏe. Về bảo hiểm, Trạm Y tế triển khai công tác bảo hiểm y tế và các loại bảo hiểm tự nguyện khác cho sinh viên, phối hợp với cơ quan bảo hiểm và các phòng chức năng liên quan để giải quyết các trường hợp sinh viên bị ốm đau hoặc tai nạn.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_031_aug_16",
+    "chunk_id": "reg_article_22_p48_67",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có quy định gì về hoạt động nghiên cứu khoa học của hssv không?",
+    "ground_truth": "Có, trường Đại học Sư phạm TP.HCM đã ban hành Quy định về tổ chức hoạt động nghiên cứu khoa học của sinh viên dựa trên các căn cứ như Quyết định số 426/TTg ngày 27/10/1976 của Thủ tướng Chính phủ, Văn bản hợp nhất Luật Giáo dục đại học số 42/VBHN-VPQH ngày 10/12/2018 của Văn phòng Quốc hội, Nghị định số 99/2014/NĐ-CP ngày 25/10/2014 của Chính phủ và Thông tư số 45/2020/TT-BGDĐT ngày 11/11/2020 của Bộ trưởng Bộ Giáo dục và Đào tạo.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_072_aug_17",
+    "chunk_id": "reg_regulation_text_p88_141",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn biết về quy định chung khi thực hiện các hoạt động tại trường mình, có quy định nào về tổ chức thực hiện không? hả phòng đào tạo?",
+    "ground_truth": "Tổ chức thực hiện là một phần quan trọng trong quy định chung của trường Đại học Sư phạm TP.HCM. Theo quy định, việc tổ chức thực hiện các hoạt động tại trường phải được thực hiện một cách nghiêm túc và có trách nhiệm. Tuy nhiên, đoạn văn bản này không cung cấp thông tin chi tiết về quy định cụ thể, nhưng nó đề cập đến Chương V với tiêu đề 'TỔ CHỨC THỰC HIỆN', cho thấy rằng trường có quy định về việc này.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_025_aug_18",
+    "chunk_id": "reg_regulation_text_p79_127",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Khi nào thì quyết định của trường mình có hiệu lực thi hành? ạ?",
+    "ground_truth": "Quyết định này có hiệu lực thi hành kể từ ngày ký.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_074_aug_19",
+    "chunk_id": "reg_article_2_p35_39",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em muốn học ngành Sư phạm Tiếng Nga tại trường mình thì sau khi tốt nghiệp có thể làm những công việc gì? ạ?",
+    "ground_truth": "Sau khi tốt nghiệp ngành Sư phạm Tiếng Nga tại trường Đại học Sư phạm TP.HCM, em có thể làm công tác giáo dục và giảng dạy bộ môn Tiếng Nga ở các trường THPT, làm việc trong các lĩnh vực chuyên môn đòi hỏi kiến thức văn hoá, xã hội và khả năng giao tiếp bằng tiếng Nga, có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc học cao hơn theo các chuyên ngành giảng dạy tiếng Nga và Ngôn ngữ học tiếng Nga, cũng như có khả năng và trình độ để theo học các khoá bồi dưỡng theo chuyên ngành gần để đảm nhận các vị trí thích hợp theo nhu cầu của xã hội.",
+    "expected_intent": "faculty_program_directory_query",
+    "id": "gen_case_030_aug_20",
+    "chunk_id": "faculty_faculty_11_part_1",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "program_directory",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có những nguồn lực nào để hỗ trợ hssv?",
+    "ground_truth": "Trường Đại học Sư phạm TP.HCM có nhiều nguồn lực để hỗ trợ sinh viên, giúp sinh viên có thể tiếp cận và tận dụng các nguồn lực của xã hội.",
+    "expected_intent": "office_directory_query",
+    "id": "gen_case_008_aug_21",
+    "chunk_id": "office_office_17_part_2",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "office_directory",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Khóa K51 thi môn chuyên ngành được 5.0 điểm thì có qua môn không?",
+    "ground_truth": "Theo quy định dành cho khóa K50-K51, đối với các học phần còn lại / Chuyên ngành, điểm 5.0 tương ứng với điểm chữ D+ và được xếp vào loại Không đạt. Do đó, bạn sẽ không qua môn và phải học lại.",
+    "expected_intent": "scoring_lookup",
+    "id": "gen_case_k50_001_aug_22",
+    "cohort": "K50-K51",
+    "eval_type": "true_rag",
+    "content_type": "scoring_tables",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Giáo viên có phải đưa ra đề cương chi tiết học phần và các quy định liên quan trong buổi học đầu tiên không? Và việc phân công giảng viên dạy, hướng dẫn thí nghiệm, thực tập được thực hiện như thế nào? tư vấn giúp mình nhé!",
+    "ground_truth": "Theo quy chế của Trường, trong buổi học đầu tiên của mỗi học phần, giảng viên có trách nhiệm phổ biến cho sinh viên đề cương chi tiết của học phần cùng với các quy định khác liên quan đến học phần đó. Việc xây dựng thời khóa biểu cho từng học kỳ dựa trên kế hoạch năm học do Trường soạn thảo. Sau khi thời khóa biểu được ban hành, Khoa đào tạo và các bộ môn sẽ tổ chức phân công giảng viên giảng dạy các lớp học phần theo thời khóa biểu đã có. Ngoài ra, việc phân công giảng viên phụ trách lớp, giảng viên giảng dạy, giảng viên hướng dẫn sinh viên thực hiện thí nghiệm, thực hành, thực tập, đồ án, khóa luận và các hoạt động học tập khác được thực hiện theo các quy định hiện hành của Trường và dựa trên kế hoạch đào tạo được ban hành cho từng học kỳ. Trách nhiệm, quyền hạn của giảng viên, các đơn vị chuyên môn, các đơn vị quản lý, hỗ trợ và của sinh viên khi tham dự các hoạt động học tập cũng được quy định rõ trong các quy định hiện hành của Trường.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_071_aug_23",
+    "chunk_id": "reg_article_8_p15_17_part_3",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có chương trình liên kết đào tạo không? Nó áp dụng cho hình thức vừa làm vừa học như thế nào? ạ?",
+    "ground_truth": "Liên kết đào tạo tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh chỉ được thực hiện đối với hình thức đào tạo \"vừa làm vừa học\". Theo quy định, hình thức này được quy định tại khoản 22 Điều 1 của Luật Giáo dục đại học (sửa đổi, bổ sung một số điều). Việc tổ chức và thực hiện liên kết đào tạo được thực hiện theo quy định riêng của Trường về liên kết đào tạo, tức là Trường sẽ có các quy chế, hướng dẫn chi tiết về cách thức đăng ký, điều kiện tham gia, thời gian thực hiện và các quyền lợi, nghĩa vụ của sinh viên và doanh nghiệp hoặc cơ sở thực tập. Vì vậy, nếu bạn muốn tham gia chương trình liên kết đào tạo, bạn cần tuân thủ các quy định của Luật và các quy định nội bộ của Trường về hình thức vừa làm vừa học.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_018_aug_24",
+    "chunk_id": "reg_article_6_p14_14",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em thuộc diện hộ nghèo, nếu gia đình em thoát nghèo trong năm học thì phải làm gì để dừng việc chi trả chi phí học tập cho kỳ tiếp theo? cụ thể là sao ạ?",
+    "ground_truth": "Nếu gia đình sinh viên thuộc diện hộ nghèo đã thoát nghèo trong năm học, thì sinh viên có trách nhiệm nộp văn bản chứng nhận hộ đã thoát nghèo để dừng việc chi trả chi phí học tập cho kỳ tiếp theo.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_068_aug_25",
+    "chunk_id": "reg_article_15_p117_191_part_29",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Khi nào thì quyết định về quy định tổ chức hoạt động nghiên cứu khoa học của hssv trường mình có hiệu lực?",
+    "ground_truth": "Quyết định về quy định tổ chức hoạt động nghiên cứu khoa học của sinh viên trường Đại học Sư phạm TP.HCM có hiệu lực kể từ ngày ký. Quyết định này thay thế cho Quyết định số 1673/ĐHSP-KHCN&MT-TCKH ngày 11/9/2012 của Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh về việc ban hành quy định tổ chức hoạt động NCKH của sinh viên.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_060_aug_27",
+    "chunk_id": "reg_article_16_p101_166",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Mình muốn biết mình được hưởng những quyền lợi gì theo quy định của trường và Bộ GD&ĐT? cho em hỏi với.",
+    "ground_truth": "Theo Điều 8 của Quy định, sinh viên (cũng như giảng viên) sẽ được hưởng các quyền lợi được quy định trong Quy định Chế độ làm việc của giảng viên của Bộ Giáo dục và Đào tạo và trong các quy định nội bộ của Trường Đại học Sư phạm TP.HCM. Vì vậy, mọi quyền lợi mà bạn có thể nhận được đều được quy định chi tiết trong hai tài liệu này, bao gồm các chế độ về lương, phụ cấp, bảo hiểm, nghỉ phép, và các ưu đãi khác theo quy định của Bộ GD&ĐT và của Trường.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_052_aug_28",
+    "chunk_id": "reg_article_8_p67_101",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Mình là tân sinh viên dân tộc thiểu số, gia đình thuộc hộ nghèo, đang học hệ chính quy và đã trúng tuyển theo quy chế của Bộ GD&ĐT, mình có được xếp vào diện hỗ trợ của trường không?",
+    "ground_truth": "Theo Điều 15 của phần \"Xây dựng và phát huy truyền thống Nhà trường\" trong Sổ tay sinh viên, sinh viên thuộc diện hỗ trợ là sinh viên dân tộc thiểu số thuộc hộ nghèo hoặc hộ cận nghèo theo quy định của Thủ tướng Chính phủ. Để được xếp vào diện này, sinh viên phải đáp ứng các điều kiện sau: 1) là sinh viên dân tộc thiểu số; 2) thuộc hộ nghèo hoặc hộ cận nghèo theo tiêu chuẩn do Thủ tướng Chính phủ quy định; 3) là sinh viên hệ chính quy (học toàn thời gian); 4) đạt điểm trúng tuyển vào Trường theo Quy chế của Bộ Giáo dục và Đào tạo. Nếu bạn đáp ứng đầy đủ cả bốn tiêu chí trên, bạn sẽ được coi là sinh viên thuộc diện hỗ trợ và có quyền lợi theo các chính sách hỗ trợ của trường.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_059_aug_29",
+    "chunk_id": "reg_article_15_p117_191_part_22",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em là hssv hệ đại học chính quy, không biết công tác cố vấn học tập được quy định như thế nào?",
+    "ground_truth": "Văn bản này quy định chế độ làm việc đối với giảng viên được phân công làm Công tác CVHT cho sinh viên hệ đại học chính quy, bao gồm: Nhiệm vụ và quyền hạn; Thời gian và nội dung làm việc với lớp; Chế độ báo cáo; Quyền lợi; Khen thưởng và kỷ luật.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_064_aug_30",
+    "chunk_id": "reg_article_1_p64_92",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Trường mình có danh sách bảo tàng nào tại TP.HCM không, mình muốn tham khảo? ạ?",
+    "ground_truth": "Có, trường mình có danh sách các bảo tàng tại TP.HCM như sau: Bảo tàng Lịch sử Việt Nam – Thành phố Hồ Chí Minh, Bảo tàng Thành phố Hồ Chí Minh, Bảo tàng Chứng tích Chiến tranh, Bảo tàng Hồ Chí Minh – Chi nhánh Thành phố Hồ Chí Minh, Bảo tàng Tôn Đức Thắng, Bảo tàng Chiến dịch Hồ Chí Minh, Bảo tàng Phụ nữ Nam bộ, Bảo tàng Lực lượng Vũ trang miền Đông Nam bộ, Bảo tàng Mỹ thuật – Thành phố Hồ Chí Minh, Bảo tàng Địa chất, Bảo tàng Y học Cổ truyền Việt Nam, Bảo tàng Áo dài, Bảo tàng Tranh 3D Artinus.",
+    "expected_intent": "reference_directory_query",
+    "id": "gen_case_021_aug_31",
+    "chunk_id": "reference_reference_p163",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "office_directory",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "query": "Em là lớp trưởng, em có quyền yêu cầu báo cáo tình hình lớp không và em có thể tham gia những hoạt động nào của trường? tư vấn giúp mình nhé!",
+    "ground_truth": "Là lớp trưởng, bạn có quyền yêu cầu ban cán sự lớp báo cáo định kỳ và đột xuất tình hình của lớp để có biện pháp chỉ đạo, góp ý kịp thời các hoạt động của lớp. Bạn cũng được quyền đề nghị Trưởng khoa và các đơn vị liên quan cung cấp tài liệu và các thông tin cần thiết để tham khảo, phục vụ cho công tác quản lý sinh viên của lớp mình. Ngoài ra, bạn được quyền tham gia các phiên họp của Hội đồng các cấp có liên quan đến sinh viên của lớp phụ trách và có quyền tổ chức họp lớp sinh viên để thực hiện trách nhiệm được phân công.",
+    "expected_intent": "regulation_query",
+    "id": "gen_case_015_aug_32",
+    "chunk_id": "reg_article_4_p65_96",
+    "cohort": "general",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  },
+  {
+    "id": "gen_v4_k48_program_school",
+    "query": "K48-K49 trường đang có những ngành đào tạo nào?",
+    "cohort": "K48-K49",
+    "expected_intent": "faculty_query",
+    "ground_truth": "Câu trả lời phải liệt kê danh sách ngành áp dụng cho K48-K49, gồm Công nghệ Thông tin và Sư phạm Tin học, nhưng không được đưa Công nghệ Giáo dục hoặc Toán ứng dụng vào danh sách K48-K49.",
+    "chunk_id": "program_directory_k48_school",
+    "eval_type": "structured",
+    "content_type": "faculty_directory",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ],
+    "source_eval_file": "generation_eval_cases.json"
+  }
+]

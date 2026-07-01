@@ -17,14 +17,45 @@ CONFIG_PATH = Path("configs/embedding.yaml")
 
 def validate_semantic_chunks(chunks: list[dict]) -> None:
     bad_chunks = []
+    metadata_issues = []
+    seen_ids: set[str] = set()
 
     for chunk in chunks:
+        chunk_id = chunk.get("chunk_id")
+        if not chunk_id:
+            metadata_issues.append({"issue": "missing_chunk_id", "chunk": chunk})
+        elif chunk_id in seen_ids:
+            metadata_issues.append({"issue": "duplicate_chunk_id", "chunk_id": chunk_id})
+        else:
+            seen_ids.add(chunk_id)
+
         if chunk.get("index_mode") != "semantic":
-            bad_chunks.append(chunk.get("chunk_id"))
+            bad_chunks.append(chunk_id)
+
+        metadata = chunk.get("metadata") or {}
+        cohort = metadata.get("cohort")
+        document_id = metadata.get("document_id")
+        content_type = metadata.get("content_type") or chunk.get("chunk_type")
+        if cohort not in {"K48-K49", "K50-K51"}:
+            metadata_issues.append(
+                {"issue": "invalid_cohort", "chunk_id": chunk_id, "cohort": cohort}
+            )
+        if not document_id:
+            metadata_issues.append(
+                {"issue": "missing_document_id", "chunk_id": chunk_id}
+            )
+        if not content_type:
+            metadata_issues.append(
+                {"issue": "missing_content_type", "chunk_id": chunk_id}
+            )
 
     if bad_chunks:
         raise ValueError(
             f"Found non-semantic chunks in embedding input: {bad_chunks[:10]}"
+        )
+    if metadata_issues:
+        raise ValueError(
+            f"Invalid semantic chunk metadata: {metadata_issues[:20]}"
         )
 
 

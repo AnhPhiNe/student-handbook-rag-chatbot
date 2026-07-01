@@ -56,6 +56,39 @@ class ResponseCacheTest(unittest.TestCase):
 
             self.assertIsNone(cache.get("missing"))
 
+    def test_cache_key_changes_with_context_fingerprint(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cache = ResponseCache(Path(tmpdir) / "cache.json")
+            retrieval_result = {
+                "retrieval_query": "qua mon",
+                "structured_result": None,
+                "tool_result": None,
+            }
+            citations = [{"chunk_id": "chunk-1", "title": "Title"}]
+
+            key_v1 = cache.make_cache_key(
+                query="may diem qua mon",
+                retrieval_result=retrieval_result,
+                selected_citations=citations,
+                cohort="K50-K51",
+                context_fingerprint={
+                    "strategy": "score_weighted",
+                    "cache_version": "context_alloc_v1",
+                },
+            )
+            key_v2 = cache.make_cache_key(
+                query="may diem qua mon",
+                retrieval_result=retrieval_result,
+                selected_citations=citations,
+                cohort="K50-K51",
+                context_fingerprint={
+                    "strategy": "equal_split",
+                    "cache_version": "context_alloc_v2",
+                },
+            )
+
+            self.assertNotEqual(key_v1, key_v2)
+
 
 if __name__ == "__main__":
     unittest.main()

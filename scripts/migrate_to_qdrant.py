@@ -32,6 +32,12 @@ def main():
     parser = argparse.ArgumentParser(description="Chuyển dữ liệu từ ChromaDB (Local) sang Qdrant (Cloud)")
     parser.add_argument("--config", type=str, default="configs/embedding.yaml", help="Đường dẫn file config")
     parser.add_argument("--batch-size", type=int, default=30, help="Batch size để đẩy dữ liệu lên Qdrant")
+    parser.add_argument(
+        "--target-collection",
+        type=str,
+        default=None,
+        help="Tên collection Qdrant đích. Nếu bỏ trống thì dùng collection_name trong config.",
+    )
     args = parser.parse_args()
 
     # 1. Đọc cấu hình ChromaDB hiện tại
@@ -86,7 +92,8 @@ def main():
     from qdrant_client.models import Distance, VectorParams, PointStruct
     
     vector_size = len(embeddings[0])
-    qdrant_collection = collection_name
+    qdrant_collection = args.target_collection or collection_name
+    print(f"   Tên Collection đích trên Qdrant: {qdrant_collection}")
     
     if qdrant_client.collection_exists(qdrant_collection):
         print(f"   Collection '{qdrant_collection}' đã tồn tại trên Qdrant. Đang xóa để nạp lại...")

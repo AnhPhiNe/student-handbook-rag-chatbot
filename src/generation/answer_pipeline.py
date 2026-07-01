@@ -1,3 +1,4 @@
+import os
 import time
 from collections.abc import Iterator
 from dataclasses import replace
@@ -24,12 +25,12 @@ from .answer_guardrails import (
     is_out_of_domain_query,
 )
 from .citation_formatter import format_sources_text, select_relevant_citations
+from .context_allocation import ContextAllocationConfig, build_context_for_prompt
 from .gemini_client import GeminiClient
 from .io_utils import load_json, load_yaml
 from .prompt_builder import (
     DEFAULT_MAX_CONTEXT_CHARS,
     build_answer_prompt,
-    limit_context,
 )
 from .query_rewriter import QueryRewriter, QueryRewriteResult
 from .response_cache import get_response_cache
@@ -37,6 +38,13 @@ from .semantic_cache import SemanticCache
 
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
+
+
+def _env_bool(name: str, default: bool = False) -> bool:
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
 class AnswerPipeline:
@@ -50,6 +58,8 @@ class AnswerPipeline:
 
         self.scoring_tables = load_json(self.config["input"]["scoring_tables"])
         self.formula_rules = load_json(self.config["input"]["formula_rules"])
+        self.form_templates = load_json(self.config["input"]["form_templates"])
+        self.program_directory = load_json(self.config["input"]["program_directory"])
         self.entity_registry = load_json(self.config["input"]["entity_registry"])
         self.expansion_rules = load_json(self.config["input"]["query_expansion_rules"])
 
@@ -65,9 +75,17 @@ class AnswerPipeline:
                 "AnswerPipeline currently supports only llm.provider='gemini' or 'groq'."
             )
 
+        if _env_bool("STUDENT_RAG_OFFLINE_EVAL"):
+            self.config.setdefault("query_rewriter", {})["enabled"] = False
+            self.config.setdefault("semantic_cache", {})["enabled"] = False
+            self.config.setdefault("cache", {})["enabled"] = False
+
         self._llm_client = llm_client
         self.max_context_chars = int(
             llm_config.get("max_context_chars", DEFAULT_MAX_CONTEXT_CHARS)
+        )
+        self.context_allocation = ContextAllocationConfig.from_config(
+            self.config.get("context_allocation")
         )
         self.request_sleep_seconds = float(llm_config.get("request_sleep_seconds", 2))
         self._last_llm_call_at = 0.0
@@ -186,9 +204,10 @@ class AnswerPipeline:
                 query_rewrite=rewrite_result,
             )
 
-        context_used = limit_context(
-            str(retrieval_result.get("context_for_llm") or ""),
+        context_used = build_context_for_prompt(
+            retrieval_result,
             max_context_chars=self.max_context_chars,
+            allocation_config=self.context_allocation,
         )
 
         if retrieval_result.get("rewrite_verification_needs_clarification"):
@@ -365,6 +384,7 @@ class AnswerPipeline:
             retrieval_result=retrieval_result,
             selected_citations=selected_citations,
             cohort=cohort,
+            context_fingerprint=self.context_allocation.cache_fingerprint(),
         )
         cached = self.response_cache.get(cache_key)
         if cached:
@@ -390,6 +410,7 @@ class AnswerPipeline:
             selected_citations=None,
             max_context_chars=self.max_context_chars,
             cohort=cohort,
+            context_allocation=self.context_allocation,
         )
 
         try:
@@ -439,6 +460,7 @@ class AnswerPipeline:
                 llm_called=True,
                 used_cache=False,
                 query_rewrite=rewrite_result,
+                model_used=llm_result.get("model_used"),
             )
 
         llm_text = str(llm_result.get("text") or "").strip()
@@ -459,6 +481,7 @@ class AnswerPipeline:
             llm_called=True,
             used_cache=False,
             query_rewrite=rewrite_result,
+            model_used=llm_result.get("model_used"),
         )
         self.response_cache.set(
             cache_key,
@@ -730,6 +753,7 @@ class AnswerPipeline:
             selected_citations=None,
             max_context_chars=self.max_context_chars,
             cohort=cohort,
+            context_allocation=self.context_allocation,
         )
 
         yield {"type": "progress", "message": "Đang tổng hợp câu trả lời..."}
@@ -763,7 +787,7 @@ class AnswerPipeline:
         yield {"type": "done"}
 
     def _run_retrieval(self, query: str, cohort: str | None = None) -> dict[str, Any]:
-        return run_retrieval_pipeline(
+        result = run_retrieval_pipeline(
             query=query,
             model=self.model,
             collection=self.collection,
@@ -771,11 +795,17 @@ class AnswerPipeline:
             formula_rules=self.formula_rules,
             entity_registry=self.entity_registry,
             expansion_rules=self.expansion_rules,
+            form_templates=self.form_templates,
+            program_directory=self.program_directory,
             top_k=self.config["retrieval"]["default_top_k"],
             batch_size=self.config["embedding"]["batch_size"],
             normalize_embeddings=self.config["embedding"]["normalize_embeddings"],
             cohort=cohort,
+            candidate_multiplier=self.config["retrieval"].get("candidate_multiplier", 5),
+            min_candidates=self.config["retrieval"].get("min_candidates", 25),
         )
+        result["selected_cohort"] = cohort
+        return result
 
     def _run_verified_retrieval(
         self,
@@ -949,10 +979,16 @@ class AnswerPipeline:
         used_cache: bool,
         clarification_needed: bool = False,
         query_rewrite: QueryRewriteResult | None = None,
+        model_used: str | None = None,
     ) -> dict[str, Any]:
         query_rewrite_payload = query_rewrite.to_dict() if query_rewrite else None
         run_tree = get_current_run_tree()
         run_id = str(run_tree.id) if run_tree else None
+        if model_used is None:
+            if used_cache:
+                model_used = "cache"
+            elif not llm_called:
+                model_used = "deterministic"
 
         return {
             "run_id": run_id,
@@ -976,6 +1012,7 @@ class AnswerPipeline:
             "formula_result": retrieval_result.get("formula_result"),
             "tool_result": retrieval_result.get("tool_result"),
             "llm_called": llm_called,
+            "model_used": model_used,
             "used_cache": used_cache,
             "clarification_needed": clarification_needed,
             "context_used": context_used,

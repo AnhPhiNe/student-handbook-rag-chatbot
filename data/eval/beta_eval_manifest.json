@@ -1,0 +1,20 @@
+{
+  "description": "Bộ eval beta tách structured/tool khỏi true RAG để tránh chấm sai bản chất của từng nhóm năng lực.",
+  "targets": {
+    "structured_cases": 70,
+    "true_rag_cases": 80,
+    "ragas_judge_cases": 100
+  },
+  "actual_counts": {
+    "structured": 70,
+    "true_rag": 80,
+    "beta": 150,
+    "judge": 100
+  },
+  "files": {
+    "structured": "data/eval/structured_eval_cases.json",
+    "true_rag": "data/eval/true_rag_eval_cases.json",
+    "beta": "data/eval/beta_eval_cases.json",
+    "judge": "data/eval/ragas_judge_cases.json"
+  }
+}

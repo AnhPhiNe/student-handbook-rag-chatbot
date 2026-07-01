@@ -1,6 +1,8 @@
 input:
   scoring_tables: data/processed/tables/scoring_tables.json
   formula_rules: data/processed/tables/formula_rules.json
+  form_templates: data/processed/forms/form_templates.json
+  program_directory: data/processed/directories/program_directory.json
   entity_registry: data/processed/entities/entity_registry.json
   query_expansion_rules: data/processed/entities/query_expansion_rules.json
 
@@ -11,15 +13,17 @@ embedding:
 
 vectorstore:
   persist_dir: data/vectorstore/chroma
-  collection_name: student_handbook_semantic_v3
+  collection_name: student_handbook_semantic_v4
 
 retrieval:
   default_top_k: 5
+  candidate_multiplier: 5
+  min_candidates: 25
 
 query_rewriter:
   enabled: true
   api_key_env_var: QUERY_REWRITER_API_KEY
-  model_name: llama-3.3-70b-versatile
+  model_name: llama-3.1-8b-instant
   temperature: 0.0
   max_output_tokens: 256
   max_retries: 1
@@ -38,7 +42,14 @@ llm:
   retry_max_delay_seconds: 20
   request_timeout_seconds: 60
   request_sleep_seconds: 2
-  max_context_chars: 12000
+  max_context_chars: 6000
+
+context_allocation:
+  strategy: score_weighted
+  min_chars_per_doc: 400
+  max_chars_per_doc: 1800
+  sentence_boundary: true
+  cache_version: context_alloc_v1
 
 cache:
   enabled: true
@@ -47,7 +58,7 @@ cache:
 semantic_cache:
   enabled: true
   persist_dir: data/cache/semantic_cache_chroma
-  collection_name: semantic_query_cache
+  collection_name: semantic_query_cache_v2
   max_distance: 0.15
   min_query_length: 8
   verifier_model: llama-3.1-8b-instant

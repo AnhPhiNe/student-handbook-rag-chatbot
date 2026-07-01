@@ -130,10 +130,11 @@ def build_form_chunks(forms: list[dict[str, Any]]) -> list[dict[str, Any]]:
             create_chunk(
                 chunk_id=f"form_{form['form_id']}",  # ID duy nhất cho chunk này
                 chunk_type="form",  # Loại chunk là "form"
-                index_mode="semantic",  # Chế độ lập chỉ mục (ví dụ: tìm kiếm ngữ nghĩa)
+                index_mode="structured",  # Chỉ lookup metadata, không embed toàn văn biểu mẫu
                 content=content,  # Nội dung đã tạo ở trên
                 metadata={  # Các thông tin bổ sung về biểu mẫu
                     "source_type": "form_template",
+                    "content_mode": "structured_only",
                     "form_id": form.get("form_id"),
                     "form_name": form_name,
                     "source_pages": source_pages,

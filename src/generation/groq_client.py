@@ -36,13 +36,22 @@ class GroqClient:
                 "Missing dependency groq. Install it with: pip install groq"
             ) from exc
 
-        # Build fallback matrix (Model x Key)
-        fallback_models = [
-            model_name,
-            "openai/gpt-oss-120b",
-            "qwen/qwen3.6-27b",
-            "llama-3.1-8b-instant",
-        ]
+        # Build fallback matrix (Model x Key). Eval runs can disable fallback
+        # to compare model behavior cleanly without changing production config.
+        if os.environ.get("STUDENT_RAG_DISABLE_GROQ_FALLBACK", "").strip().lower() in {
+            "1",
+            "true",
+            "yes",
+            "on",
+        }:
+            fallback_models = [model_name]
+        else:
+            fallback_models = [
+                model_name,
+                "openai/gpt-oss-120b",
+                "qwen/qwen3.6-27b",
+                "llama-3.1-8b-instant",
+            ]
         self.models = []
         for m in fallback_models:
             if m not in self.models:
@@ -77,12 +86,14 @@ class GroqClient:
                 text = response.choices[0].message.content
                 if not text:
                     raise RuntimeError("Groq API returned an empty response.")
+                print(f"[GroqClient] mode=generate model_used={provider['model']}")
                 return {
                     "ok": True,
                     "text": text,
                     "error_type": None,
                     "error_message": None,
                     "attempts": 1,
+                    "model_used": provider["model"],
                 }
             except Exception as exc:
                 last_error = exc
@@ -97,6 +108,7 @@ class GroqClient:
             "error_type": "api_error",
             "error_message": str(last_error),
             "attempts": len(providers),
+            "model_used": None,
         }
 
     @traceable(name="Groq Generation Stream", run_type="llm")
@@ -122,6 +134,7 @@ class GroqClient:
                     max_tokens=self._config["max_tokens"],
                     stream=True,
                 )
+                print(f"[GroqClient] mode=stream model_used={provider['model']}")
 
                 # Fetch first chunk to verify TTFT and API health
                 iterator = iter(response)

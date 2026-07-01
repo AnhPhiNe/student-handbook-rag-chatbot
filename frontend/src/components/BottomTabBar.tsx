@@ -6,6 +6,7 @@ interface BottomTabBarProps {
 }
 
 export function BottomTabBar({ activeTab, onTabChange }: BottomTabBarProps) {
+  const toolTabs = new Set(['gpa', 'target-gpa', 'course-target', 'scholarship', 'tuition', 'credits', 'faq']);
   const tabs = [
     { id: 'home', icon: Home, label: 'Trang chủ' },
     { id: 'chat', icon: MessageSquare, label: 'Chat' },
@@ -18,7 +19,7 @@ export function BottomTabBar({ activeTab, onTabChange }: BottomTabBarProps) {
     <nav className="bottom-tab-bar">
       {tabs.map(tab => {
         const Icon = tab.icon;
-        const isActive = activeTab === tab.id;
+        const isActive = activeTab === tab.id || (tab.id === 'tools' && toolTabs.has(activeTab));
         return (
           <button
             key={tab.id}

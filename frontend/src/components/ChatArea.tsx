@@ -3,6 +3,7 @@ import { GraduationCap, Gift, Home, ArrowDown, Lock, Calculator, Medal, Clipboar
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';
+import type { Cohort } from '../utils/gradeScale';
 import botAvatarImg from '../assets/bot_avatar.png';
 
 const IS_MAINTENANCE_MODE = false;
@@ -20,6 +21,7 @@ interface ChatAreaProps {
   onToggleTheme: () => void;
   onNavigateTab?: (tabId: string) => void;
   onClearChat?: () => void;
+  cohort: Cohort;
 }
 
 const ACTION_CARDS = [
@@ -128,6 +130,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
 
   useEffect(() => {
     if (isTyping) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoadingSeconds(0);
       loadingTimer.current = setInterval(() => {
         setLoadingSeconds(prev => prev + 1);
@@ -148,7 +151,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
 
   const handleQuickAccess = (id: string) => {
     if (id === 'bieu-mau') {
-      if (onNavigateTab) onNavigateTab('resources');
+      if (onNavigateTab) onNavigateTab('bieu-mau');
       return;
     }
     

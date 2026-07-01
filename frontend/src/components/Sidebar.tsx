@@ -1,4 +1,4 @@
-import { Award, Calculator, FileText, GraduationCap, HelpCircle, MessageSquare, Plus, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home, Bug, MessageSquareText } from 'lucide-react';
+import { Award, Calculator, FileText, GraduationCap, HelpCircle, MessageSquare, Plus, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home, Bug, MessageSquareText, School } from 'lucide-react';
 import logoHcmue from '../assets/logo_hcmue.png';
 
 interface SidebarProps {
@@ -104,6 +104,11 @@ export function Sidebar({ activeTab, onTabChange, onNewChat, isCollapsed, isMobi
 
           <div className="sidebar-nav-section">
             <div className="sidebar-nav-title">Tra cứu</div>
+            <button className={`nav-item ${activeTab === 'admissions' ? 'active' : ''}`} onClick={() => handleTabClick('admissions')} aria-label="Tuyển sinh">
+              {activeTab === 'admissions' && <div className="active-indicator" />}
+              <School size={18} />
+              <span>Tuyển sinh</span>
+            </button>
             <button className={`nav-item ${activeTab === 'bieu-mau' ? 'active' : ''}`} onClick={() => handleTabClick('bieu-mau')} aria-label="Biểu mẫu">
               {activeTab === 'bieu-mau' && <div className="active-indicator" />}
               <FileText size={18} />

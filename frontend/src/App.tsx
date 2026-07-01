@@ -14,6 +14,7 @@ import { ScholarshipPage } from './components/pages/ScholarshipPage';
 import { ToolsPage } from './components/pages/ToolsPage';
 import { TuitionPage } from './components/pages/TuitionPage';
 import { FaqPage } from './components/pages/FaqPage';
+import { AdmissionPage } from './components/pages/AdmissionPage';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { MobileHeader } from './components/MobileHeader';
 import { BottomTabBar } from './components/BottomTabBar';
@@ -130,6 +131,7 @@ function App() {
             {activeTab === 'course-target' && <CourseTargetPage key={cohort} cohort={cohort} />}
             {activeTab === 'scholarship' && <ScholarshipPage />}
             {activeTab === 'tuition' && <TuitionPage />}
+            {activeTab === 'admissions' && <AdmissionPage />}
             {activeTab === 'credits' && <CreditsPage />}
             {activeTab === 'faq' && <FaqPage cohort={cohort} onAskQuestion={handleAskFaqQuestion} />}
             {activeTab === 'huong-dan' && <GuidePage />}

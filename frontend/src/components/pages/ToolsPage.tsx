@@ -1,4 +1,4 @@
-import { Award, Calculator, CircleHelp, GraduationCap, ShieldCheck, TrendingUp, Target } from 'lucide-react';
+import { Award, Calculator, CircleHelp, GraduationCap, School, ShieldCheck, TrendingUp, Target } from 'lucide-react';
 
 interface ToolsPageProps {
   onNavigate: (tab: string) => void;
@@ -39,6 +39,13 @@ const TOOLS = [
     description: 'Tra học phí theo ngành, năm học và số tín chỉ.',
     icon: Calculator,
     color: '#f59e0b',
+  },
+  {
+    id: 'admissions',
+    title: 'Tuyển sinh',
+    description: 'Tra cứu điểm chuẩn và ước lượng mức độ an toàn tham khảo theo ngành, phương thức, tổ hợp.',
+    icon: School,
+    color: '#2563eb',
   },
   {
     id: 'credits',

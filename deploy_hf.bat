@@ -74,7 +74,7 @@ echo ==============================================
 exit /b 0
 
 :copy_dir
-robocopy "%~1" "%~2" /E /XD __pycache__ .pytest_cache .ruff_cache cache /XF *.pyc *.lock
+robocopy "%~1" "%~2" /E /XD __pycache__ .pytest_cache .ruff_cache cache reports /XF *.pyc *.lock
 if %ERRORLEVEL% GEQ 8 exit /b 1
 exit /b 0
 

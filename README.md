@@ -1,253 +1,337 @@
-# 🎓 HCMUE Student Handbook RAG Assistant
+# HCMUE AI Student Handbook Assistant
 
-> **Disclaimer**: This is an independent, non-commercial personal project created for the HCMUE student community to easily access handbook information. It is **not** an official application provided or endorsed by Ho Chi Minh City University of Education.
+> Independent student project. This repository is not an official product of Ho Chi Minh City University of Education (HCMUE). The assistant is designed to help students look up handbook information faster, but important decisions should still be checked against the cited source documents or the relevant university office.
 
 <p align="center">
-  <img src="https://img.shields.io/badge/python-3.11-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python 3.11">
-  <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI">
-  <img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" alt="Vite">
-  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
-  <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
-  <img src="https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
-  <img src="https://img.shields.io/badge/Qdrant-E21727?style=for-the-badge&logo=Qdrant&logoColor=white" alt="Qdrant">
-  <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis">
-  <img src="https://img.shields.io/badge/LangSmith-000000?style=for-the-badge" alt="LangSmith">
+  <img src="https://img.shields.io/badge/Python-3.11-3670A0?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11">
+  <img src="https://img.shields.io/badge/FastAPI-API-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/React-Vite-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Vite">
+  <img src="https://img.shields.io/badge/Qdrant-VectorDB-E21727?style=for-the-badge" alt="Qdrant">
+  <img src="https://img.shields.io/badge/MongoDB-DocStore-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
+  <img src="https://img.shields.io/badge/Groq-LLM-F55036?style=for-the-badge" alt="Groq">
 </p>
 
-## 🌟 Overview
+## Why This Project Exists
 
-The **HCMUE Student Handbook RAG** is a production-grade, multi-stage Retrieval-Augmented Generation (RAG) system built to answer complex, cohort-specific academic queries regarding the student handbook of Ho Chi Minh City University of Education.
+HCMUE student handbooks contain a lot of useful information, but students often need fast answers to practical questions:
 
-By combining advanced NLP preprocessing, multi-stage hybrid search, intent routing, and fault-tolerant LLM orchestration, the system delivers grounded, citable, and factually accurate answers (verified via LLM-as-a-Judge) with sub-second latencies.
+- "Khoa CNTT co nhung nganh nao?"
+- "K50-K51 diem D+ co qua mon khong?"
+- "Muon phuc khao diem thi thi lam sao?"
+- "Van de hoc phi lien he phong nao?"
+- "Bieu mau tam nghi hoc nam o dau?"
 
-## 🛠️ Architectural Highlights & Engineering Decisions
+This project turns the handbooks into a cohort-aware RAG assistant. It combines deterministic lookup for facts that must be exact with retrieval-augmented generation for longer regulations and procedures.
 
-### 1. 🔍 Advanced Hybrid Retrieval & Reranking
-- **Dense & Lexical Fusion:** Combines semantic vectors (generated via `BAAI/bge-m3` on Qdrant Cloud) with sparse BM25 retrieval to capture both deep semantic context and exact academic terminology.
-- **Cross-Encoder Reranking:** Integrates a local Cross-Encoder model to compute exact query-document relevance scores, filtering out retrieval noise and feeding only the highest-quality context to the generator.
-- **Preprocessing Pipeline:** Implements custom Query Expansion, typo correction, and Entity Linking to translate student abbreviations (e.g., "CNTT", "ĐRL") to their formal equivalents, boosting retrieval recall.
+## Highlights
 
-### 2. ⚡ High-Availability & Fault-Tolerant LLM Orchestration
-- **API Key Load Balancer:** Combines a custom round-robin balancer rotating across 5 distinct Groq API keys to bypass Rate Limits (TPD/TPM) of the free tier.
-- **Graceful Quality Degradation:** Integrates a double-loop fallback model hierarchy. If the primary LLM (`llama-3.3-70b-versatile`) exhausts its tokens, the system dynamically downgrades to `gpt-oss-120b`, `qwen3.6-27b`, and finally `llama-3.1-8b-instant` to guarantee 100% uptime.
-- **Two-Tier Caching Matrix:** Shared Redis L1 Cache (Upstash) reduces LLM execution costs. If Redis undergoes a network partition, the system automatically falls back to an ephemeral Local JSON L2 Cache.
+- **Cohort-aware answers** for K48-K49 and K50-K51.
+- **Structured lookup** for programs, grade thresholds, scoring tables, formulas, offices, and forms.
+- **Hybrid RAG retrieval** with dense vectors, BM25, entity expansion, metadata filters, and cross-encoder reranking.
+- **Parent-child document retrieval** using Qdrant for vector chunks and MongoDB for full parent context.
+- **Streaming FastAPI backend** and React/Vite frontend.
+- **Production-oriented guardrails** for out-of-scope questions, ambiguous queries, and missing context.
+- **Evaluation-first workflow** with deterministic tests, retrieval metrics, and RAGAS-style Gemini Judge reports.
 
-### 3. ☁️ Scalable Parent-Child DB Architecture
-- **Parent-Child Relation:** Utilizes **MongoDB Atlas (DocStore)** for storing full-length, uncut regulation documents ("Parents"), while **Qdrant Cloud (VectorDB)** stores dense, overlapping 200-token chunks ("Children"). This avoids vector dilution during retrieval while ensuring the LLM receives complete context without arbitrary truncation.
-- **Dynamic Multi-Cohort Support:** Segregates and indexes regulations dynamically across different academic years (e.g., K48, K51), enabling the bot to contrast and compare policies across student generations.
+## Current System Snapshot
 
----
+| Area | Current State |
+|---|---:|
+| Student handbook cohorts | K48-K49, K50-K51 |
+| Semantic chunks in vector index | 798 |
+| Parent documents in MongoDB docstore | 435 |
+| Program directory records | 86 |
+| Form template records | 19 |
+| Qdrant collection | `student_handbook_semantic_v4` |
+| Backend API | FastAPI |
+| Frontend | React + Vite |
 
-## 🏛️ System Architecture
-
-This diagram illustrates the high-availability infrastructure, showing how servers, databases, and external APIs are connected.
-
-```mermaid
-graph LR
-    classDef ui fill:#005571,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef api fill:#4ea94b,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef cache fill:#DC382D,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef db fill:#E21727,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef mongo fill:#4ea94b,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef llm fill:#8E75B2,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef ops fill:#F4A261,stroke:#fff,stroke-width:2px,color:#fff;
-
-    User([👨‍🎓 Student]) -->|HTTPS| Frontend[React / Vite UI]:::ui
-    Frontend -->|REST API| Backend[FastAPI Backend]:::api
-    
-    %% Observability
-    Backend -.->|Telemetry| LangSmith[LangSmith Tracing]:::ops
-    
-    %% Caching System
-    Backend -->|Cache Hit| Cache[(Redis Cloud L1)]:::cache
-    Cache -.->|Network Fallback| L2[(Local JSON L2)]:::cache
-    
-    %% Parent-Child Databases
-    Backend ---->|Vector Search| Qdrant[(Qdrant Cloud Vectors)]:::db
-    Backend ---->|Doc Fetch| Mongo[(MongoDB Atlas Docs)]:::mongo
-    
-    %% Load Balancer
-    Backend -->|Round-Robin| LB{Groq Load Balancer}:::llm
-    LB -->|Primary| Llama3[Llama-3.3-70b]:::llm
-    LB -.->|Graceful Degradation| Backup[Qwen / GPT-OSS]:::llm
-    
-    %% Offline Pipeline
-    Ingest[Offline Ingestion Pipeline]:::ops ----> Qdrant
-    Ingest ----> Mongo
-```
-
----
-
-## 🧠 RAG Processing Pipeline (Data Flow)
-
-This diagram illustrates the logical steps a question goes through, from the moment the user asks it until the final answer is generated.
+## Architecture
 
 ```mermaid
-graph TD
-    classDef process fill:#2A9D8F,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef router fill:#F4A261,stroke:#fff,stroke-width:2px,color:#fff;
-    
-    Query([📝 User Query]) --> Guard[Input Guardrails & Security]:::process
-    Guard --> Router{NLP Intent Router}:::router
-    
-    Router -->|Exact Match| Rule[Deterministic Form / Score Lookup]:::process
-    Router -->|Semantic| Expand[Query Expansion & Entity Linking]:::process
-    
-    Expand --> Search[Vector Similarity Search]:::process
-    Search --> Fetch[Fetch Full Parent Documents]:::process
-    Fetch --> Rerank[Cross-Encoder Reranking]:::process
-    
-    Rule --> Gen[LLM Answer Generation]:::process
-    Rerank --> Gen
-    
-    Gen --> Output([✅ Final Answer + Citations])
+flowchart LR
+    U["Student"] --> FE["React/Vite Web App"]
+    FE --> API["FastAPI Backend"]
+
+    API --> Guard["Input Guardrails"]
+    Guard --> Router["AI Router + Rules"]
+
+    Router -->|structured facts| Lookup["Structured Lookup"]
+    Router -->|long regulations| Retrieval["Hybrid Retrieval"]
+
+    Retrieval --> Qdrant["Qdrant Cloud\nsemantic child chunks"]
+    Retrieval --> BM25["BM25 Sparse Index"]
+    Retrieval --> Rerank["Cross-Encoder Reranker"]
+    Rerank --> Mongo["MongoDB Atlas\nparent docs"]
+
+    Lookup --> Answer["Answer Formatter / LLM"]
+    Mongo --> Answer
+    Answer --> Cite["Citations + Source Metadata"]
+    Cite --> FE
+
+    API -. optional .-> Redis["Redis / Local Cache"]
+    API -. tracing .-> LangSmith["LangSmith"]
 ```
 
-### 🧩 Step-by-Step Pipeline Breakdown
+## Query Flow
 
-1. **Input Guardrails**: Intercepts the query to filter out prompt injections, jailbreaks, or out-of-domain requests.
-2. **NLP Intent Router**: Classifies the query domain. Routes to the **Deterministic Lookup** (for exact form requirements, grade calculations) or the **Semantic Retrieval** engine.
-3. **Query Expansion & Entity Linking**: Maps Vietnamese abbreviations and academic terminology to expand query semantics.
-4. **Vector Search (Qdrant)**: Embeds the query using `bge-m3` and searches against Qdrant Cloud for the top semantic child chunks.
-5. **Context Fetching (MongoDB)**: Maps child chunks to their parents in MongoDB Atlas and retrieves full documents.
-6. **Cross-Encoder Reranking**: Re-scores the retrieved context against the user query using a local Cross-Encoder to optimize context window space.
-7. **LLM Answer Generation**: Synthesizes a factual, well-cited Vietnamese answer, complete with document page numbers.
+1. **Validate the user query**
+   - Rejects prompt-injection-like and out-of-domain requests.
+   - Asks a follow-up question when the query is too ambiguous.
 
----
+2. **Route by intent and content type**
+   - `program_directory`: majors, faculties, cohort-specific program lists.
+   - `scoring_tables` / `threshold_rules`: grade scale, pass/fail thresholds, GPA-related rules.
+   - `office_directory`: offices, duties, emails, phone numbers.
+   - `form_templates`: form name, purpose, source page, and guidance to the Forms page.
+   - `regulation_sections` / `procedures`: longer handbook rules handled by RAG.
 
-## 📂 Source Code Architecture
+3. **Retrieve or lookup**
+   - Structured facts are answered from JSON-backed deterministic stores.
+   - Long-form questions use Qdrant + BM25 + reranking + Mongo parent-doc expansion.
 
-The codebase adheres strictly to **Clean Architecture** principles and is fully typed, linted, and formatted using `ruff` for strict PEP-8 compliance.
+4. **Generate grounded answer**
+   - The LLM is used to explain and phrase the answer.
+   - For structured cases, the source of truth is the lookup result, not free-form generation.
+   - Citations include cohort, content type, source page, and source metadata when available.
+
+## Data Pipeline
+
+The ingestion pipeline is built around document profiles instead of one-off parsing rules. Each handbook is processed into structured and semantic artifacts:
+
+```mermaid
+flowchart TD
+    PDF["Raw handbook PDFs"] --> Parse["PDF parsing + section detection"]
+    Parse --> Profile["Document profile\ncohort, pages, section map"]
+    Profile --> Extract["Structured extraction"]
+    Profile --> Chunk["Semantic chunking"]
+
+    Extract --> Programs["program_directory"]
+    Extract --> Offices["office_directory"]
+    Extract --> Forms["form_templates"]
+    Extract --> Scores["scoring_tables / threshold_rules / formula_rules"]
+
+    Chunk --> Chroma["Local Chroma build"]
+    Chroma --> Qdrant["Qdrant Cloud v4"]
+    Chunk --> Mongo["MongoDB parent_docs"]
+```
+
+Key design choices:
+
+- Keep a **single Qdrant collection** with required metadata: `cohort`, `document_id`, `chunk_type`, `content_type`, and `source_pages`.
+- Use `cohort` filters instead of separate collections per handbook.
+- Keep repetitive forms/templates out of semantic retrieval when they are better served by structured lookup.
+- Preserve source pages so students can verify important answers.
+
+## Evaluation
+
+The evaluation suite is intentionally split by system behavior. Deterministic lookup is not judged the same way as free-form RAG generation.
+
+### Deterministic Structured Eval
+
+Structured/tool questions are evaluated with exactness, item counts, cohort correctness, and citation metadata checks.
+
+| Metric | Score |
+|---|---:|
+| Cases | 70 |
+| Pass rate | 94.29% |
+| Deterministic exactness | 97.83% |
+| Citation metadata accuracy | 93.94% |
+| Intent accuracy | 100.00% |
+| Strategy accuracy | 100.00% |
+
+### True-RAG Retrieval Eval
+
+Retrieval is evaluated only on true RAG cases: regulation, procedure, office/faculty detail, and other long-form handbook questions.
+
+| Metric | Score |
+|---|---:|
+| Cases | 80 |
+| Hit@1 | 77.50% |
+| Hit@3 | 90.00% |
+| Hit@5 | 90.00% |
+| MRR | 83.13% |
+| nDCG@5 | 84.84% |
+
+Breakdown:
+
+| Content type | Hit@3 | MRR | nDCG@5 |
+|---|---:|---:|---:|
+| Faculty directory | 100.00% | 100.00% | 96.88% |
+| Office directory | 90.48% | 90.48% | 90.48% |
+| Procedures | 100.00% | 100.00% | 100.00% |
+| Regulation sections | 86.67% | 74.44% | 77.97% |
+
+### RAGAS-Style Gemini Judge
+
+For generated true-RAG answers, the project uses a RAGAS-style rubric with Gemini 3.1 Flash Lite as Judge. The latest primary report is calculated only on generated true-RAG answers, excluding deterministic lookup cases from the headline metric.
+
+| Metric | Score |
+|---|---:|
+| Answer relevancy | 90.23% |
+| Context precision | 74.77% |
+| Context recall | 75.91% |
+| Citation correctness | 80.00% |
+| Faithfulness | 72.05% |
+| Answer correctness | 62.27% |
+
+Interpretation:
+
+- The system is ready for public beta because high-frequency structured questions and retrieval placement are stable.
+- Lower faithfulness/correctness numbers are expected on harder long-form judge cases and are treated as improvement signals, not hidden.
+- The UI keeps a visible warning that the assistant can make mistakes and that source citations should be checked for important decisions.
+
+## Repository Structure
 
 ```text
 student_handbook_rag/
-├── configs/                 # Project configurations and routing thresholds
-├── data/
-│   ├── raw/                 # Original PDF handbooks
-│   └── processed/           # Extracted texts, entity registries, and structured chunks
-├── deploy/                  # Scripts and configurations for deployment
-├── docs/                    # Project documentation
-├── frontend/                # React/Vite UI source code
-├── logs/                    # System runtime logs
-├── scripts/                 # CLI utilities for data ingestion, evaluation, and system management
-├── tests/                   # Comprehensive Unit and Integration Test suite
-└── src/
-    ├── api/                 # FastAPI controllers, routes, and Pydantic schemas
-    ├── chunking/            # Layout-aware semantic chunking logic
-    ├── common/              # Shared utilities like logging and environment loaders
-    ├── extraction/          # Structured data parsing and metadata extraction
-    ├── generation/          # LLM orchestration, Query Rewriting, and text generation
-    ├── ingestion/           # Data loading pipelines
-    ├── preprocessing/       # Hierarchical document parsing and text cleaning
-    ├── retrieval/           # Core RAG engine (Vector Search, Intent Router, Entity Linker)
-    └── services/            # Core business logic orchestrating Retrieval and Generation
+|-- configs/                  # Runtime, retrieval, embedding, chunking configs
+|-- data/
+|   |-- raw/                  # Original handbook PDFs
+|   |-- processed/            # Extracted structured data, chunks, metadata
+|   `-- eval/                 # Golden eval cases for structured, retrieval, judge
+|-- frontend/                 # React + Vite web app
+|-- scripts/                  # Ingestion, migration, evaluation, debug utilities
+|-- src/
+|   |-- api/                  # FastAPI app, routes, request/response schemas
+|   |-- chunking/             # Semantic, directory, form, table chunking
+|   |-- common/               # Shared env/config helpers
+|   |-- extraction/           # Structured data extraction from handbooks
+|   |-- generation/           # Prompting, LLM clients, answer formatting, citations
+|   |-- ingestion/            # PDF loading and preprocessing helpers
+|   |-- preprocessing/        # Structure parsing and text cleanup
+|   |-- retrieval/            # Router, lookup, BM25, vector retrieval, reranking
+|   `-- services/             # Answer service orchestration
+`-- tests/                    # Unit and integration tests
 ```
 
-- **`tests/`**: Over 56 automated Unit and Integration tests ensuring stability across the LLM and API logic.
-- **`src/api/`**: Asynchronous FastAPI controllers, Server-Sent Events (SSE) for streaming, and Pydantic models for request/response validation.
-- **`src/common/`**: Essential shared modules for the system such as robust logging (`logger.py`) and environment loading (`env_loader.py`).
-- **`src/retrieval/`**: The core RAG retrieval engine featuring Intent Routing, Context Building, and Cross-Encoder Reranking logic.
-- **`src/generation/`**: LLM orchestration layer managing Prompt Injection, Query Rewriting, and Double-Loop Fallback generation.
-- **`src/chunking/` & `src/extraction/`**: Autonomous offline data pipelines responsible for layout-aware PDF parsing (via PyMuPDF) and extracting complex structured business rules (formulas, tables, directories).
-- **`src/services/`**: High-level business logic binding the Retrieval and Generation modules.
+## Tech Stack
 
----
+| Layer | Tools |
+|---|---|
+| Frontend | React, Vite, TypeScript, lucide-react |
+| Backend | FastAPI, Pydantic, Uvicorn |
+| Embeddings | BAAI/bge-m3 |
+| Vector database | Qdrant Cloud, local Chroma for offline eval |
+| Sparse retrieval | BM25 |
+| Reranking | Local cross-encoder reranker |
+| Parent docstore | MongoDB Atlas |
+| LLM provider | Groq model fallback chain |
+| Cache | Redis when available, local JSON fallback |
+| Evaluation | deterministic eval, retrieval eval, RAGAS-style Gemini Judge |
+| CI | GitHub Actions, ruff, compileall, unittest, frontend lint/build |
 
-## 📊 Automated Evaluation & Observability (LLM-as-a-Judge)
+## Running Locally
 
-To ensure factual safety and prevent hallucinations, the system is continuously evaluated against an augmented dataset of **250+ golden test cases**, assessed strictly by an autonomous LLM-as-a-Judge (`gemini-3.1-flash-lite` at `temperature=0.0`).
+### Backend
 
-### 1. Generation Quality (100 Complex Cases)
-| Metric (RAGAS) | Score | Description |
-|---|---|---|
-| **Answer Relevance** | **92.2%** | Verifies that the answer directly solves the user's intent. |
-| **Faithfulness** | **77.1%** | Grounding check ensuring the LLM does not hallucinate facts outside the provided context. |
-| **Correctness** | **71.5%** | Compares factual outputs directly against human-annotated gold truths. |
-
-### 2. Intent Routing & Guardrails (50 Cases)
-| Metric | Score | Description |
-|---|---|---|
-| **Intent Router Accuracy** | **94.0%** | Measures classification accuracy between semantic and deterministic queries. |
-| **Guardrail Pass Rate** | **86.0%** | Deflects prompt injections, jailbreaks, and out-of-domain requests. |
-| **Citation Accuracy** | **100.0%** | Perfect matching of answers to source pages and regulations. |
-
-### 3. Observability
-- **LangSmith Tracing**: Every live user query records complete telemetry including: retrieval chunk relevance scores, context window size, latency breakdown, and token utilization/cost.
-
----
-
-## ⚙️ CI/CD & Production Quality Gates
-
-The project implements a complete **GitHub Actions CI/CD Pipeline** (`ci.yml`) to enforce code standards and prevent quality regression during updates:
-- **Linting & Code Style:** Strict `ruff check .` checks.
-- **Static Syntax Check:** Compiles all python files (`compileall`) to catch compilation bugs.
-- **Automated Tests:** Automatically executes unit test discoveries.
-- **Performance Quality Gates:** The pipeline executes `scripts.evaluate_router_behavior` on every push. **The build fails automatically** if the NLP Router's intent accuracy or strategy accuracy falls below **75%**.
-
----
-
-## 💻 Setup & Installation
-
-### 1. Prerequisites
-- Python 3.11+
-- Node.js & npm (for Frontend)
-
-### 2. Environment Variables (`.env`)
-Create a `.env` file in the root directory:
-```env
-GEMINI_API_KEY="your_gemini_key"
-GROQ_API_KEYS="key1,key2,key3" # Comma separated for load balancing
-
-# VectorDB (Qdrant Cloud)
-VECTORDB_PROVIDER=qdrant_cloud
-QDRANT_URL="https://your-qdrant-cluster.cloud.qdrant.io"
-QDRANT_API_KEY="your_qdrant_key"
-
-# Two-Tier Cache (Upstash Redis)
-REDIS_URL="rediss://default:your_password@your_upstash_url:6379"
-
-# Document Store (MongoDB Atlas)
-MONGODB_URL="mongodb+srv://user:pass@cluster.mongodb.net/?appName=chatbotHCMUE"
-
-# Observability (LangSmith)
-LANGCHAIN_TRACING_V2=true
-LANGCHAIN_ENDPOINT="https://api.smith.langchain.com"
-LANGCHAIN_API_KEY="your_langsmith_key"
-LANGCHAIN_PROJECT="chatbotHCMUE"
-```
-
-### 3. Run the Backend
 ```bash
+python -m venv .venv
+.venv\Scripts\activate
 pip install -r requirements.txt
-uvicorn src.app:app --host 0.0.0.0 --port 8000
+uvicorn src.api.main:app --host 0.0.0.0 --port 7860
 ```
 
-### 4. Run the React Frontend
+### Frontend
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-### 5. Data Pipeline Execution (Optional)
+## Environment Variables
 
-To run the **Dynamic Multi-Cohort Pipeline** (parsing, chunking, and merging both K48 and K51 handbooks) and push vector embeddings to Qdrant Cloud:
+Create a `.env` file in the repository root. Do not commit real secrets.
+
+```env
+# LLM
+GROQ_API_KEYS=your_groq_key_1,your_groq_key_2
+GEMINI_API_KEY=your_gemini_key_for_eval
+
+# Vector database
+VECTORDB_PROVIDER=qdrant_cloud
+QDRANT_URL=https://your-cluster-url
+QDRANT_API_KEY=your_qdrant_key
+
+# Runtime collection
+# Config files currently point to student_handbook_semantic_v4
+
+# Parent document store
+MONGODB_URL=mongodb+srv://user:password@cluster.mongodb.net/?appName=chatbotHCMUE
+MONGODB_PARENT_LOOKUP_ENABLED=true
+
+# Cache
+REDIS_URL=rediss://default:password@host:6379
+STUDENT_RAG_DISABLE_REDIS=false
+
+# CORS
+STUDENT_RAG_CORS_ORIGINS=https://your-frontend-domain
+
+# Optional tracing
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_API_KEY=your_langsmith_key
+LANGCHAIN_PROJECT=chatbotHCMUE
+```
+
+## Useful Commands
+
+### Run Offline Evaluations
+
+```bash
+python scripts/evaluate_answers.py
+python scripts/evaluate_retrieval.py
+python scripts/evaluate_router_behavior.py
+```
+
+### Build Multi-Cohort Artifacts
+
 ```bash
 python scripts/build_multi_cohort.py
 ```
 
----
+### Push Local Chroma Collection to a New Qdrant Collection
 
-## 🚧 System Constraints & Future Roadmap
+```bash
+python scripts/migrate_to_qdrant.py --target-collection student_handbook_semantic_v4
+```
 
-### Current Constraints
-- **Domain Specificity:** The retrieval engine and prompt matrices are strictly optimized for the HCMUE academic regulations and student handbook structure.
-- **Language Constraint:** Designed specifically for Vietnamese queries (supporting both accented and accentless text). Other languages are not supported.
+### Frontend Quality Checks
 
-### Future Roadmap
-- **GraphRAG Integration:** Transition from hierarchical document mapping to a Knowledge Graph structure (e.g., using Neo4j) to model complex rule dependencies, such as prerequisite courses, GPA conversions, and conditional academic warnings.
-- **Agentic Chunking:** Implement LLM-guided agentic chunking to partition documents by semantic topic rather than rigid layout or token length boundaries.
-- **Multi-Modal Parsing:** Incorporate Vision Language Models (VLMs) into the ingestion pipeline to parse handbook tables, structure trees, and process flowcharts directly as visual inputs.
+```bash
+cd frontend
+npm run lint
+npm run build
+```
 
----
-*Built with ❤️ for the HCMUE Student Community.*
+## Deployment Notes
+
+- Current runtime configs point to `student_handbook_semantic_v4`.
+- MongoDB `parent_docs` should match the local `data/processed/chunks/docstore_items.json` IDs.
+- Before public deployment, smoke test these flows:
+  - switch K48-K49 and K50-K51;
+  - list programs by school/faculty;
+  - pass/fail thresholds and D/D+ behavior;
+  - scholarship, re-study, grade appeal, dormitory, temporary leave;
+  - office contact questions;
+  - citation expand/collapse;
+  - ambiguous and out-of-domain questions.
+
+## Limitations
+
+- This is a public beta assistant, not an official policy source.
+- Some long regulation/procedure chunks can still lose nuance after context truncation.
+- Judge metrics are intentionally reported honestly; faithfulness and correctness remain the main future improvement targets.
+- Form retrieval is intentionally handled through structured form lookup and the Forms page instead of optimizing semantic RAG for form templates.
+
+## Roadmap
+
+- Add production feedback clustering for repeated low-confidence questions.
+- Improve parent/child context selection for long regulations and procedures.
+- Add source document viewer links when stable public URLs are available.
+- Expand cohorts when new student handbooks are released.
+- Build a lightweight internal quality dashboard after authentication/roles are introduced.
+
+## License and Attribution
+
+This project is built as a non-commercial student engineering project for learning, experimentation, and community support. Handbook content belongs to its respective source documents and should be verified through official HCMUE channels when used for important decisions.

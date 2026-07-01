@@ -787,7 +787,7 @@ class AnswerPipeline:
         yield {"type": "done"}
 
     def _run_retrieval(self, query: str, cohort: str | None = None) -> dict[str, Any]:
-        return run_retrieval_pipeline(
+        result = run_retrieval_pipeline(
             query=query,
             model=self.model,
             collection=self.collection,
@@ -804,6 +804,8 @@ class AnswerPipeline:
             candidate_multiplier=self.config["retrieval"].get("candidate_multiplier", 5),
             min_candidates=self.config["retrieval"].get("min_candidates", 25),
         )
+        result["selected_cohort"] = cohort
+        return result
 
     def _run_verified_retrieval(
         self,

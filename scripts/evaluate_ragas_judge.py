@@ -234,6 +234,23 @@ def case_cache_key(case: dict[str, Any], index: int) -> str:
     return str(case.get("id") or f"case_{index:03d}")
 
 
+def filter_by_eval_bucket(
+    items: list[dict[str, Any]],
+    bucket: str | None,
+) -> list[dict[str, Any]]:
+    if not bucket:
+        return items
+    return [
+        item
+        for item in items
+        if str(
+            item.get("eval_bucket")
+            or eval_bucket(item.get("eval_type"), item.get("content_type"))
+        )
+        == bucket
+    ]
+
+
 def load_answer_cache(path: Path) -> dict[str, dict[str, Any]]:
     if not path.exists():
         return {}
@@ -314,6 +331,10 @@ def generate_answer_cache(
     mock_answers: bool,
     stop_on_failure: bool,
     disable_answer_fallback: bool,
+    answer_model: str | None,
+    max_context_chars: int | None,
+    max_output_tokens: int | None,
+    eval_bucket_filter: str | None,
 ) -> dict[str, Any]:
     os.environ["HF_HUB_OFFLINE"] = "1"
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
@@ -334,6 +355,7 @@ def generate_answer_cache(
 
     load_project_env()
     cases = load_json(cases_path)
+    cases = filter_by_eval_bucket(cases, eval_bucket_filter)
     if limit is not None:
         cases = cases[:limit]
 
@@ -342,6 +364,13 @@ def generate_answer_cache(
         config_path=config_path,
         llm_client=MockAnswerClient() if mock_answers else None,
     )
+    if answer_model and not mock_answers:
+        pipeline.config.setdefault("llm", {})["model_name"] = answer_model
+    if max_context_chars is not None:
+        pipeline.config.setdefault("llm", {})["max_context_chars"] = max_context_chars
+        pipeline.max_context_chars = max_context_chars
+    if max_output_tokens is not None:
+        pipeline.config.setdefault("llm", {})["max_output_tokens"] = max_output_tokens
     pipeline.response_cache.enabled = False
     pipeline.semantic_cache.enabled = False
     pipeline.query_rewriter.enabled = False
@@ -385,7 +414,11 @@ def generate_answer_cache(
         "generated_this_run": generated,
         "skipped_cached": skipped,
         "failed_this_run": failed,
+        "answer_model": "mock" if mock_answers else pipeline.config.get("llm", {}).get("model_name"),
+        "max_context_chars": pipeline.config.get("llm", {}).get("max_context_chars"),
+        "max_output_tokens": pipeline.config.get("llm", {}).get("max_output_tokens"),
         "disable_answer_fallback": disable_answer_fallback,
+        "eval_bucket_filter": eval_bucket_filter,
     }
     return report
 
@@ -443,10 +476,12 @@ def judge_from_answer_cache(
     sleep_seconds: float,
     limit: int | None,
     mock_judge: bool,
+    eval_bucket_filter: str | None,
 ) -> dict[str, Any]:
     load_project_env()
     cache = load_answer_cache(cache_path)
     ready_records = [item for item in cache.values() if item.get("answer_ready")]
+    ready_records = filter_by_eval_bucket(ready_records, eval_bucket_filter)
     if limit is not None:
         ready_records = ready_records[:limit]
 
@@ -494,6 +529,7 @@ def judge_from_answer_cache(
         "cache_path": str(cache_path),
         "judge_model": "mock" if mock_judge else judge_model,
         "sleep_seconds": sleep_seconds,
+        "eval_bucket_filter": eval_bucket_filter,
         "ragas_package_available": ragas_package_available(),
         "summary": build_summary(results),
         "cases": results,
@@ -585,10 +621,22 @@ def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
         by_content_type[str(item.get("content_type") or "unknown")].append(item)
         by_model_used[str(item.get("model_used") or "unknown")].append(item)
 
+    primary_ragas_results = _primary_ragas_results(results)
+    structured_secondary_results = by_eval_bucket.get("structured_tool", [])
+
     return {
         "total_cases": len(results),
         "answered_cases": sum(1 for item in results if item.get("status") == "answered"),
         **_metric_means(results),
+        "headline_metric_note": (
+            "Use primary_ragas_summary for CV/report RAGAS headline. "
+            "Overall metrics include structured/deterministic cases and are for debug only."
+        ),
+        "overall_summary": _metric_group_summary(results),
+        "primary_ragas_summary": _metric_group_summary(primary_ragas_results),
+        "structured_secondary_summary": _metric_group_summary(
+            structured_secondary_results
+        ),
         "cohort_breakdown": {
             cohort: _metric_group_summary(items)
             for cohort, items in sorted(by_cohort.items())
@@ -611,10 +659,30 @@ def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
         },
         "true_rag_summary": _metric_group_summary(by_eval_bucket.get("true_rag", [])),
         "structured_tool_summary": _metric_group_summary(
-            by_eval_bucket.get("structured_tool", [])
+            structured_secondary_results
         ),
         "lowest_scored_cases": _lowest_scored_cases(results, limit=15),
+        "primary_lowest_scored_cases": _lowest_scored_cases(
+            primary_ragas_results,
+            limit=15,
+        ),
     }
+
+
+def _primary_ragas_results(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    output: list[dict[str, Any]] = []
+    for item in results:
+        bucket = str(
+            item.get("eval_bucket")
+            or eval_bucket(item.get("eval_type"), item.get("content_type"))
+        )
+        model_used = str(item.get("model_used") or "").strip().lower()
+        if bucket != "true_rag":
+            continue
+        if model_used in {"", "deterministic", "mock-answer"}:
+            continue
+        output.append(item)
+    return output
 
 
 def _metric_group_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
@@ -671,6 +739,18 @@ def _case_quality_score(item: dict[str, Any]) -> float:
     return sum(values) / len(values) if values else 0.0
 
 
+def resummarize_judge_report(report_path: Path) -> dict[str, Any]:
+    report = load_json(report_path)
+    if not isinstance(report, dict):
+        raise ValueError(f"Report must be a JSON object: {report_path}")
+    cases = report.get("cases")
+    if not isinstance(cases, list):
+        raise ValueError(f"Report does not contain a cases list: {report_path}")
+    report["summary"] = build_summary(cases)
+    report["resummarized_from"] = str(report_path)
+    return report
+
+
 def ragas_package_available() -> bool:
     try:
         import ragas  # noqa: F401
@@ -688,6 +768,10 @@ def run_evaluation(
     mock_judge: bool,
     mock_answers: bool,
     disable_answer_fallback: bool,
+    answer_model: str | None,
+    max_context_chars: int | None,
+    max_output_tokens: int | None,
+    eval_bucket_filter: str | None,
 ) -> dict[str, Any]:
     os.environ["HF_HUB_OFFLINE"] = "1"
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
@@ -720,7 +804,7 @@ def run_evaluation(
     os.environ["STUDENT_RAG_DISABLE_AI_ROUTER"] = "1"
     if disable_answer_fallback:
         os.environ["STUDENT_RAG_DISABLE_GROQ_FALLBACK"] = "1"
-    cases = load_json(cases_path)
+    cases = filter_by_eval_bucket(load_json(cases_path), eval_bucket_filter)
     if limit is not None:
         cases = cases[:limit]
 
@@ -728,6 +812,13 @@ def run_evaluation(
         config_path=config_path,
         llm_client=MockAnswerClient() if mock_answers else None,
     )
+    if answer_model and not mock_answers:
+        pipeline.config.setdefault("llm", {})["model_name"] = answer_model
+    if max_context_chars is not None:
+        pipeline.config.setdefault("llm", {})["max_context_chars"] = max_context_chars
+        pipeline.max_context_chars = max_context_chars
+    if max_output_tokens is not None:
+        pipeline.config.setdefault("llm", {})["max_output_tokens"] = max_output_tokens
     pipeline.response_cache.enabled = False
     pipeline.semantic_cache.enabled = False
     pipeline.query_rewriter.enabled = False
@@ -771,7 +862,10 @@ def run_evaluation(
         "cases_path": str(cases_path),
         "judge_model": "mock" if mock_judge else judge_model,
         "answer_model": "mock" if mock_answers else pipeline.config.get("llm", {}).get("model_name"),
+        "max_context_chars": pipeline.config.get("llm", {}).get("max_context_chars"),
+        "max_output_tokens": pipeline.config.get("llm", {}).get("max_output_tokens"),
         "disable_answer_fallback": disable_answer_fallback,
+        "eval_bucket_filter": eval_bucket_filter,
         "sleep_seconds": sleep_seconds,
         "ragas_package_available": ragas_package_available(),
         "summary": build_summary(results),
@@ -789,10 +883,21 @@ def main() -> None:
     parser.add_argument("--judge-model", default=DEFAULT_JUDGE_MODEL)
     parser.add_argument("--sleep-seconds", type=float, default=5.0)
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument(
+        "--eval-bucket",
+        choices=("true_rag", "structured_tool"),
+        default=None,
+        help="Filter cases/answer cache records by eval bucket before limit is applied.",
+    )
     parser.add_argument("--mock-judge", action="store_true")
     parser.add_argument("--mock-answers", action="store_true")
     parser.add_argument("--generate-answer-cache", action="store_true")
     parser.add_argument("--judge-from-cache", action="store_true")
+    parser.add_argument(
+        "--resummarize-report",
+        default=None,
+        help="Rebuild summary from an existing Judge report without calling any model.",
+    )
     parser.add_argument("--no-resume", action="store_true")
     parser.add_argument("--stop-on-generation-failure", action="store_true")
     parser.add_argument(
@@ -800,8 +905,34 @@ def main() -> None:
         action="store_true",
         help="Use only the configured answer model while generating answers.",
     )
+    parser.add_argument(
+        "--answer-model",
+        default=None,
+        help="Override llm.model_name for this eval run without editing production config.",
+    )
+    parser.add_argument(
+        "--max-context-chars",
+        type=int,
+        default=None,
+        help="Override llm.max_context_chars for this eval run.",
+    )
+    parser.add_argument(
+        "--max-output-tokens",
+        type=int,
+        default=None,
+        help="Override llm.max_output_tokens for this eval run.",
+    )
     parser.add_argument("--fail-under-faithfulness", type=float, default=None)
     args = parser.parse_args()
+
+    if args.resummarize_report:
+        report = resummarize_judge_report(Path(args.resummarize_report))
+        save_json(report, Path(args.output))
+        print("\nRAGAS-style Gemini Judge report resummarized")
+        for key, value in report["summary"].items():
+            print(f"{key}: {value}")
+        print(f"Saved report: {args.output}")
+        return
 
     if args.generate_answer_cache:
         report = generate_answer_cache(
@@ -813,6 +944,10 @@ def main() -> None:
             mock_answers=args.mock_answers,
             stop_on_failure=args.stop_on_generation_failure,
             disable_answer_fallback=args.disable_answer_fallback,
+            answer_model=args.answer_model,
+            max_context_chars=args.max_context_chars,
+            max_output_tokens=args.max_output_tokens,
+            eval_bucket_filter=args.eval_bucket,
         )
         save_json(report, Path(args.output))
         print("\nRAGAS answer cache generation")
@@ -830,6 +965,7 @@ def main() -> None:
             sleep_seconds=args.sleep_seconds,
             limit=args.limit,
             mock_judge=args.mock_judge,
+            eval_bucket_filter=args.eval_bucket,
         )
     else:
         report = run_evaluation(
@@ -841,6 +977,10 @@ def main() -> None:
             mock_judge=args.mock_judge,
             mock_answers=args.mock_answers,
             disable_answer_fallback=args.disable_answer_fallback,
+            answer_model=args.answer_model,
+            max_context_chars=args.max_context_chars,
+            max_output_tokens=args.max_output_tokens,
+            eval_bucket_filter=args.eval_bucket,
         )
     save_json(report, Path(args.output))
 

@@ -62,6 +62,12 @@ Quy tắc theo loại câu hỏi:
 USER_QUESTION:
 {query}
 
+SOURCE_STRICTNESS:
+- Every concrete claim in the answer must be supported by CONTEXT, STRUCTURED_RESULT, or TOOL_RESULT.
+- Do not add background knowledge, plausible policy details, office responsibility, deadline, eligibility condition, or interpretation if it is not explicitly present in the provided data.
+- If the retrieved context is only partially relevant, answer only the supported part and say the handbook source found here is not enough to confirm the remaining part.
+- Prefer a shorter source-grounded answer over a longer answer that mixes weakly related context.
+
 RETRIEVAL_METADATA:
 - intent: {retrieval_result.get("intent")}
 - strategy: {retrieval_result.get("strategy")}

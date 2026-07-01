@@ -1,9 +1,6 @@
 import re
 from typing import Any
 
-from .citation_formatter import format_sources_text
-
-
 SOURCE_SECTION_PATTERN = re.compile(
     r"(?ims)\n?\s*(?:#+\s*)?(?:nguồn|nguon|tham khảo|tham khao|sources?)\s*:\s*.*$"
 )
@@ -36,8 +33,9 @@ def append_sources(answer: str, sources_text: str) -> str:
 def format_final_answer(
     answer: str, selected_citations: list[dict[str, Any]] | None
 ) -> str:
-    sources_text = format_sources_text(selected_citations)
-    return append_sources(answer, sources_text)
+    # UI đã hiển thị nguồn bằng citation card, nên nội dung trả lời không lặp lại
+    # khối "Nguồn:" dạng văn bản thô.
+    return remove_existing_sources_section(answer)
 
 
 def format_final_response(
@@ -50,4 +48,4 @@ def format_final_response(
     if ambiguity_note:
         answer = f"{clean_answer(ambiguity_note)}\n\n{answer}".strip()
 
-    return append_sources(answer, sources_text)
+    return remove_existing_sources_section(answer)

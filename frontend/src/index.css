@@ -1215,6 +1215,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   font-size: 0.875rem;
 }
 
+.hero-tip {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  margin-top: 0.4rem;
+}
+
 /* Action Cards Grid */
 .action-cards-grid {
   display: grid;
@@ -1669,16 +1676,25 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.75rem;
+  align-items: center;
+}
+
+.suggestion-pills-label {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  margin-right: 0.1rem;
+  text-transform: uppercase;
 }
 
 .suggestion-pill {
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--primary) 9%, var(--bg-primary));
+  border: 1px solid color-mix(in srgb, var(--primary) 28%, var(--border-color));
   color: var(--primary);
-  padding: 0.5rem 1rem;
+  padding: 0.55rem 0.9rem;
   border-radius: 100px;
-  font-size: 0.8125rem;
-  font-weight: 500;
+  font-size: 0.84rem;
+  font-weight: 700;
   cursor: pointer;
   transition: all var(--transition-fast);
   box-shadow: var(--shadow-sm);
@@ -1697,7 +1713,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
 [data-theme='dark'] .suggestion-pill {
   color: #60A5FA;
-  background: rgba(30, 41, 59, 0.5);
+  background: rgba(37, 99, 235, 0.16);
+  border-color: rgba(96, 165, 250, 0.35);
 }
 
 [data-theme='dark'] .suggestion-pill:hover {

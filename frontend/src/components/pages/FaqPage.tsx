@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { ChevronDown, MessageSquareText, Search, Sparkles } from 'lucide-react';
 import { getFaqCategoriesForCohort, getFaqItemsForCohort } from '../../data/faq';
 import type { Cohort } from '../../utils/gradeScale';
@@ -125,7 +126,9 @@ export function FaqPage({ cohort, onAskQuestion }: FaqPageProps) {
 
               <div className="faq-card-body">
                 <div className="faq-card-inner">
-                  <p>{item.shortAnswer}</p>
+                  <div className="faq-answer-markdown">
+                    <ReactMarkdown>{item.shortAnswer}</ReactMarkdown>
+                  </div>
                   <button className="tool-btn primary faq-ask-btn" onClick={() => onAskQuestion(item.aiPrompt)}>
                     <MessageSquareText size={16} />
                     <span>Hỏi AI chi tiết</span>

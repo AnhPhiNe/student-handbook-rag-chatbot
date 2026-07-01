@@ -24,7 +24,7 @@ from .answer_guardrails import (
     is_low_confidence,
     is_out_of_domain_query,
 )
-from .citation_formatter import format_sources_text, select_relevant_citations
+from .citation_formatter import select_relevant_citations
 from .context_allocation import ContextAllocationConfig, build_context_for_prompt
 from .gemini_client import GeminiClient
 from .io_utils import load_json, load_yaml
@@ -467,7 +467,6 @@ class AnswerPipeline:
 
         final_answer = format_final_response(
             llm_text,
-            sources_text=format_sources_text(selected_citations),
         )
         output = self._build_output(
             query=query,

@@ -1367,6 +1367,54 @@
   padding: 0 1.15rem 1rem;
 }
 
+.faq-answer-markdown {
+  margin: 0 0 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.faq-answer-markdown p,
+.faq-answer-markdown ul,
+.faq-answer-markdown ol {
+  margin: 0 0 0.9rem;
+}
+
+.faq-answer-markdown p:last-child,
+.faq-answer-markdown ul:last-child,
+.faq-answer-markdown ol:last-child {
+  margin-bottom: 0;
+}
+
+.faq-answer-markdown ul,
+.faq-answer-markdown ol {
+  padding-left: 1.2rem;
+}
+
+.faq-answer-markdown li {
+  margin-bottom: 0.35rem;
+  padding-left: 0.1rem;
+}
+
+.faq-answer-markdown li::marker {
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.faq-answer-markdown strong {
+  color: var(--text-primary);
+}
+
+.faq-answer-markdown code {
+  background: color-mix(in srgb, var(--primary) 8%, var(--bg-secondary));
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border-color));
+  border-radius: 6px;
+  color: var(--text-primary);
+  display: inline-block;
+  font-family: inherit;
+  font-weight: 700;
+  padding: 0.35rem 0.55rem;
+}
+
 .faq-card-inner p {
   margin: 0 0 0.9rem;
   color: var(--text-secondary);

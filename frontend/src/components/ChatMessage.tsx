@@ -40,11 +40,53 @@ function formatCitationContent(text: string): string {
   return cleaned.trim();
 }
 
+function normalizeCitationLabel(value?: string): string {
+  const text = (value || '').trim();
+  if (!text) return '';
+
+  const normalized = text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[–—]/g, '-')
+    .replace(/\s+/g, ' ');
+
+  const labelMap: Record<string, string> = {
+    'danh sach nganh dao tao': 'Danh sách ngành đào tạo',
+    'danh muc nganh dao tao trong so tay sinh vien hcmue': 'Danh mục ngành đào tạo trong Sổ tay sinh viên HCMUE',
+    'program directory': 'Danh sách ngành đào tạo',
+    'program_directory': 'Danh sách ngành đào tạo',
+    'faculty directory': 'Danh bạ khoa/đơn vị',
+    'faculty_directory': 'Danh bạ khoa/đơn vị',
+    'office directory': 'Danh bạ phòng ban',
+    'office_directory': 'Danh bạ phòng ban',
+    'form templates': 'Biểu mẫu',
+    'form_templates': 'Biểu mẫu',
+    'scoring tables': 'Bảng điểm',
+    'scoring_tables': 'Bảng điểm',
+    'threshold rules': 'Quy định ngưỡng điểm',
+    'threshold_rules': 'Quy định ngưỡng điểm',
+    'regulation sections': 'Quy định',
+    'regulation_sections': 'Quy định',
+  };
+
+  return labelMap[normalized] || text;
+}
+
 function getCitationTypeLabel(citation: Citation): string {
-  if (citation.source_label) return citation.source_label;
+  const sourceLabel = normalizeCitationLabel(citation.source_label);
+  if (sourceLabel) return sourceLabel;
   switch (citation.chunk_type) {
     case 'structured_lookup':
       return 'Bảng quy định';
+    case 'program_directory':
+      return 'Danh sách ngành đào tạo';
+    case 'faculty_directory':
+      return 'Danh bạ khoa/đơn vị';
+    case 'office_directory':
+      return 'Danh bạ phòng ban';
+    case 'form_templates':
+      return 'Biểu mẫu';
     case 'formula':
       return 'Công thức/quy tắc';
     case 'form':
@@ -279,18 +321,20 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
                     const isExpanded = expandedCitations.has(idx);
                     const pagesLabel = cit.source_pages?.length ? `Trang ${cit.source_pages.join(', ')}` : '';
                     const excerpt = cit.content ? getCompactExcerpt(cit.content) : '';
+                    const citationTitle = normalizeCitationLabel(cit.title || cit.chunk_id);
+                    const applicability = normalizeCitationLabel(cit.applicability);
                     return (
                       <div key={idx} className="citation-card">
                         <div className="citation-card-header" onClick={() => toggleCitation(idx)}>
                           <div className="citation-card-icon"><FileText size={16} /></div>
                           <div className="citation-card-body">
-                            <span className="citation-title">{cit.title || cit.chunk_id}</span>
+                            <span className="citation-title">{citationTitle}</span>
                             <div className="citation-meta-row">
                               <span className="citation-badge">{getCitationTypeLabel(cit)}</span>
                               {cit.cohort && <span className="citation-badge">{cit.cohort}</span>}
                               {pagesLabel && <span className="citation-pages">{pagesLabel}</span>}
                             </div>
-                            {cit.applicability && <span className="citation-applicability">{cit.applicability}</span>}
+                            {applicability && <span className="citation-applicability">{applicability}</span>}
                             {!isExpanded && excerpt && (
                               <div className="citation-excerpt-wrap">
                                 <span className="citation-excerpt-label">Trích đoạn liên quan</span>
@@ -382,7 +426,8 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
 
         {!message.isStreaming && !isErrorMsg && message.role === 'bot' && message.suggestions && message.suggestions.length > 0 && (
           <div className="suggestion-pills-container">
-            {message.suggestions.slice(0, 3).map((sugg, idx) => (
+            <span className="suggestion-pills-label">Hỏi nhanh:</span>
+            {message.suggestions.slice(0, 6).map((sugg, idx) => (
               <button key={idx} className="suggestion-pill" onClick={() => {
                 if (onSuggestionClick) onSuggestionClick(sugg);
               }}>

@@ -1586,6 +1586,551 @@ input:checked + .slider:before { transform: translateX(20px); }
 .about-info a { color: var(--primary); font-weight: 500; text-decoration: none; }
 .about-info a:hover { text-decoration: underline; }
 
+/* Admissions */
+.admission-page .tool-callout,
+.admission-page .tool-panel {
+  max-width: 1024px;
+}
+
+.admission-warning {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  border-color: rgba(245, 158, 11, 0.28);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(37, 99, 235, 0.05));
+}
+
+.admission-warning svg {
+  flex-shrink: 0;
+  color: var(--primary);
+  margin-top: 0.1rem;
+}
+
+.admission-warning h2 {
+  margin-bottom: 0.35rem;
+}
+
+.admission-warning p {
+  color: var(--text-primary);
+  line-height: 1.65;
+}
+
+.admission-inline-source,
+.admission-row-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: fit-content;
+  border: 1px solid rgba(37, 99, 235, 0.24);
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.admission-inline-source {
+  margin-top: 0.75rem;
+  padding: 0.55rem 0.8rem;
+}
+
+.admission-inline-source.compact,
+.admission-row-source {
+  margin: 0;
+  padding: 0.42rem 0.65rem;
+  font-size: 0.8rem;
+}
+
+.admission-inline-source:hover,
+.admission-row-source:hover {
+  border-color: var(--primary);
+  background: rgba(37, 99, 235, 0.13);
+  text-decoration: none;
+}
+
+.admission-layout {
+  max-width: 1024px;
+}
+
+.admission-form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admission-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.admission-subject-box {
+  display: grid;
+  gap: 0.45rem;
+  margin: 1.25rem 0;
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  background: rgba(59, 130, 246, 0.06);
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.admission-subject-box span {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admission-subject-box strong {
+  color: var(--text-primary);
+  line-height: 1.45;
+}
+
+.admission-subject-box p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.admission-plan-card {
+  display: grid;
+  gap: 0.85rem;
+  margin: -0.25rem 0 1.25rem;
+  border: 1px solid rgba(20, 184, 166, 0.24);
+  background: rgba(20, 184, 166, 0.07);
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.admission-plan-card > div:first-child span,
+.admission-plan-grid span {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admission-plan-card > div:first-child strong {
+  color: var(--text-primary);
+  font-size: 1.02rem;
+}
+
+.admission-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.admission-plan-grid div {
+  border: 1px solid rgba(20, 184, 166, 0.18);
+  border-radius: 12px;
+  background: var(--bg-primary);
+  padding: 0.75rem;
+}
+
+.admission-plan-grid strong {
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.admission-score-mode {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: 0.35rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+}
+
+.admission-score-mode button {
+  appearance: none;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.6rem 0.9rem;
+  transition: all var(--transition-fast);
+}
+
+.admission-score-mode button.active {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.admission-score-mode button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.admission-subject-score-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.admission-calculated-score {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  background: var(--bg-secondary);
+}
+
+.admission-calculated-score span {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.admission-calculated-score strong {
+  color: var(--primary);
+  font-size: 1.4rem;
+}
+
+.admission-meta-grid div {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0.85rem;
+  background: var(--bg-secondary);
+}
+
+.admission-meta-grid span,
+.admission-bar-meta span,
+.admission-suggestion-grid span {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.admission-meta-grid strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  margin-top: 0.25rem;
+}
+
+.admission-result {
+  border-color: rgba(37, 99, 235, 0.18);
+}
+
+.admission-result.very_safe,
+.admission-result.safe {
+  border-color: rgba(16, 185, 129, 0.28);
+}
+
+.admission-result.consider {
+  border-color: rgba(245, 158, 11, 0.32);
+}
+
+.admission-result.risky {
+  border-color: rgba(245, 158, 11, 0.42);
+  box-shadow: 0 18px 48px rgba(245, 158, 11, 0.08);
+}
+
+.admission-result.very_risky {
+  border-color: rgba(239, 68, 68, 0.48);
+  box-shadow: 0 18px 48px rgba(239, 68, 68, 0.1);
+}
+
+.admission-result-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 0.75rem 0 0.9rem;
+}
+
+.admission-level-pill,
+.admission-2025-pill,
+.admission-inline-badge,
+.admission-regime-badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.admission-level-pill {
+  padding: 0.45rem 0.7rem;
+  font-size: 0.78rem;
+}
+
+.admission-level-pill.very_safe,
+.admission-level-pill.safe {
+  color: #047857;
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.admission-level-pill.consider {
+  color: #b45309;
+  border-color: rgba(245, 158, 11, 0.38);
+  background: rgba(245, 158, 11, 0.13);
+}
+
+.admission-level-pill.risky {
+  color: #b45309;
+  border-color: rgba(245, 158, 11, 0.46);
+  background: rgba(245, 158, 11, 0.16);
+}
+
+.admission-level-pill.very_risky {
+  color: #dc2626;
+  border-color: rgba(239, 68, 68, 0.44);
+  background: rgba(239, 68, 68, 0.14);
+}
+
+.admission-2025-pill {
+  padding: 0.45rem 0.7rem;
+  color: var(--primary);
+  border-color: rgba(37, 99, 235, 0.35);
+  background: rgba(37, 99, 235, 0.1);
+  font-size: 0.78rem;
+}
+
+.admission-key-metric.is-2025 {
+  border-color: rgba(37, 99, 235, 0.36);
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.admission-key-metric.post-2025 {
+  border-color: rgba(16, 185, 129, 0.32);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.admission-key-metric small {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-left: 0.25rem;
+}
+
+.admission-risk-note {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 0.95rem 1rem;
+}
+
+.admission-risk-note strong {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.admission-risk-note p {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.admission-risk-note.consider,
+.admission-risk-note.risky {
+  border-color: rgba(245, 158, 11, 0.36);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.admission-risk-note.very_risky {
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.admission-warning-list {
+  margin: 1rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  font-size: 0.9rem;
+}
+
+.admission-warning-list li + li {
+  margin-top: 0.35rem;
+}
+
+.admission-history {
+  width: 100%;
+}
+
+.admission-history-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+.admission-bars {
+  display: grid;
+  gap: 0.85rem;
+  margin: 1.25rem 0 1.5rem;
+}
+
+.admission-bar-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.1fr) minmax(160px, 2fr) auto;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 0.15rem 0.25rem;
+}
+
+.admission-bar-row.is-latest-year {
+  border-color: rgba(37, 99, 235, 0.24);
+  background: rgba(37, 99, 235, 0.06);
+  padding: 0.75rem;
+}
+
+.admission-bar-meta strong {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--text-primary);
+}
+
+.admission-inline-badge {
+  padding: 0.28rem 0.45rem;
+  color: var(--primary);
+  border-color: rgba(37, 99, 235, 0.28);
+  background: rgba(37, 99, 235, 0.1);
+  font-size: 0.68rem;
+}
+
+.admission-bar-track {
+  height: 12px;
+  background: var(--bg-secondary);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.admission-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #10b981);
+  border-radius: inherit;
+}
+
+.admission-bar-score {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  min-width: 3.25rem;
+  text-align: right;
+}
+
+.admission-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+}
+
+.admission-table {
+  min-width: 860px;
+  box-shadow: none;
+}
+
+.admission-table tr.is-latest-year td {
+  background: rgba(37, 99, 235, 0.06);
+}
+
+.admission-score-2025 {
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.admission-regime-badge {
+  padding: 0.35rem 0.55rem;
+  font-size: 0.72rem;
+}
+
+.admission-regime-badge.post_2025 {
+  color: #047857;
+  border-color: rgba(16, 185, 129, 0.32);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.admission-regime-badge.pre_2025 {
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+}
+
+.admission-suggestions {
+  width: 100%;
+}
+
+.admission-suggestion-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.admission-suggestion-grid button {
+  appearance: none;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.admission-suggestion-grid button:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.admission-source a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.admission-source a:hover {
+  text-decoration: underline;
+}
+
+.admission-source-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin: 0.85rem 0;
+}
+
+.admission-source-links a {
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.07);
+  padding: 0.5rem 0.75rem;
+}
+
 /* MEDIA QUERIES FOR PAGES */
 @media (max-width: 1200px) {
   .grade-scale-grid {
@@ -1645,6 +2190,9 @@ input:checked + .slider:before { transform: translateX(20px); }
   .result-grid {
     grid-template-columns: 1fr;
   }
+  .admission-plan-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .tool-table {
     min-width: 860px;
   }
@@ -1657,6 +2205,18 @@ input:checked + .slider:before { transform: translateX(20px); }
   .grade-scale-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .admission-form-grid,
+  .admission-meta-grid,
+  .admission-suggestion-grid {
+    grid-template-columns: 1fr;
+  }
+  .admission-bar-row {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+  .admission-bar-score {
+    text-align: left;
   }
   .result-number,
   .gpa-summary .result-number {

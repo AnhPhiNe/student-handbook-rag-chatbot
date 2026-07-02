@@ -271,7 +271,7 @@ export function AdmissionPage() {
           {selectedPlan && (
             <div className="admission-plan-card">
               <div>
-                <span>Kế hoạch tuyển sinh 2025</span>
+                <span>Kế hoạch tuyển sinh 2026</span>
                 <strong>{selectedPlan.programLabel}</strong>
               </div>
               <div className="admission-plan-grid">
@@ -292,8 +292,26 @@ export function AdmissionPage() {
                   <strong>{selectedPlan.campus}</strong>
                 </div>
               </div>
+              <div className="admission-plan-subjects">
+                <div>
+                  <span>Tổ hợp xét tuyển 2026</span>
+                  <strong>{selectedPlan.examMethodLabel}</strong>
+                </div>
+                {selectedPlan.examSubjectGroups.length > 0 ? (
+                  <div className="admission-plan-subject-list">
+                    {selectedPlan.examSubjectGroups.map((group) => (
+                      <span className="admission-plan-subject-chip" key={group.code}>
+                        <b>{group.code}</b>
+                        {group.subjects}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p>Đề án nguồn không liệt kê tổ hợp THPT cho ngành này.</p>
+                )}
+              </div>
               <a className="admission-inline-source compact" href={selectedPlan.sourceUrl} target="_blank" rel="noreferrer">
-                Mở đề án tuyển sinh 2025, trang {selectedPlan.sourcePage} <ExternalLink size={14} />
+                Mở kế hoạch tuyển sinh 2026, trang {selectedPlan.sourcePage} <ExternalLink size={14} />
               </a>
             </div>
           )}

@@ -1741,6 +1741,59 @@ input:checked + .slider:before { transform: translateX(20px); }
   font-size: 1rem;
 }
 
+.admission-plan-subjects {
+  border: 1px solid rgba(20, 184, 166, 0.18);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.62);
+  padding: 0.85rem;
+}
+
+.admission-plan-subjects > div:first-child span {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admission-plan-subjects > div:first-child strong {
+  color: var(--text-primary);
+  font-size: 0.96rem;
+}
+
+.admission-plan-subjects p {
+  color: var(--text-secondary);
+  margin: 0.65rem 0 0;
+}
+
+.admission-plan-subject-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.admission-plan-subject-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 100%;
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  border-radius: 999px;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.35;
+  padding: 0.45rem 0.65rem;
+}
+
+.admission-plan-subject-chip b {
+  color: var(--accent-color);
+  font-size: 0.84rem;
+}
+
 .admission-score-mode {
   display: inline-flex;
   flex-wrap: wrap;

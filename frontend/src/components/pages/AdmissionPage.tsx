@@ -122,7 +122,6 @@ export function AdmissionPage() {
   const riskNote = getRiskNote(estimate.level);
   const latestCutoffIs2025 = estimate.latestCutoff?.year === 2025;
   const latestCutoffIsPost2025 = estimate.latestCutoff?.admissionRegime === 'post_2025';
-  const latestSourceUrl = estimate.latestCutoff?.sourceUrl ?? programRecords[0]?.sourceUrl ?? selectedPlan?.sourceUrl;
   const sourceLinksByYear = useMemo(
     () => {
       const sources = programRecords.reduce((current, item) => {
@@ -163,11 +162,6 @@ export function AdmissionPage() {
             Từ năm 2025, chương trình GDPT 2018 làm thay đổi cấu trúc thi và tổ hợp xét tuyển,
             nên dữ liệu 2025 trở đi được ưu tiên hơn dữ liệu xu hướng trước đó.
           </p>
-          {latestSourceUrl && (
-            <a className="admission-inline-source" href={latestSourceUrl} target="_blank" rel="noreferrer">
-              Kiểm tra nguồn điểm chuẩn mới nhất <ExternalLink size={15} />
-            </a>
-          )}
         </div>
       </section>
 
@@ -480,11 +474,6 @@ export function AdmissionPage() {
           </div>
           <div className="admission-history-actions">
             <LineChart size={24} className="text-accent" />
-            {latestSourceUrl && (
-              <a className="admission-inline-source compact" href={latestSourceUrl} target="_blank" rel="noreferrer">
-                Mở nguồn mới nhất <ExternalLink size={14} />
-              </a>
-            )}
           </div>
         </div>
 

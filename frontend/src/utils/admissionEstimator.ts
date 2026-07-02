@@ -58,10 +58,7 @@ export function splitSubjectGroups(subjectGroup: string): string[] {
 }
 
 export function getAdmissionPrograms(): string[] {
-  return Array.from(new Set([
-    ...ADMISSION_CUTOFFS.map((item) => item.programName),
-    ...ADMISSION_PLANS_2026.map((item) => item.programName),
-  ])).sort((a, b) =>
+  return Array.from(new Set(ADMISSION_CUTOFFS.map((item) => item.programName))).sort((a, b) =>
     a.localeCompare(b, 'vi'),
   );
 }

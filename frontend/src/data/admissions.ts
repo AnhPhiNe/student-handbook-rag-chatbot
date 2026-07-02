@@ -1,4 +1,4 @@
-export type AdmissionMethod = 'THPT' | 'COMBINED' | 'PRIORITY_DIRECT';
+export type AdmissionMethod = 'THPT' | 'PRIORITY_DIRECT';
 export type AdmissionRegime = 'pre_2025' | 'post_2025';
 export type AdmissionCampus = 'TP.HCM';
 export type AdmissionSourceKind = 'html' | 'api';
@@ -56,12 +56,12 @@ export const ADMISSION_SOURCE_URLS_BY_YEAR: Record<number, string> = {
   2021: 'https://vnexpress.net/dai-hoc-su-pham-tp-hcm-lay-diem-chuan-cao-nhat-27-15-4357165.html',
 };
 
+
 export const ADMISSION_DATA_NOTE =
   'Bản beta đang có dữ liệu điểm chuẩn THPT 2021-2025 và kế hoạch tuyển sinh 2026. Dữ liệu 2025 dùng nguồn chi tiết Tuyensinh247 để giữ nhiều tổ hợp hơn, nhưng chỉ giữ các ngành cơ sở chính TP.HCM; các điểm nguồn lớn hơn 30 sẽ được đánh dấu để bạn đối chiếu cách tính điểm ưu tiên/quy đổi.';
 
 export const ADMISSION_METHOD_LABELS: Record<AdmissionMethod, string> = {
   THPT: 'Điểm thi THPT',
-  COMBINED: 'Xét tuyển kết hợp',
   PRIORITY_DIRECT: 'Ưu tiên xét tuyển / xét tuyển thẳng',
 };
 
@@ -74,6 +74,7 @@ function getAdmissionSourceUrl(year: number): string {
 function getAdmissionSourceKind(year: number): AdmissionSourceKind {
   return ADMISSION_SOURCE_URLS_BY_YEAR[year] ? 'html' : 'api';
 }
+
 
 function thpt2025(
   programName: string,
@@ -218,11 +219,13 @@ const LATEST_THPT_CUTOFFS: AdmissionCutoff[] = [
   thpt2025('Công nghệ thông tin', 'Khoa Công nghệ Thông tin', 'A01; X26', 19),
   thpt2025('Công nghệ thông tin', 'Khoa Công nghệ Thông tin', 'B08', 19.75),
   thpt2025('Công nghệ thông tin', 'Khoa Công nghệ Thông tin', 'D07', 19.5),
-  thpt2025('Sư phạm Tin học', 'Khoa Công nghệ Thông tin', 'A01; X26', 23.23),
+  thpt2025('Sư phạm Tin học', 'Khoa Công nghệ Thông tin', 'A01', 23.23),
+  thpt2025('Sư phạm Tin học', 'Khoa Công nghệ Thông tin', 'X26', 23.23),
   thpt2025('Sư phạm Tin học', 'Khoa Công nghệ Thông tin', 'B08', 23.98),
   thpt2025('Sư phạm Tin học', 'Khoa Công nghệ Thông tin', 'D07', 23.73),
 
-  thpt2025('Sư phạm Toán học', 'Khoa Toán - Tin học', 'A00; X06', 28.25),
+  thpt2025('Sư phạm Toán học', 'Khoa Toán - Tin học', 'A00', 28.25),
+  thpt2025('Sư phạm Toán học', 'Khoa Toán - Tin học', 'X06', 28.25),
   thpt2025('Sư phạm Toán học', 'Khoa Toán - Tin học', 'A01', 28.75),
   thpt2025('Toán ứng dụng', 'Khoa Toán - Tin học', 'A00; X06; X07', 26.17),
   thpt2025('Toán ứng dụng', 'Khoa Toán - Tin học', 'A01', 26.67),
@@ -247,6 +250,9 @@ const LATEST_THPT_CUTOFFS: AdmissionCutoff[] = [
 
   thpt2025('Sư phạm Sinh học', 'Khoa Sinh học', 'B00', 26.21),
   thpt2025('Sư phạm Sinh học', 'Khoa Sinh học', 'D08', 26.71),
+  thpt2025('Sư phạm khoa học tự nhiên', 'Khoa Sinh học', 'A00', 26.38),
+  thpt2025('Sư phạm khoa học tự nhiên', 'Khoa Sinh học', 'A02', 26.63),
+  thpt2025('Sư phạm khoa học tự nhiên', 'Khoa Sinh học', 'B00', 27.38),
   thpt2025('Sinh học ứng dụng', 'Khoa Sinh học', 'B00; X14', 19.5),
   thpt2025('Sinh học ứng dụng', 'Khoa Sinh học', 'D08', 20),
   thpt2025('Sinh học ứng dụng', 'Khoa Sinh học', 'X16', 19.25),
@@ -282,6 +288,12 @@ const LATEST_THPT_CUTOFFS: AdmissionCutoff[] = [
   thpt2025('Ngôn ngữ Anh', 'Khoa Tiếng Anh', 'D01', 24.8),
   thpt2025('Ngôn ngữ Anh', 'Khoa Tiếng Anh', 'X79', 24.55),
 
+  thpt2025('Sư phạm Tiếng Nga', 'Khoa Tiếng Nga', 'D01; D02', 21.9),
+  thpt2025('Sư phạm Tiếng Nga', 'Khoa Tiếng Nga', 'D14', 21.65),
+  thpt2025('Sư phạm Tiếng Nga', 'Khoa Tiếng Nga', 'D66; X78', 21.15),
+  thpt2025('Ngôn ngữ Nga', 'Khoa Tiếng Nga', 'D01; D02', 18.25),
+  thpt2025('Ngôn ngữ Nga', 'Khoa Tiếng Nga', 'D14', 18),
+  thpt2025('Ngôn ngữ Nga', 'Khoa Tiếng Nga', 'D66; X78', 17.5),
   thpt2025('Sư phạm Tiếng Pháp', 'Khoa Tiếng Pháp', 'D01; D03', 21.75),
   thpt2025('Ngôn ngữ Pháp', 'Khoa Tiếng Pháp', 'D01; D03', 19),
   thpt2025('Sư phạm Tiếng Trung Quốc', 'Khoa Tiếng Trung', 'D01; D04', 25.39),
@@ -300,15 +312,38 @@ const LATEST_THPT_CUTOFFS: AdmissionCutoff[] = [
   thpt2025('Giáo dục Đặc biệt', 'Khoa Giáo dục Đặc biệt', 'C19', 26.95),
   thpt2025('Giáo dục Đặc biệt', 'Khoa Giáo dục Đặc biệt', 'D01', 28.7),
   thpt2025('Giáo dục Đặc biệt', 'Khoa Giáo dục Đặc biệt', 'X70', 27.45),
+  thpt2025('Giáo dục Công dân', 'Khoa Giáo dục Chính trị', 'X01', 27.08),
+  thpt2025('Giáo dục Công dân', 'Khoa Giáo dục Chính trị', 'X70', 26.83),
+  thpt2025('Giáo dục Công dân', 'Khoa Giáo dục Chính trị', 'X78', 27.33),
+  thpt2025('Giáo dục Công dân', 'Khoa Giáo dục Chính trị', 'C14', 27.08),
+  thpt2025('Giáo dục Công dân', 'Khoa Giáo dục Chính trị', 'C19', 26.83),
+  thpt2025('Giáo dục Công dân', 'Khoa Giáo dục Chính trị', 'D66', 27.33),
+  thpt2025('Giáo dục Chính trị', 'Khoa Giáo dục Chính trị', 'C14; X01', 27.37),
+  thpt2025('Giáo dục Chính trị', 'Khoa Giáo dục Chính trị', 'C19', 27.12),
+  thpt2025('Giáo dục Chính trị', 'Khoa Giáo dục Chính trị', 'D66; X78', 27.62),
+  thpt2025('Giáo dục Chính trị', 'Khoa Giáo dục Chính trị', 'X70', 27.12),
+  thpt2025('Giáo dục Thể chất', 'Khoa Giáo dục Thể chất', 'T01', 26.52),
+  thpt2025('Giáo dục Thể chất', 'Khoa Giáo dục Thể chất', 'M08', 26.27),
+  thpt2025('Giáo dục Quốc phòng - An ninh', 'Trung tâm Giáo dục Quốc phòng và An ninh', 'Q02', 23),
+  thpt2025('Giáo dục Quốc phòng - An ninh', 'Trung tâm Giáo dục Quốc phòng và An ninh', 'Q01', 23.25),
 
   thpt2025('Giáo dục học', 'Khoa Khoa học Giáo dục', 'A00', 22.35),
+  thpt2025('Giáo dục học', 'Khoa Khoa học Giáo dục', 'C03', 22.6),
+  thpt2025('Giáo dục học', 'Khoa Khoa học Giáo dục', 'C14; X01', 22.35),
+  thpt2025('Giáo dục học', 'Khoa Khoa học Giáo dục', 'D01', 23.35),
   thpt2025('Quản lý giáo dục', 'Khoa Khoa học Giáo dục', 'A00', 23.42),
+  thpt2025('Quản lý giáo dục', 'Khoa Khoa học Giáo dục', 'C03', 23.67),
+  thpt2025('Quản lý giáo dục', 'Khoa Khoa học Giáo dục', 'C14; X01', 23.42),
+  thpt2025('Quản lý giáo dục', 'Khoa Khoa học Giáo dục', 'D01', 24.42),
+  thpt2025('Quản lý giáo dục', 'Khoa Khoa học Giáo dục', 'X01', 23.42),
   thpt2025('Tâm lý học', 'Khoa Tâm lý học', 'C00', 26.5),
   thpt2025('Tâm lý học', 'Khoa Tâm lý học', 'C03; C04', 27.5),
   thpt2025('Tâm lý học', 'Khoa Tâm lý học', 'D01', 28),
   thpt2025('Tâm lý học giáo dục', 'Khoa Tâm lý học', 'C00', 25.82),
   thpt2025('Tâm lý học giáo dục', 'Khoa Tâm lý học', 'C03; C04', 26.82),
   thpt2025('Tâm lý học giáo dục', 'Khoa Tâm lý học', 'D01', 27.32),
+  thpt2025('Quốc tế học', 'Khoa Lịch sử', 'D09', 21.5),
+  thpt2025('Quốc tế học', 'Khoa Lịch sử', 'D14', 21.25),
 
   thpt2025('Du lịch', 'Khoa Du lịch', 'C00', 25.89),
   thpt2025('Du lịch', 'Khoa Du lịch', 'D01', 27.39),

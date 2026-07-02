@@ -1,6 +1,8 @@
 import {
   ADMISSION_CUTOFFS,
   ADMISSION_PLANS_2026,
+  ADMISSION_RAW_SCORE_SCALE,
+  ADMISSION_SCORE_INPUT_MAX,
   type AdmissionCutoff,
   type AdmissionMethod,
   type AdmissionPlan,
@@ -165,7 +167,7 @@ export function estimateAdmissionChance(input: AdmissionEstimateInput): Admissio
   const programRecords = getCutoffsForProgram(input.programName);
   const warnings: string[] = [];
 
-  if (!Number.isFinite(input.score) || input.score <= 0 || input.score > 30) {
+  if (!Number.isFinite(input.score) || input.score <= 0 || input.score > ADMISSION_SCORE_INPUT_MAX) {
     return {
       level: 'insufficient',
       ...getLevelText('insufficient'),
@@ -173,8 +175,12 @@ export function estimateAdmissionChance(input: AdmissionEstimateInput): Admissio
       confidenceLabel: 'Thấp',
       matchedRecords: [],
       matchScope: 'none',
-      warnings: ['Vui lòng nhập tổng điểm hợp lệ theo thang 30.'],
+      warnings: [`Vui lòng nhập điểm xét tuyển hợp lệ, tối đa khoảng ${ADMISSION_SCORE_INPUT_MAX} khi đã gồm điểm ưu tiên/khuyến khích.`],
     };
+  }
+
+  if (input.score > 30) {
+    warnings.push('Điểm bạn nhập lớn hơn 30 nên hệ thống hiểu đây là điểm xét tuyển đã gồm điểm ưu tiên/khuyến khích.');
   }
 
   if (programRecords.length === 0) {
@@ -217,6 +223,9 @@ export function estimateAdmissionChance(input: AdmissionEstimateInput): Admissio
   );
 
   const scoreDelta = roundScore(input.score - latestCutoff.cutoffScore);
+  if (latestCutoff.cutoffScore > ADMISSION_RAW_SCORE_SCALE) {
+    warnings.push('Điểm chuẩn nguồn lớn hơn 30. Đây có thể là điểm xét tuyển đã gồm ưu tiên/quy đổi, nên hãy mở nguồn để đối chiếu trước khi quyết định.');
+  }
   const cutoffs = matchedRecords.map((item) => item.cutoffScore);
   const averageCutoff = roundScore(average(cutoffs));
   const minCutoff = Math.min(...cutoffs);

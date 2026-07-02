@@ -7,9 +7,10 @@ interface MobileHeaderProps {
   onOpenBugReport: () => void;
   cohort: string;
   onCohortChange: (cohort: 'K48-K49' | 'K50-K51') => void;
+  showCohortSelector: boolean;
 }
 
-export function MobileHeader({ onMenuToggle, theme, onToggleTheme, onOpenBugReport, cohort, onCohortChange }: MobileHeaderProps) {
+export function MobileHeader({ onMenuToggle, theme, onToggleTheme, onOpenBugReport, cohort, onCohortChange, showCohortSelector }: MobileHeaderProps) {
   return (
     <header className="mobile-header">
       <button className="mobile-menu-btn" onClick={onMenuToggle} aria-label="Menu">
@@ -22,22 +23,17 @@ export function MobileHeader({ onMenuToggle, theme, onToggleTheme, onOpenBugRepo
       </div>
       
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <select 
-          value={cohort} 
-          onChange={(e) => onCohortChange(e.target.value as 'K48-K49' | 'K50-K51')}
-          style={{ 
-            fontSize: '0.75rem', 
-            padding: '4px 2px', 
-            borderRadius: '6px', 
-            backgroundColor: 'var(--bg-secondary)', 
-            color: 'var(--text-primary)',
-            border: '1px solid var(--border-color)',
-            outline: 'none'
-          }}
-        >
-          <option value="K48-K49">K48-49</option>
-          <option value="K50-K51">K50-51</option>
-        </select>
+        {showCohortSelector && (
+          <select 
+            className="mobile-cohort-selector"
+            value={cohort} 
+            onChange={(e) => onCohortChange(e.target.value as 'K48-K49' | 'K50-K51')}
+            aria-label="Chọn khóa áp dụng"
+          >
+            <option value="K48-K49">K48-49</option>
+            <option value="K50-K51">K50-51</option>
+          </select>
+        )}
         <button 
           className="mobile-theme-btn" 
           onClick={onOpenBugReport} 

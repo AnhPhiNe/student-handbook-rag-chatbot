@@ -19,9 +19,12 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { MobileHeader } from './components/MobileHeader';
 import { BottomTabBar } from './components/BottomTabBar';
 import { ToastProvider } from './components/Toast';
+import { ScrollCue } from './components/ScrollCue';
 import { useMediaQuery } from './hooks/useMediaQuery';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { BugReportModal } from './components/BugReportModal';
+
+const COHORT_AWARE_TABS = new Set(['home', 'chat', 'faq', 'gpa', 'course-target']);
 
 function App() {
   const defaultTheme = (new Date().getHours() >= 18 || new Date().getHours() < 6) ? 'dark' : 'light';
@@ -36,6 +39,7 @@ function App() {
   const [isBugModalOpen, setIsBugModalOpen] = useState(false);
   
   const isMobile = useMediaQuery('(max-width: 900px)');
+  const shouldShowCohortSelector = COHORT_AWARE_TABS.has(activeTab);
 
   // Sync theme with HTML data attribute
   useEffect(() => {
@@ -63,6 +67,7 @@ function App() {
               onOpenBugReport={() => setIsBugModalOpen(true)}
               cohort={cohort}
               onCohortChange={setCohort}
+              showCohortSelector={shouldShowCohortSelector}
             />
           )}
           
@@ -80,7 +85,7 @@ function App() {
           <div className="content-area" style={{ position: 'relative' }}>
             {/* Global Controls */}
             {!isMobile && (
-              <div style={{ position: 'absolute', top: '16px', right: '24px', zIndex: 100, display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <div className={`global-controls ${shouldShowCohortSelector ? '' : 'compact'}`}>
                 {activeTab === 'chat' && messages.length > 0 && (
                   <button className="theme-toggle" onClick={() => {
                     if (window.confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử chat không?")) {
@@ -91,6 +96,7 @@ function App() {
                     <span>Xóa chat</span>
                   </button>
                 )}
+                {shouldShowCohortSelector && (
                 <select 
                   className="theme-toggle cohort-selector" 
                   value={cohort} 
@@ -100,6 +106,7 @@ function App() {
                   <option value="K48-K49">Khóa 48 - 49</option>
                   <option value="K50-K51">Khóa 50 - 51</option>
                 </select>
+                )}
                 <button className="theme-toggle" onClick={toggleTheme}>
                   {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
                   <span>{theme === 'light' ? 'Chế độ tối' : 'Chế độ sáng'}</span>
@@ -135,6 +142,7 @@ function App() {
             {activeTab === 'credits' && <CreditsPage />}
             {activeTab === 'faq' && <FaqPage cohort={cohort} onAskQuestion={handleAskFaqQuestion} />}
             {activeTab === 'huong-dan' && <GuidePage />}
+            <ScrollCue activeTab={activeTab} />
           </div>
 
           {isMobile && (

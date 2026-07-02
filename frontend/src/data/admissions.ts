@@ -45,6 +45,9 @@ export const ADMISSION_SOURCE_URL =
 export const ADMISSION_PLAN_SOURCE_URL =
   'https://drive.google.com/file/d/1JWc0ctdH1HUthfrurouF9Wne8rGu9kLu/view';
 
+export const ADMISSION_RAW_SCORE_SCALE = 30;
+export const ADMISSION_SCORE_INPUT_MAX = 33;
+
 export const ADMISSION_SOURCE_URLS_BY_YEAR: Record<number, string> = {
   2025: ADMISSION_SOURCE_URL,
   2024: 'https://vnexpress.net/diem-chuan-dai-hoc-su-pham-tp-hcm-nam-2024-4782845.html',
@@ -54,7 +57,7 @@ export const ADMISSION_SOURCE_URLS_BY_YEAR: Record<number, string> = {
 };
 
 export const ADMISSION_DATA_NOTE =
-  'Bản beta đang có dữ liệu điểm chuẩn THPT 2021-2025 và kế hoạch tuyển sinh 2026. Dữ liệu 2025 được ưu tiên khi ước lượng điểm chuẩn vì chương trình GDPT 2018 làm thay đổi cấu trúc thi; tổ hợp và chỉ tiêu nên đối chiếu theo kế hoạch 2026.';
+  'Bản beta đang có dữ liệu điểm chuẩn THPT 2021-2025 và kế hoạch tuyển sinh 2026. Dữ liệu 2025 dùng nguồn chi tiết Tuyensinh247 để giữ nhiều tổ hợp hơn, nhưng chỉ giữ các ngành cơ sở chính TP.HCM; các điểm nguồn lớn hơn 30 sẽ được đánh dấu để bạn đối chiếu cách tính điểm ưu tiên/quy đổi.';
 
 export const ADMISSION_METHOD_LABELS: Record<AdmissionMethod, string> = {
   THPT: 'Điểm thi THPT',
@@ -90,7 +93,7 @@ function thpt2025(
     admissionMethodLabel: ADMISSION_METHOD_LABELS.THPT,
     subjectGroup,
     cutoffScore,
-    scoreScale: 30,
+    scoreScale: ADMISSION_RAW_SCORE_SCALE,
     admissionRegime: 'post_2025',
     campus,
     note,
@@ -120,7 +123,7 @@ function historicalThpt(
     admissionMethodLabel: ADMISSION_METHOD_LABELS.THPT,
     subjectGroup,
     cutoffScore,
-    scoreScale: 30,
+    scoreScale: ADMISSION_RAW_SCORE_SCALE,
     admissionRegime: year >= 2025 ? 'post_2025' : 'pre_2025',
     campus,
     note,
@@ -298,6 +301,8 @@ const LATEST_THPT_CUTOFFS: AdmissionCutoff[] = [
   thpt2025('Giáo dục Đặc biệt', 'Khoa Giáo dục Đặc biệt', 'D01', 28.7),
   thpt2025('Giáo dục Đặc biệt', 'Khoa Giáo dục Đặc biệt', 'X70', 27.45),
 
+  thpt2025('Giáo dục học', 'Khoa Khoa học Giáo dục', 'A00', 22.35),
+  thpt2025('Quản lý giáo dục', 'Khoa Khoa học Giáo dục', 'A00', 23.42),
   thpt2025('Tâm lý học', 'Khoa Tâm lý học', 'C00', 26.5),
   thpt2025('Tâm lý học', 'Khoa Tâm lý học', 'C03; C04', 27.5),
   thpt2025('Tâm lý học', 'Khoa Tâm lý học', 'D01', 28),

@@ -376,6 +376,12 @@
   box-sizing: border-box;
 }
 
+.tool-panel:hover,
+.tool-result-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.06);
+}
+
 .tool-result-card {
   border: 1px solid rgba(59, 130, 246, 0.1);
   background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
@@ -1592,6 +1598,121 @@ input:checked + .slider:before { transform: translateX(20px); }
   max-width: 1024px;
 }
 
+.admission-guide-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.46);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: fadeIn 0.18s ease-out;
+}
+
+.admission-guide-modal {
+  width: min(620px, 100%);
+  max-height: calc(100dvh - 2.5rem);
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  background: var(--bg-primary);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+  padding: 1.6rem;
+  animation: slideUp 0.22s ease-out;
+}
+
+.admission-guide-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.admission-guide-eyebrow {
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+}
+
+.admission-guide-modal h2 {
+  color: var(--text-primary);
+  font-size: 1.55rem;
+  line-height: 1.25;
+  margin: 0 0 0.65rem;
+}
+
+.admission-guide-lead {
+  color: var(--text-secondary);
+  font-size: 0.98rem;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.admission-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+
+.admission-guide-grid div {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  background: var(--bg-secondary);
+  padding: 0.85rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.admission-guide-grid svg {
+  flex-shrink: 0;
+  color: var(--success);
+  margin-top: 0.1rem;
+}
+
+.admission-guide-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  border: 1px dashed rgba(245, 158, 11, 0.36);
+  border-radius: 14px;
+  background: rgba(245, 158, 11, 0.08);
+  padding: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.admission-guide-note svg {
+  flex-shrink: 0;
+  color: var(--warning);
+  margin-top: 0.1rem;
+}
+
+.admission-guide-note p {
+  margin: 0;
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+.admission-guide-action {
+  width: 100%;
+  margin-top: 1.15rem;
+}
+
 .admission-warning {
   display: flex;
   gap: 0.85rem;
@@ -1830,6 +1951,11 @@ input:checked + .slider:before { transform: translateX(20px); }
   opacity: 0.45;
 }
 
+.admission-score-help {
+  margin: 0.45rem 0 0;
+  font-size: 0.84rem;
+}
+
 .admission-subject-score-panel {
   display: grid;
   gap: 1rem;
@@ -1912,6 +2038,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .admission-level-pill,
 .admission-2025-pill,
+.admission-review-pill,
 .admission-inline-badge,
 .admission-regime-badge {
   display: inline-flex;
@@ -1958,6 +2085,14 @@ input:checked + .slider:before { transform: translateX(20px); }
   color: var(--primary);
   border-color: rgba(37, 99, 235, 0.35);
   background: rgba(37, 99, 235, 0.1);
+  font-size: 0.78rem;
+}
+
+.admission-review-pill {
+  padding: 0.45rem 0.7rem;
+  color: #b45309;
+  border-color: rgba(245, 158, 11, 0.42);
+  background: rgba(245, 158, 11, 0.14);
   font-size: 0.78rem;
 }
 
@@ -2086,21 +2221,130 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 .admission-bar-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
   color: var(--text-primary);
   font-size: 0.95rem;
   min-width: 3.25rem;
   text-align: right;
 }
 
+.admission-table-shell {
+  position: relative;
+}
+
+.admission-table-shell::before,
+.admission-table-shell::after {
+  content: '';
+  position: absolute;
+  top: 2.85rem;
+  bottom: 0;
+  z-index: 2;
+  width: 2.5rem;
+  pointer-events: none;
+}
+
+.admission-table-shell::before {
+  left: 0;
+  border-radius: 14px 0 0 14px;
+  background: linear-gradient(90deg, var(--bg-secondary), transparent);
+}
+
+.admission-table-shell::after {
+  right: 0;
+  border-radius: 0 14px 14px 0;
+  background: linear-gradient(270deg, var(--bg-secondary), transparent);
+}
+
+.admission-table-scroll-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.7rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--primary);
+  font-size: 0.82rem;
+  font-weight: 800;
+  animation: admissionHintPulse 2.4s ease-in-out infinite;
+}
+
+.admission-table-scroll-hint svg {
+  animation: admissionHintSlide 1.8s ease-in-out infinite;
+}
+
 .admission-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--border-color);
   border-radius: 14px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
 }
 
 .admission-table {
-  min-width: 860px;
+  min-width: 1120px;
   box-shadow: none;
+  table-layout: fixed;
+}
+
+.admission-table th,
+.admission-table td {
+  padding: 1rem 0.95rem;
+  vertical-align: middle;
+}
+
+.admission-table th:nth-child(1),
+.admission-col-year {
+  width: 7%;
+  white-space: nowrap;
+}
+
+.admission-table th:nth-child(2),
+.admission-col-program {
+  width: 20%;
+}
+
+.admission-table th:nth-child(3),
+.admission-col-method {
+  width: 14%;
+}
+
+.admission-table th:nth-child(4),
+.admission-col-group {
+  width: 13%;
+}
+
+.admission-table th:nth-child(5),
+.admission-col-score {
+  width: 13%;
+  white-space: nowrap;
+}
+
+.admission-table th:nth-child(6),
+.admission-col-regime {
+  width: 14%;
+}
+
+.admission-table th:nth-child(7),
+.admission-col-note {
+  width: 10%;
+  white-space: nowrap;
+}
+
+.admission-table th:nth-child(8),
+.admission-col-source {
+  width: 9%;
+  white-space: nowrap;
+}
+
+.admission-col-program,
+.admission-col-method,
+.admission-col-group {
+  line-height: 1.45;
 }
 
 .admission-table tr.is-latest-year td {
@@ -2112,9 +2356,48 @@ input:checked + .slider:before { transform: translateX(20px); }
   font-weight: 800;
 }
 
+.admission-score-needs-review {
+  color: #b45309;
+}
+
+.admission-score-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.admission-score-review-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 1px solid rgba(245, 158, 11, 0.48);
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.15);
+  color: #b45309;
+  line-height: 1;
+  cursor: help;
+  transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.admission-score-review-badge:hover,
+.admission-score-review-badge:focus-visible {
+  border-color: rgba(245, 158, 11, 0.8);
+  background: rgba(245, 158, 11, 0.24);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.admission-score-tooltip {
+  margin-left: 0;
+}
+
 .admission-regime-badge {
   padding: 0.35rem 0.55rem;
   font-size: 0.72rem;
+  white-space: nowrap;
 }
 
 .admission-regime-badge.post_2025 {
@@ -2126,6 +2409,16 @@ input:checked + .slider:before { transform: translateX(20px); }
 .admission-regime-badge.pre_2025 {
   color: var(--text-secondary);
   background: var(--bg-secondary);
+}
+
+@keyframes admissionHintPulse {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 1; }
+}
+
+@keyframes admissionHintSlide {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
 }
 
 .admission-suggestions {
@@ -2270,6 +2563,16 @@ input:checked + .slider:before { transform: translateX(20px); }
   }
   .admission-bar-score {
     text-align: left;
+  }
+  .admission-guide-modal {
+    padding: 1.15rem;
+    border-radius: 16px;
+  }
+  .admission-guide-modal h2 {
+    font-size: 1.3rem;
+  }
+  .admission-guide-grid {
+    grid-template-columns: 1fr;
   }
   .result-number,
   .gpa-summary .result-number {

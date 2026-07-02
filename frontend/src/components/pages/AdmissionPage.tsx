@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, ExternalLink, GraduationCap, LineChart, Search, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ChevronsLeftRight, CircleHelp, ExternalLink, GraduationCap, LineChart, Search, ShieldCheck, Sparkles } from 'lucide-react';
 import {
   ADMISSION_DATA_NOTE,
   ADMISSION_METHOD_LABELS,
+  ADMISSION_RAW_SCORE_SCALE,
+  ADMISSION_SCORE_INPUT_MAX,
   type AdmissionMethod,
 } from '../../data/admissions';
 import {
@@ -20,8 +22,9 @@ import {
   searchAdmissionPrograms,
   type AdmissionChanceLevel,
 } from '../../utils/admissionEstimator';
+import { Tooltip } from '../Tooltip';
 
-const DEFAULT_PROGRAM = 'Công nghệ thông tin';
+const ADMISSION_GUIDE_ACK_KEY = 'hcmue-admission-guide-ack-v1';
 
 function formatScore(value: number | undefined): string {
   if (value === undefined || !Number.isFinite(value)) return '--';
@@ -33,6 +36,23 @@ function formatScore(value: number | undefined): string {
 function formatDelta(value: number | undefined): string {
   if (value === undefined || !Number.isFinite(value)) return '--';
   return `${value >= 0 ? '+' : ''}${formatScore(value)}`;
+}
+
+function scoreNeedsReview(value: number | undefined): boolean {
+  return value !== undefined && Number.isFinite(value) && value > ADMISSION_RAW_SCORE_SCALE;
+}
+
+function ScoreReviewBadge() {
+  return (
+    <Tooltip
+      className="admission-score-tooltip"
+      content="Điểm này lớn hơn 30 vì nguồn có thể đã gồm điểm ưu tiên hoặc quy đổi. Hãy mở nguồn để kiểm tra cách tính trước khi dùng để đặt nguyện vọng."
+    >
+      <span className="admission-score-review-badge" aria-label="Điểm cần kiểm tra cách tính" tabIndex={0}>
+        <CircleHelp size={13} strokeWidth={2.6} />
+      </span>
+    </Tooltip>
+  );
 }
 
 function getRiskNote(level: AdmissionChanceLevel): { title: string; text: string } | null {
@@ -66,9 +86,13 @@ function getSourceLinkLabel(year: number, sourceKind: 'html' | 'api'): string {
 }
 
 export function AdmissionPage() {
+  const [showGuide, setShowGuide] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.localStorage.getItem(ADMISSION_GUIDE_ACK_KEY) !== 'true';
+  });
   const programs = useMemo(() => getAdmissionPrograms(), []);
-  const [programName, setProgramName] = useState(DEFAULT_PROGRAM);
-  const [programQuery, setProgramQuery] = useState(DEFAULT_PROGRAM);
+  const [programName, setProgramName] = useState('');
+  const [programQuery, setProgramQuery] = useState('');
   const [admissionMethod, setAdmissionMethod] = useState<AdmissionMethod>('THPT');
   const [subjectGroup, setSubjectGroup] = useState('A01');
   const [score, setScore] = useState('');
@@ -76,13 +100,39 @@ export function AdmissionPage() {
   const [subjectScores, setSubjectScores] = useState<Record<string, string>>({});
   const [priorityScore, setPriorityScore] = useState('');
 
-  const suggestions = useMemo(() => searchAdmissionPrograms(programQuery, 10), [programQuery]);
-  const programRecords = useMemo(() => getCutoffsForProgram(programName), [programName]);
-  const selectedPlan = useMemo(() => getAdmissionPlanForProgram(programName), [programName]);
-  const methods = useMemo(() => getMethodsForProgram(programName), [programName]);
+  const hasSelectedProgram = programName.trim().length > 0;
+
+  const suggestions = useMemo(
+    () => (programQuery.trim() ? searchAdmissionPrograms(programQuery, 10) : []),
+    [programQuery],
+  );
+
+  const programRecords = useMemo(
+    () => (hasSelectedProgram ? getCutoffsForProgram(programName) : []),
+    [hasSelectedProgram, programName],
+  );
+  const historyScoreScale = useMemo(
+    () =>
+      Math.max(
+        ADMISSION_RAW_SCORE_SCALE,
+        Math.ceil(Math.max(0, ...programRecords.map((item) => item.cutoffScore))),
+      ),
+    [programRecords],
+  );
+
+  const selectedPlan = useMemo(
+    () => (hasSelectedProgram ? getAdmissionPlanForProgram(programName) : undefined),
+    [hasSelectedProgram, programName],
+  );
+
+  const methods = useMemo(
+    () => (hasSelectedProgram ? getMethodsForProgram(programName) : []),
+    [hasSelectedProgram, programName],
+  );
+
   const subjectGroups = useMemo(
-    () => getSubjectGroupsForProgram(programName, admissionMethod),
-    [programName, admissionMethod],
+    () => (hasSelectedProgram ? getSubjectGroupsForProgram(programName, admissionMethod) : []),
+    [hasSelectedProgram, programName, admissionMethod],
   );
   const subjectGroupDefinition = useMemo(() => getSubjectGroupDefinition(subjectGroup), [subjectGroup]);
   const calculatedScore = useMemo(
@@ -107,13 +157,20 @@ export function AdmissionPage() {
 
   const estimate = useMemo(
     () =>
-      estimateAdmissionChance({
-        programName,
-        admissionMethod,
-        subjectGroup,
-        score: effectiveScore,
-      }),
-    [programName, admissionMethod, subjectGroup, effectiveScore],
+      hasSelectedProgram
+        ? estimateAdmissionChance({
+            programName,
+            admissionMethod,
+            subjectGroup,
+            score: effectiveScore,
+          })
+        : estimateAdmissionChance({
+            programName: '',
+            admissionMethod,
+            subjectGroup,
+            score: 0,
+          }),
+    [hasSelectedProgram, programName, admissionMethod, subjectGroup, effectiveScore],
   );
 
   const nearPrograms = useMemo(() => getNearScorePrograms(effectiveScore, 6), [effectiveScore]);
@@ -122,7 +179,7 @@ export function AdmissionPage() {
   const riskNote = getRiskNote(estimate.level);
   const latestCutoffIs2025 = estimate.latestCutoff?.year === 2025;
   const latestCutoffIsPost2025 = estimate.latestCutoff?.admissionRegime === 'post_2025';
-  const latestSourceUrl = estimate.latestCutoff?.sourceUrl ?? programRecords[0]?.sourceUrl ?? selectedPlan?.sourceUrl;
+  const latestCutoffNeedsReview = scoreNeedsReview(estimate.latestCutoff?.cutoffScore);
   const sourceLinksByYear = useMemo(
     () => {
       const sources = programRecords.reduce((current, item) => {
@@ -144,8 +201,60 @@ export function AdmissionPage() {
     setProgramQuery(name);
   };
 
+  const confirmGuide = () => {
+    window.localStorage.setItem(ADMISSION_GUIDE_ACK_KEY, 'true');
+    setShowGuide(false);
+  };
+
   return (
     <div className="page-container tool-page admission-page">
+      {showGuide && (
+        <div className="admission-guide-overlay" role="dialog" aria-modal="true" aria-labelledby="admission-guide-title">
+          <div className="admission-guide-modal">
+            <div className="admission-guide-icon">
+              <Sparkles size={24} />
+            </div>
+            <p className="admission-guide-eyebrow">Công cụ tham khảo nguyện vọng</p>
+            <h2 id="admission-guide-title">Tuyển sinh dùng để làm gì?</h2>
+            <p className="admission-guide-lead">
+              Công cụ này giúp bạn tra nhanh điểm chuẩn HCMUE, xem tổ hợp xét tuyển và ước lượng mức độ an toàn
+              khi đặt nguyện vọng theo điểm thi THPT.
+            </p>
+
+            <div className="admission-guide-grid">
+              <div>
+                <CheckCircle2 size={18} />
+                <span>Chọn ngành, phương thức và tổ hợp môn.</span>
+              </div>
+              <div>
+                <CheckCircle2 size={18} />
+                <span>Nhập tổng điểm hoặc điểm từng môn để hệ thống tự tính.</span>
+              </div>
+              <div>
+                <CheckCircle2 size={18} />
+                <span>So với điểm chuẩn 2021-2025, trong đó mốc 2025 được ưu tiên hơn.</span>
+              </div>
+              <div>
+                <CheckCircle2 size={18} />
+                <span>Xem kế hoạch tuyển sinh 2026: chỉ tiêu, tổ hợp và nguồn kiểm chứng.</span>
+              </div>
+            </div>
+
+            <div className="admission-guide-note">
+              <AlertTriangle size={18} />
+              <p>
+                Kết quả chỉ để tham khảo, không phải cam kết trúng tuyển. Dữ liệu đang ưu tiên các ngành tại cơ sở chính
+                TP.HCM; hãy mở nguồn để kiểm tra lại trước khi chốt nguyện vọng.
+              </p>
+            </div>
+
+            <button type="button" className="tool-btn primary admission-guide-action" onClick={confirmGuide}>
+              Đã hiểu, bắt đầu tra cứu
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="page-header">
         <h1>Tuyển sinh</h1>
         <p>
@@ -163,11 +272,6 @@ export function AdmissionPage() {
             Từ năm 2025, chương trình GDPT 2018 làm thay đổi cấu trúc thi và tổ hợp xét tuyển,
             nên dữ liệu 2025 trở đi được ưu tiên hơn dữ liệu xu hướng trước đó.
           </p>
-          {latestSourceUrl && (
-            <a className="admission-inline-source" href={latestSourceUrl} target="_blank" rel="noreferrer">
-              Kiểm tra nguồn điểm chuẩn mới nhất <ExternalLink size={15} />
-            </a>
-          )}
         </div>
       </section>
 
@@ -217,6 +321,10 @@ export function AdmissionPage() {
                 value={programName}
                 onChange={(event) => selectProgram(event.target.value)}
               >
+                <option value="" disabled>
+                  Chưa chọn ngành
+                </option>
+
                 {programs.map((name) => (
                   <option key={name} value={name}>
                     {name}
@@ -229,9 +337,14 @@ export function AdmissionPage() {
               <span>Phương thức</span>
               <select
                 className="tool-select"
-                value={admissionMethod}
+                value={hasSelectedProgram ? admissionMethod : ''}
                 onChange={(event) => setAdmissionMethod(event.target.value as AdmissionMethod)}
+                disabled={!hasSelectedProgram}
               >
+                {!hasSelectedProgram && (
+                  <option value="">Chọn ngành trước</option>
+                )}
+
                 {methods.map((method) => (
                   <option key={method} value={method}>
                     {ADMISSION_METHOD_LABELS[method]}
@@ -244,9 +357,14 @@ export function AdmissionPage() {
               <span>Tổ hợp môn</span>
               <select
                 className="tool-select"
-                value={subjectGroup}
+                value={hasSelectedProgram ? subjectGroup : ''}
                 onChange={(event) => setSubjectGroup(event.target.value)}
-              >
+                disabled={!hasSelectedProgram}
+              > 
+                {!hasSelectedProgram && (
+                  <option value="">Chọn ngành trước</option>
+                )}
+
                 {subjectGroups.map((group) => (
                   <option key={group} value={group}>
                     {group}
@@ -256,17 +374,19 @@ export function AdmissionPage() {
             </label>
           </div>
 
-          <div className="admission-subject-box">
-            <div>
-              <span>Tổ hợp {subjectGroup}</span>
-              {subjectGroupDefinition.subjects.length > 0 ? (
-                <strong>{subjectGroupDefinition.subjects.map((subject) => subject.label).join(' + ')}</strong>
-              ) : (
-                <strong>Chưa có mô tả môn trong dữ liệu hiện tại</strong>
-              )}
+          {hasSelectedProgram && (
+            <div className="admission-subject-box">
+              <div>
+                <span>Tổ hợp {subjectGroup}</span>
+                {subjectGroupDefinition.subjects.length > 0 ? (
+                  <strong>{subjectGroupDefinition.subjects.map((subject) => subject.label).join(' + ')}</strong>
+                ) : (
+                  <strong>Chưa có mô tả môn trong dữ liệu hiện tại</strong>
+                )}
+              </div>
+              {subjectGroupDefinition.note && <p>{subjectGroupDefinition.note}</p>}
             </div>
-            {subjectGroupDefinition.note && <p>{subjectGroupDefinition.note}</p>}
-          </div>
+          )}
 
           {selectedPlan && (
             <div className="admission-plan-card">
@@ -328,7 +448,7 @@ export function AdmissionPage() {
               type="button"
               className={scoreInputMode === 'subjects' ? 'active' : ''}
               onClick={() => setScoreInputMode('subjects')}
-              disabled={!subjectGroupDefinition.calculable}
+              disabled={!hasSelectedProgram || !subjectGroupDefinition.calculable}
             >
               Tính từ điểm môn
             </button>
@@ -336,17 +456,20 @@ export function AdmissionPage() {
 
           {scoreInputMode === 'total' || !subjectGroupDefinition.calculable ? (
             <label className="tool-field">
-              <span>Tổng điểm của bạn</span>
+              <span>Tổng điểm xét tuyển của bạn</span>
               <input
                 className="tool-input"
                 type="number"
                 min="0"
-                max="30"
+                max={ADMISSION_SCORE_INPUT_MAX}
                 step="0.01"
                 value={score}
                 onChange={(event) => setScore(event.target.value)}
                 placeholder="Ví dụ: 24.75"
               />
+              <p className="tool-note admission-score-help">
+                Nhập tổng điểm xét tuyển theo nguồn tuyển sinh. Nếu đã cộng điểm ưu tiên/khuyến khích, điểm có thể lớn hơn 30.
+              </p>
             </label>
           ) : (
             <div className="admission-subject-score-panel">
@@ -408,11 +531,16 @@ export function AdmissionPage() {
         <aside className={`tool-result-card admission-result ${estimate.level}`}>
           <ShieldCheck size={28} className="result-icon" />
           <p className="result-label">Mức độ an toàn tham khảo</p>
-          {hasScore ? (
+          {!hasSelectedProgram ? (
+            <p className="tool-note">
+              Chọn ngành trước để xem mức độ an toàn xét tuyển.
+            </p>
+          ) : hasScore ? (
             <>
               <div className="admission-result-status">
                 <span className={`admission-level-pill ${estimate.level}`}>{estimate.levelLabel}</span>
                 {latestCutoffIs2025 && <span className="admission-2025-pill">Điểm chuẩn 2025</span>}
+                {latestCutoffNeedsReview && <span className="admission-review-pill">Cần kiểm tra cách tính điểm</span>}
               </div>
               <h3 className="result-title">{estimate.levelLabel}</h3>
               <p className="result-subtitle">{estimate.levelDescription}</p>
@@ -421,6 +549,7 @@ export function AdmissionPage() {
                   <span>Điểm chuẩn gần nhất</span>
                   <strong>
                     {formatScore(estimate.latestCutoff?.cutoffScore)}
+                    {latestCutoffNeedsReview && <ScoreReviewBadge />}
                     {estimate.latestCutoff && <small> năm {estimate.latestCutoff.year}</small>}
                   </strong>
                 </div>
@@ -465,7 +594,7 @@ export function AdmissionPage() {
             </>
           ) : (
             <p className="tool-note">
-              Nhập tổng điểm theo thang 30 để xem mức độ an toàn. Hệ thống sẽ ưu tiên so với ngành,
+              Nhập tổng điểm xét tuyển để xem mức độ an toàn. Nếu có điểm ưu tiên/khuyến khích, hãy cộng vào trước khi nhập. Hệ thống sẽ ưu tiên so với ngành,
               phương thức và tổ hợp đang chọn.
             </p>
           )}
@@ -480,11 +609,6 @@ export function AdmissionPage() {
           </div>
           <div className="admission-history-actions">
             <LineChart size={24} className="text-accent" />
-            {latestSourceUrl && (
-              <a className="admission-inline-source compact" href={latestSourceUrl} target="_blank" rel="noreferrer">
-                Mở nguồn mới nhất <ExternalLink size={14} />
-              </a>
-            )}
           </div>
         </div>
 
@@ -499,56 +623,68 @@ export function AdmissionPage() {
                 <span>{item.admissionMethodLabel} · {item.subjectGroup}</span>
               </div>
               <div className="admission-bar-track">
-                <div className="admission-bar-fill" style={{ width: `${Math.min(100, (item.cutoffScore / 30) * 100)}%` }} />
+                <div className="admission-bar-fill" style={{ width: `${Math.min(100, (item.cutoffScore / historyScoreScale) * 100)}%` }} />
               </div>
-              <strong className="admission-bar-score">{formatScore(item.cutoffScore)}</strong>
+              <strong className="admission-bar-score">
+                {formatScore(item.cutoffScore)}
+                {scoreNeedsReview(item.cutoffScore) && <ScoreReviewBadge />}
+              </strong>
             </div>
           ))}
         </div>
 
-        <div className="admission-table-wrap">
-          <table className="data-table admission-table">
-            <thead>
-              <tr>
-                <th>Năm</th>
-                <th>Ngành</th>
-                <th>Phương thức</th>
-                <th>Tổ hợp</th>
-                <th>Điểm chuẩn</th>
-                <th>Giai đoạn</th>
-                <th>Ghi chú</th>
-                <th>Nguồn</th>
-              </tr>
-            </thead>
-            <tbody>
-              {programRecords.map((item) => (
-                <tr key={item.id} className={item.year === 2025 ? 'is-latest-year' : ''}>
-                  <td>{item.year}</td>
-                  <td>{item.programName}</td>
-                  <td>{item.admissionMethodLabel}</td>
-                  <td>{item.subjectGroup}</td>
-                  <td className={`font-medium ${item.year === 2025 ? 'admission-score-2025' : ''}`}>
-                    {formatScore(item.cutoffScore)}
-                  </td>
-                  <td>
-                    <span className={`admission-regime-badge ${item.admissionRegime}`}>
-                      {getRegimeLabel(item.admissionRegime)}
-                    </span>
-                  </td>
-                  <td>{item.note ?? item.campus}</td>
-                  <td>
-                    <a className="admission-row-source" href={item.sourceUrl} target="_blank" rel="noreferrer">
-                      {item.sourceKind === 'html' ? item.year : `Dữ liệu ${item.year}`} <ExternalLink size={13} />
-                    </a>
-                  </td>
+        <div className="admission-table-shell">
+          <div className="admission-table-scroll-hint" aria-hidden="true">
+            <ChevronsLeftRight size={16} />
+            <span>Vuốt ngang để xem thêm cột</span>
+          </div>
+          <div className="admission-table-wrap">
+            <table className="data-table admission-table">
+              <thead>
+                <tr>
+                  <th>Năm</th>
+                  <th>Ngành</th>
+                  <th>Phương thức</th>
+                  <th>Tổ hợp</th>
+                  <th>Điểm chuẩn</th>
+                  <th>Giai đoạn</th>
+                  <th>Ghi chú</th>
+                  <th>Nguồn</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {programRecords.map((item) => (
+                  <tr key={item.id} className={item.year === 2025 ? 'is-latest-year' : ''}>
+                    <td className="admission-col-year">{item.year}</td>
+                    <td className="admission-col-program">{item.programName}</td>
+                    <td className="admission-col-method">{item.admissionMethodLabel}</td>
+                    <td className="admission-col-group">{item.subjectGroup}</td>
+                    <td className={`admission-col-score font-medium ${item.year === 2025 ? 'admission-score-2025' : ''} ${scoreNeedsReview(item.cutoffScore) ? 'admission-score-needs-review' : ''}`}>
+                      <span className="admission-score-cell">
+                        {formatScore(item.cutoffScore)}
+                        {scoreNeedsReview(item.cutoffScore) && <ScoreReviewBadge />}
+                      </span>
+                    </td>
+                    <td className="admission-col-regime">
+                      <span className={`admission-regime-badge ${item.admissionRegime}`}>
+                        {getRegimeLabel(item.admissionRegime)}
+                      </span>
+                    </td>
+                    <td className="admission-col-note">{item.note ?? item.campus}</td>
+                    <td className="admission-col-source">
+                      <a className="admission-row-source" href={item.sourceUrl} target="_blank" rel="noreferrer">
+                        {item.sourceKind === 'html' ? item.year : `Dữ liệu ${item.year}`} <ExternalLink size={13} />
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
-      {hasScore && nearPrograms.length > 0 && (
+      {hasSelectedProgram && hasScore && nearPrograms.length > 0 && (
         <section className="tool-panel admission-suggestions">
           <h2>Ngành gần mức điểm của bạn</h2>
           <p className="tool-note">
@@ -558,7 +694,10 @@ export function AdmissionPage() {
             {nearPrograms.map((item) => (
               <button key={item.id} type="button" onClick={() => selectProgram(item.programName)}>
                 <strong>{item.programName}</strong>
-                <span>{item.subjectGroup} · {formatScore(item.cutoffScore)} điểm</span>
+                <span>
+                  {item.subjectGroup} · {formatScore(item.cutoffScore)} điểm
+                  {scoreNeedsReview(item.cutoffScore) && <ScoreReviewBadge />}
+                </span>
               </button>
             ))}
           </div>

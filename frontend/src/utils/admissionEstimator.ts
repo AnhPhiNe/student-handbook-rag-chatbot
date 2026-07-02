@@ -1,6 +1,6 @@
 import {
   ADMISSION_CUTOFFS,
-  ADMISSION_PLANS_2025,
+  ADMISSION_PLANS_2026,
   type AdmissionCutoff,
   type AdmissionMethod,
   type AdmissionPlan,
@@ -60,7 +60,7 @@ export function splitSubjectGroups(subjectGroup: string): string[] {
 export function getAdmissionPrograms(): string[] {
   return Array.from(new Set([
     ...ADMISSION_CUTOFFS.map((item) => item.programName),
-    ...ADMISSION_PLANS_2025.map((item) => item.programName),
+    ...ADMISSION_PLANS_2026.map((item) => item.programName),
   ])).sort((a, b) =>
     a.localeCompare(b, 'vi'),
   );
@@ -91,7 +91,7 @@ export function getCutoffsForProgram(programName: string): AdmissionCutoff[] {
 
 export function getAdmissionPlanForProgram(programName: string): AdmissionPlan | undefined {
   const normalizedProgram = normalizeText(programName);
-  return ADMISSION_PLANS_2025.find((item) => normalizeText(item.programName) === normalizedProgram);
+  return ADMISSION_PLANS_2026.find((item) => normalizeText(item.programName) === normalizedProgram);
 }
 
 export function getMethodsForProgram(programName: string): AdmissionMethod[] {

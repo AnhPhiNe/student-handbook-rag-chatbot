@@ -42,6 +42,13 @@ function scoreNeedsReview(value: number | undefined): boolean {
   return value !== undefined && Number.isFinite(value) && value > ADMISSION_RAW_SCORE_SCALE;
 }
 
+function splitAdmissionGroupCodes(value: string): string[] {
+  return value
+    .split(';')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function ScoreReviewBadge() {
   return (
     <Tooltip
@@ -94,13 +101,14 @@ export function AdmissionPage() {
   const [programName, setProgramName] = useState('');
   const [programQuery, setProgramQuery] = useState('');
   const [admissionMethod, setAdmissionMethod] = useState<AdmissionMethod>('THPT');
-  const [subjectGroup, setSubjectGroup] = useState('A01');
+  const [subjectGroup, setSubjectGroup] = useState('');
   const [score, setScore] = useState('');
   const [scoreInputMode, setScoreInputMode] = useState<'total' | 'subjects'>('total');
   const [subjectScores, setSubjectScores] = useState<Record<string, string>>({});
   const [priorityScore, setPriorityScore] = useState('');
 
   const hasSelectedProgram = programName.trim().length > 0;
+  const hasSelectedSubjectGroup = subjectGroup.trim().length > 0;
 
   const suggestions = useMemo(
     () => (programQuery.trim() ? searchAdmissionPrograms(programQuery, 10) : []),
@@ -134,6 +142,16 @@ export function AdmissionPage() {
     () => (hasSelectedProgram ? getSubjectGroupsForProgram(programName, admissionMethod) : []),
     [hasSelectedProgram, programName, admissionMethod],
   );
+  const planSubjectGroupSet = useMemo(() => {
+    const codes = selectedPlan?.examSubjectGroups.flatMap((group) => splitAdmissionGroupCodes(group.code)) ?? [];
+    return new Set(codes);
+  }, [selectedPlan]);
+  const subjectGroupOptions = useMemo(() => {
+    const planGroups = subjectGroups.filter((group) => planSubjectGroupSet.has(group));
+    const historicalGroups = subjectGroups.filter((group) => !planSubjectGroupSet.has(group));
+    return { planGroups, historicalGroups };
+  }, [planSubjectGroupSet, subjectGroups]);
+  const selectedSubjectGroupInPlan = hasSelectedSubjectGroup && planSubjectGroupSet.has(subjectGroup);
   const subjectGroupDefinition = useMemo(() => getSubjectGroupDefinition(subjectGroup), [subjectGroup]);
   const calculatedScore = useMemo(
     () => calculateAdmissionTotal(subjectGroup, subjectScores, priorityScore),
@@ -150,14 +168,14 @@ export function AdmissionPage() {
   }, [methods, admissionMethod]);
 
   useEffect(() => {
-    if (subjectGroups.length > 0 && !subjectGroups.includes(subjectGroup)) {
-      setSubjectGroup(subjectGroups[0]);
+    if (subjectGroup && !subjectGroups.includes(subjectGroup)) {
+      setSubjectGroup('');
     }
   }, [subjectGroups, subjectGroup]);
 
   const estimate = useMemo(
     () =>
-      hasSelectedProgram
+      hasSelectedProgram && hasSelectedSubjectGroup
         ? estimateAdmissionChance({
             programName,
             admissionMethod,
@@ -170,7 +188,7 @@ export function AdmissionPage() {
             subjectGroup,
             score: 0,
           }),
-    [hasSelectedProgram, programName, admissionMethod, subjectGroup, effectiveScore],
+    [hasSelectedProgram, hasSelectedSubjectGroup, programName, admissionMethod, subjectGroup, effectiveScore],
   );
 
   const nearPrograms = useMemo(() => getNearScorePrograms(effectiveScore, 6), [effectiveScore]);
@@ -243,8 +261,8 @@ export function AdmissionPage() {
             <div className="admission-guide-note">
               <AlertTriangle size={18} />
               <p>
-                Kết quả chỉ để tham khảo, không phải cam kết trúng tuyển. Dữ liệu đang ưu tiên các ngành tại cơ sở chính
-                TP.HCM; hãy mở nguồn để kiểm tra lại trước khi chốt nguyện vọng.
+                Kết quả chỉ để tham khảo, không phải cam kết trúng tuyển. Dữ liệu ưu tiên cơ sở chính TP.HCM; hãy mở
+                nguồn trước khi chốt nguyện vọng.
               </p>
             </div>
 
@@ -339,7 +357,7 @@ export function AdmissionPage() {
                 className="tool-select"
                 value={hasSelectedProgram ? admissionMethod : ''}
                 onChange={(event) => setAdmissionMethod(event.target.value as AdmissionMethod)}
-                disabled={!hasSelectedProgram}
+                disabled={!hasSelectedProgram || methods.length <= 1}
               >
                 {!hasSelectedProgram && (
                   <option value="">Chọn ngành trước</option>
@@ -360,16 +378,30 @@ export function AdmissionPage() {
                 value={hasSelectedProgram ? subjectGroup : ''}
                 onChange={(event) => setSubjectGroup(event.target.value)}
                 disabled={!hasSelectedProgram}
-              > 
-                {!hasSelectedProgram && (
-                  <option value="">Chọn ngành trước</option>
+              >
+                <option value="" disabled>
+                  {hasSelectedProgram ? 'Chọn tổ hợp môn' : 'Chọn ngành trước'}
+                </option>
+
+                {subjectGroupOptions.planGroups.length > 0 && (
+                  <optgroup label="Theo đề án tuyển sinh 2026">
+                    {subjectGroupOptions.planGroups.map((group) => (
+                      <option key={group} value={group}>
+                        {group}
+                      </option>
+                    ))}
+                  </optgroup>
                 )}
 
-                {subjectGroups.map((group) => (
-                  <option key={group} value={group}>
-                    {group}
-                  </option>
-                ))}
+                {subjectGroupOptions.historicalGroups.length > 0 && (
+                  <optgroup label="Tổ hợp từng dùng các năm trước">
+                    {subjectGroupOptions.historicalGroups.map((group) => (
+                      <option key={group} value={group}>
+                        {group}
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
               </select>
             </label>
           </div>
@@ -377,14 +409,27 @@ export function AdmissionPage() {
           {hasSelectedProgram && (
             <div className="admission-subject-box">
               <div>
-                <span>Tổ hợp {subjectGroup}</span>
-                {subjectGroupDefinition.subjects.length > 0 ? (
+                <span>{hasSelectedSubjectGroup ? `Tổ hợp ${subjectGroup}` : 'Chưa chọn tổ hợp môn'}</span>
+                {!hasSelectedSubjectGroup ? (
+                  <strong>Chọn một tổ hợp trong đề án 2026 hoặc lịch sử điểm chuẩn để hệ thống so sánh chính xác.</strong>
+                ) : subjectGroupDefinition.subjects.length > 0 ? (
                   <strong>{subjectGroupDefinition.subjects.map((subject) => subject.label).join(' + ')}</strong>
                 ) : (
                   <strong>Chưa có mô tả môn trong dữ liệu hiện tại</strong>
                 )}
               </div>
-              {subjectGroupDefinition.note && <p>{subjectGroupDefinition.note}</p>}
+              {selectedPlan && hasSelectedSubjectGroup && (
+                <span className={`admission-subject-status ${selectedSubjectGroupInPlan ? 'in-plan' : 'historical-only'}`}>
+                  {selectedSubjectGroupInPlan ? 'Có trong đề án 2026' : 'Từng dùng các năm trước'}
+                </span>
+              )}
+              {hasSelectedSubjectGroup && subjectGroupDefinition.note && <p>{subjectGroupDefinition.note}</p>}
+              {selectedPlan && hasSelectedSubjectGroup && !selectedSubjectGroupInPlan && (
+                <p className="admission-subject-plan-note">
+                  Tổ hợp này từng có dữ liệu điểm chuẩn ở các năm trước, nhưng chưa thấy trong kế hoạch tuyển sinh 2026 của ngành đang chọn.
+                  Hãy ưu tiên các tổ hợp thuộc đề án 2026 khi đặt nguyện vọng năm nay.
+                </p>
+              )}
             </div>
           )}
 
@@ -535,6 +580,10 @@ export function AdmissionPage() {
             <p className="tool-note">
               Chọn ngành trước để xem mức độ an toàn xét tuyển.
             </p>
+          ) : !hasSelectedSubjectGroup ? (
+            <p className="tool-note">
+              Chọn tổ hợp môn trước để hệ thống so sánh đúng điểm chuẩn theo ngành, phương thức và tổ hợp.
+            </p>
           ) : hasScore ? (
             <>
               <div className="admission-result-status">
@@ -684,7 +733,7 @@ export function AdmissionPage() {
         </div>
       </section>
 
-      {hasSelectedProgram && hasScore && nearPrograms.length > 0 && (
+      {hasSelectedProgram && hasSelectedSubjectGroup && hasScore && nearPrograms.length > 0 && (
         <section className="tool-panel admission-suggestions">
           <h2>Ngành gần mức điểm của bạn</h2>
           <p className="tool-note">

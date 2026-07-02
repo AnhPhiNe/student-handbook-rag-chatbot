@@ -1775,39 +1775,222 @@ input:checked + .slider:before { transform: translateX(20px); }
   max-width: 1024px;
 }
 
+.admission-input-panel {
+  scroll-margin-top: 1.25rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.admission-input-panel.is-highlighted {
+  border-color: rgba(37, 99, 235, 0.45);
+  box-shadow: 0 18px 46px rgba(37, 99, 235, 0.14);
+  transform: translateY(-2px);
+}
+
+.admission-stepper {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin: 1rem 0 1.15rem;
+}
+
+.admission-step {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  padding: 0.7rem 0.75rem;
+  text-align: left;
+  user-select: none;
+}
+
+.admission-step span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 999px;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.admission-step strong {
+  min-width: 0;
+  color: inherit;
+  font-size: 0.88rem;
+  line-height: 1.25;
+}
+
+.admission-step.is-current {
+  border-color: rgba(37, 99, 235, 0.34);
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--primary);
+}
+
+.admission-step.is-current span {
+  background: var(--primary);
+  color: #fff;
+}
+
+.admission-step.is-done {
+  border-color: rgba(16, 185, 129, 0.28);
+  background: rgba(16, 185, 129, 0.09);
+  color: #047857;
+}
+
+.admission-step.is-done span {
+  background: #10b981;
+  color: #fff;
+}
+
+.admission-step-note {
+  margin: -0.35rem 0 0.9rem;
+  color: #92400e;
+}
+
 .admission-form-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.admission-meta-grid {
+.admission-subject-select-row {
+  margin-top: 0.95rem;
+}
+
+.admission-inline-help {
+  margin: 0.45rem 0 0;
+  font-size: 0.82rem;
+}
+
+.admission-program-search-panel {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
   gap: 0.75rem;
-  margin-top: 1.25rem;
+}
+
+.admission-cancel-search {
+  appearance: none;
+  border: 1px solid rgba(37, 99, 235, 0.24);
+  border-radius: 999px;
+  background: var(--bg-primary);
+  color: var(--primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  margin-bottom: 0.05rem;
+  padding: 0.72rem 0.95rem;
+  transition: all var(--transition-fast);
+}
+
+.admission-cancel-search:hover {
+  border-color: rgba(37, 99, 235, 0.42);
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.admission-selected-program {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1rem 0;
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  border-left: 4px solid rgba(37, 99, 235, 0.62);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.96), rgba(255, 255, 255, 0.9));
+  padding: 0.9rem 1rem;
+}
+
+.admission-selected-program.compact {
+  margin-top: 0.75rem;
+  padding: 0.75rem 0.9rem;
+}
+
+.admission-selected-program > div {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.admission-selected-program span {
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.admission-selected-program strong {
+  color: var(--text-primary);
+  font-size: 1.04rem;
+  overflow-wrap: anywhere;
+}
+
+.admission-selected-program small {
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.admission-selected-program button {
+  flex: 0 0 auto;
+  appearance: none;
+  border: 1px solid rgba(37, 99, 235, 0.24);
+  border-radius: 999px;
+  background: var(--bg-primary);
+  color: var(--primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.45rem 0.7rem;
+  transition: all var(--transition-fast);
+}
+
+.admission-selected-program button:hover {
+  border-color: rgba(37, 99, 235, 0.42);
+  background: rgba(37, 99, 235, 0.08);
 }
 
 .admission-subject-box {
-  display: grid;
-  gap: 0.45rem;
-  margin: 1.25rem 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.65rem 0 0.9rem;
   border: 1px solid rgba(37, 99, 235, 0.22);
   background: rgba(59, 130, 246, 0.06);
-  border-radius: 14px;
-  padding: 1rem;
+  border-radius: 12px;
+  padding: 0.62rem 0.75rem;
 }
 
 .admission-subject-box span {
-  display: block;
-  color: var(--text-secondary);
-  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  border-radius: 999px;
+  background: var(--bg-primary);
+  color: var(--primary);
+  font-size: 0.78rem;
   font-weight: 700;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0;
+  padding: 0.25rem 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .admission-subject-box strong {
   color: var(--text-primary);
+  flex: 1 1 220px;
+  font-size: 0.95rem;
   line-height: 1.45;
 }
 
@@ -1843,21 +2026,23 @@ input:checked + .slider:before { transform: translateX(20px); }
   margin: 0;
 }
 
-.admission-subject-box .admission-subject-plan-note {
-  color: #92400e;
-}
-
 .admission-plan-card {
   display: grid;
   gap: 0.85rem;
-  margin: -0.25rem 0 1.25rem;
-  border: 1px solid rgba(20, 184, 166, 0.24);
-  background: rgba(20, 184, 166, 0.07);
+  margin: 1.25rem 0;
+  border: 1px solid rgba(20, 184, 166, 0.22);
+  border-top: 3px solid rgba(20, 184, 166, 0.52);
+  background: linear-gradient(180deg, rgba(240, 253, 250, 0.88), rgba(255, 255, 255, 0.92));
   border-radius: 14px;
   padding: 1rem;
 }
 
-.admission-plan-card > div:first-child span,
+.admission-plan-heading {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.admission-plan-heading span,
 .admission-plan-grid span {
   display: block;
   color: var(--text-secondary);
@@ -1868,7 +2053,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   letter-spacing: 0.04em;
 }
 
-.admission-plan-card > div:first-child strong {
+.admission-plan-heading strong {
   color: var(--text-primary);
   font-size: 1.02rem;
 }
@@ -1880,9 +2065,9 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 .admission-plan-grid div {
-  border: 1px solid rgba(20, 184, 166, 0.18);
+  border: 1px solid rgba(20, 184, 166, 0.16);
   border-radius: 12px;
-  background: var(--bg-primary);
+  background: rgba(255, 255, 255, 0.76);
   padding: 0.75rem;
 }
 
@@ -1892,9 +2077,9 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 .admission-plan-subjects {
-  border: 1px solid rgba(20, 184, 166, 0.18);
+  border: 1px solid rgba(20, 184, 166, 0.16);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.74);
   padding: 0.85rem;
 }
 
@@ -1930,7 +2115,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   align-items: center;
   gap: 0.4rem;
   max-width: 100%;
-  border: 1px solid rgba(20, 184, 166, 0.2);
+  border: 1px solid rgba(37, 99, 235, 0.16);
   border-radius: 999px;
   background: var(--bg-primary);
   color: var(--text-secondary);
@@ -1945,39 +2130,40 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 .admission-score-mode {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  padding: 0.35rem;
-  margin-bottom: 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  background: var(--bg-secondary);
+  display: none;
 }
 
-.admission-score-mode button {
+.admission-score-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1rem 0 0.55rem;
+}
+
+.admission-score-heading span {
+  color: var(--text-primary);
+  font-size: 0.98rem;
+  font-weight: 800;
+}
+
+.admission-score-heading button {
   appearance: none;
-  border: none;
-  border-radius: 9px;
-  background: transparent;
-  color: var(--text-secondary);
+  border: 1px solid rgba(37, 99, 235, 0.24);
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.07);
+  color: var(--primary);
   cursor: pointer;
   font: inherit;
-  font-size: 0.9rem;
-  font-weight: 700;
-  padding: 0.6rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.45rem 0.7rem;
   transition: all var(--transition-fast);
 }
 
-.admission-score-mode button.active {
-  background: var(--primary);
-  color: #fff;
-  box-shadow: var(--shadow-sm);
-}
-
-.admission-score-mode button:disabled {
-  cursor: not-allowed;
-  opacity: 0.45;
+.admission-score-heading button:hover {
+  border-color: rgba(37, 99, 235, 0.42);
+  background: rgba(37, 99, 235, 0.12);
 }
 
 .admission-score-help {
@@ -2012,27 +2198,12 @@ input:checked + .slider:before { transform: translateX(20px); }
   font-size: 1.4rem;
 }
 
-.admission-meta-grid div {
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 0.85rem;
-  background: var(--bg-secondary);
-}
-
-.admission-meta-grid span,
 .admission-bar-meta span,
 .admission-suggestion-grid span {
   display: block;
   color: var(--text-secondary);
   font-size: 0.8rem;
   line-height: 1.45;
-}
-
-.admission-meta-grid strong {
-  display: block;
-  color: var(--text-primary);
-  font-size: 0.95rem;
-  margin-top: 0.25rem;
 }
 
 .admission-result {
@@ -2582,9 +2753,26 @@ input:checked + .slider:before { transform: translateX(20px); }
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .admission-form-grid,
-  .admission-meta-grid,
   .admission-suggestion-grid {
     grid-template-columns: 1fr;
+  }
+  .admission-program-search-panel {
+    grid-template-columns: 1fr;
+  }
+  .admission-cancel-search {
+    justify-self: start;
+    margin-bottom: 0;
+  }
+  .admission-stepper {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .admission-step {
+    padding: 0.65rem 0.7rem;
+  }
+  .admission-selected-program {
+    align-items: flex-start;
+    flex-direction: column;
   }
   .admission-bar-row {
     grid-template-columns: 1fr;

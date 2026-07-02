@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AlertTriangle, CheckCircle2, ChevronsLeftRight, CircleHelp, ExternalLink, GraduationCap, LineChart, Search, ShieldCheck, Sparkles } from 'lucide-react';
 import {
   ADMISSION_DATA_NOTE,
@@ -6,6 +6,7 @@ import {
   ADMISSION_RAW_SCORE_SCALE,
   ADMISSION_SCORE_INPUT_MAX,
   type AdmissionMethod,
+  type AdmissionCutoff,
 } from '../../data/admissions';
 import {
   calculateAdmissionTotal,
@@ -14,7 +15,6 @@ import {
 import {
   estimateAdmissionChance,
   getAdmissionPlanForProgram,
-  getAdmissionPrograms,
   getCutoffsForProgram,
   getMethodsForProgram,
   getNearScorePrograms,
@@ -85,7 +85,7 @@ function getRiskNote(level: AdmissionChanceLevel): { title: string; text: string
 }
 
 function getRegimeLabel(regime: 'pre_2025' | 'post_2025'): string {
-  return regime === 'post_2025' ? 'Sau mốc 2025' : 'Trước mốc 2025';
+  return regime === 'post_2025' ? 'Từ 2025 trở đi' : 'Trước 2025';
 }
 
 function getSourceLinkLabel(year: number, sourceKind: 'html' | 'api'): string {
@@ -93,26 +93,30 @@ function getSourceLinkLabel(year: number, sourceKind: 'html' | 'api'): string {
 }
 
 export function AdmissionPage() {
+  const inputPanelRef = useRef<HTMLElement | null>(null);
   const [showGuide, setShowGuide] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.localStorage.getItem(ADMISSION_GUIDE_ACK_KEY) !== 'true';
   });
-  const programs = useMemo(() => getAdmissionPrograms(), []);
   const [programName, setProgramName] = useState('');
   const [programQuery, setProgramQuery] = useState('');
+  const [isProgramSearchOpen, setIsProgramSearchOpen] = useState(true);
   const [admissionMethod, setAdmissionMethod] = useState<AdmissionMethod>('THPT');
   const [subjectGroup, setSubjectGroup] = useState('');
   const [score, setScore] = useState('');
   const [scoreInputMode, setScoreInputMode] = useState<'total' | 'subjects'>('total');
   const [subjectScores, setSubjectScores] = useState<Record<string, string>>({});
   const [priorityScore, setPriorityScore] = useState('');
+  const [highlightInputPanel, setHighlightInputPanel] = useState(false);
 
   const hasSelectedProgram = programName.trim().length > 0;
   const hasSelectedSubjectGroup = subjectGroup.trim().length > 0;
+  const canEnterScore = hasSelectedProgram && hasSelectedSubjectGroup;
+  const showProgramSearch = !hasSelectedProgram || isProgramSearchOpen;
 
   const suggestions = useMemo(
-    () => (programQuery.trim() ? searchAdmissionPrograms(programQuery, 10) : []),
-    [programQuery],
+    () => (showProgramSearch && programQuery.trim() ? searchAdmissionPrograms(programQuery, 10) : []),
+    [programQuery, showProgramSearch],
   );
 
   const programRecords = useMemo(
@@ -152,6 +156,11 @@ export function AdmissionPage() {
     return { planGroups, historicalGroups };
   }, [planSubjectGroupSet, subjectGroups]);
   const selectedSubjectGroupInPlan = hasSelectedSubjectGroup && planSubjectGroupSet.has(subjectGroup);
+  const formatSubjectGroupOption = (group: string) => {
+    const definition = getSubjectGroupDefinition(group);
+    const subjects = definition.subjects.map((subject) => subject.label).join(', ');
+    return subjects ? `${group} - ${subjects}` : group;
+  };
   const subjectGroupDefinition = useMemo(() => getSubjectGroupDefinition(subjectGroup), [subjectGroup]);
   const calculatedScore = useMemo(
     () => calculateAdmissionTotal(subjectGroup, subjectScores, priorityScore),
@@ -193,7 +202,6 @@ export function AdmissionPage() {
 
   const nearPrograms = useMemo(() => getNearScorePrograms(effectiveScore, 6), [effectiveScore]);
   const selectedFaculty = programRecords[0]?.faculty ?? 'Chưa có dữ liệu';
-  const latestYear = programRecords.length > 0 ? Math.max(...programRecords.map((item) => item.year)) : undefined;
   const riskNote = getRiskNote(estimate.level);
   const latestCutoffIs2025 = estimate.latestCutoff?.year === 2025;
   const latestCutoffIsPost2025 = estimate.latestCutoff?.admissionRegime === 'post_2025';
@@ -214,9 +222,60 @@ export function AdmissionPage() {
     [programRecords, selectedPlan],
   );
 
-  const selectProgram = (name: string) => {
+  const selectProgram = (
+    name: string,
+    options: { admissionMethod?: AdmissionMethod; subjectGroup?: string; scrollToForm?: boolean } = {},
+  ) => {
+    const nextMethods = getMethodsForProgram(name);
+    const nextMethod =
+      options.admissionMethod && nextMethods.includes(options.admissionMethod)
+        ? options.admissionMethod
+        : nextMethods.includes(admissionMethod)
+          ? admissionMethod
+          : nextMethods[0] ?? 'THPT';
+    const nextSubjectGroups = getSubjectGroupsForProgram(name, nextMethod);
+    const nextSubjectGroup =
+      options.subjectGroup && nextSubjectGroups.includes(options.subjectGroup)
+        ? options.subjectGroup
+        : '';
+
     setProgramName(name);
     setProgramQuery(name);
+    setIsProgramSearchOpen(false);
+    setAdmissionMethod(nextMethod);
+    setSubjectGroup(nextSubjectGroup);
+
+    if (options.scrollToForm) {
+      setHighlightInputPanel(true);
+      window.setTimeout(() => {
+        inputPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 0);
+      window.setTimeout(() => setHighlightInputPanel(false), 1400);
+    }
+  };
+
+  const selectNearProgram = (item: AdmissionCutoff) => {
+    const nextSubjectGroups = getSubjectGroupsForProgram(item.programName, item.admissionMethod);
+    const preferredSubjectGroup =
+      splitAdmissionGroupCodes(item.subjectGroup).find((group) => nextSubjectGroups.includes(group)) ??
+      nextSubjectGroups[0] ??
+      '';
+
+    selectProgram(item.programName, {
+      admissionMethod: item.admissionMethod,
+      subjectGroup: preferredSubjectGroup,
+      scrollToForm: true,
+    });
+  };
+
+  const openProgramSearch = () => {
+    setIsProgramSearchOpen(true);
+    setProgramQuery('');
+  };
+
+  const cancelProgramSearch = () => {
+    setIsProgramSearchOpen(false);
+    setProgramQuery(programName);
   };
 
   const confirmGuide = () => {
@@ -294,7 +353,7 @@ export function AdmissionPage() {
       </section>
 
       <div className="tool-layout split admission-layout">
-        <section className="tool-panel">
+        <section className={`tool-panel admission-input-panel ${highlightInputPanel ? 'is-highlighted' : ''}`} ref={inputPanelRef}>
           <div className="tool-panel-header">
             <div>
               <h2>Nhập thông tin xét tuyển</h2>
@@ -303,20 +362,45 @@ export function AdmissionPage() {
             <GraduationCap size={24} className="text-accent" />
           </div>
 
-          <label className="tool-field">
-            <span>Tìm ngành</span>
-            <div className="autocomplete-box">
-              <Search size={18} className="search-icon" />
-              <input
-                className="tool-input"
-                value={programQuery}
-                onChange={(event) => setProgramQuery(event.target.value)}
-                placeholder="Nhập tên ngành, ví dụ: Công nghệ thông tin"
-              />
+          <div className="admission-stepper" aria-label="Thứ tự nhập thông tin xét tuyển">
+            <div className={`admission-step ${hasSelectedProgram ? 'is-done' : 'is-current'}`}>
+              <span>{hasSelectedProgram ? <CheckCircle2 size={15} /> : '1'}</span>
+              <strong>Chọn ngành</strong>
             </div>
-          </label>
+            <div className={`admission-step ${hasSelectedSubjectGroup ? 'is-done' : hasSelectedProgram ? 'is-current' : ''}`}>
+              <span>{hasSelectedSubjectGroup ? <CheckCircle2 size={15} /> : '2'}</span>
+              <strong>Chọn tổ hợp</strong>
+            </div>
+            <div className={`admission-step ${canEnterScore && hasScore ? 'is-done' : canEnterScore ? 'is-current' : ''}`}>
+              <span>{canEnterScore && hasScore ? <CheckCircle2 size={15} /> : '3'}</span>
+              <strong>Nhập điểm</strong>
+            </div>
+          </div>
 
-          {programQuery && programQuery !== programName && (
+          {showProgramSearch && (
+            <div className="admission-program-search-panel">
+              <label className="tool-field">
+                <span>{hasSelectedProgram ? 'Đổi ngành' : 'Tìm ngành'}</span>
+                <div className="autocomplete-box">
+                  <Search size={18} className="search-icon" />
+                  <input
+                    className="tool-input"
+                    value={programQuery}
+                    onChange={(event) => setProgramQuery(event.target.value)}
+                    placeholder="Nhập tên ngành, ví dụ: Công nghệ thông tin"
+                    autoFocus={hasSelectedProgram}
+                  />
+                </div>
+              </label>
+              {hasSelectedProgram && (
+                <button type="button" className="admission-cancel-search" onClick={cancelProgramSearch}>
+                  Hủy
+                </button>
+              )}
+            </div>
+          )}
+
+          {showProgramSearch && programQuery && programQuery !== programName && (
             <div className="autocomplete-list">
               {suggestions.length > 0 ? (
                 suggestions.map((name) => (
@@ -331,88 +415,93 @@ export function AdmissionPage() {
             </div>
           )}
 
-          <div className="tool-form-grid admission-form-grid">
-            <label className="tool-field">
-              <span>Ngành đang chọn</span>
-              <select
-                className="tool-select"
-                value={programName}
-                onChange={(event) => selectProgram(event.target.value)}
-              >
-                <option value="" disabled>
-                  Chưa chọn ngành
-                </option>
+          {showProgramSearch && hasSelectedProgram && (
+            <div className="admission-selected-program compact">
+              <div>
+                <span>Ngành hiện tại</span>
+                <strong>{programName}</strong>
+                <small>{selectedFaculty} · {ADMISSION_METHOD_LABELS[admissionMethod]}</small>
+              </div>
+            </div>
+          )}
 
-                {programs.map((name) => (
-                  <option key={name} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            </label>
+          {hasSelectedProgram && !isProgramSearchOpen && (
+            <>
+              <div className="admission-selected-program">
+                <div>
+                  <span>Ngành đã chọn</span>
+                  <strong>{programName}</strong>
+                  <small>{selectedFaculty} · {ADMISSION_METHOD_LABELS[admissionMethod]}</small>
+                </div>
+                <button type="button" onClick={openProgramSearch}>Đổi ngành</button>
+              </div>
 
-            <label className="tool-field">
-              <span>Phương thức</span>
-              <select
-                className="tool-select"
-                value={hasSelectedProgram ? admissionMethod : ''}
-                onChange={(event) => setAdmissionMethod(event.target.value as AdmissionMethod)}
-                disabled={!hasSelectedProgram || methods.length <= 1}
-              >
-                {!hasSelectedProgram && (
-                  <option value="">Chọn ngành trước</option>
-                )}
+              {methods.length > 1 && (
+                <div className="tool-form-grid admission-form-grid">
+                  <label className="tool-field">
+                    <span>Phương thức</span>
+                    <select
+                      className="tool-select"
+                      value={admissionMethod}
+                      onChange={(event) => setAdmissionMethod(event.target.value as AdmissionMethod)}
+                    >
+                      {methods.map((method) => (
+                        <option key={method} value={method}>
+                          {ADMISSION_METHOD_LABELS[method]}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              )}
 
-                {methods.map((method) => (
-                  <option key={method} value={method}>
-                    {ADMISSION_METHOD_LABELS[method]}
-                  </option>
-                ))}
-              </select>
-            </label>
+              <div className="tool-form-grid admission-form-grid admission-subject-select-row">
+                <label className="tool-field">
+                  <span>Tổ hợp môn</span>
+                  <select
+                    className="tool-select"
+                    value={subjectGroup}
+                    onChange={(event) => setSubjectGroup(event.target.value)}
+                  >
+                    <option value="" disabled>
+                      Chọn tổ hợp môn
+                    </option>
 
-            <label className="tool-field">
-              <span>Tổ hợp môn</span>
-              <select
-                className="tool-select"
-                value={hasSelectedProgram ? subjectGroup : ''}
-                onChange={(event) => setSubjectGroup(event.target.value)}
-                disabled={!hasSelectedProgram}
-              >
-                <option value="" disabled>
-                  {hasSelectedProgram ? 'Chọn tổ hợp môn' : 'Chọn ngành trước'}
-                </option>
+                    {subjectGroupOptions.planGroups.length > 0 && (
+                      <optgroup label="Theo đề án tuyển sinh 2026">
+                        {subjectGroupOptions.planGroups.map((group) => (
+                          <option key={group} value={group}>
+                            {formatSubjectGroupOption(group)}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
 
-                {subjectGroupOptions.planGroups.length > 0 && (
-                  <optgroup label="Theo đề án tuyển sinh 2026">
-                    {subjectGroupOptions.planGroups.map((group) => (
-                      <option key={group} value={group}>
-                        {group}
-                      </option>
-                    ))}
-                  </optgroup>
-                )}
+                    {subjectGroupOptions.historicalGroups.length > 0 && (
+                      <optgroup label="Tổ hợp từng dùng các năm trước">
+                        {subjectGroupOptions.historicalGroups.map((group) => (
+                          <option key={group} value={group}>
+                            {formatSubjectGroupOption(group)}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
+                  </select>
+                  {!hasSelectedSubjectGroup && (
+                    <p className="tool-note admission-inline-help">
+                      Ưu tiên tổ hợp trong đề án 2026.
+                    </p>
+                  )}
+                </label>
+              </div>
+            </>
+          )}
 
-                {subjectGroupOptions.historicalGroups.length > 0 && (
-                  <optgroup label="Tổ hợp từng dùng các năm trước">
-                    {subjectGroupOptions.historicalGroups.map((group) => (
-                      <option key={group} value={group}>
-                        {group}
-                      </option>
-                    ))}
-                  </optgroup>
-                )}
-              </select>
-            </label>
-          </div>
-
-          {hasSelectedProgram && (
+          {hasSelectedProgram && hasSelectedSubjectGroup && (!selectedSubjectGroupInPlan || subjectGroupDefinition.note) && (
             <div className="admission-subject-box">
               <div>
-                <span>{hasSelectedSubjectGroup ? `Tổ hợp ${subjectGroup}` : 'Chưa chọn tổ hợp môn'}</span>
-                {!hasSelectedSubjectGroup ? (
-                  <strong>Chọn một tổ hợp trong đề án 2026 hoặc lịch sử điểm chuẩn để hệ thống so sánh chính xác.</strong>
-                ) : subjectGroupDefinition.subjects.length > 0 ? (
+                <span>{subjectGroup}</span>
+                {subjectGroupDefinition.subjects.length > 0 ? (
                   <strong>{subjectGroupDefinition.subjects.map((subject) => subject.label).join(' + ')}</strong>
                 ) : (
                   <strong>Chưa có mô tả môn trong dữ liệu hiện tại</strong>
@@ -424,18 +513,82 @@ export function AdmissionPage() {
                 </span>
               )}
               {hasSelectedSubjectGroup && subjectGroupDefinition.note && <p>{subjectGroupDefinition.note}</p>}
-              {selectedPlan && hasSelectedSubjectGroup && !selectedSubjectGroupInPlan && (
-                <p className="admission-subject-plan-note">
-                  Tổ hợp này từng có dữ liệu điểm chuẩn ở các năm trước, nhưng chưa thấy trong kế hoạch tuyển sinh 2026 của ngành đang chọn.
-                  Hãy ưu tiên các tổ hợp thuộc đề án 2026 khi đặt nguyện vọng năm nay.
-                </p>
-              )}
             </div>
+          )}
+
+          {canEnterScore && (
+            <>
+              <div className="admission-score-heading">
+                <span>{scoreInputMode === 'subjects' ? 'Nhập điểm từng môn' : 'Nhập tổng điểm'}</span>
+                {subjectGroupDefinition.calculable && (
+                  <button
+                    type="button"
+                    onClick={() => setScoreInputMode(scoreInputMode === 'total' ? 'subjects' : 'total')}
+                  >
+                    {scoreInputMode === 'total' ? 'Tính từ điểm môn' : 'Nhập tổng điểm'}
+                  </button>
+                )}
+              </div>
+
+              {scoreInputMode === 'total' || !subjectGroupDefinition.calculable ? (
+                <label className="tool-field">
+                  <input
+                    className="tool-input"
+                    type="number"
+                    min="0"
+                    max={ADMISSION_SCORE_INPUT_MAX}
+                    step="0.01"
+                    value={score}
+                    onChange={(event) => setScore(event.target.value)}
+                    placeholder="Ví dụ: 24.75"
+                  />
+                </label>
+              ) : (
+                <div className="admission-subject-score-panel">
+                  <div className="tool-form-grid admission-form-grid">
+                    {subjectGroupDefinition.subjects.map((subject) => (
+                      <label className="tool-field" key={subject.key}>
+                        <span>{subject.label}</span>
+                        <input
+                          className="tool-input"
+                          type="number"
+                          min="0"
+                          max="10"
+                          step="0.01"
+                          value={subjectScores[subject.key] ?? ''}
+                          onChange={(event) =>
+                            setSubjectScores((current) => ({ ...current, [subject.key]: event.target.value }))
+                          }
+                          placeholder="0 - 10"
+                        />
+                      </label>
+                    ))}
+                    <label className="tool-field">
+                      <span>Điểm ưu tiên / khuyến khích</span>
+                      <input
+                        className="tool-input"
+                        type="number"
+                        min="0"
+                        max="3"
+                        step="0.01"
+                        value={priorityScore}
+                        onChange={(event) => setPriorityScore(event.target.value)}
+                        placeholder="Nếu có"
+                      />
+                    </label>
+                  </div>
+                  <div className="admission-calculated-score">
+                    <span>Tổng điểm tạm tính</span>
+                    <strong>{calculatedScore === null ? '--' : formatScore(calculatedScore)}</strong>
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
           {selectedPlan && (
             <div className="admission-plan-card">
-              <div>
+              <div className="admission-plan-heading">
                 <span>Kế hoạch tuyển sinh 2026</span>
                 <strong>{selectedPlan.programLabel}</strong>
               </div>
@@ -480,97 +633,6 @@ export function AdmissionPage() {
               </a>
             </div>
           )}
-
-          <div className="admission-score-mode" role="tablist" aria-label="Cách nhập điểm xét tuyển">
-            <button
-              type="button"
-              className={scoreInputMode === 'total' ? 'active' : ''}
-              onClick={() => setScoreInputMode('total')}
-            >
-              Nhập tổng điểm
-            </button>
-            <button
-              type="button"
-              className={scoreInputMode === 'subjects' ? 'active' : ''}
-              onClick={() => setScoreInputMode('subjects')}
-              disabled={!hasSelectedProgram || !subjectGroupDefinition.calculable}
-            >
-              Tính từ điểm môn
-            </button>
-          </div>
-
-          {scoreInputMode === 'total' || !subjectGroupDefinition.calculable ? (
-            <label className="tool-field">
-              <span>Tổng điểm xét tuyển của bạn</span>
-              <input
-                className="tool-input"
-                type="number"
-                min="0"
-                max={ADMISSION_SCORE_INPUT_MAX}
-                step="0.01"
-                value={score}
-                onChange={(event) => setScore(event.target.value)}
-                placeholder="Ví dụ: 24.75"
-              />
-              <p className="tool-note admission-score-help">
-                Nhập tổng điểm xét tuyển theo nguồn tuyển sinh. Nếu đã cộng điểm ưu tiên/khuyến khích, điểm có thể lớn hơn 30.
-              </p>
-            </label>
-          ) : (
-            <div className="admission-subject-score-panel">
-              <div className="tool-form-grid admission-form-grid">
-                {subjectGroupDefinition.subjects.map((subject) => (
-                  <label className="tool-field" key={subject.key}>
-                    <span>{subject.label}</span>
-                    <input
-                      className="tool-input"
-                      type="number"
-                      min="0"
-                      max="10"
-                      step="0.01"
-                      value={subjectScores[subject.key] ?? ''}
-                      onChange={(event) =>
-                        setSubjectScores((current) => ({ ...current, [subject.key]: event.target.value }))
-                      }
-                      placeholder="0 - 10"
-                    />
-                  </label>
-                ))}
-                <label className="tool-field">
-                  <span>Điểm ưu tiên / khuyến khích</span>
-                  <input
-                    className="tool-input"
-                    type="number"
-                    min="0"
-                    max="3"
-                    step="0.01"
-                    value={priorityScore}
-                    onChange={(event) => setPriorityScore(event.target.value)}
-                    placeholder="Nếu có"
-                  />
-                </label>
-              </div>
-              <div className="admission-calculated-score">
-                <span>Tổng điểm tạm tính</span>
-                <strong>{calculatedScore === null ? '--' : formatScore(calculatedScore)}</strong>
-              </div>
-            </div>
-          )}
-
-          <div className="admission-meta-grid">
-            <div>
-              <span>Khoa phụ trách</span>
-              <strong>{selectedFaculty}</strong>
-            </div>
-            <div>
-              <span>Năm dữ liệu mới nhất</span>
-              <strong>{latestYear ?? '--'}</strong>
-            </div>
-            <div>
-              <span>Số dòng điểm chuẩn</span>
-              <strong>{programRecords.length}</strong>
-            </div>
-          </div>
         </section>
 
         <aside className={`tool-result-card admission-result ${estimate.level}`}>
@@ -606,21 +668,7 @@ export function AdmissionPage() {
                   <span>Chênh lệch điểm</span>
                   <strong>{formatDelta(estimate.scoreDelta)}</strong>
                 </div>
-                <div>
-                  <span>Độ tin cậy</span>
-                  <strong>{estimate.confidenceLabel}</strong>
-                </div>
-                <div>
-                  <span>So khớp dữ liệu</span>
-                  <strong>
-                    {estimate.matchScope === 'exact'
-                      ? 'Đúng tổ hợp'
-                      : estimate.matchScope === 'method'
-                        ? 'Cùng phương thức'
-                      : 'Cùng ngành'}
-                  </strong>
-                </div>
-                {estimate.latestCutoff && (
+                {estimate.latestCutoff && latestCutoffIsPost2025 && (
                   <div className={latestCutoffIsPost2025 ? 'admission-key-metric post-2025' : 'admission-key-metric'}>
                     <span>Giai đoạn dữ liệu</span>
                     <strong>{getRegimeLabel(estimate.latestCutoff.admissionRegime)}</strong>
@@ -741,7 +789,7 @@ export function AdmissionPage() {
           </p>
           <div className="admission-suggestion-grid">
             {nearPrograms.map((item) => (
-              <button key={item.id} type="button" onClick={() => selectProgram(item.programName)}>
+              <button key={item.id} type="button" onClick={() => selectNearProgram(item)}>
                 <strong>{item.programName}</strong>
                 <span>
                   {item.subjectGroup} · {formatScore(item.cutoffScore)} điểm

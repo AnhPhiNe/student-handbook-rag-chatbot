@@ -206,6 +206,7 @@ class AnswerPipeline:
 
         context_used = build_context_for_prompt(
             retrieval_result,
+            query=effective_query,
             max_context_chars=self.max_context_chars,
             allocation_config=self.context_allocation,
         )

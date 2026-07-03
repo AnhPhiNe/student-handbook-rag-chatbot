@@ -24,6 +24,7 @@ def build_answer_prompt(
 
     context = build_context_for_prompt(
         retrieval_result=retrieval_result,
+        query=query,
         selected_citations=selected_citations or [],
         max_context_chars=max_context_chars,
         allocation_config=context_allocation,
@@ -67,6 +68,8 @@ SOURCE_STRICTNESS:
 - Do not add background knowledge, plausible policy details, office responsibility, deadline, eligibility condition, or interpretation if it is not explicitly present in the provided data.
 - If the retrieved context is only partially relevant, answer only the supported part and say the handbook source found here is not enough to confirm the remaining part.
 - Prefer a shorter source-grounded answer over a longer answer that mixes weakly related context.
+- If CONTEXT contains blocks named "BẢNG/DANH SÁCH ĐÃ CHUẨN HÓA", "ĐIỀU/MỤC LIÊN QUAN", or "ĐOẠN LIÊN QUAN", read those blocks before the raw text because they are selected from the same source for the current question.
+- Do not answer "không đề cập" when a normalized table/list/section block clearly contains the requested number, time period, condition, case, or list item.
 
 RETRIEVAL_METADATA:
 - intent: {retrieval_result.get("intent")}

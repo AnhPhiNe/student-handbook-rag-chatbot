@@ -49,7 +49,7 @@ context_allocation:
   min_chars_per_doc: 400
   max_chars_per_doc: 1800
   sentence_boundary: true
-  cache_version: context_alloc_v2_no_inline_sources
+  cache_version: context_alloc_v3_source_aware_context
 
 cache:
   enabled: true

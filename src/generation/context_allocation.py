@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 import re
+import unicodedata
 from dataclasses import dataclass
 from typing import Any
 
@@ -43,6 +44,7 @@ class ContextAllocationConfig:
 def build_context_for_prompt(
     retrieval_result: dict[str, Any],
     *,
+    query: str | None = None,
     selected_citations: list[dict[str, Any]] | None = None,
     max_context_chars: int,
     allocation_config: ContextAllocationConfig | dict[str, Any] | None = None,
@@ -83,6 +85,13 @@ def build_context_for_prompt(
     blocks: list[str] = []
     for header, item, budget in zip(headers, items, budgets, strict=False):
         content = str(item.get("content") or "").strip()
+        content = prepare_content_for_prompt(
+            content,
+            item=item,
+            query=query or str(retrieval_result.get("query") or ""),
+            budget=budget,
+            sentence_boundary=config.sentence_boundary,
+        )
         truncated_content = truncate_text(
             content,
             budget,
@@ -95,6 +104,333 @@ def build_context_for_prompt(
         max_context_chars,
         sentence_boundary=config.sentence_boundary,
     )
+
+
+def prepare_content_for_prompt(
+    content: str,
+    *,
+    item: dict[str, Any] | None = None,
+    query: str | None = None,
+    budget: int = 1800,
+    sentence_boundary: bool = True,
+) -> str:
+    """Chuẩn hóa phần nguồn trước khi cắt để LLM đọc đúng đoạn liên quan hơn."""
+
+    content = (content or "").strip()
+    if not content:
+        return ""
+
+    metadata = (item or {}).get("metadata", {}) or {}
+    query_terms = _query_terms(query or "")
+    table_context = _normalized_table_context(content, metadata)
+    section_context = _section_aware_context(content, query_terms)
+    snippet_context = _snippet_aware_context(
+        content,
+        query_terms,
+        max_chars=max(600, min(max(900, budget), 2200)),
+        sentence_boundary=sentence_boundary,
+    )
+
+    blocks: list[str] = []
+    if table_context:
+        blocks.append("BẢNG/DANH SÁCH ĐÃ CHUẨN HÓA:\n" + table_context)
+    if section_context and section_context not in table_context:
+        blocks.append("ĐIỀU/MỤC LIÊN QUAN:\n" + section_context)
+    if snippet_context and snippet_context not in table_context + section_context:
+        blocks.append("ĐOẠN LIÊN QUAN:\n" + snippet_context)
+
+    if blocks:
+        return "\n\n".join(blocks)
+
+    return content
+
+
+def _query_terms(query: str) -> list[str]:
+    normalized = _normalize_text(query)
+    if not normalized:
+        return []
+
+    stopwords = {
+        "la",
+        "co",
+        "cua",
+        "cho",
+        "toi",
+        "minh",
+        "ban",
+        "nhung",
+        "nao",
+        "gi",
+        "thi",
+        "duoc",
+        "khong",
+        "bao",
+        "nhieu",
+        "may",
+        "ve",
+        "trong",
+        "the",
+        "nhu",
+    }
+    tokens = [
+        token
+        for token in re.findall(r"[a-z0-9]+", normalized)
+        if len(token) >= 3 and token not in stopwords
+    ]
+
+    phrases: list[str] = []
+    for size in (4, 3, 2):
+        for index in range(0, max(0, len(tokens) - size + 1)):
+            phrase = " ".join(tokens[index : index + size])
+            if len(phrase) >= 8:
+                phrases.append(phrase)
+
+    expansions = _query_expansions(normalized)
+    seen: set[str] = set()
+    result: list[str] = []
+    for term in [*expansions, *phrases, *tokens]:
+        if term and term not in seen:
+            seen.add(term)
+            result.append(term)
+    return result[:24]
+
+
+def _query_expansions(normalized_query: str) -> list[str]:
+    expansions: list[str] = []
+    if "tot nghiep" in normalized_query:
+        expansions.extend(
+            [
+                "xet tot nghiep",
+                "dot xet tot nghiep",
+                "cong nhan tot nghiep",
+                "cap bang tot nghiep",
+            ]
+        )
+    if "thoi gian" in normalized_query or "bao nhieu nam" in normalized_query:
+        expansions.extend(
+            [
+                "thoi gian hoc tap toi da",
+                "thoi gian hoc tap chuan",
+                "hinh thuc dao tao chinh quy",
+            ]
+        )
+    if "bao luu" in normalized_query:
+        expansions.extend(["nghi hoc tam thoi", "tam dung hoc tap"])
+    if "rot mon" in normalized_query:
+        expansions.extend(["hoc phan khong dat", "hoc lai"])
+    return expansions
+
+
+def _normalized_table_context(content: str, metadata: dict[str, Any]) -> str:
+    normalized = _normalize_text(content)
+    blocks: list[str] = []
+
+    if "thoi gian hoc tap chuan" in normalized and "thoi gian hoc tap toi da" in normalized:
+        rows = _extract_study_duration_rows(content)
+        if rows:
+            blocks.append("Bảng thời gian học tập:")
+            blocks.append("Loại chương trình | Thời gian chuẩn | Thời gian tối đa")
+            blocks.extend(f"- {name}: chuẩn {standard}, tối đa {maximum}" for name, standard, maximum in rows)
+
+    if "dot xet tot nghiep" in normalized or "xet tot nghiep chinh thuc" in normalized:
+        sentence = _snippet_aware_context(
+            content,
+            ["dot xet tot nghiep", "xet tot nghiep chinh thuc", "thang 5", "thang 8", "thang 11"],
+            max_chars=520,
+            sentence_boundary=True,
+        )
+        if sentence:
+            blocks.append("Thông tin về đợt xét tốt nghiệp:")
+            blocks.append(f"- {_collapse_space(sentence)}")
+
+    if not blocks and _looks_like_table(metadata, content):
+        rows = _compact_structured_lines(content)
+        if rows:
+            blocks.append("Nội dung dạng bảng/danh sách đã gom dòng:")
+            blocks.extend(f"- {row}" for row in rows[:12])
+
+    return "\n".join(blocks).strip()
+
+
+def _extract_study_duration_rows(content: str) -> list[tuple[str, str, str]]:
+    text = _collapse_space(content)
+    patterns = [
+        r"(Đào tạo đại học cấp bằng thứ nhất)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
+        r"(Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
+        r"(Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
+        r"(Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
+    ]
+    rows: list[tuple[str, str, str]] = []
+    for pattern in patterns:
+        match = re.search(pattern, text, flags=re.IGNORECASE)
+        if match:
+            rows.append((match.group(1), match.group(2), match.group(3)))
+    return rows
+
+
+def _section_aware_context(content: str, query_terms: list[str]) -> str:
+    if not query_terms:
+        return ""
+
+    lines = [line.strip() for line in content.splitlines() if line.strip()]
+    if len(lines) < 3:
+        return ""
+
+    relevant_indices: list[int] = []
+    for index, line in enumerate(lines):
+        normalized_line = _normalize_text(line)
+        if _term_score(normalized_line, query_terms) >= 2:
+            relevant_indices.append(index)
+
+    if not relevant_indices:
+        return ""
+
+    selected: list[str] = []
+    for index in relevant_indices[:4]:
+        start = _nearest_section_start(lines, index)
+        end = _nearest_section_end(lines, index, start)
+        selected.extend(lines[start : end + 1])
+
+    return "\n".join(_dedupe_preserve_order(selected)).strip()
+
+
+def _snippet_aware_context(
+    content: str,
+    query_terms: list[str],
+    *,
+    max_chars: int,
+    sentence_boundary: bool,
+) -> str:
+    if not query_terms:
+        return ""
+
+    normalized_content = _normalize_text(content)
+    best_index = -1
+    best_score = 0
+    for term in query_terms:
+        start = 0
+        while True:
+            index = normalized_content.find(term, start)
+            if index < 0:
+                break
+            window = normalized_content[max(0, index - 240) : index + 240]
+            score = _term_score(window, query_terms)
+            if score > best_score:
+                best_score = score
+                best_index = index
+            start = index + len(term)
+
+    if best_index < 0 or best_score <= 0:
+        return ""
+
+    start = max(0, best_index - max_chars // 2)
+    end = min(len(content), start + max_chars)
+    start = _move_to_boundary(content, start, backward=True)
+    end = _move_to_boundary(content, end, backward=False)
+    snippet = content[start:end].strip()
+    return truncate_text(snippet, max_chars, sentence_boundary=sentence_boundary)
+
+
+def _find_sentence_with_terms(content: str, terms: list[str]) -> str:
+    normalized_terms = [_normalize_text(term) for term in terms]
+    candidates = re.split(r"(?<=[.!?。])\s+|\n+", content)
+    best = ""
+    best_score = 0
+    for candidate in candidates:
+        normalized_candidate = _normalize_text(candidate)
+        score = _term_score(normalized_candidate, normalized_terms)
+        if score > best_score:
+            best = candidate.strip()
+            best_score = score
+    return best if best_score > 0 else ""
+
+
+def _looks_like_table(metadata: dict[str, Any], content: str) -> bool:
+    if metadata.get("has_table") or metadata.get("chunk_type") == "table":
+        return True
+    normalized = _normalize_text(content)
+    table_terms = (
+        "bang",
+        "thang diem",
+        "muc diem",
+        "thoi gian hoc tap",
+        "dieu kien",
+        "ho so",
+        "quy trinh",
+    )
+    return sum(term in normalized for term in table_terms) >= 2
+
+
+def _compact_structured_lines(content: str) -> list[str]:
+    lines = [_collapse_space(line) for line in content.splitlines()]
+    rows = [
+        line
+        for line in lines
+        if line
+        and (
+            re.match(r"^(\d+\.|[a-z]\)|[-–•])\s+", line, flags=re.IGNORECASE)
+            or len(re.findall(r"\b\d+(?:[,.]\d+)?\b", line)) >= 2
+        )
+    ]
+    return _dedupe_preserve_order(rows)
+
+
+def _nearest_section_start(lines: list[str], index: int) -> int:
+    for cursor in range(index, -1, -1):
+        if _is_section_marker(lines[cursor]):
+            return cursor
+    return max(0, index - 2)
+
+
+def _nearest_section_end(lines: list[str], index: int, start: int) -> int:
+    for cursor in range(index + 1, min(len(lines), start + 10)):
+        if _is_section_marker(lines[cursor]):
+            return max(index, cursor - 1)
+    return min(len(lines) - 1, index + 4)
+
+
+def _is_section_marker(line: str) -> bool:
+    return bool(re.match(r"^(\d+\.|[a-z]\)|[IVX]+\.)\s+", line.strip(), flags=re.IGNORECASE))
+
+
+def _term_score(text: str, terms: list[str]) -> int:
+    return sum(1 for term in terms if term and term in text)
+
+
+def _normalize_text(text: str) -> str:
+    text = unicodedata.normalize("NFD", text or "")
+    text = "".join(char for char in text if unicodedata.category(char) != "Mn")
+    text = text.lower().replace("đ", "d")
+    return _collapse_space(text)
+
+
+def _collapse_space(text: str) -> str:
+    return re.sub(r"\s+", " ", text or "").strip()
+
+
+def _move_to_boundary(text: str, index: int, *, backward: bool) -> int:
+    index = max(0, min(len(text), index))
+    boundaries = "\n.;:"
+    if backward:
+        candidates = [text.rfind(boundary, 0, index) for boundary in boundaries]
+        best = max(candidates)
+        return best + 1 if best >= 0 else index
+
+    candidates = [text.find(boundary, index) for boundary in boundaries]
+    positives = [candidate for candidate in candidates if candidate >= 0]
+    return min(positives) + 1 if positives else index
+
+
+def _dedupe_preserve_order(items: list[str]) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for item in items:
+        key = _normalize_text(item)
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(item)
+    return result
 
 
 def allocate_context_budget(

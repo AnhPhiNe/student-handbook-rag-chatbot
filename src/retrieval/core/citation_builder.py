@@ -1,4 +1,14 @@
+import re
 from typing import Any
+
+
+_FOCUS_MARKER = "THÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:"
+_CONTENT_MARKER = "Nội dung:"
+_PAGE_FOOTER_RE = re.compile(r"^(?:\d+\s+)?SỔ TAY SINH VIÊN KHÓA\s+\d+\s*$")
+_NEW_PARAGRAPH_RE = re.compile(
+    r"^(?:Điều\s+\d+\.|\d+\.\s|[a-zđ]\)|[-•]\s+|Tài liệu:|Phần:|Chương:|Tiêu đề:)",
+    re.IGNORECASE,
+)
 
 
 def parse_source_pages(value: Any) -> list[int]:
@@ -28,6 +38,45 @@ def _first_value(source: dict[str, Any], keys: tuple[str, ...]) -> Any:
         if value not in (None, "", []):
             return value
     return None
+
+
+def sanitize_citation_content(value: Any) -> str:
+    """Làm sạch nội dung nguồn trước khi gửi về UI citation."""
+    if value is None:
+        return ""
+
+    text = str(value).replace("\r\n", "\n").replace("\r", "\n").strip()
+    if not text:
+        return ""
+
+    if _FOCUS_MARKER in text:
+        text = text.split(_FOCUS_MARKER, 1)[0].strip()
+
+    if _CONTENT_MARKER in text:
+        text = text.split(_CONTENT_MARKER, 1)[1].strip()
+
+    lines = [
+        line.strip()
+        for line in text.split("\n")
+        if line.strip() and not _PAGE_FOOTER_RE.match(line.strip())
+    ]
+    if not lines:
+        return ""
+
+    paragraphs: list[str] = []
+    for line in lines:
+        if not paragraphs or _starts_new_paragraph(line):
+            paragraphs.append(line)
+        else:
+            paragraphs[-1] = f"{paragraphs[-1]} {line}"
+
+    cleaned = "\n\n".join(paragraphs)
+    cleaned = re.sub(r"[ \t]+", " ", cleaned)
+    return cleaned.strip()
+
+
+def _starts_new_paragraph(line: str) -> bool:
+    return bool(_NEW_PARAGRAPH_RE.match(line))
 
 
 def _build_source_label(metadata: dict[str, Any]) -> str | None:
@@ -91,7 +140,9 @@ def build_citations_from_vector_results(
                 "distance": item.get("distance"),
                 "rerank": item.get("rerank"),
                 "retrieval_purpose": item.get("retrieval_purpose"),
-                "content": item.get("document") or item.get("content"),
+                "content": sanitize_citation_content(
+                    item.get("document") or item.get("content")
+                ),
             }
         )
 

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AlertTriangle, CheckCircle2, ChevronsLeftRight, CircleHelp, ExternalLink, GraduationCap, LineChart, Search, ShieldCheck, Sparkles } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, CircleHelp, ExternalLink, GraduationCap, LineChart, Search, ShieldCheck, Sparkles } from 'lucide-react';
 import {
   ADMISSION_DATA_NOTE,
   ADMISSION_METHOD_LABELS,
@@ -84,12 +84,8 @@ function getRiskNote(level: AdmissionChanceLevel): { title: string; text: string
   }
 }
 
-function getRegimeLabel(regime: 'pre_2025' | 'post_2025'): string {
-  return regime === 'post_2025' ? 'Từ 2025 trở đi' : 'Trước 2025';
-}
-
 function getSourceLinkLabel(year: number, sourceKind: 'html' | 'api'): string {
-  return sourceKind === 'html' ? `${year}` : `Dữ liệu ${year}`;
+  return sourceKind === 'html' ? `Nguồn ${year}` : `Dữ liệu ${year}`;
 }
 
 export function AdmissionPage() {
@@ -200,12 +196,28 @@ export function AdmissionPage() {
     [hasSelectedProgram, hasSelectedSubjectGroup, programName, admissionMethod, subjectGroup, effectiveScore],
   );
 
-  const nearPrograms = useMemo(() => getNearScorePrograms(effectiveScore, 6), [effectiveScore]);
+  const nearPrograms = useMemo(
+    () =>
+      getNearScorePrograms(effectiveScore, 6, {
+        admissionMethod,
+        subjectGroup,
+        excludeProgramName: programName,
+      }),
+    [admissionMethod, effectiveScore, programName, subjectGroup],
+  );
   const selectedFaculty = programRecords[0]?.faculty ?? 'Chưa có dữ liệu';
   const riskNote = getRiskNote(estimate.level);
   const latestCutoffIs2025 = estimate.latestCutoff?.year === 2025;
-  const latestCutoffIsPost2025 = estimate.latestCutoff?.admissionRegime === 'post_2025';
   const latestCutoffNeedsReview = scoreNeedsReview(estimate.latestCutoff?.cutoffScore);
+  const visibleWarnings = useMemo(() => {
+    if (latestCutoffNeedsReview) {
+      return estimate.warnings.slice(0, 1);
+    }
+    if (estimate.level === 'safe' || estimate.level === 'very_safe') {
+      return [];
+    }
+    return estimate.warnings.slice(0, 1);
+  }, [estimate.level, estimate.warnings, latestCutoffNeedsReview]);
   const sourceLinksByYear = useMemo(
     () => {
       const sources = programRecords.reduce((current, item) => {
@@ -295,7 +307,7 @@ export function AdmissionPage() {
             <h2 id="admission-guide-title">Tuyển sinh dùng để làm gì?</h2>
             <p className="admission-guide-lead">
               Công cụ này giúp bạn tra nhanh điểm chuẩn HCMUE, xem tổ hợp xét tuyển và ước lượng mức độ an toàn
-              khi đặt nguyện vọng theo điểm thi THPT.
+              khi đặt nguyện vọng theo điểm thi THPTQG.
             </p>
 
             <div className="admission-guide-grid">
@@ -344,6 +356,10 @@ export function AdmissionPage() {
         <AlertTriangle size={20} />
         <div>
           <h2>Lưu ý trước khi dùng</h2>
+          <div className="admission-scope-badges" aria-label="Phạm vi áp dụng của công cụ tuyển sinh">
+            <span>Chỉ dùng điểm thi THPTQG</span>
+            <span>Cơ sở chính: 280 An Dương Vương, phường Chợ Quán, TP.HCM</span>
+          </div>
           <p>
             Kết quả chỉ là công cụ tham khảo để đặt nguyện vọng, không phải dự đoán chắc chắn.
             Từ năm 2025, chương trình GDPT 2018 làm thay đổi cấu trúc thi và tổ hợp xét tuyển,
@@ -357,9 +373,9 @@ export function AdmissionPage() {
           <div className="tool-panel-header">
             <div>
               <h2>Nhập thông tin xét tuyển</h2>
-              <p>Chọn đúng ngành, phương thức và tổ hợp để kết quả có ý nghĩa hơn.</p>
+              <p>Dành cho điểm thi THPTQG tại cơ sở chính TP.HCM.</p>
             </div>
-            <GraduationCap size={24} className="text-accent" />
+            <GraduationCap size={24} className="text-accent admission-panel-icon" />
           </div>
 
           <div className="admission-stepper" aria-label="Thứ tự nhập thông tin xét tuyển">
@@ -420,7 +436,10 @@ export function AdmissionPage() {
               <div>
                 <span>Ngành hiện tại</span>
                 <strong>{programName}</strong>
-                <small>{selectedFaculty} · {ADMISSION_METHOD_LABELS[admissionMethod]}</small>
+                <div className="admission-selected-meta">
+                  <span className="admission-meta-pill">{selectedFaculty}</span>
+                  <span className="admission-meta-pill method">{ADMISSION_METHOD_LABELS[admissionMethod]}</span>
+                </div>
               </div>
             </div>
           )}
@@ -431,7 +450,10 @@ export function AdmissionPage() {
                 <div>
                   <span>Ngành đã chọn</span>
                   <strong>{programName}</strong>
-                  <small>{selectedFaculty} · {ADMISSION_METHOD_LABELS[admissionMethod]}</small>
+                  <div className="admission-selected-meta">
+                    <span className="admission-meta-pill">{selectedFaculty}</span>
+                    <span className="admission-meta-pill method">{ADMISSION_METHOD_LABELS[admissionMethod]}</span>
+                  </div>
                 </div>
                 <button type="button" onClick={openProgramSearch}>Đổi ngành</button>
               </div>
@@ -668,12 +690,6 @@ export function AdmissionPage() {
                   <span>Chênh lệch điểm</span>
                   <strong>{formatDelta(estimate.scoreDelta)}</strong>
                 </div>
-                {estimate.latestCutoff && latestCutoffIsPost2025 && (
-                  <div className={latestCutoffIsPost2025 ? 'admission-key-metric post-2025' : 'admission-key-metric'}>
-                    <span>Giai đoạn dữ liệu</span>
-                    <strong>{getRegimeLabel(estimate.latestCutoff.admissionRegime)}</strong>
-                  </div>
-                )}
               </div>
               {riskNote && (
                 <div className={`admission-risk-note ${estimate.level}`}>
@@ -681,9 +697,9 @@ export function AdmissionPage() {
                   <p>{riskNote.text}</p>
                 </div>
               )}
-              {estimate.warnings.length > 0 && (
+              {visibleWarnings.length > 0 && (
                 <ul className="admission-warning-list">
-                  {estimate.warnings.map((warning) => (
+                  {visibleWarnings.map((warning) => (
                     <li key={warning}>{warning}</li>
                   ))}
                 </ul>
@@ -710,7 +726,10 @@ export function AdmissionPage() {
         </div>
 
         <div className="admission-bars">
-          {programRecords.slice(0, 8).map((item) => (
+          {programRecords.slice(0, 8).map((item) => {
+            const sourceLabel = getSourceLinkLabel(item.year, item.sourceKind);
+
+            return (
             <div className={`admission-bar-row ${item.year === 2025 ? 'is-latest-year' : ''}`} key={item.id}>
               <div className="admission-bar-meta">
                 <strong>
@@ -726,73 +745,38 @@ export function AdmissionPage() {
                 {formatScore(item.cutoffScore)}
                 {scoreNeedsReview(item.cutoffScore) && <ScoreReviewBadge />}
               </strong>
+              <a
+                className="admission-row-source"
+                href={item.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`Mở ${sourceLabel} để kiểm tra điểm chuẩn`}
+                title={`Mở ${sourceLabel} để kiểm tra điểm chuẩn`}
+              >
+                {sourceLabel} <ExternalLink size={13} />
+              </a>
             </div>
-          ))}
-        </div>
-
-        <div className="admission-table-shell">
-          <div className="admission-table-scroll-hint" aria-hidden="true">
-            <ChevronsLeftRight size={16} />
-            <span>Vuốt ngang để xem thêm cột</span>
-          </div>
-          <div className="admission-table-wrap">
-            <table className="data-table admission-table">
-              <thead>
-                <tr>
-                  <th>Năm</th>
-                  <th>Ngành</th>
-                  <th>Phương thức</th>
-                  <th>Tổ hợp</th>
-                  <th>Điểm chuẩn</th>
-                  <th>Giai đoạn</th>
-                  <th>Ghi chú</th>
-                  <th>Nguồn</th>
-                </tr>
-              </thead>
-              <tbody>
-                {programRecords.map((item) => (
-                  <tr key={item.id} className={item.year === 2025 ? 'is-latest-year' : ''}>
-                    <td className="admission-col-year">{item.year}</td>
-                    <td className="admission-col-program">{item.programName}</td>
-                    <td className="admission-col-method">{item.admissionMethodLabel}</td>
-                    <td className="admission-col-group">{item.subjectGroup}</td>
-                    <td className={`admission-col-score font-medium ${item.year === 2025 ? 'admission-score-2025' : ''} ${scoreNeedsReview(item.cutoffScore) ? 'admission-score-needs-review' : ''}`}>
-                      <span className="admission-score-cell">
-                        {formatScore(item.cutoffScore)}
-                        {scoreNeedsReview(item.cutoffScore) && <ScoreReviewBadge />}
-                      </span>
-                    </td>
-                    <td className="admission-col-regime">
-                      <span className={`admission-regime-badge ${item.admissionRegime}`}>
-                        {getRegimeLabel(item.admissionRegime)}
-                      </span>
-                    </td>
-                    <td className="admission-col-note">{item.note ?? item.campus}</td>
-                    <td className="admission-col-source">
-                      <a className="admission-row-source" href={item.sourceUrl} target="_blank" rel="noreferrer">
-                        {item.sourceKind === 'html' ? item.year : `Dữ liệu ${item.year}`} <ExternalLink size={13} />
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+            );
+          })}
         </div>
       </section>
 
       {hasSelectedProgram && hasSelectedSubjectGroup && hasScore && nearPrograms.length > 0 && (
         <section className="tool-panel admission-suggestions">
-          <h2>Ngành gần mức điểm của bạn</h2>
+          <h2>Ngành cùng tổ hợp gần mức điểm của bạn</h2>
           <p className="tool-note">
-            Danh sách này giúp bạn tham khảo thêm nguyện vọng dự phòng theo điểm chuẩn gần nhất.
+            Chỉ hiển thị các ngành cùng phương thức và còn có tổ hợp {subjectGroup} trong đề án tuyển sinh 2026.
+          </p>
+          <p className="admission-suggestion-note">
+            Lưu ý: điểm bên dưới là điểm chuẩn gần nhất trong dữ liệu 2021-2025, không phải điểm chuẩn 2026.
           </p>
           <div className="admission-suggestion-grid">
             {nearPrograms.map((item) => (
               <button key={item.id} type="button" onClick={() => selectNearProgram(item)}>
                 <strong>{item.programName}</strong>
-                <span>
-                  {item.subjectGroup} · {formatScore(item.cutoffScore)} điểm
+                <span className="admission-suggestion-meta">
+                  <span>{item.subjectGroup} · {formatScore(item.cutoffScore)} điểm</span>
+                  <b>{item.year}</b>
                   {scoreNeedsReview(item.cutoffScore) && <ScoreReviewBadge />}
                 </span>
               </button>
@@ -804,7 +788,7 @@ export function AdmissionPage() {
       <section className="tool-callout info admission-source">
         <h2>Nguồn dữ liệu</h2>
         <p>
-          Dữ liệu seed lấy từ bảng điểm chuẩn HCMUE 2021-2025 theo phương thức điểm thi THPT.
+          Dữ liệu seed lấy từ bảng điểm chuẩn HCMUE 2021-2025 theo phương thức điểm thi THPTQG.
           Chức năng này chỉ giữ các dòng của cơ sở chính tại TP.HCM; các dòng ghi chú đào tạo tại Gia Lai hoặc Long An
           trong nguồn gốc không được đưa vào phần tính xác suất.
         </p>

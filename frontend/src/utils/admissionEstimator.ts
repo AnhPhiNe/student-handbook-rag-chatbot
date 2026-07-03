@@ -93,6 +93,15 @@ export function getAdmissionPlanForProgram(programName: string): AdmissionPlan |
   return ADMISSION_PLANS_2026.find((item) => normalizeText(item.programName) === normalizedProgram);
 }
 
+function planHasSubjectGroup(programName: string, subjectGroup: string): boolean {
+  const plan = getAdmissionPlanForProgram(programName);
+  if (!plan) return false;
+  const normalizedSubjectGroup = subjectGroup.trim().toUpperCase();
+  return plan.examSubjectGroups.some((group) =>
+    splitSubjectGroups(group.code).includes(normalizedSubjectGroup),
+  );
+}
+
 export function getMethodsForProgram(programName: string): AdmissionMethod[] {
   return Array.from(new Set(getCutoffsForProgram(programName).map((item) => item.admissionMethod)));
 }
@@ -281,11 +290,26 @@ export function estimateAdmissionChance(input: AdmissionEstimateInput): Admissio
   };
 }
 
-export function getNearScorePrograms(score: number, limit = 6): AdmissionCutoff[] {
+export function getNearScorePrograms(
+  score: number,
+  limit = 6,
+  options: {
+    admissionMethod?: AdmissionMethod;
+    subjectGroup?: string;
+    excludeProgramName?: string;
+  } = {},
+): AdmissionCutoff[] {
   if (!Number.isFinite(score) || score <= 0) return [];
+  const normalizedSubjectGroup = options.subjectGroup?.trim().toUpperCase();
+  const normalizedExcludedProgram = options.excludeProgramName ? normalizeText(options.excludeProgramName) : '';
   const latestByProgram = new Map<string, AdmissionCutoff>();
 
   for (const item of ADMISSION_CUTOFFS) {
+    if (options.admissionMethod && item.admissionMethod !== options.admissionMethod) continue;
+    if (normalizedSubjectGroup && !splitSubjectGroups(item.subjectGroup).includes(normalizedSubjectGroup)) continue;
+    if (normalizedSubjectGroup && !planHasSubjectGroup(item.programName, normalizedSubjectGroup)) continue;
+    if (normalizedExcludedProgram && normalizeText(item.programName) === normalizedExcludedProgram) continue;
+
     const key = `${item.programName}-${item.admissionMethod}-${item.subjectGroup}-${item.campus}`;
     const current = latestByProgram.get(key);
     if (!current || item.year > current.year) {

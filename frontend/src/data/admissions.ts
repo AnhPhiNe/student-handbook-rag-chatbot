@@ -58,10 +58,10 @@ export const ADMISSION_SOURCE_URLS_BY_YEAR: Record<number, string> = {
 
 
 export const ADMISSION_DATA_NOTE =
-  'Bản beta đang có dữ liệu điểm chuẩn THPT 2021-2025 và kế hoạch tuyển sinh 2026. Dữ liệu 2025 dùng nguồn chi tiết Tuyensinh247 để giữ nhiều tổ hợp hơn, nhưng chỉ giữ các ngành cơ sở chính TP.HCM; các điểm nguồn lớn hơn 30 sẽ được đánh dấu để bạn đối chiếu cách tính điểm ưu tiên/quy đổi.';
+  'Bản beta đang có dữ liệu điểm chuẩn THPTQG 2021-2025 và kế hoạch tuyển sinh 2026. Dữ liệu 2025 dùng nguồn chi tiết Tuyensinh247 để giữ nhiều tổ hợp hơn, nhưng chỉ giữ các ngành cơ sở chính TP.HCM; các điểm nguồn lớn hơn 30 sẽ được đánh dấu để bạn đối chiếu cách tính điểm ưu tiên/quy đổi.';
 
 export const ADMISSION_METHOD_LABELS: Record<AdmissionMethod, string> = {
-  THPT: 'Điểm thi THPT',
+  THPT: 'Điểm thi THPTQG',
   PRIORITY_DIRECT: 'Ưu tiên xét tuyển / xét tuyển thẳng',
 };
 
@@ -98,7 +98,7 @@ function thpt2025(
     admissionRegime: 'post_2025',
     campus,
     note,
-    sourceLabel: 'Điểm chuẩn HCMUE 2025 - phương thức điểm thi THPT',
+    sourceLabel: 'Điểm chuẩn HCMUE 2025 - phương thức điểm thi THPTQG',
     sourceUrl: getAdmissionSourceUrl(2025),
     sourceKind: getAdmissionSourceKind(2025),
     verified: true,
@@ -128,7 +128,7 @@ function historicalThpt(
     admissionRegime: year >= 2025 ? 'post_2025' : 'pre_2025',
     campus,
     note,
-    sourceLabel: `Điểm chuẩn HCMUE ${year} - phương thức điểm thi THPT`,
+    sourceLabel: `Điểm chuẩn HCMUE ${year} - phương thức điểm thi THPTQG`,
     sourceUrl: getAdmissionSourceUrl(year),
     sourceKind: getAdmissionSourceKind(year),
     verified: true,

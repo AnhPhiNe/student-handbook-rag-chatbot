@@ -236,7 +236,7 @@ def _normalized_table_context(content: str, metadata: dict[str, Any]) -> str:
         sentence = _snippet_aware_context(
             content,
             ["dot xet tot nghiep", "xet tot nghiep chinh thuc", "thang 5", "thang 8", "thang 11"],
-            max_chars=520,
+            max_chars=760,
             sentence_boundary=True,
         )
         if sentence:
@@ -307,6 +307,7 @@ def _snippet_aware_context(
     normalized_content = _normalize_text(content)
     best_index = -1
     best_score = 0
+    best_term = ""
     for term in query_terms:
         start = 0
         while True:
@@ -318,17 +319,23 @@ def _snippet_aware_context(
             if score > best_score:
                 best_score = score
                 best_index = index
+                best_term = term
             start = index + len(term)
 
     if best_index < 0 or best_score <= 0:
         return ""
 
-    start = max(0, best_index - max_chars // 2)
+    start = max(0, best_index - max_chars // 3)
     end = min(len(content), start + max_chars)
-    start = _move_to_boundary(content, start, backward=True)
+    boundary_start = _move_to_boundary(content, start, backward=True)
+    if best_index - boundary_start <= max_chars // 2:
+        start = boundary_start
     end = _move_to_boundary(content, end, backward=False)
     snippet = content[start:end].strip()
-    return truncate_text(snippet, max_chars, sentence_boundary=sentence_boundary)
+    truncated = truncate_text(snippet, max_chars, sentence_boundary=sentence_boundary)
+    if best_term and best_term in _normalize_text(snippet) and best_term not in _normalize_text(truncated):
+        return truncate_text(snippet, max_chars, sentence_boundary=False)
+    return truncated
 
 
 def _find_sentence_with_terms(content: str, terms: list[str]) -> str:
@@ -394,7 +401,13 @@ def _is_section_marker(line: str) -> bool:
 
 
 def _term_score(text: str, terms: list[str]) -> int:
-    return sum(1 for term in terms if term and term in text)
+    score = 0
+    for term in terms:
+        if not term or term not in text:
+            continue
+        token_count = max(1, len(term.split()))
+        score += token_count * token_count
+    return score
 
 
 def _normalize_text(text: str) -> str:

@@ -2,6 +2,17 @@ import re
 from typing import Any
 
 from .chunk_schema import create_chunk
+from .regulation_highlight_extractor import (
+    build_regulation_highlight_chunk_content,
+    extract_regulation_highlights,
+    highlight_metadata_payload,
+)
+from .regulation_table_extractor import (
+    build_regulation_table_chunk_content,
+    extract_regulation_tables,
+    format_tables_for_parent,
+    table_metadata_payload,
+)
 from .text_utils import join_non_empty, source_page_range
 from .token_utils import count_tokens_approx, split_text_by_paragraph
 
@@ -21,6 +32,34 @@ def build_regulation_chunk_content(section: dict[str, Any], content: str) -> str
             content,
         ]
     )
+
+
+def build_parent_doc_content(
+    section: dict[str, Any],
+    content: str,
+    tables: list[dict[str, Any]],
+    highlights: list[dict[str, Any]] | None = None,
+) -> str:
+    """Tạo parent doc có thêm bảng đã chuẩn hóa để LLM không phải đọc bảng bị dính dòng."""
+
+    normalized_tables = format_tables_for_parent(tables)
+    highlight_text = format_highlights_for_parent(highlights or [])
+    return join_non_empty(
+        [
+            build_regulation_chunk_content(section, content),
+            normalized_tables,
+            highlight_text,
+        ]
+    )
+
+
+def format_highlights_for_parent(highlights: list[dict[str, Any]]) -> str:
+    if not highlights:
+        return ""
+    lines = ["THÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:"]
+    for highlight in highlights:
+        lines.append(f"- {highlight['highlight_name']}: {highlight['text']}")
+    return "\n".join(lines).strip()
 
 
 def split_by_clause(content: str) -> list[str]:
@@ -66,6 +105,8 @@ def build_regulation_chunks(
             continue
 
         source_pages = source_page_range(section["page_start"], section["page_end"])
+        extracted_tables = extract_regulation_tables(section)
+        extracted_highlights = extract_regulation_highlights(section)
         base_metadata = {
             "source_type": "structured_section",
             "document_title": section.get("document_title"),
@@ -81,14 +122,70 @@ def build_regulation_chunks(
             "has_thresholds": section.get("has_thresholds"),
         }
 
-        full_content = build_regulation_chunk_content(section, content)
+        full_content = build_parent_doc_content(
+            section,
+            content,
+            extracted_tables,
+            extracted_highlights,
+        )
         docstore_items.append(
             {
                 "_id": section["section_id"],
                 "content": full_content,
+                "normalized_content": full_content,
+                "tables": [table_metadata_payload(table) for table in extracted_tables],
+                "highlights": [
+                    highlight_metadata_payload(highlight)
+                    for highlight in extracted_highlights
+                ],
                 "metadata": base_metadata,
             }
         )
+
+        for table in extracted_tables:
+            table_metadata = dict(base_metadata)
+            table_metadata.update(
+                {
+                    "source_type": "regulation_table",
+                    "parent_section_id": section["section_id"],
+                    "semantic_content_kind": "table",
+                    "table_id": table["table_id"],
+                    "table_name": table["table_name"],
+                    "table_kind": table["table_kind"],
+                    "applicability": table.get("applicability"),
+                }
+            )
+            chunks.append(
+                create_chunk(
+                    chunk_id=f"reg_table_{table['table_id']}",
+                    chunk_type="regulation_table",
+                    index_mode="semantic",
+                    content=build_regulation_table_chunk_content(section, table),
+                    metadata=table_metadata,
+                )
+            )
+
+        for highlight in extracted_highlights:
+            highlight_metadata = dict(base_metadata)
+            highlight_metadata.update(
+                {
+                    "source_type": "regulation_highlight",
+                    "parent_section_id": section["section_id"],
+                    "semantic_content_kind": "highlight",
+                    "highlight_id": highlight["highlight_id"],
+                    "highlight_name": highlight["highlight_name"],
+                    "highlight_kind": highlight["highlight_kind"],
+                }
+            )
+            chunks.append(
+                create_chunk(
+                    chunk_id=f"reg_highlight_{highlight['highlight_id']}",
+                    chunk_type="regulation_highlight",
+                    index_mode="semantic",
+                    content=build_regulation_highlight_chunk_content(section, highlight),
+                    metadata=highlight_metadata,
+                )
+            )
 
         if count_tokens_approx(full_content) <= max_tokens:
             chunks.append(

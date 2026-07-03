@@ -164,6 +164,39 @@ def test_build_context_for_prompt_keeps_query_snippet_near_chunk_end() -> None:
     assert len(context) <= 900
 
 
+def test_snippet_fallback_keeps_precise_match_when_sentence_boundary_drops_it() -> None:
+    long_preceding_sentence = (
+        "Sinh viên hết thời gian học tập theo hình thức chính quy được chuyển sang học tập "
+        "theo hình thức vừa làm vừa học tại Trường nếu còn trong thời gian học tập theo quy "
+        "định đối với hình thức đào tạo chuyển đến. "
+    )
+    content = (
+        "Điều kiện công nhận tốt nghiệp được quy định chung trong điều này. " * 12
+        + long_preceding_sentence
+        + "6. Sinh viên đào tạo theo hình thức chính quy có 03 đợt xét tốt nghiệp "
+        "chính thức, thường được tổ chức vào tháng 5, tháng 8 và tháng 11."
+    )
+    retrieval_result = {
+        "query": "trường có những đợt xét tốt nghiệp nào",
+        "retrieved_items": [_item("graduation", content, 0.9)],
+    }
+
+    context = build_context_for_prompt(
+        retrieval_result,
+        query="trường có những đợt xét tốt nghiệp nào",
+        max_context_chars=900,
+        allocation_config=ContextAllocationConfig(
+            strategy="score_weighted",
+            min_chars_per_doc=400,
+            max_chars_per_doc=700,
+            sentence_boundary=True,
+        ),
+    )
+
+    assert "03 đợt xét tốt nghiệp" in context
+    assert "tháng 5, tháng 8 và tháng 11" in context
+
+
 def test_prepare_content_for_prompt_normalizes_flattened_study_duration_table() -> None:
     content = (
         "6. Thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa của CTĐT "

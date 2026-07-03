@@ -1,0 +1,400 @@
+from __future__ import annotations
+
+import re
+from typing import Any
+
+
+GRADE_RANGES = [
+    ("8,5 - 10", "A"),
+    ("7,8 - 8,4", "B+"),
+    ("7,0 - 7,7", "B"),
+    ("6,3 - 6,9", "C+"),
+    ("5,5 - 6,2", "C"),
+    ("4,8 - 5,4", "D+"),
+    ("4,0 - 4,7", "D"),
+    ("3,0 - 3,9", "F+"),
+    ("0,0 - 2,9", "F"),
+]
+
+GRADE4_ROWS = [
+    ("A", "4,0"),
+    ("B+", "3,5"),
+    ("B", "3,0"),
+    ("C+", "2,5"),
+    ("C", "2,0"),
+    ("D+", "1,5"),
+    ("D", "1,0"),
+    ("F+", "0,5"),
+    ("F", "0,0"),
+]
+
+
+def extract_regulation_tables(section: dict[str, Any]) -> list[dict[str, Any]]:
+    """Trích các bảng quy định bị flatten thành cấu trúc dễ đọc cho RAG."""
+
+    content = str(section.get("content") or "")
+    if not content:
+        return []
+
+    source_pages = list(
+        range(int(section["page_start"]), int(section["page_end"]) + 1)
+    )
+    tables: list[dict[str, Any]] = []
+    tables.extend(_extract_study_duration_tables(section, content, source_pages))
+    tables.extend(_extract_grade_scale_tables(section, content, source_pages))
+    tables.extend(_extract_grade4_tables(section, content, source_pages))
+    tables.extend(_extract_academic_classification_tables(section, content, source_pages))
+    tables.extend(_extract_conduct_tables(section, content, source_pages))
+    return tables
+
+
+def format_tables_for_parent(tables: list[dict[str, Any]]) -> str:
+    if not tables:
+        return ""
+
+    blocks: list[str] = ["BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:"]
+    for table in tables:
+        blocks.append("")
+        blocks.append(f"Bảng: {table['table_name']}")
+        applicability = table.get("applicability")
+        if applicability:
+            blocks.append(f"Phạm vi áp dụng: {applicability}")
+        blocks.append(_rows_to_markdown(table["columns"], table["rows"]))
+    return "\n".join(blocks).strip()
+
+
+def build_regulation_table_chunk_content(
+    section: dict[str, Any],
+    table: dict[str, Any],
+) -> str:
+    parts = [
+        f"Tài liệu: {section.get('document_title') or ''}",
+        f"Điều: {section.get('article') or ''}",
+        f"Tiêu đề: {section.get('title') or ''}",
+        f"Bảng: {table['table_name']}",
+    ]
+    if table.get("applicability"):
+        parts.append(f"Phạm vi áp dụng: {table['applicability']}")
+    parts.extend(
+        [
+            "Nội dung bảng:",
+            _rows_to_markdown(table["columns"], table["rows"]),
+        ]
+    )
+    return "\n".join(part for part in parts if part and part.strip())
+
+
+def table_metadata_payload(table: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "table_id": table["table_id"],
+        "table_name": table["table_name"],
+        "table_kind": table["table_kind"],
+        "applicability": table.get("applicability"),
+        "columns": table["columns"],
+        "rows": table["rows"],
+    }
+
+
+def _extract_study_duration_tables(
+    section: dict[str, Any],
+    content: str,
+    source_pages: list[int],
+) -> list[dict[str, Any]]:
+    lowered = content.lower()
+    if "thời gian học tập chuẩn" not in lowered or "thời gian học tập tối đa" not in lowered:
+        return []
+
+    normalized = _collapse_space(content)
+    row_patterns = [
+        r"(Đào tạo đại học cấp bằng thứ nhất)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
+        r"(Đào tạo cao đẳng chính quy)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
+        r"(Đào tạo cao đẳng vừa làm vừa học)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
+        r"(Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
+        r"(Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
+        r"(Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
+    ]
+    rows = []
+    for pattern in row_patterns:
+        match = re.search(pattern, normalized, flags=re.IGNORECASE)
+        if match:
+            rows.append(
+                {
+                    "Chương trình đào tạo": match.group(1),
+                    "Thời gian học tập chuẩn": match.group(2),
+                    "Thời gian học tập tối đa": match.group(3),
+                }
+            )
+
+    if not rows:
+        return []
+
+    return [
+        _make_table(
+            section,
+            suffix="study_duration",
+            table_name="Thời gian học tập chuẩn và tối đa",
+            table_kind="study_duration",
+            columns=[
+                "Chương trình đào tạo",
+                "Thời gian học tập chuẩn",
+                "Thời gian học tập tối đa",
+            ],
+            rows=rows,
+            source_pages=source_pages,
+            applicability="Theo hình thức đào tạo được nêu trong điều khoản nguồn.",
+        )
+    ]
+
+
+def _extract_grade_scale_tables(
+    section: dict[str, Any],
+    content: str,
+    source_pages: list[int],
+) -> list[dict[str, Any]]:
+    if "Thang điểm 10" not in content or "Thang điểm chữ" not in content:
+        return []
+
+    compact = _collapse_space(content)
+    blocks: list[tuple[str, str, str]] = []
+    if "Đối với các học phần giáo dục đại cương" in content:
+        foundation = _between(
+            compact,
+            "Đối với các học phần giáo dục đại cương",
+            "Đối với các học phần còn lại",
+        )
+        remaining = _between(
+            compact,
+            "Đối với các học phần còn lại",
+            "b) Các học phần thuộc loại đạt không phân mức",
+        )
+        blocks.extend(
+            [
+                (
+                    "grade_scale_foundation",
+                    "Bảng quy đổi điểm học phần nhóm nền tảng",
+                    foundation,
+                ),
+                (
+                    "grade_scale_remaining",
+                    "Bảng quy đổi điểm học phần còn lại",
+                    remaining,
+                ),
+            ]
+        )
+    else:
+        generic = _between(
+            compact,
+            "Loại Thang điểm 10 Thang điểm chữ",
+            "b) Các học phần thuộc loại đạt không phân mức",
+        )
+        if not generic:
+            generic = _between(
+                compact,
+                "Loại Thang điểm 10 Thang điểm chữ",
+                "3. Học lại",
+            )
+        blocks.append(
+            (
+                "grade_scale_general",
+                "Bảng quy đổi thang điểm 10 sang điểm chữ",
+                generic,
+            )
+        )
+
+    tables: list[dict[str, Any]] = []
+    for suffix, table_name, block in blocks:
+        rows = _grade_scale_rows(block, remaining=("remaining" in suffix))
+        if not rows:
+            continue
+        applicability = None
+        if "foundation" in suffix:
+            applicability = "Áp dụng cho học phần giáo dục đại cương/học phần chung thuộc nhóm nền tảng."
+        elif "remaining" in suffix:
+            applicability = "Áp dụng cho các học phần còn lại."
+        tables.append(
+            _make_table(
+                section,
+                suffix=suffix,
+                table_name=table_name,
+                table_kind="grade_scale",
+                columns=["Loại", "Thang điểm 10", "Thang điểm chữ"],
+                rows=rows,
+                source_pages=source_pages,
+                applicability=applicability,
+            )
+        )
+    return tables
+
+
+def _extract_grade4_tables(
+    section: dict[str, Any],
+    content: str,
+    source_pages: list[int],
+) -> list[dict[str, Any]]:
+    if "Thang điểm chữ" not in content or "Thang điểm 4" not in content:
+        return []
+
+    compact = _collapse_space(content)
+    if not all(f"{letter} {point}" in compact for letter, point in [("A", "4,0"), ("F", "0,0")]):
+        return []
+
+    rows = [
+        {"Thang điểm chữ": letter, "Thang điểm 4": point}
+        for letter, point in GRADE4_ROWS
+    ]
+    return [
+        _make_table(
+            section,
+            suffix="letter_to_grade4",
+            table_name="Bảng quy đổi điểm chữ sang thang điểm 4",
+            table_kind="letter_to_grade4",
+            columns=["Thang điểm chữ", "Thang điểm 4"],
+            rows=rows,
+            source_pages=source_pages,
+        )
+    ]
+
+
+def _extract_academic_classification_tables(
+    section: dict[str, Any],
+    content: str,
+    source_pages: list[int],
+) -> list[dict[str, Any]]:
+    if "Xếp loại" not in content or "Thang điểm 4" not in content:
+        return []
+
+    compact = _collapse_space(content)
+    row_patterns = [
+        (r"Xuất sắc\s+Từ 3,6 đến 4,0", "Xuất sắc", "Từ 3,6 đến 4,0"),
+        (r"Giỏi\s+Từ 3,2 đến dưới 3,6", "Giỏi", "Từ 3,2 đến dưới 3,6"),
+        (r"Khá\s+Từ 2,5 đến dưới 3,2", "Khá", "Từ 2,5 đến dưới 3,2"),
+        (r"Trung bình\s+Từ 2,0 đến dưới 2,5", "Trung bình", "Từ 2,0 đến dưới 2,5"),
+        (r"Yếu\s+Từ 1,0 đến dưới 2,0", "Yếu", "Từ 1,0 đến dưới 2,0"),
+        (r"Kém\s+Dưới 1,0", "Kém", "Dưới 1,0"),
+    ]
+    rows = []
+    for pattern, label, score_range in row_patterns:
+        if re.search(pattern, compact, flags=re.IGNORECASE):
+            rows.append({"Xếp loại": label, "Thang điểm 4": score_range})
+
+    if not rows:
+        return []
+
+    return [
+        _make_table(
+            section,
+            suffix="academic_classification",
+            table_name="Bảng xếp loại học lực theo thang điểm 4",
+            table_kind="academic_classification",
+            columns=["Xếp loại", "Thang điểm 4"],
+            rows=rows,
+            source_pages=source_pages,
+        )
+    ]
+
+
+def _extract_conduct_tables(
+    section: dict[str, Any],
+    content: str,
+    source_pages: list[int],
+) -> list[dict[str, Any]]:
+    if "Khung điểm" not in content or "Xếp loại" not in content:
+        return []
+
+    compact = _collapse_space(content)
+    row_patterns = [
+        (r"Từ 90 đến 100 điểm\s+Xuất sắc", "Từ 90 đến 100 điểm", "Xuất sắc"),
+        (r"Từ 80 đến dưới 90 điểm\s+Tốt", "Từ 80 đến dưới 90 điểm", "Tốt"),
+        (r"Từ 65 đến dưới 80 điểm\s+Khá", "Từ 65 đến dưới 80 điểm", "Khá"),
+        (r"Từ 50 đến dưới 65 điểm\s+Trung bình", "Từ 50 đến dưới 65 điểm", "Trung bình"),
+        (r"Từ 35 đến dưới 50 điểm\s+Yếu", "Từ 35 đến dưới 50 điểm", "Yếu"),
+        (r"Dưới 35 điểm\s+Kém", "Dưới 35 điểm", "Kém"),
+    ]
+    rows = []
+    for pattern, score_range, label in row_patterns:
+        if re.search(pattern, compact, flags=re.IGNORECASE):
+            rows.append({"Khung điểm": score_range, "Xếp loại": label})
+
+    if not rows:
+        return []
+
+    return [
+        _make_table(
+            section,
+            suffix="conduct_classification",
+            table_name="Bảng phân loại kết quả rèn luyện",
+            table_kind="conduct_classification",
+            columns=["Khung điểm", "Xếp loại"],
+            rows=rows,
+            source_pages=source_pages,
+        )
+    ]
+
+
+def _grade_scale_rows(block: str, *, remaining: bool) -> list[dict[str, str]]:
+    if not block:
+        return []
+
+    rows: list[dict[str, str]] = []
+    for score_range, letter in GRADE_RANGES:
+        range_pattern = score_range.replace(" - ", r"\s*[–-]\s*")
+        if not re.search(rf"{range_pattern}\s+{re.escape(letter)}(?=\s|$)", block):
+            continue
+        is_fail = letter in {"F+", "F"} or (remaining and letter in {"D+", "D"})
+        rows.append(
+            {
+                "Loại": "Không đạt" if is_fail else "Đạt",
+                "Thang điểm 10": score_range,
+                "Thang điểm chữ": letter,
+            }
+        )
+    return rows
+
+
+def _make_table(
+    section: dict[str, Any],
+    *,
+    suffix: str,
+    table_name: str,
+    table_kind: str,
+    columns: list[str],
+    rows: list[dict[str, str]],
+    source_pages: list[int],
+    applicability: str | None = None,
+) -> dict[str, Any]:
+    table_id = f"{section['section_id']}_{suffix}"
+    return {
+        "table_id": table_id,
+        "table_name": table_name,
+        "table_kind": table_kind,
+        "columns": columns,
+        "rows": rows,
+        "source_pages": source_pages,
+        "source_section": section.get("title") or section.get("article"),
+        "applicability": applicability,
+    }
+
+
+def _rows_to_markdown(columns: list[str], rows: list[dict[str, Any]]) -> str:
+    header = "| " + " | ".join(columns) + " |"
+    divider = "| " + " | ".join("---" for _ in columns) + " |"
+    body = [
+        "| " + " | ".join(str(row.get(column, "")) for column in columns) + " |"
+        for row in rows
+    ]
+    return "\n".join([header, divider, *body])
+
+
+def _between(text: str, start_marker: str, end_marker: str) -> str:
+    start = text.find(start_marker)
+    if start < 0:
+        return ""
+    start += len(start_marker)
+    end = text.find(end_marker, start)
+    if end < 0:
+        return text[start:]
+    return text[start:end]
+
+
+def _collapse_space(text: str) -> str:
+    return re.sub(r"\s+", " ", text or "").strip()

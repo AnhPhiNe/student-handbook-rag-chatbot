@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import contextlib
 import os
+import threading
 import time
 from collections import defaultdict, deque
 from typing import Deque
@@ -10,7 +12,49 @@ from fastapi import HTTPException, Request
 
 DEFAULT_MAX_QUERY_CHARS = 500
 DEFAULT_RATE_LIMIT_PER_MINUTE = 10
+DEFAULT_MAX_CONCURRENT_CHAT = 3
+DEFAULT_MAX_QUEUE_SIZE = 10
+DEFAULT_QUEUE_TIMEOUT_SECONDS = 15.0
 _RATE_LIMIT_BUCKETS: dict[str, Deque[float]] = defaultdict(deque)
+_CAPACITY_LOCK = threading.Lock()
+_CAPACITY_LIMITER = None
+_CAPACITY_SETTINGS: tuple[int, int, float] | None = None
+
+
+class ChatCapacityError(RuntimeError):
+    def __init__(self, reason: str) -> None:
+        self.reason = reason
+        super().__init__(reason)
+
+
+class ChatCapacityLimiter:
+    def __init__(self, *, max_concurrent: int, max_queue_size: int) -> None:
+        self.max_concurrent = max_concurrent
+        self.max_queue_size = max_queue_size
+        self._semaphore = threading.BoundedSemaphore(max_concurrent)
+        self._waiting = 0
+        self._lock = threading.Lock()
+
+    def acquire(self, timeout_seconds: float) -> None:
+        if self._semaphore.acquire(blocking=False):
+            return
+
+        with self._lock:
+            if self._waiting >= self.max_queue_size:
+                raise ChatCapacityError("queue_full")
+            self._waiting += 1
+
+        try:
+            acquired = self._semaphore.acquire(timeout=timeout_seconds)
+        finally:
+            with self._lock:
+                self._waiting = max(0, self._waiting - 1)
+
+        if not acquired:
+            raise ChatCapacityError("queue_timeout")
+
+    def release(self) -> None:
+        self._semaphore.release()
 
 
 def validate_chat_query(raw_query: str) -> str:
@@ -80,6 +124,55 @@ def enforce_chat_rate_limit(request: Request) -> None:
     bucket.append(now)
 
 
+@contextlib.contextmanager
+def chat_capacity_slot():
+    settings = chat_capacity_settings()
+    max_concurrent, _, timeout_seconds = settings
+    if max_concurrent <= 0:
+        yield
+        return
+
+    limiter = _chat_capacity_limiter(settings)
+    limiter.acquire(timeout_seconds)
+    try:
+        yield
+    finally:
+        limiter.release()
+
+
+def _chat_capacity_limiter(settings: tuple[int, int, float]) -> ChatCapacityLimiter:
+    global _CAPACITY_LIMITER, _CAPACITY_SETTINGS
+    max_concurrent, max_queue_size, _ = settings
+    with _CAPACITY_LOCK:
+        if _CAPACITY_LIMITER is None or _CAPACITY_SETTINGS != settings:
+            _CAPACITY_LIMITER = ChatCapacityLimiter(
+                max_concurrent=max_concurrent,
+                max_queue_size=max_queue_size,
+            )
+            _CAPACITY_SETTINGS = settings
+        return _CAPACITY_LIMITER
+
+
+def chat_capacity_settings() -> tuple[int, int, float]:
+    return (
+        _env_int(
+            "STUDENT_RAG_MAX_CONCURRENT_CHAT",
+            DEFAULT_MAX_CONCURRENT_CHAT,
+            minimum=0,
+        ),
+        _env_int(
+            "STUDENT_RAG_MAX_QUEUE_SIZE",
+            DEFAULT_MAX_QUEUE_SIZE,
+            minimum=0,
+        ),
+        _env_float(
+            "STUDENT_RAG_QUEUE_TIMEOUT_SECONDS",
+            DEFAULT_QUEUE_TIMEOUT_SECONDS,
+            minimum=0.0,
+        ),
+    )
+
+
 def max_query_chars() -> int:
     """Lấy giá trị độ dài tối đa cho phép của một chuỗi truy vấn.
 
@@ -121,6 +214,24 @@ def rate_limit_per_minute() -> int:
         # Nếu giá trị trong biến môi trường không phải là số, dùng giá trị mặc định
         return DEFAULT_RATE_LIMIT_PER_MINUTE
     return max(0, value)  # Đảm bảo giá trị trả về ít nhất là 0
+
+
+def _env_int(name: str, default: int, *, minimum: int) -> int:
+    raw_value = os.getenv(name, str(default))
+    try:
+        value = int(raw_value)
+    except ValueError:
+        return default
+    return max(minimum, value)
+
+
+def _env_float(name: str, default: float, *, minimum: float) -> float:
+    raw_value = os.getenv(name, str(default))
+    try:
+        value = float(raw_value)
+    except ValueError:
+        return default
+    return max(minimum, value)
 
 
 def should_include_debug(include_debug: bool) -> bool:

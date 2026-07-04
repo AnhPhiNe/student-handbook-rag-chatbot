@@ -21,7 +21,12 @@ from uuid import uuid4
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
 
-from src.api.chat_controls import enforce_chat_rate_limit, validate_chat_query
+from src.api.chat_controls import (
+    ChatCapacityError,
+    chat_capacity_slot,
+    enforce_chat_rate_limit,
+    validate_chat_query,
+)
 from src.api.deps import get_answer_service
 from src.api.schemas import ChatRequest
 
@@ -97,43 +102,63 @@ def chat_stream(
         final_status = "unknown"
         final_metadata: dict[str, Any] = {}
         try:
-            logger.debug(
-                "chat_stream_history_received",
-                extra={"history_count": len(request.chat_history or [])},
+            with chat_capacity_slot():
+                logger.debug(
+                    "chat_stream_history_received",
+                    extra={"history_count": len(request.chat_history or [])},
+                )
+                stream = answer_service.answer_stream(
+                    query,
+                    chat_history=request.chat_history,
+                    cohort=request.cohort,
+                )
+                for chunk in stream:
+                    chunk_type = chunk.get("type", "")
+                    if chunk_type == "metadata":
+                        chunk["request_id"] = request_id
+                        final_metadata = dict(chunk)
+                        final_status = str(chunk.get("status") or final_status)
+                        yield _sse_event("metadata", chunk)
+                    elif chunk_type == "token":
+                        yield _sse_event("token", {"text": chunk.get("text", "")})
+                    elif chunk_type == "progress":
+                        yield _sse_event(
+                            "progress",
+                            {"message": chunk.get("message", "")},
+                        )
+                    elif chunk_type == "done":
+                        latency_ms = round((time.perf_counter() - started_at) * 1000, 2)
+                        logger.info(
+                            "chat_stream_completed",
+                            extra={
+                                "request_id": request_id,
+                                "latency_ms": latency_ms,
+                                "query_length": len(query),
+                                "status": final_status,
+                                "intent": final_metadata.get("intent"),
+                                "strategy": final_metadata.get("strategy"),
+                            },
+                        )
+                        yield _sse_event(
+                            "done",
+                            {"request_id": request_id, "latency_ms": latency_ms},
+                        )
+        except ChatCapacityError as exc:
+            logger.warning(
+                "chat_stream_overloaded",
+                extra={"request_id": request_id, "reason": exc.reason},
             )
-            stream = answer_service.answer_stream(
-                query,
-                chat_history=request.chat_history,
-                cohort=request.cohort,
+            yield _sse_event(
+                "error",
+                {
+                    "request_id": request_id,
+                    "error_type": "server_busy",
+                    "error_message": (
+                        "Hệ thống đang bận, bạn thử lại sau vài giây nhé."
+                    ),
+                },
             )
-            for chunk in stream:
-                chunk_type = chunk.get("type", "")
-                if chunk_type == "metadata":
-                    chunk["request_id"] = request_id
-                    final_metadata = dict(chunk)
-                    final_status = str(chunk.get("status") or final_status)
-                    yield _sse_event("metadata", chunk)
-                elif chunk_type == "token":
-                    yield _sse_event("token", {"text": chunk.get("text", "")})
-                elif chunk_type == "progress":
-                    yield _sse_event("progress", {"message": chunk.get("message", "")})
-                elif chunk_type == "done":
-                    latency_ms = round((time.perf_counter() - started_at) * 1000, 2)
-                    logger.info(
-                        "chat_stream_completed",
-                        extra={
-                            "request_id": request_id,
-                            "latency_ms": latency_ms,
-                            "query_length": len(query),
-                            "status": final_status,
-                            "intent": final_metadata.get("intent"),
-                            "strategy": final_metadata.get("strategy"),
-                        },
-                    )
-                    yield _sse_event(
-                        "done",
-                        {"request_id": request_id, "latency_ms": latency_ms},
-                    )
+            yield _sse_event("done", {"request_id": request_id})
         except Exception:
             logger.exception(
                 "chat_stream_error",

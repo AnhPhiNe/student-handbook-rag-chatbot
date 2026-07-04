@@ -175,6 +175,30 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertEqual(second.status_code, 429)
         self.assertEqual(second.json()["detail"], "Rate limit exceeded")
 
+    def test_chat_returns_busy_when_capacity_is_full(self) -> None:
+        with patch.dict(
+            "os.environ",
+            {
+                "STUDENT_RAG_MAX_CONCURRENT_CHAT": "1",
+                "STUDENT_RAG_MAX_QUEUE_SIZE": "0",
+            },
+        ):
+            with chat_controls.chat_capacity_slot():
+                response = self.client.post(
+                    "/chat",
+                    json={"query": "Email phong dao tao?"},
+                )
+
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(
+            response.json()["detail"],
+            "Hệ thống đang bận, bạn thử lại sau vài giây nhé.",
+        )
+
+    def test_chat_capacity_settings_defaults_are_beta_safe(self) -> None:
+        with patch.dict("os.environ", {}, clear=True):
+            self.assertEqual(chat_controls.chat_capacity_settings(), (3, 10, 15.0))
+
     def test_chat_rate_limit_defaults_to_10(self) -> None:
         with patch.dict("os.environ", {}, clear=True):
             self.assertEqual(chat_controls.rate_limit_per_minute(), 10)

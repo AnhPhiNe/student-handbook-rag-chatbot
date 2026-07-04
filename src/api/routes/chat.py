@@ -8,6 +8,8 @@ from uuid import uuid4
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from src.api.chat_controls import (
+    ChatCapacityError,
+    chat_capacity_slot,
     enforce_chat_rate_limit,
     should_include_debug,
     validate_chat_query,
@@ -146,9 +148,24 @@ def chat(
     enforce_chat_rate_limit(http_request)
 
     try:
-        result = answer_service.answer(
-            query, chat_history=request.chat_history, cohort=request.cohort
+        with chat_capacity_slot():
+            result = answer_service.answer(
+                query, chat_history=request.chat_history, cohort=request.cohort
+            )
+    except ChatCapacityError as exc:
+        latency_ms = round((time.perf_counter() - started_at) * 1000, 2)
+        logger.warning(
+            "chat_request_overloaded",
+            extra={
+                "request_id": request_id,
+                "latency_ms": latency_ms,
+                "reason": exc.reason,
+            },
         )
+        raise HTTPException(
+            status_code=503,
+            detail="Hệ thống đang bận, bạn thử lại sau vài giây nhé.",
+        ) from exc
     except Exception as exc:
         latency_ms = round((time.perf_counter() - started_at) * 1000, 2)
         logger.exception(

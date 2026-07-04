@@ -1,0 +1,66 @@
+document_id: so_tay_sinh_vien_khoa_50
+file_name: so-tay-sinh-vien-khoa-50.pdf
+language: vi
+document_type: student_handbook
+academic_year: "2024-2025"
+
+sections:
+  - content_type: cover_page
+    page_start: 1
+    page_end: 1
+    description: "Trang bìa"
+
+  - content_type: abbreviation
+    page_start: 2
+    page_end: 2
+    description: "Quy ước viết tắt"
+
+  - content_type: general_info
+    page_start: 3
+    page_end: 6
+    description: "Tổng quan Trường Đại học Sư phạm TP.HCM"
+
+  - content_type: scoring_form_table
+    page_start: 99
+    page_end: 105
+    description: "Phiếu đánh giá kết quả rèn luyện sinh viên"
+
+  - content_type: regulation_text
+    page_start: 7
+    page_end: 170
+    description: "Các quy chế, quy định, chính sách sinh viên"
+
+  - content_type: form_template
+    page_start: 171
+    page_end: 172
+    description: "Biểu mẫu, đơn từ sinh viên"
+
+  - content_type: office_directory
+    page_start: 173
+    page_end: 184
+    description: "Danh sách phòng ban, trung tâm phục vụ công tác đào tạo"
+
+  - content_type: faculty_program_directory
+    page_start: 185
+    page_end: 205
+    description: "Các khoa, tổ trực thuộc và ngành đào tạo"
+
+  - content_type: office_directory
+    page_start: 206
+    page_end: 207
+    description: "Một số công việc của các phòng và trung tâm liên quan đến sinh viên"
+
+  - content_type: faculty_student_services
+    page_start: 208
+    page_end: 208
+    description: "Một số công việc của các khoa và phân hiệu liên quan đến sinh viên"
+
+  - content_type: reference_directory
+    page_start: 209
+    page_end: 211
+    description: "Danh sách bảo tàng và di tích lịch sử"
+
+  - content_type: toc_or_index
+    page_start: 212
+    page_end: 220
+    description: "Mục lục hoặc thông tin xuất bản cuối tài liệu"

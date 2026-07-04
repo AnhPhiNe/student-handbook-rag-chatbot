@@ -23,13 +23,16 @@ import { ScrollCue } from './components/ScrollCue';
 import { useMediaQuery } from './hooks/useMediaQuery';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { BugReportModal } from './components/BugReportModal';
+import { normalizeFrontendCohort, type Cohort } from './utils/gradeScale';
 
 const COHORT_AWARE_TABS = new Set(['home', 'chat', 'faq', 'gpa', 'course-target']);
 
 function App() {
   const defaultTheme = (new Date().getHours() >= 18 || new Date().getHours() < 6) ? 'dark' : 'light';
   const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('hcmue-theme', defaultTheme);
-  const [cohort, setCohort] = useLocalStorage<'K48-K49' | 'K50-K51'>('hcmue-cohort', 'K48-K49');
+  const [storedCohort, setStoredCohort] = useLocalStorage<Cohort | 'K50-K51'>('hcmue-cohort', 'K48-K49');
+  const cohort = normalizeFrontendCohort(storedCohort);
+  const setCohort = (nextCohort: Cohort) => setStoredCohort(nextCohort);
   
   const { messages, isTyping, progressMessage, sendMessage, sendHardcodedMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat(cohort);
 
@@ -100,11 +103,12 @@ function App() {
                 <select 
                   className="theme-toggle cohort-selector" 
                   value={cohort} 
-                  onChange={(e) => setCohort(e.target.value as 'K48-K49' | 'K50-K51')}
+                  onChange={(e) => setCohort(e.target.value as Cohort)}
                   style={{ cursor: 'pointer', outline: 'none' }}
                 >
                   <option value="K48-K49">Khóa 48 - 49</option>
-                  <option value="K50-K51">Khóa 50 - 51</option>
+                  <option value="K50">Khóa 50</option>
+                  <option value="K51">Khóa 51</option>
                 </select>
                 )}
                 <button className="theme-toggle" onClick={toggleTheme}>

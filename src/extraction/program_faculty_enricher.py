@@ -22,6 +22,17 @@ def load_program_faculty_overrides(path: Path = PROGRAM_OVERRIDES_PATH) -> dict[
     return {fold_text(key): str(value) for key, value in overrides.items()}
 
 
+def load_program_name_overrides(path: Path = PROGRAM_OVERRIDES_PATH) -> dict[str, str]:
+    if not path.exists():
+        return {}
+    with path.open("r", encoding="utf-8") as f:
+        config = yaml.safe_load(f) or {}
+    overrides = config.get("program_name_overrides") or {}
+    if not isinstance(overrides, dict):
+        return {}
+    return {fold_text(key): str(value) for key, value in overrides.items()}
+
+
 MANUAL_PROGRAM_FACULTY = {
     "cong nghe giao duc": "Khoa Công nghệ Thông tin",
     "cong nghe thong tin": "Khoa Công nghệ Thông tin",
@@ -64,8 +75,15 @@ def fold_text(text: str | None) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+FACULTY_NAME_ALIASES = {
+    "khoa tam li hoc": "Khoa Tâm lý học",
+    "khoa tam ly hoc": "Khoa Tâm lý học",
+}
+
+
 def clean_faculty_name(name: str | None) -> str:
-    return re.sub(r"^\d+\.\s*", "", str(name or "")).strip()
+    cleaned = re.sub(r"^\d+\.\s*", "", str(name or "")).strip()
+    return FACULTY_NAME_ALIASES.get(fold_text(cleaned), cleaned)
 
 
 def resolve_faculty_name(
@@ -85,6 +103,17 @@ def enrich_program_faculty_names(
     faculty_records: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     """Bổ sung khoa phụ trách cho ngành khi sổ tay không ghi trực tiếp cạnh ngành."""
+    program_name_overrides = load_program_name_overrides()
+    for program in program_records:
+        program_key = fold_text(program.get("program_name"))
+        canonical_name = program_name_overrides.get(program_key)
+        if canonical_name and canonical_name != program.get("program_name"):
+            program["raw_program_name"] = program.get("program_name")
+            program["program_name"] = canonical_name
+            program["program_name_source"] = "canonical_program_name_rule"
+        if program.get("faculty_name"):
+            program["faculty_name"] = clean_faculty_name(program.get("faculty_name"))
+
     program_faculty_overrides = load_program_faculty_overrides()
     known_by_program: dict[str, str] = {}
     for program in program_records:

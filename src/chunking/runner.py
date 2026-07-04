@@ -15,7 +15,9 @@ from .validator import validate_chunks, validate_parent_links
 
 CONFIG_PATH = Path("configs/chunking.yaml")
 DOCUMENT_ID_BY_COHORT = {
-    "K48-K49": "so_tay_sinh_vien_khoa_48",
+    "K48-K49": "so_tay_sinh_vien_khoa_48_49",
+    "K50": "so_tay_sinh_vien_khoa_50",
+    "K51": "so_tay_sinh_vien_khoa_51",
     "K50-K51": "so_tay_sinh_vien_khoa_51",
 }
 
@@ -32,6 +34,12 @@ def attach_cohort_metadata(
 
     for chunk in chunks:
         metadata = chunk.setdefault("metadata", {})
+        if not metadata.get("content_type"):
+            metadata["content_type"] = (
+                metadata.get("source_type")
+                or chunk.get("chunk_type")
+                or chunk.get("index_mode")
+            )
         if cohort:
             metadata["cohort"] = cohort
         if document_id:

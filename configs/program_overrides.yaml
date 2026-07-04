@@ -1,17 +1,108 @@
 program_policy:
   K48-K49:
-    source_cohort: K50-K51
-    document_id: so_tay_sinh_vien_khoa_48
+    source_cohort: K51
+    document_id: so_tay_sinh_vien_khoa_48_49
     exclusions:
       - toan ung dung
       - cong nghe giao duc
-    review_status: derived_from_k50_minus_exclusions
-    derived_rule: K48-K49 dùng danh sách ngành K50-K51, trừ Toán ứng dụng và Công nghệ Giáo dục.
+    review_status: derived_from_k51_minus_exclusions
+    derived_rule: K48-K49 dùng danh sách ngành K51, trừ Toán ứng dụng và Công nghệ Giáo dục.
 
 expected_counts:
   program_directory:
     K48-K49: 42
-    K50-K51: 44
+    K50: 42
+    K51: 44
+
+implicit_programs_by_cohort:
+  K48-K49:
+    Khoa Toán - Tin học:
+      - Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)
+    Khoa Sinh học:
+      - Sư phạm Sinh học
+    Khoa Tiếng Hàn Quốc:
+      - Ngôn ngữ Hàn Quốc
+    Khoa Tiếng Nhật:
+      - Ngôn ngữ Nhật
+    Khoa Giáo dục Chính trị:
+      - Giáo dục Chính trị
+      - Giáo dục Công dân
+    Khoa Giáo dục Đặc biệt:
+      - Giáo dục Đặc biệt
+    Khoa Giáo dục Tiểu học:
+      - Giáo dục Tiểu học
+    Khoa Giáo dục Mầm non:
+      - Giáo dục Mầm non (trình độ cao đẳng và đại học)
+    Khoa Giáo dục Quốc phòng:
+      - Giáo dục Quốc phòng – An ninh
+    Khoa Giáo dục Thể chất:
+      - Giáo dục Thể chất
+  K50:
+    Khoa Toán - Tin học:
+      - Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)
+    Khoa Tiếng Hàn Quốc:
+      - Ngôn ngữ Hàn Quốc
+    Khoa Tiếng Nhật:
+      - Ngôn ngữ Nhật
+    Khoa Giáo dục Chính trị:
+      - Giáo dục Chính trị
+      - Giáo dục Công dân
+    Khoa Giáo dục Đặc biệt:
+      - Giáo dục Đặc biệt
+    Khoa Giáo dục Tiểu học:
+      - Giáo dục Tiểu học
+    Khoa Giáo dục Mầm non:
+      - Giáo dục Mầm non (trình độ cao đẳng và đại học)
+    Khoa Giáo dục Quốc phòng:
+      - Giáo dục Quốc phòng – An ninh
+    Khoa Giáo dục Thể chất:
+      - Giáo dục Thể chất
+
+program_name_overrides:
+  cong nghe thong tin: Công nghệ Thông tin
+  cong tac xa hoi: Công tác xã hội
+  cu nhan hoa hoc: Hoá học
+  dia ly hoc: Địa lý học
+  du lich: Du lịch
+  giao duc chinh tri: Giáo dục Chính trị
+  giao duc cong dan: Giáo dục Công dân
+  giao duc dac biet: Giáo dục Đặc biệt
+  giao duc hoc: Giáo dục học
+  giao duc mam non trinh do cao dang va dai hoc: Giáo dục Mầm non (trình độ cao đẳng và đại học)
+  giao duc quoc phong an ninh: Giáo dục Quốc phòng – An ninh
+  giao duc the chat: Giáo dục Thể chất
+  giao duc tieu hoc: Giáo dục Tiểu học
+  ngon ngu anh: Ngôn ngữ Anh
+  ngon ngu han quoc: Ngôn ngữ Hàn Quốc
+  ngon ngu nga: Ngôn ngữ Nga
+  ngon ngu nhat: Ngôn ngữ Nhật
+  ngon ngu phap: Ngôn ngữ Pháp
+  ngon ngu trung quoc: Ngôn ngữ Trung Quốc
+  quan ly giao duc: Quản lý giáo dục
+  quoc te hoc: Quốc tế học
+  sinh hoc ung dung: Sinh học ứng dụng
+  su pham cong nghe: Sư phạm Công nghệ
+  su pham dia ly: Sư phạm Địa lý
+  su pham hoa hoc: Sư phạm Hoá học
+  su pham khoa hoc tu nhien: Sư phạm Khoa học tự nhiên
+  su pham lich su: Sư phạm Lịch sử
+  su pham lich su va dia ly: Sư phạm Lịch sử – Địa lý
+  su pham ngu van: Sư phạm Ngữ văn
+  su pham sinh hoc: Sư phạm Sinh học
+  su pham tieng anh: Sư phạm tiếng Anh
+  su pham tieng nga: Sư phạm tiếng Nga
+  su pham tieng phap: Sư phạm tiếng Pháp
+  su pham tieng trung quoc: Sư phạm tiếng Trung Quốc
+  su pham tin hoc: Sư phạm Tin học
+  su pham toan hoc: Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)
+  su pham toan hoc tieng viet va song ngu viet anh: Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)
+  su pham vat ly: Sư phạm Vật lý
+  tam ly hoc: Tâm lý học
+  tam ly hoc giao duc: Tâm lý học giáo dục
+  toan ung dung: Toán ứng dụng
+  van hoc: Văn học
+  vat ly hoc: Vật lý học
+  viet nam hoc: Việt Nam học
 
 program_faculty_overrides:
   cong nghe giao duc: Khoa Công nghệ Thông tin

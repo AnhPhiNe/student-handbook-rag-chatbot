@@ -9,11 +9,21 @@ import unicodedata
 import yaml
 
 
-VALID_COHORTS = {"K48-K49", "K50-K51"}
+VALID_COHORTS = {"K48-K49", "K50", "K51"}
 PROGRAM_OVERRIDES_PATH = Path("configs/program_overrides.yaml")
+LEGACY_COHORT_PREFIXES = ("K50-K51_",)
+GENERATED_OUTPUT_DIRS = (
+    Path("data/processed/chunks"),
+    Path("data/processed/directories"),
+    Path("data/processed/forms"),
+    Path("data/processed/procedures"),
+    Path("data/processed/tables"),
+    Path("data/processed/metadata"),
+)
 DOCUMENT_ID_BY_COHORT = {
-    "K48-K49": "so_tay_sinh_vien_khoa_48",
-    "K50-K51": "so_tay_sinh_vien_khoa_51",
+    "K48-K49": "so_tay_sinh_vien_khoa_48_49",
+    "K50": "so_tay_sinh_vien_khoa_50",
+    "K51": "so_tay_sinh_vien_khoa_51",
 }
 
 
@@ -29,8 +39,7 @@ def get_cohort_from_filename(filename: str) -> str:
         k = int(match.group(1))
         if k <= 49:
             return "K48-K49"
-        else:
-            return "K50-K51"
+        return f"K{k}"
     return "UNKNOWN"
 
 
@@ -47,10 +56,12 @@ def run_pipeline_for_pdf(pdf_path: Path, cohort: str):
     env = os.environ.copy()
     env["PDF_PATH"] = str(pdf_path)
     env["COHORT"] = cohort
-    if cohort == "K50-K51":
-        env["CONFIG_PATH"] = "configs/document_sections_k50_k51.yaml"
-    else:
-        env["CONFIG_PATH"] = "configs/document_sections.yaml"
+    config_by_cohort = {
+        "K48-K49": "configs/document_sections.yaml",
+        "K50": "configs/document_sections_k50.yaml",
+        "K51": "configs/document_sections_k51.yaml",
+    }
+    env["CONFIG_PATH"] = config_by_cohort.get(cohort, "configs/document_sections.yaml")
     
     for label, command in STEPS:
         print(f"\n==> {label} ({cohort})")
@@ -137,20 +148,20 @@ def fold_text(value: str | None) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
-def derive_k48_programs_from_k50(
+def derive_k48_programs_from_source(
     merged_program_path: Path,
     k48_program_path: Path | None = None,
     overrides: dict | None = None,
 ) -> None:
-    """Dùng danh sách ngành K50-K51 cho K48-K49, trừ các ngành không áp dụng."""
+    """Dùng danh sách ngành mới nhất cho K48-K49, trừ các ngành không áp dụng."""
     if not merged_program_path.exists():
         return
 
     overrides = overrides or load_program_overrides()
     policy = (overrides.get("program_policy") or {}).get("K48-K49") or {}
-    source_cohort = str(policy.get("source_cohort") or "K50-K51")
+    source_cohort = str(policy.get("source_cohort") or "K51")
     exclusions = {fold_text(item) for item in policy.get("exclusions") or []}
-    document_id = str(policy.get("document_id") or "so_tay_sinh_vien_khoa_48")
+    document_id = str(policy.get("document_id") or "so_tay_sinh_vien_khoa_48_49")
     derived_rule = str(policy.get("derived_rule") or "")
     review_status = str(policy.get("review_status") or "derived_from_source_policy")
 
@@ -174,7 +185,7 @@ def derive_k48_programs_from_k50(
         derived["document_id"] = document_id
         derived["derived_from_cohort"] = source_cohort
         derived["derived_rule"] = (
-            "K48-K49 dùng danh sách ngành K50-K51, trừ Toán ứng dụng và Công nghệ Giáo dục"
+            "K48-K49 dùng danh sách ngành mới nhất, trừ Toán ứng dụng và Công nghệ Giáo dục"
         )
         derived["review_status"] = review_status
         derived["derived_rule"] = derived_rule
@@ -262,7 +273,7 @@ def validate_cohort_tags(paths: list[Path]) -> None:
         preview = json.dumps(issues[:20], ensure_ascii=False, indent=2)
         raise RuntimeError(
             "Cohort validation failed. "
-            "Mọi record từ sổ tay phải có cohort K48-K49 hoặc K50-K51.\n"
+            "Mọi record từ sổ tay phải có cohort K48-K49, K50 hoặc K51.\n"
             f"{preview}"
         )
 
@@ -383,7 +394,7 @@ def validate_program_directory(program_path: Path, overrides: dict) -> None:
     }
     k50_program_names = {
         fold_text(program.get("program_name"))
-        for program in by_cohort.get("K50-K51", [])
+        for program in by_cohort.get("K51", [])
     }
     for program_name in k48_exclusions:
         if program_name in k48_program_names:
@@ -542,8 +553,15 @@ def fold_text(text):
     return re.sub(r"\s+", " ", text).strip()
 
 
+FACULTY_NAME_ALIASES = {
+    "khoa tam li hoc": "Khoa Tâm lý học",
+    "khoa tam ly hoc": "Khoa Tâm lý học",
+}
+
+
 def clean_faculty_name(name):
-    return re.sub(r"^\d+\.\s*", "", str(name or "")).strip()
+    cleaned = re.sub(r"^\d+\.\s*", "", str(name or "")).strip()
+    return FACULTY_NAME_ALIASES.get(fold_text(cleaned), cleaned)
 
 
 def resolve_faculty_name(candidate, faculty_records):
@@ -599,8 +617,27 @@ def should_skip(name: str) -> bool:
     return os.environ.get(name, "").strip().lower() in {"1", "true", "yes", "on"}
 
 
+def cleanup_legacy_cohort_artifacts() -> None:
+    """Loại bỏ artifact sinh tự động của cohort cũ trước khi build lại."""
+    removed = []
+    for directory in GENERATED_OUTPUT_DIRS:
+        if not directory.exists():
+            continue
+        for prefix in LEGACY_COHORT_PREFIXES:
+            for path in directory.glob(f"{prefix}*.json"):
+                path.unlink()
+                removed.append(path)
+
+    if removed:
+        print("\nRemoved legacy cohort artifacts:")
+        for path in removed:
+            print(f"  - {path}")
+
+
 def main():
     overrides = load_program_overrides()
+    cleanup_legacy_cohort_artifacts()
+
     raw_dir = Path("data/raw")
     pdfs = list(raw_dir.glob("*.pdf"))
 
@@ -739,7 +776,7 @@ def main():
         directory_dir / "faculty_directory.json",
         overrides,
     )
-    derive_k48_programs_from_k50(
+    derive_k48_programs_from_source(
         directory_dir / "program_directory.json",
         program_outputs.get("K48-K49"),
         overrides,

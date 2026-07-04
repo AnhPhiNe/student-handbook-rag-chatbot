@@ -4,6 +4,7 @@ import {
   getCourseGroupOptions,
   getDefaultCourseGroup,
   getGradeScale,
+  isSplitGradeCohort,
   type Cohort,
   type CourseGroup,
   type LetterGrade,
@@ -41,7 +42,7 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
     { id: 'comp-2', name: 'Giữa kỳ', weight: '20', score: '' },
   ]);
 
-  const activeGroup = cohort === 'K50-K51' ? courseGroup : getDefaultCourseGroup(cohort);
+  const activeGroup = isSplitGradeCohort(cohort) ? courseGroup : getDefaultCourseGroup(cohort);
   const scale = getGradeScale(cohort, activeGroup);
 
   const addComponent = () => {
@@ -146,7 +147,7 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
               </div>
             </div>
 
-            {cohort === 'K50-K51' && (
+            {isSplitGradeCohort(cohort) && (
               <div className="tool-field-block">
                 <label>Nhóm học phần</label>
                 <select

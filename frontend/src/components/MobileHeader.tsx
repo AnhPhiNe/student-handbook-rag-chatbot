@@ -1,12 +1,13 @@
 import { Menu, Moon, Sun, Bug } from 'lucide-react';
+import type { Cohort } from '../utils/gradeScale';
 
 interface MobileHeaderProps {
   onMenuToggle: () => void;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
   onOpenBugReport: () => void;
-  cohort: string;
-  onCohortChange: (cohort: 'K48-K49' | 'K50-K51') => void;
+  cohort: Cohort;
+  onCohortChange: (cohort: Cohort) => void;
   showCohortSelector: boolean;
 }
 
@@ -27,11 +28,12 @@ export function MobileHeader({ onMenuToggle, theme, onToggleTheme, onOpenBugRepo
           <select 
             className="mobile-cohort-selector"
             value={cohort} 
-            onChange={(e) => onCohortChange(e.target.value as 'K48-K49' | 'K50-K51')}
+            onChange={(e) => onCohortChange(e.target.value as Cohort)}
             aria-label="Chọn khóa áp dụng"
           >
             <option value="K48-K49">K48-49</option>
-            <option value="K50-K51">K50-51</option>
+            <option value="K50">K50</option>
+            <option value="K51">K51</option>
           </select>
         )}
         <button 

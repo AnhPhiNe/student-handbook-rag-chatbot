@@ -56,7 +56,7 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
     suggestions: [
       'Mấy điểm thì qua môn?',
       'Điểm B+ quy đổi sang hệ 4 là bao nhiêu?',
-      'K50-K51 điểm D+ có qua môn không?',
+      'K51 điểm D+ có qua môn không?',
       'Bị điểm F thì học lại như thế nào?',
       'Khi nào sinh viên bị cảnh báo học vụ?',
       'Xin bảo lưu kết quả cần điều kiện gì?'

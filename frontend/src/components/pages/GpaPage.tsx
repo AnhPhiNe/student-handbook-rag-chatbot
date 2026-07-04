@@ -7,6 +7,7 @@ import {
   getDefaultCourseGroup,
   getGradeScale,
   getGradeScales,
+  isSplitGradeCohort,
   type Cohort,
   type CourseInput,
   type LetterGrade,
@@ -35,7 +36,7 @@ function createDefaultCourses(cohort: Cohort): CourseInput[] {
 export function GpaPage({ cohort }: GpaPageProps) {
   const [courses, setCourses] = useState<CourseInput[]>(() => createDefaultCourses(cohort));
   const result = useMemo(() => calculateGpa(courses, cohort), [courses, cohort]);
-  const showCourseGroup = cohort === 'K50-K51';
+  const showCourseGroup = isSplitGradeCohort(cohort);
   const groupOptions = getCourseGroupOptions(cohort);
 
   const updateCourse = (id: string, patch: Partial<CourseInput>) => {

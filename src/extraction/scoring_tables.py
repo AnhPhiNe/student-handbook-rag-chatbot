@@ -5,8 +5,8 @@ from typing import Any
 def build_scoring_tables() -> list[dict[str, Any]]:
     cohort = os.environ.get("COHORT", "").upper()
     grade_tables = (
-        _k50_k51_grade_10_tables()
-        if cohort == "K50-K51"
+        _new_cohort_grade_10_tables(cohort)
+        if cohort in {"K51", "K50-K51"}
         else [_legacy_grade_10_table()]
     )
     return grade_tables + _shared_scoring_tables()
@@ -35,7 +35,8 @@ def _legacy_grade_10_table() -> dict[str, Any]:
     }
 
 
-def _k50_k51_grade_10_tables() -> list[dict[str, Any]]:
+def _new_cohort_grade_10_tables(cohort: str) -> list[dict[str, Any]]:
+    cohort_label = "K51" if cohort == "K50-K51" else cohort
     base = {
         "lookup_group": "grade_10_to_letter",
         "source_pages": [20],
@@ -50,7 +51,7 @@ def _k50_k51_grade_10_tables() -> list[dict[str, Any]]:
         {
             **base,
             "table_id": "grade_10_to_letter_foundation",
-            "table_name": "K50-K51: quy đổi điểm cho học phần giáo dục đại cương/học phần chung",
+            "table_name": f"{cohort_label}: quy đổi điểm cho học phần giáo dục đại cương/học phần chung",
             "applicability": "Học phần giáo dục đại cương hoặc học phần chung thuộc nhóm học phần nền tảng",
             "pass_threshold": "Từ 4.0 trở lên",
             "rows": _grade_rows_with_d_as_pass(),
@@ -58,7 +59,7 @@ def _k50_k51_grade_10_tables() -> list[dict[str, Any]]:
         {
             **base,
             "table_id": "grade_10_to_letter_remaining",
-            "table_name": "K50-K51: quy đổi điểm cho các học phần còn lại",
+            "table_name": f"{cohort_label}: quy đổi điểm cho các học phần còn lại",
             "applicability": "Các học phần còn lại",
             "pass_threshold": "Từ 5.5 trở lên",
             "rows": _grade_rows_with_d_as_fail(),
@@ -66,7 +67,7 @@ def _k50_k51_grade_10_tables() -> list[dict[str, Any]]:
         {
             **base,
             "table_id": "grade_10_to_letter_pass_fail_ungraded",
-            "table_name": "K50-K51: học phần đạt/không đạt không phân mức",
+            "table_name": f"{cohort_label}: học phần đạt/không đạt không phân mức",
             "applicability": "Học phần chỉ yêu cầu đạt, không tính vào điểm trung bình học tập",
             "pass_threshold": "Từ 5.0 trở lên",
             "rows": [

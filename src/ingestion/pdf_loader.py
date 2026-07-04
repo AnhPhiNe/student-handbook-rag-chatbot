@@ -293,10 +293,14 @@ def main() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     cohort = os.environ.get("COHORT", "UNKNOWN")
-    if cohort == "K50-K51":
-        config = load_yaml_config(Path("configs/document_sections_k50_k51.yaml"))
-    else:
-        config = load_yaml_config(CONFIG_PATH)
+    config_by_cohort = {
+        "K48-K49": CONFIG_PATH,
+        "K50": Path("configs/document_sections_k50.yaml"),
+        "K51": Path("configs/document_sections_k51.yaml"),
+        # Legacy alias: old K50-K51 builds were actually based on the K51 file.
+        "K50-K51": Path("configs/document_sections_k51.yaml"),
+    }
+    config = load_yaml_config(config_by_cohort.get(cohort, CONFIG_PATH))
 
     pages = extract_pdf_pages(PDF_PATH, config)
     document_profile = build_document_profile(pages, config)

@@ -1,4 +1,4 @@
-export type Cohort = 'K48-K49' | 'K50-K51';
+export type Cohort = 'K48-K49' | 'K50' | 'K51';
 export type CourseGroup = 'foundation' | 'remaining';
 export type LetterGrade = 'A' | 'B+' | 'B' | 'C+' | 'C' | 'D+' | 'D' | 'F+' | 'F';
 export type GradeStatus = 'Đạt' | 'Không đạt';
@@ -62,18 +62,29 @@ function makeRows(passThreshold: number): GradeScaleRow[] {
   }));
 }
 
+const COMMON_SCALE: GradeScaleDefinition = {
+  id: 'foundation',
+  label: 'Bảng quy đổi chung',
+  shortLabel: 'Bảng chung',
+  applicability: 'Áp dụng chung cho các học phần có đánh giá theo thang điểm 10.',
+  passThreshold: 4.0,
+  rows: makeRows(4.0),
+};
+
 export const GRADE_SCALE_BY_COHORT: Record<Cohort, GradeScaleDefinition[]> = {
   'K48-K49': [
     {
-      id: 'foundation',
+      ...COMMON_SCALE,
       label: 'Bảng quy đổi chung K48-K49',
-      shortLabel: 'Bảng chung',
-      applicability: 'Áp dụng chung cho các học phần có đánh giá theo thang điểm 10.',
-      passThreshold: 4.0,
-      rows: makeRows(4.0),
     },
   ],
-  'K50-K51': [
+  K50: [
+    {
+      ...COMMON_SCALE,
+      label: 'Bảng quy đổi chung K50',
+    },
+  ],
+  K51: [
     {
       id: 'foundation',
       label: 'Môn chung / nhóm học phần nền tảng',
@@ -95,8 +106,22 @@ export const GRADE_SCALE_BY_COHORT: Record<Cohort, GradeScaleDefinition[]> = {
 
 export const GRADE_SCALE = GRADE_SCALE_BY_COHORT['K48-K49'][0].rows;
 
+export function normalizeFrontendCohort(cohort: string | null | undefined): Cohort {
+  if (cohort === 'K50-K51') return 'K51';
+  if (cohort === 'K50' || cohort === 'K51' || cohort === 'K48-K49') return cohort;
+  return 'K48-K49';
+}
+
+export function isNewCohort(cohort: Cohort): boolean {
+  return cohort === 'K50' || cohort === 'K51';
+}
+
+export function isSplitGradeCohort(cohort: Cohort): boolean {
+  return cohort === 'K51';
+}
+
 export function getDefaultCourseGroup(cohort: Cohort): CourseGroup {
-  return cohort === 'K50-K51' ? 'remaining' : 'foundation';
+  return isSplitGradeCohort(cohort) ? 'remaining' : 'foundation';
 }
 
 export function getCourseGroupOptions(cohort: Cohort): GradeScaleDefinition[] {

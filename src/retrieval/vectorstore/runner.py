@@ -36,7 +36,7 @@ def validate_semantic_chunks(chunks: list[dict]) -> None:
         cohort = metadata.get("cohort")
         document_id = metadata.get("document_id")
         content_type = metadata.get("content_type") or chunk.get("chunk_type")
-        if cohort not in {"K48-K49", "K50-K51"}:
+        if cohort not in {"K48-K49", "K50", "K51"}:
             metadata_issues.append(
                 {"issue": "invalid_cohort", "chunk_id": chunk_id, "cohort": cohort}
             )

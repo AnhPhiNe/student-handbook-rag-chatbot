@@ -28,9 +28,11 @@ export function FaqPage({ cohort, onAskQuestion }: FaqPageProps) {
   }, [activeCategory, allItems, searchTerm]);
 
   const featuredIds =
-    cohort === 'K50-K51'
-      ? ['pass-score-k50', 'd-plus-k50', 'retake-final-grade-k50']
-      : ['pass-score-k48', 'grade-4-conversion', 'retake-final-grade'];
+    cohort === 'K51'
+      ? ['pass-score-k51', 'd-plus-k51', 'retake-final-grade-k51']
+      : cohort === 'K50'
+        ? ['pass-score-k50', 'd-plus-k50', 'grade-4-conversion']
+        : ['pass-score-k48', 'grade-4-conversion', 'retake-final-grade'];
   const featuredItems = featuredIds
     .map((id) => allItems.find((item) => item.id === id))
     .filter((item): item is NonNullable<typeof item> => Boolean(item));

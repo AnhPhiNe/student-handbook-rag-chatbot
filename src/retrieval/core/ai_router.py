@@ -120,7 +120,7 @@ Câu hỏi của sinh viên: "{query}"
         model_used: str | None = None
         for provider in providers:
             try:
-                client = Groq(api_key=provider["api_key"], timeout=5.0, max_retries=0)
+                client = Groq(api_key=provider["api_key"], timeout=3.0, max_retries=0)
                 response = client.chat.completions.create(
                     model=provider["model"],
                     messages=[{"role": "user", "content": prompt}],

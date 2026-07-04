@@ -121,6 +121,10 @@ def prepare_content_for_prompt(
         return ""
 
     metadata = (item or {}).get("metadata", {}) or {}
+    
+    if metadata.get("chunk_type") == "regulation" and len(content) <= budget:
+        return content
+
     query_terms = _query_terms(query or "")
     table_context = _normalized_table_context(content, metadata)
     section_context = _section_aware_context(content, query_terms)

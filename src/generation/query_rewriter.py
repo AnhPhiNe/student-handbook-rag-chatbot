@@ -290,7 +290,7 @@ class QueryRewriter:
 
         for provider in providers:
             try:
-                client = self._client or Groq(api_key=provider["api_key"], timeout=5.0, max_retries=0)
+                client = self._client or Groq(api_key=provider["api_key"], timeout=2.0, max_retries=0)
                 kwargs: dict[str, Any] = {
                     "model": provider["model"],
                     "messages": [
@@ -351,7 +351,7 @@ class QueryRewriter:
 
         for provider in providers:
             try:
-                client = self._client or Groq(api_key=provider["api_key"], timeout=5.0, max_retries=0)
+                client = self._client or Groq(api_key=provider["api_key"], timeout=2.0, max_retries=0)
                 kwargs: dict[str, Any] = {
                     "model": provider["model"],
                     "messages": [

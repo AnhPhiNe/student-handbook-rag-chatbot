@@ -3,7 +3,7 @@ import os
 import re
 import unicodedata
 from typing import Any
-from langsmith import traceable
+from langfuse import observe
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
 
 logger = logging.getLogger(__name__)
@@ -424,9 +424,6 @@ def retrieve_with_plan(
         final_docs.append(doc)
 
     return final_docs[: plan["top_k"]]
-
-
-@traceable(name="Retrieval Pipeline", run_type="retriever")
 def run_retrieval_pipeline(
     query: str,
     model: SentenceTransformer,
@@ -574,6 +571,8 @@ def run_retrieval_pipeline(
             "citations": build_citation_from_lookup(program_lookup_result),
             "context_for_llm": build_context_from_lookup(program_lookup_result),
             "needs_llm_answer": False,
+            "router_usage": routing.get("usage"),
+            "router_model": routing.get("model_used"),
         }
 
     form_lookup_result = None
@@ -598,6 +597,8 @@ def run_retrieval_pipeline(
                 "citations": build_citation_from_lookup(form_lookup_result),
                 "context_for_llm": build_context_from_lookup(form_lookup_result),
                 "needs_llm_answer": True,
+                "router_usage": routing.get("usage"),
+                "router_model": routing.get("model_used"),
             }
 
         fallback_plan = {
@@ -851,4 +852,6 @@ def run_retrieval_pipeline(
         "citations": citations,
         "context_for_llm": "\n\n---\n\n".join(context_blocks),
         "needs_llm_answer": True,
+        "router_usage": routing.get("usage"),
+        "router_model": routing.get("model_used"),
     }

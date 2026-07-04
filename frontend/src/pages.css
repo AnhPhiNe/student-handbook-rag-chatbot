@@ -1568,7 +1568,12 @@ input:checked + .slider:before { transform: translateX(20px); }
   border: none;
   transition: all var(--transition-fast);
 }
-.btn-primary:hover { background-color: var(--primary-light); }
+.btn-primary:hover:not(:disabled) { background-color: var(--primary-light); }
+.btn-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  pointer-events: auto;
+}
 
 /* Confirm Dialog */
 .confirm-dialog {

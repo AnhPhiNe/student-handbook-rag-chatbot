@@ -2,7 +2,7 @@ import os
 from collections.abc import Iterator
 from typing import Any
 
-from langsmith import traceable
+from langfuse import observe
 from src.common.env_loader import load_project_env
 
 
@@ -61,8 +61,6 @@ class GroqClient:
             "temperature": temperature,
             "max_tokens": max_output_tokens,
         }
-
-    @traceable(name="Groq Generation", run_type="llm")
     def generate(self, prompt: str) -> dict[str, Any]:
         from groq import Groq
         import random
@@ -87,6 +85,15 @@ class GroqClient:
                 if not text:
                     raise RuntimeError("Groq API returned an empty response.")
                 print(f"[GroqClient] mode=generate model_used={provider['model']}")
+                
+                usage_info = None
+                if hasattr(response, "usage") and response.usage:
+                    usage_info = {
+                        "input": getattr(response.usage, "prompt_tokens", 0),
+                        "output": getattr(response.usage, "completion_tokens", 0),
+                        "total": getattr(response.usage, "total_tokens", 0),
+                    }
+                    
                 return {
                     "ok": True,
                     "text": text,
@@ -94,6 +101,7 @@ class GroqClient:
                     "error_message": None,
                     "attempts": 1,
                     "model_used": provider["model"],
+                    "usage": usage_info,
                 }
             except Exception as exc:
                 last_error = exc
@@ -110,8 +118,6 @@ class GroqClient:
             "attempts": len(providers),
             "model_used": None,
         }
-
-    @traceable(name="Groq Generation Stream", run_type="llm")
     def generate_stream(self, prompt: str) -> Iterator[str]:
         """Trả dần văn bản từ Groq theo thời gian thực, kèm fallback hai vòng và TTFT."""
         from groq import Groq
@@ -134,7 +140,12 @@ class GroqClient:
                     max_tokens=self._config["max_tokens"],
                     stream=True,
                 )
+                # Groq stream provides usage via x_groq attribute in the last chunk natively.
+                
                 print(f"[GroqClient] mode=stream model_used={provider['model']}")
+                
+                self._last_stream_usage = None
+                self._last_stream_model = provider["model"]
 
                 # Fetch first chunk to verify TTFT and API health
                 iterator = iter(response)
@@ -152,8 +163,16 @@ class GroqClient:
 
                 # Yield remaining chunks
                 for chunk in iterator:
-                    if chunk.choices and chunk.choices[0].delta.content:
+                    if chunk.choices and len(chunk.choices) > 0 and chunk.choices[0].delta.content:
                         yield chunk.choices[0].delta.content
+                        
+                    # Check for usage in x_groq
+                    if hasattr(chunk, "x_groq") and chunk.x_groq and hasattr(chunk.x_groq, "usage"):
+                        self._last_stream_usage = {
+                            "input": getattr(chunk.x_groq.usage, "prompt_tokens", 0),
+                            "output": getattr(chunk.x_groq.usage, "completion_tokens", 0),
+                            "total": getattr(chunk.x_groq.usage, "total_tokens", 0),
+                        }
 
                 return  # Successfully finished streaming
 

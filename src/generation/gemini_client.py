@@ -7,7 +7,7 @@ from collections.abc import Iterator
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeoutError
 from typing import Any
 
-from langsmith import traceable
+from langfuse import observe
 
 from src.common.env_loader import load_project_env
 
@@ -53,8 +53,6 @@ class GeminiClient:
             temperature=temperature,
             max_output_tokens=max_output_tokens,
         )
-
-    @traceable(name="Gemini Generation", run_type="llm")
     def generate(self, prompt: str) -> dict[str, Any]:
         attempts = 0
         last_error_type = None
@@ -155,8 +153,6 @@ class GeminiClient:
         if any(token in text for token in ["api", "google", "gemini"]):
             return "api_error"
         return "unknown"
-
-    @traceable(name="Gemini Generation Stream", run_type="llm")
     def generate_stream(self, prompt: str) -> Iterator[str]:
         """Trả dần các đoạn văn bản khi Gemini sinh ra theo thời gian thực.
 

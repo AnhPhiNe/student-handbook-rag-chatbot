@@ -134,6 +134,15 @@ Câu hỏi của sinh viên: "{query}"
 
                 parsed = self._extract_json_object(raw_text)
                 model_used = provider["model"]
+                
+                self._last_usage = None
+                if hasattr(response, "usage") and response.usage:
+                    self._last_usage = {
+                        "input": getattr(response.usage, "prompt_tokens", 0),
+                        "output": getattr(response.usage, "completion_tokens", 0),
+                        "total": getattr(response.usage, "total_tokens", 0),
+                    }
+                    
                 print(f"[AIRouter] model_used={model_used}")
                 break  # Success!
 
@@ -178,6 +187,7 @@ Câu hỏi của sinh viên: "{query}"
             "needs_clarification": needs_clarification,
             "clarification_question": clarification_question,
             "model_used": model_used,
+            "usage": getattr(self, "_last_usage", None),
         }
 
     def _extract_json_object(self, text: str) -> dict[str, Any]:

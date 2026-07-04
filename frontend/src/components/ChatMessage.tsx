@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
-import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, X, Brain, ExternalLink } from 'lucide-react';
+import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, Brain, ExternalLink } from 'lucide-react';
 import type { Citation, Message } from '../hooks/useChat';
 import { useToast } from './Toast';
 import userAvatarImg from '../assets/user_avatar.png';
@@ -194,10 +194,28 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
   const [feedback, setFeedback] = useState<'like'|'dislike'|null>(null);
   const toast = useToast();
 
-  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [showInlineFeedback, setShowInlineFeedback] = useState(false);
   const [feedbackText, setFeedbackText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showThinking, setShowThinking] = useState(false);
+  const [justFinished, setJustFinished] = useState(false);
+  const feedbackInputRef = useRef<HTMLTextAreaElement>(null);
+  const prevStreamingRef = useRef(message.isStreaming);
+
+  useEffect(() => {
+    if (showInlineFeedback && feedbackInputRef.current) {
+        feedbackInputRef.current.focus();
+        feedbackInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [showInlineFeedback]);
+
+  useEffect(() => {
+    if (prevStreamingRef.current === true && message.isStreaming === false) {
+       setJustFinished(true);
+       setTimeout(() => setJustFinished(false), 2000);
+    }
+    prevStreamingRef.current = message.isStreaming;
+  }, [message.isStreaming]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(message.content);
@@ -230,14 +248,15 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
       toast.show("Có lỗi xảy ra khi gửi đánh giá.", "error");
     } finally {
       setIsSubmitting(false);
-      setShowFeedbackModal(false);
+      setShowInlineFeedback(false);
     }
   };
 
   const handleFeedbackClick = (type: 'like' | 'dislike') => {
+    if (feedback !== null) return;
     setFeedback(type);
     if (type === 'dislike' && message.runId) {
-      setShowFeedbackModal(true);
+      setShowInlineFeedback(true);
       setFeedbackText("");
     } else if (type === 'like' && message.runId) {
       submitFeedbackToApi('like');
@@ -402,29 +421,40 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
 
 
         {!message.isStreaming && !isErrorMsg && (
-          <div className="message-metadata">
-            <div className="meta-actions">
-              <button className="action-btn" title="Chia sẻ" onClick={handleShare}>
-                <Share2 size={16} />
-                <span className="action-btn-label">Chia sẻ</span>
-              </button>
-              <button className={`action-btn ${feedback === 'like' ? 'active' : ''}`} title="Hữu ích" onClick={() => handleFeedbackClick('like')}>
-                <ThumbsUp size={16} />
-              </button>
-              <button className={`action-btn ${feedback === 'dislike' ? 'active' : ''}`} title="Chưa chính xác" onClick={() => handleFeedbackClick('dislike')}>
-                <ThumbsDown size={16} />
-              </button>
-              <button className="action-btn" title="Copy" onClick={handleCopy}>
-                {copied ? <Check size={16} style={{color: 'var(--success)'}}/> : <Copy size={16} />}
-                <span className="action-btn-label">{copied ? 'Đã copy' : 'Copy'}</span>
-              </button>
-              <button className="action-btn" title="Tạo lại" onClick={() => onRegenerate?.()}>
-                <RotateCcw size={16} />
-                <span className="action-btn-label">Tạo lại</span>
-              </button>
-            </div>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: 'auto' }}>
+          <div className="message-metadata" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+            <div style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
+              <div className="meta-actions">
+                <button className="action-btn" title="Chia sẻ" onClick={handleShare}>
+                  <Share2 size={16} />
+                  <span className="action-btn-label">Chia sẻ</span>
+                </button>
+                <button 
+                  className={`action-btn ${feedback === 'like' ? 'active' : ''} ${justFinished ? 'pulse-glow' : ''}`} 
+                  title="Hữu ích" 
+                  onClick={() => handleFeedbackClick('like')}
+                  disabled={feedback !== null}
+                >
+                  <ThumbsUp size={16} />
+                </button>
+                <button 
+                  className={`action-btn ${feedback === 'dislike' ? 'active' : ''} ${justFinished ? 'pulse-glow' : ''}`} 
+                  title="Chưa chính xác" 
+                  onClick={() => handleFeedbackClick('dislike')}
+                  disabled={feedback !== null}
+                >
+                  <ThumbsDown size={16} />
+                </button>
+                <button className="action-btn" title="Copy" onClick={handleCopy}>
+                  {copied ? <Check size={16} style={{color: 'var(--success)'}}/> : <Copy size={16} />}
+                  <span className="action-btn-label">{copied ? 'Đã copy' : 'Copy'}</span>
+                </button>
+                <button className="action-btn" title="Tạo lại" onClick={() => onRegenerate?.()}>
+                  <RotateCcw size={16} />
+                  <span className="action-btn-label">Tạo lại</span>
+                </button>
+              </div>
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: 'auto' }}>
               {message.usedCache ? (
                 <span className="metadata-badge cache" title="Câu trả lời được lấy từ bộ nhớ đệm giúp tốc độ phản hồi tức thì">
                   ⚡ Từ bộ nhớ đệm
@@ -440,6 +470,31 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
                 )
               )}
             </div>
+            </div>
+
+            {showInlineFeedback && (
+              <div className="inline-feedback-container">
+                <div className="inline-feedback-header">
+                  Câu trả lời sai hoặc thiếu thông tin gì? (Không bắt buộc)
+                </div>
+                <textarea 
+                  ref={feedbackInputRef}
+                  className="inline-feedback-input"
+                  value={feedbackText} 
+                  onChange={e => setFeedbackText(e.target.value)} 
+                  placeholder="Ví dụ: Trả lời sai thông tin học bổng..."
+                  rows={2}
+                  disabled={isSubmitting}
+                />
+                <div className="inline-feedback-actions">
+                  <button className="btn-secondary" onClick={() => setShowInlineFeedback(false)} disabled={isSubmitting}>Bỏ qua</button>
+                  <button className="btn-primary" onClick={() => submitFeedbackToApi('dislike', feedbackText)} disabled={isSubmitting}>
+                    {isSubmitting ? "Đang gửi..." : "Gửi góp ý"}
+                  </button>
+                </div>
+              </div>
+            )}
+
           </div>
         )}
 
@@ -456,32 +511,7 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
           </div>
         )}
 
-        {showFeedbackModal && (
-          <div className="feedback-modal-overlay" onClick={() => setShowFeedbackModal(false)}>
-            <div className="feedback-modal" onClick={e => e.stopPropagation()}>
-              <div className="feedback-header">
-                <h4>Góp ý câu trả lời</h4>
-                <button className="close-btn" onClick={() => setShowFeedbackModal(false)}>
-                  <X size={16} />
-                </button>
-              </div>
-              <p>Bot đã trả lời sai hoặc thiếu thông tin gì? (Không bắt buộc)</p>
-              <textarea 
-                value={feedbackText} 
-                onChange={e => setFeedbackText(e.target.value)} 
-                placeholder="Ví dụ: Trả lời lan man, sai thông tin học bổng..."
-                rows={3}
-                disabled={isSubmitting}
-              />
-              <div className="feedback-actions">
-                <button className="btn-secondary" onClick={() => setShowFeedbackModal(false)} disabled={isSubmitting}>Bỏ qua</button>
-                <button className="btn-primary" onClick={() => submitFeedbackToApi('dislike', feedbackText)} disabled={isSubmitting}>
-                  {isSubmitting ? "Đang gửi..." : "Gửi góp ý"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+
       </div>
     </div>
   );

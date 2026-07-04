@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from groq import Groq
-from langsmith import traceable
+from langfuse import observe
 
 from src.common.env_loader import load_project_env
 from src.generation.context_resolver import (
@@ -105,6 +105,8 @@ class QueryRewriter:
         for m in fallback_models:
             if m not in self.models:
                 self.models.append(m)
+                
+        self._last_llm_usages = []
 
     @classmethod
     def from_config(cls, config: dict[str, Any] | None) -> QueryRewriter:
@@ -127,13 +129,12 @@ class QueryRewriter:
             trigger_on_short_query=bool(config.get("trigger_on_short_query", True)),
             trigger_on_typo_signals=bool(config.get("trigger_on_typo_signals", True)),
         )
-
-    @traceable(name="Query Rewriter", run_type="chain")
     def rewrite(
         self,
         query: str,
         chat_history: list[dict[str, str]] | None = None,
     ) -> QueryRewriteResult:
+        self._last_llm_usages = []
         cleaned_query = query.strip()
         if not cleaned_query:
             return QueryRewriteResult(
@@ -312,6 +313,17 @@ class QueryRewriter:
                 if not raw_text:
                     raise ValueError("Empty response from Groq")
                 print(f"[QueryRewriter] phase=rewrite model_used={provider['model']}")
+                
+                usage_info = None
+                if hasattr(llm_result, "usage") and llm_result.usage:
+                    usage_info = {
+                        "model": provider["model"],
+                        "input": getattr(llm_result.usage, "prompt_tokens", 0),
+                        "output": getattr(llm_result.usage, "completion_tokens", 0),
+                        "total": getattr(llm_result.usage, "total_tokens", 0),
+                    }
+                    self._last_llm_usages.append(usage_info)
+                    
                 return raw_text
             except (
                 RateLimitError,
@@ -373,6 +385,17 @@ class QueryRewriter:
                 if not raw_text:
                     raise ValueError("Empty response from Groq")
                 print(f"[QueryRewriter] phase=context model_used={provider['model']}")
+                
+                usage_info = None
+                if hasattr(llm_result, "usage") and llm_result.usage:
+                    usage_info = {
+                        "model": provider["model"],
+                        "input": getattr(llm_result.usage, "prompt_tokens", 0),
+                        "output": getattr(llm_result.usage, "completion_tokens", 0),
+                        "total": getattr(llm_result.usage, "total_tokens", 0),
+                    }
+                    self._last_llm_usages.append(usage_info)
+                    
                 return raw_text
             except (
                 RateLimitError,

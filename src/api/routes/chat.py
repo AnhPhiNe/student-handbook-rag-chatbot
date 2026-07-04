@@ -16,7 +16,9 @@ from src.api.chat_controls import (
 )
 from src.api.deps import get_answer_service
 from src.api.schemas import ChatRequest, ChatResponse, ChatFeedbackRequest
-from langsmith import Client as LangSmithClient
+from langfuse import Langfuse
+import threading
+from src.api.langfuse_helper import push_trace_to_langfuse
 
 
 router = APIRouter(tags=["chat"])
@@ -146,12 +148,35 @@ def chat(
     started_at = time.perf_counter()
     query = validate_chat_query(request.query)
     enforce_chat_rate_limit(http_request)
-
     try:
         with chat_capacity_slot():
             result = answer_service.answer(
-                query, chat_history=request.chat_history, cohort=request.cohort
+                query, chat_history=request.chat_history, cohort=request.cohort, langfuse_trace_id=request_id
             )
+            sync_latency = round((time.perf_counter() - started_at) * 1000, 2)
+            threading.Thread(
+                target=push_trace_to_langfuse,
+                args=(
+                    request_id, 
+                    "Chat (Sync)", 
+                    request.cohort, 
+                    query, 
+                    str(result.get("answer") or ""), 
+                ),
+                kwargs={
+                    "metadata": {
+                        "status": result.get("status"),
+                        "intent": result.get("intent"),
+                        "strategy": result.get("strategy"),
+                        "model": result.get("model"),
+                    },
+                    "latency_ms": sync_latency,
+                    "model": result.get("model"),
+                    "tags": ["sync"],
+                    "tracker": result.get("tracker"),
+                },
+                daemon=True
+            ).start()
     except ChatCapacityError as exc:
         latency_ms = round((time.perf_counter() - started_at) * 1000, 2)
         logger.warning(
@@ -179,6 +204,7 @@ def chat(
 
     latency_ms = round((time.perf_counter() - started_at) * 1000, 2)
     result["request_id"] = request_id
+    result["run_id"] = request_id
     result["latency_ms"] = latency_ms
     logger.info(
         "chat_request_completed",
@@ -208,7 +234,7 @@ def submit_feedback(request: ChatFeedbackRequest):
 
     Đây là một API endpoint nhận phản hồi từ người dùng về chất lượng của
     một câu trả lời đã được cung cấp. Phản hồi này (ví dụ: thích/không thích,
-    điểm số, bình luận) sẽ được ghi lại vào LangSmith để theo dõi và cải thiện
+    điểm số, bình luận) sẽ được ghi lại vào Langfuse để theo dõi và cải thiện
     hiệu suất của chatbot.
 
     Args:
@@ -225,20 +251,21 @@ def submit_feedback(request: ChatFeedbackRequest):
         HTTPException:
             - Nếu `run_id` không được cung cấp trong yêu cầu, một lỗi HTTP 400
               (Bad Request) sẽ được trả về.
-            - Nếu có lỗi xảy ra trong quá trình gửi phản hồi đến LangSmith,
+            - Nếu có lỗi xảy ra trong quá trình gửi phản hồi đến Langfuse,
               một lỗi HTTP 500 (Internal Server Error) sẽ được trả về.
     """
     if not request.run_id:
         raise HTTPException(status_code=400, detail="run_id is required")
 
     try:
-        client = LangSmithClient()
-        client.create_feedback(
-            request.run_id,
-            key="user_score",
-            score=request.score,
+        langfuse = Langfuse()
+        langfuse.create_score(
+            trace_id=request.run_id,
+            name="user_score",
+            value=request.score,
             comment=request.comment,
         )
+        langfuse.flush()
         return {"status": "success"}
     except Exception as exc:
         logger.exception("feedback_submission_failed", extra={"run_id": request.run_id})

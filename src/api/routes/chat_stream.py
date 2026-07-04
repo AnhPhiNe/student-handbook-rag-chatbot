@@ -18,8 +18,11 @@ import time
 from typing import Any
 from uuid import uuid4
 
+import threading
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
+from langfuse import Langfuse
+from src.api.langfuse_helper import push_trace_to_langfuse
 
 from src.api.chat_controls import (
     ChatCapacityError,
@@ -101,6 +104,8 @@ def chat_stream(
         started_at = time.perf_counter()
         final_status = "unknown"
         final_metadata: dict[str, Any] = {}
+        full_text = ""
+        
         try:
             with chat_capacity_slot():
                 logger.debug(
@@ -111,15 +116,18 @@ def chat_stream(
                     query,
                     chat_history=request.chat_history,
                     cohort=request.cohort,
+                    langfuse_trace_id=request_id,
                 )
                 for chunk in stream:
                     chunk_type = chunk.get("type", "")
                     if chunk_type == "metadata":
                         chunk["request_id"] = request_id
+                        chunk["run_id"] = request_id
                         final_metadata = dict(chunk)
                         final_status = str(chunk.get("status") or final_status)
                         yield _sse_event("metadata", chunk)
                     elif chunk_type == "token":
+                        full_text += chunk.get("text", "")
                         yield _sse_event("token", {"text": chunk.get("text", "")})
                     elif chunk_type == "progress":
                         yield _sse_event(
@@ -127,6 +135,32 @@ def chat_stream(
                             {"message": chunk.get("message", "")},
                         )
                     elif chunk_type == "done":
+                        done_latency = round((time.perf_counter() - started_at) * 1000, 2)
+                        tracker = chunk.get("tracker")
+                        threading.Thread(
+                            target=push_trace_to_langfuse,
+                            args=(
+                                request_id, 
+                                "Chat (Stream)", 
+                                request.cohort, 
+                                query, 
+                                full_text, 
+                            ),
+                            kwargs={
+                                "metadata": {
+                                    "status": final_status,
+                                    "intent": final_metadata.get("intent"),
+                                    "strategy": final_metadata.get("strategy"),
+                                    "model": final_metadata.get("model"),
+                                },
+                                "latency_ms": done_latency,
+                                "model": final_metadata.get("model"),
+                                "tags": ["stream"],
+                                "tracker": tracker,
+                            },
+                            daemon=True
+                        ).start()
+                        
                         latency_ms = round((time.perf_counter() - started_at) * 1000, 2)
                         logger.info(
                             "chat_stream_completed",

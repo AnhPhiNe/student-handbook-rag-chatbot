@@ -5,8 +5,8 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
-from langsmith import traceable
-from langsmith.run_helpers import get_current_run_tree
+from langfuse import observe
+
 from src.common.cohort import resolve_cohort_from_query
 from src.retrieval.core.retrieval_pipeline import run_retrieval_pipeline
 from src.retrieval.core.vector_retriever import (
@@ -103,13 +103,12 @@ class AnswerPipeline:
         self.semantic_cache = SemanticCache(
             config=semantic_config, embedding_model=self.model
         )
-
-    @traceable(name="Answer Pipeline", run_type="chain")
     def answer(
         self,
         query: str,
         chat_history: list[dict[str, str]] | None = None,
         cohort: str | None = None,
+        **kwargs,
     ) -> dict[str, Any]:
         """Bộ Não Sinh Ngôn Ngữ: Lấy dữ liệu từ Retrieval và biến thành câu trả lời (Sync Mode).
 
@@ -499,19 +498,39 @@ class AnswerPipeline:
 
         return output
 
-    @traceable(name="Answer Pipeline Stream", run_type="chain")
     def answer_stream(
         self,
         query: str,
         chat_history: list[dict[str, str]] | None = None,
         cohort: str | None = None,
+        **kwargs,
     ) -> Iterator[dict[str, Any]]:
         """Luồng tạo câu trả lời dạng Streaming (Server-Sent Events)."""
-        run_tree = get_current_run_tree()
-        run_id = str(run_tree.id) if run_tree else None
+        trace_id = ""
+        run_id = None
+        
+        from src.api.usage_tracker import UsageTracker
+        from datetime import datetime, timezone
+        tracker = UsageTracker()
 
         yield {"type": "progress", "message": "Đang tối ưu hóa câu hỏi..."}
+        
+        start_time_rw = datetime.now(timezone.utc).isoformat()
         rewrite_result = self.query_rewriter.rewrite(query, chat_history=chat_history)
+        end_time_rw = datetime.now(timezone.utc).isoformat()
+        
+        if hasattr(self.query_rewriter, "_last_llm_usages") and self.query_rewriter._last_llm_usages:
+            for usage in self.query_rewriter._last_llm_usages:
+                tracker.record(
+                    step_name="Query Rewriter",
+                    model=usage.get("model", ""),
+                    input_tokens=usage.get("input", 0),
+                    output_tokens=usage.get("output", 0),
+                    total_tokens=usage.get("total", 0),
+                    start_time=start_time_rw,
+                    end_time=end_time_rw
+                )
+                
         effective_query = rewrite_result.effective_query
         cohort = resolve_cohort_from_query(query, cohort)
 
@@ -534,7 +553,7 @@ class AnswerPipeline:
                         "used_cache": True,
                     }
                     yield {"type": "token", "text": str(cached.get("answer") or "")}
-                    yield {"type": "done"}
+                    yield {"type": "done", "tracker": tracker}
                     return
 
         # Stream path dung cung rule voi sync path: rewriter chi duoc hoi lai som cho follow-up.
@@ -552,7 +571,7 @@ class AnswerPipeline:
                 "citations_used": [],
             }
             yield {"type": "token", "text": rewrite_result.clarification_question}
-            yield {"type": "done"}
+            yield {"type": "done", "tracker": tracker}
             return
 
         yield {"type": "progress", "message": "Đang tìm kiếm thông tin trong Sổ tay..."}
@@ -563,6 +582,18 @@ class AnswerPipeline:
                 rewrite_result,
                 cohort=cohort,
             )
+            
+            if retrieval_result.get("router_usage"):
+                tracker.record(
+                    step_name="AI Router",
+                    model=retrieval_result.get("router_model", ""),
+                    input_tokens=retrieval_result["router_usage"].get("input", 0),
+                    output_tokens=retrieval_result["router_usage"].get("output", 0),
+                    total_tokens=retrieval_result["router_usage"].get("total", 0),
+                    start_time=start_time_rw,
+                    end_time=datetime.now(timezone.utc).isoformat()
+                )
+                
             effective_query = rewrite_result.effective_query
         except Exception:
             fallback = build_fallback_answer(
@@ -577,7 +608,7 @@ class AnswerPipeline:
                 "citations_used": [],
             }
             yield {"type": "token", "text": fallback}
-            yield {"type": "done"}
+            yield {"type": "done", "tracker": tracker}
             return
 
         if retrieval_result.get("rewrite_verification_needs_clarification"):
@@ -595,7 +626,7 @@ class AnswerPipeline:
                 "llm_called": False,
             }
             yield {"type": "token", "text": clarification_msg}
-            yield {"type": "done"}
+            yield {"type": "done", "tracker": tracker}
             return
 
         # Lớp bảo vệ thứ 2: Nếu câu hỏi đã được rewrite từ lịch sử chat,
@@ -620,7 +651,7 @@ class AnswerPipeline:
                 "citations_used": [],
             }
             yield {"type": "token", "text": clarification_msg}
-            yield {"type": "done"}
+            yield {"type": "done", "tracker": tracker}
             return
 
         # Neu cau hoi mo ho, stream cau hoi lam ro nhu mot token block thay vi goi LLM.
@@ -638,7 +669,7 @@ class AnswerPipeline:
                 "llm_called": False,
             }
             yield {"type": "token", "text": clarification_msg}
-            yield {"type": "done"}
+            yield {"type": "done", "tracker": tracker}
             return
 
         # Out-of-domain duoc chan truoc khi tao prompt de tranh LLM tra loi ngoai nguon.
@@ -659,7 +690,7 @@ class AnswerPipeline:
                 "llm_called": False,
             }
             yield {"type": "token", "text": out_of_domain_msg}
-            yield {"type": "done"}
+            yield {"type": "done", "tracker": tracker}
             return
 
         if is_out_of_domain_query(effective_query, retrieval_result):
@@ -678,7 +709,7 @@ class AnswerPipeline:
                 "llm_called": False,
             }
             yield {"type": "token", "text": out_of_domain_msg}
-            yield {"type": "done"}
+            yield {"type": "done", "tracker": tracker}
             return
 
         yield {"type": "progress", "message": "Đang phân tích tài liệu tìm được..."}
@@ -712,7 +743,7 @@ class AnswerPipeline:
                 "llm_called": False,
             }
             yield {"type": "token", "text": final_answer}
-            yield {"type": "done"}
+            yield {"type": "done", "tracker": tracker}
             return
 
         selected_citations = select_relevant_citations(
@@ -742,7 +773,7 @@ class AnswerPipeline:
                 "llm_called": False,
             }
             yield {"type": "token", "text": final_answer}
-            yield {"type": "done"}
+            yield {"type": "done", "tracker": tracker}
             return
 
         # Đưa TOÀN BỘ retrieved_items (đã qua ngưỡng 0.70) vào context cho LLM.
@@ -769,10 +800,23 @@ class AnswerPipeline:
 
         try:
             llm_client = self._get_llm_client()
+            start_time_llm = datetime.now(timezone.utc).isoformat()
             self._throttle_llm_call()
             for chunk in llm_client.generate_stream(prompt):
                 yield {"type": "token", "text": chunk}
+            end_time_llm = datetime.now(timezone.utc).isoformat()
             self._last_llm_call_at = time.monotonic()
+            
+            if hasattr(llm_client, "_last_stream_usage") and llm_client._last_stream_usage:
+                tracker.record(
+                    step_name="LLM Generation",
+                    model=getattr(llm_client, "_last_stream_model", ""),
+                    input_tokens=llm_client._last_stream_usage.get("input", 0),
+                    output_tokens=llm_client._last_stream_usage.get("output", 0),
+                    total_tokens=llm_client._last_stream_usage.get("total", 0),
+                    start_time=start_time_llm,
+                    end_time=end_time_llm
+                )
         except Exception:
             fallback = build_fallback_answer(
                 effective_query, retrieval_result, reason="api_error"
@@ -784,7 +828,7 @@ class AnswerPipeline:
         # if sources_text:
         #     yield {"type": "token", "text": f"\n\n{sources_text}"}
 
-        yield {"type": "done"}
+        yield {"type": "done", "tracker": tracker}
 
     def _run_retrieval(self, query: str, cohort: str | None = None) -> dict[str, Any]:
         result = run_retrieval_pipeline(
@@ -982,8 +1026,8 @@ class AnswerPipeline:
         model_used: str | None = None,
     ) -> dict[str, Any]:
         query_rewrite_payload = query_rewrite.to_dict() if query_rewrite else None
-        run_tree = get_current_run_tree()
-        run_id = str(run_tree.id) if run_tree else None
+        trace_id = ""
+        run_id = None
         if model_used is None:
             if used_cache:
                 model_used = "cache"

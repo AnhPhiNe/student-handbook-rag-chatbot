@@ -28,9 +28,10 @@ class AnswerService:
         query: str,
         chat_history: list[dict[str, str]] | None = None,
         cohort: str | None = None,
+        **kwargs,
     ) -> dict[str, Any]:
         return self._get_pipeline().answer(
-            query, chat_history=chat_history, cohort=cohort
+            query, chat_history=chat_history, cohort=cohort, **kwargs
         )
 
     def answer_stream(
@@ -38,10 +39,11 @@ class AnswerService:
         query: str,
         chat_history: list[dict[str, str]] | None = None,
         cohort: str | None = None,
+        **kwargs,
     ) -> Iterator[dict[str, Any]]:
         """Trả dần các phần câu trả lời từ pipeline."""
         yield from self._get_pipeline().answer_stream(
-            query, chat_history=chat_history, cohort=cohort
+            query, chat_history=chat_history, cohort=cohort, **kwargs
         )
 
     def health(self) -> dict[str, Any]:

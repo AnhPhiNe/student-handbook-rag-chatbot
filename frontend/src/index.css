@@ -1329,6 +1329,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .send-btn:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+  pointer-events: auto;
 }
 
 .char-counter {
@@ -2161,4 +2162,70 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 [data-theme='dark'] .metadata-badge.latency {
   background-color: rgba(156, 163, 175, 0.2);
   color: var(--text-secondary);
+}
+
+/* Feedback UX Enhancements */
+@keyframes pulseGlow {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+  50% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(37, 99, 235, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+
+.action-btn.pulse-glow {
+  animation: pulseGlow 0.8s ease-out 2;
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.inline-feedback-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  animation: slideUpFade 0.2s ease-out forwards;
+  width: 100%;
+}
+
+.inline-feedback-header {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.inline-feedback-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  resize: vertical;
+  min-height: 80px;
+  transition: all 0.2s ease;
+}
+.inline-feedback-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  background: var(--bg-primary);
+}
+
+.inline-feedback-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.inline-feedback-actions button {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s;
 }

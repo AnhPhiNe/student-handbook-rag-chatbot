@@ -1,1778 +1,1778 @@
 [
-  {
-    "id": "reg_001",
-    "category": "regulation",
-    "query": "Điều kiện xét học bổng là gì?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_002",
-    "category": "regulation",
-    "query": "Sinh viên bị cảnh báo học tập khi nào?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_003",
-    "category": "regulation",
-    "query": "Muốn học vượt thì cần điều kiện gì?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_004",
-    "category": "regulation",
-    "query": "Một học phần có thể học lại mấy lần?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_005",
-    "category": "regulation",
-    "query": "Bao nhiêu tín chỉ thì bị chậm tiến độ?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_006",
-    "category": "regulation",
-    "query": "Khi nào sinh viên bị buộc thôi học?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_007",
-    "category": "regulation",
-    "query": "Có thể đăng ký học lại để cải thiện điểm không?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_008",
-    "category": "regulation",
-    "query": "Điểm D có được tính là đạt học phần không?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_009",
-    "category": "regulation",
-    "query": "Nếu bị điểm F thì xử lý thế nào?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_010",
-    "category": "regulation",
-    "query": "Điều kiện tốt nghiệp của sinh viên là gì?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_011",
-    "category": "regulation_paraphrase",
-    "query": "Muốn ra trường sớm thì có được học vượt không?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_012",
-    "category": "regulation_paraphrase",
-    "query": "Rớt môn thì học lại bằng cách nào?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_013",
-    "category": "regulation_paraphrase",
-    "query": "Trượt môn có phải đăng ký học lại không?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_014",
-    "category": "regulation_paraphrase",
-    "query": "Sinh viên học chậm tiến độ thì bị gì?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_015",
-    "category": "regulation_typo",
-    "query": "Dieu kien xet hoc bong la gi?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "form_001",
-    "category": "form",
-    "query": "Muốn tạm nghỉ học cần mẫu đơn nào?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "form_002",
-    "category": "form",
-    "query": "Có mẫu đơn xin trợ cấp xã hội không?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "form_003",
-    "category": "form",
-    "query": "Đơn xin thôi học cần khai thông tin gì?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "form_004",
-    "category": "form",
-    "query": "Muốn xác nhận sinh viên để vay vốn thì làm giấy nào?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "form_005",
-    "category": "form",
-    "query": "Có form theo dõi tiến độ học tập không?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "form_006",
-    "category": "form",
-    "query": "Đơn học lại yêu cầu thông tin gì?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "form_007",
-    "category": "form",
-    "query": "Muốn xin hỗ trợ chi phí học tập thì điền mẫu gì?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "form_008",
-    "category": "form",
-    "query": "Biểu mẫu miễn giảm học phí gồm gì?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "form_009",
-    "category": "form_paraphrase",
-    "query": "Cần đơn gì để quay lại học sau bảo lưu?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "form_010",
-    "category": "form_typo",
-    "query": "Muon tam nghi hoc can mau don nao?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_001",
-    "category": "office",
-    "query": "Email phòng đào tạo là gì?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_002",
-    "category": "office",
-    "query": "Website phòng CNTT là gì?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_003",
-    "category": "office",
-    "query": "Phòng CTCT-HSSV ở tầng mấy?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_004",
-    "category": "office",
-    "query": "Số điện thoại phòng Sau đại học bao nhiêu?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_005",
-    "category": "office",
-    "query": "Đơn vị nào xử lý công tác sinh viên?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_006",
-    "category": "office",
-    "query": "Phòng Kế hoạch - Tài chính làm gì?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_007",
-    "category": "office",
-    "query": "Muốn giải quyết giấy tờ sinh viên thì tìm ai?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_008",
-    "category": "office",
-    "query": "Liên hệ học vụ ở đâu?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_009",
-    "category": "office_paraphrase",
-    "query": "Mail của phòng đào tạo là gì?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_010",
-    "category": "office_typo",
-    "query": "Email phong dao tao la gi?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "faculty_001",
-    "category": "faculty",
-    "query": "Khoa Công nghệ thông tin có ngành nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "faculty_002",
-    "category": "faculty",
-    "query": "Khoa Tiếng Anh có những ngành nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "faculty_003",
-    "category": "faculty",
-    "query": "Khoa Toán - Tin học có email không?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "faculty_004",
-    "category": "faculty",
-    "query": "Ngành Công nghệ thông tin học xong làm nghề gì?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "faculty_005",
-    "category": "faculty",
-    "query": "Khoa Hóa học đào tạo những gì?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "faculty_006",
-    "category": "faculty",
-    "query": "Khoa Địa lí có website không?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "faculty_007",
-    "category": "faculty",
-    "query": "Tổ trực thuộc nào liên quan công nghệ?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "faculty_008",
-    "category": "faculty",
-    "query": "Ngành tiếng Anh ra trường có thể làm gì?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "faculty_009",
-    "category": "faculty_paraphrase",
-    "query": "Khoa tiếng Pháp nằm ở đâu?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "faculty_010",
-    "category": "faculty_typo",
-    "query": "Khoa cong nghe thong tin o dau?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ktx_001",
-    "category": "procedure",
-    "query": "Quy trình vào ký túc xá như thế nào?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ktx_002",
-    "category": "procedure",
-    "query": "Ai được ưu tiên vào ký túc xá?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ktx_003",
-    "category": "procedure",
-    "query": "Muốn ở nội trú thì làm sao?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ktx_004",
-    "category": "procedure",
-    "query": "Hội đồng xét KTX gồm ai?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ktx_005",
-    "category": "procedure",
-    "query": "Sinh viên nữ có được ưu tiên KTX không?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ktx_006",
-    "category": "procedure",
-    "query": "Điều kiện để vào ký túc xá là gì?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ktx_007",
-    "category": "procedure",
-    "query": "KTX xét theo tiêu chí nào?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ktx_008",
-    "category": "procedure",
-    "query": "Thủ tục vào ở nội trú như thế nào?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ktx_009",
-    "category": "procedure_paraphrase",
-    "query": "Con hộ nghèo có ưu tiên KTX không?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ktx_010",
-    "category": "procedure_typo",
-    "query": "Quy trinh vao ky tuc xa gom nhung buoc nao?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "score_001",
-    "category": "score_lookup",
-    "query": "Điểm rèn luyện 92 là loại gì?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "score_002",
-    "category": "score_lookup",
-    "query": "GPA 2.95 được xếp loại học lực gì?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "score_003",
-    "category": "score_lookup",
-    "query": "Điểm B+ quy đổi sang hệ 4 bao nhiêu?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "score_004",
-    "category": "score_lookup",
-    "query": "Điểm chữ C tương đương mấy điểm?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "score_005",
-    "category": "score_lookup",
-    "query": "Rèn luyện 49 có bị yếu không?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "score_006",
-    "category": "score_lookup",
-    "query": "3.6 GPA là xuất sắc hay giỏi?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "score_007",
-    "category": "score_lookup",
-    "query": "Điểm A có tương đương 4.0 không?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "score_008",
-    "category": "score_lookup",
-    "query": "Rèn luyện 75 là khá hay tốt?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "score_009",
-    "category": "score_typo",
-    "query": "Diem ren luyen 85 la loai gi?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "score_010",
-    "category": "score_typo",
-    "query": "GPA 3.4 la loai hoc luc gi?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "calc_001",
-    "category": "calculation",
-    "query": "Tính điểm học bổng nếu GPA 3.2 và rèn luyện 90",
-    "expected_intent": "calculation_query",
-    "expected_strategy": "calculator_tool",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "calc_002",
-    "category": "calculation",
-    "query": "Tính giúp điểm học bổng với GPA 3.6 và điểm rèn luyện 85",
-    "expected_intent": "calculation_query",
-    "expected_strategy": "calculator_tool",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "calc_003",
-    "category": "calculation",
-    "query": "Điểm học bổng là bao nhiêu nếu GPA 3.1 và rèn luyện 80?",
-    "expected_intent": "calculation_query",
-    "expected_strategy": "calculator_tool",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "calc_004",
-    "category": "calculation_typo",
-    "query": "Tinh diem hoc bong neu GPA 3.2 va ren luyen 90",
-    "expected_intent": "calculation_query",
-    "expected_strategy": "calculator_tool",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "calc_005",
-    "category": "calculation",
-    "query": "Bao nhiêu nếu điểm học bổng có GPA 2.8 và rèn luyện 95?",
-    "expected_intent": "calculation_query",
-    "expected_strategy": "calculator_tool",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "mixed_001",
-    "category": "mixed",
-    "query": "Muốn bảo lưu thì vừa cần điều kiện gì vừa cần mẫu đơn nào?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "mixed_002",
-    "category": "mixed",
-    "query": "Muốn xin vào KTX thì liên hệ phòng nào và dùng mẫu gì?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "mixed_003",
-    "category": "mixed",
-    "query": "Muốn chuyển trường thì cần biểu mẫu gì và quy định ra sao?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "mixed_004",
-    "category": "mixed",
-    "query": "Muốn miễn giảm học phí thì liên hệ ai và dùng đơn gì?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "mixed_005",
-    "category": "mixed",
-    "query": "Nếu nghỉ tạm thời xong thì làm sao học lại và dùng đơn nào?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "mixed_006",
-    "category": "mixed",
-    "query": "Muốn vay vốn sinh viên thì cần giấy xác nhận gì và liên hệ đâu?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "mixed_007",
-    "category": "mixed",
-    "query": "Cần mẫu đơn gì và điều kiện nào để tạm nghỉ học?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "mixed_008",
-    "category": "mixed",
-    "query": "Có cần nộp đơn để xét KTX không?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "mixed_009",
-    "category": "mixed",
-    "query": "Xin trợ cấp xã hội cần mẫu đơn và điều kiện gì?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "mixed_010",
-    "category": "mixed_typo",
-    "query": "Muon bao luu can dieu kien va mau don nao?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "amb_001",
-    "category": "ambiguity",
-    "query": "CNTT ở đâu?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "amb_002",
-    "category": "ambiguity",
-    "query": "Học vụ liên hệ ai?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "amb_003",
-    "category": "ambiguity",
-    "query": "Giấy tờ sinh viên làm ở đâu?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "amb_004",
-    "category": "ambiguity",
-    "query": "Học bổng hỏi ai?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "amb_005",
-    "category": "ambiguity",
-    "query": "Liên hệ ai?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ood_001",
-    "category": "out_of_domain",
-    "query": "Trường có bán bánh tráng trộn không?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ood_002",
-    "category": "out_of_domain",
-    "query": "Hôm nay thời tiết ở TP.HCM thế nào?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ood_003",
-    "category": "out_of_domain",
-    "query": "Làm sao để nấu phở ngon?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ood_004",
-    "category": "out_of_domain",
-    "query": "Tư vấn mua laptop gaming đi",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ood_005",
-    "category": "out_of_domain",
-    "query": "Bitcoin hôm nay tăng hay giảm?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "neg_001",
-    "category": "negative_regression",
-    "query": "Phòng CNTT ở đâu?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "neg_002",
-    "category": "negative_regression",
-    "query": "Khoa CNTT ở đâu?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "neg_003",
-    "category": "negative_regression",
-    "query": "Website phòng CNTT là gì?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "neg_004",
-    "category": "negative_regression",
-    "query": "Khoa Công nghệ thông tin có website không?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "neg_005",
-    "category": "negative_regression",
-    "query": "Qua môn cần bao nhiêu điểm?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_016",
-    "category": "regulation_paraphrase",
-    "query": "Sinh viên được phép nghỉ học tạm thời khi nào?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_017",
-    "category": "regulation_paraphrase",
-    "query": "Cần đáp ứng gì để xét học bổng khuyến khích học tập?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "form_011",
-    "category": "form_paraphrase",
-    "query": "Phiếu đánh giá rèn luyện dùng để làm gì?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "form_012",
-    "category": "form_paraphrase",
-    "query": "Xác nhận sinh viên cần giấy gì?",
-    "expected_intent": "form_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_011",
-    "category": "office_paraphrase",
-    "query": "Văn phòng phòng Công tác chính trị và HSSV ở đâu?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_012",
-    "category": "office_paraphrase",
-    "query": "SĐT phòng đào tạo là bao nhiêu?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "faculty_011",
-    "category": "faculty_paraphrase",
-    "query": "Chuyên ngành của khoa Toán - Tin học gồm gì?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "faculty_012",
-    "category": "faculty_paraphrase",
-    "query": "Ngành Vật lí sau này làm gì?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ktx_011",
-    "category": "procedure_paraphrase",
-    "query": "Nội trú xét theo thứ tự ưu tiên nào?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ktx_012",
-    "category": "procedure_paraphrase",
-    "query": "Ký túc xá công bố kết quả xét ở đâu?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "score_011",
-    "category": "score_lookup",
-    "query": "Điểm trung bình 3.2 xếp loại học lực gì?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "score_012",
-    "category": "score_lookup",
-    "query": "Điểm chữ D+ đổi sang thang 4 là bao nhiêu?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "mixed_011",
-    "category": "multi_hop",
-    "query": "Tạm nghỉ học cần điều kiện gì và mẫu đơn nào?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "mixed_012",
-    "category": "multi_hop",
-    "query": "Xin vào ký túc xá cần hồ sơ gì và quy trình xét ra sao?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "ood_006",
-    "category": "out_of_domain",
-    "query": "Có nên học Python hay Java trước?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "cohort_prog_001",
-    "category": "program_school_cohort",
-    "query": "Trường đang có những ngành đào tạo nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "cohort_prog_002",
-    "category": "program_school_cohort",
-    "query": "Hiện trường có những ngành nào vậy?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "cohort_prog_003",
-    "category": "program_school_cohort",
-    "query": "K48-K49 trường có các ngành nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "program_lookup",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ],
-    "cohort": "K48-K49"
-  },
-  {
-    "id": "cohort_prog_004",
-    "category": "program_school_cohort",
-    "query": "Khóa 50 51 có những ngành đào tạo nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "program_lookup",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ],
-    "cohort": "K50"
-  },
-  {
-    "id": "cohort_prog_004",
-    "category": "program_school_cohort",
-    "query": "Khóa 50 51 có những ngành đào tạo nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "program_lookup",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ],
-    "cohort": "K51"
-  },
-  {
-    "id": "cohort_prog_005",
-    "category": "program_school_cohort_typo",
-    "query": "truong dang co nhung nganh nao",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "cohort_prog_006",
-    "category": "program_faculty_scope",
-    "query": "Khoa Công nghệ Thông tin có những ngành nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "cohort_prog_007",
-    "category": "program_faculty_scope",
-    "query": "Khoa CNTT đào tạo ngành gì?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "cohort_prog_008",
-    "category": "program_faculty_scope",
-    "query": "Khoa Toán - Tin học có ngành nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "cohort_prog_009",
-    "category": "program_faculty_scope",
-    "query": "Khoa Vật lý phụ trách ngành nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "cohort_prog_010",
-    "category": "program_faculty_scope",
-    "query": "Khoa Địa lý có ngành Lịch sử - Địa lý không?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "cohort_prog_011",
-    "category": "program_detail",
-    "query": "Ngành Công nghệ Thông tin học xong làm nghề gì?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "faculty_directory",
-      "program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "cohort_prog_012",
-    "category": "program_detail",
-    "query": "Ngành Sư phạm Công nghệ thuộc khoa nào?",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "program_lookup",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "cohort_score_001",
-    "category": "cohort_score",
-    "query": "K48-K49 mấy điểm thì qua môn?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "K48-K49"
-  },
-  {
-    "id": "cohort_score_002",
-    "category": "cohort_score",
-    "query": "K50-K51 D+ có qua môn không?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "K50"
-  },
-  {
-    "id": "cohort_score_002",
-    "category": "cohort_score",
-    "query": "K50-K51 D+ có qua môn không?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "K51"
-  },
-  {
-    "id": "cohort_score_003",
-    "category": "cohort_score",
-    "query": "Khóa 50 51 học phần còn lại bao nhiêu điểm mới đạt?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "K50"
-  },
-  {
-    "id": "cohort_score_003",
-    "category": "cohort_score",
-    "query": "Khóa 50 51 học phần còn lại bao nhiêu điểm mới đạt?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "K51"
-  },
-  {
-    "id": "cohort_score_004",
-    "category": "cohort_score",
-    "query": "K51 học phần nền tảng điểm D có đạt không?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "K50"
-  },
-  {
-    "id": "cohort_score_004",
-    "category": "cohort_score",
-    "query": "K51 học phần nền tảng điểm D có đạt không?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "K51"
-  },
-  {
-    "id": "cohort_score_005",
-    "category": "cohort_score_typo",
-    "query": "khoa 49 may diem thi qua mon",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "K48-K49"
-  },
-  {
-    "id": "cohort_score_006",
-    "category": "score_boundary",
-    "query": "Điểm 4.8 là D+ hay C?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "cohort_score_007",
-    "category": "score_boundary",
-    "query": "Điểm 5.5 tương ứng điểm chữ gì?",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "form_expanded_001",
-    "category": "form_lookup",
-    "query": "Có mẫu đơn xin cấp giấy xác nhận sinh viên không?",
-    "expected_intent": "form_query",
-    "expected_strategy": "form_lookup",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "form_expanded_002",
-    "category": "form_lookup",
-    "query": "Em cần mẫu đơn xin miễn giảm học phí",
-    "expected_intent": "form_query",
-    "expected_strategy": "form_lookup",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "form_expanded_003",
-    "category": "form_lookup",
-    "query": "Mẫu đơn đề nghị hỗ trợ chi phí học tập nằm ở đâu?",
-    "expected_intent": "form_query",
-    "expected_strategy": "form_lookup",
-    "expected_target_chunk_types": [
-      "form"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_expanded_001",
-    "category": "office_lookup",
-    "query": "Tài khoản sinh viên bị lỗi thì liên hệ phòng nào?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_expanded_002",
-    "category": "office_lookup",
-    "query": "Học phí liên hệ email nào?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "office_expanded_003",
-    "category": "office_lookup",
-    "query": "Phúc khảo điểm thi thì liên hệ đơn vị nào?",
-    "expected_intent": "office_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "office_directory"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "procedure_expanded_001",
-    "category": "procedure",
-    "query": "Quy trình phúc khảo điểm thi kết thúc học phần như thế nào?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "procedure_expanded_002",
-    "category": "procedure",
-    "query": "Muốn tạm nghỉ học thì cần làm thủ tục gì?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "procedure_expanded_003",
-    "category": "procedure",
-    "query": "Sinh viên muốn quay lại học sau tạm nghỉ thì làm sao?",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_expanded_001",
-    "category": "regulation",
-    "query": "Sinh viên được bảo lưu kết quả học tập trong trường hợp nào?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_expanded_002",
-    "category": "regulation",
-    "query": "Điểm thi kết thúc học phần có được phúc khảo không?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "reg_expanded_003",
-    "category": "regulation",
-    "query": "Điểm quá trình có được phúc khảo không?",
-    "expected_intent": "regulation_query",
-    "expected_strategy": "semantic_filtered",
-    "expected_target_chunk_types": [
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "mixed_expanded_001",
-    "category": "mixed",
-    "query": "Muốn tạm nghỉ học thì cần điều kiện gì và dùng mẫu đơn nào?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "mixed_expanded_002",
-    "category": "mixed",
-    "query": "Xin miễn giảm học phí thì cần quy định gì và mẫu đơn nào?",
-    "expected_intent": "mixed_query",
-    "expected_strategy": "semantic_multi_filter",
-    "expected_target_chunk_types": [
-      "form",
-      "regulation"
-    ],
-    "cohort": "all"
-  },
-  {
-    "id": "amb_expanded_001",
-    "category": "ambiguity",
-    "query": "CNTT ở đâu?",
-    "expected_intent": "needs_clarification",
-    "expected_strategy": "clarification",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "amb_expanded_002",
-    "category": "ambiguity",
-    "query": "Liên hệ tài khoản ở đâu?",
-    "expected_intent": "needs_clarification",
-    "expected_strategy": "clarification",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "ood_expanded_001",
-    "category": "out_of_domain",
-    "query": "Hôm nay nên ăn gì ở quận 5?",
-    "expected_intent": "out_of_domain",
-    "expected_strategy": "none",
-    "expected_target_chunk_types": [],
-    "cohort": "all"
-  },
-  {
-    "id": "cohort_matrix_router_prog_school_k48",
-    "category": "cohort_program_school",
-    "query": "Theo sổ tay K48-K49, trường có những ngành đào tạo nào?",
-    "cohort": "K48-K49",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "program_lookup",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ]
-  },
-  {
-    "id": "cohort_matrix_router_prog_school_k50",
-    "category": "cohort_program_school",
-    "query": "Theo sổ tay K50-K51, trường có những ngành đào tạo nào?",
-    "cohort": "K50",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "program_lookup",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ]
-  },
-  {
-    "id": "cohort_matrix_router_prog_school_k50",
-    "category": "cohort_program_school",
-    "query": "Theo sổ tay K50-K51, trường có những ngành đào tạo nào?",
-    "cohort": "K51",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "program_lookup",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ]
-  },
-  {
-    "id": "cohort_matrix_router_cntt_k48",
-    "category": "cohort_program_faculty",
-    "query": "K48-K49 khoa CNTT có những ngành nào?",
-    "cohort": "K48-K49",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "program_lookup",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ]
-  },
-  {
-    "id": "cohort_matrix_router_cntt_k50",
-    "category": "cohort_program_faculty",
-    "query": "K50-K51 khoa CNTT có những ngành nào?",
-    "cohort": "K50",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "program_lookup",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ]
-  },
-  {
-    "id": "cohort_matrix_router_cntt_k50",
-    "category": "cohort_program_faculty",
-    "query": "K50-K51 khoa CNTT có những ngành nào?",
-    "cohort": "K51",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "program_lookup",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ]
-  },
-  {
-    "id": "cohort_matrix_router_math_k50",
-    "category": "cohort_program_faculty",
-    "query": "K51 ngành Toán ứng dụng thuộc khoa nào?",
-    "cohort": "K50",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "program_lookup",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ]
-  },
-  {
-    "id": "cohort_matrix_router_math_k50",
-    "category": "cohort_program_faculty",
-    "query": "K51 ngành Toán ứng dụng thuộc khoa nào?",
-    "cohort": "K51",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "program_lookup",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ]
-  },
-  {
-    "id": "cohort_matrix_router_edtech_k50",
-    "category": "cohort_program_faculty",
-    "query": "K50 ngành Công nghệ Giáo dục thuộc khoa nào?",
-    "cohort": "K50",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "program_lookup",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ]
-  },
-  {
-    "id": "cohort_matrix_router_edtech_k50",
-    "category": "cohort_program_faculty",
-    "query": "K50 ngành Công nghệ Giáo dục thuộc khoa nào?",
-    "cohort": "K51",
-    "expected_intent": "faculty_query",
-    "expected_strategy": "program_lookup",
-    "expected_target_chunk_types": [
-      "program_directory"
-    ]
-  },
-  {
-    "id": "cohort_matrix_router_pass_k48_d",
-    "category": "cohort_score",
-    "query": "K48-K49 điểm D có được xem là đạt không?",
-    "cohort": "K48-K49",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": []
-  },
-  {
-    "id": "cohort_matrix_router_pass_k50_remaining",
-    "category": "cohort_score",
-    "query": "K50-K51 học phần còn lại điểm D+ có đạt không?",
-    "cohort": "K50",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": []
-  },
-  {
-    "id": "cohort_matrix_router_pass_k50_remaining",
-    "category": "cohort_score",
-    "query": "K50-K51 học phần còn lại điểm D+ có đạt không?",
-    "cohort": "K51",
-    "expected_intent": "score_lookup_query",
-    "expected_strategy": "structured_lookup",
-    "expected_target_chunk_types": []
-  },
-  {
-    "id": "cohort_matrix_router_form_k48",
-    "category": "cohort_form",
-    "query": "K48-K49 mẫu đơn xin tạm nghỉ học nằm ở đâu?",
-    "cohort": "K48-K49",
-    "expected_intent": "form_query",
-    "expected_strategy": "form_lookup",
-    "expected_target_chunk_types": [
-      "form"
-    ]
-  },
-  {
-    "id": "cohort_matrix_router_procedure_k50",
-    "category": "cohort_procedure",
-    "query": "K50-K51 quy trình phúc khảo điểm thi kết thúc học phần thế nào?",
-    "cohort": "K50",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ]
-  },
-  {
-    "id": "cohort_matrix_router_procedure_k50",
-    "category": "cohort_procedure",
-    "query": "K50-K51 quy trình phúc khảo điểm thi kết thúc học phần thế nào?",
-    "cohort": "K51",
-    "expected_intent": "procedure_query",
-    "expected_strategy": "semantic_filtered_rerank",
-    "expected_target_chunk_types": [
-      "procedure"
-    ]
-  }
+    {
+        "id": "reg_001",
+        "category": "regulation",
+        "query": "Điều kiện xét học bổng là gì?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_002",
+        "category": "regulation",
+        "query": "Sinh viên bị cảnh báo học tập khi nào?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_003",
+        "category": "regulation",
+        "query": "Muốn học vượt thì cần điều kiện gì?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_004",
+        "category": "regulation",
+        "query": "Một học phần có thể học lại mấy lần?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_005",
+        "category": "regulation",
+        "query": "Bao nhiêu tín chỉ thì bị chậm tiến độ?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_006",
+        "category": "regulation",
+        "query": "Khi nào sinh viên bị buộc thôi học?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_007",
+        "category": "regulation",
+        "query": "Có thể đăng ký học lại để cải thiện điểm không?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_008",
+        "category": "regulation",
+        "query": "Điểm D có được tính là đạt học phần không?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_009",
+        "category": "regulation",
+        "query": "Nếu bị điểm F thì xử lý thế nào?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_010",
+        "category": "regulation",
+        "query": "Điều kiện tốt nghiệp của sinh viên là gì?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_011",
+        "category": "regulation_paraphrase",
+        "query": "Muốn ra trường sớm thì có được học vượt không?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_012",
+        "category": "regulation_paraphrase",
+        "query": "Rớt môn thì học lại bằng cách nào?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_013",
+        "category": "regulation_paraphrase",
+        "query": "Trượt môn có phải đăng ký học lại không?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_014",
+        "category": "regulation_paraphrase",
+        "query": "Sinh viên học chậm tiến độ thì bị gì?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_015",
+        "category": "regulation_typo",
+        "query": "Dieu kien xet hoc bong la gi?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "form_001",
+        "category": "form",
+        "query": "Muốn tạm nghỉ học cần mẫu đơn nào?",
+        "expected_intent": "form_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "form_002",
+        "category": "form",
+        "query": "Có mẫu đơn xin trợ cấp xã hội không?",
+        "expected_intent": "form_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "form_003",
+        "category": "form",
+        "query": "Đơn xin thôi học cần khai thông tin gì?",
+        "expected_intent": "form_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "form_004",
+        "category": "form",
+        "query": "Muốn xác nhận sinh viên để vay vốn thì làm giấy nào?",
+        "expected_intent": "form_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "form_005",
+        "category": "form",
+        "query": "Có form theo dõi tiến độ học tập không?",
+        "expected_intent": "form_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "form_006",
+        "category": "form",
+        "query": "Đơn học lại yêu cầu thông tin gì?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "form_007",
+        "category": "form",
+        "query": "Muốn xin hỗ trợ chi phí học tập thì điền mẫu gì?",
+        "expected_intent": "form_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "form_008",
+        "category": "form",
+        "query": "Biểu mẫu miễn giảm học phí gồm gì?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "form_009",
+        "category": "form_paraphrase",
+        "query": "Cần đơn gì để quay lại học sau bảo lưu?",
+        "expected_intent": "form_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "form_010",
+        "category": "form_typo",
+        "query": "Muon tam nghi hoc can mau don nao?",
+        "expected_intent": "form_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_001",
+        "category": "office",
+        "query": "Email phòng đào tạo là gì?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_002",
+        "category": "office",
+        "query": "Website phòng CNTT là gì?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_003",
+        "category": "office",
+        "query": "Phòng CTCT-HSSV ở tầng mấy?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_004",
+        "category": "office",
+        "query": "Số điện thoại phòng Sau đại học bao nhiêu?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_005",
+        "category": "office",
+        "query": "Đơn vị nào xử lý công tác sinh viên?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_006",
+        "category": "office",
+        "query": "Phòng Kế hoạch - Tài chính làm gì?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_007",
+        "category": "office",
+        "query": "Muốn giải quyết giấy tờ sinh viên thì tìm ai?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form",
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_008",
+        "category": "office",
+        "query": "Liên hệ học vụ ở đâu?",
+        "expected_intent": "office_query",
+        "expected_strategy": "none",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_009",
+        "category": "office_paraphrase",
+        "query": "Mail của phòng đào tạo là gì?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_010",
+        "category": "office_typo",
+        "query": "Email phong dao tao la gi?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "faculty_001",
+        "category": "faculty",
+        "query": "Khoa Công nghệ thông tin có ngành nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "faculty_002",
+        "category": "faculty",
+        "query": "Khoa Tiếng Anh có những ngành nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "faculty_003",
+        "category": "faculty",
+        "query": "Khoa Toán - Tin học có email không?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "faculty_004",
+        "category": "faculty",
+        "query": "Ngành Công nghệ thông tin học xong làm nghề gì?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "faculty_005",
+        "category": "faculty",
+        "query": "Khoa Hóa học đào tạo những gì?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "faculty_006",
+        "category": "faculty",
+        "query": "Khoa Địa lí có website không?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "faculty_007",
+        "category": "faculty",
+        "query": "Tổ trực thuộc nào liên quan công nghệ?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "faculty_008",
+        "category": "faculty",
+        "query": "Ngành tiếng Anh ra trường có thể làm gì?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "faculty_009",
+        "category": "faculty_paraphrase",
+        "query": "Khoa tiếng Pháp nằm ở đâu?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "faculty_010",
+        "category": "faculty_typo",
+        "query": "Khoa cong nghe thong tin o dau?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ktx_001",
+        "category": "procedure",
+        "query": "Quy trình vào ký túc xá như thế nào?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ktx_002",
+        "category": "procedure",
+        "query": "Ai được ưu tiên vào ký túc xá?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ktx_003",
+        "category": "procedure",
+        "query": "Muốn ở nội trú thì làm sao?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ktx_004",
+        "category": "procedure",
+        "query": "Hội đồng xét KTX gồm ai?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ktx_005",
+        "category": "procedure",
+        "query": "Sinh viên nữ có được ưu tiên KTX không?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ktx_006",
+        "category": "procedure",
+        "query": "Điều kiện để vào ký túc xá là gì?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ktx_007",
+        "category": "procedure",
+        "query": "KTX xét theo tiêu chí nào?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ktx_008",
+        "category": "procedure",
+        "query": "Thủ tục vào ở nội trú như thế nào?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ktx_009",
+        "category": "procedure_paraphrase",
+        "query": "Con hộ nghèo có ưu tiên KTX không?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ktx_010",
+        "category": "procedure_typo",
+        "query": "Quy trinh vao ky tuc xa gom nhung buoc nao?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "score_001",
+        "category": "score_lookup",
+        "query": "Điểm rèn luyện 92 là loại gì?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "score_002",
+        "category": "score_lookup",
+        "query": "GPA 2.95 được xếp loại học lực gì?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "score_003",
+        "category": "score_lookup",
+        "query": "Điểm B+ quy đổi sang hệ 4 bao nhiêu?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "score_004",
+        "category": "score_lookup",
+        "query": "Điểm chữ C tương đương mấy điểm?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "score_005",
+        "category": "score_lookup",
+        "query": "Rèn luyện 49 có bị yếu không?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "score_006",
+        "category": "score_lookup",
+        "query": "3.6 GPA là xuất sắc hay giỏi?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "score_007",
+        "category": "score_lookup",
+        "query": "Điểm A có tương đương 4.0 không?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "score_008",
+        "category": "score_lookup",
+        "query": "Rèn luyện 75 là khá hay tốt?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "score_009",
+        "category": "score_typo",
+        "query": "Diem ren luyen 85 la loai gi?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "score_010",
+        "category": "score_typo",
+        "query": "GPA 3.4 la loai hoc luc gi?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "calc_001",
+        "category": "calculation",
+        "query": "Tính điểm học bổng nếu GPA 3.2 và rèn luyện 90",
+        "expected_intent": "calculation_query",
+        "expected_strategy": "calculator_tool",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "calc_002",
+        "category": "calculation",
+        "query": "Tính giúp điểm học bổng với GPA 3.6 và điểm rèn luyện 85",
+        "expected_intent": "calculation_query",
+        "expected_strategy": "calculator_tool",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "calc_003",
+        "category": "calculation",
+        "query": "Điểm học bổng là bao nhiêu nếu GPA 3.1 và rèn luyện 80?",
+        "expected_intent": "calculation_query",
+        "expected_strategy": "calculator_tool",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "calc_004",
+        "category": "calculation_typo",
+        "query": "Tinh diem hoc bong neu GPA 3.2 va ren luyen 90",
+        "expected_intent": "calculation_query",
+        "expected_strategy": "calculator_tool",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "calc_005",
+        "category": "calculation",
+        "query": "Bao nhiêu nếu điểm học bổng có GPA 2.8 và rèn luyện 95?",
+        "expected_intent": "calculation_query",
+        "expected_strategy": "calculator_tool",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "mixed_001",
+        "category": "mixed",
+        "query": "Muốn bảo lưu thì vừa cần điều kiện gì vừa cần mẫu đơn nào?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_target_chunk_types": [
+            "form",
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "mixed_002",
+        "category": "mixed",
+        "query": "Muốn xin vào KTX thì liên hệ phòng nào và dùng mẫu gì?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_target_chunk_types": [
+            "form",
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "mixed_003",
+        "category": "mixed",
+        "query": "Muốn chuyển trường thì cần biểu mẫu gì và quy định ra sao?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_target_chunk_types": [
+            "form",
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "mixed_004",
+        "category": "mixed",
+        "query": "Muốn miễn giảm học phí thì liên hệ ai và dùng đơn gì?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_target_chunk_types": [
+            "form",
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "mixed_005",
+        "category": "mixed",
+        "query": "Nếu nghỉ tạm thời xong thì làm sao học lại và dùng đơn nào?",
+        "expected_intent": "form_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "mixed_006",
+        "category": "mixed",
+        "query": "Muốn vay vốn sinh viên thì cần giấy xác nhận gì và liên hệ đâu?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form",
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "mixed_007",
+        "category": "mixed",
+        "query": "Cần mẫu đơn gì và điều kiện nào để tạm nghỉ học?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_target_chunk_types": [
+            "form",
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "mixed_008",
+        "category": "mixed",
+        "query": "Có cần nộp đơn để xét KTX không?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_target_chunk_types": [
+            "form",
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "mixed_009",
+        "category": "mixed",
+        "query": "Xin trợ cấp xã hội cần mẫu đơn và điều kiện gì?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_target_chunk_types": [
+            "form",
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "mixed_010",
+        "category": "mixed_typo",
+        "query": "Muon bao luu can dieu kien va mau don nao?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_target_chunk_types": [
+            "form",
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "amb_001",
+        "category": "ambiguity",
+        "query": "CNTT ở đâu?",
+        "expected_intent": "office_query",
+        "expected_strategy": "none",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "amb_002",
+        "category": "ambiguity",
+        "query": "Học vụ liên hệ ai?",
+        "expected_intent": "office_query",
+        "expected_strategy": "none",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "amb_003",
+        "category": "ambiguity",
+        "query": "Giấy tờ sinh viên làm ở đâu?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "none",
+        "expected_target_chunk_types": [
+            "form",
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "amb_004",
+        "category": "ambiguity",
+        "query": "Học bổng hỏi ai?",
+        "expected_intent": "office_query",
+        "expected_strategy": "none",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "amb_005",
+        "category": "ambiguity",
+        "query": "Liên hệ ai?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ood_001",
+        "category": "out_of_domain",
+        "query": "Trường có bán bánh tráng trộn không?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "none",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ood_002",
+        "category": "out_of_domain",
+        "query": "Hôm nay thời tiết ở TP.HCM thế nào?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "none",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ood_003",
+        "category": "out_of_domain",
+        "query": "Làm sao để nấu phở ngon?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "none",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ood_004",
+        "category": "out_of_domain",
+        "query": "Tư vấn mua laptop gaming đi",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ood_005",
+        "category": "out_of_domain",
+        "query": "Bitcoin hôm nay tăng hay giảm?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "neg_001",
+        "category": "negative_regression",
+        "query": "Phòng CNTT ở đâu?",
+        "expected_intent": "office_query",
+        "expected_strategy": "none",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "neg_002",
+        "category": "negative_regression",
+        "query": "Khoa CNTT ở đâu?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "none",
+        "expected_target_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "neg_003",
+        "category": "negative_regression",
+        "query": "Website phòng CNTT là gì?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "neg_004",
+        "category": "negative_regression",
+        "query": "Khoa Công nghệ thông tin có website không?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "neg_005",
+        "category": "negative_regression",
+        "query": "Qua môn cần bao nhiêu điểm?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_016",
+        "category": "regulation_paraphrase",
+        "query": "Sinh viên được phép nghỉ học tạm thời khi nào?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_017",
+        "category": "regulation_paraphrase",
+        "query": "Cần đáp ứng gì để xét học bổng khuyến khích học tập?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "form_011",
+        "category": "form_paraphrase",
+        "query": "Phiếu đánh giá rèn luyện dùng để làm gì?",
+        "expected_intent": "form_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "form_012",
+        "category": "form_paraphrase",
+        "query": "Xác nhận sinh viên cần giấy gì?",
+        "expected_intent": "form_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_011",
+        "category": "office_paraphrase",
+        "query": "Văn phòng phòng Công tác chính trị và HSSV ở đâu?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_012",
+        "category": "office_paraphrase",
+        "query": "SĐT phòng đào tạo là bao nhiêu?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "faculty_011",
+        "category": "faculty_paraphrase",
+        "query": "Chuyên ngành của khoa Toán - Tin học gồm gì?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "faculty_012",
+        "category": "faculty_paraphrase",
+        "query": "Ngành Vật lí sau này làm gì?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "faculty_program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ktx_011",
+        "category": "procedure_paraphrase",
+        "query": "Nội trú xét theo thứ tự ưu tiên nào?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ktx_012",
+        "category": "procedure_paraphrase",
+        "query": "Ký túc xá công bố kết quả xét ở đâu?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "score_011",
+        "category": "score_lookup",
+        "query": "Điểm trung bình 3.2 xếp loại học lực gì?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "score_012",
+        "category": "score_lookup",
+        "query": "Điểm chữ D+ đổi sang thang 4 là bao nhiêu?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "mixed_011",
+        "category": "multi_hop",
+        "query": "Tạm nghỉ học cần điều kiện gì và mẫu đơn nào?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_target_chunk_types": [
+            "form",
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "mixed_012",
+        "category": "multi_hop",
+        "query": "Xin vào ký túc xá cần hồ sơ gì và quy trình xét ra sao?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_target_chunk_types": [
+            "form",
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "ood_006",
+        "category": "out_of_domain",
+        "query": "Có nên học Python hay Java trước?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "cohort_prog_001",
+        "category": "program_school_cohort",
+        "query": "Trường đang có những ngành đào tạo nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "cohort_prog_002",
+        "category": "program_school_cohort",
+        "query": "Hiện trường có những ngành nào vậy?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "cohort_prog_003",
+        "category": "program_school_cohort",
+        "query": "K48-K49 trường có các ngành nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ],
+        "cohort": "K48-K49"
+    },
+    {
+        "id": "cohort_prog_004",
+        "category": "program_school_cohort",
+        "query": "Khóa 50 51 có những ngành đào tạo nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ],
+        "cohort": "K50"
+    },
+    {
+        "id": "cohort_prog_004",
+        "category": "program_school_cohort",
+        "query": "Khóa 50 51 có những ngành đào tạo nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ],
+        "cohort": "K51"
+    },
+    {
+        "id": "cohort_prog_005",
+        "category": "program_school_cohort_typo",
+        "query": "truong dang co nhung nganh nao",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "cohort_prog_006",
+        "category": "program_faculty_scope",
+        "query": "Khoa Công nghệ Thông tin có những ngành nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "cohort_prog_007",
+        "category": "program_faculty_scope",
+        "query": "Khoa CNTT đào tạo ngành gì?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "cohort_prog_008",
+        "category": "program_faculty_scope",
+        "query": "Khoa Toán - Tin học có ngành nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "cohort_prog_009",
+        "category": "program_faculty_scope",
+        "query": "Khoa Vật lý phụ trách ngành nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "cohort_prog_010",
+        "category": "program_faculty_scope",
+        "query": "Khoa Địa lý có ngành Lịch sử - Địa lý không?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "cohort_prog_011",
+        "category": "program_detail",
+        "query": "Ngành Công nghệ Thông tin học xong làm nghề gì?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "faculty_directory",
+            "program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "cohort_prog_012",
+        "category": "program_detail",
+        "query": "Ngành Sư phạm Công nghệ thuộc khoa nào?",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "cohort_score_001",
+        "category": "cohort_score",
+        "query": "K48-K49 mấy điểm thì qua môn?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "K48-K49"
+    },
+    {
+        "id": "cohort_score_002",
+        "category": "cohort_score",
+        "query": "K50-K51 D+ có qua môn không?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "K50"
+    },
+    {
+        "id": "cohort_score_002",
+        "category": "cohort_score",
+        "query": "K50-K51 D+ có qua môn không?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "K51"
+    },
+    {
+        "id": "cohort_score_003",
+        "category": "cohort_score",
+        "query": "Khóa 50 51 học phần còn lại bao nhiêu điểm mới đạt?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "K50"
+    },
+    {
+        "id": "cohort_score_003",
+        "category": "cohort_score",
+        "query": "Khóa 50 51 học phần còn lại bao nhiêu điểm mới đạt?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "K51"
+    },
+    {
+        "id": "cohort_score_004",
+        "category": "cohort_score",
+        "query": "K51 học phần nền tảng điểm D có đạt không?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "K50"
+    },
+    {
+        "id": "cohort_score_004",
+        "category": "cohort_score",
+        "query": "K51 học phần nền tảng điểm D có đạt không?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "K51"
+    },
+    {
+        "id": "cohort_score_005",
+        "category": "cohort_score_typo",
+        "query": "khoa 49 may diem thi qua mon",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "K48-K49"
+    },
+    {
+        "id": "cohort_score_006",
+        "category": "score_boundary",
+        "query": "Điểm 4.8 là D+ hay C?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "cohort_score_007",
+        "category": "score_boundary",
+        "query": "Điểm 5.5 tương ứng điểm chữ gì?",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "form_expanded_001",
+        "category": "form_lookup",
+        "query": "Có mẫu đơn xin cấp giấy xác nhận sinh viên không?",
+        "expected_intent": "form_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "form_expanded_002",
+        "category": "form_lookup",
+        "query": "Em cần mẫu đơn xin miễn giảm học phí",
+        "expected_intent": "form_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "form_expanded_003",
+        "category": "form_lookup",
+        "query": "Mẫu đơn đề nghị hỗ trợ chi phí học tập nằm ở đâu?",
+        "expected_intent": "form_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_expanded_001",
+        "category": "office_lookup",
+        "query": "Tài khoản sinh viên bị lỗi thì liên hệ phòng nào?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_expanded_002",
+        "category": "office_lookup",
+        "query": "Học phí liên hệ email nào?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "office_expanded_003",
+        "category": "office_lookup",
+        "query": "Phúc khảo điểm thi thì liên hệ đơn vị nào?",
+        "expected_intent": "office_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "office_directory"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "procedure_expanded_001",
+        "category": "procedure",
+        "query": "Quy trình phúc khảo điểm thi kết thúc học phần như thế nào?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "procedure_expanded_002",
+        "category": "procedure",
+        "query": "Muốn tạm nghỉ học thì cần làm thủ tục gì?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "procedure_expanded_003",
+        "category": "procedure",
+        "query": "Sinh viên muốn quay lại học sau tạm nghỉ thì làm sao?",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_expanded_001",
+        "category": "regulation",
+        "query": "Sinh viên được bảo lưu kết quả học tập trong trường hợp nào?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_expanded_002",
+        "category": "regulation",
+        "query": "Điểm thi kết thúc học phần có được phúc khảo không?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "reg_expanded_003",
+        "category": "regulation",
+        "query": "Điểm quá trình có được phúc khảo không?",
+        "expected_intent": "regulation_query",
+        "expected_strategy": "semantic_filtered",
+        "expected_target_chunk_types": [
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "mixed_expanded_001",
+        "category": "mixed",
+        "query": "Muốn tạm nghỉ học thì cần điều kiện gì và dùng mẫu đơn nào?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_target_chunk_types": [
+            "form",
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "mixed_expanded_002",
+        "category": "mixed",
+        "query": "Xin miễn giảm học phí thì cần quy định gì và mẫu đơn nào?",
+        "expected_intent": "mixed_query",
+        "expected_strategy": "semantic_multi_filter",
+        "expected_target_chunk_types": [
+            "form",
+            "regulation"
+        ],
+        "cohort": "all"
+    },
+    {
+        "id": "amb_expanded_001",
+        "category": "ambiguity",
+        "query": "CNTT ở đâu?",
+        "expected_intent": "needs_clarification",
+        "expected_strategy": "none",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "amb_expanded_002",
+        "category": "ambiguity",
+        "query": "Liên hệ tài khoản ở đâu?",
+        "expected_intent": "needs_clarification",
+        "expected_strategy": "clarification",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "ood_expanded_001",
+        "category": "out_of_domain",
+        "query": "Hôm nay nên ăn gì ở quận 5?",
+        "expected_intent": "out_of_domain",
+        "expected_strategy": "none",
+        "expected_target_chunk_types": [],
+        "cohort": "all"
+    },
+    {
+        "id": "cohort_matrix_router_prog_school_k48",
+        "category": "cohort_program_school",
+        "query": "Theo sổ tay K48-K49, trường có những ngành đào tạo nào?",
+        "cohort": "K48-K49",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ]
+    },
+    {
+        "id": "cohort_matrix_router_prog_school_k50",
+        "category": "cohort_program_school",
+        "query": "Theo sổ tay K50-K51, trường có những ngành đào tạo nào?",
+        "cohort": "K50",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ]
+    },
+    {
+        "id": "cohort_matrix_router_prog_school_k50",
+        "category": "cohort_program_school",
+        "query": "Theo sổ tay K50-K51, trường có những ngành đào tạo nào?",
+        "cohort": "K51",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ]
+    },
+    {
+        "id": "cohort_matrix_router_cntt_k48",
+        "category": "cohort_program_faculty",
+        "query": "K48-K49 khoa CNTT có những ngành nào?",
+        "cohort": "K48-K49",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ]
+    },
+    {
+        "id": "cohort_matrix_router_cntt_k50",
+        "category": "cohort_program_faculty",
+        "query": "K50-K51 khoa CNTT có những ngành nào?",
+        "cohort": "K50",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ]
+    },
+    {
+        "id": "cohort_matrix_router_cntt_k50",
+        "category": "cohort_program_faculty",
+        "query": "K50-K51 khoa CNTT có những ngành nào?",
+        "cohort": "K51",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ]
+    },
+    {
+        "id": "cohort_matrix_router_math_k50",
+        "category": "cohort_program_faculty",
+        "query": "K51 ngành Toán ứng dụng thuộc khoa nào?",
+        "cohort": "K50",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ]
+    },
+    {
+        "id": "cohort_matrix_router_math_k50",
+        "category": "cohort_program_faculty",
+        "query": "K51 ngành Toán ứng dụng thuộc khoa nào?",
+        "cohort": "K51",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ]
+    },
+    {
+        "id": "cohort_matrix_router_edtech_k50",
+        "category": "cohort_program_faculty",
+        "query": "K50 ngành Công nghệ Giáo dục thuộc khoa nào?",
+        "cohort": "K50",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ]
+    },
+    {
+        "id": "cohort_matrix_router_edtech_k50",
+        "category": "cohort_program_faculty",
+        "query": "K50 ngành Công nghệ Giáo dục thuộc khoa nào?",
+        "cohort": "K51",
+        "expected_intent": "faculty_query",
+        "expected_strategy": "program_lookup",
+        "expected_target_chunk_types": [
+            "program_directory"
+        ]
+    },
+    {
+        "id": "cohort_matrix_router_pass_k48_d",
+        "category": "cohort_score",
+        "query": "K48-K49 điểm D có được xem là đạt không?",
+        "cohort": "K48-K49",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": []
+    },
+    {
+        "id": "cohort_matrix_router_pass_k50_remaining",
+        "category": "cohort_score",
+        "query": "K50-K51 học phần còn lại điểm D+ có đạt không?",
+        "cohort": "K50",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": []
+    },
+    {
+        "id": "cohort_matrix_router_pass_k50_remaining",
+        "category": "cohort_score",
+        "query": "K50-K51 học phần còn lại điểm D+ có đạt không?",
+        "cohort": "K51",
+        "expected_intent": "score_lookup_query",
+        "expected_strategy": "structured_lookup",
+        "expected_target_chunk_types": []
+    },
+    {
+        "id": "cohort_matrix_router_form_k48",
+        "category": "cohort_form",
+        "query": "K48-K49 mẫu đơn xin tạm nghỉ học nằm ở đâu?",
+        "cohort": "K48-K49",
+        "expected_intent": "form_query",
+        "expected_strategy": "form_lookup",
+        "expected_target_chunk_types": [
+            "form"
+        ]
+    },
+    {
+        "id": "cohort_matrix_router_procedure_k50",
+        "category": "cohort_procedure",
+        "query": "K50-K51 quy trình phúc khảo điểm thi kết thúc học phần thế nào?",
+        "cohort": "K50",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ]
+    },
+    {
+        "id": "cohort_matrix_router_procedure_k50",
+        "category": "cohort_procedure",
+        "query": "K50-K51 quy trình phúc khảo điểm thi kết thúc học phần thế nào?",
+        "cohort": "K51",
+        "expected_intent": "procedure_query",
+        "expected_strategy": "semantic_filtered_rerank",
+        "expected_target_chunk_types": [
+            "procedure"
+        ]
+    }
 ]

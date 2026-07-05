@@ -545,12 +545,7 @@ MANUAL_PROGRAM_FACULTY = {
 }
 
 
-def fold_text(text):
-    text = str(text or "").lower().replace("đ", "d").replace("Đ", "D")
-    decomposed = unicodedata.normalize("NFD", text)
-    text = "".join(ch for ch in decomposed if unicodedata.category(ch) != "Mn")
-    text = re.sub(r"[^a-z0-9]+", " ", text)
-    return re.sub(r"\s+", " ", text).strip()
+
 
 
 FACULTY_NAME_ALIASES = {

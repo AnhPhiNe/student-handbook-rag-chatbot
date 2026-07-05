@@ -2,7 +2,6 @@ import os
 from collections.abc import Iterator
 from typing import Any
 
-from langfuse import observe
 from src.common.env_loader import load_project_env
 
 

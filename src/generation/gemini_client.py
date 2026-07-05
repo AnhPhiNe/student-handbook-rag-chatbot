@@ -7,7 +7,6 @@ from collections.abc import Iterator
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeoutError
 from typing import Any
 
-from langfuse import observe
 
 from src.common.env_loader import load_project_env
 

@@ -5,7 +5,6 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
-from langfuse import observe
 
 from src.common.cohort import resolve_cohort_from_query
 from src.retrieval.core.retrieval_pipeline import run_retrieval_pipeline
@@ -525,7 +524,6 @@ class AnswerPipeline:
         Yields:
             Các chunks dữ liệu (metadata, token, progress) để Frontend vẽ UI thời gian thực.
         """
-        trace_id = ""
         run_id = None
         
         from src.api.usage_tracker import UsageTracker
@@ -1045,7 +1043,6 @@ class AnswerPipeline:
         model_used: str | None = None,
     ) -> dict[str, Any]:
         query_rewrite_payload = query_rewrite.to_dict() if query_rewrite else None
-        trace_id = ""
         run_id = None
         if model_used is None:
             if used_cache:

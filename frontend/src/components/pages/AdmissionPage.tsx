@@ -168,12 +168,14 @@ export function AdmissionPage() {
 
   useEffect(() => {
     if (methods.length > 0 && !methods.includes(admissionMethod)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAdmissionMethod(methods[0]);
     }
   }, [methods, admissionMethod]);
 
   useEffect(() => {
     if (subjectGroup && !subjectGroups.includes(subjectGroup)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSubjectGroup('');
     }
   }, [subjectGroups, subjectGroup]);

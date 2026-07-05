@@ -47,6 +47,7 @@ export function ActiveUsersBadge() {
   useEffect(() => {
     // Nếu lần đầu (0), thì gán thẳng luôn tránh đếm từ 0 lâu
     if (displayUsers === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDisplayUsers(targetUsers);
       return;
     }

@@ -21,7 +21,6 @@ from uuid import uuid4
 import threading
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
-from langfuse import Langfuse
 from src.api.langfuse_helper import push_trace_to_langfuse
 
 from src.api.chat_controls import (

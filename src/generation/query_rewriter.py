@@ -8,7 +8,6 @@ from dataclasses import dataclass
 from typing import Any
 
 from groq import Groq
-from langfuse import observe
 
 from src.common.env_loader import load_project_env
 from src.generation.context_resolver import (

@@ -12,6 +12,7 @@ export function ScrollCue({ activeTab }: ScrollCueProps) {
 
   useEffect(() => {
     if (SCROLL_CUE_EXCLUDED_TABS.has(activeTab)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsVisible(false);
       return;
     }

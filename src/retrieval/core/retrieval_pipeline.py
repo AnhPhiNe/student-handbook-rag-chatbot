@@ -3,7 +3,6 @@ import os
 import re
 import unicodedata
 from typing import Any
-from langfuse import observe
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
 
 logger = logging.getLogger(__name__)

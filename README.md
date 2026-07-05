@@ -275,6 +275,7 @@ Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 
 
 | Metric | Score |
 |---|---:|
+| Cases | 150 (Golden) |
 | Answer relevancy | 81.27% |
 | Faithfulness | 76.87% |
 | Answer correctness | 51.80% |

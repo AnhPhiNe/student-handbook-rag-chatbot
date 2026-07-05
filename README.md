@@ -16,7 +16,7 @@
   <img src="https://img.shields.io/badge/Redis-Caching-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis">
 </p>
 
-## Overview
+## 🌟 Overview
 
 **HCMUE AI Student Handbook Assistant** is a cohort-aware Retrieval-Augmented Generation system for answering questions from HCMUE student handbooks.
 
@@ -33,9 +33,9 @@ The result is a production-oriented public beta assistant that can answer practi
 - "Van de hoc phi lien he phong nao?"
 - "Tam nghi hoc can bieu mau nao?"
 
-## Key Features
+## ✨ Key Features
 
-### 1. Cohort-Aware Handbook Reasoning
+### 1️⃣ Cohort-Aware Handbook Reasoning
 
 The system supports handbook differences between **K48-K49** and **K50-K51** instead of treating all documents as one flat knowledge base.
 
@@ -43,7 +43,7 @@ The system supports handbook differences between **K48-K49** and **K50-K51** ins
 - Frontend tools and chat answers respect the selected cohort.
 - Grade thresholds and program lists are handled differently when handbook rules differ by cohort.
 
-### 2. Hybrid Retrieval With Reranking
+### 2️⃣ Hybrid Retrieval With Reranking
 
 For true RAG questions, the system combines:
 
@@ -53,7 +53,7 @@ For true RAG questions, the system combines:
 - Cross-encoder reranking to improve final context quality.
 - Metadata filtering and boosting by cohort and content type.
 
-### 3. Structured Lookup for Deterministic Facts
+### 3️⃣ Structured Lookup for Deterministic Facts
 
 Information that should not be "generated from vibes" is extracted into structured stores:
 
@@ -66,7 +66,7 @@ Information that should not be "generated from vibes" is extracted into structur
 
 This design reduces hallucination on high-frequency student questions.
 
-### 4. Parent-Child Retrieval Architecture
+### 4️⃣ Parent-Child Retrieval Architecture
 
 The project uses a parent-child retrieval design:
 
@@ -74,7 +74,7 @@ The project uses a parent-child retrieval design:
 - **MongoDB Atlas** stores parent documents for richer context expansion.
 - The app currently uses Qdrant collection `student_handbook_semantic_v4`.
 
-### 5. Production-Oriented LLM Pipeline
+### 5️⃣ Production-Oriented LLM Pipeline
 
 The generation layer includes:
 
@@ -85,11 +85,11 @@ The generation layer includes:
 - Citation selection that prefers matching cohort, content type, section, and page metadata.
 - Guardrails for out-of-domain, unsafe, ambiguous, or low-context questions.
 
-## System Snapshot
+## 📸 System Snapshot
 
 | Component | Current State |
 |---|---:|
-| Supported cohorts | K48-K49, K50-K51 |
+| Supported cohorts | K48-K49, K50, K51 |
 | Semantic vector chunks | 798 |
 | MongoDB parent docs | 435 |
 | Program directory records | 86 |
@@ -97,7 +97,7 @@ The generation layer includes:
 | Qdrant collection | `student_handbook_semantic_v4` |
 | Evaluation cases | 500 (150 Golden, 200 Beta, 150 Ragas) |
 
-## Architecture
+## 🏗️ Architecture
 
 ```mermaid
 flowchart LR
@@ -124,7 +124,7 @@ flowchart LR
     API -. optional .-> Trace["Langfuse Tracing"]
 ```
 
-## RAG Processing Pipeline
+## ⚙️ RAG Processing Pipeline
 
 ```mermaid
 flowchart TD
@@ -150,7 +150,7 @@ flowchart TD
     Cite --> Output["Answer + Sources"]
 ```
 
-### Pipeline Breakdown
+### 🔍 Pipeline Breakdown
 
 1. **Input validation**
    - Filters out obviously invalid or out-of-domain questions.
@@ -179,7 +179,7 @@ flowchart TD
 7. **Citation formatting**
    - Returns compact sources with metadata such as cohort, content type, and source pages.
 
-## Data and Ingestion Design
+## 💾 Data and Ingestion Design
 
 The pipeline processes each handbook through a document profile instead of relying on one-off hardcoded sections.
 
@@ -200,7 +200,7 @@ flowchart TD
     Chunk --> Docstore["MongoDB parent_docs"]
 ```
 
-### Important ingestion choices
+### 💡 Important ingestion choices
 
 - Keep one unified Qdrant collection instead of one collection per handbook.
 - Use metadata filters to separate cohort-specific retrieval.
@@ -208,7 +208,7 @@ flowchart TD
 - Preserve enough source metadata for citation and verification.
 - Validate chunk IDs, point IDs, cohort fields, document IDs, and content types before remote push.
 
-## Source Code Architecture
+## 📂 Source Code Architecture
 
 ```text
 student_handbook_rag/
@@ -232,11 +232,11 @@ student_handbook_rag/
 `-- tests/                    # Unit and integration tests
 ```
 
-## Evaluation
+## 📊 Evaluation
 
 The evaluation design separates deterministic behavior from generated RAG behavior.
 
-### 1. Structured / Tool Evaluation
+### 1️⃣ Structured / Tool Evaluation
 
 Structured questions are checked with exactness, item count, cohort correctness, and citation metadata. This avoids incorrectly using LLM-as-a-Judge for answers that should be deterministic.
 
@@ -249,7 +249,7 @@ Structured questions are checked with exactness, item count, cohort correctness,
 | Intent accuracy | 100.00% |
 | Strategy accuracy | 100.00% |
 
-### 2. True-RAG Retrieval Evaluation
+### 2️⃣ True-RAG Retrieval Evaluation
 
 Retrieval is evaluated only on long-form RAG cases such as regulations, procedures, offices, and faculty details.
 
@@ -269,7 +269,7 @@ Breakdown by content type:
 | Procedures | 100.00% | 100.00% | 100.00% |
 | Regulation sections | 86.67% | 74.44% | 77.97% |
 
-### 3. RAGAS-Style Gemini Judge
+### 3️⃣ RAGAS-Style Gemini Judge
 
 Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 3.1 Flash Lite as Judge. Deterministic lookup cases are excluded from the headline RAGAS metrics.
 
@@ -283,14 +283,14 @@ Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 
 | Context recall | 61.13% |
 | Citation correctness | 77.20% |
 
-### How to read these numbers
+### 📖 How to read these numbers
 
 - **Cohort Segregation (K50 vs K51):** The system enforces strict isolation between K50 and K51 regulations. This drastically increases the difficulty of the Retrieval task (slightly lowering Hit Rate and Correctness) but establishes a baseline **Faithfulness of 76.87%**, ensuring students never receive mixed-up regulations.
 - **Comprehensive RAGAS Evaluation:** Although Retrieval quality is already rigorously measured using exact math in Table 2 (Hit Rate, nDCG), we present the full RAGAS suite here for absolute transparency. Note that LLM-judged Context Precision/Recall scores are naturally lower than mathematical Hit Rates due to the strictness of the LLM Judge.
 - Deterministic lookups and retrieval placement are stable enough for public beta. Generated answer quality (Answer Correctness 51.8%) is still the primary risk area and is being prioritized for the next iteration.
 - Metrics are reported honestly instead of being filtered to only easy cases (150 Golden Queries tested).
 
-## CI/CD and Quality Gates
+## 🚀 CI/CD and Quality Gates
 
 GitHub Actions runs offline checks on every push and pull request:
 
@@ -307,7 +307,7 @@ The deployment flow keeps GitHub source code and Hugging Face Space deployment s
 - Hugging Face Space receives a clean backend-only deployment bundle.
 - Qdrant vectors and MongoDB parent docs are managed as external data services.
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 | Layer | Tools |
 |---|---|
@@ -323,9 +323,9 @@ The deployment flow keeps GitHub source code and Hugging Face Space deployment s
 | Evaluation | deterministic eval, retrieval eval, RAGAS-style Gemini Judge |
 | Deployment | GitHub, Hugging Face Spaces |
 
-## Setup
+## 💻 Setup
 
-### Backend
+### 🔙 Backend
 
 ```bash
 python -m venv .venv
@@ -334,7 +334,7 @@ pip install -r requirements.txt
 uvicorn src.api.main:app --host 0.0.0.0 --port 7860
 ```
 
-### Frontend
+### 🎨 Frontend
 
 ```bash
 cd frontend
@@ -342,7 +342,7 @@ npm install
 npm run dev
 ```
 
-## Environment Variables
+## 🔑 Environment Variables
 
 Create a `.env` file in the repository root. Do not commit real secrets.
 

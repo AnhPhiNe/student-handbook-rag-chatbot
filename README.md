@@ -1,5 +1,6 @@
 # HCMUE AI - Student Handbook RAG Assistant
 
+> **Version:** 1.0.0-beta (Updated: July 2026) | **License:** MIT
 > Independent, non-commercial student project for the HCMUE student community.
 > This is not an official application of Ho Chi Minh City University of Education.
 > The assistant is built to help students look up handbook information faster, while important decisions should still be verified from citations or official offices.
@@ -12,13 +13,22 @@
   <img src="https://img.shields.io/badge/MongoDB-Parent%20Docs-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
   <img src="https://img.shields.io/badge/Groq-LLM%20Orchestration-F55036?style=for-the-badge" alt="Groq">
   <img src="https://img.shields.io/badge/Gemini-LLM%20Judge-8E75B2?style=for-the-badge&logo=google&logoColor=white" alt="Gemini">
-  <img src="https://img.shields.io/badge/Langfuse-Tracing-FF6136?style=for-the-badge" alt="Langfuse">
-  <img src="https://img.shields.io/badge/Redis-Caching-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis">
+  <br>
+  <a href="https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api">
+    <img src="https://img.shields.io/badge/Live_API_Demo-HuggingFace-FFD21E?style=for-the-badge&logo=huggingface" alt="Live API Demo">
+  </a>
 </p>
 
 ## 🌟 Overview
 
+![Chat Interface Placeholder](./frontend/public/chat_ui_screenshot.png)
+
 **HCMUE AI Student Handbook Assistant** is a cohort-aware Retrieval-Augmented Generation system for answering questions from HCMUE student handbooks.
+
+## 🚀 Live Demo
+
+- **Frontend Chat UI (Custom Domain):** [hcmuebot.id.vn](https://hcmuebot.id.vn)
+- **Backend API & Interactive Swagger UI:** [HCMUE Handbook RAG (Hugging Face Space)](https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api)
 
 Unlike a simple "PDF chatbot", this project separates the system into two complementary layers:
 
@@ -64,7 +74,7 @@ Information that should not be "generated from vibes" is extracted into structur
 - `office_directory`: offices, responsibilities, emails, phone numbers.
 - `form_templates`: form name, purpose, source page, and routing to the Forms page.
 
-This design reduces hallucination on high-frequency student questions.
+This architecture significantly reduces LLM hallucination on high-frequency student questions. To avoid LLM math limitations and hallucinated calculations, complex logic such as GPA and tuition estimation is offloaded to dedicated **Deterministic UI Tools** instead of relying on the LLM to compute results through generation.
 
 ### 4️⃣ Parent-Child Retrieval Architecture
 
@@ -152,32 +162,9 @@ flowchart TD
 
 ### 🔍 Pipeline Breakdown
 
-1. **Input validation**
-   - Filters out obviously invalid or out-of-domain questions.
-   - Keeps the system focused on HCMUE handbook and student-service topics.
-
-2. **Query rewriting**
-   - Handles accentless Vietnamese and short/typo-prone queries.
-   - Improves retrieval without changing the user's intent.
-
-3. **Intent routing**
-   - Sends deterministic questions to structured lookup.
-   - Sends regulation/procedure questions to true RAG retrieval.
-
-4. **Hybrid retrieval**
-   - Combines vector retrieval and BM25.
-   - Applies cohort/content-type filters when available.
-
-5. **Reranking and parent expansion**
-   - Reranks candidates with a local cross-encoder.
-   - Expands selected chunks into parent context from MongoDB when needed.
-
-6. **Answer generation**
-   - Uses lookup/RAG context as source of truth.
-   - Refuses to overclaim when context is missing.
-
-7. **Citation formatting**
-   - Returns compact sources with metadata such as cohort, content type, and source pages.
+- **Input validation & Rewriting:** Filters invalid queries and rewrites them into accentless, complete sentences.
+- **Intent Routing:** Sends deterministic queries to structured lookups, and long-form questions to the Hybrid RAG pipeline.
+- **Hybrid Retrieval & Generation:** Combines Vector + BM25, reranks with cross-encoder, expands context via MongoDB, and enforces strict cohort guardrails during generation.
 
 ## 💾 Data and Ingestion Design
 
@@ -200,13 +187,6 @@ flowchart TD
     Chunk --> Docstore["MongoDB parent_docs"]
 ```
 
-### 💡 Important ingestion choices
-
-- Keep one unified Qdrant collection instead of one collection per handbook.
-- Use metadata filters to separate cohort-specific retrieval.
-- Keep repetitive forms and templates mostly in `form_templates`, not semantic RAG.
-- Preserve enough source metadata for citation and verification.
-- Validate chunk IDs, point IDs, cohort fields, document IDs, and content types before remote push.
 
 ## 📂 Source Code Architecture
 
@@ -217,6 +197,7 @@ student_handbook_rag/
 |   |-- raw/                  # Original source PDFs
 |   |-- processed/            # Structured data, chunks, metadata artifacts
 |   `-- eval/                 # Golden evaluation datasets
+|-- docs/                     # Technical specifications, testing, and script guides
 |-- frontend/                 # React + Vite frontend
 |-- scripts/                  # Ingestion, deployment, evaluation, debug scripts
 |-- src/
@@ -248,6 +229,8 @@ Structured questions are checked with exactness, item count, cohort correctness,
 | Citation metadata accuracy | 93.94% |
 | Intent accuracy | 100.00% |
 | Strategy accuracy | 100.00% |
+| PII Directory Accuracy | 100.00% |
+| Out-of-domain Rejection Rate | 98.00% |
 
 ### 2️⃣ True-RAG Retrieval Evaluation
 
@@ -262,12 +245,12 @@ Retrieval is evaluated only on long-form RAG cases such as regulations, procedur
 
 Breakdown by content type:
 
-| Content Type | Hit@3 | MRR | nDCG@5 |
-|---|---:|---:|---:|
-| Faculty directory | 100.00% | 100.00% | 96.88% |
-| Office directory | 90.48% | 90.48% | 90.48% |
-| Procedures | 100.00% | 100.00% | 100.00% |
-| Regulation sections | 86.67% | 74.44% | 77.97% |
+| Content Type | Cases (N) | Hit@3 | MRR | nDCG@5 |
+|---|---:|---:|---:|---:|
+| Faculty directory | 11 | 100.00% | 100.00% | 96.88% |
+| Office directory | 21 | 90.48% | 90.48% | 90.48% |
+| Procedures | 28 | 100.00% | 100.00% | 100.00% |
+| Regulation sections | 90 | 86.67% | 74.44% | 77.97% |
 
 ### 3️⃣ RAGAS-Style Gemini Judge
 
@@ -285,8 +268,10 @@ Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 
 
 ### 📖 How to read these numbers
 
+
 - **Cohort Segregation (K50 vs K51):** The system enforces strict isolation between K50 and K51 regulations. This drastically increases the difficulty of the Retrieval task (slightly lowering Hit Rate and Correctness) but establishes a baseline **Faithfulness of 76.87%**, ensuring students never receive mixed-up regulations.
 - **Comprehensive RAGAS Evaluation:** Although Retrieval quality is already rigorously measured using exact math in Table 2 (Hit Rate, nDCG), we present the full RAGAS suite here for absolute transparency. Note that LLM-judged Context Precision/Recall scores are naturally lower than mathematical Hit Rates due to the strictness of the LLM Judge.
+- **Relevancy & Citation:** High Answer Relevancy (81.27%) and Citation Correctness (77.20%) demonstrate the system's strong ability to stay on-topic and provide verifiable handbook references, even when generative correctness fluctuates.
 - Deterministic lookups and retrieval placement are stable enough for public beta. Generated answer quality (Answer Correctness 51.8%) is still the primary risk area and is being prioritized for the next iteration.
 - Metrics are reported honestly instead of being filtered to only easy cases (150 Golden Queries tested).
 
@@ -321,15 +306,21 @@ The deployment flow keeps GitHub source code and Hugging Face Space deployment s
 | LLM provider | Groq model fallback chain |
 | Cache | Redis when available, local JSON fallback |
 | Evaluation | deterministic eval, retrieval eval, RAGAS-style Gemini Judge |
-| Deployment | GitHub, Hugging Face Spaces |
+| Deployment | Vercel (Frontend), Hugging Face Spaces (Backend) |
 
 ## 💻 Setup
 
 ### 🔙 Backend
 
 ```bash
+# 1. Create virtual environment
 python -m venv .venv
-.venv\Scripts\activate
+
+# 2. Activate it
+source .venv/bin/activate  # macOS / Linux
+# .venv\Scripts\activate   # Windows
+
+# 3. Install and run
 pip install -r requirements.txt
 uvicorn src.api.main:app --host 0.0.0.0 --port 7860
 ```
@@ -348,7 +339,7 @@ Create a `.env` file in the repository root. Do not commit real secrets.
 
 ```env
 # LLM
-GROQ_API_KEYS=your_groq_key_1,your_groq_key_2
+GROQ_API_KEYS=your_groq_key_1
 GEMINI_API_KEY=your_gemini_key_for_eval
 
 # Vector database
@@ -356,24 +347,12 @@ VECTORDB_PROVIDER=qdrant_cloud
 QDRANT_URL=https://your-qdrant-cluster-url
 QDRANT_API_KEY=your_qdrant_key
 
-# Runtime collection is configured in YAML as:
-# student_handbook_semantic_v4
-
-# Parent document store
-MONGODB_URL=mongodb+srv://user:password@cluster.mongodb.net/?appName=chatbotHCMUE
-MONGODB_PARENT_LOOKUP_ENABLED=true
-
-# Cache
-REDIS_URL=rediss://default:password@host:6379
-STUDENT_RAG_DISABLE_REDIS=false
-
-# Frontend / CORS
-STUDENT_RAG_CORS_ORIGINS=https://your-frontend-domain
-
 # Optional tracing
 LANGCHAIN_TRACING_V2=true
 LANGCHAIN_API_KEY=your_langsmith_key
-LANGCHAIN_PROJECT=chatbotHCMUE
+LANGCHAIN_PROJECT=your_project_name
+
+# For all other configurations (Redis, MongoDB, CORS, etc.), see `.env.example`.
 ```
 
 ## Useful Commands
@@ -412,44 +391,23 @@ npm run lint
 npm run build
 ```
 
-## Production Smoke Test Checklist
+## 🧪 Testing
 
-Before public beta, test these flows on the deployed UI:
+*(See `docs/TESTING.md` for the Smoke Test Checklist and Evaluation instructions)*
 
-- Switch between K48-K49 and K50-K51.
-- Ask school-wide and faculty-specific program questions.
-- Ask pass/fail threshold questions, especially D and D+ for K50-K51.
-- Ask about grade appeal, dormitory, temporary leave, scholarship, and re-study.
-- Ask office contact questions such as tuition, training, and student affairs.
-- Expand citations and verify source metadata.
-- Try ambiguous and out-of-domain questions.
+## 🚧 Known Limitations & Roadmap
 
-## Known Limitations
+- **Limitation:** Long regulation chunks can lose nuance after context allocation.
+  **Roadmap:** Improve long-context selection and dynamic chunk sizing.
+- **Limitation:** RAGAS-style faithfulness (76.8%) is lower on complex reasoning.
+  **Roadmap:** Introduce chain-of-thought prompting for the generator model.
+- **Limitation:** Hard to verify raw PDF text.
+  **Roadmap:** Add stable source-document URLs for "open source" citation buttons.
+- **Limitation:** No internal quality dashboard.
+  **Roadmap:** Build an admin dashboard with authentication and feedback clustering.
 
-- This is a public beta assistant, not an official university system.
-- Some long regulation/procedure chunks can still lose nuance after context allocation.
-- RAGAS-style faithfulness and answer correctness are lower on difficult long-form questions and remain the main improvement targets.
-- Form-related questions are intentionally routed to structured lookup and the Forms page instead of optimizing semantic form retrieval.
-- There is no admin dashboard yet; feedback is currently handled through simpler logging/feedback mechanisms.
+## 📝 License and Attribution
 
-## Roadmap
-
-- Improve long-context selection for regulation and procedure chunks.
-- Add stable source-document URLs for "open source" citation buttons.
-- Add feedback clustering for repeated low-score or unanswered questions.
-- Expand the pipeline when new handbook cohorts are released.
-- Add an internal quality dashboard after authentication and role management are introduced.
-
-## Portfolio Notes
-
-This project demonstrates:
-
-- Applied RAG system design beyond a single-PDF chatbot.
-- Cohort-aware retrieval and metadata filtering.
-- Structured extraction and deterministic lookup for high-precision facts.
-- Evaluation-driven iteration using retrieval metrics and RAGAS-style judging.
-- Practical deployment trade-offs with Hugging Face, Qdrant, MongoDB, and Groq.
-
-## License and Attribution
+This project is licensed under the **MIT License**.
 
 This project is built for learning, experimentation, and community support. Handbook content belongs to its respective source documents and should be verified through official HCMUE channels for important decisions.

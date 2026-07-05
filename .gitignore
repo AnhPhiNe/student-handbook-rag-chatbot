@@ -52,3 +52,5 @@ scratch/
 out.*
 temp_matches.txt
 test_viranker.py
+
+deploy_hf.bat

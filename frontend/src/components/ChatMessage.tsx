@@ -301,12 +301,12 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
     <div className="message-wrapper bot">
       <img src={botAvatarImg} alt="HCMUE AI" className="avatar bot" />
       <div className="message-content">
-        <div className={`${thinkingMessage && message.isStreaming && !displayContent && !thinkContent ? 'cold-start-bubble' : 'message-bubble'} ${message.isStreaming && !displayContent && !thinkContent && !thinkingMessage ? 'typing-indicator' : ''}`}>
+        <div className={`message-bubble ${message.isStreaming && !displayContent && !thinkContent && !thinkingMessage ? 'typing-indicator' : ''}`}>
           {message.isStreaming && !displayContent && !thinkContent ? (
             thinkingMessage ? (
-              <div className="cold-start-content">
-                <Sparkles size={16} className="thinking-sparkle" />
-                <span className="shimmer-text">{thinkingMessage}</span>
+              <div className="cold-start-content" style={{ padding: '2px 4px' }}>
+                <Sparkles size={18} className="thinking-sparkle" />
+                <span className="thinking-text">{thinkingMessage}</span>
               </div>
             ) : (
               <>

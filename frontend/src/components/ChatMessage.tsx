@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
-import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, Brain, ExternalLink } from 'lucide-react';
+import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, Brain, ExternalLink, Sparkles } from 'lucide-react';
 import type { Citation, Message } from '../hooks/useChat';
 import { useToast } from './Toast';
 const userAvatarImg = '/user_avatar.png';
@@ -305,8 +305,8 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
           {message.isStreaming && !displayContent && !thinkContent ? (
             thinkingMessage ? (
               <div className="cold-start-content">
-                <div className="cold-start-spinner" />
-                <span>{thinkingMessage}</span>
+                <Sparkles size={16} className="thinking-sparkle" />
+                <span className="shimmer-text">{thinkingMessage}</span>
               </div>
             ) : (
               <>

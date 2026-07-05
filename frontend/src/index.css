@@ -1681,12 +1681,32 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   max-width: 100%;
 }
 
-.cold-start-spinner {
-  width: 16px; height: 16px;
-  border: 2px solid rgba(59, 130, 246, 0.2); /* primary color with opacity */
-  border-top-color: var(--primary-color);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+/* Shimmer text effect */
+.shimmer-text {
+  background: linear-gradient(90deg, var(--text-secondary) 0%, var(--primary-color) 50%, var(--text-secondary) 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmer 2s linear infinite;
+  font-weight: 500;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.thinking-sparkle {
+  color: var(--primary-color);
+  animation: pulse-sparkle 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-sparkle {
+  0% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; color: var(--warning); }
+  100% { transform: scale(1); opacity: 0.6; }
 }
 
 /* ===== COMPONENTS ===== */

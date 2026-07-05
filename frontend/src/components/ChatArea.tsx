@@ -140,7 +140,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
   const [loadingSeconds, setLoadingSeconds] = useState(0);
   const loadingTimer = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
-  const displayThinkingMessage = thinkingMessage ? `${thinkingMessage} (${loadingSeconds}s)` : "";
+  const displayThinkingMessage = thinkingMessage;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

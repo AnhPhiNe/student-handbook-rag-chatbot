@@ -4,7 +4,7 @@ import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';
 import type { Cohort } from '../utils/gradeScale';
-import botAvatarImg from '../assets/bot_avatar.png';
+const botAvatarImg = '/bot_avatar.png';
 
 const IS_MAINTENANCE_MODE = false;
 

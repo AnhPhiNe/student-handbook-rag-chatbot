@@ -70,8 +70,8 @@ export function ActiveUsersBadge() {
     // Hàm gọi API
     const fetchActiveUsers = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-        const response = await fetch(`${apiUrl}/api/metrics/active-users?session_id=${sessionId}`);
+        const baseUrl = import.meta.env.VITE_API_BASE_URL || '/api';
+        const response = await fetch(`${baseUrl}/api/metrics/active-users?session_id=${sessionId}`);
         if (response.ok) {
           const data = await response.json();
           if (data && typeof data.active_users === 'number') {

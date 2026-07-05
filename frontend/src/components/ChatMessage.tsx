@@ -4,8 +4,8 @@ import rehypeRaw from 'rehype-raw';
 import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, Brain, ExternalLink } from 'lucide-react';
 import type { Citation, Message } from '../hooks/useChat';
 import { useToast } from './Toast';
-import userAvatarImg from '../assets/user_avatar.png';
-import botAvatarImg from '../assets/bot_avatar.png';
+const userAvatarImg = '/user_avatar.png';
+const botAvatarImg = '/bot_avatar.png';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 

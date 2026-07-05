@@ -283,6 +283,7 @@ Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 
 ### How to read these numbers
 
 - **Cohort Segregation (K50 vs K51):** The system enforces strict isolation between K50 and K51 regulations. This drastically increases the difficulty of the Retrieval task (slightly lowering Hit Rate and Correctness) but successfully boosts **Faithfulness to 76.87%**, ensuring students never receive mixed-up regulations.
+- **Strategic Metric Selection:** Context evaluation metrics (Precision/Recall) are deliberately excluded from the RAGAS table to avoid redundancy. Retrieval quality is already rigorously measured using exact math in Table 2 (Hit Rate, nDCG). The RAGAS judge is strictly reserved for evaluating end-to-end generation pillars: Relevancy, Faithfulness, and Correctness.
 - The system is strong enough for public beta because structured facts and retrieval placement are stable.
 - Metrics are reported honestly instead of being filtered to only easy cases (150 Golden Queries tested).
 

@@ -137,9 +137,6 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
   const [thinkingMessage, setThinkingMessage] = useState("");
   const coldStartTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   
-  const [loadingSeconds, setLoadingSeconds] = useState(0);
-  const loadingTimer = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
-
   const displayThinkingMessage = thinkingMessage;
 
   const scrollToBottom = () => {
@@ -153,20 +150,6 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
       scrollToBottom();
     }
   }, [messages, isTyping]);
-
-  useEffect(() => {
-    if (isTyping) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLoadingSeconds(0);
-      loadingTimer.current = setInterval(() => {
-        setLoadingSeconds(prev => prev + 1);
-      }, 1000) as ReturnType<typeof setInterval>;
-    } else {
-      setLoadingSeconds(0);
-      clearInterval(loadingTimer.current);
-    }
-    return () => clearInterval(loadingTimer.current);
-  }, [isTyping]);
 
   const handleScroll = () => {
     if (!chatContainerRef.current) return;

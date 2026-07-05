@@ -285,9 +285,9 @@ Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 
 
 ### How to read these numbers
 
-- **Cohort Segregation (K50 vs K51):** The system enforces strict isolation between K50 and K51 regulations. This drastically increases the difficulty of the Retrieval task (slightly lowering Hit Rate and Correctness) but successfully boosts **Faithfulness to 76.87%**, ensuring students never receive mixed-up regulations.
+- **Cohort Segregation (K50 vs K51):** The system enforces strict isolation between K50 and K51 regulations. This drastically increases the difficulty of the Retrieval task (slightly lowering Hit Rate and Correctness) but establishes a baseline **Faithfulness of 76.87%**, ensuring students never receive mixed-up regulations.
 - **Comprehensive RAGAS Evaluation:** Although Retrieval quality is already rigorously measured using exact math in Table 2 (Hit Rate, nDCG), we present the full RAGAS suite here for absolute transparency. Note that LLM-judged Context Precision/Recall scores are naturally lower than mathematical Hit Rates due to the strictness of the LLM Judge.
-- The system is strong enough for public beta because structured facts and retrieval placement are stable.
+- Deterministic lookups and retrieval placement are stable enough for public beta. Generated answer quality (Answer Correctness 51.8%) is still the primary risk area and is being prioritized for the next iteration.
 - Metrics are reported honestly instead of being filtered to only easy cases (150 Golden Queries tested).
 
 ## CI/CD and Quality Gates

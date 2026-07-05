@@ -26,7 +26,7 @@ class ProductionQueryBehaviorsTest(unittest.TestCase):
             "diem tb tinh kieu j": ("formula_query", "formula_lookup"),
             "xin giay tam hoan nghia vu quan su": (
                 "form_query",
-                "semantic_filtered_rerank",
+                "form_lookup",
             ),
         }
 

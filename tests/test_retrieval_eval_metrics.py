@@ -10,12 +10,11 @@ from scripts.evaluate_retrieval import (
 
 class RetrievalEvalMetricsTest(unittest.TestCase):
     def test_hit_at_k_and_mrr(self) -> None:
-        actual = ["a", "b", "c"]
-        expected = ["c", "x"]
+        flags = [False, False, True]
 
-        self.assertFalse(has_hit_at_k(actual, expected, 1))
-        self.assertTrue(has_hit_at_k(actual, expected, 3))
-        self.assertEqual(reciprocal_rank(actual, expected), 1 / 3)
+        self.assertFalse(has_hit_at_k(flags, 1))
+        self.assertTrue(has_hit_at_k(flags, 3))
+        self.assertEqual(reciprocal_rank(flags), 1 / 3)
 
     def test_evaluate_case_supports_structured_and_tool_results(self) -> None:
         case = {
@@ -41,6 +40,7 @@ class RetrievalEvalMetricsTest(unittest.TestCase):
         summary = build_summary(
             [
                 {
+                    "is_retrieval_case": True,
                     "intent_match": True,
                     "strategy_match": True,
                     "expected_chunk_ids": ["a"],

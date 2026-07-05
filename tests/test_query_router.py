@@ -11,7 +11,7 @@ class QueryRouterTest(unittest.TestCase):
             "diem tb tinh kieu j": ("formula_query", "formula_lookup"),
             "Muon tam nghi hoc can mau don nao?": (
                 "form_query",
-                "semantic_filtered_rerank",
+                "form_lookup",
             ),
             "Diem ren luyen 85 la loai gi?": (
                 "score_lookup_query",

@@ -1230,7 +1230,18 @@
     "expected_target_chunk_types": [
       "program_directory"
     ],
-    "cohort": "K50-K51"
+    "cohort": "K50"
+  },
+  {
+    "id": "cohort_prog_004",
+    "category": "program_school_cohort",
+    "query": "Khóa 50 51 có những ngành đào tạo nào?",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_target_chunk_types": [
+      "program_directory"
+    ],
+    "cohort": "K51"
   },
   {
     "id": "cohort_prog_005",
@@ -1337,7 +1348,16 @@
     "expected_intent": "score_lookup_query",
     "expected_strategy": "structured_lookup",
     "expected_target_chunk_types": [],
-    "cohort": "K50-K51"
+    "cohort": "K50"
+  },
+  {
+    "id": "cohort_score_002",
+    "category": "cohort_score",
+    "query": "K50-K51 D+ có qua môn không?",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_target_chunk_types": [],
+    "cohort": "K51"
   },
   {
     "id": "cohort_score_003",
@@ -1346,7 +1366,16 @@
     "expected_intent": "score_lookup_query",
     "expected_strategy": "structured_lookup",
     "expected_target_chunk_types": [],
-    "cohort": "K50-K51"
+    "cohort": "K50"
+  },
+  {
+    "id": "cohort_score_003",
+    "category": "cohort_score",
+    "query": "Khóa 50 51 học phần còn lại bao nhiêu điểm mới đạt?",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_target_chunk_types": [],
+    "cohort": "K51"
   },
   {
     "id": "cohort_score_004",
@@ -1355,7 +1384,16 @@
     "expected_intent": "score_lookup_query",
     "expected_strategy": "structured_lookup",
     "expected_target_chunk_types": [],
-    "cohort": "K50-K51"
+    "cohort": "K50"
+  },
+  {
+    "id": "cohort_score_004",
+    "category": "cohort_score",
+    "query": "K51 học phần nền tảng điểm D có đạt không?",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_target_chunk_types": [],
+    "cohort": "K51"
   },
   {
     "id": "cohort_score_005",
@@ -1582,7 +1620,18 @@
     "id": "cohort_matrix_router_prog_school_k50",
     "category": "cohort_program_school",
     "query": "Theo sổ tay K50-K51, trường có những ngành đào tạo nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_target_chunk_types": [
+      "program_directory"
+    ]
+  },
+  {
+    "id": "cohort_matrix_router_prog_school_k50",
+    "category": "cohort_program_school",
+    "query": "Theo sổ tay K50-K51, trường có những ngành đào tạo nào?",
+    "cohort": "K51",
     "expected_intent": "faculty_query",
     "expected_strategy": "program_lookup",
     "expected_target_chunk_types": [
@@ -1604,7 +1653,18 @@
     "id": "cohort_matrix_router_cntt_k50",
     "category": "cohort_program_faculty",
     "query": "K50-K51 khoa CNTT có những ngành nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_target_chunk_types": [
+      "program_directory"
+    ]
+  },
+  {
+    "id": "cohort_matrix_router_cntt_k50",
+    "category": "cohort_program_faculty",
+    "query": "K50-K51 khoa CNTT có những ngành nào?",
+    "cohort": "K51",
     "expected_intent": "faculty_query",
     "expected_strategy": "program_lookup",
     "expected_target_chunk_types": [
@@ -1615,7 +1675,18 @@
     "id": "cohort_matrix_router_math_k50",
     "category": "cohort_program_faculty",
     "query": "K51 ngành Toán ứng dụng thuộc khoa nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_target_chunk_types": [
+      "program_directory"
+    ]
+  },
+  {
+    "id": "cohort_matrix_router_math_k50",
+    "category": "cohort_program_faculty",
+    "query": "K51 ngành Toán ứng dụng thuộc khoa nào?",
+    "cohort": "K51",
     "expected_intent": "faculty_query",
     "expected_strategy": "program_lookup",
     "expected_target_chunk_types": [
@@ -1626,7 +1697,18 @@
     "id": "cohort_matrix_router_edtech_k50",
     "category": "cohort_program_faculty",
     "query": "K50 ngành Công nghệ Giáo dục thuộc khoa nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_target_chunk_types": [
+      "program_directory"
+    ]
+  },
+  {
+    "id": "cohort_matrix_router_edtech_k50",
+    "category": "cohort_program_faculty",
+    "query": "K50 ngành Công nghệ Giáo dục thuộc khoa nào?",
+    "cohort": "K51",
     "expected_intent": "faculty_query",
     "expected_strategy": "program_lookup",
     "expected_target_chunk_types": [
@@ -1646,7 +1728,16 @@
     "id": "cohort_matrix_router_pass_k50_remaining",
     "category": "cohort_score",
     "query": "K50-K51 học phần còn lại điểm D+ có đạt không?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_target_chunk_types": []
+  },
+  {
+    "id": "cohort_matrix_router_pass_k50_remaining",
+    "category": "cohort_score",
+    "query": "K50-K51 học phần còn lại điểm D+ có đạt không?",
+    "cohort": "K51",
     "expected_intent": "score_lookup_query",
     "expected_strategy": "structured_lookup",
     "expected_target_chunk_types": []
@@ -1666,7 +1757,18 @@
     "id": "cohort_matrix_router_procedure_k50",
     "category": "cohort_procedure",
     "query": "K50-K51 quy trình phúc khảo điểm thi kết thúc học phần thế nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "expected_target_chunk_types": [
+      "procedure"
+    ]
+  },
+  {
+    "id": "cohort_matrix_router_procedure_k50",
+    "category": "cohort_procedure",
+    "query": "K50-K51 quy trình phúc khảo điểm thi kết thúc học phần thế nào?",
+    "cohort": "K51",
     "expected_intent": "procedure_query",
     "expected_strategy": "semantic_filtered_rerank",
     "expected_target_chunk_types": [

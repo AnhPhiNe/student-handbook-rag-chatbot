@@ -23,6 +23,8 @@ import { ScrollCue } from './components/ScrollCue';
 import { useMediaQuery } from './hooks/useMediaQuery';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { BugReportModal } from './components/BugReportModal';
+import { CohortSelectionModal } from './components/CohortSelectionModal';
+import { ActiveUsersBadge } from './components/ActiveUsersBadge';
 import { normalizeFrontendCohort, type Cohort } from './utils/gradeScale';
 
 const COHORT_AWARE_TABS = new Set(['home', 'chat', 'faq', 'gpa', 'course-target']);
@@ -30,8 +32,8 @@ const COHORT_AWARE_TABS = new Set(['home', 'chat', 'faq', 'gpa', 'course-target'
 function App() {
   const defaultTheme = (new Date().getHours() >= 18 || new Date().getHours() < 6) ? 'dark' : 'light';
   const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('hcmue-theme', defaultTheme);
-  const [storedCohort, setStoredCohort] = useLocalStorage<Cohort | 'K50-K51'>('hcmue-cohort', 'K48-K49');
-  const cohort = normalizeFrontendCohort(storedCohort);
+  const [storedCohort, setStoredCohort] = useLocalStorage<Cohort | null>('hcmue-cohort', null);
+  const cohort = storedCohort ? normalizeFrontendCohort(storedCohort) : 'K48-K49'; // Fallback an toàn cho utils
   const setCohort = (nextCohort: Cohort) => setStoredCohort(nextCohort);
   
   const { messages, isTyping, progressMessage, sendMessage, sendHardcodedMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat(cohort);
@@ -89,6 +91,7 @@ function App() {
             {/* Global Controls */}
             {!isMobile && (
               <div className={`global-controls ${shouldShowCohortSelector ? '' : 'compact'}`}>
+                <ActiveUsersBadge />
                 {activeTab === 'chat' && messages.length > 0 && (
                   <button className="theme-toggle" onClick={() => {
                     if (window.confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử chat không?")) {
@@ -157,6 +160,8 @@ function App() {
           )}
 
           <BugReportModal isOpen={isBugModalOpen} setIsOpen={setIsBugModalOpen} messages={messages} />
+          
+          {!storedCohort && <CohortSelectionModal onSelect={setCohort} />}
         </div>
       </ToastProvider>
     </ErrorBoundary>

@@ -594,7 +594,45 @@
     "id": "ans_prog_school_k50",
     "category": "program_lookup_cohort",
     "query": "Trường đang có những ngành đào tạo nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_answer_contains": [
+      "Công nghệ Giáo dục",
+      "Toán ứng dụng",
+      "Công nghệ Thông tin"
+    ],
+    "min_structured_items": 44,
+    "max_structured_items": 44,
+    "expected_structured_items_include": [
+      "Công nghệ Giáo dục",
+      "Toán ứng dụng"
+    ],
+    "min_citations": 1,
+    "expected_citation_chunk_types": [
+      "program_directory"
+    ],
+    "expect_sources_section": true,
+    "expected_citation_content_types": [
+      "program_directory"
+    ],
+    "expected_citation_cohort": "K50-K51",
+    "expected_citation_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_citation_source_sections": [
+      "program_directory"
+    ],
+    "eval_type": "structured",
+    "content_type": "program_directory",
+    "source_eval_file": "answer_eval_cases.json"
+  },
+  {
+    "id": "ans_prog_school_k50",
+    "category": "program_lookup_cohort",
+    "query": "Trường đang có những ngành đào tạo nào?",
+    "cohort": "K51",
     "expected_status": "answered",
     "expected_llm_called": false,
     "expected_intent": "faculty_query",
@@ -673,7 +711,42 @@
     "id": "ans_prog_cntt_k50",
     "category": "program_lookup_faculty",
     "query": "Khoa Công nghệ Thông tin có những ngành nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_lookup_type": "program_directory",
+    "expected_answer_contains": [
+      "Công nghệ Thông tin",
+      "Sư phạm Tin học",
+      "Công nghệ Giáo dục"
+    ],
+    "min_structured_items": 3,
+    "max_structured_items": 3,
+    "expected_structured_items_include": [
+      "Công nghệ Giáo dục"
+    ],
+    "min_citations": 1,
+    "expected_citation_chunk_types": [
+      "program_directory"
+    ],
+    "expect_sources_section": true,
+    "expected_citation_content_types": [
+      "program_directory"
+    ],
+    "expected_citation_cohort": "K50-K51",
+    "expected_citation_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_citation_source_sections": [
+      "program_directory"
+    ],
+    "eval_type": "structured",
+    "content_type": "program_directory",
+    "source_eval_file": "answer_eval_cases.json"
+  },
+  {
+    "id": "ans_prog_cntt_k50",
+    "category": "program_lookup_faculty",
+    "query": "Khoa Công nghệ Thông tin có những ngành nào?",
+    "cohort": "K51",
     "expected_status": "answered",
     "expected_llm_called": false,
     "expected_lookup_type": "program_directory",
@@ -708,7 +781,39 @@
     "id": "ans_prog_math_k50",
     "category": "program_lookup_faculty",
     "query": "Khoa Toán - Tin học có ngành nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_lookup_type": "program_directory",
+    "expected_answer_contains": [
+      "Toán ứng dụng"
+    ],
+    "min_structured_items": 1,
+    "expected_structured_items_include": [
+      "Toán ứng dụng"
+    ],
+    "min_citations": 1,
+    "expected_citation_chunk_types": [
+      "program_directory"
+    ],
+    "expect_sources_section": true,
+    "expected_citation_content_types": [
+      "program_directory"
+    ],
+    "expected_citation_cohort": "K50-K51",
+    "expected_citation_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_citation_source_sections": [
+      "program_directory"
+    ],
+    "eval_type": "structured",
+    "content_type": "program_directory",
+    "source_eval_file": "answer_eval_cases.json"
+  },
+  {
+    "id": "ans_prog_math_k50",
+    "category": "program_lookup_faculty",
+    "query": "Khoa Toán - Tin học có ngành nào?",
+    "cohort": "K51",
     "expected_status": "answered",
     "expected_llm_called": false,
     "expected_lookup_type": "program_directory",
@@ -740,7 +845,39 @@
     "id": "ans_prog_physics_k50",
     "category": "program_lookup_faculty",
     "query": "Ngành Sư phạm Công nghệ thuộc khoa nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_lookup_type": "program_directory",
+    "expected_answer_contains": [
+      "Sư phạm Công nghệ",
+      "Khoa Vật lý"
+    ],
+    "expected_structured_items_include": [
+      "Khoa Vật lý"
+    ],
+    "min_citations": 1,
+    "expected_citation_chunk_types": [
+      "program_directory"
+    ],
+    "expect_sources_section": true,
+    "expected_citation_content_types": [
+      "program_directory"
+    ],
+    "expected_citation_cohort": "K50-K51",
+    "expected_citation_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_citation_source_sections": [
+      "program_directory"
+    ],
+    "eval_type": "structured",
+    "content_type": "program_directory",
+    "source_eval_file": "answer_eval_cases.json"
+  },
+  {
+    "id": "ans_prog_physics_k50",
+    "category": "program_lookup_faculty",
+    "query": "Ngành Sư phạm Công nghệ thuộc khoa nào?",
+    "cohort": "K51",
     "expected_status": "answered",
     "expected_llm_called": false,
     "expected_lookup_type": "program_directory",
@@ -772,7 +909,39 @@
     "id": "ans_prog_geo_k50",
     "category": "program_lookup_faculty",
     "query": "Ngành Sư phạm Lịch sử - Địa lý thuộc khoa nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_lookup_type": "program_directory",
+    "expected_answer_contains": [
+      "Sư phạm Lịch sử - Địa lý",
+      "Khoa Địa lý"
+    ],
+    "expected_structured_items_include": [
+      "Khoa Địa lý"
+    ],
+    "min_citations": 1,
+    "expected_citation_chunk_types": [
+      "program_directory"
+    ],
+    "expect_sources_section": true,
+    "expected_citation_content_types": [
+      "program_directory"
+    ],
+    "expected_citation_cohort": "K50-K51",
+    "expected_citation_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_citation_source_sections": [
+      "program_directory"
+    ],
+    "eval_type": "structured",
+    "content_type": "program_directory",
+    "source_eval_file": "answer_eval_cases.json"
+  },
+  {
+    "id": "ans_prog_geo_k50",
+    "category": "program_lookup_faculty",
+    "query": "Ngành Sư phạm Lịch sử - Địa lý thuộc khoa nào?",
+    "cohort": "K51",
     "expected_status": "answered",
     "expected_llm_called": false,
     "expected_lookup_type": "program_directory",
@@ -829,7 +998,32 @@
     "id": "ans_score_pass_k50",
     "category": "score_cohort",
     "query": "K50-K51 mấy điểm thì qua môn?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_lookup_type": "grade_10_to_letter",
+    "expected_answer_contains": [
+      "5.5",
+      "học phần còn lại"
+    ],
+    "min_citations": 1,
+    "expected_citation_chunk_types": [
+      "structured_lookup"
+    ],
+    "expect_sources_section": true,
+    "expected_citation_content_types": [
+      "structured_lookup"
+    ],
+    "expected_citation_cohort": "K50-K51",
+    "eval_type": "structured",
+    "content_type": "threshold_rules",
+    "source_eval_file": "answer_eval_cases.json"
+  },
+  {
+    "id": "ans_score_pass_k50",
+    "category": "score_cohort",
+    "query": "K50-K51 mấy điểm thì qua môn?",
+    "cohort": "K51",
     "expected_status": "answered",
     "expected_llm_called": false,
     "expected_lookup_type": "grade_10_to_letter",
@@ -854,7 +1048,32 @@
     "id": "ans_score_dplus_k50",
     "category": "score_cohort",
     "query": "K50-K51 D+ có qua môn không?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_lookup_type": "letter_to_grade_4",
+    "expected_answer_contains": [
+      "D+",
+      "1.5"
+    ],
+    "min_citations": 1,
+    "expected_citation_chunk_types": [
+      "structured_lookup"
+    ],
+    "expect_sources_section": true,
+    "expected_citation_content_types": [
+      "structured_lookup"
+    ],
+    "expected_citation_cohort": "K50-K51",
+    "eval_type": "structured",
+    "content_type": "scoring_tables",
+    "source_eval_file": "answer_eval_cases.json"
+  },
+  {
+    "id": "ans_score_dplus_k50",
+    "category": "score_cohort",
+    "query": "K50-K51 D+ có qua môn không?",
+    "cohort": "K51",
     "expected_status": "answered",
     "expected_llm_called": false,
     "expected_lookup_type": "letter_to_grade_4",
@@ -1038,7 +1257,39 @@
     "id": "cohort_matrix_ans_school_k50",
     "category": "cohort_program_school",
     "query": "Theo sổ tay K50-K51, trường có những ngành đào tạo nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "min_structured_items": 44,
+    "expected_structured_items_include": [
+      "Toán ứng dụng",
+      "Công nghệ Giáo dục"
+    ],
+    "max_structured_items": 44,
+    "expected_llm_called": false,
+    "min_citations": 1,
+    "expected_citation_chunk_types": [
+      "program_directory"
+    ],
+    "expected_citation_content_types": [
+      "program_directory"
+    ],
+    "expected_citation_cohort": "K50-K51",
+    "expected_citation_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_citation_source_sections": [
+      "program_directory"
+    ],
+    "eval_type": "structured",
+    "content_type": "program_directory",
+    "source_eval_file": "answer_eval_cases.json"
+  },
+  {
+    "id": "cohort_matrix_ans_school_k50",
+    "category": "cohort_program_school",
+    "query": "Theo sổ tay K50-K51, trường có những ngành đào tạo nào?",
+    "cohort": "K51",
     "expected_status": "answered",
     "expected_intent": "faculty_query",
     "expected_strategy": "program_lookup",
@@ -1105,7 +1356,42 @@
     "id": "cohort_matrix_ans_cntt_k50",
     "category": "cohort_program_faculty",
     "query": "K50-K51 khoa CNTT có những ngành nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_structured_items_include": [
+      "Công nghệ Thông tin",
+      "Sư phạm Tin học",
+      "Công nghệ Giáo dục"
+    ],
+    "expected_structured_items_exclude": [
+      "Toán ứng dụng",
+      "Sư phạm Công nghệ"
+    ],
+    "expected_llm_called": false,
+    "min_citations": 1,
+    "expected_citation_chunk_types": [
+      "program_directory"
+    ],
+    "expected_citation_content_types": [
+      "program_directory"
+    ],
+    "expected_citation_cohort": "K50-K51",
+    "expected_citation_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_citation_source_sections": [
+      "program_directory"
+    ],
+    "eval_type": "structured",
+    "content_type": "program_directory",
+    "source_eval_file": "answer_eval_cases.json"
+  },
+  {
+    "id": "cohort_matrix_ans_cntt_k50",
+    "category": "cohort_program_faculty",
+    "query": "K50-K51 khoa CNTT có những ngành nào?",
+    "cohort": "K51",
     "expected_status": "answered",
     "expected_intent": "faculty_query",
     "expected_strategy": "program_lookup",
@@ -1140,7 +1426,35 @@
     "id": "cohort_matrix_ans_math_k50",
     "category": "cohort_program_faculty",
     "query": "K51 ngành Toán ứng dụng thuộc khoa nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_lookup_type": "program_directory",
+    "expected_structured_items_include": [
+      "Toán ứng dụng",
+      "Khoa Toán"
+    ],
+    "expected_llm_called": false,
+    "min_citations": 1,
+    "expected_citation_chunk_types": [
+      "program_directory"
+    ],
+    "expected_citation_content_types": [
+      "program_directory"
+    ],
+    "expected_citation_cohort": "K50-K51",
+    "expected_citation_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_citation_source_sections": [
+      "program_directory"
+    ],
+    "eval_type": "structured",
+    "content_type": "program_directory",
+    "source_eval_file": "answer_eval_cases.json"
+  },
+  {
+    "id": "cohort_matrix_ans_math_k50",
+    "category": "cohort_program_faculty",
+    "query": "K51 ngành Toán ứng dụng thuộc khoa nào?",
+    "cohort": "K51",
     "expected_status": "answered",
     "expected_lookup_type": "program_directory",
     "expected_structured_items_include": [
@@ -1168,7 +1482,38 @@
     "id": "cohort_matrix_ans_edtech_k50",
     "category": "cohort_program_faculty",
     "query": "K50 ngành Công nghệ Giáo dục thuộc khoa nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_lookup_type": "program_directory",
+    "expected_structured_items_include": [
+      "Công nghệ Giáo dục",
+      "Khoa Công nghệ"
+    ],
+    "expected_structured_items_exclude": [
+      "Khoa Khoa học Giáo dục"
+    ],
+    "expected_llm_called": false,
+    "min_citations": 1,
+    "expected_citation_chunk_types": [
+      "program_directory"
+    ],
+    "expected_citation_content_types": [
+      "program_directory"
+    ],
+    "expected_citation_cohort": "K50-K51",
+    "expected_citation_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_citation_source_sections": [
+      "program_directory"
+    ],
+    "eval_type": "structured",
+    "content_type": "program_directory",
+    "source_eval_file": "answer_eval_cases.json"
+  },
+  {
+    "id": "cohort_matrix_ans_edtech_k50",
+    "category": "cohort_program_faculty",
+    "query": "K50 ngành Công nghệ Giáo dục thuộc khoa nào?",
+    "cohort": "K51",
     "expected_status": "answered",
     "expected_lookup_type": "program_directory",
     "expected_structured_items_include": [
@@ -1217,7 +1562,22 @@
     "id": "cohort_matrix_ans_pass_k50_remaining",
     "category": "cohort_score",
     "query": "K50-K51 học phần còn lại điểm D+ có đạt không?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_lookup_type": "grade_10_to_letter",
+    "expected_answer_contains": [
+      "D+",
+      "Không đạt"
+    ],
+    "eval_type": "structured",
+    "content_type": "threshold_rules",
+    "source_eval_file": "answer_eval_cases.json"
+  },
+  {
+    "id": "cohort_matrix_ans_pass_k50_remaining",
+    "category": "cohort_score",
+    "query": "K50-K51 học phần còn lại điểm D+ có đạt không?",
+    "cohort": "K51",
     "expected_status": "answered",
     "expected_lookup_type": "grade_10_to_letter",
     "expected_answer_contains": [
@@ -1394,7 +1754,22 @@
   {
     "id": "v4_prog_faculty_physics_k50",
     "query": "Khoa Vật lý phụ trách ngành nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_cohort": "K50-K51",
+    "expected_document_id": "so_tay_sinh_vien_khoa_51",
+    "eval_type": "structured",
+    "content_type": "program_directory",
+    "expected_content_types": [],
+    "expected_chunk_ids": [],
+    "source_eval_file": "golden_queries.json"
+  },
+  {
+    "id": "v4_prog_faculty_physics_k50",
+    "query": "Khoa Vật lý phụ trách ngành nào?",
+    "cohort": "K51",
     "expected_intent": "faculty_query",
     "expected_strategy": "program_lookup",
     "expected_lookup_type": "program_directory",
@@ -1409,7 +1784,22 @@
   {
     "id": "v4_prog_faculty_geo_k50",
     "query": "Khoa Địa lý có ngành nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_cohort": "K50-K51",
+    "expected_document_id": "so_tay_sinh_vien_khoa_51",
+    "eval_type": "structured",
+    "content_type": "program_directory",
+    "expected_content_types": [],
+    "expected_chunk_ids": [],
+    "source_eval_file": "golden_queries.json"
+  },
+  {
+    "id": "v4_prog_faculty_geo_k50",
+    "query": "Khoa Địa lý có ngành nào?",
+    "cohort": "K51",
     "expected_intent": "faculty_query",
     "expected_strategy": "program_lookup",
     "expected_lookup_type": "program_directory",
@@ -1424,7 +1814,20 @@
   {
     "id": "v4_score_pass_k50",
     "query": "Mấy điểm thì qua môn?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "grade_10_to_letter",
+    "expected_cohort": "K50-K51",
+    "expected_document_id": "so_tay_sinh_vien_khoa_51",
+    "eval_type": "structured",
+    "content_type": "threshold_rules",
+    "source_eval_file": "golden_queries.json"
+  },
+  {
+    "id": "v4_score_pass_k50",
+    "query": "Mấy điểm thì qua môn?",
+    "cohort": "K51",
     "expected_intent": "score_lookup_query",
     "expected_strategy": "structured_lookup",
     "expected_lookup_type": "grade_10_to_letter",
@@ -1437,7 +1840,20 @@
   {
     "id": "v4_score_55_k50",
     "query": "Điểm 5.5 tương ứng điểm chữ gì?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "grade_10_to_letter",
+    "expected_cohort": "K50-K51",
+    "expected_document_id": "so_tay_sinh_vien_khoa_51",
+    "eval_type": "structured",
+    "content_type": "threshold_rules",
+    "source_eval_file": "golden_queries.json"
+  },
+  {
+    "id": "v4_score_55_k50",
+    "query": "Điểm 5.5 tương ứng điểm chữ gì?",
+    "cohort": "K51",
     "expected_intent": "score_lookup_query",
     "expected_strategy": "structured_lookup",
     "expected_lookup_type": "grade_10_to_letter",

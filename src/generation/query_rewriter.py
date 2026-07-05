@@ -134,6 +134,25 @@ class QueryRewriter:
         query: str,
         chat_history: list[dict[str, str]] | None = None,
     ) -> QueryRewriteResult:
+        """Bộ não của "Bộ nhớ hội thoại" (Chat Memory) - Viết lại câu hỏi mập mờ thành câu hỏi hoàn chỉnh.
+        
+        Vấn đề: 
+        Khi chat, người dùng thường nói rút gọn ở các câu sau (Ví dụ: Câu 1: "Học bổng K50 là bao nhiêu?", Câu 2: "Thế còn điểm rèn luyện?").
+        Nếu mang nguyên câu "Thế còn điểm rèn luyện?" đi tìm kiếm, hệ thống sẽ không biết là tìm cho K50 hay K51.
+        
+        Cách giải quyết:
+        1. Hàm này đọc câu hỏi mới và toàn bộ lịch sử trò chuyện trước đó (chat_history).
+        2. Dùng thuật toán để kiểm tra xem câu hỏi có chứa đại từ chỉ định ("nó", "thế", "đó") hoặc bị thiếu chủ ngữ không.
+        3. Nếu thiếu, gọi LLM (Llama 3) kết hợp ngữ cảnh để tự động "biên dịch" thành câu hoàn chỉnh (VD: "Điểm rèn luyện của sinh viên K50 tính như thế nào?").
+        4. Kết quả câu hoàn chỉnh (effective_query) mới thực sự được mang đi tìm kiếm trong VectorDB.
+        
+        Args:
+            query: Câu hỏi cộc lốc/mới của người dùng.
+            chat_history: Lịch sử các câu hỏi và trả lời trước đó.
+            
+        Returns:
+            QueryRewriteResult: Chứa câu hỏi gốc và câu hỏi đã được LLM viết lại để mang đi tìm kiếm.
+        """
         self._last_llm_usages = []
         cleaned_query = query.strip()
         if not cleaned_query:

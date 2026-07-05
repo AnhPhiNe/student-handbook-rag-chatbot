@@ -38,11 +38,6 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
     }
   }, [input]);
 
-  useEffect(() => {
-    if (!disabled && textareaRef.current) {
-      textareaRef.current.focus();
-    }
-  }, [disabled]);
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();

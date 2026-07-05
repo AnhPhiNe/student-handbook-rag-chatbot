@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { GraduationCap, Gift, Home, ArrowDown, Lock, Calculator, Medal, ClipboardList, ArrowLeft } from 'lucide-react';
+import { GraduationCap, Gift, ArrowDown, Lock, Medal, ArrowLeft, BookOpen, Phone, Shield } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';
@@ -25,12 +25,12 @@ interface ChatAreaProps {
 }
 
 const ACTION_CARDS = [
-  { id: 'hoc-vu', label: 'Học vụ & Đào tạo', icon: GraduationCap, color: '#3b82f6', desc: 'Điểm số, qua môn, học lại, bảo lưu...' },
-  { id: 'tinh-toan', label: 'Tính điểm & Công cụ', icon: Calculator, color: '#ec4899', desc: 'Tính GPA, rèn luyện, học bổng...' },
+  { id: 'hoc-vu', label: 'Học tập & Điểm số', icon: BookOpen, color: '#3b82f6', desc: 'Đăng ký môn, tính GPA, học cải thiện...' },
+  { id: 'bao-luu', label: 'Bảo lưu & Tốt nghiệp', icon: GraduationCap, color: '#0ea5e9', desc: 'Tạm nghỉ, thôi học, xét tốt nghiệp...' },
   { id: 'hoc-bong', label: 'Học bổng & Học phí', icon: Gift, color: '#8b5cf6', desc: 'Điều kiện xét, mức thưởng, miễn giảm...' },
   { id: 'ren-luyen', label: 'Rèn luyện & Khen thưởng', icon: Medal, color: '#ef4444', desc: 'Điểm rèn luyện, kỷ luật, danh hiệu...' },
-  { id: 'ktx', label: 'Phòng ban & Liên hệ', icon: Home, color: '#f59e0b', desc: 'SĐT, email, địa chỉ, KTX...' },
-  { id: 'hanh-chinh', label: 'Quy trình Hành chính', icon: ClipboardList, color: '#10b981', desc: 'Thủ tục, nộp đơn, mẫu biểu...' }
+  { id: 'lien-he', label: 'Phòng ban & Liên hệ', icon: Phone, color: '#f59e0b', desc: 'SĐT, email, KTX, hỗ trợ sinh viên...' },
+  { id: 'noi-quy', label: 'Nội quy & Văn hóa', icon: Shield, color: '#0ea5e9', desc: 'Trang phục, thẻ SV, văn hóa ứng xử...' }
 ];
 
 type QuickAccessResponse = {
@@ -50,44 +50,38 @@ ${hint}
 const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
   'hoc-vu': {
     response: buildQuickAccessResponse(
-      'Học vụ & Đào tạo',
-      'Dùng mục này khi bạn đang thắc mắc về các vấn đề học tập thường gặp:\n\n- **Điểm và qua môn:** mấy điểm thì đạt, D/D+ có qua môn không, điểm chữ/hệ 4 quy đổi ra sao.\n- **Học lại/cải thiện:** bị F thì học lại thế nào, học cải thiện có được không, điểm học lại được tính ra sao.\n- **Tiến độ học tập:** khi nào bị cảnh báo học vụ, bị buộc thôi học, được học vượt hoặc cần bảo lưu/tạm nghỉ.'
+      'Học tập & Điểm số',
+      'Dùng mục này khi bạn thắc mắc về quá trình học, lịch học, điểm số và thi cử:\n\n- **Học vụ:** quy định đăng ký tín chỉ, hủy môn, học lại, học cải thiện.\n- **Điểm số & Thi cử:** cách tính điểm trung bình (GPA), quy đổi điểm chữ, vắng thi, gian lận thi cử.\n- **Học vụ khác:** điều kiện chuyển ngành, chuyển trường, cảnh báo học vụ.'
     ),
     suggestions: [
-      'Mấy điểm thì qua môn?',
-      'Điểm B+ quy đổi sang hệ 4 là bao nhiêu?',
-      'K51 điểm D+ có qua môn không?',
-      'Bị điểm F thì học lại như thế nào?',
-      'Khi nào sinh viên bị cảnh báo học vụ?',
-      'Xin bảo lưu kết quả cần điều kiện gì?'
+      'Học cải thiện tính điểm thế nào?',
+      'Thi rớt 3 môn có bị đuổi học?',
+      'Đăng ký học vượt tín chỉ ra sao?',
+      'Hoãn thi cuối kỳ cần điều kiện gì?'
     ]
   },
-  'tinh-toan': {
+  'bao-luu': {
     response: buildQuickAccessResponse(
-      'Tính điểm & Công cụ',
-      'Dùng mục này khi bạn cần hiểu cách tính điểm hoặc cách xếp loại:\n\n- **GPA và điểm trung bình:** cách tính điểm trung bình học kỳ/tích lũy, GPA bao nhiêu thì thuộc loại nào.\n- **Quy đổi điểm:** điểm chữ A, B+, C, D quy đổi sang hệ 4 hoặc thang 10 như thế nào.\n- **Công cụ liên quan:** cần tính GPA, điểm học bổng, điểm rèn luyện hoặc kiểm tra nguy cơ hạ bằng.'
+      'Bảo lưu & Tốt nghiệp',
+      'Dùng mục này khi bạn quan tâm đến việc tạm dừng học hoặc thủ tục ra trường:\n\n- **Bảo lưu/Tạm nghỉ:** điều kiện bảo lưu kết quả, thời gian tối đa được bảo lưu, thủ tục xin học lại.\n- **Thôi học:** quy định buộc thôi học, tự nguyện xin thôi học.\n- **Tốt nghiệp:** điều kiện để được xét tốt nghiệp, quy trình đăng ký xét và nhận bằng.'
     ),
     suggestions: [
-      'GPA 3.2 thì xếp loại học lực gì?',
-      'Điểm rèn luyện 85 là loại gì?',
-      'Điểm C quy đổi sang hệ 4 là bao nhiêu?',
-      'Công thức tính điểm trung bình học kỳ như thế nào?',
-      'Điều kiện để xếp loại học lực Xuất sắc là gì?',
-      'Tính điểm học bổng cần những thông tin nào?'
+      'Năm nhất có được xin bảo lưu?',
+      'Thời gian bảo lưu tối đa bao lâu?',
+      'Bị cảnh báo học vụ mấy lần thì đuổi?',
+      'Nợ môn Thể chất có xét tốt nghiệp?'
     ]
   },
   'hoc-bong': {
     response: buildQuickAccessResponse(
       'Học bổng & Học phí',
-      'Dùng mục này khi bạn có thắc mắc về quyền lợi tài chính của sinh viên:\n\n- **Học bổng:** điều kiện xét học bổng, mức học bổng, trường hợp bị loại khỏi danh sách xét.\n- **Học phí:** học phí/tài chính liên hệ ở đâu, cần hỏi phòng nào khi có vấn đề đóng học phí.\n- **Miễn giảm/hỗ trợ:** ai được miễn giảm học phí, hỗ trợ chi phí học tập hoặc hỗ trợ sinh hoạt.'
+      'Dùng mục này khi bạn có thắc mắc về quyền lợi tài chính của sinh viên:\n\n- **Học bổng:** điều kiện xét học bổng, mức học bổng, trường hợp bị loại khỏi danh sách xét.\n- **Học phí:** quy định nộp học phí, xử lý khi trễ hạn nộp, các kênh thanh toán học phí hợp lệ.\n- **Miễn giảm/hỗ trợ:** ai được miễn giảm học phí, hỗ trợ chi phí học tập hoặc hỗ trợ sinh hoạt.'
     ),
     suggestions: [
-      'Điều kiện xét học bổng khuyến khích học tập là gì?',
-      'Sinh viên bị kỷ luật có được xét học bổng không?',
-      'Mức học bổng được tính như thế nào?',
-      'Đối tượng nào được miễn học phí?',
-      'Sinh viên sư phạm có được hỗ trợ chi phí sinh hoạt không?',
-      'Học phí hoặc tài chính thì liên hệ phòng nào?'
+      'Điều kiện để được xét học bổng KKHT là gì?',
+      'Đóng học phí trễ bị cấm thi không?',
+      'Mức học bổng Xuất sắc là bao nhiêu?',
+      'Ai thuộc diện miễn giảm học phí?'
     ]
   },
   'ren-luyen': {
@@ -96,40 +90,34 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
       'Dùng mục này khi bạn muốn hỏi về quá trình rèn luyện và xử lý vi phạm:\n\n- **Điểm rèn luyện:** bao nhiêu điểm là tốt/xuất sắc, tiêu chí chấm điểm gồm những gì.\n- **Khen thưởng:** điều kiện được khen thưởng, danh hiệu hoặc các hình thức ghi nhận sinh viên.\n- **Kỷ luật/vi phạm:** vi phạm quy chế thi bị xử lý ra sao, khiển trách/cảnh cáo bao lâu được xóa.'
     ),
     suggestions: [
-      'Điểm rèn luyện bao nhiêu là tốt/xuất sắc?',
-      'Tiêu chí đánh giá kết quả rèn luyện gồm những gì?',
-      'Sinh viên vi phạm quy chế thi bị xử lý như thế nào?',
-      'Bị kỷ luật khiển trách thì bao lâu được xóa?',
-      'Quay cóp trong phòng thi bị xử lý thế nào?',
-      'Điều kiện để được khen thưởng là gì?'
+      'Điểm rèn luyện dưới 50 bị cảnh báo?',
+      'Tiêu chí chấm điểm rèn luyện là gì?',
+      'Nhờ người thi hộ bị xử lý ra sao?',
+      'Kỷ luật Cảnh cáo bao lâu được xóa?'
     ]
   },
-  'ktx': {
+  'lien-he': {
     response: buildQuickAccessResponse(
       'Phòng ban & Liên hệ',
-      'Dùng mục này khi bạn không biết nên liên hệ đơn vị nào trong trường:\n\n- **Học vụ/đào tạo:** hỏi về chương trình đào tạo, học phần, bảng điểm, tốt nghiệp hoặc đăng ký học.\n- **Công tác sinh viên:** hỏi học bổng, miễn giảm học phí, giấy xác nhận, tạm nghỉ, học lại hoặc hỗ trợ sinh viên.\n- **Dịch vụ và đơn vị khác:** hỏi học phí/tài chính, ký túc xá, trạm y tế, thư viện, khoa hoặc thông tin email/số điện thoại.'
+      'Dùng mục này khi bạn không biết nên liên hệ đơn vị nào trong trường:\n\n- **Phòng Đào tạo / CTSV:** hỏi về lịch học, bảng điểm, học bổng, giấy xác nhận, tạm nghỉ.\n- **Ký túc xá & Trạm y tế:** quy định, thủ tục đăng ký, giờ giấc hoạt động.\n- **Liên hệ khác:** số điện thoại, email, địa chỉ các Phòng, Khoa hoặc hỗ trợ tài khoản sinh viên.'
     ),
     suggestions: [
-      'Vấn đề tài khoản sinh viên thì liên hệ ở đâu?',
-      'Cho mình xin số điện thoại Phòng Đào tạo',
-      'Email Phòng CTCT&HSSV là gì?',
-      'Học phí và tài chính thì liên hệ phòng nào?',
-      'Ai được ưu tiên xếp vào Ký túc xá?',
-      'Trạm y tế của trường nằm ở đâu?'
+      'Số điện thoại của Phòng Đào tạo?',
+      'Lỗi tài khoản SV liên hệ phòng nào?',
+      'Phòng nào hỗ trợ in bảng điểm?',
+      'Phòng CTCT-HSSV nằm ở đâu?'
     ]
   },
-  'hanh-chinh': {
+  'noi-quy': {
     response: buildQuickAccessResponse(
-      'Quy trình Hành chính',
-      'Dùng mục này khi bạn cần biết thủ tục phải làm, giấy tờ cần chuẩn bị hoặc nơi nộp hồ sơ:\n\n- **Giấy tờ sinh viên:** xin giấy xác nhận sinh viên, bảng điểm, làm lại thẻ sinh viên hoặc giấy tờ liên quan.\n- **Thủ tục học vụ:** phúc khảo điểm thi, tạm nghỉ học, quay lại học, học lại hoặc học cải thiện.\n- **Biểu mẫu/hồ sơ:** cần mẫu đơn nào, nộp ở đâu, quy trình gồm những bước nào.'
+      'Nội quy & Văn hóa',
+      'Dùng mục này khi bạn muốn hỏi về các quy định nội quy, văn hóa học đường của trường:\n\n- **Trang phục & Tác phong:** quy định về trang phục, đeo thẻ sinh viên khi đến lớp.\n- **Hành vi cấm:** những việc sinh viên không được làm trong khuôn viên trường (hút thuốc, uống rượu bia, gian lận...).\n- **Văn hóa ứng xử:** quy tắc giao tiếp với giảng viên, cán bộ và bạn bè.'
     ),
     suggestions: [
-      'Quy trình xin giấy xác nhận sinh viên như thế nào?',
-      'Muốn phúc khảo điểm thi thì làm thế nào?',
-      'Làm thủ tục xin bảng điểm ở đâu?',
-      'Cách làm thẻ sinh viên bị mất',
-      'Muốn tạm nghỉ học thì cần làm gì?',
-      'Cần mẫu đơn thì tìm ở đâu trong web?'
+      'Không đeo thẻ SV có bị cấm thi?',
+      'Sinh viên không được làm những gì?',
+      'Hút thuốc trong trường phạt ra sao?',
+      'Mặc quần đùi đến lớp được không?'
     ]
   }
 };
@@ -193,16 +181,10 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
       return;
     }
     
-    const titles: Record<string, string> = {
-      'hoc-vu': 'Học vụ & Đào tạo',
-      'hoc-bong': 'Học bổng & Học phí',
-      'ktx': 'Phòng ban & Ký túc xá',
-      'hanh-chinh': 'Quy trình Hành chính',
-      'tinh-toan': 'Tính điểm & Đánh giá',
-      'ren-luyen': 'Rèn luyện & Khen thưởng'
-    };
+    const card = ACTION_CARDS.find(c => c.id === id);
+    const title = card ? card.label : id;
     
-    const userPrompt = `Cho tôi biết thông tin về ${titles[id]}`;
+    const userPrompt = `Cho tôi biết thông tin về ${title}`;
     
     const quickAccess = HARDCODED_RESPONSES[id];
     if (quickAccess) onSendHardcoded(userPrompt, quickAccess.response, quickAccess.suggestions);

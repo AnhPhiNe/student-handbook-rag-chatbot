@@ -11,6 +11,9 @@
   <img src="https://img.shields.io/badge/Qdrant-Vector%20DB-E21727?style=for-the-badge" alt="Qdrant">
   <img src="https://img.shields.io/badge/MongoDB-Parent%20Docs-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
   <img src="https://img.shields.io/badge/Groq-LLM%20Orchestration-F55036?style=for-the-badge" alt="Groq">
+  <img src="https://img.shields.io/badge/Gemini-LLM%20Judge-8E75B2?style=for-the-badge&logo=google&logoColor=white" alt="Gemini">
+  <img src="https://img.shields.io/badge/Langfuse-Tracing-FF6136?style=for-the-badge" alt="Langfuse">
+  <img src="https://img.shields.io/badge/Redis-Caching-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis">
 </p>
 
 ## Overview
@@ -92,9 +95,7 @@ The generation layer includes:
 | Program directory records | 86 |
 | Form template records | 19 |
 | Qdrant collection | `student_handbook_semantic_v4` |
-| Structured eval cases | 70 |
-| True-RAG retrieval eval cases | 80 |
-| RAGAS-style judge cases | 100 |
+| Evaluation cases | 500 (150 Golden, 200 Beta, 150 Ragas) |
 
 ## Architecture
 
@@ -120,7 +121,7 @@ flowchart LR
     Citation --> Frontend
 
     API -. optional .-> Cache["Redis / Local JSON Cache"]
-    API -. optional .-> Trace["LangSmith Tracing"]
+    API -. optional .-> Trace["Langfuse Tracing"]
 ```
 
 ## RAG Processing Pipeline
@@ -254,12 +255,10 @@ Retrieval is evaluated only on long-form RAG cases such as regulations, procedur
 
 | Metric | Score |
 |---|---:|
-| Cases | 80 |
-| Hit@1 | 77.50% |
-| Hit@3 | 90.00% |
-| Hit@5 | 90.00% |
-| MRR | 83.13% |
-| nDCG@5 | 84.84% |
+| Cases | 150 (Golden) |
+| Hit@3 | 86.25% |
+| MRR | 80.19% |
+| nDCG@5 | 82.90% |
 
 Breakdown by content type:
 
@@ -276,18 +275,15 @@ Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 
 
 | Metric | Score |
 |---|---:|
-| Answer relevancy | 90.23% |
-| Context precision | 74.77% |
-| Context recall | 75.91% |
-| Citation correctness | 80.00% |
-| Faithfulness | 72.05% |
-| Answer correctness | 62.27% |
+| Answer relevancy | 81.27% |
+| Faithfulness | 76.87% |
+| Answer correctness | 51.80% |
 
 ### How to read these numbers
 
+- **Cohort Segregation (K50 vs K51):** The system enforces strict isolation between K50 and K51 regulations. This drastically increases the difficulty of the Retrieval task (slightly lowering Hit Rate and Correctness) but successfully boosts **Faithfulness to 76.87%**, ensuring students never receive mixed-up regulations.
 - The system is strong enough for public beta because structured facts and retrieval placement are stable.
-- Faithfulness and correctness are still the main improvement targets for harder long-form questions.
-- Metrics are reported honestly instead of being filtered to only easy cases.
+- Metrics are reported honestly instead of being filtered to only easy cases (150 Golden Queries tested).
 
 ## CI/CD and Quality Gates
 

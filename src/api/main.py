@@ -5,7 +5,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.api.routes import chat, chat_stream, health
+from src.api.routes import chat, chat_stream, health, metrics
 from src.common.env_loader import load_project_env
 
 
@@ -72,6 +72,7 @@ if cors_origins:
     )
 
 app.include_router(health.router)
+app.include_router(metrics.router)
 app.include_router(chat.router)
 app.include_router(chat_stream.router)
 

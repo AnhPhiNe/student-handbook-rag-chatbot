@@ -505,7 +505,26 @@ class AnswerPipeline:
         cohort: str | None = None,
         **kwargs,
     ) -> Iterator[dict[str, Any]]:
-        """Luồng tạo câu trả lời dạng Streaming (Server-Sent Events)."""
+        """Hàm trái tim (Core Function) điều phối luồng Sinh câu trả lời dạng Streaming.
+
+        Cách hàm này hoạt động:
+        1. Nhận câu hỏi mới (query) và lịch sử chat (chat_history).
+        2. Dùng Query Rewriter (Bộ nhớ hội thoại) để viết lại câu hỏi sao cho rõ nghĩa nhất.
+        3. Dùng Retrieval Pipeline để bốc tài liệu đúng (Context) từ Database.
+        4. Kiểm tra các rào cản an toàn (Guardrails):
+           - Có phải là câu hỏi ngoài lề (Out-of-domain) không? -> Báo từ chối.
+           - Có cần tính toán công thức cứng (GPA, Học phí) không? -> Trả về đáp án cứng (Deterministic).
+        5. Cắt gọt tài liệu (Context Allocation) để nhét vừa vào LLM Prompt.
+        6. Gọi API LLM (Groq/Gemini) và liên tục yield (nhả) từng token ra ngoài (Streaming) để Frontend hiển thị chữ chạy ngay lập tức.
+        
+        Args:
+            query: Câu hỏi gốc của người dùng.
+            chat_history: Lịch sử tin nhắn để giữ ngữ cảnh trò chuyện.
+            cohort: Phân loại nhóm người dùng (ví dụ: K50, K51) để áp dụng luật riêng.
+            
+        Yields:
+            Các chunks dữ liệu (metadata, token, progress) để Frontend vẽ UI thời gian thực.
+        """
         trace_id = ""
         run_id = None
         

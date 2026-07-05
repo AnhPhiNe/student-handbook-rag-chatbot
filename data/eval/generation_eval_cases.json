@@ -524,14 +524,28 @@
     "ground_truth": "Theo quy định dành cho khóa K50-K51, đối với các học phần còn lại / Chuyên ngành, điểm 5.0 tương ứng với điểm chữ D+ và được xếp vào loại Không đạt. Do đó, bạn sẽ không qua môn và phải học lại.",
     "expected_intent": "scoring_lookup",
     "id": "gen_case_k50_001",
-    "cohort": "K50-K51"
+    "cohort": "K50"
+  },
+  {
+    "query": "Khóa K50 thi môn chuyên ngành được 5.0 điểm thì có qua môn không?",
+    "ground_truth": "Theo quy định dành cho khóa K50-K51, đối với các học phần còn lại / Chuyên ngành, điểm 5.0 tương ứng với điểm chữ D+ và được xếp vào loại Không đạt. Do đó, bạn sẽ không qua môn và phải học lại.",
+    "expected_intent": "scoring_lookup",
+    "id": "gen_case_k50_001",
+    "cohort": "K51"
   },
   {
     "query": "Sinh viên khóa K51 thi học phần Giáo dục đại cương được 4.5 thì được điểm chữ gì và có qua môn không?",
     "ground_truth": "Theo quy định dành cho khóa K50-K51, đối với học phần Giáo dục đại cương / Nền tảng, điểm 4.5 tương ứng với điểm chữ D và được xếp vào loại Đạt. Do đó, bạn đã qua môn học này.",
     "expected_intent": "scoring_lookup",
     "id": "gen_case_k51_002",
-    "cohort": "K50-K51"
+    "cohort": "K50"
+  },
+  {
+    "query": "Sinh viên khóa K51 thi học phần Giáo dục đại cương được 4.5 thì được điểm chữ gì và có qua môn không?",
+    "ground_truth": "Theo quy định dành cho khóa K50-K51, đối với học phần Giáo dục đại cương / Nền tảng, điểm 4.5 tương ứng với điểm chữ D và được xếp vào loại Đạt. Do đó, bạn đã qua môn học này.",
+    "expected_intent": "scoring_lookup",
+    "id": "gen_case_k51_002",
+    "cohort": "K51"
   },
   {
     "query": "Trường mình có quy định gì về hoạt động nghiên cứu khoa học của SV không?",
@@ -714,7 +728,14 @@
     "ground_truth": "Theo quy định dành cho khóa K50-K51, đối với các học phần còn lại / Chuyên ngành, điểm 5.0 tương ứng với điểm chữ D+ và được xếp vào loại Không đạt. Do đó, bạn sẽ không qua môn và phải học lại.",
     "expected_intent": "scoring_lookup",
     "id": "gen_case_k50_001_aug_22",
-    "cohort": "K50-K51"
+    "cohort": "K50"
+  },
+  {
+    "query": "Khóa K51 thi môn chuyên ngành được 5.0 điểm thì có qua môn không?",
+    "ground_truth": "Theo quy định dành cho khóa K50-K51, đối với các học phần còn lại / Chuyên ngành, điểm 5.0 tương ứng với điểm chữ D+ và được xếp vào loại Không đạt. Do đó, bạn sẽ không qua môn và phải học lại.",
+    "expected_intent": "scoring_lookup",
+    "id": "gen_case_k50_001_aug_22",
+    "cohort": "K51"
   },
   {
     "query": "Giáo viên có phải đưa ra đề cương chi tiết học phần và các quy định liên quan trong buổi học đầu tiên không? Và việc phân công giảng viên dạy, hướng dẫn thí nghiệm, thực tập được thực hiện như thế nào? tư vấn giúp mình nhé!",
@@ -807,7 +828,15 @@
   {
     "id": "gen_v4_k50_program_school",
     "query": "K50-K51 trường đang có những ngành đào tạo nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "faculty_query",
+    "ground_truth": "Câu trả lời phải liệt kê danh sách ngành áp dụng cho K50-K51 và có các ngành Công nghệ Giáo dục, Toán ứng dụng, Công nghệ Thông tin, Sư phạm Tin học nếu dữ liệu structured đang lưu các ngành này.",
+    "chunk_id": "program_directory_k50_school"
+  },
+  {
+    "id": "gen_v4_k50_program_school",
+    "query": "K50-K51 trường đang có những ngành đào tạo nào?",
+    "cohort": "K51",
     "expected_intent": "faculty_query",
     "ground_truth": "Câu trả lời phải liệt kê danh sách ngành áp dụng cho K50-K51 và có các ngành Công nghệ Giáo dục, Toán ứng dụng, Công nghệ Thông tin, Sư phạm Tin học nếu dữ liệu structured đang lưu các ngành này.",
     "chunk_id": "program_directory_k50_school"
@@ -823,7 +852,15 @@
   {
     "id": "gen_v4_cntt_k50",
     "query": "Khoa Công nghệ Thông tin của K50-K51 có những ngành nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "faculty_query",
+    "ground_truth": "Khoa Công nghệ Thông tin ở K50-K51 cần trả lời các ngành Công nghệ Thông tin, Sư phạm Tin học và Công nghệ Giáo dục nếu dữ liệu structured đang lưu theo mapping hiện tại.",
+    "chunk_id": "program_directory_k50_cntt"
+  },
+  {
+    "id": "gen_v4_cntt_k50",
+    "query": "Khoa Công nghệ Thông tin của K50-K51 có những ngành nào?",
+    "cohort": "K51",
     "expected_intent": "faculty_query",
     "ground_truth": "Khoa Công nghệ Thông tin ở K50-K51 cần trả lời các ngành Công nghệ Thông tin, Sư phạm Tin học và Công nghệ Giáo dục nếu dữ liệu structured đang lưu theo mapping hiện tại.",
     "chunk_id": "program_directory_k50_cntt"
@@ -831,7 +868,15 @@
   {
     "id": "gen_v4_su_pham_cong_nghe",
     "query": "Ngành Sư phạm Công nghệ thuộc khoa nào và có thể làm gì sau tốt nghiệp?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "faculty_query",
+    "ground_truth": "Câu trả lời phải xác định ngành Sư phạm Công nghệ thuộc Khoa Vật lý theo mapping đã chuẩn hóa, sau đó tóm tắt cơ hội nghề nghiệp dựa trên nguồn chương ngành đào tạo, không gán nhầm sang khoa khác.",
+    "chunk_id": "program_directory_su_pham_cong_nghe"
+  },
+  {
+    "id": "gen_v4_su_pham_cong_nghe",
+    "query": "Ngành Sư phạm Công nghệ thuộc khoa nào và có thể làm gì sau tốt nghiệp?",
+    "cohort": "K51",
     "expected_intent": "faculty_query",
     "ground_truth": "Câu trả lời phải xác định ngành Sư phạm Công nghệ thuộc Khoa Vật lý theo mapping đã chuẩn hóa, sau đó tóm tắt cơ hội nghề nghiệp dựa trên nguồn chương ngành đào tạo, không gán nhầm sang khoa khác.",
     "chunk_id": "program_directory_su_pham_cong_nghe"
@@ -839,7 +884,15 @@
   {
     "id": "gen_v4_su_pham_lich_su_dia_ly",
     "query": "Ngành Sư phạm Lịch sử - Địa lý thuộc khoa nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "faculty_query",
+    "ground_truth": "Câu trả lời phải xác định Sư phạm Lịch sử - Địa lý thuộc Khoa Địa lý theo dữ liệu đã chuẩn hóa, không gán sang Khoa Lịch sử.",
+    "chunk_id": "program_directory_su_pham_lich_su_dia_ly"
+  },
+  {
+    "id": "gen_v4_su_pham_lich_su_dia_ly",
+    "query": "Ngành Sư phạm Lịch sử - Địa lý thuộc khoa nào?",
+    "cohort": "K51",
     "expected_intent": "faculty_query",
     "ground_truth": "Câu trả lời phải xác định Sư phạm Lịch sử - Địa lý thuộc Khoa Địa lý theo dữ liệu đã chuẩn hóa, không gán sang Khoa Lịch sử.",
     "chunk_id": "program_directory_su_pham_lich_su_dia_ly"
@@ -855,7 +908,15 @@
   {
     "id": "gen_v4_pass_k50_remaining",
     "query": "K50-K51 học phần còn lại thì D+ có qua môn không?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "score_lookup_query",
+    "ground_truth": "Với K50-K51, cần phân biệt nhóm học phần. Ở nhóm các học phần còn lại, D và D+ không đạt; ngưỡng đạt bắt đầu từ C, tức khoảng 5.5 trở lên. Không được trả lời chung rằng D+ luôn qua môn.",
+    "chunk_id": "scoring_table_k50_grade_10_to_letter"
+  },
+  {
+    "id": "gen_v4_pass_k50_remaining",
+    "query": "K50-K51 học phần còn lại thì D+ có qua môn không?",
+    "cohort": "K51",
     "expected_intent": "score_lookup_query",
     "ground_truth": "Với K50-K51, cần phân biệt nhóm học phần. Ở nhóm các học phần còn lại, D và D+ không đạt; ngưỡng đạt bắt đầu từ C, tức khoảng 5.5 trở lên. Không được trả lời chung rằng D+ luôn qua môn.",
     "chunk_id": "scoring_table_k50_grade_10_to_letter"
@@ -863,7 +924,15 @@
   {
     "id": "gen_v4_pass_k50_foundation",
     "query": "K51 học phần nền tảng điểm D có được tính đạt không?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "score_lookup_query",
+    "ground_truth": "Câu trả lời phải nêu rõ với K50-K51 cần xem nhóm học phần. Nếu là học phần chung/nền tảng theo bảng áp dụng, D có thể được tính đạt; còn các học phần còn lại thì D/D+ không đạt.",
+    "chunk_id": "scoring_table_k50_grade_10_to_letter"
+  },
+  {
+    "id": "gen_v4_pass_k50_foundation",
+    "query": "K51 học phần nền tảng điểm D có được tính đạt không?",
+    "cohort": "K51",
     "expected_intent": "score_lookup_query",
     "ground_truth": "Câu trả lời phải nêu rõ với K50-K51 cần xem nhóm học phần. Nếu là học phần chung/nền tảng theo bảng áp dụng, D có thể được tính đạt; còn các học phần còn lại thì D/D+ không đạt.",
     "chunk_id": "scoring_table_k50_grade_10_to_letter"
@@ -935,7 +1004,15 @@
   {
     "id": "cohort_matrix_gen_school_k50",
     "query": "Theo sổ tay K50-K51, trường có những ngành đào tạo nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "faculty_query",
+    "ground_truth": "Câu trả lời phải liệt kê danh sách ngành theo khóa K50-K51 và có thể bao gồm các ngành mới như Toán ứng dụng, Công nghệ Giáo dục nếu có trong nguồn.",
+    "chunk_id": "program_directory_k50_school"
+  },
+  {
+    "id": "cohort_matrix_gen_school_k50",
+    "query": "Theo sổ tay K50-K51, trường có những ngành đào tạo nào?",
+    "cohort": "K51",
     "expected_intent": "faculty_query",
     "ground_truth": "Câu trả lời phải liệt kê danh sách ngành theo khóa K50-K51 và có thể bao gồm các ngành mới như Toán ứng dụng, Công nghệ Giáo dục nếu có trong nguồn.",
     "chunk_id": "program_directory_k50_school"
@@ -951,7 +1028,15 @@
   {
     "id": "cohort_matrix_gen_cntt_k50",
     "query": "K50-K51 khoa CNTT có những ngành nào?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "faculty_query",
+    "ground_truth": "Câu trả lời phải nêu Khoa Công nghệ Thông tin của K50-K51 gồm Công nghệ Thông tin, Sư phạm Tin học và Công nghệ Giáo dục; không gán Toán ứng dụng hoặc Sư phạm Công nghệ cho khoa này.",
+    "chunk_id": "program_directory_k50_cntt"
+  },
+  {
+    "id": "cohort_matrix_gen_cntt_k50",
+    "query": "K50-K51 khoa CNTT có những ngành nào?",
+    "cohort": "K51",
     "expected_intent": "faculty_query",
     "ground_truth": "Câu trả lời phải nêu Khoa Công nghệ Thông tin của K50-K51 gồm Công nghệ Thông tin, Sư phạm Tin học và Công nghệ Giáo dục; không gán Toán ứng dụng hoặc Sư phạm Công nghệ cho khoa này.",
     "chunk_id": "program_directory_k50_cntt"
@@ -967,7 +1052,15 @@
   {
     "id": "cohort_matrix_gen_pass_k50_remaining",
     "query": "K50-K51 học phần còn lại điểm D+ có đạt không?",
-    "cohort": "K50-K51",
+    "cohort": "K50",
+    "expected_intent": "score_lookup_query",
+    "ground_truth": "Câu trả lời phải nêu với K50-K51 cần phân biệt nhóm học phần; với học phần còn lại, D/D+ là không đạt và ngưỡng đạt bắt đầu từ C hoặc 5.5 nếu nguồn quy định như vậy.",
+    "chunk_id": "scoring_table_k50_grade_10_to_letter"
+  },
+  {
+    "id": "cohort_matrix_gen_pass_k50_remaining",
+    "query": "K50-K51 học phần còn lại điểm D+ có đạt không?",
+    "cohort": "K51",
     "expected_intent": "score_lookup_query",
     "ground_truth": "Câu trả lời phải nêu với K50-K51 cần phân biệt nhóm học phần; với học phần còn lại, D/D+ là không đạt và ngưỡng đạt bắt đầu từ C hoặc 5.5 nếu nguồn quy định như vậy.",
     "chunk_id": "scoring_table_k50_grade_10_to_letter"

@@ -49,6 +49,29 @@ def build_context_for_prompt(
     max_context_chars: int,
     allocation_config: ContextAllocationConfig | dict[str, Any] | None = None,
 ) -> str:
+    """Thuật toán đóng gói và cắt gọt tài liệu (Context Allocation) trước khi đưa cho LLM.
+    
+    Vấn đề:
+    LLM (như Gemini/Llama) có giới hạn về số lượng token (Max Token) có thể đọc trong một lần.
+    Nếu Retrieval kéo lên 10 tài liệu quá dài, LLM sẽ bị "tràn bộ nhớ" (Context Window Overflow).
+    
+    Cách giải quyết (Thuật toán):
+    1. Nhận danh sách các tài liệu (retrieval_result) và số ký tự tối đa cho phép (max_context_chars).
+    2. Trừ đi phần dung lượng (budget) dành cho các tiêu đề (Headers - Tên tài liệu, trang số mấy).
+    3. Phân bổ phần dung lượng còn lại cho các tài liệu theo chiến lược (strategy) đã cấu hình:
+       - equal_split: Chia đều số ký tự cho tất cả tài liệu.
+       - score_weighted: Chia nhiều số ký tự hơn cho tài liệu nào có điểm số Retrieval cao hơn.
+    4. Cắt (truncate) các tài liệu sao cho không làm vỡ câu (giữ nguyên dấu chấm câu - sentence_boundary).
+    5. Nối chúng lại với nhau kèm đường dẫn nguồn để đưa vào Prompt.
+    
+    Args:
+        retrieval_result: Kết quả trả về từ luồng tìm kiếm.
+        query: Câu hỏi của người dùng để ưu tiên cắt đúng đoạn chứa từ khóa.
+        max_context_chars: Giới hạn ký tự tối đa LLM có thể đọc.
+        
+    Returns:
+        str: Một khối văn bản (Context) đã được dồn nén tối ưu nhất để nhét vào Prompt.
+    """
     config = (
         allocation_config
         if isinstance(allocation_config, ContextAllocationConfig)

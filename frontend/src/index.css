@@ -1270,6 +1270,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   border-radius: var(--radius-md);
   font-size: 0.875rem;
   animation: slideDown 0.3s ease-out;
+  max-width: 780px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 @keyframes slideDown {
@@ -1300,6 +1303,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 }
 
 .chat-input-container {
+  max-width: 780px;
+  margin: 0 auto;
+  position: relative;
+  width: 100%;
+}
+
+.chat-input-box {
   display: flex;
   align-items: flex-end;
   background-color: var(--bg-secondary);

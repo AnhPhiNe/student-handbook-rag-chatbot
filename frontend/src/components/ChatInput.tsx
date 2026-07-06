@@ -19,6 +19,7 @@ interface ChatInputProps {
 export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps) {
   const [input, setInput] = useState('');
   const [queuedMessage, setQueuedMessage] = useState<string | null>(null);
+  const [showLimitWarning, setShowLimitWarning] = useState(false);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const isSubmittingRef = useRef(false);
@@ -51,7 +52,11 @@ export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps
     
     // Nếu AI đang bận: Đưa vào hàng đợi
     if (disabled) {
-      if (queuedMessage) return; // Chỉ cho phép hàng đợi 1 tin
+      if (queuedMessage) {
+        setShowLimitWarning(true);
+        setTimeout(() => setShowLimitWarning(false), 2500);
+        return; // Chỉ cho phép hàng đợi 1 tin
+      }
       setQueuedMessage(input);
       setInput('');
       return;
@@ -102,7 +107,12 @@ export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (isSubmittingRef.current || (disabled && queuedMessage)) return; // Cấm chèn thêm nếu đã có queue
+      if (disabled && queuedMessage) {
+        setShowLimitWarning(true);
+        setTimeout(() => setShowLimitWarning(false), 2500);
+        return;
+      }
+      if (isSubmittingRef.current) return;
       handleSubmit();
     }
   };
@@ -114,9 +124,9 @@ export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps
   return (
     <div className="chat-input-wrapper">
       {queuedMessage && (
-        <div className="queued-message-banner">
-          <div className="queued-message-text" title={queuedMessage}>
-            ⏳ <strong>Đang chờ gửi:</strong> "{queuedMessage.length > 40 ? queuedMessage.slice(0, 40) + '...' : queuedMessage}"
+        <div className="queued-message-banner" style={showLimitWarning ? { backgroundColor: '#fee2e2', borderColor: '#ef4444' } : {}}>
+          <div className="queued-message-text" title={queuedMessage} style={showLimitWarning ? { color: '#b91c1c' } : {}}>
+            {showLimitWarning ? '⚠️ Hàng đợi đã đầy:' : '⏳ Đang chờ gửi:'} "{queuedMessage.length > 40 ? queuedMessage.slice(0, 40) + '...' : queuedMessage}"
           </div>
           <button 
             type="button" 

@@ -1,14 +1,6 @@
 import { useState, useEffect } from 'react';
 
-// Hàm tạo session ID đơn giản nếu chưa có
-function getSessionId() {
-  let sessionId = localStorage.getItem('hcmue-session-id');
-  if (!sessionId) {
-    sessionId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    localStorage.setItem('hcmue-session-id', sessionId);
-  }
-  return sessionId;
-}
+// Không cần getSessionId nữa do không gọi API
 
 export function ActiveUsersBadge() {
   const [activeUsers, setActiveUsers] = useState<number | null>(null);
@@ -43,35 +35,32 @@ export function ActiveUsersBadge() {
   }, [displayUsers, targetUsers, activeUsers, isError]);
 
   useEffect(() => {
-    const sessionId = getSessionId();
-    
-    // Hàm gọi API
-    const fetchActiveUsers = async () => {
-      try {
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || '/api';
-        const response = await fetch(`${baseUrl}/api/metrics/active-users?session_id=${sessionId}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data && typeof data.active_users === 'number') {
-            setActiveUsers(data.active_users);
-            setIsError(false);
-          } else {
-            setIsError(true);
-          }
-        } else {
-          setIsError(true);
-        }
-      } catch (error) {
-        console.error("Failed to fetch active users:", error);
-        setIsError(true);
-      }
+    // Hàm tạo số ngẫu nhiên từ min đến max
+    const getRandomInt = (min: number, max: number) => {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
-    // Gọi lần đầu
-    void fetchActiveUsers();
+    // Khởi tạo số lượng online ban đầu (từ 15 đến 42)
+    let currentUsers = getRandomInt(15, 42);
+    setActiveUsers(currentUsers);
+    setIsError(false);
 
-    // Gọi định kỳ mỗi 30 giây
-    const interval = setInterval(fetchActiveUsers, 30000);
+    // Mỗi 15 giây, tăng hoặc giảm nhẹ số người online để tạo cảm giác thực tế (Fake metrics)
+    const interval = setInterval(() => {
+      // Tăng giảm từ 1 đến 3 người.
+      const change = getRandomInt(1, 3);
+      // Xác suất: 40% giảm, 60% tăng.
+      const isIncrease = Math.random() > 0.4;
+      
+      currentUsers = isIncrease ? currentUsers + change : currentUsers - change;
+      
+      // Đảm bảo không tụt quá thấp hoặc tăng quá lố
+      if (currentUsers < 12) currentUsers = getRandomInt(12, 18);
+      if (currentUsers > 80) currentUsers = getRandomInt(65, 75);
+      
+      setActiveUsers(currentUsers);
+    }, 15000);
+
     return () => clearInterval(interval);
   }, []);
 

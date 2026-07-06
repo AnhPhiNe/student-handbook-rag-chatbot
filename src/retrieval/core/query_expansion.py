@@ -23,18 +23,34 @@ def expand_query(
     query: str,
     expansion_rules: list[dict[str, Any]],
 ) -> str:
-    q = normalize_text(query)
-    additions = []
+    expanded_query = query
 
     for rule in expansion_rules:
-        triggers = [normalize_text(t) for t in rule.get("trigger", [])]
+        triggers = [t for t in rule.get("trigger", [])]
+        expand_to = rule.get("expand_to", [])
+        
+        if not expand_to:
+            continue
+            
+        # Lấy từ khóa chuẩn đầu tiên để làm từ thay thế
+        replacement = expand_to[0]
 
-        if any(contains_trigger(q, trigger) for trigger in triggers):
-            additions.extend(rule.get("expand_to", []))
+        for trigger in triggers:
+            if not trigger:
+                continue
+            
+            # Cấu trúc Regex để thay thế độc lập từ (case-insensitive)
+            starts_word = trigger[0].isalnum() or trigger[0] == "_"
+            ends_word = trigger[-1].isalnum() or trigger[-1] == "_"
+            prefix = r"(?<!\w)" if starts_word else ""
+            suffix = r"(?!\w)" if ends_word else ""
+            
+            pattern = re.compile(prefix + re.escape(trigger) + suffix, re.IGNORECASE)
+            
+            # Thực hiện thay thế trực tiếp vào câu hỏi
+            expanded_query = pattern.sub(replacement, expanded_query)
 
-    additions = list(dict.fromkeys(additions))
+    # Dọn dẹp khoảng trắng thừa có thể sinh ra trong quá trình replace
+    expanded_query = re.sub(r"\s+", " ", expanded_query).strip()
 
-    if not additions:
-        return query
-
-    return query + " " + " ".join(additions)
+    return expanded_query

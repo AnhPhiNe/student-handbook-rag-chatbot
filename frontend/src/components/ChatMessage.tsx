@@ -202,6 +202,18 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
   const [justFinished, setJustFinished] = useState(false);
   const feedbackInputRef = useRef<HTMLTextAreaElement>(null);
   const prevStreamingRef = useRef(message.isStreaming);
+  
+  // Sàn hiển thị tối thiểu 500ms (Min Display Threshold)
+  const [isMinDelayPassed, setIsMinDelayPassed] = useState(!message.isStreaming);
+
+  useEffect(() => {
+    if (message.isStreaming && !isMinDelayPassed) {
+      const timer = setTimeout(() => {
+        setIsMinDelayPassed(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [message.isStreaming, isMinDelayPassed]);
 
   useEffect(() => {
     if (showInlineFeedback && feedbackInputRef.current) {
@@ -298,23 +310,18 @@ export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRet
   }
 
   return (
-    <div className="message-wrapper bot">
-      <img src={botAvatarImg} alt="HCMUE AI" className="avatar bot" />
+    <div className="message-wrapper bot" aria-live="polite">
+      <div className={`avatar-container ${message.isStreaming && (!displayContent || !isMinDelayPassed) ? 'halo-breathing' : ''}`}>
+        <img src={botAvatarImg} alt="HCMUE AI" className="avatar bot" />
+      </div>
       <div className="message-content">
-        <div className={`message-bubble ${message.isStreaming && !displayContent && !thinkContent && !thinkingMessage ? 'typing-indicator' : ''}`}>
-          {message.isStreaming && !displayContent && !thinkContent ? (
-            thinkingMessage ? (
-              <div className="cold-start-content" style={{ padding: '2px 4px' }}>
-                <Sparkles size={18} className="thinking-sparkle" />
-                <span className="thinking-text">{thinkingMessage}</span>
-              </div>
-            ) : (
-              <>
-                <div className="typing-dot"></div>
-                <div className="typing-dot"></div>
-                <div className="typing-dot"></div>
-              </>
-            )
+        <div className={`message-bubble ${message.isStreaming && (!displayContent || !isMinDelayPassed) && !thinkContent ? 'typing-indicator' : ''}`}>
+          {message.isStreaming && (!displayContent || !isMinDelayPassed) && !thinkContent ? (
+             <div className="typing-dots-wrapper" aria-busy="true">
+               <div className="typing-dot"></div>
+               <div className="typing-dot"></div>
+               <div className="typing-dot"></div>
+             </div>
           ) : (
             <>
               {thinkContent && (

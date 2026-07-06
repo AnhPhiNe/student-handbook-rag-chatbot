@@ -923,7 +923,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   border-right-color: var(--user-msg-bg);
 }
 
-/* Typing Indicator */
+/* Typing Indicator & Animations */
+.typing-dots-wrapper {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  height: 24px;
+}
+
 .typing-indicator {
   display: flex;
   gap: 5px;
@@ -941,6 +948,35 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 }
 .typing-dot:nth-child(1) { animation-delay: -0.32s; }
 .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+/* Halo Breathing Effect */
+.avatar-container {
+  position: relative;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-container.halo-breathing::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  opacity: 0.3;
+  z-index: -1;
+  animation: haloBreathe 2s ease-in-out infinite alternate;
+}
+
+@keyframes haloBreathe {
+  0% { transform: scale(0.9); opacity: 0.1; }
+  100% { transform: scale(1.15); opacity: 0.4; }
+}
 
 .cold-start-bubble {
   width: fit-content;

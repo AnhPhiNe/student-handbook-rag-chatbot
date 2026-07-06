@@ -11,40 +11,18 @@ function getSessionId() {
 }
 
 export function ActiveUsersBadge() {
-  const [activeUsers, setActiveUsers] = useState<number>(1);
+  const [activeUsers, setActiveUsers] = useState<number | null>(null);
   const [isHovered, setIsHovered] = useState(false);
-  
-  // Tổng số hiển thị trực tiếp ra màn hình, tách biệt với số mục tiêu để làm hiệu ứng chạy từ từ
   const [displayUsers, setDisplayUsers] = useState<number>(0);
-  
-  // Thủ thuật 2: Cộng thêm số nền (Base Offset) ngẫu nhiên từ 15 đến 85 để tạo hiệu ứng đám đông
-  const [baseOffset, setBaseOffset] = useState(() => Math.floor(Math.random() * (85 - 15 + 1)) + 15);
+  const [isError, setIsError] = useState(false);
 
-  // Hiệu ứng dao động ngẫu nhiên (lên/xuống 3-12 người) mỗi 8 giây để tạo cảm giác thực tế
+  // Tính toán số lượng mục tiêu cần hướng tới (sử dụng số liệu thật 100%)
+  const targetUsers = activeUsers !== null ? activeUsers : 0;
+
+  // Hiệu ứng đếm dần (Count up/down animation) để UI mượt mà
   useEffect(() => {
-    const driftInterval = setInterval(() => {
-      setBaseOffset(prev => {
-        // Tăng/giảm một khoảng ngẫu nhiên từ 3 đến 12 người
-        const changeAmount = Math.floor(Math.random() * (12 - 3 + 1)) + 3; 
-        const isUp = Math.random() > 0.5;
-        const change = isUp ? changeAmount : -changeAmount;
-        
-        let next = prev + change;
-        // Giới hạn trong khoảng 15 đến 150
-        if (next < 15) next = 15;
-        if (next > 150) next = 150;
-        return next;
-      });
-    }, 8000); // 8 giây
-
-    return () => clearInterval(driftInterval);
-  }, []);
-
-  // Tính toán số lượng mục tiêu cần hướng tới
-  const targetUsers = activeUsers + baseOffset;
-
-  // Hiệu ứng đếm dần (Count up/down animation)
-  useEffect(() => {
+    if (activeUsers === null || isError) return;
+    
     // Nếu lần đầu (0), thì gán thẳng luôn tránh đếm từ 0 lâu
     if (displayUsers === 0) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -62,7 +40,7 @@ export function ActiveUsersBadge() {
     }, animationDelay);
 
     return () => clearTimeout(timer);
-  }, [displayUsers, targetUsers]);
+  }, [displayUsers, targetUsers, activeUsers, isError]);
 
   useEffect(() => {
     const sessionId = getSessionId();
@@ -76,10 +54,16 @@ export function ActiveUsersBadge() {
           const data = await response.json();
           if (data && typeof data.active_users === 'number') {
             setActiveUsers(data.active_users);
+            setIsError(false);
+          } else {
+            setIsError(true);
           }
+        } else {
+          setIsError(true);
         }
       } catch (error) {
         console.error("Failed to fetch active users:", error);
+        setIsError(true);
       }
     };
 
@@ -91,12 +75,27 @@ export function ActiveUsersBadge() {
     return () => clearInterval(interval);
   }, []);
 
+  // Fallback state khi lỗi mạng hoặc chưa tải xong
+  if (isError || activeUsers === null) {
+    return (
+      <div 
+        className="active-users-badge"
+        title="Hệ thống đang kết nối hoặc tải số lượng"
+      >
+        <div className="pulsing-dot" style={{ backgroundColor: '#F59E0B' }}></div>
+        <span className="count-text">
+          Đang kết nối...
+        </span>
+      </div>
+    );
+  }
+
   return (
     <div 
       className="active-users-badge"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      title="Số người đang truy cập hệ thống"
+      title="Số người đang truy cập hệ thống (Thời gian thực)"
     >
       <div className="pulsing-dot"></div>
       <span className="count-text">
@@ -105,3 +104,4 @@ export function ActiveUsersBadge() {
     </div>
   );
 }
+

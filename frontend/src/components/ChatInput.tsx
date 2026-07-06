@@ -18,7 +18,8 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
   const [input, setInput] = useState('');
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const placeholder = disabled ? 'Đang trả lời, vui lòng chờ...' : PLACEHOLDERS[placeholderIdx];
+  const isSubmittingRef = useRef(false);
+  const placeholder = PLACEHOLDERS[placeholderIdx];
 
   const charCount = input.length;
   const isNearLimit = charCount > MAX_CHARS * 0.8;
@@ -41,22 +42,30 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (!input.trim() || disabled || isOverLimit) return;
+    if (!input.trim() || disabled || isOverLimit || isSubmittingRef.current) return;
+    
+    isSubmittingRef.current = true;
     onSend(input);
     setInput('');
+    
+    // Debounce chống click đúp (Double-click guard)
+    setTimeout(() => {
+      isSubmittingRef.current = false;
+    }, 500);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
+      if (disabled || isSubmittingRef.current) return;
       handleSubmit();
     }
   };
 
   return (
-    <div className={`chat-input-wrapper ${disabled ? 'is-disabled' : ''}`}>
+    <div className="chat-input-wrapper">
       <form onSubmit={handleSubmit} className="chat-input-container" aria-busy={disabled}>
-        <div className={`chat-input-box ${disabled ? 'is-disabled' : ''}`}>
+        <div className="chat-input-box">
           <textarea
             ref={textareaRef}
             className="chat-textarea"
@@ -64,8 +73,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            disabled={disabled}
-            aria-disabled={disabled}
+            disabled={false} // Unblock input
             rows={1}
           />
           
@@ -79,16 +87,13 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
             type="submit" 
             className={`send-btn ${input.trim() ? 'has-input' : ''}`} 
             disabled={!input.trim() || disabled || isOverLimit}
+            aria-disabled={disabled}
             aria-label={disabled ? 'Đang chờ trợ lý trả lời' : 'Gửi câu hỏi'}
             title={disabled ? 'Vui lòng chờ trợ lý trả lời xong' : 'Gửi câu hỏi'}
+            style={disabled ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
           >
             <Send size={18} className={input.trim() ? 'send-icon-active' : ''} />
           </button>
-          {disabled && (
-            <div className="chat-input-disabled-hint" aria-hidden="true">
-              Trợ lý đang xử lý câu hỏi hiện tại
-            </div>
-          )}
         </div>
         <p className="disclaimer">
           Trợ lý AI có thể mắc lỗi. Vui lòng kiểm tra thông tin quan trọng.

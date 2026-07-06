@@ -134,10 +134,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
   else greeting = "Chào buổi tối 🌙";
 
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const [thinkingMessage, setThinkingMessage] = useState("");
-  const coldStartTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  
-  const displayThinkingMessage = thinkingMessage;
+  const displayThinkingMessage = progressMessage;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -196,40 +193,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
     }
   };
 
-  // Progressive thinking indicator based on real backend progress or simulated fallback
-  useEffect(() => {
-    if (isTyping) {
-      if (progressMessage) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setThinkingMessage(progressMessage);
-        clearInterval(coldStartTimer.current);
-      } else {
-        const messages = [
-          "Đang phân tích câu hỏi của bạn...",
-          "Đang lục lọi trong Sổ tay sinh viên...",
-          "Đang tìm kiếm các tài liệu liên quan...",
-          "Sắp xong rồi, đang tổng hợp câu trả lời..."
-        ];
-        if (!thinkingMessage) {
-          setThinkingMessage(messages[0]);
-        }
-        
-        let i = 0;
-        clearInterval(coldStartTimer.current);
-        coldStartTimer.current = setInterval(() => {
-          i++;
-          if (i < messages.length) {
-            setThinkingMessage(messages[i]);
-          }
-        }, 1200) as ReturnType<typeof setInterval>;
-      }
-    } else {
-      setThinkingMessage("");
-      clearInterval(coldStartTimer.current);
-    }
-    return () => clearInterval(coldStartTimer.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isTyping, progressMessage]);
+  // Không sử dụng cold start delay giả nữa, mọi thứ để tự nhiên
 
   // ============ EMPTY STATE ============
   if (!hasMessages) {

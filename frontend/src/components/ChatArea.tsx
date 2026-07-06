@@ -136,6 +136,9 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
   const [showScrollButton, setShowScrollButton] = useState(false);
   const displayThinkingMessage = progressMessage;
 
+  const lastMsg = messages[messages.length - 1];
+  const hasError = !isTyping && lastMsg?.role === 'bot' && (lastMsg.content.includes("Xin lỗi, đã có lỗi") || lastMsg.content.includes("Hệ thống AI hiện đang quá tải"));
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -253,7 +256,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
               <span>{displayThinkingMessage}</span>
             </div>
           )}
-          <ChatInput onSend={onSendMessage} disabled={isTyping} hasError={systemStatus === 'error'} />
+          <ChatInput onSend={onSendMessage} disabled={isTyping} hasError={hasError} />
         </div>
       </main>
     );
@@ -296,7 +299,6 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
             <ChatMessage 
               key={msg.id} 
               message={msg} 
-              thinkingMessage={displayThinkingMessage}
               onRetry={onRetry}
               onRegenerate={onRegenerate}
               query={query}
@@ -313,7 +315,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
         </button>
       )}
 
-      <ChatInput onSend={onSendMessage} disabled={isTyping} />
+      <ChatInput onSend={onSendMessage} disabled={isTyping} hasError={hasError} />
     </main>
   );
 }

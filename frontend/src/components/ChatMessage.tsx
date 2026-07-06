@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
-import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, Brain, ExternalLink, Sparkles } from 'lucide-react';
+import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, Brain, ExternalLink } from 'lucide-react';
 import type { Citation, Message } from '../hooks/useChat';
 import { useToast } from './Toast';
 const userAvatarImg = '/user_avatar.png';
@@ -11,7 +11,6 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
 interface ChatMessageProps {
   message: Message;
-  thinkingMessage?: string;
   onRegenerate?: () => void;
   onRetry?: () => void;
   query?: string;
@@ -175,7 +174,7 @@ function highlightKeywords(text: string, query?: string): string {
   return text.replace(pattern, '<mark>$1</mark>');
 }
 
-export function ChatMessage({ message, thinkingMessage = "", onRegenerate, onRetry, query, onSuggestionClick }: ChatMessageProps) {
+export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestionClick }: ChatMessageProps) {
   const defaultShowSources = !!(message.citations && message.citations.length > 0 && message.citations.length <= 2);
   const [showSources, setShowSources] = useState(defaultShowSources);
   const [expandedCitations, setExpandedCitations] = useState<Set<number>>(new Set());

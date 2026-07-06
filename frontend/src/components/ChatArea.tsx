@@ -253,7 +253,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
               <span>{displayThinkingMessage}</span>
             </div>
           )}
-          <ChatInput onSend={onSendMessage} disabled={isTyping} />
+          <ChatInput onSend={onSendMessage} disabled={isTyping} hasError={systemStatus === 'error'} />
         </div>
       </main>
     );

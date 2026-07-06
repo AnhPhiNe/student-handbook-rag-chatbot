@@ -1,24 +1,29 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send } from 'lucide-react';
+import { Send, X } from 'lucide-react';
+
+const PLACEHOLDERS = [
+  "Hỏi chi tiết về học bổng, điểm rèn luyện...",
+  "Quy định xét vớt tốt nghiệp như thế nào?",
+  "Sinh viên năm 4 cần lưu ý gì về chuẩn đầu ra?",
+  "Mất thẻ sinh viên thì phải làm sao?"
+];
 
 const MAX_CHARS = 500;
-const PLACEHOLDERS = [
-  "Nhập câu hỏi của bạn...",
-  "Nhập câu hỏi về điều kiện bảo lưu...",
-  "Hỗ trợ cả tiếng Việt không dấu ✨",
-  "Nhập câu hỏi về bảng điểm hoặc phòng ban...",
-];
 
 interface ChatInputProps {
   onSend: (text: string) => void;
   disabled?: boolean;
+  hasError?: boolean;
 }
 
-export function ChatInput({ onSend, disabled }: ChatInputProps) {
+export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps) {
   const [input, setInput] = useState('');
+  const [queuedMessage, setQueuedMessage] = useState<string | null>(null);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const isSubmittingRef = useRef(false);
+  const hasFiredRef = useRef(false);
+  
   const placeholder = PLACEHOLDERS[placeholderIdx];
 
   const charCount = input.length;
@@ -42,8 +47,16 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (!input.trim() || disabled || isOverLimit || isSubmittingRef.current) return;
+    if (!input.trim() || isOverLimit || isSubmittingRef.current) return;
     
+    // Nếu AI đang bận: Đưa vào hàng đợi
+    if (disabled) {
+      if (queuedMessage) return; // Chỉ cho phép hàng đợi 1 tin
+      setQueuedMessage(input);
+      setInput('');
+      return;
+    }
+
     isSubmittingRef.current = true;
     onSend(input);
     setInput('');
@@ -54,16 +67,68 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
     }, 500);
   };
 
+  const handleCancelQueue = () => {
+    if (queuedMessage) {
+      const restoredText = queuedMessage + (input.trim() ? '\n' + input.trim() : '');
+      setInput(restoredText);
+      setQueuedMessage(null);
+      // Tự focus lại
+      setTimeout(() => textareaRef.current?.focus(), 50);
+    }
+  };
+
+  // Logic Auto-Fire (Bóp cò tự động)
+  useEffect(() => {
+    // Nếu AI đã gõ xong, và không có lỗi, và có tin nhắn đang chờ, và chưa bắn
+    if (!disabled && queuedMessage && !hasError && !hasFiredRef.current) {
+      hasFiredRef.current = true;
+      const msgToFire = queuedMessage;
+      setQueuedMessage(null);
+      isSubmittingRef.current = true;
+      
+      onSend(msgToFire);
+      
+      setTimeout(() => {
+        isSubmittingRef.current = false;
+      }, 500);
+    }
+    
+    // Reset cờ fire khi AI chuyển sang trạng thái bận
+    if (disabled) {
+      hasFiredRef.current = false;
+    }
+  }, [disabled, queuedMessage, hasError, onSend]);
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (disabled || isSubmittingRef.current) return;
+      if (isSubmittingRef.current || (disabled && queuedMessage)) return; // Cấm chèn thêm nếu đã có queue
       handleSubmit();
     }
   };
 
+  // Có thể submit (Gửi thật hoặc Đưa vào queue) nếu input có giá trị và không vượt limit
+  // Và: Nút chỉ hoàn toàn bị vô hiệu hóa khi (đang disabled VÀ đã có queuedMessage)
+  const isSendDisabled = !input.trim() || isOverLimit || (disabled && queuedMessage !== null);
+
   return (
     <div className="chat-input-wrapper">
+      {queuedMessage && (
+        <div className="queued-message-banner">
+          <div className="queued-message-text" title={queuedMessage}>
+            ⏳ <strong>Đang chờ gửi:</strong> "{queuedMessage.length > 40 ? queuedMessage.slice(0, 40) + '...' : queuedMessage}"
+          </div>
+          <button 
+            type="button" 
+            className="queued-message-cancel" 
+            onClick={handleCancelQueue}
+            title="Hủy tin nhắn này và trả về ô nhập"
+          >
+            Hủy
+          </button>
+        </div>
+      )}
+      
       <form onSubmit={handleSubmit} className="chat-input-container" aria-busy={disabled}>
         <div className="chat-input-box">
           <textarea
@@ -85,14 +150,14 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
 
           <button 
             type="submit" 
-            className={`send-btn ${input.trim() ? 'has-input' : ''}`} 
-            disabled={!input.trim() || disabled || isOverLimit}
-            aria-disabled={disabled}
+            className={`send-btn ${input.trim() && !isSendDisabled ? 'has-input' : ''}`} 
+            disabled={isSendDisabled}
+            aria-disabled={isSendDisabled}
             aria-label={disabled ? 'Đang chờ trợ lý trả lời' : 'Gửi câu hỏi'}
-            title={disabled ? 'Vui lòng chờ trợ lý trả lời xong' : 'Gửi câu hỏi'}
-            style={disabled ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+            title={disabled && queuedMessage ? 'Hàng đợi đã đầy. Vui lòng đợi' : 'Gửi câu hỏi'}
+            style={isSendDisabled ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
           >
-            <Send size={18} className={input.trim() ? 'send-icon-active' : ''} />
+            <Send size={18} className={input.trim() && !isSendDisabled ? 'send-icon-active' : ''} />
           </button>
         </div>
         <p className="disclaimer">

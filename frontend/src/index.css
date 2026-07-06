@@ -1255,15 +1255,51 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   padding: 1rem 2rem 1.5rem;
   background: linear-gradient(to top, var(--bg-primary) 70%, transparent);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.queued-message-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.queued-message-text {
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 85%;
+}
+
+.queued-message-cancel {
+  background: transparent;
+  border: none;
+  color: #EF4444;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.queued-message-cancel:hover {
+  background: rgba(239, 68, 68, 0.1);
 }
 
 .chat-input-container {
-  max-width: 780px;
-  margin: 0 auto;
-  position: relative;
-}
-
-.chat-input-box {
   display: flex;
   align-items: flex-end;
   background-color: var(--bg-secondary);

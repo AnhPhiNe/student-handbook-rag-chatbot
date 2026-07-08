@@ -5,7 +5,11 @@ from typing import Any
 from src.common.env_loader import load_project_env
 
 
+import time
+
 class GroqClient:
+    _rate_limited_providers = {}  # Lưu trữ các Model/Key bị cấm (Key -> Expiration Timestamp)
+    
     def __init__(
         self,
         model_name: str = "llama-3.3-70b-versatile",
@@ -64,59 +68,60 @@ class GroqClient:
         from groq import Groq
         import random
 
-        last_error = None
+        while True:
+            last_error = None
+            keys = list(self.available_keys)
+            random.shuffle(keys)
+            providers = [{"model": m, "api_key": k} for m in self.models for k in keys]
+            
+            all_skipped = True
 
-        keys = list(self.available_keys)
-        random.shuffle(keys)
-        providers = [{"model": m, "api_key": k} for m in self.models for k in keys]
+            for provider in providers:
+                provider_key = f"{provider['model']}:{provider['api_key']}"
+                if provider_key in GroqClient._rate_limited_providers:
+                    if time.time() < GroqClient._rate_limited_providers[provider_key]:
+                        continue
+                    else:
+                        del GroqClient._rate_limited_providers[provider_key]
 
-        for provider in providers:
-            try:
-                client = Groq(api_key=provider["api_key"], timeout=15.0, max_retries=0)
-                response = client.chat.completions.create(
-                    model=provider["model"],
-                    messages=[{"role": "user", "content": prompt}],
-                    temperature=self._config["temperature"],
-                    max_tokens=self._config["max_tokens"],
-                    stream=False,
-                )
-                text = response.choices[0].message.content
-                if not text:
-                    raise RuntimeError("Groq API returned an empty response.")
-                print(f"[GroqClient] mode=generate model_used={provider['model']}")
-                
-                usage_info = None
-                if hasattr(response, "usage") and response.usage:
-                    usage_info = {
-                        "input": getattr(response.usage, "prompt_tokens", 0),
-                        "output": getattr(response.usage, "completion_tokens", 0),
-                        "total": getattr(response.usage, "total_tokens", 0),
-                    }
+                all_skipped = False
+                try:
+                    client = Groq(api_key=provider["api_key"], timeout=20.0, max_retries=0)
+                    response = client.chat.completions.create(
+                        model=provider["model"],
+                        messages=[{"role": "user", "content": prompt}],
+                        temperature=self._config["temperature"],
+                        max_tokens=self._config["max_tokens"],
+                        stream=False,
+                    )
+                    text = response.choices[0].message.content
+                    if not text:
+                        raise RuntimeError("Groq API returned an empty response.")
+                    print(f"[GroqClient] mode=generate model_used={provider['model']}")
                     
-                return {
-                    "ok": True,
-                    "text": text,
-                    "error_type": None,
-                    "error_message": None,
-                    "attempts": 1,
-                    "model_used": provider["model"],
-                    "usage": usage_info,
-                }
-            except Exception as exc:
-                last_error = exc
-                print(
-                    f"[Fallback] Groq generation failed with model {provider['model']}. Trying next... Error: {str(exc)}"
-                )
-                continue
+                    return {
+                        "ok": True,
+                        "text": text,
+                        "error_type": None,
+                        "error_message": None,
+                        "attempts": 1,
+                        "model_used": provider["model"],
+                    }
+                except Exception as exc:
+                    last_error = exc
+                    err_str = str(exc)
+                    if "429" in err_str or "rate_limit" in err_str.lower():
+                        print(f"[Fallback] Groq Key hit rate limit. Penalty Box for 65 seconds...")
+                        GroqClient._rate_limited_providers[provider_key] = time.time() + 65
+                    else:
+                        print(f"[Fallback] Groq server error. Sleep 5s... Error: {err_str}")
+                        time.sleep(5)
+                    continue
 
-        return {
-            "ok": False,
-            "text": None,
-            "error_type": "api_error",
-            "error_message": str(last_error),
-            "attempts": len(providers),
-            "model_used": None,
-        }
+            # Nếu tất cả các Key đều nằm trong Penalty Box
+            if all_skipped:
+                print("[GroqClient] All keys are exhausted/rate-limited. Hibernating for 15 seconds before retry...")
+                time.sleep(15)
     def generate_stream(self, prompt: str) -> Iterator[str]:
         """Trả dần văn bản từ Groq theo thời gian thực, kèm fallback hai vòng và TTFT."""
         from groq import Groq
@@ -129,6 +134,14 @@ class GroqClient:
         providers = [{"model": m, "api_key": k} for m in self.models for k in keys]
 
         for provider in providers:
+            provider_key = f"{provider['model']}:{provider['api_key']}"
+            if provider_key in GroqClient._rate_limited_providers:
+                if time.time() < GroqClient._rate_limited_providers[provider_key]:
+                    print(f"[Skip] Provider {provider['model']} is in Penalty Box (Rate Limited). Skipping...")
+                    continue
+                else:
+                    del GroqClient._rate_limited_providers[provider_key]
+
             try:
                 # HTTP timeout 10.0s will implicitly act as TTFT timeout
                 client = Groq(api_key=provider["api_key"], timeout=10.0, max_retries=0)
@@ -177,9 +190,12 @@ class GroqClient:
 
             except Exception as exc:
                 last_error = exc
-                print(
-                    f"[Fallback] Groq stream failed with model {provider['model']}. Trying next... Error: {str(exc)}"
-                )
+                err_str = str(exc)
+                if "429" in err_str or "rate_limit" in err_str.lower():
+                    print(f"[Fallback] Groq model {provider['model']} hit rate limit (429). Blocking for 1 hour...")
+                    GroqClient._rate_limited_providers[provider_key] = time.time() + 3600
+                else:
+                    print(f"[Fallback] Groq stream failed with model {provider['model']}. Trying next... Error: {err_str}")
                 continue
 
         # If all providers fail

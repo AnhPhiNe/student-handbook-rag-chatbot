@@ -43,7 +43,7 @@ class MongoDocStore:
         self,
         uri: str,
         db_name: str = "chatbotHCMUE",
-        collection_name: str = "parent_docs",
+        collection_name: str = "parent_docs_v6",
         timeout_ms: int = 3000,
         failure_backoff_seconds: int = 300,
     ):

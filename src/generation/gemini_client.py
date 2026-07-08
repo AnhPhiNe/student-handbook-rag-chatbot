@@ -12,9 +12,12 @@ from src.common.env_loader import load_project_env
 
 
 class GeminiClient:
+    _current_key_index = 0
+    _rate_limited_providers = {}
+
     def __init__(
         self,
-        model_name: str = "gemini-2.5-flash-lite",
+        model_name: str = "gemini-2.5-flash",
         temperature: float = 0.2,
         max_output_tokens: int = 1024,
         max_retries: int = 3,
@@ -25,15 +28,20 @@ class GeminiClient:
     ) -> None:
         load_project_env()
         self.api_key_env_var = api_key_env_var
-        api_key = os.environ.get(api_key_env_var)
-        if not api_key:
+        
+        # Load multiple keys if GEMINI_API_KEYS exists, else fallback to GEMINI_API_KEY
+        keys_str = os.environ.get(api_key_env_var + "S") or os.environ.get(api_key_env_var)
+        if not keys_str:
             raise RuntimeError(
-                f"Missing {api_key_env_var}. Add it to .env or set this environment variable before running Gemini calls."
+                f"Missing {api_key_env_var}S or {api_key_env_var}. Add it to .env or set this environment variable before running Gemini calls."
             )
+        self.available_keys = [k.strip() for k in keys_str.split(",") if k.strip()]
 
         try:
             from google import genai
             from google.genai import types
+            self._types = types
+            self._genai = genai
         except ImportError as exc:
             raise RuntimeError(
                 "Missing dependency google-genai. Install it with: pip install google-genai"
@@ -45,24 +53,44 @@ class GeminiClient:
         self.retry_max_delay_seconds = float(retry_max_delay_seconds)
         self.request_timeout_seconds = float(request_timeout_seconds)
 
-        self._client = genai.Client(api_key=api_key)
+        self._client = self._genai.Client(api_key=self.available_keys[0])
         # google-genai does not expose a stable per-call timeout parameter across
         # all versions, so generate() enforces timeout around the blocking call.
-        self._config = types.GenerateContentConfig(
+        self._config = self._types.GenerateContentConfig(
             temperature=temperature,
             max_output_tokens=max_output_tokens,
         )
+
     def generate(self, prompt: str) -> dict[str, Any]:
         attempts = 0
         last_error_type = None
         last_error_message = None
 
-        for attempt_index in range(self.max_retries + 1):
-            attempts = attempt_index + 1
+        while True:
+            attempts += 1
+            if not self.available_keys:
+                raise RuntimeError("No Gemini API keys available.")
+                
+            current_key = self.available_keys[GeminiClient._current_key_index]
+            provider_key = f"{self.model_name}:{current_key}"
+            
+            # Check penalty box for the current key
+            if provider_key in GeminiClient._rate_limited_providers:
+                wait_time = GeminiClient._rate_limited_providers[provider_key] - time.time()
+                if wait_time > 0:
+                    print(f"[GeminiClient] Key {GeminiClient._current_key_index} still in penalty. Waiting {wait_time:.2f}s for RPM/TPD recovery...")
+                    time.sleep(wait_time)
+                else:
+                    del GeminiClient._rate_limited_providers[provider_key]
+
             try:
+                # Update client to use the current key
+                self._client = self._genai.Client(api_key=current_key)
                 text = self._generate_once(prompt)
                 if not text:
                     raise RuntimeError("Gemini API returned an empty response.")
+                
+                # If successful, we DON'T change the index. We exhaust this key for the next requests.
                 return {
                     "ok": True,
                     "text": text,
@@ -74,13 +102,28 @@ class GeminiClient:
             except Exception as exc:
                 last_error_type = self._classify_error(exc)
                 last_error_message = str(exc)
-
-                if attempt_index >= self.max_retries or not self._should_retry(
-                    last_error_type
-                ):
-                    break
-
-                time.sleep(self._retry_delay(attempt_index))
+                
+                if last_error_type == "rate_limit":
+                    print(f"[Fallback] Gemini Key {GeminiClient._current_key_index} hit rate limit (RPM/TPM). Penalty Box for 65 seconds...")
+                    GeminiClient._rate_limited_providers[provider_key] = time.time() + 65
+                    # Move to next key IMMEDIATELY
+                    GeminiClient._current_key_index = (GeminiClient._current_key_index + 1) % len(self.available_keys)
+                    continue
+                else:
+                    print(f"[Fallback] Gemini generation failed. Error: {last_error_message}")
+                    if self._should_retry(last_error_type):
+                        delay = self._retry_delay(attempts)
+                        print(f"[GeminiClient] Server error ({last_error_type}). Sleeping {delay:.2f}s to wait for server recovery...")
+                        time.sleep(delay)
+                        # Don't switch key if it's just a server transient error, but for safety we can switch
+                        GeminiClient._current_key_index = (GeminiClient._current_key_index + 1) % len(self.available_keys)
+                        continue
+                    else:
+                        print("Fatal error. Switching to next key...")
+                        GeminiClient._current_key_index = (GeminiClient._current_key_index + 1) % len(self.available_keys)
+                        if attempts >= self.max_retries * len(self.available_keys):
+                            break
+                        continue
 
         return {
             "ok": False,
@@ -116,10 +159,7 @@ class GeminiClient:
         return (getattr(response, "text", None) or "").strip()
 
     def _retry_delay(self, attempt_index: int) -> float:
-        exponential_delay = self.retry_base_delay_seconds * (2**attempt_index)
-        capped_delay = min(exponential_delay, self.retry_max_delay_seconds)
-        jitter = random.uniform(0, min(1.0, capped_delay * 0.25))
-        return capped_delay + jitter
+        return 5.0
 
     @staticmethod
     def _should_retry(error_type: str | None) -> bool:
@@ -152,23 +192,40 @@ class GeminiClient:
         if any(token in text for token in ["api", "google", "gemini"]):
             return "api_error"
         return "unknown"
-    def generate_stream(self, prompt: str) -> Iterator[str]:
-        """Trả dần các đoạn văn bản khi Gemini sinh ra theo thời gian thực.
 
-        Khác với generate() phải đợi đủ câu trả lời, phương thức này stream token
-        ngay khi API tạo ra. Được dùng bởi streaming answer pipeline và endpoint SSE.
-        """
-        try:
-            yield from self._generate_stream_once(prompt)
-        except Exception as exc:
-            error_type = self._classify_error(exc)
-            if self._should_retry(error_type):
-                # Fallback to non-streaming on transient errors
-                result = self.generate(prompt)
-                if result.get("ok") and result.get("text"):
-                    yield str(result["text"])
-                    return
-            raise
+    def generate_stream(self, prompt: str) -> Iterator[str]:
+        """Trả dần các đoạn văn bản khi Gemini sinh ra theo thời gian thực."""
+        # For simplicity in stream, we just wrap generate logic if it's transient, 
+        # but ideal streaming fallback requires identical while True logic.
+        while True:
+            current_key = self.available_keys[GeminiClient._current_key_index]
+            provider_key = f"{self.model_name}:{current_key}"
+            
+            if provider_key in GeminiClient._rate_limited_providers:
+                wait_time = GeminiClient._rate_limited_providers[provider_key] - time.time()
+                if wait_time > 0:
+                    time.sleep(wait_time)
+                else:
+                    del GeminiClient._rate_limited_providers[provider_key]
+
+            try:
+                self._client = self._genai.Client(api_key=current_key)
+                yield from self._generate_stream_once(prompt)
+                return
+            except Exception as exc:
+                error_type = self._classify_error(exc)
+                if error_type == "rate_limit":
+                    GeminiClient._rate_limited_providers[provider_key] = time.time() + 65
+                    GeminiClient._current_key_index = (GeminiClient._current_key_index + 1) % len(self.available_keys)
+                    continue
+                else:
+                    if self._should_retry(error_type):
+                        delay = self._retry_delay(1)
+                        print(f"[GeminiClient] Server error ({error_type}). Sleeping {delay:.2f}s to wait for server recovery...")
+                        time.sleep(delay)
+                        GeminiClient._current_key_index = (GeminiClient._current_key_index + 1) % len(self.available_keys)
+                        continue
+                    raise
 
     def _generate_stream_once(self, prompt: str) -> Iterator[str]:
         output_queue: queue.Queue[tuple[str, str | Exception | None]] = queue.Queue()

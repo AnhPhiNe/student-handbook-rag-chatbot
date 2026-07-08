@@ -208,6 +208,11 @@ def _metadata_boost(
     query_text = _normalize_text(query)
     boost = 0.0
 
+    # Ưu tiên vừa phải cho các mẩu tin bốc ra từ Graph (Không buff quá mạnh để tránh lấn át Vector)
+    if metadata.get("source") == "knowledge_graph":
+        boost += 0.05
+
+
     doc_type = _infer_chunk_type(doc)
     if doc_type in set(plan.get("chunk_types") or []):
         boost += 0.05
@@ -337,6 +342,20 @@ def retrieve_with_plan(
         )
     ]
 
+    # 2.5 Graph Search (Knowledge Graph)
+    try:
+        if _env_bool("STUDENT_RAG_DISABLE_GRAPH"):
+            graph_results = []
+        else:
+            from .graph_retriever import GraphRetriever
+            graph_retriever = GraphRetriever()
+            entity_names = [str(e.get("canonical_name") or "") for e in detected_entities if e.get("canonical_name")]
+            graph_results = graph_retriever.retrieve(entities=entity_names, depth=1, cohort=cohort)
+    except Exception as e:
+        logger.error(f"Graph Search failed: {e}")
+        graph_results = []
+
+
     # 3. Reciprocal Rank Fusion (RRF)
     # Combine results from both retrievers using RRF
     rrf_k = 60
@@ -355,6 +374,16 @@ def retrieve_with_plan(
         # If document is only in BM25 results, keep its metadata structure
         if doc_id not in docs_map:
             docs_map[doc_id] = doc
+        combined_scores[doc_id] = combined_scores.get(doc_id, 0.0) + 1.0 / (
+            rrf_k + rank + 1
+        )
+
+    for rank, doc in enumerate(graph_results):
+        doc_id = doc["id"]
+        doc["chunk_id"] = doc_id  # Đảm bảo format đồng nhất
+        if doc_id not in docs_map:
+            docs_map[doc_id] = doc
+        # Đẩy kết quả Graph lên top bằng cách cho rank nhỏ nhất (hoặc rank + 1.0 RRF)
         combined_scores[doc_id] = combined_scores.get(doc_id, 0.0) + 1.0 / (
             rrf_k + rank + 1
         )
@@ -419,6 +448,16 @@ def retrieve_with_plan(
             if chunk_id in seen_parents:
                 continue
             seen_parents.add(chunk_id)
+            
+            # Khắc phục lỗi rỗng content cho các docs lấy từ Graph Search
+            try:
+                store = _get_docstore()
+                origin_doc = store.get_document_by_id(chunk_id)
+                if origin_doc and "content" in origin_doc:
+                    # Nối đoạn văn gốc phía dưới câu tóm tắt của Graph
+                    doc["content"] = doc.get("text", "") + "\n\n[RAW TEXT]\n" + origin_doc["content"]
+            except Exception as e:
+                logger.error(f"Error fetching chunk doc {chunk_id} from MongoDB: {e}")
 
         final_docs.append(doc)
 

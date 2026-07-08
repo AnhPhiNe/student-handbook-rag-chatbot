@@ -53,7 +53,7 @@ from src.generation.gemini_client import GeminiClient
 DEFAULT_CASES_PATH = Path("data/eval/ragas_judge_cases.json")
 DEFAULT_OUTPUT_PATH = Path("data/processed/metadata/ragas_judge_report.json")
 DEFAULT_ANSWER_CACHE_PATH = Path("data/processed/metadata/ragas_answer_cache.json")
-DEFAULT_JUDGE_MODEL = "gemini-3.1-flash-lite"
+DEFAULT_JUDGE_MODEL = "gemini-3.5-flash"
 STRUCTURED_TOOL_CONTENT_TYPES = {
     "form_templates",
     "formula_rules",
@@ -65,6 +65,7 @@ STRUCTURED_TOOL_CONTENT_TYPES = {
 JUDGE_PROMPT_TEMPLATE = """Bạn là giám khảo đánh giá hệ thống RAG cho Sổ tay sinh viên HCMUE.
 
 Hãy chấm điểm từ 0.0 đến 1.0 theo phong cách RAGAS. Chỉ dựa vào dữ liệu dưới đây.
+LƯU Ý CỰC KỲ QUAN TRỌNG: Bạn CHỈ ĐƯỢC PHÉP trả về duy nhất một đối tượng JSON hợp lệ. Tuyệt đối không in ra bất kỳ văn bản, lời chào, định dạng markdown hay giải thích nào nằm ngoài khối JSON. Nếu có giải thích, hãy đặt toàn bộ vào trường "rationale".
 
 [CÂU HỎI]
 {query}
@@ -492,7 +493,7 @@ def judge_from_answer_cache(
         judge = GeminiClient(
             model_name=judge_model,
             temperature=0.0,
-            max_output_tokens=1024,
+            max_output_tokens=4096,
             max_retries=4,
             retry_base_delay_seconds=5,
             retry_max_delay_seconds=60,
@@ -521,6 +522,10 @@ def judge_from_answer_cache(
             "cases": results,
         }
         save_json(partial_report, output_path)
+        if metrics.get("judge_error_type") and not mock_judge:
+            print("   -> Judge API failed (Rate Limit/Error). Stopping evaluation early to prevent empty reports.")
+            break
+        
         if not mock_judge and index < len(ready_records):
             time.sleep(max(0.0, sleep_seconds))
 
@@ -830,7 +835,7 @@ def run_evaluation(
         judge = GeminiClient(
             model_name=judge_model,
             temperature=0.0,
-            max_output_tokens=1024,
+            max_output_tokens=4096,
             max_retries=4,
             retry_base_delay_seconds=5,
             retry_max_delay_seconds=60,
@@ -849,6 +854,11 @@ def run_evaluation(
             f"Rel:{float(metrics.get('answer_relevancy', 0.0)):.2f} "
             f"Corr:{float(metrics.get('answer_correctness', 0.0)):.2f}"
         )
+        
+        if result.get("status") == "api_error" or metrics.get("judge_error_type"):
+            print("   -> API Error (Generation or Judge). Stopping evaluation early to prevent empty reports.")
+            break
+            
         if not mock_judge and index < len(cases):
             time.sleep(max(0.0, sleep_seconds))
 

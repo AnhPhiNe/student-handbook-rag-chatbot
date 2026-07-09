@@ -10,7 +10,7 @@ embedding:
 vectorstore:
   provider: qdrant_cloud
   persist_dir: data/vectorstore/chroma
-  collection_name: student_handbook_semantic_v5
+  collection_name: student_handbook_semantic_v6
   reset_collection: true
 
 output:

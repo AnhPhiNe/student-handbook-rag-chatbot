@@ -13,7 +13,7 @@ embedding:
 
 vectorstore:
   persist_dir: data/vectorstore/chroma
-  collection_name: student_handbook_semantic_v5
+  collection_name: student_handbook_semantic_v6
 
 retrieval:
   default_top_k: 5

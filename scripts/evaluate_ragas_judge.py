@@ -339,7 +339,7 @@ def generate_answer_cache(
 ) -> dict[str, Any]:
     os.environ["HF_HUB_OFFLINE"] = "1"
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
-    os.environ["EVAL_VECTORDB_PROVIDER"] = "chroma"
+    os.environ["EVAL_VECTORDB_PROVIDER"] = "qdrant"
     os.environ["STUDENT_RAG_DISABLE_REDIS"] = "1"
     os.environ["QUERY_REWRITER_ENABLED"] = "false"
     os.environ["LANGSMITH_TRACING"] = "false"
@@ -780,7 +780,7 @@ def run_evaluation(
 ) -> dict[str, Any]:
     os.environ["HF_HUB_OFFLINE"] = "1"
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
-    os.environ["EVAL_VECTORDB_PROVIDER"] = "chroma"
+    os.environ["EVAL_VECTORDB_PROVIDER"] = "qdrant"
     os.environ["STUDENT_RAG_DISABLE_REDIS"] = "1"
     os.environ["QUERY_REWRITER_ENABLED"] = "false"
     os.environ["LANGSMITH_TRACING"] = "false"
@@ -797,7 +797,7 @@ def run_evaluation(
     load_project_env()
     os.environ["HF_HUB_OFFLINE"] = "1"
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
-    os.environ["EVAL_VECTORDB_PROVIDER"] = "chroma"
+    os.environ["EVAL_VECTORDB_PROVIDER"] = "qdrant"
     os.environ["STUDENT_RAG_DISABLE_REDIS"] = "1"
     os.environ["QUERY_REWRITER_ENABLED"] = "false"
     os.environ["LANGSMITH_TRACING"] = "false"

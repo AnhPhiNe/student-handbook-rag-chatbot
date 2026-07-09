@@ -59,7 +59,7 @@ Quy tắc theo loại câu hỏi:
 
 - Câu hỏi về điểm, thang điểm, xếp loại, qua môn: Nếu có STRUCTURED_RESULT, TUYỆT ĐỐI ƯU TIÊN lấy các bảng từ đó để trả lời và KHÔNG ĐƯỢC lấy dữ liệu điểm số từ CONTEXT để pha trộn vào. Với câu hỏi hỏi "mấy điểm qua môn", hãy trả lời ngưỡng qua môn trước, sau đó nếu cần liệt kê thang điểm thì dùng dạng ngắn gọn theo nhóm `Đạt` / `Không đạt`: `Điểm A: 8.5-10`, `Điểm B+: 7.8-8.4`, ... Không diễn giải dài từng dòng. Với K51 hoặc khi STRUCTURED_RESULT có nhiều bảng, PHẢI tách tiêu đề theo từng `applicability` (ví dụ: học phần chung/nền tảng; các học phần còn lại), rồi trong mỗi tiêu đề mới liệt kê `Đạt` và `Không đạt`. Nếu có liệt kê các dòng `rows`, PHẢI giữ đúng `status` của từng dòng, đặc biệt không được liệt kê D/D+ trong nhóm "các học phần còn lại" mà bỏ mất trạng thái "Không đạt". (Tuy nhiên, trong trường hợp STRUCTURED_RESULT báo "không có", bạn vẫn được phép dùng CONTEXT để trả lời như bình thường).
 - Câu hỏi tính điểm: dùng TOOL_RESULT, nêu kết quả và công thức/ghi chú có sẵn; không tự tính lại.
-
+- ĐỐI VỚI CÁC CÂU HỎI VỀ ĐIỂM SỐ, XẾP LOẠI: TUYỆT ĐỐI KHÔNG ĐƯỢC tự ý kết luận hạng mức (Ví dụ: phán 45 điểm là Trung bình) một cách cảm tính. BẮT BUỘC phải trích xuất y nguyên bảng điểm trong Sổ tay sinh viên ra trước, sau đó đối chiếu CHÍNH XÁC TỪNG CON SỐ theo chuẩn toán học (lớn hơn, nhỏ hơn, bằng) trước khi đưa ra kết luận cuối cùng. Nếu tự suy diễn sai lệch số liệu, bạn sẽ bị phạt nặng!
 USER_QUESTION:
 {query}
 

@@ -1,6 +1,5 @@
 import json
 import pandas as pd
-import json
 import os
 import re
 from unidecode import unidecode
@@ -35,7 +34,19 @@ def process_batch(prefix_excel, prefix_json):
         ten_dieu = str(row.get('Ten_dieu', '')) if pd.notna(row.get('Ten_dieu', '')) else ""
         dieu_raw = row.get('Dieu', '')
         dieu = str(dieu_raw).replace(".", "").strip() if pd.notna(dieu_raw) else ""
-        excel_map[dieu] = {
+        
+        # Bắt khóa kép: Điều + Trang (Giúp chống ghi đè chéo văn bản)
+        trang_raw = row.get('Trang')
+        trang_str = ""
+        if pd.notna(trang_raw):
+            try:
+                trang_str = str(int(float(trang_raw)))
+            except:
+                trang_str = str(trang_raw).strip()
+
+        comp_key = f"{dieu}_{trang_str}"
+        
+        excel_map[comp_key] = {
             'khoa': str(row.get('Khoa', '')).strip() if pd.notna(row.get('Khoa', '')) else "",
             'ten_van_ban': str(row.get('Ten_van_ban', '')).strip() if pd.notna(row.get('Ten_van_ban', '')) else "",
             'chuong': str(row.get('Chuong', '')).strip() if pd.notna(row.get('Chuong', '')) else "",
@@ -60,9 +71,17 @@ def process_batch(prefix_excel, prefix_json):
             
         clean_article = article_str.replace(".", "").strip()
         
-        if clean_article in excel_map:
+        # Lấy trang từ chunk
+        source_pages = metadata.get("source_pages", [])
+        trang_str = ""
+        if source_pages and len(source_pages) > 0:
+            trang_str = str(int(source_pages[0]))
+            
+        comp_key = f"{clean_article}_{trang_str}"
+        
+        if comp_key in excel_map:
             matched_count += 1
-            info = excel_map[clean_article]
+            info = excel_map[comp_key]
             
             khoa_slug = info['khoa'].replace("_", "-") 
             van_ban_slug = slugify(info['ten_van_ban'])
@@ -92,7 +111,7 @@ def process_batch(prefix_excel, prefix_json):
                 
             updated_chunks.append(chunk)
 
-    print(f"Matched {matched_count}/{len(chunks)} chunks with Excel data.")
+    print(f"Matched {matched_count}/{len(chunks)} chunks using Composite Key (Dieu + Trang).")
     return updated_chunks
 
 def main():

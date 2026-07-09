@@ -211,6 +211,7 @@ def is_context_empty(retrieval_result: dict[str, Any]) -> bool:
     # Context rong nghia la retrieval khong co van ban, khong co lookup, cung khong co tool result.
     return not any(
         [
+            bool(retrieval_result.get("retrieved_items")),
             str(retrieval_result.get("context_for_llm") or "").strip(),
             _has_result(retrieval_result.get("structured_result")),
             _has_formula_result(retrieval_result.get("formula_result")),

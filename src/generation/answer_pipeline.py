@@ -7,7 +7,7 @@ from typing import Any
 
 
 from src.common.cohort import resolve_cohort_from_query
-from src.retrieval.core.retrieval_pipeline import run_retrieval_pipeline
+from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline as run_retrieval_pipeline
 from src.retrieval.core.vector_retriever import (
     get_chroma_collection,
     load_embedding_model,
@@ -63,10 +63,15 @@ class AnswerPipeline:
         self.expansion_rules = load_json(self.config["input"]["query_expansion_rules"])
 
         self.model = load_embedding_model(self.config["embedding"]["model_name"])
-        self.collection = get_chroma_collection(
-            persist_dir=self.config["vectorstore"]["persist_dir"],
-            collection_name=self.config["vectorstore"]["collection_name"],
-        )
+        try:
+            self.collection = get_chroma_collection(
+                persist_dir=self.config["vectorstore"].get("persist_dir", "data/vectorstore/chroma"),
+                collection_name=self.config["vectorstore"].get("collection_name", "student_handbook_semantic_v4"),
+            )
+        except Exception as exc:
+            import logging
+            logging.getLogger(__name__).warning(f"Bỏ qua khởi tạo ChromaDB (đang dùng V6 Qdrant): {exc}")
+            self.collection = None
 
         llm_config = self.config["llm"]
         if llm_config.get("provider") not in ["gemini", "groq"]:
@@ -848,22 +853,10 @@ class AnswerPipeline:
         yield {"type": "done", "tracker": tracker}
 
     def _run_retrieval(self, query: str, cohort: str | None = None) -> dict[str, Any]:
-        result = run_retrieval_pipeline(
+        from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline
+        result = run_hybrid_retrieval_pipeline(
             query=query,
-            model=self.model,
-            collection=self.collection,
-            scoring_tables=self.scoring_tables,
-            formula_rules=self.formula_rules,
-            entity_registry=self.entity_registry,
-            expansion_rules=self.expansion_rules,
-            form_templates=self.form_templates,
-            program_directory=self.program_directory,
-            top_k=self.config["retrieval"]["default_top_k"],
-            batch_size=self.config["embedding"]["batch_size"],
-            normalize_embeddings=self.config["embedding"]["normalize_embeddings"],
-            cohort=cohort,
-            candidate_multiplier=self.config["retrieval"].get("candidate_multiplier", 5),
-            min_candidates=self.config["retrieval"].get("min_candidates", 25),
+            top_k=self.config["retrieval"]["default_top_k"]
         )
         result["selected_cohort"] = cohort
         return result

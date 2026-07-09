@@ -17,8 +17,9 @@ embedding:
   normalize_embeddings: true
 
 vectorstore:
-  persist_dir: data/vectorstore/chroma
-  collection_name: student_handbook_semantic_v5
+  provider: qdrant_cloud
+  collection_name: student_handbook_semantic_v6
+  persist_directory: data/processed/chroma
 
 retrieval:
   default_top_k: 5

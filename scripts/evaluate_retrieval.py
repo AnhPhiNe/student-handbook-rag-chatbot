@@ -49,7 +49,7 @@ from src.common.console import configure_utf8_stdio
 
 
 DEFAULT_CONFIG_PATH = Path("configs/retrieval.yaml")
-DEFAULT_GOLDEN_PATH = Path("data/eval/true_rag_eval_cases.json")
+DEFAULT_GOLDEN_PATH = Path("data/eval/true_rag_eval_cases_v6.json")
 DEFAULT_OUTPUT_PATH = Path("data/processed/metadata/true_rag_retrieval_eval_report.json")
 
 
@@ -245,6 +245,7 @@ def evaluate_case(case: dict[str, Any], result: dict[str, Any]) -> dict[str, Any
     return {
         "query": case["query"],
         "id": case.get("id"),
+        "tags": expected_list(case, "tags"),
         "eval_type": case.get("eval_type") or (
             "true_rag" if has_retrieval_expectation(case) else "structured"
         ),
@@ -337,6 +338,7 @@ def build_summary(case_results: list[dict[str, Any]]) -> dict[str, Any]:
             for cohort, items in sorted(by_cohort.items())
         },
         "content_type_breakdown": _content_type_breakdown(retrieval_cases),
+        "tag_breakdown": _tag_breakdown(retrieval_cases),
     }
 
 
@@ -429,6 +431,24 @@ def _normalize_report_content_type(content_type: str) -> str:
     return aliases.get(content_type, content_type)
 
 
+def _tag_breakdown(case_results: list[dict[str, Any]]) -> dict[str, Any]:
+    groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for item in case_results:
+        tags = item.get("tags") or []
+        for tag in tags:
+            groups[str(tag)].append(item)
+
+    return {
+        tag: {
+            "total_cases": len(items),
+            "hit_at_3": _mean_bool(items, "hit_at_3"),
+            "mrr": _mean_float(items, "reciprocal_rank"),
+            "ndcg_at_5": _mean_float(items, "ndcg_at_5"),
+        }
+        for tag, items in sorted(groups.items())
+    }
+
+
 def run_evaluation(config_path: Path, golden_path: Path) -> dict[str, Any]:
     os.environ["EVAL_VECTORDB_PROVIDER"] = "chroma"
     os.environ["STUDENT_RAG_DISABLE_REDIS"] = "1"
@@ -445,7 +465,7 @@ def run_evaluation(config_path: Path, golden_path: Path) -> dict[str, Any]:
 
     from src.retrieval.core.io_utils import load_json as load_project_json
     from src.retrieval.core.io_utils import load_yaml
-    from src.retrieval.core.retrieval_pipeline import run_retrieval_pipeline
+    from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline as run_retrieval_pipeline
     from src.retrieval.core.vector_retriever import (
         get_chroma_collection,
         load_embedding_model,
@@ -461,16 +481,14 @@ def run_evaluation(config_path: Path, golden_path: Path) -> dict[str, Any]:
     entity_registry = load_project_json(Path(config["input"]["entity_registry"]))
     expansion_rules = load_project_json(Path(config["input"]["query_expansion_rules"]))
 
-    model = load_embedding_model(config["embedding"]["model_name"])
-    collection = get_chroma_collection(
-        persist_dir=config["vectorstore"]["persist_dir"],
-        collection_name=config["vectorstore"]["collection_name"],
-    )
+    model = None
+    collection = None
 
+    from tqdm import tqdm
     case_results = []
-    for index, case in enumerate(cases, start=1):
+    for index, case in enumerate(tqdm(cases, desc="Evaluating True RAG", unit="case"), start=1):
         query = str(case["query"])
-        print(f"[{index}/{len(cases)}] {query}")
+        # Bỏ print cũ để TQDM tự hiển thị thanh tiến độ mượt mà
         cohort = case.get("cohort")
         result = run_retrieval_pipeline(
             query=query,

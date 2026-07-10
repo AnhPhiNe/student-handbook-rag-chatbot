@@ -18,7 +18,11 @@ def _env_bool(name: str, default: bool = False) -> bool:
 
 CHUNK_TYPE_ALIASES = {
     "faculty_program_directory": ["faculty_directory", "program_directory"],
+    "regulation_sections": ["regulation"],
+    "regulation_text": ["regulation"],
 }
+
+HYBRID_V6_CHUNK_TYPES = {"regulation"}
 
 COMPATIBLE_ENTITY_CHUNK_TYPES = {
     "office_query": {"office_directory"},
@@ -49,6 +53,36 @@ def filter_entity_chunk_types(intent: str, chunk_types: list[str]) -> list[str]:
     if not allowed:
         return chunk_types
     return [chunk_type for chunk_type in chunk_types if chunk_type in allowed]
+
+
+def _is_hybrid_v6_regulation_plan(plan: dict[str, Any]) -> bool:
+    chunk_types = set(normalize_chunk_types(plan.get("chunk_types") or []))
+    return bool(chunk_types) and chunk_types <= HYBRID_V6_CHUNK_TYPES
+
+
+def _retrieve_with_hybrid_v6(
+    query: str,
+    plan: dict[str, Any],
+    detected_entities: list[dict[str, Any]],
+    cohort: str | None,
+) -> list[dict[str, Any]]:
+    from .hybrid_pipeline import run_hybrid_retrieval_pipeline
+
+    result = run_hybrid_retrieval_pipeline(
+        plan.get("query") or query,
+        top_k=int(plan.get("top_k") or 5),
+        cohort=cohort,
+        retrieval_query=plan.get("query") or query,
+        detected_entities=detected_entities,
+        intent="regulation_query",
+        strategy="hybrid_graph_retrieval",
+        target_chunk_types=["regulation"],
+    )
+    return [
+        _ensure_chunk_type_metadata(doc)
+        for doc in result.get("retrieved_items", [])
+        if isinstance(doc, dict)
+    ]
 
 
 def _get_docstore():
@@ -282,6 +316,7 @@ from .entity_linker import (
 )
 from .formula_lookup import formula_lookup
 from .form_lookup import form_lookup
+from .office_lookup import office_lookup
 from .program_lookup import program_lookup
 from .query_expansion import expand_query
 from .query_router import route_query
@@ -315,20 +350,37 @@ def retrieve_with_plan(
     """
     candidate_k = max(plan["top_k"] * candidate_multiplier, min_candidates)
 
+    if _is_hybrid_v6_regulation_plan(plan) and not _env_bool("STUDENT_RAG_DISABLE_V6_HYBRID"):
+        try:
+            return _retrieve_with_hybrid_v6(
+                query=query,
+                plan=plan,
+                detected_entities=detected_entities,
+                cohort=cohort,
+            )
+        except Exception as exc:
+            logger.error("Hybrid V6 regulation retrieval failed: %s", exc)
+            if collection is None or _env_bool("STUDENT_RAG_OFFLINE_EVAL"):
+                return []
+
     # 1. Vector Search (Dense)
-    vector_results = [
-        _ensure_chunk_type_metadata(doc)
-        for doc in vector_search(
-        query=plan["query"],
-        model=model,
-        collection=collection,
-        chunk_types=plan["chunk_types"],
-        top_k=candidate_k,
-        batch_size=batch_size,
-        normalize_embeddings=normalize_embeddings,
-        cohort=cohort,
-        )
-    ]
+    if collection is None:
+        logger.warning("Skip legacy vector search because collection is unavailable.")
+        vector_results = []
+    else:
+        vector_results = [
+            _ensure_chunk_type_metadata(doc)
+            for doc in vector_search(
+            query=plan["query"],
+            model=model,
+            collection=collection,
+            chunk_types=plan["chunk_types"],
+            top_k=candidate_k,
+            batch_size=batch_size,
+            normalize_embeddings=normalize_embeddings,
+            cohort=cohort,
+            )
+        ]
 
     # 2. BM25 Search (Sparse)
     bm25_retriever = get_bm25_retriever()
@@ -471,6 +523,7 @@ def run_retrieval_pipeline(
     entity_registry: list[dict[str, Any]],
     expansion_rules: list[dict[str, Any]],
     form_templates: list[dict[str, Any]] | None = None,
+    office_directory: list[dict[str, Any]] | None = None,
     program_directory: list[dict[str, Any]] | None = None,
     top_k: int = 5,
     batch_size: int = 8,
@@ -608,6 +661,33 @@ def run_retrieval_pipeline(
             "retrieved_items": [],
             "citations": build_citation_from_lookup(program_lookup_result),
             "context_for_llm": build_context_from_lookup(program_lookup_result),
+            "needs_llm_answer": False,
+            "router_usage": routing.get("usage"),
+            "router_model": routing.get("model_used"),
+        }
+
+    office_lookup_result = None
+    if intent == "office_query" or "office_directory" in target_chunk_types:
+        office_lookup_result = office_lookup(
+            query,
+            office_directory or [],
+            cohort=cohort,
+            detected_entities=detected_entities,
+            routing=routing,
+        )
+
+    if intent == "office_query" and office_lookup_result is not None:
+        return {
+            "query": query,
+            "retrieval_query": retrieval_query,
+            "detected_entities": detected_entities,
+            "intent": intent,
+            "strategy": "office_lookup",
+            "target_chunk_types": ["office_directory"],
+            "structured_result": office_lookup_result,
+            "retrieved_items": [],
+            "citations": build_citation_from_lookup(office_lookup_result),
+            "context_for_llm": build_context_from_lookup(office_lookup_result),
             "needs_llm_answer": False,
             "router_usage": routing.get("usage"),
             "router_model": routing.get("model_used"),

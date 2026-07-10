@@ -198,6 +198,31 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
             }
         ]
 
+    if lookup_result.get("lookup_type") == "office_directory":
+        offices = lookup_result.get("result") or []
+        preview = "; ".join(
+            str(office.get("unit_name"))
+            for office in offices[:5]
+            if office.get("unit_name")
+        )
+        first_office = offices[0] if offices else {}
+        return [
+            {
+                "chunk_type": "office_directory",
+                "title": first_office.get("unit_name") or lookup_result.get("table_name"),
+                "source_pages": lookup_result.get("source_pages", []),
+                "source_label": lookup_result.get("source_label")
+                or "Danh muc phong ban/lien he trong So tay sinh vien",
+                "source_url": lookup_result.get("source_url"),
+                "cohort": lookup_result.get("cohort"),
+                "document_id": lookup_result.get("document_id"),
+                "source_section": lookup_result.get("source_section"),
+                "applicability": lookup_result.get("applicability"),
+                "content": preview
+                or "Du lieu phong ban/lien he duoc trich xuat tu So tay sinh vien HCMUE.",
+            }
+        ]
+
     return [
         {
             "chunk_type": "structured_lookup",

@@ -36,6 +36,8 @@ def build_context_from_lookup(lookup_result: dict[str, Any]) -> str:
         return build_context_from_form_lookup(lookup_result)
     if lookup_result.get("lookup_type") == "program_directory":
         return build_context_from_program_lookup(lookup_result)
+    if lookup_result.get("lookup_type") == "office_directory":
+        return build_context_from_office_lookup(lookup_result)
 
     return (
         f"Kết quả tra cứu bảng: {lookup_result.get('table_name')}\n"
@@ -84,6 +86,41 @@ def build_context_from_form_lookup(lookup_result: dict[str, Any]) -> str:
                 f"Tóm tắt/đoạn nhận diện: {form.get('summary')}",
             ]
         )
+
+    return "\n".join(lines)
+
+
+def build_context_from_office_lookup(lookup_result: dict[str, Any]) -> str:
+    offices = lookup_result.get("result") or []
+    lines = [
+        f"Ket qua tra cuu phong ban/lien he: {lookup_result.get('table_name')}",
+        f"Cau hoi: {lookup_result.get('input_value')}",
+        f"Khoa ap dung: {lookup_result.get('cohort') or 'khong xac dinh'}",
+    ]
+
+    for index, office in enumerate(offices, start=1):
+        emails = ", ".join(office.get("emails") or []) or "chua co email trong du lieu"
+        phones = ", ".join(office.get("phones") or []) or "chua co so dien thoai trong du lieu"
+        internal = ", ".join(office.get("internal_numbers") or [])
+        websites = ", ".join(office.get("websites") or [])
+        responsibilities = office.get("responsibilities") or []
+
+        lines.extend(
+            [
+                "",
+                f"[Phong ban {index}] {office.get('unit_name')}",
+                f"Trang nguon: {office.get('source_pages')}",
+                f"Email: {emails}",
+                f"Dien thoai: {phones}",
+            ]
+        )
+        if internal:
+            lines.append(f"So may noi bo: {internal}")
+        if websites:
+            lines.append(f"Website: {websites}")
+        if responsibilities:
+            lines.append("Nhiem vu lien quan:")
+            lines.extend(f"- {item}" for item in responsibilities[:4])
 
     return "\n".join(lines)
 

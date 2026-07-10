@@ -33,15 +33,23 @@ class HybridRetrieverV6:
             chunks = json.load(f)
             self.content_store = {c["_id"]: c for c in chunks}
 
-    def retrieve(self, query: str, top_k_vector: int = 5, top_k_final: int = 5, graph_depth: int = 3) -> List[Dict[str, Any]]:
+    def retrieve(
+        self,
+        query: str,
+        top_k_vector: int = 5,
+        top_k_final: int = 5,
+        graph_depth: int = 3,
+        cohort: str | None = None,
+    ) -> List[Dict[str, Any]]:
         logger.info(f"==> Câu hỏi: {query}")
         
         # BƯỚC 1: VECTOR SEARCH (Tìm Top K ban đầu)
         query_vector = self.embed_model.encode(query).tolist()
+        search_limit = top_k_vector * 4 if cohort else top_k_vector
         search_results = self.qdrant_client.query_points(
             collection_name=self.collection_name,
             query=query_vector,
-            limit=top_k_vector
+            limit=search_limit,
         ).points
         
         seed_ids = [hit.payload["chunk_id"] for hit in search_results if hit.payload]
@@ -63,10 +71,18 @@ class HybridRetrieverV6:
         candidate_docs = []
         for cid in candidate_ids:
             if cid in self.content_store:
-                doc = self.content_store[cid]
+                doc = dict(self.content_store[cid])
+                metadata = dict(doc.get("metadata") or {})
+                doc["metadata"] = metadata
+                doc_cohort = doc.get("cohort") or metadata.get("cohort")
+                if cohort and doc_cohort != cohort:
+                    continue
                 # PhoRanker yêu cầu cặp (Query, Document)
                 candidate_contents.append(doc["content"])
                 candidate_docs.append(doc)
+
+        if not candidate_docs:
+            return []
 
         # BƯỚC 4: RERANKING VỚI PHORANKER
         logger.info(f"[*] Chấm điểm lại (Reranking) {len(candidate_docs)} khối bằng PhoRanker...")
@@ -120,30 +136,46 @@ def run_hybrid_retrieval_pipeline(
         _GLOBAL_RETRIEVER = HybridRetrieverV6(qdrant_url, qdrant_key)
     
     # Gọi hàm truy xuất Top K
-    docs = _GLOBAL_RETRIEVER.retrieve(query, top_k_final=top_k)
+    cohort = kwargs.get("cohort")
+    retrieval_query = kwargs.get("retrieval_query") or query
+    detected_entities = kwargs.get("detected_entities") or []
+    intent = kwargs.get("intent") or "regulation_query"
+    strategy = kwargs.get("strategy") or "hybrid_graph_retrieval"
+    target_chunk_types = kwargs.get("target_chunk_types") or ["regulation"]
+
+    docs = _GLOBAL_RETRIEVER.retrieve(
+        retrieval_query,
+        top_k_final=top_k,
+        cohort=cohort,
+    )
     
     # Format lại Citations cho UI (Lấy nguyên khối metadata)
-    citations = []
     formatted_results = []
     for doc in docs:
         metadata = doc.get("metadata", {})
-        if metadata and metadata not in citations:
-            citations.append(metadata)
-        
         doc_copy = dict(doc)
         doc_copy["chunk_id"] = doc.get("_id") or doc.get("id")
+        doc_copy["chunk_type"] = doc_copy.get("chunk_type") or metadata.get("chunk_type") or "regulation"
         formatted_results.append(doc_copy)
+
+    from .citation_builder import build_citations_from_vector_results
+    from .context_builder import build_context_from_vector_results
+
+    citations = build_citations_from_vector_results(formatted_results)
             
     # Bọc lại thành Hộp Quà (Dictionary) y như hệ thống cũ yêu cầu
     return {
         "query": query,
-        "retrieval_query": query,
-        "detected_entities": [],
-        "intent": "regulation_query",
-        "strategy": "semantic_filtered",
-        "target_chunk_types": ["regulation"],
+        "retrieval_query": retrieval_query,
+        "detected_entities": detected_entities,
+        "intent": intent,
+        "strategy": strategy,
+        "target_chunk_types": target_chunk_types,
+        "structured_result": None,
+        "tool_result": None,
         "retrieved_items": formatted_results,
         "citations": citations,
+        "context_for_llm": build_context_from_vector_results(formatted_results),
         "needs_llm_answer": True,
         "needs_clarification": False,
         "out_of_domain": False

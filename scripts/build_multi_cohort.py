@@ -79,13 +79,18 @@ def merge_chunks(cohort_files, output_path):
                 if "metadata" not in chunk:
                     chunk["metadata"] = {}
                 chunk["metadata"]["cohort"] = cohort
-                chunk["chunk_id"] = f"{cohort}_{chunk['chunk_id']}"
+                chunk["metadata"]["document_id"] = DOCUMENT_ID_BY_COHORT.get(cohort)
+                chunk_id = str(chunk["chunk_id"])
+                if not chunk_id.startswith(f"{cohort}_"):
+                    chunk["chunk_id"] = f"{cohort}_{chunk_id}"
                 if "parent_id" in chunk["metadata"]:
-                    chunk["metadata"]["parent_id"] = f"{cohort}_{chunk['metadata']['parent_id']}"
+                    parent_id = str(chunk["metadata"]["parent_id"])
+                    if not parent_id.startswith(f"{cohort}_"):
+                        chunk["metadata"]["parent_id"] = f"{cohort}_{parent_id}"
                 if "parent_section_id" in chunk["metadata"]:
-                    chunk["metadata"]["parent_section_id"] = (
-                        f"{cohort}_{chunk['metadata']['parent_section_id']}"
-                    )
+                    parent_section_id = str(chunk["metadata"]["parent_section_id"])
+                    if not parent_section_id.startswith(f"{cohort}_"):
+                        chunk["metadata"]["parent_section_id"] = f"{cohort}_{parent_section_id}"
             all_chunks.extend(chunks)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -102,8 +107,11 @@ def merge_docstore(cohort_files, output_path):
             docs = json.load(f)
             for doc in docs:
                 doc["cohort"] = cohort
+                doc["document_id"] = DOCUMENT_ID_BY_COHORT.get(cohort)
                 if "_id" in doc:
-                    doc["_id"] = f"{cohort}_{doc['_id']}"
+                    doc_id = str(doc["_id"])
+                    if not doc_id.startswith(f"{cohort}_"):
+                        doc["_id"] = f"{cohort}_{doc_id}"
             all_docs.extend(docs)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)

@@ -2,6 +2,7 @@ input:
   scoring_tables: data/processed/tables/scoring_tables.json
   formula_rules: data/processed/tables/formula_rules.json
   form_templates: data/processed/forms/form_templates.json
+  office_directory: data/processed/directories/office_directory.json
   program_directory: data/processed/directories/program_directory.json
   entity_registry: data/processed/entities/entity_registry.json
   query_expansion_rules: data/processed/entities/query_expansion_rules.json

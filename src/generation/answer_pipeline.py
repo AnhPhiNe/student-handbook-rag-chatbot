@@ -7,7 +7,7 @@ from typing import Any
 
 
 from src.common.cohort import resolve_cohort_from_query
-from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline as run_retrieval_pipeline
+from src.retrieval.core.retrieval_pipeline import run_retrieval_pipeline
 from src.retrieval.core.vector_retriever import (
     get_chroma_collection,
     load_embedding_model,
@@ -58,6 +58,10 @@ class AnswerPipeline:
         self.scoring_tables = load_json(self.config["input"]["scoring_tables"])
         self.formula_rules = load_json(self.config["input"]["formula_rules"])
         self.form_templates = load_json(self.config["input"]["form_templates"])
+        office_directory_path = self.config["input"].get("office_directory")
+        self.office_directory = (
+            load_json(office_directory_path) if office_directory_path else []
+        )
         self.program_directory = load_json(self.config["input"]["program_directory"])
         self.entity_registry = load_json(self.config["input"]["entity_registry"])
         self.expansion_rules = load_json(self.config["input"]["query_expansion_rules"])
@@ -853,10 +857,27 @@ class AnswerPipeline:
         yield {"type": "done", "tracker": tracker}
 
     def _run_retrieval(self, query: str, cohort: str | None = None) -> dict[str, Any]:
-        from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline
-        result = run_hybrid_retrieval_pipeline(
+        result = run_retrieval_pipeline(
             query=query,
-            top_k=self.config["retrieval"]["default_top_k"]
+            model=self.model,
+            collection=self.collection,
+            scoring_tables=self.scoring_tables,
+            formula_rules=self.formula_rules,
+            entity_registry=self.entity_registry,
+            expansion_rules=self.expansion_rules,
+            form_templates=self.form_templates,
+            office_directory=self.office_directory,
+            program_directory=self.program_directory,
+            top_k=self.config["retrieval"]["default_top_k"],
+            batch_size=self.config["retrieval"].get("batch_size", 8),
+            normalize_embeddings=self.config["embedding"].get(
+                "normalize_embeddings", True
+            ),
+            cohort=cohort,
+            candidate_multiplier=int(
+                self.config["retrieval"].get("candidate_multiplier", 5)
+            ),
+            min_candidates=int(self.config["retrieval"].get("min_candidates", 25)),
         )
         result["selected_cohort"] = cohort
         return result

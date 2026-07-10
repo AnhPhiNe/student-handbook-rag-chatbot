@@ -247,6 +247,8 @@ def can_answer_deterministically(retrieval_result: dict[str, Any]) -> bool:
             return True
         if structured_res.get("lookup_type") == "form_template":
             return True
+        if structured_res.get("lookup_type") == "office_directory":
+            return True
         if structured_res.get("lookup_type") == "grade_10_to_letter":
             return True
         row = structured_res.get("result")
@@ -687,6 +689,8 @@ def _format_structured_result(structured_result: dict[str, Any]) -> str:
         return _format_program_directory_result(structured_result)
     if structured_result.get("lookup_type") == "form_template":
         return _format_form_template_result(structured_result)
+    if structured_result.get("lookup_type") == "office_directory":
+        return _format_office_directory_result(structured_result)
     if structured_result.get("lookup_type") == "grade_10_to_letter":
         return _format_grade_10_to_letter_result(structured_result)
 
@@ -736,6 +740,40 @@ def _format_form_template_result(structured_result: dict[str, Any]) -> str:
     if input_value:
         lines.insert(0, f"Với yêu cầu “{input_value}”:")
     lines.append("Bạn có thể mở trang Biểu mẫu để tìm, lọc và tải đúng mẫu cần dùng.")
+    return "\n".join(lines)
+
+
+def _format_office_directory_result(structured_result: dict[str, Any]) -> str:
+    offices = structured_result.get("result") or []
+    if not offices:
+        return "Mình chưa tìm thấy phòng ban phù hợp trong danh mục liên hệ hiện có."
+
+    lines = ["Mình tìm thấy đơn vị phù hợp để bạn liên hệ:"]
+    for office in offices[:3]:
+        name = office.get("unit_name") or "Phòng ban"
+        pages = office.get("source_pages") or []
+        page_text = f" (trang {', '.join(str(page) for page in pages)})" if pages else ""
+        lines.append(f"- {name}{page_text}")
+
+        emails = office.get("emails") or []
+        phones = office.get("phones") or []
+        internal_numbers = office.get("internal_numbers") or []
+        websites = office.get("websites") or []
+        responsibilities = office.get("responsibilities") or []
+
+        if emails:
+            lines.append(f"  Email: {', '.join(emails)}")
+        if phones:
+            lines.append(f"  Số điện thoại: {', '.join(phones)}")
+        if internal_numbers:
+            lines.append(f"  Số máy nội bộ: {', '.join(internal_numbers)}")
+        if websites:
+            lines.append(f"  Website: {', '.join(websites)}")
+        if responsibilities:
+            lines.append("  Phụ trách liên quan:")
+            for item in responsibilities[:2]:
+                lines.append(f"  - {_compact_text(item, limit=150)}")
+
     return "\n".join(lines)
 
 

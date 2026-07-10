@@ -51,6 +51,13 @@ from src.common.console import configure_utf8_stdio
 DEFAULT_CONFIG_PATH = Path("configs/retrieval.yaml")
 DEFAULT_GOLDEN_PATH = Path("data/eval/true_rag_eval_cases_v6.json")
 DEFAULT_OUTPUT_PATH = Path("data/processed/metadata/true_rag_retrieval_eval_report.json")
+V6_REGULATION_SCOPE_TYPES = {"regulation", "regulation_sections", "regulation_text"}
+V6_COMPATIBLE_LEGACY_STRATEGIES = {
+    "semantic",
+    "semantic_filtered",
+    "semantic_filtered_rerank",
+    "hybrid",
+}
 
 
 def load_json(path: Path) -> Any:
@@ -130,10 +137,25 @@ def normalize_chunk_type(value: Any) -> str:
         "office": "office_directory",
         "procedures": "procedure",
         "program": "program_directory",
+        "regulation_text": "regulation",
         "regulation_sections": "regulation",
     }
     text = str(value or "").strip()
     return aliases.get(text, text)
+
+
+def metadata_value(item: dict[str, Any], key: str) -> Any:
+    metadata = item.get("metadata") or {}
+    if key in metadata and metadata.get(key) is not None:
+        return metadata.get(key)
+    return item.get(key)
+
+
+def item_chunk_type(item: dict[str, Any]) -> str:
+    return normalize_chunk_type(
+        metadata_value(item, "chunk_type")
+        or metadata_value(item, "content_type")
+    )
 
 
 def has_retrieval_expectation(case: dict[str, Any]) -> bool:
@@ -151,6 +173,26 @@ def has_retrieval_expectation(case: dict[str, Any]) -> bool:
     )
 
 
+def case_matches_scope(case: dict[str, Any], scope: str) -> bool:
+    if scope == "all":
+        return True
+    if scope != "v6-regulation":
+        raise ValueError(f"Unsupported evaluation scope: {scope}")
+
+    content_types = set()
+    if case.get("content_type"):
+        content_types.add(normalize_content_type(case.get("content_type")))
+    content_types.update(
+        normalize_content_type(value)
+        for value in expected_list(case, "expected_content_types")
+    )
+    content_types.update(
+        normalize_chunk_type(value)
+        for value in expected_list(case, "expected_content_types")
+    )
+    return bool(content_types & V6_REGULATION_SCOPE_TYPES)
+
+
 def cohort_arg(value: Any) -> str | None:
     if value is None:
         return None
@@ -161,8 +203,6 @@ def cohort_arg(value: Any) -> str | None:
 
 
 def metadata_relevance(item: dict[str, Any], case: dict[str, Any]) -> bool:
-    metadata = item.get("metadata") or {}
-
     expected_ids = set(expected_list(case, "expected_chunk_ids"))
     if expected_ids and str(item.get("chunk_id")) in expected_ids:
         return True
@@ -174,25 +214,23 @@ def metadata_relevance(item: dict[str, Any], case: dict[str, Any]) -> bool:
         for item in expected_list(case, "expected_content_types")
     }
     if expected_content_types:
-        checks.append(
-            normalize_chunk_type(metadata.get("chunk_type")) in expected_content_types
-        )
+        checks.append(item_chunk_type(item) in expected_content_types)
 
     expected_cohort = str(case.get("expected_cohort") or case.get("cohort") or "").strip()
     if expected_cohort and expected_cohort.lower() not in {"all", "general"}:
-        checks.append(str(metadata.get("cohort")) == expected_cohort)
+        checks.append(str(metadata_value(item, "cohort")) == expected_cohort)
 
     expected_document_id = str(case.get("expected_document_id") or "").strip()
     if expected_document_id:
-        checks.append(str(metadata.get("document_id")) == expected_document_id)
+        checks.append(str(metadata_value(item, "document_id")) == expected_document_id)
 
     expected_sections = set(expected_list(case, "expected_source_sections"))
     if expected_sections:
-        checks.append(str(metadata.get("source_section")) in expected_sections)
+        checks.append(str(metadata_value(item, "source_section")) in expected_sections)
 
     expected_pages = set(parse_source_pages(case.get("expected_source_pages")))
     if expected_pages:
-        actual_pages = set(parse_source_pages(metadata.get("source_pages")))
+        actual_pages = set(parse_source_pages(metadata_value(item, "source_pages")))
         checks.append(bool(expected_pages & actual_pages))
 
     return bool(checks) and all(checks)
@@ -256,7 +294,7 @@ def evaluate_case(case: dict[str, Any], result: dict[str, Any]) -> dict[str, Any
         "intent_match": result.get("intent") == case.get("expected_intent"),
         "expected_strategy": case.get("expected_strategy"),
         "actual_strategy": result.get("strategy"),
-        "strategy_match": result.get("strategy") == case.get("expected_strategy"),
+        "strategy_match": strategy_matches(case, result),
         "expected_chunk_ids": expected_ids,
         "expected_content_types": expected_list(case, "expected_content_types"),
         "expected_cohort": case.get("expected_cohort") or case.get("cohort"),
@@ -266,13 +304,13 @@ def evaluate_case(case: dict[str, Any], result: dict[str, Any]) -> dict[str, Any
         "top_chunk_ids": actual_ids[:5],
         "top_metadata": [
             {
-                "chunk_type": (item.get("metadata") or {}).get("chunk_type"),
-                "cohort": (item.get("metadata") or {}).get("cohort"),
-                "document_id": (item.get("metadata") or {}).get("document_id"),
-                "source_section": (item.get("metadata") or {}).get("source_section"),
-                "source_pages": parse_source_pages(
-                    (item.get("metadata") or {}).get("source_pages")
-                ),
+                "chunk_type": metadata_value(item, "chunk_type"),
+                "content_type": metadata_value(item, "content_type"),
+                "normalized_type": item_chunk_type(item),
+                "cohort": metadata_value(item, "cohort"),
+                "document_id": metadata_value(item, "document_id"),
+                "source_section": metadata_value(item, "source_section"),
+                "source_pages": parse_source_pages(metadata_value(item, "source_pages")),
             }
             for item in retrieved_items[:5]
         ],
@@ -449,7 +487,7 @@ def _tag_breakdown(case_results: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def run_evaluation(config_path: Path, golden_path: Path) -> dict[str, Any]:
+def run_evaluation(config_path: Path, golden_path: Path, scope: str = "all") -> dict[str, Any]:
     os.environ["EVAL_VECTORDB_PROVIDER"] = "chroma"
     os.environ["STUDENT_RAG_DISABLE_REDIS"] = "1"
     os.environ.setdefault("HF_HUB_OFFLINE", "1")
@@ -472,7 +510,8 @@ def run_evaluation(config_path: Path, golden_path: Path) -> dict[str, Any]:
     )
 
     config = load_yaml(config_path)
-    cases = load_json(golden_path)
+    all_cases = load_json(golden_path)
+    cases = [case for case in all_cases if case_matches_scope(case, scope)]
 
     scoring_tables = load_project_json(Path(config["input"]["scoring_tables"]))
     formula_rules = load_project_json(Path(config["input"]["formula_rules"]))
@@ -511,8 +550,10 @@ def run_evaluation(config_path: Path, golden_path: Path) -> dict[str, Any]:
 
     return {
         "evaluation": "golden_retrieval_eval",
+        "scope": scope,
         "config_path": str(config_path),
         "golden_path": str(golden_path),
+        "total_cases_before_scope_filter": len(all_cases),
         "summary": build_summary(case_results),
         "cases": case_results,
     }
@@ -525,12 +566,19 @@ def main() -> None:
     parser.add_argument("--config", default=str(DEFAULT_CONFIG_PATH))
     parser.add_argument("--golden", default=str(DEFAULT_GOLDEN_PATH))
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT_PATH))
+    parser.add_argument(
+        "--scope",
+        choices=["all", "v6-regulation"],
+        default="all",
+        help="Use v6-regulation to keep only regulation_text/regulation_sections cases in the headline retrieval report.",
+    )
     parser.add_argument("--fail-under-hit3", type=float, default=None)
     args = parser.parse_args()
 
     report = run_evaluation(
         config_path=Path(args.config),
         golden_path=Path(args.golden),
+        scope=args.scope,
     )
     save_json(report, Path(args.output))
 
@@ -548,6 +596,31 @@ def _optional_match(expected: Any, actual: Any) -> bool | None:
     if expected is None:
         return None
     return actual == expected
+
+
+def strategy_matches(case: dict[str, Any], result: dict[str, Any]) -> bool:
+    expected = case.get("expected_strategy")
+    actual = result.get("strategy")
+    if expected == actual:
+        return True
+
+    content_types = set()
+    if case.get("content_type"):
+        content_types.add(normalize_content_type(case.get("content_type")))
+    content_types.update(
+        normalize_content_type(value)
+        for value in expected_list(case, "expected_content_types")
+    )
+    content_types.update(
+        normalize_chunk_type(value)
+        for value in expected_list(case, "expected_content_types")
+    )
+    is_v6_regulation_case = bool(content_types & V6_REGULATION_SCOPE_TYPES)
+    return (
+        is_v6_regulation_case
+        and actual == "hybrid_graph_retrieval"
+        and str(expected or "") in V6_COMPATIBLE_LEGACY_STRATEGIES
+    )
 
 
 def _mean_bool(items: list[dict[str, Any]], field: str) -> float | None:

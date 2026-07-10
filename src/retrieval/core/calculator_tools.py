@@ -1,4 +1,5 @@
 import re
+import unicodedata
 from typing import Any, Optional
 
 
@@ -31,11 +32,20 @@ def extract_numbers(query: str) -> list[float]:
     return [float(n.replace(",", ".")) for n in nums]
 
 
+def normalize_text(text: Any) -> str:
+    value = str(text or "").lower()
+    value = value.replace("đ", "d").replace("Ä‘", "d").replace("Ä", "d")
+    value = unicodedata.normalize("NFD", value)
+    value = "".join(char for char in value if unicodedata.category(char) != "Mn")
+    value = re.sub(r"[^a-z0-9]+", " ", value)
+    return re.sub(r"\s+", " ", value).strip()
+
+
 def try_calculation(query: str) -> Optional[dict[str, Any]]:
-    q = query.lower()
+    q = normalize_text(query)
     numbers = extract_numbers(query)
 
-    if "điểm học bổng" in q and len(numbers) >= 2:
+    if "diem hoc bong" in q and len(numbers) >= 2:
         academic_score = numbers[0]
         conduct_score = numbers[1]
 
@@ -51,7 +61,7 @@ def try_calculation(query: str) -> Optional[dict[str, Any]]:
                 "conduct_score_100": conduct_score,
             },
             "result": result,
-            "note": "Công thức: (Điểm học tập × 80 + Điểm rèn luyện / 25 × 20) / 100",
+            "note": "Công thức: (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100",
         }
 
     return None

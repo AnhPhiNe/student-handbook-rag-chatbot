@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import sys
+import unicodedata
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -303,15 +304,15 @@ def _optional_match(expected: Any, actual: Any) -> bool | None:
 def _contains_all(text: str, expected_items: list[str]) -> bool | None:
     if not expected_items:
         return None
-    normalized = text.lower()
-    return all(str(item).lower() in normalized for item in expected_items)
+    normalized = _normalize_for_eval(text)
+    return all(_normalize_for_eval(item) in normalized for item in expected_items)
 
 
 def _contains_none(text: str, unexpected_items: list[str]) -> bool | None:
     if not unexpected_items:
         return None
-    normalized = text.lower()
-    return all(str(item).lower() not in normalized for item in unexpected_items)
+    normalized = _normalize_for_eval(text)
+    return all(_normalize_for_eval(item) not in normalized for item in unexpected_items)
 
 
 def _structured_item_count_match(
@@ -338,7 +339,7 @@ def _structured_items_include_match(
     if expected_items is None:
         return None
     haystack = _structured_items_text(structured_result)
-    return all(str(item).lower() in haystack for item in expected_items)
+    return all(_normalize_for_eval(item) in haystack for item in expected_items)
 
 
 def _structured_items_exclude_match(
@@ -348,11 +349,13 @@ def _structured_items_exclude_match(
     if unexpected_items is None:
         return None
     haystack = _structured_items_text(structured_result)
-    return all(str(item).lower() not in haystack for item in unexpected_items)
+    return all(_normalize_for_eval(item) not in haystack for item in unexpected_items)
 
 
 def _structured_items_text(structured_result: dict[str, Any]) -> str:
-    return json.dumps(_structured_items(structured_result), ensure_ascii=False).lower()
+    return _normalize_for_eval(
+        json.dumps(_structured_items(structured_result), ensure_ascii=False)
+    )
 
 
 def _structured_items(structured_result: dict[str, Any]) -> list[dict[str, Any]]:
@@ -473,6 +476,14 @@ def _mean_check(items: list[dict[str, Any]], check_name: str) -> float | None:
     if not values:
         return None
     return round(sum(1 for value in values if value is True) / len(values), 4)
+
+
+def _normalize_for_eval(value: Any) -> str:
+    text = str(value or "").lower()
+    text = text.replace("đ", "d").replace("Đ", "d")
+    text = unicodedata.normalize("NFD", text)
+    text = "".join(char for char in text if unicodedata.category(char) != "Mn")
+    return " ".join(text.split())
 
 
 if __name__ == "__main__":

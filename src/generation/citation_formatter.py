@@ -102,6 +102,7 @@ def select_relevant_citations(
         structured_chunk_types = {
             "structured_lookup",
             "program_directory",
+            "office_directory",
             "form",
             "form_template",
         }

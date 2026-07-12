@@ -38,7 +38,7 @@ from .semantic_cache import SemanticCache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v12"
+PIPELINE_VERSION = "v13"
 
 
 def _env_bool(name: str, default: bool = False) -> bool:

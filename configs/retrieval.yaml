@@ -18,7 +18,7 @@ embedding:
 
 vectorstore:
   provider: qdrant_cloud
-  collection_name: student_handbook_semantic_v6
+  collection_name: student_handbook_semantic_v7
   persist_directory: data/processed/chroma
 
 retrieval:

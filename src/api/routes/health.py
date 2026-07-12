@@ -94,6 +94,21 @@ def artifact_health() -> ArtifactHealthResponse:
             exists=Path("data/processed/entities/query_expansion_rules.json").is_file(),
             kind="processed_json",
         ),
+        ArtifactStatus(
+            path="data/processed/chunks/all_docstore_items.json",
+            exists=Path("data/processed/chunks/all_docstore_items.json").is_file(),
+            kind="processed_json",
+        ),
+        ArtifactStatus(
+            path="data/processed/chunks/v7_child_parent_chunks.json",
+            exists=Path("data/processed/chunks/v7_child_parent_chunks.json").is_file(),
+            kind="processed_json",
+        ),
+        ArtifactStatus(
+            path="data/processed/metadata/section_evidence_registry.json",
+            exists=Path("data/processed/metadata/section_evidence_registry.json").is_file(),
+            kind="processed_json",
+        ),
     ]
 
     vectordb_provider = os.environ.get("VECTORDB_PROVIDER", "chroma").strip().lower()

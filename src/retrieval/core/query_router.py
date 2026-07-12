@@ -37,12 +37,42 @@ def contains_any(text: str, keywords: list[str]) -> bool:
 def infer_program_lookup_metadata(query: str) -> dict[str, str] | None:
     """Nhan dien thao tac tra cuu nganh dao tao o tang router."""
     ascii_query = strip_accents(query)
-    if not contains_any(query, ["ngành", "nganh", "chuyên ngành", "chuyen nganh"]):
+    has_program_term = contains_any(
+        query,
+        [
+            "ngành",
+            "nganh",
+            "chuyên ngành",
+            "chuyen nganh",
+            "danh mục ngành",
+            "danh muc nganh",
+        ],
+    )
+    asks_program_faculty_without_program_word = contains_any(
+        query,
+        [
+            "thuộc khoa",
+            "thuoc khoa",
+            "khoa nào",
+            "khoa nao",
+            "khoa phụ trách",
+            "khoa phu trach",
+            "phụ trách",
+            "phu trach",
+        ],
+    ) and not contains_any(query, ["phòng", "phong", "trung tâm", "trung tam"])
+    if not has_program_term and not asks_program_faculty_without_program_word:
         return None
 
     asks_list = contains_any(
         query,
         [
+            "tổng cộng",
+            "tong cong",
+            "tất cả",
+            "tat ca",
+            "mấy ngành",
+            "may nganh",
             "có những",
             "co nhung",
             "có các",
@@ -140,8 +170,10 @@ def infer_score_lookup_metadata(query: str) -> bool:
     ]
     action_cues = [
         "qua mon",
+        "qua hoc phan",
         "rot mon",
         "dat",
+        "dat hoc phan",
         "khong dat",
         "bao nhieu",
         "may diem",
@@ -150,6 +182,9 @@ def infer_score_lookup_metadata(query: str) -> bool:
         "quy doi",
         "sang he 4",
         "thang 4",
+        "tinh nhu the nao",
+        "tinh the nao",
+        "he thong tinh",
     ]
     has_letter_grade = re.search(r"(?<!\w)(a|b\+?|c\+?|d\+?|f\+?)(?!\w)", ascii_query)
     if "gpa" in ascii_query and "hoc luc" in ascii_query:
@@ -183,8 +218,12 @@ def _is_obvious_out_of_domain(query: str) -> bool:
         "ban do an",
         "quan an",
     ]
-    weather = ["thoi tiet", "hom nay mua", "troi mua", "nhiet do"]
-    return contains_any(ascii_query, food_or_cooking + weather)
+    weather = ["thoi tiet", "hom nay mua", "ngay mai mua", "troi mua", "nhiet do"]
+    asks_weather = contains_any(ascii_query, weather) or (
+        contains_any(ascii_query, ["hom nay", "ngay mai", "toi nay"])
+        and contains_any(ascii_query, ["co mua", "mua khong", "troi mua"])
+    )
+    return contains_any(ascii_query, food_or_cooking) or asks_weather
 
 
 def _has_regulation_priority_signal(query: str) -> bool:
@@ -208,6 +247,22 @@ def _has_regulation_priority_signal(query: str) -> bool:
             "kế hoạch giảng dạy",
             "kế hoạch học tập",
             "học kỳ",
+            "học bổng khuyến khích",
+            "học bổng kkht",
+            "quỹ học bổng",
+            "mức học bổng",
+            "tốt nghiệp",
+            "xét tốt nghiệp",
+            "cấp bằng",
+            "thời gian học tập",
+            "thời gian chuẩn",
+            "thời gian tối đa",
+            "học tối đa",
+            "tối đa của chương trình",
+            "chương trình đại học chính quy",
+            "cảnh báo học tập",
+            "buộc thôi học",
+            "đình chỉ học tập",
             "thời khóa biểu",
             "có được giảm học phí",
             "có được miễn giảm",
@@ -336,7 +391,7 @@ def route_query(query: str) -> dict[str, Any]:
             **program_metadata,
         }
 
-    if infer_score_lookup_metadata(q):
+    if not has_reg_priority_signal and infer_score_lookup_metadata(q):
         return {
             "intent": "score_lookup_query",
             "strategy": "structured_lookup",
@@ -344,6 +399,16 @@ def route_query(query: str) -> dict[str, Any]:
         }
 
     if has_ktx_signal:
+        if has_contact_question or contains_any(
+            q,
+            ["đơn vị nào", "don vi nao", "hỏi thông tin", "hoi thong tin", "liên hệ", "lien he"],
+        ):
+            return {
+                "intent": "office_query",
+                "strategy": "office_lookup",
+                "target_chunk_types": ["office_directory"],
+            }
+
         if has_form_signal or contains_any(q, rules["ktx_form_signal"]):
             return {
                 "intent": "mixed_query",
@@ -377,7 +442,7 @@ def route_query(query: str) -> dict[str, Any]:
     if has_office_support_signal and not has_reg_priority_signal:
         return {
             "intent": "office_query",
-            "strategy": "semantic_filtered_rerank",
+            "strategy": "office_lookup",
             "target_chunk_types": ["office_directory"],
         }
 
@@ -498,7 +563,7 @@ def route_query(query: str) -> dict[str, Any]:
     if has_explicit_office_entity or (has_contact_question and not has_faculty_signal):
         return {
             "intent": "office_query",
-            "strategy": "semantic_filtered_rerank",
+            "strategy": "office_lookup",
             "target_chunk_types": ["office_directory"],
         }
 
@@ -541,7 +606,7 @@ def route_query(query: str) -> dict[str, Any]:
         contains_any(q, ["diem", "d+", "d", "Ä‘iá»ƒm"])
         and contains_any(q, ["qua mon", "qua mÃ´n", "dat", "Ä‘áº¡t", "khong dat", "khÃ´ng Ä‘áº¡t"])
     )
-    if asks_passing_score:
+    if asks_passing_score and not has_reg_priority_signal:
         return {
             "intent": "score_lookup_query",
             "strategy": "structured_lookup",
@@ -564,6 +629,11 @@ def route_query(query: str) -> dict[str, Any]:
         q,
         ["bị", "thì sao", "xử lý", "rớt", "trượt"],
     )
+    if asks_failed_grade_policy and contains_any(
+        ascii_q,
+        ["tinh", "quy doi", "he 4", "he thong tinh"],
+    ):
+        asks_failed_grade_policy = False
     if asks_failed_grade_policy:
         return {
             "intent": "regulation_query",
@@ -581,9 +651,12 @@ def route_query(query: str) -> dict[str, Any]:
 
     # Score lookup chi danh cho cau hoi tra bang diem/range.
     if (
-        contains_any(q, rules["score_lookup_signal"])
-        or asks_letter_grade
-        or asks_gpa_classification
+        not has_reg_priority_signal
+        and (
+            contains_any(q, rules["score_lookup_signal"])
+            or asks_letter_grade
+            or asks_gpa_classification
+        )
     ):
         return {
             "intent": "score_lookup_query",

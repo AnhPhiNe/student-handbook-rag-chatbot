@@ -4,6 +4,10 @@ import argparse
 import sys
 from pathlib import Path
 
+ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 from src.common.console import configure_utf8_stdio
 
 
@@ -13,6 +17,9 @@ REQUIRED_ARTIFACTS = [
     ("data/processed/tables/formula_rules.json", "file"),
     ("data/processed/entities/entity_registry.json", "file"),
     ("data/processed/entities/query_expansion_rules.json", "file"),
+    ("data/processed/chunks/all_docstore_items.json", "file"),
+    ("data/processed/chunks/v7_child_parent_chunks.json", "file"),
+    ("data/processed/metadata/section_evidence_registry.json", "file"),
     ("data/vectorstore/chroma", "dir"),
 ]
 

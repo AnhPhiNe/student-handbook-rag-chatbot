@@ -2,7 +2,10 @@ import re
 from typing import Any
 
 
-_FOCUS_MARKER = "THÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:"
+_FOCUS_MARKERS = (
+    "THÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:",
+    "THÔNG TIN TRỌNG TÂM TỪ NGUỒN:",
+)
 _CONTENT_MARKER = "Nội dung:"
 _PAGE_FOOTER_RE = re.compile(r"^(?:\d+\s+)?SỔ TAY SINH VIÊN KHÓA\s+\d+\s*$")
 _NEW_PARAGRAPH_RE = re.compile(
@@ -49,8 +52,9 @@ def sanitize_citation_content(value: Any) -> str:
     if not text:
         return ""
 
-    if _FOCUS_MARKER in text:
-        text = text.split(_FOCUS_MARKER, 1)[0].strip()
+    for marker in _FOCUS_MARKERS:
+        if marker in text:
+            text = text.split(marker, 1)[0].strip()
 
     if _CONTENT_MARKER in text:
         text = text.split(_CONTENT_MARKER, 1)[1].strip()

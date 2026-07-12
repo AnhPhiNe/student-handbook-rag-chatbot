@@ -6,6 +6,8 @@ import unicodedata
 from dataclasses import dataclass
 from typing import Any
 
+from .evidence_selection import build_evidence_context
+
 
 @dataclass(frozen=True)
 class ContextAllocationConfig:
@@ -14,6 +16,7 @@ class ContextAllocationConfig:
     max_chars_per_doc: int = 1800
     sentence_boundary: bool = True
     cache_version: str = "context_alloc_v1"
+    evidence_selection: dict[str, Any] | None = None
 
     @classmethod
     def from_config(cls, config: dict[str, Any] | None) -> "ContextAllocationConfig":
@@ -32,12 +35,16 @@ class ContextAllocationConfig:
             max_chars_per_doc=max_chars,
             sentence_boundary=bool(config.get("sentence_boundary", True)),
             cache_version=str(config.get("cache_version") or "context_alloc_v1"),
+            evidence_selection=dict(config.get("evidence_selection") or {}),
         )
 
     def cache_fingerprint(self) -> dict[str, Any]:
         return {
             "strategy": self.strategy,
             "cache_version": self.cache_version,
+            "evidence_selection_enabled": bool((self.evidence_selection or {}).get("enabled", False)),
+            "evidence_registry_path": (self.evidence_selection or {}).get("registry_path"),
+            "evidence_rerank_top_k": (self.evidence_selection or {}).get("rerank_evidence_top_k"),
         }
 
 
@@ -114,6 +121,7 @@ def build_context_for_prompt(
             query=query or str(retrieval_result.get("query") or ""),
             budget=budget,
             sentence_boundary=config.sentence_boundary,
+            evidence_config=config.evidence_selection,
         )
         truncated_content = truncate_text(
             content,
@@ -136,16 +144,22 @@ def prepare_content_for_prompt(
     query: str | None = None,
     budget: int = 1800,
     sentence_boundary: bool = True,
+    evidence_config: dict[str, Any] | None = None,
 ) -> str:
     """Chuẩn hóa phần nguồn trước khi cắt để LLM đọc đúng đoạn liên quan hơn."""
 
-    content = (content or "").strip()
+    content = _strip_generated_focus_sections((content or "").strip())
     if not content:
         return ""
 
     metadata = (item or {}).get("metadata", {}) or {}
-    
-    if metadata.get("chunk_type") == "regulation" and len(content) <= budget:
+    evidence_context = build_evidence_context(item=item, query=query, config=evidence_config or {})
+
+    if (
+        not evidence_context
+        and metadata.get("chunk_type") == "regulation"
+        and len(content) <= budget
+    ):
         return content
 
     query_terms = _query_terms(query or "")
@@ -159,17 +173,70 @@ def prepare_content_for_prompt(
     )
 
     blocks: list[str] = []
+    focused_evidence_mode = bool(evidence_context) and _is_focused_evidence_question(query or "")
     if table_context:
         blocks.append("BẢNG/DANH SÁCH ĐÃ CHUẨN HÓA:\n" + table_context)
-    if section_context and section_context not in table_context:
+    if evidence_context:
+        blocks.append(evidence_context)
+    if section_context and not focused_evidence_mode and section_context not in table_context:
         blocks.append("ĐIỀU/MỤC LIÊN QUAN:\n" + section_context)
     if snippet_context and snippet_context not in table_context + section_context:
         blocks.append("ĐOẠN LIÊN QUAN:\n" + snippet_context)
 
     if blocks:
+        raw_context = truncate_text(
+            content,
+            max(800, min(max(1200, budget), 2600)),
+            sentence_boundary=sentence_boundary,
+        )
+        if raw_context:
+            blocks.append("VĂN BẢN GỐC LIÊN QUAN:\n" + raw_context)
         return "\n\n".join(blocks)
 
     return content
+
+
+def _strip_generated_focus_sections(content: str) -> str:
+    """Remove evidence/context labels that may have been appended in older cached excerpts."""
+
+    if not content:
+        return ""
+
+    generated_markers = (
+        "thong tin trong tam",
+        "bang danh sach da",
+        "bang dong da gom",
+        "dieu kien truong hop moc so lieu",
+        "van ban goc lien quan",
+    )
+    lines = content.splitlines()
+    for index, line in enumerate(lines):
+        normalized = _normalize_text(line)
+        if any(marker in normalized for marker in generated_markers):
+            if index == 0:
+                return content.strip()
+            return "\n".join(lines[:index]).strip()
+    return content
+
+
+def _is_focused_evidence_question(query: str) -> bool:
+    normalized = _normalize_text(query)
+    if not normalized:
+        return False
+    focused_phrases = (
+        "dieu kien",
+        "truong hop",
+        "bao nhieu",
+        "may dot",
+        "thang nao",
+        "khi nao",
+        "luc nao",
+        "gom gi",
+        "gom nhung gi",
+        "can gi",
+        "xet sao",
+    )
+    return any(phrase in normalized for phrase in focused_phrases)
 
 
 def _query_terms(query: str) -> list[str]:
@@ -212,88 +279,26 @@ def _query_terms(query: str) -> list[str]:
             if len(phrase) >= 8:
                 phrases.append(phrase)
 
-    expansions = _query_expansions(normalized)
     seen: set[str] = set()
     result: list[str] = []
-    for term in [*expansions, *phrases, *tokens]:
+    for term in [*phrases, *tokens]:
         if term and term not in seen:
             seen.add(term)
             result.append(term)
     return result[:24]
 
 
-def _query_expansions(normalized_query: str) -> list[str]:
-    expansions: list[str] = []
-    if "tot nghiep" in normalized_query:
-        expansions.extend(
-            [
-                "xet tot nghiep",
-                "dot xet tot nghiep",
-                "cong nhan tot nghiep",
-                "cap bang tot nghiep",
-            ]
-        )
-    if "thoi gian" in normalized_query or "bao nhieu nam" in normalized_query:
-        expansions.extend(
-            [
-                "thoi gian hoc tap toi da",
-                "thoi gian hoc tap chuan",
-                "hinh thuc dao tao chinh quy",
-            ]
-        )
-    if "bao luu" in normalized_query:
-        expansions.extend(["nghi hoc tam thoi", "tam dung hoc tap"])
-    if "rot mon" in normalized_query:
-        expansions.extend(["hoc phan khong dat", "hoc lai"])
-    return expansions
-
-
 def _normalized_table_context(content: str, metadata: dict[str, Any]) -> str:
-    normalized = _normalize_text(content)
-    blocks: list[str] = []
+    if not _looks_like_table(metadata, content):
+        return ""
 
-    if "thoi gian hoc tap chuan" in normalized and "thoi gian hoc tap toi da" in normalized:
-        rows = _extract_study_duration_rows(content)
-        if rows:
-            blocks.append("Bảng thời gian học tập:")
-            blocks.append("Loại chương trình | Thời gian chuẩn | Thời gian tối đa")
-            blocks.extend(f"- {name}: chuẩn {standard}, tối đa {maximum}" for name, standard, maximum in rows)
+    rows = _compact_structured_lines(content)
+    if not rows:
+        return ""
 
-    if "dot xet tot nghiep" in normalized or "xet tot nghiep chinh thuc" in normalized:
-        sentence = _snippet_aware_context(
-            content,
-            ["dot xet tot nghiep", "xet tot nghiep chinh thuc", "thang 5", "thang 8", "thang 11"],
-            max_chars=760,
-            sentence_boundary=True,
-        )
-        if sentence:
-            blocks.append("Thông tin về đợt xét tốt nghiệp:")
-            blocks.append(f"- {_collapse_space(sentence)}")
-
-    if not blocks and _looks_like_table(metadata, content):
-        rows = _compact_structured_lines(content)
-        if rows:
-            blocks.append("Nội dung dạng bảng/danh sách đã gom dòng:")
-            blocks.extend(f"- {row}" for row in rows[:12])
-
+    blocks = ["STRUCTURED SOURCE LINES:"]
+    blocks.extend(f"- {row}" for row in rows[:12])
     return "\n".join(blocks).strip()
-
-
-def _extract_study_duration_rows(content: str) -> list[tuple[str, str, str]]:
-    text = _collapse_space(content)
-    patterns = [
-        r"(Đào tạo đại học cấp bằng thứ nhất)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
-        r"(Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
-        r"(Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
-        r"(Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
-    ]
-    rows: list[tuple[str, str, str]] = []
-    for pattern in patterns:
-        match = re.search(pattern, text, flags=re.IGNORECASE)
-        if match:
-            rows.append((match.group(1), match.group(2), match.group(3)))
-    return rows
-
 
 def _section_aware_context(content: str, query_terms: list[str]) -> str:
     if not query_terms:
@@ -382,17 +387,7 @@ def _find_sentence_with_terms(content: str, terms: list[str]) -> str:
 def _looks_like_table(metadata: dict[str, Any], content: str) -> bool:
     if metadata.get("has_table") or metadata.get("chunk_type") == "table":
         return True
-    normalized = _normalize_text(content)
-    table_terms = (
-        "bang",
-        "thang diem",
-        "muc diem",
-        "thoi gian hoc tap",
-        "dieu kien",
-        "ho so",
-        "quy trinh",
-    )
-    return sum(term in normalized for term in table_terms) >= 2
+    return len(_compact_structured_lines(content)) >= 2
 
 
 def _compact_structured_lines(content: str) -> list[str]:

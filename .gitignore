@@ -39,7 +39,10 @@ $RECYCLE.BIN/
 .idea/
 
 # Data and Models
-data/processed/
+data/processed/*
+!data/processed/metadata/
+data/processed/metadata/*
+!data/processed/metadata/section_evidence_registry.json
 data/vectorstore/
 models/
 scratch/

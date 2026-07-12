@@ -255,7 +255,16 @@ def should_use_structured_lookup(query: str) -> bool:
         "xep loai",
         "loai gi",
         "qua mon",
+        "qua hoc phan",
         "rot mon",
+        "diem d",
+        "diem d+",
+        "d+",
+        "diem f",
+        "bi f",
+        "he thong tinh",
+        "tinh nhu the nao",
+        "tinh the nao",
         "bao nhieu diem",
         "may diem",
         "dat",
@@ -316,6 +325,7 @@ def structured_lookup(
         k in ascii_q
         for k in [
             "qua mon",
+            "qua hoc phan",
             "rot mon",
             "dat",
             "khong dat",
@@ -329,6 +339,9 @@ def structured_lookup(
         return lookup_grade_10_to_letter(query, tables)
 
     if asks_scale_4:
+        return lookup_letter_grade(query, tables)
+
+    if any(k in ascii_q for k in ["he thong tinh", "tinh nhu the nao", "tinh the nao"]):
         return lookup_letter_grade(query, tables)
 
     if re.search(r"\d+(?:[,.]\d+)?", query) and any(

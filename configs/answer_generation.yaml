@@ -14,7 +14,7 @@ embedding:
 
 vectorstore:
   persist_dir: data/vectorstore/chroma
-  collection_name: student_handbook_semantic_v6
+  collection_name: student_handbook_semantic_v7
 
 retrieval:
   default_top_k: 5
@@ -50,7 +50,16 @@ context_allocation:
   min_chars_per_doc: 400
   max_chars_per_doc: 4500
   sentence_boundary: true
-  cache_version: context_alloc_v3_source_aware_context
+  cache_version: context_alloc_v10_table_first_context
+  evidence_selection:
+    enabled: true
+    registry_path: data/processed/metadata/section_evidence_registry.json
+    cheap_candidate_top_k: 12
+    rerank_evidence_top_k: 3
+    use_cross_encoder_reranker: true
+    neighbor_window: 1
+    max_structural_evidence_blocks: 8
+    fallback_to_lexical_scoring: true
 
 cache:
   enabled: true
@@ -67,7 +76,7 @@ semantic_cache:
   verifier_max_tokens: 8
 
 citations:
-  max_sources: 3
+  max_sources: 5
   prefer_intent_chunk_type: true
   deduplicate: true
 

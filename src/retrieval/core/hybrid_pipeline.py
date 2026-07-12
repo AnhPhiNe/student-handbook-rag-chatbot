@@ -293,7 +293,7 @@ class HybridRetrieverV7:
             filtered_parent_ids = []
             seed_ids = list(parents_by_seed.keys())
             idx = 0
-            while len(filtered_parent_ids) < 5 and any(parents_by_seed.values()):
+            while len(filtered_parent_ids) < 3 and any(parents_by_seed.values()):
                 sid = seed_ids[idx % len(seed_ids)]
                 if parents_by_seed[sid]:
                     filtered_parent_ids.append(parents_by_seed[sid].pop(0))

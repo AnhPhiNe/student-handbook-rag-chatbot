@@ -8,12 +8,13 @@ from src.generation.groq_client import GroqClient
 
 
 class SemanticCache:
-    def __init__(self, config: dict[str, Any], embedding_model: Any):
+    def __init__(self, config: dict[str, Any], embedding_model: Any, pipeline_version: str = "v1"):
         self.config = config
         self.enabled = config.get("enabled", False)
         self.max_distance = float(config.get("max_distance", 0.15))
         self.min_query_length = int(config.get("min_query_length", 8))
         self.embedding_model = embedding_model
+        self.pipeline_version = pipeline_version
 
         if not self.enabled:
             return
@@ -49,8 +50,14 @@ class SemanticCache:
                 "query_embeddings": [query_embedding],
                 "n_results": 3,
             }
+            where_clauses = [{"pipeline_version": self.pipeline_version}]
             if cohort:
-                query_kwargs["where"] = {"cohort": cohort}
+                where_clauses.append({"cohort": cohort})
+            
+            if len(where_clauses) == 1:
+                query_kwargs["where"] = where_clauses[0]
+            else:
+                query_kwargs["where"] = {"$and": where_clauses}
 
             results = self.collection.query(**query_kwargs)
 
@@ -88,7 +95,11 @@ class SemanticCache:
 
         try:
             query_embedding = self.embedding_model.encode(query).tolist()
-            metadata = {"cache_key": cache_key, "created_at": time.time()}
+            metadata = {
+                "cache_key": cache_key, 
+                "created_at": time.time(),
+                "pipeline_version": self.pipeline_version
+            }
             if cohort:
                 metadata["cohort"] = cohort
 

@@ -38,6 +38,8 @@ from .semantic_cache import SemanticCache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
+PIPELINE_VERSION = "v12"
+
 
 def _env_bool(name: str, default: bool = False) -> bool:
     value = os.environ.get(name)
@@ -109,7 +111,9 @@ class AnswerPipeline:
 
         semantic_config = self.config.get("semantic_cache", {})
         self.semantic_cache = SemanticCache(
-            config=semantic_config, embedding_model=self.model
+            config=semantic_config, 
+            embedding_model=self.model,
+            pipeline_version=PIPELINE_VERSION
         )
     def answer(
         self,
@@ -385,6 +389,7 @@ class AnswerPipeline:
             selected_citations=selected_citations,
             cohort=cohort,
             context_fingerprint=self.context_allocation.cache_fingerprint(),
+            pipeline_version=PIPELINE_VERSION,
         )
         cached = self.response_cache.get(cache_key)
         if cached:

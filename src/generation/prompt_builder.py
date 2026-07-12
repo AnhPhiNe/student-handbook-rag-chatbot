@@ -101,8 +101,11 @@ CONTEXT:
 
 QUY TẮC TỔNG HỢP ĐA NGUỒN:
 Nếu CONTEXT có đoạn được đánh dấu [NGUỒN LIÊN QUAN - được tìm thấy qua dẫn chiếu], đây LÀ thông tin cần thiết để trả lời đầy đủ, KHÔNG PHẢI thông tin phụ có thể bỏ qua. BẮT BUỘC kết hợp nội dung của [NGUỒN CHÍNH] và [NGUỒN LIÊN QUAN] thành 1 câu trả lời thống nhất. Cụ thể: nếu [NGUỒN CHÍNH] nói về một thủ tục/quy định, và [NGUỒN LIÊN QUAN] cung cấp con số/định nghĩa/giới hạn liên quan tới thủ tục đó, PHẢI nêu rõ con số/giới hạn đó trong câu trả lời, không chỉ dừng ở việc mô tả thủ tục.
-    - Nếu câu hỏi yêu cầu một con số/điều kiện mà NGUỒN CHÍNH không có nhưng có dẫn chiếu đến NGUỒN LIÊN QUAN, BẮT BUỘC phải đọc NGUỒN LIÊN QUAN để lấy con số/điều kiện đó và kết hợp vào câu trả lời.
-    - Khi giải thích các ngoại lệ hoặc quy định liên đới (ví dụ: "không tính vào thời gian đào tạo chính thức"), PHẢI ghi rõ con số cụ thể của thời gian đó (ví dụ: 8 năm) bằng cách tra cứu trong NGUỒN LIÊN QUAN, không chỉ dừng ở việc mô tả thủ tục.
+    - Khi câu hỏi liên quan đến giới hạn thời gian, BẠN BẮT BUỘC PHẢI SUY LUẬN THEO CÁC BƯỚC SAU (viết trong thẻ <thinking>):
+      1. Xác định "Hành động A" có bị quy định là "tính vào" hay "không tính vào" một "Quỹ thời gian B" nào đó không?
+      2. "Quỹ thời gian B" đó có giới hạn tối đa là bao nhiêu?
+      3. Nếu A tính vào B, kết luận: Giới hạn của A phụ thuộc vào B, không có giới hạn độc lập.
+      Sau đó ở phần trả lời, bạn phải viết: "Thời gian [A] được tính vào [B] (tối đa [C] năm)". TUYỆT ĐỐI KHÔNG gộp chung thành "[A] tối đa là [C] năm". Hành vi gộp chung này là bóp méo văn bản!
 
 FINAL_GROUNDING_CHECK:
 - Kiểm tra: nếu CONTEXT có đoạn đánh dấu [NGUỒN LIÊN QUAN], câu trả lời NHÁP của bạn đã dùng thông tin từ đoạn đó chưa? Nếu chưa, PHẢI sửa lại câu trả lời trước khi gửi.

@@ -88,10 +88,12 @@ class ResponseCache:
         selected_citations: list[dict[str, Any]] | None,
         cohort: str | None = None,
         context_fingerprint: dict[str, Any] | None = None,
+        pipeline_version: str | None = None,
     ) -> str:
         payload = {
             "query": query,
             "cohort": cohort,
+            "pipeline_version": pipeline_version,
             "context_fingerprint": context_fingerprint or {},
             "retrieval_query": retrieval_result.get("retrieval_query"),
             "citations": [

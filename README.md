@@ -47,7 +47,7 @@ The result is a production-oriented public beta assistant that can answer practi
 
 ### 1️⃣ Cohort-Aware Handbook Reasoning
 
-The system supports handbook differences between **K48-K49** and **K50-K51** instead of treating all documents as one flat knowledge base.
+The system supports handbook differences between **K48-K49**, **K50**, and **K51** instead of treating all documents as one flat knowledge base.
 
 - Every indexed chunk carries `cohort`, `document_id`, `chunk_type`, `content_type`, and `source_pages`.
 - Frontend tools and chat answers respect the selected cohort.
@@ -80,9 +80,9 @@ This architecture significantly reduces LLM hallucination on high-frequency stud
 
 The project uses a parent-child retrieval design:
 
-- **Qdrant Cloud** stores semantic child chunks for fast retrieval.
-- **MongoDB Atlas** stores parent documents for richer context expansion.
-- The app currently uses Qdrant collection `student_handbook_semantic_v4`.
+- **Qdrant Cloud** stores V7 child/table/heading chunks for fast retrieval.
+- **MongoDB Atlas** stores parent regulation sections for richer context expansion and source display.
+- The app currently uses Qdrant collection `student_handbook_semantic_v7`.
 
 ### 5️⃣ Production-Oriented LLM Pipeline
 
@@ -100,12 +100,12 @@ The generation layer includes:
 | Component | Current State |
 |---|---:|
 | Supported cohorts | K48-K49, K50, K51 |
-| Semantic vector chunks | 798 |
-| MongoDB parent docs | 435 |
-| Program directory records | 86 |
-| Form template records | 19 |
-| Qdrant collection | `student_handbook_semantic_v4` |
-| Evaluation cases | 500 (150 Golden, 200 Beta, 150 Ragas) |
+| Retrieval design | V7 child-parent regulation retrieval |
+| Parent docstore | MongoDB Atlas |
+| Structured lookup groups | programs, scoring, forms, offices, guardrails |
+| Qdrant collection | `student_handbook_semantic_v7` |
+| Final regression cases | 40 router, 16 structured/tool, 84 true-RAG retrieval, 30 evidence |
+| RAGAS-style Judge subset | 29 generated true-RAG answers |
 
 ## 🏗️ Architecture
 
@@ -118,9 +118,9 @@ flowchart LR
     Guard --> Router["AI Router + Routing Rules"]
 
     Router -->|programs / scores / forms / offices| Lookup["Structured Lookup"]
-    Router -->|regulations / procedures| Retrieval["Hybrid Retrieval"]
+    Router -->|regulations| Retrieval["V7 Hybrid Retrieval"]
 
-    Retrieval --> Qdrant["Qdrant Cloud\nChild Chunks"]
+    Retrieval --> Qdrant["Qdrant Cloud\nV7 child/table/heading chunks"]
     Retrieval --> BM25["BM25 Sparse Index"]
     Retrieval --> Reranker["Cross-Encoder Reranker"]
     Reranker --> Mongo["MongoDB Atlas\nParent Docs"]
@@ -151,7 +151,7 @@ flowchart TD
     Vector --> Merge["Candidate Merge"]
     Sparse --> Merge
     Merge --> Rerank["Cross-Encoder Rerank"]
-    Rerank --> Parent["Mongo Parent Context"]
+    Rerank --> Parent["Mongo Parent Sections"]
     Parent --> Context["Score-Weighted Context Allocation"]
 
     StructuredAnswer --> Generate["Final Answer"]
@@ -182,8 +182,8 @@ flowchart TD
     Extract --> Form["form_templates"]
     Extract --> Score["scoring_tables / threshold_rules / formula_rules"]
 
-    Chunk --> Chroma["Local Chroma Build"]
-    Chroma --> Qdrant["Qdrant Cloud v4"]
+    Chunk --> V7["V7 child/table/heading chunks"]
+    V7 --> Qdrant["Qdrant Cloud v7"]
     Chunk --> Docstore["MongoDB parent_docs"]
 ```
 
@@ -223,57 +223,82 @@ Structured questions are checked with exactness, item count, cohort correctness,
 
 | Metric | Score |
 |---|---:|
-| Cases | 70 |
-| Pass rate | 94.29% |
-| Deterministic exactness | 97.83% |
-| Citation metadata accuracy | 93.94% |
+| Cases | 16 |
+| Pass rate | 100.00% |
+| Deterministic exactness | 100.00% |
+| Citation metadata accuracy | 100.00% |
 | Intent accuracy | 100.00% |
 | Strategy accuracy | 100.00% |
-| PII Directory Accuracy | 100.00% |
-| Out-of-domain Rejection Rate | 98.00% |
+| Structured item count accuracy | 100.00% |
 
 ### 2️⃣ True-RAG Retrieval Evaluation
 
-Retrieval is evaluated only on long-form RAG cases such as regulations, procedures, offices, and faculty details.
+Retrieval is evaluated only on generated true-RAG regulation cases. Structured lookups such as programs, scoring, forms, and office contacts are excluded from this headline retrieval metric.
 
 | Metric | Score |
 |---|---:|
-| Cases | 150 (Golden) |
-| Hit@3 | 86.25% |
-| MRR | 80.19% |
-| nDCG@5 | 82.90% |
+| Cases | 84 |
+| Hit@1 | 66.67% |
+| Hit@3 | 83.33% |
+| Hit@5 | 95.24% |
+| MRR | 76.61% |
+| nDCG@5 | 81.59% |
 
-Breakdown by content type:
+Breakdown by cohort:
 
-| Content Type | Cases (N) | Hit@3 | MRR | nDCG@5 |
+| Cohort | Cases (N) | Hit@3 | MRR | nDCG@5 |
 |---|---:|---:|---:|---:|
-| Faculty directory | 11 | 100.00% | 100.00% | 96.88% |
-| Office directory | 21 | 90.48% | 90.48% | 90.48% |
-| Procedures | 28 | 100.00% | 100.00% | 100.00% |
-| Regulation sections | 90 | 86.67% | 74.44% | 77.97% |
+| K48-K49 | 26 | 88.46% | 80.13% | 84.17% |
+| K50 | 26 | 73.08% | 65.77% | 72.25% |
+| K51 | 5 | 80.00% | 85.00% | 88.61% |
+| General | 27 | 88.89% | 82.10% | 86.81% |
 
-### 3️⃣ RAGAS-Style Gemini Judge
+Important tag-level checks:
 
-Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 3.1 Flash Lite as Judge. Deterministic lookup cases are excluded from the headline RAGAS metrics.
+| Tag | Cases (N) | Hit@3 | MRR | nDCG@5 |
+|---|---:|---:|---:|---:|
+| Numeric fact | 27 | 96.30% | 89.81% | 92.27% |
+| Table-heavy | 12 | 91.67% | 88.19% | 91.09% |
+| Cohort-sensitive | 6 | 100.00% | 88.89% | 91.38% |
+
+### 3️⃣ Evidence Selection Regression
+
+The evidence layer is evaluated separately from retrieval to verify that important facts are surfaced to the LLM without taking over citation binding.
 
 | Metric | Score |
 |---|---:|
-| Cases | 150 (Golden) |
-| Answer relevancy | 81.27% |
-| Faithfulness | 76.87% |
-| Answer correctness | 51.80% |
-| Context precision | 66.13% |
-| Context recall | 61.13% |
-| Citation correctness | 77.20% |
+| Cases | 30 |
+| Retrieval fact availability | 86.67% |
+| Evidence context present | 100.00% |
+| Required fact hit with evidence | 90.00% |
+| Retrieval source correctness | 96.67% |
+| Evidence fact hit | 80.00% |
+| Answer uses evidence | 90.00% |
+| Citation binding correctness | 96.67% |
+| No marker leakage | 100.00% |
+
+### 4️⃣ RAGAS-Style Gemini Judge
+
+Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 3.1 Flash Lite as Judge. Deterministic lookup cases are excluded from the headline RAGAS metrics. The latest judge run uses 29 generated answers because one extra answer-generation case was skipped after Groq rate limits; it is not used in the headline metric.
+
+| Metric | Score |
+|---|---:|
+| Cases | 29 |
+| Faithfulness | 97.59% |
+| Answer relevancy | 94.14% |
+| Context precision | 92.07% |
+| Context recall | 88.62% |
+| Answer correctness | 85.69% |
+| Citation correctness | 88.97% |
 
 ### 📖 How to read these numbers
 
 
-- **Cohort Segregation (K50 vs K51):** The system enforces strict isolation between K50 and K51 regulations. This drastically increases the difficulty of the Retrieval task (slightly lowering Hit Rate and Correctness) but establishes a baseline **Faithfulness of 76.87%**, ensuring students never receive mixed-up regulations.
-- **Comprehensive RAGAS Evaluation:** Although Retrieval quality is already rigorously measured using exact math in Table 2 (Hit Rate, nDCG), we present the full RAGAS suite here for absolute transparency. Note that LLM-judged Context Precision/Recall scores are naturally lower than mathematical Hit Rates due to the strictness of the LLM Judge.
-- **Relevancy & Citation:** High Answer Relevancy (81.27%) and Citation Correctness (77.20%) demonstrate the system's strong ability to stay on-topic and provide verifiable handbook references, even when generative correctness fluctuates.
-- Deterministic lookups and retrieval placement are stable enough for public beta. Generated answer quality (Answer Correctness 51.8%) is still the primary risk area and is being prioritized for the next iteration.
-- Metrics are reported honestly instead of being filtered to only easy cases (150 Golden Queries tested).
+- **Cohort Segregation (K50 vs K51):** The system enforces strict isolation between K50 and K51 regulations. In the production UI, students select a cohort before asking, so cohort-specific retrieval and citation are more representative than no-cohort general stress tests.
+- **V7 Retrieval Tradeoff:** Hit@1 is intentionally not the only goal. The RAG pipeline uses top-k evidence, parent expansion, and reranking, so Hit@3/Hit@5 and citation correctness better reflect the user-facing answer quality.
+- **RAGAS Scope:** RAGAS-style Judge is reported only for generated true-RAG answers. Deterministic lookup cases are measured separately with exactness and item-count checks.
+- **Evidence Layer:** Evidence selection improves source readability and focuses the LLM on key facts, but citation binding remains attached to the retrieved parent section to avoid evidence-level citation drift.
+- Metrics are reported as layered quality gates instead of one blended score.
 
 ## 🚀 CI/CD and Quality Gates
 
@@ -360,21 +385,22 @@ LANGCHAIN_PROJECT=your_project_name
 ### Run offline evaluations
 
 ```bash
-python scripts/evaluate_answers.py
-python scripts/evaluate_retrieval.py
-python scripts/evaluate_router_behavior.py
+python scripts/evaluate_router_behavior.py --cases data/eval/final_router_holdout_v7.json
+python scripts/evaluate_answers.py --cases data/eval/final_structured_tool_holdout_v7.json
+python scripts/evaluate_retrieval.py --golden data/eval/final_true_rag_holdout_v7.json --scope v6-regulation
 ```
 
-### Build multi-cohort artifacts
+### Build V7 retrieval artifacts
 
 ```bash
-python scripts/build_multi_cohort.py
+python scripts/build_section_evidence_registry.py
+python scripts/build_v7_child_parent_index.py
 ```
 
-### Push local Chroma vectors to a new Qdrant collection
+### Push V7 child-parent vectors to Qdrant
 
 ```bash
-python scripts/migrate_to_qdrant.py --target-collection student_handbook_semantic_v4
+python scripts/push_to_qdrant_v7.py
 ```
 
 ### Deploy backend to Hugging Face Space
@@ -397,12 +423,12 @@ npm run build
 
 ## 🚧 Known Limitations & Roadmap
 
-- **Limitation:** Long regulation chunks can lose nuance after context allocation.
-  **Roadmap:** Improve long-context selection and dynamic chunk sizing.
-- **Limitation:** RAGAS-style faithfulness (76.8%) is lower on complex reasoning.
-  **Roadmap:** Introduce chain-of-thought prompting for the generator model.
-- **Limitation:** Hard to verify raw PDF text.
-  **Roadmap:** Add stable source-document URLs for "open source" citation buttons.
+- **Limitation:** Procedure/form workflows are not yet fully OCR/crawled when source pages rely on images, QR codes, or external forms.
+  **Roadmap:** Build a clean procedure directory from OCR and official linked sources.
+- **Limitation:** K50 retrieval is harder than other cohorts because similar regulations can mention cao đẳng/GDMN and undergraduate rules in nearby sections.
+  **Roadmap:** Continue improving scope-aware reranking without adding brittle question-specific heuristics.
+- **Limitation:** Production scaling is bounded by the free/low-cost hosting tier and external LLM rate limits.
+  **Roadmap:** Add queue/backpressure defaults and upgrade hosting only when real traffic requires it.
 - **Limitation:** No internal quality dashboard.
   **Roadmap:** Build an admin dashboard with authentication and feedback clustering.
 

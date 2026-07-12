@@ -19,13 +19,13 @@
   </a>
 </p>
 
-## 🌟 Overview
+## Overview
 
 ![Chat Interface Placeholder](./frontend/public/chat_ui_screenshot.png)
 
 **HCMUE AI Student Handbook Assistant** is a cohort-aware Retrieval-Augmented Generation system for answering questions from HCMUE student handbooks.
 
-## 🚀 Live Demo
+## Live Demo
 
 - **Frontend Chat UI (Custom Domain):** [hcmuebot.id.vn](https://hcmuebot.id.vn)
 - **Backend API & Interactive Swagger UI:** [HCMUE Handbook RAG (Hugging Face Space)](https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api)
@@ -33,19 +33,24 @@
 Unlike a simple "PDF chatbot", this project separates the system into two complementary layers:
 
 - **Structured lookup** for information that must be exact, such as program lists, grade thresholds, scoring tables, formulas, offices, and forms.
-- **True RAG retrieval** for longer regulations and procedures that need explanation, context, and citations.
+- **True RAG retrieval** for longer regulations and policy sections that need explanation, context, and citations.
+
+### Why this is not just a PDF chatbot
+
+The system is designed around the actual failure modes of handbook QA: different cohorts can have different rules, structured facts should not be guessed by an LLM, and long regulations often require retrieving a small evidence chunk while still citing the original parent section. HCMUE AI therefore combines cohort-aware routing, deterministic lookup, child-parent retrieval, reranking, evidence selection, and citation binding instead of sending raw PDF chunks directly to a chat model.
 
 The result is a production-oriented public beta assistant that can answer practical student questions such as:
 
 - "Khoa Cong nghe Thong tin co nhung nganh nao?"
-- "K50-K51 diem D+ co qua mon khong?"
+- "K50 diem D+ co qua mon khong?"
+- "K51 diem D+ co qua mon khong?"
 - "Muon phuc khao diem thi thi lam sao?"
 - "Van de hoc phi lien he phong nao?"
 - "Tam nghi hoc can bieu mau nao?"
 
-## ✨ Key Features
+## Key Features
 
-### 1️⃣ Cohort-Aware Handbook Reasoning
+### 1. Cohort-Aware Handbook Reasoning
 
 The system supports handbook differences between **K48-K49**, **K50**, and **K51** instead of treating all documents as one flat knowledge base.
 
@@ -53,7 +58,7 @@ The system supports handbook differences between **K48-K49**, **K50**, and **K51
 - Frontend tools and chat answers respect the selected cohort.
 - Grade thresholds and program lists are handled differently when handbook rules differ by cohort.
 
-### 2️⃣ Hybrid Retrieval With Reranking
+### 2. Hybrid Retrieval With Reranking
 
 For true RAG questions, the system combines:
 
@@ -63,7 +68,7 @@ For true RAG questions, the system combines:
 - Cross-encoder reranking to improve final context quality.
 - Metadata filtering and boosting by cohort and content type.
 
-### 3️⃣ Structured Lookup for Deterministic Facts
+### 3. Structured Lookup for Deterministic Facts
 
 Information that should not be "generated from vibes" is extracted into structured stores:
 
@@ -76,7 +81,7 @@ Information that should not be "generated from vibes" is extracted into structur
 
 This architecture significantly reduces LLM hallucination on high-frequency student questions. To avoid LLM math limitations and hallucinated calculations, complex logic such as GPA and tuition estimation is offloaded to dedicated **Deterministic UI Tools** instead of relying on the LLM to compute results through generation.
 
-### 4️⃣ Parent-Child Retrieval Architecture
+### 4. Parent-Child Retrieval Architecture
 
 The project uses a parent-child retrieval design:
 
@@ -84,7 +89,7 @@ The project uses a parent-child retrieval design:
 - **MongoDB Atlas** stores parent regulation sections for richer context expansion and source display.
 - The app currently uses Qdrant collection `student_handbook_semantic_v7`.
 
-### 5️⃣ Production-Oriented LLM Pipeline
+### 5. Production-Oriented LLM Pipeline
 
 The generation layer includes:
 
@@ -95,7 +100,18 @@ The generation layer includes:
 - Citation selection that prefers matching cohort, content type, section, and page metadata.
 - Guardrails for out-of-domain, unsafe, ambiguous, or low-context questions.
 
-## 📸 System Snapshot
+## Engineering Highlights
+
+- **Cohort-aware RAG architecture:** metadata filtering and cohort-specific routing for `K48-K49`, `K50`, and `K51`.
+- **Hybrid router:** separates deterministic lookup questions from generated true-RAG answers.
+- **Deterministic lookup:** exact program, scoring, form, office, and tool responses without relying on LLM guessing.
+- **V7 child-parent retrieval:** Qdrant indexes small `section_heading`, `child`, and `table_like` chunks while MongoDB stores full parent sections for citations.
+- **Hybrid retrieval stack:** dense retrieval with `BAAI/bge-m3`, BM25 sparse retrieval, metadata filtering, and cross-encoder reranking.
+- **Evidence selection:** surfaces key facts from retrieved sections to reduce "source is correct but LLM missed the detail" failures.
+- **Layered evaluation:** router/lookup metrics, retrieval metrics, evidence regression, and RAGAS-style Gemini Judge are reported separately.
+- **Production guardrails:** cohort filtering, citation binding, model fallback, cache support, rate limits, and queue/backpressure settings.
+
+## System Snapshot
 
 | Component | Current State |
 |---|---:|
@@ -107,7 +123,7 @@ The generation layer includes:
 | Final regression cases | 40 router, 16 structured/tool, 84 true-RAG retrieval, 30 evidence |
 | RAGAS-style Judge subset | 29 generated true-RAG answers |
 
-## 🏗️ Architecture
+## Architecture
 
 ```mermaid
 flowchart LR
@@ -134,7 +150,7 @@ flowchart LR
     API -. optional .-> Trace["Langfuse Tracing"]
 ```
 
-## ⚙️ RAG Processing Pipeline
+## RAG Processing Pipeline
 
 ```mermaid
 flowchart TD
@@ -160,13 +176,13 @@ flowchart TD
     Cite --> Output["Answer + Sources"]
 ```
 
-### 🔍 Pipeline Breakdown
+### Pipeline Breakdown
 
 - **Input validation & Rewriting:** Filters invalid queries and rewrites them into accentless, complete sentences.
 - **Intent Routing:** Sends deterministic queries to structured lookups, and long-form questions to the Hybrid RAG pipeline.
 - **Hybrid Retrieval & Generation:** Combines Vector + BM25, reranks with cross-encoder, expands context via MongoDB, and enforces strict cohort guardrails during generation.
 
-## 💾 Data and Ingestion Design
+## Data and Ingestion Design
 
 The pipeline processes each handbook through a document profile instead of relying on one-off hardcoded sections.
 
@@ -188,7 +204,7 @@ flowchart TD
 ```
 
 
-## 📂 Source Code Architecture
+## Source Code Architecture
 
 ```text
 student_handbook_rag/
@@ -213,11 +229,11 @@ student_handbook_rag/
 `-- tests/                    # Unit and integration tests
 ```
 
-## 📊 Evaluation
+## Evaluation
 
 The evaluation design separates deterministic behavior from generated RAG behavior.
 
-### 1️⃣ Structured / Tool Evaluation
+### 1. Structured / Tool Evaluation
 
 Structured questions are checked with exactness, item count, cohort correctness, and citation metadata. This avoids incorrectly using LLM-as-a-Judge for answers that should be deterministic.
 
@@ -231,7 +247,7 @@ Structured questions are checked with exactness, item count, cohort correctness,
 | Strategy accuracy | 100.00% |
 | Structured item count accuracy | 100.00% |
 
-### 2️⃣ True-RAG Retrieval Evaluation
+### 2. True-RAG Retrieval Evaluation
 
 Retrieval is evaluated only on generated true-RAG regulation cases. Structured lookups such as programs, scoring, forms, and office contacts are excluded from this headline retrieval metric.
 
@@ -261,7 +277,7 @@ Important tag-level checks:
 | Table-heavy | 12 | 91.67% | 88.19% | 91.09% |
 | Cohort-sensitive | 6 | 100.00% | 88.89% | 91.38% |
 
-### 3️⃣ Evidence Selection Regression
+### 3. Evidence Selection Regression
 
 The evidence layer is evaluated separately from retrieval to verify that important facts are surfaced to the LLM without taking over citation binding.
 
@@ -277,7 +293,7 @@ The evidence layer is evaluated separately from retrieval to verify that importa
 | Citation binding correctness | 96.67% |
 | No marker leakage | 100.00% |
 
-### 4️⃣ RAGAS-Style Gemini Judge
+### 4. RAGAS-Style Gemini Judge
 
 Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 3.1 Flash Lite as Judge. Deterministic lookup cases are excluded from the headline RAGAS metrics. The latest judge run uses 29 generated answers because one extra answer-generation case was skipped after Groq rate limits; it is not used in the headline metric.
 
@@ -291,7 +307,7 @@ Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 
 | Answer correctness | 85.69% |
 | Citation correctness | 88.97% |
 
-### 📖 How to read these numbers
+### How to read these numbers
 
 
 - **Cohort Segregation (K50 vs K51):** The system enforces strict isolation between K50 and K51 regulations. In the production UI, students select a cohort before asking, so cohort-specific retrieval and citation are more representative than no-cohort general stress tests.
@@ -300,7 +316,7 @@ Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 
 - **Evidence Layer:** Evidence selection improves source readability and focuses the LLM on key facts, but citation binding remains attached to the retrieved parent section to avoid evidence-level citation drift.
 - Metrics are reported as layered quality gates instead of one blended score.
 
-## 🚀 CI/CD and Quality Gates
+## CI/CD and Quality Gates
 
 GitHub Actions runs offline checks on every push and pull request:
 
@@ -317,7 +333,7 @@ The deployment flow keeps GitHub source code and Hugging Face Space deployment s
 - Hugging Face Space receives a clean backend-only deployment bundle.
 - Qdrant vectors and MongoDB parent docs are managed as external data services.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Tools |
 |---|---|
@@ -333,9 +349,9 @@ The deployment flow keeps GitHub source code and Hugging Face Space deployment s
 | Evaluation | deterministic eval, retrieval eval, RAGAS-style Gemini Judge |
 | Deployment | Vercel (Frontend), Hugging Face Spaces (Backend) |
 
-## 💻 Setup
+## Setup
 
-### 🔙 Backend
+### Backend
 
 ```bash
 # 1. Create virtual environment
@@ -350,7 +366,7 @@ pip install -r requirements.txt
 uvicorn src.api.main:app --host 0.0.0.0 --port 7860
 ```
 
-### 🎨 Frontend
+### Frontend
 
 ```bash
 cd frontend
@@ -358,7 +374,7 @@ npm install
 npm run dev
 ```
 
-## 🔑 Environment Variables
+## Environment Variables
 
 Create a `.env` file in the repository root. Do not commit real secrets.
 
@@ -372,10 +388,14 @@ VECTORDB_PROVIDER=qdrant_cloud
 QDRANT_URL=https://your-qdrant-cluster-url
 QDRANT_API_KEY=your_qdrant_key
 
-# Optional tracing
-LANGCHAIN_TRACING_V2=true
-LANGCHAIN_API_KEY=your_langsmith_key
-LANGCHAIN_PROJECT=your_project_name
+# Optional tracing / observability
+LANGFUSE_SECRET_KEY=sk-lf-your-secret-key
+LANGFUSE_PUBLIC_KEY=pk-lf-your-public-key
+LANGFUSE_HOST=https://cloud.langfuse.com
+
+# Parent document store
+MONGODB_URL=mongodb+srv://...
+MONGODB_PARENT_COLLECTION=parent_docs
 
 # For all other configurations (Redis, MongoDB, CORS, etc.), see `.env.example`.
 ```
@@ -387,7 +407,7 @@ LANGCHAIN_PROJECT=your_project_name
 ```bash
 python scripts/evaluate_router_behavior.py --cases data/eval/final_router_holdout_v7.json
 python scripts/evaluate_answers.py --cases data/eval/final_structured_tool_holdout_v7.json
-python scripts/evaluate_retrieval.py --golden data/eval/final_true_rag_holdout_v7.json --scope v6-regulation
+python scripts/evaluate_retrieval.py --golden data/eval/final_true_rag_holdout_v7.json --scope regulation-v7
 ```
 
 ### Build V7 retrieval artifacts
@@ -417,22 +437,22 @@ npm run lint
 npm run build
 ```
 
-## 🧪 Testing
+## Testing
 
 *(See `docs/TESTING.md` for the Smoke Test Checklist and Evaluation instructions)*
 
-## 🚧 Known Limitations & Roadmap
+## Known Limitations & Roadmap
 
 - **Limitation:** Procedure/form workflows are not yet fully OCR/crawled when source pages rely on images, QR codes, or external forms.
   **Roadmap:** Build a clean procedure directory from OCR and official linked sources.
-- **Limitation:** K50 retrieval is harder than other cohorts because similar regulations can mention cao đẳng/GDMN and undergraduate rules in nearby sections.
+- **Limitation:** K50 retrieval is harder than other cohorts because similar regulations can mention cao dang/GDMN and undergraduate rules in nearby sections.
   **Roadmap:** Continue improving scope-aware reranking without adding brittle question-specific heuristics.
 - **Limitation:** Production scaling is bounded by the free/low-cost hosting tier and external LLM rate limits.
   **Roadmap:** Add queue/backpressure defaults and upgrade hosting only when real traffic requires it.
 - **Limitation:** No internal quality dashboard.
   **Roadmap:** Build an admin dashboard with authentication and feedback clustering.
 
-## 📝 License and Attribution
+## License and Attribution
 
 This project is licensed under the **MIT License**.
 

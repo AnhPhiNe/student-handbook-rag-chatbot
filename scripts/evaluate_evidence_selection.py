@@ -394,7 +394,7 @@ def run_eval(cases_path: Path, config_path: Path, output_path: Path, limit: int 
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Evaluate evidence selection A/B after V6 retrieval.")
+    parser = argparse.ArgumentParser(description="Evaluate evidence selection A/B after regulation retrieval.")
     parser.add_argument("--cases", default=str(DEFAULT_CASES_PATH))
     parser.add_argument("--config", default=str(DEFAULT_CONFIG_PATH))
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT_PATH))

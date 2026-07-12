@@ -25,6 +25,7 @@ htmlcov/
 .cache/
 .streamlit-run/
 data/cache/
+data/eval/reports/*.json
 *.log
 hf_check/
 

@@ -56,28 +56,12 @@ def build_context_for_prompt(
     max_context_chars: int,
     allocation_config: ContextAllocationConfig | dict[str, Any] | None = None,
 ) -> str:
-    """Thuật toán đóng gói và cắt gọt tài liệu (Context Allocation) trước khi đưa cho LLM.
-    
-    Vấn đề:
-    LLM (như Gemini/Llama) có giới hạn về số lượng token (Max Token) có thể đọc trong một lần.
-    Nếu Retrieval kéo lên 10 tài liệu quá dài, LLM sẽ bị "tràn bộ nhớ" (Context Window Overflow).
-    
-    Cách giải quyết (Thuật toán):
-    1. Nhận danh sách các tài liệu (retrieval_result) và số ký tự tối đa cho phép (max_context_chars).
-    2. Trừ đi phần dung lượng (budget) dành cho các tiêu đề (Headers - Tên tài liệu, trang số mấy).
-    3. Phân bổ phần dung lượng còn lại cho các tài liệu theo chiến lược (strategy) đã cấu hình:
-       - equal_split: Chia đều số ký tự cho tất cả tài liệu.
-       - score_weighted: Chia nhiều số ký tự hơn cho tài liệu nào có điểm số Retrieval cao hơn.
-    4. Cắt (truncate) các tài liệu sao cho không làm vỡ câu (giữ nguyên dấu chấm câu - sentence_boundary).
-    5. Nối chúng lại với nhau kèm đường dẫn nguồn để đưa vào Prompt.
-    
-    Args:
-        retrieval_result: Kết quả trả về từ luồng tìm kiếm.
-        query: Câu hỏi của người dùng để ưu tiên cắt đúng đoạn chứa từ khóa.
-        max_context_chars: Giới hạn ký tự tối đa LLM có thể đọc.
-        
-    Returns:
-        str: Một khối văn bản (Context) đã được dồn nén tối ưu nhất để nhét vào Prompt.
+    """Build the bounded source context sent to the answer LLM.
+
+    Retrieval can return several long parent sections. This function allocates
+    a character budget per source, formats source headers, optionally prepends
+    selected evidence blocks, and truncates on readable boundaries so the prompt
+    stays within ``max_context_chars`` without losing citation metadata.
     """
     config = (
         allocation_config
@@ -146,7 +130,12 @@ def prepare_content_for_prompt(
     sentence_boundary: bool = True,
     evidence_config: dict[str, Any] | None = None,
 ) -> str:
-    """Chuẩn hóa phần nguồn trước khi cắt để LLM đọc đúng đoạn liên quan hơn."""
+    """Prepare one retrieved source before prompt-level truncation.
+
+    Evidence selection may highlight text inside the retrieved parent source,
+    but it never decides citations. Citation binding stays with the retrieved
+    item metadata from the retrieval layer.
+    """
 
     content = _strip_generated_focus_sections((content or "").strip())
     if not content:
@@ -175,13 +164,13 @@ def prepare_content_for_prompt(
     blocks: list[str] = []
     focused_evidence_mode = bool(evidence_context) and _is_focused_evidence_question(query or "")
     if table_context:
-        blocks.append("BẢNG/DANH SÁCH ĐÃ CHUẨN HÓA:\n" + table_context)
+        blocks.append("NORMALIZED TABLE/LIST:\n" + table_context)
     if evidence_context:
         blocks.append(evidence_context)
     if section_context and not focused_evidence_mode and section_context not in table_context:
-        blocks.append("ĐIỀU/MỤC LIÊN QUAN:\n" + section_context)
+        blocks.append("RELATED SECTION:\n" + section_context)
     if snippet_context and snippet_context not in table_context + section_context:
-        blocks.append("ĐOẠN LIÊN QUAN:\n" + snippet_context)
+        blocks.append("RELATED SNIPPET:\n" + snippet_context)
 
     if blocks:
         raw_context = truncate_text(
@@ -190,7 +179,7 @@ def prepare_content_for_prompt(
             sentence_boundary=sentence_boundary,
         )
         if raw_context:
-            blocks.append("VĂN BẢN GỐC LIÊN QUAN:\n" + raw_context)
+            blocks.append("SOURCE TEXT:\n" + raw_context)
         return "\n\n".join(blocks)
 
     return content
@@ -372,7 +361,7 @@ def _snippet_aware_context(
 
 def _find_sentence_with_terms(content: str, terms: list[str]) -> str:
     normalized_terms = [_normalize_text(term) for term in terms]
-    candidates = re.split(r"(?<=[.!?。])\s+|\n+", content)
+    candidates = re.split(r"(?<=[.!?])\s+|\n+", content)
     best = ""
     best_score = 0
     for candidate in candidates:
@@ -397,7 +386,7 @@ def _compact_structured_lines(content: str) -> list[str]:
         for line in lines
         if line
         and (
-            re.match(r"^(\d+\.|[a-z]\)|[-–•])\s+", line, flags=re.IGNORECASE)
+            re.match(r"^(\d+\.|[a-z]\)|[-])\s+", line, flags=re.IGNORECASE)
             or len(re.findall(r"\b\d+(?:[,.]\d+)?\b", line)) >= 2
         )
     ]
@@ -562,11 +551,11 @@ def _source_header(index: int, item: dict[str, Any]) -> str:
     title = _item_title(item, metadata)
     return "\n".join(
         [
-            f"[Nguồn {index}]",
-            f"Tiêu đề: {title}",
-            f"Loại: {metadata.get('chunk_type')}",
-            f"Trang: {metadata.get('source_pages')}",
-            "Nội dung:",
+            f"[Source {index}]",
+            f"Title: {title}",
+            f"Type: {metadata.get('chunk_type')}",
+            f"Pages: {metadata.get('source_pages')}",
+            "Content:",
             "",
         ]
     )
@@ -583,7 +572,7 @@ def _item_title(item: dict[str, Any], metadata: dict[str, Any]) -> str:
         or metadata.get("procedure_name")
         or metadata.get("rule_name")
         or item.get("chunk_id")
-        or "Nguồn"
+        or "Source"
     ).strip()
 
 
@@ -680,7 +669,7 @@ def _distribute_remaining(
 
 
 def _last_sentence_boundary(text: str) -> int:
-    matches = list(re.finditer(r"(?<=[\.\?!;:。！？])\s+|\n{1,}", text))
+    matches = list(re.finditer(r"(?<=[\.\?!;:])\s+|\n{1,}", text))
     if not matches:
         return -1
     return matches[-1].end()

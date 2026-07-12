@@ -74,7 +74,7 @@ class AnswerPipeline:
             )
         except Exception as exc:
             import logging
-            logging.getLogger(__name__).warning(f"Bỏ qua khởi tạo ChromaDB (đang dùng V6 Qdrant): {exc}")
+            logging.getLogger(__name__).warning(f"Skip Chroma initialization because Qdrant hybrid retrieval is configured: {exc}")
             self.collection = None
 
         llm_config = self.config["llm"]
@@ -118,20 +118,12 @@ class AnswerPipeline:
         cohort: str | None = None,
         **kwargs,
     ) -> dict[str, Any]:
-        """Bộ Não Sinh Ngôn Ngữ: Lấy dữ liệu từ Retrieval và biến thành câu trả lời (Sync Mode).
+        """Return a complete answer for one user query.
 
-        Quy trình hoạt động:
-        1. Gọi Query Rewriter để sửa lỗi chính tả/ngữ pháp của người dùng.
-        2. Chạy Retrieval Pipeline để tìm kiếm thông tin.
-        3. Guardrails (Bảo vệ):
-           - Chặn câu hỏi Out-of-Domain.
-           - Trả lời nhanh Deterministic nếu tính bằng công thức toán học.
-           - Báo lỗi Low Confidence nếu không tìm thấy tài liệu.
-        4. Caching:
-           - Đọc từ answer_response_cache.json xem đã từng trả lời chưa.
-           - Nếu có -> Lấy ra dùng ngay (Tiết kiệm chi phí API).
-        5. Gọi LLM:
-           - Chèn thông tin vào prompt và gọi Gemini để sinh câu trả lời.
+        The sync path rewrites the query when needed, runs router + retrieval,
+        applies deterministic guardrails for structured/tool answers, builds a
+        bounded context for true-RAG questions, then calls the configured LLM
+        only when generation is actually required.
         """
         rewrite_result = self.query_rewriter.rewrite(query, chat_history=chat_history)
         effective_query = rewrite_result.effective_query
@@ -513,25 +505,11 @@ class AnswerPipeline:
         cohort: str | None = None,
         **kwargs,
     ) -> Iterator[dict[str, Any]]:
-        """Hàm trái tim (Core Function) điều phối luồng Sinh câu trả lời dạng Streaming.
+        """Stream progress events and answer tokens for one user query.
 
-        Cách hàm này hoạt động:
-        1. Nhận câu hỏi mới (query) và lịch sử chat (chat_history).
-        2. Dùng Query Rewriter (Bộ nhớ hội thoại) để viết lại câu hỏi sao cho rõ nghĩa nhất.
-        3. Dùng Retrieval Pipeline để bốc tài liệu đúng (Context) từ Database.
-        4. Kiểm tra các rào cản an toàn (Guardrails):
-           - Có phải là câu hỏi ngoài lề (Out-of-domain) không? -> Báo từ chối.
-           - Có cần tính toán công thức cứng (GPA, Học phí) không? -> Trả về đáp án cứng (Deterministic).
-        5. Cắt gọt tài liệu (Context Allocation) để nhét vừa vào LLM Prompt.
-        6. Gọi API LLM (Groq/Gemini) và liên tục yield (nhả) từng token ra ngoài (Streaming) để Frontend hiển thị chữ chạy ngay lập tức.
-        
-        Args:
-            query: Câu hỏi gốc của người dùng.
-            chat_history: Lịch sử tin nhắn để giữ ngữ cảnh trò chuyện.
-            cohort: Phân loại nhóm người dùng (ví dụ: K50, K51) để áp dụng luật riêng.
-            
-        Yields:
-            Các chunks dữ liệu (metadata, token, progress) để Frontend vẽ UI thời gian thực.
+        This mirrors ``answer`` but yields progress, metadata, token, and done
+        events so the frontend can show retrieval progress and stream LLM output
+        without changing the underlying routing, guardrail, or citation logic.
         """
         run_id = None
         
@@ -857,6 +835,7 @@ class AnswerPipeline:
         yield {"type": "done", "tracker": tracker}
 
     def _run_retrieval(self, query: str, cohort: str | None = None) -> dict[str, Any]:
+        """Run the backend retrieval/router stack with the active cohort context."""
         result = run_retrieval_pipeline(
             query=query,
             model=self.model,
@@ -888,6 +867,7 @@ class AnswerPipeline:
         rewrite_result: QueryRewriteResult,
         cohort: str | None = None,
     ) -> tuple[dict[str, Any], QueryRewriteResult]:
+        """Compare rewritten and original retrieval when history rewriting is risky."""
         effective_query = rewrite_result.effective_query
         rewritten_result = self._run_retrieval(effective_query, cohort=cohort)
 
@@ -946,6 +926,7 @@ class AnswerPipeline:
         original_result: dict[str, Any],
         rewritten_result: dict[str, Any],
     ) -> str:
+        """Choose the safer retrieval result after query rewriting verification."""
         original_answerable = _retrieval_is_answerable(original_result)
         rewritten_answerable = _retrieval_is_answerable(rewritten_result)
         original_quality = _retrieval_quality(original_result)
@@ -970,6 +951,7 @@ class AnswerPipeline:
         return "rewritten_query"
 
     def _get_llm_client(self) -> Any:
+        """Lazily create the configured LLM client for generated true-RAG answers."""
         if self._llm_client is None:
             llm_config = self.config["llm"]
             provider = llm_config.get("provider", "gemini")
@@ -1010,6 +992,7 @@ class AnswerPipeline:
         return self._llm_client
 
     def _throttle_llm_call(self) -> None:
+        """Respect configured spacing between outbound LLM calls."""
         if self.request_sleep_seconds <= 0 or self._last_llm_call_at <= 0:
             return
 
@@ -1022,6 +1005,7 @@ class AnswerPipeline:
         self,
         rewrite_result: QueryRewriteResult,
     ) -> bool:
+        """Return True when the rewriter used conversation history."""
         context_resolution = rewrite_result.context_resolution or {}
         return bool(rewrite_result.changed and context_resolution.get("history_used"))
 
@@ -1029,9 +1013,10 @@ class AnswerPipeline:
         self,
         rewrite_result: QueryRewriteResult,
     ) -> bool:
+        """Decide whether history-based ambiguity should ask for clarification."""
         context_resolution = rewrite_result.context_resolution or {}
-        # Context ambiguity là rủi ro nhiễm history, nên hỏi lại trước khi retrieval.
-        # Standalone ambiguity thông thường vẫn để Retrieval/Guardrail đánh giá bằng nguồn thật.
+        # History ambiguity can contaminate retrieval, so ask before searching.
+        # Standalone ambiguity can still be handled by retrieval and guardrails.
         return bool(
             context_resolution.get("history_used")
             or (

@@ -7,7 +7,7 @@ import logging
 import time
 import unicodedata
 from collections import defaultdict
-from typing import List, Dict, Any
+from typing import Any
 from sentence_transformers import CrossEncoder
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from qdrant_client import QdrantClient
@@ -121,6 +121,7 @@ def _scope_text_for_chunk(chunk: dict[str, Any]) -> str:
 
 
 def _scope_preference_adjustment(query: str, chunk: dict[str, Any]) -> float:
+    """Apply a small cohort-scope preference without overriding semantic ranking."""
     query_scope = _normalize_scope_text(query)
     chunk_scope = _scope_text_for_chunk(chunk)
 
@@ -134,106 +135,6 @@ def _scope_preference_adjustment(query: str, chunk: dict[str, Any]) -> float:
     if _contains_any_term(chunk_scope, UNDERGRAD_SCOPE_TERMS):
         adjustment += UNDERGRAD_SCOPE_BOOST
     return adjustment
-
-
-class HybridRetrieverV6:
-    def __init__(self, qdrant_url: str, qdrant_key: str, collection_name: str = "student_handbook_semantic_v6"):
-        # 1. Khởi tạo Qdrant Client (Vector Search)
-        self.qdrant_client = QdrantClient(url=qdrant_url, api_key=qdrant_key, timeout=60.0)
-        self.collection_name = collection_name
-        
-        # Lấy mô hình Embedding (để mã hóa câu hỏi thành Vector)
-        from sentence_transformers import SentenceTransformer
-        self.embed_model = SentenceTransformer("BAAI/bge-m3")
-        
-        # 2. Khởi tạo Graph Traverser (NetworkX)
-        self.graph = NetworkXGraphTraverser()
-        
-        # 3. Khởi tạo Reranker (PhoRanker - Offline)
-        logger.info("Đang nạp mô hình PhoRanker (Offline)...")
-        self.reranker = CrossEncoder("itdainb/PhoRanker", max_length=256)
-        
-        # Load Content Memory (Để bốc nội dung nhanh mà không cần chọc Mongo nhiều lần)
-        with open("data/processed/chunks/all_docstore_items.json", "r", encoding="utf-8") as f:
-            chunks = json.load(f)
-            self.content_store = {c["_id"]: c for c in chunks}
-
-    def retrieve(
-        self,
-        query: str,
-        top_k_vector: int = 5,
-        top_k_final: int = 5,
-        graph_depth: int = 3,
-        cohort: str | None = None,
-    ) -> List[Dict[str, Any]]:
-        logger.info(f"==> Câu hỏi: {query}")
-        
-        # BƯỚC 1: VECTOR SEARCH (Tìm Top K ban đầu)
-        query_vector = self.embed_model.encode(query).tolist()
-        search_limit = top_k_vector * 4 if cohort else top_k_vector
-        search_results = _query_points_with_retry(
-            self.qdrant_client,
-            collection_name=self.collection_name,
-            query=query_vector,
-            limit=search_limit,
-        )
-        
-        seed_ids = [hit.payload["chunk_id"] for hit in search_results if hit.payload]
-        logger.info(f"[*] Vector Search nhặt được {len(seed_ids)} khối Vàng (Seed Nodes).")
-
-        # BƯỚC 2: GRAPH EXPANSION (Đào bới Đồ thị)
-        expanded_nodes = self.graph.expand_context(seed_ids, max_depth=graph_depth)
-        expanded_ids = [n["id"] for n in expanded_nodes]
-        
-        # Gộp và loại bỏ trùng lặp
-        candidate_ids = list(set(seed_ids + expanded_ids))
-        logger.info(f"[*] Graph Traversal mở rộng ra thêm {len(expanded_ids)} khối láng giềng. Tổng Candidates: {len(candidate_ids)}.")
-
-        if not candidate_ids:
-            return []
-
-        # BƯỚC 3: CHUẨN BỊ NỘI DUNG (Content Retrieval)
-        candidate_contents = []
-        candidate_docs = []
-        for cid in candidate_ids:
-            if cid in self.content_store:
-                doc = dict(self.content_store[cid])
-                metadata = dict(doc.get("metadata") or {})
-                doc["metadata"] = metadata
-                doc_cohort = doc.get("cohort") or metadata.get("cohort")
-                if cohort and doc_cohort != cohort:
-                    continue
-                # PhoRanker yêu cầu cặp (Query, Document)
-                candidate_contents.append(doc["content"])
-                candidate_docs.append(doc)
-
-        if not candidate_docs:
-            return []
-
-        # BƯỚC 4: RERANKING VỚI PHORANKER
-        logger.info(f"[*] Chấm điểm lại (Reranking) {len(candidate_docs)} khối bằng PhoRanker...")
-        # Tạo mảng các cặp [ [query, doc1], [query, doc2], ... ]
-        cross_inp = [[query, content] for content in candidate_contents]
-        scores = self.reranker.predict(cross_inp)
-        
-        # Ghép điểm số vào docs và sắp xếp giảm dần
-        for i, doc in enumerate(candidate_docs):
-            doc["rerank_score"] = float(scores[i])
-            
-        candidate_docs.sort(key=lambda x: x["rerank_score"], reverse=True)
-        
-        # BƯỚC 5: LỌC KẾT QUẢ CUỐI CÙNG (Áp dụng Tối đa K và Ngưỡng Điểm)
-        final_results = []
-        for doc in candidate_docs:
-            # PhoRanker xuất ra dạng Logit (Score > 0.0 là ranh giới phân biệt Rác và Thật)
-            if doc["rerank_score"] > 0.0:
-                final_results.append(doc)
-            if len(final_results) == top_k_final:
-                break
-                
-        logger.info(f"[*] Hoàn tất lọc Top {len(final_results)} kết quả xuất sắc nhất (Ngưỡng Logit > 0.0).")
-        
-        return final_results
 
 
 class HybridRetrieverV7:
@@ -293,6 +194,13 @@ class HybridRetrieverV7:
         graph_depth: int = 2,
         cohort: str | None = None,
     ) -> list[dict[str, Any]]:
+        """Retrieve parent-bound regulation sources using V7 child/table chunks.
+
+        Vector search starts from small Qdrant chunks, graph expansion adds
+        related parent sections, the cross-encoder reranks all child/table
+        candidates, and the final result is grouped back to Mongo parent
+        sections for stable citations.
+        """
         logger.info("==> V7 query: %s", query)
         query_vector = self.embed_model.encode(query).tolist()
         query_filter = _v7_query_filter(cohort)
@@ -356,6 +264,7 @@ class HybridRetrieverV7:
         parent_ids: list[str],
         cohort: str | None,
     ) -> list[dict[str, Any]]:
+        """Collect child/table candidates from seed chunks and expanded parents."""
         by_id: dict[str, dict[str, Any]] = {}
         for chunk in seed_chunks:
             chunk_id = str(chunk.get("_id") or chunk.get("chunk_id") or "")
@@ -381,6 +290,7 @@ class HybridRetrieverV7:
         query: str,
         chunks: list[dict[str, Any]],
     ) -> list[tuple[float, dict[str, Any]]]:
+        """Score V7 child/table chunks with the cross-encoder and light scope boosts."""
         pairs = [[query, str(chunk.get("content") or "")] for chunk in chunks]
         scores = self.reranker.predict(pairs)
         scored: list[tuple[float, dict[str, Any]]] = []
@@ -409,6 +319,7 @@ class HybridRetrieverV7:
         scored_chunks: list[tuple[float, dict[str, Any]]],
         top_k_final: int,
     ) -> list[dict[str, Any]]:
+        """Group top child/table matches back into parent-section result objects."""
         parent_groups: dict[str, list[tuple[float, dict[str, Any]]]] = defaultdict(list)
         parent_best_score: dict[str, float] = {}
         for score, chunk in scored_chunks:
@@ -466,6 +377,7 @@ class HybridRetrieverV7:
         parent_id: str,
         scored_group: list[tuple[float, dict[str, Any]]],
     ) -> list[tuple[float, dict[str, Any]]]:
+        """Choose the child/table snippets that should be shown before the parent text."""
         selected = sorted(scored_group, key=lambda pair: pair[0], reverse=True)[:4]
         if any(
             (chunk.get("metadata") or {}).get("chunk_granularity") in {"child", "table_like"}
@@ -497,10 +409,10 @@ def _format_v7_focused_context(
     parent_metadata: dict[str, Any],
     focused_chunks: list[tuple[float, dict[str, Any]]],
 ) -> str:
-    title = parent_metadata.get("title") or parent_metadata.get("article") or "Nguồn quy định"
+    title = parent_metadata.get("title") or parent_metadata.get("article") or "Regulation source"
     lines = [
-        "THÔNG TIN TRỌNG TÂM TỪ NGUỒN:",
-        f"Nguồn gốc: {title}",
+        "FOCUSED EVIDENCE FROM SOURCE:",
+        f"Parent source: {title}",
     ]
     seen: set[str] = set()
     for score, chunk in focused_chunks:
@@ -528,11 +440,12 @@ def run_hybrid_retrieval_pipeline(
     query: str,
     top_k: int = 5,
     **kwargs
-) -> dict[str, Any]:
-    """
-    Adapter tương thích ngược: Bọc HybridRetrieverV6 để trả về cấu trúc output giống 
-    hệt như run_retrieval_pipeline cũ, giúp Chatbot UI không bị gãy.
-    Đã được tối ưu hóa Singleton Caching: Khởi tạo mô hình AI 1 lần duy nhất để giải phóng RAM.
+    ) -> dict[str, Any]:
+    """Run the configured hybrid regulation retriever and return pipeline-shaped output.
+
+    Runtime uses the V7 child-parent retriever. The adapter keeps the same
+    output contract as the broader retrieval pipeline so the answer layer and
+    UI do not need separate code paths.
     """
     global _GLOBAL_RETRIEVER
     
@@ -543,30 +456,17 @@ def run_hybrid_retrieval_pipeline(
         
         qdrant_url = os.getenv("QDRANT_URL")
         qdrant_key = os.getenv("QDRANT_API_KEY")
-        
-        # Khởi tạo cỗ máy V6 (Chỉ chạy 1 lần)
-        logger.info("[*] Đang khởi tạo Cỗ Máy Tìm Kiếm V6 vào Bộ Nhớ Đệm Toàn Cục...")
-        hybrid_version = os.getenv("STUDENT_RAG_HYBRID_VERSION", "v7").strip().lower()
         collection_name = os.getenv(
             "STUDENT_RAG_HYBRID_COLLECTION",
-            "student_handbook_semantic_v7"
-            if hybrid_version == "v7"
-            else "student_handbook_semantic_v6",
+            "student_handbook_semantic_v7",
         )
-        if hybrid_version == "v6":
-            _GLOBAL_RETRIEVER = HybridRetrieverV6(
-                qdrant_url,
-                qdrant_key,
-                collection_name=collection_name,
-            )
-        else:
-            _GLOBAL_RETRIEVER = HybridRetrieverV7(
-                qdrant_url,
-                qdrant_key,
-                collection_name=collection_name,
-            )
+        logger.info("Initializing hybrid regulation retriever V7...")
+        _GLOBAL_RETRIEVER = HybridRetrieverV7(
+            qdrant_url,
+            qdrant_key,
+            collection_name=collection_name,
+        )
     
-    # Gọi hàm truy xuất Top K
     cohort = kwargs.get("cohort")
     retrieval_query = kwargs.get("retrieval_query") or query
     detected_entities = kwargs.get("detected_entities") or []
@@ -580,7 +480,6 @@ def run_hybrid_retrieval_pipeline(
         cohort=cohort,
     )
     
-    # Format lại Citations cho UI (Lấy nguyên khối metadata)
     formatted_results = []
     for doc in docs:
         metadata = doc.get("metadata", {})
@@ -594,7 +493,6 @@ def run_hybrid_retrieval_pipeline(
 
     citations = build_citations_from_vector_results(formatted_results)
             
-    # Bọc lại thành Hộp Quà (Dictionary) y như hệ thống cũ yêu cầu
     return {
         "query": query,
         "retrieval_query": retrieval_query,
@@ -618,7 +516,7 @@ if __name__ == "__main__":
     qdrant_url = os.getenv("QDRANT_URL")
     qdrant_key = os.getenv("QDRANT_API_KEY")
     
-    retriever = HybridRetrieverV6(qdrant_url, qdrant_key)
-    res = retriever.retrieve("Điều kiện xét học bổng là gì?")
+    retriever = HybridRetrieverV7(qdrant_url, qdrant_key)
+    res = retriever.retrieve("Dieu kien xet hoc bong la gi?")
     for r in res:
         print(f"[{r['rerank_score']:.4f}] {r['metadata']['title']}")

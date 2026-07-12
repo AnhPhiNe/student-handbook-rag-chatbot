@@ -43,7 +43,7 @@ class MongoDocStore:
         self,
         uri: str,
         db_name: str = "chatbotHCMUE",
-        collection_name: str = "parent_docs_v6",
+        collection_name: str = "parent_docs",
         timeout_ms: int = 3000,
         failure_backoff_seconds: int = 300,
     ):
@@ -91,7 +91,7 @@ class MongoDocStore:
             return None
 
     def drop_collection(self) -> None:
-        """Xóa toàn bộ collection. Cần dùng thận trọng."""
+        """Drop the configured parent-doc collection."""
         self.collection.drop()
         logger.info(f"Dropped collection {self.collection.name}.")
 
@@ -111,8 +111,10 @@ def get_mongo_store() -> MongoDocStore | DisabledMongoDocStore:
 
     timeout_ms = _env_int("MONGODB_TIMEOUT_MS", 3000)
     failure_backoff_seconds = _env_int("MONGODB_FAILURE_BACKOFF_SECONDS", 300)
+    collection_name = os.environ.get("MONGODB_PARENT_COLLECTION", "parent_docs")
     return MongoDocStore(
         uri=uri,
+        collection_name=collection_name,
         timeout_ms=timeout_ms,
         failure_backoff_seconds=failure_backoff_seconds,
     )

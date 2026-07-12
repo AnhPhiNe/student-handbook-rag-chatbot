@@ -50,10 +50,10 @@ from src.common.console import configure_utf8_stdio
 
 
 DEFAULT_CONFIG_PATH = Path("configs/retrieval.yaml")
-DEFAULT_GOLDEN_PATH = Path("data/eval/true_rag_eval_cases_v6.json")
+DEFAULT_GOLDEN_PATH = Path("data/eval/final_true_rag_holdout_v7.json")
 DEFAULT_OUTPUT_PATH = Path("data/processed/metadata/true_rag_retrieval_eval_report.json")
-V6_REGULATION_SCOPE_TYPES = {"regulation", "regulation_sections", "regulation_text"}
-V6_COMPATIBLE_LEGACY_STRATEGIES = {
+REGULATION_SCOPE_TYPES = {"regulation", "regulation_sections", "regulation_text"}
+REGULATION_COMPATIBLE_STRATEGIES = {
     "semantic",
     "semantic_filtered",
     "semantic_filtered_rerank",
@@ -190,7 +190,7 @@ def has_retrieval_expectation(case: dict[str, Any]) -> bool:
 def case_matches_scope(case: dict[str, Any], scope: str) -> bool:
     if scope == "all":
         return True
-    if scope != "v6-regulation":
+    if scope != "regulation-v7":
         raise ValueError(f"Unsupported evaluation scope: {scope}")
 
     content_types = set()
@@ -204,7 +204,7 @@ def case_matches_scope(case: dict[str, Any], scope: str) -> bool:
         normalize_chunk_type(value)
         for value in expected_list(case, "expected_content_types")
     )
-    return bool(content_types & V6_REGULATION_SCOPE_TYPES)
+    return bool(content_types & REGULATION_SCOPE_TYPES)
 
 
 def cohort_arg(value: Any) -> str | None:
@@ -626,9 +626,9 @@ def main() -> None:
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT_PATH))
     parser.add_argument(
         "--scope",
-        choices=["all", "v6-regulation"],
+        choices=["all", "regulation-v7"],
         default="all",
-        help="Use v6-regulation to keep only regulation_text/regulation_sections cases in the headline retrieval report.",
+        help="Use regulation-v7 to keep only regulation_text/regulation_sections cases in the headline retrieval report.",
     )
     parser.add_argument("--fail-under-hit3", type=float, default=None)
     args = parser.parse_args()
@@ -673,11 +673,11 @@ def strategy_matches(case: dict[str, Any], result: dict[str, Any]) -> bool:
         normalize_chunk_type(value)
         for value in expected_list(case, "expected_content_types")
     )
-    is_v6_regulation_case = bool(content_types & V6_REGULATION_SCOPE_TYPES)
+    is_regulation_case = bool(content_types & REGULATION_SCOPE_TYPES)
     return (
-        is_v6_regulation_case
+        is_regulation_case
         and actual == "hybrid_graph_retrieval"
-        and str(expected or "") in V6_COMPATIBLE_LEGACY_STRATEGIES
+        and str(expected or "") in REGULATION_COMPATIBLE_STRATEGIES
     )
 
 

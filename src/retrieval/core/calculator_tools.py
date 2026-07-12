@@ -34,7 +34,7 @@ def extract_numbers(query: str) -> list[float]:
 
 def normalize_text(text: Any) -> str:
     value = str(text or "").lower()
-    value = value.replace("đ", "d").replace("Ä‘", "d").replace("Ä", "d")
+    value = value.replace("đ", "d").replace("Đ", "d")
     value = unicodedata.normalize("NFD", value)
     value = "".join(char for char in value if unicodedata.category(char) != "Mn")
     value = re.sub(r"[^a-z0-9]+", " ", value)
@@ -61,7 +61,7 @@ def try_calculation(query: str) -> Optional[dict[str, Any]]:
                 "conduct_score_100": conduct_score,
             },
             "result": result,
-            "note": "Công thức: (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100",
+            "note": "Cong thuc: (Diem hoc tap x 80 + Diem ren luyen / 25 x 20) / 100",
         }
 
     return None

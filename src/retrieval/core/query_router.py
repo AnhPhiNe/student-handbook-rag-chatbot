@@ -457,8 +457,8 @@ def route_query(query: str) -> dict[str, Any]:
     has_office_signal = has_contact_question or has_explicit_office_entity
     has_pass_score_signal = contains_any(
         q,
-        ["may diem", "máº¥y Ä‘iá»ƒm", "bao nhieu diem", "bao nhiÃªu Ä‘iá»ƒm", "d+", "diem d", "Ä‘iá»ƒm d"],
-    ) and contains_any(q, ["qua mon", "qua mÃ´n", "dat", "Ä‘áº¡t"])
+        ["may diem", "mấy điểm", "bao nhieu diem", "bao nhiêu điểm", "d+", "diem d", "điểm d"],
+    ) and contains_any(q, ["qua mon", "qua môn", "dat", "đạt"])
     has_pass_score_signal = has_pass_score_signal or bool(
         re.search(
             r"\b(khoa\s*)?(48|49|50|51)\b.*\b(may|bao).*\bdiem\b.*\b(dat|qua)\b",
@@ -487,8 +487,8 @@ def route_query(query: str) -> dict[str, Any]:
             "target_chunk_types": ["form"],
         }
 
-    if contains_any(q, ["phuc khao", "phÃºc kháº£o"]) and contains_any(
-        q, ["quy trinh", "quy trÃ¬nh", "thu tuc", "thá»§ tá»¥c"]
+    if contains_any(q, ["phuc khao", "phúc khảo"]) and contains_any(
+        q, ["quy trinh", "quy trình", "thu tuc", "thủ tục"]
     ):
         return {
             "intent": "procedure_query",
@@ -496,9 +496,8 @@ def route_query(query: str) -> dict[str, Any]:
             "target_chunk_types": ["procedure"],
         }
 
-    # --- 1. CONFLICT DETECTION LOGIC ---
-    # Nếu câu hỏi chứa từ 2 loại tín hiệu trở lên, Rule-based Router sẽ "giơ cờ trắng"
-    # và nhường quyền phân tích cho AI Router để xử lý ngữ nghĩa phức tạp (Mixed Query).
+    # If a query contains multiple strong signals, let the AI router resolve the mixed intent.
+    # Mixed queries are handled with multi-filter retrieval instead of forcing one intent too early.
     active_signals = []
     if has_form_signal:
         active_signals.append("form")
@@ -524,8 +523,8 @@ def route_query(query: str) -> dict[str, Any]:
         if has_faculty_signal:
             target_chunk_types.extend(["faculty_directory", "program_directory"])
 
-        # Conflict phổ biến là câu hỏi nhiều ý; xử lý bằng multi-filter trước.
-        # Multi-filter giu lai nhieu loai chunk de reranker tu chon nguon tot nhat.
+        # Multi-filter keeps likely chunk types so the reranker can select the best source.
+        # This is safer than dropping one side of a mixed student question.
         return {
             "intent": "mixed_query",
             "strategy": "semantic_multi_filter",
@@ -541,10 +540,10 @@ def route_query(query: str) -> dict[str, Any]:
             "target_chunk_types": ["form"],
         }
 
-    # 5. Nếu query gốc nói rõ Khoa/Ngành thì ưu tiên faculty,
-    # trừ khi query cũng nói rõ "phòng".
-    # Ví dụ: "Khoa Tiếng Anh ở đâu?" -> faculty
-    # Nhưng: "Website phòng CNTT là gì?" -> office
+    # 5. Prefer faculty/program when the query clearly asks about a khoa/nganh,
+    # unless it explicitly asks for an office/department.
+    # Example: "Khoa CNTT o dau?" should not become office just because it contains "o dau".
+    # Example: "Website phong CNTT la gi?" should still go to office lookup.
     if has_faculty_signal and not has_explicit_office_entity and not has_pass_score_signal:
         route = {
             "intent": "faculty_query",
@@ -558,8 +557,8 @@ def route_query(query: str) -> dict[str, Any]:
         return route
 
     # 6. Office/contact query
-    # Ví dụ: "Website Phòng Công nghệ Thông tin là gì?"
-    # Không đưa "ký túc xá" vào office entity ở đây.
+    # Example: "Website Phong Cong nghe Thong tin la gi?"
+    # Do not treat KTX as a generic office entity here.
     if has_explicit_office_entity or (has_contact_question and not has_faculty_signal):
         return {
             "intent": "office_query",
@@ -574,8 +573,8 @@ def route_query(query: str) -> dict[str, Any]:
             "target_chunk_types": ["form"],
         }
 
-    if contains_any(q, ["phuc khao", "phÃºc kháº£o"]) and contains_any(
-        q, ["quy trinh", "quy trÃ¬nh", "thu tuc", "thá»§ tá»¥c"]
+    if contains_any(q, ["phuc khao", "phúc khảo"]) and contains_any(
+        q, ["quy trinh", "quy trình", "thu tuc", "thủ tục"]
     ):
         return {
             "intent": "procedure_query",
@@ -583,7 +582,7 @@ def route_query(query: str) -> dict[str, Any]:
             "target_chunk_types": ["procedure"],
         }
 
-    # 7. Faculty query còn lại
+    # 7. Remaining faculty query
     if has_faculty_signal:
         route = {
             "intent": "faculty_query",
@@ -596,15 +595,15 @@ def route_query(query: str) -> dict[str, Any]:
             route["target_chunk_types"] = ["program_directory"]
         return route
 
-    # 8. Các câu điểm qua môn/rớt môn
-    # Nếu hỏi TỪ KHÓA ĐIỂM + RỚT/QUA MÔN -> Tra cứu JSON
-    # Nếu hỏi RỚT MÔN chung chung (học lại, xử lý, etc) -> Regulation
+    # 8. Pass/fail score questions
+    # Specific score thresholds go to structured lookup; broader fail/retry rules go to regulation retrieval.
+    # This keeps deterministic scoring separate from policy explanation.
     asks_passing_score = contains_any(
         q, rules["pass_fail_regulation_signal"]
     ) and contains_any(q, ["mấy điểm", "bao nhiêu điểm", "thang điểm", "quy đổi"])
     asks_passing_score = asks_passing_score or (
-        contains_any(q, ["diem", "d+", "d", "Ä‘iá»ƒm"])
-        and contains_any(q, ["qua mon", "qua mÃ´n", "dat", "Ä‘áº¡t", "khong dat", "khÃ´ng Ä‘áº¡t"])
+        contains_any(q, ["diem", "d+", "d", "điểm"])
+        and contains_any(q, ["qua mon", "qua môn", "dat", "đạt", "khong dat", "không đạt"])
     )
     if asks_passing_score and not has_reg_priority_signal:
         return {
@@ -613,15 +612,14 @@ def route_query(query: str) -> dict[str, Any]:
             "target_chunk_types": [],
         }
 
-    # Nếu chỉ hỏi về quy chế rớt/qua mà không hỏi điểm cụ thể
+    # Broad pass/fail regulation questions without a concrete score threshold.
     if contains_any(q, rules["pass_fail_regulation_signal"]):
         return {
             "intent": "regulation_query",
             "strategy": "semantic_filtered",
             "target_chunk_types": ["regulation"],
         }
-
-    # 9. Score lookup chỉ dành cho bảng/range rõ
+    # 9. Score lookup only handles clear table/range questions.
     ascii_q = strip_accents(q)
     asks_failed_grade_policy = bool(
         re.search(r"\bdiem\s+f\b", ascii_q, flags=re.IGNORECASE)

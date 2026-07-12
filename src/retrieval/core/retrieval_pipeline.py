@@ -22,7 +22,7 @@ CHUNK_TYPE_ALIASES = {
     "regulation_text": ["regulation"],
 }
 
-HYBRID_V6_CHUNK_TYPES = {"regulation"}
+HYBRID_REGULATION_CHUNK_TYPES = {"regulation"}
 
 COMPATIBLE_ENTITY_CHUNK_TYPES = {
     "office_query": {"office_directory"},
@@ -55,17 +55,21 @@ def filter_entity_chunk_types(intent: str, chunk_types: list[str]) -> list[str]:
     return [chunk_type for chunk_type in chunk_types if chunk_type in allowed]
 
 
-def _is_hybrid_v6_regulation_plan(plan: dict[str, Any]) -> bool:
+def _is_hybrid_regulation_plan(plan: dict[str, Any]) -> bool:
+    """Return True when a retrieval plan should use the hybrid regulation path."""
+
     chunk_types = set(normalize_chunk_types(plan.get("chunk_types") or []))
-    return bool(chunk_types) and chunk_types <= HYBRID_V6_CHUNK_TYPES
+    return bool(chunk_types) and chunk_types <= HYBRID_REGULATION_CHUNK_TYPES
 
 
-def _retrieve_with_hybrid_v6(
+def _retrieve_with_hybrid_regulation(
     query: str,
     plan: dict[str, Any],
     detected_entities: list[dict[str, Any]],
     cohort: str | None,
 ) -> list[dict[str, Any]]:
+    """Run V7 hybrid child-parent retrieval for regulation_text questions."""
+
     from .hybrid_pipeline import run_hybrid_retrieval_pipeline
 
     result = run_hybrid_retrieval_pipeline(
@@ -237,12 +241,13 @@ def _metadata_boost(
     detected_entities: list[dict[str, Any]],
     cohort: str | None = None,
 ) -> float:
+    """Return a bounded metadata boost applied after semantic reranking."""
     metadata = doc.get("metadata") or {}
     metadata_text = _metadata_text(doc)
     query_text = _normalize_text(query)
     boost = 0.0
 
-    # Ưu tiên vừa phải cho các mẩu tin bốc ra từ Graph (Không buff quá mạnh để tránh lấn át Vector)
+    # Apply a small graph-source boost without letting metadata override semantic relevance.
     if metadata.get("source") == "knowledge_graph":
         boost += 0.05
 
@@ -340,26 +345,24 @@ def retrieve_with_plan(
     candidate_multiplier: int = 5,
     min_candidates: int = 25,
 ) -> list[dict[str, Any]]:
-    """Tìm kiếm Vector dựa trên bản kế hoạch (Retrieval Plan) và Xếp hạng lại (Reranking).
+    """Execute one retrieval plan and return reranked source candidates.
 
-    Quy trình:
-    1. Quét mở rộng danh sách candidate: Gấp 3 lần top_k (hoặc tối thiểu 10) từ VectorDB.
-    2. Chạy thuật toán Heuristic Reranking: Chấm điểm lại (re-score) các document dựa vào keyword, regex, và loại tài liệu.
-    3. Lọc nhiễu: Loại bỏ các document có final_score < 0.70 (Tránh ảo giác cho LLM).
-    4. Trả về top_k kết quả tốt nhất.
+    Regulation-only plans are delegated to the V7 child-parent hybrid retriever.
+    Other content types use the legacy dense + sparse + graph fusion path,
+    followed by cross-encoder reranking and lightweight metadata boosts.
     """
     candidate_k = max(plan["top_k"] * candidate_multiplier, min_candidates)
 
-    if _is_hybrid_v6_regulation_plan(plan) and not _env_bool("STUDENT_RAG_DISABLE_V6_HYBRID"):
+    if _is_hybrid_regulation_plan(plan) and not _env_bool("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL"):
         try:
-            return _retrieve_with_hybrid_v6(
+            return _retrieve_with_hybrid_regulation(
                 query=query,
                 plan=plan,
                 detected_entities=detected_entities,
                 cohort=cohort,
             )
         except Exception as exc:
-            logger.error("Hybrid V6 regulation retrieval failed: %s", exc)
+            logger.error("Hybrid regulation retrieval failed: %s", exc)
             if collection is None or _env_bool("STUDENT_RAG_OFFLINE_EVAL"):
                 return []
 
@@ -432,10 +435,9 @@ def retrieve_with_plan(
 
     for rank, doc in enumerate(graph_results):
         doc_id = doc["id"]
-        doc["chunk_id"] = doc_id  # Đảm bảo format đồng nhất
+        doc["chunk_id"] = doc_id
         if doc_id not in docs_map:
             docs_map[doc_id] = doc
-        # Đẩy kết quả Graph lên top bằng cách cho rank nhỏ nhất (hoặc rank + 1.0 RRF)
         combined_scores[doc_id] = combined_scores.get(doc_id, 0.0) + 1.0 / (
             rrf_k + rank + 1
         )
@@ -473,7 +475,7 @@ def retrieve_with_plan(
         reverse=True,
     )[: plan["top_k"]]
 
-    # 5. Lọc nhiễu
+    # 5. Filter weak reranked candidates
     filtered = [doc for doc in reranked if doc["rerank"]["final_score"] >= 0.20]
 
     # 6. Small-to-Big Deduplication
@@ -501,12 +503,10 @@ def retrieve_with_plan(
                 continue
             seen_parents.add(chunk_id)
             
-            # Khắc phục lỗi rỗng content cho các docs lấy từ Graph Search
             try:
                 store = _get_docstore()
                 origin_doc = store.get_document_by_id(chunk_id)
                 if origin_doc and "content" in origin_doc:
-                    # Nối đoạn văn gốc phía dưới câu tóm tắt của Graph
                     doc["content"] = doc.get("text", "") + "\n\n[RAW TEXT]\n" + origin_doc["content"]
             except Exception as e:
                 logger.error(f"Error fetching chunk doc {chunk_id} from MongoDB: {e}")
@@ -532,45 +532,24 @@ def run_retrieval_pipeline(
     candidate_multiplier: int = 5,
     min_candidates: int = 25,
 ) -> dict[str, Any]:
-    """Hàm lõi điều phối toàn bộ quá trình Tìm kiếm dữ liệu (Retrieval Pipeline).
+    """Route a user query to deterministic lookup or true-RAG retrieval.
 
-    Quy trình hoạt động (Workflow):
-    1. Tiền xử lý (Preprocessing): Nhận diện thực thể (Entity Linking) và mở rộng câu hỏi (Query Expansion).
-    2. Định tuyến (Routing):
-       - Chạy Rule-based Router siêu tốc độ (0 chi phí).
-       - Nếu không hiểu (unknown), gọi AI Router (LLM) để phân tích sâu.
-    3. Tra cứu có cấu trúc (Structured / Formula Lookup):
-       - Nếu là câu hỏi tính điểm/rèn luyện -> Dùng công thức cứng thay vì tìm văn bản.
-    4. Lập kế hoạch & Tìm kiếm Vector (Retrieval Planner & Vector Search):
-       - Chạy nhiều luồng tìm kiếm song song vào VectorDB (Chroma/Qdrant).
-    5. Xếp hạng lại (Heuristic Reranking):
-       - Dùng thuật toán tự viết để cộng/trừ điểm các tài liệu dựa vào mức độ trùng khớp từ khóa.
-
-    Args:
-        query: Câu hỏi gốc của người dùng.
-        model: Mô hình Embedding (bge-m3).
-        collection: Đối tượng VectorDB (Chroma hoặc Qdrant Adapter).
-        scoring_tables, formula_rules, entity_registry, expansion_rules: Các tệp metadata luật.
-        top_k: Số lượng tài liệu trả về tối đa.
-
-    Returns:
-        dict chứa context, citations, và các kết quả có cấu trúc (nếu có).
+    The router first decides whether the question is structured/tool-friendly
+    or requires reading handbook regulations. Program, scoring, form, office,
+    and calculator requests return deterministic results. Regulation questions
+    are planned and sent to the V7 hybrid child-parent retriever, then formatted
+    into citations and context for the answer layer.
     """
     detected_entities = detect_entities(query, entity_registry)
     # Entity linking append canonical name vao retrieval query de vector search bat dung don vi/khoa.
     entity_normalized_query = normalize_query_with_entities(query, detected_entities)
     # Query expansion them synonym/tu khoa lien quan, nhung van giu query goc de router khong bi lech.
     retrieval_query = expand_query(entity_normalized_query, expansion_rules)
-
-    # 1. Chạy Rule-based Router siêu tốc độ trước
     routing = route_query(query)
-
-    # 2. Nếu Rule-based không hiểu, dùng AI Router để phân tích sâu
     if routing["intent"] == "unknown" and not _env_bool("STUDENT_RAG_DISABLE_AI_ROUTER"):
         try:
             routing = AIRouter().route(query)
         except Exception as exc:
-            # AI Router là lớp hỗ trợ, không để thiếu API key làm hỏng retrieval offline.
             routing = {
                 "intent": "regulation_query",
                 "strategy": "semantic_filtered",
@@ -587,8 +566,6 @@ def run_retrieval_pipeline(
 
     intent = routing["intent"]
     strategy = routing["strategy"]
-
-    # Bắt tín hiệu cần làm rõ từ AI Router
     if routing.get("needs_clarification"):
         return {
             "query": query,
@@ -604,8 +581,6 @@ def run_retrieval_pipeline(
             "needs_clarification": True,
             "clarification_question": routing.get("clarification_question"),
         }
-
-    # Câu hỏi nằm ngoài phạm vi Sổ tay sinh viên → từ chối thẳng
     if intent == "out_of_domain":
         return {
             "query": query,
@@ -807,7 +782,6 @@ def run_retrieval_pipeline(
                 "needs_llm_answer": True,
             }
 
-        # Vẫn tiếp tục vector search để lấy thêm các quy định/văn bản xung quanh
         supplement_plan = {
             "purpose": "formula_supplement",
             "query": retrieval_query,

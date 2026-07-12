@@ -36,41 +36,50 @@ class NetworkXGraphTraverser:
 
     def expand_context(self, seed_ids: List[str], max_depth: int = 2) -> List[Dict[str, Any]]:
         """
-        Từ danh sách ID (Hạt giống) ban đầu, lan truyền tìm láng giềng theo chiều rộng (BFS).
-        Trả về danh sách các Node láng giềng kèm theo Đường dẫn (Path) và Lý do liên quan.
+        Duyệt BFS Đa nguồn (Multi-source BFS) từ tất cả seed_ids cùng lúc.
+        Đảm bảo mỗi node luôn được gán cho độ sâu ngắn nhất (Graph Proximity) 
+        và thuộc về seed gốc gần nó nhất thực sự.
         """
-        expanded_nodes = []
-        visited_nodes: Set[str] = set(seed_ids) # Đánh dấu Seed là đã ghé thăm để tránh trả về chính Seed
+        from collections import deque
         
-        for seed_node in seed_ids:
-            if seed_node not in self.graph:
+        expanded_nodes = []
+        # visited map lưu: node_id -> (depth, origin_seed)
+        visited: Dict[str, tuple] = {}
+        
+        # frontier chứa tuple: (current_node, origin_seed, depth, direct_parent)
+        frontier = deque([(seed, seed, 0, None) for seed in seed_ids if seed in self.graph])
+        
+        while frontier:
+            node, origin_seed, depth, parent_node = frontier.popleft()
+            
+            # BFS chạy theo tầng (depth=0 -> depth=1 -> depth=2).
+            # Do đó, lần ĐẦU TIÊN ta pop được một node, đó TẤT YẾU là đường đi ngắn nhất tới nó.
+            if node in visited:
                 continue
                 
-            # Duyệt BFS từ seed_node, với giới hạn độ sâu (cutoff)
-            # lengths trả về dict {node_id: khoảng_cách}
-            lengths = nx.single_source_shortest_path_length(self.graph, seed_node, cutoff=max_depth)
+            visited[node] = (depth, origin_seed)
             
-            for neighbor_id, depth in lengths.items():
-                if depth == 0 or neighbor_id in visited_nodes:
-                    continue # Bỏ qua Node gốc hoặc Node đã có
-                
-                # Tìm lý do liên kết (Edge attribute) từ node cha đến node con
-                # Để đơn giản, ta lấy cạnh ngắn nhất nối từ seed tới neighbor
-                try:
-                    path = nx.shortest_path(self.graph, source=seed_node, target=neighbor_id)
-                    # Lấy lý do của bước cuối cùng trong path
-                    direct_source = path[-2]
-                    edge_data = self.graph.get_edge_data(direct_source, neighbor_id)
-                    reason = edge_data[0].get("reason", "") if edge_data else ""
-                except nx.NetworkXNoPath:
-                    reason = "Liên kết mạng nhện chéo"
+            # Nếu node này không phải là seed ban đầu (depth > 0), ta thêm vào kết quả
+            if depth > 0:
+                reason = ""
+                if parent_node:
+                    edge_data = self.graph.get_edge_data(parent_node, node)
+                    if edge_data:
+                        # Với MultiDiGraph, lấy cạnh index 0
+                        reason = edge_data[0].get("reason", "")
                 
                 expanded_nodes.append({
-                    "id": neighbor_id,
+                    "id": node,
                     "depth": depth,
-                    "seed_source": seed_node,
+                    "seed_source": origin_seed,
                     "reason": reason
                 })
-                visited_nodes.add(neighbor_id)
                 
+            # Tiếp tục bung lụa nếu chưa chạm giới hạn độ sâu
+            if depth < max_depth:
+                # Tìm các láng giềng trực tiếp
+                for neighbor in self.graph.successors(node):
+                    if neighbor not in visited:
+                        frontier.append((neighbor, origin_seed, depth + 1, node))
+                        
         return expanded_nodes

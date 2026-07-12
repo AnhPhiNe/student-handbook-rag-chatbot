@@ -232,58 +232,90 @@ class HybridRetrieverV7:
         ]
         seed_parent_ids = [parent_id for parent_id in seed_parent_ids if parent_id]
         expanded_parent_ids: list[str] = []
+        parent_depths: dict[str, int] = {}
+        parent_sources: dict[str, str] = {}
         try:
             expanded = self.graph.expand_context(seed_parent_ids, max_depth=graph_depth)
-            expanded_parent_ids = [
-                str(node.get("id"))
-                for node in expanded
-                if node.get("id") in self.parent_store
-            ]
+            for node in expanded:
+                node_id = str(node.get("id"))
+                if node_id in self.parent_store:
+                    expanded_parent_ids.append(node_id)
+                    parent_depths[node_id] = node.get("depth", 99)
+                    parent_sources[node_id] = node.get("seed_source", "unknown")
         except Exception as exc:
             logger.warning("V7 graph expansion failed, using vector seeds only: %s", exc)
 
-        candidate_chunks = self._candidate_chunks(
-            seed_chunks=seed_chunks,
-            parent_ids=[*seed_parent_ids, *expanded_parent_ids],
-            cohort=cohort,
-        )
-        if not candidate_chunks:
-            return []
-
-        scored = self._rerank_chunks(query, candidate_chunks)
-        return self._group_parent_results(
-            query=query,
-            scored_chunks=scored,
-            top_k_final=top_k_final,
-        )
-
-    def _candidate_chunks(
-        self,
-        *,
-        seed_chunks: list[dict[str, Any]],
-        parent_ids: list[str],
-        cohort: str | None,
-    ) -> list[dict[str, Any]]:
-        """Collect child/table candidates from seed chunks and expanded parents."""
-        by_id: dict[str, dict[str, Any]] = {}
-        for chunk in seed_chunks:
-            chunk_id = str(chunk.get("_id") or chunk.get("chunk_id") or "")
-            if chunk_id:
-                by_id[chunk_id] = chunk
-
-        for parent_id in dict.fromkeys(parent_ids):
+        neighbor_chunks = []
+        seed_chunk_ids = {str(chunk.get("_id") or chunk.get("chunk_id") or "") for chunk in seed_chunks}
+        
+        for parent_id in dict.fromkeys(expanded_parent_ids):
+            depth = parent_depths.get(parent_id, 99)
+            source_seed = parent_sources.get(parent_id, "unknown")
             for chunk in self.children_by_parent.get(parent_id, []):
                 metadata = chunk.get("metadata") or {}
                 if cohort and metadata.get("cohort") != cohort:
                     continue
                 chunk_id = str(chunk.get("_id") or chunk.get("chunk_id") or "")
-                if chunk_id:
-                    by_id[chunk_id] = chunk
-                if len(by_id) >= 160:
-                    break
-            if len(by_id) >= 160:
-                break
-        return list(by_id.values())
+                # Đã khử trùng lặp: Nếu chunk này đã là seed thì tuyệt đối không thêm vào neighbor
+                if chunk_id and chunk_id not in seed_chunk_ids:
+                    chunk_copy = dict(chunk)
+                    chunk_copy["_graph_depth"] = depth
+                    chunk_copy["_source_seed_id"] = source_seed
+                    neighbor_chunks.append(chunk_copy)
+
+        # --- BUDGET ALLOCATION ---
+        # Ngân sách 1: Seed Chunks (~24) -> Pass thẳng
+        final_candidates = list(seed_chunks)
+
+        # Ngân sách 2: Neighbor Chunks -> Lọc bằng cấu trúc Graph (Depth) với Round-Robin theo Seed
+        if neighbor_chunks:
+            # Nhóm các láng giềng theo Parent ID để lấy TRỌN VẸN cả Điều, không băm nhỏ từng khoản
+            neighbors_by_parent: dict[str, list] = defaultdict(list)
+            parent_to_seed: dict[str, str] = {}
+            parent_to_depth: dict[str, int] = {}
+            for chunk in neighbor_chunks:
+                pid = str((chunk.get("metadata") or {}).get("parent_section_id") or "")
+                if pid:
+                    neighbors_by_parent[pid].append(chunk)
+                    parent_to_seed[pid] = chunk.get("_source_seed_id", "unknown")
+                    parent_to_depth[pid] = min(parent_to_depth.get(pid, 99), chunk.get("_graph_depth", 99))
+
+            # Nhóm các Parent ID theo Seed
+            parents_by_seed: dict[str, list[str]] = defaultdict(list)
+            for pid, sid in parent_to_seed.items():
+                parents_by_seed[sid].append(pid)
+
+            # Sắp xếp các Parent của mỗi Seed theo depth
+            for sid in parents_by_seed:
+                parents_by_seed[sid].sort(key=lambda pid: parent_to_depth[pid])
+
+            # Round-robin: mỗi vòng lấy 1 Parent (nguyên Điều) của MỖI seed
+            filtered_parent_ids = []
+            seed_ids = list(parents_by_seed.keys())
+            idx = 0
+            while len(filtered_parent_ids) < 5 and any(parents_by_seed.values()):
+                sid = seed_ids[idx % len(seed_ids)]
+                if parents_by_seed[sid]:
+                    filtered_parent_ids.append(parents_by_seed[sid].pop(0))
+                idx += 1
+
+            # Gom lại tất cả các chunk thuộc về các Parent đã chọn
+            filtered_neighbors = []
+            for pid in filtered_parent_ids:
+                filtered_neighbors.extend(neighbors_by_parent[pid])
+
+            final_candidates.extend(filtered_neighbors)
+
+        if not final_candidates:
+            return []
+
+        # Lớp 2: Lọc tinh bằng Cross-Encoder trên Budget đã gộp (~40)
+        scored = self._rerank_chunks(query, final_candidates)
+        return self._group_parent_results(
+            query=query,
+            scored_chunks=scored,
+            top_k_final=top_k_final,
+        )
 
     def _rerank_chunks(
         self,
@@ -363,6 +395,8 @@ class HybridRetrieverV7:
                         "chunk_granularity": (chunk.get("metadata") or {}).get("chunk_granularity"),
                         "clause_marker": (chunk.get("metadata") or {}).get("clause_marker"),
                         "score": float(score),
+                        "_graph_depth": chunk.get("_graph_depth"),
+                        "_source_seed_id": chunk.get("_source_seed_id"),
                     }
                     for score, chunk in focused_chunks
                 ],
@@ -378,7 +412,15 @@ class HybridRetrieverV7:
         scored_group: list[tuple[float, dict[str, Any]]],
     ) -> list[tuple[float, dict[str, Any]]]:
         """Choose the child/table snippets that should be shown before the parent text."""
-        selected = sorted(scored_group, key=lambda pair: pair[0], reverse=True)[:4]
+        # Lấy tối đa 4 chunk cho các kết quả Vector/BM25 thông thường,
+        # NHƯNG lấy TẤT CẢ các chunk nếu parent này là Graph Neighbor (có _graph_depth)
+        # để tránh việc PhoRanker loại mất đoạn văn chứa câu trả lời do không khớp keyword.
+        scored_group_sorted = sorted(scored_group, key=lambda pair: pair[0], reverse=True)
+        selected = []
+        for pair in scored_group_sorted:
+            chunk = pair[1]
+            if chunk.get("_graph_depth", 0) > 0 or len(selected) < 4:
+                selected.append(pair)
         if any(
             (chunk.get("metadata") or {}).get("chunk_granularity") in {"child", "table_like"}
             for _, chunk in selected

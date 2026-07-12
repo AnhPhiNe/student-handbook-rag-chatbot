@@ -549,8 +549,24 @@ def _filter_retrieved_items(
 def _source_header(index: int, item: dict[str, Any]) -> str:
     metadata = item.get("metadata", {}) or {}
     title = _item_title(item, metadata)
+    
+    matched_chunks = metadata.get("v7_matched_chunks", [])
+    is_related_source = False
+    source_seed_id = ""
+    if matched_chunks:
+        all_are_neighbors = all(chunk.get("_graph_depth") is not None for chunk in matched_chunks)
+        if all_are_neighbors and len(matched_chunks) > 0:
+            is_related_source = True
+            source_seed_id = matched_chunks[0].get("_source_seed_id", "khác")
+            
+    if is_related_source:
+        source_label = f"[NGUỒN LIÊN QUAN - được tìm thấy qua dẫn chiếu từ {source_seed_id}]"
+    else:
+        source_label = "[NGUỒN CHÍNH - khớp trực tiếp câu hỏi]"
+        
     return "\n".join(
         [
+            source_label,
             f"[Source {index}]",
             f"Title: {title}",
             f"Type: {metadata.get('chunk_type')}",

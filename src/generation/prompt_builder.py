@@ -104,8 +104,8 @@ Nếu CONTEXT có đoạn được đánh dấu [NGUỒN LIÊN QUAN - được t
     - Khi câu hỏi liên quan đến giới hạn thời gian, BẠN BẮT BUỘC PHẢI SUY LUẬN THEO CÁC BƯỚC SAU (viết trong thẻ <thinking>):
       1. Xác định "Hành động A" có bị quy định là "tính vào" hay "không tính vào" một "Quỹ thời gian B" nào đó không?
       2. "Quỹ thời gian B" đó có giới hạn tối đa là bao nhiêu?
-      3. Nếu A tính vào B, kết luận: Giới hạn của A phụ thuộc vào B, không có giới hạn độc lập.
-      Sau đó ở phần trả lời, bạn phải viết: "Thời gian [A] được tính vào [B] (tối đa [C] năm)". TUYỆT ĐỐI KHÔNG gộp chung thành "[A] tối đa là [C] năm". Hành vi gộp chung này là bóp méo văn bản!
+      3. Nếu văn bản ghi A tính vào B, hãy kết luận dứt khoát rằng giới hạn của A phụ thuộc vào B (không được dùng các từ suy đoán rụt rè như "không rõ", "có thể").
+      Sau đó ở phần trả lời, bạn BẮT BUỘC phải khẳng định rõ ràng: "Thời gian [A] được tính vào [B] (tối đa [C] năm)". TUYỆT ĐỐI KHÔNG gộp chung thành "[A] tối đa là [C] năm". Hành vi gộp chung này là bóp méo văn bản!
       4. STRICT GROUNDING: Nếu CONTEXT không cung cấp con số giới hạn cụ thể cho riêng Hành động A, TUYỆT ĐỐI KHÔNG ĐƯỢC tự ý sử dụng kiến thức bên ngoài để bịa ra bất kỳ con số nào. Chỉ được phép kết luận dựa trên mối quan hệ với Quỹ thời gian B.
 
 FINAL_GROUNDING_CHECK:

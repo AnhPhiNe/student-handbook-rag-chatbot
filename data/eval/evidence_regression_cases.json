@@ -1,0 +1,242 @@
+[
+  {
+    "id": "evidence_001",
+    "query": "K48-K49: Điều kiện học bổng KKHT cần bao nhiêu tín chỉ?",
+    "cohort": "K48-K49",
+    "tags": ["old_failure", "numeric", "scholarship"],
+    "required_facts": ["15 tín chỉ"],
+    "expected_source_keywords": ["học bổng"]
+  },
+  {
+    "id": "evidence_002",
+    "query": "K50: Muốn xét học bổng khuyến khích học tập thì tối thiểu mấy tín chỉ trong học kỳ?",
+    "cohort": "K50",
+    "tags": ["paraphrase", "numeric", "scholarship"],
+    "required_facts": ["15 tín chỉ"],
+    "expected_source_keywords": ["học bổng"]
+  },
+  {
+    "id": "evidence_003",
+    "query": "K51: Học bổng KKHT có tính tín chỉ trả nợ hoặc cải thiện không?",
+    "cohort": "K51",
+    "tags": ["hard_negative", "scholarship"],
+    "required_facts": ["không bao gồm", "trả nợ", "cải thiện"],
+    "expected_source_keywords": ["học bổng"]
+  },
+  {
+    "id": "evidence_004",
+    "query": "K48-K49: Sinh viên năm cuối học kỳ II cần đăng ký bao nhiêu tín chỉ để xét học bổng?",
+    "cohort": "K48-K49",
+    "tags": ["numeric", "scholarship"],
+    "required_facts": ["6 tín chỉ"],
+    "expected_source_keywords": ["học bổng"]
+  },
+  {
+    "id": "evidence_005",
+    "query": "K50: Điểm học bổng được tính theo công thức nào?",
+    "cohort": "K50",
+    "tags": ["formula", "scholarship"],
+    "required_facts": ["Điểm học tập", "80", "Điểm rèn luyện", "20"],
+    "expected_source_keywords": ["học bổng"]
+  },
+  {
+    "id": "evidence_006",
+    "query": "K51: Mức học bổng loại giỏi được tính hệ số bao nhiêu?",
+    "cohort": "K51",
+    "tags": ["numeric", "scholarship"],
+    "required_facts": ["1.25"],
+    "expected_source_keywords": ["học bổng"]
+  },
+  {
+    "id": "evidence_007",
+    "query": "K48-K49: Quỹ học bổng khuyến khích học tập tối thiểu bằng bao nhiêu phần trăm nguồn thu học phí?",
+    "cohort": "K48-K49",
+    "tags": ["numeric", "scholarship"],
+    "required_facts": ["8%"],
+    "expected_source_keywords": ["học bổng"]
+  },
+  {
+    "id": "evidence_008",
+    "query": "K48-K49: Trường có mấy đợt xét tốt nghiệp chính thức cho sinh viên chính quy?",
+    "cohort": "K48-K49",
+    "tags": ["old_failure", "numeric", "graduation"],
+    "required_facts": ["03 đợt", "tháng 5", "tháng 8", "tháng 10"],
+    "expected_source_keywords": ["tốt nghiệp"]
+  },
+  {
+    "id": "evidence_009",
+    "query": "K50: Ra trường xét tốt nghiệp mấy lần trong năm đối với hệ chính quy?",
+    "cohort": "K50",
+    "tags": ["paraphrase", "numeric", "graduation"],
+    "required_facts": ["03 đợt", "tháng 5", "tháng 8", "tháng 10"],
+    "expected_source_keywords": ["tốt nghiệp"]
+  },
+  {
+    "id": "evidence_010",
+    "query": "K51: Vừa làm vừa học có mấy đợt xét tốt nghiệp chính thức?",
+    "cohort": "K51",
+    "tags": ["numeric", "graduation"],
+    "required_facts": ["05 đợt", "tháng 3", "tháng 5", "tháng 8", "tháng 10", "tháng 12"],
+    "expected_source_keywords": ["tốt nghiệp"]
+  },
+  {
+    "id": "evidence_011",
+    "query": "K48-K49: Sinh viên đủ điều kiện tốt nghiệp được cấp bằng trong thời hạn bao lâu?",
+    "cohort": "K48-K49",
+    "tags": ["numeric", "graduation"],
+    "required_facts": ["03 tháng"],
+    "expected_source_keywords": ["tốt nghiệp"]
+  },
+  {
+    "id": "evidence_012",
+    "query": "K50: Điều kiện để được công nhận tốt nghiệp gồm những gì?",
+    "cohort": "K50",
+    "tags": ["condition", "graduation"],
+    "required_facts": ["Tích lũy đủ học phần", "đạt chuẩn đầu ra", "trung bình trở lên"],
+    "expected_source_keywords": ["tốt nghiệp"]
+  },
+  {
+    "id": "evidence_013",
+    "query": "K51: Khi nào sinh viên bị giảm hạng tốt nghiệp?",
+    "cohort": "K51",
+    "tags": ["condition", "graduation"],
+    "required_facts": ["5%", "học lại", "kỷ luật"],
+    "expected_source_keywords": ["tốt nghiệp"]
+  },
+  {
+    "id": "evidence_014",
+    "query": "K48-K49: Học lại vượt quá bao nhiêu phần trăm thì hạng tốt nghiệp bị giảm?",
+    "cohort": "K48-K49",
+    "tags": ["numeric", "graduation"],
+    "required_facts": ["5%"],
+    "expected_source_keywords": ["tốt nghiệp"]
+  },
+  {
+    "id": "evidence_015",
+    "query": "K50: Sau khi hết thời gian học tập tối đa mà còn thiếu GDQP hoặc GDTC thì được hoàn thiện trong bao lâu?",
+    "cohort": "K50",
+    "tags": ["numeric", "graduation"],
+    "required_facts": ["03 năm"],
+    "expected_source_keywords": ["tốt nghiệp"]
+  },
+  {
+    "id": "evidence_016",
+    "query": "K48-K49: Thời gian học tập tối đa của đại học chính quy cấp bằng thứ nhất là bao nhiêu năm?",
+    "cohort": "K48-K49",
+    "tags": ["old_failure", "table_heavy", "numeric", "study_time"],
+    "required_facts": ["4 năm học", "8 năm học"],
+    "expected_source_keywords": ["thời gian học tập"]
+  },
+  {
+    "id": "evidence_017",
+    "query": "K50: Học tối đa bao lâu đối với đào tạo đại học chính quy cấp bằng thứ nhất?",
+    "cohort": "K50",
+    "tags": ["paraphrase", "table_heavy", "numeric", "study_time"],
+    "required_facts": ["8 năm học"],
+    "expected_source_keywords": ["thời gian học tập"]
+  },
+  {
+    "id": "evidence_018",
+    "query": "K51: Thời gian chuẩn và tối đa của đào tạo liên thông từ cao đẳng lên đại học là bao lâu?",
+    "cohort": "K51",
+    "tags": ["table_heavy", "numeric", "study_time"],
+    "required_facts": ["1,5 năm học", "3 năm học"],
+    "expected_source_keywords": ["thời gian học tập"]
+  },
+  {
+    "id": "evidence_019",
+    "query": "K48-K49: Vừa làm vừa học đại học cấp bằng thứ nhất có thời gian tối đa mấy năm?",
+    "cohort": "K48-K49",
+    "tags": ["table_heavy", "numeric", "study_time"],
+    "required_facts": ["5 năm học", "9 năm học"],
+    "expected_source_keywords": ["thời gian học tập"]
+  },
+  {
+    "id": "evidence_020",
+    "query": "K50: Liên thông từ trung cấp lên đại học học chuẩn và tối đa bao lâu?",
+    "cohort": "K50",
+    "tags": ["table_heavy", "numeric", "study_time"],
+    "required_facts": ["2,5 năm học", "5 năm học"],
+    "expected_source_keywords": ["thời gian học tập"]
+  },
+  {
+    "id": "evidence_021",
+    "query": "K48-K49: Sinh viên bị cảnh báo học tập khi nào?",
+    "cohort": "K48-K49",
+    "tags": ["condition", "academic_warning"],
+    "required_facts": ["cảnh báo học tập"],
+    "expected_source_keywords": ["cảnh báo"]
+  },
+  {
+    "id": "evidence_022",
+    "query": "K50: Sinh viên bị buộc thôi học trong những trường hợp nào?",
+    "cohort": "K50",
+    "tags": ["condition", "dismissal"],
+    "required_facts": ["buộc thôi học"],
+    "expected_source_keywords": ["buộc thôi học"]
+  },
+  {
+    "id": "evidence_023",
+    "query": "K51: Nghỉ học tạm thời tối đa bao nhiêu học kỳ?",
+    "cohort": "K51",
+    "tags": ["numeric", "temporary_leave"],
+    "required_facts": ["nghỉ học tạm thời"],
+    "expected_source_keywords": ["nghỉ học"]
+  },
+  {
+    "id": "evidence_024",
+    "query": "K48-K49: Sinh viên được học cải thiện điểm trong trường hợp nào?",
+    "cohort": "K48-K49",
+    "tags": ["condition", "retake"],
+    "required_facts": ["cải thiện điểm"],
+    "expected_source_keywords": ["học lại", "cải thiện"]
+  },
+  {
+    "id": "evidence_025",
+    "query": "K50: Sinh viên học lại học phần không đạt thì điểm được tính như thế nào?",
+    "cohort": "K50",
+    "tags": ["condition", "retake"],
+    "required_facts": ["học lại"],
+    "expected_source_keywords": ["học lại"]
+  },
+  {
+    "id": "evidence_026",
+    "query": "K51: Phúc khảo điểm thi kết thúc học phần được thực hiện thế nào?",
+    "cohort": "K51",
+    "tags": ["condition", "grade_review"],
+    "required_facts": ["phúc khảo"],
+    "expected_source_keywords": ["phúc khảo"]
+  },
+  {
+    "id": "evidence_027",
+    "query": "K48-K49: Điểm đánh giá quá trình có được phúc khảo không?",
+    "cohort": "K48-K49",
+    "tags": ["hard_negative", "grade_review"],
+    "required_facts": ["đánh giá quá trình", "phúc khảo"],
+    "expected_source_keywords": ["phúc khảo"]
+  },
+  {
+    "id": "evidence_028",
+    "query": "K50: Sinh viên được bảo lưu kết quả học tập khi nào?",
+    "cohort": "K50",
+    "tags": ["condition", "reserved_result"],
+    "required_facts": ["nghỉ học tạm thời"],
+    "expected_source_keywords": ["nghỉ học tạm thời"]
+  },
+  {
+    "id": "evidence_029",
+    "query": "K51: Sinh viên bị kỷ luật thì có ảnh hưởng đến học bổng hoặc tốt nghiệp không?",
+    "cohort": "K51",
+    "tags": ["hard_negative", "discipline"],
+    "required_facts": ["kỷ luật"],
+    "expected_source_keywords": ["học bổng", "tốt nghiệp"]
+  },
+  {
+    "id": "evidence_030",
+    "query": "K48-K49: Sinh viên có quyền khiếu nại về điểm hoặc kỷ luật trong trường hợp nào?",
+    "cohort": "K48-K49",
+    "tags": ["hard_negative", "rights"],
+    "required_facts": ["khiếu nại"],
+    "expected_source_keywords": ["khiếu nại"]
+  }
+]

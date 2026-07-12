@@ -1,0 +1,1166 @@
+[
+  {
+    "id": "holdout_ragas_007",
+    "query": "Công thức mức học bổng KKHT trong sổ tay đang dựa trên những thành phần nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu28",
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27",
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Mức học bổng được tính theo số tín chỉ, định mức học phí một tín chỉ và hệ số theo loại: khá 1.0, giỏi 1.25, xuất sắc 1.5; quỹ học bổng bố trí tối thiểu bằng 8% nguồn thu học phí và cấp bù học phí.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_010",
+    "query": "Hệ vừa làm vừa học được xét tốt nghiệp chính thức mấy đợt mỗi năm?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Sinh viên chính quy có 03 đợt xét tốt nghiệp chính thức, thường vào tháng 5, tháng 8 và tháng 10. Sinh viên vừa làm vừa học có 05 đợt, thường vào tháng 3, 5, 8, 10 và 12.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_022",
+    "query": "Chính quy bị buộc thôi học sau bao nhiêu lần cảnh báo học tập?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "cohort_sensitive",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Sinh viên chính quy bị buộc thôi học nếu bị cảnh báo học tập 03 lần liên tiếp trong một khóa học, bị cảnh báo đến lần thứ tư tính từ đầu khóa, hoặc thời gian học tập vượt quá giới hạn tối đa.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_031",
+    "query": "Muốn chuyển ngành thì sổ tay nêu những nguyên tắc điều kiện nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 17. Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo,"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu17",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu17",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu17"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Việc chuyển ngành, chuyển nơi học hoặc chuyển cơ sở đào tạo phải đáp ứng điều kiện theo quy chế, phụ thuộc chương trình, năng lực tiếp nhận và không thuộc các trường hợp không được phép; sinh viên cần thực hiện theo thủ tục do Trường quy định.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_043",
+    "query": "Sinh viên có những quyền lợi chính nào trong sổ tay?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 8. Quyền của sinh viên"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu8",
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu8",
+      "K50_QuyDinhNgoaiTruDoiVoiSinhVienDaoTaoTrinhDoDaiHocCaoDangNganhGiaoDucMamNonHinhThucChinhQuyCuaTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiQuyenVaNghiaVuCuaSinhVienNgoaiTru_Dieu5",
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu8",
+      "K51_QuyDinhNgoaiTruDoiVoiSinhVienDaoTaoTrinhDoDaiHocCaoDangNganhGiaoDucMamNonHinhThucChinhQuyCuaTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiQuyenVaNghiaVuCuaSinhVienNgoaiTru_Dieu5"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Sinh viên có các quyền liên quan đến học tập, nghiên cứu, tham gia hoạt động, được cung cấp thông tin, được hưởng chính sách, được góp ý/khiếu nại theo quy định và được bảo đảm quyền lợi hợp pháp.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_060",
+    "query": "K50: Sinh viên học theo tín chỉ thì việc học tập được quản lý theo nguyên tắc nào?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 4. Phương thức tổ chức đào tạo"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu4"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      11,
+      12
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Đào tạo được tổ chức theo tín chỉ, năm học gồm các học kỳ chính và có thể có học kỳ phụ; sinh viên đăng ký học tập theo kế hoạch và quy định của Trường.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_062",
+    "query": "K48-K49: Sinh viên dựa vào đâu để đăng ký học phần theo tiến độ?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 7. Kế hoạch giảng dạy và học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu7"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      14,
+      15
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Kế hoạch giảng dạy và học tập được xây dựng, công bố để sinh viên đăng ký học phần, theo dõi tiến độ và thực hiện CTĐT theo quy định của Trường.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_070",
+    "query": "Kết quả học tập theo học kỳ được đánh giá bằng những chỉ số nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Kết quả học tập theo học kỳ/năm học được đánh giá bằng các chỉ số như số tín chỉ tích lũy, điểm trung bình học kỳ/năm học và điểm trung bình tích lũy theo quy định.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_088",
+    "query": "Quy trình đánh giá điểm rèn luyện được thực hiện qua những bước nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 11. Quy trình đánh giá kết quả rèn luyện sinh viên"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDanhGiaKetQuaRenLuyenCuaSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiPhanLoaiDanhGiaVaQuyTrinhDanhGiaKetQuaRenLuyen_Dieu11",
+      "K50_QuyCheDanhGiaKetQuaRenLuyenCuaSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiPhanLoaiDanhGiaVaQuyTrinhDanhGiaKetQuaRenLuyen_Dieu11",
+      "K51_QuyCheDanhGiaKetQuaRenLuyenCuaSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiPhanLoaiDanhGiaVaQuyTrinhDanhGiaKetQuaRenLuyen_Dieu11"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Quy trình đánh giá rèn luyện gồm các bước sinh viên tự đánh giá, lớp/khoa/đơn vị xem xét, hội đồng đánh giá và công bố/khiếu nại theo thời gian quy định.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_091",
+    "query": "Sinh viên tham gia nghiên cứu khoa học có quyền lợi và trách nhiệm gì?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Quyền lợi và trách nhiệm của sinh viên tham gia NCKH"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyDinhVeViecToChucHoatDongNghienCuuKhoaHocCuaSinhVien_ChuongIvTrachNhiemQuyenCuaSinhVienThamGiaNghienCuuKhoaHocVaNguoiHuongDan_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Sinh viên tham gia nghiên cứu khoa học có quyền lợi và trách nhiệm theo quy định, bao gồm thực hiện đề tài nghiêm túc, tuân thủ yêu cầu chuyên môn, được hỗ trợ/hướng dẫn và được xem xét khen thưởng hoặc công nhận kết quả nếu đáp ứng điều kiện.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_001",
+    "query": "K48-K49: Để được xét học bổng khuyến khích học tập thì một học kỳ phải tích lũy điều kiện gì?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu28"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      52,
+      53
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Học bổng khuyến khích học tập yêu cầu sinh viên chính quy trong kế hoạch khóa học, kết quả học tập và rèn luyện từ khá trở lên, không bị kỷ luật từ khiển trách trở lên; học kỳ phải tích lũy tối thiểu 15 tín chỉ theo kế hoạch và các tín chỉ đều đạt.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_002",
+    "query": "K50: Khi xét học bổng KKHT, mốc tín chỉ tối thiểu trong học kỳ được quy định ra sao?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      71,
+      72,
+      73
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Học bổng khuyến khích học tập yêu cầu sinh viên chính quy trong kế hoạch khóa học, kết quả học tập và rèn luyện từ khá trở lên, không bị kỷ luật từ khiển trách trở lên; học kỳ phải tích lũy tối thiểu 15 tín chỉ theo kế hoạch và các tín chỉ đều đạt.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_003",
+    "query": "K51: Sinh viên muốn xét học bổng khuyến khích học tập cần đáp ứng những tiêu chuẩn chính nào?",
+    "cohort": "K51",
+    "expected_cohort": "K51",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_source_pages": [
+      70,
+      71,
+      72
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Học bổng khuyến khích học tập yêu cầu sinh viên chính quy trong kế hoạch khóa học, kết quả học tập và rèn luyện từ khá trở lên, không bị kỷ luật từ khiển trách trở lên; học kỳ phải tích lũy tối thiểu 15 tín chỉ theo kế hoạch và các tín chỉ đều đạt.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_004",
+    "query": "Nếu học kỳ chỉ đăng ký ít tín chỉ thì điều kiện học bổng KKHT được hiểu ra sao?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu28",
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27",
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Học bổng khuyến khích học tập yêu cầu sinh viên chính quy trong kế hoạch khóa học, kết quả học tập và rèn luyện từ khá trở lên, không bị kỷ luật từ khiển trách trở lên; học kỳ phải tích lũy tối thiểu 15 tín chỉ theo kế hoạch và các tín chỉ đều đạt.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_005",
+    "query": "K50: Mức học bổng loại khá, giỏi, xuất sắc được tính theo hệ số nào?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      71,
+      72,
+      73
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Mức học bổng được tính theo số tín chỉ, định mức học phí một tín chỉ và hệ số theo loại: khá 1.0, giỏi 1.25, xuất sắc 1.5; quỹ học bổng bố trí tối thiểu bằng 8% nguồn thu học phí và cấp bù học phí.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_008",
+    "query": "K50: Trong năm trường thường tổ chức xét tốt nghiệp chính quy vào các tháng nào?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      23,
+      24,
+      25
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Sinh viên chính quy có 03 đợt xét tốt nghiệp chính thức, thường vào tháng 5, tháng 8 và tháng 10. Sinh viên vừa làm vừa học có 05 đợt, thường vào tháng 3, 5, 8, 10 và 12.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_009",
+    "query": "K51: Sinh viên chính quy có bao nhiêu đợt xét tốt nghiệp chính thức?",
+    "cohort": "K51",
+    "expected_cohort": "K51",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_source_pages": [
+      23,
+      24,
+      25
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Sinh viên chính quy có 03 đợt xét tốt nghiệp chính thức, thường vào tháng 5, tháng 8 và tháng 10. Sinh viên vừa làm vừa học có 05 đợt, thường vào tháng 3, 5, 8, 10 và 12.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_011",
+    "query": "K48-K49: Các mốc tháng xét tốt nghiệp của chính quy và vừa làm vừa học khác nhau thế nào?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      25,
+      26,
+      27
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Sinh viên chính quy có 03 đợt xét tốt nghiệp chính thức, thường vào tháng 5, tháng 8 và tháng 10. Sinh viên vừa làm vừa học có 05 đợt, thường vào tháng 3, 5, 8, 10 và 12.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_012",
+    "query": "K51: Khi xét công nhận tốt nghiệp, sinh viên cần thỏa những nhóm điều kiện nào?",
+    "cohort": "K51",
+    "expected_cohort": "K51",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_source_pages": [
+      23,
+      24,
+      25
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Điều kiện công nhận tốt nghiệp gồm tích lũy đủ học phần/số tín chỉ và nội dung bắt buộc theo CTĐT, đạt chuẩn đầu ra, điểm trung bình tích lũy toàn khóa từ trung bình trở lên, và tại thời điểm xét không bị truy cứu trách nhiệm hình sự hoặc kỷ luật đình chỉ học tập.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_013",
+    "query": "Muốn được cấp bằng tốt nghiệp thì ngoài tín chỉ còn cần điều kiện gì?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Điều kiện công nhận tốt nghiệp gồm tích lũy đủ học phần/số tín chỉ và nội dung bắt buộc theo CTĐT, đạt chuẩn đầu ra, điểm trung bình tích lũy toàn khóa từ trung bình trở lên, và tại thời điểm xét không bị truy cứu trách nhiệm hình sự hoặc kỷ luật đình chỉ học tập.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_015",
+    "query": "K51: Học đại học chính quy cấp bằng thứ nhất được học tối đa bao lâu?",
+    "cohort": "K51",
+    "expected_cohort": "K51",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 3. Chương trình đào tạo và thời gian học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_source_pages": [
+      9,
+      10,
+      11
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Đào tạo đại học cấp bằng thứ nhất hệ chính quy có thời gian chuẩn 4 năm học và tối đa 8 năm học; hình thức vừa làm vừa học có thời gian chuẩn 5 năm học và tối đa 9 năm học.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_016",
+    "query": "Thời gian chuẩn và tối đa của chương trình đại học chính quy là mấy năm?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 3. Chương trình đào tạo và thời gian học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Đào tạo đại học cấp bằng thứ nhất hệ chính quy có thời gian chuẩn 4 năm học và tối đa 8 năm học; hình thức vừa làm vừa học có thời gian chuẩn 5 năm học và tối đa 9 năm học.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_017",
+    "query": "K48-K49: Hệ vừa làm vừa học cấp bằng thứ nhất có thời gian học tối đa bao nhiêu năm?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 3. Chương trình đào tạo và thời gian học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      11,
+      12,
+      13
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Đào tạo đại học cấp bằng thứ nhất hệ chính quy có thời gian chuẩn 4 năm học và tối đa 8 năm học; hình thức vừa làm vừa học có thời gian chuẩn 5 năm học và tối đa 9 năm học.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_018",
+    "query": "K50: Bảng thời gian học tập quy định mốc tối đa thế nào cho hệ chính quy?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 3. Chương trình đào tạo và thời gian học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      9,
+      10,
+      11
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Đào tạo đại học cấp bằng thứ nhất hệ chính quy có thời gian chuẩn 4 năm học và tối đa 8 năm học; hình thức vừa làm vừa học có thời gian chuẩn 5 năm học và tối đa 9 năm học.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_019",
+    "query": "Hệ chính quy bị cảnh báo học tập khi rơi vào các trường hợp nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "cohort_sensitive",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Sinh viên chính quy bị cảnh báo học tập nếu tín chỉ không đạt vượt 50% khối lượng đăng ký hoặc nợ đọng vượt 24 tín chỉ; điểm trung bình học kỳ dưới 0,8 ở học kỳ đầu hoặc dưới 1,0 ở các học kỳ sau; hoặc điểm trung bình tích lũy dưới ngưỡng theo năm học.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_020",
+    "query": "K48-K49: Nếu nợ tín chỉ quá nhiều thì điều kiện cảnh báo học tập được quy định ra sao?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "cohort_sensitive",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      23,
+      24
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Sinh viên chính quy bị cảnh báo học tập nếu tín chỉ không đạt vượt 50% khối lượng đăng ký hoặc nợ đọng vượt 24 tín chỉ; điểm trung bình học kỳ dưới 0,8 ở học kỳ đầu hoặc dưới 1,0 ở các học kỳ sau; hoặc điểm trung bình tích lũy dưới ngưỡng theo năm học.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_021",
+    "query": "K50: Ngưỡng điểm trung bình học kỳ nào khiến sinh viên chính quy bị cảnh báo?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "cohort_sensitive",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      21,
+      22
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Sinh viên chính quy bị cảnh báo học tập nếu tín chỉ không đạt vượt 50% khối lượng đăng ký hoặc nợ đọng vượt 24 tín chỉ; điểm trung bình học kỳ dưới 0,8 ở học kỳ đầu hoặc dưới 1,0 ở các học kỳ sau; hoặc điểm trung bình tích lũy dưới ngưỡng theo năm học.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_023",
+    "query": "K48-K49: Cảnh báo học tập đến mức nào thì sinh viên chính quy có thể bị buộc thôi học?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "cohort_sensitive",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      23,
+      24
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Sinh viên chính quy bị buộc thôi học nếu bị cảnh báo học tập 03 lần liên tiếp trong một khóa học, bị cảnh báo đến lần thứ tư tính từ đầu khóa, hoặc thời gian học tập vượt quá giới hạn tối đa.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_024",
+    "query": "K50: Ngoài cảnh báo học tập, trường hợp nào khác có thể dẫn đến buộc thôi học?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "cohort_sensitive",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      21,
+      22
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Sinh viên chính quy bị buộc thôi học nếu bị cảnh báo học tập 03 lần liên tiếp trong một khóa học, bị cảnh báo đến lần thứ tư tính từ đầu khóa, hoặc thời gian học tập vượt quá giới hạn tối đa.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  },
+  {
+    "id": "holdout_ragas_025",
+    "query": "Hệ vừa làm vừa học bị cảnh báo hoặc buộc thôi học theo các mốc nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 13. Xử lý kết quả học tập đối với hình thức đào tạo vừa làm"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu13",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu13",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu13",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu13",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu13"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "eval_bucket": "true_rag",
+    "ground_truth": "Hình thức vừa làm vừa học bị cảnh báo nếu điểm trung bình tích lũy dưới ngưỡng theo năm học hoặc tổng tín chỉ nợ đọng từ đầu khóa vượt quá 24; bị buộc thôi học nếu cảnh báo 02 lần liên tiếp hoặc 03 lần không liên tiếp trong một khóa học, hoặc vượt thời gian tối đa.",
+    "judge_metrics": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall",
+      "answer_correctness",
+      "citation_correctness"
+    ]
+  }
+]

@@ -4,6 +4,7 @@ import argparse
 import json
 import math
 import os
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -151,6 +152,18 @@ def metadata_value(item: dict[str, Any], key: str) -> Any:
     return item.get(key)
 
 
+def item_identity_values(item: dict[str, Any]) -> set[str]:
+    values = {
+        item.get("chunk_id"),
+        item.get("parent_section_id"),
+        item.get("parent_chunk_id"),
+        metadata_value(item, "chunk_id"),
+        metadata_value(item, "parent_section_id"),
+        metadata_value(item, "parent_chunk_id"),
+    }
+    return {str(value).strip() for value in values if str(value or "").strip()}
+
+
 def item_chunk_type(item: dict[str, Any]) -> str:
     return normalize_chunk_type(
         metadata_value(item, "chunk_type")
@@ -165,6 +178,7 @@ def has_retrieval_expectation(case: dict[str, Any]) -> bool:
         case.get(key)
         for key in (
             "expected_chunk_ids",
+            "expected_parent_section_ids",
             "expected_content_types",
             "expected_document_id",
             "expected_source_sections",
@@ -204,7 +218,12 @@ def cohort_arg(value: Any) -> str | None:
 
 def metadata_relevance(item: dict[str, Any], case: dict[str, Any]) -> bool:
     expected_ids = set(expected_list(case, "expected_chunk_ids"))
-    if expected_ids and str(item.get("chunk_id")) in expected_ids:
+    item_ids = item_identity_values(item)
+    if expected_ids and item_ids & expected_ids:
+        return True
+
+    expected_parent_ids = set(expected_list(case, "expected_parent_section_ids"))
+    if expected_parent_ids and item_ids & expected_parent_ids:
         return True
 
     checks: list[bool] = []
@@ -226,7 +245,12 @@ def metadata_relevance(item: dict[str, Any], case: dict[str, Any]) -> bool:
 
     expected_sections = set(expected_list(case, "expected_source_sections"))
     if expected_sections:
-        checks.append(str(metadata_value(item, "source_section")) in expected_sections)
+        actual_section = str(metadata_value(item, "source_section") or "").strip()
+        if actual_section:
+            checks.append(actual_section in expected_sections)
+        else:
+            actual_identity = " ".join(item_ids)
+            checks.append(section_identity_matches(actual_identity, expected_sections))
 
     expected_pages = set(parse_source_pages(case.get("expected_source_pages")))
     if expected_pages:
@@ -234,6 +258,36 @@ def metadata_relevance(item: dict[str, Any], case: dict[str, Any]) -> bool:
         checks.append(bool(expected_pages & actual_pages))
 
     return bool(checks) and all(checks)
+
+
+def section_identity_matches(actual_identity: str, expected_sections: set[str]) -> bool:
+    actual = normalize_for_section_match(actual_identity)
+    if not actual:
+        return False
+    for expected in expected_sections:
+        expected_normalized = normalize_for_section_match(expected)
+        marker = extract_article_marker(expected_normalized)
+        if marker and marker in actual:
+            return True
+    return False
+
+
+def normalize_for_section_match(value: Any) -> str:
+    text = str(value or "").lower()
+    text = (
+        text.replace("đ", "d")
+        .replace("Đ", "d")
+        .replace("_", " ")
+        .replace("-", " ")
+    )
+    return re.sub(r"[^a-z0-9]+", "", text)
+
+
+def extract_article_marker(normalized_text: str) -> str:
+    match = re.search(r"dieu0*(\d+)", normalized_text)
+    if not match:
+        return ""
+    return f"dieu{match.group(1)}"
 
 
 def relevance_flags(items: list[dict[str, Any]], case: dict[str, Any]) -> list[bool]:
@@ -296,6 +350,7 @@ def evaluate_case(case: dict[str, Any], result: dict[str, Any]) -> dict[str, Any
         "actual_strategy": result.get("strategy"),
         "strategy_match": strategy_matches(case, result),
         "expected_chunk_ids": expected_ids,
+        "expected_parent_section_ids": expected_list(case, "expected_parent_section_ids"),
         "expected_content_types": expected_list(case, "expected_content_types"),
         "expected_cohort": case.get("expected_cohort") or case.get("cohort"),
         "expected_document_id": case.get("expected_document_id"),
@@ -309,6 +364,9 @@ def evaluate_case(case: dict[str, Any], result: dict[str, Any]) -> dict[str, Any
                 "normalized_type": item_chunk_type(item),
                 "cohort": metadata_value(item, "cohort"),
                 "document_id": metadata_value(item, "document_id"),
+                "chunk_id": item.get("chunk_id") or metadata_value(item, "chunk_id"),
+                "parent_section_id": metadata_value(item, "parent_section_id"),
+                "parent_chunk_id": metadata_value(item, "parent_chunk_id"),
                 "source_section": metadata_value(item, "source_section"),
                 "source_pages": parse_source_pages(metadata_value(item, "source_pages")),
             }

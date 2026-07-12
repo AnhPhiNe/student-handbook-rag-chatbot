@@ -1,0 +1,410 @@
+[
+  {
+    "id": "router_holdout_struct_program_cntt_k50",
+    "category": "program_lookup",
+    "query": "Ở khóa 50, khoa Công nghệ Thông tin đào tạo những ngành nào vậy?",
+    "cohort": "K50",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_program_cntt_k51",
+    "category": "program_lookup",
+    "query": "Khóa 51 bên CNTT có thêm ngành nào so với các khóa trước?",
+    "cohort": "K51",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_program_school_k48_count",
+    "category": "program_lookup",
+    "query": "Danh mục ngành áp dụng cho K48-K49 gồm bao nhiêu ngành?",
+    "cohort": "K48-K49",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_program_school_k51_count",
+    "category": "program_lookup",
+    "query": "Nếu chọn khóa 51 thì trường đang có tổng cộng mấy ngành đào tạo?",
+    "cohort": "K51",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_program_faculty_history_geo",
+    "category": "program_lookup",
+    "query": "Ai phụ trách ngành Sư phạm Lịch sử - Địa lý trong danh mục ngành?",
+    "cohort": "K51",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_program_faculty_sp_cong_nghe",
+    "category": "program_lookup",
+    "query": "Sư phạm Công nghệ do khoa nào phụ trách?",
+    "cohort": "K51",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_score_k50_d",
+    "category": "scoring_lookup",
+    "query": "K50 bị điểm D thì môn đó có được tính là đạt không?",
+    "cohort": "K50",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_score_k51_dplus",
+    "category": "scoring_lookup",
+    "query": "K51 điểm D+ có qua học phần không?",
+    "cohort": "K51",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_score_bplus",
+    "category": "scoring_lookup",
+    "query": "B+ quy đổi sang thang 4 là bao nhiêu?",
+    "cohort": "K48-K49",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_score_f_retake",
+    "category": "scoring_lookup",
+    "query": "Nếu học phần bị F thì hệ thống tính như thế nào?",
+    "cohort": "K50",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_form_certificate",
+    "category": "form_lookup",
+    "query": "Nếu cần giấy xác nhận đang là sinh viên thì nên mở mục biểu mẫu nào?",
+    "cohort": "K51",
+    "expected_intent": "form_query",
+    "expected_strategy": "form_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_office_ctcthssv_email",
+    "category": "office_lookup",
+    "query": "Email liên hệ Phòng CTCT&HSSV là gì?",
+    "cohort": "K51",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_office_khao_thi",
+    "category": "office_lookup",
+    "query": "Các việc liên quan đến khảo thí và đảm bảo chất lượng nên hỏi phòng nào?",
+    "cohort": "K50",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_office_ktx",
+    "category": "office_lookup",
+    "query": "Ký túc xá có thể hỏi thông tin ở đơn vị nào?",
+    "cohort": "K48-K49",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_office_student_account",
+    "category": "office_lookup",
+    "query": "Tài khoản sinh viên trên hệ thống phần mềm bị lỗi thì nên hỏi đơn vị nào?",
+    "cohort": "K48-K49",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_struct_guardrail_weather",
+    "category": "guardrail",
+    "query": "Ngày mai ở quận 5 có mưa không?",
+    "cohort": "K51",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_target_chunk_types": null
+  },
+  {
+    "id": "router_holdout_rag_001",
+    "category": "regulation_query",
+    "query": "K48-K49: Để được xét học bổng khuyến khích học tập thì một học kỳ phải tích lũy điều kiện gì?",
+    "cohort": "K48-K49",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_002",
+    "category": "regulation_query",
+    "query": "K50: Khi xét học bổng KKHT, mốc tín chỉ tối thiểu trong học kỳ được quy định ra sao?",
+    "cohort": "K50",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_003",
+    "category": "regulation_query",
+    "query": "K51: Sinh viên muốn xét học bổng khuyến khích học tập cần đáp ứng những tiêu chuẩn chính nào?",
+    "cohort": "K51",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_004",
+    "category": "regulation_query",
+    "query": "Nếu học kỳ chỉ đăng ký ít tín chỉ thì điều kiện học bổng KKHT được hiểu ra sao?",
+    "cohort": "general",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_005",
+    "category": "regulation_query",
+    "query": "K50: Mức học bổng loại khá, giỏi, xuất sắc được tính theo hệ số nào?",
+    "cohort": "K50",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_006",
+    "category": "regulation_query",
+    "query": "K51: Quỹ học bổng khuyến khích học tập tối thiểu được bố trí theo tỷ lệ bao nhiêu?",
+    "cohort": "K51",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_007",
+    "category": "regulation_query",
+    "query": "Công thức mức học bổng KKHT trong sổ tay đang dựa trên những thành phần nào?",
+    "cohort": "general",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_008",
+    "category": "regulation_query",
+    "query": "K50: Trong năm trường thường tổ chức xét tốt nghiệp chính quy vào các tháng nào?",
+    "cohort": "K50",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_009",
+    "category": "regulation_query",
+    "query": "K51: Sinh viên chính quy có bao nhiêu đợt xét tốt nghiệp chính thức?",
+    "cohort": "K51",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_010",
+    "category": "regulation_query",
+    "query": "Hệ vừa làm vừa học được xét tốt nghiệp chính thức mấy đợt mỗi năm?",
+    "cohort": "general",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_011",
+    "category": "regulation_query",
+    "query": "K48-K49: Các mốc tháng xét tốt nghiệp của chính quy và vừa làm vừa học khác nhau thế nào?",
+    "cohort": "K48-K49",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_012",
+    "category": "regulation_query",
+    "query": "K51: Khi xét công nhận tốt nghiệp, sinh viên cần thỏa những nhóm điều kiện nào?",
+    "cohort": "K51",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_013",
+    "category": "regulation_query",
+    "query": "Muốn được cấp bằng tốt nghiệp thì ngoài tín chỉ còn cần điều kiện gì?",
+    "cohort": "general",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_014",
+    "category": "regulation_query",
+    "query": "K48-K49: Điểm trung bình toàn khóa có vai trò gì trong điều kiện tốt nghiệp?",
+    "cohort": "K48-K49",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_015",
+    "category": "regulation_query",
+    "query": "K51: Học đại học chính quy cấp bằng thứ nhất được học tối đa bao lâu?",
+    "cohort": "K51",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_016",
+    "category": "regulation_query",
+    "query": "Thời gian chuẩn và tối đa của chương trình đại học chính quy là mấy năm?",
+    "cohort": "general",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_017",
+    "category": "regulation_query",
+    "query": "K48-K49: Hệ vừa làm vừa học cấp bằng thứ nhất có thời gian học tối đa bao nhiêu năm?",
+    "cohort": "K48-K49",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_018",
+    "category": "regulation_query",
+    "query": "K50: Bảng thời gian học tập quy định mốc tối đa thế nào cho hệ chính quy?",
+    "cohort": "K50",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_019",
+    "category": "regulation_query",
+    "query": "Hệ chính quy bị cảnh báo học tập khi rơi vào các trường hợp nào?",
+    "cohort": "general",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_020",
+    "category": "regulation_query",
+    "query": "K48-K49: Nếu nợ tín chỉ quá nhiều thì điều kiện cảnh báo học tập được quy định ra sao?",
+    "cohort": "K48-K49",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_021",
+    "category": "regulation_query",
+    "query": "K50: Ngưỡng điểm trung bình học kỳ nào khiến sinh viên chính quy bị cảnh báo?",
+    "cohort": "K50",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_022",
+    "category": "regulation_query",
+    "query": "Chính quy bị buộc thôi học sau bao nhiêu lần cảnh báo học tập?",
+    "cohort": "general",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_023",
+    "category": "regulation_query",
+    "query": "K48-K49: Cảnh báo học tập đến mức nào thì sinh viên chính quy có thể bị buộc thôi học?",
+    "cohort": "K48-K49",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  },
+  {
+    "id": "router_holdout_rag_024",
+    "category": "regulation_query",
+    "query": "K50: Ngoài cảnh báo học tập, trường hợp nào khác có thể dẫn đến buộc thôi học?",
+    "cohort": "K50",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_target_chunk_types": [
+      "regulation"
+    ]
+  }
+]

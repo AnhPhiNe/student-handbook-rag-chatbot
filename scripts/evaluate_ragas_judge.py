@@ -194,7 +194,7 @@ def format_context(citations: list[dict[str, Any]]) -> str:
         content = str(citation.get("content") or citation.get("text") or "").strip()
         if not content:
             continue
-        parts.append(f"[{index}] {content[:2000]}")
+        parts.append(f"[{index}] {content[:3500]}")
     return "\n\n".join(parts) if parts else "(không có context)"
 
 
@@ -294,6 +294,8 @@ def answer_record_from_case(
     result = pipeline.answer(query, cohort=cohort_arg(cohort))
     answer = str(result.get("answer") or "").strip()
     citations = result.get("citations_used") or []
+    context_used = str(result.get("context_used") or "").strip()
+    citation_context = format_context(citations)
     status = result.get("status")
     error_type = result.get("error_type")
     answer_ready = status == "answered" and bool(answer)
@@ -316,7 +318,9 @@ def answer_record_from_case(
         "model_used": result.get("model_used"),
         "citation_count": len(citations),
         "citations": citations,
-        "context": format_context(citations),
+        "context": context_used or citation_context,
+        "context_used": context_used,
+        "citation_context": citation_context,
         "answer": answer,
         "answer_preview": answer[:700],
         "answer_ready": answer_ready,
@@ -430,10 +434,15 @@ def judge_cached_case(
 ) -> dict[str, Any]:
     answer = str(record.get("answer") or "")
     citations = record.get("citations") or []
+    context = (
+        str(record.get("context_used") or "").strip()
+        or str(record.get("context") or "").strip()
+        or format_context(citations)
+    )
     prompt = JUDGE_PROMPT_TEMPLATE.format(
         query=record.get("query"),
         cohort=record.get("cohort") or "general",
-        context=record.get("context") or format_context(citations),
+        context=context,
         citations=format_citations(citations),
         answer=answer,
         ground_truth=record.get("ground_truth", ""),

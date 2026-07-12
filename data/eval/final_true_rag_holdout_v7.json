@@ -1,0 +1,2374 @@
+[
+  {
+    "id": "holdout_rag_001",
+    "query": "K48-K49: Để được xét học bổng khuyến khích học tập thì một học kỳ phải tích lũy điều kiện gì?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu28"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      52,
+      53
+    ]
+  },
+  {
+    "id": "holdout_rag_002",
+    "query": "K50: Khi xét học bổng KKHT, mốc tín chỉ tối thiểu trong học kỳ được quy định ra sao?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      71,
+      72,
+      73
+    ]
+  },
+  {
+    "id": "holdout_rag_003",
+    "query": "K51: Sinh viên muốn xét học bổng khuyến khích học tập cần đáp ứng những tiêu chuẩn chính nào?",
+    "cohort": "K51",
+    "expected_cohort": "K51",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_source_pages": [
+      70,
+      71,
+      72
+    ]
+  },
+  {
+    "id": "holdout_rag_004",
+    "query": "Nếu học kỳ chỉ đăng ký ít tín chỉ thì điều kiện học bổng KKHT được hiểu ra sao?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu28",
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27",
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_005",
+    "query": "K50: Mức học bổng loại khá, giỏi, xuất sắc được tính theo hệ số nào?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      71,
+      72,
+      73
+    ]
+  },
+  {
+    "id": "holdout_rag_006",
+    "query": "K51: Quỹ học bổng khuyến khích học tập tối thiểu được bố trí theo tỷ lệ bao nhiêu?",
+    "cohort": "K51",
+    "expected_cohort": "K51",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_source_pages": [
+      70,
+      71,
+      72
+    ]
+  },
+  {
+    "id": "holdout_rag_007",
+    "query": "Công thức mức học bổng KKHT trong sổ tay đang dựa trên những thành phần nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu28",
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27",
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongVHocBongMienGiamHocPhiVaBaoLuuKetQua_Dieu27"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_008",
+    "query": "K50: Trong năm trường thường tổ chức xét tốt nghiệp chính quy vào các tháng nào?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      23,
+      24,
+      25
+    ]
+  },
+  {
+    "id": "holdout_rag_009",
+    "query": "K51: Sinh viên chính quy có bao nhiêu đợt xét tốt nghiệp chính thức?",
+    "cohort": "K51",
+    "expected_cohort": "K51",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_source_pages": [
+      23,
+      24,
+      25
+    ]
+  },
+  {
+    "id": "holdout_rag_010",
+    "query": "Hệ vừa làm vừa học được xét tốt nghiệp chính thức mấy đợt mỗi năm?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_011",
+    "query": "K48-K49: Các mốc tháng xét tốt nghiệp của chính quy và vừa làm vừa học khác nhau thế nào?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      25,
+      26,
+      27
+    ]
+  },
+  {
+    "id": "holdout_rag_012",
+    "query": "K51: Khi xét công nhận tốt nghiệp, sinh viên cần thỏa những nhóm điều kiện nào?",
+    "cohort": "K51",
+    "expected_cohort": "K51",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_source_pages": [
+      23,
+      24,
+      25
+    ]
+  },
+  {
+    "id": "holdout_rag_013",
+    "query": "Muốn được cấp bằng tốt nghiệp thì ngoài tín chỉ còn cần điều kiện gì?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_014",
+    "query": "K48-K49: Điểm trung bình toàn khóa có vai trò gì trong điều kiện tốt nghiệp?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      25,
+      26,
+      27
+    ]
+  },
+  {
+    "id": "holdout_rag_015",
+    "query": "K51: Học đại học chính quy cấp bằng thứ nhất được học tối đa bao lâu?",
+    "cohort": "K51",
+    "expected_cohort": "K51",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 3. Chương trình đào tạo và thời gian học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_51",
+    "expected_source_pages": [
+      9,
+      10,
+      11
+    ]
+  },
+  {
+    "id": "holdout_rag_016",
+    "query": "Thời gian chuẩn và tối đa của chương trình đại học chính quy là mấy năm?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 3. Chương trình đào tạo và thời gian học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_017",
+    "query": "K48-K49: Hệ vừa làm vừa học cấp bằng thứ nhất có thời gian học tối đa bao nhiêu năm?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 3. Chương trình đào tạo và thời gian học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      11,
+      12,
+      13
+    ]
+  },
+  {
+    "id": "holdout_rag_018",
+    "query": "K50: Bảng thời gian học tập quy định mốc tối đa thế nào cho hệ chính quy?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 3. Chương trình đào tạo và thời gian học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu3"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "table_heavy",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      9,
+      10,
+      11
+    ]
+  },
+  {
+    "id": "holdout_rag_019",
+    "query": "Hệ chính quy bị cảnh báo học tập khi rơi vào các trường hợp nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "cohort_sensitive",
+      "numeric_fact",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_020",
+    "query": "K48-K49: Nếu nợ tín chỉ quá nhiều thì điều kiện cảnh báo học tập được quy định ra sao?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "cohort_sensitive",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      23,
+      24
+    ]
+  },
+  {
+    "id": "holdout_rag_021",
+    "query": "K50: Ngưỡng điểm trung bình học kỳ nào khiến sinh viên chính quy bị cảnh báo?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "cohort_sensitive",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      21,
+      22
+    ]
+  },
+  {
+    "id": "holdout_rag_022",
+    "query": "Chính quy bị buộc thôi học sau bao nhiêu lần cảnh báo học tập?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "cohort_sensitive",
+      "numeric_fact",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_023",
+    "query": "K48-K49: Cảnh báo học tập đến mức nào thì sinh viên chính quy có thể bị buộc thôi học?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "cohort_sensitive",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      23,
+      24
+    ]
+  },
+  {
+    "id": "holdout_rag_024",
+    "query": "K50: Ngoài cảnh báo học tập, trường hợp nào khác có thể dẫn đến buộc thôi học?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "cohort_sensitive",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      21,
+      22
+    ]
+  },
+  {
+    "id": "holdout_rag_025",
+    "query": "Hệ vừa làm vừa học bị cảnh báo hoặc buộc thôi học theo các mốc nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 13. Xử lý kết quả học tập đối với hình thức đào tạo vừa làm"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu13",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu13",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu13",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu13",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu13"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_026",
+    "query": "K48-K49: Vừa làm vừa học bị buộc thôi học sau mấy lần cảnh báo?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 13. Xử lý kết quả học tập đối với hình thức đào tạo vừa làm"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu13"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      24,
+      25
+    ]
+  },
+  {
+    "id": "holdout_rag_027",
+    "query": "K50: Tín chỉ nợ đọng của hệ vừa làm vừa học vượt mức nào thì bị cảnh báo?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 13. Xử lý kết quả học tập đối với hình thức đào tạo vừa làm"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu13"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      22,
+      23
+    ]
+  },
+  {
+    "id": "holdout_rag_028",
+    "query": "Trường hợp nào sinh viên được xin nghỉ học tạm thời?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu16",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu16",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu16",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu16",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu16"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_029",
+    "query": "K48-K49: Nghỉ học tạm thời vì lý do cá nhân cần lưu ý điều kiện gì?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu16"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      27,
+      28
+    ]
+  },
+  {
+    "id": "holdout_rag_030",
+    "query": "K50: Sau khi tạm nghỉ thì việc tiếp nhận trở lại học được căn cứ theo đâu?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu16"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      25,
+      26
+    ]
+  },
+  {
+    "id": "holdout_rag_031",
+    "query": "Muốn chuyển ngành thì sổ tay nêu những nguyên tắc điều kiện nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 17. Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo,"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu17",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu17",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu17"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_032",
+    "query": "K48-K49: Chuyển nơi học hoặc chuyển cơ sở đào tạo được xem xét theo các yếu tố nào?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 17. Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo,"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu17"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      28,
+      29
+    ]
+  },
+  {
+    "id": "holdout_rag_033",
+    "query": "K50: Sinh viên có thể tự ý chuyển ngành hay phải theo quy trình của trường?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 17. Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo,"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu17"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      26,
+      27
+    ]
+  },
+  {
+    "id": "holdout_rag_034",
+    "query": "Học song song hai chương trình cần đáp ứng điều kiện gì?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 19. Học cùng lúc hai chương trình"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu19",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu19",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu19"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_035",
+    "query": "K48-K49: Khi nào sinh viên phải dừng học chương trình thứ hai?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 19. Học cùng lúc hai chương trình"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu19"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      30,
+      31
+    ]
+  },
+  {
+    "id": "holdout_rag_036",
+    "query": "K50: Quy định học cùng lúc hai chương trình nhấn mạnh những yêu cầu nào?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 19. Học cùng lúc hai chương trình"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvNhungQuyDinhKhacDoiVoiSinhVien_Dieu19"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      28,
+      29
+    ]
+  },
+  {
+    "id": "holdout_rag_037",
+    "query": "Chuyển đổi tín chỉ được xét dựa trên những yếu tố nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 14. Công nhận kết quả học tập và chuyển đổi tín chỉ"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu14",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu14",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu14",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu14",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu14"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_038",
+    "query": "K48-K49: Học phần đã tích lũy ở nơi khác có thể được công nhận ra sao?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 14. Công nhận kết quả học tập và chuyển đổi tín chỉ"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu14"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      25
+    ]
+  },
+  {
+    "id": "holdout_rag_039",
+    "query": "K50: Công nhận kết quả học tập có phải tự động hay cần xét theo quy định?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 14. Công nhận kết quả học tập và chuyển đổi tín chỉ"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu14"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      23
+    ]
+  },
+  {
+    "id": "holdout_rag_040",
+    "query": "Sổ tay quy định sinh viên có những nhiệm vụ chính nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 7. Nhiệm vụ của sinh viên"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu7",
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu7",
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu7"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_041",
+    "query": "K48-K49: Ngoài học tập, sinh viên phải chấp hành những nghĩa vụ gì?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 7. Nhiệm vụ của sinh viên"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu7"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      40,
+      41
+    ]
+  },
+  {
+    "id": "holdout_rag_042",
+    "query": "K50: Nhiệm vụ của sinh viên liên quan đến rèn luyện và nội quy được nêu thế nào?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 7. Nhiệm vụ của sinh viên"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu7"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      60,
+      61
+    ]
+  },
+  {
+    "id": "holdout_rag_043",
+    "query": "Sinh viên có những quyền lợi chính nào trong sổ tay?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 8. Quyền của sinh viên"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu8",
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu8",
+      "K50_QuyDinhNgoaiTruDoiVoiSinhVienDaoTaoTrinhDoDaiHocCaoDangNganhGiaoDucMamNonHinhThucChinhQuyCuaTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiQuyenVaNghiaVuCuaSinhVienNgoaiTru_Dieu5",
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu8",
+      "K51_QuyDinhNgoaiTruDoiVoiSinhVienDaoTaoTrinhDoDaiHocCaoDangNganhGiaoDucMamNonHinhThucChinhQuyCuaTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiQuyenVaNghiaVuCuaSinhVienNgoaiTru_Dieu5"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_044",
+    "query": "K48-K49: Quyền của sinh viên về thông tin, chính sách và khiếu nại được hiểu thế nào?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 8. Quyền của sinh viên"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu8"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      41,
+      42,
+      43
+    ]
+  },
+  {
+    "id": "holdout_rag_045",
+    "query": "K50: Sinh viên được tham gia và được hỗ trợ những hoạt động gì?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 8. Quyền của sinh viên"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu8"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      61,
+      62,
+      63
+    ]
+  },
+  {
+    "id": "holdout_rag_046",
+    "query": "Những hành vi nào sinh viên bị cấm trong sổ tay?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 10. Các hành vi sinh viên không được làm"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu10",
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu10",
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu10"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_047",
+    "query": "K48-K49: Sổ tay nêu các nhóm việc sinh viên không được làm ra sao?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 10. Các hành vi sinh viên không được làm"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu10"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      43,
+      44
+    ]
+  },
+  {
+    "id": "holdout_rag_048",
+    "query": "K50: Gian lận hoặc gây rối có nằm trong nhóm hành vi bị cấm không?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 10. Các hành vi sinh viên không được làm"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiNhiemVuVaQuyenCuaSinhVien_Dieu10"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      63,
+      64
+    ]
+  },
+  {
+    "id": "holdout_rag_049",
+    "query": "Các hình thức kỷ luật sinh viên gồm những mức nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 35. Hình thức kỷ luật và nội dung vi phạm"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu35",
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu34",
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu34"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_050",
+    "query": "K48-K49: Khi vi phạm nội quy, sinh viên có thể bị xử lý kỷ luật theo các hình thức nào?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 35. Hình thức kỷ luật và nội dung vi phạm"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu35"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      59,
+      60
+    ]
+  },
+  {
+    "id": "holdout_rag_051",
+    "query": "K50: Đình chỉ học tập và buộc thôi học nằm trong nhóm xử lý kỷ luật nào?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 34. Hình thức kỷ luật và nội dung vi phạm"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu34"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      80,
+      81
+    ]
+  },
+  {
+    "id": "holdout_rag_052",
+    "query": "Quy trình xét kỷ luật sinh viên cần những bước/hồ sơ gì?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 36. Trình tự, thủ tục và hồ sơ xét kỷ luật"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu36",
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu35",
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu35"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_053",
+    "query": "K48-K49: Khi bị xem xét kỷ luật, hồ sơ xử lý thường dựa vào những tài liệu nào?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 36. Trình tự, thủ tục và hồ sơ xét kỷ luật"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu36"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      60,
+      61
+    ]
+  },
+  {
+    "id": "holdout_rag_054",
+    "query": "K50: Trình tự xét kỷ luật có phải do cá nhân tự quyết hay theo hội đồng/quy định?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 35. Trình tự, thủ tục và hồ sơ xét kỷ luật"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu35"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      81,
+      82
+    ]
+  },
+  {
+    "id": "holdout_rag_055",
+    "query": "Nếu không đồng ý với quyết định kỷ luật thì sinh viên có quyền gì?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 39. Quyền khiếu nại về khen thưởng, kỷ luật"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu39",
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu38",
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu38"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_056",
+    "query": "K48-K49: Quyền khiếu nại về khen thưởng, kỷ luật được nêu như thế nào?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 39. Quyền khiếu nại về khen thưởng, kỷ luật"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu39"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      62
+    ]
+  },
+  {
+    "id": "holdout_rag_057",
+    "query": "K50: Sinh viên có thể phản ánh quyết định khen thưởng hoặc kỷ luật không?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 38. Quyền khiếu nại về khen thưởng, kỷ luật"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongViThiDuaKhenThuongVaKyLuat_Dieu38"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      83
+    ]
+  },
+  {
+    "id": "holdout_rag_058",
+    "query": "Phương thức tổ chức đào tạo theo tín chỉ được mô tả thế nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 4. Phương thức tổ chức đào tạo"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu4",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu4",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu4",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu4",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu4"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_059",
+    "query": "K48-K49: Năm học và học kỳ trong phương thức đào tạo được tổ chức ra sao?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 4. Phương thức tổ chức đào tạo"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu4"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      13
+    ]
+  },
+  {
+    "id": "holdout_rag_060",
+    "query": "K50: Sinh viên học theo tín chỉ thì việc học tập được quản lý theo nguyên tắc nào?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 4. Phương thức tổ chức đào tạo"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu4"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      11,
+      12
+    ]
+  },
+  {
+    "id": "holdout_rag_061",
+    "query": "Kế hoạch giảng dạy và học tập có vai trò gì với sinh viên?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 7. Kế hoạch giảng dạy và học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu7",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu7",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu7",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu7",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu7"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_062",
+    "query": "K48-K49: Sinh viên dựa vào đâu để đăng ký học phần theo tiến độ?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 7. Kế hoạch giảng dạy và học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu7"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      14,
+      15
+    ]
+  },
+  {
+    "id": "holdout_rag_063",
+    "query": "K50: Kế hoạch học tập của trường được dùng để quản lý những việc gì?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 7. Kế hoạch giảng dạy và học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu7"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      12,
+      13
+    ]
+  },
+  {
+    "id": "holdout_rag_064",
+    "query": "Đăng ký học phần cần tuân thủ những nguyên tắc nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 9. Tổ chức đăng ký học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu9",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu9",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu9",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu9",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu9"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_065",
+    "query": "K48-K49: Sinh viên có trách nhiệm gì khi đăng ký học tập?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 9. Tổ chức đăng ký học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu9"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      17,
+      18
+    ]
+  },
+  {
+    "id": "holdout_rag_066",
+    "query": "K50: Việc đăng ký học tập có liên quan đến điều kiện học phần tiên quyết không?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 9. Tổ chức đăng ký học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiLapKeHoachToChucGiangDayVaHocTap_Dieu9"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      15,
+      16
+    ]
+  },
+  {
+    "id": "holdout_rag_067",
+    "query": "Điểm học phần được đánh giá từ những thành phần nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 10. Đánh giá và tính điểm học phần"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu10",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu10",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu10",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu10",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu10"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_068",
+    "query": "K48-K49: Việc tính điểm học phần căn cứ vào đâu?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 10. Đánh giá và tính điểm học phần"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu10"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      18,
+      19,
+      20,
+      21
+    ]
+  },
+  {
+    "id": "holdout_rag_069",
+    "query": "K50: Đánh giá học phần có bao gồm điểm quá trình và điểm kết thúc học phần không?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 10. Đánh giá và tính điểm học phần"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu10"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      16,
+      17,
+      18,
+      19
+    ]
+  },
+  {
+    "id": "holdout_rag_070",
+    "query": "Kết quả học tập theo học kỳ được đánh giá bằng những chỉ số nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_071",
+    "query": "K48-K49: Điểm trung bình học kỳ và tín chỉ tích lũy dùng để làm gì?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      21,
+      22,
+      23
+    ]
+  },
+  {
+    "id": "holdout_rag_072",
+    "query": "K50: Khi tổng kết năm học, sổ tay đánh giá kết quả học tập ra sao?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      19,
+      20,
+      21
+    ]
+  },
+  {
+    "id": "holdout_rag_073",
+    "query": "Đánh giá kết quả học tập toàn khóa dựa trên những căn cứ nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_074",
+    "query": "K48-K49: Điểm trung bình tích lũy toàn khóa có ý nghĩa gì?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      21,
+      22,
+      23
+    ]
+  },
+  {
+    "id": "holdout_rag_075",
+    "query": "K50: Kết quả toàn khóa liên quan thế nào đến xếp loại tốt nghiệp?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu11"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      19,
+      20,
+      21
+    ]
+  },
+  {
+    "id": "holdout_rag_076",
+    "query": "Trường hợp nào làm hạng tốt nghiệp xuất sắc hoặc giỏi bị giảm một mức?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K50_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K51_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15",
+      "K51_QuyCheDaoTaoTrinhDoCaoDangNganhGiaoDucMamNonTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_077",
+    "query": "K48-K49: Nếu học lại quá nhiều tín chỉ thì hạng tốt nghiệp có bị ảnh hưởng không?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      25,
+      26,
+      27
+    ]
+  },
+  {
+    "id": "holdout_rag_078",
+    "query": "K50: Kỷ luật từ mức nào có thể làm giảm hạng tốt nghiệp?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheDaoTaoTrinhDoDaiHocTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiDanhGiaKetQuaHocTapVaCapBangTotNghiep_Dieu15"
+    ],
+    "tags": [
+      "citation_required",
+      "numeric_fact",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      23,
+      24,
+      25
+    ]
+  },
+  {
+    "id": "holdout_rag_079",
+    "query": "Công tác sinh viên được quản lý qua những cấp/đơn vị nào?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Hệ thống tổ chức, quản lý công tác sinh viên"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvHeThongToChucQuanLyCongTacSinhVien_Dieu12",
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvHeThongToChucQuanLyCongTacSinhVien_Dieu11",
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvHeThongToChucQuanLyCongTacSinhVien_Dieu11"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_080",
+    "query": "K48-K49: Hệ thống quản lý công tác sinh viên gồm những thành phần chính nào?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 12. Hệ thống tổ chức, quản lý công tác sinh viên"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvHeThongToChucQuanLyCongTacSinhVien_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      45
+    ]
+  },
+  {
+    "id": "holdout_rag_081",
+    "query": "K50: Khoa, phòng ban và cố vấn học tập tham gia quản lý sinh viên ra sao?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 11. Hệ thống tổ chức, quản lý công tác sinh viên"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvHeThongToChucQuanLyCongTacSinhVien_Dieu11"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      64
+    ]
+  },
+  {
+    "id": "holdout_rag_082",
+    "query": "Cố vấn học tập hỗ trợ sinh viên những việc gì?",
+    "cohort": "general",
+    "expected_cohort": null,
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 24. Cố vấn học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvHeThongToChucQuanLyCongTacSinhVien_Dieu24",
+      "K48-49_QuyDinhCongTacCoVanHocTapTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongINhungQuyDinhChung_Dieu2",
+      "K48-49_QuyDinhCongTacCoVanHocTapTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIiiTrachNhiemVaQuyenLoiCuaCoVanHocTapDoiVoiLopSinhVien_Dieu5",
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvHeThongToChucQuanLyCongTacSinhVien_Dieu23",
+      "K50_QuyDinhCongTacCoVanHocTapChoSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIQuyDinhChung_Dieu2",
+      "K50_QuyDinhCongTacCoVanHocTapChoSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIQuyDinhChung_Dieu3",
+      "K50_QuyDinhNgoaiTruDoiVoiSinhVienDaoTaoTrinhDoDaiHocCaoDangNganhGiaoDucMamNonHinhThucChinhQuyCuaTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvToChucThucHien_Dieu12",
+      "K51_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvHeThongToChucQuanLyCongTacSinhVien_Dieu23",
+      "K51_QuyDinhCongTacCoVanHocTapChoSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIQuyDinhChung_Dieu2",
+      "K51_QuyDinhCongTacCoVanHocTapChoSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIQuyDinhChung_Dieu3",
+      "K51_QuyDinhNgoaiTruDoiVoiSinhVienDaoTaoTrinhDoDaiHocCaoDangNganhGiaoDucMamNonHinhThucChinhQuyCuaTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvToChucThucHien_Dieu12"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ]
+  },
+  {
+    "id": "holdout_rag_083",
+    "query": "K48-K49: Khi cần tư vấn kế hoạch học tập thì cố vấn học tập có vai trò gì?",
+    "cohort": "K48-K49",
+    "expected_cohort": "K48-K49",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 24. Cố vấn học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K48-49_QuyCheCongTacSinhVienDoiVoiChuongTrinhDaoTaoDaiHocHeChinhQuyTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvHeThongToChucQuanLyCongTacSinhVien_Dieu24"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_48_49",
+    "expected_source_pages": [
+      49,
+      50
+    ]
+  },
+  {
+    "id": "holdout_rag_084",
+    "query": "K50: Cố vấn học tập có liên quan đến đăng ký học phần và rèn luyện không?",
+    "cohort": "K50",
+    "expected_cohort": "K50",
+    "eval_type": "true_rag",
+    "content_type": "regulation_sections",
+    "expected_content_types": [
+      "regulation"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "expected_source_sections": [
+      "Điều 23. Cố vấn học tập"
+    ],
+    "expected_parent_section_ids": [
+      "K50_QuyCheCongTacSinhVienDoiVoiSinhVienHeChinhQuyTaiTruongDaiHocSuPhamThanhPhoHoChiMinh_ChuongIvHeThongToChucQuanLyCongTacSinhVien_Dieu23"
+    ],
+    "tags": [
+      "citation_required",
+      "true_rag"
+    ],
+    "expected_document_id": "so_tay_sinh_vien_khoa_50",
+    "expected_source_pages": [
+      69
+    ]
+  }
+]

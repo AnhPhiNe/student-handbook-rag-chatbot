@@ -1,0 +1,289 @@
+[
+  {
+    "id": "holdout_struct_program_cntt_k50",
+    "category": "program_lookup",
+    "query": "Ở khóa 50, khoa Công nghệ Thông tin đào tạo những ngành nào vậy?",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_structured_items_include": [
+      "Công nghệ Thông tin",
+      "Sư phạm Tin học"
+    ],
+    "expected_structured_items_exclude": [
+      "Công nghệ Giáo dục"
+    ],
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_types": [
+      "program_directory"
+    ],
+    "eval_type": "structured",
+    "content_type": "program_directory"
+  },
+  {
+    "id": "holdout_struct_program_cntt_k51",
+    "category": "program_lookup",
+    "query": "Khóa 51 bên CNTT có thêm ngành nào so với các khóa trước?",
+    "cohort": "K51",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_structured_items_include": [
+      "Công nghệ Giáo dục",
+      "Công nghệ Thông tin",
+      "Sư phạm Tin học"
+    ],
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_types": [
+      "program_directory"
+    ],
+    "eval_type": "structured",
+    "content_type": "program_directory"
+  },
+  {
+    "id": "holdout_struct_program_school_k48_count",
+    "category": "program_lookup",
+    "query": "Danh mục ngành áp dụng cho K48-K49 gồm bao nhiêu ngành?",
+    "cohort": "K48-K49",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "min_structured_items": 42,
+    "max_structured_items": 42,
+    "expected_structured_items_exclude": [
+      "Toán ứng dụng",
+      "Công nghệ Giáo dục"
+    ],
+    "expected_citation_cohort": "K48-K49",
+    "eval_type": "structured",
+    "content_type": "program_directory"
+  },
+  {
+    "id": "holdout_struct_program_school_k51_count",
+    "category": "program_lookup",
+    "query": "Nếu chọn khóa 51 thì trường đang có tổng cộng mấy ngành đào tạo?",
+    "cohort": "K51",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "min_structured_items": 44,
+    "max_structured_items": 44,
+    "expected_structured_items_include": [
+      "Toán ứng dụng",
+      "Công nghệ Giáo dục"
+    ],
+    "expected_citation_cohort": "K51",
+    "eval_type": "structured",
+    "content_type": "program_directory"
+  },
+  {
+    "id": "holdout_struct_program_faculty_history_geo",
+    "category": "program_lookup",
+    "query": "Ai phụ trách ngành Sư phạm Lịch sử - Địa lý trong danh mục ngành?",
+    "cohort": "K51",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_answer_contains": [
+      "Khoa Địa lý"
+    ],
+    "expected_structured_items_include": [
+      "Sư phạm Lịch sử"
+    ],
+    "expected_citation_content_types": [
+      "program_directory"
+    ],
+    "eval_type": "structured",
+    "content_type": "program_directory"
+  },
+  {
+    "id": "holdout_struct_program_faculty_sp_cong_nghe",
+    "category": "program_lookup",
+    "query": "Sư phạm Công nghệ do khoa nào phụ trách?",
+    "cohort": "K51",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_answer_contains": [
+      "Khoa Vật lý"
+    ],
+    "expected_structured_items_include": [
+      "Sư phạm Công nghệ"
+    ],
+    "eval_type": "structured",
+    "content_type": "program_directory"
+  },
+  {
+    "id": "holdout_struct_score_k50_d",
+    "category": "scoring_lookup",
+    "query": "K50 bị điểm D thì môn đó có được tính là đạt không?",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "grade_10_to_letter",
+    "expected_answer_contains": [
+      "D",
+      "1.0"
+    ],
+    "eval_type": "structured",
+    "content_type": "scoring_tables"
+  },
+  {
+    "id": "holdout_struct_score_k51_dplus",
+    "category": "scoring_lookup",
+    "query": "K51 điểm D+ có qua học phần không?",
+    "cohort": "K51",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "grade_10_to_letter",
+    "expected_answer_contains": [
+      "D+",
+      "1.5"
+    ],
+    "eval_type": "structured",
+    "content_type": "threshold_rules"
+  },
+  {
+    "id": "holdout_struct_score_bplus",
+    "category": "scoring_lookup",
+    "query": "B+ quy đổi sang thang 4 là bao nhiêu?",
+    "cohort": "K48-K49",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "letter_to_grade_4",
+    "expected_answer_contains": [
+      "B+",
+      "3.5"
+    ],
+    "eval_type": "structured",
+    "content_type": "scoring_tables"
+  },
+  {
+    "id": "holdout_struct_score_f_retake",
+    "category": "scoring_lookup",
+    "query": "Nếu học phần bị F thì hệ thống tính như thế nào?",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "letter_to_grade_4",
+    "expected_answer_contains": [
+      "F",
+      "0.0"
+    ],
+    "eval_type": "structured",
+    "content_type": "scoring_tables"
+  },
+  {
+    "id": "holdout_struct_form_certificate",
+    "category": "form_lookup",
+    "query": "Nếu cần giấy xác nhận đang là sinh viên thì nên mở mục biểu mẫu nào?",
+    "cohort": "K51",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "form_query",
+    "expected_strategy": "form_lookup",
+    "expected_lookup_type": "form_template",
+    "expected_answer_contains": [
+      "Biểu mẫu"
+    ],
+    "eval_type": "structured",
+    "content_type": "form_templates"
+  },
+  {
+    "id": "holdout_struct_office_ctcthssv_email",
+    "category": "office_lookup",
+    "query": "Email liên hệ Phòng CTCT&HSSV là gì?",
+    "cohort": "K51",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_answer_contains": [
+      "hopthusinhvien@hcmue.edu.vn"
+    ],
+    "eval_type": "structured",
+    "content_type": "office_directory"
+  },
+  {
+    "id": "holdout_struct_office_khao_thi",
+    "category": "office_lookup",
+    "query": "Các việc liên quan đến khảo thí và đảm bảo chất lượng nên hỏi phòng nào?",
+    "cohort": "K50",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_structured_items_include": [
+      "Khảo thí"
+    ],
+    "eval_type": "structured",
+    "content_type": "office_directory"
+  },
+  {
+    "id": "holdout_struct_office_ktx",
+    "category": "office_lookup",
+    "query": "Ký túc xá có thể hỏi thông tin ở đơn vị nào?",
+    "cohort": "K48-K49",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_structured_items_include": [
+      "Ký túc xá"
+    ],
+    "eval_type": "structured",
+    "content_type": "office_directory"
+  },
+  {
+    "id": "holdout_struct_office_student_account",
+    "category": "office_lookup",
+    "query": "Tài khoản sinh viên trên hệ thống phần mềm bị lỗi thì nên hỏi đơn vị nào?",
+    "cohort": "K48-K49",
+    "expected_status": "answered",
+    "expected_llm_called": false,
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_structured_items_include": [
+      "Công nghệ Thông tin"
+    ],
+    "eval_type": "structured",
+    "content_type": "office_directory"
+  },
+  {
+    "id": "holdout_struct_guardrail_weather",
+    "category": "guardrail",
+    "query": "Ngày mai ở quận 5 có mưa không?",
+    "cohort": "K51",
+    "expected_status": "out_of_domain",
+    "expected_llm_called": false,
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "eval_type": "structured",
+    "content_type": "guardrail"
+  }
+]

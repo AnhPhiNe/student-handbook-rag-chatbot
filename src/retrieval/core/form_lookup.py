@@ -106,6 +106,21 @@ def _score_form(query: str, form: dict[str, Any]) -> float:
     return score
 
 
+def _score_form_from_data(candidate_text: str, form: dict[str, Any]) -> float:
+    candidate_norm = normalize_text(candidate_text)
+    candidate_tokens = tokenize(candidate_text)
+    if not candidate_norm or not candidate_tokens:
+        return 0.0
+    name_norm = normalize_text(form.get("form_name") or "")
+    search_norm = normalize_text(_form_search_text(form))
+    score = len(candidate_tokens & tokenize(search_norm)) * 2.0
+    if candidate_norm == name_norm:
+        score += 20
+    elif candidate_norm in search_norm or name_norm in candidate_norm:
+        score += 10
+    return score
+
+
 def _summarize_form(form: dict[str, Any]) -> dict[str, Any]:
     raw_text = str(form.get("raw_text") or "")
     return {
@@ -127,25 +142,48 @@ def form_lookup(
     form_templates: list[dict[str, Any]],
     cohort: str | None = None,
     top_k: int = 3,
+    candidate_text: str | None = None,
+    require_confident_match: bool = False,
 ) -> dict[str, Any] | None:
     """Tra cứu biểu mẫu bằng metadata, không cần embed toàn văn mẫu đơn."""
     normalized_cohort = normalize_cohort(cohort)
     candidates = form_templates
     if normalized_cohort:
-        candidates = [
+        cohort_matches = [
             form
             for form in candidates
             if normalize_cohort(form.get("cohort")) == normalized_cohort
         ]
+        if cohort_matches:
+            candidates = cohort_matches
 
-    scored = [
-        (score, form)
-        for form in candidates
-        if (score := _score_form(query, form)) > 0
-    ]
+    if candidate_text and candidate_text.strip():
+        scored = [
+            (score, form)
+            for form in candidates
+            if (score := _score_form_from_data(candidate_text, form)) > 0
+        ]
+    else:
+        scored = [
+            (score, form)
+            for form in candidates
+            if (score := _score_form(query, form)) > 0
+        ]
     scored.sort(key=lambda item: item[0], reverse=True)
 
-    matches = [_summarize_form(form) | {"score": round(score, 2)} for score, form in scored[:top_k]]
+    match_score = scored[0][0] if scored else 0.0
+    runner_up_score = scored[1][0] if len(scored) > 1 else 0.0
+    score_margin = match_score - runner_up_score
+    if require_confident_match:
+        required_margin = max(1.0, match_score * 0.15)
+        if not scored or score_margin < required_margin:
+            return None
+        scored = scored[:1]
+
+    matches = [
+        _summarize_form(form) | {"score": round(score, 2)}
+        for score, form in scored[:top_k]
+    ]
     if not matches:
         return None
 
@@ -174,4 +212,9 @@ def form_lookup(
         "document_id": next(iter(document_ids)) if len(document_ids) == 1 else None,
         "source_section": "form_templates",
         "content_type": "form_template",
+        "match_score": round(match_score, 2),
+        "score_margin": round(score_margin, 2),
+        "selection_method": (
+            "typed_candidate_confident" if require_confident_match else "lexical_rank"
+        ),
     }

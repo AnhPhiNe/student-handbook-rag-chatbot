@@ -110,8 +110,18 @@ class QueryRewriter:
     @classmethod
     def from_config(cls, config: dict[str, Any] | None) -> QueryRewriter:
         config = config or {}
-        env_enabled = False if _env_bool("STUDENT_RAG_OFFLINE_EVAL") else _env_bool("QUERY_REWRITER_ENABLED")
-        enabled = bool(config.get("enabled", False) or env_enabled)
+        env_enabled = (
+            False
+            if _env_bool("STUDENT_RAG_OFFLINE_EVAL")
+            else _env_bool("QUERY_REWRITER_ENABLED")
+        )
+        # An explicit config value is authoritative. This prevents a stale
+        # environment variable from silently re-enabling a retired rewriter.
+        enabled = (
+            bool(config["enabled"])
+            if "enabled" in config
+            else env_enabled
+        )
         api_key_env_var = str(
             config.get("api_key_env_var") or DEFAULT_REWRITER_API_KEY_ENV
         )

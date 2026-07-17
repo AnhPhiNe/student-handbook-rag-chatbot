@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import unittest
 
+from src.generation.answer_guardrails import build_deterministic_answer
 from src.extraction.scoring_tables import build_scoring_tables
 from src.retrieval.core.structured_lookup import structured_lookup
 
@@ -24,6 +25,32 @@ class StructuredLookupTest(unittest.TestCase):
                 row = result["result"]
                 self.assertEqual(row["letter_grade"], expected_grade)
                 self.assertEqual(row["score_4"], expected_score)
+
+    def test_numeric_grade_10_maps_to_letter_grade(self) -> None:
+        result = structured_lookup("Điểm 8.5 tương ứng điểm chữ nào?", self.tables)
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["lookup_type"], "grade_10_to_letter")
+        self.assertIsInstance(result["result"], list)
+        self.assertTrue(result["result"])
+
+        first = result["result"][0]
+        self.assertEqual(first["row"]["letter_grade"], "A")
+
+    def test_numeric_grade_answer_mentions_letter_grade(self) -> None:
+        result = structured_lookup("Điểm 8.5 tương ứng điểm chữ nào?", self.tables)
+        self.assertIsNotNone(result)
+
+        answer = build_deterministic_answer(
+            "Điểm 8.5 tương ứng điểm chữ nào?",
+            {
+                "structured_result": result,
+                "retrieved_items": [],
+                "tool_result": None,
+                "formula_result": None,
+            },
+        )
+        self.assertIn("điểm chữ A", answer)
 
 
 if __name__ == "__main__":

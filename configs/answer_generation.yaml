@@ -1,8 +1,12 @@
 input:
   scoring_tables: data/processed/tables/scoring_tables.json
   formula_rules: data/processed/tables/formula_rules.json
-  form_templates: data/processed/forms/form_templates.json
-  office_directory: data/processed/directories/office_directory.json
+  form_templates: data/processed/forms/clean_form_templates.json
+  student_service_directory: data/processed/directories/student_service_directory.json
+  student_office_profiles: data/processed/directories/student_office_profiles.json
+  student_faculty_profiles: data/processed/directories/student_faculty_profiles.json
+  foreign_language_equivalency_table: data/processed/tables/foreign_language_equivalency_table.json
+  structured_tables_registry: data/processed/tables/structured_tables_registry.json
   program_directory: data/processed/directories/program_directory.json
   entity_registry: data/processed/entities/entity_registry.json
   query_expansion_rules: data/processed/entities/query_expansion_rules.json
@@ -22,7 +26,7 @@ retrieval:
   min_candidates: 25
 
 query_rewriter:
-  enabled: true
+  enabled: false
   api_key_env_var: QUERY_REWRITER_API_KEY
   model_name: llama-3.1-8b-instant
   temperature: 0.0
@@ -34,8 +38,9 @@ query_rewriter:
   trigger_on_typo_signals: true
 
 llm:
-  provider: groq
-  model_name: llama-3.3-70b-versatile
+  provider: gemini
+  model_name: gemini-3.1-flash-lite
+  api_key_env_var: GEMINI_API_KEY
   temperature: 0.0
   max_output_tokens: 4096
   max_retries: 3
@@ -43,23 +48,20 @@ llm:
   retry_max_delay_seconds: 20
   request_timeout_seconds: 60
   request_sleep_seconds: 0
-  max_context_chars: 10000
+  max_context_chars: 160000
+  key_pool:
+    rpm_limit_per_key: 12
+    rpd_limit_per_key: 450
+    cooldown_on_rate_limit_seconds: 65
+    state_path: data/cache/gemini_key_state.json
+    wait_when_all_keys_limited: true
 
 context_allocation:
-  strategy: score_weighted
-  min_chars_per_doc: 400
-  max_chars_per_doc: 4500
+  strategy: full_sources
+  min_chars_per_doc: 0
+  max_chars_per_doc: 50000
   sentence_boundary: true
-  cache_version: context_alloc_v10_table_first_context
-  evidence_selection:
-    enabled: true
-    registry_path: data/processed/metadata/section_evidence_registry.json
-    cheap_candidate_top_k: 12
-    rerank_evidence_top_k: 3
-    use_cross_encoder_reranker: true
-    neighbor_window: 1
-    max_structural_evidence_blocks: 8
-    fallback_to_lexical_scoring: true
+  cache_version: context_alloc_v14_full_sources_gemini
 
 cache:
   enabled: true
@@ -82,7 +84,7 @@ citations:
 
 guardrails:
   skip_llm_on_low_confidence: true
-  allow_deterministic_direct_answer: true
+  allow_deterministic_direct_answer: false
 
 output:
   test_report: data/processed/metadata/answer_generation_test_report.json

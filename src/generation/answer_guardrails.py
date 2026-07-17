@@ -241,6 +241,12 @@ def can_answer_deterministically(retrieval_result: dict[str, Any]) -> bool:
     ):
         return True
 
+    # Retrieved synthetic candidates may be useful context, but they are not
+    # a validated tool result. Only an explicit router+resolver contract (or
+    # the isolated legacy debug path) may bypass the final LLM.
+    if retrieval_result.get("deterministic_validated") is not True:
+        return False
+
     structured_res = retrieval_result.get("structured_result")
     if _has_result(structured_res):
         if structured_res.get("lookup_type") == "program_directory":
@@ -248,6 +254,12 @@ def can_answer_deterministically(retrieval_result: dict[str, Any]) -> bool:
         if structured_res.get("lookup_type") == "form_template":
             return True
         if structured_res.get("lookup_type") == "office_directory":
+            return True
+        if structured_res.get("lookup_type") == "foreign_language_equivalency":
+            return True
+        if structured_res.get("lookup_type") == "study_duration":
+            return True
+        if structured_res.get("lookup_type") == "scholarship_classification":
             return True
         if structured_res.get("lookup_type") == "grade_10_to_letter":
             return True
@@ -691,6 +703,12 @@ def _format_structured_result(structured_result: dict[str, Any]) -> str:
         return _format_form_template_result(structured_result)
     if structured_result.get("lookup_type") == "office_directory":
         return _format_office_directory_result(structured_result)
+    if structured_result.get("lookup_type") == "foreign_language_equivalency":
+        return _format_foreign_language_equivalency_result(structured_result)
+    if structured_result.get("lookup_type") == "study_duration":
+        return _format_study_duration_result(structured_result)
+    if structured_result.get("lookup_type") == "scholarship_classification":
+        return _format_scholarship_classification_result(structured_result)
     if structured_result.get("lookup_type") == "grade_10_to_letter":
         return _format_grade_10_to_letter_result(structured_result)
 
@@ -748,6 +766,8 @@ def _format_office_directory_result(structured_result: dict[str, Any]) -> str:
     if not offices:
         return "Mình chưa tìm thấy phòng ban phù hợp trong danh mục liên hệ hiện có."
 
+    requested_field = str(structured_result.get("requested_field") or "all")
+    show_all = requested_field == "all"
     lines = ["Mình tìm thấy đơn vị phù hợp để bạn liên hệ:"]
     for office in offices[:3]:
         name = office.get("unit_name") or "Phòng ban"
@@ -759,21 +779,127 @@ def _format_office_directory_result(structured_result: dict[str, Any]) -> str:
         phones = office.get("phones") or []
         internal_numbers = office.get("internal_numbers") or []
         websites = office.get("websites") or []
+        office_address = str(office.get("office") or "").strip()
         responsibilities = office.get("responsibilities") or []
 
-        if emails:
+        if (show_all or requested_field == "email") and emails:
             lines.append(f"  Email: {', '.join(emails)}")
-        if phones:
+        if (show_all or requested_field == "phone") and phones:
             lines.append(f"  Số điện thoại: {', '.join(phones)}")
-        if internal_numbers:
+        if show_all and internal_numbers:
             lines.append(f"  Số máy nội bộ: {', '.join(internal_numbers)}")
-        if websites:
+        if (show_all or requested_field == "website") and websites:
             lines.append(f"  Website: {', '.join(websites)}")
-        if responsibilities:
+        if (show_all or requested_field == "office") and office_address:
+            lines.append(f"  Địa chỉ: {office_address}")
+        if show_all and responsibilities:
             lines.append("  Phụ trách liên quan:")
             for item in responsibilities[:2]:
                 lines.append(f"  - {_compact_text(item, limit=150)}")
 
+    return "\n".join(lines)
+
+
+def _format_foreign_language_equivalency_result(
+    structured_result: dict[str, Any],
+) -> str:
+    result = structured_result.get("result") or {}
+    items = structured_result.get("items") or []
+    cohort = structured_result.get("cohort")
+    prefix = "Theo bảng quy đổi chuẩn đầu ra ngoại ngữ"
+    if cohort:
+        prefix += f" áp dụng cho {cohort}"
+
+    if isinstance(result, dict) and result.get("matched_level"):
+        level_label = "bậc 4" if result.get("matched_level") == "bac_4" else "bậc 3"
+        value = result.get("matched_value")
+        value_text = f" {value:g}" if isinstance(value, (int, float)) else ""
+        return (
+            f"{prefix}, {result.get('certificate')}{value_text} tương đương {level_label}. "
+            f"Mốc bậc 3: {result.get('equivalent_level_3')}; "
+            f"mốc bậc 4: {result.get('equivalent_level_4')}."
+        )
+
+    rows = items if items else result.get("rows") if isinstance(result, dict) else []
+    if isinstance(result, dict) and not rows:
+        rows = [result]
+
+    if not rows:
+        return (
+            "Mình chưa tìm thấy dòng quy đổi ngoại ngữ phù hợp trong bảng "
+            "chuẩn đầu ra ngoại ngữ hiện có."
+        )
+
+    lines = [f"{prefix}, các mốc quy đổi phù hợp là:"]
+    for row in rows[:8]:
+        lines.append(
+            "- "
+            f"{row.get('certificate')}: "
+            f"bậc 3 = {row.get('equivalent_level_3') or 'không nêu'}; "
+            f"bậc 4 = {row.get('equivalent_level_4') or 'không nêu'}."
+        )
+    if len(rows) > 8:
+        lines.append(f"- Còn {len(rows) - 8} dòng khác trong bảng quy đổi.")
+    return "\n".join(lines)
+
+
+def _format_study_duration_result(structured_result: dict[str, Any]) -> str:
+    result = structured_result.get("result") or {}
+    tables = result.get("tables") or structured_result.get("items") or []
+    cohort = structured_result.get("cohort")
+    prefix = "Theo bảng thời gian học tập chuẩn và tối đa"
+    if cohort:
+        prefix += f" áp dụng cho {cohort}"
+
+    if not tables:
+        return "Mình chưa tìm thấy bảng thời gian học tập phù hợp trong dữ liệu hiện có."
+
+    lines = [f"{prefix}:"]
+    mode_labels = {
+        "chinh_quy": "hệ chính quy",
+        "vua_lam_vua_hoc": "hệ vừa làm vừa học",
+    }
+    for table in tables:
+        mode = mode_labels.get(table.get("training_mode"), "hệ đào tạo")
+        rows = table.get("rows") or []
+        lines.append(f"- {mode}:")
+        for row in rows:
+            program = row.get("Chương trình đào tạo") or "Chương trình đào tạo"
+            standard = row.get("Thời gian học tập chuẩn") or "không nêu"
+            maximum = row.get("Thời gian học tập tối đa") or "không nêu"
+            lines.append(f"  - {program}: chuẩn {standard}, tối đa {maximum}.")
+    return "\n".join(lines)
+
+
+def _format_scholarship_classification_result(
+    structured_result: dict[str, Any],
+) -> str:
+    result = structured_result.get("result") or {}
+    rows = structured_result.get("items") or result.get("rows") if isinstance(result, dict) else []
+    if isinstance(result, dict) and not rows and result.get("label"):
+        rows = [result]
+
+    cohort = structured_result.get("cohort")
+    prefix = "Theo bảng xếp loại học bổng khuyến khích học tập"
+    if cohort:
+        prefix += f" áp dụng cho {cohort}"
+
+    if not rows:
+        return "Mình chưa tìm thấy mốc xếp loại học bổng phù hợp trong dữ liệu hiện có."
+
+    lines = [f"{prefix}:"]
+    matched_score = result.get("matched_score") if isinstance(result, dict) else None
+    if matched_score is not None:
+        lines[0] = f"{prefix}, điểm học bổng {matched_score:g} thuộc mốc:"
+
+    for row in rows:
+        lines.append(
+            "- "
+            f"{row.get('label')}: "
+            f"điểm học bổng {row.get('scholarship_score_range')}; "
+            f"điểm học tập {row.get('academic_score_range')}; "
+            f"điểm rèn luyện {row.get('conduct_score_condition')}."
+        )
     return "\n".join(lines)
 
 
@@ -794,10 +920,28 @@ def _format_grade_10_to_letter_result(structured_result: dict[str, Any]) -> str:
     requested_grade = structured_result.get("requested_letter_grade")
     requested_rows = structured_result.get("requested_grade_rows") or []
     grade_4 = structured_result.get("letter_grade_4") or {}
+    input_value = structured_result.get("input_value")
 
     prefix = "Theo bảng quy đổi điểm"
     if cohort:
         prefix += f" áp dụng cho {cohort}"
+
+    if tables and isinstance(tables, list) and isinstance(tables[0], dict) and tables[0].get("row"):
+        score_text = f"{input_value:g}" if isinstance(input_value, (int, float)) else str(input_value)
+        lines = [f"{prefix}, điểm {score_text} tương ứng:"]
+        for item in tables:
+            row = item.get("row") or {}
+            applicability = item.get("applicability") or item.get("table_name")
+            letter_grade = row.get("letter_grade") or "không nêu"
+            score_range = row.get("score_10_range") or row.get("range")
+            status = row.get("status")
+            parts = [f"- {applicability}: điểm chữ {letter_grade}"]
+            if score_range:
+                parts.append(f"khoảng điểm {score_range}")
+            if status:
+                parts.append(f"trạng thái {status}")
+            lines.append("; ".join(parts) + ".")
+        return "\n".join(lines)
 
     if requested_grade and requested_rows:
         lines = [f"{prefix}, điểm chữ {requested_grade} có kết quả như sau:"]
@@ -867,6 +1011,21 @@ def _format_program_directory_result(structured_result: dict[str, Any]) -> str:
     programs = structured_result.get("result") or []
     cohort = structured_result.get("cohort")
     scope = structured_result.get("lookup_scope")
+
+    if scope == "program_exists":
+        searched_program = structured_result.get("searched_program") or "ngành được hỏi"
+        if structured_result.get("exists") and programs:
+            program_name = programs[0].get("program_name") or searched_program
+            faculty_name = programs[0].get("faculty_name")
+            faculty_text = f", thuộc {faculty_name}" if faculty_name else ""
+            return (
+                f"Có. {program_name} có trong danh mục ngành áp dụng cho "
+                f"{cohort}{faculty_text}."
+            )
+        return (
+            f"Không. Theo danh mục ngành áp dụng cho {cohort}, "
+            f"không có ngành {searched_program}."
+        )
 
     if not programs:
         return "Mình chưa tìm thấy danh sách ngành phù hợp trong dữ liệu sổ tay."

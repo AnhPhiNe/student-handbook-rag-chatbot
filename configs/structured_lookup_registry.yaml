@@ -1,0 +1,168 @@
+version: 1
+
+tools:
+  foreign_language:
+    data_category: regulation_table
+    description: Quy doi chung chi/diem ngoai ngu sang bac chuan dau ra.
+    intents: [direct_value, list_items]
+    required_slots:
+      direct_value: [certificate_or_language, score_or_level]
+      list_items: []
+    slot_schema:
+      certificate_or_language:
+        type: string
+        examples: [IELTS, TOEFL, JLPT, HSK, TOPIK]
+      score_or_level:
+        type: [string, number]
+        examples: [5.5, N3, HSK4, TOPIK3]
+    strategy: foreign_language_lookup
+    response_intent: foreign_language_lookup_query
+    target_chunk_types: [structured_lookup]
+
+  study_duration:
+    data_category: regulation_table
+    description: Tra thoi gian hoc chuan/toi da theo he va loai chuong trinh.
+    intents: [direct_value, list_items]
+    required_slots:
+      direct_value: [training_mode, program_type]
+      list_items: [training_mode]
+    slot_schema:
+      training_mode:
+        type: string
+        enum: [chinh_quy, vua_lam_vua_hoc]
+      program_type:
+        type: string
+        canonical_values: [first_degree, college_bridge, secondary_bridge, second_degree]
+    strategy: study_duration_lookup
+    response_intent: study_duration_lookup_query
+    target_chunk_types: [structured_lookup]
+
+  scholarship_classification:
+    data_category: regulation_table
+    description: Xep loai hoc bong tu diem, hoac tra khoang diem cua mot nhan xep loai cu the.
+    intents: [direct_value]
+    required_slots:
+      direct_value: [score_or_label]
+    slot_schema:
+      score_or_label: {type: [string, number]}
+    strategy: scholarship_classification_lookup
+    response_intent: scholarship_classification_lookup_query
+    target_chunk_types: [structured_lookup]
+
+  scoring:
+    data_category: regulation_table
+    description: Quy doi/xep loai diem 10, diem chu, thang 4, GPA, ren luyen; gom hoc phan dat/khong dat khong tinh GPA.
+    intents: [direct_value, list_items, compare]
+    required_slots:
+      direct_value: [operation]
+      list_items: [operation]
+      compare: [operation]
+    slot_schema:
+      operation:
+        type: string
+        enum: [grade_10_to_letter, pass_fail_ungraded, letter_to_grade_4, academic_classification, conduct_classification]
+      score_or_grade: {type: [string, number]}
+    strategy: structured_lookup
+    response_intent: score_lookup_query
+    target_chunk_types: [structured_lookup]
+
+  student_service:
+    data_category: directory_table
+    description: Tim don vi phu trach khi nguoi dung mo ta mot cong viec/dich vu can lam; khong dung cho quy dinh hay thu tuc.
+    intents: [direct_value, contact]
+    default_intent: contact
+    required_slots:
+      direct_value: [service, requested_field]
+      contact: [service, requested_field]
+    slot_schema:
+      service: {type: string}
+      requested_field:
+        type: string
+        enum: [unit, phone, email, office, website, all]
+    strategy: student_service_lookup
+    response_intent: office_query
+    target_chunk_types: [office_directory]
+
+  office:
+    data_category: directory_table
+    description: Tra email, phone, website hoac dia chi cua mot don vi cu the, ke ca khi ten don vi la viet tat; trach nhiem, quyen han va quy dinh phai RAG.
+    intents: [contact]
+    default_intent: contact
+    required_slots:
+      contact: [office, requested_field]
+    slot_schema:
+      office: {type: string}
+      requested_field:
+        type: string
+        enum: [phone, email, office, website, all]
+    strategy: office_lookup
+    response_intent: office_query
+    target_chunk_types: [office_directory]
+
+  faculty:
+    data_category: directory_table
+    description: Tra email, phone, website hoac dia chi cua mot Khoa cu the; khong dung cho cau hoi danh sach nganh.
+    intents: [contact]
+    default_intent: contact
+    required_slots:
+      contact: [faculty, requested_field]
+    slot_schema:
+      faculty: {type: string}
+      requested_field:
+        type: string
+        enum: [phone, email, office, website, all]
+    strategy: faculty_lookup
+    response_intent: faculty_query
+    target_chunk_types: [faculty_program_directory]
+
+  program:
+    data_category: directory_table
+    description: Tra nganh dao tao, khoa phu trach, hoac liet ke nganh.
+    intents: [direct_value, list_items, exists]
+    required_slots:
+      direct_value: [program_or_faculty, requested_field]
+      list_items: [scope]
+      exists: [program_or_faculty]
+    slot_schema:
+      program_or_faculty: {type: string}
+      requested_field:
+        type: string
+        enum: [faculty, programs, exists, all]
+      scope:
+        type: string
+        enum: [school, faculty]
+    strategy: program_lookup
+    response_intent: faculty_query
+    target_chunk_types: [program_directory]
+
+  form:
+    description: Tim mau don/bieu mau theo muc dich su dung.
+    intents: [form, list_items]
+    required_slots:
+      form: [purpose]
+      list_items: [purpose]
+    slot_schema:
+      purpose: {type: string}
+    strategy: form_lookup
+    response_intent: form_query
+    target_chunk_types: [form]
+
+  formula:
+    description: Tra cong thuc da duoc dinh nghia, khong thuc hien phep tinh.
+    intents: [formula]
+    required_slots:
+      formula: [formula_type]
+    slot_schema:
+      formula_type:
+        type: string
+        enum: [scholarship_score, gpa_weighted_average]
+    strategy: formula_lookup
+    response_intent: formula_query
+    target_chunk_types: [structured_lookup]
+
+rag_intents:
+  policy: [regulation]
+  procedure: [procedure, regulation]
+  consequence_or_exception: [regulation]
+  open_question: [regulation, procedure, form, office_directory, program_directory]
+  mixed: [regulation, procedure, form, office_directory]

@@ -32,12 +32,20 @@ def build_context_from_vector_results(
 
 
 def build_context_from_lookup(lookup_result: dict[str, Any]) -> str:
+    if lookup_result.get("lookup_type") == "structured_context":
+        return build_context_from_structured_context(lookup_result)
     if lookup_result.get("lookup_type") == "form_template":
         return build_context_from_form_lookup(lookup_result)
     if lookup_result.get("lookup_type") == "program_directory":
         return build_context_from_program_lookup(lookup_result)
     if lookup_result.get("lookup_type") == "office_directory":
         return build_context_from_office_lookup(lookup_result)
+    if lookup_result.get("lookup_type") == "foreign_language_equivalency":
+        return build_context_from_foreign_language_lookup(lookup_result)
+    if lookup_result.get("lookup_type") == "study_duration":
+        return build_context_from_study_duration_lookup(lookup_result)
+    if lookup_result.get("lookup_type") == "scholarship_classification":
+        return build_context_from_scholarship_lookup(lookup_result)
 
     return (
         f"Kết quả tra cứu bảng: {lookup_result.get('table_name')}\n"
@@ -45,6 +53,108 @@ def build_context_from_lookup(lookup_result: dict[str, Any]) -> str:
         f"Kết quả: {lookup_result.get('result')}\n"
         f"Trang nguồn: {lookup_result.get('source_pages')}"
     )
+
+
+def build_context_from_structured_context(lookup_result: dict[str, Any]) -> str:
+    lines = [
+        "Structured table context",
+        f"Lookup type: {lookup_result.get('source_lookup_type')}",
+        f"Cohort: {lookup_result.get('cohort')}",
+    ]
+    for table_index, table in enumerate(lookup_result.get("items") or [], start=1):
+        columns = [str(column) for column in table.get("columns") or []]
+        lines.extend(
+            [
+                "",
+                f"[Table {table_index}] {table.get('table_name') or table.get('table_id')}",
+                f"Table ID: {table.get('table_id')}",
+                f"Table type: {table.get('table_type')}/{table.get('table_subtype')}",
+                f"Applicability: {table.get('applicability')}",
+                f"Source parent: {table.get('source_parent_id')}",
+                f"Pages: {table.get('source_pages')}",
+                f"Columns: {', '.join(columns)}",
+            ]
+        )
+        for row_index, row in enumerate(table.get("rows") or [], start=1):
+            if not isinstance(row, dict):
+                continue
+            if columns:
+                values = [f"{column}={row.get(column)}" for column in columns]
+            else:
+                values = [f"{key}={value}" for key, value in row.items()]
+            lines.append(f"- Row {row_index}: " + "; ".join(values))
+    return "\n".join(lines)
+
+
+def build_context_from_foreign_language_lookup(lookup_result: dict[str, Any]) -> str:
+    result = lookup_result.get("result") or {}
+    items = lookup_result.get("items") or []
+    rows = items if items else result.get("rows") if isinstance(result, dict) else []
+    if isinstance(result, dict) and not rows:
+        rows = [result]
+
+    lines = [
+        f"Bang quy doi chuan dau ra ngoai ngu: {lookup_result.get('table_name')}",
+        f"Cohort: {lookup_result.get('cohort')}",
+        f"Source section: {lookup_result.get('source_section')}",
+        f"Input: {lookup_result.get('input_value')}",
+    ]
+    for row in rows:
+        parts = [
+            f"language={row.get('language')}",
+            f"certificate={row.get('certificate')}",
+            f"level_or_scale={row.get('level_or_scale')}",
+            f"bac_3={row.get('equivalent_level_3')}",
+            f"bac_4={row.get('equivalent_level_4')}",
+            f"matched_level={row.get('matched_level')}",
+        ]
+        lines.append(
+            "- "
+            + "; ".join(
+                part for part in parts if part.split("=", 1)[1] not in {"", "None"}
+            )
+        )
+    return "\n".join(lines)
+
+
+def build_context_from_study_duration_lookup(lookup_result: dict[str, Any]) -> str:
+    result = lookup_result.get("result") or {}
+    tables = result.get("tables") or lookup_result.get("items") or []
+    lines = [
+        f"Bang thoi gian hoc tap: {lookup_result.get('table_name')}",
+        f"Cohort: {lookup_result.get('cohort')}",
+        f"Source section: {lookup_result.get('source_section')}",
+        f"Input: {lookup_result.get('input_value')}",
+    ]
+    for table in tables:
+        lines.append(f"- mode={table.get('training_mode')}; table={table.get('table_id')}")
+        for row in table.get("rows") or []:
+            lines.append(
+                "  + "
+                f"program={row.get('Chương trình đào tạo')}; "
+                f"standard={row.get('Thời gian học tập chuẩn')}; "
+                f"maximum={row.get('Thời gian học tập tối đa')}"
+            )
+    return "\n".join(lines)
+
+
+def build_context_from_scholarship_lookup(lookup_result: dict[str, Any]) -> str:
+    rows = lookup_result.get("items") or []
+    lines = [
+        f"Bang xep loai hoc bong: {lookup_result.get('table_name')}",
+        f"Cohort: {lookup_result.get('cohort')}",
+        f"Source section: {lookup_result.get('source_section')}",
+        f"Input: {lookup_result.get('input_value')}",
+    ]
+    for row in rows:
+        lines.append(
+            "- "
+            f"label={row.get('label')}; "
+            f"scholarship_score={row.get('scholarship_score_range')}; "
+            f"academic_score={row.get('academic_score_range')}; "
+            f"conduct={row.get('conduct_score_condition')}"
+        )
+    return "\n".join(lines)
 
 
 def build_context_from_program_lookup(lookup_result: dict[str, Any]) -> str:

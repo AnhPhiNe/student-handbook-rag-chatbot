@@ -1,8 +1,8 @@
 import os
 from dotenv import load_dotenv
+from src.retrieval.vectorstore.mongo_store import get_mongo_store
 load_dotenv()
 os.environ["TRANSFORMERS_VERBOSITY"] = "error"
-import json
 import logging
 import time
 import unicodedata
@@ -11,7 +11,12 @@ from typing import Any
 from sentence_transformers import CrossEncoder
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from qdrant_client import QdrantClient
-from qdrant_client.models import FieldCondition, Filter, MatchValue
+from qdrant_client.models import (
+    FieldCondition,
+    Filter,
+    MatchAny,
+    MatchValue,
+)
 
 logger = logging.getLogger("hybrid_pipeline")
 
@@ -127,9 +132,8 @@ def _scope_preference_adjustment(query: str, chunk: dict[str, Any]) -> float:
 
     asks_for_college_gdmn = _contains_any_term(query_scope, COLLEGE_GDMN_QUERY_TERMS)
     adjustment = 0.0
-    if (
-        not asks_for_college_gdmn
-        and _contains_any_term(chunk_scope, COLLEGE_GDMN_SCOPE_TERMS)
+    if not asks_for_college_gdmn and _contains_any_term(
+        chunk_scope, COLLEGE_GDMN_SCOPE_TERMS
     ):
         adjustment += COLLEGE_GDMN_SCOPE_PENALTY
     if _contains_any_term(chunk_scope, UNDERGRAD_SCOPE_TERMS):
@@ -151,40 +155,143 @@ class HybridRetrieverV7:
         qdrant_url: str,
         qdrant_key: str,
         collection_name: str = "student_handbook_semantic_v7",
-        docstore_path: str = "data/processed/chunks/all_docstore_items.json",
-        v7_chunks_path: str = "data/processed/chunks/v7_child_parent_chunks.json",
     ):
-        self.qdrant_client = QdrantClient(url=qdrant_url, api_key=qdrant_key, timeout=60.0)
+        self.qdrant_client = QdrantClient(
+            url=qdrant_url,
+            api_key=qdrant_key,
+            timeout=60.0,
+        )
         self.collection_name = collection_name
 
         from sentence_transformers import SentenceTransformer
 
         self.embed_model = SentenceTransformer("BAAI/bge-m3")
         self.graph = NetworkXGraphTraverser()
+
         logger.info("Loading PhoRanker for V7 child-parent retrieval...")
-        self.reranker = CrossEncoder("itdainb/PhoRanker", max_length=256)
+        self.reranker = CrossEncoder(
+            "itdainb/PhoRanker",
+            max_length=256,
+        )
 
-        with open(docstore_path, "r", encoding="utf-8") as f:
-            parents = json.load(f)
-        self.parent_store: dict[str, dict[str, Any]] = {}
-        for parent in parents:
-            metadata = parent.get("metadata") or {}
-            parent_id = metadata.get("parent_section_id") or parent.get("_id")
-            if parent_id:
-                self.parent_store[str(parent_id)] = parent
+        # Parent đầy đủ lấy từ MongoDB.
+        self.mongo_store = get_mongo_store()
 
-        with open(v7_chunks_path, "r", encoding="utf-8") as f:
-            child_chunks = json.load(f)
-        self.child_store: dict[str, dict[str, Any]] = {}
-        self.children_by_parent: dict[str, list[dict[str, Any]]] = defaultdict(list)
-        for chunk in child_chunks:
-            chunk_id = str(chunk.get("_id") or chunk.get("chunk_id") or "")
-            metadata = chunk.get("metadata") or {}
-            parent_id = str(metadata.get("parent_section_id") or "")
-            if not chunk_id or not parent_id:
-                continue
-            self.child_store[chunk_id] = chunk
-            self.children_by_parent[parent_id].append(chunk)
+        # Cache runtime, không phải dữ liệu local.
+        self.parent_cache: dict[str, dict[str, Any]] = {}
+        self.children_cache: dict[str, list[dict[str, Any]]] = {}
+
+    def _get_parent(self, parent_id: str) -> dict[str, Any] | None:
+        if not parent_id:
+            return None
+
+        cached = self.parent_cache.get(parent_id)
+        if cached is not None:
+            return cached
+
+        parent = self.mongo_store.get_document_by_id(parent_id)
+
+        if parent is not None:
+            self.parent_cache[parent_id] = parent
+
+        return parent
+    
+    @staticmethod
+    def _qdrant_point_to_chunk(point: Any) -> dict[str, Any]:
+        """Chuyển một Qdrant point thành cấu trúc chunk nội bộ."""
+        payload = dict(point.payload or {})
+        chunk_id = str(payload.get("chunk_id") or point.id)
+
+        return {
+            "_id": chunk_id,
+            "chunk_id": chunk_id,
+            "content": str(payload.get("content") or ""),
+            "metadata": payload,
+        }
+
+
+    def _get_children_for_parents(
+        self,
+        parent_ids: list[str],
+        cohort: str | None = None,
+    ) -> dict[str, list[dict[str, Any]]]:
+        """Lấy toàn bộ child của các parent trực tiếp từ Qdrant."""
+
+        unique_parent_ids = list(
+            dict.fromkeys(
+                str(parent_id)
+                for parent_id in parent_ids
+                if str(parent_id).strip()
+            )
+        )
+
+        missing_parent_ids = [
+            parent_id
+            for parent_id in unique_parent_ids
+            if parent_id not in self.children_cache
+        ]
+
+        if missing_parent_ids:
+            conditions = [
+                FieldCondition(
+                    key="parent_section_id",
+                    match=MatchAny(any=missing_parent_ids),
+                ),
+                FieldCondition(
+                    key="content_type",
+                    match=MatchValue(value="regulation_text"),
+                ),
+            ]
+
+            if cohort:
+                conditions.append(
+                    FieldCondition(
+                        key="cohort",
+                        match=MatchValue(value=cohort),
+                    )
+                )
+
+            grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+            offset = None
+
+            while True:
+                points, next_offset = self.qdrant_client.scroll(
+                    collection_name=self.collection_name,
+                    scroll_filter=Filter(must=conditions),
+                    limit=256,
+                    offset=offset,
+                    with_payload=True,
+                    with_vectors=False,
+                )
+
+                for point in points:
+                    chunk = self._qdrant_point_to_chunk(point)
+                    parent_id = str(
+                        (chunk.get("metadata") or {}).get(
+                            "parent_section_id"
+                        )
+                        or ""
+                    )
+
+                    if parent_id:
+                        grouped[parent_id].append(chunk)
+
+                if next_offset is None:
+                    break
+
+                offset = next_offset
+
+            # Cache cả kết quả rỗng để không gọi Qdrant lặp lại.
+            for parent_id in missing_parent_ids:
+                self.children_cache[parent_id] = grouped.get(
+                    parent_id,
+                    [],
+                )
+
+        return {
+            parent_id: list(self.children_cache.get(parent_id, []))
+            for parent_id in unique_parent_ids
+        }
 
     def retrieve(
         self,
@@ -201,6 +308,16 @@ class HybridRetrieverV7:
         candidates, and the final result is grouped back to Mongo parent
         sections for stable citations.
         """
+        eval_mode = (
+            os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE", "full").strip().lower()
+        )
+        if eval_mode not in {"full", "no_graph", "vector_only"}:
+            raise ValueError(
+                f"Unsupported STUDENT_RAG_EVAL_RETRIEVAL_MODE={eval_mode!r}"
+            )
+        if eval_mode in {"no_graph", "vector_only"}:
+            graph_depth = 0
+
         logger.info("==> V7 query: %s", query)
         query_vector = self.embed_model.encode(query).tolist()
         query_filter = _v7_query_filter(cohort)
@@ -213,45 +330,122 @@ class HybridRetrieverV7:
             limit=search_limit,
         )
 
-        seed_chunk_ids = [
-            str(hit.payload.get("chunk_id"))
-            for hit in search_results
-            if hit.payload and hit.payload.get("chunk_id")
-        ]
         seed_chunks = [
-            self.child_store[chunk_id]
-            for chunk_id in seed_chunk_ids
-            if chunk_id in self.child_store
+            self._qdrant_point_to_chunk(hit)
+            for hit in search_results
+            if hit.payload
         ]
+
+        seed_chunks = [
+            chunk
+            for chunk in seed_chunks
+            if chunk.get("chunk_id")
+        ]
+        qdrant_seed_chunk_count = len(seed_chunks)
+
         if not seed_chunks:
             return []
+
+        if eval_mode == "vector_only":
+            vector_scores = {
+                str(hit.payload.get("chunk_id")): float(
+                    getattr(hit, "score", 0.0) or 0.0
+                )
+                for hit in search_results
+                if hit.payload and hit.payload.get("chunk_id")
+            }
+            vector_scored: list[tuple[float, dict[str, Any]]] = []
+            for chunk in seed_chunks:
+                chunk_id = str(chunk.get("_id") or chunk.get("chunk_id") or "")
+                vector_scored.append((vector_scores.get(chunk_id, 0.0), chunk))
+            vector_telemetry = {
+                "retrieval_mode": eval_mode,
+                "qdrant_search_limit": search_limit,
+                "qdrant_seed_chunks": qdrant_seed_chunk_count,
+                "qdrant_seed_parents": len(
+                    {
+                        str((chunk.get("metadata") or {}).get("parent_section_id") or "")
+                        for chunk in seed_chunks
+                        if (chunk.get("metadata") or {}).get("parent_section_id")
+                    }
+                ),
+                "phoranker_used": False,
+                "phoranker_candidate_chunks": 0,
+                "phoranker_candidate_parents": 0,
+            }
+            return self._group_parent_results(
+                query=query,
+                scored_chunks=vector_scored,
+                top_k_final=top_k_final,
+                retrieval_telemetry=vector_telemetry,
+            )
 
         seed_parent_ids = [
             str((chunk.get("metadata") or {}).get("parent_section_id") or "")
             for chunk in seed_chunks
         ]
         seed_parent_ids = [parent_id for parent_id in seed_parent_ids if parent_id]
+        qdrant_seed_parent_count = len(set(seed_parent_ids))
         expanded_parent_ids: list[str] = []
         parent_depths: dict[str, int] = {}
         parent_sources: dict[str, str] = {}
         try:
             expanded = self.graph.expand_context(seed_parent_ids, max_depth=graph_depth)
             for node in expanded:
-                node_id = str(node.get("id"))
-                if node_id in self.parent_store:
-                    expanded_parent_ids.append(node_id)
-                    parent_depths[node_id] = node.get("depth", 99)
-                    parent_sources[node_id] = node.get("seed_source", "unknown")
+                node_id = str(node.get("id") or "")
+
+                if not node_id:
+                    continue
+
+                expanded_parent_ids.append(node_id)
+                parent_depths[node_id] = int(node.get("depth", 99))
+                parent_sources[node_id] = str(
+                    node.get("seed_source") or "unknown"
+                )
         except Exception as exc:
-            logger.warning("V7 graph expansion failed, using vector seeds only: %s", exc)
+            logger.warning(
+                "V7 graph expansion failed, using vector seeds only: %s", exc
+            )
+
+        # ---------------------------------------------------------
+        # CHÚ Ý QUAN TRỌNG: Lấy toàn bộ children của Seed Parents!
+        # Nếu Vector search chỉ trúng "khoản a" của Điều 16, ta phải kéo luôn "khoản b" của Điều 16
+        # vào danh sách candidate để CrossEncoder chấm điểm lại!
+        # ---------------------------------------------------------
+        seed_chunk_ids = {
+            str(chunk.get("_id") or chunk.get("chunk_id") or "")
+            for chunk in seed_chunks
+        }
+
+        seed_children_by_parent = self._get_children_for_parents(
+            seed_parent_ids,
+            cohort=cohort,
+        )
+
+        for parent_id in set(seed_parent_ids):
+            for chunk in seed_children_by_parent.get(parent_id, []):
+                metadata = chunk.get("metadata") or {}
+                if cohort and metadata.get("cohort") != cohort:
+                    continue
+                chunk_id = str(chunk.get("_id") or chunk.get("chunk_id") or "")
+                if chunk_id and chunk_id not in seed_chunk_ids:
+                    chunk_copy = dict(chunk)
+                    chunk_copy["_graph_depth"] = 0
+                    chunk_copy["_source_seed_id"] = parent_id
+                    seed_chunks.append(chunk_copy)
+                    seed_chunk_ids.add(chunk_id)
 
         neighbor_chunks = []
-        seed_chunk_ids = {str(chunk.get("_id") or chunk.get("chunk_id") or "") for chunk in seed_chunks}
         
+        neighbor_children_by_parent = self._get_children_for_parents(
+            expanded_parent_ids,
+            cohort=cohort,
+        )
+
         for parent_id in dict.fromkeys(expanded_parent_ids):
             depth = parent_depths.get(parent_id, 99)
             source_seed = parent_sources.get(parent_id, "unknown")
-            for chunk in self.children_by_parent.get(parent_id, []):
+            for chunk in neighbor_children_by_parent.get(parent_id, []):
                 metadata = chunk.get("metadata") or {}
                 if cohort and metadata.get("cohort") != cohort:
                     continue
@@ -266,6 +460,9 @@ class HybridRetrieverV7:
         # --- BUDGET ALLOCATION ---
         # Ngân sách 1: Seed Chunks (~24) -> Pass thẳng
         final_candidates = list(seed_chunks)
+        seed_candidate_chunk_count = len(seed_chunks)
+        filtered_parent_ids: list[str] = []
+        filtered_neighbors: list[dict[str, Any]] = []
 
         # Ngân sách 2: Neighbor Chunks -> Lọc bằng cấu trúc Graph (Depth) với Round-Robin theo Seed
         if neighbor_chunks:
@@ -278,7 +475,9 @@ class HybridRetrieverV7:
                 if pid:
                     neighbors_by_parent[pid].append(chunk)
                     parent_to_seed[pid] = chunk.get("_source_seed_id", "unknown")
-                    parent_to_depth[pid] = min(parent_to_depth.get(pid, 99), chunk.get("_graph_depth", 99))
+                    parent_to_depth[pid] = min(
+                        parent_to_depth.get(pid, 99), chunk.get("_graph_depth", 99)
+                    )
 
             # Nhóm các Parent ID theo Seed
             parents_by_seed: dict[str, list[str]] = defaultdict(list)
@@ -290,7 +489,6 @@ class HybridRetrieverV7:
                 parents_by_seed[sid].sort(key=lambda pid: parent_to_depth[pid])
 
             # Round-robin: mỗi vòng lấy 1 Parent (nguyên Điều) của MỖI seed
-            filtered_parent_ids = []
             seed_ids = list(parents_by_seed.keys())
             idx = 0
             while len(filtered_parent_ids) < 3 and any(parents_by_seed.values()):
@@ -300,7 +498,6 @@ class HybridRetrieverV7:
                 idx += 1
 
             # Gom lại tất cả các chunk thuộc về các Parent đã chọn
-            filtered_neighbors = []
             for pid in filtered_parent_ids:
                 filtered_neighbors.extend(neighbors_by_parent[pid])
 
@@ -309,12 +506,38 @@ class HybridRetrieverV7:
         if not final_candidates:
             return []
 
+        final_candidate_parent_count = len(
+            {
+                str((chunk.get("metadata") or {}).get("parent_section_id") or "")
+                for chunk in final_candidates
+                if (chunk.get("metadata") or {}).get("parent_section_id")
+            }
+        )
+        retrieval_telemetry = {
+            "retrieval_mode": eval_mode,
+            "qdrant_search_limit": search_limit,
+            "qdrant_seed_chunks": qdrant_seed_chunk_count,
+            "qdrant_seed_parents": qdrant_seed_parent_count,
+            "graph_depth": graph_depth,
+            "graph_expanded_parents": len(set(expanded_parent_ids)),
+            "graph_neighbor_parent_limit": 3,
+            "graph_neighbor_parents_selected": len(filtered_parent_ids),
+            "graph_neighbor_chunks_available": len(neighbor_chunks),
+            "graph_neighbor_chunks_selected": len(filtered_neighbors),
+            "seed_candidate_chunks": seed_candidate_chunk_count,
+            "phoranker_used": True,
+            "phoranker_candidate_chunks": len(final_candidates),
+            "phoranker_candidate_parents": final_candidate_parent_count,
+        }
+        logger.info("V7 rerank telemetry: %s", retrieval_telemetry)
+
         # Lớp 2: Lọc tinh bằng Cross-Encoder trên Budget đã gộp (~40)
         scored = self._rerank_chunks(query, final_candidates)
         return self._group_parent_results(
             query=query,
             scored_chunks=scored,
             top_k_final=top_k_final,
+            retrieval_telemetry=retrieval_telemetry,
         )
 
     def _rerank_chunks(
@@ -326,21 +549,51 @@ class HybridRetrieverV7:
         pairs = [[query, str(chunk.get("content") or "")] for chunk in chunks]
         scores = self.reranker.predict(pairs)
         scored: list[tuple[float, dict[str, Any]]] = []
+
+        # Bước 1: Tìm điểm cao nhất của mỗi Parent (đại diện cho sức mạnh của Seed)
+        parent_max_scores: dict[str, float] = {}
         for index, chunk in enumerate(chunks):
             score = float(scores[index])
+            parent_id = str(
+                (chunk.get("metadata") or {}).get("parent_section_id") or ""
+            )
+            if parent_id:
+                parent_max_scores[parent_id] = max(
+                    parent_max_scores.get(parent_id, 0.0), score
+                )
+
+        # Bước 2: Chấm điểm lại kèm theo Graph Boost
+        for index, chunk in enumerate(chunks):
+            score = float(scores[index])
+            chunk = dict(chunk)
             metadata = dict(chunk.get("metadata") or {})
+
+            # --- GRAPH BOOST TRUYỀN ĐIỂM ---
+            # Nếu mẩu này được kéo về từ Graph, nó sẽ được kế thừa điểm của thằng Seed đã gọi nó!
+            graph_depth = chunk.get("_graph_depth", 0)
+            source_seed = chunk.get("_source_seed_id")
+            if graph_depth > 0 and source_seed and source_seed in parent_max_scores:
+                seed_score = parent_max_scores[source_seed]
+                # Kế thừa điểm: Giảm 0.15 điểm cho mỗi bậc cách biệt (depth)
+                inherited_score = max(0.0, seed_score - (0.15 * graph_depth))
+                if inherited_score > score:
+                    score = inherited_score
+                    metadata["graph_boost_applied"] = round(inherited_score, 4)
+
             granularity = metadata.get("chunk_granularity")
             if granularity == "table_like":
                 score += 0.04
             elif granularity == "child":
                 score += 0.02
+
             scope_adjustment = _scope_preference_adjustment(query, chunk)
             if scope_adjustment:
-                chunk = dict(chunk)
                 metadata["scope_preference_adjustment"] = round(scope_adjustment, 4)
-                chunk["metadata"] = metadata
                 score += scope_adjustment
+
+            chunk["metadata"] = metadata
             scored.append((score, chunk))
+
         scored.sort(key=lambda pair: pair[0], reverse=True)
         return scored
 
@@ -350,16 +603,21 @@ class HybridRetrieverV7:
         query: str,
         scored_chunks: list[tuple[float, dict[str, Any]]],
         top_k_final: int,
+        retrieval_telemetry: dict[str, Any] | None = None,
     ) -> list[dict[str, Any]]:
         """Group top child/table matches back into parent-section result objects."""
         parent_groups: dict[str, list[tuple[float, dict[str, Any]]]] = defaultdict(list)
         parent_best_score: dict[str, float] = {}
         for score, chunk in scored_chunks:
-            parent_id = str((chunk.get("metadata") or {}).get("parent_section_id") or "")
-            if not parent_id or parent_id not in self.parent_store:
+            parent_id = str(
+                (chunk.get("metadata") or {}).get("parent_section_id") or ""
+            )
+            if not parent_id:
                 continue
             parent_groups[parent_id].append((score, chunk))
-            parent_best_score[parent_id] = max(score, parent_best_score.get(parent_id, -999.0))
+            parent_best_score[parent_id] = max(
+                score, parent_best_score.get(parent_id, -999.0)
+            )
 
         ranked_parent_ids = sorted(
             parent_groups.keys(),
@@ -368,19 +626,30 @@ class HybridRetrieverV7:
         )
 
         results: list[dict[str, Any]] = []
-        for parent_id in ranked_parent_ids[:top_k_final]:
-            parent = self.parent_store[parent_id]
+        for parent_id in ranked_parent_ids:
+            if len(results) >= top_k_final:
+                break
+
+            parent = self._get_parent(parent_id)
+
+            if parent is None:
+                logger.warning(
+                    "Không tìm thấy parent %s trong MongoDB collection.",
+                    parent_id,
+                )
+                continue
+    
             parent_metadata = dict(parent.get("metadata") or {})
             focused_chunks = self._focused_chunks_for_parent(
                 query=query,
                 parent_id=parent_id,
                 scored_group=parent_groups[parent_id],
             )
-            focused_context = _format_v7_focused_context(parent_metadata, focused_chunks)
             doc = dict(parent)
             doc["chunk_id"] = parent_id
             doc["rerank_score"] = float(parent_best_score[parent_id])
-            doc["content"] = focused_context
+            # PHỤC HỒI TOÀN BỘ NỘI DUNG TỪ MONGODB THAY VÌ FOCUSED CHUNKS
+            doc["content"] = parent.get("content") or ""
             doc["document"] = parent.get("content") or ""
             doc["metadata"] = {
                 **parent_metadata,
@@ -389,11 +658,18 @@ class HybridRetrieverV7:
                 "content_type": "regulation_text",
                 "chunk_granularity": "parent_bound_context",
                 "v7_collection": self.collection_name,
+                "parent_source": "mongodb",
+                "child_source": "qdrant",
+                "retrieval_telemetry": retrieval_telemetry or {},
                 "v7_matched_chunks": [
                     {
                         "chunk_id": chunk.get("_id") or chunk.get("chunk_id"),
-                        "chunk_granularity": (chunk.get("metadata") or {}).get("chunk_granularity"),
-                        "clause_marker": (chunk.get("metadata") or {}).get("clause_marker"),
+                        "chunk_granularity": (chunk.get("metadata") or {}).get(
+                            "chunk_granularity"
+                        ),
+                        "clause_marker": (chunk.get("metadata") or {}).get(
+                            "clause_marker"
+                        ),
                         "score": float(score),
                         "_graph_depth": chunk.get("_graph_depth"),
                         "_source_seed_id": chunk.get("_source_seed_id"),
@@ -411,26 +687,35 @@ class HybridRetrieverV7:
         parent_id: str,
         scored_group: list[tuple[float, dict[str, Any]]],
     ) -> list[tuple[float, dict[str, Any]]]:
-        """Choose the child/table snippets that should be shown before the parent text."""
-        # Lấy tối đa 4 chunk cho các kết quả Vector/BM25 thông thường,
+        # Lấy tối đa 12 chunk cho các kết quả Vector/BM25 thông thường,
         # NHƯNG lấy TẤT CẢ các chunk nếu parent này là Graph Neighbor (có _graph_depth)
         # để tránh việc PhoRanker loại mất đoạn văn chứa câu trả lời do không khớp keyword.
-        scored_group_sorted = sorted(scored_group, key=lambda pair: pair[0], reverse=True)
+        scored_group_sorted = sorted(
+            scored_group, key=lambda pair: pair[0], reverse=True
+        )
         selected = []
         for pair in scored_group_sorted:
             chunk = pair[1]
-            if chunk.get("_graph_depth", 0) > 0 or len(selected) < 4:
+            if chunk.get("_graph_depth", 0) > 0 or len(selected) < 12:
                 selected.append(pair)
         if any(
-            (chunk.get("metadata") or {}).get("chunk_granularity") in {"child", "table_like"}
+            (chunk.get("metadata") or {}).get("chunk_granularity")
+            in {"child", "table_like"}
             for _, chunk in selected
         ):
             return selected
 
+        siblings = self._get_children_for_parents(
+            [parent_id]
+        ).get(parent_id, [])
+
         candidates = [
             chunk
-            for chunk in self.children_by_parent.get(parent_id, [])
-            if (chunk.get("metadata") or {}).get("chunk_granularity") in {"child", "table_like"}
+            for chunk in siblings
+            if (chunk.get("metadata") or {}).get(
+                "chunk_granularity"
+            )
+            in {"child", "table_like"}
         ]
         if not candidates:
             return selected
@@ -451,7 +736,11 @@ def _format_v7_focused_context(
     parent_metadata: dict[str, Any],
     focused_chunks: list[tuple[float, dict[str, Any]]],
 ) -> str:
-    title = parent_metadata.get("title") or parent_metadata.get("article") or "Regulation source"
+    title = (
+        parent_metadata.get("title")
+        or parent_metadata.get("article")
+        or "Regulation source"
+    )
     lines = [
         "FOCUSED EVIDENCE FROM SOURCE:",
         f"Parent source: {title}",
@@ -460,7 +749,11 @@ def _format_v7_focused_context(
     for score, chunk in focused_chunks:
         metadata = chunk.get("metadata") or {}
         content = str(chunk.get("content") or "").strip()
-        content = content.split("Content:", 1)[-1].strip() if "Content:" in content else content
+        content = (
+            content.split("Content:", 1)[-1].strip()
+            if "Content:" in content
+            else content
+        )
         if not content:
             continue
         key = " ".join(content.lower().split())
@@ -476,13 +769,13 @@ def _format_v7_focused_context(
         lines.append(prefix + content)
     return "\n".join(lines)
 
+
 _GLOBAL_RETRIEVER = None
 
+
 def run_hybrid_retrieval_pipeline(
-    query: str,
-    top_k: int = 5,
-    **kwargs
-    ) -> dict[str, Any]:
+    query: str, top_k: int = 5, **kwargs
+) -> dict[str, Any]:
     """Run the configured hybrid regulation retriever and return pipeline-shaped output.
 
     Runtime uses the V7 child-parent retriever. The adapter keeps the same
@@ -490,12 +783,13 @@ def run_hybrid_retrieval_pipeline(
     UI do not need separate code paths.
     """
     global _GLOBAL_RETRIEVER
-    
+
     if _GLOBAL_RETRIEVER is None:
         import os
         from src.common.env_loader import load_project_env
+
         load_project_env()
-        
+
         qdrant_url = os.getenv("QDRANT_URL")
         qdrant_key = os.getenv("QDRANT_API_KEY")
         collection_name = os.getenv(
@@ -508,7 +802,7 @@ def run_hybrid_retrieval_pipeline(
             qdrant_key,
             collection_name=collection_name,
         )
-    
+
     cohort = kwargs.get("cohort")
     retrieval_query = kwargs.get("retrieval_query") or query
     detected_entities = kwargs.get("detected_entities") or []
@@ -521,20 +815,22 @@ def run_hybrid_retrieval_pipeline(
         top_k_final=top_k,
         cohort=cohort,
     )
-    
+
     formatted_results = []
     for doc in docs:
         metadata = doc.get("metadata", {})
         doc_copy = dict(doc)
         doc_copy["chunk_id"] = doc.get("_id") or doc.get("id")
-        doc_copy["chunk_type"] = doc_copy.get("chunk_type") or metadata.get("chunk_type") or "regulation"
+        doc_copy["chunk_type"] = (
+            doc_copy.get("chunk_type") or metadata.get("chunk_type") or "regulation"
+        )
         formatted_results.append(doc_copy)
 
     from .citation_builder import build_citations_from_vector_results
     from .context_builder import build_context_from_vector_results
 
     citations = build_citations_from_vector_results(formatted_results)
-            
+
     return {
         "query": query,
         "retrieval_query": retrieval_query,
@@ -549,15 +845,17 @@ def run_hybrid_retrieval_pipeline(
         "context_for_llm": build_context_from_vector_results(formatted_results),
         "needs_llm_answer": True,
         "needs_clarification": False,
-        "out_of_domain": False
+        "out_of_domain": False,
     }
+
 
 if __name__ == "__main__":
     from src.common.env_loader import load_project_env
+
     load_project_env()
     qdrant_url = os.getenv("QDRANT_URL")
     qdrant_key = os.getenv("QDRANT_API_KEY")
-    
+
     retriever = HybridRetrieverV7(qdrant_url, qdrant_key)
     res = retriever.retrieve("Dieu kien xet hoc bong la gi?")
     for r in res:

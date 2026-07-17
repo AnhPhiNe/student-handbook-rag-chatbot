@@ -21,7 +21,7 @@ class ProductionQueryBehaviorsTest(unittest.TestCase):
 
     def test_core_router_behaviors_do_not_regress(self) -> None:
         cases = {
-            "email phong dao tao la gi": ("office_query", "semantic_filtered_rerank"),
+            "email phong dao tao la gi": ("office_query", "office_lookup"),
             "thông tin khoa van hoc": ("faculty_query", "semantic_filtered_rerank"),
             "diem tb tinh kieu j": ("formula_query", "formula_lookup"),
             "xin giay tam hoan nghia vu quan su": (

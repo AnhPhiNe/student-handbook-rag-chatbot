@@ -154,6 +154,31 @@ def build_citations_from_vector_results(
 
 
 def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, Any]]:
+    if lookup_result.get("lookup_type") == "structured_context":
+        citations = []
+        seen = set()
+        for item in lookup_result.get("items") or []:
+            source_parent_id = item.get("source_parent_id")
+            key = (source_parent_id, item.get("cohort"), item.get("table_id"))
+            if key in seen:
+                continue
+            seen.add(key)
+            citations.append(
+                {
+                    "chunk_type": "structured_lookup",
+                    "title": item.get("table_name") or "Bảng dữ liệu Sổ tay sinh viên",
+                    "source_pages": item.get("source_pages") or [],
+                    "source_label": "Bảng dữ liệu được chuẩn hóa từ Sổ tay sinh viên HCMUE",
+                    "cohort": item.get("cohort"),
+                    "document_id": item.get("document_id"),
+                    "source_section": source_parent_id,
+                    "source_parent_id": source_parent_id,
+                    "parent_section_id": source_parent_id,
+                    "content": f"{item.get('table_name')}: {len(item.get('rows') or [])} dòng được chọn.",
+                }
+            )
+        return citations
+
     if lookup_result.get("lookup_type") == "program_directory":
         programs = lookup_result.get("result") or []
         preview = "; ".join(
@@ -176,6 +201,8 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
                 "cohort": lookup_result.get("cohort"),
                 "document_id": lookup_result.get("document_id"),
                 "source_section": lookup_result.get("source_section"),
+                "source_parent_id": lookup_result.get("source_parent_id"),
+                "parent_section_id": lookup_result.get("source_parent_id"),
                 "applicability": lookup_result.get("applicability"),
                 "content": preview
                 or "Du lieu nganh dao tao duoc trich xuat tu So tay sinh vien HCMUE.",
@@ -196,6 +223,8 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
                 "cohort": lookup_result.get("cohort"),
                 "document_id": lookup_result.get("document_id"),
                 "source_section": lookup_result.get("source_section"),
+                "source_parent_id": lookup_result.get("source_parent_id"),
+                "parent_section_id": lookup_result.get("source_parent_id"),
                 "applicability": lookup_result.get("applicability"),
                 "content": first_form.get("summary")
                 or "Dữ liệu biểu mẫu được trích xuất từ Sổ tay sinh viên HCMUE.",
@@ -221,9 +250,73 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
                 "cohort": lookup_result.get("cohort"),
                 "document_id": lookup_result.get("document_id"),
                 "source_section": lookup_result.get("source_section"),
+                "source_parent_id": lookup_result.get("source_parent_id"),
+                "parent_section_id": lookup_result.get("source_parent_id"),
                 "applicability": lookup_result.get("applicability"),
                 "content": preview
                 or "Du lieu phong ban/lien he duoc trich xuat tu So tay sinh vien HCMUE.",
+            }
+        ]
+
+    if lookup_result.get("lookup_type") == "foreign_language_equivalency":
+        items = lookup_result.get("items") or []
+        preview = "; ".join(
+            str(item.get("certificate"))
+            for item in items[:5]
+            if item.get("certificate")
+        )
+        return [
+            {
+                "chunk_type": "structured_lookup",
+                "title": lookup_result.get("table_name")
+                or "Bang quy doi chuan dau ra ngoai ngu",
+                "source_pages": lookup_result.get("source_pages", []),
+                "source_label": lookup_result.get("source_label")
+                or "Bang quy doi chuan dau ra ngoai ngu trong So tay sinh vien HCMUE",
+                "source_url": lookup_result.get("source_url"),
+                "cohort": lookup_result.get("cohort"),
+                "document_id": lookup_result.get("document_id"),
+                "source_section": lookup_result.get("source_section"),
+                "source_parent_id": lookup_result.get("source_parent_id"),
+                "parent_section_id": lookup_result.get("source_parent_id"),
+                "applicability": lookup_result.get("applicability"),
+                "content": preview
+                or "Du lieu quy doi chuan dau ra ngoai ngu duoc trich xuat tu So tay sinh vien HCMUE.",
+            }
+        ]
+
+    if lookup_result.get("lookup_type") in {
+        "study_duration",
+        "scholarship_classification",
+    }:
+        items = lookup_result.get("items") or []
+        if lookup_result.get("lookup_type") == "study_duration":
+            preview = "; ".join(
+                str(row.get("Chương trình đào tạo"))
+                for table in items[:3]
+                for row in (table.get("rows") or [])[:2]
+                if row.get("Chương trình đào tạo")
+            )
+        else:
+            preview = "; ".join(
+                str(row.get("label")) for row in items[:5] if row.get("label")
+            )
+        return [
+            {
+                "chunk_type": "structured_lookup",
+                "title": lookup_result.get("table_name") or "Bang tra cuu",
+                "source_pages": lookup_result.get("source_pages", []),
+                "source_label": lookup_result.get("source_label")
+                or "Bang du lieu duoc trich xuat tu So tay sinh vien HCMUE",
+                "source_url": lookup_result.get("source_url"),
+                "cohort": lookup_result.get("cohort"),
+                "document_id": lookup_result.get("document_id"),
+                "source_section": lookup_result.get("source_section"),
+                "source_parent_id": lookup_result.get("source_parent_id"),
+                "parent_section_id": lookup_result.get("source_parent_id"),
+                "applicability": lookup_result.get("applicability"),
+                "content": preview
+                or "Du lieu bang duoc trich xuat tu So tay sinh vien HCMUE.",
             }
         ]
 
@@ -239,6 +332,8 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
             "cohort": lookup_result.get("cohort"),
             "document_id": lookup_result.get("document_id"),
             "source_section": lookup_result.get("source_section"),
+            "source_parent_id": lookup_result.get("source_parent_id"),
+            "parent_section_id": lookup_result.get("source_parent_id"),
             "applicability": lookup_result.get("applicability"),
             "content": "Dữ liệu được trích xuất trực tiếp từ cơ sở dữ liệu bảng quy chế trong Sổ tay Sinh viên HCMUE.",
         }
@@ -257,6 +352,8 @@ def build_citation_from_formula(formula_result: dict[str, Any]) -> list[dict[str
             "cohort": formula_result.get("cohort"),
             "document_id": formula_result.get("document_id"),
             "source_section": formula_result.get("source_section"),
+            "source_parent_id": formula_result.get("source_parent_id"),
+            "parent_section_id": formula_result.get("source_parent_id"),
             "applicability": formula_result.get("applicability"),
         }
     ]

@@ -35,6 +35,12 @@ class FakeRewriteClient:
 
 
 class QueryRewriterTest(unittest.TestCase):
+    def test_explicit_disabled_config_wins_over_enabled_environment(self) -> None:
+        with patch.dict("os.environ", {"QUERY_REWRITER_ENABLED": "true"}):
+            rewriter = QueryRewriter.from_config({"enabled": False})
+
+        self.assertFalse(rewriter.enabled)
+
     def test_disabled_rewriter_keeps_original_query(self) -> None:
         rewriter = QueryRewriter(enabled=False)
 

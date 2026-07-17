@@ -1,0 +1,18 @@
+enabled: true
+provider: groq
+model_name: qwen/qwen3.6-27b
+temperature: 0.0
+max_output_tokens: 256
+request_timeout_seconds: 5
+max_retries: 1
+cache_enabled: true
+cache_path: data/cache/qwen_router_cache.json
+
+key_pool:
+  rpm_limit_per_key: 30
+  rpd_limit_per_key: 1000
+  tpm_limit_per_key: 8000
+  tpd_limit_per_key: 200000
+  cooldown_seconds: 65
+  state_path: data/cache/qwen_router_key_state.json
+  wait_when_limited: false

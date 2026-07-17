@@ -1,5 +1,6 @@
 import os
 import time
+from contextvars import ContextVar
 from collections.abc import Iterator
 from dataclasses import replace
 from pathlib import Path
@@ -38,7 +39,10 @@ from .semantic_cache import SemanticCache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v14"
+PIPELINE_VERSION = "v16"
+_evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
+    "answer_pipeline_evaluation_telemetry", default=None
+)
 
 
 def _env_bool(name: str, default: bool = False) -> bool:
@@ -60,9 +64,50 @@ class AnswerPipeline:
         self.scoring_tables = load_json(self.config["input"]["scoring_tables"])
         self.formula_rules = load_json(self.config["input"]["formula_rules"])
         self.form_templates = load_json(self.config["input"]["form_templates"])
-        office_directory_path = self.config["input"].get("office_directory")
-        self.office_directory = (
-            load_json(office_directory_path) if office_directory_path else []
+        student_service_directory_path = self.config["input"].get(
+            "student_service_directory"
+        )
+        self.student_service_directory = (
+            load_json(student_service_directory_path)
+            if student_service_directory_path
+            and Path(student_service_directory_path).is_file()
+            else []
+        )
+        student_office_profiles_path = self.config["input"].get(
+            "student_office_profiles"
+        )
+        self.student_office_profiles = (
+            load_json(student_office_profiles_path)
+            if student_office_profiles_path
+            and Path(student_office_profiles_path).is_file()
+            else []
+        )
+        student_faculty_profiles_path = self.config["input"].get(
+            "student_faculty_profiles"
+        )
+        self.student_faculty_profiles = (
+            load_json(student_faculty_profiles_path)
+            if student_faculty_profiles_path
+            and Path(student_faculty_profiles_path).is_file()
+            else []
+        )
+        foreign_language_table_path = self.config["input"].get(
+            "foreign_language_equivalency_table"
+        )
+        self.foreign_language_tables = (
+            load_json(foreign_language_table_path)
+            if foreign_language_table_path
+            and Path(foreign_language_table_path).is_file()
+            else []
+        )
+        structured_tables_registry_path = self.config["input"].get(
+            "structured_tables_registry"
+        )
+        self.structured_tables_registry = (
+            load_json(structured_tables_registry_path)
+            if structured_tables_registry_path
+            and Path(structured_tables_registry_path).is_file()
+            else []
         )
         self.program_directory = load_json(self.config["input"]["program_directory"])
         self.entity_registry = load_json(self.config["input"]["entity_registry"])
@@ -71,12 +116,19 @@ class AnswerPipeline:
         self.model = load_embedding_model(self.config["embedding"]["model_name"])
         try:
             self.collection = get_chroma_collection(
-                persist_dir=self.config["vectorstore"].get("persist_dir", "data/vectorstore/chroma"),
-                collection_name=self.config["vectorstore"].get("collection_name", "student_handbook_semantic_v4"),
+                persist_dir=self.config["vectorstore"].get(
+                    "persist_dir", "data/vectorstore/chroma"
+                ),
+                collection_name=self.config["vectorstore"].get(
+                    "collection_name", "student_handbook_semantic_v4"
+                ),
             )
         except Exception as exc:
             import logging
-            logging.getLogger(__name__).warning(f"Skip Chroma initialization because Qdrant hybrid retrieval is configured: {exc}")
+
+            logging.getLogger(__name__).warning(
+                f"Skip Chroma initialization because Qdrant hybrid retrieval is configured: {exc}"
+            )
             self.collection = None
 
         llm_config = self.config["llm"]
@@ -87,6 +139,11 @@ class AnswerPipeline:
 
         if _env_bool("STUDENT_RAG_OFFLINE_EVAL"):
             self.config.setdefault("query_rewriter", {})["enabled"] = False
+            self.config.setdefault("semantic_cache", {})["enabled"] = False
+            self.config.setdefault("cache", {})["enabled"] = False
+        elif _env_bool("STUDENT_RAG_QUALITY_EVAL"):
+            # Quality evaluation must exercise rewriting/retrieval/generation,
+            # while response caches would hide model and retrieval regressions.
             self.config.setdefault("semantic_cache", {})["enabled"] = False
             self.config.setdefault("cache", {})["enabled"] = False
 
@@ -111,10 +168,11 @@ class AnswerPipeline:
 
         semantic_config = self.config.get("semantic_cache", {})
         self.semantic_cache = SemanticCache(
-            config=semantic_config, 
+            config=semantic_config,
             embedding_model=self.model,
-            pipeline_version=PIPELINE_VERSION
+            pipeline_version=PIPELINE_VERSION,
         )
+
     def answer(
         self,
         query: str,
@@ -129,7 +187,20 @@ class AnswerPipeline:
         bounded context for true-RAG questions, then calls the configured LLM
         only when generation is actually required.
         """
+        telemetry = (
+            {
+                "started_at_monotonic": time.monotonic(),
+                "retry_count": 0,
+                "cooldown_events": 0,
+            }
+            if _env_bool("STUDENT_RAG_EVAL_TELEMETRY")
+            else None
+        )
+        _evaluation_telemetry.set(telemetry)
+        rewrite_started = time.monotonic()
         rewrite_result = self.query_rewriter.rewrite(query, chat_history=chat_history)
+        if telemetry is not None:
+            telemetry["query_rewrite_ms"] = (time.monotonic() - rewrite_started) * 1000
         effective_query = rewrite_result.effective_query
 
         # Let an explicit cohort in the query win over the UI selector.
@@ -181,11 +252,17 @@ class AnswerPipeline:
         try:
             # Với rewrite từ history, chạy thêm retrieval query gốc để kiểm chứng.
             # Nếu rewrite kéo nhầm context, verification sẽ fallback hoặc hỏi lại.
+            retrieval_started = time.monotonic()
             retrieval_result, rewrite_result = self._run_verified_retrieval(
                 query,
                 rewrite_result,
                 cohort,
+                chat_history=chat_history,
             )
+            if telemetry is not None:
+                telemetry["routing_retrieval_parent_lookup_ms"] = (
+                    time.monotonic() - retrieval_started
+                ) * 1000
             effective_query = rewrite_result.effective_query
         except Exception as exc:
             final_answer = build_fallback_answer(
@@ -207,12 +284,19 @@ class AnswerPipeline:
                 query_rewrite=rewrite_result,
             )
 
+        context_started = time.monotonic()
         context_used = build_context_for_prompt(
             retrieval_result,
             query=effective_query,
             max_context_chars=self.max_context_chars,
             allocation_config=self.context_allocation,
         )
+        if telemetry is not None:
+            telemetry["context_build_ms"] = (time.monotonic() - context_started) * 1000
+            telemetry["context_chars"] = len(context_used)
+            telemetry["source_count"] = len(
+                retrieval_result.get("retrieved_items") or []
+            )
 
         if retrieval_result.get("rewrite_verification_needs_clarification"):
             return self._build_output(
@@ -233,15 +317,7 @@ class AnswerPipeline:
                 query_rewrite=rewrite_result,
             )
 
-        # AI Router khong nhan chat_history, nen neu cau hoi da duoc rewrite tu history
-        # thi khong de router yeu cau clarify lai mot lan nua.
-        query_was_rewritten_from_history = self._query_was_rewritten_from_history(
-            rewrite_result
-        )
-        if (
-            retrieval_result.get("needs_clarification")
-            and not query_was_rewritten_from_history
-        ):
+        if retrieval_result.get("needs_clarification"):
             return self._build_output(
                 query=query,
                 retrieval_result=retrieval_result,
@@ -322,8 +398,8 @@ class AnswerPipeline:
         citations_config = self.config.get("citations", {})
 
         guardrails_config = self.config.get("guardrails", {})
-        # Cac ket qua bang diem/cong thuc/tool da du deterministic thi tra thang,
-        # vua chinh xac hon vua tiet kiem chi phi LLM.
+        # Compatibility fast path only. Production keeps this disabled so every
+        # validated structured payload is phrased consistently by the answer LLM.
         if guardrails_config.get(
             "allow_deterministic_direct_answer", True
         ) and can_answer_deterministically(retrieval_result):
@@ -409,6 +485,7 @@ class AnswerPipeline:
 
         # Đưa TOÀN BỘ retrieved_items (đã qua ngưỡng 0.70) vào context cho LLM.
         # selected_citations chỉ dùng cho UI hiển thị nguồn tham khảo.
+        prompt_started = time.monotonic()
         prompt = build_answer_prompt(
             query=effective_query,
             retrieval_result=retrieval_result,
@@ -417,6 +494,9 @@ class AnswerPipeline:
             cohort=cohort,
             context_allocation=self.context_allocation,
         )
+        if telemetry is not None:
+            telemetry["prompt_build_ms"] = (time.monotonic() - prompt_started) * 1000
+            telemetry["prompt_chars"] = len(prompt)
 
         try:
             llm_client = self._get_llm_client()
@@ -442,7 +522,12 @@ class AnswerPipeline:
             )
 
         self._throttle_llm_call()
+        llm_started = time.monotonic()
         llm_result = llm_client.generate(prompt)
+        if telemetry is not None:
+            telemetry["gemini_ms"] = (time.monotonic() - llm_started) * 1000
+            telemetry["key_fingerprint"] = llm_result.get("key_fingerprint")
+            telemetry["retry_count"] = max(0, int(llm_result.get("attempts") or 1) - 1)
         self._last_llm_call_at = time.monotonic()
 
         if not llm_result.get("ok"):
@@ -517,18 +602,22 @@ class AnswerPipeline:
         without changing the underlying routing, guardrail, or citation logic.
         """
         run_id = None
-        
+
         from src.api.usage_tracker import UsageTracker
         from datetime import datetime, timezone
+
         tracker = UsageTracker()
 
         yield {"type": "progress", "message": "Đang tối ưu hóa câu hỏi..."}
-        
+
         start_time_rw = datetime.now(timezone.utc).isoformat()
         rewrite_result = self.query_rewriter.rewrite(query, chat_history=chat_history)
         end_time_rw = datetime.now(timezone.utc).isoformat()
-        
-        if hasattr(self.query_rewriter, "_last_llm_usages") and self.query_rewriter._last_llm_usages:
+
+        if (
+            hasattr(self.query_rewriter, "_last_llm_usages")
+            and self.query_rewriter._last_llm_usages
+        ):
             for usage in self.query_rewriter._last_llm_usages:
                 tracker.record(
                     step_name="Query Rewriter",
@@ -537,9 +626,9 @@ class AnswerPipeline:
                     output_tokens=usage.get("output", 0),
                     total_tokens=usage.get("total", 0),
                     start_time=start_time_rw,
-                    end_time=end_time_rw
+                    end_time=end_time_rw,
                 )
-                
+
         effective_query = rewrite_result.effective_query
         cohort = resolve_cohort_from_query(query, cohort)
 
@@ -550,7 +639,10 @@ class AnswerPipeline:
             if semantic_cache_key:
                 cached = self.response_cache.get(semantic_cache_key)
                 if cached:
-                    yield {"type": "progress", "message": "Đang truy xuất từ bộ nhớ đệm..."}
+                    yield {
+                        "type": "progress",
+                        "message": "Đang truy xuất từ bộ nhớ đệm...",
+                    }
                     yield {
                         "type": "metadata",
                         "run_id": run_id,
@@ -590,8 +682,9 @@ class AnswerPipeline:
                 query,
                 rewrite_result,
                 cohort=cohort,
+                chat_history=chat_history,
             )
-            
+
             if retrieval_result.get("router_usage"):
                 tracker.record(
                     step_name="AI Router",
@@ -600,9 +693,9 @@ class AnswerPipeline:
                     output_tokens=retrieval_result["router_usage"].get("output", 0),
                     total_tokens=retrieval_result["router_usage"].get("total", 0),
                     start_time=start_time_rw,
-                    end_time=datetime.now(timezone.utc).isoformat()
+                    end_time=datetime.now(timezone.utc).isoformat(),
                 )
-                
+
             effective_query = rewrite_result.effective_query
         except Exception:
             fallback = build_fallback_answer(
@@ -638,16 +731,7 @@ class AnswerPipeline:
             yield {"type": "done", "tracker": tracker}
             return
 
-        # Lớp bảo vệ thứ 2: Nếu câu hỏi đã được rewrite từ lịch sử chat,
-        # bỏ qua needs_clarification từ AI Router vì AI Router không nhận history
-        # và có thể đánh giá sai câu hỏi đã được bổ sung ngữ cảnh.
-        query_was_rewritten_from_history = self._query_was_rewritten_from_history(
-            rewrite_result
-        )
-        if (
-            retrieval_result.get("needs_clarification")
-            and not query_was_rewritten_from_history
-        ):
+        if retrieval_result.get("needs_clarification"):
             clarification_msg = retrieval_result.get(
                 "clarification_question", "Bạn có thể làm rõ câu hỏi được không?"
             )
@@ -815,8 +899,11 @@ class AnswerPipeline:
                 yield {"type": "token", "text": chunk}
             end_time_llm = datetime.now(timezone.utc).isoformat()
             self._last_llm_call_at = time.monotonic()
-            
-            if hasattr(llm_client, "_last_stream_usage") and llm_client._last_stream_usage:
+
+            if (
+                hasattr(llm_client, "_last_stream_usage")
+                and llm_client._last_stream_usage
+            ):
                 tracker.record(
                     step_name="LLM Generation",
                     model=getattr(llm_client, "_last_stream_model", ""),
@@ -824,7 +911,7 @@ class AnswerPipeline:
                     output_tokens=llm_client._last_stream_usage.get("output", 0),
                     total_tokens=llm_client._last_stream_usage.get("total", 0),
                     start_time=start_time_llm,
-                    end_time=end_time_llm
+                    end_time=end_time_llm,
                 )
         except Exception:
             fallback = build_fallback_answer(
@@ -839,7 +926,12 @@ class AnswerPipeline:
 
         yield {"type": "done", "tracker": tracker}
 
-    def _run_retrieval(self, query: str, cohort: str | None = None) -> dict[str, Any]:
+    def _run_retrieval(
+        self,
+        query: str,
+        cohort: str | None = None,
+        chat_history: list[dict[str, str]] | None = None,
+    ) -> dict[str, Any]:
         """Run the backend retrieval/router stack with the active cohort context."""
         result = run_retrieval_pipeline(
             query=query,
@@ -850,7 +942,11 @@ class AnswerPipeline:
             entity_registry=self.entity_registry,
             expansion_rules=self.expansion_rules,
             form_templates=self.form_templates,
-            office_directory=self.office_directory,
+            office_directory=self.student_office_profiles,
+            student_service_directory=self.student_service_directory,
+            student_faculty_profiles=self.student_faculty_profiles,
+            foreign_language_tables=self.foreign_language_tables,
+            structured_tables_registry=self.structured_tables_registry,
             program_directory=self.program_directory,
             top_k=self.config["retrieval"]["default_top_k"],
             batch_size=self.config["retrieval"].get("batch_size", 8),
@@ -862,6 +958,7 @@ class AnswerPipeline:
                 self.config["retrieval"].get("candidate_multiplier", 5)
             ),
             min_candidates=int(self.config["retrieval"].get("min_candidates", 25)),
+            chat_history=chat_history,
         )
         result["selected_cohort"] = cohort
         return result
@@ -871,10 +968,36 @@ class AnswerPipeline:
         original_query: str,
         rewrite_result: QueryRewriteResult,
         cohort: str | None = None,
+        chat_history: list[dict[str, str]] | None = None,
     ) -> tuple[dict[str, Any], QueryRewriteResult]:
         """Compare rewritten and original retrieval when history rewriting is risky."""
         effective_query = rewrite_result.effective_query
-        rewritten_result = self._run_retrieval(effective_query, cohort=cohort)
+        rewritten_result = self._run_retrieval(
+            effective_query,
+            cohort=cohort,
+            chat_history=chat_history,
+        )
+
+        router_query = str(rewritten_result.get("retrieval_query") or "").strip()
+        router_model = str(rewritten_result.get("router_model") or "")
+        if router_model == "qwen/qwen3.6-27b" and router_query:
+            rewrite_result = replace(
+                rewrite_result,
+                effective_query=router_query,
+                rewritten_query=router_query,
+                confidence="high",
+                reason="qwen_structured_router",
+                llm_called=not bool(rewritten_result.get("router_cache_hit")),
+                context_resolution={
+                    "history_used": bool(chat_history),
+                    "decision": "resolved_by_qwen_router",
+                },
+            )
+            rewritten_result["rewrite_verification"] = {
+                "mode": "qwen_router_single_retrieval",
+                "selected": "router_retrieval_query",
+            }
+            return rewritten_result, rewrite_result
 
         if (
             not self._query_was_rewritten_from_history(rewrite_result)
@@ -975,6 +1098,8 @@ class AnswerPipeline:
                     request_timeout_seconds=llm_config.get(
                         "request_timeout_seconds", 60
                     ),
+                    api_key_env_var=llm_config.get("api_key_env_var", "GEMINI_API_KEY"),
+                    key_pool_config=llm_config.get("key_pool"),
                 )
             elif provider == "groq":
                 from .groq_client import GroqClient
@@ -1080,7 +1205,25 @@ class AnswerPipeline:
             "used_cache": used_cache,
             "clarification_needed": clarification_needed,
             "context_used": context_used,
+            "evaluation_telemetry": self._finalize_evaluation_telemetry(
+                used_cache=used_cache,
+                llm_called=llm_called,
+            ),
         }
+
+    @staticmethod
+    def _finalize_evaluation_telemetry(
+        *, used_cache: bool, llm_called: bool
+    ) -> dict[str, Any] | None:
+        telemetry = _evaluation_telemetry.get()
+        if telemetry is None:
+            return None
+        output = dict(telemetry)
+        started_at = float(output.pop("started_at_monotonic", time.monotonic()))
+        output["total_ms"] = (time.monotonic() - started_at) * 1000
+        output["cache_hit"] = used_cache
+        output["llm_called"] = llm_called
+        return output
 
 
 def _retrieval_is_answerable(retrieval_result: dict[str, Any]) -> bool:

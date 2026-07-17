@@ -12,6 +12,7 @@ def build_retrieval_plan(
 ) -> list[dict[str, Any]]:
     intent = routing["intent"]
     target_chunk_types = routing.get("target_chunk_types", [])
+    content_types = routing.get("content_types", [])
 
     if intent != "mixed_query":
         return [
@@ -19,6 +20,7 @@ def build_retrieval_plan(
                 "purpose": intent,
                 "query": retrieval_query,
                 "chunk_types": target_chunk_types,
+                "content_types": content_types,
                 "top_k": 5,
             }
         ]
@@ -51,9 +53,9 @@ def build_retrieval_plan(
     if contains_any(q, rules["ktx_signal"] + ["tiêu chí", "xét"]):
         plans.append(
             {
-                "purpose": "procedure",
+                "purpose": "regulation",
                 "query": retrieval_query,
-                "chunk_types": ["procedure"],
+                "chunk_types": ["regulation"],
                 "top_k": 3,
             }
         )
@@ -74,6 +76,7 @@ def build_retrieval_plan(
                 "purpose": "mixed_default",
                 "query": retrieval_query,
                 "chunk_types": target_chunk_types,
+                "content_types": content_types,
                 "top_k": 5,
             }
         )

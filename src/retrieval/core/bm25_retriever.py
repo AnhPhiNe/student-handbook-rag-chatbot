@@ -83,6 +83,7 @@ class BM25Retriever:
         query: str,
         top_k: int = 15,
         chunk_types: list[str] | None = None,
+        content_types: list[str] | None = None,
         cohort: str | None = None,
     ) -> list[dict[str, Any]]:
         if not self.bm25 or not self.chunks:
@@ -96,6 +97,7 @@ class BM25Retriever:
 
         cohort = normalize_cohort(cohort)
         allowed_types = set(chunk_types or [])
+        allowed_content_types = set(content_types or [])
 
         candidate_indices = []
         for idx, chunk in enumerate(self.chunks):
@@ -103,6 +105,8 @@ class BM25Retriever:
             if cohort and metadata.get("cohort") != cohort:
                 continue
             if allowed_types and chunk.get("chunk_type") not in allowed_types:
+                continue
+            if allowed_content_types and metadata.get("content_type") not in allowed_content_types:
                 continue
             candidate_indices.append(idx)
 

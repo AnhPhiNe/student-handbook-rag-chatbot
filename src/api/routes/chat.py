@@ -63,6 +63,7 @@ def _build_debug_payload(result: dict[str, Any]) -> dict[str, Any]:
         else 0,
         "request_id": result.get("request_id"),
         "latency_ms": result.get("latency_ms"),
+        "evaluation_telemetry": result.get("evaluation_telemetry"),
     }
 
 
@@ -151,17 +152,20 @@ def chat(
     try:
         with chat_capacity_slot():
             result = answer_service.answer(
-                query, chat_history=request.chat_history, cohort=request.cohort, langfuse_trace_id=request_id
+                query,
+                chat_history=request.chat_history,
+                cohort=request.cohort,
+                langfuse_trace_id=request_id,
             )
             sync_latency = round((time.perf_counter() - started_at) * 1000, 2)
             threading.Thread(
                 target=push_trace_to_langfuse,
                 args=(
-                    request_id, 
-                    "Chat (Sync)", 
-                    request.cohort, 
-                    query, 
-                    str(result.get("answer") or ""), 
+                    request_id,
+                    "Chat (Sync)",
+                    request.cohort,
+                    query,
+                    str(result.get("answer") or ""),
                 ),
                 kwargs={
                     "metadata": {
@@ -175,7 +179,7 @@ def chat(
                     "tags": ["sync"],
                     "tracker": result.get("tracker"),
                 },
-                daemon=True
+                daemon=True,
             ).start()
     except ChatCapacityError as exc:
         latency_ms = round((time.perf_counter() - started_at) * 1000, 2)

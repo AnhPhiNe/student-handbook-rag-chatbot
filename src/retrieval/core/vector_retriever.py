@@ -20,7 +20,9 @@ def get_chroma_collection(persist_dir: str, collection_name: str) -> Any:
 
 
 def build_where_filter(
-    chunk_types: Optional[list[str]], cohort: Optional[str] = None
+    chunk_types: Optional[list[str]],
+    cohort: Optional[str] = None,
+    content_types: Optional[list[str]] = None,
 ) -> Optional[dict[str, Any]]:
     conditions = []
 
@@ -29,6 +31,12 @@ def build_where_filter(
             conditions.append({"chunk_type": chunk_types[0]})
         else:
             conditions.append({"chunk_type": {"$in": chunk_types}})
+
+    if content_types:
+        if len(content_types) == 1:
+            conditions.append({"content_type": content_types[0]})
+        else:
+            conditions.append({"content_type": {"$in": content_types}})
 
     cohort = normalize_cohort(cohort)
     if cohort:
@@ -52,6 +60,7 @@ def vector_search(
     batch_size: int = 8,
     normalize_embeddings: bool = True,
     cohort: Optional[str] = None,
+    content_types: Optional[list[str]] = None,
 ) -> list[dict[str, Any]]:
     query_embedding = model.encode(
         [query],
@@ -59,7 +68,7 @@ def vector_search(
         normalize_embeddings=normalize_embeddings,
     ).tolist()
 
-    where_filter = build_where_filter(chunk_types, cohort)
+    where_filter = build_where_filter(chunk_types, cohort, content_types)
 
     response = collection.query(
         query_embeddings=query_embedding,

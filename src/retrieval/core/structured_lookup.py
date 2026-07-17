@@ -157,41 +157,60 @@ def lookup_letter_grade(
 
 
 def lookup_grade_10_to_letter(
-    query: str, tables: list[dict[str, Any]]
+    query: str,
+    tables: list[dict[str, Any]],
 ) -> Optional[dict[str, Any]]:
     matching_tables = [
-        t
-        for t in tables
-        if t.get("lookup_group") == "grade_10_to_letter"
-        or "grade_10_to_letter" in t.get("table_id", "")
+        table
+        for table in tables
+        if table.get("lookup_group") == "grade_10_to_letter"
+        or "grade_10_to_letter" in str(table.get("table_id") or "")
     ]
+
     if not matching_tables:
         return None
 
-    # Return all matching tables (general and major if split) so LLM can read them
     if len(matching_tables) == 1:
-        table_name = matching_tables[0].get("table_name", "Quy đổi thang điểm 10")
+        table_name = matching_tables[0].get(
+            "table_name",
+            "Quy đổi thang điểm 10",
+        )
     else:
         table_name = "Các bảng: " + " | ".join(
-            t.get("table_name", "Bảng quy đổi") for t in matching_tables
+            table.get("table_name", "Bảng quy đổi")
+            for table in matching_tables
         )
 
     requested_grade = _requested_letter_grade(query, tables)
-    requested_grade_rows = _matching_grade_rows(requested_grade, matching_tables)
+    requested_grade_rows = _matching_grade_rows(
+        requested_grade,
+        matching_tables,
+    )
     letter_grade_4 = lookup_letter_grade(query, tables)
 
-    return _with_metadata({
-        "lookup_type": "grade_10_to_letter",
-        "input_value": query,
-        "result": [t for t in matching_tables],
-        "source_pages": list(
-            set(p for t in matching_tables for p in t.get("source_pages", []))
-        ),
-        "table_name": table_name,
-        "requested_letter_grade": requested_grade,
-        "requested_grade_rows": requested_grade_rows,
-        "letter_grade_4": letter_grade_4.get("result") if letter_grade_4 else None,
-    }, matching_tables)
+    return _with_metadata(
+        {
+            "lookup_type": "grade_10_to_letter",
+            "input_value": query,
+            "result": matching_tables,
+            "source_pages": sorted(
+                {
+                    page
+                    for table in matching_tables
+                    for page in table.get("source_pages", [])
+                }
+            ),
+            "table_name": table_name,
+            "requested_letter_grade": requested_grade,
+            "requested_grade_rows": requested_grade_rows,
+            "letter_grade_4": (
+                letter_grade_4.get("result")
+                if letter_grade_4
+                else None
+            ),
+        },
+        matching_tables,
+    )
 
 
 def _requested_letter_grade(query: str, tables: list[dict[str, Any]]) -> str | None:
@@ -347,6 +366,9 @@ def structured_lookup(
     if re.search(r"\d+(?:[,.]\d+)?", query) and any(
         k in ascii_q for k in ["diem chu", "tuong ung", "quy doi"]
     ):
+        requested_score = extract_number(query)
+        if requested_score is not None:
+            return _lookup_grade_10_value(requested_score, tables)
         return lookup_grade_10_to_letter(query, tables)
 
     # Thu tu uu tien giup query co keyword ro di vao dung bang truoc.
@@ -383,4 +405,142 @@ def structured_lookup(
         or lookup_grade_10_to_letter(query, tables)
         or lookup_conduct_classification(query, tables)
         or lookup_academic_classification(query, tables)
+    )
+
+
+def structured_lookup_from_slots(
+    slots: dict[str, Any],
+    tables: list[dict[str, Any]],
+    cohort: str | None = None,
+) -> Optional[dict[str, Any]]:
+    """Resolve a scoring request from typed slots without query keyword routing."""
+    normalized_cohort = normalize_cohort(cohort)
+    if normalized_cohort:
+        tables = [
+            table
+            for table in tables
+            if table.get("cohort") == normalized_cohort
+        ]
+
+    operation = normalize_text(slots.get("operation"))
+    value = slots.get("score_or_grade")
+
+    if value is None:
+        return None
+
+    value_text = str(value).strip()
+    normalized_value = normalize_text(value_text)
+
+    operation_aliases = {
+        "conduct classification": "conduct_classification",
+        "academic classification": "academic_classification",
+        "grade 10 to letter": "grade_10_to_letter",
+        "letter to grade 4": "letter_to_grade_4",
+        "pass threshold": "pass_threshold",
+        "passing score": "pass_threshold",
+        "ren luyen": "conduct_classification",
+        "hoc luc": "academic_classification",
+        "diem 10 sang diem chu": "grade_10_to_letter",
+        "diem chu sang thang 4": "letter_to_grade_4",
+        "qua mon": "pass_threshold",
+        "diem toi thieu": "pass_threshold",
+    }
+
+    canonical = operation_aliases.get(
+        operation,
+        operation.replace(" ", "_"),
+    )
+
+    # 1. Điểm rèn luyện → xếp loại
+    if canonical == "conduct_classification":
+        return lookup_conduct_classification(value_text, tables)
+
+    # 2. Điểm chữ → thang điểm 4
+    if canonical == "letter_to_grade_4":
+        return lookup_letter_grade(value_text, tables)
+
+    # 3. Điểm thang 10 → điểm chữ
+    if canonical == "grade_10_to_letter":
+        try:
+            score = float(value_text.replace(",", "."))
+        except ValueError:
+            return lookup_grade_10_to_letter(value_text, tables)
+
+        return _lookup_grade_10_value(score, tables)
+
+    # 4. Câu hỏi về ngưỡng đạt/rớt học phần
+    pass_threshold_signals = [
+        "qua mon",
+        "qua hoc phan",
+        "rot mon",
+        "truot mon",
+        "khong dat",
+        "diem toi thieu",
+        "may diem",
+        "bao nhieu diem",
+    ]
+
+    asks_pass_threshold = (
+        canonical == "pass_threshold"
+        or any(
+            signal in normalized_value
+            for signal in pass_threshold_signals
+        )
+        or bool(re.fullmatch(r"[abcdf]\+?", normalized_value))
+    )
+
+    if asks_pass_threshold:
+        try:
+            score = float(value_text.replace(",", "."))
+        except ValueError:
+            return lookup_grade_10_to_letter(value_text, tables)
+        return _lookup_grade_10_value(score, tables)
+
+    # 5. GPA/thang điểm 4 → xếp loại học lực
+    if canonical == "academic_classification":
+        return lookup_academic_classification(value_text, tables)
+
+    return None
+
+
+def _lookup_grade_10_value(
+    value: float, tables: list[dict[str, Any]]
+) -> Optional[dict[str, Any]]:
+    matching_tables = [
+        table
+        for table in tables
+        if table.get("lookup_group") == "grade_10_to_letter"
+        or "grade_10_to_letter" in str(table.get("table_id") or "")
+    ]
+    matches: list[dict[str, Any]] = []
+    for table in matching_tables:
+        for row in table.get("rows") or []:
+            if in_range(value, str(row.get("score_10_range") or row.get("range") or "")):
+                matches.append(
+                    {
+                        "table_id": table.get("table_id"),
+                        "table_name": table.get("table_name"),
+                        "applicability": table.get("applicability"),
+                        "pass_threshold": table.get("pass_threshold"),
+                        "row": row,
+                    }
+                )
+    if not matches:
+        return None
+    return _with_metadata(
+        {
+            "lookup_type": "grade_10_to_letter",
+            "input_value": value,
+            "result": matches,
+            "items": matches,
+            "source_pages": sorted(
+                {
+                    page
+                    for table in matching_tables
+                    for page in table.get("source_pages", [])
+                }
+            ),
+            "table_name": "Quy doi thang diem 10 sang diem chu",
+        },
+        matching_tables,
     )

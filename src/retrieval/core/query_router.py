@@ -150,15 +150,6 @@ def infer_score_lookup_metadata(query: str) -> bool:
     ascii_query = strip_accents(query)
     score_cues = [
         "diem",
-        "d+",
-        "d",
-        "c+",
-        "c",
-        "b+",
-        "b",
-        "a",
-        "f+",
-        "f",
         "he 4",
         "thang 4",
         "thang diem",
@@ -211,19 +202,167 @@ def _contains_phrase(text: str, phrase: str) -> bool:
 
 def _is_obvious_out_of_domain(query: str) -> bool:
     ascii_query = strip_accents(query)
-    food_or_cooking = [
-        "nau pho",
-        "an gi",
-        "banh trang",
-        "ban do an",
-        "quan an",
-    ]
-    weather = ["thoi tiet", "hom nay mua", "ngay mai mua", "troi mua", "nhiet do"]
-    asks_weather = contains_any(ascii_query, weather) or (
-        contains_any(ascii_query, ["hom nay", "ngay mai", "toi nay"])
-        and contains_any(ascii_query, ["co mua", "mua khong", "troi mua"])
+    out_of_domain_topics = {
+        "weather": ["thoi tiet", "mua lon", "co mua", "mua khong", "nhiet do"],
+        "market": ["bitcoin", "tien ao", "gia vang", "chung khoan"],
+        "creative": ["bai tho", "tho tinh", "viet truyen", "sang tac"],
+        "sports": ["doi tuyen", "bong da", "lich thi dau", "da luc may gio"],
+        "device_repair": ["xanh man hinh", "sua may tinh", "loi laptop"],
+        "food": ["quan an", "mon an", "nau pho", "an gi", "banh trang"],
+        "translation": ["dich cau", "dich sang tieng", "phien dich"],
+        "shopping": ["ma giam gia", "khuyen mai mua", "coupon"],
+    }
+    return any(
+        contains_any(ascii_query, signals)
+        for signals in out_of_domain_topics.values()
     )
-    return contains_any(ascii_query, food_or_cooking) or asks_weather
+
+
+def classify_request_shape(query: str) -> str:
+    """Classify how the user asks, independently from the handbook topic."""
+    ascii_query = strip_accents(normalize_query(query))
+    unresolved_references = [
+        "muc nay",
+        "truong hop do",
+        "bieu mau kia",
+        "diem nhu vay",
+        "chung chi do",
+        "nganh nay",
+        "cong thuc nay",
+        "loai do",
+        "phong do",
+        "thu tuc nay",
+        "quy dinh cua khoa em trong truong hop nay",
+    ]
+    if contains_any(ascii_query, unresolved_references):
+        return "ambiguous"
+    if _is_obvious_out_of_domain(ascii_query):
+        return "out_of_domain"
+
+    procedure_terms = [
+        "quy trinh",
+        "trinh tu",
+        "thu tuc",
+        "cac buoc",
+        "ho so can",
+        "nop ho so",
+    ]
+    if contains_any(ascii_query, procedure_terms):
+        return "policy_or_procedure"
+
+    consequence_terms = [
+        "co bi",
+        "bi xu ly",
+        "xu ly",
+        "xu ly ra sao",
+        "anh huong",
+        "trach nhiem",
+        "ngoai le",
+        "khieu nai",
+        "quyen loi",
+        "co quyen",
+        "duoc phep",
+        "co duoc",
+        "thieu chu ky",
+        "nop tre",
+        "sau khi nop",
+    ]
+    if contains_any(ascii_query, consequence_terms):
+        return "consequence_or_exception"
+
+    formula_terms = ["cong thuc", "cach tinh", "tinh kieu", "tinh ra sao"]
+    calculation_slots = (
+        contains_any(ascii_query, ["diem hoc tap", "gpa"])
+        and contains_any(ascii_query, ["diem ren luyen", "ren luyen"])
+        and len(re.findall(r"\d+(?:[,.]\d+)?", _strip_cohort_tokens(ascii_query))) >= 2
+    )
+    if contains_any(ascii_query, formula_terms) or calculation_slots:
+        return "formula_or_calculation"
+
+    form_lookup_terms = [
+        "tai bieu mau",
+        "tai mau",
+        "lay bieu mau",
+        "lay mau",
+        "bieu mau nao",
+        "mau nao",
+        "mau don nao",
+        "can don gi",
+    ]
+    if contains_any(ascii_query, form_lookup_terms):
+        return "form_lookup"
+
+    contact_terms = [
+        "email",
+        "so dien thoai",
+        "dien thoai",
+        "website",
+        "dia chi",
+        "van phong",
+        "lien he ai",
+        "lien he don vi nao",
+        "hoi phong nao",
+        "hoi don vi nao",
+        "o dau",
+    ]
+    if contains_any(ascii_query, contact_terms):
+        return "contact_lookup"
+
+    direct_value_terms = [
+        "bao nhieu",
+        "may nam",
+        "bao lau",
+        "tuong duong",
+        "quy doi",
+        "xep loai",
+        "loai gi",
+        "nam trong khoang",
+        "nganh nao",
+        "cac nganh",
+        "khoa nao",
+        "phu trach",
+    ]
+    if contains_any(ascii_query, direct_value_terms):
+        return "direct_value_lookup"
+
+    policy_terms = [
+        "dieu kien",
+        "quy dinh",
+        "tieu chi",
+        "khi nao",
+        "neu",
+        "truong hop",
+    ]
+    if contains_any(ascii_query, policy_terms):
+        return "policy_query"
+    return "open_question"
+
+
+def deterministic_lookup_allowed(query: str, lookup_name: str) -> bool:
+    """Require both a compatible request shape and the slots needed by a lookup."""
+    shape = classify_request_shape(query)
+    ascii_query = strip_accents(normalize_query(query))
+    if lookup_name in {"foreign_language", "scholarship"}:
+        return shape == "direct_value_lookup"
+    if lookup_name == "study_duration":
+        has_training_scope = contains_any(
+            ascii_query,
+            [
+                "chinh quy",
+                "vua lam vua hoc",
+                "cap bang thu nhat",
+                "bang dai hoc thu hai",
+                "cao dang",
+                "trung cap",
+            ],
+        )
+        return shape == "direct_value_lookup" and has_training_scope
+    return True
+
+
+def _strip_cohort_tokens(query: str) -> str:
+    query = re.sub(r"\bk\s*\d{2}(?:\s*-\s*k?\d{2})?\b", " ", query)
+    return re.sub(r"\bkhoa\s*\d{2}\b", " ", query)
 
 
 def _has_regulation_priority_signal(query: str) -> bool:
@@ -283,56 +422,53 @@ def _has_office_support_signal(query: str) -> bool:
             "phòng ban hỗ trợ",
             "liên hệ ở đâu",
             "liên hệ phòng nào",
+            "liên hệ ai",
+            "phòng nào",
+            "xin giấy xác nhận",
+            "giấy xác nhận",
+            "giấy đang học",
+            "xác nhận sinh viên",
         ],
     )
 
-
-def _clarification_question(query: str) -> str | None:
-    ascii_query = strip_accents(query)
-    contact_cues = ["hoi ai", "lien he ai", "gap ai", "o dau", "lam o dau"]
-    if "cntt" in ascii_query and contains_any(ascii_query, ["o dau"]):
-        return (
-            "Bạn muốn liên hệ về Khoa Công nghệ Thông tin, Phòng Công nghệ Thông tin, "
-            "hay ngành Công nghệ Thông tin?"
-        )
-    if "hoc bong" in ascii_query and contains_any(ascii_query, contact_cues):
-        return (
-            "Bạn muốn liên hệ về điều kiện học bổng, kết quả xét học bổng, "
-            "hay phòng ban phụ trách học bổng?"
-        )
-    if "hoc vu" in ascii_query and contains_any(ascii_query, contact_cues):
-        return (
-            "Bạn muốn liên hệ về chương trình đào tạo, điểm số, học lại, "
-            "hay một thủ tục học vụ cụ thể?"
-        )
-    if any(term in ascii_query for term in ["giay to", "giay xac nhan"]) and contains_any(
-        ascii_query, contact_cues
-    ):
-        return (
-            "Bạn muốn liên hệ về giấy xác nhận sinh viên, biểu mẫu cần nộp, "
-            "hay phòng ban tiếp nhận hồ sơ?"
-        )
-    return None
 
 
 def route_query(query: str) -> dict[str, Any]:
     q = normalize_query(query)
     rules = load_query_routing_rules()
-    clarification = _clarification_question(q)
-    if clarification:
+    request_shape = classify_request_shape(q)
+
+    if request_shape == "ambiguous":
         return {
             "intent": "needs_clarification",
             "strategy": "none",
             "target_chunk_types": [],
             "needs_clarification": True,
-            "clarification_question": clarification,
+            "clarification_question": (
+                "Bạn có thể nói rõ đối tượng, biểu mẫu, chứng chỉ, phòng ban "
+                "hoặc trường hợp cụ thể mà bạn đang hỏi không?"
+            ),
         }
 
-    if _is_obvious_out_of_domain(q):
+    if request_shape == "out_of_domain":
         return {
             "intent": "out_of_domain",
             "strategy": "none",
             "target_chunk_types": [],
+        }
+
+    if request_shape == "policy_or_procedure":
+        return {
+            "intent": "procedure_query",
+            "strategy": "semantic_filtered_rerank",
+            "target_chunk_types": ["regulation"],
+        }
+
+    if request_shape in {"policy_query", "consequence_or_exception"}:
+        return {
+            "intent": "regulation_query",
+            "strategy": "semantic_filtered",
+            "target_chunk_types": ["regulation"],
         }
 
     program_metadata = infer_program_lookup_metadata(q)
@@ -350,34 +486,89 @@ def route_query(query: str) -> dict[str, Any]:
     has_reg_priority_signal = _has_regulation_priority_signal(q)
     has_office_support_signal = _has_office_support_signal(q)
 
+    if request_shape == "form_lookup":
+        return {
+            "intent": "form_query",
+            "strategy": "form_lookup",
+            "target_chunk_types": ["form"],
+        }
+
+    if request_shape == "contact_lookup":
+        # Hỏi khoa cụ thể thì không được chuyển thành office/student service.
+        if (
+            contains_any(q, ["khoa"])
+            and not has_explicit_office_entity
+            and not has_reg_priority_signal
+        ):
+            return {
+                "intent": "faculty_query",
+                "strategy": "semantic_filtered_rerank",
+                "target_chunk_types": ["faculty_directory"],
+            }
+
+        # Hỏi ngành thuộc khoa nào.
+        if (
+            program_metadata
+            and program_metadata.get("action") == "resolve_faculty"
+        ):
+            return {
+                "intent": "faculty_query",
+                "strategy": "program_lookup",
+                "target_chunk_types": ["program_directory"],
+                **program_metadata,
+            }
+
+        asks_profile_field = contains_any(
+            q,
+            [
+                "email",
+                "số điện thoại",
+                "điện thoại",
+                "website",
+                "địa chỉ",
+                "văn phòng",
+            ],
+        )
+
+        use_office_profile = asks_profile_field and (
+            has_explicit_office_entity or has_ktx_signal
+        )
+
+        return {
+            "intent": "office_query",
+            "strategy": (
+                "office_lookup"
+                if use_office_profile
+                else "student_service_lookup"
+            ),
+            "target_chunk_types": ["office_directory"],
+            "lookup_scope": (
+                "office"
+                if use_office_profile
+                else "student_service"
+            ),
+        }
+
     if has_reg_priority_signal:
         program_metadata = None
         has_faculty_signal = False
         has_reg_signal = True
 
-    # 1. Calculation query
-    # Calculator chi kich hoat khi co tin hieu tinh toan va du so dau vao.
-    has_calc = contains_any(q, rules["calculation_signal"])
+    # 1. Formula lookup. The production system does not execute calculations.
     has_gpa = contains_any(q, rules["gpa_signal"])
     has_formula = contains_any(q, rules["formula_signal"])
     has_raw_scholarship_score = contains_any(q, rules["scholarship_score_signal"])
-    numbers = re.findall(r"\d+(?:[,.]\d+)?", q)
-    has_scholarship_score = has_raw_scholarship_score and contains_any(
-        q,
-        rules["calculation_signal"],
+    calculation_values = re.findall(r"(?<!\d)\d+(?:[,.]\d+)?(?!\d)", strip_accents(q))
+    asks_calculation_guidance = (
+        contains_any(q, ["tính", "tinh"])
+        and (has_gpa or has_raw_scholarship_score)
+        and len(calculation_values) >= 2
     )
 
-    if has_formula and (has_gpa or has_raw_scholarship_score):
+    if (has_formula and (has_gpa or has_raw_scholarship_score)) or asks_calculation_guidance:
         return {
             "intent": "formula_query",
             "strategy": "formula_lookup",
-            "target_chunk_types": [],
-        }
-
-    if has_calc and has_scholarship_score and len(numbers) >= 2:
-        return {
-            "intent": "calculation_query",
-            "strategy": "calculator_tool",
             "target_chunk_types": [],
         }
 
@@ -413,20 +604,20 @@ def route_query(query: str) -> dict[str, Any]:
             return {
                 "intent": "mixed_query",
                 "strategy": "semantic_multi_filter",
-                "target_chunk_types": ["form", "procedure"],
+                "target_chunk_types": ["form", "regulation"],
             }
 
-        if contains_any(q, rules["ktx_procedure_signal"]):
+        if contains_any(q, rules["ktx_regulation_signal"]):
             return {
-                "intent": "procedure_query",
-                "strategy": "semantic_filtered_rerank",
-                "target_chunk_types": ["procedure"],
+                "intent": "regulation_query",
+                "strategy": "semantic_filtered",
+                "target_chunk_types": ["regulation"],
             }
 
         return {
-            "intent": "procedure_query",
-            "strategy": "semantic_filtered_rerank",
-            "target_chunk_types": ["procedure"],
+            "intent": "regulation_query",
+            "strategy": "semantic_filtered",
+            "target_chunk_types": ["regulation"],
         }
 
     if contains_any(q, ["quy trình", "trình tự", "các bước"]) and contains_any(
@@ -434,9 +625,9 @@ def route_query(query: str) -> dict[str, Any]:
         ["sinh viên", "khoa", "phòng", "đơn vị", "công việc"],
     ):
         return {
-            "intent": "procedure_query",
-            "strategy": "semantic_filtered_rerank",
-            "target_chunk_types": ["procedure"],
+            "intent": "regulation_query",
+            "strategy": "semantic_filtered",
+            "target_chunk_types": ["regulation"],
         }
 
     if has_office_support_signal and not has_reg_priority_signal:
@@ -480,6 +671,26 @@ def route_query(query: str) -> dict[str, Any]:
             route["target_chunk_types"] = ["program_directory"]
         return route
 
+    has_direct_form_lookup_signal = contains_any(
+        q,
+        [
+            "mau don",
+            "bieu mau",
+            "lay mau",
+            "tai mau",
+        ],
+    )
+    if (
+        has_direct_form_lookup_signal
+        and not has_ktx_signal
+        and not has_faculty_signal
+    ):
+        return {
+            "intent": "form_query",
+            "strategy": "form_lookup",
+            "target_chunk_types": ["form"],
+        }
+
     if has_form_signal and not has_reg_signal and not has_ktx_signal and not has_faculty_signal:
         return {
             "intent": "form_query",
@@ -491,9 +702,9 @@ def route_query(query: str) -> dict[str, Any]:
         q, ["quy trinh", "quy trình", "thu tuc", "thủ tục"]
     ):
         return {
-            "intent": "procedure_query",
-            "strategy": "semantic_filtered_rerank",
-            "target_chunk_types": ["procedure"],
+            "intent": "regulation_query",
+            "strategy": "semantic_filtered",
+            "target_chunk_types": ["regulation"],
         }
 
     # If a query contains multiple strong signals, let the AI router resolve the mixed intent.
@@ -519,7 +730,7 @@ def route_query(query: str) -> dict[str, Any]:
         if has_office_signal:
             target_chunk_types.append("office_directory")
         if has_ktx_signal:
-            target_chunk_types.append("procedure")
+            target_chunk_types.append("regulation")
         if has_faculty_signal:
             target_chunk_types.extend(["faculty_directory", "program_directory"])
 
@@ -577,9 +788,9 @@ def route_query(query: str) -> dict[str, Any]:
         q, ["quy trinh", "quy trình", "thu tuc", "thủ tục"]
     ):
         return {
-            "intent": "procedure_query",
-            "strategy": "semantic_filtered_rerank",
-            "target_chunk_types": ["procedure"],
+            "intent": "regulation_query",
+            "strategy": "semantic_filtered",
+            "target_chunk_types": ["regulation"],
         }
 
     # 7. Remaining faculty query

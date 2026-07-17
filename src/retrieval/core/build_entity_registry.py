@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 
-OFFICE_PATH = Path("data/processed/directories/office_directory.json")
+OFFICE_PATH = Path("data/processed/directories/student_office_profiles.json")
 FACULTY_PATH = Path("data/processed/directories/faculty_directory.json")
 PROGRAM_PATH = Path("data/processed/directories/program_directory.json")
 OUTPUT_PATH = Path("data/processed/entities/entity_registry.json")

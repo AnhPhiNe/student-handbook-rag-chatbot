@@ -82,6 +82,9 @@ def ensure_payload_indexes(client: Any, collection_name: str) -> None:
         "source": PayloadSchemaType.KEYWORD,
         "title": PayloadSchemaType.TEXT,
         "cohort": PayloadSchemaType.KEYWORD,
+        "content_type": PayloadSchemaType.KEYWORD,
+        "chunk_granularity": PayloadSchemaType.KEYWORD,
+        "parent_section_id": PayloadSchemaType.KEYWORD,
     }
 
     try:
@@ -180,6 +183,17 @@ class QdrantCollectionAdapter:
                         must_conditions.append(
                             FieldCondition(
                                 key="chunk_type", match=MatchAny(any=val["$in"])
+                            )
+                        )
+                elif key == "content_type":
+                    if isinstance(val, str):
+                        must_conditions.append(
+                            FieldCondition(key="content_type", match=MatchAny(any=[val]))
+                        )
+                    elif isinstance(val, dict) and "$in" in val:
+                        must_conditions.append(
+                            FieldCondition(
+                                key="content_type", match=MatchAny(any=val["$in"])
                             )
                         )
                 elif key == "cohort":

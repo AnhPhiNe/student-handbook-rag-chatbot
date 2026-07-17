@@ -43,8 +43,8 @@ class MongoDocStore:
         self,
         uri: str,
         db_name: str = "chatbotHCMUE",
-        collection_name: str = "parent_docs",
-        timeout_ms: int = 3000,
+        collection_name: str = "parent_docs_v7",
+        timeout_ms: int = 30000,
         failure_backoff_seconds: int = 300,
     ):
         self.client = MongoClient(
@@ -70,11 +70,15 @@ class MongoDocStore:
                 UpdateOne({"_id": doc["_id"]}, {"$set": doc}, upsert=True)
             )
 
-        if operations:
-            result = self.collection.bulk_write(operations)
-            logger.info(
-                f"Inserted/Updated {result.upserted_count + result.modified_count} docs into MongoDB."
+        inserted_or_updated = 0
+        for start in range(0, len(operations), 100):
+            result = self.collection.bulk_write(
+                operations[start : start + 100],
+                ordered=False,
             )
+            inserted_or_updated += result.upserted_count + result.modified_count
+        if operations:
+            logger.info(f"Inserted/Updated {inserted_or_updated} docs into MongoDB.")
 
     def get_document_by_id(self, doc_id: str) -> Optional[Dict[str, Any]]:
         if time.monotonic() < self._disabled_until:
@@ -109,9 +113,9 @@ def get_mongo_store() -> MongoDocStore | DisabledMongoDocStore:
     if not uri:
         raise ValueError("MONGODB_URL not found in environment variables")
 
-    timeout_ms = _env_int("MONGODB_TIMEOUT_MS", 3000)
+    timeout_ms = _env_int("MONGODB_TIMEOUT_MS", 30000)
     failure_backoff_seconds = _env_int("MONGODB_FAILURE_BACKOFF_SECONDS", 300)
-    collection_name = os.environ.get("MONGODB_PARENT_COLLECTION", "parent_docs")
+    collection_name = os.environ.get("MONGODB_PARENT_COLLECTION", "parent_docs_v7")
     return MongoDocStore(
         uri=uri,
         collection_name=collection_name,

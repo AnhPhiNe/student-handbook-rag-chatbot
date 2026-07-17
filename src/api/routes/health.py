@@ -85,6 +85,26 @@ def artifact_health() -> ArtifactHealthResponse:
             kind="processed_json",
         ),
         ArtifactStatus(
+            path="data/processed/tables/structured_tables_registry.json",
+            exists=Path("data/processed/tables/structured_tables_registry.json").is_file(),
+            kind="processed_json",
+        ),
+        ArtifactStatus(
+            path="data/processed/tables/foreign_language_equivalency_table.json",
+            exists=Path("data/processed/tables/foreign_language_equivalency_table.json").is_file(),
+            kind="processed_json",
+        ),
+        ArtifactStatus(
+            path="data/processed/directories/student_service_directory.json",
+            exists=Path("data/processed/directories/student_service_directory.json").is_file(),
+            kind="processed_json",
+        ),
+        ArtifactStatus(
+            path="data/processed/directories/student_office_profiles.json",
+            exists=Path("data/processed/directories/student_office_profiles.json").is_file(),
+            kind="processed_json",
+        ),
+        ArtifactStatus(
             path="data/processed/entities/entity_registry.json",
             exists=Path("data/processed/entities/entity_registry.json").is_file(),
             kind="processed_json",
@@ -102,11 +122,6 @@ def artifact_health() -> ArtifactHealthResponse:
         ArtifactStatus(
             path="data/processed/chunks/v7_child_parent_chunks.json",
             exists=Path("data/processed/chunks/v7_child_parent_chunks.json").is_file(),
-            kind="processed_json",
-        ),
-        ArtifactStatus(
-            path="data/processed/metadata/section_evidence_registry.json",
-            exists=Path("data/processed/metadata/section_evidence_registry.json").is_file(),
             kind="processed_json",
         ),
     ]

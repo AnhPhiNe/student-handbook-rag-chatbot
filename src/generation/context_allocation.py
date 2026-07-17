@@ -6,9 +6,6 @@ import unicodedata
 from dataclasses import dataclass
 from typing import Any
 
-from .evidence_selection import build_evidence_context
-
-
 @dataclass(frozen=True)
 class ContextAllocationConfig:
     strategy: str = "equal_split"
@@ -16,13 +13,12 @@ class ContextAllocationConfig:
     max_chars_per_doc: int = 1800
     sentence_boundary: bool = True
     cache_version: str = "context_alloc_v1"
-    evidence_selection: dict[str, Any] | None = None
 
     @classmethod
     def from_config(cls, config: dict[str, Any] | None) -> "ContextAllocationConfig":
         config = config or {}
         strategy = str(config.get("strategy") or "equal_split").strip().lower()
-        if strategy not in {"equal_split", "score_weighted"}:
+        if strategy not in {"equal_split", "score_weighted", "full_sources"}:
             strategy = "equal_split"
 
         max_chars = max(1, int(config.get("max_chars_per_doc", 1800)))
@@ -35,16 +31,12 @@ class ContextAllocationConfig:
             max_chars_per_doc=max_chars,
             sentence_boundary=bool(config.get("sentence_boundary", True)),
             cache_version=str(config.get("cache_version") or "context_alloc_v1"),
-            evidence_selection=dict(config.get("evidence_selection") or {}),
         )
 
     def cache_fingerprint(self) -> dict[str, Any]:
         return {
             "strategy": self.strategy,
             "cache_version": self.cache_version,
-            "evidence_selection_enabled": bool((self.evidence_selection or {}).get("enabled", False)),
-            "evidence_registry_path": (self.evidence_selection or {}).get("registry_path"),
-            "evidence_rerank_top_k": (self.evidence_selection or {}).get("rerank_evidence_top_k"),
         }
 
 
@@ -59,9 +51,9 @@ def build_context_for_prompt(
     """Build the bounded source context sent to the answer LLM.
 
     Retrieval can return several long parent sections. This function allocates
-    a character budget per source, formats source headers, optionally prepends
-    selected evidence blocks, and truncates on readable boundaries so the prompt
-    stays within ``max_context_chars`` without losing citation metadata.
+    a character budget per source, formats source headers, keeps query-focused
+    table/section/snippet context, and truncates on readable boundaries so the
+    prompt stays within ``max_context_chars`` without losing citation metadata.
     """
     config = (
         allocation_config
@@ -84,6 +76,14 @@ def build_context_for_prompt(
         )
 
     headers = [_source_header(index, item) for index, item in enumerate(items, start=1)]
+    if config.strategy == "full_sources":
+        return _build_full_sources_context(
+            items,
+            headers=headers,
+            max_context_chars=max_context_chars,
+            allocation_config=config,
+        )
+
     separator_budget = max(0, len("\n\n---\n\n") * (len(items) - 1))
     header_budget = sum(len(header) for header in headers) + separator_budget
     content_budget = max(0, max_context_chars - header_budget)
@@ -105,7 +105,6 @@ def build_context_for_prompt(
             query=query or str(retrieval_result.get("query") or ""),
             budget=budget,
             sentence_boundary=config.sentence_boundary,
-            evidence_config=config.evidence_selection,
         )
         truncated_content = truncate_text(
             content,
@@ -121,6 +120,61 @@ def build_context_for_prompt(
     )
 
 
+def _build_full_sources_context(
+    items: list[dict[str, Any]],
+    *,
+    headers: list[str],
+    max_context_chars: int,
+    allocation_config: ContextAllocationConfig,
+) -> str:
+    separator = "\n\n---\n\n"
+    raw_contents = [
+        _strip_generated_focus_sections(str(item.get("content") or "").strip())
+        for item in items
+    ]
+    per_source_cap = max(1, int(allocation_config.max_chars_per_doc))
+    capped_contents = [
+        truncate_text(
+            content,
+            per_source_cap,
+            sentence_boundary=allocation_config.sentence_boundary,
+        )
+        for content in raw_contents
+    ]
+    full_blocks = [
+        f"{header}{content}" for header, content in zip(headers, capped_contents, strict=False)
+    ]
+    full_context = separator.join(full_blocks)
+    if len(full_context) <= max_context_chars:
+        return full_context
+
+    separator_budget = max(0, len(separator) * (len(items) - 1))
+    header_budget = sum(len(header) for header in headers) + separator_budget
+    content_budget = max(0, max_context_chars - header_budget)
+    budgets = allocate_context_budget(
+        items,
+        total_budget=content_budget,
+        min_chars_per_doc=allocation_config.min_chars_per_doc,
+        max_chars_per_doc=allocation_config.max_chars_per_doc,
+        strategy="score_weighted",
+    )
+    truncated_blocks: list[str] = []
+    for header, content, budget in zip(headers, capped_contents, budgets, strict=False):
+        truncated_content = truncate_text(
+            content,
+            budget,
+            sentence_boundary=allocation_config.sentence_boundary,
+        )
+        truncated_blocks.append(
+            f"{header}{truncated_content}"
+        )
+    return truncate_text(
+        separator.join(truncated_blocks),
+        max_context_chars,
+        sentence_boundary=allocation_config.sentence_boundary,
+    )
+
+
 def prepare_content_for_prompt(
     content: str,
     *,
@@ -128,13 +182,12 @@ def prepare_content_for_prompt(
     query: str | None = None,
     budget: int = 1800,
     sentence_boundary: bool = True,
-    evidence_config: dict[str, Any] | None = None,
 ) -> str:
     """Prepare one retrieved source before prompt-level truncation.
 
-    Evidence selection may highlight text inside the retrieved parent source,
-    but it never decides citations. Citation binding stays with the retrieved
-    item metadata from the retrieval layer.
+    The context packer keeps table-like content, query-focused sections, and
+    local snippets before final truncation. Citation binding stays with the
+    retrieved item metadata from the retrieval layer.
     """
 
     content = _strip_generated_focus_sections((content or "").strip())
@@ -142,10 +195,19 @@ def prepare_content_for_prompt(
         return ""
 
     metadata = (item or {}).get("metadata", {}) or {}
-    evidence_context = build_evidence_context(item=item, query=query, config=evidence_config or {})
+    marker = "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:"
+    extracted_table_block = ""
+    if marker in content:
+        start_idx = content.find(marker)
+        extracted_table_block = content[start_idx:].strip()
+        content = content[:start_idx].strip()
+        
+        next_marker_idx = extracted_table_block.find("THÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:")
+        if next_marker_idx != -1:
+            extracted_table_block = extracted_table_block[:next_marker_idx].strip()
 
     if (
-        not evidence_context
+        not extracted_table_block
         and metadata.get("chunk_type") == "regulation"
         and len(content) <= budget
     ):
@@ -162,12 +224,11 @@ def prepare_content_for_prompt(
     )
 
     blocks: list[str] = []
-    focused_evidence_mode = bool(evidence_context) and _is_focused_evidence_question(query or "")
+    if extracted_table_block:
+        blocks.append(extracted_table_block)
     if table_context:
         blocks.append("NORMALIZED TABLE/LIST:\n" + table_context)
-    if evidence_context:
-        blocks.append(evidence_context)
-    if section_context and not focused_evidence_mode and section_context not in table_context:
+    if section_context and section_context not in table_context:
         blocks.append("RELATED SECTION:\n" + section_context)
     if snippet_context and snippet_context not in table_context + section_context:
         blocks.append("RELATED SNIPPET:\n" + snippet_context)
@@ -206,26 +267,6 @@ def _strip_generated_focus_sections(content: str) -> str:
                 return content.strip()
             return "\n".join(lines[:index]).strip()
     return content
-
-
-def _is_focused_evidence_question(query: str) -> bool:
-    normalized = _normalize_text(query)
-    if not normalized:
-        return False
-    focused_phrases = (
-        "dieu kien",
-        "truong hop",
-        "bao nhieu",
-        "may dot",
-        "thang nao",
-        "khi nao",
-        "luc nao",
-        "gom gi",
-        "gom nhung gi",
-        "can gi",
-        "xet sao",
-    )
-    return any(phrase in normalized for phrase in focused_phrases)
 
 
 def _query_terms(query: str) -> list[str]:
@@ -278,6 +319,18 @@ def _query_terms(query: str) -> list[str]:
 
 
 def _normalized_table_context(content: str, metadata: dict[str, Any]) -> str:
+    marker = "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:"
+    if marker in content:
+        start_idx = content.find(marker)
+        table_block = content[start_idx:]
+        
+        # Remove any other generated sections that might be appended after it (just in case)
+        next_marker_idx = table_block.find("THÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:")
+        if next_marker_idx != -1:
+            table_block = table_block[:next_marker_idx]
+            
+        return table_block.strip()
+
     if not _looks_like_table(metadata, content):
         return ""
 
@@ -354,7 +407,11 @@ def _snippet_aware_context(
     end = _move_to_boundary(content, end, backward=False)
     snippet = content[start:end].strip()
     truncated = truncate_text(snippet, max_chars, sentence_boundary=sentence_boundary)
-    if best_term and best_term in _normalize_text(snippet) and best_term not in _normalize_text(truncated):
+    if (
+        best_term
+        and best_term in _normalize_text(snippet)
+        and best_term not in _normalize_text(truncated)
+    ):
         return truncate_text(snippet, max_chars, sentence_boundary=False)
     return truncated
 

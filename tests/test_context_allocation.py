@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import json
-
 from src.generation.context_allocation import (
     ContextAllocationConfig,
     allocate_context_budget,
@@ -9,7 +7,6 @@ from src.generation.context_allocation import (
     prepare_content_for_prompt,
     truncate_text,
 )
-from src.generation.evidence_selection import build_section_evidence_registry
 
 
 def _item(
@@ -133,25 +130,75 @@ def test_build_context_for_prompt_respects_total_budget() -> None:
     )
 
     assert len(context) <= 1000
-    assert "[Ngu" in context
+    assert "Section high" in context
     assert "high" in context
 
 
+def test_full_sources_keeps_top_five_content_when_under_budget() -> None:
+    retrieval_result = {
+        "retrieved_items": [
+            _item(str(index), f"full source body {index}. " * 50, 1.0 - index * 0.1)
+            for index in range(5)
+        ],
+    }
+
+    context = build_context_for_prompt(
+        retrieval_result,
+        max_context_chars=20000,
+        allocation_config=ContextAllocationConfig(
+            strategy="full_sources",
+            min_chars_per_doc=0,
+            max_chars_per_doc=50000,
+            sentence_boundary=True,
+        ),
+    )
+
+    for index in range(5):
+        assert f"Section {index}" in context
+        assert f"full source body {index}" in context
+    assert "RELATED SNIPPET" not in context
+    assert len(context) <= 20000
+
+
+def test_full_sources_truncates_only_when_global_budget_is_exceeded() -> None:
+    retrieval_result = {
+        "retrieved_items": [
+            _item("high", "high source. " * 2000, 0.9),
+            _item("low", "low source. " * 2000, 0.1),
+        ],
+    }
+
+    context = build_context_for_prompt(
+        retrieval_result,
+        max_context_chars=1200,
+        allocation_config=ContextAllocationConfig(
+            strategy="full_sources",
+            min_chars_per_doc=0,
+            max_chars_per_doc=50000,
+            sentence_boundary=True,
+        ),
+    )
+
+    assert len(context) <= 1200
+    assert "Section high" in context
+    assert "Section low" in context
+    assert "Content:" in context
+
+
 def test_build_context_for_prompt_keeps_query_snippet_near_chunk_end() -> None:
-    long_intro = "Thông tin chung không liên quan. " * 80
+    long_intro = "general unrelated policy text. " * 80
     content = (
         long_intro
-        + "6. Sinh viên đào tạo theo hình thức chính quy có 03 đợt xét tốt nghiệp "
-        "chính thức, thường được tổ chức vào tháng 5, tháng 8 và tháng 11."
+        + "6. Students have 03 official graduation review rounds in May, August, and November."
     )
     retrieval_result = {
-        "query": "trường có những đợt xét tốt nghiệp nào",
+        "query": "graduation review rounds",
         "retrieved_items": [_item("graduation", content, 0.9)],
     }
 
     context = build_context_for_prompt(
         retrieval_result,
-        query="trường có những đợt xét tốt nghiệp nào",
+        query="graduation review rounds",
         max_context_chars=900,
         allocation_config=ContextAllocationConfig(
             strategy="score_weighted",
@@ -161,32 +208,25 @@ def test_build_context_for_prompt_keeps_query_snippet_near_chunk_end() -> None:
         ),
     )
 
-    assert "03 đợt xét tốt nghiệp" in context
-    assert "tháng 5, tháng 8 và tháng 11" in context
-    assert "ĐOẠN LIÊN QUAN" in context
+    assert "03 official graduation review rounds" in context
+    assert "May, August, and November" in context
+    assert "RELATED SNIPPET" in context
     assert len(context) <= 900
 
 
 def test_snippet_fallback_keeps_precise_match_when_sentence_boundary_drops_it() -> None:
-    long_preceding_sentence = (
-        "Sinh viên hết thời gian học tập theo hình thức chính quy được chuyển sang học tập "
-        "theo hình thức vừa làm vừa học tại Trường nếu còn trong thời gian học tập theo quy "
-        "định đối với hình thức đào tạo chuyển đến. "
-    )
     content = (
-        "Điều kiện công nhận tốt nghiệp được quy định chung trong điều này. " * 12
-        + long_preceding_sentence
-        + "6. Sinh viên đào tạo theo hình thức chính quy có 03 đợt xét tốt nghiệp "
-        "chính thức, thường được tổ chức vào tháng 5, tháng 8 và tháng 11."
+        "This section begins with a long general rule. " * 30
+        + "6. Students have 03 official graduation review rounds in May, August, and November."
     )
     retrieval_result = {
-        "query": "trường có những đợt xét tốt nghiệp nào",
+        "query": "graduation review rounds",
         "retrieved_items": [_item("graduation", content, 0.9)],
     }
 
     context = build_context_for_prompt(
         retrieval_result,
-        query="trường có những đợt xét tốt nghiệp nào",
+        query="graduation review rounds",
         max_context_chars=900,
         allocation_config=ContextAllocationConfig(
             strategy="score_weighted",
@@ -196,113 +236,22 @@ def test_snippet_fallback_keeps_precise_match_when_sentence_boundary_drops_it() 
         ),
     )
 
-    assert "03 đợt xét tốt nghiệp" in context
-    assert "tháng 5, tháng 8 và tháng 11" in context
+    assert "03 official graduation review rounds" in context
+    assert "May, August, and November" in context
 
 
-def test_prepare_content_for_prompt_normalizes_flattened_study_duration_table() -> None:
+def test_prepare_content_for_prompt_keeps_table_like_context() -> None:
     content = (
-        "6. Thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa của CTĐT "
-        "a) Thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa đối với "
-        "hình thức đào tạo chính quy được quy định như sau: "
-        "Chương trình đào tạo Thời gian học tập chuẩn Thời gian học tập tối đa "
-        "Đào tạo đại học cấp bằng thứ nhất 4 năm học 8 năm học "
-        "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học 2 năm học 4 năm học "
-        "Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học 3 năm học 6 năm học"
+        "Study duration table: program: first bachelor degree | standard: 4 years | max: 8 years\n"
+        "program: college to university transfer | standard: 2 years | max: 4 years"
     )
 
     prepared = prepare_content_for_prompt(
         content,
         item={"metadata": {"chunk_type": "regulation", "has_table": True}},
-        query="thời gian học tập tối đa là bao nhiêu năm",
-        budget=1200,
+        query="maximum study duration",
+        budget=600,
     )
 
-    assert "BẢNG/DANH SÁCH ĐÃ CHUẨN HÓA" in prepared
-    assert "Đào tạo đại học cấp bằng thứ nhất: chuẩn 4 năm học, tối đa 8 năm học" in prepared
-    assert "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học" in prepared
-
-
-def test_evidence_registry_promotes_relevant_condition_block(tmp_path) -> None:
-    docstore_path = tmp_path / "all_docstore_items.json"
-    registry_path = tmp_path / "section_evidence_registry.json"
-    content = (
-        "Tài liệu: QUY CHẾ\n"
-        "Tiêu đề: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n"
-        "Nội dung:\n"
-        "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n"
-        "1. Tiêu chuẩn\n"
-        "a) Sinh viên đại học chính quy tại Trường theo kế hoạch của khóa học.\n"
-        "b) Trong học kỳ, sinh viên có kết quả học tập, rèn luyện từ loại khá trở lên.\n"
-        "c) Tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn hoặc bằng 15 tín chỉ theo kế hoạch trong CTĐT của khóa học; "
-        "tất cả các tín chỉ đều phải đạt, không bao gồm các tín chỉ trả nợ, cải thiện, tương đương.\n"
-    )
-    docstore_path.write_text(
-        json.dumps(
-            [
-                {
-                    "_id": "section-scholarship",
-                    "content": content,
-                    "tables": [],
-                    "metadata": {
-                        "content_type": "regulation_text",
-                        "chunk_type": "regulation",
-                        "document_id": "handbook",
-                        "cohort": "K51",
-                        "parent_section_id": "section-scholarship",
-                        "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
-                        "source_pages": [60, 61],
-                    },
-                    "cohort": "K51",
-                    "document_id": "handbook",
-                }
-            ],
-            ensure_ascii=False,
-        ),
-        encoding="utf-8",
-    )
-    registry = build_section_evidence_registry(docstore_path, registry_path)
-
-    assert registry["block_count"] >= 4
-
-    context = build_context_for_prompt(
-        {
-            "query": "Điều kiện học bổng KKHT cần bao nhiêu tín chỉ?",
-            "retrieved_items": [
-                {
-                    "chunk_id": "section-scholarship",
-                    "content": content,
-                    "metadata": {
-                        "content_type": "regulation_text",
-                        "chunk_type": "regulation",
-                        "document_id": "handbook",
-                        "cohort": "K51",
-                        "parent_section_id": "section-scholarship",
-                        "title": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
-                        "source_pages": [60, 61],
-                    },
-                }
-            ],
-        },
-        query="Điều kiện học bổng KKHT cần bao nhiêu tín chỉ?",
-        max_context_chars=2200,
-        allocation_config=ContextAllocationConfig(
-            strategy="score_weighted",
-            min_chars_per_doc=500,
-            max_chars_per_doc=1800,
-            sentence_boundary=True,
-            evidence_selection={
-                "enabled": True,
-                "registry_path": str(registry_path),
-                "cheap_candidate_top_k": 12,
-                "rerank_evidence_top_k": 3,
-                "use_cross_encoder_reranker": False,
-                "neighbor_window": 1,
-                "fallback_to_lexical_scoring": True,
-            },
-        ),
-    )
-
-    assert "THÔNG TIN TRỌNG TÂM TỪ NGUỒN" in context
-    assert "15 tín chỉ" in context
-    assert "không bao gồm các tín chỉ trả nợ" in context
+    assert "THONG TIN TRONG TAM" not in prepared
+    assert "8 years" in prepared

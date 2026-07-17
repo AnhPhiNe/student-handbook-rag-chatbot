@@ -1,0 +1,51 @@
+version: 1
+
+# Domain vocabulary belongs to the catalog build, not runtime query branching.
+unit_aliases:
+  Phòng Đào tạo: [PĐT, PDT, học vụ]
+  Phòng Công nghệ Thông tin: [CNTT, phòng IT]
+  Phòng Công tác chính trị và Học sinh, sinh viên: [CTCT&HSSV, CTCT HSSV, CTSV, HSSV]
+  Phòng Kế hoạch - Tài chính: [KHTC, phòng tài chính]
+  Phòng Khảo thí và Đảm bảo chất lượng: [KT&ĐBCL, KT DBCL, phòng khảo thí]
+  Ký túc xá: [KTX, nội trú]
+  Trạm Y tế: [TYT, phòng y tế, y tế trường]
+
+service_aliases:
+  - match: giấy xác nhận sinh viên
+    aliases: [giấy xác nhận đang học, giấy đang học, xác nhận sinh viên]
+  - match: xác nhận
+    aliases: [giấy xác nhận sinh viên, giấy xác nhận đang học, giấy đang học, xác nhận sinh viên]
+  - match: chứng thực
+    aliases: [giấy xác nhận sinh viên, giấy xác nhận đang học, giấy đang học, xác nhận sinh viên]
+  - match: thẻ sinh viên
+    aliases: [cấp thẻ sinh viên, làm thẻ sinh viên, mất thẻ sinh viên]
+  - match: học bổng
+    aliases: [học bổng khuyến khích học tập, HBKKHT, xét học bổng]
+  - match: miễn giảm học phí
+    aliases: [miễn học phí, giảm học phí, hỗ trợ học phí]
+  - match: vay vốn
+    aliases: [vay vốn tín dụng, vay vốn sinh viên]
+  - match: bảo lưu
+    aliases: [tạm nghỉ, dừng tiến độ, nghỉ học tạm thời]
+  - match: đăng ký học phần
+    aliases: [đăng ký môn, đăng ký tín chỉ, học phần]
+  - match: thời khóa biểu
+    aliases: [lịch học, kế hoạch học kỳ]
+  - match: xét tốt nghiệp
+    aliases: [công nhận tốt nghiệp, bằng tốt nghiệp]
+  - match: phúc khảo
+    aliases: [phúc khảo điểm, điểm thi, kết quả thi, bảng điểm, in bảng điểm]
+  - match: điểm thi
+    aliases: [phúc khảo điểm, kết quả thi, bảng điểm, in bảng điểm]
+  - match: học phí
+    aliases: [đóng học phí, thu học phí, biên lai học phí]
+  - match: email sinh viên
+    aliases: [tài khoản sinh viên, email trường, hệ thống phần mềm]
+
+unit_service_aliases:
+  Phòng Công tác chính trị và Học sinh, sinh viên:
+    - service: Hỗ trợ thủ tục vay vốn tín dụng dành cho sinh viên
+      aliases: [vay vốn sinh viên, vay vốn tín dụng, hồ sơ vay vốn]
+  Phòng Công nghệ Thông tin:
+    - service: Hỗ trợ kết nối mạng và wifi sinh viên
+      aliases: [wifi, mạng wifi, kết nối wifi, mạng không dây]

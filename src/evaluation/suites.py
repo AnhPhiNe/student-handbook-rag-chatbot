@@ -40,6 +40,35 @@ DETERMINISTIC_STRATEGIES = {
 STRUCTURED_STRATEGIES = {"structured_table"}
 
 
+def _is_structured_path(
+    strategy: str | None,
+    structured: dict[str, Any],
+    *,
+    needs_llm_answer: bool,
+) -> bool:
+    if not structured:
+        return False
+    if strategy in STRUCTURED_STRATEGIES:
+        return True
+    return bool(needs_llm_answer) and strategy in DETERMINISTIC_STRATEGIES
+
+
+def _lookup_match_text(structured: dict[str, Any], lookup_type: str) -> str:
+    return " ".join(
+        str(value or "")
+        for value in (
+            lookup_type,
+            structured.get("lookup_scope"),
+            structured.get("source_lookup_type"),
+            structured.get("content_type"),
+            structured.get("table_type"),
+            structured.get("table_subtype"),
+            structured.get("source_section"),
+            _flatten_text(structured.get("items") or structured.get("result") or []),
+        )
+    )
+
+
 def _cohort_matches(actual: Any, expected: str | None) -> bool:
     if not expected or expected == "general":
         return True
@@ -199,8 +228,11 @@ def evaluate_deterministic(
                     or result.get("tool_result")
                     or {}
                 )
-                structured_group = strategy in STRUCTURED_STRATEGIES and bool(
-                    structured
+                needs_llm_answer = bool(result.get("needs_llm_answer"))
+                structured_group = _is_structured_path(
+                    strategy,
+                    structured,
+                    needs_llm_answer=needs_llm_answer,
                 )
                 if result.get("needs_clarification"):
                     actual_group = "clarification"
@@ -217,6 +249,7 @@ def evaluate_deterministic(
                     or structured.get("rule_type")
                     or ""
                 )
+                lookup_match_text = _lookup_match_text(structured, lookup_type)
                 citations = result.get("citations") or []
                 expected_citation_type = case.get("expected_citation_content_type")
                 citation_required = expected_citation_type is not None
@@ -293,10 +326,13 @@ def evaluate_deterministic(
                 elif expected_group == "clarification_or_rag":
                     strategy_ok = actual_group in {"clarification", "rag"}
                 elif expected_group == "structured":
-                    strategy_ok = actual_group == "structured" and (
-                        not any(expected_strategies)
-                        or result.get("strategy") in set(expected_strategies)
-                    )
+                    if set(expected_strategies) == {"structured_table"}:
+                        strategy_ok = actual_group == "structured"
+                    else:
+                        strategy_ok = actual_group == "structured" and (
+                            not any(expected_strategies)
+                            or result.get("strategy") in set(expected_strategies)
+                        )
                 else:
                     strategy_ok = not any(expected_strategies) or result.get(
                         "strategy"
@@ -313,7 +349,7 @@ def evaluate_deterministic(
                 lookup_type_ok = (
                     expected_group not in {"deterministic", "structured"}
                     or not case.get("expected_lookup_type")
-                    or case["expected_lookup_type"] in lookup_type
+                    or case["expected_lookup_type"] in lookup_match_text
                     or lookup_type in case["expected_lookup_type"]
                 )
                 passed = group_ok and fallback_ok and strategy_ok

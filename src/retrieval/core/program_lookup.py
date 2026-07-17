@@ -209,6 +209,42 @@ def _filter_by_program_name(
     return matches
 
 
+def _filter_by_program_topic(
+    records: list[dict[str, Any]],
+    query: str,
+) -> list[dict[str, Any]]:
+    text = normalize_text(query)
+    stopwords = {
+        "cac",
+        "cho",
+        "cua",
+        "danh",
+        "em",
+        "gi",
+        "khoa",
+        "la",
+        "ly",
+        "nao",
+        "nganh",
+        "nhung",
+        "phu",
+        "quan",
+        "sach",
+        "thuoc",
+        "tra",
+        "trach",
+        "truc",
+    }
+    topic_tokens = {token for token in text.split() if token not in stopwords}
+    if len(topic_tokens) < 2:
+        return []
+    return [
+        record
+        for record in records
+        if topic_tokens.issubset(set(normalize_text(record.get("program_name")).split()))
+    ]
+
+
 def _group_counts(records: list[dict[str, Any]]) -> dict[str, int]:
     counts: dict[str, int] = defaultdict(int)
     for record in records:
@@ -299,7 +335,9 @@ def program_lookup(
             return None
     lookup_scope = "school"
     if routed_to_program_faculty:
-        candidates = _filter_by_program_name(candidates, query)
+        candidates = _filter_by_program_name(candidates, query) or _filter_by_program_topic(
+            candidates, query
+        )
         lookup_scope = "program"
         if not candidates:
             return None

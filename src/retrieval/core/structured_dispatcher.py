@@ -185,7 +185,6 @@ def resolve_structured_decision(
             "grade_10_to_letter": {
                 "grade_scale",
                 "grade_10_to_letter",
-                "pass_fail_ungraded",
             },
             "pass_fail_ungraded": {"pass_fail_ungraded"},
             "letter_to_grade_4": {"letter_to_grade4", "letter_to_grade_4"},

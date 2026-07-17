@@ -1,0 +1,53 @@
+{
+  "version": "v8.2-deterministic-holdout",
+  "frozen": true,
+  "created_at_utc": "2026-07-15T05:37:46.676239+00:00",
+  "description": "Source-anchored frozen benchmark for deterministic, retrieval, answer and production evaluation.",
+  "annotation_method": "deterministic source anchoring; human audit required for 20 judged answers",
+  "counts": {
+    "deterministic": 120,
+    "retrieval": 180,
+    "answers": 100,
+    "production": 60
+  },
+  "dataset_hashes": {
+    "deterministic": "f8aa3e639bc6f7296a8e20943811518601e61b808f5f7802390504f0c8b9de52",
+    "retrieval": "2a0ea0709098b0dd1a283e60c59def61c5b0117c7c0a937ef693ef519949a340",
+    "answers": "0376f929b3c19cc9a1698b19fe21bd425658f3a499c6b1d6994243f905fda354",
+    "production": "b9e6d7e7433741613828a6a42f5bd86743eae62b2327f2cab92af46048fa6086"
+  },
+  "auxiliary_hashes": {
+    "human_audit_template": "bff9f9704029f9c88bfbf7d855cb1debf576abdb979ae7aebbc7135472ae8f77"
+  },
+  "git_commit": "e230365383c7e794f0c321fa8cc8dedac3871aa0",
+  "config_hashes": {
+    "answer_generation": "e71290d0a772445c6dc4c5fad0d7a09015001c2854d346dca888b1fe8dda35c3",
+    "retrieval": "3c635bb2a1147b886e9bfd1979c74bda9092dd165def78f24c1051022607acc4",
+    "ai_router": "c3d0ffa23a822252402e12bab18c9594f4f535aa9fa3251d92f30179a9c832d9",
+    "structured_lookup_registry": "07506803c1954867e7b5468f883025b55f87b21ef793c46b9b6cc27777fe3481"
+  },
+  "docstore_hash": "b98cd9a41175107189e49348b23b6e98768e8c01592986d25f0b7f2c660702dc",
+  "generation_provider": "gemini",
+  "generation_model": "gemini-3.1-flash-lite",
+  "query_rewriter_model": null,
+  "router_provider": "groq",
+  "router_model": "qwen/qwen3.6-27b",
+  "judge_provider": "groq",
+  "judge_model": "openai/gpt-oss-120b",
+  "headline_backend": "qdrant_cloud+mongodb",
+  "legacy_eval_policy": "development_only",
+  "holdout_for": [
+    "deterministic"
+  ],
+  "predecessor_bundle": "v8",
+  "predecessor_deterministic_hash": "170aa40a44d343b4f598f324c6704ac6b1cd40cd1277fff5e4220b0f65f573e4",
+  "predecessor_bundles": [
+    "v8",
+    "v8_holdout"
+  ],
+  "predecessor_deterministic_hashes": {
+    "v8": "170aa40a44d343b4f598f324c6704ac6b1cd40cd1277fff5e4220b0f65f573e4",
+    "v8_holdout": "b4b0df0ddbdd4f8e4ae8d55b102b9734f320abd00b99b8a814fff61ddf0a7377"
+  },
+  "holdout_policy": "single_run_no_post_tuning"
+}

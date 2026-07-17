@@ -1,0 +1,1082 @@
+[
+  {
+    "id": "v8_prod_cold_01",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, Cho em hỏi bồi hoàn kinh phí hỗ trợ có những điều kiện và mốc nào cần lưu ý?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_001",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_02",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, Em chưa rõ chính sách miễn, giảm học phí và hỗ trợ chi phí, phương tiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh viên người dân tộc thiểu số được quy định cụ thể như thế nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_002",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_03",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, Trong sổ tay chế độ báo cáo, lưu trữ, công khai thông tin nội dung chính trong sổ tay là gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_003",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_04",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, công nhận kết quả học tập và chuyển đổi tín chỉ la sao va can luu y gi theo so tay?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_004",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_05",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, Nếu cần áp dụng đúng quy định công tác sinh viên có điểm nào dễ bị hiểu nhầm không?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_005",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_06",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, Sinh viên cần hiểu thế nào về hiệu lực thi hành thì em cần thực hiện hoặc đáp ứng những gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_006",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_07",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, Cho em hỏi hình thức đào tạo có những điều kiện và mốc nào cần lưu ý?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_007",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_08",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, Em chưa rõ học liên thông đối với người có văn bằng khác được quy định cụ thể như thế nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_008",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_09",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, Trong sổ tay khen thưởng và kỷ luật nội dung chính trong sổ tay là gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_009",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_10",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, mục liên kết đào tạo có dẫn chiếu tới Điều nào và nội dung liên quan ra sao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_010",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_11",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, lớp sinh viên la sao va can luu y gi theo so tay?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_011",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_12",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, mục nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học có dẫn chiếu tới Điều nào và nội dung liên quan ra sao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_012",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_13",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, Cho em hỏi nhiệm vụ của sinh viên có những điều kiện và mốc nào cần lưu ý?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_013",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_14",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, Em chưa rõ nội dung, hình thức khen thưởng được quy định cụ thể như thế nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_014",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_15",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, Trong sổ tay phòng hợp tác – quốc tế nội dung chính trong sổ tay là gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_015",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_16",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, Nhờ giải thích giúp em phương thức tổ chức đào tạo áp dụng cho sinh viên ra sao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_016",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_17",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, Nếu cần áp dụng đúng quy định phạm vi điều chỉnh và đối tượng áp dụng có điểm nào dễ bị hiểu nhầm không?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_017",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_18",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, quy trình tổ chức và tiến độ triển khai hoạt động nghiên cứu khoa học của sinh viên la sao va can luu y gi theo so tay?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_018",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_19",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, mục quy định về việc thôi học, chuyển trường, chuyển ngành, buộc thôi học có dẫn chiếu tới Điều nào và nội dung liên quan ra sao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_019",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_cold_20",
+    "suite": "production",
+    "scenario": "cold_rag",
+    "query": "Em thuộc K48-K49, Em chưa rõ quyền khiếu nại về khen thưởng, kỷ luật được quy định cụ thể như thế nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "cold_rag"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_020",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_det_01",
+    "suite": "production",
+    "scenario": "deterministic",
+    "query": "K48-K49 IELTS 5.5 tương đương bậc ngoại ngữ nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "deterministic"
+    ],
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_prod_det_01",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_det_02",
+    "suite": "production",
+    "scenario": "deterministic",
+    "query": "Với K48-K49, chứng chỉ JLPT N3 được quy đổi sang bậc mấy?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "deterministic"
+    ],
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_prod_det_02",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_det_03",
+    "suite": "production",
+    "scenario": "deterministic",
+    "query": "K50 IELTS 5.5 tương đương bậc ngoại ngữ nào?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "deterministic"
+    ],
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_prod_det_03",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_det_04",
+    "suite": "production",
+    "scenario": "deterministic",
+    "query": "Với K50, chứng chỉ JLPT N3 được quy đổi sang bậc mấy?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "deterministic"
+    ],
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_prod_det_04",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_det_05",
+    "suite": "production",
+    "scenario": "deterministic",
+    "query": "K51 IELTS 5.5 tương đương bậc ngoại ngữ nào?",
+    "cohort": "K51",
+    "tags": [
+      "production",
+      "deterministic"
+    ],
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_prod_det_05",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_det_06",
+    "suite": "production",
+    "scenario": "deterministic",
+    "query": "Với K51, chứng chỉ JLPT N3 được quy đổi sang bậc mấy?",
+    "cohort": "K51",
+    "tags": [
+      "production",
+      "deterministic"
+    ],
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_prod_det_06",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_det_07",
+    "suite": "production",
+    "scenario": "deterministic",
+    "query": "Sinh viên K48-K49 hệ chính quy được học tối đa bao nhiêu năm?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "deterministic"
+    ],
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_prod_det_07",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_det_08",
+    "suite": "production",
+    "scenario": "deterministic",
+    "query": "K48-K49 thời gian chuẩn của đào tạo đại học cấp bằng thứ nhất là mấy năm?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "deterministic"
+    ],
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_prod_det_08",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_det_09",
+    "suite": "production",
+    "scenario": "deterministic",
+    "query": "Sinh viên K50 hệ chính quy được học tối đa bao nhiêu năm?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "deterministic"
+    ],
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_prod_det_09",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_det_10",
+    "suite": "production",
+    "scenario": "deterministic",
+    "query": "K50 thời gian chuẩn của đào tạo đại học cấp bằng thứ nhất là mấy năm?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "deterministic"
+    ],
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_prod_det_10",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_warm_01",
+    "suite": "production",
+    "scenario": "warm_cache",
+    "query": "Em thuộc K48-K49, Cho em hỏi bồi hoàn kinh phí hỗ trợ có những điều kiện và mốc nào cần lưu ý?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "warm_cache"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": "v8_prod_cold_01",
+    "duplicate_group": "v8_source_query_v8_ret_reg_001",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_warm_02",
+    "suite": "production",
+    "scenario": "warm_cache",
+    "query": "Em thuộc K48-K49, Em chưa rõ chính sách miễn, giảm học phí và hỗ trợ chi phí, phương tiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh viên người dân tộc thiểu số được quy định cụ thể như thế nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "warm_cache"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": "v8_prod_cold_02",
+    "duplicate_group": "v8_source_query_v8_ret_reg_002",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_warm_03",
+    "suite": "production",
+    "scenario": "warm_cache",
+    "query": "Em thuộc K48-K49, Trong sổ tay chế độ báo cáo, lưu trữ, công khai thông tin nội dung chính trong sổ tay là gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "warm_cache"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": "v8_prod_cold_03",
+    "duplicate_group": "v8_source_query_v8_ret_reg_003",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_warm_04",
+    "suite": "production",
+    "scenario": "warm_cache",
+    "query": "Em thuộc K48-K49, công nhận kết quả học tập và chuyển đổi tín chỉ la sao va can luu y gi theo so tay?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "warm_cache"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": "v8_prod_cold_04",
+    "duplicate_group": "v8_source_query_v8_ret_reg_004",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_warm_05",
+    "suite": "production",
+    "scenario": "warm_cache",
+    "query": "Em thuộc K48-K49, Nếu cần áp dụng đúng quy định công tác sinh viên có điểm nào dễ bị hiểu nhầm không?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "warm_cache"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": "v8_prod_cold_05",
+    "duplicate_group": "v8_source_query_v8_ret_reg_005",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_warm_06",
+    "suite": "production",
+    "scenario": "warm_cache",
+    "query": "Em thuộc K48-K49, Sinh viên cần hiểu thế nào về hiệu lực thi hành thì em cần thực hiện hoặc đáp ứng những gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "warm_cache"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": "v8_prod_cold_06",
+    "duplicate_group": "v8_source_query_v8_ret_reg_006",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_warm_07",
+    "suite": "production",
+    "scenario": "warm_cache",
+    "query": "Em thuộc K48-K49, Cho em hỏi hình thức đào tạo có những điều kiện và mốc nào cần lưu ý?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "warm_cache"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": "v8_prod_cold_07",
+    "duplicate_group": "v8_source_query_v8_ret_reg_007",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_warm_08",
+    "suite": "production",
+    "scenario": "warm_cache",
+    "query": "Em thuộc K48-K49, Em chưa rõ học liên thông đối với người có văn bằng khác được quy định cụ thể như thế nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "warm_cache"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": "v8_prod_cold_08",
+    "duplicate_group": "v8_source_query_v8_ret_reg_008",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_warm_09",
+    "suite": "production",
+    "scenario": "warm_cache",
+    "query": "Em thuộc K48-K49, Trong sổ tay khen thưởng và kỷ luật nội dung chính trong sổ tay là gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "warm_cache"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": "v8_prod_cold_09",
+    "duplicate_group": "v8_source_query_v8_ret_reg_009",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_warm_10",
+    "suite": "production",
+    "scenario": "warm_cache",
+    "query": "Em thuộc K48-K49, mục liên kết đào tạo có dẫn chiếu tới Điều nào và nội dung liên quan ra sao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "production",
+      "warm_cache"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": false,
+    "repeat_of": "v8_prod_cold_10",
+    "duplicate_group": "v8_source_query_v8_ret_reg_010",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_stream_01",
+    "suite": "production",
+    "scenario": "streaming",
+    "query": "Em thuộc K50, Cho em hỏi bồi hoàn kinh phí hỗ trợ có những điều kiện và mốc nào cần lưu ý?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "streaming"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": true,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_031",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_stream_02",
+    "suite": "production",
+    "scenario": "streaming",
+    "query": "Em thuộc K50, chương trình đào tạo và thời gian học tập la sao va can luu y gi theo so tay?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "streaming"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": true,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_032",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_stream_03",
+    "suite": "production",
+    "scenario": "streaming",
+    "query": "Em thuộc K50, Trong sổ tay các hành vi sinh viên không được làm nội dung chính trong sổ tay là gì?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "streaming"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": true,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_033",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_stream_04",
+    "suite": "production",
+    "scenario": "streaming",
+    "query": "Em thuộc K50, Nhờ giải thích giúp em công nhận kết quả học tập và chuyển đổi tín chỉ áp dụng cho sinh viên ra sao?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "streaming"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": true,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_034",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_stream_05",
+    "suite": "production",
+    "scenario": "streaming",
+    "query": "Em thuộc K50, Nếu cần áp dụng đúng quy định công tác sinh viên có điểm nào dễ bị hiểu nhầm không?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "streaming"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": true,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_035",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_stream_06",
+    "suite": "production",
+    "scenario": "streaming",
+    "query": "Em thuộc K50, Sinh viên cần hiểu thế nào về giải thích từ ngữ thì em cần thực hiện hoặc đáp ứng những gì?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "streaming"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": true,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_036",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_stream_07",
+    "suite": "production",
+    "scenario": "streaming",
+    "query": "Em thuộc K50, Cho em hỏi hiệu trưởng có những điều kiện và mốc nào cần lưu ý?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "streaming"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": true,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_037",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_stream_08",
+    "suite": "production",
+    "scenario": "streaming",
+    "query": "Em thuộc K50, Em chưa rõ học cùng lúc hai chương trình được quy định cụ thể như thế nào?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "streaming"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": true,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_038",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_stream_09",
+    "suite": "production",
+    "scenario": "streaming",
+    "query": "Em thuộc K50, khen thưởng và kỷ luật la sao va can luu y gi theo so tay?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "streaming"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": true,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_039",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_stream_10",
+    "suite": "production",
+    "scenario": "streaming",
+    "query": "Em thuộc K50, Nhờ giải thích giúp em kế hoạch giảng dạy và học tập áp dụng cho sinh viên ra sao?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "streaming"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 1,
+    "stream": true,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_040",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_burst_01",
+    "suite": "production",
+    "scenario": "burst",
+    "query": "Em thuộc K50, Nếu cần áp dụng đúng quy định lớp sinh viên có điểm nào dễ bị hiểu nhầm không?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "burst"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 3,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_041",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_burst_02",
+    "suite": "production",
+    "scenario": "burst",
+    "query": "Em thuộc K50, Sinh viên cần hiểu thế nào về nghĩa vụ của sinh viên ngoại trú thì em cần thực hiện hoặc đáp ứng những gì?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "burst"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 3,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_042",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_burst_03",
+    "suite": "production",
+    "scenario": "burst",
+    "query": "Em thuộc K50, Cho em hỏi nhiệm vụ của sinh viên có những điều kiện và mốc nào cần lưu ý?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "burst"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 3,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_043",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_burst_04",
+    "suite": "production",
+    "scenario": "burst",
+    "query": "Em thuộc K50, Em chưa rõ nội dung đánh giá và thang điểm được quy định cụ thể như thế nào?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "burst"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 3,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_044",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_burst_05",
+    "suite": "production",
+    "scenario": "burst",
+    "query": "Em thuộc K50, Trong sổ tay phòng công nghệ thông tin nội dung chính trong sổ tay là gì?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "burst"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 3,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_045",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_burst_06",
+    "suite": "production",
+    "scenario": "burst",
+    "query": "Em thuộc K50, phòng thanh tra đào tạo la sao va can luu y gi theo so tay?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "burst"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 5,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_046",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_burst_07",
+    "suite": "production",
+    "scenario": "burst",
+    "query": "Em thuộc K50, Nếu cần áp dụng đúng quy định phạm vi điều chỉnh và đối tượng áp dụng có điểm nào dễ bị hiểu nhầm không?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "burst"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 5,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_047",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_burst_08",
+    "suite": "production",
+    "scenario": "burst",
+    "query": "Em thuộc K50, Sinh viên cần hiểu thế nào về phạm vi điều chỉnh và đối tượng áp dụng thì em cần thực hiện hoặc đáp ứng những gì?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "burst"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 5,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_048",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_burst_09",
+    "suite": "production",
+    "scenario": "burst",
+    "query": "Em thuộc K50, Cho em hỏi quy tắc ứng xử trên mạng xã hội có những điều kiện và mốc nào cần lưu ý?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "burst"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 5,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_049",
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_prod_burst_10",
+    "suite": "production",
+    "scenario": "burst",
+    "query": "Em thuộc K50, Em chưa rõ quyền của sinh viên ngoại trú được quy định cụ thể như thế nào?",
+    "cohort": "K50",
+    "tags": [
+      "production",
+      "burst"
+    ],
+    "expected_intent": "regulation_query",
+    "expected_strategy": "hybrid_graph_retrieval",
+    "concurrency": 5,
+    "stream": false,
+    "repeat_of": null,
+    "duplicate_group": "v8_source_query_v8_ret_reg_050",
+    "near_duplicate_reviewed": true
+  }
+]

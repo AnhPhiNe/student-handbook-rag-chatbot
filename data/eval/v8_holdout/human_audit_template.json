@@ -1,0 +1,182 @@
+[
+  {
+    "id": "v8_ans_001",
+    "case_type": "regulation_true_rag",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": true,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_002",
+    "case_type": "regulation_true_rag",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": true,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_003",
+    "case_type": "regulation_true_rag",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": true,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_004",
+    "case_type": "regulation_true_rag",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": true,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_005",
+    "case_type": "regulation_true_rag",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": true,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_006",
+    "case_type": "regulation_true_rag",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_007",
+    "case_type": "regulation_true_rag",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_008",
+    "case_type": "regulation_true_rag",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_009",
+    "case_type": "regulation_true_rag",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_010",
+    "case_type": "regulation_true_rag",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_011",
+    "case_type": "regulation_true_rag",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_012",
+    "case_type": "regulation_true_rag",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_081",
+    "case_type": "synthetic_fallback",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_082",
+    "case_type": "synthetic_fallback",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_083",
+    "case_type": "synthetic_fallback",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_084",
+    "case_type": "synthetic_fallback",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_091",
+    "case_type": "unanswerable",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_092",
+    "case_type": "unanswerable",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_093",
+    "case_type": "unanswerable",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v8_ans_094",
+    "case_type": "unanswerable",
+    "human_score": null,
+    "critical_false_pass": null,
+    "notes": "",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  }
+]

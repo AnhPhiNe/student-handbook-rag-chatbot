@@ -1,0 +1,250 @@
+[
+  {
+    "id": "fl_should_001",
+    "query": "K50 IELTS 5.5 dat chuan dau ra ngoai ngu muc may?",
+    "cohort": "K50",
+    "expected_group": "deterministic",
+    "expected_strategy": "foreign_language_lookup",
+    "reason": "Direct certificate equivalency lookup."
+  },
+  {
+    "id": "fl_should_002",
+    "query": "TOEIC 650 cua K51 tuong duong bac may?",
+    "cohort": "K51",
+    "expected_group": "deterministic",
+    "expected_strategy": "foreign_language_lookup",
+    "reason": "Direct certificate score equivalency lookup."
+  },
+  {
+    "id": "fl_should_003",
+    "query": "HSK bac 4 co du chuan ngoai ngu K50 khong?",
+    "cohort": "K50",
+    "expected_group": "deterministic",
+    "expected_strategy": "foreign_language_lookup",
+    "reason": "Direct language certificate level lookup."
+  },
+  {
+    "id": "fl_avoid_001",
+    "query": "Neu em khong co IELTS thi co duoc xet tot nghiep khong?",
+    "cohort": "K50",
+    "expected_group": "rag",
+    "must_not_strategy": "foreign_language_lookup",
+    "reason": "Asks policy condition, not certificate equivalency."
+  },
+  {
+    "id": "fl_avoid_002",
+    "query": "Chua co chung chi ngoai ngu thi xin no chuan dau ra nhu the nao?",
+    "cohort": "K51",
+    "expected_group": "rag",
+    "must_not_strategy": "foreign_language_lookup",
+    "reason": "Asks process/policy, not table lookup."
+  },
+  {
+    "id": "fl_avoid_003",
+    "query": "IELTS het han thi co duoc cong nhan chuan dau ra khong?",
+    "cohort": "K50",
+    "expected_group": "rag",
+    "must_not_strategy": "foreign_language_lookup",
+    "reason": "Asks validity rule, not score mapping."
+  },
+  {
+    "id": "study_should_001",
+    "query": "K50 dai hoc chinh quy duoc hoc toi da bao nhieu nam?",
+    "cohort": "K50",
+    "expected_group": "deterministic",
+    "expected_strategy": "study_duration_lookup",
+    "reason": "Direct maximum study duration lookup."
+  },
+  {
+    "id": "study_should_002",
+    "query": "Thoi gian dao tao chuan cua sinh vien K51 la may nam?",
+    "cohort": "K51",
+    "expected_group": "deterministic",
+    "expected_strategy": "study_duration_lookup",
+    "reason": "Direct standard study duration lookup."
+  },
+  {
+    "id": "study_should_003",
+    "query": "Vua lam vua hoc duoc hoc toi da bao lau?",
+    "cohort": "K50",
+    "expected_group": "deterministic",
+    "expected_strategy": "study_duration_lookup",
+    "reason": "Direct mode-specific study duration lookup."
+  },
+  {
+    "id": "study_avoid_001",
+    "query": "Hoc qua thoi gian toi da thi co bi buoc thoi hoc khong?",
+    "cohort": "K50",
+    "expected_group": "rag",
+    "must_not_strategy": "study_duration_lookup",
+    "reason": "Asks consequence/policy, not only duration value."
+  },
+  {
+    "id": "study_avoid_002",
+    "query": "Neu sap het thoi gian hoc toi da thi can lam thu tuc gi?",
+    "cohort": "K51",
+    "expected_group": "rag",
+    "must_not_strategy": "study_duration_lookup",
+    "reason": "Asks procedure."
+  },
+  {
+    "id": "study_avoid_003",
+    "query": "Hoc cham tien do co bi canh bao hoc vu khong?",
+    "cohort": "K50",
+    "expected_group": "rag",
+    "must_not_strategy": "study_duration_lookup",
+    "reason": "Asks academic warning policy."
+  },
+  {
+    "id": "scholar_should_001",
+    "query": "Diem hoc bong 3.4 la loai gi?",
+    "cohort": "K50",
+    "expected_group": "deterministic",
+    "expected_strategy": "scholarship_classification_lookup",
+    "reason": "Direct scholarship score classification."
+  },
+  {
+    "id": "scholar_should_002",
+    "query": "Hoc bong loai gioi can diem bao nhieu?",
+    "cohort": "K51",
+    "expected_group": "deterministic",
+    "expected_strategy": "scholarship_classification_lookup",
+    "reason": "Direct scholarship label criteria."
+  },
+  {
+    "id": "scholar_avoid_001",
+    "query": "Bi ky luat thi co duoc xet hoc bong khong?",
+    "cohort": "K50",
+    "expected_group": "rag",
+    "must_not_strategy": "scholarship_classification_lookup",
+    "reason": "Asks eligibility policy beyond score table."
+  },
+  {
+    "id": "scholar_avoid_002",
+    "query": "Neu diem hoc bong cao nhung no hoc phi thi co duoc nhan khong?",
+    "cohort": "K51",
+    "expected_group": "rag",
+    "must_not_strategy": "scholarship_classification_lookup",
+    "reason": "Asks exception/policy."
+  },
+  {
+    "id": "form_should_001",
+    "query": "Muon tam nghi hoc can mau don nao?",
+    "cohort": "K50",
+    "expected_group": "deterministic",
+    "expected_strategy": "form_lookup",
+    "reason": "Direct form lookup."
+  },
+  {
+    "id": "form_should_002",
+    "query": "Mau don xin hoc lai nam o dau?",
+    "cohort": "K50",
+    "expected_group": "deterministic",
+    "expected_strategy": "form_lookup",
+    "reason": "Direct form lookup."
+  },
+  {
+    "id": "form_avoid_001",
+    "query": "Dieu kien tam nghi hoc la gi?",
+    "cohort": "K50",
+    "expected_group": "rag",
+    "must_not_strategy": "form_lookup",
+    "reason": "Asks regulation condition, not form."
+  },
+  {
+    "id": "form_avoid_002",
+    "query": "Nop don tam nghi hoc tre thi co duoc chap nhan khong?",
+    "cohort": "K51",
+    "expected_group": "rag",
+    "must_not_strategy": "form_lookup",
+    "reason": "Asks acceptance policy."
+  },
+  {
+    "id": "office_should_001",
+    "query": "Xin giay xac nhan sinh vien lien he phong nao?",
+    "cohort": "K50",
+    "expected_group": "deterministic",
+    "expected_strategy": "student_service_lookup",
+    "reason": "Direct student service contact lookup."
+  },
+  {
+    "id": "office_should_002",
+    "query": "Dong hoc phi thi lien he don vi nao?",
+    "cohort": "K51",
+    "expected_group": "deterministic",
+    "expected_strategy": "student_service_lookup",
+    "reason": "Direct contact/service lookup."
+  },
+  {
+    "id": "office_avoid_001",
+    "query": "Phong cong tac sinh vien xu ly ky luat nhu the nao?",
+    "cohort": "K50",
+    "expected_group": "rag",
+    "must_not_strategy": "student_service_lookup",
+    "reason": "Asks policy/process, not contact info."
+  },
+  {
+    "id": "office_avoid_002",
+    "query": "Neu nop hoc phi tre thi co bi xu ly khong?",
+    "cohort": "K50",
+    "expected_group": "rag",
+    "must_not_strategy": "student_service_lookup",
+    "reason": "Asks regulation consequence, not contact."
+  },
+  {
+    "id": "formula_should_001",
+    "query": "Cong thuc tinh diem GPA la gi?",
+    "cohort": "K50",
+    "expected_group": "deterministic",
+    "expected_strategy": "formula_lookup",
+    "reason": "Direct formula lookup."
+  },
+  {
+    "id": "formula_should_002",
+    "query": "Tinh diem hoc bong neu GPA 3.2 va ren luyen 90",
+    "cohort": "K50",
+    "expected_group": "deterministic",
+    "expected_strategy": "calculator_tool",
+    "reason": "Direct calculator query."
+  },
+  {
+    "id": "formula_avoid_001",
+    "query": "GPA thap thi co bi canh bao hoc vu khong?",
+    "cohort": "K50",
+    "expected_group": "rag",
+    "must_not_strategy": "formula_lookup",
+    "reason": "Asks academic warning policy, not formula."
+  },
+  {
+    "id": "structured_should_001",
+    "query": "Diem ren luyen 85 la loai gi?",
+    "cohort": "K50",
+    "expected_group": "deterministic",
+    "expected_strategy": "structured_lookup",
+    "reason": "Direct conduct classification lookup."
+  },
+  {
+    "id": "structured_should_002",
+    "query": "Diem chu B+ quy doi thang 4 la bao nhieu?",
+    "cohort": "K51",
+    "expected_group": "deterministic",
+    "expected_strategy": "structured_lookup",
+    "reason": "Direct grade conversion lookup."
+  },
+  {
+    "id": "structured_avoid_001",
+    "query": "Diem ren luyen thap thi co bi cam thi khong?",
+    "cohort": "K50",
+    "expected_group": "rag",
+    "must_not_strategy": "structured_lookup",
+    "reason": "Asks consequence/policy."
+  },
+  {
+    "id": "structured_avoid_002",
+    "query": "Neu bi xep loai hoc luc yeu thi co phai hoc lai khong?",
+    "cohort": "K50",
+    "expected_group": "rag",
+    "must_not_strategy": "structured_lookup",
+    "reason": "Asks policy consequence."
+  }
+]

@@ -1,0 +1,2541 @@
+[
+  {
+    "id": "v8_det_pos_001",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "foreign_language",
+    "query": "K48-K49 IELTS 5.5 tương đương bậc ngoại ngữ nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "foreign_language"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "expected_lookup_type": "foreign_language_equivalency",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "bac_4"
+    ],
+    "expected_item_count": 1,
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_01"
+  },
+  {
+    "id": "v8_det_pos_002",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "foreign_language",
+    "query": "Với K48-K49, chứng chỉ JLPT N3 được quy đổi sang bậc mấy?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "foreign_language"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "expected_lookup_type": "foreign_language_equivalency",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "bac_4"
+    ],
+    "expected_item_count": 1,
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_02"
+  },
+  {
+    "id": "v8_det_pos_003",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "foreign_language",
+    "query": "K50 IELTS 5.5 tương đương bậc ngoại ngữ nào?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "foreign_language"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "expected_lookup_type": "foreign_language_equivalency",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "bac_4"
+    ],
+    "expected_item_count": 1,
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_03"
+  },
+  {
+    "id": "v8_det_pos_004",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "foreign_language",
+    "query": "Với K50, chứng chỉ JLPT N3 được quy đổi sang bậc mấy?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "foreign_language"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "expected_lookup_type": "foreign_language_equivalency",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "bac_4"
+    ],
+    "expected_item_count": 1,
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_04"
+  },
+  {
+    "id": "v8_det_pos_005",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "foreign_language",
+    "query": "K51 IELTS 5.5 tương đương bậc ngoại ngữ nào?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "foreign_language"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "expected_lookup_type": "foreign_language_equivalency",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "bac_4"
+    ],
+    "expected_item_count": 1,
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_05"
+  },
+  {
+    "id": "v8_det_pos_006",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "foreign_language",
+    "query": "Với K51, chứng chỉ JLPT N3 được quy đổi sang bậc mấy?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "foreign_language"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "expected_lookup_type": "foreign_language_equivalency",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "bac_4"
+    ],
+    "expected_item_count": 1,
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_06"
+  },
+  {
+    "id": "v8_det_neg_007",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "foreign_language",
+    "query": "K48-K49 chưa có IELTS thì có được xin nợ chuẩn ngoại ngữ không?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "foreign_language"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "foreign_language_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_008",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "foreign_language",
+    "query": "Chứng chỉ IELTS hết hạn có được K50 xét tốt nghiệp không?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "foreign_language"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "foreign_language_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_009",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "foreign_language",
+    "query": "Thủ tục nộp chứng chỉ ngoại ngữ của K51 gồm những bước nào?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "foreign_language"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "forbidden_strategy": "foreign_language_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_010",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "foreign_language",
+    "query": "K48-K49 không có chứng chỉ ngoại ngữ thì bị xử lý ra sao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "foreign_language"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "foreign_language_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_011",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "study_duration",
+    "query": "Sinh viên K48-K49 hệ chính quy được học tối đa bao nhiêu năm?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "study_duration"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "expected_lookup_type": "study_duration",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "8 năm học"
+    ],
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_07"
+  },
+  {
+    "id": "v8_det_pos_012",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "study_duration",
+    "query": "K48-K49 thời gian chuẩn của đào tạo đại học cấp bằng thứ nhất là mấy năm?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "study_duration"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "expected_lookup_type": "study_duration",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "4 năm học"
+    ],
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_08"
+  },
+  {
+    "id": "v8_det_pos_013",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "study_duration",
+    "query": "Sinh viên K50 hệ chính quy được học tối đa bao nhiêu năm?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "study_duration"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "expected_lookup_type": "study_duration",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "8 năm học"
+    ],
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_09"
+  },
+  {
+    "id": "v8_det_pos_014",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "study_duration",
+    "query": "K50 thời gian chuẩn của đào tạo đại học cấp bằng thứ nhất là mấy năm?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "study_duration"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "expected_lookup_type": "study_duration",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "4 năm học"
+    ],
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_10"
+  },
+  {
+    "id": "v8_det_pos_015",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "study_duration",
+    "query": "Sinh viên K51 hệ chính quy được học tối đa bao nhiêu năm?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "study_duration"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "expected_lookup_type": "study_duration",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "8 năm học"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_016",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "study_duration",
+    "query": "K51 thời gian chuẩn của đào tạo đại học cấp bằng thứ nhất là mấy năm?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "study_duration"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "expected_lookup_type": "study_duration",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "4 năm học"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_017",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "study_duration",
+    "query": "K50 vượt thời gian học tối đa thì có bị buộc thôi học không?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "study_duration"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "study_duration_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_018",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "study_duration",
+    "query": "Muốn gia hạn thời gian học ở K51 cần thủ tục gì?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "study_duration"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "forbidden_strategy": "study_duration_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_019",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "study_duration",
+    "query": "Nếu K48-K49 nghỉ học tạm thời thì thời gian đó có tính vào khóa học không?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "study_duration"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "study_duration_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_020",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "study_duration",
+    "query": "K50 học chậm tiến độ thì nhà trường xử lý thế nào?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "study_duration"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "study_duration_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_021",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scholarship",
+    "query": "K48-K49 điểm học bổng 3.7 được xếp loại gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scholarship"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "scholarship_classification_lookup_query",
+    "expected_strategy": "scholarship_classification_lookup",
+    "expected_lookup_type": "scholarship_classification",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "Xuất sắc"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_022",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scholarship",
+    "query": "Mức điểm học bổng loại giỏi của K48-K49 nằm trong khoảng nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scholarship"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "scholarship_classification_lookup_query",
+    "expected_strategy": "scholarship_classification_lookup",
+    "expected_lookup_type": "scholarship_classification",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "Giỏi"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_023",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scholarship",
+    "query": "K50 điểm học bổng 3.7 được xếp loại gì?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scholarship"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "scholarship_classification_lookup_query",
+    "expected_strategy": "scholarship_classification_lookup",
+    "expected_lookup_type": "scholarship_classification",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "Xuất sắc"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_024",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scholarship",
+    "query": "Mức điểm học bổng loại giỏi của K50 nằm trong khoảng nào?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scholarship"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "scholarship_classification_lookup_query",
+    "expected_strategy": "scholarship_classification_lookup",
+    "expected_lookup_type": "scholarship_classification",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "Giỏi"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_025",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scholarship",
+    "query": "K51 điểm học bổng 3.7 được xếp loại gì?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scholarship"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "scholarship_classification_lookup_query",
+    "expected_strategy": "scholarship_classification_lookup",
+    "expected_lookup_type": "scholarship_classification",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "Xuất sắc"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_026",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scholarship",
+    "query": "Mức điểm học bổng loại giỏi của K51 nằm trong khoảng nào?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scholarship"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "scholarship_classification_lookup_query",
+    "expected_strategy": "scholarship_classification_lookup",
+    "expected_lookup_type": "scholarship_classification",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "Giỏi"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_027",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scholarship",
+    "query": "K51 nợ học phí có được nhận học bổng không?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scholarship"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "scholarship_classification_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_028",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scholarship",
+    "query": "Điều kiện xét học bổng của K48-K49 gồm những gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scholarship"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "scholarship_classification_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_029",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scholarship",
+    "query": "K50 bị kỷ luật thì còn được xét học bổng không?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scholarship"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "scholarship_classification_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_030",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scholarship",
+    "query": "Quy trình nộp hồ sơ học bổng cho K51 ra sao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scholarship"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "forbidden_strategy": "scholarship_classification_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_031",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scoring",
+    "query": "K48-K49 điểm 7.9 quy đổi thành điểm chữ gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scoring"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "grade_10_to_letter",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "B+"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_032",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scoring",
+    "query": "Điểm chữ B+ của K48-K49 tương ứng bao nhiêu trên thang 4?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scoring"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "letter_to_grade_4",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "3.5",
+      "3,5"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_033",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scoring",
+    "query": "K50 điểm 7.9 quy đổi thành điểm chữ gì?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scoring"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "grade_10_to_letter",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "B+"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_034",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scoring",
+    "query": "Điểm chữ B+ của K50 tương ứng bao nhiêu trên thang 4?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scoring"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "letter_to_grade_4",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "3.5",
+      "3,5"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_035",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scoring",
+    "query": "K51 điểm 7.9 quy đổi thành điểm chữ gì?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scoring"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "grade_10_to_letter",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "B+"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_036",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scoring",
+    "query": "Điểm chữ B+ của K51 tương ứng bao nhiêu trên thang 4?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scoring"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "letter_to_grade_4",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "3.5",
+      "3,5"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_037",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scoring",
+    "query": "K48-K49 bị điểm F thì phải học lại như thế nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scoring"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "structured_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_038",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scoring",
+    "query": "Điểm thấp có khiến sinh viên K50 bị cảnh báo học tập không?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scoring"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "structured_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_039",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scoring",
+    "query": "K51 được phúc khảo điểm trong trường hợp nào?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scoring"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "structured_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_040",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scoring",
+    "query": "Nếu cải thiện điểm thì kết quả cũ của K48-K49 được xử lý ra sao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scoring"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "structured_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_041",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "service",
+    "query": "K48-K49 em bị lỗi tài khoản sinh viên thì liên hệ đơn vị nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "service"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "student_service_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Phòng Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_042",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "service",
+    "query": "Sinh viên K48-K49 cần xin giấy xác nhận đang học thì hỏi phòng nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "service"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "student_service_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Phòng Công tác chính trị và Học sinh, sinh viên"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_043",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "service",
+    "query": "K50 em bị lỗi tài khoản sinh viên thì liên hệ đơn vị nào?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "service"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "student_service_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Phòng Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_044",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "service",
+    "query": "Sinh viên K50 cần xin giấy xác nhận đang học thì hỏi phòng nào?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "service"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "student_service_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Phòng Công tác chính trị và Học sinh, sinh viên"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_045",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "service",
+    "query": "K51 em bị lỗi tài khoản sinh viên thì liên hệ đơn vị nào?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "service"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "student_service_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Phòng Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_046",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "service",
+    "query": "Sinh viên K51 cần xin giấy xác nhận đang học thì hỏi phòng nào?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "service"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "student_service_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Phòng Công tác chính trị và Học sinh, sinh viên"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_047",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "service",
+    "query": "Phòng sinh viên xử lý khiếu nại của K50 theo quy trình nào?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "service"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "forbidden_strategy": "student_service_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_048",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "service",
+    "query": "K51 mất tài khoản thì có bị ảnh hưởng đăng ký học phần không?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "service"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "student_service_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_049",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "service",
+    "query": "Đơn vị hỗ trợ có chịu trách nhiệm giải quyết hồ sơ trễ của K48-K49 không?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "service"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "student_service_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_050",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "service",
+    "query": "K50 cần điều kiện gì để được cấp giấy xác nhận sinh viên?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "service"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "student_service_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_051",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "office",
+    "query": "Email Phòng Công nghệ Thông tin dành cho sinh viên K48-K49 là gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "office"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "phongcntt@hcmue.edu.vn"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_052",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "office",
+    "query": "K48-K49 cho em địa chỉ làm việc của ký túc xá với?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "office"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Ký túc xá"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_053",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "office",
+    "query": "Email Phòng Công nghệ Thông tin dành cho sinh viên K50 là gì?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "office"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "phongcntt@hcmue.edu.vn"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_054",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "office",
+    "query": "K50 cho em địa chỉ làm việc của ký túc xá với?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "office"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Ký túc xá"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_055",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "office",
+    "query": "Email Phòng Công nghệ Thông tin dành cho sinh viên K51 là gì?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "office"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "phongcntt@hcmue.edu.vn"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_056",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "office",
+    "query": "K51 cho em địa chỉ làm việc của ký túc xá với?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "office"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Ký túc xá"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_057",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "office",
+    "query": "Ký túc xá xử lý vi phạm nội trú của K51 như thế nào?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "office"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "office_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_058",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "office",
+    "query": "Phòng CNTT có quyền khóa tài khoản sinh viên K48-K49 khi nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "office"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "office_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_059",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "office",
+    "query": "K50 muốn chuyển phòng ban giải quyết hồ sơ thì thủ tục ra sao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "office"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "forbidden_strategy": "office_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_060",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "office",
+    "query": "Trách nhiệm của phòng đào tạo với sinh viên K51 là gì?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "office"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "office_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_061",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "program",
+    "query": "K48-K49 ngành Công nghệ Thông tin do khoa nào phụ trách?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "program"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "program_directory",
+    "expected_contains_any": [
+      "Khoa Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_062",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "program",
+    "query": "Với K48-K49, khoa phụ trách CNTT đang quản lý các ngành đào tạo nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "program"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "program_directory",
+    "expected_contains_any": [
+      "Khoa Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_063",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "program",
+    "query": "K50 ngành Công nghệ Thông tin do khoa nào phụ trách?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "program"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "program_directory",
+    "expected_contains_any": [
+      "Khoa Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_064",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "program",
+    "query": "Với K50, khoa phụ trách CNTT đang quản lý các ngành đào tạo nào?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "program"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "program_directory",
+    "expected_contains_any": [
+      "Khoa Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_065",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "program",
+    "query": "K51 ngành Công nghệ Thông tin do khoa nào phụ trách?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "program"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "program_directory",
+    "expected_contains_any": [
+      "Khoa Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_066",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "program",
+    "query": "Với K51, khoa phụ trách CNTT đang quản lý các ngành đào tạo nào?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "program"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "program_directory",
+    "expected_contains_any": [
+      "Khoa Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_067",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "program",
+    "query": "K48-K49 muốn chuyển sang ngành Công nghệ Thông tin cần điều kiện gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "program"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "program_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_068",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "program",
+    "query": "Học cùng lúc hai ngành ở K50 được quy định ra sao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "program"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "program_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_069",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "program",
+    "query": "K51 có được tự chọn khoa quản lý khi chuyển ngành không?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "program"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "program_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_070",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "program",
+    "query": "Điều kiện tốt nghiệp ngành Công nghệ Thông tin của K48-K49 là gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "program"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "program_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_071",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "form",
+    "query": "K48-K49 cần giấy xác nhận sinh viên thì tải biểu mẫu nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "form"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "form_query",
+    "expected_strategy": "form_lookup",
+    "expected_lookup_type": "form_template",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "form_template",
+    "expected_contains_any": [
+      "GIẤY XÁC NHẬN"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_072",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "form",
+    "query": "Cho em tìm mẫu biên bản họp lớp áp dụng với K48-K49.",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "form"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "form_query",
+    "expected_strategy": "form_lookup",
+    "expected_lookup_type": "form_template",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "form_template",
+    "expected_contains_any": [
+      "BIÊN BẢN HỌP LỚP"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_073",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "form",
+    "query": "K50 cần giấy xác nhận sinh viên thì tải biểu mẫu nào?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "form"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "form_query",
+    "expected_strategy": "form_lookup",
+    "expected_lookup_type": "form_template",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "form_template",
+    "expected_contains_any": [
+      "GIẤY XÁC NHẬN"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_074",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "form",
+    "query": "Cho em tìm mẫu biên bản họp lớp áp dụng với K50.",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "form"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "form_query",
+    "expected_strategy": "form_lookup",
+    "expected_lookup_type": "form_template",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "form_template",
+    "expected_contains_any": [
+      "BIÊN BẢN HỌP LỚP"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_075",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "form",
+    "query": "K51 cần giấy xác nhận sinh viên thì tải biểu mẫu nào?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "form"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "form_query",
+    "expected_strategy": "form_lookup",
+    "expected_lookup_type": "form_template",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "form_template",
+    "expected_contains_any": [
+      "GIẤY XÁC NHẬN"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_076",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "form",
+    "query": "Cho em tìm mẫu biên bản họp lớp áp dụng với K51.",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "form"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "form_query",
+    "expected_strategy": "form_lookup",
+    "expected_lookup_type": "form_template",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "form_template",
+    "expected_contains_any": [
+      "BIÊN BẢN HỌP LỚP"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_077",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "form",
+    "query": "Sau khi nộp mẫu xin nghỉ học của K50 thì quy trình xét thế nào?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "form"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "forbidden_strategy": "form_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_078",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "form",
+    "query": "K51 thiếu chữ ký trong biểu mẫu thì hồ sơ bị xử lý ra sao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "form"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "form_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_079",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "form",
+    "query": "Điều kiện để K48-K49 được xác nhận đang học là gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "form"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "form_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_080",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "form",
+    "query": "K50 nộp biểu mẫu trễ có được giải quyết ngoại lệ không?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "form"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "form_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_081",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "formula",
+    "query": "Công thức tính điểm trung bình chung của K48-K49 là gì?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "formula"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "formula_query",
+    "expected_strategy": "formula_lookup",
+    "expected_lookup_type": "formula",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "formula",
+    "expected_contains_any": [
+      "Σ(ai × ni) / Σ(ni)"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_082",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "formula",
+    "query": "K48-K49 cho em công thức tính điểm học bổng.",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "formula"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "formula_query",
+    "expected_strategy": "formula_lookup",
+    "expected_lookup_type": "formula",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "formula",
+    "expected_contains_any": [
+      "điểm học bổng"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_083",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "formula",
+    "query": "Công thức tính điểm trung bình chung của K50 là gì?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "formula"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "formula_query",
+    "expected_strategy": "formula_lookup",
+    "expected_lookup_type": "formula",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "formula",
+    "expected_contains_any": [
+      "Σ(ai × ni) / Σ(ni)"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_084",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "formula",
+    "query": "K50 cho em công thức tính điểm học bổng.",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "formula"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "formula_query",
+    "expected_strategy": "formula_lookup",
+    "expected_lookup_type": "formula",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "formula",
+    "expected_contains_any": [
+      "điểm học bổng"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_085",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "formula",
+    "query": "Công thức tính điểm trung bình chung của K51 là gì?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "formula"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "formula_query",
+    "expected_strategy": "formula_lookup",
+    "expected_lookup_type": "formula",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "formula",
+    "expected_contains_any": [
+      "Σ(ai × ni) / Σ(ni)"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_086",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "formula",
+    "query": "K51 cho em công thức tính điểm học bổng.",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "formula"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "formula_query",
+    "expected_strategy": "formula_lookup",
+    "expected_lookup_type": "formula",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "formula",
+    "expected_contains_any": [
+      "điểm học bổng"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_087",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "formula",
+    "query": "Điểm trung bình thấp thì K51 có bị cảnh báo học tập không?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "formula"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "formula_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_088",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "formula",
+    "query": "K48-K49 có được làm tròn điểm học bổng trong trường hợp đặc biệt không?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "formula"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "formula_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_089",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "formula",
+    "query": "Công thức điểm thay đổi thì quyền lợi học bổng K50 xử lý thế nào?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "formula"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "formula_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_090",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "formula",
+    "query": "K51 có được khiếu nại kết quả tính điểm không?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "formula"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "formula_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_091",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "calculator",
+    "query": "Áp dụng cho K48-K49, tính điểm học bổng khi điểm học tập 3.6 và điểm rèn luyện 90.",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "calculator"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "calculation_query",
+    "expected_strategy": "calculator_tool",
+    "expected_lookup_type": "calculator",
+    "expected_llm_called": false,
+    "expected_citation_cohort": null,
+    "expected_citation_content_type": null,
+    "expected_contains_any": [],
+    "expected_numeric_value": 3.6,
+    "numeric_tolerance": 0.001,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_092",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "calculator",
+    "query": "Áp dụng cho K48-K49, tính giúp điểm học bổng với GPA 3.2 và điểm rèn luyện 80.",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "calculator"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "calculation_query",
+    "expected_strategy": "calculator_tool",
+    "expected_lookup_type": "calculator",
+    "expected_llm_called": false,
+    "expected_citation_cohort": null,
+    "expected_citation_content_type": null,
+    "expected_contains_any": [],
+    "expected_numeric_value": 3.2,
+    "numeric_tolerance": 0.001,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_093",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "calculator",
+    "query": "Áp dụng cho K50, tính điểm học bổng khi điểm học tập 3.6 và điểm rèn luyện 90.",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "calculator"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "calculation_query",
+    "expected_strategy": "calculator_tool",
+    "expected_lookup_type": "calculator",
+    "expected_llm_called": false,
+    "expected_citation_cohort": null,
+    "expected_citation_content_type": null,
+    "expected_contains_any": [],
+    "expected_numeric_value": 3.6,
+    "numeric_tolerance": 0.001,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_094",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "calculator",
+    "query": "Áp dụng cho K50, tính giúp điểm học bổng với GPA 3.2 và điểm rèn luyện 80.",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "calculator"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "calculation_query",
+    "expected_strategy": "calculator_tool",
+    "expected_lookup_type": "calculator",
+    "expected_llm_called": false,
+    "expected_citation_cohort": null,
+    "expected_citation_content_type": null,
+    "expected_contains_any": [],
+    "expected_numeric_value": 3.2,
+    "numeric_tolerance": 0.001,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_095",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "calculator",
+    "query": "Áp dụng cho K51, tính điểm học bổng khi điểm học tập 3.6 và điểm rèn luyện 90.",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "calculator"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "calculation_query",
+    "expected_strategy": "calculator_tool",
+    "expected_lookup_type": "calculator",
+    "expected_llm_called": false,
+    "expected_citation_cohort": null,
+    "expected_citation_content_type": null,
+    "expected_contains_any": [],
+    "expected_numeric_value": 3.6,
+    "numeric_tolerance": 0.001,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_pos_096",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "calculator",
+    "query": "Áp dụng cho K51, tính giúp điểm học bổng với GPA 3.2 và điểm rèn luyện 80.",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "calculator"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "calculation_query",
+    "expected_strategy": "calculator_tool",
+    "expected_lookup_type": "calculator",
+    "expected_llm_called": false,
+    "expected_citation_cohort": null,
+    "expected_citation_content_type": null,
+    "expected_contains_any": [],
+    "expected_numeric_value": 3.2,
+    "numeric_tolerance": 0.001,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_097",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "calculator",
+    "query": "Nếu điểm học bổng thấp thì em có được xét ngoại lệ không?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "calculator"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "calculator_tool",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_098",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "calculator",
+    "query": "Điểm rèn luyện thiếu thì quy trình xét học bổng thế nào?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "calculator"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "forbidden_strategy": "calculator_tool",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_099",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "calculator",
+    "query": "Nhà trường xử lý sai sót tính điểm học bổng ra sao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "calculator"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "calculator_tool",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_neg_100",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "calculator",
+    "query": "Có được khiếu nại cách tính điểm học bổng không?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "calculator"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "calculator_tool",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v8_det_amb_001",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Cho em hỏi mức này được tính sao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "ambiguous",
+      "missing_slot"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v8_det_amb_002",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Trường hợp đó thì em liên hệ ai?",
+    "cohort": "K50",
+    "tags": [
+      "ambiguous",
+      "missing_slot"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v8_det_amb_003",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Biểu mẫu kia lấy ở đâu vậy?",
+    "cohort": "K51",
+    "tags": [
+      "ambiguous",
+      "missing_slot"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v8_det_amb_004",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Điểm như vậy có ổn không?",
+    "cohort": "K48-K49",
+    "tags": [
+      "ambiguous",
+      "missing_slot"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v8_det_amb_005",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Em học tối đa được bao lâu nhỉ?",
+    "cohort": "K50",
+    "tags": [
+      "ambiguous",
+      "missing_slot"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v8_det_amb_006",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Chứng chỉ đó có dùng được không?",
+    "cohort": "K51",
+    "tags": [
+      "ambiguous",
+      "missing_slot"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v8_det_amb_007",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Ngành này thuộc khoa nào vậy?",
+    "cohort": "K48-K49",
+    "tags": [
+      "ambiguous",
+      "missing_slot"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v8_det_amb_008",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Công thức này áp dụng thế nào?",
+    "cohort": "K50",
+    "tags": [
+      "ambiguous",
+      "missing_slot"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v8_det_amb_009",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Học bổng loại đó tính ra sao?",
+    "cohort": "K51",
+    "tags": [
+      "ambiguous",
+      "missing_slot"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v8_det_amb_010",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Phòng đó nằm chỗ nào?",
+    "cohort": "K48-K49",
+    "tags": [
+      "ambiguous",
+      "missing_slot"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v8_det_amb_011",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Em cần làm thủ tục này thì bắt đầu từ đâu?",
+    "cohort": "K50",
+    "tags": [
+      "ambiguous",
+      "missing_slot"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v8_det_amb_012",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Quy định của khóa em trong trường hợp này là gì?",
+    "cohort": "K51",
+    "tags": [
+      "ambiguous",
+      "missing_slot"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v8_det_ood_001",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Cuối tuần này khu trung tâm thành phố có mưa lớn không?",
+    "cohort": "K48-K49",
+    "tags": [
+      "guardrail",
+      "out_of_domain"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  },
+  {
+    "id": "v8_det_ood_002",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Giá Bitcoin hôm nay bao nhiêu?",
+    "cohort": "K50",
+    "tags": [
+      "guardrail",
+      "out_of_domain"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  },
+  {
+    "id": "v8_det_ood_003",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Viết giúp em một bài thơ tình.",
+    "cohort": "K51",
+    "tags": [
+      "guardrail",
+      "out_of_domain"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  },
+  {
+    "id": "v8_det_ood_004",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Đội tuyển Việt Nam tối nay đá lúc mấy giờ?",
+    "cohort": "K48-K49",
+    "tags": [
+      "guardrail",
+      "out_of_domain"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  },
+  {
+    "id": "v8_det_ood_005",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Máy tính của em bị xanh màn hình sửa sao?",
+    "cohort": "K50",
+    "tags": [
+      "guardrail",
+      "out_of_domain"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  },
+  {
+    "id": "v8_det_ood_006",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Quán ăn nào gần trường ngon nhất?",
+    "cohort": "K51",
+    "tags": [
+      "guardrail",
+      "out_of_domain"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  },
+  {
+    "id": "v8_det_ood_007",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Dịch câu này sang tiếng Pháp giúp em.",
+    "cohort": "K48-K49",
+    "tags": [
+      "guardrail",
+      "out_of_domain"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  },
+  {
+    "id": "v8_det_ood_008",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Cho em mã giảm giá mua laptop.",
+    "cohort": "K50",
+    "tags": [
+      "guardrail",
+      "out_of_domain"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  }
+]

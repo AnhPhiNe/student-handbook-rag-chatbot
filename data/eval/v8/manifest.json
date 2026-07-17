@@ -1,0 +1,39 @@
+{
+  "version": "v8",
+  "frozen": true,
+  "created_at_utc": "2026-07-15T13:57:17.940496+00:00",
+  "description": "Source-anchored frozen benchmark for deterministic, retrieval, answer and production evaluation.",
+  "annotation_method": "deterministic source anchoring; human audit required for 20 judged answers",
+  "counts": {
+    "deterministic": 120,
+    "retrieval": 150,
+    "answers": 100,
+    "production": 60
+  },
+  "dataset_hashes": {
+    "deterministic": "170aa40a44d343b4f598f324c6704ac6b1cd40cd1277fff5e4220b0f65f573e4",
+    "retrieval": "b0e67dfe16aa7208faee571c8102fbf9248d5e635af5197669ca2d52427c690c",
+    "answers": "6af53f2dfed5d02368f8c8b57dbc6a6c99420c050cc4c775ce9dc9bae12fdb23",
+    "production": "540aa4bf5d0819661eb1a609f65224277fc65fc44e48c74ecc8c2826a890278d"
+  },
+  "auxiliary_hashes": {
+    "human_audit_template": "bff9f9704029f9c88bfbf7d855cb1debf576abdb979ae7aebbc7135472ae8f77"
+  },
+  "git_commit": "e230365383c7e794f0c321fa8cc8dedac3871aa0",
+  "config_hashes": {
+    "answer_generation": "e31266a9a166b026e8d7f3d769f4b503c806b8c8a8208835724d693169edc13c",
+    "retrieval": "95e35f0a2628f780f27ef3ba156267bc8137a497152052065c06d2e627fd52b6",
+    "ai_router": "c3d0ffa23a822252402e12bab18c9594f4f535aa9fa3251d92f30179a9c832d9",
+    "structured_lookup_registry": "923863df735166083f8498307d4ff60b302c415c53c354d862bca1bad12afd0e"
+  },
+  "docstore_hash": "0d4bc2bf08dececdb79c87ee2c6d8010663e4f3c29cbac5b27e34e1876852491",
+  "generation_provider": "gemini",
+  "generation_model": "gemini-3.1-flash-lite",
+  "query_rewriter_model": null,
+  "router_provider": "groq",
+  "router_model": "qwen/qwen3.6-27b",
+  "judge_provider": "groq",
+  "judge_model": "openai/gpt-oss-120b",
+  "headline_backend": "qdrant_cloud+mongodb",
+  "legacy_eval_policy": "development_only"
+}

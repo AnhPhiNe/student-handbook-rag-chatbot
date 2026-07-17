@@ -1,0 +1,2661 @@
+[
+  {
+    "id": "v82_det_pos_001",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "foreign_language",
+    "query": "Em khoa K48-K49, IELTS dat 5.5 thi bang quy doi xep vao bac nao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "foreign_language",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "expected_lookup_type": "foreign_language_equivalency",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "bac_4"
+    ],
+    "expected_item_count": 1,
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_01"
+  },
+  {
+    "id": "v82_det_pos_002",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "foreign_language",
+    "query": "Cho em tra JLPT N3 tuong ung bac may doi voi sinh vien K48-K49.",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "foreign_language",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "expected_lookup_type": "foreign_language_equivalency",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "bac_4"
+    ],
+    "expected_item_count": 1,
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_02"
+  },
+  {
+    "id": "v82_det_pos_003",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "foreign_language",
+    "query": "Em khoa K50, IELTS dat 5.5 thi bang quy doi xep vao bac nao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "foreign_language",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "expected_lookup_type": "foreign_language_equivalency",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "bac_4"
+    ],
+    "expected_item_count": 1,
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_03"
+  },
+  {
+    "id": "v82_det_pos_004",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "foreign_language",
+    "query": "Cho em tra JLPT N3 tuong ung bac may doi voi sinh vien K50.",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "foreign_language",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "expected_lookup_type": "foreign_language_equivalency",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "bac_4"
+    ],
+    "expected_item_count": 1,
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_04"
+  },
+  {
+    "id": "v82_det_pos_005",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "foreign_language",
+    "query": "Em khoa K51, IELTS dat 5.5 thi bang quy doi xep vao bac nao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "foreign_language",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "expected_lookup_type": "foreign_language_equivalency",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "bac_4"
+    ],
+    "expected_item_count": 1,
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_05"
+  },
+  {
+    "id": "v82_det_pos_006",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "foreign_language",
+    "query": "Cho em tra JLPT N3 tuong ung bac may doi voi sinh vien K51.",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "foreign_language",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "foreign_language_lookup_query",
+    "expected_strategy": "foreign_language_lookup",
+    "expected_lookup_type": "foreign_language_equivalency",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "bac_4"
+    ],
+    "expected_item_count": 1,
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_06"
+  },
+  {
+    "id": "v82_det_neg_007",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "foreign_language",
+    "query": "Ban scan IELTS cua K48-K49 co duoc chap nhan thay ban goc khong?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "foreign_language",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "foreign_language_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_008",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "foreign_language",
+    "query": "Sinh vien K50 no chuan ngoai ngu thi han nop bo sung duoc quy dinh the nao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "foreign_language",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "foreign_language_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_009",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "foreign_language",
+    "query": "Quy trinh nop minh chung ngoai ngu cho K51 gom nhung khau nao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "foreign_language",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "forbidden_strategy": "foreign_language_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_010",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "foreign_language",
+    "query": "Khong dat chuan tieng Anh thi K48-K49 bi anh huong tot nghiep ra sao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "foreign_language",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "foreign_language_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_011",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "study_duration",
+    "query": "Hoc chinh quy khoa K48-K49 thi tong thoi gian duoc hoc nhieu nhat la may nam?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "study_duration",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "expected_lookup_type": "study_duration",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "8 năm học"
+    ],
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_07"
+  },
+  {
+    "id": "v82_det_pos_012",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "study_duration",
+    "query": "Chuong trinh dai hoc cap bang dau tien cua K48-K49 duoc thiet ke chuan trong bao lau?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "study_duration",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "expected_lookup_type": "study_duration",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "4 năm học"
+    ],
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_08"
+  },
+  {
+    "id": "v82_det_pos_013",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "study_duration",
+    "query": "Hoc chinh quy khoa K50 thi tong thoi gian duoc hoc nhieu nhat la may nam?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "study_duration",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "expected_lookup_type": "study_duration",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "8 năm học"
+    ],
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_09"
+  },
+  {
+    "id": "v82_det_pos_014",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "study_duration",
+    "query": "Chuong trinh dai hoc cap bang dau tien cua K50 duoc thiet ke chuan trong bao lau?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "study_duration",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "expected_lookup_type": "study_duration",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "4 năm học"
+    ],
+    "near_duplicate_reviewed": true,
+    "duplicate_group": "v8_prod_det_10"
+  },
+  {
+    "id": "v82_det_pos_015",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "study_duration",
+    "query": "Hoc chinh quy khoa K51 thi tong thoi gian duoc hoc nhieu nhat la may nam?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "study_duration",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "expected_lookup_type": "study_duration",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "8 năm học"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_016",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "study_duration",
+    "query": "Chuong trinh dai hoc cap bang dau tien cua K51 duoc thiet ke chuan trong bao lau?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "study_duration",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "study_duration_lookup_query",
+    "expected_strategy": "study_duration_lookup",
+    "expected_lookup_type": "study_duration",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "4 năm học"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_017",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "study_duration",
+    "query": "Het thoi gian hoc toi da, K50 co duoc xin hoc them mot hoc ky khong?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "study_duration",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "study_duration_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_018",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "study_duration",
+    "query": "Bao luu ket qua cua K51 co bi tru vao thoi han dao tao khong?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "study_duration",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "study_duration_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_019",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "study_duration",
+    "query": "Hoc cham tien do thi sinh vien K48-K49 bi canh bao theo quy dinh nao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "study_duration",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "study_duration_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_020",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "study_duration",
+    "query": "Dieu kien xin keo dai khoa hoc cua K50 la gi?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "study_duration",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "study_duration_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_021",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scholarship",
+    "query": "Voi K48-K49, 3.7 diem xet hoc bong duoc goi la muc nao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scholarship",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "scholarship_classification_lookup_query",
+    "expected_strategy": "scholarship_classification_lookup",
+    "expected_lookup_type": "scholarship_classification",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "Xuất sắc"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_022",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scholarship",
+    "query": "Nhan Gioi trong bang hoc bong K48-K49 ung voi khoang diem nao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scholarship",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "scholarship_classification_lookup_query",
+    "expected_strategy": "scholarship_classification_lookup",
+    "expected_lookup_type": "scholarship_classification",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "Giỏi"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_023",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scholarship",
+    "query": "Voi K50, 3.7 diem xet hoc bong duoc goi la muc nao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scholarship",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "scholarship_classification_lookup_query",
+    "expected_strategy": "scholarship_classification_lookup",
+    "expected_lookup_type": "scholarship_classification",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "Xuất sắc"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_024",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scholarship",
+    "query": "Nhan Gioi trong bang hoc bong K50 ung voi khoang diem nao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scholarship",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "scholarship_classification_lookup_query",
+    "expected_strategy": "scholarship_classification_lookup",
+    "expected_lookup_type": "scholarship_classification",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "Giỏi"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_025",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scholarship",
+    "query": "Voi K51, 3.7 diem xet hoc bong duoc goi la muc nao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scholarship",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "scholarship_classification_lookup_query",
+    "expected_strategy": "scholarship_classification_lookup",
+    "expected_lookup_type": "scholarship_classification",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "Xuất sắc"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_026",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scholarship",
+    "query": "Nhan Gioi trong bang hoc bong K51 ung voi khoang diem nao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scholarship",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "scholarship_classification_lookup_query",
+    "expected_strategy": "scholarship_classification_lookup",
+    "expected_lookup_type": "scholarship_classification",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "Giỏi"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_027",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scholarship",
+    "query": "Dat 3.7 nhung con no hoc phi thi K51 co nhan hoc bong khong?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scholarship",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "scholarship_classification_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_028",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scholarship",
+    "query": "Duoc xep loai Gioi co dong nghia K48-K49 chac chan nhan hoc bong khong?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scholarship",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "scholarship_classification_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_029",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scholarship",
+    "query": "Sinh vien K50 khieu nai ket qua xet hoc bong bang cach nao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scholarship",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "scholarship_classification_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_030",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scholarship",
+    "query": "Bi khien trach thi K51 con du dieu kien duyet hoc bong khong?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scholarship",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "scholarship_classification_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_031",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scoring",
+    "query": "Em khoa K48-K49 duoc 7.9 tren thang 10, bang quy doi cho ra diem chu gi?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scoring",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "grade_10_to_letter",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "B+"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_032",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scoring",
+    "query": "Neu ket qua la B+ thi he 4 ghi bao nhieu diem cho K48-K49?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scoring",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "letter_to_grade_4",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "3.5",
+      "3,5"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_033",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scoring",
+    "query": "Em khoa K50 duoc 7.9 tren thang 10, bang quy doi cho ra diem chu gi?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scoring",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "grade_10_to_letter",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "B+"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_034",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scoring",
+    "query": "Neu ket qua la B+ thi he 4 ghi bao nhieu diem cho K50?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scoring",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "letter_to_grade_4",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "3.5",
+      "3,5"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_035",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scoring",
+    "query": "Em khoa K51 duoc 7.9 tren thang 10, bang quy doi cho ra diem chu gi?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scoring",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "grade_10_to_letter",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "B+"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_036",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "scoring",
+    "query": "Neu ket qua la B+ thi he 4 ghi bao nhieu diem cho K51?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "scoring",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "score_lookup_query",
+    "expected_strategy": "structured_lookup",
+    "expected_lookup_type": "letter_to_grade_4",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "structured_lookup",
+    "expected_contains_any": [
+      "3.5",
+      "3,5"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_037",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scoring",
+    "query": "Diem B+ cua K48-K49 co duoc dang ky hoc cai thien khong?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scoring",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "structured_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_038",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scoring",
+    "query": "Neu 7.9 bi nhap sai, K50 lam thu tuc phuc khao the nao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scoring",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "forbidden_strategy": "structured_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_039",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scoring",
+    "query": "Nhan diem F+ thi sinh vien K51 phai xu ly hoc phan ra sao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scoring",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "structured_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_040",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "scoring",
+    "query": "Ren luyen bi xep thap se anh huong K48-K49 theo quy dinh nao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "scoring",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "structured_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_041",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "service",
+    "query": "Cong sinh vien khong dang nhap duoc, em thuoc K48-K49 nen tim don vi nao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "service",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "student_service_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Phòng Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_042",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "service",
+    "query": "Em K48-K49 muon xin giay chung minh dang theo hoc thi bo phan nao phu trach?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "service",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "student_service_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Phòng Công tác chính trị và Học sinh, sinh viên"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_043",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "service",
+    "query": "Cong sinh vien khong dang nhap duoc, em thuoc K50 nen tim don vi nao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "service",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "student_service_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Phòng Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_044",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "service",
+    "query": "Em K50 muon xin giay chung minh dang theo hoc thi bo phan nao phu trach?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "service",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "student_service_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Phòng Công tác chính trị và Học sinh, sinh viên"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_045",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "service",
+    "query": "Cong sinh vien khong dang nhap duoc, em thuoc K51 nen tim don vi nao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "service",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "student_service_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Phòng Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_046",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "service",
+    "query": "Em K51 muon xin giay chung minh dang theo hoc thi bo phan nao phu trach?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "service",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "student_service_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Phòng Công tác chính trị và Học sinh, sinh viên"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_047",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "service",
+    "query": "Phong CNTT xu ly du lieu tai khoan bi mat cua K50 theo quy trinh nao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "service",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "forbidden_strategy": "student_service_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_048",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "service",
+    "query": "Can dap ung gi thi K51 moi duoc cap giay xac nhan dang hoc?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "service",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "student_service_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_049",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "service",
+    "query": "Ho so dich vu bi tu choi thi K48-K49 khieu nai voi don vi nao va ra sao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "service",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "student_service_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_050",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "service",
+    "query": "Don vi phu trach phai giai quyet yeu cau cua K50 trong bao lau?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "service",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "student_service_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_051",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "office",
+    "query": "Cho sinh vien K48-K49 xin hop thu dien tu cua Phong Cong nghe Thong tin.",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "office",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "phongcntt@hcmue.edu.vn"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_052",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "office",
+    "query": "Co so lam viec cua Ky tuc xa cho khoa K48-K49 co dia chi o dau?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "office",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Ký túc xá"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_053",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "office",
+    "query": "Cho sinh vien K50 xin hop thu dien tu cua Phong Cong nghe Thong tin.",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "office",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "phongcntt@hcmue.edu.vn"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_054",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "office",
+    "query": "Co so lam viec cua Ky tuc xa cho khoa K50 co dia chi o dau?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "office",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Ký túc xá"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_055",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "office",
+    "query": "Cho sinh vien K51 xin hop thu dien tu cua Phong Cong nghe Thong tin.",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "office",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "phongcntt@hcmue.edu.vn"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_056",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "office",
+    "query": "Co so lam viec cua Ky tuc xa cho khoa K51 co dia chi o dau?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "office",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "office_query",
+    "expected_strategy": "office_lookup",
+    "expected_lookup_type": "office_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "office_directory",
+    "expected_contains_any": [
+      "Ký túc xá"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_057",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "office",
+    "query": "Phong Dao tao co quyen huy ket qua dang ky cua K51 trong truong hop nao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "office",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "office_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_058",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "office",
+    "query": "Trach nhiem cua Ky tuc xa khi sinh vien K48-K49 vi pham noi tru la gi?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "office",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "office_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_059",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "office",
+    "query": "Muon chuyen noi tiep nhan ho so, K50 phai lam thu tuc nao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "office",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "forbidden_strategy": "office_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_060",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "office",
+    "query": "Phong CNTT xu ly tai khoan K51 bi khoa theo quy dinh nao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "office",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "office_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_061",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "program",
+    "query": "Hoc nganh Cong nghe Thong tin khoa K48-K49 thi don vi hoc thuat nao quan ly?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "program",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "program_directory",
+    "expected_contains_any": [
+      "Khoa Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_062",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "program",
+    "query": "Khoa CNTT dang phu trach nhung nganh nao cua K48-K49?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "program",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "program_directory",
+    "expected_contains_any": [
+      "Khoa Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_063",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "program",
+    "query": "Hoc nganh Cong nghe Thong tin khoa K50 thi don vi hoc thuat nao quan ly?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "program",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "program_directory",
+    "expected_contains_any": [
+      "Khoa Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_064",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "program",
+    "query": "Khoa CNTT dang phu trach nhung nganh nao cua K50?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "program",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "program_directory",
+    "expected_contains_any": [
+      "Khoa Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_065",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "program",
+    "query": "Hoc nganh Cong nghe Thong tin khoa K51 thi don vi hoc thuat nao quan ly?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "program",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "program_directory",
+    "expected_contains_any": [
+      "Khoa Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_066",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "program",
+    "query": "Khoa CNTT dang phu trach nhung nganh nao cua K51?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "program",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "faculty_query",
+    "expected_strategy": "program_lookup",
+    "expected_lookup_type": "program_directory",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "program_directory",
+    "expected_contains_any": [
+      "Khoa Công nghệ Thông tin"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_067",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "program",
+    "query": "Sinh vien K48-K49 muon chuyen vao CNTT phai thoa dieu kien nao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "program",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "program_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_068",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "program",
+    "query": "Dang hoc mot nganh, K50 co the hoc them nganh thu hai theo thu tuc nao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "program",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "forbidden_strategy": "program_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_069",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "program",
+    "query": "Neu mot nganh ngung tuyen sinh thi quyen loi cua K51 duoc xu ly ra sao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "program",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "program_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_070",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "program",
+    "query": "Chuan dau ra rieng cua nganh CNTT khoa K48-K49 gom nhung yeu cau gi?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "program",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "program_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_071",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "form",
+    "query": "Em K48-K49 can mau de chung minh minh dang la sinh vien cua truong.",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "form",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "form_query",
+    "expected_strategy": "form_lookup",
+    "expected_lookup_type": "form_template",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "form_template",
+    "expected_contains_any": [
+      "GIẤY XÁC NHẬN"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_072",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "form",
+    "query": "Lop K48-K49 hop cham diem ren luyen thi can dung bien ban mau nao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "form",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "form_query",
+    "expected_strategy": "form_lookup",
+    "expected_lookup_type": "form_template",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "form_template",
+    "expected_contains_any": [
+      "BIÊN BẢN HỌP LỚP"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_073",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "form",
+    "query": "Em K50 can mau de chung minh minh dang la sinh vien cua truong.",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "form",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "form_query",
+    "expected_strategy": "form_lookup",
+    "expected_lookup_type": "form_template",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "form_template",
+    "expected_contains_any": [
+      "GIẤY XÁC NHẬN"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_074",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "form",
+    "query": "Lop K50 hop cham diem ren luyen thi can dung bien ban mau nao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "form",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "form_query",
+    "expected_strategy": "form_lookup",
+    "expected_lookup_type": "form_template",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "form_template",
+    "expected_contains_any": [
+      "BIÊN BẢN HỌP LỚP"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_075",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "form",
+    "query": "Em K51 can mau de chung minh minh dang la sinh vien cua truong.",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "form",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "form_query",
+    "expected_strategy": "form_lookup",
+    "expected_lookup_type": "form_template",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "form_template",
+    "expected_contains_any": [
+      "GIẤY XÁC NHẬN"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_076",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "form",
+    "query": "Lop K51 hop cham diem ren luyen thi can dung bien ban mau nao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "form",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "form_query",
+    "expected_strategy": "form_lookup",
+    "expected_lookup_type": "form_template",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "form_template",
+    "expected_contains_any": [
+      "BIÊN BẢN HỌP LỚP"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_077",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "form",
+    "query": "Nop sai mau don thi ho so K50 duoc xu ly hay tra lai the nao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "form",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "form_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_078",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "form",
+    "query": "Bieu mau thieu xac nhan cua khoa thi K51 co duoc bo sung sau khong?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "form",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "form_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_079",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "form",
+    "query": "Qua han nop don, sinh vien K48-K49 co duoc xem xet ngoai le khong?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "form",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "form_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_080",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "form",
+    "query": "Sau khi gui mau nghi hoc, quy trinh phe duyet cho K50 dien ra the nao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "form",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "forbidden_strategy": "form_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_081",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "formula",
+    "query": "Bieu thuc tong co trong so de tinh diem trung binh cua K48-K49 viet the nao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "formula",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "formula_query",
+    "expected_strategy": "formula_lookup",
+    "expected_lookup_type": "formula",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "formula",
+    "expected_contains_any": [
+      "Σ(ai × ni) / Σ(ni)"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_082",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "formula",
+    "query": "Cho em cong thuc ket hop diem hoc tap va ren luyen de ra diem hoc bong K48-K49.",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "formula",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "formula_query",
+    "expected_strategy": "formula_lookup",
+    "expected_lookup_type": "formula",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K48-K49",
+    "expected_citation_content_type": "formula",
+    "expected_contains_any": [
+      "điểm học bổng"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_083",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "formula",
+    "query": "Bieu thuc tong co trong so de tinh diem trung binh cua K50 viet the nao?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "formula",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "formula_query",
+    "expected_strategy": "formula_lookup",
+    "expected_lookup_type": "formula",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "formula",
+    "expected_contains_any": [
+      "Σ(ai × ni) / Σ(ni)"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_084",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "formula",
+    "query": "Cho em cong thuc ket hop diem hoc tap va ren luyen de ra diem hoc bong K50.",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "formula",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "formula_query",
+    "expected_strategy": "formula_lookup",
+    "expected_lookup_type": "formula",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K50",
+    "expected_citation_content_type": "formula",
+    "expected_contains_any": [
+      "điểm học bổng"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_085",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "formula",
+    "query": "Bieu thuc tong co trong so de tinh diem trung binh cua K51 viet the nao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "formula",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "formula_query",
+    "expected_strategy": "formula_lookup",
+    "expected_lookup_type": "formula",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "formula",
+    "expected_contains_any": [
+      "Σ(ai × ni) / Σ(ni)"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_086",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "formula",
+    "query": "Cho em cong thuc ket hop diem hoc tap va ren luyen de ra diem hoc bong K51.",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "formula",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "formula_query",
+    "expected_strategy": "formula_lookup",
+    "expected_lookup_type": "formula",
+    "expected_llm_called": false,
+    "expected_citation_cohort": "K51",
+    "expected_citation_content_type": "formula",
+    "expected_contains_any": [
+      "điểm học bổng"
+    ],
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_087",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "formula",
+    "query": "Diem trung binh cua K51 co duoc lam tron de tranh canh bao khong?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "formula",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "formula_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_088",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "formula",
+    "query": "Neu nha truong doi cong thuc, ket qua cu cua K48-K49 duoc bao luu the nao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "formula",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "formula_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_089",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "formula",
+    "query": "K50 muon khieu nai phep tinh diem hoc bong thi can lam gi?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "formula",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "formula_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_090",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "formula",
+    "query": "Truong hop nao diem hoc phan khong duoc tinh vao GPA cua K51?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "formula",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "formula_lookup",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_091",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "calculator",
+    "query": "Khoa K48-K49: diem hoc tap 3.6, ren luyen 90; tinh diem hoc bong giup em.",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "calculator",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "calculation_query",
+    "expected_strategy": "calculator_tool",
+    "expected_lookup_type": "calculator",
+    "expected_llm_called": false,
+    "expected_citation_cohort": null,
+    "expected_citation_content_type": null,
+    "expected_contains_any": [],
+    "expected_numeric_value": 3.6,
+    "numeric_tolerance": 0.001,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_092",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "calculator",
+    "query": "Em K48-K49 co GPA 3.2 va ren luyen 80, ket qua diem hoc bong la bao nhieu?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic",
+      "positive",
+      "calculator",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "calculation_query",
+    "expected_strategy": "calculator_tool",
+    "expected_lookup_type": "calculator",
+    "expected_llm_called": false,
+    "expected_citation_cohort": null,
+    "expected_citation_content_type": null,
+    "expected_contains_any": [],
+    "expected_numeric_value": 3.2,
+    "numeric_tolerance": 0.001,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_093",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "calculator",
+    "query": "Khoa K50: diem hoc tap 3.6, ren luyen 90; tinh diem hoc bong giup em.",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "calculator",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "calculation_query",
+    "expected_strategy": "calculator_tool",
+    "expected_lookup_type": "calculator",
+    "expected_llm_called": false,
+    "expected_citation_cohort": null,
+    "expected_citation_content_type": null,
+    "expected_contains_any": [],
+    "expected_numeric_value": 3.6,
+    "numeric_tolerance": 0.001,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_094",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "calculator",
+    "query": "Em K50 co GPA 3.2 va ren luyen 80, ket qua diem hoc bong la bao nhieu?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic",
+      "positive",
+      "calculator",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "calculation_query",
+    "expected_strategy": "calculator_tool",
+    "expected_lookup_type": "calculator",
+    "expected_llm_called": false,
+    "expected_citation_cohort": null,
+    "expected_citation_content_type": null,
+    "expected_contains_any": [],
+    "expected_numeric_value": 3.2,
+    "numeric_tolerance": 0.001,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_095",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "calculator",
+    "query": "Khoa K51: diem hoc tap 3.6, ren luyen 90; tinh diem hoc bong giup em.",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "calculator",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "calculation_query",
+    "expected_strategy": "calculator_tool",
+    "expected_lookup_type": "calculator",
+    "expected_llm_called": false,
+    "expected_citation_cohort": null,
+    "expected_citation_content_type": null,
+    "expected_contains_any": [],
+    "expected_numeric_value": 3.6,
+    "numeric_tolerance": 0.001,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_pos_096",
+    "suite": "deterministic",
+    "case_type": "positive",
+    "lookup_group": "calculator",
+    "query": "Em K51 co GPA 3.2 va ren luyen 80, ket qua diem hoc bong la bao nhieu?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic",
+      "positive",
+      "calculator",
+      "v8.2_holdout"
+    ],
+    "expected_group": "deterministic",
+    "expected_intent": "calculation_query",
+    "expected_strategy": "calculator_tool",
+    "expected_lookup_type": "calculator",
+    "expected_llm_called": false,
+    "expected_citation_cohort": null,
+    "expected_citation_content_type": null,
+    "expected_contains_any": [],
+    "expected_numeric_value": 3.2,
+    "numeric_tolerance": 0.001,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_097",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "calculator",
+    "query": "Thieu diem ren luyen thi K48-K49 co duoc tam tinh hoc bong khong?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "calculator",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "calculator_tool",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_098",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "calculator",
+    "query": "Diem hoc bong thap co duoc xin xet dac cach cho K50 khong?",
+    "cohort": "K50",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "calculator",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "calculator_tool",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_099",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "calculator",
+    "query": "Nhap sai diem hoc tap khi tinh hoc bong thi K51 duoc sua theo quy trinh nao?",
+    "cohort": "K51",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "calculator",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "procedure_query",
+    "expected_strategy": "semantic_filtered_rerank",
+    "forbidden_strategy": "calculator_tool",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_neg_100",
+    "suite": "deterministic",
+    "case_type": "hard_negative",
+    "lookup_group": "calculator",
+    "query": "Ket qua phep tinh co dam bao K48-K49 se nhan hoc bong khong?",
+    "cohort": "K48-K49",
+    "tags": [
+      "deterministic_safety",
+      "hard_negative",
+      "calculator",
+      "v8.2_holdout"
+    ],
+    "expected_group": "rag",
+    "expected_intent": "regulation_query",
+    "expected_strategy": "semantic_filtered",
+    "forbidden_strategy": "calculator_tool",
+    "expected_llm_called": true,
+    "near_duplicate_reviewed": true
+  },
+  {
+    "id": "v82_det_amb_001",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Muc vua noi cua em thuoc loai nao vay?",
+    "cohort": "K48-K49",
+    "tags": [
+      "ambiguous",
+      "missing_slot",
+      "v8.2_holdout"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v82_det_amb_002",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Cho em xin thong tin lien he cua ben do.",
+    "cohort": "K50",
+    "tags": [
+      "ambiguous",
+      "missing_slot",
+      "v8.2_holdout"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v82_det_amb_003",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Mau ay em tai cho nao?",
+    "cohort": "K51",
+    "tags": [
+      "ambiguous",
+      "missing_slot",
+      "v8.2_holdout"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v82_det_amb_004",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Neu diem nhu tren thi quy doi ra sao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "ambiguous",
+      "missing_slot",
+      "v8.2_holdout"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v82_det_amb_005",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Thoi han cua chuong trinh nay la bao lau?",
+    "cohort": "K50",
+    "tags": [
+      "ambiguous",
+      "missing_slot",
+      "v8.2_holdout"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v82_det_amb_006",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Chung chi kia duoc tinh o muc nao?",
+    "cohort": "K51",
+    "tags": [
+      "ambiguous",
+      "missing_slot",
+      "v8.2_holdout"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v82_det_amb_007",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Nganh do nam trong khoa gi?",
+    "cohort": "K48-K49",
+    "tags": [
+      "ambiguous",
+      "missing_slot",
+      "v8.2_holdout"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v82_det_amb_008",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Phep tinh nay can nhung so nao?",
+    "cohort": "K50",
+    "tags": [
+      "ambiguous",
+      "missing_slot",
+      "v8.2_holdout"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v82_det_amb_009",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Loai hoc bong vua de cap co moc bao nhieu?",
+    "cohort": "K51",
+    "tags": [
+      "ambiguous",
+      "missing_slot",
+      "v8.2_holdout"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v82_det_amb_010",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Van phong ay co email khong?",
+    "cohort": "K48-K49",
+    "tags": [
+      "ambiguous",
+      "missing_slot",
+      "v8.2_holdout"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v82_det_amb_011",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Thu tuc do bat dau tu dau?",
+    "cohort": "K50",
+    "tags": [
+      "ambiguous",
+      "missing_slot",
+      "v8.2_holdout"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v82_det_amb_012",
+    "suite": "deterministic",
+    "case_type": "ambiguous",
+    "lookup_group": "ambiguous",
+    "query": "Quy dinh nay ap dung cho khoa cua em chu?",
+    "cohort": "K51",
+    "tags": [
+      "ambiguous",
+      "missing_slot",
+      "v8.2_holdout"
+    ],
+    "expected_group": "clarification_or_rag",
+    "expected_intent": null,
+    "expected_strategy": null,
+    "expected_llm_called": null
+  },
+  {
+    "id": "v82_det_ood_001",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Gia vang trong nuoc sang nay bao nhieu?",
+    "cohort": "K48-K49",
+    "tags": [
+      "guardrail",
+      "out_of_domain",
+      "v8.2_holdout"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  },
+  {
+    "id": "v82_det_ood_002",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Lap lich tap gym ba buoi moi tuan cho toi.",
+    "cohort": "K50",
+    "tags": [
+      "guardrail",
+      "out_of_domain",
+      "v8.2_holdout"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  },
+  {
+    "id": "v82_det_ood_003",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Viet email xin viec bang tieng Anh.",
+    "cohort": "K51",
+    "tags": [
+      "guardrail",
+      "out_of_domain",
+      "v8.2_holdout"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  },
+  {
+    "id": "v82_det_ood_004",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Tran bong da toi nay phat tren kenh nao?",
+    "cohort": "K48-K49",
+    "tags": [
+      "guardrail",
+      "out_of_domain",
+      "v8.2_holdout"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  },
+  {
+    "id": "v82_det_ood_005",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "May anh nao chup du lich dep trong tam gia?",
+    "cohort": "K50",
+    "tags": [
+      "guardrail",
+      "out_of_domain",
+      "v8.2_holdout"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  },
+  {
+    "id": "v82_det_ood_006",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Goi y quan ca phe yen tinh o quan 3.",
+    "cohort": "K51",
+    "tags": [
+      "guardrail",
+      "out_of_domain",
+      "v8.2_holdout"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  },
+  {
+    "id": "v82_det_ood_007",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Sua loi cong thuc trong file Excel cua toi.",
+    "cohort": "K48-K49",
+    "tags": [
+      "guardrail",
+      "out_of_domain",
+      "v8.2_holdout"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  },
+  {
+    "id": "v82_det_ood_008",
+    "suite": "deterministic",
+    "case_type": "out_of_domain",
+    "lookup_group": "guardrail",
+    "query": "Tim ma giam gia cho ve xem phim cuoi tuan.",
+    "cohort": "K50",
+    "tags": [
+      "guardrail",
+      "out_of_domain",
+      "v8.2_holdout"
+    ],
+    "expected_group": "guardrail",
+    "expected_intent": "out_of_domain",
+    "expected_strategy": "none",
+    "expected_llm_called": false
+  }
+]

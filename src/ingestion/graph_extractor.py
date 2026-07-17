@@ -1,169 +1,383 @@
-import os
+import argparse
 import json
-import time
 import re
-import google.generativeai as genai
-from dotenv import load_dotenv
+import sys
+from collections import Counter, defaultdict
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
 
-load_dotenv()
 
-class GeminiGraphExtractor:
-    def __init__(self, all_ids):
-        keys_str = os.getenv("GEMINI_API_KEYS", "")
-        self.api_keys = [k.strip() for k in keys_str.split(",") if k.strip()]
-        if not self.api_keys:
-            raise ValueError("Cảnh báo: Chưa có GEMINI_API_KEYS trong file .env!")
-        
-        self.all_ids = all_ids
-        self.all_ids_str = "\n".join([f"- {i}" for i in all_ids])
-        
-        self.current_key_idx = 0
-        self.requests_on_current_key = 0
-        
-        # Thông số tối ưu RPM 5, RPD 20
-        self.MAX_RPM = 4  
-        self.MAX_RPD = 19 
-        self.key_usage_day = {k: 0 for k in self.api_keys}
-        
-        print(f"[*] Khởi tạo Thợ Xây Graph với {len(self.api_keys)} Keys xoay vòng (Model: Gemini 3.5 Flash).")
-        self._configure_current_key()
-        
-    def _configure_current_key(self):
-        key = self.api_keys[self.current_key_idx]
-        genai.configure(api_key=key)
-        # SỬ DỤNG ĐÚNG MODEL GEMINI 3.5 FLASH NHƯ USER YÊU CẦU!
-        self.model = genai.GenerativeModel('gemini-3.5-flash')
-        
-    def _rotate_key(self):
-        self.current_key_idx = (self.current_key_idx + 1) % len(self.api_keys)
-        self.requests_on_current_key = 0
-        print(f"[>] Xoay sang API Key mới (Vị trí {self.current_key_idx + 1}/{len(self.api_keys)})")
-        self._configure_current_key()
+DEFAULT_INPUT_FILE = "data/processed/chunks/all_docstore_items.json"
+DEFAULT_OUTPUT_FILE = "data/processed/graphs/document_edges.json"
+DEFAULT_REPORT_FILE = "data/processed/graphs/document_edges_report.json"
+RELATION = "LIEN_QUAN_TOI"
 
-    def extract_batch(self, chunks_batch):
-        current_key = self.api_keys[self.current_key_idx]
-        if self.key_usage_day[current_key] >= self.MAX_RPD:
-            print(f"[!] Key {self.current_key_idx + 1} đã hết RPD. Xoay key...")
-            self._rotate_key()
-            return self.extract_batch(chunks_batch)
-            
-        if self.requests_on_current_key >= self.MAX_RPM:
-            print(f"[!] Key {self.current_key_idx + 1} đạt đỉnh RPM. Xoay key để tránh chờ đợi...")
-            self._rotate_key()
-            
-        prompt = self._build_prompt(chunks_batch)
-        
-        retries = 3
-        while retries > 0:
-            try:
-                self.requests_on_current_key += 1
-                self.key_usage_day[self.api_keys[self.current_key_idx]] += 1
-                
-                response = self.model.generate_content(prompt)
-                text = response.text
-                json_str = self._extract_json(text)
-                
-                if json_str:
-                    return json.loads(json_str)
-                else:
-                    return []
-                    
-            except Exception as e:
-                error_msg = str(e)
-                print(f"[x] Lỗi API: {error_msg[:100]}... Đang xoay key và thử lại (Còn {retries-1} lần)")
-                self._rotate_key()
-                retries -= 1
-                time.sleep(3) 
-                
-        print("[-] Bỏ cuộc với Batch này sau nhiều lần thử thất bại!")
-        return []
+ARTICLE_PATTERN = re.compile(r"(?:Điều|Dieu)\s+(\d+)", re.IGNORECASE)
+CLAUSE_PATTERN = re.compile(r"(?:khoản|khoan)\s+(\d+[a-zA-Z]?)", re.IGNORECASE)
+POINT_PATTERN = re.compile(r"(?:điểm|diem)\s+([a-zA-ZđĐ])", re.IGNORECASE)
+WHITESPACE_PATTERN = re.compile(r"\s+")
 
-    def _build_prompt(self, chunks):
-        text_blocks = ""
-        for i, chunk in enumerate(chunks):
-            content = chunk.get("content", "")
-            text_blocks += f"--- ĐOẠN {i+1} ---\n{content}\n\n"
-            
-        return f"""Bạn là một chuyên gia Pháp chế. Nhiệm vụ của bạn là đọc các đoạn văn bên dưới và trích xuất MỐI QUAN HỆ DẪN CHIẾU chéo giữa các Điều luật (Document Graph).
 
-Tuyệt đối tuân thủ các quy tắc Vàng sau:
-1. Nút (Node) ở đây chính là các Điều luật. Tuyệt đối không trích xuất Thực thể tự do.
-2. Mỗi đoạn văn đều có một thẻ bài ở đầu dạng: [ID CHUẨN: abc... | Khóa...]. Bạn PHẢI dùng chuỗi "ID CHUẨN" này làm giá trị cho trường `source`.
-3. Khi tìm thấy 1 câu nhắc đến một Điều luật khác, hãy tìm ID CHUẨN của Điều luật đó để điền vào trường `target`.
-4. Quan hệ (relation) LUÔN LUÔN LÀ: "LIEN_QUAN_TOI".
-5. Xử lý "Tự tham chiếu": Tự động BỎ QUA nếu source trùng target (VD: "Khoản 1 Điều này...").
-6. Xử lý "Dẫn chiếu nhiều Điều": Tách riêng từng Điều thành nhiều object nếu 1 câu chứa nhiều Điều (VD: "theo Điều 3, Điều 4").
-7. QUY TẮC TỪ ĐIỂN (QUAN TRỌNG NHẤT): Mọi giá trị `target` bạn trích xuất BẮT BUỘC phải nằm trong [TỪ ĐIỂN ID CHUẨN] bên dưới. Nếu có dẫn chiếu nhưng ID không tồn tại trong Từ điển này, HÃY BỎ QUA mối quan hệ đó!
+@dataclass(frozen=True)
+class SectionRecord:
+    section_id: str
+    cohort: str
+    document_id: str
+    document_key: str
+    document_title: str
+    article_number: int
 
-[TỪ ĐIỂN ID CHUẨN CÁC NÚT ĐƯỢC PHÉP SỬ DỤNG]
-{self.all_ids_str}
 
-Trả về ĐÚNG MỘT MẢNG JSON, không giải thích gì thêm:
-[
-  {{
-    "source": "<ID CHUẨN của đoạn văn>",
-    "target": "<Một ID trích từ TỪ ĐIỂN ID CHUẨN>",
-    "relation": "LIEN_QUAN_TOI",
-    "reason": "<trích dẫn câu chữ gốc chứng minh sự dẫn chiếu>"
-  }}
-]
+@dataclass(frozen=True)
+class Reference:
+    article_number: int
+    reference_text: str
+    reason: str
+    clause: str | None = None
+    point: str | None = None
 
-DỮ LIỆU ĐẦU VÀO:
-{text_blocks}
-"""
 
-    def _extract_json(self, text):
-        match = re.search(r"```(?:json)?\s*(.*?)\s*```", text, re.DOTALL)
-        if match:
-            return match.group(1)
-        if text.strip().startswith("[") and text.strip().endswith("]"):
-            return text.strip()
+def _metadata(item: dict[str, Any]) -> dict[str, Any]:
+    metadata = item.get("metadata")
+    return metadata if isinstance(metadata, dict) else {}
+
+
+def _cohort(item: dict[str, Any]) -> str:
+    metadata = _metadata(item)
+    return str(item.get("cohort") or metadata.get("cohort") or "")
+
+
+def _document_id(item: dict[str, Any]) -> str:
+    metadata = _metadata(item)
+    return str(item.get("document_id") or metadata.get("document_id") or "")
+
+
+def _document_title(item: dict[str, Any]) -> str:
+    return str(_metadata(item).get("document_title") or "")
+
+
+def _document_key(item: dict[str, Any]) -> str:
+    # document_id is the whole handbook in current data. document_title is the
+    # finer regulation/procedure boundary, so it prevents Điều N collisions.
+    return _document_title(item) or _document_id(item)
+
+
+def _article_number_from_text(text: str) -> int | None:
+    match = ARTICLE_PATTERN.search(text or "")
+    if not match:
         return None
+    return int(match.group(1))
 
-def main():
-    input_file = "data/processed/chunks/all_docstore_items.json"
-    output_file = "data/processed/graphs/document_edges.json"
-    
-    # Tạo thư mục nếu chưa có
-    os.makedirs(os.path.dirname(output_file), exist_ok=True)
-    
-    if not os.path.exists(input_file):
-        print("Lỗi: Không tìm thấy file Vàng Mười!")
-        return
-        
-    with open(input_file, "r", encoding="utf-8") as f:
-        all_chunks = json.load(f)
-        
-    print(f"Tổng số chunks tải lên: {len(all_chunks)}")
-    
-    # Rút trích danh sách ID để làm Từ điển
-    all_ids = [chunk.get("_id") for chunk in all_chunks if chunk.get("_id")]
-    print(f"Đã tạo Từ điển chứa {len(all_ids)} ID chuẩn.")
-    
-    extractor = GeminiGraphExtractor(all_ids)
-    
-    batch_size = 10
-    all_edges = []
-    
-    print(f"\n[>] Bắt đầu cày nát {len(all_chunks)} chunks (Batch={batch_size})...")
-    
-    for i in range(0, len(all_chunks), batch_size):
-        batch = all_chunks[i:i+batch_size]
-        print(f"[*] Đang xử lý Batch {i//batch_size + 1}/{(len(all_chunks)+batch_size-1)//batch_size} (Chunks {i} đến {i+len(batch)-1})", flush=True)
-        
-        edges = extractor.extract_batch(batch)
-        if edges:
-            all_edges.extend(edges)
-            # Lưu liên tục để lỡ Crash thì không mất kết quả
-            with open(output_file, "w", encoding="utf-8") as f:
-                json.dump(all_edges, f, ensure_ascii=False, indent=2)
-            
-        time.sleep(2)
-    
-    print(f"\n=== HOÀN TẤT TRÍCH XUẤT ===", flush=True)
-    print(f"Tổng số Cạnh (Edges) thu được: {len(all_edges)}", flush=True)
-        
-    print(f"Đã lưu Đồ thị vào {output_file}")
+
+def article_number_for_item(item: dict[str, Any]) -> int | None:
+    metadata = _metadata(item)
+    article_number = _article_number_from_text(str(metadata.get("article") or ""))
+    if article_number is not None:
+        return article_number
+
+    section_id = str(item.get("_id") or "")
+    match = re.search(r"_Dieu(\d+)(?:_|$)", section_id)
+    if match:
+        return int(match.group(1))
+
+    return _article_number_from_text(str(item.get("content") or ""))
+
+
+def _clean_text(text: str) -> str:
+    return WHITESPACE_PATTERN.sub(" ", text or "").strip()
+
+
+def _reason_for_match(text: str, start: int, end: int) -> str:
+    left_candidates = [text.rfind(mark, 0, start) for mark in (".", ";", "\n")]
+    left = max(left_candidates)
+    left = 0 if left == -1 else left + 1
+
+    right_candidates = [text.find(mark, end) for mark in (".", ";", "\n")]
+    right_candidates = [idx for idx in right_candidates if idx != -1]
+    right = min(right_candidates) if right_candidates else len(text)
+
+    reason = _clean_text(text[left:right])
+    if len(reason) > 280:
+        reason = reason[:277].rstrip() + "..."
+    return reason
+
+
+def _nearest_match(pattern: re.Pattern[str], text: str) -> re.Match[str] | None:
+    matches = list(pattern.finditer(text))
+    return matches[-1] if matches else None
+
+
+def _reference_for_article_match(text: str, match: re.Match[str]) -> Reference:
+    prefix_start = max(0, match.start() - 80)
+    prefix = text[prefix_start : match.start()]
+    clause_match = _nearest_match(CLAUSE_PATTERN, prefix)
+    point_match = _nearest_match(POINT_PATTERN, prefix)
+
+    reference_start = match.start()
+    clause = None
+    point = None
+    if clause_match:
+        clause = clause_match.group(1)
+        reference_start = min(reference_start, prefix_start + clause_match.start())
+    if point_match:
+        point = point_match.group(1).lower()
+        reference_start = min(reference_start, prefix_start + point_match.start())
+
+    reference_text = _clean_text(text[reference_start : match.end()])
+    reason = _reason_for_match(text, match.start(), match.end())
+    return Reference(
+        article_number=int(match.group(1)),
+        reference_text=reference_text,
+        reason=reason,
+        clause=clause,
+        point=point,
+    )
+
+
+def extract_references(content: str) -> list[Reference]:
+    return [_reference_for_article_match(content, match) for match in ARTICLE_PATTERN.finditer(content or "")]
+
+
+def build_section_index(
+    docstore_items: list[dict[str, Any]],
+) -> tuple[dict[tuple[str, str, int], list[SectionRecord]], set[str], list[dict[str, Any]]]:
+    index: dict[tuple[str, str, int], list[SectionRecord]] = defaultdict(list)
+    parent_ids: set[str] = set()
+    skipped: list[dict[str, Any]] = []
+
+    for item in docstore_items:
+        section_id = str(item.get("_id") or "")
+        if not section_id:
+            skipped.append({"issue": "missing_section_id"})
+            continue
+        parent_ids.add(section_id)
+
+        cohort = _cohort(item)
+        document_id = _document_id(item)
+        document_key = _document_key(item)
+        article_number = article_number_for_item(item)
+        if not cohort or not document_key or article_number is None:
+            skipped.append(
+                {
+                    "issue": "missing_index_fields",
+                    "section_id": section_id,
+                    "cohort": cohort,
+                    "document_id": document_id,
+                    "document_key": document_key,
+                    "article_number": article_number,
+                }
+            )
+            continue
+
+        index[(cohort, document_key, article_number)].append(
+            SectionRecord(
+                section_id=section_id,
+                cohort=cohort,
+                document_id=document_id,
+                document_key=document_key,
+                document_title=_document_title(item),
+                article_number=article_number,
+            )
+        )
+
+    return index, parent_ids, skipped
+
+
+def _resolve_target(
+    index: dict[tuple[str, str, int], list[SectionRecord]],
+    source: SectionRecord,
+    reference: Reference,
+) -> tuple[SectionRecord | None, str | None]:
+    candidates = index.get((source.cohort, source.document_key, reference.article_number), [])
+    if not candidates:
+        return None, "unresolved_target"
+    if len(candidates) > 1:
+        return None, "ambiguous_target"
+    return candidates[0], None
+
+
+def _edge_from_reference(source: SectionRecord, target: SectionRecord, reference: Reference) -> dict[str, Any]:
+    return {
+        "source": source.section_id,
+        "target": target.section_id,
+        "relation": RELATION,
+        "reason": reference.reason,
+        "method": "rule",
+        "confidence": 1.0,
+        "cohort": source.cohort,
+        "document_id": source.document_id,
+        "document_title": source.document_title,
+        "reference_text": reference.reference_text,
+        "reference_article": reference.article_number,
+        "reference_clause": reference.clause,
+        "reference_point": reference.point,
+    }
+
+
+def extract_rule_edges(docstore_items: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    index, parent_ids, index_skips = build_section_index(docstore_items)
+    source_by_id = {record.section_id: record for records in index.values() for record in records}
+    edges_by_key: dict[tuple[str, str, str, str, str], dict[str, Any]] = {}
+    skipped: list[dict[str, Any]] = list(index_skips)
+
+    for item in docstore_items:
+        source_id = str(item.get("_id") or "")
+        source = source_by_id.get(source_id)
+        if not source:
+            continue
+
+        for reference in extract_references(str(item.get("content") or "")):
+            target, issue = _resolve_target(index, source, reference)
+            if issue:
+                skipped.append(
+                    {
+                        "issue": issue,
+                        "source": source_id,
+                        "cohort": source.cohort,
+                        "document_id": source.document_id,
+                        "document_title": source.document_title,
+                        "reference_article": reference.article_number,
+                        "reference_text": reference.reference_text,
+                    }
+                )
+                continue
+            if not target or target.section_id == source.section_id:
+                skipped.append(
+                    {
+                        "issue": "self_reference",
+                        "source": source_id,
+                        "reference_article": reference.article_number,
+                        "reference_text": reference.reference_text,
+                    }
+                )
+                continue
+
+            key = (source.cohort, source.document_id, source.section_id, target.section_id, RELATION)
+            if key in edges_by_key:
+                skipped.append(
+                    {
+                        "issue": "duplicate_edge",
+                        "source": source.section_id,
+                        "target": target.section_id,
+                        "reference_text": reference.reference_text,
+                    }
+                )
+                continue
+            edges_by_key[key] = _edge_from_reference(source, target, reference)
+
+    edges = sorted(edges_by_key.values(), key=lambda edge: (edge["cohort"], edge["source"], edge["target"]))
+    validation = validate_edges(edges, parent_ids)
+    report = {
+        "status": "ok" if not validation["missing_nodes"] else "invalid",
+        "total_docstore_items": len(docstore_items),
+        "total_edges": len(edges),
+        "total_skipped": len(skipped),
+        "skip_counts": dict(Counter(item["issue"] for item in skipped)),
+        "coverage": _coverage_by_cohort(edges, docstore_items),
+        "validation": validation,
+        "skipped": skipped,
+    }
+    return edges, report
+
+
+def _coverage_by_cohort(edges: list[dict[str, Any]], docstore_items: list[dict[str, Any]]) -> dict[str, Any]:
+    parent_ids_by_cohort: dict[str, set[str]] = defaultdict(set)
+    for item in docstore_items:
+        section_id = str(item.get("_id") or "")
+        cohort = _cohort(item)
+        if section_id and cohort:
+            parent_ids_by_cohort[cohort].add(section_id)
+
+    graph_nodes_by_cohort: dict[str, set[str]] = defaultdict(set)
+    for edge in edges:
+        cohort = str(edge.get("cohort") or "")
+        graph_nodes_by_cohort[cohort].add(str(edge.get("source")))
+        graph_nodes_by_cohort[cohort].add(str(edge.get("target")))
+
+    coverage = {}
+    for cohort, parent_ids in sorted(parent_ids_by_cohort.items()):
+        graph_nodes = graph_nodes_by_cohort.get(cohort, set())
+        coverage[cohort] = {
+            "parent_sections": len(parent_ids),
+            "graph_nodes": len(graph_nodes),
+            "coverage_pct": round((len(graph_nodes) / len(parent_ids)) * 100, 2) if parent_ids else 0.0,
+        }
+    return coverage
+
+
+def validate_edges(edges: list[dict[str, Any]], parent_ids: set[str]) -> dict[str, Any]:
+    missing_nodes = sorted(
+        {
+            str(node_id)
+            for edge in edges
+            for node_id in (edge.get("source"), edge.get("target"))
+            if node_id not in parent_ids
+        }
+    )
+    cross_cohort_edges = [
+        edge
+        for edge in edges
+        if str(edge.get("source", "")).split("_", 1)[0] != str(edge.get("target", "")).split("_", 1)[0]
+    ]
+    return {
+        "missing_nodes": missing_nodes,
+        "graph_nodes_missing_in_docstore": len(missing_nodes),
+        "cross_cohort_edges": len(cross_cohort_edges),
+    }
+
+
+def load_json(path: Path) -> list[dict[str, Any]]:
+    with path.open("r", encoding="utf-8") as file:
+        data = json.load(file)
+    if not isinstance(data, list):
+        raise ValueError(f"Expected a JSON array in {path}")
+    return data
+
+
+def write_json(path: Path, data: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as file:
+        json.dump(data, file, ensure_ascii=False, indent=2)
+        file.write("\n")
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Build directed document graph edges with rule-based extraction.")
+    parser.add_argument("--input-file", default=DEFAULT_INPUT_FILE)
+    parser.add_argument("--output-file", default=DEFAULT_OUTPUT_FILE)
+    parser.add_argument("--report-file", default=DEFAULT_REPORT_FILE)
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> None:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+
+    args = parse_args(argv)
+    input_path = Path(args.input_file)
+    output_path = Path(args.output_file)
+    report_path = Path(args.report_file)
+
+    if not input_path.exists():
+        raise FileNotFoundError(f"Không tìm thấy docstore file: {input_path}")
+
+    docstore_items = load_json(input_path)
+    edges, report = extract_rule_edges(docstore_items)
+    if report["validation"]["graph_nodes_missing_in_docstore"]:
+        write_json(report_path, report)
+        raise RuntimeError("Graph validation failed: some edge nodes are missing from docstore.")
+
+    write_json(output_path, edges)
+    write_json(report_path, report)
+
+    print(f"Loaded docstore items: {len(docstore_items)}")
+    print(f"Extracted rule edges: {len(edges)}")
+    print(f"Skipped references: {report['total_skipped']}")
+    print(f"Graph nodes missing in docstore: {report['validation']['graph_nodes_missing_in_docstore']}")
+    print(f"Wrote graph edges to: {output_path}")
+    print(f"Wrote extraction report to: {report_path}")
+
 
 if __name__ == "__main__":
     main()

@@ -35,8 +35,51 @@ def main() -> None:
 
     chunks = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     print(f"Loaded {len(chunks)} V7 child-parent chunks from {DATA_PATH}")
+    
+    if not isinstance(chunks, list) or not chunks:
+        raise RuntimeError(
+            "Từ chối push Qdrant vì file V7 rỗng hoặc sai định dạng."
+        )
+
+    expected_cohorts = {"K48-K49", "K50", "K51"}
+
+    actual_cohorts = {
+        str((chunk.get("metadata") or {}).get("cohort"))
+        for chunk in chunks
+        if (chunk.get("metadata") or {}).get("cohort")
+    }
+
+    print(f"V7 cohorts: {sorted(actual_cohorts)}")
+
+    if actual_cohorts != expected_cohorts:
+        raise RuntimeError(
+            "Từ chối ghi đè Qdrant vì file V7 không đủ 3 cohort. "
+            f"Hiện có: {sorted(actual_cohorts)}"
+        )
+        
+    allowed_content_types = {
+        "regulation_text",
+        "regulation_sections",
+        "regulation",
+    }
+
+    invalid_content_types = sorted(
+        {
+            str((chunk.get("metadata") or {}).get("content_type"))
+            for chunk in chunks
+            if (chunk.get("metadata") or {}).get("content_type")
+            not in allowed_content_types
+        }
+    )
+
+    if invalid_content_types:
+        raise RuntimeError(
+            "V7 còn chứa content_type không được phép embedding: "
+            + ", ".join(invalid_content_types)
+        )
 
     model_name = os.getenv("STUDENT_RAG_EMBEDDING_MODEL", "BAAI/bge-m3")
+    encode_batch_size = int(os.getenv("STUDENT_RAG_EMBEDDING_BATCH_SIZE", "32"))
     print(f"Loading embedding model: {model_name}")
     model = SentenceTransformer(model_name)
     vector_size = model.get_sentence_embedding_dimension()
@@ -56,7 +99,7 @@ def main() -> None:
     texts = [str(chunk.get("content") or "") for chunk in chunks]
     embeddings = model.encode(
         texts,
-        batch_size=8,
+        batch_size=encode_batch_size,
         show_progress_bar=True,
         normalize_embeddings=True,
     )
@@ -86,14 +129,23 @@ def main() -> None:
 
 
 def create_payload_indexes(client: QdrantClient) -> None:
-    for field in ("content_type", "cohort", "chunk_granularity", "parent_section_id"):
+    for field in (
+        "chunk_type",
+        "content_type",
+        "cohort",
+        "chunk_granularity",
+        "parent_section_id",
+    ):
         client.create_payload_index(
             collection_name=COLLECTION_NAME,
             field_name=field,
             field_schema=PayloadSchemaType.KEYWORD,
             wait=True,
         )
-    print("Created payload indexes for content_type, cohort, chunk_granularity, parent_section_id")
+    print(
+        "Created payload indexes for chunk_type, content_type, cohort, "
+        "chunk_granularity, parent_section_id"
+    )
 
 
 if __name__ == "__main__":

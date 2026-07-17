@@ -89,7 +89,6 @@ def extract_formula_rules(sections: list[dict[str, Any]]) -> list[dict[str, Any]
         - "calculation_type": Loại tính toán (ví dụ: "weighted_average").
         - "formula_text": Văn bản mô tả công thức.
         - "variables": Một dictionary giải thích các biến trong công thức.
-        - "calculator_function": Tên của hàm Python dùng để tính toán công thức này.
         - "source_article": Điều khoản nguồn.
         - "source_title": Tiêu đề của phần nguồn.
         - "source_pages": Phạm vi trang nguồn.
@@ -117,7 +116,6 @@ def extract_formula_rules(sections: list[dict[str, Any]]) -> list[dict[str, Any]
                         "ai": "Điểm của học phần thứ i",
                         "ni": "Số tín chỉ của học phần thứ i",
                     },
-                    "calculator_function": "calculate_gpa",
                     "source_article": article,
                     "source_title": section.get("title"),
                     "source_pages": pages,
@@ -138,7 +136,6 @@ def extract_formula_rules(sections: list[dict[str, Any]]) -> list[dict[str, Any]
                         "diem_hoc_tap": "Điểm học tập theo thang điểm 4",
                         "diem_ren_luyen": "Điểm rèn luyện theo thang điểm 100",
                     },
-                    "calculator_function": "calculate_scholarship_score",
                     "source_article": article,
                     "source_title": section.get("title"),
                     "source_pages": pages,

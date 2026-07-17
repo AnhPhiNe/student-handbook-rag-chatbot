@@ -8,6 +8,8 @@ import shutil
 import unicodedata
 import yaml
 
+from scripts.derive_foreign_language_policy import derive_foreign_language_policy
+
 
 VALID_COHORTS = {"K48-K49", "K50", "K51"}
 PROGRAM_OVERRIDES_PATH = Path("configs/program_overrides.yaml")
@@ -33,14 +35,24 @@ def load_program_overrides(path: Path = PROGRAM_OVERRIDES_PATH) -> dict:
 
 
 def get_cohort_from_filename(filename: str) -> str:
-    import re
-    match = re.search(r"khoa-(\d+)", filename, re.IGNORECASE)
-    if match:
-        k = int(match.group(1))
-        if k <= 49:
-            return "K48-K49"
-        return f"K{k}"
-    return "UNKNOWN"
+    normalized = Path(filename).stem.lower()
+    normalized = normalized.replace("_", "-")
+
+    if re.search(r"(?:khoa|k)-?48(?:-?49)?", normalized):
+        return "K48-K49"
+
+    if re.search(r"(?:khoa|k)-?49", normalized):
+        return "K48-K49"
+
+    if re.search(r"(?:khoa|k)-?50", normalized):
+        return "K50"
+
+    if re.search(r"(?:khoa|k)-?51", normalized):
+        return "K51"
+
+    raise ValueError(
+        f"Không xác định được cohort từ tên PDF: {filename}"
+    )
 
 
 def run_pipeline_for_pdf(pdf_path: Path, cohort: str):
@@ -106,12 +118,17 @@ def merge_docstore(cohort_files, output_path):
         with open(path, "r", encoding="utf-8") as f:
             docs = json.load(f)
             for doc in docs:
-                doc["cohort"] = cohort
-                doc["document_id"] = DOCUMENT_ID_BY_COHORT.get(cohort)
-                if "_id" in doc:
-                    doc_id = str(doc["_id"])
-                    if not doc_id.startswith(f"{cohort}_"):
-                        doc["_id"] = f"{cohort}_{doc_id}"
+                if "metadata" not in doc:
+                    doc["metadata"] = {}
+                doc["metadata"]["cohort"] = cohort
+                doc["metadata"]["document_id"] = DOCUMENT_ID_BY_COHORT.get(cohort)
+                doc_id = str(doc["_id"])
+                if not doc_id.startswith(f"{cohort}_"):
+                    doc["_id"] = f"{cohort}_{doc_id}"
+                if "chunk_id" in doc:
+                    chunk_id = str(doc["chunk_id"])
+                    if not chunk_id.startswith(f"{cohort}_"):
+                        doc["chunk_id"] = f"{cohort}_{chunk_id}"
             all_docs.extend(docs)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -146,6 +163,109 @@ def merge_structured_data(cohort_files, output_path):
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(all_items, f, ensure_ascii=False, indent=2)
+
+def validate_structured_json(paths: list[Path]) -> None:
+    issues = []
+
+    for path in paths:
+        if not path.exists():
+            issues.append({
+                "path": str(path),
+                "issue": "missing_file",
+            })
+            continue
+
+        with path.open("r", encoding="utf-8") as f:
+            records = json.load(f)
+
+        if not isinstance(records, list):
+            issues.append({
+                "path": str(path),
+                "issue": "root_must_be_list",
+            })
+            continue
+
+        seen_ids: set[str] = set()
+
+        for index, record in enumerate(records):
+            if not isinstance(record, dict):
+                issues.append({
+                    "path": str(path),
+                    "index": index,
+                    "issue": "record_must_be_object",
+                })
+                continue
+
+            record_id = (
+                record.get("record_id")
+                or record.get("table_id")
+                or record.get("rule_id")
+            )
+            cohort = record.get("cohort")
+            document_id = record.get("document_id")
+
+            if cohort not in VALID_COHORTS:
+                issues.append({
+                    "path": str(path),
+                    "index": index,
+                    "record_id": record_id,
+                    "issue": "invalid_cohort",
+                    "value": cohort,
+                })
+
+            if not document_id:
+                issues.append({
+                    "path": str(path),
+                    "index": index,
+                    "record_id": record_id,
+                    "issue": "missing_document_id",
+                })
+
+            if not record_id:
+                issues.append({
+                    "path": str(path),
+                    "index": index,
+                    "issue": "missing_record_id",
+                })
+            elif str(record_id) in seen_ids:
+                issues.append({
+                    "path": str(path),
+                    "index": index,
+                    "record_id": record_id,
+                    "issue": "duplicate_record_id",
+                })
+            else:
+                seen_ids.add(str(record_id))
+
+            if (
+                "rows" in record
+                and not isinstance(record["rows"], list)
+            ):
+                issues.append({
+                    "path": str(path),
+                    "record_id": record_id,
+                    "issue": "rows_must_be_list",
+                })
+
+            if (
+                "columns" in record
+                and not isinstance(record["columns"], list)
+            ):
+                issues.append({
+                    "path": str(path),
+                    "record_id": record_id,
+                    "issue": "columns_must_be_list",
+                })
+
+    if issues:
+        raise RuntimeError(
+            "Structured JSON validation failed:\n"
+            + json.dumps(
+                issues[:30],
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
 
 
 def fold_text(value: str | None) -> str:
@@ -642,11 +762,38 @@ def main():
     cleanup_legacy_cohort_artifacts()
 
     raw_dir = Path("data/raw")
-    pdfs = list(raw_dir.glob("*.pdf"))
+    pdfs = sorted(raw_dir.glob("*.pdf"))
 
     if not pdfs:
         print("No PDFs found in data/raw!")
         return
+
+    seen_cohorts: dict[str, Path] = {}
+
+    for pdf in pdfs:
+        cohort = get_cohort_from_filename(pdf.name)
+
+        if cohort not in VALID_COHORTS:
+            raise RuntimeError(
+                f"Cohort không hợp lệ cho file {pdf.name}: {cohort}"
+            )
+
+        if cohort in seen_cohorts:
+            raise RuntimeError(
+                f"Phát hiện hai PDF cùng cohort {cohort}:\n"
+                f"- {seen_cohorts[cohort]}\n"
+                f"- {pdf}"
+            )
+
+        seen_cohorts[cohort] = pdf
+        
+    missing_cohorts = VALID_COHORTS - set(seen_cohorts)
+
+    if missing_cohorts:
+        raise RuntimeError(
+            "Thiếu PDF của các cohort: "
+            + ", ".join(sorted(missing_cohorts))
+        )
 
     chunk_dir = Path("data/processed/chunks")
     
@@ -662,9 +809,8 @@ def main():
     procedure_chunk_outputs = {}
     docstore_outputs = {}
     formula_outputs = {}
-    threshold_outputs = {}
     scoring_outputs = {}
-    form_outputs = {}
+    threshold_outputs = {}
     office_outputs = {}
     faculty_outputs = {}
     program_outputs = {}
@@ -689,7 +835,6 @@ def main():
         regulation_chunks_dest = chunk_dir / f"{cohort}_regulation_chunks.json"
         table_chunks_dest = chunk_dir / f"{cohort}_table_chunks.json"
         formula_chunks_dest = chunk_dir / f"{cohort}_formula_chunks.json"
-        form_chunks_dest = chunk_dir / f"{cohort}_form_chunks.json"
         directory_chunks_dest = chunk_dir / f"{cohort}_directory_chunks.json"
         procedure_chunks_dest = chunk_dir / f"{cohort}_procedure_chunks.json"
         docstore_dest = chunk_dir / f"{cohort}_docstore_items.json"
@@ -701,7 +846,6 @@ def main():
         shutil.copy(chunk_dir / "regulation_chunks.json", regulation_chunks_dest)
         shutil.copy(chunk_dir / "table_chunks.json", table_chunks_dest)
         shutil.copy(chunk_dir / "formula_chunks.json", formula_chunks_dest)
-        shutil.copy(chunk_dir / "form_chunks.json", form_chunks_dest)
         shutil.copy(chunk_dir / "directory_chunks.json", directory_chunks_dest)
         shutil.copy(chunk_dir / "procedure_chunks.json", procedure_chunks_dest)
         shutil.copy(chunk_dir / "docstore_items.json", docstore_dest)
@@ -709,7 +853,6 @@ def main():
         formula_dest = table_dir / f"{cohort}_formula_rules.json"
         threshold_dest = table_dir / f"{cohort}_threshold_rules.json"
         scoring_dest = table_dir / f"{cohort}_scoring_tables.json"
-        form_dest = form_dir / f"{cohort}_form_templates.json"
         office_dest = directory_dir / f"{cohort}_office_directory.json"
         faculty_dest = directory_dir / f"{cohort}_faculty_directory.json"
         program_dest = directory_dir / f"{cohort}_program_directory.json"
@@ -721,7 +864,6 @@ def main():
         shutil.copy(table_dir / "formula_rules.json", formula_dest)
         shutil.copy(table_dir / "threshold_rules.json", threshold_dest)
         shutil.copy(table_dir / "scoring_tables.json", scoring_dest)
-        shutil.copy(form_dir / "form_templates.json", form_dest)
         shutil.copy(directory_dir / "office_directory.json", office_dest)
         shutil.copy(directory_dir / "faculty_directory.json", faculty_dest)
         shutil.copy(directory_dir / "program_directory.json", program_dest)
@@ -737,14 +879,12 @@ def main():
         regulation_chunk_outputs[cohort] = regulation_chunks_dest
         table_chunk_outputs[cohort] = table_chunks_dest
         formula_chunk_outputs[cohort] = formula_chunks_dest
-        form_chunk_outputs[cohort] = form_chunks_dest
         directory_chunk_outputs[cohort] = directory_chunks_dest
         procedure_chunk_outputs[cohort] = procedure_chunks_dest
         docstore_outputs[cohort] = docstore_dest
         formula_outputs[cohort] = formula_dest
         threshold_outputs[cohort] = threshold_dest
         scoring_outputs[cohort] = scoring_dest
-        form_outputs[cohort] = form_dest
         office_outputs[cohort] = office_dest
         faculty_outputs[cohort] = faculty_dest
         program_outputs[cohort] = program_dest
@@ -759,18 +899,30 @@ def main():
     merge_chunks(tool_outputs, chunk_dir / "tool_rule_chunks.json")
     merge_chunks(all_chunk_outputs, chunk_dir / "all_chunks.json")
     merge_chunks(regulation_chunk_outputs, chunk_dir / "regulation_chunks.json")
-    merge_chunks(table_chunk_outputs, chunk_dir / "table_chunks.json")
-    merge_chunks(formula_chunk_outputs, chunk_dir / "formula_chunks.json")
-    merge_chunks(form_chunk_outputs, chunk_dir / "form_chunks.json")
     merge_chunks(directory_chunk_outputs, chunk_dir / "directory_chunks.json")
     merge_chunks(procedure_chunk_outputs, chunk_dir / "procedure_chunks.json")
-    merge_docstore(docstore_outputs, chunk_dir / "docstore_items.json")
+    merge_docstore(docstore_outputs, chunk_dir / "all_docstore_items.json")
+    
+    for stale_path in (
+        chunk_dir / "table_chunks.json",
+        chunk_dir / "formula_chunks.json",
+    ):
+        if stale_path.exists():
+            stale_path.unlink()
+        
+    derived_policy_report = derive_foreign_language_policy(
+        chunk_dir / "all_docstore_items.json",
+        metadata_dir / "derived_foreign_language_policy_report.json",
+    )
+    print(
+        "Derived foreign-language policy sections: "
+        f"{derived_policy_report['derived_section_count']}"
+    )
     
     print(f"\n{'='*50}\n--- MERGING STRUCTURED DATA ---\n{'='*50}")
     merge_structured_data(formula_outputs, table_dir / "formula_rules.json")
     merge_structured_data(threshold_outputs, table_dir / "threshold_rules.json")
     merge_structured_data(scoring_outputs, table_dir / "scoring_tables.json")
-    merge_structured_data(form_outputs, form_dir / "form_templates.json")
     merge_structured_data(office_outputs, directory_dir / "office_directory.json")
     merge_structured_data(faculty_outputs, directory_dir / "faculty_directory.json")
     merge_structured_data(program_outputs, directory_dir / "program_directory.json")
@@ -793,6 +945,19 @@ def main():
         directory_dir / "faculty_directory.json",
         directory_dir / "faculty_program_directory.json",
     )
+    
+    validate_structured_json(
+        [
+            table_dir / "scoring_tables.json",
+            table_dir / "formula_rules.json",
+            table_dir / "threshold_rules.json",
+            table_dir / "foreign_language_equivalency_table.json",
+            directory_dir / "office_directory.json",
+            directory_dir / "faculty_directory.json",
+            directory_dir / "program_directory.json",
+            directory_dir / "reference_directory.json",
+        ]
+    )
 
     audit_reports = {}
     for cohort, path in audit_outputs.items():
@@ -812,16 +977,12 @@ def main():
             chunk_dir / "structured_lookup_chunks.json",
             chunk_dir / "tool_rule_chunks.json",
             chunk_dir / "regulation_chunks.json",
-            chunk_dir / "table_chunks.json",
-            chunk_dir / "formula_chunks.json",
-            chunk_dir / "form_chunks.json",
             chunk_dir / "directory_chunks.json",
             chunk_dir / "procedure_chunks.json",
-            chunk_dir / "docstore_items.json",
+            chunk_dir / "all_docstore_items.json",
             table_dir / "formula_rules.json",
             table_dir / "threshold_rules.json",
             table_dir / "scoring_tables.json",
-            form_dir / "form_templates.json",
             directory_dir / "office_directory.json",
             directory_dir / "faculty_directory.json",
             directory_dir / "program_directory.json",
@@ -836,11 +997,10 @@ def main():
             chunk_dir / "semantic_chunks.json",
             chunk_dir / "structured_lookup_chunks.json",
             chunk_dir / "tool_rule_chunks.json",
-            chunk_dir / "docstore_items.json",
+            chunk_dir / "all_docstore_items.json",
             table_dir / "formula_rules.json",
             table_dir / "threshold_rules.json",
             table_dir / "scoring_tables.json",
-            form_dir / "form_templates.json",
             directory_dir / "office_directory.json",
             directory_dir / "faculty_directory.json",
             directory_dir / "program_directory.json",
@@ -852,18 +1012,37 @@ def main():
     print(f"\n{'='*50}\n--- BUILDING ENTITY REGISTRY ---\n{'='*50}")
     subprocess.run([sys.executable, "-m", "src.retrieval.core.build_entity_registry"], check=True)
 
-    if should_skip("SKIP_VECTORSTORE"):
-        print("\nSKIP_VECTORSTORE enabled; unified vector store build skipped.")
+    enable_legacy_vectorstore = (
+        os.environ.get("ENABLE_LEGACY_VECTORSTORE", "")
+        .strip()
+        .lower()
+        in {"1", "true", "yes", "on"}
+    )
+
+    if enable_legacy_vectorstore:
+        print(
+            f"\n{'='*50}\n"
+            "--- BUILDING LEGACY UNIFIED VECTOR STORE ---\n"
+            f"{'='*50}"
+        )
+        subprocess.run(
+            [sys.executable, "-m", "scripts.build_vectorstore"],
+            check=True,
+        )
     else:
-        print(f"\n{'='*50}\n--- BUILDING UNIFIED VECTOR STORE ---\n{'='*50}")
-        subprocess.run([sys.executable, "-m", "scripts.build_vectorstore"], check=True)
+        print(
+            "\nLegacy vector store disabled. "
+            "Hệ thống chỉ build Qdrant V7."
+        )
 
     if should_skip("SKIP_REMOTE_PUSH"):
         print("\nSKIP_REMOTE_PUSH enabled; MongoDB/Qdrant upload skipped.")
     else:
         print(f"\n{'='*50}\n--- PUSHING TO MONGODB & QDRANT CLOUD ---\n{'='*50}")
         subprocess.run([sys.executable, "-m", "scripts.push_to_mongo"], check=True)
-        subprocess.run([sys.executable, "-m", "scripts.migrate_to_qdrant"], check=True)
+        print("Building V7 Child/Parent Index before pushing to Qdrant...")
+        subprocess.run([sys.executable, "-m", "scripts.build_v7_child_parent_index"], check=True)
+        subprocess.run([sys.executable, "-m", "scripts.push_to_qdrant_v7"], check=True)
 
     print("\nMulti-cohort preprocessing completed successfully!")
 

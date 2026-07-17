@@ -1,29 +1,13 @@
 input:
   structured_sections: data/processed/metadata/structured_sections.json
-  scoring_tables: data/processed/tables/scoring_tables.json
-  formula_rules: data/processed/tables/formula_rules.json
-  threshold_rules: data/processed/tables/threshold_rules.json
-  form_templates: data/processed/forms/form_templates.json
-  office_directory: data/processed/directories/office_directory.json
-  faculty_directory: data/processed/directories/faculty_directory.json
-  program_directory: data/processed/directories/program_directory.json
-  faculty_program_directory: data/processed/directories/faculty_program_directory.json
-  reference_directory: data/processed/directories/reference_directory.json
-  procedures: data/processed/procedures/procedures.json
-  
 
 output:
   regulation_chunks: data/processed/chunks/regulation_chunks.json
-  table_chunks: data/processed/chunks/table_chunks.json
-  formula_chunks: data/processed/chunks/formula_chunks.json
-  form_chunks: data/processed/chunks/form_chunks.json
-  directory_chunks: data/processed/chunks/directory_chunks.json
-  procedure_chunks: data/processed/chunks/procedure_chunks.json
   semantic_chunks: data/processed/chunks/semantic_chunks.json
   structured_lookup_chunks: data/processed/chunks/structured_lookup_chunks.json
   tool_rule_chunks: data/processed/chunks/tool_rule_chunks.json
   all_chunks: data/processed/chunks/all_chunks.json
-  docstore_items: data/processed/chunks/all_docstore_items.json
+  docstore_items: data/processed/chunks/docstore_items.json
   report: data/processed/metadata/chunk_report.json
   index_manifest: data/processed/chunks/index_manifest.json
 

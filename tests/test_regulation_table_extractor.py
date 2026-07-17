@@ -63,6 +63,29 @@ def test_extract_k50_remaining_grade_scale_marks_d_as_not_passed() -> None:
     assert by_letter["C"]["Loại"] == "Đạt"
 
 
+def test_extract_k51_pass_fail_ungraded_as_separate_table() -> None:
+    content = (
+        "Thang điểm 10 Thang điểm chữ "
+        "Đối với các học phần giáo dục đại cương "
+        "Đạt 8,5 - 10 A Không đạt 0,0 - 2,9 F "
+        "Đối với các học phần còn lại "
+        "Đạt 8,5 - 10 A Không đạt 0,0 - 2,9 F "
+        "b) Các học phần thuộc loại đạt không phân mức (chỉ yêu cầu đạt, "
+        "không tính vào điểm trung bình học tập) yêu cầu đạt 5,0 trở lên theo "
+        "thang điểm 10, và được quy đổi ra điểm chữ là P;"
+    )
+
+    tables = extract_regulation_tables(_section(content, "K51_Dieu10"))
+    pass_fail = next(
+        table for table in tables if table["table_kind"] == "pass_fail_ungraded"
+    )
+
+    assert pass_fail["rows"][0]["Thang điểm 10"] == "Từ 5,0 trở lên"
+    assert pass_fail["rows"][0]["Điểm chữ"] == "P"
+    assert pass_fail["rows"][1]["Kết quả"] == "Chưa đạt"
+    assert "không tính" in pass_fail["applicability"]
+
+
 def test_regulation_chunker_adds_table_chunks_and_parent_tables() -> None:
     content = (
         "Thang điểm chữ Thang điểm 4 "

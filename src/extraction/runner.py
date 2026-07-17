@@ -9,7 +9,6 @@ from .directory_parser import (
     extract_reference_directory,
 )
 from .audit_builder import build_content_audit
-from .form_parser import extract_form_templates
 from .formula_rules import extract_formula_rules
 from .io_utils import load_json, load_yaml, save_json
 from .procedure_parser import extract_procedures
@@ -22,6 +21,16 @@ from .threshold_rules import extract_threshold_rules
 
 CONFIG_PATH = Path("configs/extraction.yaml")
 
+NON_EMBEDDED_CONTENT_TYPES = {
+    "scoring_table",
+    "formula_rule",
+    "threshold_rule",
+    "office_directory",
+    "faculty_directory",
+    "program_directory",
+    "reference_directory",
+    "procedure",
+}
 
 def main() -> None:
     config = load_yaml(CONFIG_PATH)
@@ -34,7 +43,6 @@ def main() -> None:
     scoring_tables = build_scoring_tables()
     formula_rules = extract_formula_rules(sections)
     threshold_rules = extract_threshold_rules(sections)
-    form_templates = extract_form_templates(pages)
 
     office_directory = extract_office_directory(pages)
     faculty_directory = extract_faculty_program_directory(pages)
@@ -51,28 +59,45 @@ def main() -> None:
         (scoring_tables, "scoring_table"),
         (formula_rules, "formula_rule"),
         (threshold_rules, "threshold_rule"),
-        (form_templates, "form_template"),
         (office_directory, "office_directory"),
         (faculty_directory, "faculty_directory"),
         (program_directory, "program_directory"),
         (reference_directory, "reference_directory"),
         (procedures, "procedure"),
     ]
+    
     for group, content_type in record_groups:
         for record in group:
             record.setdefault("content_type", content_type)
+
+            if content_type in NON_EMBEDDED_CONTENT_TYPES:
+                record.setdefault("embedding_enabled", False)
+
+                if content_type == "procedure":
+                    record.setdefault("retrieval_mode", "structured_lookup")
+                else:
+                    record.setdefault("retrieval_mode", "deterministic")
+            else:
+                record.setdefault("embedding_enabled", True)
+                record.setdefault("retrieval_mode", "semantic")
+
             apply_record_defaults(
                 record,
                 document_id=document_id,
                 cohort=cohort,
-                source_section=record.get("content_type"),
+                source_section=(
+                    record.get("source_section")
+                    or record.get("article")
+                    or record.get("section_title")
+                    or record.get("title")
+                    or content_type
+                ),
             )
 
     report = build_report(
         scoring_tables=scoring_tables,
         formula_rules=formula_rules,
         threshold_rules=threshold_rules,
-        form_templates=form_templates,
         office_directory=office_directory,
         faculty_directory=faculty_directory,
         program_directory=program_directory,
@@ -83,7 +108,6 @@ def main() -> None:
     save_json(scoring_tables, Path(config["output"]["scoring_tables"]))
     save_json(formula_rules, Path(config["output"]["formula_rules"]))
     save_json(threshold_rules, Path(config["output"]["threshold_rules"]))
-    save_json(form_templates, Path(config["output"]["form_templates"]))
     save_json(office_directory, Path(config["output"]["office_directory"]))
     save_json(faculty_directory, Path(config["output"]["faculty_directory"]))
     save_json(program_directory, Path(config["output"]["program_directory"]))
@@ -98,7 +122,6 @@ def main() -> None:
     print(f"Scoring tables: {len(scoring_tables)}")
     print(f"Formula rules: {len(formula_rules)}")
     print(f"Threshold rules: {len(threshold_rules)}")
-    print(f"Form templates: {len(form_templates)}")
     print(f"Office records: {len(office_directory)}")
     print(f"Faculty records: {len(faculty_directory)}")
     print(f"Program records: {len(program_directory)}")

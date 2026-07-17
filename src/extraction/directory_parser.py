@@ -5,7 +5,11 @@ from .text_utils import get_pages_by_type, normalize_text
 
 
 OFFICE_HEADING_PATTERN = re.compile(
-    r"^\s*(\d+)\.\s+(Phòng|Ban|Trung tâm|Thư viện|Ký túc xá|Tạp chí)\b",
+    (
+        r"^\s*(\d+)\.\s+"
+        r"(Phòng|Ban|Trung tâm|Thư viện|Ký túc xá|Tạp chí|Trạm|Trường|"
+        r"Nhà xuất bản|Viện|Đoàn|Phân hiệu)\b"
+    ),
     re.IGNORECASE,
 )
 

@@ -87,7 +87,6 @@ def build_chunk_report(
     regulation_chunks: list[dict[str, Any]],
     table_chunks: list[dict[str, Any]],
     formula_chunks: list[dict[str, Any]],
-    form_chunks: list[dict[str, Any]],
     directory_chunks: list[dict[str, Any]],
     procedure_chunks: list[dict[str, Any]],
     all_chunks: list[dict[str, Any]],
@@ -119,7 +118,6 @@ def build_chunk_report(
             - "regulation_chunks" (int): Số lượng chunk loại "regulation".
             - "table_chunks" (int): Số lượng chunk loại "table".
             - "formula_chunks" (int): Số lượng chunk loại "formula".
-            - "form_chunks" (int): Số lượng chunk loại "form".
             - "directory_chunks" (int): Số lượng chunk loại thư mục.
             - "procedure_chunks" (int): Số lượng chunk loại "procedure".
             - "chunk_type_count" (dict[str, int]): Số lượng chunk cho mỗi loại chunk.
@@ -137,7 +135,6 @@ def build_chunk_report(
         "regulation_chunks": len(regulation_chunks),
         "table_chunks": len(table_chunks),
         "formula_chunks": len(formula_chunks),
-        "form_chunks": len(form_chunks),
         "directory_chunks": len(directory_chunks),
         "procedure_chunks": len(procedure_chunks),
         "chunk_type_count": dict(Counter(chunk["chunk_type"] for chunk in all_chunks)),

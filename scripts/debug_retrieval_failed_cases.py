@@ -228,6 +228,9 @@ def debug_case(
     scoring_tables: list[dict[str, Any]],
     formula_rules: list[dict[str, Any]],
     form_templates: list[dict[str, Any]],
+    student_service_directory: list[dict[str, Any]],
+    foreign_language_tables: list[dict[str, Any]],
+    structured_tables_registry: list[dict[str, Any]],
     program_directory: list[dict[str, Any]],
     entity_registry: list[dict[str, Any]],
     expansion_rules: list[dict[str, Any]],
@@ -241,6 +244,9 @@ def debug_case(
         scoring_tables=scoring_tables,
         formula_rules=formula_rules,
         form_templates=form_templates,
+        student_service_directory=student_service_directory,
+        foreign_language_tables=foreign_language_tables,
+        structured_tables_registry=structured_tables_registry,
         program_directory=program_directory,
         top_k=config["retrieval"]["default_top_k"],
         batch_size=config["embedding"]["batch_size"],
@@ -311,6 +317,18 @@ def main() -> None:
     scoring_tables = load_json(Path(config["input"]["scoring_tables"]))
     formula_rules = load_json(Path(config["input"]["formula_rules"]))
     form_templates = load_json(Path(config["input"]["form_templates"]))
+    student_service_path = config["input"].get("student_service_directory")
+    student_service_directory = (
+        load_json(Path(student_service_path)) if student_service_path else []
+    )
+    foreign_language_path = config["input"].get("foreign_language_equivalency_table")
+    foreign_language_tables = (
+        load_json(Path(foreign_language_path)) if foreign_language_path else []
+    )
+    structured_tables_path = config["input"].get("structured_tables_registry")
+    structured_tables_registry = (
+        load_json(Path(structured_tables_path)) if structured_tables_path else []
+    )
     program_directory = load_json(Path(config["input"]["program_directory"]))
 
     model = load_embedding_model(config["embedding"]["model_name"])
@@ -330,6 +348,9 @@ def main() -> None:
             scoring_tables=scoring_tables,
             formula_rules=formula_rules,
             form_templates=form_templates,
+            student_service_directory=student_service_directory,
+            foreign_language_tables=foreign_language_tables,
+            structured_tables_registry=structured_tables_registry,
             program_directory=program_directory,
             entity_registry=entity_registry,
             expansion_rules=expansion_rules,

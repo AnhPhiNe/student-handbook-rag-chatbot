@@ -1,8 +1,12 @@
 import json
+import logging
+import os
 import re
+import unicodedata
 from pathlib import Path
 from typing import Any, Optional
 
+import pandas as pd
 import yaml
 
 
@@ -12,8 +16,8 @@ NO_CHAPTER = "__NO_CHAPTER__"
 MAX_NON_ARTICLE_CHARS = 1200
 
 
-PART_PATTERN = re.compile(r"^PHẦN\s+[IVXLCDM]+", re.IGNORECASE)
-CHAPTER_PATTERN = re.compile(r"^Chương\s+[IVXLCDM]+", re.IGNORECASE)
+PART_PATTERN = re.compile(r"^(?:PHẦN|Phần)\s+[IVXLCDM]+\b")
+CHAPTER_PATTERN = re.compile(r"^(?:CHƯƠNG|Chương)\s+[IVXLCDM]+\b")
 ARTICLE_PATTERN = re.compile(r"^Điều\s+(\d+)\.\s*(.*)", re.IGNORECASE)
 CLAUSE_PATTERN = re.compile(r"^\d+\.\s+")
 POINT_PATTERN = re.compile(r"^[a-zđ]\)\s+", re.IGNORECASE)
@@ -158,15 +162,25 @@ def make_section_id(
     section_level: str,
     page_start: int,
     index: int,
-    article_number: Optional[int] = None,
+    document_title: Optional[str] = None,
+    chapter: Optional[str] = None,
+    article: Optional[str] = None,
     content_type: Optional[str] = None,
 ) -> str:
-    if article_number is not None:
-        return f"article_{article_number}_p{page_start}_{index}"
+    parts = []
+    if document_title:
+        parts.append(slugify_text(document_title))
+    if chapter and chapter != "__NO_CHAPTER__":
+        parts.append(slugify_text(chapter))
+    if article:
+        parts.append(slugify_text(article))
+        
+    if parts:
+        base = "_".join(parts)
+        return f"{base}_p{page_start}_{index}"
 
     prefix = content_type or section_level
     prefix = slugify_text(prefix)
-
     return f"{prefix}_p{page_start}_{index}"
 
 
@@ -266,7 +280,9 @@ def create_section(
             section_level=section_level,
             page_start=page_number,
             index=index,
-            article_number=article_number,
+            document_title=document_title,
+            chapter=chapter,
+            article=article,
             content_type=content_type,
         ),
         "section_level": section_level,
@@ -280,6 +296,8 @@ def create_section(
         "page_end": page_number,
         "content_lines": [],
         "pages": [],
+        "tables": [],
+        "highlights": [],
     }
 
 
@@ -342,6 +360,7 @@ def should_split_long_non_article_section(
 
 def build_structured_sections(
     line_records: list[dict[str, Any]],
+    lookup_dict: dict[tuple[int, int], dict[str, Any]],
 ) -> list[dict[str, Any]]:
     sections: list[dict[str, Any]] = []
 
@@ -391,18 +410,33 @@ def build_structured_sections(
 
             article, title, article_number = extract_article_info(line)
 
+            lookup_key = (page_number, article_number)
+            excel_data = lookup_dict.get(lookup_key)
+
+            if not excel_data:
+                print(f"DEBUG: Dropped article {article_number} on page {page_number}. Not found in lookup_dict.")
+                current_section = None
+                continue
+
+            golden_id = str(excel_data.get("Dinh_dang_2", ""))
+            if "CaoDang" in golden_id:
+                current_section = None
+                continue
+
             current_section = create_section(
                 section_level="article",
                 page_number=page_number,
                 content_type=content_type,
                 index=section_index,
-                document_title=current_document_title,
+                document_title=str(excel_data.get("Ten_van_ban", current_document_title)),
                 part=current_part,
-                chapter=current_chapter,
+                chapter=str(excel_data.get("Chuong", current_chapter)),
                 article=article,
-                title=title,
+                title=str(excel_data.get("Ten_dieu", title)),
                 article_number=article_number,
             )
+            
+            current_section["section_id"] = golden_id
 
             current_section["content_lines"].append(line)
             current_section["pages"].append(page_number)
@@ -411,33 +445,10 @@ def build_structured_sections(
             continue
 
         if current_section is None:
-            title = (
-                current_chapter
-                or current_part
-                or current_document_title
-                or f"Section page {page_number}"
-            )
-
-            current_section = create_section(
-                section_level="non_article",
-                page_number=page_number,
-                content_type=content_type,
-                index=section_index,
-                document_title=current_document_title,
-                part=current_part,
-                chapter=current_chapter,
-                article=None,
-                title=title,
-            )
-
-            section_index += 1
+            continue
 
         current_section["content_lines"].append(line)
         current_section["pages"].append(page_number)
-
-        if should_split_long_non_article_section(current_section):
-            close_section(current_section, sections)
-            current_section = None
 
     close_section(current_section, sections)
 
@@ -583,7 +594,22 @@ def main() -> None:
         target_content_types=target_content_types,
     )
 
-    structured_sections = build_structured_sections(line_records)
+    cohort = os.environ.get("COHORT", "UNKNOWN")
+    lookup_dict = {}
+    if cohort in ["K48-K49", "K50", "K51"]:
+        file_prefix = "K48_49" if cohort == "K48-K49" else cohort
+        excel_file = f"data/raw/gpt_extracted/{file_prefix}_extracted.xlsx"
+        if os.path.exists(excel_file):
+            df = pd.read_excel(excel_file)
+            for _, row in df.iterrows():
+                try:
+                    trang = int(row["Trang"])
+                    dieu = int(row["So_dieu"])
+                    lookup_dict[(trang, dieu)] = row.to_dict()
+                except (ValueError, TypeError):
+                    continue
+
+    structured_sections = build_structured_sections(line_records, lookup_dict)
     structure_report = build_structure_report(structured_sections)
 
     save_json(line_records, Path(config["output"]["line_records"]))

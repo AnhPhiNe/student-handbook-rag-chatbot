@@ -2,14 +2,9 @@ from pathlib import Path
 from typing import Any
 import os
 
-from .directory_chunker import build_directory_chunks
-from .form_chunker import build_form_chunks
-from .formula_chunker import build_formula_chunks
 from .io_utils import load_json, load_yaml, save_json
-from .procedure_chunker import build_procedure_chunks
 from .regulation_chunker import build_regulation_chunks
 from .report_builder import build_chunk_report
-from .table_chunker import build_table_chunks
 from .validator import validate_chunks, validate_parent_links
 
 
@@ -101,24 +96,7 @@ def main() -> None:
         ),
         None,
     )
-    scoring_tables = load_json(Path(config["input"]["scoring_tables"]))
-    formula_rules = load_json(Path(config["input"]["formula_rules"]))
-    form_templates = load_json(Path(config["input"]["form_templates"]))
-    office_directory = load_json(Path(config["input"]["office_directory"]))
-    faculty_path = Path(
-        config["input"].get(
-            "faculty_directory",
-            config["input"]["faculty_program_directory"],
-        )
-    )
-    faculty_directory = load_json(faculty_path)
-    program_directory = load_json(Path(config["input"]["program_directory"]))
-    reference_directory = load_json(Path(config["input"]["reference_directory"]))
-    procedures = load_json(Path(config["input"]["procedures"]))
-
     regulation_config = config["chunking"]["regulation"]
-    directory_config = config["chunking"]["directory_summary"]
-    procedure_config = config["chunking"]["procedure_summary"]
 
     regulation_chunks, docstore_items = build_regulation_chunks(
         sections=structured_sections,
@@ -126,31 +104,7 @@ def main() -> None:
         overlap_tokens=regulation_config["overlap_tokens"],
     )
 
-    table_chunks = build_table_chunks(scoring_tables)
-    formula_chunks = build_formula_chunks(formula_rules)
-    form_chunks = build_form_chunks(form_templates)
-
-    directory_chunks = build_directory_chunks(
-        office_records=office_directory,
-        faculty_records=faculty_directory,
-        program_records=program_directory,
-        reference_records=reference_directory,
-        directory_max_tokens=directory_config["max_tokens"],
-    )
-
-    procedure_chunks = build_procedure_chunks(
-        procedures=procedures,
-        max_tokens=procedure_config["max_tokens"],
-    )
-
-    all_chunks = (
-        regulation_chunks
-        + table_chunks
-        + formula_chunks
-        + form_chunks
-        + directory_chunks
-        + procedure_chunks
-    )
+    all_chunks = regulation_chunks
     attach_cohort_metadata(
         chunks=all_chunks,
         docstore_items=docstore_items,
@@ -169,11 +123,10 @@ def main() -> None:
 
     report = build_chunk_report(
         regulation_chunks=regulation_chunks,
-        table_chunks=table_chunks,
-        formula_chunks=formula_chunks,
-        form_chunks=form_chunks,
-        directory_chunks=directory_chunks,
-        procedure_chunks=procedure_chunks,
+        table_chunks=[],
+        formula_chunks=[],
+        directory_chunks=[],
+        procedure_chunks=[],
         all_chunks=all_chunks,
         validation_issues=validation_issues,
     )
@@ -181,11 +134,6 @@ def main() -> None:
     index_manifest = build_index_manifest(config)
 
     save_json(regulation_chunks, Path(config["output"]["regulation_chunks"]))
-    save_json(table_chunks, Path(config["output"]["table_chunks"]))
-    save_json(formula_chunks, Path(config["output"]["formula_chunks"]))
-    save_json(form_chunks, Path(config["output"]["form_chunks"]))
-    save_json(directory_chunks, Path(config["output"]["directory_chunks"]))
-    save_json(procedure_chunks, Path(config["output"]["procedure_chunks"]))
 
     save_json(semantic_chunks, Path(config["output"]["semantic_chunks"]))
     save_json(

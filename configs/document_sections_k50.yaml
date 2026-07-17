@@ -21,7 +21,7 @@ sections:
     description: "Tổng quan Trường Đại học Sư phạm TP.HCM"
 
   - content_type: scoring_form_table
-    page_start: 99
+    page_start: 103
     page_end: 105
     description: "Phiếu đánh giá kết quả rèn luyện sinh viên"
 

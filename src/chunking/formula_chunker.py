@@ -28,7 +28,7 @@ def build_formula_chunks(formulas: list[dict[str, Any]]) -> list[dict[str, Any]]
     """Xây dựng các "chunk" (khối dữ liệu) từ một danh sách các công thức.
 
     Hàm này duyệt qua từng công thức trong danh sách đầu vào, trích xuất các thông tin
-    quan trọng như tên công thức, biểu thức, biến số, hàm tính toán, và nguồn.
+    quan trọng như tên công thức, biểu thức, biến số và nguồn.
     Sau đó, nó định dạng các thông tin này thành một chuỗi nội dung dễ hiểu
     và tạo ra một "chunk" dữ liệu hoàn chỉnh. Mỗi chunk bao gồm một ID duy nhất,
     loại chunk, chế độ lập chỉ mục, nội dung mô tả công thức, và các siêu dữ liệu
@@ -39,7 +39,7 @@ def build_formula_chunks(formulas: list[dict[str, Any]]) -> list[dict[str, Any]]
         formulas (list[dict[str, Any]]): Một danh sách các từ điển, trong đó mỗi
             từ điển đại diện cho một công thức. Mỗi từ điển công thức có thể
             chứa các khóa như 'rule_name' (tên công thức), 'formula_text' (biểu thức),
-            'variables' (các biến số), 'calculator_function' (hàm tính toán),
+            'variables' (các biến số),
             'source_pages' (trang nguồn), 'rule_id' (ID công thức), v.v.
 
     Returns:
@@ -61,9 +61,8 @@ def build_formula_chunks(formulas: list[dict[str, Any]]) -> list[dict[str, Any]]
                 f"Biểu thức: {formula.get('formula_text')}",
                 "Biến số:",
                 variables_to_text(formula.get("variables", {})),
-                f"Hàm tính toán: {formula.get('calculator_function')}",
                 f"Nguồn: {format_source_pages(source_pages)}",
-                "Ghi chú: Nếu người dùng yêu cầu tính toán, hệ thống nên gọi calculator function.",
+                "Ghi chú: Công thức này dùng để tra cứu và hướng dẫn cách áp dụng.",
             ]
         )
 
@@ -78,7 +77,6 @@ def build_formula_chunks(formulas: list[dict[str, Any]]) -> list[dict[str, Any]]
                     "rule_id": formula.get("rule_id"),
                     "rule_name": formula.get("rule_name"),
                     "calculation_type": formula.get("calculation_type"),
-                    "calculator_function": formula.get("calculator_function"),
                     "source_article": formula.get("source_article"),
                     "source_pages": source_pages,
                     "review_status": formula.get("review_status"),

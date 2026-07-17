@@ -14,18 +14,6 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-os.environ.setdefault("HF_HUB_OFFLINE", "1")
-os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
-os.environ["LANGSMITH_TRACING"] = "false"
-os.environ["LANGCHAIN_TRACING"] = "false"
-os.environ["LANGCHAIN_TRACING_V2"] = "false"
-os.environ["LANGSMITH_API_KEY"] = ""
-os.environ["LANGCHAIN_API_KEY"] = ""
-os.environ["MONGODB_PARENT_LOOKUP_ENABLED"] = "false"
-os.environ["STUDENT_RAG_DISABLE_AI_ROUTER"] = "1"
-os.environ["STUDENT_RAG_OFFLINE_EVAL"] = "1"
-
-
 def _disable_langsmith_tracing() -> None:
     try:
         import langsmith
@@ -562,11 +550,6 @@ def run_evaluation(config_path: Path, golden_path: Path, scope: str = "all") -> 
     from src.retrieval.core.io_utils import load_json as load_project_json
     from src.retrieval.core.io_utils import load_yaml
     from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline as run_retrieval_pipeline
-    from src.retrieval.core.vector_retriever import (
-        get_chroma_collection,
-        load_embedding_model,
-    )
-
     config = load_yaml(config_path)
     all_cases = load_json(golden_path)
     cases = [case for case in all_cases if case_matches_scope(case, scope)]

@@ -15,11 +15,15 @@ REQUIRED_ARTIFACTS = [
     ("configs/answer_generation.yaml", "file"),
     ("data/processed/tables/scoring_tables.json", "file"),
     ("data/processed/tables/formula_rules.json", "file"),
+    ("data/processed/tables/structured_tables_registry.json", "file"),
+    ("data/processed/tables/foreign_language_equivalency_table.json", "file"),
+    ("data/processed/directories/student_service_directory.json", "file"),
+    ("data/processed/directories/student_office_profiles.json", "file"),
+    ("data/processed/directories/student_faculty_profiles.json", "file"),
     ("data/processed/entities/entity_registry.json", "file"),
     ("data/processed/entities/query_expansion_rules.json", "file"),
     ("data/processed/chunks/all_docstore_items.json", "file"),
     ("data/processed/chunks/v7_child_parent_chunks.json", "file"),
-    ("data/processed/metadata/section_evidence_registry.json", "file"),
     ("data/vectorstore/chroma", "dir"),
 ]
 

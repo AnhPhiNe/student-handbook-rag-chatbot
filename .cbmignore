@@ -1,0 +1,41 @@
+# Secrets and local config
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Local environments and dependency caches
+.venv/
+venv/
+env/
+node_modules/
+frontend/node_modules/
+__pycache__/
+**/__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Runtime, generated, and bulky artifacts
+logs/
+outputs/
+scratch/
+.hf_deploy_temp/
+.streamlit-run/
+.agents/
+.codex/
+data/
+models/
+*.ipynb
+*.log
+*.sqlite3
+*.db
+*.onnx
+*.onnx_data
+*.bin
+
+# Temporary manual test outputs
+install.ps1
+test_output*.txt
+out.*
+temp_matches.txt

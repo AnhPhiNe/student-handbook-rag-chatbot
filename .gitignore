@@ -25,9 +25,10 @@ htmlcov/
 .cache/
 .streamlit-run/
 data/cache/
-data/eval/reports/*.json
+data/eval/reports/**
 *.log
 hf_check/
+codebase-memory-mcp-bin/
 
 # OS/editor noise
 .DS_Store
@@ -43,7 +44,6 @@ $RECYCLE.BIN/
 data/processed/*
 !data/processed/metadata/
 data/processed/metadata/*
-!data/processed/metadata/section_evidence_registry.json
 data/vectorstore/
 models/
 scratch/

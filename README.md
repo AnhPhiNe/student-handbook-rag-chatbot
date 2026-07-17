@@ -11,8 +11,8 @@
   <img src="https://img.shields.io/badge/React%20%2B%20Vite-Frontend-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Vite">
   <img src="https://img.shields.io/badge/Qdrant-Vector%20DB-E21727?style=for-the-badge" alt="Qdrant">
   <img src="https://img.shields.io/badge/MongoDB-Parent%20Docs-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
-  <img src="https://img.shields.io/badge/Groq-LLM%20Orchestration-F55036?style=for-the-badge" alt="Groq">
-  <img src="https://img.shields.io/badge/Gemini-LLM%20Judge-8E75B2?style=for-the-badge&logo=google&logoColor=white" alt="Gemini">
+  <img src="https://img.shields.io/badge/Gemini-Answer%20Generation-8E75B2?style=for-the-badge&logo=google&logoColor=white" alt="Gemini">
+  <img src="https://img.shields.io/badge/Multi--Key-Load%20Balancing-1F6FEB?style=for-the-badge" alt="Multi-key load balancing">
   <br>
   <a href="https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api">
     <img src="https://img.shields.io/badge/Live_API_Demo-HuggingFace-FFD21E?style=for-the-badge&logo=huggingface" alt="Live API Demo">
@@ -37,7 +37,7 @@ Unlike a simple "PDF chatbot", this project separates the system into two comple
 
 ### Why this is not just a PDF chatbot
 
-The system is designed around the actual failure modes of handbook QA: different cohorts can have different rules, structured facts should not be guessed by an LLM, and long regulations often require retrieving a small evidence chunk while still citing the original parent section. HCMUE AI therefore combines cohort-aware routing, deterministic lookup, child-parent retrieval, reranking, evidence selection, and citation binding instead of sending raw PDF chunks directly to a chat model.
+The system is designed around the actual failure modes of handbook QA: different cohorts can have different rules, structured facts should not be guessed by an LLM, and long regulations need parent-section context with reliable citations. HCMUE AI therefore uses a deterministic-first pipeline for exact facts, then falls back to cohort-aware child-parent RAG with reranking, full top-5 context packing, and citation binding instead of sending raw PDF chunks directly to a chat model.
 
 The result is a production-oriented public beta assistant that can answer practical student questions such as:
 
@@ -68,15 +68,17 @@ For true RAG questions, the system combines:
 - Cross-encoder reranking to improve final context quality.
 - Metadata filtering and boosting by cohort and content type.
 
-### 3. Structured Lookup for Deterministic Facts
+### 3. Deterministic Lookup for Exact Facts
 
 Information that should not be "generated from vibes" is extracted into structured stores:
 
 - `program_directory`: majors, faculties, career descriptions, cohort applicability.
-- `scoring_tables`: grade conversion and training score tables.
+- `student_service_directory`: student services, offices, responsibilities, emails, phones, and locations.
+- `scoring_tables`: grade conversion, academic classification, conduct classification, and scholarship classification tables.
+- `structured_tables_registry`: standardized handbook tables such as study duration.
+- `foreign_language_equivalency_table`: certificate equivalency for foreign-language output standards.
 - `threshold_rules`: pass/fail thresholds and policy cutoffs.
 - `formula_rules`: GPA, scholarship, and tuition-related formulas where available.
-- `office_directory`: offices, responsibilities, emails, phone numbers.
 - `form_templates`: form name, purpose, source page, and routing to the Forms page.
 
 This architecture significantly reduces LLM hallucination on high-frequency student questions. To avoid LLM math limitations and hallucinated calculations, complex logic such as GPA and tuition estimation is offloaded to dedicated **Deterministic UI Tools** instead of relying on the LLM to compute results through generation.
@@ -93,23 +95,23 @@ The project uses a parent-child retrieval design:
 
 The generation layer includes:
 
+- Deterministic pre-router lookup for exact table/directory/formula questions.
 - AI router for intent and retrieval strategy.
 - Query rewriting for accentless Vietnamese, typo-prone queries, and short queries.
-- Groq model fallback chain for answer generation.
-- Context allocation to fit relevant sources into a controlled token budget.
+- Gemini Flash-Lite answer generation with multi-key quota-aware load balancing.
+- Full top-5 parent-section context packing for true-RAG answers.
 - Citation selection that prefers matching cohort, content type, section, and page metadata.
 - Guardrails for out-of-domain, unsafe, ambiguous, or low-context questions.
 
 ## Engineering Highlights
 
 - **Cohort-aware RAG architecture:** metadata filtering and cohort-specific routing for `K48-K49`, `K50`, and `K51`.
-- **Hybrid router:** separates deterministic lookup questions from generated true-RAG answers.
-- **Deterministic lookup:** exact program, scoring, form, office, and tool responses without relying on LLM guessing.
+- **Deterministic-first router:** answers exact table, directory, form, formula, study-duration, scholarship, and foreign-language queries without an LLM call.
 - **V7 child-parent retrieval:** Qdrant indexes small `section_heading`, `child`, and `table_like` chunks while MongoDB stores full parent sections for citations.
 - **Hybrid retrieval stack:** dense retrieval with `BAAI/bge-m3`, BM25 sparse retrieval, metadata filtering, and cross-encoder reranking.
-- **Evidence selection:** surfaces key facts from retrieved sections to reduce "source is correct but LLM missed the detail" failures.
-- **Layered evaluation:** router/lookup metrics, retrieval metrics, evidence regression, and RAGAS-style Gemini Judge are reported separately.
-- **Production guardrails:** cohort filtering, citation binding, model fallback, cache support, rate limits, and queue/backpressure settings.
+- **Full top-5 context packing:** sends richer parent-section context to Gemini while preserving source/citation metadata.
+- **Layered evaluation:** router/lookup metrics, retrieval metrics, generation quality, and RAGAS-style Gemini Judge are reported separately.
+- **Production guardrails:** cohort filtering, citation binding, Gemini key-pool load balancing, cache support, rate limits, and queue/backpressure settings.
 
 ## System Snapshot
 
@@ -118,10 +120,10 @@ The generation layer includes:
 | Supported cohorts | K48-K49, K50, K51 |
 | Retrieval design | V7 child-parent regulation retrieval |
 | Parent docstore | MongoDB Atlas |
-| Structured lookup groups | programs, scoring, forms, offices, guardrails |
+| Deterministic lookup groups | programs, services/offices, forms, scoring, formulas, study duration, scholarship, foreign language |
 | Qdrant collection | `student_handbook_semantic_v7` |
-| Final regression cases | 40 router, 16 structured/tool, 84 true-RAG retrieval, 30 evidence |
-| RAGAS-style Judge subset | 29 generated true-RAG answers |
+| Answer model | Gemini Flash-Lite with local multi-key load balancing |
+| Evaluation status | Legacy baseline shown below; rerun evaluation after this cleanup for final CV numbers |
 
 ## Architecture
 
@@ -131,19 +133,22 @@ flowchart LR
     Frontend --> API["FastAPI Backend"]
 
     API --> Guard["Input Guardrails"]
-    Guard --> Router["AI Router + Routing Rules"]
+    Guard --> LookupFirst["Deterministic Pre-Router Lookup"]
+    LookupFirst --> Router["AI Router + Routing Rules"]
 
-    Router -->|programs / scores / forms / offices| Lookup["Structured Lookup"]
+    LookupFirst -->|exact tables / directories / formulas| Lookup["Structured Lookup"]
     Router -->|regulations| Retrieval["V7 Hybrid Retrieval"]
 
     Retrieval --> Qdrant["Qdrant Cloud\nV7 child/table/heading chunks"]
     Retrieval --> BM25["BM25 Sparse Index"]
+    Retrieval --> Graph["Directed Rule Graph Expansion"]
     Retrieval --> Reranker["Cross-Encoder Reranker"]
     Reranker --> Mongo["MongoDB Atlas\nParent Docs"]
 
-    Lookup --> Answer["Answer Formatter / LLM"]
-    Mongo --> Answer
-    Answer --> Citation["Citations + Source Metadata"]
+    Lookup --> Answer["Deterministic Answer Formatter"]
+    Mongo --> Gemini["Gemini Answer Generator\nFull top-5 context"]
+    Gemini --> Citation["Citations + Source Metadata"]
+    Answer --> Citation
     Citation --> Frontend
 
     API -. optional .-> Cache["Redis / Local JSON Cache"]
@@ -156,19 +161,22 @@ flowchart LR
 flowchart TD
     Query["User Query"] --> Validate["Validate Query"]
     Validate --> Rewrite["Query Rewriter"]
-    Rewrite --> Route{"Router Decision"}
+    Rewrite --> Lookup{"Deterministic lookup?"}
 
-    Route -->|Structured| Structured["Structured Lookup"]
+    Lookup -->|yes| Structured["JSON / tool lookup"]
     Structured --> StructuredAnswer["Deterministic Answer Builder"]
 
+    Lookup -->|no| Route{"Router Decision"}
     Route -->|True RAG| Expand["Entity Expansion"]
     Expand --> Vector["Qdrant Dense Retrieval"]
     Expand --> Sparse["BM25 Sparse Retrieval"]
+    Expand --> Graph["Directed Graph Expansion"]
     Vector --> Merge["Candidate Merge"]
     Sparse --> Merge
+    Graph --> Merge
     Merge --> Rerank["Cross-Encoder Rerank"]
     Rerank --> Parent["Mongo Parent Sections"]
-    Parent --> Context["Score-Weighted Context Allocation"]
+    Parent --> Context["Full Top-5 Context Allocation"]
 
     StructuredAnswer --> Generate["Final Answer"]
     Context --> Generate
@@ -178,9 +186,10 @@ flowchart TD
 
 ### Pipeline Breakdown
 
-- **Input validation & Rewriting:** Filters invalid queries and rewrites them into accentless, complete sentences.
-- **Intent Routing:** Sends deterministic queries to structured lookups, and long-form questions to the Hybrid RAG pipeline.
-- **Hybrid Retrieval & Generation:** Combines Vector + BM25, reranks with cross-encoder, expands context via MongoDB, and enforces strict cohort guardrails during generation.
+- **Input validation & rewriting:** Filters invalid queries, resolves cohort context, and rewrites typo-prone or short Vietnamese queries.
+- **Deterministic lookup:** Handles exact facts from JSON/tool stores before vector retrieval or answer-generation LLM calls.
+- **Intent routing:** Sends remaining long-form questions to the Hybrid RAG pipeline.
+- **Hybrid retrieval & generation:** Combines Qdrant + BM25 + directed graph expansion, reranks with a cross-encoder, expands context via MongoDB, and uses Gemini with strict cohort/citation guardrails.
 
 ## Data and Ingestion Design
 
@@ -277,23 +286,7 @@ Important tag-level checks:
 | Table-heavy | 12 | 91.67% | 88.19% | 91.09% |
 | Cohort-sensitive | 6 | 100.00% | 88.89% | 91.38% |
 
-### 3. Evidence Selection Regression
-
-The evidence layer is evaluated separately from retrieval to verify that important facts are surfaced to the LLM without taking over citation binding.
-
-| Metric | Score |
-|---|---:|
-| Cases | 30 |
-| Retrieval fact availability | 86.67% |
-| Evidence context present | 100.00% |
-| Required fact hit with evidence | 90.00% |
-| Retrieval source correctness | 96.67% |
-| Evidence fact hit | 80.00% |
-| Answer uses evidence | 90.00% |
-| Citation binding correctness | 96.67% |
-| No marker leakage | 100.00% |
-
-### 4. RAGAS-Style Gemini Judge
+### 3. RAGAS-Style Gemini Judge
 
 Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 3.1 Flash Lite as Judge. Deterministic lookup cases are excluded from the headline RAGAS metrics. The latest judge run uses 29 generated answers because one extra answer-generation case was skipped after Groq rate limits; it is not used in the headline metric.
 
@@ -313,7 +306,7 @@ Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 
 - **Cohort Segregation (K50 vs K51):** The system enforces strict isolation between K50 and K51 regulations. In the production UI, students select a cohort before asking, so cohort-specific retrieval and citation are more representative than no-cohort general stress tests.
 - **V7 Retrieval Tradeoff:** Hit@1 is intentionally not the only goal. The RAG pipeline uses top-k evidence, parent expansion, and reranking, so Hit@3/Hit@5 and citation correctness better reflect the user-facing answer quality.
 - **RAGAS Scope:** RAGAS-style Judge is reported only for generated true-RAG answers. Deterministic lookup cases are measured separately with exactness and item-count checks.
-- **Evidence Layer:** Evidence selection improves source readability and focuses the LLM on key facts, but citation binding remains attached to the retrieved parent section to avoid evidence-level citation drift.
+- **Context Packing:** The generation prompt uses retrieved parent sections with table/list normalization and query-focused snippets. Citation binding remains attached to the retrieved parent section.
 - Metrics are reported as layered quality gates instead of one blended score.
 
 ## CI/CD and Quality Gates
@@ -413,7 +406,6 @@ python scripts/evaluate_retrieval.py --golden data/eval/final_true_rag_holdout_v
 ### Build V7 retrieval artifacts
 
 ```bash
-python scripts/build_section_evidence_registry.py
 python scripts/build_v7_child_parent_index.py
 ```
 

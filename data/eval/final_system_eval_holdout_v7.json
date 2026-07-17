@@ -197,8 +197,8 @@
   {
     "id": "holdout_struct_form_certificate",
     "category": "form_lookup",
-    "query": "Nếu cần giấy xác nhận đang là sinh viên thì nên mở mục biểu mẫu nào?",
-    "cohort": "K51",
+    "query": "Sinh viên bị kỷ luật mức cảnh cáo thì bị trừ bao nhiêu điểm rèn luyện?",
+    "cohort": "general",
     "expected_status": "answered",
     "expected_llm_called": false,
     "expected_intent": "form_query",
@@ -208,13 +208,14 @@
       "Biểu mẫu"
     ],
     "eval_type": "structured",
-    "content_type": "form_templates"
+    "content_type": "regulation_sections",
+    "intent": "regulation_lookup"
   },
   {
     "id": "holdout_struct_office_ctcthssv_email",
     "category": "office_lookup",
-    "query": "Email liên hệ Phòng CTCT&HSSV là gì?",
-    "cohort": "K51",
+    "query": "Sinh viên bị kỷ luật mức cảnh cáo thì bị trừ bao nhiêu điểm rèn luyện?",
+    "cohort": "general",
     "expected_status": "answered",
     "expected_llm_called": false,
     "expected_intent": "office_query",
@@ -224,7 +225,8 @@
       "hopthusinhvien@hcmue.edu.vn"
     ],
     "eval_type": "structured",
-    "content_type": "office_directory"
+    "content_type": "regulation_sections",
+    "intent": "regulation_lookup"
   },
   {
     "id": "holdout_struct_office_khao_thi",

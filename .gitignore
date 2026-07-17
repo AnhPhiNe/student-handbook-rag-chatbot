@@ -51,10 +51,14 @@ scratch/
 *.onnx_data
 *.bin
 *.sqlite3
+data/eval/v7_new/
+human_validation_samples.csv
 
 # Temp files
 out.*
 temp_matches.txt
 test_viranker.py
+scripts/patch_eval_v8.py
+scripts/test_router.py
 
 deploy_hf.bat

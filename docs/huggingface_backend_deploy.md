@@ -88,11 +88,11 @@ MONGODB_TIMEOUT_MS=3000
 MONGODB_FAILURE_BACKOFF_SECONDS=300
 ```
 
-`configs/answer_generation.yaml` currently sets `query_rewriter.enabled: true`,
-so `QUERY_REWRITER_ENABLED=false` by itself does not disable this layer. To
-deploy without the Groq/Llama context resolver and query-rewriting layer, set
-`query_rewriter.enabled: false` in the Space copy of
-`configs/answer_generation.yaml` before pushing backend files.
+`configs/answer_generation.yaml` in this repository currently sets
+`query_rewriter.enabled: false`, so the query-rewriter layer is disabled by
+default. If you want to enable Groq/Llama context resolution and query
+rewriting in the Space, set `query_rewriter.enabled: true` in the Space copy
+of `configs/answer_generation.yaml` before pushing backend files.
 
 ## 4. Push Backend Files
 

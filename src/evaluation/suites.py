@@ -182,6 +182,16 @@ def _first_retrieval_telemetry(items: list[dict[str, Any]]) -> dict[str, Any]:
     return {}
 
 
+def _progress_cases(
+    cases: list[dict[str, Any]],
+    *,
+    limit: int | None,
+    desc: str,
+) -> tqdm:
+    selected = cases[:limit]
+    return tqdm(selected, desc=desc, unit="case", dynamic_ncols=True)
+
+
 def evaluate_deterministic(
     cases: list[dict[str, Any]],
     *,
@@ -198,7 +208,13 @@ def evaluate_deterministic(
     os.environ["STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED"] = "1"
     rows: list[dict[str, Any]] = []
     try:
-        for case in cases[:limit]:
+        progress = _progress_cases(
+            cases,
+            limit=limit,
+            desc="Deterministic Eval",
+        )
+        for case in progress:
+            progress.set_postfix_str(str(case.get("id") or "unknown"))
             started = time.perf_counter()
             try:
                 result = pipeline.run_retrieval_pipeline(
@@ -404,6 +420,22 @@ def evaluate_deterministic(
                         "latency_ms": (time.perf_counter() - started) * 1000,
                     }
                 )
+                progress.set_postfix(
+                    {
+                        "case": case.get("id"),
+                        "group": actual_group,
+                        "pass": int(passed),
+                        "api": int(
+                            bool(result.get("router_model"))
+                            and not bool(
+                                (result.get("router_decision") or {}).get(
+                                    "router_error"
+                                )
+                            )
+                        ),
+                    },
+                    refresh=False,
+                )
             except Exception as exc:
                 rows.append(
                     {
@@ -412,6 +444,14 @@ def evaluate_deterministic(
                         "error": str(exc),
                         "latency_ms": (time.perf_counter() - started) * 1000,
                     }
+                )
+                progress.set_postfix(
+                    {
+                        "case": case.get("id"),
+                        "pass": 0,
+                        "error": type(exc).__name__,
+                    },
+                    refresh=False,
                 )
     finally:
         pipeline.retrieve_with_plan = original_retrieve
@@ -523,8 +563,16 @@ def evaluate_retrieval(
 ) -> dict[str, Any]:
     if backend not in {"qdrant", "chroma"}:
         raise ValueError("backend must be qdrant or chroma")
-    if mode not in {"full", "no_graph", "vector_only"}:
-        raise ValueError("mode must be full, no_graph or vector_only")
+    if mode not in {
+        "full",
+        "no_graph",
+        "vector_only",
+        "vector_primary_graph_supplement",
+    }:
+        raise ValueError(
+            "mode must be full, no_graph, vector_only, "
+            "or vector_primary_graph_supplement"
+        )
     if backend == "chroma" and mode != "full":
         raise ValueError("Chroma is reproducibility-only; ablations require Qdrant")
     previous_backend = os.environ.get("STUDENT_RAG_USE_QDRANT")
@@ -543,7 +591,13 @@ def evaluate_retrieval(
     pipeline = pipeline_factory()
     rows: list[dict[str, Any]] = []
     try:
-        for case in cases[:limit]:
+        progress = _progress_cases(
+            cases,
+            limit=limit,
+            desc=f"Retrieval Eval [{backend}/{mode}]",
+        )
+        for case in progress:
+            progress.set_postfix_str(str(case.get("id") or "unknown"))
             started = time.perf_counter()
             try:
                 requested_cohort = case.get("cohort")
@@ -624,6 +678,15 @@ def evaluate_retrieval(
                         "latency_ms": (time.perf_counter() - started) * 1000,
                     }
                 )
+                progress.set_postfix(
+                    {
+                        "case": case.get("id"),
+                        "hit5": int(bool(metrics["hit_at_5"])),
+                        "items": len(items),
+                        "ms": int((time.perf_counter() - started) * 1000),
+                    },
+                    refresh=False,
+                )
             except Exception as exc:
                 empty_metrics = retrieval_metrics([])
                 empty_metrics["mrr"] = empty_metrics.pop("reciprocal_rank")
@@ -640,6 +703,14 @@ def evaluate_retrieval(
                         "synthetic_leak": False,
                         "latency_ms": (time.perf_counter() - started) * 1000,
                     }
+                )
+                progress.set_postfix(
+                    {
+                        "case": case.get("id"),
+                        "hit5": 0,
+                        "error": type(exc).__name__,
+                    },
+                    refresh=False,
                 )
     finally:
         _restore_env("STUDENT_RAG_USE_QDRANT", previous_backend)
@@ -766,8 +837,18 @@ def generate_answers(
     by_id = {row["id"]: row for row in existing}
     try:
         pipeline = pipeline_factory()
-        for case in tqdm(cases[:limit], desc="Generating Answers", unit="case"):
+        progress = _progress_cases(
+            cases,
+            limit=limit,
+            desc="Generating Answers",
+        )
+        for case in progress:
+            progress.set_postfix_str(str(case.get("id") or "unknown"))
             if case["id"] in by_id:
+                progress.set_postfix(
+                    {"case": case.get("id"), "cache": 1},
+                    refresh=False,
+                )
                 continue
             started = time.perf_counter()
             try:
@@ -786,6 +867,14 @@ def generate_answers(
                     "latency_ms": (time.perf_counter() - started) * 1000,
                 }
             by_id[case["id"]] = record
+            progress.set_postfix(
+                {
+                    "case": case.get("id"),
+                    "status": record.get("status"),
+                    "ms": int(float(record.get("latency_ms") or 0)),
+                },
+                refresh=False,
+            )
             cache_path.parent.mkdir(parents=True, exist_ok=True)
             cache_path.write_text(
                 json.dumps(list(by_id.values()), ensure_ascii=False, indent=2),
@@ -823,8 +912,18 @@ def judge_answers(
     answers = {row["id"]: row for row in answer_cache}
     existing = load_json(checkpoint_path) if resume and checkpoint_path.exists() else []
     judged = {row["id"]: row for row in existing}
-    for case in tqdm(cases[:limit], desc="Judging Answers", unit="case"):
+    progress = _progress_cases(
+        cases,
+        limit=limit,
+        desc="Judging Answers",
+    )
+    for case in progress:
+        progress.set_postfix_str(str(case.get("id") or "unknown"))
         if case["id"] in judged:
+            progress.set_postfix(
+                {"case": case.get("id"), "cache": 1},
+                refresh=False,
+            )
             continue
         answer = answers.get(case["id"], {})
         packet = compact_judge_packet(case, answer)
@@ -848,6 +947,14 @@ def judge_answers(
             )
             / max(1, len(case.get("required_facts") or [])),
         }
+        progress.set_postfix(
+            {
+                "case": case.get("id"),
+                "ok": int(bool(result.get("ok"))),
+                "ms": int((time.perf_counter() - started) * 1000),
+            },
+            refresh=False,
+        )
         checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
         checkpoint_path.write_text(
             json.dumps(list(judged.values()), ensure_ascii=False, indent=2),
@@ -922,7 +1029,7 @@ def _answer_checks(case: dict[str, Any], answer: dict[str, Any]) -> dict[str, An
         "needs_clarification",
         "out_of_domain",
         "low_confidence",
-    }
+    } or _answer_text_abstains(text)
     citation_exact_match = bool(expected_ids & actual_ids) if expected_ids else not actual_ids
     required_fact_hit = (
         all(_soft_fact_match(fact, text) for fact in required) if required else True
@@ -958,6 +1065,22 @@ def _normalize_eval_text(value: Any) -> str:
     text = "".join(char for char in text if unicodedata.category(char) != "Mn")
     text = re.sub(r"[^\w%.,]+", " ", text, flags=re.UNICODE)
     return " ".join(text.split())
+
+
+def _answer_text_abstains(answer_text: str) -> bool:
+    abstention_signals = (
+        "chua thay",
+        "khong tim thay",
+        "khong co quy dinh",
+        "chua co can cu",
+        "khong du can cu",
+        "chua du can cu",
+        "khong du thong tin",
+        "khong thay can cu",
+        "khong co can cu truc tiep",
+        "chua thay can cu truc tiep",
+    )
+    return any(signal in answer_text for signal in abstention_signals)
 
 
 def _soft_fact_match(fact: str, answer_text: str) -> bool:
@@ -1110,15 +1233,50 @@ def evaluate_production(
             }
 
     sequential = [case for case in selected if case["scenario"] != "burst"]
-    rows.extend(run(case) for case in sequential)
+    sequential_progress = tqdm(
+        sequential,
+        desc="Production Eval",
+        unit="req",
+        dynamic_ncols=True,
+    )
+    for case in sequential_progress:
+        sequential_progress.set_postfix_str(str(case.get("id") or "unknown"))
+        row = run(case)
+        rows.append(row)
+        sequential_progress.set_postfix(
+            {
+                "case": case.get("id"),
+                "ok": int(bool(row.get("success"))),
+                "ms": int(float(row.get("latency_ms") or 0)),
+            },
+            refresh=False,
+        )
     bursts = [case for case in selected if case["scenario"] == "burst"]
     by_concurrency: dict[int, list[dict[str, Any]]] = defaultdict(list)
     for case in bursts:
         by_concurrency[int(case.get("concurrency", 3))].append(case)
     for concurrency, group in by_concurrency.items():
         with ThreadPoolExecutor(max_workers=concurrency) as executor:
-            futures = [executor.submit(run, case) for case in group]
-            rows.extend(future.result() for future in as_completed(futures))
+            futures = {executor.submit(run, case): case for case in group}
+            burst_progress = tqdm(
+                as_completed(futures),
+                total=len(futures),
+                desc=f"Production Burst c={concurrency}",
+                unit="req",
+                dynamic_ncols=True,
+            )
+            for future in burst_progress:
+                case = futures[future]
+                row = future.result()
+                rows.append(row)
+                burst_progress.set_postfix(
+                    {
+                        "case": case.get("id"),
+                        "ok": int(bool(row.get("success"))),
+                        "ms": int(float(row.get("latency_ms") or 0)),
+                    },
+                    refresh=False,
+                )
 
     summary = {
         "n": len(rows),

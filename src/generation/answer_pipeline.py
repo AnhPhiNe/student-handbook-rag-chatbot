@@ -19,6 +19,7 @@ from .answer_guardrails import (
     build_clarification_question,
     build_deterministic_answer,
     build_fallback_answer,
+    build_scope_abstention_answer,
     can_answer_deterministically,
     detect_ambiguous_query,
     is_low_confidence,
@@ -50,6 +51,15 @@ def _env_bool(name: str, default: bool = False) -> bool:
     if value is None:
         return default
     return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _normalize_retrieval_cohort(cohort: str | None) -> str | None:
+    if cohort is None:
+        return None
+    normalized = str(cohort).strip()
+    if normalized.lower() in {"", "general", "all"}:
+        return None
+    return normalized
 
 
 class AnswerPipeline:
@@ -204,7 +214,7 @@ class AnswerPipeline:
         effective_query = rewrite_result.effective_query
 
         # Let an explicit cohort in the query win over the UI selector.
-        cohort = resolve_cohort_from_query(query, cohort)
+        cohort = _normalize_retrieval_cohort(resolve_cohort_from_query(query, cohort))
 
         # LLM-Evaluated Semantic Cache (before retrieval)
         is_standalone = not chat_history or len(chat_history) == 0
@@ -459,6 +469,23 @@ class AnswerPipeline:
                 query_rewrite=rewrite_result,
             )
 
+        if guardrails_config.get("scope_abstention_enabled", True):
+            scope_abstention = build_scope_abstention_answer(query, retrieval_result)
+            if scope_abstention:
+                return self._build_output(
+                    query=query,
+                    retrieval_result=retrieval_result,
+                    final_answer=scope_abstention,
+                    context_used=context_used,
+                    selected_citations=[],
+                    status="answered",
+                    error_type=None,
+                    error_message=None,
+                    llm_called=False,
+                    used_cache=False,
+                    query_rewrite=rewrite_result,
+                )
+
         cache_key = self.response_cache.make_cache_key(
             query=effective_query,
             retrieval_result=retrieval_result,
@@ -630,7 +657,7 @@ class AnswerPipeline:
                 )
 
         effective_query = rewrite_result.effective_query
-        cohort = resolve_cohort_from_query(query, cohort)
+        cohort = _normalize_retrieval_cohort(resolve_cohort_from_query(query, cohort))
 
         # LLM-Evaluated Semantic Cache (before retrieval)
         is_standalone = not chat_history or len(chat_history) == 0
@@ -869,6 +896,22 @@ class AnswerPipeline:
             yield {"type": "done", "tracker": tracker}
             return
 
+        if guardrails_config.get("scope_abstention_enabled", True):
+            scope_abstention = build_scope_abstention_answer(query, retrieval_result)
+            if scope_abstention:
+                yield {
+                    "type": "metadata",
+                    "run_id": run_id,
+                    "status": "answered",
+                    "intent": retrieval_result.get("intent"),
+                    "strategy": retrieval_result.get("strategy"),
+                    "citations_used": [],
+                    "llm_called": False,
+                }
+                yield {"type": "token", "text": scope_abstention}
+                yield {"type": "done", "tracker": tracker}
+                return
+
         # Đưa TOÀN BỘ retrieved_items (đã qua ngưỡng 0.70) vào context cho LLM.
         # selected_citations chỉ dùng cho UI hiển thị nguồn tham khảo.
         prompt = build_answer_prompt(
@@ -997,6 +1040,34 @@ class AnswerPipeline:
                 "mode": "qwen_router_single_retrieval",
                 "selected": "router_retrieval_query",
             }
+            if _retrieval_is_answerable(rewritten_result):
+                return rewritten_result, rewrite_result
+
+            original_result = self._run_retrieval(
+                original_query,
+                cohort=cohort,
+                chat_history=chat_history,
+            )
+            selected = self._select_verified_retrieval(
+                original_result=original_result,
+                rewritten_result=rewritten_result,
+            )
+            verification = {
+                "mode": "qwen_router_dual_retrieval",
+                "selected": selected,
+                "original_quality": _retrieval_quality(original_result),
+                "rewritten_quality": _retrieval_quality(rewritten_result),
+                "original_intent": original_result.get("intent"),
+                "rewritten_intent": rewritten_result.get("intent"),
+            }
+            if selected == "original_query":
+                original_result["rewrite_verification"] = verification
+                return original_result, replace(
+                    rewrite_result,
+                    effective_query=original_query,
+                    reason=f"{rewrite_result.reason}_retrieval_fallback_to_original",
+                )
+            rewritten_result["rewrite_verification"] = verification
             return rewritten_result, rewrite_result
 
         if (
@@ -1009,7 +1080,11 @@ class AnswerPipeline:
             }
             return rewritten_result, rewrite_result
 
-        original_result = self._run_retrieval(original_query)
+        original_result = self._run_retrieval(
+            original_query,
+            cohort=cohort,
+            chat_history=chat_history,
+        )
         selected = self._select_verified_retrieval(
             original_result=original_result,
             rewritten_result=rewritten_result,

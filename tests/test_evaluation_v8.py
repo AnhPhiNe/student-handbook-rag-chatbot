@@ -13,6 +13,7 @@ from src.evaluation.judge import (
     GroqJudgeClient,
     JudgeConfig,
     JudgeQuotaPool,
+    build_judge_prompt,
     compact_judge_packet,
     key_fingerprint,
     parse_judge_json,
@@ -179,6 +180,41 @@ def test_broad_question_handling_accepts_scoped_cited_answer() -> None:
 
     assert checks["required_fact_hit"] is False
     assert checks["question_handling_correctness"] is True
+
+
+def test_textual_abstention_counts_for_unanswerable_answer() -> None:
+    case = {
+        "answerability": "unanswerable",
+        "expected_answer_behavior": "abstain",
+        "required_facts": [],
+        "expected_citations": [],
+    }
+    answer = {
+        "status": "answered",
+        "answer": "Mình chưa thấy căn cứ trực tiếp trong Sổ tay cho trường hợp này.",
+        "citations": [],
+    }
+
+    checks = _answer_checks(case, answer)
+
+    assert checks["abstention_correct"] is True
+    assert checks["question_handling_correctness"] is True
+
+
+def test_judge_prompt_is_fair_for_unanswerable_abstention() -> None:
+    prompt = build_judge_prompt(
+        {
+            "case_id": "x",
+            "query": "Trường có cấp laptop miễn phí không?",
+            "answerability": "unanswerable",
+            "expected_answer_behavior": "abstain",
+            "answer": "Mình chưa thấy căn cứ trực tiếp trong Sổ tay.",
+            "retrieved_context": "Nguồn chỉ nói về hỗ trợ học phí.",
+        }
+    )
+
+    assert "do not require a citation that proves non-existence" in prompt
+    assert "unsupported_claim is false" in prompt
 
 
 def test_judge_is_pinned_and_fails_over_without_model_switch(tmp_path: Path) -> None:

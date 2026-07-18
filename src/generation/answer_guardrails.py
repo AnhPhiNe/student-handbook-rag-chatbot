@@ -206,6 +206,71 @@ CHUNK_TYPE_LABELS = {
 
 CLOSE_SCORE_GAP_THRESHOLD = 0.12
 
+ABSTENTION_QUERY_SIGNALS = [
+    "co duoc",
+    "duoc khong",
+    "co khong",
+    "khong can",
+    "bat ky",
+    "bao dam",
+    "cam ket",
+    "tu dong",
+    "mien phi",
+    "mien toan bo",
+    "hoan tien",
+    "mua them",
+    "cap laptop",
+]
+
+DIRECT_SUPPORT_STOPWORDS = {
+    "ai",
+    "ban",
+    "bao",
+    "bao lau",
+    "cho",
+    "co",
+    "con",
+    "cua",
+    "duoc",
+    "em",
+    "hoi",
+    "k48",
+    "k49",
+    "k50",
+    "k51",
+    "khong",
+    "la",
+    "lam",
+    "minh",
+    "nao",
+    "neu",
+    "nhu",
+    "o",
+    "sau",
+    "sinh",
+    "so",
+    "tay",
+    "thi",
+    "the",
+    "trong",
+    "truong",
+    "tu",
+    "van",
+    "ve",
+    "vien",
+}
+
+HIGH_RISK_SCOPE_TERMS = {
+    "bao dam",
+    "cam ket",
+    "laptop",
+    "hoan tien",
+    "mien toan bo",
+    "khong can",
+    "bat ky",
+    "mua them",
+}
+
 
 def is_context_empty(retrieval_result: dict[str, Any]) -> bool:
     # Context rong nghia la retrieval khong co van ban, khong co lookup, cung khong co tool result.
@@ -330,6 +395,101 @@ def build_fallback_answer(
         "Bạn có thể hỏi cụ thể hơn về biểu mẫu, phòng ban, quy định, mốc điểm "
         "hoặc thủ tục cần tra cứu."
     )
+
+
+def build_scope_abstention_answer(
+    query: str,
+    retrieval_result: dict[str, Any],
+) -> str | None:
+    """Return a concise no-direct-evidence answer for weakly supported policy claims."""
+    reason = _scope_abstention_reason(query, retrieval_result)
+    if reason is None:
+        return None
+
+    related_scope = _related_scope_summary(retrieval_result)
+    if related_scope:
+        return (
+            "Mình chưa thấy căn cứ trực tiếp trong Sổ tay để kết luận trường hợp bạn hỏi. "
+            f"Nguồn tìm được chủ yếu nói về {related_scope}, nên không đủ để suy ra chính sách/quyền lợi này. "
+            "Bạn nên liên hệ đơn vị phụ trách để xác nhận trước khi thực hiện."
+        )
+    return (
+        "Mình chưa thấy căn cứ trực tiếp trong Sổ tay để kết luận trường hợp bạn hỏi. "
+        "Bạn nên hỏi lại với thông tin cụ thể hơn hoặc liên hệ đơn vị phụ trách để xác nhận."
+    )
+
+
+def _scope_abstention_reason(
+    query: str,
+    retrieval_result: dict[str, Any],
+) -> str | None:
+    if can_answer_deterministically(retrieval_result) or is_context_empty(
+        retrieval_result
+    ):
+        return None
+
+    ascii_query = _ascii_text(_normalize_query(query))
+    if not _contains_any(ascii_query, ABSTENTION_QUERY_SIGNALS):
+        return None
+
+    context = _retrieval_text(retrieval_result)
+    ascii_context = _ascii_text(_normalize_query(context))
+    if not ascii_context:
+        return "no_context_text"
+
+    missing_risk_terms = [
+        term
+        for term in HIGH_RISK_SCOPE_TERMS
+        if term in ascii_query and term not in ascii_context
+    ]
+    query_terms = _direct_support_terms(ascii_query)
+    context_terms = set(_word_tokens(ascii_context))
+    overlap = len(set(query_terms) & context_terms)
+    coverage = overlap / max(1, len(set(query_terms)))
+
+    if missing_risk_terms and coverage < 0.75:
+        return "missing_high_risk_scope_term"
+    if len(query_terms) >= 4 and coverage < 0.45:
+        return "weak_direct_support"
+    return None
+
+
+def _retrieval_text(retrieval_result: dict[str, Any]) -> str:
+    pieces: list[str] = []
+    for item in (retrieval_result.get("retrieved_items") or [])[:5]:
+        metadata = item.get("metadata") or {}
+        pieces.extend(
+            str(value or "")
+            for value in (
+                metadata.get("title"),
+                metadata.get("document_id"),
+                metadata.get("source_section"),
+                item.get("content"),
+            )
+        )
+    pieces.append(str(retrieval_result.get("context_for_llm") or ""))
+    return "\n".join(piece for piece in pieces if piece.strip())
+
+
+def _direct_support_terms(ascii_query: str) -> list[str]:
+    terms = [
+        token
+        for token in _word_tokens(ascii_query)
+        if len(token) >= 3 and token not in DIRECT_SUPPORT_STOPWORDS
+    ]
+    return list(dict.fromkeys(terms))
+
+
+def _related_scope_summary(retrieval_result: dict[str, Any]) -> str:
+    titles: list[str] = []
+    for item in (retrieval_result.get("retrieved_items") or [])[:3]:
+        metadata = item.get("metadata") or {}
+        title = str(metadata.get("title") or metadata.get("source_section") or "")
+        if title and title not in titles:
+            titles.append(title)
+    if not titles:
+        return ""
+    return ", ".join(titles[:2])
 
 
 def detect_ambiguous_query(query: str, retrieval_result: dict[str, Any]) -> bool:

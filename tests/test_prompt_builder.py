@@ -31,6 +31,8 @@ class PromptBuilderTest(unittest.TestCase):
         self.assertNotIn("CITATIONS", prompt)
         self.assertIn("không xuất checklist", prompt)
         self.assertIn("K51", prompt)
+        self.assertIn("DIRECT ANSWER FIRST", prompt)
+        self.assertIn("required facts", prompt)
 
     def test_structured_result_no_longer_forces_1500_char_context_cap(self) -> None:
         long_content = ("nội dung dài " * 160) + "TAIL_MARKER_CONTEXT_VAN_CON"

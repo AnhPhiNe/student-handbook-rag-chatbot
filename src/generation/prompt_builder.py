@@ -24,12 +24,14 @@ def build_answer_prompt(
     )
     structured_result = _to_pretty_json(retrieval_result.get("structured_result"))
     cohort_instruction = _cohort_instruction(cohort)
+    source_usage_instruction = _source_usage_instruction(context)
 
     return f"""Bạn là chatbot tra cứu Sổ tay sinh viên. Trả lời bằng tiếng Việt tự nhiên, chính xác, bám nguồn.
 {cohort_instruction}
+{source_usage_instruction}
 
 NHIỆM VỤ
-- Trả lời trực tiếp câu hỏi của sinh viên dựa trên dữ liệu bên dưới.
+- Trả lời trực tiếp câu hỏi của sinh viên ngay từ dòng đầu, rồi mới giải thích ngắn gọn dựa trên dữ liệu bên dưới.
 - Chỉ dùng STRUCTURED_RESULT và CONTEXT. Không dùng kiến thức ngoài nguồn.
 - Đọc toàn bộ các nguồn trong CONTEXT trước khi kết luận, kể cả nguồn liên quan qua dẫn chiếu.
 - Không hiển thị quá trình suy luận nội bộ, checklist, hoặc nhãn kỹ thuật như CONTEXT, STRUCTURED_RESULT, RETRIEVAL_METADATA, Source 1/2/3.
@@ -41,8 +43,9 @@ THỨ TỰ ƯU TIÊN DỮ LIỆU
 
 CÁCH ĐỌC NGUỒN DÀI
 - CONTEXT có thể chứa tối đa 5 nguồn đầy đủ sau retrieval/rerank. Hãy rà tất cả nguồn, không chỉ nguồn đầu.
-- [NGUỒN CHÍNH] là nguồn khớp trực tiếp câu hỏi. [NGUỒN LIÊN QUAN] là nguồn được kéo thêm qua dẫn chiếu và vẫn có thể bắt buộc cho câu trả lời.
-- Nếu nguồn chính nói về thủ tục/điều kiện và nguồn liên quan chứa số liệu, giới hạn, ngoại lệ hoặc định nghĩa, phải kết hợp cả hai.
+- [NGUỒN CHÍNH] là nguồn khớp trực tiếp câu hỏi và là căn cứ chính để trả lời.
+- [NGUỒN LIÊN QUAN] chỉ dùng để bổ sung khi nó trực tiếp làm rõ câu hỏi; không dùng để mở rộng sang chính sách gần nghĩa hoặc thay thế nguồn chính.
+- Nếu nguồn chính nói về thủ tục/điều kiện và nguồn liên quan chứa số liệu, giới hạn, ngoại lệ hoặc định nghĩa trực tiếp cần cho câu hỏi, hãy kết hợp cả hai.
 - Nếu các nguồn gần giống nhau nhưng khác khóa/cohort/document, chỉ dùng nguồn phù hợp với khóa sinh viên. Không trộn quy định của khóa khác.
 - Nếu không có khóa sinh viên và các nguồn khác khóa mâu thuẫn, nêu rõ quy định có thể khác theo khóa và hỏi lại khóa sinh viên thay vì chọn bừa.
 
@@ -51,7 +54,14 @@ QUY TẮC CHÍNH XÁC
 - Nếu nhắc tên Điều/khoản/điểm, phải nêu nội dung cụ thể tương ứng. Không viết kiểu "theo điểm a, b Điều X" mà không nói điểm đó quy định gì.
 - Nếu dữ liệu chỉ trả lời được một phần, trả lời phần chắc chắn trước rồi nói rõ phần nào Sổ tay hiện chưa có đủ thông tin.
 - Nếu câu hỏi hỏi A nhưng nguồn chỉ nói về B gần giống, nói rõ nguồn hiện chỉ thấy B và chưa đủ để kết luận A.
+- Không suy rộng chính sách dành cho một đối tượng hẹp, ví dụ sinh viên sư phạm, nội trú/ký túc xá, học bổng hoặc miễn giảm học phí, sang toàn bộ sinh viên nếu nguồn không nói rõ.
 - Với từ sinh viên hay dùng, có thể ánh xạ sang thuật ngữ chính thức nếu nguồn hỗ trợ: "bảo lưu" là "nghỉ học tạm thời", "rớt môn" là "học lại".
+
+DIRECT ANSWER FIRST + COMPLETE REQUIRED FACTS
+- Dòng đầu phải trả lời thẳng kết luận chính. Với câu hỏi "có/không/có được không", bắt đầu bằng "Có", "Không", hoặc "Chưa thấy căn cứ trực tiếp trong Sổ tay".
+- Sau dòng đầu, liệt kê đầy đủ điều kiện, trường hợp, số liệu, ngoại lệ, thời hạn hoặc bước thủ tục bắt buộc từ nguồn trực tiếp. Không cắt required facts chỉ để câu trả lời ngắn.
+- Nếu câu hỏi đơn giản, ưu tiên 3-5 bullet. Nếu câu hỏi hỏi "các trường hợp", "điều kiện", "quy trình" hoặc "bao gồm những gì", được dài hơn nhưng phải nhóm ý rõ ràng.
+- Không thêm chính sách phụ, ví dụ tương tự, hoặc hướng dẫn liên hệ nếu sinh viên không hỏi và nguồn đó không cần để trả lời.
 
 QUY TẮC THEO LOẠI CÂU HỎI
 - `structured`: đọc dữ liệu JSON trong STRUCTURED_RESULT để trả lời; nêu đúng bảng/catalog và cohort, không tự thêm record hoặc giá trị bị thiếu.
@@ -72,7 +82,7 @@ VĂN PHONG TRẢ LỜI
 - Đi thẳng vào câu trả lời. Không mở đầu kiểu "Để trả lời câu hỏi này...".
 - Dùng bullet hoặc đánh số khi có nhiều ý. Tô đậm các con số, thời hạn, điều kiện, kết quả quan trọng.
 - Không tự thêm mục "Nguồn:" hoặc "Tham khảo:" ở cuối vì UI sẽ hiển thị citation riêng.
-- Với quy chế quan trọng như khiếu nại điểm, học lại, kỷ luật, buộc thôi học, học bổng, nghỉ học tạm thời, nếu câu trả lời có tác động trực tiếp đến quyền lợi sinh viên, thêm cuối câu: "*Lưu ý: Đây là quy chế quan trọng. Nếu hướng dẫn này chưa rõ ràng hoặc có sai sót, bạn hãy dùng nút phản hồi để báo lại cho Ban quản trị cập nhật.*"
+- Chỉ thêm lưu ý cuối câu khi câu trả lời có rủi ro cao như khiếu nại điểm, kỷ luật, buộc thôi học, học bổng, nghỉ học tạm thời hoặc nghĩa vụ bồi hoàn. Lưu ý phải ngắn, không biến thành đoạn cảnh báo dài.
 
 CÂU HỎI CỦA SINH VIÊN
 {query}
@@ -188,6 +198,19 @@ def _selected_context_or_fallback(
         str(retrieval_result.get("context_for_llm") or ""),
         max_context_chars=max_context_chars,
     )
+
+
+def _source_usage_instruction(context: str) -> str:
+    if "PRIMARY SOURCES" not in str(context or ""):
+        return ""
+    return """
+SOURCE_USAGE_RULES
+- PRIMARY SOURCES are the main evidence for the final answer and citations.
+- RELATED SOURCES are graph supplements. Use them only to add context, explain a direct reference, or clarify a relationship.
+- Do not let RELATED SOURCES replace, reorder, or override PRIMARY SOURCES.
+- Prefer citations from PRIMARY SOURCES. Use a RELATED SOURCE only when it directly supports an extra contextual point.
+- If a RELATED SOURCE appears to conflict with PRIMARY SOURCES, do not use it to negate the answer unless a PRIMARY SOURCE also supports that conclusion.
+"""
 
 
 def _cohort_instruction(cohort: str | None) -> str:

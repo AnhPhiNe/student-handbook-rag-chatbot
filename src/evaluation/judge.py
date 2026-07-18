@@ -322,8 +322,10 @@ def build_judge_prompt(packet: dict[str, Any]) -> str:
         "context_recall measures whether retrieved_context contains enough evidence for the required facts. "
         "If question_specificity is broad, do not expect exhaustive coverage; a scoped summary with correct primary citation can be correct. "
         "If expected_answer_behavior is clarify_or_scope, either a clarification request or a clearly scoped answer is acceptable. "
-        "If expected_answer_behavior is abstain, reward saying the handbook does not provide enough evidence. "
-        "unsupported_claim is true only for an important unsupported or contradicted answer claim. "
+        "If answerability is unanswerable or expected_answer_behavior is abstain, reward a concise refusal or scoped answer that says the handbook/source does not provide enough direct evidence. "
+        "For unanswerable cases, do not require a citation that proves non-existence; citation_correctness should not be low solely because the answer abstains without citations. "
+        "For unanswerable cases, unsupported_claim is false when the answer only says the evidence is missing or insufficient. "
+        "Set unsupported_claim true when the answer asserts a positive policy, right, permission, exception, or consequence that the retrieved_context does not support, or when it applies a related source to the asked case without direct evidence. "
         "critical_false_pass is true only if the answer looks acceptable but contains a dangerous/decisive wrong claim.\n"
         "Use exactly these keys and no extra keys: "
         '{"faithfulness":0.0,"answer_relevancy":0.0,"answer_correctness":0.0,'

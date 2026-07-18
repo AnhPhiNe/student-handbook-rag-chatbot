@@ -32,8 +32,8 @@ from src.evaluation.suites import (
 )
 
 
-DEFAULT_DATASET = ROOT / "data" / "eval" / "v8_3_holdout"
-DEFAULT_OUTPUT = ROOT / "data" / "eval" / "reports" / "v8_3_holdout"
+DEFAULT_DATASET = ROOT / "data" / "eval" / "v8_4_holdout"
+DEFAULT_OUTPUT = ROOT / "data" / "eval" / "reports" / "v8_4_holdout"
 DEFAULT_DOCSTORE = ROOT / "data" / "processed" / "chunks" / "all_docstore_items.json"
 AI_ROUTER_CONFIG = ROOT / "configs" / "ai_router.yaml"
 LOOKUP_REGISTRY_CONFIG = ROOT / "configs" / "structured_lookup_registry.yaml"
@@ -130,7 +130,7 @@ def _run_retrieval_modes(
     cases: list[dict[str, Any]], args: argparse.Namespace, provenance: dict[str, Any]
 ) -> None:
     modes = (
-        ("full", "no_graph", "vector_only")
+        ("full", "no_graph", "vector_only", "vector_primary_graph_supplement")
         if args.ablation == "all"
         else (args.ablation,)
     )
@@ -258,7 +258,15 @@ def main() -> None:
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--backend", choices=("qdrant", "chroma"), default="qdrant")
     parser.add_argument(
-        "--ablation", choices=("full", "no_graph", "vector_only", "all"), default="full"
+        "--ablation",
+        choices=(
+            "full",
+            "no_graph",
+            "vector_only",
+            "vector_primary_graph_supplement",
+            "all",
+        ),
+        default="vector_primary_graph_supplement",
     )
     parser.add_argument("--dataset", type=Path, default=DEFAULT_DATASET)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)

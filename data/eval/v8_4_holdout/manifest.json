@@ -1,0 +1,106 @@
+{
+  "version": "v8.4-clean-retrieval-holdout",
+  "frozen": true,
+  "created_at_utc": "2026-07-18T10:19:10.694444+00:00",
+  "description": "Full-system holdout with V8.3 retrieval label audit applied; non-headline retrieval cases were replaced, not tuned.",
+  "annotation_method": "source-anchored questions plus V8.3 failure audit categories; V8.4 replacement cases avoid supplemental, directory, and under-anchored labels",
+  "counts": {
+    "deterministic": 120,
+    "retrieval": 180,
+    "answers": 100,
+    "production": 60
+  },
+  "dataset_hashes": {
+    "deterministic": "3409daa0a4b920d3d6181321ce4f43f7983760737f0c8f19b147a85b19750a72",
+    "retrieval": "991c13227ac0af41f05b45451dea8af364b1a1458e74d0a11d76fc8276479f75",
+    "answers": "acc07d65343b14855125d7b88c3fa31da39a80740d97306436e8f858cbc964be",
+    "production": "ac54a95c4f8281aac363dfd3f28a11b2c2b4080c4920a93ee4437d141dfb6eb2"
+  },
+  "auxiliary_hashes": {
+    "human_audit_template": "ee0d1640c9e9530e8698ece0258935f9c4d7247709d9adab728825c352aea303"
+  },
+  "git_commit": "8c4b857e6733fdb960623c56b3b0d1560b5ab250",
+  "config_hashes": {
+    "answer_generation": "8a92d123902cc928d6ef26569ad1420435b72431c29b148e90ed29afb26cdc53",
+    "retrieval": "95e35f0a2628f780f27ef3ba156267bc8137a497152052065c06d2e627fd52b6",
+    "ai_router": "c3d0ffa23a822252402e12bab18c9594f4f535aa9fa3251d92f30179a9c832d9",
+    "structured_lookup_registry": "0fa15b7ef6e687ce93a27965959ba1ad23979a2da8b2ffbafed7aae6079827f5"
+  },
+  "docstore_hash": "086813e45b05f3479e8aa8fc3d8f99a32e791ec51def47983cdbbd1dad7ce0dd",
+  "generation_provider": "gemini",
+  "generation_model": "gemini-3.1-flash-lite",
+  "query_rewriter_model": null,
+  "router_provider": "groq",
+  "router_model": "qwen/qwen3.6-27b",
+  "judge_provider": "groq",
+  "judge_model": "openai/gpt-oss-120b",
+  "headline_backend": "qdrant_cloud+mongodb",
+  "legacy_eval_policy": "development_only",
+  "holdout_policy": "single_run_no_post_tuning",
+  "predecessor_bundles": [
+    "v8",
+    "v8_2_holdout",
+    "v8_3_holdout"
+  ],
+  "v8_3_retrieval_audit": {
+    "source_report": "data\\eval\\reports\\v8_3_holdout\\retrieval_qdrant_vector_primary_graph_supplement_full.json",
+    "non_headline_replaced": 16,
+    "replacement_case_ids": [
+      "v84_ret_new_001",
+      "v84_ret_new_002",
+      "v84_ret_new_003",
+      "v84_ret_new_004",
+      "v84_ret_new_005",
+      "v84_ret_new_006",
+      "v84_ret_new_007",
+      "v84_ret_new_008",
+      "v84_ret_new_009",
+      "v84_ret_new_010",
+      "v84_ret_new_011",
+      "v84_ret_new_012",
+      "v84_ret_new_013",
+      "v84_ret_new_014",
+      "v84_ret_new_015",
+      "v84_ret_new_016"
+    ],
+    "true_misses_carried_forward": [
+      "v83_ret_048",
+      "v83_ret_089",
+      "v83_ret_113",
+      "v83_ret_120",
+      "v83_ret_153",
+      "v83_ret_155",
+      "v83_ret_158",
+      "v83_ret_162",
+      "v83_ret_165",
+      "v83_ret_167",
+      "v83_ret_173",
+      "v83_ret_175"
+    ]
+  },
+  "answer_eval_policy": "100 generated-answer cases: 66 retrieval-linked regulation cases, 20 independent regulation answer holdout cases, 4 structured/mixed cases, and 10 unanswerable cases. The answer set was finalized before the full Gemini generation and gpt-oss-120b judge run.",
+  "answer_source_relation_counts": {
+    "retrieval_linked": 66,
+    "independent": 20,
+    "structured": 4,
+    "unanswerable": 10
+  },
+  "realistic_stress_split": {
+    "deterministic": {
+      "realistic": 60,
+      "stress": 60
+    },
+    "retrieval": {
+      "realistic": 135,
+      "stress": 45
+    },
+    "answers": {
+      "realistic": 75,
+      "stress": 25
+    },
+    "production": {
+      "realistic": 45,
+      "stress": 15
+    }
+  }
+}

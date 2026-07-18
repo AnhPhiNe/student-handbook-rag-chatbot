@@ -132,11 +132,136 @@ def _retrieve_with_hybrid_regulation(
         target_chunk_types=["regulation"],
     )
 
-    return [
+    items = [
         _ensure_chunk_type_metadata(doc)
         for doc in result.get("retrieved_items", [])
         if isinstance(doc, dict)
     ]
+    related_items = [
+        item
+        for item in result.get("related_items", [])
+        if isinstance(item, dict)
+    ]
+    if items and related_items:
+        metadata = dict(items[0].get("metadata") or {})
+        metadata["related_items"] = related_items
+        items[0]["metadata"] = metadata
+    return items
+
+
+def _should_force_regulation_rag(
+    query: str,
+    router_decision: dict[str, Any] | None,
+    *,
+    cohort: str | None,
+) -> bool:
+    """Recover from over-cautious AI routing for in-handbook questions."""
+
+    if not router_decision or router_decision.get("route") not in {
+        "clarify",
+        "out_of_domain",
+    }:
+        return False
+
+    query_text = _normalize_text(query)
+    explicit_scope_terms = {
+        "so tay",
+        "quy dinh",
+        "quy che",
+        "theo so tay",
+        "dieu ",
+        "chuong ",
+        "k48",
+        "k49",
+        "k50",
+        "k51",
+    }
+    handbook_topic_terms = {
+        "sinh vien",
+        "hoc bong",
+        "hoc phi",
+        "ngoai ngu",
+        "ngoai tru",
+        "ren luyen",
+        "co van hoc tap",
+        "ke hoach giang day",
+        "ke hoach hoc tap",
+        "lop sinh vien",
+        "hieu luc",
+        "trach nhiem",
+        "cac khoa",
+        "don vi",
+        "ho tro",
+        "dich vu sinh vien",
+        "dao tao",
+        "hinh thuc dao tao",
+    }
+    unresolved_terms = {
+        "muc nay",
+        "truong hop do",
+        "bieu mau kia",
+        "diem nhu vay",
+        "chung chi do",
+        "nganh nay",
+        "cong thuc nay",
+        "loai do",
+        "phong do",
+        "thu tuc nay",
+    }
+    if any(term in query_text for term in unresolved_terms):
+        return False
+
+    has_explicit_scope = any(term in query_text for term in explicit_scope_terms)
+    has_handbook_topic = any(term in query_text for term in handbook_topic_terms)
+    has_selected_cohort = bool(normalize_cohort(cohort))
+    return has_handbook_topic and (has_explicit_scope or has_selected_cohort)
+
+
+def _force_regulation_rag_decision(
+    router_decision: dict[str, Any],
+    *,
+    query: str,
+) -> dict[str, Any]:
+    return {
+        **router_decision,
+        "route": "rag",
+        "execution_mode": "regulation",
+        "intent": "regulation_query",
+        "lookup_type": None,
+        "slots": {},
+        "slot_spans": {},
+        "retrieval_query": router_decision.get("retrieval_query") or query,
+        "target_chunk_types": ["regulation"],
+        "needs_clarification": False,
+        "clarification_question": None,
+        "router_fallback": "handbook_scoped_query_to_regulation_rag",
+    }
+
+
+def _extract_related_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    related_items: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
+    for item in items:
+        metadata = dict(item.get("metadata") or {})
+        raw_related = metadata.pop("related_items", [])
+        if raw_related:
+            item["metadata"] = metadata
+        if not isinstance(raw_related, list):
+            continue
+        for related in raw_related:
+            if not isinstance(related, dict):
+                continue
+            related_id = str(
+                related.get("chunk_id")
+                or related.get("_id")
+                or related.get("id")
+                or ""
+            )
+            if not related_id or related_id in seen_ids:
+                continue
+            seen_ids.add(related_id)
+            related_items.append(related)
+    return related_items
 
 
 def _get_docstore():
@@ -781,6 +906,15 @@ def run_retrieval_pipeline(
                         validation_errors,
                         query=query,
                     )
+            if _should_force_regulation_rag(
+                query,
+                router_decision,
+                cohort=cohort,
+            ):
+                router_decision = _force_regulation_rag_decision(
+                    router_decision,
+                    query=query,
+                )
             routing = decision_to_legacy_routing(router_decision)
             routing["usage"] = router_decision.get("usage")
             routing["model_used"] = router_decision.get("model_used")
@@ -1111,10 +1245,21 @@ def run_retrieval_pipeline(
     )
 
     if entity_chunk_types and strategy.startswith("semantic"):
+        if (
+            intent == "regulation_query"
+            and execution_mode == "regulation"
+            and "regulation" in routing.get("target_chunk_types", [])
+        ):
+            entity_chunk_types = [
+                chunk_type
+                for chunk_type in entity_chunk_types
+                if chunk_type == "regulation"
+            ]
         # Neu entity da biet loai chunk muc tieu, ep retrieval tim dung vung du lieu cua entity do.
-        routing["target_chunk_types"] = list(
-            dict.fromkeys(routing.get("target_chunk_types", []) + entity_chunk_types)
-        )
+        if entity_chunk_types:
+            routing["target_chunk_types"] = list(
+                dict.fromkeys(routing.get("target_chunk_types", []) + entity_chunk_types)
+            )
 
     routing["target_chunk_types"] = normalize_chunk_types(
         routing.get("target_chunk_types", [])
@@ -1402,6 +1547,7 @@ def run_retrieval_pipeline(
         )
 
     merged_results = merge_plan_results(results_by_plan)
+    related_items = _extract_related_items(merged_results)
     citations = structured_context_citations + build_citations_from_vector_results(
         merged_results
     )
@@ -1410,7 +1556,10 @@ def run_retrieval_pipeline(
         citations = build_citation_from_lookup(form_lookup_result) + citations
         context_blocks.append(build_context_from_lookup(form_lookup_result))
 
-    vector_context = build_context_from_vector_results(merged_results)
+    vector_context = build_context_from_vector_results(
+        merged_results,
+        related_items=related_items,
+    )
     if vector_context:
         context_blocks.append(vector_context)
 
@@ -1424,6 +1573,7 @@ def run_retrieval_pipeline(
         "retrieval_plan": retrieval_plan,
         "structured_result": structured_context_result or form_lookup_result,
         "retrieved_items": merged_results,
+        "related_items": related_items,
         "citations": citations,
         "context_for_llm": "\n\n---\n\n".join(context_blocks),
         "needs_llm_answer": True,

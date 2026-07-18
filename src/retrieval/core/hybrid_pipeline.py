@@ -20,6 +20,15 @@ from qdrant_client.models import (
 
 logger = logging.getLogger("hybrid_pipeline")
 
+DEFAULT_RETRIEVAL_MODE = "vector_primary_graph_supplement"
+SUPPORTED_RETRIEVAL_MODES = {
+    "full",
+    "no_graph",
+    "vector_only",
+    DEFAULT_RETRIEVAL_MODE,
+}
+GRAPH_SUPPLEMENT_PARENT_LIMIT = 5
+
 UNDERGRAD_SCOPE_TERMS = (
     "dai hoc",
     "daihoc",
@@ -139,6 +148,79 @@ def _scope_preference_adjustment(query: str, chunk: dict[str, Any]) -> float:
     if _contains_any_term(chunk_scope, UNDERGRAD_SCOPE_TERMS):
         adjustment += UNDERGRAD_SCOPE_BOOST
     return adjustment
+
+
+def _is_supplemental_regulation_metadata(metadata: dict[str, Any]) -> bool:
+    source_type = str(metadata.get("source_type") or "").strip().lower()
+    parent_id = str(metadata.get("parent_section_id") or metadata.get("chunk_id") or "")
+    return source_type == "supplemental_regulation" or "_Supplement_" in parent_id
+
+
+def select_graph_related_parent_candidates(
+    primary_parent_ids: list[str],
+    expanded_nodes: list[dict[str, Any]],
+    *,
+    max_related_total: int = GRAPH_SUPPLEMENT_PARENT_LIMIT,
+) -> list[dict[str, Any]]:
+    """Select context-only graph neighbors without changing primary ranking.
+
+    Priority follows the production rule:
+    lower graph depth first, then higher-ranked primary source, then graph
+    traversal order. Primary parents are never returned as related parents.
+    """
+
+    primary_ids = [
+        str(parent_id)
+        for parent_id in primary_parent_ids
+        if str(parent_id).strip()
+    ]
+    primary_set = set(primary_ids)
+    primary_rank = {
+        parent_id: index
+        for index, parent_id in enumerate(primary_ids)
+    }
+    best_by_parent: dict[str, dict[str, Any]] = {}
+
+    for edge_order, node in enumerate(expanded_nodes):
+        parent_id = str(node.get("id") or "").strip()
+        if not parent_id or parent_id in primary_set:
+            continue
+
+        try:
+            depth = int(node.get("depth", 99))
+        except (TypeError, ValueError):
+            depth = 99
+        source_primary_id = str(node.get("seed_source") or "").strip()
+        source_primary_rank = primary_rank.get(source_primary_id, 999)
+        candidate = {
+            "parent_id": parent_id,
+            "depth": depth,
+            "source_primary_id": source_primary_id,
+            "source_primary_rank": source_primary_rank,
+            "edge_order": edge_order,
+        }
+        existing = best_by_parent.get(parent_id)
+        candidate_key = (depth, source_primary_rank, edge_order)
+        if existing is None:
+            best_by_parent[parent_id] = candidate
+            continue
+        existing_key = (
+            existing["depth"],
+            existing["source_primary_rank"],
+            existing["edge_order"],
+        )
+        if candidate_key < existing_key:
+            best_by_parent[parent_id] = candidate
+
+    ranked = sorted(
+        best_by_parent.values(),
+        key=lambda item: (
+            item["depth"],
+            item["source_primary_rank"],
+            item["edge_order"],
+        ),
+    )
+    return ranked[: max(0, int(max_related_total))]
 
 
 class HybridRetrieverV7:
@@ -266,10 +348,11 @@ class HybridRetrieverV7:
 
                 for point in points:
                     chunk = self._qdrant_point_to_chunk(point)
+                    metadata = chunk.get("metadata") or {}
+                    if _is_supplemental_regulation_metadata(metadata):
+                        continue
                     parent_id = str(
-                        (chunk.get("metadata") or {}).get(
-                            "parent_section_id"
-                        )
+                        metadata.get("parent_section_id")
                         or ""
                     )
 
@@ -303,15 +386,19 @@ class HybridRetrieverV7:
     ) -> list[dict[str, Any]]:
         """Retrieve parent-bound regulation sources using V7 child/table chunks.
 
-        Vector search starts from small Qdrant chunks, graph expansion adds
-        related parent sections, the cross-encoder reranks all child/table
-        candidates, and the final result is grouped back to Mongo parent
-        sections for stable citations.
+        The production mode ranks primary parent sections by Qdrant vector
+        score, then attaches outbound graph neighbors as related sources.
+        Legacy eval modes can still run full graph + PhoRanker ablations.
         """
         eval_mode = (
-            os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE", "full").strip().lower()
+            os.environ.get(
+                "STUDENT_RAG_EVAL_RETRIEVAL_MODE",
+                DEFAULT_RETRIEVAL_MODE,
+            )
+            .strip()
+            .lower()
         )
-        if eval_mode not in {"full", "no_graph", "vector_only"}:
+        if eval_mode not in SUPPORTED_RETRIEVAL_MODES:
             raise ValueError(
                 f"Unsupported STUDENT_RAG_EVAL_RETRIEVAL_MODE={eval_mode!r}"
             )
@@ -340,13 +427,14 @@ class HybridRetrieverV7:
             chunk
             for chunk in seed_chunks
             if chunk.get("chunk_id")
+            and not _is_supplemental_regulation_metadata(chunk.get("metadata") or {})
         ]
         qdrant_seed_chunk_count = len(seed_chunks)
 
         if not seed_chunks:
             return []
 
-        if eval_mode == "vector_only":
+        if eval_mode in {"vector_only", DEFAULT_RETRIEVAL_MODE}:
             vector_scores = {
                 str(hit.payload.get("chunk_id")): float(
                     getattr(hit, "score", 0.0) or 0.0
@@ -373,12 +461,34 @@ class HybridRetrieverV7:
                 "phoranker_candidate_chunks": 0,
                 "phoranker_candidate_parents": 0,
             }
-            return self._group_parent_results(
+            primary_results = self._group_parent_results(
                 query=query,
                 scored_chunks=vector_scored,
                 top_k_final=top_k_final,
                 retrieval_telemetry=vector_telemetry,
             )
+            if eval_mode == "vector_only":
+                return primary_results
+
+            related_results, related_telemetry = self._graph_related_parent_results(
+                primary_results,
+                graph_depth=graph_depth,
+                cohort=cohort,
+            )
+            supplement_telemetry = {
+                **vector_telemetry,
+                **related_telemetry,
+                "retrieval_mode": eval_mode,
+            }
+            for item in primary_results:
+                item_metadata = dict(item.get("metadata") or {})
+                item_metadata["retrieval_telemetry"] = supplement_telemetry
+                item["metadata"] = item_metadata
+            if primary_results and related_results:
+                primary_metadata = dict(primary_results[0].get("metadata") or {})
+                primary_metadata["related_items"] = related_results
+                primary_results[0]["metadata"] = primary_metadata
+            return primary_results
 
         seed_parent_ids = [
             str((chunk.get("metadata") or {}).get("parent_section_id") or "")
@@ -539,6 +649,103 @@ class HybridRetrieverV7:
             top_k_final=top_k_final,
             retrieval_telemetry=retrieval_telemetry,
         )
+
+    def _graph_related_parent_results(
+        self,
+        primary_results: list[dict[str, Any]],
+        *,
+        graph_depth: int,
+        cohort: str | None,
+    ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        """Fetch outbound graph neighbors as context-only related sources."""
+
+        primary_parent_ids = [
+            str(item.get("chunk_id") or item.get("_id") or item.get("id") or "")
+            for item in primary_results
+        ]
+        primary_parent_ids = [
+            parent_id for parent_id in primary_parent_ids if parent_id
+        ]
+        expanded: list[dict[str, Any]] = []
+        if primary_parent_ids and graph_depth > 0:
+            try:
+                expanded = self.graph.expand_context(
+                    primary_parent_ids,
+                    max_depth=graph_depth,
+                )
+            except Exception as exc:
+                logger.warning(
+                    "V7 graph supplement expansion failed, using primary only: %s",
+                    exc,
+                )
+
+        related_candidates = select_graph_related_parent_candidates(
+            primary_parent_ids,
+            expanded,
+            max_related_total=GRAPH_SUPPLEMENT_PARENT_LIMIT,
+        )
+        related_results: list[dict[str, Any]] = []
+        for rank, candidate in enumerate(related_candidates, start=1):
+            parent_id = candidate["parent_id"]
+            parent = self._get_parent(parent_id)
+            if parent is None:
+                logger.warning(
+                    "Cannot attach graph related parent %s because Mongo lookup missed.",
+                    parent_id,
+                )
+                continue
+
+            parent_metadata = dict(parent.get("metadata") or {})
+            if _is_supplemental_regulation_metadata(
+                {
+                    **parent_metadata,
+                    "parent_section_id": parent_id,
+                }
+            ):
+                continue
+            if cohort and parent_metadata.get("cohort") != cohort:
+                continue
+
+            doc = dict(parent)
+            doc["chunk_id"] = parent_id
+            doc["rerank_score"] = 0.0
+            doc["content"] = parent.get("content") or ""
+            doc["document"] = parent.get("content") or ""
+            doc["metadata"] = {
+                **parent_metadata,
+                "chunk_id": parent_id,
+                "chunk_type": "regulation",
+                "content_type": "regulation_text",
+                "chunk_granularity": "parent_graph_related_context",
+                "retrieval_role": "related",
+                "related_rank": rank,
+                "related_graph_depth": candidate["depth"],
+                "related_source_primary_id": candidate["source_primary_id"],
+                "related_source_primary_rank": candidate["source_primary_rank"],
+                "v7_collection": self.collection_name,
+                "parent_source": "mongodb",
+                "child_source": "graph",
+            }
+            related_results.append(doc)
+
+        telemetry = {
+            "graph_depth": graph_depth,
+            "graph_expanded_parents": len(
+                {
+                    str(node.get("id") or "")
+                    for node in expanded
+                    if node.get("id")
+                }
+            ),
+            "graph_related_parent_limit": GRAPH_SUPPLEMENT_PARENT_LIMIT,
+            "graph_related_parents_selected": len(related_results),
+            "graph_neighbor_parent_limit": GRAPH_SUPPLEMENT_PARENT_LIMIT,
+            "graph_neighbor_parents_selected": len(related_results),
+            "graph_neighbor_chunks_available": 0,
+            "graph_neighbor_chunks_selected": 0,
+            "related_source_count": len(related_results),
+        }
+        return related_results, telemetry
 
     def _rerank_chunks(
         self,
@@ -817,10 +1024,18 @@ def run_hybrid_retrieval_pipeline(
     )
 
     formatted_results = []
+    related_items: list[dict[str, Any]] = []
     for doc in docs:
-        metadata = doc.get("metadata", {})
+        metadata = dict(doc.get("metadata", {}) or {})
+        if not related_items:
+            raw_related = metadata.pop("related_items", [])
+            if isinstance(raw_related, list):
+                related_items = [
+                    item for item in raw_related if isinstance(item, dict)
+                ]
         doc_copy = dict(doc)
-        doc_copy["chunk_id"] = doc.get("_id") or doc.get("id")
+        doc_copy["metadata"] = metadata
+        doc_copy["chunk_id"] = doc.get("chunk_id") or doc.get("_id") or doc.get("id")
         doc_copy["chunk_type"] = (
             doc_copy.get("chunk_type") or metadata.get("chunk_type") or "regulation"
         )
@@ -841,8 +1056,12 @@ def run_hybrid_retrieval_pipeline(
         "structured_result": None,
         "tool_result": None,
         "retrieved_items": formatted_results,
+        "related_items": related_items,
         "citations": citations,
-        "context_for_llm": build_context_from_vector_results(formatted_results),
+        "context_for_llm": build_context_from_vector_results(
+            formatted_results,
+            related_items=related_items,
+        ),
         "needs_llm_answer": True,
         "needs_clarification": False,
         "out_of_domain": False,

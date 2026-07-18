@@ -160,6 +160,45 @@ def test_full_sources_keeps_top_five_content_when_under_budget() -> None:
     assert len(context) <= 20000
 
 
+def test_full_sources_formats_related_sources_separately() -> None:
+    retrieval_result = {
+        "retrieved_items": [
+            _item("primary-1", "primary body", 0.9),
+        ],
+        "related_items": [
+            {
+                "chunk_id": "related-1",
+                "content": "related body",
+                "metadata": {
+                    "title": "Related section",
+                    "chunk_type": "regulation",
+                    "source_pages": [3],
+                    "related_graph_depth": 1,
+                    "related_source_primary_id": "primary-1",
+                },
+            }
+        ],
+    }
+
+    context = build_context_for_prompt(
+        retrieval_result,
+        max_context_chars=4000,
+        allocation_config=ContextAllocationConfig(
+            strategy="full_sources",
+            min_chars_per_doc=0,
+            max_chars_per_doc=50000,
+            sentence_boundary=True,
+        ),
+    )
+
+    assert "PRIMARY SOURCES" in context
+    assert "RELATED SOURCES" in context
+    assert "[1]" in context
+    assert "[R1]" in context
+    assert "primary body" in context
+    assert "related body" in context
+
+
 def test_full_sources_truncates_only_when_global_budget_is_exceeded() -> None:
     retrieval_result = {
         "retrieved_items": [

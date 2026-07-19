@@ -1,0 +1,227 @@
+[
+  {
+    "id": "v85_ans_006",
+    "case_type": "regulation_true_rag",
+    "human_score": 0.8,
+    "critical_false_pass": false,
+    "notes": "Elaboration/Scope issue: Đối chiếu K48-K49 Điều 24: câu trả lời nêu đúng các hiệu lực được dẫn, nhưng bỏ hai quyết định chuyển tiếp 2045/QĐ-ĐHSP và 3672/QĐ-ĐHSP — hai ý chính trong ground truth.",
+    "repeat_for_consistency": true,
+    "repeat_score": 0.8
+  },
+  {
+    "id": "v85_ans_008",
+    "case_type": "regulation_true_rag",
+    "human_score": 1.0,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Đối chiếu K48-K49: đối tượng học liên thông, thời gian học, học bổng và phạm vi hỗ trợ học phí đều có trong các Điều được dẫn.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_016",
+    "case_type": "regulation_true_rag",
+    "human_score": 1.0,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Đối chiếu K50 Điều 10: câu trả lời bao quát đúng 10 nhóm hành vi sinh viên không được làm.",
+    "repeat_for_consistency": true,
+    "repeat_score": 0.95
+  },
+  {
+    "id": "v85_ans_019",
+    "case_type": "regulation_true_rag",
+    "human_score": 0.9,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Đối chiếu K50: nhiệm vụ Hiệu trưởng, đối thoại hằng năm, khen thưởng–kỷ luật và mốc xét tốt nghiệp đều có căn cứ; câu trả lời chỉ hơi rộng.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_025",
+    "case_type": "regulation_true_rag",
+    "human_score": 0.85,
+    "critical_false_pass": false,
+    "notes": "Elaboration/Scope issue: Đối chiếu K50 Điều 7 và các Điều liên quan: các nhiệm vụ/mốc nêu ra có nguồn, nhưng thiếu nghĩa vụ báo cáo kịp thời hành vi tiêu cực, gian lận.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_034",
+    "case_type": "regulation_true_rag",
+    "human_score": 1.0,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Đối chiếu K51 Điều 12: thành phần, nhiệm vụ của Hội đồng cấp Trường/cấp cơ sở và việc tự giải thể đều đúng.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_036",
+    "case_type": "regulation_true_rag",
+    "human_score": 1.0,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Đối chiếu K51: định nghĩa lớp học phần, điều kiện mở lớp, buổi học đầu tiên và quy định cải thiện điểm đều có nguồn.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_042",
+    "case_type": "regulation_true_rag",
+    "human_score": 0.75,
+    "critical_false_pass": false,
+    "notes": "Elaboration/Scope issue: Đối chiếu K51 và K48-K49 Điều 3: các claim đều có nguồn, nhưng câu trả lời bỏ định nghĩa CTĐT và một số mốc định lượng mà câu hỏi/ground truth nhấn mạnh.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_049",
+    "case_type": "regulation_true_rag",
+    "human_score": 0.4,
+    "critical_false_pass": false,
+    "notes": "Retrieval/Answer-targeting failure: Đối chiếu K50 Điều 12 về ngoại trú: nguồn đúng phải nói CVHT/BCS đôn đốc đăng ký, cập nhật nơi tạm trú và dùng nhận xét địa phương khi đánh giá rèn luyện. Câu trả lời truy xuất sang nhiệm vụ CVHT chung nên lệch trọng tâm.",
+    "repeat_for_consistency": true,
+    "repeat_score": 0.45
+  },
+  {
+    "id": "v85_ans_052",
+    "case_type": "regulation_true_rag",
+    "human_score": 1.0,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Đối chiếu K48-K49 Điều 19 và Điều 25: điều kiện học hai chương trình, cảnh báo học tập, thời gian và xét tốt nghiệp đều đúng.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_058",
+    "case_type": "regulation_true_rag",
+    "human_score": 1.0,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Đối chiếu K50 Điều 6, Điều 13 và Điều 29: nhóm hỗ trợ, đầu mối CTCT&HSSV và thủ tục hồ sơ đều được hỗ trợ.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_059",
+    "case_type": "regulation_true_rag",
+    "human_score": 1.0,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Đối chiếu K50 Điều 12: thành phần và nhiệm vụ hai cấp Hội đồng được trả lời đúng.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_063",
+    "case_type": "regulation_true_rag",
+    "human_score": 0.9,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Đối chiếu K51: các hiệu lực của từng văn bản đều có trong nguồn, nhưng câu trả lời rộng hơn ground truth neo vào quy định CVHT.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_065",
+    "case_type": "regulation_true_rag",
+    "human_score": 0.8,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Đối chiếu K50 Điều 14 về ngoại trú: trách nhiệm phối hợp, tư vấn chỗ ở và tạo điều kiện rèn luyện đều có nguồn; cách mở đầu còn mơ hồ.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_078",
+    "case_type": "regulation_true_rag",
+    "human_score": 1.0,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Đối chiếu K51 Điều 10–14: các bước, ngưỡng biểu quyết, công bố và lưu hồ sơ đều có căn cứ.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_084",
+    "case_type": "regulation_true_rag",
+    "human_score": 0.75,
+    "critical_false_pass": false,
+    "notes": "Elaboration/Scope issue: Đối chiếu cả ba sổ tay: các mốc 30 ngày, 4 năm, lãi suất, miễn/giảm/xóa và khởi kiện đều có; tuy nhiên câu trả lời trộn bản K48/K50 với quy định sửa đổi trong K51 mà không tách phạm vi khóa.",
+    "repeat_for_consistency": true,
+    "repeat_score": 0.8
+  },
+  {
+    "id": "v85_ans_092",
+    "case_type": "unanswerable",
+    "human_score": 0.95,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Tìm toàn văn K51 không thấy chính sách cấp laptop miễn phí cho mọi sinh viên. Câu trả lời abstain hợp lý; nguồn hỗ trợ gần nhất chỉ nói chính sách cho nhóm cụ thể.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_095",
+    "case_type": "unanswerable",
+    "human_score": 0.95,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Đối chiếu toàn bộ quy trình rèn luyện K50: không có cơ chế 'mua điểm'. Câu trả lời đúng về bản chất, nhưng nên nói 'không tìm thấy căn cứ' thay vì phủ định tuyệt đối.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_096",
+    "case_type": "unanswerable",
+    "human_score": 1.0,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Đối chiếu K50 Điều 14: tác giả chính đề tài NCKH đạt Khá trở lên có thể nộp đơn xin dùng điểm đề tài thay điểm thi kết thúc học phần, tối đa 3 tín chỉ. Nhãn unanswerable của dataset là lỗi annotation.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_097",
+    "case_type": "unanswerable",
+    "human_score": 1.0,
+    "critical_false_pass": false,
+    "notes": "Judge Error: Quy định ngoại ngữ được xác minh trong văn bản áp dụng cho khóa tuyển sinh từ 2022 trở đi; K51 thuộc phạm vi áp dụng. Tuy nhiên phần nội dung không được in đầy đủ lại trong bản PDF K51 nên citation là dẫn xuất liên khóa, cần ghi rõ.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_099",
+    "case_type": "unanswerable",
+    "human_score": 0.4,
+    "critical_false_pass": false,
+    "notes": "True Hallucination: K51 chỉ quy định các đợt xét tốt nghiệp và thời hạn cấp bằng trong 3 tháng. Không có căn cứ để suy ra sinh viên 'không được tự chọn tháng nhận bằng'; đây là suy diễn không được nguồn hỗ trợ.",
+    "repeat_for_consistency": true,
+    "repeat_score": 0.45
+  },
+  {
+    "id": "v85_ans_004",
+    "case_type": "regulation_true_rag",
+    "human_score": 1.0,
+    "critical_false_pass": false,
+    "notes": "Correct supported: Đối chiếu K48-K49 Điều 14 và Điều 18: cấp độ công nhận, giới hạn 50%, hồ sơ và giới hạn 25% trong hợp tác đào tạo đều đúng.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_005",
+    "case_type": "regulation_true_rag",
+    "human_score": 0.75,
+    "critical_false_pass": false,
+    "notes": "Correct but partially relevant: Đối chiếu K48-K49: các nguyên tắc và thông tin bồi hoàn đều có nguồn, nhưng câu trả lời không nêu trực tiếp định nghĩa công tác sinh viên và mở rộng hơi xa.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_045",
+    "case_type": "regulation_true_rag",
+    "human_score": 1.0,
+    "critical_false_pass": false,
+    "notes": "Correct supported: Nội dung chuẩn đầu ra ngoại ngữ, các trường hợp công nhận và thủ tục 15/10 ngày được xác minh trong quy định áp dụng từ khóa tuyển sinh 2022 trở đi; citation liên khóa cần được mô tả rõ.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_090",
+    "case_type": "structured_mixed",
+    "human_score": 1.0,
+    "critical_false_pass": false,
+    "notes": "Correct supported: Đối chiếu bảng quy đổi K50: các ngưỡng chứng chỉ phổ biến trong structured result khớp bảng gốc.",
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  }
+]

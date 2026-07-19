@@ -1,0 +1,79 @@
+{
+  "audit_scope": {
+    "total_cases": 25,
+    "low_faithfulness_cases": 21,
+    "random_comparison_cases": 4,
+    "regulation_cases": 19,
+    "method": "AI-assisted audit with direct verification against the three uploaded Student Handbook PDFs.",
+    "pdf_manifest": {
+      "K48-K49": {
+        "filename": "so_tay_K48_49.pdf",
+        "sha256": "4bf7b510b66e6ed8ce60008d48efd05723f06899171cbf89e4494f4b277739db",
+        "size_bytes": 2365288
+      },
+      "K50": {
+        "filename": "so_tay_K50.pdf",
+        "sha256": "bbae270b9821c71eeede660e3168c868bde07f458f07b648645c14584bdeb8b0",
+        "size_bytes": 2725959
+      },
+      "K51": {
+        "filename": "so_tay_K51.pdf",
+        "sha256": "bab2e55fa964da302144aafa5675d0f5b2d8003254a5159e2d612a03f4beb4bd",
+        "size_bytes": 3198539
+      }
+    },
+    "template_mismatch": "The uploaded template contains 20 older IDs; the output follows the 25 IDs explicitly listed in final_steps_guide.md."
+  },
+  "step1_guide_compatible_metrics": {
+    "human_correctness_all_25": 0.888,
+    "human_faithfulness_regulation_19_using_human_score": 0.8894736842105263,
+    "human_citation_correctness_all_25_pdf_verified": 0.946,
+    "critical_false_passes": 0,
+    "material_hallucination_rate_human_score_lt_0_3": 0.0,
+    "mean_low21": 0.8785714285714286,
+    "mean_random4": 0.9375
+  },
+  "supplemental_pdf_verified_dimensions": {
+    "claim_level_faithfulness_regulation_19": 0.981578947368421,
+    "claim_level_faithfulness_all_25": 0.966,
+    "citation_correctness_all_25": 0.946,
+    "note": "These dimensions are stored separately because the guide's template provides only one overall human_score."
+  },
+  "judge_comparison": {
+    "mae_human_score_vs_judge_faithfulness": 0.5196000000000001,
+    "agreement_within_0_15_vs_judge_faithfulness": 0.08,
+    "mae_human_score_vs_judge_answer_correctness": 0.2944,
+    "agreement_within_0_15_vs_judge_answer_correctness": 0.4,
+    "provisional_repeat_mae": 0.040000000000000015,
+    "repeat_check_validity": "Provisional only: the repeated ratings were produced in the same work session, not after the guide's recommended 30-minute delay."
+  },
+  "step2_low21_classification": {
+    "elaboration": 4,
+    "judge_error": 15,
+    "non_hallucination_answer_failure": 1,
+    "true_hallucination": 1,
+    "true_hallucination_rate_in_low21": 0.047619047619047616,
+    "true_hallucination_rate_in_audited_25": 0.04,
+    "not_true_hallucination_in_low21": 0.9523809523809523
+  },
+  "gates": {
+    "human_correctness_ge_0_85": true,
+    "human_faithfulness_ge_0_90_guide_compatible": false,
+    "claim_level_faithfulness_ge_0_90_pdf_verified": true,
+    "human_citation_correctness_ge_0_90": true,
+    "critical_false_pass_eq_0": true,
+    "material_hallucination_le_0_05": true
+  },
+  "important_findings": {
+    "v85_ans_049": "Real answer-targeting/retrieval failure; answer discusses general CVHT duties instead of the expected CVHT/BCS external-residence duties.",
+    "v85_ans_084": "All facts exist, but rules from different handbook versions are combined without cohort separation.",
+    "v85_ans_096": "Dataset annotation issue: K50 handbook directly answers the question, so the case should not be unanswerable.",
+    "v85_ans_097": "The foreign-language rule is applicable to K51 but is verified through a cross-cohort regulation applying from the 2022 admission cohort onward.",
+    "v85_ans_099": "Only true hallucination in low21: graduation-review months were incorrectly converted into a rule about choosing the month of diploma receipt."
+  },
+  "cv_readiness": {
+    "status": "not_fully_passed_under_the_guide_as_written",
+    "reason": "The guide-compatible regulation mean is 88.95%, below the 90% gate, although direct claim-level PDF faithfulness is 98.16%. Fix v85_ans_049, v85_ans_084, v85_ans_099 and rerun before claiming a clean >=90% Human Faithfulness gate.",
+    "warning": "Do not report 4.76% as the hallucination rate over all 100 cases; it is only the true-hallucination rate inside the audited low21 slice."
+  }
+}

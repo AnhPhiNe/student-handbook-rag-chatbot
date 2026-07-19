@@ -1,0 +1,3417 @@
+[
+  {
+    "id": "v85_ans_006",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "K48-K49",
+    "query": "Em thuộc K48-K49, Sinh viên cần hiểu thế nào về hiệu lực thi hành thì em cần thực hiện hoặc đáp ứng những gì?",
+    "ground_truth": "Quy chế này có hiệu lực thi hành kể từ ngày ký và áp dụng đối với các khóa tuyển sinh sau ngày Quy chế có hiệu lực. Các khoá tuyển sinh trước khi Quy chế có hiệu lực được thực hiện theo Quyết định số 2045/QĐ-ĐHSP ngày 05/9/2016 của Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh về việc ban hành Quy chế Đào tạo đại học và cao đẳng hệ chính quy theo hệ thống tín chỉ và Quyết định 3672/QĐ-ĐHSP ngày 20/12/2018 của Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh về việc ban hành Quy chế Đào tạo hệ vừa làm vừa học theo hệ thống tín chỉ. Đối với những vấn đề phát sinh ngoài Quy chế này, Hiệu trưởng quyết định phương án giải quyết.",
+    "required_facts": [
+      "Các khoá tuyển sinh trước khi Quy chế có hiệu lực được thực hiện theo Quyết định số 2045/QĐ-ĐHSP ngày 05/9/2016 của Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh về việc ban hành Quy chế Đào tạo đại học và cao đẳng hệ chính quy theo hệ thống tín chỉ và Quyết định 3672/QĐ-ĐHSP ngày 20/12/2018 của Hiệu trưởng ",
+      "Quy chế này có hiệu lực thi hành kể từ ngày ký và áp dụng đối với các khóa tuyển sinh sau ngày Quy chế có hiệu lực."
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Đối với sinh viên khóa K48-K49 (nhập học năm 2022/2023), hiệu lực thi hành của các quy định trong Sổ tay sinh viên được xác định cụ thể theo từng văn bản như sau:\n\n1. **Quy chế đào tạo trình độ đại học:** Quy chế ban hành kèm theo Quyết định số 989/QĐ-ĐHSP ngày 29/3/2022 có hiệu lực kể từ ngày ký và áp dụng đối với các khóa tuyển sinh sau ngày Quy chế có hiệu lực [2].\n2. **Quy chế công tác sinh viên:** Quy chế có hiệu lực kể từ ngày ký, thay thế cho Quy chế ban hành kèm theo Quyết định số 132/QĐ-ĐHSP ngày 13/01/2014 [1].\n3. **Quy chế đánh giá kết quả rèn luyện:** Quy chế có hiệu lực kể từ ngày ký, thay thế cho Quy định ban hành kèm theo Quyết định số 133/QĐ-ĐHSP ngày 13/01/2014 [5].\n4. **Quy định về hoạt động nghiên cứu khoa học:** Quyết định có hiệu lực kể từ ngày ký, thay thế cho Quyết định số 1673/ĐHSP-KHCN&MT-TCKH ngày 11/9/2012 [3].\n5. **Chính sách hỗ trợ học phí và chi phí sinh hoạt:** Nghị định quy định về chính sách này có hiệu lực từ ngày 15/11/2020 và áp dụng bắt đầu từ khóa tuyển sinh năm học 2021 – 2022 [4].\n\n**Lưu ý chung:**\n* Đối với các vấn đề phát sinh ngoài quy định, Hiệu trưởng là người xem xét và quyết định phương án giải quyết [1, 2, 3, 5].\n* Trong trường hợp cần thiết, Hiệu trưởng có thẩm quyền quyết định sửa đổi, bổ sung các quy định để phù hợp với tình hình thực tế [1, 2].",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Hiệu lực thi hành",
+        "source_label": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          63,
+          64
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong7_Dieu41"
+      },
+      {
+        "title": "Hiệu lực thi hành",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          32,
+          33,
+          34
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu24"
+      },
+      {
+        "title": "Điều khoản thi hành",
+        "source_label": "Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên",
+        "cohort": "K48-K49",
+        "source_pages": [
+          101,
+          102
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16"
+      },
+      {
+        "title": "Hiệu lực và trách nhiệm thi hành",
+        "source_label": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
+        "cohort": "K48-K49",
+        "source_pages": [
+          117,
+          118,
+          119,
+          120,
+          121,
+          122,
+          123,
+          124,
+          125,
+          126,
+          127,
+          128
+        ],
+        "chunk_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15"
+      },
+      {
+        "title": "Điều khoản thi hành",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          81
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu18"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.1,
+      "answer_relevancy": 0.2,
+      "answer_correctness": 0.2,
+      "context_precision": 0.5,
+      "context_recall": 0.9,
+      "citation_correctness": 0.8,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Contains incorrect regulations; unsupported claims despite some correct facts"
+    },
+    "human_score": 0.8,
+    "human_correctness_score": 0.8,
+    "human_faithfulness_score_pdf_verified": 0.95,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "elaboration",
+    "notes": "Elaboration/Scope issue: Đối chiếu K48-K49 Điều 24: câu trả lời nêu đúng các hiệu lực được dẫn, nhưng bỏ hai quyết định chuyển tiếp 2045/QĐ-ĐHSP và 3672/QĐ-ĐHSP — hai ý chính trong ground truth.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K48-K49 Điều 24: câu trả lời nêu đúng các hiệu lực được dẫn, nhưng bỏ hai quyết định chuyển tiếp 2045/QĐ-ĐHSP và 3672/QĐ-ĐHSP — hai ý chính trong ground truth.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            63,
+            64
+          ],
+          "title": "Hiệu lực thi hành",
+          "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong7_Dieu41"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            32,
+            33,
+            34
+          ],
+          "title": "Hiệu lực thi hành",
+          "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu24"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            101,
+            102
+          ],
+          "title": "Điều khoản thi hành",
+          "chunk_id": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            117,
+            118,
+            119,
+            120,
+            121,
+            122,
+            123,
+            124,
+            125,
+            126,
+            127,
+            128
+          ],
+          "title": "Hiệu lực và trách nhiệm thi hành",
+          "chunk_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            81
+          ],
+          "title": "Điều khoản thi hành",
+          "chunk_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu18"
+        }
+      ]
+    },
+    "repeat_for_consistency": true,
+    "repeat_score": 0.8
+  },
+  {
+    "id": "v85_ans_008",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "K48-K49",
+    "query": "Em thuộc K48-K49, Em chưa rõ học liên thông đối với người có văn bằng khác được quy định cụ thể như thế nào?",
+    "ground_truth": "Học liên thông đối với người có văn bằng khác 1. Người đã tốt nghiệp các trình độ đào tạo của giáo dục nghề nghiệp được dự tuyển và học liên thông lên trình độ đại học theo đề án tuyển sinh và thông báo tuyển sinh hằng năm của Trường. Người đã tốt nghiệp đại học được dự tuyển và học liên thông để nhận thêm một bằng tốt nghiệp đại học của một ngành đào tạo khác theo đề án tuyển sinh và thông báo tuyển sinh hằng năm của Trường.",
+    "required_facts": [
+      "Học liên thông đối với người có văn bằng khác 1."
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Đối với sinh viên khóa K48-K49, quy định về học liên thông tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh được thực hiện theo các nội dung sau:\n\n**1. Đối tượng và hình thức dự tuyển**\n*   Người đã tốt nghiệp các trình độ đào tạo của giáo dục nghề nghiệp hoặc đã tốt nghiệp đại học được dự tuyển và học liên thông theo đề án tuyển sinh và thông báo tuyển sinh hằng năm của Trường.\n*   Người học liên thông thực hiện chương trình đào tạo (CTĐT) và đăng ký học tập theo kế hoạch chung như các sinh viên khác cùng hình thức đào tạo.\n*   Sinh viên được miễn trừ các học phần tương ứng với khối lượng học tập đã tích lũy dựa trên cơ sở công nhận và chuyển đổi tín chỉ theo quy định hiện hành.\n\n**2. Thời gian học tập chuẩn và tối đa**\nThời gian học tập phụ thuộc vào hình thức đào tạo và trình độ đào tạo trước đó:\n\n*   **Đối với hình thức đào tạo chính quy:**\n    *   Liên thông từ trình độ cao đẳng lên đại học: Chuẩn 1,5 năm; Tối đa 3 năm.\n    *   Liên thông từ trình độ trung cấp lên đại học: Chuẩn 2,5 năm; Tối đa 5 năm.\n    *   Liên thông đại học đối với người đã có một bằng đại học: Chuẩn 2 năm; Tối đa 4 năm.\n\n*   **Đối với hình thức đào tạo vừa làm vừa học:**\n    *   Liên thông từ trình độ cao đẳng lên đại học: Chuẩn 2 năm; Tối đa 4 năm.\n    *   Liên thông từ trình độ trung cấp lên đại học: Chuẩn 3 năm; Tối đa 6 năm.\n    *   Liên thông đại học đối với người đã có một bằng đại học: Chuẩn 2,5 năm; Tối đa 5 năm.\n\n**3. Lưu ý về học bổng**\nSinh viên hệ liên thông không được xét cấp Học bổng khuyến khích học tập (HBKKHT), vốn chỉ áp dụng cho sinh viên hệ chính quy đang học tập tại Trường.\n\n**4. Chính sách hỗ trợ học phí**\nTheo quy định tại Nghị định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm, chính sách này áp dụng cho sinh viên học liên thông chính quy các ngành đào tạo giáo viên (đối với văn bằng thứ 2 yêu cầu kết quả học lực văn bằng thứ 1 đạt loại giỏi).",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Học liên thông đối với người có văn bằng khác",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          31
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu20"
+      },
+      {
+        "title": "Chương trình đào tạo và thời gian học tập",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          11,
+          12,
+          13
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3"
+      },
+      {
+        "title": "Học bổng",
+        "source_label": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          51,
+          52
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu27"
+      },
+      {
+        "title": "Liên kết đào tạo",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          14
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu6"
+      },
+      {
+        "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+        "source_label": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
+        "cohort": "K48-K49",
+        "source_pages": [
+          106,
+          107
+        ],
+        "chunk_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.3,
+      "answer_relevancy": 0.95,
+      "answer_correctness": 0.9,
+      "context_precision": 0.8,
+      "context_recall": 0.5,
+      "citation_correctness": 0.9,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Correct core fact but includes unsupported eligibility claim"
+    },
+    "human_score": 1.0,
+    "human_correctness_score": 1.0,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Đối chiếu K48-K49: đối tượng học liên thông, thời gian học, học bổng và phạm vi hỗ trợ học phí đều có trong các Điều được dẫn.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K48-K49: đối tượng học liên thông, thời gian học, học bổng và phạm vi hỗ trợ học phí đều có trong các Điều được dẫn.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            31
+          ],
+          "title": "Học liên thông đối với người có văn bằng khác",
+          "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu20"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            11,
+            12,
+            13
+          ],
+          "title": "Chương trình đào tạo và thời gian học tập",
+          "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            51,
+            52
+          ],
+          "title": "Học bổng",
+          "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu27"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            14
+          ],
+          "title": "Liên kết đào tạo",
+          "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu6"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            106,
+            107
+          ],
+          "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+          "chunk_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_016",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "K50",
+    "query": "Em thuộc K50, Trong sổ tay các hành vi sinh viên không được làm nội dung chính trong sổ tay là gì?",
+    "ground_truth": "Các hành vi sinh viên không được làm 1. Xúc phạm nhân phẩm, danh dự, xâm phạm thân thể giảng viên, viên chức, nhân viên, sinh viên Trường và người khác. Gian lận trong học tập, kiểm tra, thi cử như: quay cóp, mang tài liệu vào phòng thi, xin điểm;",
+    "required_facts": [
+      "Các hành vi sinh viên không được làm 1."
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Theo quy định tại Điều 10, Chương III của \"Quy chế công tác sinh viên\" trong Sổ tay sinh viên K50, sinh viên không được thực hiện các hành vi sau:\n\n1. Xúc phạm nhân phẩm, danh dự, xâm phạm thân thể giảng viên, viên chức, nhân viên, sinh viên Trường và người khác.\n2. Gian lận trong học tập, kiểm tra, thi cử (quay cóp, mang tài liệu vào phòng thi, xin điểm; học, thi, thực tập hộ hoặc nhờ người khác làm hộ; sao chép, nhờ hoặc làm hộ tiểu luận, đồ án, khóa luận; tổ chức hoặc tham gia tổ chức thi hộ...).\n3. Sản xuất, buôn bán, vận chuyển, phát hành, tàng trữ, sử dụng hoặc lôi kéo người khác sử dụng vũ khí, chất nổ, ma túy, các loại dược phẩm, hóa chất cấm; các tài liệu, ấn phẩm, thông tin phản động, đồi trụy và các tài liệu cấm khác; tổ chức, tham gia, truyền bá các hoạt động mê tín dị đoan, hoạt động tôn giáo trong Trường và các hành vi vi phạm đạo đức khác.\n4. Hút thuốc, uống rượu, bia trong trường học; say rượu, bia khi đến lớp. Bôi xóa, viết vẽ lên bàn, tường trong phòng học và khuôn viên Trường; làm hư hại tài sản, trang thiết bị của Trường.\n5. Tổ chức hoặc tham gia tụ tập đông người, biểu tình, khiếu kiện trái pháp luật; tham gia tệ nạn xã hội, gây rối an ninh, trật tự an toàn trong Trường và ngoài xã hội.\n6. Tổ chức hoặc tham gia đua xe hoặc cổ vũ đua xe trái phép.\n7. Tổ chức hoặc tham gia đánh bạc dưới mọi hình thức.\n8. Thành lập, tham gia các hoạt động mang tính chất chính trị trái pháp luật; tổ chức, tham gia các hoạt động tập thể mang danh nghĩa của Trường khi chưa được Hiệu trưởng cho phép.\n9. Đăng tải, bình luận, chia sẻ bài viết, hình ảnh có nội dung dung tục, phản cảm, bạo lực, đồi trụy, xâm phạm an ninh quốc gia, chống phá Đảng và Nhà nước, xuyên tạc, vu khống, xúc phạm uy tín của tổ chức, danh dự và nhân phẩm của cá nhân trên không gian mạng.\n10. Tổ chức hoặc tham gia các hoạt động vi phạm pháp luật khác.",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Các hành vi sinh viên không được làm",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          63,
+          64
+        ],
+        "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong3_Dieu10"
+      },
+      {
+        "title": "Tổ chức đăng ký học tập",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          15,
+          16
+        ],
+        "chunk_id": "K50_QuyCheDaoTao_Chuong2_Dieu9"
+      },
+      {
+        "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          19,
+          20,
+          21
+        ],
+        "chunk_id": "K50_QuyCheDaoTao_Chuong3_Dieu11"
+      },
+      {
+        "title": "Công tác sinh viên",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          56,
+          57
+        ],
+        "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong1_Dieu3"
+      },
+      {
+        "title": "Trách nhiệm",
+        "source_label": "Quy định công tác cố vấn học tập cho sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          86,
+          87
+        ],
+        "chunk_id": "K50_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.2,
+      "answer_relevancy": 0.9,
+      "answer_correctness": 0.85,
+      "context_precision": 0.2,
+      "context_recall": 0.2,
+      "citation_correctness": 0.7,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Answer includes many unsupported items; citations not backed by context"
+    },
+    "human_score": 1.0,
+    "human_correctness_score": 1.0,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Đối chiếu K50 Điều 10: câu trả lời bao quát đúng 10 nhóm hành vi sinh viên không được làm.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K50 Điều 10: câu trả lời bao quát đúng 10 nhóm hành vi sinh viên không được làm.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            63,
+            64
+          ],
+          "title": "Các hành vi sinh viên không được làm",
+          "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong3_Dieu10"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            15,
+            16
+          ],
+          "title": "Tổ chức đăng ký học tập",
+          "chunk_id": "K50_QuyCheDaoTao_Chuong2_Dieu9"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            19,
+            20,
+            21
+          ],
+          "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+          "chunk_id": "K50_QuyCheDaoTao_Chuong3_Dieu11"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            56,
+            57
+          ],
+          "title": "Công tác sinh viên",
+          "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong1_Dieu3"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            86,
+            87
+          ],
+          "title": "Trách nhiệm",
+          "chunk_id": "K50_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4"
+        }
+      ]
+    },
+    "repeat_for_consistency": true,
+    "repeat_score": 0.95
+  },
+  {
+    "id": "v85_ans_019",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "K50",
+    "query": "Em thuộc K50, Cho em hỏi hiệu trưởng có những điều kiện và mốc nào cần lưu ý?",
+    "ground_truth": "Chỉ đạo, tổ chức quản lý các hoạt động về công tác sinh viên; bố trí các nguồn lực nhằm bảo đảm thực hiện tốt các nội dung công tác sinh viên. Tổ chức chỉ đạo việc thực hiện các chủ trương, đường lối của Đảng, chính sách, pháp luật của Nhà nước, các quy chế, quy định của Bộ SỔ TAY SINH VIÊN KHÓA 50 Giáo dục và Đào tạo trong công tác sinh viên, bảo đảm công bằng, công khai, minh bạch và dân chủ.",
+    "required_facts": [
+      "Tổ chức chỉ đạo việc thực hiện các chủ trương, đường lối của Đảng, chính sách, pháp luật của Nhà nước, các quy chế, quy định của Bộ SỔ TAY SINH VIÊN KHÓA 50 Giáo dục và Đào tạo trong công tác sinh viên, bảo đảm công bằng, công khai, minh bạch và dân chủ.",
+      "Chỉ đạo, tổ chức quản lý các hoạt động về công tác sinh viên;"
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Đối với sinh viên khóa K50, các quy định và mốc thời gian liên quan đến Hiệu trưởng trong công tác sinh viên và đào tạo được quy định như sau:\n\n**1. Các nhiệm vụ và quyền hạn của Hiệu trưởng:**\n*   **Quản lý chung:** Chỉ đạo, tổ chức quản lý công tác sinh viên; đảm bảo thực hiện các chủ trương, chính sách, quy chế của Bộ Giáo dục và Đào tạo; đưa công tác sinh viên vào nề nếp và bảo đảm quyền, nghĩa vụ của sinh viên.\n*   **Đối thoại:** Hằng năm, Hiệu trưởng tổ chức đối thoại với sinh viên để giải thích chủ trương, chính sách, cung cấp thông tin và giải quyết kịp thời các thắc mắc, tâm tư, nguyện vọng của sinh viên.\n*   **Khen thưởng và Kỷ luật:** Hiệu trưởng là người ra quyết định khen thưởng hoặc kỷ luật sinh viên dựa trên sự tư vấn của Hội đồng Khen thưởng và Kỷ luật sinh viên. Hiệu trưởng (hoặc Phó Hiệu trưởng phụ trách) giữ vai trò Chủ tịch Hội đồng này.\n*   **Quyết định khác:** Hiệu trưởng có thẩm quyền quyết định các vấn đề phát sinh ngoài quy chế, sửa đổi/bổ sung quy định khi cần thiết, và quyết định sự tham gia của sinh viên đại diện cho Trường khi có yêu cầu từ các cấp, ngành.\n\n**2. Mốc thời gian liên quan đến Hiệu trưởng trong xét tốt nghiệp:**\n*   **Công nhận tốt nghiệp và cấp bằng:** Hiệu trưởng ký quyết định công nhận tốt nghiệp và cấp bằng trong thời hạn **03 tháng** tính từ thời điểm sinh viên đáp ứng đầy đủ điều kiện tốt nghiệp và hoàn thành nghĩa vụ với Trường.\n*   **Đợt xét tốt nghiệp bổ sung:** Ngoài các đợt xét tốt nghiệp chính thức (tháng 5, 8, 10 đối với hệ chính quy), Hiệu trưởng sẽ căn cứ vào điều kiện cụ thể của từng năm học để quyết định các đợt xét tốt nghiệp bổ sung.\n\n*",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Hiệu lực thi hành",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          84,
+          85
+        ],
+        "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong7_Dieu40"
+      },
+      {
+        "title": "Hiệu trưởng",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          64,
+          65
+        ],
+        "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu12"
+      },
+      {
+        "title": "Hội đồng Khen thưởng và Kỷ luật sinh viên",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          82,
+          83
+        ],
+        "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu37"
+      },
+      {
+        "title": "Hiệu lực thi hành",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          30,
+          31,
+          32
+        ],
+        "chunk_id": "K50_QuyCheDaoTao_Chuong5_Dieu24"
+      },
+      {
+        "title": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          23,
+          24,
+          25
+        ],
+        "chunk_id": "K50_QuyCheDaoTao_Chuong3_Dieu15"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.3,
+      "answer_relevancy": 0.8,
+      "answer_correctness": 0.6,
+      "context_precision": 0.4,
+      "context_recall": 0.9,
+      "citation_correctness": 1.0,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Relevant but many unsupported details, low faithfulness"
+    },
+    "human_score": 0.9,
+    "human_correctness_score": 0.9,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Đối chiếu K50: nhiệm vụ Hiệu trưởng, đối thoại hằng năm, khen thưởng–kỷ luật và mốc xét tốt nghiệp đều có căn cứ; câu trả lời chỉ hơi rộng.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K50: nhiệm vụ Hiệu trưởng, đối thoại hằng năm, khen thưởng–kỷ luật và mốc xét tốt nghiệp đều có căn cứ; câu trả lời chỉ hơi rộng.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            84,
+            85
+          ],
+          "title": "Hiệu lực thi hành",
+          "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong7_Dieu40"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            64,
+            65
+          ],
+          "title": "Hiệu trưởng",
+          "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu12"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            82,
+            83
+          ],
+          "title": "Hội đồng Khen thưởng và Kỷ luật sinh viên",
+          "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu37"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            30,
+            31,
+            32
+          ],
+          "title": "Hiệu lực thi hành",
+          "chunk_id": "K50_QuyCheDaoTao_Chuong5_Dieu24"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            23,
+            24,
+            25
+          ],
+          "title": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+          "chunk_id": "K50_QuyCheDaoTao_Chuong3_Dieu15"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_025",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "K50",
+    "query": "Em thuộc K50, Cho em hỏi nhiệm vụ của sinh viên có những điều kiện và mốc nào cần lưu ý?",
+    "ground_truth": "Chấp hành chủ trương, đường lối của Đảng, chính sách, pháp luật của Nhà nước và các quy chế, quy định, nội quy của Trường. Học tập, rèn luyện theo chương trình, kế hoạch giáo dục, đào tạo của Trường; chủ động, tích cực tự học, nghiên cứu, sáng tạo và rèn luyện đạo đức, lối sống.",
+    "required_facts": [
+      "kịp thời báo cáo SỔ TAY SINH VIÊN KHÓA 50 với khoa, phòng chức năng hoặc các cơ quan có thẩm quyền khi phát hiện những hành vi tiêu cực, gian lận trong học tập, thi cử hoặc những hành vi vi phạm pháp luật, vi phạm nội quy, quy chế khác của sinh viên, viên chức trong Trường.",
+      "Chấp hành chủ trương, đường lối của Đảng, chính sách, pháp luật của Nhà nước và các quy chế, quy định, nội quy của Trường."
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Đối với sinh viên khóa K50, nhiệm vụ và các mốc thời gian thực hiện quy định cụ thể như sau:\n\n### 1. Nhiệm vụ của sinh viên\nTheo Quy chế công tác sinh viên, sinh viên có các nhiệm vụ chính sau:\n*   Chấp hành chủ trương, đường lối của Đảng, chính sách, pháp luật của Nhà nước và các quy chế, quy định, nội quy của Trường.\n*   Học tập, rèn luyện theo chương trình, kế hoạch đào tạo; chủ động, tích cực tự học, nghiên cứu, sáng tạo và rèn luyện đạo đức, lối sống.\n*   Tôn trọng giảng viên, viên chức, nhân viên; đoàn kết, giúp đỡ lẫn nhau và thực hiện nếp sống văn hóa trong trường học.\n*   Giữ gìn, bảo vệ tài sản của Trường và phát huy truyền thống của Trường.\n*   Thực hiện đầy đủ quy định về khám sức khỏe khi nhập học và khám sức khỏe định kỳ.\n*   Đóng học phí, bảo hiểm y tế đầy đủ và đúng thời hạn.\n*   Tham gia phòng, chống tiêu cực, gian lận trong học tập, thi cử; tham gia đảm bảo an ninh, trật tự, an toàn giao thông, phòng chống tội phạm, tệ nạn xã hội.\n*   Tham gia lao động công ích, hoạt động tình nguyện, xã hội phù hợp với năng lực và sức khỏe.\n\n### 2. Các mốc thời gian cần lưu ý\nTrong quá trình học tập, sinh viên cần lưu ý các mốc thời gian quan trọng đối với một số thủ tục hành chính:\n\n*   **Nghỉ học tạm thời:**\n    *   Hồ sơ phải được gửi **trước khi thi học kỳ 04 tuần**.\n    *   Điều kiện: Sinh viên phải hoàn thành ít nhất một học kỳ và không nợ học phí tại thời điểm làm hồ sơ.\n*   **Thủ tục xin học lại:**\n    *   Sinh viên phải hoàn tất thủ tục xin học lại **trước thời điểm đăng ký học phần** (của học kỳ muốn trở lại học) ít nhất **02 tuần**.\n*   **Hoạt động lớp:**\n    *   Cố vấn học tập tổ chức họp lớp định kỳ **02 lần/học kỳ** để tư vấn kế hoạch học tập và đánh giá kết quả rèn luyện.\n    *   Ban cán sự lớp báo cáo tình hình học tập, rèn luyện của lớp cho Cố vấn học tập định kỳ **hằng tháng**.\n\n*Lưu ý: Các quy định về học tập chi tiết (như tín chỉ, học phần) được thực hiện theo Quy chế đào tạo trình độ đại học tại Trường.*",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Tín chỉ và học phần",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          8,
+          9
+        ],
+        "chunk_id": "K50_QuyCheDaoTao_Chuong1_Dieu2"
+      },
+      {
+        "title": "Nhiệm vụ của sinh viên",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          60,
+          61
+        ],
+        "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong3_Dieu7"
+      },
+      {
+        "title": "Lớp sinh viên",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          69,
+          70,
+          71
+        ],
+        "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu24"
+      },
+      {
+        "title": "Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          75,
+          76,
+          77
+        ],
+        "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30"
+      },
+      {
+        "title": "Trách nhiệm",
+        "source_label": "Quy định công tác cố vấn học tập cho sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          86,
+          87
+        ],
+        "chunk_id": "K50_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.3,
+      "answer_relevancy": 0.9,
+      "answer_correctness": 0.6,
+      "context_precision": 0.4,
+      "context_recall": 0.8,
+      "citation_correctness": 0.8,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Missing reporting duty; many unsupported duties."
+    },
+    "human_score": 0.85,
+    "human_correctness_score": 0.85,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "elaboration",
+    "notes": "Elaboration/Scope issue: Đối chiếu K50 Điều 7 và các Điều liên quan: các nhiệm vụ/mốc nêu ra có nguồn, nhưng thiếu nghĩa vụ báo cáo kịp thời hành vi tiêu cực, gian lận.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K50 Điều 7 và các Điều liên quan: các nhiệm vụ/mốc nêu ra có nguồn, nhưng thiếu nghĩa vụ báo cáo kịp thời hành vi tiêu cực, gian lận.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            8,
+            9
+          ],
+          "title": "Tín chỉ và học phần",
+          "chunk_id": "K50_QuyCheDaoTao_Chuong1_Dieu2"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            60,
+            61
+          ],
+          "title": "Nhiệm vụ của sinh viên",
+          "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong3_Dieu7"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            69,
+            70,
+            71
+          ],
+          "title": "Lớp sinh viên",
+          "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu24"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            75,
+            76,
+            77
+          ],
+          "title": "Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học",
+          "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            86,
+            87
+          ],
+          "title": "Trách nhiệm",
+          "chunk_id": "K50_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_034",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "K51",
+    "query": "Em thuộc K51, Em chưa rõ hội đồng đánh giá kết quả rèn luyện của sinh viên được quy định cụ thể như thế nào?",
+    "ground_truth": "Hội đồng đánh giá kết quả rèn luyện của sinh viên Mỗi học kỳ, Hiệu trưởng ban hành Quyết định thành lập Hội đồng đánh giá kết quả rèn luyện sinh viên và tự giải thể khi hoàn thành nhiệm vụ. Hội đồng cấp Trường 94 SỔ TAY SINH VIÊN KHÓA 51 a) Thẩm quyền thành lập: Hiệu trưởng; Thành phần Hội đồng cấp Trường bao gồm: – Chủ tịch Hội đồng: Hiệu trưởng hoặc Phó Hiệu trưởng được ủy quyền;",
+    "required_facts": [
+      "Hội đồng cấp Trường 94 SỔ TAY SINH VIÊN KHÓA 51 a) Thẩm quyền thành lập: Hiệu trưởng;",
+      "Hội đồng đánh giá kết quả rèn luyện của sinh viên Mỗi học kỳ, Hiệu trưởng ban hành Quyết định thành lập Hội đồng đánh giá kết quả rèn luyện sinh viên và tự giải thể khi hoàn thành nhiệm vụ."
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Theo quy định tại Sổ tay sinh viên K51, việc tổ chức đánh giá kết quả rèn luyện được thực hiện thông qua Hội đồng đánh giá kết quả rèn luyện sinh viên ở hai cấp, được Hiệu trưởng ban hành quyết định thành lập mỗi học kỳ:\n\n**1. Hội đồng cấp Trường**\n*   **Thẩm quyền thành lập:** Hiệu trưởng.\n*   **Thành phần:**\n    *   Chủ tịch: Hiệu trưởng hoặc Phó Hiệu trưởng được ủy quyền.\n    *   Phó Chủ tịch: Trưởng Phòng CTCT&HSSV.\n    *   Ủy viên thường trực: Phó Trưởng Phòng CTCT&HSSV.\n    *   Các ủy viên: Bí thư Đoàn Thanh niên, Chủ tịch Hội Sinh viên Trường, đại diện lãnh đạo các khoa, phân hiệu, phòng có liên quan.\n    *   Ủy viên thư ký: Chuyên viên phụ trách công tác điểm rèn luyện sinh viên.\n*   **Nhiệm vụ:** Tư vấn cho Hiệu trưởng xem xét, công nhận kết quả rèn luyện của từng sinh viên; xem xét, đánh giá kết quả rèn luyện của từng khoa, phân hiệu dựa trên đề nghị của Trưởng đơn vị.\n\n**2. Hội đồng cấp cơ sở (Khoa và Phân hiệu)**\n*   **Thẩm quyền thành lập:** Trưởng khoa hoặc Giám đốc phân hiệu.\n*   **Thành phần:**\n    *   Chủ tịch: Trưởng/Phó Trưởng khoa hoặc Giám đốc/Phó Giám đốc phân hiệu.\n    *   Các ủy viên:\n        *   Tại khoa: Giáo vụ khoa, Cố vấn học tập (CVHT), đại diện BCH Đoàn khoa, đại diện BCH Liên Chi hội Sinh viên khoa.\n        *   Tại phân hiệu: Tổ trưởng tổ Đào tạo – Khảo thí – Công tác sinh viên, Trưởng/Phó Trưởng khoa có sinh viên đào tạo tại phân hiệu, CVHT các lớp, đại diện BCH Đoàn phân hiệu, đại diện BCH Liên Chi hội Sinh viên phân hiệu (và các thành phần khác nếu cần).\n*   **Nhiệm vụ:** Giúp Trưởng đơn vị xem xét, đánh giá chính xác, công bằng, công khai và dân chủ kết quả rèn luyện của sinh viên trong đơn vị; tổng hợp kết quả từ CVHT các lớp để trình Hội đồng cấp Trường.\n\nHội đồng sẽ tự giải thể sau khi hoàn thành nhiệm vụ mỗi học kỳ.\n\n*",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Hội đồng đánh giá kết quả rèn luyện của sinh viên",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          93,
+          94,
+          95
+        ],
+        "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu12"
+      },
+      {
+        "title": "Quy trình đánh giá kết quả rèn luyện sinh viên",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          92,
+          93
+        ],
+        "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu11"
+      },
+      {
+        "title": "Nguyên tắc đánh giá kết quả rèn luyện của sinh viên",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          88
+        ],
+        "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu2"
+      },
+      {
+        "title": "Thời gian đánh giá kết quả rèn luyện",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          95
+        ],
+        "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu13"
+      },
+      {
+        "title": "Nội dung đánh giá và thang điểm",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          88,
+          89
+        ],
+        "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu3"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.45,
+      "answer_relevancy": 0.9,
+      "answer_correctness": 0.7,
+      "context_precision": 0.6,
+      "context_recall": 0.95,
+      "citation_correctness": 0.9,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Core facts correct, extra details unsupported"
+    },
+    "human_score": 1.0,
+    "human_correctness_score": 1.0,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Đối chiếu K51 Điều 12: thành phần, nhiệm vụ của Hội đồng cấp Trường/cấp cơ sở và việc tự giải thể đều đúng.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K51 Điều 12: thành phần, nhiệm vụ của Hội đồng cấp Trường/cấp cơ sở và việc tự giải thể đều đúng.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            93,
+            94,
+            95
+          ],
+          "title": "Hội đồng đánh giá kết quả rèn luyện của sinh viên",
+          "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu12"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            92,
+            93
+          ],
+          "title": "Quy trình đánh giá kết quả rèn luyện sinh viên",
+          "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu11"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            88
+          ],
+          "title": "Nguyên tắc đánh giá kết quả rèn luyện của sinh viên",
+          "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu2"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            95
+          ],
+          "title": "Thời gian đánh giá kết quả rèn luyện",
+          "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu13"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            88,
+            89
+          ],
+          "title": "Nội dung đánh giá và thang điểm",
+          "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu3"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_036",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "K51",
+    "query": "Em thuộc K51, Nhờ giải thích giúp em lớp học phần áp dụng cho sinh viên ra sao?",
+    "ground_truth": "Lớp học phần bao gồm những sinh viên đăng ký cùng học một học phần. Lớp học phần được tổ chức theo thời gian học một học phần, để được theo dõi, quản lý về học tập và kỷ luật của sinh viên trong giờ học. Đại diện lớp học phần sẽ do giảng viên phụ trách lớp học phần chỉ định và có trách nhiệm báo cáo việc chấp hành nội quy, quy định, quy chế của sinh viên với khoa, phân hiệu.",
+    "required_facts": [
+      "Lớp học phần bao gồm những sinh viên đăng ký cùng học một học phần."
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Đối với sinh viên khóa K51, quy định về lớp học phần được thực hiện như sau:\n\n**1. Định nghĩa và tổ chức:**\n*   Lớp học phần bao gồm những sinh viên đăng ký cùng học một học phần, được tổ chức theo thời gian học của học phần đó để theo dõi, quản lý về học tập và kỷ luật trong giờ học.\n*   Mỗi học phần được tổ chức thành các lớp học phần dựa theo thời khóa biểu chung của Trường và có mã số riêng.\n*   Đại diện lớp học phần do giảng viên phụ trách lớp chỉ định, có trách nhiệm báo cáo việc chấp hành nội quy, quy định, quy chế của sinh viên với khoa hoặc phân hiệu.\n\n**2. Điều kiện tổ chức lớp:**\n*   Trưởng phòng Đào tạo sẽ trình Hiệu trưởng quyết định số lượng sinh viên tối thiểu cho mỗi lớp học phần tùy theo điều kiện cụ thể của từng học kỳ.\n*   Nếu số lượng sinh viên đăng ký ít hơn quy định, lớp học phần đó sẽ không được tổ chức. Trong trường hợp này, sinh viên phải đăng ký chuyển sang học ở các lớp học phần khác mà Trường có tổ chức để đảm bảo đủ số tín chỉ quy định trong học kỳ.\n\n**3. Lưu ý về học tập:**\n*   Trong buổi học đầu tiên, giảng viên sẽ phổ biến đề cương chi tiết và các quy định liên quan đến học phần.\n*   Đối với sinh viên K51, nếu đã có điểm học phần đạt, sinh viên được đăng ký học lại chính học phần đó để cải thiện điểm. Điểm đánh giá cao nhất trong những điểm đã đạt sẽ là điểm chính thức của học phần.\n\n*",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Lớp học phần",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          69
+        ],
+        "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu25"
+      },
+      {
+        "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          19,
+          20,
+          21
+        ],
+        "chunk_id": "K51_QuyCheDaoTao_Chuong3_Dieu11"
+      },
+      {
+        "title": "Quy định về việc thôi học, chuyển trường, chuyển ngành, buộc thôi học",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          75,
+          76
+        ],
+        "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31"
+      },
+      {
+        "title": "Tổ chức giảng dạy và học tập",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          13,
+          14,
+          15
+        ],
+        "chunk_id": "K51_QuyCheDaoTao_Chuong2_Dieu8"
+      },
+      {
+        "title": "Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương tiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh viên người dân tộc thiểu số",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          73
+        ],
+        "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu29"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.35,
+      "answer_relevancy": 0.92,
+      "answer_correctness": 0.78,
+      "context_precision": 0.45,
+      "context_recall": 0.92,
+      "citation_correctness": 0.9,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Extra details lack source support"
+    },
+    "human_score": 1.0,
+    "human_correctness_score": 1.0,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Đối chiếu K51: định nghĩa lớp học phần, điều kiện mở lớp, buổi học đầu tiên và quy định cải thiện điểm đều có nguồn.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K51: định nghĩa lớp học phần, điều kiện mở lớp, buổi học đầu tiên và quy định cải thiện điểm đều có nguồn.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            69
+          ],
+          "title": "Lớp học phần",
+          "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu25"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            19,
+            20,
+            21
+          ],
+          "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+          "chunk_id": "K51_QuyCheDaoTao_Chuong3_Dieu11"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            75,
+            76
+          ],
+          "title": "Quy định về việc thôi học, chuyển trường, chuyển ngành, buộc thôi học",
+          "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            13,
+            14,
+            15
+          ],
+          "title": "Tổ chức giảng dạy và học tập",
+          "chunk_id": "K51_QuyCheDaoTao_Chuong2_Dieu8"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            73
+          ],
+          "title": "Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương tiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh viên người dân tộc thiểu số",
+          "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu29"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_042",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "general",
+    "query": "Sinh viên cần hiểu thế nào về chương trình đào tạo và thời gian học tập thì em cần thực hiện hoặc đáp ứng những gì?",
+    "ground_truth": "Chương trình đào tạo và thời gian học tập 1. CTĐT là một hệ thống các hoạt động giáo dục, đào tạo được thiết kế và tổ chức thực hiện nhằm đạt được mục tiêu đào tạo. CTĐT bao gồm mục tiêu, chuẩn đầu ra, khối lượng kiến thức, cấu trúc, nội dung, phương pháp và hình thức đánh giá đối với môn học, ngành học, trình độ đào tạo phù hợp với chuẩn nghề nghiệp và Khung trình độ quốc gia Việt Nam.",
+    "required_facts": [
+      "Chương trình đào tạo và thời gian học tập 1."
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Chào bạn, về yêu cầu và điều kiện đối với chương trình đào tạo (CTĐT) và thời gian học tập, Sổ tay sinh viên quy định như sau:\n\n### 1. Yêu cầu đối với Chương trình đào tạo (CTĐT)\n*   **Cấu trúc:** CTĐT được xây dựng theo đơn vị tín chỉ, bao gồm các học phần bắt buộc và đáp ứng chuẩn theo quy định của Bộ Giáo dục và Đào tạo. Đối với đào tạo song ngành hoặc ngành chính – ngành phụ, CTĐT phải thể hiện rõ khối lượng học tập chung và riêng.\n*   **Tính công khai:** CTĐT được công khai trước khi tuyển sinh và khi bắt đầu khóa học. Mọi thay đổi, điều chỉnh sẽ được công bố trước khi áp dụng và đảm bảo không gây tác động bất lợi cho sinh viên.\n*   **Đối với người đã tốt nghiệp trình độ/ngành khác:** Khối lượng học tập thực tế được xác định dựa trên việc công nhận, chuyển đổi tín chỉ đã tích lũy và miễn trừ học phần trong CTĐT trước đó.\n\n### 2. Thời gian học tập\nThời gian học tập được quy định tùy theo hình thức đào tạo và chương trình cụ thể.\n\n**Lưu ý:** Bạn vui lòng cho biết **khóa tuyển sinh** của bạn (ví dụ: khóa 2025 trở về sau hay các khóa trước đó) để tôi cung cấp số liệu chính xác nhất, vì quy định về thời gian học tập đã có sự thay đổi/bổ sung tại Quyết định số 4743/QĐ-ĐHSP áp dụng từ khóa tuyển sinh năm 2025.\n\n*   **Đối với sinh viên học liên thông:** Thời gian tối đa để hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khóa giảm tương ứng với khối lượng tín chỉ được miễn trừ.\n\nNếu bạn cần tra cứu bảng thời gian cụ thể cho một khóa học hoặc hình thức đào tạo nhất định, vui lòng cung cấp thêm thông tin để tôi hỗ trợ chính xác.",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Chương trình đào tạo và thời gian học tập",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          9,
+          10,
+          11
+        ],
+        "chunk_id": "K51_QuyCheDaoTao_Chuong1_Dieu3"
+      },
+      {
+        "title": "Chương trình đào tạo và thời gian học tập",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          11,
+          12,
+          13
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3"
+      },
+      {
+        "title": "Lớp học phần",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          69
+        ],
+        "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu25"
+      },
+      {
+        "title": "Lớp học phần",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          71
+        ],
+        "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu25"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.3,
+      "answer_relevancy": 0.8,
+      "answer_correctness": 0.2,
+      "context_precision": 0.8,
+      "context_recall": 0.2,
+      "citation_correctness": 0.7,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Answer misses definition, cites time tables, includes unsupported claims"
+    },
+    "human_score": 0.75,
+    "human_correctness_score": 0.75,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "elaboration",
+    "notes": "Elaboration/Scope issue: Đối chiếu K51 và K48-K49 Điều 3: các claim đều có nguồn, nhưng câu trả lời bỏ định nghĩa CTĐT và một số mốc định lượng mà câu hỏi/ground truth nhấn mạnh.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K51 và K48-K49 Điều 3: các claim đều có nguồn, nhưng câu trả lời bỏ định nghĩa CTĐT và một số mốc định lượng mà câu hỏi/ground truth nhấn mạnh.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            9,
+            10,
+            11
+          ],
+          "title": "Chương trình đào tạo và thời gian học tập",
+          "chunk_id": "K51_QuyCheDaoTao_Chuong1_Dieu3"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            11,
+            12,
+            13
+          ],
+          "title": "Chương trình đào tạo và thời gian học tập",
+          "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            69
+          ],
+          "title": "Lớp học phần",
+          "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu25"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            71
+          ],
+          "title": "Lớp học phần",
+          "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu25"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_049",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "general",
+    "query": "Nếu cần áp dụng đúng quy định cố vấn học tập, bcs lớp có điểm nào dễ bị hiểu nhầm không?",
+    "ground_truth": "Đôn đốc sinh viên thực hiện việc đăng ký ngoại trú, cập nhật thông tin thay đổi nơi tạm trú theo đúng thời hạn quy định. Căn cứ nhận xét của địa phương (nếu có) để đánh giá điểm rèn luyện sinh viên.",
+    "required_facts": [
+      "Đôn đốc sinh viên thực hiện việc đăng ký ngoại trú, cập nhật thông tin thay đổi nơi tạm trú theo đúng thời hạn quy định."
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Theo quy định tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, nhiệm vụ của Cố vấn học tập (CVHT) được áp dụng chung cho các đơn vị đào tạo, bao gồm các nội dung chính sau:\n\n*   **Tư vấn học tập:** Hướng dẫn sinh viên xây dựng kế hoạch học tập cho từng học kỳ và toàn khóa học; tư vấn đăng ký hoặc điều chỉnh kế hoạch học tập dựa trên kết quả học tập, năng lực và hoàn cảnh của sinh viên [1, 3, 4, 5].\n*   **Quản lý lớp:** Quản lý thông tin cá nhân sinh viên; giới thiệu nhân sự để bầu ban cán sự lớp và đề nghị Trưởng khoa (hoặc Giám đốc phân hiệu) phê duyệt/công nhận [1, 3, 4, 5].\n*   **Hỗ trợ sinh viên:** Hướng dẫn sinh viên tham gia các hoạt động học thuật, nghiên cứu khoa học; hướng dẫn thực hiện các thủ tục điều chỉnh, khiếu nại về kết quả học tập, rèn luyện, khen thưởng và kỷ luật [1, 3, 4, 5].\n*   **Nắm bắt tình hình:** Theo dõi tình hình học tập, đời sống, sinh hoạt của lớp; thường xuyên cập nhật các quy chế, quy định của Bộ Giáo dục và Đào tạo cũng như của Trường để tư vấn kịp thời cho sinh viên [1, 3, 4, 5].\n*   **Công tác khác:** Chủ trì họp lớp xét khen thưởng, kỷ luật; tham dự họp Hội đồng Khen thưởng – Kỷ luật cấp Khoa; thực hiện chế độ báo cáo theo yêu cầu của Trưởng khoa [1, 3, 4, 5].\n\nMục đích của công tác CVHT là giúp các đơn vị đào tạo theo dõi tình hình lớp, kịp thời đề xuất phương pháp xử lý các tình huống phát sinh và là cơ sở để đánh giá, bình xét thi đua hằng năm [2].\n\nSổ tay sinh viên không ghi nhận quy định riêng biệt hoặc khác biệt về nhiệm vụ của CVHT dành riêng cho Khoa Ngữ văn hay các ngành cụ thể như Sư phạm Ngữ văn và Văn học. Nếu bạn có thắc mắc về một tình huống cụ thể tại Khoa, bạn nên liên hệ trực tiếp với Văn phòng Khoa để được giải đáp chính xác nhất.",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Nhiệm vụ",
+        "source_label": "Quy định công tác cố vấn học tập tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          64,
+          65
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu3"
+      },
+      {
+        "title": "Mục đích Công tác Cố vấn học tập",
+        "source_label": "Quy định công tác cố vấn học tập tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          64
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu2"
+      },
+      {
+        "title": "Cố vấn học tập",
+        "source_label": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          49,
+          50
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu24"
+      },
+      {
+        "title": "Cố vấn học tập",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          67,
+          68
+        ],
+        "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu23"
+      },
+      {
+        "title": "Cố vấn học tập",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          69
+        ],
+        "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu23"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.0,
+      "answer_relevancy": 0.0,
+      "answer_correctness": 0.0,
+      "context_precision": 0.2,
+      "context_recall": 0.0,
+      "citation_correctness": 0.0,
+      "unsupported_claim": false,
+      "critical_false_pass": false,
+      "rationale": "Answer irrelevant, missing required fact about external residence"
+    },
+    "human_score": 0.4,
+    "human_correctness_score": 0.4,
+    "human_faithfulness_score_pdf_verified": 0.95,
+    "human_citation_score_pdf_verified": 0.5,
+    "critical_false_pass": false,
+    "hallucination_classification": "non_hallucination_answer_failure",
+    "notes": "Retrieval/Answer-targeting failure: Đối chiếu K50 Điều 12 về ngoại trú: nguồn đúng phải nói CVHT/BCS đôn đốc đăng ký, cập nhật nơi tạm trú và dùng nhận xét địa phương khi đánh giá rèn luyện. Câu trả lời truy xuất sang nhiệm vụ CVHT chung nên lệch trọng tâm.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K50 Điều 12 về ngoại trú: nguồn đúng phải nói CVHT/BCS đôn đốc đăng ký, cập nhật nơi tạm trú và dùng nhận xét địa phương khi đánh giá rèn luyện. Câu trả lời truy xuất sang nhiệm vụ CVHT chung nên lệch trọng tâm.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            64,
+            65
+          ],
+          "title": "Nhiệm vụ",
+          "chunk_id": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu3"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            64
+          ],
+          "title": "Mục đích Công tác Cố vấn học tập",
+          "chunk_id": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu2"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            49,
+            50
+          ],
+          "title": "Cố vấn học tập",
+          "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu24"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            67,
+            68
+          ],
+          "title": "Cố vấn học tập",
+          "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu23"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            69
+          ],
+          "title": "Cố vấn học tập",
+          "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu23"
+        }
+      ]
+    },
+    "repeat_for_consistency": true,
+    "repeat_score": 0.45
+  },
+  {
+    "id": "v85_ans_052",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "K48-K49",
+    "query": "Bạn em khóa khác nói khác về học cùng lúc hai chương trình; với K48-K49 thì nguồn nào mới đúng?",
+    "ground_truth": "Đối với hình thức đào tạo chính quy, sinh viên có thể đăng ký học thêm các học phần của một chương trình khác, ngành khác khi điều kiện của Trường cho phép, nhưng chỉ được hưởng các quyền lợi chính thức và được xem xét công nhận tốt nghiệp chương trình thứ hai khi đã đăng ký thành công học chương trình thứ hai theo quy định tại khoản 2 Điều này. Sinh viên được đăng ký học chương trình thứ hai sớm nhất khi đã được xếp trình độ năm thứ hai của chương trình thứ nhất. Tại thời điểm đăng ký, sinh viên phải đáp ứng một trong hai điều kiện sau và một số điều kiện bổ sung khác theo các quy định hiện hành của Trường về học cùng lúc hai chương trình: a) Học lực tính theo điểm trung bình tích lũy xếp loại khá trở lên và đáp ứng ngưỡng bảo đảm chất",
+    "required_facts": [
+      "Đối với hình thức đào tạo chính quy, sinh viên có thể đăng ký học thêm các học phần của một chương trình khác, ngành khác khi điều kiện của Trường cho phép, nhưng chỉ được hưởng các quyền lợi chính thức và được xem xét công nhận tốt nghiệp chương trình thứ hai khi đã đăng ký thành công học chương trình thứ hai theo quy"
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Đối với sinh viên khóa K48-K49, quy định về việc học cùng lúc hai chương trình đào tạo được thực hiện theo các nội dung chính sau:\n\n**1. Điều kiện đăng ký**\nSinh viên được phép đăng ký học chương trình thứ hai sớm nhất khi đã được xếp trình độ năm thứ hai của chương trình thứ nhất. Tại thời điểm đăng ký, sinh viên phải đáp ứng một trong hai điều kiện về học lực sau:\n*   **Loại khá trở lên:** Đáp ứng ngưỡng bảo đảm chất lượng của chương trình thứ hai trong năm tuyển sinh.\n*   **Loại trung bình:** Đáp ứng điều kiện trúng tuyển của chương trình thứ hai trong năm tuyển sinh.\nNgoài ra, sinh viên cần tuân thủ các điều kiện bổ sung khác theo quy định hiện hành của Trường.\n\n**2. Quy định trong quá trình học**\n*   **Kết quả học tập:** Nếu điểm trung bình tích lũy của chương trình thứ nhất đạt dưới mức trung bình hoặc thuộc diện cảnh báo kết quả học tập, sinh viên sẽ bị buộc thôi học chương trình thứ hai ở học kỳ tiếp theo.\n*   **Thời gian học:** Thời gian tối đa để hoàn thành chương trình học là thời gian tối đa quy định cho chương trình thứ nhất. Sinh viên được công nhận kết quả các học phần có nội dung và khối lượng kiến thức tương đương giữa hai chương trình.\n*   **Đánh giá rèn luyện:** Sinh viên được đánh giá kết quả rèn luyện tại đơn vị quản lý chương trình thứ nhất, đồng thời lấy ý kiến nhận xét của đơn vị quản lý chương trình thứ hai làm căn cứ. Nếu đã hoàn thành chương trình thứ nhất, đơn vị quản lý chương trình thứ hai sẽ tiếp tục thực hiện đánh giá.\n\n**3. Điều kiện xét tốt nghiệp**\nSinh viên chỉ được xét tốt nghiệp chương trình thứ hai khi:\n*   Đã đủ điều kiện tốt nghiệp ở chương trình thứ nhất.\n*   Đã đủ 02 năm tính từ thời điểm đăng ký thành công chương trình thứ hai.\n\n**4. Quản lý lớp sinh viên**\nSau khi tốt nghiệp chương trình thứ nhất, sinh viên sẽ được xếp vào lớp sinh viên có chương trình ngành thứ hai tương ứng khi có sự đồng ý của khoa, Phòng Đào tạo và Phòng Công tác chính trị và Học sinh sinh viên để được quản lý và chấm điểm rèn luyện theo quy định.\n\n*",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Học cùng lúc hai chương trình",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          30,
+          31
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu19"
+      },
+      {
+        "title": "Lớp sinh viên",
+        "source_label": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          50,
+          51
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu25"
+      },
+      {
+        "title": "Chương trình đào tạo và thời gian học tập",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          11,
+          12,
+          13
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3"
+      },
+      {
+        "title": "Các trường hợp đánh giá",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          74,
+          75
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10"
+      },
+      {
+        "title": "Tổ chức đăng ký học tập",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          17,
+          18
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu9"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.35,
+      "answer_relevancy": 0.75,
+      "answer_correctness": 0.45,
+      "context_precision": 0.7,
+      "context_recall": 0.9,
+      "citation_correctness": 0.8,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Partial facts, some unsupported details"
+    },
+    "human_score": 1.0,
+    "human_correctness_score": 1.0,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Đối chiếu K48-K49 Điều 19 và Điều 25: điều kiện học hai chương trình, cảnh báo học tập, thời gian và xét tốt nghiệp đều đúng.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K48-K49 Điều 19 và Điều 25: điều kiện học hai chương trình, cảnh báo học tập, thời gian và xét tốt nghiệp đều đúng.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            30,
+            31
+          ],
+          "title": "Học cùng lúc hai chương trình",
+          "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu19"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            50,
+            51
+          ],
+          "title": "Lớp sinh viên",
+          "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu25"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            11,
+            12,
+            13
+          ],
+          "title": "Chương trình đào tạo và thời gian học tập",
+          "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            74,
+            75
+          ],
+          "title": "Các trường hợp đánh giá",
+          "chunk_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            17,
+            18
+          ],
+          "title": "Tổ chức đăng ký học tập",
+          "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu9"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_058",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "K50",
+    "query": "Em nghe mỗi người nói một kiểu về hỗ trợ và dịch vụ sinh viên; nếu em thuộc K50 thì quy định chính xác trong sổ tay là gì?",
+    "ground_truth": "Tư vấn học tập Tư vấn, cố vấn, hỗ trợ sinh viên xây dựng kế hoạch, phương pháp học tập phù hợp với mục tiêu và năng lực; cung cấp thông tin về CTĐT, hướng dẫn sinh viên tiếp cận các nguồn lực (về học thuật, tài chính, kỹ thuật,...) nhằm nâng cao hiệu quả học tập. Công tác hướng nghiệp, tư vấn việc làm Tổ chức thực hiện các nội dung, biện pháp công tác tư vấn hướng nghiệp, việc làm theo quy định.",
+    "required_facts": [
+      "Tư vấn học tập Tư vấn, cố vấn, hỗ trợ sinh viên xây dựng kế hoạch, phương pháp học tập phù hợp với mục tiêu và năng lực;"
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Đối với sinh viên khóa K50, các nội dung về hỗ trợ và dịch vụ sinh viên được quy định cụ thể tại Điều 6, Chương II của Quy chế công tác sinh viên, bao gồm các nhóm chính sau:\n\n1. **Tư vấn học tập:** Hỗ trợ sinh viên xây dựng kế hoạch, phương pháp học tập phù hợp với năng lực; cung cấp thông tin về chương trình đào tạo và hướng dẫn tiếp cận các nguồn lực học thuật, tài chính, kỹ thuật.\n2. **Hướng nghiệp và tư vấn việc làm:** Thực hiện các biện pháp tư vấn hướng nghiệp và việc làm theo quy định.\n3. **Tư vấn tâm lý và chăm sóc sức khỏe:**\n   - Tư vấn, hỗ trợ các vấn đề tâm lý – xã hội.\n   - Quản lý khám sức khỏe đầu vào và định kỳ; tư vấn, tổ chức thực hiện Luật Bảo hiểm y tế; xử lý các tình huống cấp cứu.\n4. **Hỗ trợ tài chính:** Phối hợp xây dựng, quản lý các quỹ học bổng và tổ chức trao học bổng cho sinh viên xuất sắc hoặc sinh viên có hoàn cảnh khó khăn.\n5. **Hỗ trợ đặc biệt:** Triển khai dịch vụ công tác xã hội để giúp đỡ sinh viên khuyết tật, sinh viên diện chính sách và sinh viên có hoàn cảnh đặc biệt khó khăn.\n\n**Đơn vị đầu mối thực hiện:**\nPhòng Công tác chính trị và Học sinh, sinh viên là đơn vị chịu trách nhiệm hướng dẫn, thực hiện các chế độ chính sách về học bổng, học phí, miễn giảm học phí, trợ cấp xã hội, bảo hiểm; tiếp nhận và xử lý các hồ sơ liên quan đến công tác sinh viên.\n\n**Lưu ý về thủ tục:**\nĐối với sinh viên thuộc diện được miễn, giảm học phí, cấp học bổng và hỗ trợ chi phí học tập, bạn cần nộp hồ sơ về Phòng Công tác chính trị và Học sinh, sinh viên đúng thời hạn quy định theo từng học kỳ.\n\n*",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Điều khoản thi hành",
+        "source_label": "Quy định quy tắc ứng xử của viên chức, người lao động và người học Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          140,
+          141
+        ],
+        "chunk_id": "K50_QuyDinhQuyTacUngXu_Chuong5_Dieu18"
+      },
+      {
+        "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+        "source_label": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
+        "cohort": "K50",
+        "source_pages": [
+          141,
+          142
+        ],
+        "chunk_id": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1"
+      },
+      {
+        "title": "Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương tiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh viên người dân tộc thiểu số",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          74,
+          75
+        ],
+        "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu29"
+      },
+      {
+        "title": "Phòng Công tác chính trị và Học sinh, sinh viên",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          65,
+          66,
+          67
+        ],
+        "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu13"
+      },
+      {
+        "title": "Hỗ trợ và dịch vụ sinh viên",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          59,
+          60
+        ],
+        "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong2_Dieu6"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.3,
+      "answer_relevancy": 0.95,
+      "answer_correctness": 0.9,
+      "context_precision": 0.4,
+      "context_recall": 0.9,
+      "citation_correctness": 0.9,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Extra unsupported services lower faithfulness despite correct core fact"
+    },
+    "human_score": 1.0,
+    "human_correctness_score": 1.0,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Đối chiếu K50 Điều 6, Điều 13 và Điều 29: nhóm hỗ trợ, đầu mối CTCT&HSSV và thủ tục hồ sơ đều được hỗ trợ.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K50 Điều 6, Điều 13 và Điều 29: nhóm hỗ trợ, đầu mối CTCT&HSSV và thủ tục hồ sơ đều được hỗ trợ.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            140,
+            141
+          ],
+          "title": "Điều khoản thi hành",
+          "chunk_id": "K50_QuyDinhQuyTacUngXu_Chuong5_Dieu18"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            141,
+            142
+          ],
+          "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+          "chunk_id": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            74,
+            75
+          ],
+          "title": "Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương tiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh viên người dân tộc thiểu số",
+          "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu29"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            65,
+            66,
+            67
+          ],
+          "title": "Phòng Công tác chính trị và Học sinh, sinh viên",
+          "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu13"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            59,
+            60
+          ],
+          "title": "Hỗ trợ và dịch vụ sinh viên",
+          "chunk_id": "K50_QuyCheCongTacSinhVien_Chuong2_Dieu6"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_059",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "K50",
+    "query": "K50 hoi ve hội đồng đánh giá kết quả rèn luyện của sinh viên ma em khong go dau, he thong can tim dung dieu nao?",
+    "ground_truth": "Hội đồng đánh giá kết quả rèn luyện của sinh viên Mỗi học kỳ, Hiệu trưởng ban hành Quyết định thành lập Hội đồng đánh giá kết quả rèn luyện sinh viên và tự giải thể khi hoàn thành nhiệm vụ. Hội đồng cấp Trường a) Thẩm quyền thành lập: Hiệu trưởng; Thành phần Hội đồng cấp Trường bao gồm: – Chủ tịch Hội đồng: Hiệu trưởng hoặc Phó Hiệu trưởng được ủy quyền;",
+    "required_facts": [
+      "98 SỔ TAY SINH VIÊN KHÓA 50 – Các ủy viên: + Đối với các khoa: giáo vụ khoa;",
+      "Hội đồng đánh giá kết quả rèn luyện của sinh viên Mỗi học kỳ, Hiệu trưởng ban hành Quyết định thành lập Hội đồng đánh giá kết quả rèn luyện sinh viên và tự giải thể khi hoàn thành nhiệm vụ."
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Đối với sinh viên khóa K50, việc đánh giá kết quả rèn luyện được thực hiện thông qua hai cấp Hội đồng theo quy định tại Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh:\n\n**1. Hội đồng cấp cơ sở (Khoa và Phân hiệu)**\n*   **Thẩm quyền thành lập:** Trưởng khoa hoặc Giám đốc phân hiệu.\n*   **Thành phần:**\n    *   **Chủ tịch:** Trưởng/Phó Trưởng khoa hoặc Giám đốc/Phó Giám đốc phân hiệu.\n    *   **Ủy viên:**\n        *   Đối với các khoa: Giáo vụ khoa, Cố vấn học tập (CVHT), đại diện BCH Đoàn khoa, đại diện BCH Liên Chi hội Sinh viên khoa.\n        *   Đối với phân hiệu: Tổ trưởng tổ Đào tạo – Khảo thí – Công tác sinh viên, Trưởng/Phó Trưởng khoa có sinh viên đào tạo tại phân hiệu, CVHT các lớp, đại diện BCH Đoàn phân hiệu, đại diện BCH Liên Chi hội Sinh viên phân hiệu (và các thành phần khác do Giám đốc phân hiệu bổ sung nếu cần).\n*   **Nhiệm vụ:** Giúp Trưởng đơn vị xem xét, đánh giá kết quả rèn luyện của sinh viên trong khoa/phân hiệu một cách chính xác, công bằng, công khai, dân chủ; tổng hợp và đề nghị Trưởng đơn vị gửi kết quả về Hội đồng cấp Trường.\n\n**2. Hội đồng cấp Trường**\n*   **Thẩm quyền thành lập:** Hiệu trưởng (được thành lập mỗi học kỳ và tự giải thể khi hoàn thành nhiệm vụ).\n*   **Thành phần:**\n    *   **Chủ tịch:** Hiệu trưởng hoặc Phó Hiệu trưởng được ủy quyền.\n    *   **Phó Chủ tịch:** Trưởng Phòng CTCT&HSSV.\n    *   **Ủy viên thường trực:** Phó Trưởng Phòng CTCT&HSSV.\n    *   **Các ủy viên:** Bí thư Đoàn Thanh niên, Chủ tịch Hội Sinh viên Trường, đại diện lãnh đạo các khoa, phân hiệu, phòng có liên quan.\n    *   **Ủy viên thư ký:** Chuyên viên phụ trách công tác điểm rèn luyện sinh viên.\n*   **Nhiệm vụ:** Tư vấn cho Hiệu trưởng xem xét, công nhận kết quả rèn luyện của từng sinh viên; xem xét, đánh giá kết quả rèn luyện của từng khoa, phân hiệu trên cơ sở đề nghị của các đơn vị để trình Hiệu trưởng quyết định công nhận.\n\n*",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Hội đồng đánh giá kết quả rèn luyện của sinh viên",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          97,
+          98
+        ],
+        "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu12"
+      },
+      {
+        "title": "Quy trình đánh giá kết quả rèn luyện sinh viên",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          95,
+          96,
+          97
+        ],
+        "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11"
+      },
+      {
+        "title": "Nội dung đánh giá và thang điểm",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          92
+        ],
+        "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu3"
+      },
+      {
+        "title": "Thời gian đánh giá kết quả rèn luyện",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          98,
+          99
+        ],
+        "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu13"
+      },
+      {
+        "title": "Sử dụng kết quả rèn luyện",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          99
+        ],
+        "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.45,
+      "answer_relevancy": 0.9,
+      "answer_correctness": 0.9,
+      "context_precision": 0.85,
+      "context_recall": 0.9,
+      "citation_correctness": 0.9,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Extra details not in source, but core correct"
+    },
+    "human_score": 1.0,
+    "human_correctness_score": 1.0,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Đối chiếu K50 Điều 12: thành phần và nhiệm vụ hai cấp Hội đồng được trả lời đúng.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K50 Điều 12: thành phần và nhiệm vụ hai cấp Hội đồng được trả lời đúng.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            97,
+            98
+          ],
+          "title": "Hội đồng đánh giá kết quả rèn luyện của sinh viên",
+          "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu12"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            95,
+            96,
+            97
+          ],
+          "title": "Quy trình đánh giá kết quả rèn luyện sinh viên",
+          "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            92
+          ],
+          "title": "Nội dung đánh giá và thang điểm",
+          "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu3"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            98,
+            99
+          ],
+          "title": "Thời gian đánh giá kết quả rèn luyện",
+          "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu13"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            99
+          ],
+          "title": "Sử dụng kết quả rèn luyện",
+          "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_063",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "K51",
+    "query": "Em nghe mỗi người nói một kiểu về hiệu lực thi hành; nếu em thuộc K51 thì quy định chính xác trong sổ tay là gì?",
+    "ground_truth": "Quyết định này có hiệu lực kể từ ngày ký và thay thế Quyết định số 3738/QĐ-ĐHSP ngày 02/12/2022 của Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh về việc ban hành Quy định công tác CVHT cho sinh viên đại học hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh. Trong quá trình thực hiện, nếu có vấn đề phát sinh hoặc khó khăn, vướng mắc, các đơn vị có liên quan đề xuất ý kiến về Phòng CTCT&HSSV để trình Hiệu trưởng xem xét sửa đổi, bổ sung. HIỆU TRƯỞNG (đã ký) Huỳnh Văn Sơn CVHT quét mã QR hoặc truy cập đường dẫn sau để xem các phụ lục và biểu mẫu có liên quan đến quy định: http://tracuu.hcmue.edu.vn/Hoso_danhgiaCVHT 88 SỔ TAY SINH VIÊN KHÓA 51 BỘ GIÁO DỤC VÀ ĐÀO TẠO TRƯỜNG ĐẠI HỌC SƯ PHẠM THÀNH PHỐ HỒ CHÍ MINH CỘNG HÒA",
+    "required_facts": [
+      "Quyết định này có hiệu lực kể từ ngày ký và thay thế Quyết định số 3738/QĐ-ĐHSP ngày 02/12/2022 của Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh về việc ban hành Quy định công tác CVHT cho sinh viên đại học hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh."
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Đối với sinh viên khóa K51 (nhập học năm 2025), hiệu lực thi hành của các quy định trong Sổ tay sinh viên được xác định như sau:\n\n*   **Quy chế công tác sinh viên:** Có hiệu lực kể từ ngày ký, áp dụng cho tất cả các khóa tuyển sinh theo hình thức đào tạo chính quy [1].\n*   **Quy định chính sách phát triển người học tài năng:** Có hiệu lực kể từ ngày ký và áp dụng đối với các khóa tuyển sinh từ năm 2025 (bao gồm khóa K51) [2].\n*   **Quy định công tác cố vấn học tập:** Có hiệu lực kể từ ngày ký và thay thế cho Quyết định số 3738/QĐ-ĐHSP ngày 02/12/2022 [3].\n*   **Quy định về hoạt động nghiên cứu khoa học của sinh viên:** Có hiệu lực kể từ ngày ký và thay thế cho Quyết định số 1673/ĐHSP-KHCN&MT-TCKH ngày 11/9/2012 [4].\n*   **Quy chế đào tạo trình độ đại học:** Có hiệu lực kể từ ngày ký và áp dụng đối với các khóa tuyển sinh sau ngày Quy chế có hiệu lực [5].\n\nTrong quá trình thực hiện, nếu có vấn đề phát sinh hoặc vướng mắc, sinh viên và các đơn vị liên quan sẽ phản ánh về các phòng ban chức năng tương ứng (như Phòng Công tác chính trị & Học sinh sinh viên, Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học) để trình Hiệu trưởng xem xét, quyết định [1, 2, 3, 4, 5].",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Hiệu lực thi hành",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          81,
+          82
+        ],
+        "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong7_Dieu40"
+      },
+      {
+        "title": "Hiệu lực thi hành",
+        "source_label": "Quy định chính sách phát triển người học tài năng tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          155,
+          156,
+          157,
+          158,
+          159,
+          160,
+          161,
+          162,
+          163,
+          164,
+          165,
+          166,
+          167,
+          168,
+          169,
+          170
+        ],
+        "chunk_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15"
+      },
+      {
+        "title": "Hiệu lực thi hành",
+        "source_label": "Quy định công tác cố vấn học tập cho sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          87,
+          88
+        ],
+        "chunk_id": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu10"
+      },
+      {
+        "title": "Điều khoản thi hành",
+        "source_label": "Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên",
+        "cohort": "K51",
+        "source_pages": [
+          122,
+          123
+        ],
+        "chunk_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16"
+      },
+      {
+        "title": "Hiệu lực thi hành",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          30,
+          31
+        ],
+        "chunk_id": "K51_QuyCheDaoTao_Chuong5_Dieu24"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.3,
+      "answer_relevancy": 0.6,
+      "answer_correctness": 0.6,
+      "context_precision": 0.4,
+      "context_recall": 0.9,
+      "citation_correctness": 0.9,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Contains correct fact but many unsupported statements"
+    },
+    "human_score": 0.9,
+    "human_correctness_score": 0.9,
+    "human_faithfulness_score_pdf_verified": 0.95,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Đối chiếu K51: các hiệu lực của từng văn bản đều có trong nguồn, nhưng câu trả lời rộng hơn ground truth neo vào quy định CVHT.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K51: các hiệu lực của từng văn bản đều có trong nguồn, nhưng câu trả lời rộng hơn ground truth neo vào quy định CVHT.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            81,
+            82
+          ],
+          "title": "Hiệu lực thi hành",
+          "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong7_Dieu40"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            155,
+            156,
+            157,
+            158,
+            159,
+            160,
+            161,
+            162,
+            163,
+            164,
+            165,
+            166,
+            167,
+            168,
+            169,
+            170
+          ],
+          "title": "Hiệu lực thi hành",
+          "chunk_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            87,
+            88
+          ],
+          "title": "Hiệu lực thi hành",
+          "chunk_id": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu10"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            122,
+            123
+          ],
+          "title": "Điều khoản thi hành",
+          "chunk_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            30,
+            31
+          ],
+          "title": "Hiệu lực thi hành",
+          "chunk_id": "K51_QuyCheDaoTao_Chuong5_Dieu24"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_065",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "general",
+    "query": "Nếu trường hợp của em hơi khác bình thường, các đơn vị, đoàn thể trong trường của general được hiểu thế nào theo sổ tay?",
+    "ground_truth": "Các đơn vị, đoàn thể trong Trường 1. Phối hợp với Phòng CTCT&HSSV và các đơn vị có liên quan trong việc triển khai thực hiện công tác ngoại trú sinh viên theo Quy định này. Tư vấn, giới thiệu chỗ ở, tạo điều kiện để sinh viên có nhu cầu tham gia các hoạt động rèn luyện tại nơi cư trú.",
+    "required_facts": [
+      "Các đơn vị, đoàn thể trong Trường 1."
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Sổ tay sinh viên hiện không cung cấp định nghĩa chi tiết cho từng đơn vị, đoàn thể trong Trường.\n\nTuy nhiên, theo các quy định trong Sổ tay, các tổ chức này được nhắc đến trong bối cảnh tham gia hoạt động và quản lý sinh viên bao gồm:\n*   **Các tổ chức Đảng, Đoàn Thanh niên Cộng sản Hồ Chí Minh, Hội Sinh viên Việt Nam** và các tổ chức khác trong Trường [1, 2, 3].\n*   **Phòng Công tác chính trị và Học sinh sinh viên (CTCT&HSSV)**: Đơn vị có vai trò phối hợp với các đơn vị, đoàn thể trong việc triển khai các công tác như quản lý ngoại trú, tư vấn chỗ ở và xây dựng Sổ tay sinh viên [4, 5].\n\nCác đơn vị, đoàn thể này có trách nhiệm phối hợp thực hiện công tác sinh viên, tư vấn, giới thiệu chỗ ở và tạo điều kiện cho sinh viên tham gia các hoạt động rèn luyện [5]. Ngoài ra, sinh viên tham gia quản lý các tổ chức này sẽ được đánh giá điểm rèn luyện dựa trên ý thức, tinh thần, thái độ và kỹ năng tổ chức, quản lý [1, 2, 3].",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các đoàn thể, tổ chức trong Nhà trường hoặc sinh viên đạt được thành tích đặc biệt trong học tập, rèn luyện",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          93,
+          94
+        ],
+        "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu8"
+      },
+      {
+        "title": "Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các đoàn thể, tổ chức trong Nhà trường hoặc sinh viên đạt được thành tích đặc biệt trong học tập, rèn luyện",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          90,
+          91
+        ],
+        "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu8"
+      },
+      {
+        "title": "Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các đoàn thể, tổ chức trong Nhà trường hoặc sinh viên đạt được thành tích đặc biệt trong học tập, rèn luyện",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          73
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu8"
+      },
+      {
+        "title": "Sổ tay sinh viên",
+        "source_label": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          44
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu11"
+      },
+      {
+        "title": "Các đơn vị, đoàn thể trong Trường",
+        "source_label": "Quy định ngoại trú đối với sinh viên đào tạo trình độ đại học, cao đẳng ngành Giáo dục Mầm non hình thức chính quy của Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          120
+        ],
+        "chunk_id": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu14"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.3,
+      "answer_relevancy": 0.7,
+      "answer_correctness": 0.2,
+      "context_precision": 0.6,
+      "context_recall": 0.9,
+      "citation_correctness": 0.9,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Inaccurate claim, missing required fact"
+    },
+    "human_score": 0.8,
+    "human_correctness_score": 0.8,
+    "human_faithfulness_score_pdf_verified": 0.95,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Đối chiếu K50 Điều 14 về ngoại trú: trách nhiệm phối hợp, tư vấn chỗ ở và tạo điều kiện rèn luyện đều có nguồn; cách mở đầu còn mơ hồ.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K50 Điều 14 về ngoại trú: trách nhiệm phối hợp, tư vấn chỗ ở và tạo điều kiện rèn luyện đều có nguồn; cách mở đầu còn mơ hồ.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            93,
+            94
+          ],
+          "title": "Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các đoàn thể, tổ chức trong Nhà trường hoặc sinh viên đạt được thành tích đặc biệt trong học tập, rèn luyện",
+          "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu8"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            90,
+            91
+          ],
+          "title": "Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các đoàn thể, tổ chức trong Nhà trường hoặc sinh viên đạt được thành tích đặc biệt trong học tập, rèn luyện",
+          "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu8"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            73
+          ],
+          "title": "Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các đoàn thể, tổ chức trong Nhà trường hoặc sinh viên đạt được thành tích đặc biệt trong học tập, rèn luyện",
+          "chunk_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu8"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            44
+          ],
+          "title": "Sổ tay sinh viên",
+          "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu11"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            120
+          ],
+          "title": "Các đơn vị, đoàn thể trong Trường",
+          "chunk_id": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu14"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_078",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "K51",
+    "query": "Em thuộc K51, mục \"Quy trình đánh giá kết quả rèn luyện sinh viên\" quy định những điểm chính nào?",
+    "ground_truth": "Quy trình đánh giá kết quả rèn luyện sinh viên 1. CVHT thông báo đến lớp trưởng lớp sinh viên về quy trình và thời gian thực hiện việc chấm điểm rèn luyện. Sinh viên căn cứ vào kết quả rèn luyện của bản thân, tự đánh giá theo mức điểm chi tiết do Trường quy định kèm theo các minh chứng hoạt động và gửi về BCS lớp.",
+    "required_facts": [
+      "Quy trình đánh giá kết quả rèn luyện sinh viên 1."
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Quy trình đánh giá kết quả rèn luyện đối với sinh viên K51 được thực hiện theo các bước chính sau đây:\n\n1. **Thông báo:** Cố vấn học tập (CVHT) thông báo cho lớp trưởng về quy trình và thời gian thực hiện.\n2. **Sinh viên tự đánh giá:** Sinh viên căn cứ vào kết quả rèn luyện của bản thân, tự đánh giá theo thang điểm 100 (kèm minh chứng) và gửi về Ban cán sự (BCS) lớp.\n3. **Chấm điểm sơ bộ:** BCS lớp, Ban chấp hành Chi đoàn, Ban chấp hành Chi hội và CVHT thực hiện chấm lại điểm rèn luyện cho sinh viên dựa trên kết quả tự đánh giá.\n4. **Họp lớp:** CVHT tổ chức họp lớp để xem xét, thông qua mức điểm của từng sinh viên. Kết quả phải được trên 50% ý kiến tập thể lớp đồng ý và có biên bản họp kèm theo.\n5. **Lập hồ sơ:** Lớp sinh viên lập hồ sơ (gồm biên bản họp, bảng kết quả, minh chứng và đơn xin không đánh giá nếu có) gửi lên Hội đồng đánh giá rèn luyện cấp khoa/phân hiệu (Hội đồng cấp cơ sở).\n6. **Xét duyệt cấp cơ sở:** Hội đồng cấp cơ sở họp xét, thống nhất và trình kết quả lên Hội đồng đánh giá rèn luyện cấp Trường.\n7. **Xét duyệt cấp Trường:** Hội đồng cấp Trường họp xét, thống nhất trình Hiệu trưởng xem xét và quyết định công nhận kết quả.\n8. **Công bố:** Kết quả được công bố công khai và thông báo cho sinh viên biết trước 20 ngày trước khi ban hành quyết định chính thức. Sau đó, các đơn vị sẽ cập nhật kết quả vào phần mềm quản lý sinh viên.\n\n**Lưu ý:** Việc đánh giá phải đảm bảo các nguyên tắc khách quan, công khai, công bằng, chính xác, bình đẳng và dân chủ. Kết quả rèn luyện là căn cứ để xét học bổng, khen thưởng, kỷ luật, xét thôi học/ngừng học và các ưu tiên khác theo quy định của Trường.",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Nguyên tắc đánh giá kết quả rèn luyện của sinh viên",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          88
+        ],
+        "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu2"
+      },
+      {
+        "title": "Quy trình đánh giá kết quả rèn luyện sinh viên",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          92,
+          93
+        ],
+        "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu11"
+      },
+      {
+        "title": "Nội dung đánh giá và thang điểm",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          88,
+          89
+        ],
+        "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu3"
+      },
+      {
+        "title": "Sử dụng kết quả rèn luyện",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          95,
+          96
+        ],
+        "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu14"
+      },
+      {
+        "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          88
+        ],
+        "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu1"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.4,
+      "answer_relevancy": 0.9,
+      "answer_correctness": 0.9,
+      "context_precision": 0.8,
+      "context_recall": 0.9,
+      "citation_correctness": 0.9,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Answer adds unsupported steps beyond retrieved context"
+    },
+    "human_score": 1.0,
+    "human_correctness_score": 1.0,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Đối chiếu K51 Điều 10–14: các bước, ngưỡng biểu quyết, công bố và lưu hồ sơ đều có căn cứ.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K51 Điều 10–14: các bước, ngưỡng biểu quyết, công bố và lưu hồ sơ đều có căn cứ.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            88
+          ],
+          "title": "Nguyên tắc đánh giá kết quả rèn luyện của sinh viên",
+          "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu2"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            92,
+            93
+          ],
+          "title": "Quy trình đánh giá kết quả rèn luyện sinh viên",
+          "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu11"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            88,
+            89
+          ],
+          "title": "Nội dung đánh giá và thang điểm",
+          "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu3"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            95,
+            96
+          ],
+          "title": "Sử dụng kết quả rèn luyện",
+          "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu14"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            88
+          ],
+          "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+          "chunk_id": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu1"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_084",
+    "sample_group": "low21",
+    "case_type": "regulation_true_rag",
+    "cohort": "general",
+    "query": "Trong sổ tay, mục \"Thu hồi chi phí bồi hoàn\" nêu những quy định chính nào?",
+    "ground_truth": "Hằng năm, căn cứ vào kết quả rèn luyện, học tập của sinh viên sư phạm, cơ sở đào tạo giáo viên thông báo danh sách sinh viên thuộc đối tượng quy định tại điểm c khoản 1 Điều 6 Nghị định này cho Ủy ban nhân dân cấp tỉnh để thông báo thu hồi kinh phí đã hỗ trợ cho sinh viên sư phạm và gia đình theo quy định tại khoản 2 Điều 8 Nghị định này. Đối với sinh viên sư phạm thuộc đối tượng phải bồi hoàn kinh phí theo quy định tại điểm a và điểm b khoản 1 Điều 6 Nghị định này, Ủy ban nhân dân cấp tỉnh ra thông báo thu hồi kinh phí hỗ trợ để sinh viên sư phạm hoặc gia đình thực hiện nộp trả đầy đủ khoản tiền phải bồi hoàn theo quy định tại Điều 8 Nghị định này. Trong thời hạn 30 ngày, kể từ ngày nhận được quyết định của cơ quan Nhà nước có thẩm quyền,",
+    "required_facts": [
+      "Hằng năm, căn cứ vào kết quả rèn luyện, học tập của sinh viên sư phạm, cơ sở đào tạo giáo viên thông báo danh sách sinh viên thuộc đối tượng quy định tại điểm c khoản 1 Điều 6 Nghị định này cho Ủy ban nhân dân cấp tỉnh để thông báo thu hồi kinh phí đã hỗ trợ cho sinh viên sư phạm và gia đình theo quy định tại khoản 2 Đ"
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Quy định về thu hồi kinh phí bồi hoàn đối với sinh viên sư phạm được thực hiện như sau:\n\n**1. Thủ tục và thời hạn thực hiện:**\n*   **Thông báo thu hồi:** Hằng năm, cơ sở đào tạo giáo viên hoặc cơ quan có thẩm quyền sẽ thông báo danh sách sinh viên thuộc đối tượng phải bồi hoàn cho Ủy ban nhân dân cấp tỉnh hoặc cơ quan liên quan để ra thông báo thu hồi kinh phí.\n*   **Liên hệ làm thủ tục:** Trong thời hạn 30 ngày kể từ ngày nhận được quyết định/thông báo của cơ quan có thẩm quyền, sinh viên hoặc gia đình phải liên hệ với cơ quan thu hồi để làm thủ tục bồi hoàn.\n*   **Thời hạn bồi hoàn:** Tối đa là 04 năm kể từ khi sinh viên nhận được thông báo bồi hoàn kinh phí.\n\n**2. Xử lý chậm trễ và khởi kiện:**\n*   Nếu chậm thực hiện nghĩa vụ bồi hoàn quá thời hạn quy định, sinh viên hoặc gia đình phải chịu lãi suất tối đa áp dụng đối với tiền gửi không kỳ hạn do Ngân hàng Nhà nước Việt Nam quy định (hoặc lãi suất tiền gửi không kỳ hạn của Ngân hàng Thương mại cổ phần Công thương Việt Nam nếu Ngân hàng Nhà nước không quy định).\n*   Trường hợp không thực hiện nghĩa vụ bồi hoàn, cơ quan có thẩm quyền có quyền khởi kiện tại Tòa án theo quy định pháp luật.\n\n**3. Chính sách miễn, giảm hoặc xóa kinh phí:**\n*   Nếu sinh viên thuộc đối tượng chính sách, khó khăn, Ủy ban nhân dân cấp tỉnh sẽ căn cứ vào điều kiện cụ thể để quyết định phương thức thu hồi, chính sách miễn, giảm hoặc xóa kinh phí bồi hoàn.\n*   Đối với trường hợp sinh viên được xác nhận bị suy giảm khả năng lao động từ 61% trở lên hoặc từ trần, sinh viên sẽ được xóa kinh phí bồi hoàn.\n*   Đối với sinh viên thuộc đối tượng hưởng chính sách miễn hoặc giảm học phí theo quy định của Chính phủ, mức bồi hoàn kinh phí hỗ trợ tiền đóng học phí sẽ được miễn hoặc giảm tương ứng.\n\n**4. Nộp trả ngân sách:**\n*   Số tiền thu hồi được nộp vào ngân sách Nhà nước theo quy định hiện hành. Đối với các cơ sở đào tạo hoặc cơ quan đặt hàng, việc nộp trả phải thực hiện chậm nhất 05 ngày làm việc kể từ khi nhận được tiền bồi hoàn từ sinh viên.\n\n*Lưu ý: Bạn cần đối chiếu với các đối tượng phải bồi hoàn (quy định tại Điều 6) và cách tính chi phí bồi hoàn (quy định tại Điều 8) để xác định chính xác nghĩa vụ tài chính của mình.*",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Thu hồi chi phí bồi hoàn",
+        "source_label": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
+        "cohort": "K48-K49",
+        "source_pages": [
+          113,
+          114
+        ],
+        "chunk_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9"
+      },
+      {
+        "title": "Thu hồi chi phí bồi hoàn",
+        "source_label": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
+        "cohort": "K50",
+        "source_pages": [
+          148,
+          149
+        ],
+        "chunk_id": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9"
+      },
+      {
+        "title": "Thu hồi kinh phí hỗ trợ",
+        "source_label": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
+        "cohort": "K51",
+        "source_pages": [
+          138,
+          139
+        ],
+        "chunk_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9"
+      },
+      {
+        "title": "Bồi hoàn kinh phí hỗ trợ",
+        "source_label": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
+        "cohort": "K50",
+        "source_pages": [
+          145,
+          146
+        ],
+        "chunk_id": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6"
+      },
+      {
+        "title": "Bồi hoàn kinh phí hỗ trợ",
+        "source_label": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
+        "cohort": "K51",
+        "source_pages": [
+          135,
+          136
+        ],
+        "chunk_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.4,
+      "answer_relevancy": 0.9,
+      "answer_correctness": 0.6,
+      "context_precision": 0.85,
+      "context_recall": 0.95,
+      "citation_correctness": 0.9,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Core fact present but many unsupported details"
+    },
+    "human_score": 0.75,
+    "human_correctness_score": 0.75,
+    "human_faithfulness_score_pdf_verified": 0.85,
+    "human_citation_score_pdf_verified": 0.8,
+    "critical_false_pass": false,
+    "hallucination_classification": "elaboration",
+    "notes": "Elaboration/Scope issue: Đối chiếu cả ba sổ tay: các mốc 30 ngày, 4 năm, lãi suất, miễn/giảm/xóa và khởi kiện đều có; tuy nhiên câu trả lời trộn bản K48/K50 với quy định sửa đổi trong K51 mà không tách phạm vi khóa.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu cả ba sổ tay: các mốc 30 ngày, 4 năm, lãi suất, miễn/giảm/xóa và khởi kiện đều có; tuy nhiên câu trả lời trộn bản K48/K50 với quy định sửa đổi trong K51 mà không tách phạm vi khóa.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            113,
+            114
+          ],
+          "title": "Thu hồi chi phí bồi hoàn",
+          "chunk_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            148,
+            149
+          ],
+          "title": "Thu hồi chi phí bồi hoàn",
+          "chunk_id": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            138,
+            139
+          ],
+          "title": "Thu hồi kinh phí hỗ trợ",
+          "chunk_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            145,
+            146
+          ],
+          "title": "Bồi hoàn kinh phí hỗ trợ",
+          "chunk_id": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            135,
+            136
+          ],
+          "title": "Bồi hoàn kinh phí hỗ trợ",
+          "chunk_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6"
+        }
+      ]
+    },
+    "repeat_for_consistency": true,
+    "repeat_score": 0.8
+  },
+  {
+    "id": "v85_ans_092",
+    "sample_group": "low21",
+    "case_type": "unanswerable",
+    "cohort": "K50",
+    "query": "K51 có chính sách cấp laptop miễn phí cho mọi sinh viên không?",
+    "ground_truth": "Sổ tay không cung cấp căn cứ để khẳng định nội dung này; hệ thống cần nói rõ không tìm thấy thông tin phù hợp.",
+    "required_facts": [
+      "Không tìm thấy căn cứ trong sổ tay."
+    ],
+    "forbidden_claims": [
+      "khẳng định chính sách không có nguồn"
+    ],
+    "answerability": "unanswerable",
+    "answer": "Hiện tại, trong Sổ tay sinh viên không có quy định về chính sách cấp laptop miễn phí cho sinh viên khóa K51.\n\nTheo Điều 29, Chương V của Quy chế công tác sinh viên, nhà trường thực hiện các chính sách hỗ trợ về học phí, chi phí học tập và phương tiện đồ dùng học tập đối với các đối tượng cụ thể như sau:\n\n*   **Sinh viên là người khuyết tật:** Được hỗ trợ phương tiện, đồ dùng học tập theo quy định tại Nghị định số 28/2012/NĐ-CP và Thông tư liên tịch số 42/2013/TTLT-BGDĐT-BLĐTBXH-BTC.\n*   **Sinh viên là người dân tộc thiểu số:** Được hỗ trợ chi phí học tập theo Quyết định 66/2013/QĐ-CP và Thông tư liên tịch số 35/2014/TTLT-BGDĐT-BTC.\n\nSinh viên thuộc các diện nêu trên cần nộp hồ sơ về Phòng Công tác chính trị và Học sinh sinh viên (CTCT&HSSV) đúng thời gian quy định theo từng học kỳ để được xem xét giải quyết.",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương tiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh viên người dân tộc thiểu số",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          73
+        ],
+        "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu29"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.2,
+      "answer_relevancy": 1.0,
+      "answer_correctness": 1.0,
+      "context_precision": 0.3,
+      "context_recall": 0.2,
+      "citation_correctness": 0.0,
+      "unsupported_claim": false,
+      "critical_false_pass": false,
+      "rationale": "Correctly states no laptop policy, but citations irrelevant"
+    },
+    "human_score": 0.95,
+    "human_correctness_score": 0.95,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 0.9,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Tìm toàn văn K51 không thấy chính sách cấp laptop miễn phí cho mọi sinh viên. Câu trả lời abstain hợp lý; nguồn hỗ trợ gần nhất chỉ nói chính sách cho nhóm cụ thể.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Tìm toàn văn K51 không thấy chính sách cấp laptop miễn phí cho mọi sinh viên. Câu trả lời abstain hợp lý; nguồn hỗ trợ gần nhất chỉ nói chính sách cho nhóm cụ thể.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            73
+          ],
+          "title": "Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương tiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh viên người dân tộc thiểu số",
+          "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu29"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_095",
+    "sample_group": "low21",
+    "case_type": "unanswerable",
+    "cohort": "K50",
+    "query": "Điểm rèn luyện có được mua thêm bằng hoạt động bên ngoài trường không?",
+    "ground_truth": "Sổ tay không cung cấp căn cứ để khẳng định nội dung này; hệ thống cần nói rõ không tìm thấy thông tin phù hợp.",
+    "required_facts": [
+      "Không tìm thấy căn cứ trong sổ tay."
+    ],
+    "forbidden_claims": [
+      "khẳng định chính sách không có nguồn"
+    ],
+    "answerability": "unanswerable",
+    "answer": "Theo quy định tại Sổ tay sinh viên khóa 50, việc đánh giá kết quả rèn luyện được thực hiện dựa trên các nội dung và thang điểm do Trường quy định.\n\nHiện tại, các quy định về đánh giá kết quả rèn luyện không có điều khoản nào cho phép sinh viên \"mua thêm\" điểm rèn luyện bằng các hoạt động bên ngoài trường. Việc đánh giá điểm rèn luyện được thực hiện theo quy trình cụ thể, trong đó sinh viên tự đánh giá dựa trên các mức điểm chi tiết do Trường quy định kèm theo minh chứng hoạt động, sau đó được thông qua bởi Cố vấn học tập và tập thể lớp trước khi trình Hội đồng đánh giá các cấp xem xét.\n\nCác nội dung đánh giá rèn luyện tập trung vào ý thức và thái độ của sinh viên trong các hoạt động học tập, chấp hành nội quy, tham gia các hoạt động chính trị, xã hội, văn hóa, thể thao, công tác cán bộ lớp hoặc các đoàn thể, tổ chức trong Trường.",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Sử dụng kết quả rèn luyện",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          99
+        ],
+        "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14"
+      },
+      {
+        "title": "Thời gian đánh giá kết quả rèn luyện",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          98,
+          99
+        ],
+        "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu13"
+      },
+      {
+        "title": "Các trường hợp xem xét phân loại điểm rèn luyện",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          94,
+          95
+        ],
+        "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10"
+      },
+      {
+        "title": "Quy trình đánh giá kết quả rèn luyện sinh viên",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          95,
+          96,
+          97
+        ],
+        "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11"
+      },
+      {
+        "title": "Nội dung đánh giá và thang điểm",
+        "source_label": "Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          92
+        ],
+        "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu3"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.4,
+      "answer_relevancy": 0.7,
+      "answer_correctness": 0.7,
+      "context_precision": 0.5,
+      "context_recall": 0.6,
+      "citation_correctness": 0.3,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Makes unsupported negative claim, lacks supporting citation"
+    },
+    "human_score": 0.95,
+    "human_correctness_score": 0.95,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 0.9,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Đối chiếu toàn bộ quy trình rèn luyện K50: không có cơ chế 'mua điểm'. Câu trả lời đúng về bản chất, nhưng nên nói 'không tìm thấy căn cứ' thay vì phủ định tuyệt đối.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu toàn bộ quy trình rèn luyện K50: không có cơ chế 'mua điểm'. Câu trả lời đúng về bản chất, nhưng nên nói 'không tìm thấy căn cứ' thay vì phủ định tuyệt đối.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            99
+          ],
+          "title": "Sử dụng kết quả rèn luyện",
+          "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            98,
+            99
+          ],
+          "title": "Thời gian đánh giá kết quả rèn luyện",
+          "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu13"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            94,
+            95
+          ],
+          "title": "Các trường hợp xem xét phân loại điểm rèn luyện",
+          "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            95,
+            96,
+            97
+          ],
+          "title": "Quy trình đánh giá kết quả rèn luyện sinh viên",
+          "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            92
+          ],
+          "title": "Nội dung đánh giá và thang điểm",
+          "chunk_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu3"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_096",
+    "sample_group": "low21",
+    "case_type": "unanswerable",
+    "cohort": "K50",
+    "query": "Sinh viên K50 được tự động nâng điểm nếu tham gia nghiên cứu khoa học không?",
+    "ground_truth": "Sổ tay không cung cấp căn cứ để khẳng định nội dung này; hệ thống cần nói rõ không tìm thấy thông tin phù hợp.",
+    "required_facts": [
+      "Không tìm thấy căn cứ trong sổ tay."
+    ],
+    "forbidden_claims": [
+      "khẳng định chính sách không có nguồn"
+    ],
+    "answerability": "unanswerable",
+    "answer": "Sinh viên K50 không được tự động nâng điểm khi tham gia nghiên cứu khoa học.\n\nTuy nhiên, sinh viên là tác giả chính của đề tài nghiên cứu khoa học được đánh giá đạt loại **Khá trở lên** có quyền nộp đơn cho Trưởng khoa để đăng ký sử dụng điểm đánh giá đề tài thay thế cho điểm thi kết thúc học phần (không quá 3 tín chỉ) liên quan gần với đề tài đó.\n\n**Điều kiện và thủ tục:**\n*   **Điều kiện:** Đề tài phải đạt loại Khá trở lên.\n*   **Thủ tục:** Sinh viên nộp đơn cho Trưởng khoa để đăng ký chuyển đổi điểm.\n\nViệc chuyển đổi điểm này được thực hiện theo quy định tại Điều 14 của Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên.",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Quy trình tổ chức và tiến độ triển khai hoạt động nghiên cứu khoa học của sinh viên",
+        "source_label": "Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên",
+        "cohort": "K50",
+        "source_pages": [
+          124,
+          125,
+          126,
+          127
+        ],
+        "chunk_id": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7"
+      },
+      {
+        "title": "Chuyển đổi điểm nghiên cứu khoa học của sinh viên",
+        "source_label": "Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên",
+        "cohort": "K50",
+        "source_pages": [
+          131,
+          132
+        ],
+        "chunk_id": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14"
+      },
+      {
+        "title": "Quyền lợi và trách nhiệm của sinh viên tham gia nghiên cứu khoa học",
+        "source_label": "Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên",
+        "cohort": "K50",
+        "source_pages": [
+          130,
+          131
+        ],
+        "chunk_id": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12"
+      },
+      {
+        "title": "Khen thưởng và xử lý vi phạm",
+        "source_label": "Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên",
+        "cohort": "K50",
+        "source_pages": [
+          132
+        ],
+        "chunk_id": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu15"
+      },
+      {
+        "title": "Phân cấp quản lý hoạt động nghiên cứu khoa học của sinh viên",
+        "source_label": "Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên",
+        "cohort": "K50",
+        "source_pages": [
+          128,
+          129,
+          130
+        ],
+        "chunk_id": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu11"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.4,
+      "answer_relevancy": 0.6,
+      "answer_correctness": 0.2,
+      "context_precision": 0.5,
+      "context_recall": 0.0,
+      "citation_correctness": 0.8,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Answer asserts unsupported policy, lacks required abstention"
+    },
+    "human_score": 1.0,
+    "human_correctness_score": 1.0,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Đối chiếu K50 Điều 14: tác giả chính đề tài NCKH đạt Khá trở lên có thể nộp đơn xin dùng điểm đề tài thay điểm thi kết thúc học phần, tối đa 3 tín chỉ. Nhãn unanswerable của dataset là lỗi annotation.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K50 Điều 14: tác giả chính đề tài NCKH đạt Khá trở lên có thể nộp đơn xin dùng điểm đề tài thay điểm thi kết thúc học phần, tối đa 3 tín chỉ. Nhãn unanswerable của dataset là lỗi annotation.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            124,
+            125,
+            126,
+            127
+          ],
+          "title": "Quy trình tổ chức và tiến độ triển khai hoạt động nghiên cứu khoa học của sinh viên",
+          "chunk_id": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            131,
+            132
+          ],
+          "title": "Chuyển đổi điểm nghiên cứu khoa học của sinh viên",
+          "chunk_id": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            130,
+            131
+          ],
+          "title": "Quyền lợi và trách nhiệm của sinh viên tham gia nghiên cứu khoa học",
+          "chunk_id": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            132
+          ],
+          "title": "Khen thưởng và xử lý vi phạm",
+          "chunk_id": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu15"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            128,
+            129,
+            130
+          ],
+          "title": "Phân cấp quản lý hoạt động nghiên cứu khoa học của sinh viên",
+          "chunk_id": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu11"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_097",
+    "sample_group": "low21",
+    "case_type": "unanswerable",
+    "cohort": "K48-K49",
+    "query": "K51 có thể bỏ qua chuẩn ngoại ngữ bằng cách đóng phí thay thế không?",
+    "ground_truth": "Sổ tay không cung cấp căn cứ để khẳng định nội dung này; hệ thống cần nói rõ không tìm thấy thông tin phù hợp.",
+    "required_facts": [
+      "Không tìm thấy căn cứ trong sổ tay."
+    ],
+    "forbidden_claims": [
+      "khẳng định chính sách không có nguồn"
+    ],
+    "answerability": "unanswerable",
+    "answer": "Theo quy định hiện hành, không có điều khoản nào cho phép sinh viên đóng phí thay thế để bỏ qua chuẩn đầu ra ngoại ngữ.\n\nĐể được công nhận đạt chuẩn đầu ra ngoại ngữ nhằm xét tốt nghiệp, sinh viên khóa K51 cần đáp ứng một trong các trường hợp sau:\n1. Đạt yêu cầu kỳ thi kết thúc chương trình ngoại ngữ do Trường tổ chức.\n2. Có bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài.\n3. Có chứng chỉ ngoại ngữ bậc 3/6 trở lên (theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam) hoặc chứng chỉ ngoại ngữ quốc tế tương đương theo quy định.\n4. Đạt giải khuyến khích cấp Trường trở lên trong các kỳ thi Olympic ngoại ngữ, thi hùng biện ngoại ngữ dành cho sinh viên không thuộc nhóm ngành ngôn ngữ nước ngoài trong thời gian học tại Trường.\n5. Các trường hợp đặc biệt khác do Hiệu trưởng quyết định.\n\nĐối với các trường hợp tại mục 2, 3, 4 và 5, sinh viên cần thực hiện thủ tục nộp đơn xét miễn học, miễn thi hoặc công nhận trình độ ngoại ngữ theo quy định tại Điều 5 của văn bản này.\n\n*Lưu ý: Sinh viên có thể phải nộp lệ phí xét hồ sơ xin miễn học, miễn thi hoặc xét công nhận trình độ ngoại ngữ là 30.000 đ/sinh viên/lần.*",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Lệ phí kiểm tra trình độ đầu vào, học và thi kết thúc chương trình ngoại ngữ",
+        "source_label": "Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [],
+        "chunk_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu6"
+      },
+      {
+        "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+        "source_label": "Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [],
+        "chunk_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1"
+      },
+      {
+        "title": "Điều khoản chuyển tiếp",
+        "source_label": "Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [],
+        "chunk_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu7"
+      },
+      {
+        "title": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp",
+        "source_label": "Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [],
+        "chunk_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4"
+      },
+      {
+        "title": "Tổ chức dạy học ngoại ngữ",
+        "source_label": "Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [],
+        "chunk_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu3"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.4,
+      "answer_relevancy": 0.9,
+      "answer_correctness": 0.9,
+      "context_precision": 0.6,
+      "context_recall": 0.3,
+      "citation_correctness": 0.5,
+      "unsupported_claim": false,
+      "critical_false_pass": false,
+      "rationale": "Correct overall, but lacks supporting citation for negative claim"
+    },
+    "human_score": 1.0,
+    "human_correctness_score": 1.0,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 0.9,
+    "critical_false_pass": false,
+    "hallucination_classification": "judge_error",
+    "notes": "Judge Error: Quy định ngoại ngữ được xác minh trong văn bản áp dụng cho khóa tuyển sinh từ 2022 trở đi; K51 thuộc phạm vi áp dụng. Tuy nhiên phần nội dung không được in đầy đủ lại trong bản PDF K51 nên citation là dẫn xuất liên khóa, cần ghi rõ.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Quy định ngoại ngữ được xác minh trong văn bản áp dụng cho khóa tuyển sinh từ 2022 trở đi; K51 thuộc phạm vi áp dụng. Tuy nhiên phần nội dung không được in đầy đủ lại trong bản PDF K51 nên citation là dẫn xuất liên khóa, cần ghi rõ.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [],
+          "title": "Lệ phí kiểm tra trình độ đầu vào, học và thi kết thúc chương trình ngoại ngữ",
+          "chunk_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu6"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [],
+          "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+          "chunk_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [],
+          "title": "Điều khoản chuyển tiếp",
+          "chunk_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu7"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [],
+          "title": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp",
+          "chunk_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [],
+          "title": "Tổ chức dạy học ngoại ngữ",
+          "chunk_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu3"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_099",
+    "sample_group": "low21",
+    "case_type": "unanswerable",
+    "cohort": "K51",
+    "query": "Sinh viên có được chọn bất kỳ tháng nào để nhận bằng tốt nghiệp không?",
+    "ground_truth": "Sổ tay không cung cấp căn cứ để khẳng định nội dung này; hệ thống cần nói rõ không tìm thấy thông tin phù hợp.",
+    "required_facts": [
+      "Không tìm thấy căn cứ trong sổ tay."
+    ],
+    "forbidden_claims": [
+      "khẳng định chính sách không có nguồn"
+    ],
+    "answerability": "unanswerable",
+    "answer": "Theo quy định tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, sinh viên không được tự chọn tháng nhận bằng tốt nghiệp.\n\nViệc xét và cấp bằng tốt nghiệp được thực hiện theo các đợt xét tốt nghiệp chính thức do Nhà trường quy định trong kế hoạch năm học:\n\n*   **Đối với sinh viên hình thức đào tạo chính quy:** Có 03 đợt xét tốt nghiệp chính thức, thường được tổ chức vào tháng 5, tháng 8 và tháng 10.\n*   **Đối với sinh viên hình thức đào tạo vừa làm vừa học:** Có 05 đợt xét tốt nghiệp chính thức, thường được tổ chức vào tháng 3, tháng 5, tháng 8, tháng 10 và tháng 12.\n\nNgoài ra, căn cứ vào điều kiện cụ thể của từng năm học, Hiệu trưởng sẽ quyết định các đợt xét tốt nghiệp bổ sung. Sinh viên đủ điều kiện tốt nghiệp sẽ được Hiệu trưởng ký quyết định công nhận và cấp bằng trong thời hạn 03 tháng kể từ thời điểm đáp ứng đầy đủ các điều kiện tốt nghiệp và hoàn thành nghĩa vụ với Trường.",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          23,
+          24,
+          25
+        ],
+        "chunk_id": "K51_QuyCheDaoTao_Chuong3_Dieu15"
+      },
+      {
+        "title": "Quyền của sinh viên",
+        "source_label": "Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          60,
+          61
+        ],
+        "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong3_Dieu8"
+      },
+      {
+        "title": "Học cùng lúc hai chương trình",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          27,
+          28
+        ],
+        "chunk_id": "K51_QuyCheDaoTao_Chuong4_Dieu19"
+      },
+      {
+        "title": "Học liên thông đối với người có văn bằng khác",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          28,
+          29
+        ],
+        "chunk_id": "K51_QuyCheDaoTao_Chuong4_Dieu20"
+      },
+      {
+        "title": "Tiêu chuẩn đối với học viên sau đại học",
+        "source_label": "Quy định chính sách phát triển người học tài năng tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K51",
+        "source_pages": [
+          149,
+          150,
+          151
+        ],
+        "chunk_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu7"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.2,
+      "answer_relevancy": 0.8,
+      "answer_correctness": 0.0,
+      "context_precision": 0.4,
+      "context_recall": 0.2,
+      "citation_correctness": 0.1,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Answer asserts unsupported policy; should have abstained."
+    },
+    "human_score": 0.4,
+    "human_correctness_score": 0.4,
+    "human_faithfulness_score_pdf_verified": 0.5,
+    "human_citation_score_pdf_verified": 0.7,
+    "critical_false_pass": false,
+    "hallucination_classification": "true_hallucination",
+    "notes": "True Hallucination: K51 chỉ quy định các đợt xét tốt nghiệp và thời hạn cấp bằng trong 3 tháng. Không có căn cứ để suy ra sinh viên 'không được tự chọn tháng nhận bằng'; đây là suy diễn không được nguồn hỗ trợ.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "K51 chỉ quy định các đợt xét tốt nghiệp và thời hạn cấp bằng trong 3 tháng. Không có căn cứ để suy ra sinh viên 'không được tự chọn tháng nhận bằng'; đây là suy diễn không được nguồn hỗ trợ.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            23,
+            24,
+            25
+          ],
+          "title": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+          "chunk_id": "K51_QuyCheDaoTao_Chuong3_Dieu15"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            60,
+            61
+          ],
+          "title": "Quyền của sinh viên",
+          "chunk_id": "K51_QuyCheCongTacSinhVien_Chuong3_Dieu8"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            27,
+            28
+          ],
+          "title": "Học cùng lúc hai chương trình",
+          "chunk_id": "K51_QuyCheDaoTao_Chuong4_Dieu19"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            28,
+            29
+          ],
+          "title": "Học liên thông đối với người có văn bằng khác",
+          "chunk_id": "K51_QuyCheDaoTao_Chuong4_Dieu20"
+        },
+        {
+          "pdf": "so_tay_K51.pdf",
+          "cohort": "K51",
+          "pages": [
+            149,
+            150,
+            151
+          ],
+          "title": "Tiêu chuẩn đối với học viên sau đại học",
+          "chunk_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu7"
+        }
+      ]
+    },
+    "repeat_for_consistency": true,
+    "repeat_score": 0.45
+  },
+  {
+    "id": "v85_ans_004",
+    "sample_group": "random4",
+    "case_type": "regulation_true_rag",
+    "cohort": "K48-K49",
+    "query": "Em thuộc K48-K49, công nhận kết quả học tập và chuyển đổi tín chỉ la sao va can luu y gi theo so tay?",
+    "ground_truth": "Công nhận kết quả học tập và chuyển đổi tín chỉ 1. Kết quả học tập của người học đã tích lũy từ một trình độ đào tạo khác, một ngành đào tạo hoặc một CTĐT khác, một khóa học khác hoặc từ một cơ sở đào tạo khác được Trường xem xét công nhận, chuyển đổi sang tín chỉ của những học phần trong CTĐT theo học. Hội đồng chuyên môn của Trường xem xét công nhận, chuyển đổi tín chỉ trên cơ sở đối sánh chuẩn đầu ra, nội dung và khối lượng học tập, cách thức đánh giá học phần và các điều kiện bảo đảm chất lượng thực hiện chương trình theo các cấp độ: a) Công nhận, chuyển đổi theo từng học phần;",
+    "required_facts": [
+      "Công nhận kết quả học tập và chuyển đổi tín chỉ 1."
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Đối với sinh viên khóa K48-K49, quy định về công nhận kết quả học tập và chuyển đổi tín chỉ được thực hiện theo Điều 14, Chương III của Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, cụ thể như sau:\n\n**1. Nguyên tắc công nhận và chuyển đổi:**\n*   Trường xem xét công nhận, chuyển đổi sang tín chỉ của các học phần trong chương trình đào tạo (CTĐT) đối với kết quả học tập mà người học đã tích lũy từ: trình độ đào tạo khác, ngành đào tạo khác, CTĐT khác, khóa học khác hoặc từ cơ sở đào tạo khác.\n*   Hội đồng chuyên môn của Trường sẽ đối sánh dựa trên chuẩn đầu ra, nội dung, khối lượng học tập, cách thức đánh giá và các điều kiện bảo đảm chất lượng.\n*   Việc công nhận, chuyển đổi được thực hiện theo các cấp độ: từng học phần, nhóm học phần hoặc cả CTĐT.\n\n**2. Giới hạn khối lượng:**\n*   Khối lượng tối đa được công nhận, chuyển đổi không vượt quá 50% khối lượng học tập tối thiểu của CTĐT.\n*   Riêng đối với ngành đào tạo giáo viên, việc thực hiện theo hướng dẫn của Bộ Giáo dục và Đào tạo.\n\n**3. Quy trình và thủ tục:**\n*   Quy trình và hồ sơ thực hiện theo quy định xét miễn học, miễn thi công nhận điểm học phần trong CTĐT trình độ đại học của Trường.\n*   Đối với trường hợp sinh viên học một số học phần tại cơ sở đào tạo khác thông qua hợp tác đào tạo (theo Điều 18), khối lượng công nhận không vượt quá 25% tổng khối lượng của CTĐT.\n\n*",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Công nhận kết quả học tập và chuyển đổi tín chỉ",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          25
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu14"
+      },
+      {
+        "title": "Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo, chuyển hình thức học",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          28,
+          29
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu17"
+      },
+      {
+        "title": "Trao đổi sinh viên và hợp tác trong đào tạo",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          29,
+          30
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu18"
+      },
+      {
+        "title": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          25,
+          26,
+          27
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15"
+      },
+      {
+        "title": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp",
+        "source_label": "Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [],
+        "chunk_id": "K48-K49_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.55,
+      "answer_relevancy": 0.9,
+      "answer_correctness": 0.9,
+      "context_precision": 0.6,
+      "context_recall": 0.9,
+      "citation_correctness": 0.9,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Mostly correct but includes unsupported details"
+    },
+    "human_score": 1.0,
+    "human_correctness_score": 1.0,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "correct_supported",
+    "notes": "Correct supported: Đối chiếu K48-K49 Điều 14 và Điều 18: cấp độ công nhận, giới hạn 50%, hồ sơ và giới hạn 25% trong hợp tác đào tạo đều đúng.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K48-K49 Điều 14 và Điều 18: cấp độ công nhận, giới hạn 50%, hồ sơ và giới hạn 25% trong hợp tác đào tạo đều đúng.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            25
+          ],
+          "title": "Công nhận kết quả học tập và chuyển đổi tín chỉ",
+          "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu14"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            28,
+            29
+          ],
+          "title": "Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo, chuyển hình thức học",
+          "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu17"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            29,
+            30
+          ],
+          "title": "Trao đổi sinh viên và hợp tác trong đào tạo",
+          "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu18"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            25,
+            26,
+            27
+          ],
+          "title": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+          "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [],
+          "title": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp",
+          "chunk_id": "K48-K49_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_005",
+    "sample_group": "random4",
+    "case_type": "regulation_true_rag",
+    "cohort": "K48-K49",
+    "query": "Em thuộc K48-K49, Nếu cần áp dụng đúng quy định công tác sinh viên có điểm nào dễ bị hiểu nhầm không?",
+    "ground_truth": "Công tác sinh viên là một trong những công tác trọng tâm của Trường bao gồm tổng thể các hoạt động giáo dục, tuyên truyền; hỗ trợ và dịch vụ đối với sinh viên nhằm đảm bảo các mục tiêu của giáo dục đại học. Công tác sinh viên phải thực hiện đúng đường lối của Đảng, chính sách, pháp luật của Nhà nước và các quy chế, quy định của Bộ Giáo dục và Đào tạo.",
+    "required_facts": [
+      "Công tác sinh viên là một trong những công tác trọng tâm của Trường bao gồm tổng thể các hoạt động giáo dục, tuyên truyền;"
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Chào bạn, đối với sinh viên khóa K48-K49, các quy định về công tác sinh viên được thực hiện theo \"Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy\" của Trường Đại học Sư phạm Thành phố Hồ Chí Minh.\n\nĐể tránh hiểu nhầm, bạn cần lưu ý các nguyên tắc cốt lõi sau đây:\n\n1. **Phạm vi áp dụng:** Quy chế này áp dụng cho tất cả sinh viên hệ đại học chính quy đang học tập tại Trường [2]. Sinh viên được xác định là trung tâm của các hoạt động giáo dục, được đảm bảo điều kiện thực hiện đầy đủ quyền và nghĩa vụ trong quá trình học tập và rèn luyện [3].\n2. **Nguyên tắc thực hiện:** Công tác sinh viên phải đảm bảo tính khách quan, công bằng, công khai và minh bạch trong mọi vấn đề liên quan đến sinh viên [1].\n3. **Phân biệt với các chính sách hỗ trợ:** Nếu bạn là sinh viên sư phạm thuộc đối tượng hưởng chính sách hỗ trợ tiền đóng học phí và chi phí sinh hoạt, cần lưu ý các quy định về **bồi hoàn kinh phí** (Điều 6, Nghị định về chính sách hỗ trợ sinh viên sư phạm). Cụ thể:\n    * Bạn có thể phải bồi hoàn nếu không công tác trong ngành giáo dục sau 02 năm tốt nghiệp, hoặc tự thôi học, bị kỷ luật buộc thôi học [4].\n    * Các trường hợp dừng học do ốm đau, tai nạn, học lại, lưu ban (không quá một lần) hoặc lý do khác không do kỷ luật vẫn được xem xét tiếp tục hưởng chính sách hỗ trợ, nhưng tổng thời gian hưởng không vượt quá thời gian tối đa hoàn thành chương trình đào tạo [4].\n\nNếu bạn đang gặp vướng mắc cụ thể tại một điều khoản nào đó trong Sổ tay sinh viên khiến bạn cảm thấy khó hiểu, bạn vui lòng cung cấp chi tiết nội dung đó để tôi có thể giải đáp chính xác hơn dựa trên quy định hiện hành.",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Công tác sinh viên",
+        "source_label": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          36,
+          37
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu3"
+      },
+      {
+        "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+        "source_label": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          36
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu1"
+      },
+      {
+        "title": "Sinh viên",
+        "source_label": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          36
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu2"
+      },
+      {
+        "title": "Bồi hoàn kinh phí hỗ trợ",
+        "source_label": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
+        "cohort": "K48-K49",
+        "source_pages": [
+          110,
+          111
+        ],
+        "chunk_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6"
+      },
+      {
+        "title": "Tổ chức đăng ký học tập",
+        "source_label": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [
+          17,
+          18
+        ],
+        "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu9"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.9,
+      "answer_relevancy": 0.4,
+      "answer_correctness": 0.2,
+      "context_precision": 0.5,
+      "context_recall": 0.8,
+      "citation_correctness": 0.9,
+      "unsupported_claim": false,
+      "critical_false_pass": false,
+      "rationale": "Answer vague, misses specific confusing point"
+    },
+    "human_score": 0.75,
+    "human_correctness_score": 0.75,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "correct_but_partially_relevant",
+    "notes": "Correct but partially relevant: Đối chiếu K48-K49: các nguyên tắc và thông tin bồi hoàn đều có nguồn, nhưng câu trả lời không nêu trực tiếp định nghĩa công tác sinh viên và mở rộng hơi xa.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu K48-K49: các nguyên tắc và thông tin bồi hoàn đều có nguồn, nhưng câu trả lời không nêu trực tiếp định nghĩa công tác sinh viên và mở rộng hơi xa.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            36,
+            37
+          ],
+          "title": "Công tác sinh viên",
+          "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu3"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            36
+          ],
+          "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+          "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu1"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            36
+          ],
+          "title": "Sinh viên",
+          "chunk_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu2"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            110,
+            111
+          ],
+          "title": "Bồi hoàn kinh phí hỗ trợ",
+          "chunk_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [
+            17,
+            18
+          ],
+          "title": "Tổ chức đăng ký học tập",
+          "chunk_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu9"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_045",
+    "sample_group": "random4",
+    "case_type": "regulation_true_rag",
+    "cohort": "general",
+    "query": "Sinh viên cần hiểu thế nào về công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp thì em cần thực hiện hoặc đáp ứng những gì?",
+    "ground_truth": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp 1. Sinh viên theo quy định Điều 1 tốt nghiệp trình độ đại học phải đạt tối thiểu bậc 3/6 theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc tương đương để được công nhận tốt nghiệp. Sinh viên được công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp nếu thuộc 01 trong các trường hợp sau: a) Đạt yêu cầu kỳ thi kết thúc chương trình ngoại ngữ theo quy định tại Điều 3;",
+    "required_facts": [
+      "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp 1."
+    ],
+    "forbidden_claims": [],
+    "answerability": "answerable",
+    "answer": "Để được công nhận đạt chuẩn đầu ra ngoại ngữ phục vụ xét tốt nghiệp, sinh viên cần đạt tối thiểu bậc 3/6 theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc trình độ tương đương [1, 2, 3].\n\nSinh viên được công nhận đạt chuẩn nếu thuộc một trong các trường hợp sau:\n*   Đạt yêu cầu kỳ thi kết thúc chương trình ngoại ngữ theo quy định của Trường [1, 2, 3].\n*   Có bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài [1, 2, 3].\n*   Có chứng chỉ ngoại ngữ bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc chứng chỉ ngoại ngữ quốc tế tương đương theo quy định tại Phụ lục [1, 2, 3].\n*   Đạt giải khuyến khích cấp Trường trở lên trong các kỳ thi Olympic ngoại ngữ, thi hùng biện ngoại ngữ dành cho sinh viên không thuộc nhóm ngành ngôn ngữ nước ngoài trong thời gian học tại Trường [1, 2, 3].\n*   Các trường hợp đặc biệt khác do Hiệu trưởng quyết định [1, 2, 3].\n\n**Lưu ý về thủ tục:**\nSinh viên thuộc các trường hợp có bằng đại học ngành ngôn ngữ, có chứng chỉ, đạt giải thi ngoại ngữ hoặc trường hợp đặc biệt cần thực hiện thủ tục theo Điều 5 [1, 2, 3]:\n1.  **Bước 1:** Nộp đơn (theo mẫu) cho Phòng Khảo thí và Đảm bảo chất lượng theo thông báo của Trường [4, 5].\n2.  **Bước 2:** Phòng Khảo thí và Đảm bảo chất lượng phối hợp với các khoa kiểm tra và báo cáo Hiệu trưởng ra quyết định công nhận trong vòng 15 ngày làm việc kể từ ngày hết hạn nộp đơn [4, 5].\n3.  **Bước 3:** Kết quả được thông báo cho sinh viên và công khai trên Cổng thông tin điện tử của Trường trong vòng 10 ngày làm việc kể từ khi có quyết định [4, 5].",
+    "status": "answered",
+    "strategy": "semantic_filtered",
+    "citations_used": [
+      {
+        "title": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp",
+        "source_label": "Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          111,
+          112
+        ],
+        "chunk_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4"
+      },
+      {
+        "title": "Quy trình và thủ tục công nhận trình độ ngoại ngữ để xét tốt nghiệp",
+        "source_label": "Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K50",
+        "source_pages": [
+          112
+        ],
+        "chunk_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu5"
+      },
+      {
+        "title": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp",
+        "source_label": "Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [],
+        "chunk_id": "K48-K49_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4"
+      },
+      {
+        "title": "Quy trình và thủ tục công nhận trình độ ngoại ngữ để xét tốt nghiệp",
+        "source_label": "Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+        "cohort": "K48-K49",
+        "source_pages": [],
+        "chunk_id": "K48-K49_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu5"
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.7,
+      "answer_relevancy": 0.7,
+      "answer_correctness": 0.7,
+      "context_precision": 0.6,
+      "context_recall": 0.9,
+      "citation_correctness": 0.9,
+      "unsupported_claim": true,
+      "critical_false_pass": false,
+      "rationale": "Some claims lack supporting evidence"
+    },
+    "human_score": 1.0,
+    "human_correctness_score": 1.0,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 0.95,
+    "critical_false_pass": false,
+    "hallucination_classification": "correct_supported",
+    "notes": "Correct supported: Nội dung chuẩn đầu ra ngoại ngữ, các trường hợp công nhận và thủ tục 15/10 ngày được xác minh trong quy định áp dụng từ khóa tuyển sinh 2022 trở đi; citation liên khóa cần được mô tả rõ.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Nội dung chuẩn đầu ra ngoại ngữ, các trường hợp công nhận và thủ tục 15/10 ngày được xác minh trong quy định áp dụng từ khóa tuyển sinh 2022 trở đi; citation liên khóa cần được mô tả rõ.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            111,
+            112
+          ],
+          "title": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp",
+          "chunk_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4"
+        },
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            112
+          ],
+          "title": "Quy trình và thủ tục công nhận trình độ ngoại ngữ để xét tốt nghiệp",
+          "chunk_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu5"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [],
+          "title": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp",
+          "chunk_id": "K48-K49_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4"
+        },
+        {
+          "pdf": "so_tay_K48_49.pdf",
+          "cohort": "K48-K49",
+          "pages": [],
+          "title": "Quy trình và thủ tục công nhận trình độ ngoại ngữ để xét tốt nghiệp",
+          "chunk_id": "K48-K49_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu5"
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  },
+  {
+    "id": "v85_ans_090",
+    "sample_group": "random4",
+    "case_type": "structured_mixed",
+    "cohort": "K50",
+    "query": "Case 90: em thuộc K50, nhờ giải thích bảng quy đổi ngoại ngữ cho chứng chỉ phổ biến.",
+    "ground_truth": "Trả lời trực tiếp bằng dữ liệu structured catalog đúng cohort và đúng nguồn.",
+    "required_facts": [
+      "Dùng dữ liệu structured catalog đúng cohort."
+    ],
+    "forbidden_claims": [
+      "Không tự suy đoán thông tin ngoài catalog."
+    ],
+    "answerability": "answerable",
+    "answer": "Dưới đây là bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4 dành cho sinh viên khóa K50:\n\n| Ngôn ngữ | Chứng chỉ | Bậc 3 | Bậc 4 |\n| :--- | :--- | :--- | :--- |\n| **Tiếng Anh** | TOEFL iBT | 30 - 45 | 46 - 93 |\n| | TOEFL ITP | 450 - 499 | - |\n| | IELTS | 4.0 - 5.0 | 5.5 - 6.5 |\n| | Cambridge/Linguaskill | B1 Preliminary; B1 Business Preliminary; Linguaskill 140 - 159 | B2 First; B2 Business Vantage; Linguaskill 160 - 179 |\n| | TOEIC (4 kỹ năng) | Nghe 275-399; Đọc 275-384; Nói 120-159; Viết 120-149 | Nghe 400-489; Đọc 385-454; Nói 160-179; Viết 150-179 |\n| **Tiếng Pháp** | TCF / DELF | TCF 300 - 399; DELF B1 | TCF 400 - 499; DELF B2 |\n| **Tiếng Trung** | HSK | HSK bậc 3 | HSK bậc 4 |\n| **Tiếng Nhật** | JLPT | N4 | N3 |\n| **Tiếng Nga** | ТРКИ | ТРКИ-1 | ТРКИ-2 |\n| **Tiếng Hàn** | TOPIK II | TOPIK II (120) | TOPIK II (150) |",
+    "status": "answered",
+    "strategy": "structured_table",
+    "citations_used": [
+      {
+        "title": "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4",
+        "source_label": "Bảng dữ liệu được chuẩn hóa từ Sổ tay sinh viên HCMUE",
+        "cohort": "K50",
+        "source_pages": [
+          112,
+          113,
+          114,
+          115,
+          116
+        ],
+        "chunk_id": null
+      }
+    ],
+    "judge_scores": {
+      "faithfulness": 0.96,
+      "answer_relevancy": 0.95,
+      "answer_correctness": 0.96,
+      "context_precision": 0.94,
+      "context_recall": 0.94,
+      "citation_correctness": 0.92,
+      "unsupported_claim": false,
+      "critical_false_pass": false,
+      "rationale": "Accurate table, fully supported by context"
+    },
+    "human_score": 1.0,
+    "human_correctness_score": 1.0,
+    "human_faithfulness_score_pdf_verified": 1.0,
+    "human_citation_score_pdf_verified": 1.0,
+    "critical_false_pass": false,
+    "hallucination_classification": "correct_supported",
+    "notes": "Correct supported: Đối chiếu bảng quy đổi K50: các ngưỡng chứng chỉ phổ biến trong structured result khớp bảng gốc.",
+    "pdf_verification": {
+      "checked_directly_against_handbooks": true,
+      "verification_note": "Đối chiếu bảng quy đổi K50: các ngưỡng chứng chỉ phổ biến trong structured result khớp bảng gốc.",
+      "source_references": [
+        {
+          "pdf": "so_tay_K50.pdf",
+          "cohort": "K50",
+          "pages": [
+            112,
+            113,
+            114,
+            115,
+            116
+          ],
+          "title": "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4",
+          "chunk_id": null
+        }
+      ]
+    },
+    "repeat_for_consistency": false,
+    "repeat_score": null
+  }
+]

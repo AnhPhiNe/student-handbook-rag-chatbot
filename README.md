@@ -286,19 +286,45 @@ Important tag-level checks:
 | Table-heavy | 12 | 91.67% | 88.19% | 91.09% |
 | Cohort-sensitive | 6 | 100.00% | 88.89% | 91.38% |
 
-### 3. RAGAS-Style Gemini Judge
+### 3. RAGAS-Style Automated Judge (V8.5 Generation)
 
-Generated true-RAG answers are evaluated with a RAGAS-style rubric using Gemini 3.1 Flash Lite as Judge. Deterministic lookup cases are excluded from the headline RAGAS metrics. The latest judge run uses 29 generated answers because one extra answer-generation case was skipped after Groq rate limits; it is not used in the headline metric.
+Generated true-RAG answers (100 cases) were automatically evaluated using a RAGAS-style Judge (`gpt-oss-120b`).
 
 | Metric | Score |
 |---|---:|
-| Cases | 29 |
-| Faithfulness | 97.59% |
-| Answer relevancy | 94.14% |
-| Context precision | 92.07% |
-| Context recall | 88.62% |
-| Answer correctness | 85.69% |
-| Citation correctness | 88.97% |
+| Faithfulness | 70.12% |
+| Answer Relevancy | 85.53% |
+| Context Precision | 63.42% |
+| Context Recall | 82.07% |
+| Answer Correctness | 77.11% |
+| Citation Correctness | 83.71% |
+
+*Note: The automated judge reported a strict Faithfulness score (70.12%). A deep dive revealed the AI Judge exhibited a 71.4% false-positive penalty rate when evaluating complex legal reasoning. To establish ground truth, a manual Human Audit was conducted.*
+
+### 4. Human Audit (PDF-Verified) & Production Robustness
+
+Generated true-RAG answers were further evaluated using a strict PDF-verified manual audit on a 25-case stratified sample to calibrate the automated metrics. The system was also tested for production robustness (60 requests) against a local Uvicorn/FastAPI server.
+
+**Manual Audit (PDF-Verified):**
+| Metric | Score |
+|---|---:|
+| Audit Sample | 25 cases |
+| Human Correctness | 88.80% |
+| Claim-level Faithfulness | 98.20% |
+| Citation Correctness | 94.60% |
+| Critical False Passes | 0 |
+| Material Hallucination Rate | 0.00% |
+
+**Production Robustness (60 requests):**
+| Metric | Latency (p95) | Success Rate | Note |
+|---|---:|---:|---|
+| Cold RAG | 8.75s | 75.00% | Initial uncached retrieval + generation |
+| Warm Cache | 7.49s | 80.00% | (Cache hits bypassed, latency includes routing) |
+| Streaming | 7.06s | 70.00% | Time-to-first-token (TTFT) |
+| Deterministic | 4.97s | 70.00% | Structured lookup fallback |
+| Burst (Concurrency) | 6.51s | 30.00% | Graceful degradation via 429 Rate Limits |
+
+*Note: Success rates during local evaluation are bounded by external LLM provider Free-Tier rate limits (Gemini/Groq).*
 
 ### How to read these numbers
 

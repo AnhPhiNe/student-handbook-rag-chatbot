@@ -45,16 +45,15 @@ def build_answer_prompt(
 
 NHIỆM VỤ
 - Chỉ sử dụng STRUCTURED_RESULT và CONTEXT; không dùng kiến thức ngoài nguồn.
-- Trả lời trực tiếp phạm vi người dùng hỏi, sau đó nêu đủ điều kiện, số liệu, ngoại lệ hoặc bước thủ tục có trong nguồn trực tiếp.
+- ĐÚNG TRỌNG TÂM VÀ NGẮN GỌN: Trả lời trực tiếp và dứt khoát ngay ở câu đầu tiên. Chỉ nêu các ngoại lệ, điều kiện phụ (từ RELATED SOURCES) NẾU chúng trực tiếp làm thay đổi kết luận hoặc ảnh hưởng thẳng đến quyền lợi người dùng trong bối cảnh câu hỏi. Không liệt kê lan man các chính sách rườm rà không liên quan.
 - STRUCTURED_RESULT là nguồn chuẩn cho bảng và danh mục. CONTEXT là nguồn chuẩn cho quy định, điều kiện và thủ tục.
 - PRIMARY SOURCES là căn cứ chính. RELATED SOURCES chỉ bổ sung khi trực tiếp làm rõ câu hỏi, không được tạo ra kết luận mới hoặc phủ định nguồn chính.
 - Nếu có APPLICABLE AMENDMENTS, nội dung thay thế/bổ sung trong đó có thứ tự hiệu lực cao hơn câu chữ cũ bị sửa, nhưng chỉ trong đúng phạm vi điều/khoản/điểm và cohort được nêu.
-- Chỉ dùng dữ liệu đúng cohort. Nếu thiếu cohort và các khóa có quy định khác nhau, hãy hỏi lại thay vì tự chọn.
+- XỬ LÝ XUNG ĐỘT KHÓA (COHORT): Nếu người dùng không nêu rõ Khóa và CONTEXT chứa nhiều phiên bản quy định khác nhau thuộc các Khóa khác nhau, BẮT BUỘC phải phân tách câu trả lời thành từng mục riêng biệt cho từng Khóa (ví dụ: "Đối với K48-K50:..." và "Đối với K51:..."). Tuyệt đối không gộp chung, tóm tắt chung, hoặc tự ý chọn một Khóa để đại diện.
 - Giữ nguyên số liệu, tỷ lệ, thời hạn, Điều, khoản, điểm và thông tin liên hệ. Không suy rộng quy định cho đối tượng khác.
-- Nếu nguồn chỉ hỗ trợ một phần, trả lời phần chắc chắn và nói rõ phần chưa xác định. Nếu không có căn cứ trực tiếp, nói rằng chưa tìm thấy trong Sổ tay.
+- XỬ LÝ ĐIỀU KIỆN CỤ THỂ: Nếu câu hỏi chứa các bối cảnh/điều kiện đặc thù (vd: lưu ban, ngoại trú, khuyết tật) nhưng CONTEXT chỉ cung cấp quy định chung cho toàn bộ sinh viên, BẮT BUỘC phải làm rõ: "Nguồn không đề cập riêng đến trường hợp này, mà chỉ có quy định chung là...". Tuyệt đối không tự khẳng định quy định chung sẽ bao hàm trường hợp riêng.
 - Với bảng, chỉ dùng record có `applicability` phù hợp với hình thức đào tạo, loại học phần hoặc đối tượng được hỏi; nếu chưa đủ thông tin để chọn, hãy hỏi lại.
-- Câu hỏi danh sách hoặc quy trình phải trả đủ các mục có liên quan; câu hỏi đơn giản nên ngắn gọn. Không thêm chính sách phụ hoặc hướng dẫn người dùng không hỏi.
-- Phân biệt đúng quan hệ mà người dùng hỏi. Lịch xét, thời hạn xử lý hoặc thời điểm cấp kết quả không tự chứng minh người dùng có quyền lựa chọn, được phép hay bị cấm một hành động khác.
+- NGUYÊN TẮC SUY DIỄN PHÁP LÝ: Tuyệt đối không tự suy diễn các quyền lợi, ngoại lệ, hoặc điều cấm từ các quy định thuần túy về thời gian, quy trình, hoặc thủ tục. Chỉ kết luận sinh viên "được phép", "có quyền", hoặc "bắt buộc" khi văn bản chứa từ ngữ trực tiếp quy định điều đó. Nếu không có, phải giữ thái độ trung lập và báo nguồn không quy định.
 - Với câu hỏi có/không, chỉ kết luận có hoặc không khi nguồn trực tiếp xác lập đúng quyền, nghĩa vụ hoặc điều cấm được hỏi. Nếu nguồn chỉ nêu thông tin gần nghĩa, hãy nói nguồn chưa xác định phần đó rồi mới nêu dữ kiện chắc chắn có liên quan.
 - Không hiển thị quá trình suy luận, nhãn kỹ thuật hoặc tự thêm mục nguồn; UI sẽ hiển thị citation riêng.
 

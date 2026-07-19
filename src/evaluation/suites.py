@@ -939,6 +939,7 @@ def judge_answers(
             "expected_answer_behavior": case.get("expected_answer_behavior"),
             "expected_path": case.get("expected_path"),
             "eval_split": case.get("eval_split"),
+            "generation_model": answer.get("model_used"),
             "judge": result,
             **deterministic,
             "judge_latency_ms": (time.perf_counter() - started) * 1000,

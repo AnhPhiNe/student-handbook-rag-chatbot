@@ -5,16 +5,14 @@ load_dotenv()
 os.environ["TRANSFORMERS_VERBOSITY"] = "error"
 import logging
 import time
-import unicodedata
 from collections import defaultdict
 from typing import Any
-from sentence_transformers import CrossEncoder
+from src.retrieval.core.cross_encoder_reranker import get_local_reranker
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
     FieldCondition,
     Filter,
-    MatchAny,
     MatchValue,
 )
 
@@ -28,44 +26,7 @@ SUPPORTED_RETRIEVAL_MODES = {
     DEFAULT_RETRIEVAL_MODE,
 }
 GRAPH_SUPPLEMENT_PARENT_LIMIT = 5
-
-UNDERGRAD_SCOPE_TERMS = (
-    "dai hoc",
-    "daihoc",
-    "trinh do dai hoc",
-    "trinhdodaihoc",
-    "dai hoc chinh quy",
-    "daihocchinhquy",
-    "he chinh quy",
-    "hechinhquy",
-    "sinh vien he chinh quy",
-    "sinhvienhechinhquy",
-)
-COLLEGE_GDMN_SCOPE_TERMS = (
-    "cao dang",
-    "caodang",
-    "gd mn",
-    "gdmn",
-    "giao duc mam non",
-    "giaoducmamnon",
-    "mam non",
-    "mamnon",
-    "nganh giao duc mam non",
-    "nganhgiaoducmamnon",
-)
-COLLEGE_GDMN_QUERY_TERMS = (
-    "cao dang",
-    "caodang",
-    "gd mn",
-    "gdmn",
-    "giao duc mam non",
-    "giaoducmamnon",
-    "mam non",
-    "mamnon",
-)
-UNDERGRAD_SCOPE_BOOST = 0.035
-COLLEGE_GDMN_SCOPE_PENALTY = -0.08
-
+PHORANKER_EVAL_MODES = {"full", "no_graph"}
 
 def _query_points_with_retry(
     client: QdrantClient,
@@ -102,52 +63,6 @@ def _query_points_with_retry(
             time.sleep(sleep_seconds)
     assert last_error is not None
     raise last_error
-
-
-def _normalize_scope_text(value: Any) -> str:
-    text = str(value or "").lower()
-    decomposed = unicodedata.normalize("NFD", text)
-    without_marks = "".join(
-        char for char in decomposed if unicodedata.category(char) != "Mn"
-    )
-    without_marks = without_marks.replace("đ", "d").replace("Đ", "d")
-    return " ".join(without_marks.replace("_", " ").replace("-", " ").split())
-
-
-def _contains_any_term(text: str, terms: tuple[str, ...]) -> bool:
-    return any(term in text for term in terms)
-
-
-def _scope_text_for_chunk(chunk: dict[str, Any]) -> str:
-    metadata = chunk.get("metadata") or {}
-    values = [
-        chunk.get("_id"),
-        chunk.get("chunk_id"),
-        metadata.get("parent_section_id"),
-        metadata.get("document_title"),
-        metadata.get("chapter_title"),
-        metadata.get("chapter"),
-        metadata.get("section_title"),
-        metadata.get("source_section"),
-        metadata.get("title"),
-    ]
-    return _normalize_scope_text(" ".join(str(value or "") for value in values))
-
-
-def _scope_preference_adjustment(query: str, chunk: dict[str, Any]) -> float:
-    """Apply a small cohort-scope preference without overriding semantic ranking."""
-    query_scope = _normalize_scope_text(query)
-    chunk_scope = _scope_text_for_chunk(chunk)
-
-    asks_for_college_gdmn = _contains_any_term(query_scope, COLLEGE_GDMN_QUERY_TERMS)
-    adjustment = 0.0
-    if not asks_for_college_gdmn and _contains_any_term(
-        chunk_scope, COLLEGE_GDMN_SCOPE_TERMS
-    ):
-        adjustment += COLLEGE_GDMN_SCOPE_PENALTY
-    if _contains_any_term(chunk_scope, UNDERGRAD_SCOPE_TERMS):
-        adjustment += UNDERGRAD_SCOPE_BOOST
-    return adjustment
 
 
 def _is_supplemental_regulation_metadata(metadata: dict[str, Any]) -> bool:
@@ -250,18 +165,14 @@ class HybridRetrieverV7:
         self.embed_model = SentenceTransformer("BAAI/bge-m3")
         self.graph = NetworkXGraphTraverser()
 
-        logger.info("Loading PhoRanker for V7 child-parent retrieval...")
-        self.reranker = CrossEncoder(
-            "itdainb/PhoRanker",
-            max_length=256,
-        )
+        # PhoRanker is evaluation-only and is loaded lazily by its ablation modes.
+        self.reranker = None
 
         # Parent đầy đủ lấy từ MongoDB.
         self.mongo_store = get_mongo_store()
 
         # Cache runtime, không phải dữ liệu local.
         self.parent_cache: dict[str, dict[str, Any]] = {}
-        self.children_cache: dict[str, list[dict[str, Any]]] = {}
 
     def _get_parent(self, parent_id: str) -> dict[str, Any] | None:
         if not parent_id:
@@ -292,90 +203,6 @@ class HybridRetrieverV7:
         }
 
 
-    def _get_children_for_parents(
-        self,
-        parent_ids: list[str],
-        cohort: str | None = None,
-    ) -> dict[str, list[dict[str, Any]]]:
-        """Lấy toàn bộ child của các parent trực tiếp từ Qdrant."""
-
-        unique_parent_ids = list(
-            dict.fromkeys(
-                str(parent_id)
-                for parent_id in parent_ids
-                if str(parent_id).strip()
-            )
-        )
-
-        missing_parent_ids = [
-            parent_id
-            for parent_id in unique_parent_ids
-            if parent_id not in self.children_cache
-        ]
-
-        if missing_parent_ids:
-            conditions = [
-                FieldCondition(
-                    key="parent_section_id",
-                    match=MatchAny(any=missing_parent_ids),
-                ),
-                FieldCondition(
-                    key="content_type",
-                    match=MatchValue(value="regulation_text"),
-                ),
-            ]
-
-            if cohort:
-                conditions.append(
-                    FieldCondition(
-                        key="cohort",
-                        match=MatchValue(value=cohort),
-                    )
-                )
-
-            grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
-            offset = None
-
-            while True:
-                points, next_offset = self.qdrant_client.scroll(
-                    collection_name=self.collection_name,
-                    scroll_filter=Filter(must=conditions),
-                    limit=256,
-                    offset=offset,
-                    with_payload=True,
-                    with_vectors=False,
-                )
-
-                for point in points:
-                    chunk = self._qdrant_point_to_chunk(point)
-                    metadata = chunk.get("metadata") or {}
-                    if _is_supplemental_regulation_metadata(metadata):
-                        continue
-                    parent_id = str(
-                        metadata.get("parent_section_id")
-                        or ""
-                    )
-
-                    if parent_id:
-                        grouped[parent_id].append(chunk)
-
-                if next_offset is None:
-                    break
-
-                offset = next_offset
-
-            # Cache cả kết quả rỗng để không gọi Qdrant lặp lại.
-            for parent_id in missing_parent_ids:
-                self.children_cache[parent_id] = grouped.get(
-                    parent_id,
-                    [],
-                )
-
-        return {
-            parent_id: list(self.children_cache.get(parent_id, []))
-            for parent_id in unique_parent_ids
-        }
-
     def retrieve(
         self,
         query: str,
@@ -386,9 +213,9 @@ class HybridRetrieverV7:
     ) -> list[dict[str, Any]]:
         """Retrieve parent-bound regulation sources using V7 child/table chunks.
 
-        The production mode ranks primary parent sections by Qdrant vector
-        score, then attaches outbound graph neighbors as related sources.
-        Legacy eval modes can still run full graph + PhoRanker ablations.
+        Production ranks parents by their best vector hit, then attaches
+        outbound graph neighbors as context-only related sources. PhoRanker is
+        reserved for controlled evaluation modes over the same vector pool.
         """
         eval_mode = (
             os.environ.get(
@@ -405,6 +232,7 @@ class HybridRetrieverV7:
         if eval_mode in {"no_graph", "vector_only"}:
             graph_depth = 0
 
+        retrieval_started = time.perf_counter()
         logger.info("==> V7 query: %s", query)
         query_vector = self.embed_model.encode(query).tolist()
         query_filter = _v7_query_filter(cohort)
@@ -434,221 +262,90 @@ class HybridRetrieverV7:
         if not seed_chunks:
             return []
 
-        if eval_mode in {"vector_only", DEFAULT_RETRIEVAL_MODE}:
-            vector_scores = {
-                str(hit.payload.get("chunk_id")): float(
-                    getattr(hit, "score", 0.0) or 0.0
-                )
-                for hit in search_results
-                if hit.payload and hit.payload.get("chunk_id")
-            }
-            vector_scored: list[tuple[float, dict[str, Any]]] = []
-            for chunk in seed_chunks:
-                chunk_id = str(chunk.get("_id") or chunk.get("chunk_id") or "")
-                vector_scored.append((vector_scores.get(chunk_id, 0.0), chunk))
-            vector_telemetry = {
-                "retrieval_mode": eval_mode,
-                "qdrant_search_limit": search_limit,
-                "qdrant_seed_chunks": qdrant_seed_chunk_count,
-                "qdrant_seed_parents": len(
-                    {
-                        str((chunk.get("metadata") or {}).get("parent_section_id") or "")
-                        for chunk in seed_chunks
-                        if (chunk.get("metadata") or {}).get("parent_section_id")
-                    }
+        vector_scores = {
+            str(hit.payload.get("chunk_id")): float(
+                getattr(hit, "score", 0.0) or 0.0
+            )
+            for hit in search_results
+            if hit.payload and hit.payload.get("chunk_id")
+        }
+        vector_scored = [
+            (
+                vector_scores.get(
+                    str(chunk.get("_id") or chunk.get("chunk_id") or ""),
+                    0.0,
                 ),
-                "phoranker_used": False,
-                "phoranker_candidate_chunks": 0,
-                "phoranker_candidate_parents": 0,
-            }
-            primary_results = self._group_parent_results(
-                query=query,
-                scored_chunks=vector_scored,
-                top_k_final=top_k_final,
-                retrieval_telemetry=vector_telemetry,
+                chunk,
             )
-            if eval_mode == "vector_only":
-                return primary_results
-
-            related_results, related_telemetry = self._graph_related_parent_results(
-                primary_results,
-                graph_depth=graph_depth,
-                cohort=cohort,
-            )
-            supplement_telemetry = {
-                **vector_telemetry,
-                **related_telemetry,
-                "retrieval_mode": eval_mode,
-            }
-            for item in primary_results:
-                item_metadata = dict(item.get("metadata") or {})
-                item_metadata["retrieval_telemetry"] = supplement_telemetry
-                item["metadata"] = item_metadata
-            if primary_results and related_results:
-                primary_metadata = dict(primary_results[0].get("metadata") or {})
-                primary_metadata["related_items"] = related_results
-                primary_results[0]["metadata"] = primary_metadata
-            return primary_results
-
-        seed_parent_ids = [
-            str((chunk.get("metadata") or {}).get("parent_section_id") or "")
             for chunk in seed_chunks
         ]
-        seed_parent_ids = [parent_id for parent_id in seed_parent_ids if parent_id]
-        qdrant_seed_parent_count = len(set(seed_parent_ids))
-        expanded_parent_ids: list[str] = []
-        parent_depths: dict[str, int] = {}
-        parent_sources: dict[str, str] = {}
-        try:
-            expanded = self.graph.expand_context(seed_parent_ids, max_depth=graph_depth)
-            for node in expanded:
-                node_id = str(node.get("id") or "")
-
-                if not node_id:
-                    continue
-
-                expanded_parent_ids.append(node_id)
-                parent_depths[node_id] = int(node.get("depth", 99))
-                parent_sources[node_id] = str(
-                    node.get("seed_source") or "unknown"
-                )
-        except Exception as exc:
-            logger.warning(
-                "V7 graph expansion failed, using vector seeds only: %s", exc
-            )
-
-        # ---------------------------------------------------------
-        # CHÚ Ý QUAN TRỌNG: Lấy toàn bộ children của Seed Parents!
-        # Nếu Vector search chỉ trúng "khoản a" của Điều 16, ta phải kéo luôn "khoản b" của Điều 16
-        # vào danh sách candidate để CrossEncoder chấm điểm lại!
-        # ---------------------------------------------------------
-        seed_chunk_ids = {
-            str(chunk.get("_id") or chunk.get("chunk_id") or "")
+        seed_parent_ids = {
+            str((chunk.get("metadata") or {}).get("parent_section_id") or "")
             for chunk in seed_chunks
+            if (chunk.get("metadata") or {}).get("parent_section_id")
         }
 
-        seed_children_by_parent = self._get_children_for_parents(
-            seed_parent_ids,
-            cohort=cohort,
-        )
+        phoranker_used = eval_mode in PHORANKER_EVAL_MODES
+        if phoranker_used:
+            rerank_started = time.perf_counter()
+            primary_scored = self._rerank_chunks(query, seed_chunks)
+            phoranker_latency_ms = (time.perf_counter() - rerank_started) * 1000
+        else:
+            primary_scored = vector_scored
+            phoranker_latency_ms = 0.0
 
-        for parent_id in set(seed_parent_ids):
-            for chunk in seed_children_by_parent.get(parent_id, []):
-                metadata = chunk.get("metadata") or {}
-                if cohort and metadata.get("cohort") != cohort:
-                    continue
-                chunk_id = str(chunk.get("_id") or chunk.get("chunk_id") or "")
-                if chunk_id and chunk_id not in seed_chunk_ids:
-                    chunk_copy = dict(chunk)
-                    chunk_copy["_graph_depth"] = 0
-                    chunk_copy["_source_seed_id"] = parent_id
-                    seed_chunks.append(chunk_copy)
-                    seed_chunk_ids.add(chunk_id)
-
-        neighbor_chunks = []
-        
-        neighbor_children_by_parent = self._get_children_for_parents(
-            expanded_parent_ids,
-            cohort=cohort,
-        )
-
-        for parent_id in dict.fromkeys(expanded_parent_ids):
-            depth = parent_depths.get(parent_id, 99)
-            source_seed = parent_sources.get(parent_id, "unknown")
-            for chunk in neighbor_children_by_parent.get(parent_id, []):
-                metadata = chunk.get("metadata") or {}
-                if cohort and metadata.get("cohort") != cohort:
-                    continue
-                chunk_id = str(chunk.get("_id") or chunk.get("chunk_id") or "")
-                # Đã khử trùng lặp: Nếu chunk này đã là seed thì tuyệt đối không thêm vào neighbor
-                if chunk_id and chunk_id not in seed_chunk_ids:
-                    chunk_copy = dict(chunk)
-                    chunk_copy["_graph_depth"] = depth
-                    chunk_copy["_source_seed_id"] = source_seed
-                    neighbor_chunks.append(chunk_copy)
-
-        # --- BUDGET ALLOCATION ---
-        # Ngân sách 1: Seed Chunks (~24) -> Pass thẳng
-        final_candidates = list(seed_chunks)
-        seed_candidate_chunk_count = len(seed_chunks)
-        filtered_parent_ids: list[str] = []
-        filtered_neighbors: list[dict[str, Any]] = []
-
-        # Ngân sách 2: Neighbor Chunks -> Lọc bằng cấu trúc Graph (Depth) với Round-Robin theo Seed
-        if neighbor_chunks:
-            # Nhóm các láng giềng theo Parent ID để lấy TRỌN VẸN cả Điều, không băm nhỏ từng khoản
-            neighbors_by_parent: dict[str, list] = defaultdict(list)
-            parent_to_seed: dict[str, str] = {}
-            parent_to_depth: dict[str, int] = {}
-            for chunk in neighbor_chunks:
-                pid = str((chunk.get("metadata") or {}).get("parent_section_id") or "")
-                if pid:
-                    neighbors_by_parent[pid].append(chunk)
-                    parent_to_seed[pid] = chunk.get("_source_seed_id", "unknown")
-                    parent_to_depth[pid] = min(
-                        parent_to_depth.get(pid, 99), chunk.get("_graph_depth", 99)
-                    )
-
-            # Nhóm các Parent ID theo Seed
-            parents_by_seed: dict[str, list[str]] = defaultdict(list)
-            for pid, sid in parent_to_seed.items():
-                parents_by_seed[sid].append(pid)
-
-            # Sắp xếp các Parent của mỗi Seed theo depth
-            for sid in parents_by_seed:
-                parents_by_seed[sid].sort(key=lambda pid: parent_to_depth[pid])
-
-            # Round-robin: mỗi vòng lấy 1 Parent (nguyên Điều) của MỖI seed
-            seed_ids = list(parents_by_seed.keys())
-            idx = 0
-            while len(filtered_parent_ids) < 3 and any(parents_by_seed.values()):
-                sid = seed_ids[idx % len(seed_ids)]
-                if parents_by_seed[sid]:
-                    filtered_parent_ids.append(parents_by_seed[sid].pop(0))
-                idx += 1
-
-            # Gom lại tất cả các chunk thuộc về các Parent đã chọn
-            for pid in filtered_parent_ids:
-                filtered_neighbors.extend(neighbors_by_parent[pid])
-
-            final_candidates.extend(filtered_neighbors)
-
-        if not final_candidates:
-            return []
-
-        final_candidate_parent_count = len(
-            {
-                str((chunk.get("metadata") or {}).get("parent_section_id") or "")
-                for chunk in final_candidates
-                if (chunk.get("metadata") or {}).get("parent_section_id")
-            }
-        )
         retrieval_telemetry = {
             "retrieval_mode": eval_mode,
             "qdrant_search_limit": search_limit,
             "qdrant_seed_chunks": qdrant_seed_chunk_count,
-            "qdrant_seed_parents": qdrant_seed_parent_count,
-            "graph_depth": graph_depth,
-            "graph_expanded_parents": len(set(expanded_parent_ids)),
-            "graph_neighbor_parent_limit": 3,
-            "graph_neighbor_parents_selected": len(filtered_parent_ids),
-            "graph_neighbor_chunks_available": len(neighbor_chunks),
-            "graph_neighbor_chunks_selected": len(filtered_neighbors),
-            "seed_candidate_chunks": seed_candidate_chunk_count,
-            "phoranker_used": True,
-            "phoranker_candidate_chunks": len(final_candidates),
-            "phoranker_candidate_parents": final_candidate_parent_count,
+            "qdrant_seed_parents": len(seed_parent_ids),
+            "ranking_method": "phoranker" if phoranker_used else "vector",
+            "phoranker_used": phoranker_used,
+            "phoranker_candidate_chunks": (
+                qdrant_seed_chunk_count if phoranker_used else 0
+            ),
+            "phoranker_candidate_parents": (
+                len(seed_parent_ids) if phoranker_used else 0
+            ),
+            "phoranker_latency_ms": phoranker_latency_ms,
         }
-        logger.info("V7 rerank telemetry: %s", retrieval_telemetry)
-
-        # Lớp 2: Lọc tinh bằng Cross-Encoder trên Budget đã gộp (~40)
-        scored = self._rerank_chunks(query, final_candidates)
-        return self._group_parent_results(
+        primary_results = self._group_parent_results(
             query=query,
-            scored_chunks=scored,
+            scored_chunks=primary_scored,
             top_k_final=top_k_final,
             retrieval_telemetry=retrieval_telemetry,
         )
+        if eval_mode in {"vector_only", "no_graph"}:
+            retrieval_telemetry["retrieval_latency_ms"] = (
+                time.perf_counter() - retrieval_started
+            ) * 1000
+            for item in primary_results:
+                item_metadata = dict(item.get("metadata") or {})
+                item_metadata["retrieval_telemetry"] = retrieval_telemetry
+                item["metadata"] = item_metadata
+            return primary_results
+
+        related_results, related_telemetry = self._graph_related_parent_results(
+            primary_results,
+            graph_depth=graph_depth,
+            cohort=cohort,
+        )
+        supplement_telemetry = {
+            **retrieval_telemetry,
+            **related_telemetry,
+            "retrieval_latency_ms": (
+                time.perf_counter() - retrieval_started
+            ) * 1000,
+        }
+        for item in primary_results:
+            item_metadata = dict(item.get("metadata") or {})
+            item_metadata["retrieval_telemetry"] = supplement_telemetry
+            item["metadata"] = item_metadata
+        if primary_results and related_results:
+            primary_metadata = dict(primary_results[0].get("metadata") or {})
+            primary_metadata["related_items"] = related_results
+            primary_results[0]["metadata"] = primary_metadata
+        return primary_results
 
     def _graph_related_parent_results(
         self,
@@ -752,57 +449,21 @@ class HybridRetrieverV7:
         query: str,
         chunks: list[dict[str, Any]],
     ) -> list[tuple[float, dict[str, Any]]]:
-        """Score V7 child/table chunks with the cross-encoder and light scope boosts."""
+        """Score the fixed vector candidate set with PhoRanker."""
         pairs = [[query, str(chunk.get("content") or "")] for chunk in chunks]
-        scores = self.reranker.predict(pairs)
-        scored: list[tuple[float, dict[str, Any]]] = []
-
-        # Bước 1: Tìm điểm cao nhất của mỗi Parent (đại diện cho sức mạnh của Seed)
-        parent_max_scores: dict[str, float] = {}
-        for index, chunk in enumerate(chunks):
-            score = float(scores[index])
-            parent_id = str(
-                (chunk.get("metadata") or {}).get("parent_section_id") or ""
-            )
-            if parent_id:
-                parent_max_scores[parent_id] = max(
-                    parent_max_scores.get(parent_id, 0.0), score
-                )
-
-        # Bước 2: Chấm điểm lại kèm theo Graph Boost
-        for index, chunk in enumerate(chunks):
-            score = float(scores[index])
-            chunk = dict(chunk)
-            metadata = dict(chunk.get("metadata") or {})
-
-            # --- GRAPH BOOST TRUYỀN ĐIỂM ---
-            # Nếu mẩu này được kéo về từ Graph, nó sẽ được kế thừa điểm của thằng Seed đã gọi nó!
-            graph_depth = chunk.get("_graph_depth", 0)
-            source_seed = chunk.get("_source_seed_id")
-            if graph_depth > 0 and source_seed and source_seed in parent_max_scores:
-                seed_score = parent_max_scores[source_seed]
-                # Kế thừa điểm: Giảm 0.15 điểm cho mỗi bậc cách biệt (depth)
-                inherited_score = max(0.0, seed_score - (0.15 * graph_depth))
-                if inherited_score > score:
-                    score = inherited_score
-                    metadata["graph_boost_applied"] = round(inherited_score, 4)
-
-            granularity = metadata.get("chunk_granularity")
-            if granularity == "table_like":
-                score += 0.04
-            elif granularity == "child":
-                score += 0.02
-
-            scope_adjustment = _scope_preference_adjustment(query, chunk)
-            if scope_adjustment:
-                metadata["scope_preference_adjustment"] = round(scope_adjustment, 4)
-                score += scope_adjustment
-
-            chunk["metadata"] = metadata
-            scored.append((score, chunk))
-
+        scores = self._get_reranker_model().predict(pairs)
+        scored = [
+            (float(scores[index]), dict(chunk))
+            for index, chunk in enumerate(chunks)
+        ]
         scored.sort(key=lambda pair: pair[0], reverse=True)
         return scored
+
+    def _get_reranker_model(self):
+        if self.reranker is None:
+            logger.info("Loading shared PhoRanker singleton for retrieval ablation...")
+            self.reranker = get_local_reranker().model
+        return self.reranker
 
     def _group_parent_results(
         self,
@@ -848,8 +509,6 @@ class HybridRetrieverV7:
     
             parent_metadata = dict(parent.get("metadata") or {})
             focused_chunks = self._focused_chunks_for_parent(
-                query=query,
-                parent_id=parent_id,
                 scored_group=parent_groups[parent_id],
             )
             doc = dict(parent)
@@ -864,6 +523,7 @@ class HybridRetrieverV7:
                 "chunk_type": "regulation",
                 "content_type": "regulation_text",
                 "chunk_granularity": "parent_bound_context",
+                "retrieval_role": "primary",
                 "v7_collection": self.collection_name,
                 "parent_source": "mongodb",
                 "child_source": "qdrant",
@@ -890,44 +550,10 @@ class HybridRetrieverV7:
     def _focused_chunks_for_parent(
         self,
         *,
-        query: str,
-        parent_id: str,
         scored_group: list[tuple[float, dict[str, Any]]],
     ) -> list[tuple[float, dict[str, Any]]]:
-        # Lấy tối đa 12 chunk cho các kết quả Vector/BM25 thông thường,
-        # NHƯNG lấy TẤT CẢ các chunk nếu parent này là Graph Neighbor (có _graph_depth)
-        # để tránh việc PhoRanker loại mất đoạn văn chứa câu trả lời do không khớp keyword.
-        scored_group_sorted = sorted(
-            scored_group, key=lambda pair: pair[0], reverse=True
-        )
-        selected = []
-        for pair in scored_group_sorted:
-            chunk = pair[1]
-            if chunk.get("_graph_depth", 0) > 0 or len(selected) < 12:
-                selected.append(pair)
-        if any(
-            (chunk.get("metadata") or {}).get("chunk_granularity")
-            in {"child", "table_like"}
-            for _, chunk in selected
-        ):
-            return selected
-
-        siblings = self._get_children_for_parents(
-            [parent_id]
-        ).get(parent_id, [])
-
-        candidates = [
-            chunk
-            for chunk in siblings
-            if (chunk.get("metadata") or {}).get(
-                "chunk_granularity"
-            )
-            in {"child", "table_like"}
-        ]
-        if not candidates:
-            return selected
-        supplemental = self._rerank_chunks(query, candidates)[:3]
-        return [*selected[:1], *supplemental]
+        """Keep the strongest matched children for provenance/debug metadata."""
+        return sorted(scored_group, key=lambda pair: pair[0], reverse=True)[:12]
 
 
 def _v7_query_filter(cohort: str | None) -> Filter:

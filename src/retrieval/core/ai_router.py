@@ -25,7 +25,7 @@ from .structured_routing import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v12-vi"
+ROUTER_PROMPT_VERSION = "structured-regulation-v14-simple-vi"
 
 ROUTER_SYSTEM_PROMPT = """
 Bạn là AI Query Router của hệ thống Sổ tay Sinh viên HCMUE.

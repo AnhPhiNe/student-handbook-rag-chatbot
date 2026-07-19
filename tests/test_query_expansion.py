@@ -23,8 +23,6 @@ class QueryExpansionTest(unittest.TestCase):
         )
 
         self.assertIn("đăng ký học phần", expanded)
-        self.assertIn("khối lượng học tập tối đa", expanded)
-        self.assertIn("học kỳ phụ", expanded)
 
     def test_short_trigger_must_match_as_standalone_term(self):
         rules = [

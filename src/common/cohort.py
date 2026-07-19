@@ -9,6 +9,11 @@ COHORT_GROUPS = {
 }
 
 VALID_COHORTS = {"K48-K49", "K50", "K51"}
+COHORT_ADMISSION_YEARS = {
+    "K48-K49": (2022, 2023),
+    "K50": (2024,),
+    "K51": (2025,),
+}
 LEGACY_COHORTS = {
     "K50-K51": "K51",
     "50-51": "K51",
@@ -33,6 +38,13 @@ def normalize_cohort(cohort: str | None) -> str | None:
         return LEGACY_COHORTS[compact]
 
     return COHORT_GROUPS.get(value, value)
+
+
+def admission_years_for_cohort(cohort: str | None) -> tuple[int, ...]:
+    """Return every admission year represented by a normalized cohort label."""
+
+    normalized = normalize_cohort(cohort)
+    return COHORT_ADMISSION_YEARS.get(normalized or "", ())
 
 
 def resolve_cohort_from_query(query: str, fallback: str | None = None) -> str | None:

@@ -1,0 +1,133 @@
+{
+  "version": "v8.5-answer-annotation-corrected",
+  "frozen": true,
+  "created_at_utc": "2026-07-19T01:32:17.479785+00:00",
+  "description": "V8.5 answer holdout derived from frozen V8.4 with four human-audited annotation corrections; runtime fixes are generic.",
+  "annotation_method": "source-anchored questions plus V8.3 failure audit categories; V8.4 replacement cases avoid supplemental, directory, and under-anchored labels",
+  "counts": {
+    "deterministic": 120,
+    "retrieval": 180,
+    "answers": 100,
+    "production": 60
+  },
+  "dataset_hashes": {
+    "deterministic": "3409daa0a4b920d3d6181321ce4f43f7983760737f0c8f19b147a85b19750a72",
+    "retrieval": "991c13227ac0af41f05b45451dea8af364b1a1458e74d0a11d76fc8276479f75",
+    "answers": "371ae79e7294c8f10428bff4b596845390a059dbbd981d92d8b74590cc71573d",
+    "production": "ac54a95c4f8281aac363dfd3f28a11b2c2b4080c4920a93ee4437d141dfb6eb2"
+  },
+  "auxiliary_hashes": {
+    "human_audit_template": "9bb95d67e5b1ecd16fa31751d62d8acd604d262f64cfebba097b8da3083ed1ca"
+  },
+  "git_commit": "33da644db8994ca77ebf2511a565fcadeb477290",
+  "config_hashes": {
+    "answer_generation": "8a92d123902cc928d6ef26569ad1420435b72431c29b148e90ed29afb26cdc53",
+    "retrieval": "95e35f0a2628f780f27ef3ba156267bc8137a497152052065c06d2e627fd52b6",
+    "ai_router": "c3d0ffa23a822252402e12bab18c9594f4f535aa9fa3251d92f30179a9c832d9",
+    "structured_lookup_registry": "0fa15b7ef6e687ce93a27965959ba1ad23979a2da8b2ffbafed7aae6079827f5"
+  },
+  "docstore_hash": "086813e45b05f3479e8aa8fc3d8f99a32e791ec51def47983cdbbd1dad7ce0dd",
+  "generation_provider": "gemini",
+  "generation_model": "gemini-3.1-flash-lite",
+  "query_rewriter_model": null,
+  "router_provider": "groq",
+  "router_model": "qwen/qwen3.6-27b",
+  "judge_provider": "groq",
+  "judge_model": "openai/gpt-oss-120b",
+  "headline_backend": "qdrant_cloud+mongodb",
+  "legacy_eval_policy": "development_only",
+  "holdout_policy": "V8.5 corrects known V8.4 labels and is suitable for regression. A fresh-query holdout is still required for final post-fix claims.",
+  "predecessor_bundles": [
+    "v8",
+    "v8_2_holdout",
+    "v8_3_holdout"
+  ],
+  "v8_3_retrieval_audit": {
+    "source_report": "data\\eval\\reports\\v8_3_holdout\\retrieval_qdrant_vector_primary_graph_supplement_full.json",
+    "non_headline_replaced": 16,
+    "replacement_case_ids": [
+      "v84_ret_new_001",
+      "v84_ret_new_002",
+      "v84_ret_new_003",
+      "v84_ret_new_004",
+      "v84_ret_new_005",
+      "v84_ret_new_006",
+      "v84_ret_new_007",
+      "v84_ret_new_008",
+      "v84_ret_new_009",
+      "v84_ret_new_010",
+      "v84_ret_new_011",
+      "v84_ret_new_012",
+      "v84_ret_new_013",
+      "v84_ret_new_014",
+      "v84_ret_new_015",
+      "v84_ret_new_016"
+    ],
+    "true_misses_carried_forward": [
+      "v83_ret_048",
+      "v83_ret_089",
+      "v83_ret_113",
+      "v83_ret_120",
+      "v83_ret_153",
+      "v83_ret_155",
+      "v83_ret_158",
+      "v83_ret_162",
+      "v83_ret_165",
+      "v83_ret_167",
+      "v83_ret_173",
+      "v83_ret_175"
+    ]
+  },
+  "answer_eval_policy": "100 generated-answer cases: 66 retrieval-linked regulation cases, 20 independent regulation answer holdout cases, 4 structured/mixed cases, and 10 unanswerable cases. The answer set was finalized before the full Gemini generation and gpt-oss-120b judge run.",
+  "answer_source_relation_counts": {
+    "retrieval_linked": 66,
+    "independent": 20,
+    "structured": 4,
+    "unanswerable": 10
+  },
+  "realistic_stress_split": {
+    "deterministic": {
+      "realistic": 60,
+      "stress": 60
+    },
+    "retrieval": {
+      "realistic": 135,
+      "stress": 45
+    },
+    "answers": {
+      "realistic": 75,
+      "stress": 25
+    },
+    "production": {
+      "realistic": 45,
+      "stress": 15
+    }
+  },
+  "predecessor_bundle": "v8_4_holdout",
+  "annotation_corrections": [
+    {
+      "predecessor_case_id": "v84_ans_009",
+      "case_id": "v85_ans_009",
+      "status": "v8_5_corrected_subject_scope_cvht",
+      "note": "Disambiguated student policy from CVHT policy."
+    },
+    {
+      "predecessor_case_id": "v84_ans_021",
+      "case_id": "v85_ans_021",
+      "status": "v8_5_corrected_subject_scope_cvht",
+      "note": "Disambiguated student policy from CVHT policy."
+    },
+    {
+      "predecessor_case_id": "v84_ans_050",
+      "case_id": "v85_ans_050",
+      "status": "v8_5_corrected_subject_scope_staff",
+      "note": "Aligned the question subject with the cited staff rule."
+    },
+    {
+      "predecessor_case_id": "v84_ans_096",
+      "case_id": "v85_ans_096",
+      "status": "v8_5_corrected_cohort",
+      "note": "Aligned cohort metadata with the explicit K50 query."
+    }
+  ]
+}

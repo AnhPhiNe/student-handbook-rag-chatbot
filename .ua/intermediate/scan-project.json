@@ -1,0 +1,2554 @@
+{
+  "projectRoot": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag",
+  "scriptCompleted": true,
+  "contentDigest": "5e879f707d0c8aaf9ae6e1c37ac7f2602cb80c2b22434421f39e83c509cea251",
+  "files": [
+    {
+      "path": ".cbmignore",
+      "language": "unknown",
+      "sizeLines": 41,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".devcontainer/devcontainer.json",
+      "language": "json",
+      "sizeLines": 32,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".dockerignore",
+      "language": "unknown",
+      "sizeLines": 28,
+      "fileCategory": "infra"
+    },
+    {
+      "path": ".env.example",
+      "language": "config",
+      "sizeLines": 40,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".gitattributes",
+      "language": "unknown",
+      "sizeLines": 8,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "language": "yaml",
+      "sizeLines": 63,
+      "fileCategory": "infra"
+    },
+    {
+      "path": ".mcp.json",
+      "language": "json",
+      "sizeLines": 11,
+      "fileCategory": "config"
+    },
+    {
+      "path": "Dockerfile",
+      "language": "dockerfile",
+      "sizeLines": 26,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "sizeLines": 451,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "configs/ai_router.yaml",
+      "language": "yaml",
+      "sizeLines": 18,
+      "fileCategory": "config"
+    },
+    {
+      "path": "configs/answer_generation.yaml",
+      "language": "yaml",
+      "sizeLines": 90,
+      "fileCategory": "config"
+    },
+    {
+      "path": "configs/chunking.yaml",
+      "language": "yaml",
+      "sizeLines": 27,
+      "fileCategory": "config"
+    },
+    {
+      "path": "configs/document_sections.yaml",
+      "language": "yaml",
+      "sizeLines": 76,
+      "fileCategory": "config"
+    },
+    {
+      "path": "configs/document_sections_k50.yaml",
+      "language": "yaml",
+      "sizeLines": 66,
+      "fileCategory": "config"
+    },
+    {
+      "path": "configs/document_sections_k50_k51.yaml",
+      "language": "yaml",
+      "sizeLines": 71,
+      "fileCategory": "config"
+    },
+    {
+      "path": "configs/document_sections_k51.yaml",
+      "language": "yaml",
+      "sizeLines": 71,
+      "fileCategory": "config"
+    },
+    {
+      "path": "configs/embedding.yaml",
+      "language": "yaml",
+      "sizeLines": 17,
+      "fileCategory": "config"
+    },
+    {
+      "path": "configs/extraction.yaml",
+      "language": "yaml",
+      "sizeLines": 18,
+      "fileCategory": "config"
+    },
+    {
+      "path": "configs/office_aliases.yaml",
+      "language": "yaml",
+      "sizeLines": 51,
+      "fileCategory": "config"
+    },
+    {
+      "path": "configs/program_overrides.yaml",
+      "language": "yaml",
+      "sizeLines": 137,
+      "fileCategory": "config"
+    },
+    {
+      "path": "configs/query_routing_rules.yaml",
+      "language": "yaml",
+      "sizeLines": 149,
+      "fileCategory": "config"
+    },
+    {
+      "path": "configs/retrieval.yaml",
+      "language": "yaml",
+      "sizeLines": 35,
+      "fileCategory": "config"
+    },
+    {
+      "path": "configs/structure_parser.yaml",
+      "language": "yaml",
+      "sizeLines": 12,
+      "fileCategory": "config"
+    },
+    {
+      "path": "configs/structured_lookup_registry.yaml",
+      "language": "yaml",
+      "sizeLines": 168,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/answer_eval_cases.json",
+      "language": "json",
+      "sizeLines": 1765,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/beta_eval_cases.json",
+      "language": "json",
+      "sizeLines": 4064,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/beta_eval_manifest.json",
+      "language": "json",
+      "sizeLines": 20,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/deterministic_lookup_safety_cases.json",
+      "language": "json",
+      "sizeLines": 250,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/evidence_regression_cases.json",
+      "language": "json",
+      "sizeLines": 242,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/final_router_holdout_v7.json",
+      "language": "json",
+      "sizeLines": 410,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/final_structured_tool_holdout_v7.json",
+      "language": "json",
+      "sizeLines": 289,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/final_system_eval_holdout_v7.json",
+      "language": "json",
+      "sizeLines": 2662,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/final_true_rag_holdout_v7.json",
+      "language": "json",
+      "sizeLines": 2374,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/generation_eval_cases.json",
+      "language": "json",
+      "sizeLines": 1067,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/golden_queries.json",
+      "language": "json",
+      "sizeLines": 2020,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/ragas_judge_cases.json",
+      "language": "json",
+      "sizeLines": 1898,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/ragas_judge_holdout_v7.json",
+      "language": "json",
+      "sizeLines": 3812,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/ragas_judge_holdout_v7_low_subset_after_prompt_fix.json",
+      "language": "json",
+      "sizeLines": 1165,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/reports/answer_eval_v4_check.json",
+      "language": "json",
+      "sizeLines": 3576,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/reports/evidence_eval_final_lock_v7.json",
+      "language": "json",
+      "sizeLines": 4947,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/reports/final_holdout_duplicate_check_v7.json",
+      "language": "json",
+      "sizeLines": 29,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/reports/ragas_answer_cache_holdout_v7_low_subset_context_used_fix.json",
+      "language": "json",
+      "sizeLines": 3483,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/reports/ragas_judge_holdout_v7_low_subset_context_used_fix_29_report.json",
+      "language": "json",
+      "sizeLines": 1470,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/reports/retrieval_eval_final_lock_v7.json",
+      "language": "json",
+      "sizeLines": 11205,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/reports/retrieval_eval_v4_check.json",
+      "language": "json",
+      "sizeLines": 7553,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/reports/router_eval_final_lock_v7.json",
+      "language": "json",
+      "sizeLines": 794,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/reports/router_eval_v4_check.json",
+      "language": "json",
+      "sizeLines": 3119,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/reports/structured_tool_eval_final_lock_v7.json",
+      "language": "json",
+      "sizeLines": 1043,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/router_behavior_queries.json",
+      "language": "json",
+      "sizeLines": 1777,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/structured_eval_cases.json",
+      "language": "json",
+      "sizeLines": 1865,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8/README.md",
+      "language": "markdown",
+      "sizeLines": 49,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "data/eval/v8/deterministic_tool_cases.json",
+      "language": "json",
+      "sizeLines": 2541,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8/generated_answer_cases.json",
+      "language": "json",
+      "sizeLines": 6560,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8/human_audit_template.json",
+      "language": "json",
+      "sizeLines": 182,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8/manifest.json",
+      "language": "json",
+      "sizeLines": 39,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8/production_cases.json",
+      "language": "json",
+      "sizeLines": 1082,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8/retrieval_cases.json",
+      "language": "json",
+      "sizeLines": 6242,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8/validation_report.json",
+      "language": "json",
+      "sizeLines": 9,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_2_holdout/deterministic_tool_cases.json",
+      "language": "json",
+      "sizeLines": 2661,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_2_holdout/generated_answer_cases.json",
+      "language": "json",
+      "sizeLines": 6494,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_2_holdout/human_audit_template.json",
+      "language": "json",
+      "sizeLines": 182,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_2_holdout/manifest.json",
+      "language": "json",
+      "sizeLines": 53,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_2_holdout/production_cases.json",
+      "language": "json",
+      "sizeLines": 1082,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_2_holdout/retrieval_cases.json",
+      "language": "json",
+      "sizeLines": 7468,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_2_holdout/validation_report.json",
+      "language": "json",
+      "sizeLines": 84,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_3_holdout/README.md",
+      "language": "markdown",
+      "sizeLines": 17,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "data/eval/v8_3_holdout/deterministic_tool_cases.json",
+      "language": "json",
+      "sizeLines": 3616,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_3_holdout/generated_answer_cases.json",
+      "language": "json",
+      "sizeLines": 6648,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_3_holdout/human_audit_template.json",
+      "language": "json",
+      "sizeLines": 182,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_3_holdout/manifest.json",
+      "language": "json",
+      "sizeLines": 62,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_3_holdout/production_cases.json",
+      "language": "json",
+      "sizeLines": 1637,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_3_holdout/retrieval_cases.json",
+      "language": "json",
+      "sizeLines": 8922,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_3_holdout/validation_report.json",
+      "language": "json",
+      "sizeLines": 82,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_4_holdout/README.md",
+      "language": "markdown",
+      "sizeLines": 21,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "data/eval/v8_4_holdout/deterministic_tool_cases.json",
+      "language": "json",
+      "sizeLines": 3616,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_4_holdout/generated_answer_cases.json",
+      "language": "json",
+      "sizeLines": 7110,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_4_holdout/human_audit_template.json",
+      "language": "json",
+      "sizeLines": 182,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_4_holdout/manifest.json",
+      "language": "json",
+      "sizeLines": 106,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_4_holdout/production_cases.json",
+      "language": "json",
+      "sizeLines": 1637,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_4_holdout/retrieval_cases.json",
+      "language": "json",
+      "sizeLines": 8871,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_4_holdout/validation_report.json",
+      "language": "json",
+      "sizeLines": 84,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_5_answer_holdout/README.md",
+      "language": "markdown",
+      "sizeLines": 3,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "data/eval/v8_5_answer_holdout/deterministic_tool_cases.json",
+      "language": "json",
+      "sizeLines": 3616,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_5_answer_holdout/generated_answer_cases.json",
+      "language": "json",
+      "sizeLines": 7215,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_5_answer_holdout/human_audit_template.json",
+      "language": "json",
+      "sizeLines": 182,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_5_answer_holdout/manifest.json",
+      "language": "json",
+      "sizeLines": 133,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_5_answer_holdout/production_cases.json",
+      "language": "json",
+      "sizeLines": 1637,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_5_answer_holdout/retrieval_cases.json",
+      "language": "json",
+      "sizeLines": 8871,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_holdout/deterministic_tool_cases.json",
+      "language": "json",
+      "sizeLines": 2661,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_holdout/generated_answer_cases.json",
+      "language": "json",
+      "sizeLines": 6494,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_holdout/human_audit_template.json",
+      "language": "json",
+      "sizeLines": 182,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_holdout/manifest.json",
+      "language": "json",
+      "sizeLines": 41,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_holdout/production_cases.json",
+      "language": "json",
+      "sizeLines": 1082,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_holdout/retrieval_cases.json",
+      "language": "json",
+      "sizeLines": 7468,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/eval/v8_holdout/validation_report.json",
+      "language": "json",
+      "sizeLines": 84,
+      "fileCategory": "config"
+    },
+    {
+      "path": "data/raw/README.md",
+      "language": "markdown",
+      "sizeLines": 14,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "data/raw/gpt_extracted/K48_49_extracted.xlsx",
+      "language": "xlsx",
+      "sizeLines": 63,
+      "fileCategory": "code"
+    },
+    {
+      "path": "data/raw/gpt_extracted/K50_extracted.xlsx",
+      "language": "xlsx",
+      "sizeLines": 77,
+      "fileCategory": "code"
+    },
+    {
+      "path": "data/raw/gpt_extracted/K51_extracted.xlsx",
+      "language": "xlsx",
+      "sizeLines": 79,
+      "fileCategory": "code"
+    },
+    {
+      "path": "data/raw/query_expansion_rules.json",
+      "language": "json",
+      "sizeLines": 1552,
+      "fileCategory": "config"
+    },
+    {
+      "path": "deploy/huggingface/backend/README.md",
+      "language": "markdown",
+      "sizeLines": 28,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/SCRIPTS.md",
+      "language": "markdown",
+      "sizeLines": 19,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/TESTING.md",
+      "language": "markdown",
+      "sizeLines": 21,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/api_contract.md",
+      "language": "markdown",
+      "sizeLines": 132,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/architecture.md",
+      "language": "markdown",
+      "sizeLines": 255,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/data_pipeline.md",
+      "language": "markdown",
+      "sizeLines": 65,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/data_policy.md",
+      "language": "markdown",
+      "sizeLines": 28,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/evaluation.md",
+      "language": "markdown",
+      "sizeLines": 162,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/failure_analysis.md",
+      "language": "markdown",
+      "sizeLines": 102,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/huggingface_backend_deploy.md",
+      "language": "markdown",
+      "sizeLines": 213,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/portfolio_review_checklist.md",
+      "language": "markdown",
+      "sizeLines": 45,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "frontend/.env.example",
+      "language": "config",
+      "sizeLines": 3,
+      "fileCategory": "config"
+    },
+    {
+      "path": "frontend/README.md",
+      "language": "markdown",
+      "sizeLines": 51,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "frontend/eslint.config.js",
+      "language": "javascript",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/index.html",
+      "language": "html",
+      "sizeLines": 32,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "frontend/package.json",
+      "language": "json",
+      "sizeLines": 37,
+      "fileCategory": "config"
+    },
+    {
+      "path": "frontend/public/forms/ctct_hssv/mau-don-de-nghi-cap-hoc-bong-va-ho-tro-kinh-phi-mua-do-dung-hoc-tap-dung-rieng.docx",
+      "language": "docx",
+      "sizeLines": 61,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/ctct_hssv/mau-don-de-nghi-ho-tro-chi-phi-hoc-tap.docx",
+      "language": "docx",
+      "sizeLines": 76,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/ctct_hssv/mau-don-de-nghi-mien-giam-hoc-phi.docx",
+      "language": "docx",
+      "sizeLines": 62,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/ctct_hssv/mau-don-xin-chuyen-truong.docx",
+      "language": "docx",
+      "sizeLines": 77,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/ctct_hssv/mau-don-xin-hoc-bong.docx",
+      "language": "docx",
+      "sizeLines": 51,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/ctct_hssv/mau-don-xin-nhan-tro-cap-xa-hoi.docx",
+      "language": "docx",
+      "sizeLines": 70,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/ctct_hssv/mau-don-xin-tam-nghi-hoc.docx",
+      "language": "docx",
+      "sizeLines": 60,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/ctct_hssv/mau-don-xin-thoi-hoc.docx",
+      "language": "docx",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/ctct_hssv/mau-don-xin-vao-o-ky-tuc-xa.docx",
+      "language": "docx",
+      "sizeLines": 59,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/ctct_hssv/mau-don-xin-xac-nhan-diem-ren-luyen-sinh-vien.docx",
+      "language": "docx",
+      "sizeLines": 71,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/ctct_hssv/mau-giay-gioi-thieu-thuc-tap.docx",
+      "language": "docx",
+      "sizeLines": 67,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/doan_luanvan/KhoaCntt_TotNghiep_BaoVe.doc",
+      "language": "doc",
+      "sizeLines": 358,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/doan_luanvan/KhoaCntt_TotNghiep_HuongDan.doc",
+      "language": "doc",
+      "sizeLines": 390,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/doan_luanvan/KhoaCntt_TotNghiep_Mau01.doc",
+      "language": "doc",
+      "sizeLines": 138,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/doan_luanvan/KhoaCntt_TotNghiep_Mau02.doc",
+      "language": "doc",
+      "sizeLines": 133,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/doan_luanvan/KhoaCntt_TotNghiep_Mau03.doc",
+      "language": "doc",
+      "sizeLines": 140,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/doan_luanvan/KhoaCntt_TotNghiep_Mau04.doc",
+      "language": "doc",
+      "sizeLines": 148,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/doan_luanvan/KhoaCntt_TotNghiep_Mau05.doc",
+      "language": "doc",
+      "sizeLines": 264,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/doan_luanvan/KhoaCntt_TotNghiep_Mau06_BiaNgoai.doc",
+      "language": "doc",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/doan_luanvan/KhoaCntt_TotNghiep_Mau07_TrangPhuBia.doc",
+      "language": "doc",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/doan_luanvan/KhoaCntt_TotNghiep_Mau08.doc",
+      "language": "doc",
+      "sizeLines": 67,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/doan_luanvan/KhoaCntt_TotNghiep_Mau09_BiaNgoai.doc",
+      "language": "doc",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/doan_luanvan/KhoaCntt_TotNghiep_Mau10_TrangPhuBia.doc",
+      "language": "doc",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/doan_luanvan/KhoaCntt_TotNghiep_Mau11.doc",
+      "language": "doc",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/doan_luanvan/KhoaCntt_TotNghiep_Mau12.doc",
+      "language": "doc",
+      "sizeLines": 62,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/nckh/Mau_10_-_NCKH_SV_-_KQ_Nghien_cuu.doc",
+      "language": "doc",
+      "sizeLines": 94,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/nckh/Mau_11_-_NCKH_SV_-_Thong_tin_SV.doc",
+      "language": "doc",
+      "sizeLines": 89,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/nckh/Mau_1_-_NCKH_SV_-_Don_dang_ky_Tham_gia.doc",
+      "language": "doc",
+      "sizeLines": 111,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/nckh/Mau_2_-_NCKH_SV_-_De_xuat_De_tai_NC.doc",
+      "language": "doc",
+      "sizeLines": 302,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/nckh/Mau_4_-_NCKH_SV_-_Bao_cao_Tien_do.doc",
+      "language": "doc",
+      "sizeLines": 107,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/nckh/Mau_5_-_NCKH_SV_-_Phieu_Danh_Gia.doc",
+      "language": "doc",
+      "sizeLines": 121,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/nckh/Mau_6_-_NCKH_SV_-_Bien_ban.doc",
+      "language": "doc",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/nckh/Mau_7_-_NCKH_SV_-_Tong_hop_DS_Dang_ky.doc",
+      "language": "doc",
+      "sizeLines": 133,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/nckh/Mau_8_-_NCKH_SV_-_Trang_bia.doc",
+      "language": "doc",
+      "sizeLines": 79,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/nckh/Mau_9_-_NCKH_SV_-_Trang_phu_bia.doc",
+      "language": "doc",
+      "sizeLines": 90,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/spnc_hstn/SPNC_HSTN_01_Bien_ban_tiep_nhan.doc",
+      "language": "doc",
+      "sizeLines": 62,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/spnc_hstn/SPNC_HSTN_02_Phieu_cham.doc",
+      "language": "doc",
+      "sizeLines": 171,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/spnc_hstn/SPNC_HSTN_03_Danh_muc_minh_chung.doc",
+      "language": "doc",
+      "sizeLines": 130,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/spnc_hstn/SPNC_HSTN_04_Phieu_nhan_xet.doc",
+      "language": "doc",
+      "sizeLines": 92,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/thuctap_cntt/01TT_Mau_bao_cao.doc",
+      "language": "doc",
+      "sizeLines": 39,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/thuctap_cntt/02TT_Phieu_danh_gia_cua_CBHD_cua_co_so_thuc_tap.doc",
+      "language": "doc",
+      "sizeLines": 96,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/thuctap_cntt/03TT_Mau_bia_bao_cao.doc",
+      "language": "doc",
+      "sizeLines": 261,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/thuctap_cntt/04TT_Phieu_danh_gia_cua_GV_cua_Khoa.doc",
+      "language": "doc",
+      "sizeLines": 109,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/thuctap_cntt/05TT_Mau_Lich_lam_viec.doc",
+      "language": "doc",
+      "sizeLines": 69,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/forms/thuctap_cntt/Mau-gioi-thieu-thuc-tap.doc",
+      "language": "doc",
+      "sizeLines": 83,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/public/manifest.json",
+      "language": "json",
+      "sizeLines": 13,
+      "fileCategory": "config"
+    },
+    {
+      "path": "frontend/scripts/validate-admissions.mjs",
+      "language": "javascript",
+      "sizeLines": 59,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/App.tsx",
+      "language": "typescript",
+      "sizeLines": 171,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/ActiveUsersBadge.tsx",
+      "language": "typescript",
+      "sizeLines": 96,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/BottomTabBar.tsx",
+      "language": "typescript",
+      "sizeLines": 37,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/BugReportModal.tsx",
+      "language": "typescript",
+      "sizeLines": 147,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/ChatArea.tsx",
+      "language": "typescript",
+      "sizeLines": 321,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/ChatInput.tsx",
+      "language": "typescript",
+      "sizeLines": 179,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/ChatMessage.tsx",
+      "language": "typescript",
+      "sizeLines": 525,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/CohortSelectionModal.tsx",
+      "language": "typescript",
+      "sizeLines": 64,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/ErrorBoundary.tsx",
+      "language": "typescript",
+      "sizeLines": 74,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/MobileHeader.tsx",
+      "language": "typescript",
+      "sizeLines": 53,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/ScrollCue.tsx",
+      "language": "typescript",
+      "sizeLines": 66,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/Sidebar.tsx",
+      "language": "typescript",
+      "sizeLines": 135,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/SkeletonLoader.tsx",
+      "language": "typescript",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/Toast.tsx",
+      "language": "typescript",
+      "sizeLines": 67,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/Tooltip.tsx",
+      "language": "typescript",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/pages/AdmissionPage.tsx",
+      "language": "typescript",
+      "sizeLines": 811,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/pages/CourseTargetPage.tsx",
+      "language": "typescript",
+      "sizeLines": 342,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/pages/CreditsPage.tsx",
+      "language": "typescript",
+      "sizeLines": 107,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/pages/FaqPage.tsx",
+      "language": "typescript",
+      "sizeLines": 146,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/pages/FormPage.tsx",
+      "language": "typescript",
+      "sizeLines": 273,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/pages/GpaPage.tsx",
+      "language": "typescript",
+      "sizeLines": 266,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/pages/GuidePage.tsx",
+      "language": "typescript",
+      "sizeLines": 151,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/pages/HomePage.tsx",
+      "language": "typescript",
+      "sizeLines": 70,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/pages/ScholarshipPage.tsx",
+      "language": "typescript",
+      "sizeLines": 204,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/pages/TargetGpaPage.tsx",
+      "language": "typescript",
+      "sizeLines": 158,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/pages/ToolsPage.tsx",
+      "language": "typescript",
+      "sizeLines": 90,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/components/pages/TuitionPage.tsx",
+      "language": "typescript",
+      "sizeLines": 127,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/data/admissionSubjectGroups.ts",
+      "language": "typescript",
+      "sizeLines": 139,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/data/admissions.ts",
+      "language": "typescript",
+      "sizeLines": 523,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/data/faq.ts",
+      "language": "typescript",
+      "sizeLines": 705,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/data/tuitionRates.ts",
+      "language": "typescript",
+      "sizeLines": 103,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/hooks/useChat.ts",
+      "language": "typescript",
+      "sizeLines": 275,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/hooks/useLocalStorage.ts",
+      "language": "typescript",
+      "sizeLines": 51,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/hooks/useMediaQuery.ts",
+      "language": "typescript",
+      "sizeLines": 43,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/index.css",
+      "language": "css",
+      "sizeLines": 2503,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "frontend/src/main.tsx",
+      "language": "typescript",
+      "sizeLines": 12,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/pages.css",
+      "language": "css",
+      "sizeLines": 2872,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "frontend/src/utils/admissionEstimator.ts",
+      "language": "typescript",
+      "sizeLines": 324,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/utils/creditThreshold.ts",
+      "language": "typescript",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/utils/gradeScale.ts",
+      "language": "typescript",
+      "sizeLines": 209,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/src/utils/scholarship.ts",
+      "language": "typescript",
+      "sizeLines": 50,
+      "fileCategory": "code"
+    },
+    {
+      "path": "frontend/tsconfig.app.json",
+      "language": "json",
+      "sizeLines": 25,
+      "fileCategory": "config"
+    },
+    {
+      "path": "frontend/tsconfig.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": "frontend/tsconfig.node.json",
+      "language": "json",
+      "sizeLines": 24,
+      "fileCategory": "config"
+    },
+    {
+      "path": "frontend/vite.config.ts",
+      "language": "typescript",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": "requirements-dev.txt",
+      "language": "txt",
+      "sizeLines": 5,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "requirements.txt",
+      "language": "txt",
+      "sizeLines": 21,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ruff.toml",
+      "language": "toml",
+      "sizeLines": 2,
+      "fileCategory": "config"
+    },
+    {
+      "path": "run_app.bat",
+      "language": "batch",
+      "sizeLines": 27,
+      "fileCategory": "script"
+    },
+    {
+      "path": "runtime.txt",
+      "language": "txt",
+      "sizeLines": 1,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "scripts/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/audit_answer_failures_v8.py",
+      "language": "python",
+      "sizeLines": 282,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/audit_retrieval_failures_v8.py",
+      "language": "python",
+      "sizeLines": 287,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/audit_table_quality.py",
+      "language": "python",
+      "sizeLines": 305,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/augment_eval_data.py",
+      "language": "python",
+      "sizeLines": 57,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/build_chunks.py",
+      "language": "python",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/build_eval_v8.py",
+      "language": "python",
+      "sizeLines": 2205,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/build_eval_v8_4.py",
+      "language": "python",
+      "sizeLines": 867,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/build_eval_v8_5.py",
+      "language": "python",
+      "sizeLines": 210,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/build_generation_eval.py",
+      "language": "python",
+      "sizeLines": 84,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/build_multi_cohort.py",
+      "language": "python",
+      "sizeLines": 1051,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/build_structured_table_layer.py",
+      "language": "python",
+      "sizeLines": 1395,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/build_synthetic_retrieval_docs.py",
+      "language": "python",
+      "sizeLines": 569,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/build_v7_child_parent_index.py",
+      "language": "python",
+      "sizeLines": 528,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/build_v7_holdout_eval.py",
+      "language": "python",
+      "sizeLines": 969,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/build_vectorstore.py",
+      "language": "python",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/check_deploy_artifacts.py",
+      "language": "python",
+      "sizeLines": 59,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/debug_retrieval_failed_cases.py",
+      "language": "python",
+      "sizeLines": 382,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/decorate_readme.py",
+      "language": "python",
+      "sizeLines": 51,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/derive_foreign_language_policy.py",
+      "language": "python",
+      "sizeLines": 283,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/evaluate_answer_batch.py",
+      "language": "python",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/evaluate_answers.py",
+      "language": "python",
+      "sizeLines": 490,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/evaluate_deterministic_lookup_safety.py",
+      "language": "python",
+      "sizeLines": 201,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/evaluate_generation.py",
+      "language": "python",
+      "sizeLines": 237,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/evaluate_ragas_judge.py",
+      "language": "python",
+      "sizeLines": 1019,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/evaluate_retrieval.py",
+      "language": "python",
+      "sizeLines": 682,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/evaluate_retrieval_batch.py",
+      "language": "python",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/evaluate_router_behavior.py",
+      "language": "python",
+      "sizeLines": 141,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/evaluate_router_fallback_answers.py",
+      "language": "python",
+      "sizeLines": 197,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/evaluate_system_v8.py",
+      "language": "python",
+      "sizeLines": 494,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/expand_manual_tests.py",
+      "language": "python",
+      "sizeLines": 245,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/extract_pdf_pages.py",
+      "language": "python",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/extract_structured_data.py",
+      "language": "python",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/fast_rebuild_chunks.py",
+      "language": "python",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/merge_tables.py",
+      "language": "python",
+      "sizeLines": 34,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/migrate_to_qdrant.py",
+      "language": "python",
+      "sizeLines": 143,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/parse_structure.py",
+      "language": "python",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/push_to_mongo.py",
+      "language": "python",
+      "sizeLines": 86,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/push_to_qdrant_v7.py",
+      "language": "python",
+      "sizeLines": 152,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/refactor_form_data.py",
+      "language": "python",
+      "sizeLines": 131,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/remerge.py",
+      "language": "python",
+      "sizeLines": 67,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/rename_forms.py",
+      "language": "python",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/restore_form_names.py",
+      "language": "python",
+      "sizeLines": 37,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/run_all_preprocessing.py",
+      "language": "python",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/run_answer_generation.py",
+      "language": "python",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/run_retrieval.py",
+      "language": "python",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/show_failures.py",
+      "language": "python",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/smoke_qdrant_adapter_filters.py",
+      "language": "python",
+      "sizeLines": 155,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/upgrade_chunks_with_excel.py",
+      "language": "python",
+      "sizeLines": 138,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/visualize_graph.py",
+      "language": "python",
+      "sizeLines": 122,
+      "fileCategory": "code"
+    },
+    {
+      "path": "scripts/write_reproducibility_report.py",
+      "language": "python",
+      "sizeLines": 121,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/api/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/api/chat_controls.py",
+      "language": "python",
+      "sizeLines": 259,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/api/deps.py",
+      "language": "python",
+      "sizeLines": 57,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/api/langfuse_helper.py",
+      "language": "python",
+      "sizeLines": 164,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/api/main.py",
+      "language": "python",
+      "sizeLines": 106,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/api/routes/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/api/routes/chat.py",
+      "language": "python",
+      "sizeLines": 278,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/api/routes/chat_stream.py",
+      "language": "python",
+      "sizeLines": 216,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/api/routes/health.py",
+      "language": "python",
+      "sizeLines": 157,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/api/routes/metrics.py",
+      "language": "python",
+      "sizeLines": 66,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/api/schemas.py",
+      "language": "python",
+      "sizeLines": 150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/api/usage_tracker.py",
+      "language": "python",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/chunk_schema.py",
+      "language": "python",
+      "sizeLines": 51,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/directory_chunker.py",
+      "language": "python",
+      "sizeLines": 337,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/form_chunker.py",
+      "language": "python",
+      "sizeLines": 147,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/formula_chunker.py",
+      "language": "python",
+      "sizeLines": 88,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/io_utils.py",
+      "language": "python",
+      "sizeLines": 79,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/procedure_chunker.py",
+      "language": "python",
+      "sizeLines": 148,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/regulation_chunker.py",
+      "language": "python",
+      "sizeLines": 233,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/regulation_highlight_extractor.py",
+      "language": "python",
+      "sizeLines": 75,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/regulation_table_extractor.py",
+      "language": "python",
+      "sizeLines": 492,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/report_builder.py",
+      "language": "python",
+      "sizeLines": 154,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/runner.py",
+      "language": "python",
+      "sizeLines": 161,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/table_chunker.py",
+      "language": "python",
+      "sizeLines": 110,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/text_utils.py",
+      "language": "python",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/token_utils.py",
+      "language": "python",
+      "sizeLines": 69,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/chunking/validator.py",
+      "language": "python",
+      "sizeLines": 102,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/common/__init__.py",
+      "language": "python",
+      "sizeLines": 3,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/common/cohort.py",
+      "language": "python",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/common/console.py",
+      "language": "python",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/common/content_modes.py",
+      "language": "python",
+      "sizeLines": 65,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/common/env_loader.py",
+      "language": "python",
+      "sizeLines": 75,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/evaluation/__init__.py",
+      "language": "python",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/evaluation/dataset.py",
+      "language": "python",
+      "sizeLines": 587,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/evaluation/gates.py",
+      "language": "python",
+      "sizeLines": 86,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/evaluation/human_audit.py",
+      "language": "python",
+      "sizeLines": 51,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/evaluation/judge.py",
+      "language": "python",
+      "sizeLines": 429,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/evaluation/metrics.py",
+      "language": "python",
+      "sizeLines": 123,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/evaluation/reporting.py",
+      "language": "python",
+      "sizeLines": 95,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/evaluation/suites.py",
+      "language": "python",
+      "sizeLines": 1361,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/extraction/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/extraction/audit_builder.py",
+      "language": "python",
+      "sizeLines": 73,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/extraction/directory_parser.py",
+      "language": "python",
+      "sizeLines": 260,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/extraction/form_parser.py",
+      "language": "python",
+      "sizeLines": 165,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/extraction/formula_rules.py",
+      "language": "python",
+      "sizeLines": 147,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/extraction/io_utils.py",
+      "language": "python",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/extraction/procedure_parser.py",
+      "language": "python",
+      "sizeLines": 56,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/extraction/program_faculty_enricher.py",
+      "language": "python",
+      "sizeLines": 143,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/extraction/program_parser.py",
+      "language": "python",
+      "sizeLines": 224,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/extraction/report_builder.py",
+      "language": "python",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/extraction/runner.py",
+      "language": "python",
+      "sizeLines": 133,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/extraction/scoring_tables.py",
+      "language": "python",
+      "sizeLines": 182,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/extraction/text_utils.py",
+      "language": "python",
+      "sizeLines": 31,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/extraction/threshold_rules.py",
+      "language": "python",
+      "sizeLines": 88,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/amendment_precedence.py",
+      "language": "python",
+      "sizeLines": 224,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/answer_batch_eval.py",
+      "language": "python",
+      "sizeLines": 236,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/answer_formatter.py",
+      "language": "python",
+      "sizeLines": 51,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/answer_guardrails.py",
+      "language": "python",
+      "sizeLines": 1089,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/answer_pipeline.py",
+      "language": "python",
+      "sizeLines": 1347,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/citation_formatter.py",
+      "language": "python",
+      "sizeLines": 307,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/context_allocation.py",
+      "language": "python",
+      "sizeLines": 864,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/context_resolver.py",
+      "language": "python",
+      "sizeLines": 174,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/gemini_client.py",
+      "language": "python",
+      "sizeLines": 472,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/groq_client.py",
+      "language": "python",
+      "sizeLines": 204,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/io_utils.py",
+      "language": "python",
+      "sizeLines": 31,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/prompt_builder.py",
+      "language": "python",
+      "sizeLines": 204,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/query_rewriter.py",
+      "language": "python",
+      "sizeLines": 905,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/response_cache.py",
+      "language": "python",
+      "sizeLines": 267,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/runner.py",
+      "language": "python",
+      "sizeLines": 82,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/generation/semantic_cache.py",
+      "language": "python",
+      "sizeLines": 138,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/ingestion/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/ingestion/graph_extractor.py",
+      "language": "python",
+      "sizeLines": 383,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/ingestion/pdf_loader.py",
+      "language": "python",
+      "sizeLines": 321,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/preprocessing/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/preprocessing/structure_parser.py",
+      "language": "python",
+      "sizeLines": 628,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/ai_router.py",
+      "language": "python",
+      "sizeLines": 620,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/bm25_retriever.py",
+      "language": "python",
+      "sizeLines": 143,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/build_entity_registry.py",
+      "language": "python",
+      "sizeLines": 259,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/citation_builder.py",
+      "language": "python",
+      "sizeLines": 359,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/context_builder.py",
+      "language": "python",
+      "sizeLines": 318,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/cross_encoder_reranker.py",
+      "language": "python",
+      "sizeLines": 100,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/entity_linker.py",
+      "language": "python",
+      "sizeLines": 141,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/foreign_language_lookup.py",
+      "language": "python",
+      "sizeLines": 374,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/form_lookup.py",
+      "language": "python",
+      "sizeLines": 220,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/formula_lookup.py",
+      "language": "python",
+      "sizeLines": 125,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/graph_traverser.py",
+      "language": "python",
+      "sizeLines": 85,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/hybrid_pipeline.py",
+      "language": "python",
+      "sizeLines": 707,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/io_utils.py",
+      "language": "python",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/office_lookup.py",
+      "language": "python",
+      "sizeLines": 515,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/program_lookup.py",
+      "language": "python",
+      "sizeLines": 378,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/query_expansion.py",
+      "language": "python",
+      "sizeLines": 56,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/query_router.py",
+      "language": "python",
+      "sizeLines": 908,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/report_builder.py",
+      "language": "python",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/retrieval_batch_eval.py",
+      "language": "python",
+      "sizeLines": 252,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/retrieval_pipeline.py",
+      "language": "python",
+      "sizeLines": 1586,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/retrieval_planner.py",
+      "language": "python",
+      "sizeLines": 105,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/routing_rules.py",
+      "language": "python",
+      "sizeLines": 113,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/runner.py",
+      "language": "python",
+      "sizeLines": 114,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/scholarship_lookup.py",
+      "language": "python",
+      "sizeLines": 174,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/structured_context.py",
+      "language": "python",
+      "sizeLines": 186,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/structured_dispatcher.py",
+      "language": "python",
+      "sizeLines": 353,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/structured_lookup.py",
+      "language": "python",
+      "sizeLines": 546,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/structured_routing.py",
+      "language": "python",
+      "sizeLines": 454,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/study_duration_lookup.py",
+      "language": "python",
+      "sizeLines": 204,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/core/vector_retriever.py",
+      "language": "python",
+      "sizeLines": 95,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/vectorstore/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/vectorstore/chroma_store.py",
+      "language": "python",
+      "sizeLines": 41,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/vectorstore/embedding_model.py",
+      "language": "python",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/vectorstore/io_utils.py",
+      "language": "python",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/vectorstore/metadata_utils.py",
+      "language": "python",
+      "sizeLines": 48,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/vectorstore/mongo_store.py",
+      "language": "python",
+      "sizeLines": 124,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/vectorstore/report_builder.py",
+      "language": "python",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/vectorstore/retrieval_tester.py",
+      "language": "python",
+      "sizeLines": 54,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/vectorstore/runner.py",
+      "language": "python",
+      "sizeLines": 142,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/retrieval/vectorstore/vectorstore_factory.py",
+      "language": "python",
+      "sizeLines": 233,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/services/__init__.py",
+      "language": "python",
+      "sizeLines": 3,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/services/answer_service.py",
+      "language": "python",
+      "sizeLines": 61,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/api/__init__.py",
+      "language": "python",
+      "sizeLines": 2,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/api/test_api_routes.py",
+      "language": "python",
+      "sizeLines": 236,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_ai_structured_router.py",
+      "language": "python",
+      "sizeLines": 919,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_answer_ambiguity.py",
+      "language": "python",
+      "sizeLines": 128,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_answer_failure_audit.py",
+      "language": "python",
+      "sizeLines": 94,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_answer_pipeline_verification.py",
+      "language": "python",
+      "sizeLines": 150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_answer_safety_guardrails.py",
+      "language": "python",
+      "sizeLines": 30,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_build_eval_v8_5.py",
+      "language": "python",
+      "sizeLines": 32,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_citation_builder.py",
+      "language": "python",
+      "sizeLines": 38,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_citation_formatter.py",
+      "language": "python",
+      "sizeLines": 63,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_context_allocation.py",
+      "language": "python",
+      "sizeLines": 296,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_context_resolver.py",
+      "language": "python",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_derive_foreign_language_policy.py",
+      "language": "python",
+      "sizeLines": 87,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_deterministic_lookup_pipeline.py",
+      "language": "python",
+      "sizeLines": 95,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_entity_linker.py",
+      "language": "python",
+      "sizeLines": 43,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_entity_registry_builder.py",
+      "language": "python",
+      "sizeLines": 43,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_evaluation_v8.py",
+      "language": "python",
+      "sizeLines": 409,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_foreign_language_lookup.py",
+      "language": "python",
+      "sizeLines": 82,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_gemini_client.py",
+      "language": "python",
+      "sizeLines": 178,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_graph_extractor.py",
+      "language": "python",
+      "sizeLines": 144,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_hybrid_graph_supplement.py",
+      "language": "python",
+      "sizeLines": 226,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_production_query_behaviors.py",
+      "language": "python",
+      "sizeLines": 66,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_prompt_builder.py",
+      "language": "python",
+      "sizeLines": 232,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_query_expansion.py",
+      "language": "python",
+      "sizeLines": 60,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_query_rewriter.py",
+      "language": "python",
+      "sizeLines": 278,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_query_router.py",
+      "language": "python",
+      "sizeLines": 81,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_regulation_table_extractor.py",
+      "language": "python",
+      "sizeLines": 125,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_response_cache.py",
+      "language": "python",
+      "sizeLines": 94,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_retrieval_eval_metrics.py",
+      "language": "python",
+      "sizeLines": 70,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_retrieval_planner_content_types.py",
+      "language": "python",
+      "sizeLines": 30,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_retrieval_router_fallback.py",
+      "language": "python",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_structured_lookup.py",
+      "language": "python",
+      "sizeLines": 57,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_table_layer_standardization.py",
+      "language": "python",
+      "sizeLines": 442,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tests/test_table_runtime_lookups.py",
+      "language": "python",
+      "sizeLines": 139,
+      "fileCategory": "code"
+    }
+  ],
+  "totalFiles": 419,
+  "filteredByIgnore": 0,
+  "estimatedComplexity": "large",
+  "stats": {
+    "filesScanned": 419,
+    "byCategory": {
+      "code": 298,
+      "config": 93,
+      "infra": 3,
+      "docs": 21,
+      "markup": 3,
+      "script": 1
+    },
+    "byLanguage": {
+      "unknown": 3,
+      "json": 75,
+      "config": 2,
+      "yaml": 16,
+      "dockerfile": 1,
+      "markdown": 18,
+      "xlsx": 3,
+      "javascript": 2,
+      "html": 1,
+      "docx": 11,
+      "doc": 34,
+      "typescript": 40,
+      "css": 2,
+      "txt": 3,
+      "toml": 1,
+      "batch": 1,
+      "python": 206
+    }
+  }
+}

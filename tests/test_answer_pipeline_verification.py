@@ -119,6 +119,32 @@ class AnswerPipelineRetrievalVerificationTest(unittest.TestCase):
 
         self.assertEqual(selected, "needs_clarification")
 
+    def test_build_output_does_not_expose_deprecated_scope_contract(self) -> None:
+        pipeline = AnswerPipeline.__new__(AnswerPipeline)
+        pipeline._finalize_evaluation_telemetry = lambda **_: None
+
+        output = AnswerPipeline._build_output(
+            pipeline,
+            query="K50 co duoc bo qua chuan ngoai ngu khong?",
+            retrieval_result={
+                "intent": "regulation_query",
+                "strategy": "semantic_filtered",
+            },
+            final_answer="Cau tra loi dua tren nguon.",
+            context_used="",
+            selected_citations=[],
+            status="answered",
+            error_type=None,
+            error_message=None,
+            llm_called=True,
+            used_cache=False,
+        )
+
+        self.assertNotIn("answer_scope", output)
+        self.assertNotIn("asked_claim", output)
+        self.assertNotIn("requires_direct_evidence", output)
+        self.assertNotIn("scope_abstention_reason", output)
+
 
 if __name__ == "__main__":
     unittest.main()

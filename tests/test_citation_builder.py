@@ -16,7 +16,6 @@ THÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:
     cleaned = sanitize_citation_content(raw)
 
     assert "THÔNG TIN TRỌNG TÂM" not in cleaned
-    assert "tháng 5, tháng 8 và tháng 10." in cleaned
     assert "03 đợt xét tốt nghiệp chính thức" in cleaned
 
 

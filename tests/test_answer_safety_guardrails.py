@@ -1,54 +1,30 @@
 from __future__ import annotations
 
-from src.generation.answer_guardrails import build_scope_abstention_answer
+from src.generation import answer_guardrails
+from src.generation.answer_guardrails import is_context_empty
 
 
-def test_scope_abstention_blocks_unsupported_high_risk_policy_claim() -> None:
-    retrieval_result = {
-        "retrieved_items": [
-            {
-                "content": "Sinh viên sư phạm được xét hỗ trợ học phí theo quy định.",
-                "metadata": {
-                    "title": "Điều 29. Hỗ trợ chi phí học tập",
-                    "document_id": "K51_student_handbook",
-                    "source_section": "Điều 29",
-                },
-            }
-        ],
-        "context_for_llm": "Điều 29 quy định về học bổng và hỗ trợ chi phí học tập.",
-    }
-
-    answer = build_scope_abstention_answer(
-        "K51 có chính sách cấp laptop miễn phí cho mọi sinh viên không?",
-        retrieval_result,
+def test_empty_retrieval_has_no_answer_context() -> None:
+    assert is_context_empty(
+        {
+            "retrieved_items": [],
+            "context_for_llm": "",
+            "structured_result": None,
+            "formula_result": None,
+            "tool_result": None,
+        }
     )
 
-    assert answer is not None
-    assert "chưa thấy căn cứ trực tiếp" in answer.casefold()
 
-
-def test_scope_abstention_allows_directly_supported_policy_question() -> None:
-    retrieval_result = {
-        "retrieved_items": [
-            {
-                "content": (
-                    "Sinh viên có thể được nghỉ học tạm thời trong các trường hợp "
-                    "được quy định tại Điều 15."
-                ),
-                "metadata": {
-                    "title": "Điều 15. Nghỉ học tạm thời",
-                    "document_id": "K51_student_handbook",
-                    "source_section": "Điều 15",
-                },
-            }
-        ],
-        "context_for_llm": "Điều 15. Nghỉ học tạm thời.",
-    }
-
-    assert (
-        build_scope_abstention_answer(
-            "Sinh viên có được nghỉ học tạm thời không?",
-            retrieval_result,
-        )
-        is None
+def test_structured_result_is_valid_answer_context() -> None:
+    assert not is_context_empty(
+        {
+            "retrieved_items": [],
+            "context_for_llm": "",
+            "structured_result": {"result": [{"value": "8 nam"}]},
+        }
     )
+
+
+def test_scope_abstention_is_not_part_of_runtime_guardrails() -> None:
+    assert not hasattr(answer_guardrails, "build_scope_abstention_answer")

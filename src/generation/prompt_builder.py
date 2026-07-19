@@ -1,6 +1,12 @@
 import json
 from typing import Any
 
+from src.common.cohort import COHORT_ADMISSION_YEARS
+
+from .amendment_precedence import (
+    collect_applicable_amendments,
+    format_applicable_amendments,
+)
 from .context_allocation import ContextAllocationConfig, build_context_for_prompt
 
 
@@ -25,64 +31,32 @@ def build_answer_prompt(
     structured_result = _to_pretty_json(retrieval_result.get("structured_result"))
     cohort_instruction = _cohort_instruction(cohort)
     source_usage_instruction = _source_usage_instruction(context)
+    applicable_amendments = format_applicable_amendments(
+        collect_applicable_amendments(
+            retrieval_result,
+            query=query,
+            cohort=cohort,
+        )
+    )
 
     return f"""Bạn là chatbot tra cứu Sổ tay sinh viên. Trả lời bằng tiếng Việt tự nhiên, chính xác, bám nguồn.
 {cohort_instruction}
 {source_usage_instruction}
 
 NHIỆM VỤ
-- Trả lời trực tiếp câu hỏi của sinh viên ngay từ dòng đầu, rồi mới giải thích ngắn gọn dựa trên dữ liệu bên dưới.
-- Chỉ dùng STRUCTURED_RESULT và CONTEXT. Không dùng kiến thức ngoài nguồn.
-- Đọc toàn bộ các nguồn trong CONTEXT trước khi kết luận, kể cả nguồn liên quan qua dẫn chiếu.
-- Không hiển thị quá trình suy luận nội bộ, checklist, hoặc nhãn kỹ thuật như CONTEXT, STRUCTURED_RESULT, RETRIEVAL_METADATA, Source 1/2/3.
-
-THỨ TỰ ƯU TIÊN DỮ LIỆU
-1. STRUCTURED_RESULT: nguồn chuẩn cho số liệu bảng, danh mục và dữ liệu đã chuẩn hóa. Giữ đúng trường, nhãn, cohort và số liệu.
-2. CONTEXT: nguồn chuẩn cho quy định, thủ tục, điều kiện, ngoại lệ, thời hạn, Điều/khoản/điểm.
-3. Nếu có cả hai nguồn, dùng STRUCTURED_RESULT cho giá trị và CONTEXT cho phạm vi áp dụng hoặc cách xử lý. Không suy diễn phần còn thiếu.
-
-CÁCH ĐỌC NGUỒN DÀI
-- CONTEXT có thể chứa tối đa 5 nguồn đầy đủ sau retrieval/rerank. Hãy rà tất cả nguồn, không chỉ nguồn đầu.
-- [NGUỒN CHÍNH] là nguồn khớp trực tiếp câu hỏi và là căn cứ chính để trả lời.
-- [NGUỒN LIÊN QUAN] chỉ dùng để bổ sung khi nó trực tiếp làm rõ câu hỏi; không dùng để mở rộng sang chính sách gần nghĩa hoặc thay thế nguồn chính.
-- Nếu nguồn chính nói về thủ tục/điều kiện và nguồn liên quan chứa số liệu, giới hạn, ngoại lệ hoặc định nghĩa trực tiếp cần cho câu hỏi, hãy kết hợp cả hai.
-- Nếu các nguồn gần giống nhau nhưng khác khóa/cohort/document, chỉ dùng nguồn phù hợp với khóa sinh viên. Không trộn quy định của khóa khác.
-- Nếu không có khóa sinh viên và các nguồn khác khóa mâu thuẫn, nêu rõ quy định có thể khác theo khóa và hỏi lại khóa sinh viên thay vì chọn bừa.
-
-QUY TẮC CHÍNH XÁC
-- Giữ nguyên số liệu, tỷ lệ, mốc thời gian, tên Điều, khoản, điểm, tên phòng ban, email, số điện thoại.
-- Nếu nhắc tên Điều/khoản/điểm, phải nêu nội dung cụ thể tương ứng. Không viết kiểu "theo điểm a, b Điều X" mà không nói điểm đó quy định gì.
-- Nếu dữ liệu chỉ trả lời được một phần, trả lời phần chắc chắn trước rồi nói rõ phần nào Sổ tay hiện chưa có đủ thông tin.
-- Nếu câu hỏi hỏi A nhưng nguồn chỉ nói về B gần giống, nói rõ nguồn hiện chỉ thấy B và chưa đủ để kết luận A.
-- Không suy rộng chính sách dành cho một đối tượng hẹp, ví dụ sinh viên sư phạm, nội trú/ký túc xá, học bổng hoặc miễn giảm học phí, sang toàn bộ sinh viên nếu nguồn không nói rõ.
-- Với từ sinh viên hay dùng, có thể ánh xạ sang thuật ngữ chính thức nếu nguồn hỗ trợ: "bảo lưu" là "nghỉ học tạm thời", "rớt môn" là "học lại".
-
-DIRECT ANSWER FIRST + COMPLETE REQUIRED FACTS
-- Dòng đầu phải trả lời thẳng kết luận chính. Với câu hỏi "có/không/có được không", bắt đầu bằng "Có", "Không", hoặc "Chưa thấy căn cứ trực tiếp trong Sổ tay".
-- Sau dòng đầu, liệt kê đầy đủ điều kiện, trường hợp, số liệu, ngoại lệ, thời hạn hoặc bước thủ tục bắt buộc từ nguồn trực tiếp. Không cắt required facts chỉ để câu trả lời ngắn.
-- Nếu câu hỏi đơn giản, ưu tiên 3-5 bullet. Nếu câu hỏi hỏi "các trường hợp", "điều kiện", "quy trình" hoặc "bao gồm những gì", được dài hơn nhưng phải nhóm ý rõ ràng.
-- Không thêm chính sách phụ, ví dụ tương tự, hoặc hướng dẫn liên hệ nếu sinh viên không hỏi và nguồn đó không cần để trả lời.
-
-QUY TẮC THEO LOẠI CÂU HỎI
-- `structured`: đọc dữ liệu JSON trong STRUCTURED_RESULT để trả lời; nêu đúng bảng/catalog và cohort, không tự thêm record hoặc giá trị bị thiếu.
-- `mixed`: lấy số liệu từ STRUCTURED_RESULT rồi đối chiếu điều kiện, ngoại lệ và hậu quả trong CONTEXT trước khi kết luận.
-- Điều kiện, trường hợp, danh sách, bao nhiêu, khi nào: rà hết bullet/khoản liên quan và liệt kê đầy đủ, giữ nguyên số liệu gốc.
-- Quy trình/thủ tục: trình bày theo bước; phân biệt nơi cấp giấy tờ, nơi nộp hồ sơ, thời hạn và biểu mẫu nếu nguồn có.
-- Phòng ban: nêu đúng đơn vị, email, số điện thoại, địa chỉ, website nếu nguồn có. Không tự đoán phòng ban.
-- Bảng/điểm/thang điểm/xếp loại: ưu tiên STRUCTURED_RESULT; nếu dùng bảng trong CONTEXT thì giữ Markdown table khi phù hợp.
-- Khi có nhiều bảng cùng chủ đề, bắt buộc đối chiếu trường `applicability` với loại học phần, hình thức đào tạo hoặc đối tượng trong câu hỏi. Nếu câu hỏi chưa đủ để chọn một bảng, nêu rõ các trường hợp hoặc hỏi lại; không tự chọn bảng.
-- Form/mẫu đơn: nêu đúng tên form và thông tin cần chuẩn bị nếu nguồn có.
-
-GIỚI HẠN THỜI GIAN
-- Nếu câu hỏi liên quan đến giới hạn thời gian, hãy kiểm tra nội bộ: hành động A có tính vào quỹ thời gian B không, B có giới hạn tối đa bao nhiêu, và giới hạn đó áp dụng cho nhóm nào.
-- Khi nguồn ghi A tính vào B, không nói sai rằng "A tối đa là C". Hãy giải thích: A được tính vào B, mà B có giới hạn tối đa C.
-- Nếu có nhiều nhóm đào tạo hoặc đối tượng với giới hạn khác nhau, liệt kê từng nhóm.
-
-VĂN PHONG TRẢ LỜI
-- Đi thẳng vào câu trả lời. Không mở đầu kiểu "Để trả lời câu hỏi này...".
-- Dùng bullet hoặc đánh số khi có nhiều ý. Tô đậm các con số, thời hạn, điều kiện, kết quả quan trọng.
-- Không tự thêm mục "Nguồn:" hoặc "Tham khảo:" ở cuối vì UI sẽ hiển thị citation riêng.
-- Chỉ thêm lưu ý cuối câu khi câu trả lời có rủi ro cao như khiếu nại điểm, kỷ luật, buộc thôi học, học bổng, nghỉ học tạm thời hoặc nghĩa vụ bồi hoàn. Lưu ý phải ngắn, không biến thành đoạn cảnh báo dài.
+- Chỉ sử dụng STRUCTURED_RESULT và CONTEXT; không dùng kiến thức ngoài nguồn.
+- Trả lời trực tiếp phạm vi người dùng hỏi, sau đó nêu đủ điều kiện, số liệu, ngoại lệ hoặc bước thủ tục có trong nguồn trực tiếp.
+- STRUCTURED_RESULT là nguồn chuẩn cho bảng và danh mục. CONTEXT là nguồn chuẩn cho quy định, điều kiện và thủ tục.
+- PRIMARY SOURCES là căn cứ chính. RELATED SOURCES chỉ bổ sung khi trực tiếp làm rõ câu hỏi, không được tạo ra kết luận mới hoặc phủ định nguồn chính.
+- Nếu có APPLICABLE AMENDMENTS, nội dung thay thế/bổ sung trong đó có thứ tự hiệu lực cao hơn câu chữ cũ bị sửa, nhưng chỉ trong đúng phạm vi điều/khoản/điểm và cohort được nêu.
+- Chỉ dùng dữ liệu đúng cohort. Nếu thiếu cohort và các khóa có quy định khác nhau, hãy hỏi lại thay vì tự chọn.
+- Giữ nguyên số liệu, tỷ lệ, thời hạn, Điều, khoản, điểm và thông tin liên hệ. Không suy rộng quy định cho đối tượng khác.
+- Nếu nguồn chỉ hỗ trợ một phần, trả lời phần chắc chắn và nói rõ phần chưa xác định. Nếu không có căn cứ trực tiếp, nói rằng chưa tìm thấy trong Sổ tay.
+- Với bảng, chỉ dùng record có `applicability` phù hợp với hình thức đào tạo, loại học phần hoặc đối tượng được hỏi; nếu chưa đủ thông tin để chọn, hãy hỏi lại.
+- Câu hỏi danh sách hoặc quy trình phải trả đủ các mục có liên quan; câu hỏi đơn giản nên ngắn gọn. Không thêm chính sách phụ hoặc hướng dẫn người dùng không hỏi.
+- Phân biệt đúng quan hệ mà người dùng hỏi. Lịch xét, thời hạn xử lý hoặc thời điểm cấp kết quả không tự chứng minh người dùng có quyền lựa chọn, được phép hay bị cấm một hành động khác.
+- Với câu hỏi có/không, chỉ kết luận có hoặc không khi nguồn trực tiếp xác lập đúng quyền, nghĩa vụ hoặc điều cấm được hỏi. Nếu nguồn chỉ nêu thông tin gần nghĩa, hãy nói nguồn chưa xác định phần đó rồi mới nêu dữ kiện chắc chắn có liên quan.
+- Không hiển thị quá trình suy luận, nhãn kỹ thuật hoặc tự thêm mục nguồn; UI sẽ hiển thị citation riêng.
 
 CÂU HỎI CỦA SINH VIÊN
 {query}
@@ -91,6 +65,8 @@ DỮ LIỆU
 
 STRUCTURED_RESULT:
 {structured_result if structured_result else "(không có)"}
+
+{applicable_amendments if applicable_amendments else "APPLICABLE AMENDMENTS: (không có sửa đổi áp dụng trực tiếp được phát hiện)"}
 
 CONTEXT:
 {context if context else "(không có context)"}
@@ -101,13 +77,7 @@ RETRIEVAL_METADATA:
 - execution_mode: {retrieval_result.get("execution_mode")}
 - retrieval_query: {retrieval_result.get("retrieval_query")}
 
-KIỂM TRA NỘI BỘ TRƯỚC KHI TRẢ LỜI
-- Câu trả lời có dùng đúng khóa/cohort chưa?
-- Có bỏ sót số liệu, điều kiện, ngoại lệ hoặc nguồn liên quan trực tiếp không?
-- Có nhắc Điều/khoản/điểm nào mà chưa nêu nội dung cụ thể không?
-- Có nội dung nào không được nguồn hỗ trợ không?
-
-Hãy trả lời cuối cùng cho sinh viên. Chỉ xuất câu trả lời, không xuất checklist."""
+Chỉ xuất câu trả lời cuối cùng cho sinh viên."""
 
 
 def build_prompt(
@@ -216,9 +186,13 @@ SOURCE_USAGE_RULES
 def _cohort_instruction(cohort: str | None) -> str:
     if not cohort:
         return ""
+    year_mapping = ", ".join(
+        f"{label}=" + "/".join(str(year) for year in years)
+        for label, years in COHORT_ADMISSION_YEARS.items()
+    )
     return (
         f"Sinh viên đang hỏi thuộc nhóm khóa: {cohort}. "
-        "Ánh xạ năm nhập học: K48=2022, K49=2023, K50=2024, K51=2025. "
+        f"Ánh xạ năm nhập học: {year_mapping}. "
         "Nếu tài liệu có quy định áp dụng theo năm hoặc khóa, phải đối chiếu để trả lời đúng cohort."
     )
 

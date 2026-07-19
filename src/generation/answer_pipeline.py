@@ -19,7 +19,6 @@ from .answer_guardrails import (
     build_clarification_question,
     build_deterministic_answer,
     build_fallback_answer,
-    build_scope_abstention_answer,
     can_answer_deterministically,
     detect_ambiguous_query,
     is_low_confidence,
@@ -40,7 +39,7 @@ from .semantic_cache import SemanticCache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v16"
+PIPELINE_VERSION = "v19-amendment-boundary"
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
 )
@@ -469,23 +468,6 @@ class AnswerPipeline:
                 query_rewrite=rewrite_result,
             )
 
-        if guardrails_config.get("scope_abstention_enabled", True):
-            scope_abstention = build_scope_abstention_answer(query, retrieval_result)
-            if scope_abstention:
-                return self._build_output(
-                    query=query,
-                    retrieval_result=retrieval_result,
-                    final_answer=scope_abstention,
-                    context_used=context_used,
-                    selected_citations=[],
-                    status="answered",
-                    error_type=None,
-                    error_message=None,
-                    llm_called=False,
-                    used_cache=False,
-                    query_rewrite=rewrite_result,
-                )
-
         cache_key = self.response_cache.make_cache_key(
             query=effective_query,
             retrieval_result=retrieval_result,
@@ -896,22 +878,6 @@ class AnswerPipeline:
             yield {"type": "done", "tracker": tracker}
             return
 
-        if guardrails_config.get("scope_abstention_enabled", True):
-            scope_abstention = build_scope_abstention_answer(query, retrieval_result)
-            if scope_abstention:
-                yield {
-                    "type": "metadata",
-                    "run_id": run_id,
-                    "status": "answered",
-                    "intent": retrieval_result.get("intent"),
-                    "strategy": retrieval_result.get("strategy"),
-                    "citations_used": [],
-                    "llm_called": False,
-                }
-                yield {"type": "token", "text": scope_abstention}
-                yield {"type": "done", "tracker": tracker}
-                return
-
         # Đưa TOÀN BỘ retrieved_items (đã qua ngưỡng 0.70) vào context cho LLM.
         # selected_citations chỉ dùng cho UI hiển thị nguồn tham khảo.
         prompt = build_answer_prompt(
@@ -1253,7 +1219,6 @@ class AnswerPipeline:
                 model_used = "cache"
             elif not llm_called:
                 model_used = "deterministic"
-
         return {
             "run_id": run_id,
             "query": query,

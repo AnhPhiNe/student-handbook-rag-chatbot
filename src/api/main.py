@@ -27,7 +27,7 @@ async def lifespan(app: FastAPI):
 
     Hàm này được gọi khi ứng dụng FastAPI khởi động và tắt.
     Khi ứng dụng khởi động, nó sẽ tải trước các mô hình học máy nặng
-    như dịch vụ trả lời, bộ truy xuất BM25 và bộ xếp hạng lại (reranker)
+    như dịch vụ trả lời và bộ truy xuất BM25
     để đảm bảo các yêu cầu đầu tiên không bị chậm do quá trình khởi tạo mô hình.
     Điều này giúp tránh hiện tượng "cold start" (khởi động lạnh).
 
@@ -41,12 +41,10 @@ async def lifespan(app: FastAPI):
     print("🚀 [FastAPI] Preloading heavy models to prevent Cold Start...")
     from src.api.deps import get_answer_service
     from src.retrieval.core.bm25_retriever import get_bm25_retriever
-    from src.retrieval.core.cross_encoder_reranker import get_local_reranker
 
     # Kích hoạt Singleton ngay từ lúc server khởi động
     get_answer_service()
     get_bm25_retriever()
-    get_local_reranker()
     print("✅ [FastAPI] All models preloaded successfully!")
     yield
 

@@ -9,7 +9,11 @@ from unittest.mock import Mock, patch
 import pytest
 
 from src.generation.answer_guardrails import can_answer_deterministically
-from src.retrieval.core.ai_router import AIRouter, GroqRouterKeyPool
+from src.retrieval.core.ai_router import (
+    ROUTER_PROMPT_VERSION,
+    AIRouter,
+    GroqRouterKeyPool,
+)
 from src.retrieval.core.office_lookup import find_grounded_catalog_hint, office_lookup
 from src.retrieval.core.retrieval_pipeline import run_retrieval_pipeline
 from src.retrieval.core.structured_routing import (
@@ -17,11 +21,22 @@ from src.retrieval.core.structured_routing import (
     fallback_to_rag,
     load_lookup_registry,
     normalize_router_decision,
+    router_json_schema,
     validate_router_decision,
 )
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_router_schema_uses_simple_contract_and_new_cache_version() -> None:
+    schema = router_json_schema()
+
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v14-simple-vi"
+    assert "answer_scope" not in schema
+    assert "requires_direct_evidence" not in schema
+    assert "route" in schema
+    assert "retrieval_query" in schema
 
 
 def _load(relative: str) -> list[dict]:

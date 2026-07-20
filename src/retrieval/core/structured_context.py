@@ -29,6 +29,11 @@ SUBTYPES_BY_OPERATION = {
         "grade_10_to_letter",
     },
     "pass_fail_ungraded": {"pass_fail_ungraded"},
+    "pass_threshold": {
+        "grade_scale",
+        "grade_10_to_letter",
+        "pass_fail_ungraded",
+    },
     "letter_to_grade_4": {"letter_to_grade4", "letter_to_grade_4"},
     "academic_classification": {"academic_classification"},
     "conduct_classification": {"conduct", "conduct_classification"},

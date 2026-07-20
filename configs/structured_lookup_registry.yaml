@@ -60,7 +60,7 @@ tools:
     slot_schema:
       operation:
         type: string
-        enum: [grade_10_to_letter, pass_fail_ungraded, letter_to_grade_4, academic_classification, conduct_classification]
+        enum: [grade_10_to_letter, pass_fail_ungraded, letter_to_grade_4, academic_classification, conduct_classification, pass_threshold]
       score_or_grade: {type: [string, number]}
     strategy: structured_lookup
     response_intent: score_lookup_query

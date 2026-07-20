@@ -1,5 +1,0 @@
-from src.retrieval.vectorstore.runner import main
-
-
-if __name__ == "__main__":
-    main()

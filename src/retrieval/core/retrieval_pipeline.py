@@ -1110,87 +1110,86 @@ def run_retrieval_pipeline(
         )
 
         if structured_context_result is None:
-            return {
-                "query": query,
-                "retrieval_query": retrieval_query,
-                "detected_entities": detected_entities,
-                "intent": "needs_clarification",
-                "strategy": "structured_context_not_resolved",
-                "target_chunk_types": [],
-                "retrieved_items": [],
-                "citations": [],
-                "context_for_llm": "",
-                "needs_llm_answer": False,
-                "needs_clarification": True,
-                "clarification_question": (
-                    "Mình chưa xác định đủ bảng hoặc khóa sinh viên để trả lời chính xác. "
-                    "Bạn cho biết khóa và nội dung bảng cần tra cứu nhé."
-                ),
-                "router_decision": router_decision,
-                "execution_mode": execution_mode,
-            }
-        if resolution is not None and resolution.result_kind == "formula":
-            structured_context_citations = build_citation_from_formula(
-                structured_context_result
+            # Structured lookup failed — fallback to RAG instead of dead-end
+            import logging as _fb_log
+            _fb_log.getLogger(__name__).info(
+                "Structured lookup returned None for %s; falling back to RAG",
+                router_decision.get("lookup_type"),
             )
-        else:
-            structured_context_citations = build_citation_from_lookup(
-                structured_context_result
-            )
-        if not structured_context_citations:
-            return {
-                "query": query,
-                "retrieval_query": retrieval_query,
-                "detected_entities": detected_entities,
-                "intent": "needs_clarification",
-                "strategy": "structured_source_validation_failed",
-                "target_chunk_types": [],
-                "retrieved_items": [],
-                "citations": [],
-                "context_for_llm": "",
-                "needs_llm_answer": False,
-                "needs_clarification": True,
-                "clarification_question": "Nguồn bảng chưa đủ thông tin để trích dẫn chính xác.",
-                "router_decision": router_decision,
-                "execution_mode": execution_mode,
-            }
-        expected_cohort = normalize_cohort(cohort)
-        if expected_cohort and any(
-            normalize_cohort(
-                citation.get("cohort")
-                or (citation.get("metadata") or {}).get("cohort")
-            )
-            not in {None, expected_cohort}
-            for citation in structured_context_citations
-        ):
-            return _build_lookup_clarification_response(
+            router_decision = fallback_to_rag(
+                router_decision,
+                ["structured_lookup_returned_none"],
                 query=query,
-                retrieval_query=retrieval_query,
-                detected_entities=detected_entities,
-                routing=routing,
-                router_decision=router_decision,
             )
-        if execution_mode == "structured":
-            return {
-                "query": query,
-                "retrieval_query": retrieval_query,
-                "detected_entities": detected_entities,
-                "intent": "structured_query",
-                "strategy": structured_strategy,
-                "target_chunk_types": [],
-                "structured_result": structured_context_result,
-                "retrieved_items": [],
-                "citations": structured_context_citations,
-                "context_for_llm": build_context_from_lookup(
+            routing = decision_to_legacy_routing(router_decision)
+            routing["usage"] = router_decision.get("usage")
+            routing["model_used"] = router_decision.get("model_used")
+            execution_mode = "regulation"
+            # Fall through to the RAG retrieval path below
+        else:
+            # Structured lookup succeeded — process citations and return
+            if resolution is not None and resolution.result_kind == "formula":
+                structured_context_citations = build_citation_from_formula(
                     structured_context_result
-                ),
-                "needs_llm_answer": True,
-                "router_usage": routing.get("usage"),
-                "router_model": routing.get("model_used"),
-                "router_cache_hit": routing.get("router_cache_hit", False),
-                "router_decision": router_decision,
-                "execution_mode": execution_mode,
-            }
+                )
+            else:
+                structured_context_citations = build_citation_from_lookup(
+                    structured_context_result
+                )
+            if not structured_context_citations:
+                return {
+                    "query": query,
+                    "retrieval_query": retrieval_query,
+                    "detected_entities": detected_entities,
+                    "intent": "needs_clarification",
+                    "strategy": "structured_source_validation_failed",
+                    "target_chunk_types": [],
+                    "retrieved_items": [],
+                    "citations": [],
+                    "context_for_llm": "",
+                    "needs_llm_answer": False,
+                    "needs_clarification": True,
+                    "clarification_question": "Nguồn bảng chưa đủ thông tin để trích dẫn chính xác.",
+                    "router_decision": router_decision,
+                    "execution_mode": execution_mode,
+                }
+            expected_cohort = normalize_cohort(cohort)
+            if expected_cohort and any(
+                normalize_cohort(
+                    citation.get("cohort")
+                    or (citation.get("metadata") or {}).get("cohort")
+                )
+                not in {None, expected_cohort}
+                for citation in structured_context_citations
+            ):
+                return _build_lookup_clarification_response(
+                    query=query,
+                    retrieval_query=retrieval_query,
+                    detected_entities=detected_entities,
+                    routing=routing,
+                    router_decision=router_decision,
+                )
+            if execution_mode == "structured":
+                return {
+                    "query": query,
+                    "retrieval_query": retrieval_query,
+                    "detected_entities": detected_entities,
+                    "intent": "structured_query",
+                    "strategy": structured_strategy,
+                    "target_chunk_types": [],
+                    "structured_result": structured_context_result,
+                    "retrieved_items": [],
+                    "citations": structured_context_citations,
+                    "context_for_llm": build_context_from_lookup(
+                        structured_context_result
+                    ),
+                    "needs_llm_answer": True,
+                    "router_usage": routing.get("usage"),
+                    "router_model": routing.get("model_used"),
+                    "router_cache_hit": routing.get("router_cache_hit", False),
+                    "router_decision": router_decision,
+                    "execution_mode": execution_mode,
+                }
 
     intent = routing["intent"]
     strategy = routing["strategy"]

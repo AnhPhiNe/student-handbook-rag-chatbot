@@ -298,7 +298,10 @@ def foreign_language_lookup(
 ) -> dict[str, Any] | None:
     """Deterministically answer clear foreign-language equivalency queries."""
 
-    if slots is not None:
+    has_relevant_slots = slots and (
+        slots.get("certificate_or_language") or slots.get("score_or_level")
+    )
+    if has_relevant_slots:
         certificate_value = str(slots.get("certificate_or_language") or "")
         level_value = slots.get("score_or_level")
         query_norm = normalize_text(f"{certificate_value} {level_value}")
@@ -323,7 +326,7 @@ def foreign_language_lookup(
     if not rows:
         return None
 
-    if slots is not None:
+    if slots and slots.get("certificate_or_language"):
         wanted = normalize_text(slots.get("certificate_or_language"))
         wanted_tokens = set(wanted.split())
         scored_rows = []

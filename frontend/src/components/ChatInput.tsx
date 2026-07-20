@@ -8,7 +8,7 @@ const PLACEHOLDERS = [
   "Mất thẻ sinh viên thì phải làm sao?"
 ];
 
-const MAX_CHARS = 500;
+const MAX_CHARS = 1000;
 
 interface ChatInputProps {
   onSend: (text: string) => void;

@@ -131,7 +131,7 @@ def scholarship_classification_lookup(
     cohort: str | None = None,
     slots: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
-    if slots is not None:
+    if slots and slots.get("score_or_label"):
         query_norm = normalize_text(slots.get("score_or_label"))
     else:
         query_norm = normalize_text(query)

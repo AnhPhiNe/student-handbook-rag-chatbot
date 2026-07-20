@@ -326,11 +326,7 @@ def validate_router_decision(
     contract_intent = (
         intent if intent in allowed_intents else spec.get("default_intent")
     )
-    required = (
-        []
-        if lookup_type in REGULATION_TABLE_LOOKUPS
-        else (spec.get("required_slots") or {}).get(contract_intent, [])
-    )
+    required = list((spec.get("required_slots") or {}).get(contract_intent, []))
     source_text = f"{query}\n{grounding_context}".strip()
     for slot_name in required:
         if not _is_present(slots.get(slot_name)):

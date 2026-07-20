@@ -10,8 +10,8 @@ from typing import Deque
 from fastapi import HTTPException, Request
 
 
-DEFAULT_MAX_QUERY_CHARS = 500
-DEFAULT_RATE_LIMIT_PER_MINUTE = 10
+DEFAULT_MAX_QUERY_CHARS = 1000
+DEFAULT_RATE_LIMIT_PER_MINUTE = 5
 DEFAULT_MAX_CONCURRENT_CHAT = 3
 DEFAULT_MAX_QUEUE_SIZE = 10
 DEFAULT_QUEUE_TIMEOUT_SECONDS = 15.0
@@ -27,34 +27,72 @@ class ChatCapacityError(RuntimeError):
         super().__init__(reason)
 
 
+class QueueTicket:
+    def __init__(self, limiter: 'ChatCapacityLimiter', ticket_id: int):
+        self.limiter = limiter
+        self.ticket_id = ticket_id
+
+    @property
+    def position(self) -> int:
+        return self.limiter.get_position(self.ticket_id)
+
+    def try_acquire(self, timeout: float = 1.0) -> bool:
+        return self.limiter.try_acquire(self.ticket_id, timeout)
+
+    def leave_queue(self) -> None:
+        self.limiter.remove_from_queue(self.ticket_id)
+
+
 class ChatCapacityLimiter:
     def __init__(self, *, max_concurrent: int, max_queue_size: int) -> None:
         self.max_concurrent = max_concurrent
         self.max_queue_size = max_queue_size
-        self._semaphore = threading.BoundedSemaphore(max_concurrent)
-        self._waiting = 0
         self._lock = threading.Lock()
+        self._condition = threading.Condition(self._lock)
+        self._active_count = 0
+        self._queue: Deque[int] = deque()
+        self._ticket_counter = 0
 
-    def acquire(self, timeout_seconds: float) -> None:
-        if self._semaphore.acquire(blocking=False):
-            return
-
+    def enter_queue(self) -> QueueTicket:
         with self._lock:
-            if self._waiting >= self.max_queue_size:
+            if len(self._queue) >= self.max_queue_size:
                 raise ChatCapacityError("queue_full")
-            self._waiting += 1
+            self._ticket_counter += 1
+            ticket_id = self._ticket_counter
+            self._queue.append(ticket_id)
+            return QueueTicket(self, ticket_id)
 
-        try:
-            acquired = self._semaphore.acquire(timeout=timeout_seconds)
-        finally:
-            with self._lock:
-                self._waiting = max(0, self._waiting - 1)
+    def get_position(self, ticket_id: int) -> int:
+        with self._lock:
+            try:
+                # position 1 means you are next in line
+                return self._queue.index(ticket_id) + 1
+            except ValueError:
+                return 0
 
-        if not acquired:
-            raise ChatCapacityError("queue_timeout")
+    def try_acquire(self, ticket_id: int, timeout: float) -> bool:
+        start = time.monotonic()
+        with self._condition:
+            while True:
+                if self._queue and self._queue[0] == ticket_id and self._active_count < self.max_concurrent:
+                    self._queue.popleft()
+                    self._active_count += 1
+                    return True
+                
+                remaining = timeout - (time.monotonic() - start)
+                if remaining <= 0:
+                    return False
+                self._condition.wait(timeout=remaining)
 
     def release(self) -> None:
-        self._semaphore.release()
+        with self._condition:
+            self._active_count = max(0, self._active_count - 1)
+            self._condition.notify_all()
+
+    def remove_from_queue(self, ticket_id: int) -> None:
+        with self._lock:
+            if ticket_id in self._queue:
+                self._queue.remove(ticket_id)
 
 
 def validate_chat_query(raw_query: str) -> str:
@@ -126,6 +164,8 @@ def enforce_chat_rate_limit(request: Request) -> None:
 
 @contextlib.contextmanager
 def chat_capacity_slot():
+    """Context manager này giữ lại cho các hàm đồng bộ không cần streaming position. 
+    Để stream position, hãy dùng limiter.enter_queue() trực tiếp."""
     settings = chat_capacity_settings()
     max_concurrent, _, timeout_seconds = settings
     if max_concurrent <= 0:

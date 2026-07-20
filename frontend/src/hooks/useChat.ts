@@ -27,6 +27,7 @@ export interface Message {
   runId?: string;
   usedCache?: boolean;
   suggestions?: string[];
+  queuePosition?: number | null;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
@@ -104,7 +105,10 @@ export function useChat(cohort: string = 'K48-K49') {
       });
       clearTimeout(timeoutId);
 
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      if (!response.ok) {
+        if (response.status === 429) throw new Error("RATE_LIMIT");
+        throw new Error(`HTTP ${response.status}`);
+      }
       if (!response.body) throw new Error("No response body");
 
       const reader = response.body.getReader();
@@ -143,20 +147,31 @@ export function useChat(cohort: string = 'K48-K49') {
                 if (data.used_cache) {
                   capturedUsedCache = data.used_cache;
                 }
+              } else if (eventType === 'queued') {
+                setMessages(prev => prev.map(m => 
+                  m.id === botMsgId ? { ...m, queuePosition: data.position } : m
+                ));
               } else if (eventType === 'progress') {
                 setProgressMessage(data.message);
+                setMessages(prev => prev.map(m => 
+                  m.id === botMsgId ? { ...m, queuePosition: null } : m
+                ));
               } else if (eventType === 'token') {
                 if (ttftMs === null) {
                   ttftMs = Date.now() - startTime;
                 }
                 currentBotContent += data.text;
                 setMessages(prev => prev.map(m => 
-                  m.id === botMsgId ? { ...m, content: currentBotContent } : m
+                  m.id === botMsgId ? { ...m, content: currentBotContent, queuePosition: null } : m
                 ));
               } else if (eventType === 'done' || eventType === 'error') {
                 setIsTyping(false);
                 setProgressMessage('');
                 const responseTimeMs = Date.now() - startTime;
+                
+                if (eventType === 'error' && data.error_message) {
+                  currentBotContent = data.error_message;
+                }
                 
                 // Mock confidence based on citations if not provided
                 let confidence: 'high' | 'medium' | 'low' = 'low';
@@ -172,6 +187,7 @@ export function useChat(cohort: string = 'K48-K49') {
                 setMessages(prev => prev.map(m => 
                   m.id === botMsgId ? { 
                     ...m, 
+                    content: currentBotContent,
                     isStreaming: false,
                     responseTimeMs,
                     ttftMs: ttftMs || undefined,
@@ -193,9 +209,11 @@ export function useChat(cohort: string = 'K48-K49') {
       setSystemStatus('error');
       const responseTimeMs = Date.now() - startTime;
       const isTimeout = error instanceof Error && error.name === 'AbortError';
-      const errMsg = isTimeout 
-        ? "Hệ thống AI hiện đang quá tải hoặc phản hồi chậm. Vui lòng thử lại sau nhé!"
-        : "Xin lỗi, đã có lỗi kết nối xảy ra.";
+      const isRateLimit = error instanceof Error && error.message === 'RATE_LIMIT';
+      let errMsg = "Xin lỗi, đã có lỗi kết nối xảy ra.";
+      if (isTimeout) errMsg = "Hệ thống AI hiện đang quá tải hoặc phản hồi chậm. Vui lòng thử lại sau nhé!";
+      if (isRateLimit) errMsg = "Bạn hỏi hơi nhanh rồi đấy! Vui lòng đợi khoảng 1 phút rồi hỏi tiếp để tránh spam hệ thống nhé 🛑";
+      
       setMessages(prev => prev.map(m => 
         m.id === botMsgId ? { 
           ...m, 

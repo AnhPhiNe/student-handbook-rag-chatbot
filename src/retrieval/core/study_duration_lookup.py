@@ -122,7 +122,10 @@ def study_duration_lookup(
     cohort: str | None = None,
     slots: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
-    if slots is not None:
+    has_relevant_slots = slots and (
+        slots.get("training_mode") or slots.get("program_type")
+    )
+    if has_relevant_slots:
         query_norm = normalize_text(
             f"{slots.get('training_mode', '')} {slots.get('program_type', '')}"
         )
@@ -137,7 +140,7 @@ def study_duration_lookup(
         return None
 
     wanted_mode = _wanted_training_mode(query_norm)
-    if slots is not None and slots.get("training_mode"):
+    if slots and slots.get("training_mode"):
         mode_value = normalize_text(slots["training_mode"])
         if "vua lam vua hoc" in mode_value or mode_value == "vlvh":
             wanted_mode = "vua_lam_vua_hoc"

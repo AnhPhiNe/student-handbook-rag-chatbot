@@ -25,7 +25,8 @@ from src.api.langfuse_helper import push_trace_to_langfuse
 
 from src.api.chat_controls import (
     ChatCapacityError,
-    chat_capacity_slot,
+    _chat_capacity_limiter,
+    chat_capacity_settings,
     enforce_chat_rate_limit,
     validate_chat_query,
 )
@@ -106,7 +107,28 @@ def chat_stream(
         full_text = ""
         
         try:
-            with chat_capacity_slot():
+            settings = chat_capacity_settings()
+            max_concurrent, _, timeout_seconds = settings
+            
+            acquired = False
+            ticket = None
+            limiter = None
+            
+            if max_concurrent > 0:
+                limiter = _chat_capacity_limiter(settings)
+                ticket = limiter.enter_queue()
+                
+                start_wait = time.monotonic()
+                while time.monotonic() - start_wait < timeout_seconds:
+                    if ticket.try_acquire(timeout=1.0):
+                        acquired = True
+                        break
+                    yield _sse_event("queued", {"position": ticket.position})
+                
+                if not acquired:
+                    raise ChatCapacityError("queue_timeout")
+            
+            try:
                 logger.debug(
                     "chat_stream_history_received",
                     extra={"history_count": len(request.chat_history or [])},
@@ -176,6 +198,11 @@ def chat_stream(
                             "done",
                             {"request_id": request_id, "latency_ms": latency_ms},
                         )
+            finally:
+                if ticket:
+                    ticket.leave_queue()
+                if acquired and limiter:
+                    limiter.release()
         except ChatCapacityError as exc:
             logger.warning(
                 "chat_stream_overloaded",
@@ -187,7 +214,9 @@ def chat_stream(
                     "request_id": request_id,
                     "error_type": "server_busy",
                     "error_message": (
-                        "Hệ thống đang bận, bạn thử lại sau vài giây nhé."
+                        "Trường đang đông quá, phòng chờ của AI đã đầy mất tiêu rồi! Bạn đợi 1 xíu nữa quay lại hỏi nha, xếp hàng cũng nhanh lắm! 🏃💨"
+                        if exc.reason == "queue_full"
+                        else "Quá thời gian xếp hàng, bạn thử hỏi lại giúp AI nhé!"
                     ),
                 },
             )
@@ -204,6 +233,7 @@ def chat_stream(
                     "error_message": "Internal chatbot service error",
                 },
             )
+            yield _sse_event("done", {"request_id": request_id})
 
     return StreamingResponse(
         event_generator(),

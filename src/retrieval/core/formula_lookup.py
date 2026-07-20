@@ -17,7 +17,7 @@ def formula_lookup(
     if cohort:
         formula_rules = [r for r in formula_rules if r.get("cohort") == cohort]
 
-    if slots is not None:
+    if slots:
         formula_type = str(slots.get("formula_type") or "").strip()
         return _find_formula_by_data(formula_rules, formula_type)
 

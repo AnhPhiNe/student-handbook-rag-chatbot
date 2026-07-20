@@ -1549,5 +1549,23 @@
     "expand_to": [
       "sinh viên nội trú"
     ]
+  },
+  {
+    "trigger": [
+      "qua môn"
+    ],
+    "expand_to": [
+      "điểm đánh giá học phần đạt"
+    ]
+  },
+  {
+    "trigger": [
+      "rớt môn",
+      "nợ môn"
+    ],
+    "expand_to": [
+      "học phần không đạt",
+      "học lại"
+    ]
   }
 ]

@@ -316,11 +316,18 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
       <div className="message-content">
         <div className={`message-bubble ${message.isStreaming && (!displayContent || !isMinDelayPassed) && !thinkContent ? 'typing-indicator' : ''}`}>
           {message.isStreaming && (!displayContent || !isMinDelayPassed) && !thinkContent ? (
-             <div className="typing-dots-wrapper" aria-busy="true">
-               <div className="typing-dot"></div>
-               <div className="typing-dot"></div>
-               <div className="typing-dot"></div>
-             </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="typing-dots-wrapper" aria-busy="true">
+                <div className="typing-dot"></div>
+                <div className="typing-dot"></div>
+                <div className="typing-dot"></div>
+              </div>
+              {message.queuePosition != null && (
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontStyle: 'italic', whiteSpace: 'nowrap' }}>
+                  (Úi đông quá! Còn {message.queuePosition} lượt chờ nữa là tới bạn, nhâm nhi ngụm nước đợi AI xíu nha ☕)
+                </span>
+              )}
+            </div>
           ) : (
             <>
               {thinkContent && (

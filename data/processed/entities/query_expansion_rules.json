@@ -1,0 +1,1613 @@
+[
+  {
+    "trigger": [
+      "222 lvs",
+      "cơ sở 2",
+      "lê văn sỹ"
+    ],
+    "expand_to": [
+      "222 Lê Văn Sỹ"
+    ]
+  },
+  {
+    "trigger": [
+      "280 adv",
+      "an dương vương",
+      "cơ sở 1"
+    ],
+    "expand_to": [
+      "280 An Dương Vương"
+    ]
+  },
+  {
+    "trigger": [
+      "anh văn đầu ra",
+      "chuẩn ngoại ngữ",
+      "đầu ra ngoại ngữ"
+    ],
+    "expand_to": [
+      "chuẩn đầu ra ngoại ngữ"
+    ]
+  },
+  {
+    "trigger": [
+      "ban can su lop",
+      "ban cán sự",
+      "bcs"
+    ],
+    "expand_to": [
+      "Ban Cán sự"
+    ]
+  },
+  {
+    "trigger": [
+      "ban chấp hành",
+      "bch"
+    ],
+    "expand_to": [
+      "Ban Chấp hành"
+    ]
+  },
+  {
+    "trigger": [
+      "bhyt",
+      "bảo hiểm y tế"
+    ],
+    "expand_to": [
+      "bảo hiểm y tế"
+    ]
+  },
+  {
+    "trigger": [
+      "biến mất khỏi trường",
+      "tự ý nghỉ"
+    ],
+    "expand_to": [
+      "tự ý bỏ học"
+    ]
+  },
+  {
+    "trigger": [
+      "bù môn",
+      "học bù"
+    ],
+    "expand_to": [
+      "học bù"
+    ]
+  },
+  {
+    "trigger": [
+      "bảo lưu",
+      "gap year",
+      "tạm nghỉ",
+      "xin nghỉ"
+    ],
+    "expand_to": [
+      "nghỉ học tạm thời"
+    ]
+  },
+  {
+    "trigger": [
+      "bằng giả",
+      "chứng chỉ giả",
+      "học bạ giả"
+    ],
+    "expand_to": [
+      "hồ sơ, văn bằng, chứng chỉ giả"
+    ]
+  },
+  {
+    "trigger": [
+      "bằng ngoại ngữ",
+      "chứng chỉ anh văn",
+      "chứng chỉ tiếng anh"
+    ],
+    "expand_to": [
+      "chứng chỉ ngoại ngữ"
+    ]
+  },
+  {
+    "trigger": [
+      "bằng thứ hai",
+      "chương trình 2",
+      "ngành 2"
+    ],
+    "expand_to": [
+      "chương trình thứ hai"
+    ]
+  },
+  {
+    "trigger": [
+      "bằng tốt nghiệp",
+      "cấp bằng",
+      "nhận bằng"
+    ],
+    "expand_to": [
+      "cấp bằng tốt nghiệp",
+      "văn bằng tốt nghiệp"
+    ]
+  },
+  {
+    "trigger": [
+      "bị kém rèn luyện",
+      "drl kém",
+      "rèn luyện kém"
+    ],
+    "expand_to": [
+      "xếp loại rèn luyện kém"
+    ]
+  },
+  {
+    "trigger": [
+      "bị phạt",
+      "kỷ luật",
+      "vi phạm"
+    ],
+    "expand_to": [
+      "kỷ luật"
+    ]
+  },
+  {
+    "trigger": [
+      "bị đuổi",
+      "bị đuổi học",
+      "đuổi",
+      "đuổi học",
+      "đình chỉ luôn"
+    ],
+    "expand_to": [
+      "buộc thôi học"
+    ]
+  },
+  {
+    "trigger": [
+      "bị đình chỉ",
+      "cấm học",
+      "đình chỉ",
+      "đình chỉ học"
+    ],
+    "expand_to": [
+      "đình chỉ học tập",
+      "đình chỉ học tập có thời hạn"
+    ]
+  },
+  {
+    "trigger": [
+      "bỏ học",
+      "cúp học",
+      "không đi học",
+      "nghỉ ngang",
+      "thôi học tự nguyện"
+    ],
+    "expand_to": [
+      "thôi học",
+      "tự ý bỏ học"
+    ]
+  },
+  {
+    "trigger": [
+      "bỏ thi",
+      "quên thi",
+      "vắng thi"
+    ],
+    "expand_to": [
+      "vắng mặt trong buổi thi",
+      "điểm 0"
+    ]
+  },
+  {
+    "trigger": [
+      "bồi hoàn",
+      "trả lại tiền hỗ trợ",
+      "đền tiền sư phạm"
+    ],
+    "expand_to": [
+      "bồi hoàn kinh phí hỗ trợ"
+    ]
+  },
+  {
+    "trigger": [
+      "cao dang",
+      "cđ"
+    ],
+    "expand_to": [
+      "cao đẳng"
+    ]
+  },
+  {
+    "trigger": [
+      "cheat thi",
+      "gian lận thi cử",
+      "quay cóp"
+    ],
+    "expand_to": [
+      "gian lận trong thi, kiểm tra, đánh giá kết quả học tập"
+    ]
+  },
+  {
+    "trigger": [
+      "chuong trinh dao tao",
+      "chương trình",
+      "ctdt",
+      "ctđt"
+    ],
+    "expand_to": [
+      "chương trình đào tạo"
+    ]
+  },
+  {
+    "trigger": [
+      "chuyển cơ sở",
+      "chuyển trường",
+      "đổi trường"
+    ],
+    "expand_to": [
+      "chuyển cơ sở đào tạo",
+      "chuyển trường"
+    ]
+  },
+  {
+    "trigger": [
+      "chuyển hình thức học",
+      "chuyển từ chính quy sang vừa học vừa làm"
+    ],
+    "expand_to": [
+      "chuyển hình thức học"
+    ]
+  },
+  {
+    "trigger": [
+      "chuyển hệ",
+      "vừa học vừa làm",
+      "đổi hình thức học"
+    ],
+    "expand_to": [
+      "chuyển hình thức học"
+    ]
+  },
+  {
+    "trigger": [
+      "chuyển khoa",
+      "chuyển ngành học",
+      "đổi ngành"
+    ],
+    "expand_to": [
+      "chuyển ngành"
+    ]
+  },
+  {
+    "trigger": [
+      "chuyển ngành"
+    ],
+    "expand_to": [
+      "chuyển ngành"
+    ]
+  },
+  {
+    "trigger": [
+      "chuyển đổi tín chỉ",
+      "công nhận tín chỉ",
+      "miễn học",
+      "điểm r"
+    ],
+    "expand_to": [
+      "công nhận kết quả học tập và chuyển đổi tín chỉ",
+      "công nhận tín chỉ",
+      "miễn học"
+    ]
+  },
+  {
+    "trigger": [
+      "chuẩn đầu ra",
+      "cđr",
+      "đầu ra"
+    ],
+    "expand_to": [
+      "chuẩn đầu ra"
+    ]
+  },
+  {
+    "trigger": [
+      "chính sách tài năng",
+      "người học tài năng",
+      "sinh viên tài năng"
+    ],
+    "expand_to": [
+      "chính sách phát triển người học tài năng"
+    ]
+  },
+  {
+    "trigger": [
+      "chưa đủ dữ liệu",
+      "thiếu điểm",
+      "điểm x"
+    ],
+    "expand_to": [
+      "Điểm chưa hoàn thiện do chưa đủ dữ liệu"
+    ]
+  },
+  {
+    "trigger": [
+      "chấm lại bài thi",
+      "khiếu nại điểm",
+      "phúc khảo",
+      "xin chấm lại"
+    ],
+    "expand_to": [
+      "khiếu nại kết quả học tập",
+      "phúc khảo"
+    ]
+  },
+  {
+    "trigger": [
+      "chấm rèn luyện",
+      "đánh giá drl",
+      "đánh giá rèn luyện"
+    ],
+    "expand_to": [
+      "đánh giá kết quả rèn luyện"
+    ]
+  },
+  {
+    "trigger": [
+      "chứng chỉ tin học",
+      "tin học cơ bản",
+      "tin học đầu ra"
+    ],
+    "expand_to": [
+      "tin học cơ bản"
+    ]
+  },
+  {
+    "trigger": [
+      "cnt",
+      "cntt",
+      "it",
+      "khoa it"
+    ],
+    "expand_to": [
+      "Khoa Công nghệ Thông tin",
+      "khoa công nghệ thông tin"
+    ]
+  },
+  {
+    "trigger": [
+      "credit",
+      "tc",
+      "tín"
+    ],
+    "expand_to": [
+      "tín chỉ"
+    ]
+  },
+  {
+    "trigger": [
+      "ctct hssv",
+      "ctct&hssv",
+      "phòng ctct",
+      "phòng công tác sinh viên"
+    ],
+    "expand_to": [
+      "Công tác chính trị và Học sinh, sinh viên",
+      "Phòng Công tác chính trị và Học sinh, sinh viên"
+    ]
+  },
+  {
+    "trigger": [
+      "cvht",
+      "cố vấn",
+      "gv phụ trách lớp"
+    ],
+    "expand_to": [
+      "cố vấn học tập"
+    ]
+  },
+  {
+    "trigger": [
+      "cách tính điểm môn",
+      "đánh giá học phần"
+    ],
+    "expand_to": [
+      "cách tính điểm học phần",
+      "đánh giá học phần"
+    ]
+  },
+  {
+    "trigger": [
+      "cơ sở gia lai",
+      "gia lai",
+      "phân hiệu gia lai"
+    ],
+    "expand_to": [
+      "Phân hiệu Gia Lai"
+    ]
+  },
+  {
+    "trigger": [
+      "cơ sở long an",
+      "long an",
+      "phân hiệu long an"
+    ],
+    "expand_to": [
+      "Phân hiệu Long An"
+    ]
+  },
+  {
+    "trigger": [
+      "cải thiện điểm",
+      "học cải thiện",
+      "kéo điểm"
+    ],
+    "expand_to": [
+      "học cải thiện điểm"
+    ]
+  },
+  {
+    "trigger": [
+      "cảnh báo",
+      "cảnh báo học vụ",
+      "cảnh cáo",
+      "cảnh cáo học vụ",
+      "warning học vụ"
+    ],
+    "expand_to": [
+      "cảnh báo học tập",
+      "cảnh báo học vụ"
+    ]
+  },
+  {
+    "trigger": [
+      "cảnh báo học tập 3 lần",
+      "cảnh báo liên tiếp"
+    ],
+    "expand_to": [
+      "cảnh báo học tập 03 lần liên tiếp"
+    ]
+  },
+  {
+    "trigger": [
+      "cảnh cáo",
+      "hạ hạnh kiểm",
+      "khiển trách"
+    ],
+    "expand_to": [
+      "cảnh cáo",
+      "khiển trách"
+    ]
+  },
+  {
+    "trigger": [
+      "cấp lại thẻ",
+      "mất thẻ sinh viên",
+      "thẻ sv"
+    ],
+    "expand_to": [
+      "thẻ sinh viên"
+    ]
+  },
+  {
+    "trigger": [
+      "cổng thông tin",
+      "hệ thống đăng ký",
+      "phòng cntt"
+    ],
+    "expand_to": [
+      "Phòng Công nghệ Thông tin"
+    ]
+  },
+  {
+    "trigger": [
+      "dai hoc",
+      "đh"
+    ],
+    "expand_to": [
+      "đại học"
+    ]
+  },
+  {
+    "trigger": [
+      "danh hiệu sinh viên giỏi",
+      "danh hiệu sinh viên xuất sắc"
+    ],
+    "expand_to": [
+      "danh hiệu cá nhân"
+    ]
+  },
+  {
+    "trigger": [
+      "dao tao",
+      "pdt",
+      "phòng đào tạo"
+    ],
+    "expand_to": [
+      "Phòng Đào tạo"
+    ]
+  },
+  {
+    "trigger": [
+      "drl",
+      "rèn luyện",
+      "điểm cd",
+      "điểm rèn luyện"
+    ],
+    "expand_to": [
+      "kết quả rèn luyện",
+      "điểm rèn luyện"
+    ]
+  },
+  {
+    "trigger": [
+      "drop môn",
+      "hủy học phần",
+      "rút bớt môn",
+      "rút môn",
+      "xóa môn đã đăng ký"
+    ],
+    "expand_to": [
+      "rút bớt học phần"
+    ]
+  },
+  {
+    "trigger": [
+      "du học trao đổi",
+      "trao đổi sinh viên"
+    ],
+    "expand_to": [
+      "trao đổi sinh viên và hợp tác trong đào tạo"
+    ]
+  },
+  {
+    "trigger": [
+      "dân tộc thiểu số",
+      "hỗ trợ chi phí",
+      "thiểu số rất ít người"
+    ],
+    "expand_to": [
+      "hỗ trợ chi phí học tập"
+    ]
+  },
+  {
+    "trigger": [
+      "dừng học",
+      "gap year",
+      "tạm dừng"
+    ],
+    "expand_to": [
+      "tạm dừng học tập"
+    ]
+  },
+  {
+    "trigger": [
+      "elective",
+      "học phần tự chọn",
+      "môn tự chọn",
+      "tự chọn bắt buộc"
+    ],
+    "expand_to": [
+      "học phần tự chọn",
+      "học phần tự chọn/tự chọn bắt buộc"
+    ]
+  },
+  {
+    "trigger": [
+      "facebook",
+      "mạng xã hội",
+      "đăng bài"
+    ],
+    "expand_to": [
+      "ứng xử trên mạng xã hội"
+    ]
+  },
+  {
+    "trigger": [
+      "fail môn",
+      "rớt",
+      "rớt môn",
+      "trượt môn"
+    ],
+    "expand_to": [
+      "học lại",
+      "không đạt",
+      "không đạt học phần",
+      "điểm F"
+    ]
+  },
+  {
+    "trigger": [
+      "gd thể chất",
+      "giáo dục thể chất",
+      "thể dục"
+    ],
+    "expand_to": [
+      "giáo dục thể chất"
+    ]
+  },
+  {
+    "trigger": [
+      "gdqp",
+      "quân sự",
+      "quốc phòng"
+    ],
+    "expand_to": [
+      "giáo dục quốc phòng – an ninh"
+    ]
+  },
+  {
+    "trigger": [
+      "giảm học phí",
+      "miễn giảm học phí",
+      "miễn học phí",
+      "xin miễn giảm"
+    ],
+    "expand_to": [
+      "chính sách miễn, giảm học phí",
+      "miễn, giảm học phí"
+    ]
+  },
+  {
+    "trigger": [
+      "gpa",
+      "điểm trung bình",
+      "điểm trung bình tích lũy",
+      "điểm tích lũy",
+      "đtb"
+    ],
+    "expand_to": [
+      "điểm trung bình tích lũy"
+    ]
+  },
+  {
+    "trigger": [
+      "gpa học kỳ",
+      "điểm tb học kỳ",
+      "điểm trung bình học kì"
+    ],
+    "expand_to": [
+      "điểm trung bình học kỳ"
+    ]
+  },
+  {
+    "trigger": [
+      "hb khuyến khích",
+      "hbkkht",
+      "học bổng khuyến khích"
+    ],
+    "expand_to": [
+      "học bổng khuyến khích học tập"
+    ]
+  },
+  {
+    "trigger": [
+      "hoãn thi",
+      "xin hoãn kiểm tra",
+      "điểm i"
+    ],
+    "expand_to": [
+      "Điểm chưa hoàn thiện"
+    ]
+  },
+  {
+    "trigger": [
+      "hssv",
+      "học sinh sinh viên"
+    ],
+    "expand_to": [
+      "Học sinh, sinh viên",
+      "học sinh sinh viên"
+    ]
+  },
+  {
+    "trigger": [
+      "huỷ môn",
+      "hủy học phần",
+      "hủy môn"
+    ],
+    "expand_to": [
+      "huỷ các học phần đã đăng ký"
+    ]
+  },
+  {
+    "trigger": [
+      "hè",
+      "học hè",
+      "học kỳ hè",
+      "học kỳ phụ"
+    ],
+    "expand_to": [
+      "học kỳ phụ"
+    ]
+  },
+  {
+    "trigger": [
+      "hình thức kỷ luật",
+      "mức độ kỷ luật"
+    ],
+    "expand_to": [
+      "hình thức kỷ luật và nội dung vi phạm"
+    ]
+  },
+  {
+    "trigger": [
+      "hướng nghiệp",
+      "tư vấn nghề",
+      "việc làm"
+    ],
+    "expand_to": [
+      "hướng nghiệp",
+      "tư vấn việc làm"
+    ]
+  },
+  {
+    "trigger": [
+      "hạng bằng",
+      "hạng tốt nghiệp",
+      "loại tốt nghiệp",
+      "xếp hạng tốt nghiệp"
+    ],
+    "expand_to": [
+      "hạng tốt nghiệp",
+      "xếp hạng tốt nghiệp"
+    ]
+  },
+  {
+    "trigger": [
+      "hết thời gian học",
+      "học quá lâu",
+      "quá hạn học",
+      "thời gian học tối đa"
+    ],
+    "expand_to": [
+      "thời gian học tập tối đa",
+      "thời gian học tập vượt quá giới hạn tối đa"
+    ]
+  },
+  {
+    "trigger": [
+      "hết thời hạn kỷ luật",
+      "xóa kỷ luật"
+    ],
+    "expand_to": [
+      "thời hạn được xóa kỷ luật"
+    ]
+  },
+  {
+    "trigger": [
+      "học 2 bằng",
+      "học 2 ngành cùng lúc",
+      "học hai ngành",
+      "học song ngành",
+      "học văn bằng 2",
+      "song bằng"
+    ],
+    "expand_to": [
+      "học cùng lúc hai chương trình"
+    ]
+  },
+  {
+    "trigger": [
+      "học bắt buộc",
+      "học phần bắt buộc",
+      "môn bắt buộc"
+    ],
+    "expand_to": [
+      "học phần bắt buộc"
+    ]
+  },
+  {
+    "trigger": [
+      "học bổng",
+      "scholarship"
+    ],
+    "expand_to": [
+      "học bổng"
+    ]
+  },
+  {
+    "trigger": [
+      "học bổng giỏi",
+      "học bổng khá",
+      "học bổng xuất sắc"
+    ],
+    "expand_to": [
+      "học bổng khuyến khích học tập"
+    ]
+  },
+  {
+    "trigger": [
+      "học liên thông",
+      "học liên thông lên đại học",
+      "liên thông",
+      "văn bằng khác"
+    ],
+    "expand_to": [
+      "học liên thông"
+    ]
+  },
+  {
+    "trigger": [
+      "học lại",
+      "trả nợ môn",
+      "đăng ký lại môn"
+    ],
+    "expand_to": [
+      "học lại"
+    ]
+  },
+  {
+    "trigger": [
+      "học lại sau bảo lưu",
+      "học lại sau khi bảo lưu",
+      "quay lại học",
+      "trở lại trường",
+      "xin học lại"
+    ],
+    "expand_to": [
+      "tiếp nhận trở lại học",
+      "tiếp nhận trở lại học tập"
+    ]
+  },
+  {
+    "trigger": [
+      "học lực",
+      "loại học lực",
+      "xếp loại học lực"
+    ],
+    "expand_to": [
+      "xếp loại học lực"
+    ]
+  },
+  {
+    "trigger": [
+      "học ngoại ngữ",
+      "trung tâm ngoại ngữ",
+      "tt ngoại ngữ"
+    ],
+    "expand_to": [
+      "Trung tâm Ngoại ngữ"
+    ]
+  },
+  {
+    "trigger": [
+      "học phí tín chỉ",
+      "đóng học phí"
+    ],
+    "expand_to": [
+      "học phí được quy định đóng theo số tín chỉ đăng ký"
+    ]
+  },
+  {
+    "trigger": [
+      "học phần học trước",
+      "học trước",
+      "môn học trước"
+    ],
+    "expand_to": [
+      "học phần học trước"
+    ]
+  },
+  {
+    "trigger": [
+      "học phần khác thay",
+      "học phần thay thế",
+      "môn thay thế"
+    ],
+    "expand_to": [
+      "học phần thay thế"
+    ]
+  },
+  {
+    "trigger": [
+      "học phần song hành",
+      "học song hành",
+      "môn song hành"
+    ],
+    "expand_to": [
+      "học phần song hành"
+    ]
+  },
+  {
+    "trigger": [
+      "học phần tiên quyết",
+      "môn tiên quyết",
+      "prerequisite",
+      "điều kiện tiên quyết"
+    ],
+    "expand_to": [
+      "học phần tiên quyết"
+    ]
+  },
+  {
+    "trigger": [
+      "học phần tương đương",
+      "môn tương đương",
+      "tương đương môn"
+    ],
+    "expand_to": [
+      "học phần tương đương"
+    ]
+  },
+  {
+    "trigger": [
+      "học tin học",
+      "trung tâm tin học",
+      "tt tin học"
+    ],
+    "expand_to": [
+      "Trung tâm Tin học"
+    ]
+  },
+  {
+    "trigger": [
+      "học vượt",
+      "học đẩy nhanh tiến độ",
+      "vượt môn",
+      "đẩy nhanh tiến độ"
+    ],
+    "expand_to": [
+      "học vượt"
+    ]
+  },
+  {
+    "trigger": [
+      "hồ sơ nghỉ học tạm thời",
+      "đơn xin bảo lưu"
+    ],
+    "expand_to": [
+      "hồ sơ nghỉ học tạm thời"
+    ]
+  },
+  {
+    "trigger": [
+      "hỗ trợ học phí",
+      "hỗ trợ tiền học phí",
+      "sư phạm miễn học phí"
+    ],
+    "expand_to": [
+      "hỗ trợ tiền đóng học phí"
+    ]
+  },
+  {
+    "trigger": [
+      "hỗ trợ sinh viên",
+      "khởi nghiệp",
+      "tt hỗ trợ sinh viên"
+    ],
+    "expand_to": [
+      "Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp"
+    ]
+  },
+  {
+    "trigger": [
+      "hỗ trợ đồ dùng",
+      "khuyết tật",
+      "phương tiện học tập"
+    ],
+    "expand_to": [
+      "hỗ trợ phương tiện, đồ dùng học tập"
+    ]
+  },
+  {
+    "trigger": [
+      "hội đồng khen thưởng kỷ luật"
+    ],
+    "expand_to": [
+      "Hội đồng Khen thưởng và Kỷ luật sinh viên"
+    ]
+  },
+  {
+    "trigger": [
+      "khen thưởng",
+      "thành tích",
+      "được thưởng"
+    ],
+    "expand_to": [
+      "khen thưởng"
+    ]
+  },
+  {
+    "trigger": [
+      "khen thưởng sinh viên"
+    ],
+    "expand_to": [
+      "nội dung, hình thức khen thưởng"
+    ]
+  },
+  {
+    "trigger": [
+      "khiếu nại",
+      "phản ánh",
+      "thắc mắc điểm"
+    ],
+    "expand_to": [
+      "quyền khiếu nại"
+    ]
+  },
+  {
+    "trigger": [
+      "khiếu nại khen thưởng",
+      "khiếu nại kỷ luật"
+    ],
+    "expand_to": [
+      "quyền khiếu nại về khen thưởng, kỷ luật"
+    ]
+  },
+  {
+    "trigger": [
+      "khám sức khỏe",
+      "trạm y tế",
+      "y tế"
+    ],
+    "expand_to": [
+      "Trạm Y tế"
+    ]
+  },
+  {
+    "trigger": [
+      "không ở ký túc xá",
+      "ngoại trú",
+      "ở trọ"
+    ],
+    "expand_to": [
+      "ngoại trú"
+    ]
+  },
+  {
+    "trigger": [
+      "khảo thí",
+      "ktdbcl",
+      "phòng khảo thí"
+    ],
+    "expand_to": [
+      "Phòng Khảo thí và Đảm bảo chất lượng"
+    ]
+  },
+  {
+    "trigger": [
+      "ktx",
+      "kí túc",
+      "kí túc xá",
+      "ký túc",
+      "nội trú"
+    ],
+    "expand_to": [
+      "ký túc xá",
+      "nội trú"
+    ]
+  },
+  {
+    "trigger": [
+      "kế hoạch giảng dạy",
+      "lịch học",
+      "thời khóa biểu",
+      "tkb"
+    ],
+    "expand_to": [
+      "kế hoạch giảng dạy và học tập",
+      "thời khóa biểu"
+    ]
+  },
+  {
+    "trigger": [
+      "kế hoạch học kỳ",
+      "lịch thi",
+      "lịch đăng ký"
+    ],
+    "expand_to": [
+      "kế hoạch học kỳ"
+    ]
+  },
+  {
+    "trigger": [
+      "kỷ luật cảnh cáo"
+    ],
+    "expand_to": [
+      "cảnh cáo"
+    ]
+  },
+  {
+    "trigger": [
+      "kỷ luật khiển trách"
+    ],
+    "expand_to": [
+      "khiển trách"
+    ]
+  },
+  {
+    "trigger": [
+      "library",
+      "mượn sách",
+      "thư viện"
+    ],
+    "expand_to": [
+      "Thư viện"
+    ]
+  },
+  {
+    "trigger": [
+      "làm thẻ",
+      "mất thẻ",
+      "thẻ sinh viên"
+    ],
+    "expand_to": [
+      "thẻ sinh viên"
+    ]
+  },
+  {
+    "trigger": [
+      "lớp học phần"
+    ],
+    "expand_to": [
+      "lớp học phần"
+    ]
+  },
+  {
+    "trigger": [
+      "lớp sinh viên"
+    ],
+    "expand_to": [
+      "lớp sinh viên"
+    ]
+  },
+  {
+    "trigger": [
+      "môn",
+      "môn học",
+      "subject"
+    ],
+    "expand_to": [
+      "học phần"
+    ]
+  },
+  {
+    "trigger": [
+      "môn tự chọn tự do"
+    ],
+    "expand_to": [
+      "học phần tự chọn tự do"
+    ]
+  },
+  {
+    "trigger": [
+      "mắc nợ môn",
+      "nợ môn",
+      "nợ tín chỉ"
+    ],
+    "expand_to": [
+      "tín chỉ nợ đọng"
+    ]
+  },
+  {
+    "trigger": [
+      "nckh",
+      "nghiên cứu sv",
+      "đề tài sinh viên"
+    ],
+    "expand_to": [
+      "nghiên cứu khoa học"
+    ]
+  },
+  {
+    "trigger": [
+      "nghiep vu su pham",
+      "nghiệp vụ",
+      "nvsp"
+    ],
+    "expand_to": [
+      "nghiệp vụ sư phạm"
+    ]
+  },
+  {
+    "trigger": [
+      "nghĩa vụ sinh viên"
+    ],
+    "expand_to": [
+      "nghĩa vụ của sinh viên"
+    ]
+  },
+  {
+    "trigger": [
+      "nghỉ luôn",
+      "thôi học",
+      "xin thôi học"
+    ],
+    "expand_to": [
+      "cho thôi học"
+    ]
+  },
+  {
+    "trigger": [
+      "nhờ thi hộ",
+      "thi hộ",
+      "đi thi giùm"
+    ],
+    "expand_to": [
+      "thi hộ hoặc nhờ người thi hộ"
+    ]
+  },
+  {
+    "trigger": [
+      "năm 1",
+      "sinh viên năm nhất"
+    ],
+    "expand_to": [
+      "sinh viên năm thứ nhất"
+    ]
+  },
+  {
+    "trigger": [
+      "năm ba",
+      "sinh viên năm 3"
+    ],
+    "expand_to": [
+      "sinh viên năm thứ ba"
+    ]
+  },
+  {
+    "trigger": [
+      "năm cuối",
+      "năm tư",
+      "sinh viên năm 4"
+    ],
+    "expand_to": [
+      "sinh viên năm thứ tư"
+    ]
+  },
+  {
+    "trigger": [
+      "năm hai",
+      "sinh viên năm 2"
+    ],
+    "expand_to": [
+      "sinh viên năm thứ hai"
+    ]
+  },
+  {
+    "trigger": [
+      "outline môn",
+      "syllabus",
+      "đề cương"
+    ],
+    "expand_to": [
+      "đề cương chi tiết"
+    ]
+  },
+  {
+    "trigger": [
+      "pass môn",
+      "qua môn",
+      "đậu môn"
+    ],
+    "expand_to": [
+      "đạt",
+      "đạt học phần"
+    ]
+  },
+  {
+    "trigger": [
+      "quy chế công tác sinh viên"
+    ],
+    "expand_to": [
+      "Quy chế công tác học sinh, sinh viên"
+    ]
+  },
+  {
+    "trigger": [
+      "quy tắc ứng xử",
+      "văn hóa học đường",
+      "ứng xử"
+    ],
+    "expand_to": [
+      "quy tắc ứng xử"
+    ]
+  },
+  {
+    "trigger": [
+      "quy đổi nckh",
+      "điểm nghiên cứu",
+      "đổi điểm nckh"
+    ],
+    "expand_to": [
+      "Chuyển đổi điểm nghiên cứu khoa học"
+    ]
+  },
+  {
+    "trigger": [
+      "quy đổi điểm",
+      "điểm chữ",
+      "điểm f+"
+    ],
+    "expand_to": [
+      "điểm chữ của học phần"
+    ]
+  },
+  {
+    "trigger": [
+      "quyền của sinh viên"
+    ],
+    "expand_to": [
+      "quyền của sinh viên"
+    ]
+  },
+  {
+    "trigger": [
+      "quỹ học bổng"
+    ],
+    "expand_to": [
+      "quỹ HBKKHT"
+    ]
+  },
+  {
+    "trigger": [
+      "ra trường",
+      "xét tốt nghiệp",
+      "điều kiện tốt nghiệp",
+      "đủ điều kiện tốt nghiệp"
+    ],
+    "expand_to": [
+      "công nhận tốt nghiệp",
+      "công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+      "xét tốt nghiệp"
+    ]
+  },
+  {
+    "trigger": [
+      "rèn luyện yếu",
+      "xếp loại rèn luyện kém"
+    ],
+    "expand_to": [
+      "xếp loại rèn luyện yếu, kém"
+    ]
+  },
+  {
+    "trigger": [
+      "sinh hoạt phí",
+      "tiền sinh hoạt",
+      "trợ cấp sinh hoạt"
+    ],
+    "expand_to": [
+      "chi phí sinh hoạt"
+    ]
+  },
+  {
+    "trigger": [
+      "sinh viên dân tộc thiểu số"
+    ],
+    "expand_to": [
+      "sinh viên người dân tộc thiểu số"
+    ]
+  },
+  {
+    "trigger": [
+      "sinh viên khuyết tật"
+    ],
+    "expand_to": [
+      "sinh viên khuyết tật"
+    ]
+  },
+  {
+    "trigger": [
+      "tbc",
+      "trung bình cộng"
+    ],
+    "expand_to": [
+      "trung bình cộng"
+    ]
+  },
+  {
+    "trigger": [
+      "tccn",
+      "trung cấp",
+      "đh, cđ, tccn"
+    ],
+    "expand_to": [
+      "trung cấp chuyên nghiệp",
+      "đại học, cao đẳng, trung cấp chuyên nghiệp"
+    ]
+  },
+  {
+    "trigger": [
+      "thcs"
+    ],
+    "expand_to": [
+      "trung học cơ sở"
+    ]
+  },
+  {
+    "trigger": [
+      "thi bù",
+      "thi bổ sung",
+      "thi lại do vắng"
+    ],
+    "expand_to": [
+      "thi bổ sung"
+    ]
+  },
+  {
+    "trigger": [
+      "thi cuối kỳ",
+      "điểm cuối kỳ",
+      "điểm thi"
+    ],
+    "expand_to": [
+      "điểm thi kết thúc học phần"
+    ]
+  },
+  {
+    "trigger": [
+      "thpt"
+    ],
+    "expand_to": [
+      "trung học phổ thông"
+    ]
+  },
+  {
+    "trigger": [
+      "tiêu chuẩn học bổng",
+      "điều kiện học bổng"
+    ],
+    "expand_to": [
+      "tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập"
+    ]
+  },
+  {
+    "trigger": [
+      "tncs",
+      "đoàn thanh niên",
+      "đoàn trường"
+    ],
+    "expand_to": [
+      "Thanh niên Cộng sản"
+    ]
+  },
+  {
+    "trigger": [
+      "trọ ngoài",
+      "ở ngoài"
+    ],
+    "expand_to": [
+      "sinh viên ngoại trú"
+    ]
+  },
+  {
+    "trigger": [
+      "tạm dừng tiến độ học"
+    ],
+    "expand_to": [
+      "tạm dừng tiến độ học tập đối với sinh viên vi phạm"
+    ]
+  },
+  {
+    "trigger": [
+      "tốt nghiệp sớm"
+    ],
+    "expand_to": [
+      "tốt nghiệp sớm"
+    ]
+  },
+  {
+    "trigger": [
+      "vi phạm quy chế thi",
+      "xử lý vi phạm thi cử"
+    ],
+    "expand_to": [
+      "xử lý vi phạm đối với sinh viên"
+    ]
+  },
+  {
+    "trigger": [
+      "xử lý học vụ",
+      "xử lý kết quả học tập"
+    ],
+    "expand_to": [
+      "xử lý kết quả học tập đối với hình thức đào tạo chính quy"
+    ]
+  },
+  {
+    "trigger": [
+      "điểm giữa kỳ",
+      "điểm quá trình",
+      "đqt"
+    ],
+    "expand_to": [
+      "điểm đánh giá quá trình"
+    ]
+  },
+  {
+    "trigger": [
+      "điểm học phần",
+      "điểm môn",
+      "điểm tổng kết môn"
+    ],
+    "expand_to": [
+      "điểm học phần"
+    ]
+  },
+  {
+    "trigger": [
+      "điểm trung bình học kỳ"
+    ],
+    "expand_to": [
+      "điểm trung bình chung học kỳ"
+    ]
+  },
+  {
+    "trigger": [
+      "đăng kí môn",
+      "đăng ký lớp",
+      "đăng ký môn",
+      "đăng ký tín chỉ"
+    ],
+    "expand_to": [
+      "đăng ký học phần"
+    ]
+  },
+  {
+    "trigger": [
+      "ở ktx",
+      "ở nội trú"
+    ],
+    "expand_to": [
+      "sinh viên nội trú"
+    ]
+  },
+  {
+    "trigger": [
+      "qua môn"
+    ],
+    "expand_to": [
+      "điểm đánh giá học phần đạt"
+    ]
+  },
+  {
+    "trigger": [
+      "rớt môn",
+      "nợ môn"
+    ],
+    "expand_to": [
+      "học phần không đạt",
+      "học lại"
+    ]
+  },
+  {
+    "trigger": [
+      "hstn"
+    ],
+    "expand_to": [
+      "hồ sơ tốt nghiệp"
+    ]
+  },
+  {
+    "trigger": [
+      "gdtc"
+    ],
+    "expand_to": [
+      "giáo dục thể chất"
+    ]
+  },
+  {
+    "trigger": [
+      "ctđt"
+    ],
+    "expand_to": [
+      "chương trình đào tạo"
+    ]
+  },
+  {
+    "trigger": [
+      "đvtc"
+    ],
+    "expand_to": [
+      "tín chỉ"
+    ]
+  },
+  {
+    "trigger": [
+      "cbhd",
+      "gvhd"
+    ],
+    "expand_to": [
+      "cán bộ hướng dẫn",
+      "giảng viên hướng dẫn"
+    ]
+  }
+]

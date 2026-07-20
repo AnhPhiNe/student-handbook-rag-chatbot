@@ -830,6 +830,7 @@ def run_retrieval_pipeline(
     expanded, planned, and sent to the hybrid child-parent retriever.
     """
     ai_router_enabled = not _env_bool("STUDENT_RAG_DISABLE_AI_ROUTER")
+    query = expand_query(query, expansion_rules)
     router_decision: dict[str, Any] | None = None
     structured_context_result: dict[str, Any] | None = None
     structured_context_citations: list[dict[str, Any]] = []

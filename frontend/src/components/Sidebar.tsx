@@ -61,11 +61,6 @@ export function Sidebar({ activeTab, onTabChange, onNewChat, isCollapsed, isMobi
               <MessageSquare size={18} />
               <span>Chat</span>
             </button>
-            <button className={`nav-item ${activeTab === 'faq' ? 'active' : ''}`} onClick={() => handleTabClick('faq')} aria-label="Câu hỏi phổ biến">
-              {activeTab === 'faq' && <div className="active-indicator" />}
-              <MessageSquareText size={18} />
-              <span>Câu hỏi phổ biến</span>
-            </button>
           </div>
 
           <div className="sidebar-nav-section">
@@ -104,11 +99,6 @@ export function Sidebar({ activeTab, onTabChange, onNewChat, isCollapsed, isMobi
 
           <div className="sidebar-nav-section">
             <div className="sidebar-nav-title">Tra cứu</div>
-            <button className={`nav-item ${activeTab === 'admissions' ? 'active' : ''}`} onClick={() => handleTabClick('admissions')} aria-label="Tuyển sinh">
-              {activeTab === 'admissions' && <div className="active-indicator" />}
-              <School size={18} />
-              <span>Tuyển sinh</span>
-            </button>
             <button className={`nav-item ${activeTab === 'bieu-mau' ? 'active' : ''}`} onClick={() => handleTabClick('bieu-mau')} aria-label="Biểu mẫu">
               {activeTab === 'bieu-mau' && <div className="active-indicator" />}
               <FileText size={18} />

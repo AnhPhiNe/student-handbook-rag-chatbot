@@ -10,6 +10,7 @@ export function ScholarshipPage() {
   
   const [query, setQuery] = useState('');
   const [selectedProgram, setSelectedProgram] = useState<TuitionProgram | null>(null);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
   const [schoolYear, setSchoolYear] = useState<SchoolYear>('2025-2026');
 
   const suggestions = useMemo(() => searchTuitionPrograms(query), [query]);
@@ -24,6 +25,24 @@ export function ScholarshipPage() {
   const selectProgram = (program: TuitionProgram) => {
     setSelectedProgram(program);
     setQuery(`${program.code} - ${program.name}`);
+    setFocusedIndex(-1);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!query || selectedProgram || suggestions.length === 0) return;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setFocusedIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : prev));
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setFocusedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      if (focusedIndex >= 0 && focusedIndex < suggestions.length) {
+        selectProgram(suggestions[focusedIndex]);
+      }
+    }
   };
 
   const tuitionFee = selectedProgram?.perCredit[schoolYear] ?? 0;
@@ -60,7 +79,7 @@ export function ScholarshipPage() {
               <label className="tool-field">
                 <span>Điểm học tập thang 4</span>
                 <div className="number-input-group">
-                  <button type="button" className="number-btn" onClick={handleDecAcademic} aria-label="Giảm"><Minus size={16} /></button>
+                  <button type="button" className="number-btn" onClick={handleDecAcademic} aria-label="Giảm" tabIndex={-1}><Minus size={16} /></button>
                   <input
                     type="number"
                     min="0"
@@ -70,13 +89,13 @@ export function ScholarshipPage() {
                     onChange={(event) => setAcademicScore(event.target.value)}
                     placeholder="Nhập điểm học tập"
                   />
-                  <button type="button" className="number-btn" onClick={handleIncAcademic} aria-label="Tăng"><Plus size={16} /></button>
+                  <button type="button" className="number-btn" onClick={handleIncAcademic} aria-label="Tăng" tabIndex={-1}><Plus size={16} /></button>
                 </div>
               </label>
               <label className="tool-field">
                 <span>Điểm rèn luyện thang 100</span>
                 <div className="number-input-group">
-                  <button type="button" className="number-btn" onClick={handleDecConduct} aria-label="Giảm"><Minus size={16} /></button>
+                  <button type="button" className="number-btn" onClick={handleDecConduct} aria-label="Giảm" tabIndex={-1}><Minus size={16} /></button>
                   <input
                     type="number"
                     min="0"
@@ -86,7 +105,7 @@ export function ScholarshipPage() {
                     onChange={(event) => setConductScore(event.target.value)}
                     placeholder="Nhập điểm rèn luyện"
                   />
-                  <button type="button" className="number-btn" onClick={handleIncConduct} aria-label="Tăng"><Plus size={16} /></button>
+                  <button type="button" className="number-btn" onClick={handleIncConduct} aria-label="Tăng" tabIndex={-1}><Plus size={16} /></button>
                 </div>
               </label>
             </div>
@@ -102,7 +121,11 @@ export function ScholarshipPage() {
                   <input
                     className="tool-input"
                     value={query}
-                    onChange={(event) => handleQueryChange(event.target.value)}
+                    onChange={(event) => {
+                      handleQueryChange(event.target.value);
+                      setFocusedIndex(-1);
+                    }}
+                    onKeyDown={handleKeyDown}
                     placeholder="Nhập mã ngành hoặc tên ngành"
                   />
                 </div>
@@ -110,8 +133,13 @@ export function ScholarshipPage() {
 
               {query && !selectedProgram && (
                 <div className="autocomplete-list">
-                  {suggestions.length > 0 ? suggestions.map((program) => (
-                    <button key={`${program.code}-${program.name}`} onClick={() => selectProgram(program)}>
+                  {suggestions.length > 0 ? suggestions.map((program, index) => (
+                    <button
+                      key={`${program.code}-${program.name}`}
+                      onClick={() => selectProgram(program)}
+                      style={index === focusedIndex ? { background: 'rgba(59, 130, 246, 0.1)' } : undefined}
+                      className={index === focusedIndex ? 'focused' : ''}
+                    >
                       <strong>{program.name}</strong>
                       <span>{program.code}</span>
                     </button>

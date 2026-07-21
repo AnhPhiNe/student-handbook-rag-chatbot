@@ -6,7 +6,7 @@ interface BottomTabBarProps {
 }
 
 export function BottomTabBar({ activeTab, onTabChange }: BottomTabBarProps) {
-  const toolTabs = new Set(['gpa', 'target-gpa', 'course-target', 'scholarship', 'tuition', 'credits', 'faq']);
+  const toolTabs = new Set(['gpa', 'target-gpa', 'course-target', 'scholarship', 'tuition', 'credits']);
   const tabs = [
     { id: 'home', icon: Home, label: 'Trang chủ' },
     { id: 'chat', icon: MessageSquare, label: 'Chat' },

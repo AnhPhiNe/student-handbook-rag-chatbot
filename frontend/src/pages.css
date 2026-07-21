@@ -630,11 +630,12 @@
 
 .tool-input.small,
 .tool-select.small {
-  min-width: 80px;
+  min-width: 65px;
+  width: 65px;
 }
 
 .tool-select {
-  min-width: 112px;
+  min-width: 100px;
 }
 
 .scroll-hint {
@@ -682,15 +683,17 @@
 .tool-table th,
 .tool-table td {
   border-bottom: 1px solid var(--border-color);
-  padding: 0.85rem 1rem;
+  padding: 0.75rem 0.5rem;
   text-align: left;
   vertical-align: middle;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .tool-table th:nth-child(2),
 .tool-table td:nth-child(2) {
-  width: 28%;
+  min-width: 100px;
+  width: 100%;
 }
 
 .tool-table th {
@@ -715,8 +718,9 @@
 .gpa-table .tool-select {
   background: var(--bg-secondary);
   border-color: transparent;
-  padding: 0.6rem;
-  border-radius: 8px;
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
 }
 .gpa-table .tool-input:focus,
 .gpa-table .tool-select:focus {
@@ -993,6 +997,7 @@
   border-radius: 4px;
   margin-top: 0.25rem;
   letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 .status-badge.success {

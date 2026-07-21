@@ -13,8 +13,6 @@ import { CourseTargetPage } from './components/pages/CourseTargetPage';
 import { ScholarshipPage } from './components/pages/ScholarshipPage';
 import { ToolsPage } from './components/pages/ToolsPage';
 import { TuitionPage } from './components/pages/TuitionPage';
-import { FaqPage } from './components/pages/FaqPage';
-import { AdmissionPage } from './components/pages/AdmissionPage';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { MobileHeader } from './components/MobileHeader';
 import { BottomTabBar } from './components/BottomTabBar';
@@ -27,7 +25,7 @@ import { CohortSelectionModal } from './components/CohortSelectionModal';
 import { ActiveUsersBadge } from './components/ActiveUsersBadge';
 import { normalizeFrontendCohort, type Cohort } from './utils/gradeScale';
 
-const COHORT_AWARE_TABS = new Set(['home', 'chat', 'faq', 'gpa', 'course-target']);
+const COHORT_AWARE_TABS = new Set(['home', 'chat', 'gpa', 'course-target']);
 
 function App() {
   const defaultTheme = (new Date().getHours() >= 18 || new Date().getHours() < 6) ? 'dark' : 'light';
@@ -53,11 +51,6 @@ function App() {
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  };
-
-  const handleAskFaqQuestion = (question: string) => {
-    setActiveTab('chat');
-    void sendMessage(question);
   };
 
   return (
@@ -145,9 +138,7 @@ function App() {
             {activeTab === 'course-target' && <CourseTargetPage key={cohort} cohort={cohort} />}
             {activeTab === 'scholarship' && <ScholarshipPage />}
             {activeTab === 'tuition' && <TuitionPage />}
-            {activeTab === 'admissions' && <AdmissionPage />}
             {activeTab === 'credits' && <CreditsPage />}
-            {activeTab === 'faq' && <FaqPage cohort={cohort} onAskQuestion={handleAskFaqQuestion} />}
             {activeTab === 'huong-dan' && <GuidePage />}
             <ScrollCue activeTab={activeTab} />
           </div>

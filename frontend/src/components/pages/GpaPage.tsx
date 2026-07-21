@@ -129,6 +129,7 @@ export function GpaPage({ cohort }: GpaPageProps) {
                         <td>
                           <select
                             className="tool-select"
+                            style={{ minWidth: '165px' }}
                             value={course.courseGroup ?? getDefaultCourseGroup(cohort)}
                             onChange={(event) => updateCourse(course.id, { courseGroup: event.target.value as CourseInput['courseGroup'] })}
                           >

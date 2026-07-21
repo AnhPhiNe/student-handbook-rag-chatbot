@@ -31,7 +31,7 @@ export function CreditsPage() {
             <label className="tool-field">
               <span>Tổng tín chỉ chương trình</span>
               <div className="number-input-group">
-                <button type="button" className="number-btn" onClick={handleDecTotal} aria-label="Giảm"><Minus size={16} /></button>
+                <button type="button" className="number-btn" onClick={handleDecTotal} aria-label="Giảm" tabIndex={-1}><Minus size={16} /></button>
                 <input
                   type="number"
                   min="1"
@@ -40,13 +40,13 @@ export function CreditsPage() {
                   onChange={(event) => setTotalCredits(event.target.value)}
                   placeholder="Nhập tổng tín chỉ"
                 />
-                <button type="button" className="number-btn" onClick={handleIncTotal} aria-label="Tăng"><Plus size={16} /></button>
+                <button type="button" className="number-btn" onClick={handleIncTotal} aria-label="Tăng" tabIndex={-1}><Plus size={16} /></button>
               </div>
             </label>
             <label className="tool-field">
               <span>Số tín chỉ đã rớt</span>
               <div className="number-input-group">
-                <button type="button" className="number-btn" onClick={handleDecChecked} aria-label="Giảm"><Minus size={16} /></button>
+                <button type="button" className="number-btn" onClick={handleDecChecked} aria-label="Giảm" tabIndex={-1}><Minus size={16} /></button>
                 <input
                   type="number"
                   min="0"
@@ -55,7 +55,7 @@ export function CreditsPage() {
                   onChange={(event) => setCheckedCredits(event.target.value)}
                   placeholder="Nhập số tín chỉ đã rớt"
                 />
-                <button type="button" className="number-btn" onClick={handleIncChecked} aria-label="Tăng"><Plus size={16} /></button>
+                <button type="button" className="number-btn" onClick={handleIncChecked} aria-label="Tăng" tabIndex={-1}><Plus size={16} /></button>
               </div>
             </label>
           </div>

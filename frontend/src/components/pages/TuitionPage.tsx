@@ -5,6 +5,7 @@ import { SCHOOL_YEARS, formatVnd, searchTuitionPrograms, type SchoolYear, type T
 export function TuitionPage() {
   const [query, setQuery] = useState('');
   const [selectedProgram, setSelectedProgram] = useState<TuitionProgram | null>(null);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
   const [schoolYear, setSchoolYear] = useState<SchoolYear>('2025-2026');
   const [credits, setCredits] = useState('');
 
@@ -25,6 +26,24 @@ export function TuitionPage() {
   const selectProgram = (program: TuitionProgram) => {
     setSelectedProgram(program);
     setQuery(`${program.code} - ${program.name}`);
+    setFocusedIndex(-1);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!query || selectedProgram || suggestions.length === 0) return;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setFocusedIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : prev));
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setFocusedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      if (focusedIndex >= 0 && focusedIndex < suggestions.length) {
+        selectProgram(suggestions[focusedIndex]);
+      }
+    }
   };
 
   const annual = selectedProgram?.annual[schoolYear] ?? 0;
@@ -49,7 +68,11 @@ export function TuitionPage() {
               <input
                 className="tool-input"
                 value={query}
-                onChange={(event) => handleQueryChange(event.target.value)}
+                onChange={(event) => {
+                  handleQueryChange(event.target.value);
+                  setFocusedIndex(-1);
+                }}
+                onKeyDown={handleKeyDown}
                 placeholder="Nhập mã ngành hoặc tên ngành"
               />
             </div>
@@ -57,8 +80,13 @@ export function TuitionPage() {
 
           {query && !selectedProgram && (
             <div className="autocomplete-list">
-              {suggestions.length > 0 ? suggestions.map((program) => (
-                <button key={`${program.code}-${program.name}`} onClick={() => selectProgram(program)}>
+              {suggestions.length > 0 ? suggestions.map((program, index) => (
+                <button
+                  key={`${program.code}-${program.name}`}
+                  onClick={() => selectProgram(program)}
+                  style={index === focusedIndex ? { background: 'rgba(59, 130, 246, 0.1)' } : undefined}
+                  className={index === focusedIndex ? 'focused' : ''}
+                >
                   <strong>{program.name}</strong>
                   <span>{program.code}</span>
                 </button>
@@ -80,7 +108,7 @@ export function TuitionPage() {
             <label className="tool-field">
               <span>Số tín chỉ học kỳ (tùy chọn)</span>
               <div className="number-input-group">
-                <button type="button" className="number-btn" onClick={handleDecrement} aria-label="Giảm"><Minus size={16} /></button>
+                <button type="button" className="number-btn" onClick={handleDecrement} aria-label="Giảm" tabIndex={-1}><Minus size={16} /></button>
                 <input
                   type="number"
                   min="0"
@@ -89,7 +117,7 @@ export function TuitionPage() {
                   onChange={(event) => setCredits(event.target.value)}
                   placeholder="Nhập số tín chỉ"
                 />
-                <button type="button" className="number-btn" onClick={handleIncrement} aria-label="Tăng"><Plus size={16} /></button>
+                <button type="button" className="number-btn" onClick={handleIncrement} aria-label="Tăng" tabIndex={-1}><Plus size={16} /></button>
               </div>
             </label>
           </div>

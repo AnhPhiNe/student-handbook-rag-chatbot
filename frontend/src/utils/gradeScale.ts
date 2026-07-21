@@ -161,7 +161,10 @@ export function getCourseGrade(course: CourseInput, cohort: Cohort = 'K48-K49'):
   if (course.inputType === 'letter') {
     return convertLetterToScore4(course.letter, cohort, course.courseGroup);
   }
-  const score = Number(course.score10);
+  if (course.score10.trim() === '') {
+    return null;
+  }
+  const score = Math.round(Number(course.score10) * 10) / 10;
   return convertScore10ToGrade(score, cohort, course.courseGroup);
 }
 

@@ -58,14 +58,12 @@ The system supports handbook differences between **K48-K49**, **K50**, and **K51
 - Frontend tools and chat answers respect the selected cohort.
 - Grade thresholds and program lists are handled differently when handbook rules differ by cohort.
 
-### 2. Hybrid Retrieval With Reranking
+### 2. Pure Dense Vector Retrieval
 
-For true RAG questions, the system combines:
+For true RAG questions, the system utilizes a streamlined, highly optimized pure vector pipeline:
 
 - Dense vector search with `BAAI/bge-m3`.
-- BM25 sparse retrieval for exact Vietnamese academic terms.
 - Entity expansion for aliases such as faculty names, office names, and common abbreviations.
-- Cross-encoder reranking to improve final context quality.
 - Metadata filtering and boosting by cohort and content type.
 
 ### 3. Deterministic Lookup for Exact Facts
@@ -108,7 +106,7 @@ The generation layer includes:
 - **Cohort-aware RAG architecture:** metadata filtering and cohort-specific routing for `K48-K49`, `K50`, and `K51`.
 - **Deterministic-first router:** answers exact table, directory, form, formula, study-duration, scholarship, and foreign-language queries without an LLM call.
 - **V7 child-parent retrieval:** Qdrant indexes small `section_heading`, `child`, and `table_like` chunks while MongoDB stores full parent sections for citations.
-- **Hybrid retrieval stack:** dense retrieval with `BAAI/bge-m3`, BM25 sparse retrieval, metadata filtering, and cross-encoder reranking.
+- **Pure dense retrieval stack:** dense retrieval with `BAAI/bge-m3` combined with metadata filtering for high-speed, accurate fetching.
 - **Full top-5 context packing:** sends richer parent-section context to Gemini while preserving source/citation metadata.
 - **Layered evaluation:** router/lookup metrics, retrieval metrics, generation quality, and RAGAS-style Gemini Judge are reported separately.
 - **Production guardrails:** cohort filtering, citation binding, Gemini key-pool load balancing, cache support, rate limits, and queue/backpressure settings.
@@ -137,13 +135,11 @@ flowchart LR
     LookupFirst --> Router["AI Router + Routing Rules"]
 
     LookupFirst -->|exact tables / directories / formulas| Lookup["Structured Lookup"]
-    Router -->|regulations| Retrieval["V7 Hybrid Retrieval"]
+    Router -->|regulations| Retrieval["V7 Dense Retrieval"]
 
     Retrieval --> Qdrant["Qdrant Cloud\nV7 child/table/heading chunks"]
-    Retrieval --> BM25["BM25 Sparse Index"]
     Retrieval --> Graph["Directed Rule Graph Expansion"]
-    Retrieval --> Reranker["Cross-Encoder Reranker"]
-    Reranker --> Mongo["MongoDB Atlas\nParent Docs"]
+    Qdrant --> Mongo["MongoDB Atlas\nParent Docs"]
 
     Lookup --> Answer["Deterministic Answer Formatter"]
     Mongo --> Gemini["Gemini Answer Generator\nFull top-5 context"]
@@ -169,13 +165,10 @@ flowchart TD
     Lookup -->|no| Route{"Router Decision"}
     Route -->|True RAG| Expand["Entity Expansion"]
     Expand --> Vector["Qdrant Dense Retrieval"]
-    Expand --> Sparse["BM25 Sparse Retrieval"]
     Expand --> Graph["Directed Graph Expansion"]
     Vector --> Merge["Candidate Merge"]
-    Sparse --> Merge
     Graph --> Merge
-    Merge --> Rerank["Cross-Encoder Rerank"]
-    Rerank --> Parent["Mongo Parent Sections"]
+    Merge --> Parent["Mongo Parent Sections"]
     Parent --> Context["Full Top-5 Context Allocation"]
 
     StructuredAnswer --> Generate["Final Answer"]
@@ -188,8 +181,8 @@ flowchart TD
 
 - **Input validation & rewriting:** Filters invalid queries, resolves cohort context, and rewrites typo-prone or short Vietnamese queries.
 - **Deterministic lookup:** Handles exact facts from JSON/tool stores before vector retrieval or answer-generation LLM calls.
-- **Intent routing:** Sends remaining long-form questions to the Hybrid RAG pipeline.
-- **Hybrid retrieval & generation:** Combines Qdrant + BM25 + directed graph expansion, reranks with a cross-encoder, expands context via MongoDB, and uses Gemini with strict cohort/citation guardrails.
+- **Intent routing:** Sends remaining long-form questions to the Dense RAG pipeline.
+- **Dense retrieval & generation:** Combines Qdrant Dense Search + directed graph expansion, expands context via MongoDB, and uses Gemini with strict cohort/citation guardrails.
 
 ## Data and Ingestion Design
 
@@ -248,13 +241,13 @@ Structured questions are checked with exactness, item count, cohort correctness,
 
 | Metric | Score |
 |---|---:|
-| Cases | 16 |
-| Pass rate | 100.00% |
-| Deterministic exactness | 100.00% |
+| Cases | 120 |
+| Pass rate | 96.67% |
+| Deterministic exactness | 96.67% |
 | Citation metadata accuracy | 100.00% |
 | Intent accuracy | 100.00% |
 | Strategy accuracy | 100.00% |
-| Structured item count accuracy | 100.00% |
+| Structured item count accuracy | 98.33% |
 
 ### 2. True-RAG Retrieval Evaluation
 
@@ -262,29 +255,12 @@ Retrieval is evaluated only on generated true-RAG regulation cases. Structured l
 
 | Metric | Score |
 |---|---:|
-| Cases | 84 |
-| Hit@1 | 66.67% |
-| Hit@3 | 83.33% |
-| Hit@5 | 95.24% |
-| MRR | 76.61% |
-| nDCG@5 | 81.59% |
-
-Breakdown by cohort:
-
-| Cohort | Cases (N) | Hit@3 | MRR | nDCG@5 |
-|---|---:|---:|---:|---:|
-| K48-K49 | 26 | 88.46% | 80.13% | 84.17% |
-| K50 | 26 | 73.08% | 65.77% | 72.25% |
-| K51 | 5 | 80.00% | 85.00% | 88.61% |
-| General | 27 | 88.89% | 82.10% | 86.81% |
-
-Important tag-level checks:
-
-| Tag | Cases (N) | Hit@3 | MRR | nDCG@5 |
-|---|---:|---:|---:|---:|
-| Numeric fact | 27 | 96.30% | 89.81% | 92.27% |
-| Table-heavy | 12 | 91.67% | 88.19% | 91.09% |
-| Cohort-sensitive | 6 | 100.00% | 88.89% | 91.38% |
+| Cases | 180 |
+| Hit@1 | 57.78% |
+| Hit@3 | 84.44% |
+| Hit@5 | 91.67% |
+| MRR | 70.66% |
+| nDCG@5 | 74.26% |
 
 ### 3. RAGAS-Style Automated Judge (V8.5 Generation)
 
@@ -356,17 +332,15 @@ The deployment flow keeps GitHub source code and Hugging Face Space deployment s
 
 | Layer | Tools |
 |---|---|
-| Frontend | React, Vite, TypeScript, lucide-react |
-| Backend | FastAPI, Uvicorn, Pydantic |
-| Embeddings | BAAI/bge-m3 |
-| Vector store | Qdrant Cloud, local Chroma for offline eval |
-| Sparse retrieval | BM25 |
-| Reranking | Local cross-encoder reranker |
-| Parent docstore | MongoDB Atlas |
-| LLM provider | Groq model fallback chain |
-| Cache | Redis when available, local JSON fallback |
-| Evaluation | deterministic eval, retrieval eval, RAGAS-style Gemini Judge |
-| Deployment | Vercel (Frontend), Hugging Face Spaces (Backend) |
+| Frontend | ⚛️ React, Vite, TypeScript, lucide-react |
+| Backend | ⚡ FastAPI, Uvicorn, Pydantic |
+| Embeddings | 🧠 BAAI/bge-m3 |
+| Vector store | 🗄️ Qdrant Cloud, local Chroma for offline eval |
+| Parent docstore | 🍃 MongoDB Atlas |
+| LLM provider | 🤖 Groq model fallback chain |
+| Cache | 🚀 Redis when available, local JSON fallback |
+| Evaluation | 📊 deterministic eval, retrieval eval, RAGAS-style Gemini Judge |
+| Deployment | ☁️ Vercel (Frontend), Hugging Face Spaces (Backend) |
 
 ## Setup
 

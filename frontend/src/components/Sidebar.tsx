@@ -1,5 +1,5 @@
 import { Award, Calculator, FileText, GraduationCap, HelpCircle, MessageSquare, Plus, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home, Bug } from 'lucide-react';
-const logoHcmue = '/logo_hcmue.png';
+import logoHcmue from '../assets/logo_hcmue.png';
 
 interface SidebarProps {
   activeTab: string;

@@ -1,5 +1,5 @@
 import { MessageSquare, Wrench, FileText, Navigation } from 'lucide-react';
-const logoHcmue = '/logo_hcmue.png';
+import logoHcmue from '../../assets/logo_hcmue.png';
 
 interface HomePageProps {
   onNavigate: (tab: string) => void;

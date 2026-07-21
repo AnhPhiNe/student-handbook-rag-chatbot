@@ -33,10 +33,16 @@ def detect_entities(
     entity_registry: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     q = normalize_text(query)
+    query_strict_tokens = set(re.findall(r"\w+", q)) & STRICT_DISJOINT_TOKENS
     detected = []
 
     for entity in entity_registry:
         canonical = normalize_text(entity["canonical_name"])
+        entity_strict_tokens = set(re.findall(r"\w+", canonical)) & STRICT_DISJOINT_TOKENS
+        
+        if query_strict_tokens and entity_strict_tokens and not (query_strict_tokens & entity_strict_tokens):
+            continue
+
         aliases = [normalize_text(a) for a in entity.get("aliases", [])]
 
         # Exact phrase match được ưu tiên trước, có boundary để alias ngắn không match nhầm.
@@ -82,7 +88,11 @@ def get_entity_target_chunk_types(
     return list(dict.fromkeys(chunk_types))
 
 
+STRICT_DISJOINT_TOKENS = {"phong", "khoa", "ban", "trung", "vien"}
+
 def _has_fuzzy_alias_match(query: str, aliases: list[str]) -> bool:
+    if not aliases:
+        return False
     query_tokens = re.findall(r"\w+", query)
     if len(query_tokens) < 2:
         return False

@@ -242,12 +242,12 @@ Structured questions are checked with exactness, item count, cohort correctness,
 | Metric | Score |
 |---|---:|
 | Cases | 120 |
-| Pass rate | 96.67% |
-| Deterministic exactness | 96.67% |
-| Citation metadata accuracy | 100.00% |
-| Intent accuracy | 100.00% |
-| Strategy accuracy | 100.00% |
-| Structured item count accuracy | 98.33% |
+| Pass rate | 94.17% |
+| Deterministic exactness | 94.17% |
+| Citation metadata accuracy | 91.67% |
+| Intent accuracy | 95.37% |
+| Strategy accuracy | 95.37% |
+| Structured item count accuracy | 93.33% |
 
 ### 2. True-RAG Retrieval Evaluation
 
@@ -256,11 +256,11 @@ Retrieval is evaluated only on generated true-RAG regulation cases. Structured l
 | Metric | Score |
 |---|---:|
 | Cases | 180 |
-| Hit@1 | 57.78% |
+| Hit@1 | 59.44% |
 | Hit@3 | 84.44% |
-| Hit@5 | 91.67% |
-| MRR | 70.66% |
-| nDCG@5 | 74.26% |
+| Hit@5 | 92.22% |
+| MRR | 71.64% |
+| nDCG@5 | 75.45% |
 
 ### 3. RAGAS-Style Automated Judge (V8.5 Generation)
 

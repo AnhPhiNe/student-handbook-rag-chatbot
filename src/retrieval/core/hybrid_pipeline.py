@@ -279,6 +279,18 @@ class HybridRetrieverV7:
             )
             for chunk in seed_chunks
         ]
+        
+        import re
+        query_terms = set(re.findall(r"\w+", query.lower()))
+        if query_terms:
+            lexical_scored = []
+            for dense_score, chunk in vector_scored:
+                chunk_text = str(chunk.get("content") or "").lower()
+                doc_terms = set(re.findall(r"\w+", chunk_text))
+                coverage = len(query_terms & doc_terms) / len(query_terms)
+                lexical_boost = coverage * 0.3
+                lexical_scored.append((dense_score + lexical_boost, chunk))
+            vector_scored = lexical_scored
         seed_parent_ids = {
             str((chunk.get("metadata") or {}).get("parent_section_id") or "")
             for chunk in seed_chunks

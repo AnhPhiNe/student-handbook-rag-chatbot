@@ -44,10 +44,11 @@ def build_answer_prompt(
 {source_usage_instruction}
 
 NHIỆM VỤ
+- ĐỊNH DẠNG: Luôn sử dụng in đậm (**văn bản**) cho các cụm từ quan trọng như mốc thời gian, tên thủ tục, con số, hoặc điều kiện cốt lõi để sinh viên dễ theo dõi.
 - Chỉ sử dụng STRUCTURED_RESULT và CONTEXT; không dùng kiến thức ngoài nguồn.
 - ĐÚNG TRỌNG TÂM VÀ NGẮN GỌN: Trả lời trực tiếp và dứt khoát ngay ở câu đầu tiên. Chỉ nêu các ngoại lệ, điều kiện phụ (từ RELATED SOURCES) NẾU chúng trực tiếp làm thay đổi kết luận hoặc ảnh hưởng thẳng đến quyền lợi người dùng trong bối cảnh câu hỏi. Không liệt kê lan man các chính sách rườm rà không liên quan.
 - STRUCTURED_RESULT là nguồn chuẩn cho bảng và danh mục. CONTEXT là nguồn chuẩn cho quy định, điều kiện và thủ tục.
-- PRIMARY SOURCES là căn cứ chính. RELATED SOURCES chỉ bổ sung khi trực tiếp làm rõ câu hỏi, không được tạo ra kết luận mới hoặc phủ định nguồn chính.
+- PRIMARY SOURCES là căn cứ chính. Nếu RELATED SOURCES chứa thủ tục, quy định liên quan hữu ích (vd: cách khiếu nại, biểu mẫu, quy trình tiếp theo), hãy chủ động bổ sung thành một mục '💡 Lưu ý thêm' hoặc '📌 Thông tin liên quan' một cách ngắn gọn để hỗ trợ sinh viên tốt hơn. Không được tạo ra kết luận mới hoặc phủ định nguồn chính.
 - Nếu có APPLICABLE AMENDMENTS, nội dung thay thế/bổ sung trong đó có thứ tự hiệu lực cao hơn câu chữ cũ bị sửa, nhưng chỉ trong đúng phạm vi điều/khoản/điểm và cohort được nêu.
 - XỬ LÝ XUNG ĐỘT KHÓA (COHORT): Nếu người dùng không nêu rõ Khóa và CONTEXT chứa nhiều phiên bản quy định khác nhau thuộc các Khóa khác nhau, BẮT BUỘC phải phân tách câu trả lời thành từng mục riêng biệt cho từng Khóa (ví dụ: "Đối với K48-K50:..." và "Đối với K51:..."). Tuyệt đối không gộp chung, tóm tắt chung, hoặc tự ý chọn một Khóa để đại diện.
 - Giữ nguyên số liệu, tỷ lệ, thời hạn, Điều, khoản, điểm và thông tin liên hệ. Không suy rộng quy định cho đối tượng khác.
@@ -175,7 +176,7 @@ def _source_usage_instruction(context: str) -> str:
     return """
 SOURCE_USAGE_RULES
 - PRIMARY SOURCES are the main evidence for the final answer and citations.
-- RELATED SOURCES are graph supplements. Use them only to add context, explain a direct reference, or clarify a relationship.
+- RELATED SOURCES are graph supplements. Extract helpful related procedures, forms, or next steps and proactively suggest them to the user under a '💡 Lưu ý thêm' section.
 - Do not let RELATED SOURCES replace, reorder, or override PRIMARY SOURCES.
 - Prefer citations from PRIMARY SOURCES. Use a RELATED SOURCE only when it directly supports an extra contextual point.
 - If a RELATED SOURCE appears to conflict with PRIMARY SOURCES, do not use it to negate the answer unless a PRIMARY SOURCE also supports that conclusion.

@@ -17,7 +17,7 @@ from src.generation.context_resolver import (
 )
 
 
-DEFAULT_REWRITER_MODEL = "llama-3.1-8b-instant"
+DEFAULT_REWRITER_MODEL = "qwen/qwen3.6-27b"
 DEFAULT_REWRITER_API_KEY_ENV = "QUERY_REWRITER_API_KEY"
 FALLBACK_REWRITER_API_KEY_ENV = "GROQ_API_KEY"
 
@@ -98,7 +98,6 @@ class QueryRewriter:
         # Build fallback matrix (Model x Key)
         fallback_models = [
             model_name,
-            "qwen/qwen3.6-27b",
         ]
         self.models = []
         for m in fallback_models:
@@ -573,7 +572,8 @@ You are a query rewriting layer for a Vietnamese HCMUE student-handbook RAG chat
 Task:
 - Restore Vietnamese accents when the user omits them.
 - Fix light typos and chat shorthand.
-- Expand common abbreviations only when clear: KTX, CNTT, CTCT-HSSV, GPA.
+- Expand common university abbreviations into their full names when contextually clear.
+- STRICT RULE: Do not alter organizational structures (e.g., do not change "Phòng" to "Khoa" or vice versa). Only expand the abbreviation part.
 - Preserve the user's original meaning unless conversation history is needed for a follow-up.
 - Do not add new entities or nouns unless they are necessary to resolve references from the provided history.
 - Do not answer the question.
@@ -597,8 +597,8 @@ Output: {{"normalized_query":"Email Phòng Đào tạo là gì?","needs_clarific
 Input (with history: User asked "học bổng loại khá cần bao nhiêu điểm"): "còn loại giỏi thì sao?"
 Output: {{"normalized_query":"Sinh viên được học bổng loại giỏi cần bao nhiêu điểm?","needs_clarification":false,"clarification_question":null,"confidence":"high","reason":"history_context_resolution"}}
 
-Input (with history about scholarships): "Khoa CNTT ở đâu?"
-Output: {{"normalized_query":"Khoa Công nghệ thông tin ở đâu?","needs_clarification":false,"clarification_question":null,"confidence":"high","reason":"new_topic_accent_restoration"}}
+Input (with history about scholarships): "Phong CTCT-HSSV o dau?"
+Output: {{"normalized_query":"Phòng Công tác Chính trị và Học sinh, sinh viên ở đâu?","needs_clarification":false,"clarification_question":null,"confidence":"high","reason":"new_topic_accent_restoration_and_expansion"}}
 
 Input: "diem ren luyen 85 la loai j"
 Output: {{"normalized_query":"Điểm rèn luyện 85 là loại gì?","needs_clarification":false,"clarification_question":null,"confidence":"high","reason":"typo_and_accent_restoration"}}

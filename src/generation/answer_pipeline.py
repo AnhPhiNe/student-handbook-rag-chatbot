@@ -13,6 +13,7 @@ from src.retrieval.core.vector_retriever import (
     get_chroma_collection,
     load_embedding_model,
 )
+from src.retrieval.core.query_expansion import expand_query
 
 from .answer_formatter import format_final_answer, format_final_response
 from .answer_guardrails import (
@@ -207,7 +208,11 @@ class AnswerPipeline:
         )
         _evaluation_telemetry.set(telemetry)
         rewrite_started = time.monotonic()
-        rewrite_result = self.query_rewriter.rewrite(query, chat_history=chat_history)
+        
+        # Tiền xử lý từ lóng, viết tắt bằng regex TRƯỚC KHI gọi AI
+        expanded_query = expand_query(query, self.expansion_rules)
+        
+        rewrite_result = self.query_rewriter.rewrite(expanded_query, chat_history=chat_history)
         if telemetry is not None:
             telemetry["query_rewrite_ms"] = (time.monotonic() - rewrite_started) * 1000
         effective_query = rewrite_result.effective_query

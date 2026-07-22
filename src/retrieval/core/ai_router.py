@@ -42,7 +42,7 @@ ROUTE VÀ EXECUTION MODE
   ngoại lệ, hậu quả, quyền/nghĩa vụ, thời hạn hoặc trường hợp áp dụng.
 - rag / mixed: cần cả dữ liệu structured và quy định. lookup_type chọn đúng một
   nguồn structured chính; target_chunk_types=["regulation"].
-- clarify: thiếu cohort hoặc thiếu entity khiến không thể chọn dữ liệu an toàn.
+- clarify: Chỉ dùng khi THIẾU THÔNG TIN CỐT LÕI khiến việc tra cứu bất khả thi (ví dụ: hỏi "số điện thoại" hay "địa chỉ" nhưng không nói rõ là của Phòng/Khoa nào, hoặc xin "biểu mẫu" nhưng không nói rõ là biểu mẫu gì). TUYỆT ĐỐI KHÔNG dùng clarify đối với các câu hỏi về quy chế chung (như hoãn thi, cấm thi, xét học bổng, rèn luyện) vì chúng áp dụng chung cho mọi môn/ngành, việc thiếu tên môn/ngành không ảnh hưởng đến việc tìm quy chế.
 - out_of_domain: ngoài phạm vi Sổ tay Sinh viên HCMUE.
 
 Với route=structured:

@@ -95,6 +95,7 @@ The generation layer includes:
 
 - Deterministic pre-router lookup for exact table/directory/formula questions.
 - AI router for intent and retrieval strategy.
+- Query expansion (Regex) to normalize slang and abbreviations.
 - Query rewriting for accentless Vietnamese, typo-prone queries, and short queries.
 - Gemini Flash-Lite answer generation with multi-key quota-aware load balancing.
 - Full top-5 parent-section context packing for true-RAG answers.
@@ -121,7 +122,7 @@ The generation layer includes:
 | Deterministic lookup groups | programs, services/offices, forms, scoring, formulas, study duration, scholarship, foreign language |
 | Qdrant collection | `student_handbook_semantic_v7` |
 | Answer model | Gemini Flash-Lite with local multi-key load balancing |
-| Evaluation status | Legacy baseline shown below; rerun evaluation after this cleanup for final CV numbers |
+| Evaluation status | Passed (V8.4 Holdout) |
 
 ## Architecture
 
@@ -159,7 +160,8 @@ flowchart LR
 ```mermaid
 flowchart TD
     Query["User Query"] --> Validate["Validate Query"]
-    Validate --> Rewrite["Query Rewriter"]
+    Validate --> ExpandQuery["Query Expansion (Regex)"]
+    ExpandQuery --> Rewrite["Query Rewriter"]
     Rewrite --> Lookup{"Deterministic lookup?"}
 
     Lookup -->|yes| Structured["JSON / tool lookup"]
@@ -185,7 +187,7 @@ flowchart TD
 
 ### Pipeline Breakdown
 
-- **Input validation & rewriting:** Filters invalid queries, resolves cohort context, and rewrites typo-prone or short Vietnamese queries.
+- **Input validation, expansion & rewriting:** Filters invalid queries, resolves cohort context, expands abbreviations (e.g., CNTT), and rewrites typo-prone queries.
 - **Deterministic lookup:** Handles exact facts from JSON/tool stores before vector retrieval or answer-generation LLM calls.
 - **Intent routing:** Sends remaining long-form questions to the Hybrid RAG pipeline.
 - **Hybrid retrieval & generation:** Combines Qdrant Dense Search + BM25 Sparse Search via RRF (Reciprocal Rank Fusion), expands context via MongoDB, and uses Gemini with strict cohort/citation guardrails.
@@ -317,22 +319,6 @@ Generated true-RAG answers were further evaluated using a strict PDF-verified ma
 - **Context Packing:** The generation prompt uses retrieved parent sections with table/list normalization and query-focused snippets. Citation binding remains attached to the retrieved parent section.
 - Metrics are reported as layered quality gates instead of one blended score.
 
-## CI/CD and Quality Gates
-
-GitHub Actions runs offline checks on every push and pull request:
-
-- Python dependency install from `requirements-dev.txt`.
-- `ruff check .`
-- `python -m compileall src scripts`
-- `python -m unittest discover -s tests`
-- `python -m scripts.evaluate_router_behavior --fail-under-intent 0.75 --fail-under-strategy 0.75`
-- Frontend `npm ci`, `npm run lint`, and `npm run build`.
-
-The deployment flow keeps GitHub source code and Hugging Face Space deployment separate:
-
-- GitHub `main` stores the full project.
-- Hugging Face Space receives a clean backend-only deployment bundle.
-- Qdrant vectors and MongoDB parent docs are managed as external data services.
 
 ## Tech Stack
 

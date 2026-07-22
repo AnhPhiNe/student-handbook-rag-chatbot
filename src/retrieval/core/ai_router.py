@@ -25,7 +25,7 @@ from .structured_routing import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v14-simple-vi"
+ROUTER_PROMPT_VERSION = "structured-regulation-v15-simple-vi"
 
 ROUTER_SYSTEM_PROMPT = """
 Bạn là AI Query Router của hệ thống Sổ tay Sinh viên HCMUE.
@@ -65,7 +65,9 @@ NGUYÊN TẮC PHÂN LOẠI
 - Chọn mixed khi câu hỏi thực sự cần cả giá trị bảng và quy định liên quan.
 - Hỏi nơi tải một biểu mẫu là structured/form; hỏi thủ tục hoặc hồ sơ là regulation.
 - Hỏi đích danh đơn vị là office/faculty; mô tả dịch vụ và hỏi nơi phụ trách là
-  student_service; hỏi ngành hoặc ngành thuộc khoa nào là program.
+  student_service; hỏi ngành, chương trình học, hoặc ngành thuộc khoa nào là program.
+- ĐẶC BIỆT CHÚ Ý: Các câu hỏi về "cơ hội nghề nghiệp", "ra trường làm gì", "vị trí công tác", "làm việc ở đâu" BẮT BUỘC dùng route=structured và lookup_type=program. Tuyệt đối KHÔNG đưa vào regulation trừ khi hỏi về quy chế xét tốt nghiệp.
+- CHỐNG OVER-ROUTING: Không tự động ép các từ "điều kiện", "ra trường" vào regulation nếu nó đi kèm với bối cảnh nghề nghiệp hoặc giới thiệu ngành học.
 - formula chỉ cung cấp công thức/hướng dẫn áp dụng, không thực hiện calculator.
 
 COHORT VÀ ENTITY

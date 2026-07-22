@@ -452,13 +452,7 @@ def _ambiguity_kind(query: str, retrieval_result: dict[str, Any]) -> str | None:
     if _is_generic_contact_query(ascii_query):
         return "generic_contact"
 
-    # CNTT co the la Phong Cong nghe Thong tin hoac Khoa Cong nghe - Thong tin.
-    if (
-        _has_query_entity_conflict(ascii_query, retrieval_result)
-        and not has_explicit_scope
-        and (has_contact_signal or _is_short_query(ascii_query))
-    ):
-        return "information_technology"
+    # Đoạn check CNTT đã bị gỡ để LLM tự liệt kê cả Phòng và Khoa.
 
     # "hoc vu lien he ai" chua ro la dang ky hoc phan, diem, thanh tra hay phuc khao.
     if (
@@ -476,21 +470,7 @@ def _ambiguity_kind(query: str, retrieval_result: dict[str, Any]) -> str | None:
     ):
         return "student_documents"
 
-    # "hoc bong hoi ai" co the hoi dieu kien, ho so, bieu mau hoac don vi lien he.
-    if (
-        "hoc bong" in ascii_query
-        and has_contact_signal
-        and not _contains_any(ascii_query, SCHOLARSHIP_SPECIFIC_SIGNALS)
-    ):
-        return "scholarship"
-
-    # Neu top results den tu nhieu nhom gan diem nhau, hoi lai thay vi doan mot nhom.
-    if (
-        _retrieval_has_close_conflict(retrieval_result)
-        and _query_is_under_specified(ascii_query)
-        and not _has_resolving_specificity(ascii_query)
-    ):
-        return "retrieval_multi_context"
+    # Đoạn check học bổng và retrieval_multi_context đã bị gỡ để LLM tự tổng hợp các nguồn.
 
     return None
 

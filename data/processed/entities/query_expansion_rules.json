@@ -1,6 +1,86 @@
 [
   {
     "trigger": [
+      "khoa toán",
+      "khoa toán học",
+      "khoa toán tin"
+    ],
+    "expand_to": [
+      "Khoa Toán - Tin học"
+    ]
+  },
+  {
+    "trigger": [
+      "khoa văn",
+      "ngữ văn"
+    ],
+    "expand_to": [
+      "Khoa Ngữ văn"
+    ]
+  },
+  {
+    "trigger": [
+      "khoa lý"
+    ],
+    "expand_to": [
+      "Khoa Vật lý"
+    ]
+  },
+  {
+    "trigger": [
+      "khoa hóa"
+    ],
+    "expand_to": [
+      "Khoa Hóa học"
+    ]
+  },
+  {
+    "trigger": [
+      "không đóng học phí",
+      "chậm đóng học phí",
+      "chưa đóng học phí",
+      "quá hạn học phí"
+    ],
+    "expand_to": [
+      "nợ học phí",
+      "trách nhiệm đóng học phí"
+    ]
+  },
+  {
+    "trigger": [
+      "miễn học phí ngoài sư phạm",
+      "ngoài sư phạm"
+    ],
+    "expand_to": [
+      "miễn, giảm học phí"
+    ]
+  },
+  {
+    "trigger": [
+      "quy đổi tín chỉ ngoại ngữ",
+      "quy đổi điểm ngoại ngữ",
+      "tín chỉ ngoại ngữ"
+    ],
+    "expand_to": [
+      "quy đổi chứng chỉ ngoại ngữ",
+      "miễn học phần ngoại ngữ"
+    ]
+  },
+  {
+    "trigger": [
+      "hoãn thi",
+      "xin hoãn thi",
+      "xin hoãn kiểm tra"
+    ],
+    "expand_to": [
+      "hoãn thi",
+      "vắng mặt buổi thi",
+      "không tham gia đánh giá học phần",
+      "điểm chưa hoàn thiện"
+    ]
+  },
+  {
+    "trigger": [
       "222 lvs",
       "cơ sở 2",
       "lê văn sỹ"

@@ -106,7 +106,7 @@ The generation layer includes:
 - **Cohort-aware RAG architecture:** metadata filtering and cohort-specific routing for `K48-K49`, `K50`, and `K51`.
 - **Deterministic-first router:** answers exact table, directory, form, formula, study-duration, scholarship, and foreign-language queries without an LLM call.
 - **V7 child-parent retrieval:** Qdrant indexes small `section_heading`, `child`, and `table_like` chunks while MongoDB stores full parent sections for citations.
-- **Pure dense retrieval stack:** dense retrieval with `BAAI/bge-m3` combined with metadata filtering for high-speed, accurate fetching.
+- **Hybrid V8 Retrieval Stack:** Dense retrieval with `BAAI/bge-m3` combined with BM25 Sparse Index (Regex + Underthesea Tokenizer) for literal token protection and robust semantic matching.
 - **Full top-5 context packing:** sends richer parent-section context to Gemini while preserving source/citation metadata.
 - **Layered evaluation:** router/lookup metrics, retrieval metrics, generation quality, and RAGAS-style Gemini Judge are reported separately.
 - **Production guardrails:** cohort filtering, citation binding, Gemini key-pool load balancing, cache support, rate limits, and queue/backpressure settings.
@@ -135,11 +135,14 @@ flowchart LR
     LookupFirst --> Router["AI Router + Routing Rules"]
 
     LookupFirst -->|exact tables / directories / formulas| Lookup["Structured Lookup"]
-    Router -->|regulations| Retrieval["V7 Dense Retrieval"]
+    Router -->|regulations| Retrieval["Hybrid V8 (BM25 + Qdrant)"]
 
-    Retrieval --> Qdrant["Qdrant Cloud\nV7 child/table/heading chunks"]
+    Retrieval --> Qdrant["Qdrant Cloud (Dense)"]
+    Retrieval --> BM25["Local BM25 Index (Sparse)"]
     Retrieval --> Graph["Directed Rule Graph Expansion"]
-    Qdrant --> Mongo["MongoDB Atlas\nParent Docs"]
+    Qdrant --> RRF["Reciprocal Rank Fusion (RRF)"]
+    BM25 --> RRF
+    RRF --> Mongo["MongoDB Atlas\nParent Docs"]
 
     Lookup --> Answer["Deterministic Answer Formatter"]
     Mongo --> Gemini["Gemini Answer Generator\nFull top-5 context"]
@@ -165,8 +168,11 @@ flowchart TD
     Lookup -->|no| Route{"Router Decision"}
     Route -->|True RAG| Expand["Entity Expansion"]
     Expand --> Vector["Qdrant Dense Retrieval"]
+    Expand --> Sparse["BM25 Sparse Retrieval"]
     Expand --> Graph["Directed Graph Expansion"]
-    Vector --> Merge["Candidate Merge"]
+    Vector --> RRF["RRF Fusion"]
+    Sparse --> RRF
+    RRF --> Merge["Candidate Merge"]
     Graph --> Merge
     Merge --> Parent["Mongo Parent Sections"]
     Parent --> Context["Full Top-5 Context Allocation"]
@@ -181,8 +187,8 @@ flowchart TD
 
 - **Input validation & rewriting:** Filters invalid queries, resolves cohort context, and rewrites typo-prone or short Vietnamese queries.
 - **Deterministic lookup:** Handles exact facts from JSON/tool stores before vector retrieval or answer-generation LLM calls.
-- **Intent routing:** Sends remaining long-form questions to the Dense RAG pipeline.
-- **Dense retrieval & generation:** Combines Qdrant Dense Search + directed graph expansion, expands context via MongoDB, and uses Gemini with strict cohort/citation guardrails.
+- **Intent routing:** Sends remaining long-form questions to the Hybrid RAG pipeline.
+- **Hybrid retrieval & generation:** Combines Qdrant Dense Search + BM25 Sparse Search via RRF (Reciprocal Rank Fusion), expands context via MongoDB, and uses Gemini with strict cohort/citation guardrails.
 
 ## Data and Ingestion Design
 
@@ -242,11 +248,11 @@ Structured questions are checked with exactness, item count, cohort correctness,
 | Metric | Score |
 |---|---:|
 | Cases | 120 |
-| Pass rate | 94.17% |
-| Deterministic exactness | 94.17% |
-| Citation metadata accuracy | 91.67% |
-| Intent accuracy | 95.37% |
-| Strategy accuracy | 95.37% |
+| Pass rate | 94.16% |
+| Deterministic exactness | 94.16% |
+| Citation metadata accuracy | 90.00% |
+| Intent accuracy | 94.44% |
+| Strategy accuracy | 94.44% |
 | Structured item count accuracy | 93.33% |
 
 ### 2. True-RAG Retrieval Evaluation
@@ -256,11 +262,11 @@ Retrieval is evaluated only on generated true-RAG regulation cases. Structured l
 | Metric | Score |
 |---|---:|
 | Cases | 180 |
-| Hit@1 | 59.44% |
-| Hit@3 | 84.44% |
-| Hit@5 | 92.22% |
-| MRR | 71.64% |
-| nDCG@5 | 75.45% |
+| Hit@1 | 69.44% |
+| Hit@3 | 85.00% |
+| Hit@5 | 90.00% |
+| MRR | 77.86% |
+| nDCG@5 | 79.11% |
 
 ### 3. RAGAS-Style Automated Judge (V8.5 Generation)
 

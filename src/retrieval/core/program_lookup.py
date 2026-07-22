@@ -69,6 +69,7 @@ def _program_summary(record: dict[str, Any]) -> dict[str, Any]:
         "cohort": record.get("cohort"),
         "document_id": record.get("document_id"),
         "summary": record.get("summary"),
+        "raw_text": record.get("raw_text"),
     }
 
 

@@ -174,6 +174,46 @@ class HybridRetrieverV7:
         # Cache runtime, không phải dữ liệu local.
         self.parent_cache: dict[str, dict[str, Any]] = {}
 
+        # BM25 Retriever
+        from src.retrieval.core.bm25_retriever import BM25Retriever
+        self.bm25 = BM25Retriever()
+        self._initialize_bm25_async()
+
+    def _initialize_bm25_async(self):
+        # Fire-and-forget background initialization for BM25 to not block startup
+        import threading
+        def _build():
+            try:
+                # Fetch all v7 child chunks from MongoDB to build BM25 index
+                # Assuming collection name matches the semantic collection logic
+                # For this implementation, we query the chunk collection or use parent chunks
+                logger.info("Starting BM25 index build...")
+                # Note: This is a placeholder for fetching chunks. 
+                # Since we don't have direct access to chunk db here, we'll fetch them from Qdrant scroll 
+                # or a pre-built JSON file if available. We will fetch from qdrant scroll API for correctness.
+                chunks = []
+                scroll_offset = None
+                while True:
+                    response = self.qdrant_client.scroll(
+                        collection_name=self.collection_name,
+                        scroll_filter=_v7_query_filter(None),
+                        limit=1000,
+                        offset=scroll_offset,
+                        with_payload=True,
+                        with_vectors=False
+                    )
+                    records, scroll_offset = response
+                    chunks.extend([self._qdrant_point_to_chunk(p) for p in records])
+                    if scroll_offset is None:
+                        break
+                
+                self.bm25.build_bm25_index(chunks)
+                logger.info(f"BM25 index built successfully with {len(chunks)} chunks.")
+            except Exception as e:
+                logger.error(f"Failed to build BM25 index: {e}")
+                
+        threading.Thread(target=_build, daemon=True).start()
+
     def _get_parent(self, parent_id: str) -> dict[str, Any] | None:
         if not parent_id:
             return None
@@ -280,22 +320,62 @@ class HybridRetrieverV7:
             for chunk in seed_chunks
         ]
         
-        import re
-        query_terms = set(re.findall(r"\w+", query.lower()))
-        if query_terms:
-            lexical_scored = []
-            for dense_score, chunk in vector_scored:
-                chunk_text = str(chunk.get("content") or "").lower()
-                doc_terms = set(re.findall(r"\w+", chunk_text))
-                coverage = len(query_terms & doc_terms) / len(query_terms)
-                lexical_boost = coverage * 0.3
-                lexical_scored.append((dense_score + lexical_boost, chunk))
-            vector_scored = lexical_scored
+        # --- BM25 RETRIEVAL & RECIPROCAL RANK FUSION (RRF) ---
+        bm25_results = self.bm25.search_bm25(query, top_k=search_limit)
+        
+        # Union of chunk IDs
+        dense_chunk_ids = [str(c.get("_id") or c.get("chunk_id") or "") for _, c in vector_scored]
+        bm25_chunk_ids = [str(c.get("_id") or c.get("chunk_id") or "") for _, c in bm25_results]
+        
+        # Extract unique IDs sequentially to ensure deterministic base order
+        union_ids = []
+        seen = set()
+        for cid in dense_chunk_ids + bm25_chunk_ids:
+            if cid not in seen:
+                seen.add(cid)
+                union_ids.append(cid)
+        
+        # Maps to store ranks
+        dense_rank_map = {cid: rank + 1 for rank, cid in enumerate(dense_chunk_ids)}
+        bm25_rank_map = {cid: rank + 1 for rank, cid in enumerate(bm25_chunk_ids)}
+        
+        # Map to original chunks
+        chunk_map = {}
+        for _, c in vector_scored:
+            cid = str(c.get("_id") or c.get("chunk_id") or "")
+            chunk_map[cid] = c
+        for _, c in bm25_results:
+            cid = str(c.get("_id") or c.get("chunk_id") or "")
+            if cid not in chunk_map:
+                chunk_map[cid] = c
+
+        fusion_scored = []
+        for cid in union_ids:
+            dense_rank = dense_rank_map.get(cid)
+            bm25_rank = bm25_rank_map.get(cid)
+            
+            # RRF Formula (k=60)
+            score_dense = 1 / (dense_rank + 60) if dense_rank else 0.0
+            score_bm25 = 1 / (bm25_rank + 60) if bm25_rank else 0.0
+            rrf_score = score_dense + score_bm25
+            
+            fusion_scored.append((rrf_score, chunk_map[cid]))
+            
+        # Sort strictly by RRF score (descending).
+        # Tie-break neutrally using chunk ID to ensure determinism without favoring Dense or BM25
+        fusion_scored.sort(key=lambda x: (x[0], str(x[1].get("_id", ""))), reverse=True)
+        
+        # Cut top K
+        primary_scored = fusion_scored[:search_limit]
+        
+        # Reconstruct seed_chunks and seeds_parent_ids from the new fused top K
+        seed_chunks = [chunk for _, chunk in primary_scored]
         seed_parent_ids = {
             str((chunk.get("metadata") or {}).get("parent_section_id") or "")
             for chunk in seed_chunks
             if (chunk.get("metadata") or {}).get("parent_section_id")
         }
+        # -----------------------------------------------------
 
         phoranker_used = eval_mode in PHORANKER_EVAL_MODES
         if phoranker_used:
@@ -303,7 +383,6 @@ class HybridRetrieverV7:
             primary_scored = self._rerank_chunks(query, seed_chunks)
             phoranker_latency_ms = (time.perf_counter() - rerank_started) * 1000
         else:
-            primary_scored = vector_scored
             phoranker_latency_ms = 0.0
 
         retrieval_telemetry = {

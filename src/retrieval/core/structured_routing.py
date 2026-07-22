@@ -29,11 +29,6 @@ COHORT_SCOPED_LOOKUPS = {
     "study_duration",
     "scholarship_classification",
     "scoring",
-    "student_service",
-    "office",
-    "faculty",
-    "program",
-    "form",
     "formula",
 }
 UNGROUNDED_SCHEMA_SLOTS = {

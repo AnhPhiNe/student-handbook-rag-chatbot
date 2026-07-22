@@ -1,143 +1,114 @@
 import os
-import unicodedata
 import re
 from typing import Any
-from pathlib import Path
+import pandas as pd
 from rank_bm25 import BM25Okapi
-from src.common.cohort import normalize_cohort
-from .io_utils import load_json
+import underthesea
+import logging
 
-
-def normalize_text_for_bm25(text: str) -> str:
-    text = text.lower()
-    text = text.replace("–", "-")
-    text = text.replace("đ", "d")
-    text = unicodedata.normalize("NFD", text)
-    text = "".join(char for char in text if unicodedata.category(char) != "Mn")
-    text = re.sub(r"[^\w\s]", " ", text)
-    text = re.sub(r"\s+", " ", text)
-    return text.strip()
-
-
-def get_searchable_text(item: dict[str, Any]) -> str:
-    metadata = item.get("metadata", {})
-    source_pages = metadata.get("source_pages") or []
-    parts = [
-        item.get("content", ""),
-        metadata.get("title", ""),
-        metadata.get("document_title", ""),
-        metadata.get("chapter", ""),
-        metadata.get("article", ""),
-        metadata.get("source_section", ""),
-        metadata.get("source_type", ""),
-        metadata.get("content_type", ""),
-        item.get("chunk_type", ""),
-        metadata.get("chunk_type", ""),
-        metadata.get("form_name", ""),
-        metadata.get("unit_name", ""),
-        metadata.get("faculty_or_unit_name", ""),
-        metadata.get("procedure_name", ""),
-        " ".join(f"trang {page}" for page in source_pages),
-    ]
-    return " ".join(str(p) for p in parts if p)
-
+logger = logging.getLogger(__name__)
 
 class BM25Retriever:
-    _instance = None
-
-    def __new__(cls, chunks_path: str = "data/processed/chunks/semantic_chunks.json"):
-        if cls._instance is None:
-            cls._instance = super(BM25Retriever, cls).__new__(cls)
-            cls._instance._init(chunks_path)
-        return cls._instance
-
-    def _init(self, chunks_path: str):
-        self.chunks_path = chunks_path
+    def __init__(self):
+        self.bm25_index = None
         self.chunks = []
-        self.bm25 = None
-        self._load_and_index()
+        self.acronym_whitelist = set()
+        self._load_acronym_whitelist()
 
-    def _load_and_index(self):
-        if not os.path.exists(self.chunks_path):
-            print(
-                f"[BM25] Warning: {self.chunks_path} not found. BM25 indexing skipped."
-            )
-            return
+        # Regex for capturing codes and numbers (e.g., 7480201, 23/QĐ-BGDĐT)
+        self.literal_regex = re.compile(
+            r'\b\d{4,}\b|\d+/[A-ZĐ\-]+|IELTS|TOEFL|B1|B2|Goethe-Zertifikat',
+            re.IGNORECASE
+        )
 
-        print(f"[BM25] Loading {self.chunks_path} for sparse indexing...")
-        self.chunks = load_json(Path(self.chunks_path))
+    def _load_acronym_whitelist(self):
+        csv_path = os.path.normpath(os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "../../../crawl_data/chuong_trinh_dao_tao.csv"
+        ))
+        try:
+            df = pd.read_csv(csv_path)
+            departments = df["query_department"].dropna().unique()
+            for dept in departments:
+                # Naive acronym generation: take the first letter of each word
+                words = str(dept).split()
+                acronym = "".join([w[0].upper() for w in words if w])
+                if len(acronym) > 1:
+                    self.acronym_whitelist.add(acronym)
+            logger.info(f"Loaded {len(self.acronym_whitelist)} acronyms from CSV.")
+        except Exception as e:
+            logger.warning(f"Could not load acronym whitelist: {e}")
+            # Fallback hardcoded list if CSV fails
+            self.acronym_whitelist.update(["CNTT", "GDTC", "GDQP", "GDMN", "GDTH", "GDDB"])
 
-        tokenized_corpus = []
-        for chunk in self.chunks:
-            searchable_text = get_searchable_text(chunk)
-            normalized = normalize_text_for_bm25(searchable_text)
-            # Tokenize by whitespace
-            tokens = normalized.split()
-            tokenized_corpus.append(tokens)
-
-        self.bm25 = BM25Okapi(tokenized_corpus)
-        print(f"[BM25] Indexed {len(self.chunks)} chunks.")
-
-    def sparse_search(
-        self,
-        query: str,
-        top_k: int = 15,
-        chunk_types: list[str] | None = None,
-        content_types: list[str] | None = None,
-        cohort: str | None = None,
-    ) -> list[dict[str, Any]]:
-        if not self.bm25 or not self.chunks:
+    def _tokenize(self, text: str) -> list[str]:
+        if not text:
             return []
 
-        normalized_query = normalize_text_for_bm25(query)
-        tokenized_query = normalized_query.split()
+        tokens = []
+        # Layer 1: Literal Extraction
+        # Find all literal matches and remove them from the text to be segmented
+        literals = []
+        
+        def literal_replacer(match):
+            lit = match.group(0)
+            literals.append(lit.lower())
+            return " "
+            
+        text_for_segmentation = self.literal_regex.sub(literal_replacer, text)
+        
+        # Also extract acronyms from whitelist
+        words = text_for_segmentation.split()
+        for w in words:
+            if w.upper() in self.acronym_whitelist:
+                literals.append(w.lower())
+                text_for_segmentation = text_for_segmentation.replace(w, " ")
 
-        # Get scores for all documents
-        scores = self.bm25.get_scores(tokenized_query)
+        tokens.extend(literals)
 
-        cohort = normalize_cohort(cohort)
-        allowed_types = set(chunk_types or [])
-        allowed_content_types = set(content_types or [])
+        # Layer 2: Word Segmentation (underthesea)
+        try:
+            segmented_words = underthesea.word_tokenize(text_for_segmentation.lower())
+            tokens.extend([w.replace(" ", "_") for w in segmented_words])
+            
+            # Bigrams of adjacent segmented syllables (fallback for bad segmentation)
+            syllables = text_for_segmentation.lower().split()
+            bigrams = [f"{syllables[i]}_{syllables[i+1]}" for i in range(len(syllables)-1)]
+            tokens.extend(bigrams)
+            
+        except Exception as e:
+             logger.warning(f"Underthesea tokenization failed: {e}")
+             # Absolute fallback
+             tokens.extend(text_for_segmentation.lower().split())
 
-        candidate_indices = []
-        for idx, chunk in enumerate(self.chunks):
-            metadata = chunk.get("metadata", {})
-            if cohort and metadata.get("cohort") != cohort:
-                continue
-            if allowed_types and chunk.get("chunk_type") not in allowed_types:
-                continue
-            if allowed_content_types and metadata.get("content_type") not in allowed_content_types:
-                continue
-            candidate_indices.append(idx)
+        return [t for t in tokens if t.strip()]
 
-        top_indices = sorted(
-            candidate_indices,
-            key=lambda i: scores[i],
-            reverse=True,
-        )[:top_k]
+    def build_bm25_index(self, chunks: list[dict[str, Any]]):
+        self.chunks = chunks
+        corpus_tokens = [self._tokenize(str(chunk.get("content") or "")) for chunk in self.chunks]
+        self.bm25_index = BM25Okapi(corpus_tokens)
+        logger.info(f"BM25 index built with {len(self.chunks)} chunks.")
 
-        results = []
-        for idx in top_indices:
-            score = float(scores[idx])
-            if score <= 0.0:
-                continue
+    def search_bm25(self, query: str, top_k: int = 24) -> list[tuple[float, dict[str, Any]]]:
+        if not self.bm25_index or not self.chunks:
+            return []
 
-            chunk = self.chunks[idx]
-            results.append(
-                {
-                    "chunk_id": chunk.get("chunk_id"),
-                    "distance": 0.0,  # Not applicable for BM25
-                    "bm25_score": score,
-                    "content": chunk.get("content", ""),
-                    "metadata": chunk.get("metadata", {}),
-                }
-            )
+        query_tokens = self._tokenize(query)
+        scores = self.bm25_index.get_scores(query_tokens)
+        
+        # Pair scores with chunks
+        scored_chunks = [(float(score), dict(chunk)) for score, chunk in zip(scores, self.chunks)]
+        
+        # Filter zero scores and sort
+        scored_chunks = [sc for sc in scored_chunks if sc[0] > 0.0]
+        scored_chunks.sort(key=lambda x: x[0], reverse=True)
+        return scored_chunks[:top_k]
 
-        return results
+# Global instance for legacy pipeline compat
+_global_bm25_retriever = None
 
-
-# Singleton helper
-def get_bm25_retriever(
-    chunks_path: str = "data/processed/chunks/semantic_chunks.json",
-) -> BM25Retriever:
-    return BM25Retriever(chunks_path)
+def get_bm25_retriever():
+    global _global_bm25_retriever
+    if _global_bm25_retriever is None:
+        _global_bm25_retriever = BM25Retriever()
+    return _global_bm25_retriever

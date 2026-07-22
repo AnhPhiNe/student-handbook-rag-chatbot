@@ -40,6 +40,11 @@ if errorlevel 1 goto :error
 call :copy_dir data\eval "%TEMP_DIR%\data\eval"
 if errorlevel 1 goto :error
 
+mkdir "%TEMP_DIR%\crawl_data"
+if errorlevel 1 goto :error
+xcopy /y crawl_data\chuong_trinh_dao_tao.csv "%TEMP_DIR%\crawl_data\"
+if errorlevel 1 goto :error
+
 echo [4/5] Preparing Hugging Face configuration...
 (
 echo ---

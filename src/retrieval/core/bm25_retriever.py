@@ -1,10 +1,10 @@
 import os
 import re
-from typing import Any
-import pandas as pd
+import csv
+import logging
+from typing import Any, List, Dict, Optional
 from rank_bm25 import BM25Okapi
 import underthesea
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -27,8 +27,14 @@ class BM25Retriever:
             "../../../crawl_data/chuong_trinh_dao_tao.csv"
         ))
         try:
-            df = pd.read_csv(csv_path)
-            departments = df["query_department"].dropna().unique()
+            with open(csv_path, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                departments = set()
+                for row in reader:
+                    dept = row.get("query_department")
+                    if dept and str(dept).strip():
+                        departments.add(str(dept).strip())
+            
             for dept in departments:
                 # Naive acronym generation: take the first letter of each word
                 words = str(dept).split()

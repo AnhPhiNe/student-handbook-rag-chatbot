@@ -122,7 +122,7 @@ The generation layer includes:
 | Deterministic lookup groups | programs, services/offices, forms, scoring, formulas, study duration, scholarship, foreign language |
 | Qdrant collection | `student_handbook_semantic_v7` |
 | Answer model | Gemini Flash-Lite with local multi-key load balancing |
-| Evaluation status | Passed (V8.4 Holdout) |
+| Evaluation status | Production Ready (V9.1 Human Audit Passed) |
 
 ## Architecture
 
@@ -250,12 +250,12 @@ Structured questions are checked with exactness, item count, cohort correctness,
 | Metric | Score |
 |---|---:|
 | Cases | 120 |
-| Pass rate | 94.16% |
-| Deterministic exactness | 94.16% |
-| Citation metadata accuracy | 90.00% |
-| Intent accuracy | 94.44% |
-| Strategy accuracy | 94.44% |
-| Structured item count accuracy | 93.33% |
+| Pass rate | 96.67% |
+| Deterministic exactness | 96.67% |
+| Citation metadata accuracy | 96.67% |
+| Intent accuracy | 98.15% |
+| Strategy accuracy | 98.15% |
+| Structured item count accuracy | 98.33% |
 
 ### 2. True-RAG Retrieval Evaluation
 
@@ -264,11 +264,11 @@ Retrieval is evaluated only on generated true-RAG regulation cases. Structured l
 | Metric | Score |
 |---|---:|
 | Cases | 180 |
-| Hit@1 | 69.44% |
-| Hit@3 | 85.00% |
-| Hit@5 | 90.00% |
-| MRR | 77.86% |
-| nDCG@5 | 79.11% |
+| Hit@1 | 70.00% |
+| Hit@3 | 87.22% |
+| Hit@5 | 93.89% |
+| MRR | 79.36% |
+| nDCG@5 | 81.12% |
 
 ### 3. RAGAS-Style Automated Judge (V8.5 Generation)
 
@@ -276,14 +276,14 @@ Generated true-RAG answers (100 cases) were automatically evaluated using a RAGA
 
 | Metric | Score |
 |---|---:|
-| Faithfulness | 70.12% |
-| Answer Relevancy | 85.53% |
-| Context Precision | 63.42% |
-| Context Recall | 82.07% |
-| Answer Correctness | 77.11% |
-| Citation Correctness | 83.71% |
+| Faithfulness | 79.31% |
+| Answer Relevancy | 86.25% |
+| Context Precision | 70.26% |
+| Context Recall | 81.87% |
+| Answer Correctness | 76.26% |
+| Citation Correctness | 83.48% |
 
-*Note: The automated judge reported a strict Faithfulness score (70.12%). A deep dive revealed the AI Judge exhibited a 71.4% false-positive penalty rate when evaluating complex legal reasoning. To establish ground truth, a manual Human Audit was conducted.*
+*Note: The automated judge reported a strict Faithfulness score (79.31%). A deep dive revealed the AI Judge exhibited a high false-positive penalty rate when evaluating complex legal reasoning. To establish ground truth, a manual Human Audit was conducted.*
 
 ### 4. Human Audit (PDF-Verified) & Production Robustness
 
@@ -292,12 +292,11 @@ Generated true-RAG answers were further evaluated using a strict PDF-verified ma
 **Manual Audit (PDF-Verified):**
 | Metric | Score |
 |---|---:|
-| Audit Sample | 25 cases |
-| Human Correctness | 88.80% |
-| Claim-level Faithfulness | 98.20% |
-| Citation Correctness | 94.60% |
-| Critical False Passes | 0 |
-| Material Hallucination Rate | 0.00% |
+| Audit Sample | 30 cases |
+| Human Correctness | 85.00% |
+| Human Faithfulness | 93.30% |
+| Citation Correctness | 90.00% |
+| AI-Human Judge MAE | 0.147 |
 
 **Production Robustness (60 requests):**
 | Metric | Latency (p95) | Success Rate | Note |
@@ -433,6 +432,8 @@ npm run build
   **Roadmap:** Continue improving scope-aware reranking without adding brittle question-specific heuristics.
 - **Limitation:** Production scaling is bounded by the free/low-cost hosting tier and external LLM rate limits.
   **Roadmap:** Add queue/backpressure defaults and upgrade hosting only when real traffic requires it.
+- **Limitation:** The AI Judge and generation model might incorrectly conclude that rules aren't met if a handbook omits explicit procedures (e.g., the handbook mentions graduation processing months, but omits whether students can delay receiving the diploma).
+  **Roadmap:** Collect and inject unwritten faculty-level practices into the deterministic tool registry.
 - **Limitation:** No internal quality dashboard.
   **Roadmap:** Build an admin dashboard with authentication and feedback clustering.
 

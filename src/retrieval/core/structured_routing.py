@@ -91,6 +91,10 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
 
 
 def router_json_schema() -> dict[str, Any]:
+    registry = load_lookup_registry()
+    tools = list(registry.get("tools", {}).keys())
+    lookup_type_enum = "|".join(tools) + "|null" if tools else "tool name or null"
+    
     return {
         "context_mode": "standalone|follow_up|ambiguous",
         "context_confidence": "high|medium|low|none",
@@ -107,7 +111,7 @@ def router_json_schema() -> dict[str, Any]:
         "route": "structured|rag|clarify|out_of_domain",
         "execution_mode": "structured|regulation|mixed",
         "intent": "intent name",
-        "lookup_type": "tool name or null",
+        "lookup_type": lookup_type_enum,
         "cohort": "K48-K49|K50|K51|null",
         "slots": {},
         "slot_spans": {},

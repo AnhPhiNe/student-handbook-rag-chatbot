@@ -110,11 +110,6 @@ def artifact_health() -> ArtifactHealthResponse:
             kind="processed_json",
         ),
         ArtifactStatus(
-            path="data/processed/entities/query_expansion_rules.json",
-            exists=Path("data/processed/entities/query_expansion_rules.json").is_file(),
-            kind="processed_json",
-        ),
-        ArtifactStatus(
             path="data/processed/chunks/all_docstore_items.json",
             exists=Path("data/processed/chunks/all_docstore_items.json").is_file(),
             kind="processed_json",

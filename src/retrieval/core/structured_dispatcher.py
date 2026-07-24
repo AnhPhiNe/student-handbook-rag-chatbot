@@ -120,6 +120,8 @@ def resolve_structured_decision(
 ) -> StructuredResolution | None:
     """Resolve exactly the lookup selected by the validated Qwen decision."""
     lookup_type = str(decision.get("lookup_type") or "")
+
+
     slots = decision.get("slots") or {}
     effective_cohort = normalize_cohort(cohort) or normalize_cohort(decision.get("cohort"))
 

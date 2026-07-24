@@ -15,16 +15,16 @@ class ChatRequest(BaseModel):
         query (str): Câu hỏi chính mà người dùng muốn hỏi. Đây là nội dung chính của yêu cầu.
         include_debug (bool): Nếu là `True`, yêu cầu sẽ bao gồm thông tin gỡ lỗi trong phản hồi.
             Mặc định là `False`.
-        chat_history (list[dict[str, str]] | None): Một danh sách các tin nhắn trước đó
+        chat_history (list[dict[str, Any]]): Một danh sách các tin nhắn trước đó
             trong cuộc trò chuyện. Mỗi tin nhắn là một từ điển có thể chứa khóa như 'role' và 'content'.
-            Mặc định là `None` nếu không có lịch sử trò chuyện.
+            Mặc định là danh sách rỗng.
         cohort (str | None): Một chuỗi định danh nhóm người dùng, thường được sử dụng
             cho các thử nghiệm A/B hoặc phân tích. Mặc định là `None`.
     """
 
-    query: str
+    query: str = ""
     include_debug: bool = False
-    chat_history: list[dict[str, str]] | None = None
+    chat_history: list[dict[str, Any]] = Field(default_factory=list)
     cohort: str | None = None
 
 

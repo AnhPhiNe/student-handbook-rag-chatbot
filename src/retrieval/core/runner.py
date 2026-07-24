@@ -4,7 +4,7 @@ from src.common.console import configure_utf8_stdio
 
 from .io_utils import load_json, load_yaml, save_json
 from .report_builder import build_retrieval_report
-from .retrieval_pipeline import run_retrieval_pipeline
+from .hybrid_pipeline import run_hybrid_retrieval_pipeline
 from .vector_retriever import get_chroma_collection, load_embedding_model
 
 
@@ -70,7 +70,7 @@ def main() -> None:
     results = []
 
     for query in TEST_QUERIES:
-        result = run_retrieval_pipeline(
+        result = run_hybrid_retrieval_pipeline(
             query=query,
             model=model,
             collection=collection,

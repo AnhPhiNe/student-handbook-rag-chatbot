@@ -987,6 +987,7 @@ def _generated_unit_aliases(unit: str) -> list[str]:
             [
                 " ".join(remainder),
                 "".join(token[0] for token in remainder).upper(),
+                " ".join(prefix).capitalize() + " " + "".join(token[0] for token in remainder).upper(),
             ]
         )
     return _dedupe(aliases)
@@ -1114,7 +1115,7 @@ def build_student_faculty_profiles(
         else:
             campus = None
         display_unit = f"{faculty} ({campus})" if campus else faculty
-        aliases = _generated_unit_aliases(faculty)
+        aliases = [*_generated_unit_aliases(faculty), *_curated_unit_aliases(faculty)]
         if campus:
             aliases = _dedupe(
                 [

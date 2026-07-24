@@ -7,7 +7,7 @@ from typing import Any
 
 
 from src.common.cohort import resolve_cohort_from_query
-from src.retrieval.core.retrieval_pipeline import run_retrieval_pipeline
+from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline
 from src.retrieval.core.vector_retriever import (
     get_chroma_collection,
     load_embedding_model,
@@ -116,7 +116,14 @@ class AnswerPipeline:
         )
         self.program_directory = load_json(self.config["input"]["program_directory"])
         self.entity_registry = load_json(self.config["input"]["entity_registry"])
-        self.expansion_rules = load_json(self.config["input"]["query_expansion_rules"])
+        
+        query_expansion_rules_path = self.config["input"].get("query_expansion_rules")
+        self.expansion_rules = (
+            load_json(query_expansion_rules_path)
+            if query_expansion_rules_path and Path(query_expansion_rules_path).is_file()
+            else {}
+        )
+
 
         self.model = load_embedding_model(self.config["embedding"]["model_name"])
         try:
@@ -841,7 +848,51 @@ class AnswerPipeline:
     ) -> dict[str, Any]:
         """Run the backend retrieval/router stack with the active cohort context."""
         os.environ["STUDENT_RAG_DISABLE_PHORANKER"] = "1"
-        result = run_retrieval_pipeline(
+
+        if not hasattr(self, "router"):
+            from src.retrieval.core.ai_router import AIRouter
+            self.router = AIRouter()
+            
+        router_decision = self.router.route(query, chat_history=chat_history)
+        
+        if router_decision.get("execution_mode") == "structured":
+            from src.retrieval.core.structured_dispatcher import resolve_structured_decision
+            resolution = resolve_structured_decision(
+                router_decision,
+                query=query,
+                cohort=cohort,
+                scoring_tables=self.scoring_tables,
+                formula_rules=self.formula_rules,
+                office_directory=self.student_office_profiles,
+                student_service_directory=self.student_service_directory,
+                student_faculty_profiles=self.student_faculty_profiles,
+                foreign_language_tables=self.foreign_language_tables,
+                structured_tables_registry=self.structured_tables_registry,
+                program_directory=self.program_directory,
+            )
+            if resolution and resolution.result:
+                is_clarification = resolution.result_kind == "clarification"
+                return {
+                    "query": query,
+                    "retrieval_query": router_decision.get("retrieval_query") or query,
+                    "intent": router_decision.get("intent"),
+                    "strategy": resolution.strategy,
+                    "router_decision": router_decision,
+                    "structured_result": resolution.result,
+                    "retrieved_items": [],
+                    "citations": [],
+                    "needs_llm_answer": False,
+                    "needs_clarification": is_clarification,
+                    "clarification_question": resolution.result.get("clarification_question") if is_clarification else None,
+                    "out_of_domain": False,
+                    "selected_cohort": cohort,
+                    "query_handling": router_decision.get("query_handling"),
+                    "effective_query": router_decision.get("effective_query") or query,
+                    "raw_query": query,
+                    "deterministic_validated": not is_clarification
+                }
+
+        result = run_hybrid_retrieval_pipeline(
             query=query,
             model=self.model,
             collection=self.collection,
@@ -866,9 +917,12 @@ class AnswerPipeline:
             ),
             min_candidates=int(self.config["retrieval"].get("min_candidates", 25)),
             chat_history=chat_history,
+            intent=router_decision.get("intent"),
+            strategy=router_decision.get("execution_mode") or "hybrid_graph_retrieval",
+            retrieval_query=router_decision.get("retrieval_query") or query,
         )
         result["selected_cohort"] = cohort
-        router_decision = result.get("router_decision")
+        result["router_decision"] = router_decision
         query_handling = (
             router_decision.get("query_handling")
             if isinstance(router_decision, dict)

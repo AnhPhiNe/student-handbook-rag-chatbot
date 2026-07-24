@@ -198,7 +198,7 @@ def evaluate_deterministic(
     *,
     limit: int | None = None,
 ) -> dict[str, Any]:
-    from src.retrieval.core import retrieval_pipeline as pipeline
+    from src.retrieval.core import hybrid_pipeline as pipeline
 
     resources = load_runtime_resources()
     original_retrieve = pipeline.retrieve_with_plan
@@ -218,7 +218,7 @@ def evaluate_deterministic(
             progress.set_postfix_str(str(case.get("id") or "unknown"))
             started = time.perf_counter()
             try:
-                result = pipeline.run_retrieval_pipeline(
+                result = pipeline.run_hybrid_retrieval_pipeline(
                     query=case["query"],
                     model=None,
                     collection=None,

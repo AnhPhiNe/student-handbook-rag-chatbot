@@ -5,7 +5,6 @@ target_content_types:
   - regulation_text
   - scoring_form_table
   - faculty_student_services
-  - ktx_admission_procedure
 
 output:
   structured_sections: data/processed/metadata/structured_sections.json

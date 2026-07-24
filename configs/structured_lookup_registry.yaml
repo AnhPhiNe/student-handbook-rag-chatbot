@@ -24,7 +24,7 @@ tools:
     description: Tra thoi gian hoc chuan/toi da theo he va loai chuong trinh.
     intents: [direct_value, list_items]
     required_slots:
-      direct_value: [training_mode, program_type]
+      direct_value: [training_mode]
       list_items: [training_mode]
     slot_schema:
       training_mode:
@@ -135,18 +135,6 @@ tools:
     response_intent: faculty_query
     target_chunk_types: [program_directory]
 
-  form:
-    description: Tim mau don/bieu mau theo muc dich su dung.
-    intents: [form, list_items]
-    required_slots:
-      form: [purpose]
-      list_items: [purpose]
-    slot_schema:
-      purpose: {type: string}
-    strategy: form_lookup
-    response_intent: form_query
-    target_chunk_types: [form]
-
   formula:
     description: Tra cong thuc da duoc dinh nghia, khong thuc hien phep tinh.
     intents: [formula]
@@ -162,7 +150,7 @@ tools:
 
 rag_intents:
   policy: [regulation]
-  procedure: [procedure, regulation]
+  procedure: [regulation]
   consequence_or_exception: [regulation]
-  open_question: [regulation, procedure, form, office_directory, program_directory]
-  mixed: [regulation, procedure, form, office_directory]
+  open_question: [regulation, office_directory, program_directory]
+  mixed: [regulation, office_directory]

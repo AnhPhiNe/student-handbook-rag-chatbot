@@ -2,7 +2,7 @@ enabled: true
 provider: groq
 model_name: qwen/qwen3.6-27b
 temperature: 0.0
-max_output_tokens: 256
+max_output_tokens: 384
 request_timeout_seconds: 5
 max_retries: 1
 cache_enabled: true

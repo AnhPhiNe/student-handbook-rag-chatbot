@@ -55,7 +55,7 @@ sections:
     page_end: 160
     description: "Một số công việc của các khoa liên quan đến sinh viên"
 
-  - content_type: ktx_admission_procedure
+  - content_type: ktx_procedure_archive
     page_start: 161
     page_end: 162
     description: "Quy trình xét sinh viên vào ở ký túc xá"
@@ -64,11 +64,6 @@ sections:
     page_start: 163
     page_end: 166
     description: "Danh sách bảo tàng và di tích lịch sử tại TP.HCM"
-
-  - content_type: form_template
-    page_start: 167
-    page_end: 185
-    description: "Biểu mẫu, đơn từ sinh viên"
 
   - content_type: toc_or_index
     page_start: 186

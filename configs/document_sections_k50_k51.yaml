@@ -30,12 +30,7 @@ sections:
     page_end: 170
     description: "Các quy chế, quy định, chính sách sinh viên"
 
-  - content_type: form_template
-    page_start: 171
-    page_end: 172
-    description: "Biểu mẫu, đơn từ sinh viên"
-
-  - content_type: ktx_admission_procedure
+  - content_type: ktx_procedure_archive
     page_start: 173
     page_end: 176
     description: "Quy trình xét sinh viên vào ở ký túc xá"

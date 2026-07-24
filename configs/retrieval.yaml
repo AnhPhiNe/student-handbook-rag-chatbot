@@ -1,7 +1,6 @@
 input:
   scoring_tables: data/processed/tables/scoring_tables.json
   formula_rules: data/processed/tables/formula_rules.json
-  form_templates: data/processed/forms/clean_form_templates.json
   student_service_directory: data/processed/directories/student_service_directory.json
   student_office_profiles: data/processed/directories/student_office_profiles.json
   student_faculty_profiles: data/processed/directories/student_faculty_profiles.json
@@ -10,7 +9,6 @@ input:
   faculty_directory: data/processed/directories/faculty_directory.json
   program_directory: data/processed/directories/program_directory.json
   faculty_program_directory: data/processed/directories/faculty_program_directory.json
-  procedures: data/processed/procedures/procedures.json
   entity_registry: data/processed/entities/entity_registry.json
   query_expansion_rules: data/processed/entities/query_expansion_rules.json
 

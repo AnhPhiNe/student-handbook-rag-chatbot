@@ -1,9 +1,8 @@
-form_signal:
+document_requirement_signal:
   - mẫu đơn
   - đơn xin
   - biểu mẫu
   - phiếu
-  - form
   - mẫu
   - điền mẫu
   - giấy
@@ -93,13 +92,13 @@ gpa_signal:
 scholarship_score_signal:
   - điểm học bổng
 
-ktx_form_signal:
+ktx_document_signal:
   - đơn
   - mẫu
   - giấy
   - hồ sơ
 
-ktx_procedure_signal:
+ktx_regulation_signal:
   - quy trình
   - tiêu chí
   - ưu tiên
@@ -108,7 +107,7 @@ ktx_procedure_signal:
   - xét
   - hội đồng
 
-mixed_form_signal:
+mixed_document_signal:
   - mẫu đơn
   - đơn
   - biểu mẫu

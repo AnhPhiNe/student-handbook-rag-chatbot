@@ -1,7 +1,6 @@
 input:
   scoring_tables: data/processed/tables/scoring_tables.json
   formula_rules: data/processed/tables/formula_rules.json
-  form_templates: data/processed/forms/clean_form_templates.json
   student_service_directory: data/processed/directories/student_service_directory.json
   student_office_profiles: data/processed/directories/student_office_profiles.json
   student_faculty_profiles: data/processed/directories/student_faculty_profiles.json
@@ -24,18 +23,6 @@ retrieval:
   default_top_k: 5
   candidate_multiplier: 5
   min_candidates: 25
-
-query_rewriter:
-  enabled: false
-  api_key_env_var: QUERY_REWRITER_API_KEY
-  model_name: llama-3.1-8b-instant
-  temperature: 0.0
-  max_output_tokens: 256
-  max_retries: 1
-  request_timeout_seconds: 3
-  trigger_on_accentless: true
-  trigger_on_short_query: true
-  trigger_on_typo_signals: true
 
 llm:
   provider: gemini

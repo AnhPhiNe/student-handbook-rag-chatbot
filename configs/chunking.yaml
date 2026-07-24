@@ -15,13 +15,9 @@ chunking:
   regulation:
     max_tokens: 850
     overlap_tokens: 80
-  form_summary:
-    max_tokens: 250
   table_summary:
     max_tokens: 250
   formula_summary:
     max_tokens: 180
   directory_summary:
     max_tokens: 350
-  procedure_summary:
-    max_tokens: 500

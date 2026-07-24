@@ -138,6 +138,33 @@ class PromptBuilderTest(unittest.TestCase):
         self.assertNotIn("abstain_if_no_direct_evidence", prompt)
         self.assertNotIn("requires_direct_evidence", prompt)
 
+    def test_prompt_does_not_expose_retrieval_query_to_generator(self) -> None:
+        prompt = build_answer_prompt(
+            query="K50 rớt môn thì sao?",
+            retrieval_result={
+                "intent": "open_question",
+                "strategy": "regulation",
+                "execution_mode": "regulation",
+                "retrieval_query": "K50 học phần chưa đạt đăng ký học lại",
+                "retrieved_items": [
+                    {
+                        "chunk_id": "article-1",
+                        "content": "Sinh viên có học phần chưa đạt phải đăng ký học lại.",
+                        "metadata": {
+                            "title": "Điều học phần",
+                            "chunk_type": "regulation",
+                            "source_pages": [1],
+                        },
+                    }
+                ],
+            },
+            cohort="K50",
+        )
+
+        self.assertIn("K50 rớt môn thì sao?", prompt)
+        self.assertNotIn("K50 học phần chưa đạt đăng ký học lại", prompt)
+        self.assertNotIn("- retrieval_query:", prompt)
+
     def test_applicable_amendment_is_promoted_for_matching_cohort(self) -> None:
         amendment_note = (
             "5 Điểm này đã được sửa đổi tại khoản 4, Điều 1, Quyết định 4743. "

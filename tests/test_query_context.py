@@ -232,3 +232,111 @@ def test_answer_output_propagates_query_handling() -> None:
     assert output["query_handling"] == handling
     assert output["router_decision"]["query_handling"] == handling
     assert output["query_rewrite"] is None
+
+
+def _minimal_pipeline() -> AnswerPipeline:
+    pipeline = AnswerPipeline.__new__(AnswerPipeline)
+    pipeline.config = {
+        "retrieval": {
+            "default_top_k": 5,
+            "candidate_multiplier": 5,
+            "min_candidates": 25,
+        },
+        "embedding": {"normalize_embeddings": True},
+    }
+    pipeline.model = object()
+    pipeline.collection = object()
+    pipeline.scoring_tables = []
+    pipeline.formula_rules = []
+    pipeline.entity_registry = []
+    pipeline.expansion_rules = {}
+    pipeline.student_office_profiles = []
+    pipeline.student_service_directory = []
+    pipeline.student_faculty_profiles = []
+    pipeline.foreign_language_tables = []
+    pipeline.structured_tables_registry = []
+    pipeline.program_directory = []
+
+    class DummySlangNormalizer:
+        def normalize(self, value: str) -> str:
+            return f"slang::{value}"
+
+    pipeline.slang_normalizer = DummySlangNormalizer()
+    return pipeline
+
+
+def test_answer_pipeline_uses_validated_query_before_slang(monkeypatch) -> None:
+    pipeline = _minimal_pipeline()
+
+    class DummyRouter:
+        def route(self, query, chat_history=None):
+            return _decision(
+                route="rag",
+                execution_mode="regulation",
+                intent="open_question",
+                lookup_type=None,
+                normalized_query=query,
+                retrieval_query="K50 dia chi phong dao tao",
+            )
+
+    captured = {}
+
+    def fake_hybrid_pipeline(**kwargs):
+        captured.update(kwargs)
+        return {
+            "query": kwargs["query"],
+            "retrieval_query": kwargs["retrieval_query"],
+            "retrieved_items": [],
+            "related_items": [],
+            "citations": [],
+            "needs_llm_answer": True,
+        }
+
+    pipeline.router = DummyRouter()
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.run_hybrid_retrieval_pipeline",
+        fake_hybrid_pipeline,
+    )
+
+    result = pipeline._run_retrieval("K50 rot mon thi sao?", cohort="K50")
+
+    assert captured["query"] == "K50 rot mon thi sao?"
+    assert captured["retrieval_query"] == "slang::K50 rot mon thi sao?"
+    assert result["effective_query"] == "K50 rot mon thi sao?"
+    assert result["router_decision"]["retrieval_query"] == "K50 dia chi phong dao tao"
+    assert result["query_handling"]["source"] == "validated_normalization"
+
+
+def test_answer_pipeline_pure_retrieval_bypasses_router(monkeypatch) -> None:
+    pipeline = _minimal_pipeline()
+
+    class FailingRouter:
+        def route(self, query, chat_history=None):
+            raise AssertionError("router should not be called in pure retrieval eval")
+
+    captured = {}
+
+    def fake_hybrid_pipeline(**kwargs):
+        captured.update(kwargs)
+        return {
+            "query": kwargs["query"],
+            "retrieval_query": kwargs["retrieval_query"],
+            "retrieved_items": [],
+            "related_items": [],
+            "citations": [],
+            "needs_llm_answer": True,
+        }
+
+    pipeline.router = FailingRouter()
+    monkeypatch.setenv("STUDENT_RAG_EVAL_FORCE_REGULATION_RAG", "1")
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.run_hybrid_retrieval_pipeline",
+        fake_hybrid_pipeline,
+    )
+
+    result = pipeline._run_retrieval("K50 bao luu duoc bao lau?", cohort="K50")
+
+    assert captured["query"] == "K50 bao luu duoc bao lau?"
+    assert captured["retrieval_query"] == "slang::K50 bao luu duoc bao lau?"
+    assert result["router_decision"]["eval_force_regulation"] is True
+    assert result["query_handling"]["source"] == "eval_force_regulation"

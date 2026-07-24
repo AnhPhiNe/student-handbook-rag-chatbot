@@ -8,10 +8,12 @@ from typing import Any
 
 from src.common.cohort import resolve_cohort_from_query
 from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline
+from src.retrieval.core.query_context import select_effective_query
 from src.retrieval.core.vector_retriever import (
     get_chroma_collection,
     load_embedding_model,
 )
+from src.retrieval.core.slang_normalizer import SlangNormalizer
 from .answer_formatter import format_final_answer, format_final_response
 from .answer_guardrails import (
     build_clarification_question,
@@ -123,6 +125,7 @@ class AnswerPipeline:
             if query_expansion_rules_path and Path(query_expansion_rules_path).is_file()
             else {}
         )
+        self.slang_normalizer = SlangNormalizer()
 
 
         self.model = load_embedding_model(self.config["embedding"]["model_name"])
@@ -849,17 +852,114 @@ class AnswerPipeline:
         """Run the backend retrieval/router stack with the active cohort context."""
         os.environ["STUDENT_RAG_DISABLE_PHORANKER"] = "1"
 
+        if _env_bool("STUDENT_RAG_EVAL_FORCE_REGULATION_RAG"):
+            query_handling = {
+                "raw_query": query,
+                "effective_query": query,
+                "mode": "raw",
+                "context_mode": "standalone",
+                "source": "eval_force_regulation",
+                "normalized_query": None,
+                "standalone_query": None,
+                "referenced_turns": [],
+                "normalization_confidence": "none",
+                "context_confidence": "none",
+                "validation_errors": [],
+                "needs_clarification": False,
+                "clarification_question": None,
+            }
+            retrieval_query = self.slang_normalizer.normalize(query)
+            result = run_hybrid_retrieval_pipeline(
+                query=query,
+                model=self.model,
+                collection=self.collection,
+                scoring_tables=self.scoring_tables,
+                formula_rules=self.formula_rules,
+                entity_registry=self.entity_registry,
+                expansion_rules=self.expansion_rules,
+                office_directory=self.student_office_profiles,
+                student_service_directory=self.student_service_directory,
+                student_faculty_profiles=self.student_faculty_profiles,
+                foreign_language_tables=self.foreign_language_tables,
+                structured_tables_registry=self.structured_tables_registry,
+                program_directory=self.program_directory,
+                top_k=self.config["retrieval"]["default_top_k"],
+                batch_size=self.config["retrieval"].get("batch_size", 8),
+                normalize_embeddings=self.config["embedding"].get(
+                    "normalize_embeddings", True
+                ),
+                cohort=cohort,
+                candidate_multiplier=int(
+                    self.config["retrieval"].get("candidate_multiplier", 5)
+                ),
+                min_candidates=int(self.config["retrieval"].get("min_candidates", 25)),
+                chat_history=chat_history,
+                intent="open_question",
+                strategy="regulation",
+                retrieval_query=retrieval_query,
+            )
+            router_decision = {
+                "route": "rag",
+                "execution_mode": "regulation",
+                "intent": "open_question",
+                "lookup_type": None,
+                "cohort": cohort,
+                "retrieval_query": retrieval_query,
+                "query_handling": query_handling,
+                "eval_force_regulation": True,
+            }
+            result["selected_cohort"] = cohort
+            result["router_decision"] = router_decision
+            result["raw_query"] = query
+            result["effective_query"] = query
+            result["query_handling"] = query_handling
+            result["retrieval_query"] = retrieval_query
+            return result
+
         if not hasattr(self, "router"):
             from src.retrieval.core.ai_router import AIRouter
-            self.router = AIRouter()
+            self.router = AIRouter.from_config()
             
         router_decision = self.router.route(query, chat_history=chat_history)
+        handling = select_effective_query(
+            query,
+            router_decision,
+            chat_history=chat_history,
+            selected_cohort=cohort,
+        )
+        query_handling = handling.to_dict()
+        effective_query = handling.effective_query or query
+        router_decision = {
+            **router_decision,
+            "query_handling": query_handling,
+            "effective_query": effective_query,
+        }
+        if handling.needs_clarification:
+            return {
+                "query": query,
+                "retrieval_query": query,
+                "intent": router_decision.get("intent"),
+                "strategy": "query_context_clarification",
+                "router_decision": router_decision,
+                "structured_result": None,
+                "retrieved_items": [],
+                "citations": [],
+                "needs_llm_answer": False,
+                "needs_clarification": True,
+                "clarification_question": handling.clarification_question,
+                "out_of_domain": False,
+                "selected_cohort": cohort,
+                "query_handling": query_handling,
+                "effective_query": effective_query,
+                "raw_query": query,
+                "deterministic_validated": False,
+            }
         
         if router_decision.get("execution_mode") == "structured":
             from src.retrieval.core.structured_dispatcher import resolve_structured_decision
             resolution = resolve_structured_decision(
                 router_decision,
-                query=query,
+                query=effective_query,
                 cohort=cohort,
                 scoring_tables=self.scoring_tables,
                 formula_rules=self.formula_rules,
@@ -869,6 +969,7 @@ class AnswerPipeline:
                 foreign_language_tables=self.foreign_language_tables,
                 structured_tables_registry=self.structured_tables_registry,
                 program_directory=self.program_directory,
+                model=self.model,
             )
             if resolution and resolution.result:
                 is_clarification = resolution.result_kind == "clarification"
@@ -886,14 +987,16 @@ class AnswerPipeline:
                     "clarification_question": resolution.result.get("clarification_question") if is_clarification else None,
                     "out_of_domain": False,
                     "selected_cohort": cohort,
-                    "query_handling": router_decision.get("query_handling"),
-                    "effective_query": router_decision.get("effective_query") or query,
+                    "query_handling": query_handling,
+                    "effective_query": effective_query,
                     "raw_query": query,
                     "deterministic_validated": not is_clarification
                 }
 
+        normalized_retrieval_query = self.slang_normalizer.normalize(effective_query)
+        
         result = run_hybrid_retrieval_pipeline(
-            query=query,
+            query=effective_query,
             model=self.model,
             collection=self.collection,
             scoring_tables=self.scoring_tables,
@@ -919,22 +1022,12 @@ class AnswerPipeline:
             chat_history=chat_history,
             intent=router_decision.get("intent"),
             strategy=router_decision.get("execution_mode") or "hybrid_graph_retrieval",
-            retrieval_query=router_decision.get("retrieval_query") or query,
+            retrieval_query=normalized_retrieval_query,
         )
         result["selected_cohort"] = cohort
         result["router_decision"] = router_decision
-        query_handling = (
-            router_decision.get("query_handling")
-            if isinstance(router_decision, dict)
-            and isinstance(router_decision.get("query_handling"), dict)
-            else None
-        )
         result["raw_query"] = query
-        result["effective_query"] = (
-            (query_handling or {}).get("effective_query")
-            or (router_decision or {}).get("effective_query")
-            or query
-        )
+        result["effective_query"] = effective_query
         result["query_handling"] = query_handling
         return result
 

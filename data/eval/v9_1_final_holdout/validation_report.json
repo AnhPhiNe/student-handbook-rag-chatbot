@@ -1,0 +1,84 @@
+{
+  "valid": true,
+  "errors": [],
+  "warnings": [],
+  "counts": {
+    "deterministic": 120,
+    "retrieval": 180,
+    "answers": 100,
+    "production": 60
+  },
+  "breakdowns": {
+    "deterministic": {
+      "cohort": {
+        "K48-K49": 41,
+        "K50": 40,
+        "K51": 39
+      },
+      "case_type": {
+        "positive": 60,
+        "hard_negative": 40,
+        "ambiguous": 12,
+        "out_of_domain": 8
+      },
+      "scenario": {
+        "None": 120
+      }
+    },
+    "retrieval": {
+      "cohort": {
+        "K48-K49": 46,
+        "K50": 45,
+        "K51": 45,
+        "general": 44
+      },
+      "case_type": {
+        "regulation_true_rag": 180
+      },
+      "scenario": {
+        "None": 180
+      }
+    },
+    "answers": {
+      "cohort": {
+        "K48-K49": 30,
+        "K50": 28,
+        "K51": 27,
+        "general": 15
+      },
+      "case_type": {
+        "regulation_true_rag": 60,
+        "structured_answer": 20,
+        "mixed_answer": 10,
+        "unanswerable": 10
+      },
+      "scenario": {
+        "None": 100
+      }
+    },
+    "production": {
+      "cohort": {
+        "K48-K49": 34,
+        "K50": 21,
+        "K51": 5
+      },
+      "case_type": {
+        "None": 60
+      },
+      "scenario": {
+        "cold_rag": 20,
+        "deterministic": 10,
+        "warm_cache": 10,
+        "streaming": 10,
+        "burst": 10
+      }
+    }
+  },
+  "dataset_hashes": {
+    "deterministic": "156a3f5c7cc5cd22fb81ace7389a3db7cf18d7061b1d5aa68b3d86e7f67d2b46",
+    "retrieval": "b8e3499d1d55aa08ac5b3df7fb688c02a362aaeade179ae5fbe7b3d17957bee9",
+    "answers": "a8f9942c166b98996a1b1e5c0e0a9108ddea7d14edf953aae1a2cba616c6d972",
+    "production": "b65892825a85e7cdb28964ae4e8f40935b698b00039b3a4c0c328d914842acf7"
+  },
+  "docstore_parent_count": 478
+}

@@ -116,6 +116,12 @@ RETRIEVAL_QUERY_REVISIONS = {
     },
 }
 
+STRUCTURED_SOURCE_ID_REVISIONS = {
+    "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded": (
+        "K48_49_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded"
+    ),
+}
+
 
 def _load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -129,6 +135,22 @@ def _doc_id(item: dict[str, Any]) -> str:
         or metadata.get("parent_section_id")
         or ""
     )
+
+
+def _revise_structured_source_ids(value: Any) -> int:
+    """Rewrite stale structured source IDs to the current registry IDs."""
+    changed = 0
+    if isinstance(value, dict):
+        source_id = value.get("source_id")
+        if source_id in STRUCTURED_SOURCE_ID_REVISIONS:
+            value["source_id"] = STRUCTURED_SOURCE_ID_REVISIONS[source_id]
+            changed += 1
+        for child in value.values():
+            changed += _revise_structured_source_ids(child)
+    elif isinstance(value, list):
+        for child in value:
+            changed += _revise_structured_source_ids(child)
+    return changed
 
 
 def _doc_judgment(item: dict[str, Any]) -> dict[str, Any]:
@@ -263,6 +285,7 @@ def build_bundle(output_dir: Path) -> dict[str, Any]:
         docstore_by_id,
     )
     _propagate_linked_query_revisions(datasets, old_query_by_id)
+    structured_source_revision_count = _revise_structured_source_ids(datasets)
 
     output_dir.mkdir(parents=True, exist_ok=True)
     for suite, cases in datasets.items():
@@ -304,9 +327,11 @@ def build_bundle(output_dir: Path) -> dict[str, Any]:
             ),
         },
         "annotation_revision_count": len(RETRIEVAL_QUERY_REVISIONS),
+        "structured_source_revision_count": structured_source_revision_count,
         "annotation_revision_policy": (
             "Only objectively incomplete, malformed, or responsibility-mismatched "
-            "queries were replaced; source IDs remain anchored."
+            "queries were replaced; stale structured source IDs were aligned to "
+            "the current approved registry."
         ),
         "holdout_policy": "single_run_no_post_tuning",
     }

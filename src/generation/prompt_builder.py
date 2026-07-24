@@ -45,7 +45,7 @@ def build_answer_prompt(
 
 ANSWER_SCOPE_RULES
 - Chỉ trả lời đúng đối tượng, chính sách hoặc giá trị mà câu hỏi đang hỏi. Không tự mở rộng sang địa chỉ, email, thủ tục, hậu quả hoặc ngoại lệ nếu người dùng không hỏi và nguồn không nói trực tiếp.
-- Treat source titles and source_section as the topic anchor. If the query matches a regulation title such as "hình thức đào tạo", answer that regulation; do not reinterpret it as a similarly named office/unit such as "Phòng Đào tạo".
+- Dùng tiêu đề nguồn, source_section và loại nguồn làm anchor chủ đề. Không diễn giải một thuật ngữ trong quy định thành tên phòng/khoa/đơn vị chỉ vì gần chữ.
 - Với câu hỏi về liên hệ/đơn vị, chỉ trả lời các trường có trong STRUCTURED_RESULT hoặc CONTEXT. Không suy ra phòng, email, số điện thoại, địa điểm hoặc đơn vị phụ trách từ tên gần giống.
 - Với câu hỏi có/không, quyền, ngoại lệ, hậu quả, thay thế, miễn hoặc thời hạn, chỉ kết luận có hoặc không khi nguồn trực tiếp xác lập đúng quyền, nghĩa vụ hoặc điều cấm được hỏi. Thông tin về lịch/thời điểm không tự chứng minh người dùng có quyền lựa chọn. Nếu không, nêu dữ kiện chắc chắn có liên quan và nói rõ nguồn chưa xác định phần được hỏi.
 - Trả lời ngắn gọn theo mặc định, nhưng phải giữ đủ điều kiện, số liệu, sửa đổi hiệu lực và khác biệt cohort trực tiếp cần thiết để tránh gây hiểu nhầm.
@@ -55,10 +55,9 @@ NHIỆM VỤ
 - Chỉ sử dụng STRUCTURED_RESULT và CONTEXT; không dùng kiến thức ngoài nguồn.
 - Nếu STRUCTURED_RESULT và CONTEXT không đủ căn cứ cho câu hỏi, nói rằng chưa tìm thấy trong Sổ tay thay vì tự suy diễn.
 - STRUCTURED_RESULT là nguồn chuẩn cho bảng và danh mục. CONTEXT là nguồn chuẩn cho quy định, điều kiện và thủ tục.
-- PRIMARY SOURCES là căn cứ chính. RELATED SOURCES là các Điều liên quan do graph kéo từ nguồn chính; luôn kiểm tra và trình bày trong mục riêng nếu có.
-- Khi có RELATED SOURCES, dùng format Expanded Graph Answer: (1) Kết luận chính, (2) Nội dung từ nguồn chính, (3) Các Điều liên quan được nguồn dẫn chiếu, (4) Lưu ý phạm vi.
-- Trong mục "Các Điều liên quan được nguồn dẫn chiếu", tóm tắt từng RELATED SOURCE đủ các ý chính liên quan, bao gồm số liệu, điều kiện, khoản/điểm, ngoại lệ, mốc thời gian và bảng nếu có. Không chỉ viết chung chung "theo Điều X".
-- RELATED SOURCES dùng để bổ sung/giải thích nguồn chính; không dùng để phủ định hoặc thay thế kết luận chính trừ khi RELATED chứa sửa đổi, ngoại lệ hoặc điều kiện hiệu lực rõ ràng.
+- PRIMARY SOURCES là căn cứ chính. RELATED SOURCES là thông tin bổ sung.
+- BẮT BUỘC: Nếu văn bản ở PRIMARY SOURCES có dẫn chiếu đến một Điều/Khoản khác (ví dụ: "theo quy định tại Điều 3", "theo Điều 15"), BẠN PHẢI tìm nội dung của Điều/Khoản đó trong RELATED SOURCES hoặc PRIMARY SOURCES để lấy con số, điều kiện cụ thể và GIẢI THÍCH TRỰC TIẾP vào câu trả lời (ví dụ: "theo Điều 3, thời gian tối đa là 8 năm"). TUYỆT ĐỐI KHÔNG được chép lại câu dẫn chiếu chung chung mà không giải thích ý nghĩa của nó.
+- Trình bày câu trả lời một cách tự nhiên, mạch lạc. Nếu RELATED SOURCES được PRIMARY dẫn chiếu trực tiếp hoặc bổ sung điều kiện làm thay đổi cách hiểu, hãy giải thích rõ trong mục "Các Điều liên quan được nguồn dẫn chiếu".
 - Nếu có APPLICABLE AMENDMENTS, nội dung thay thế/bổ sung trong đó có thứ tự hiệu lực cao hơn câu chữ cũ, nhưng chỉ trong đúng phạm vi điều/khoản/điểm và cohort được nêu.
 - Nếu người dùng không nêu rõ khóa và CONTEXT chứa nhiều phiên bản quy định khác nhau theo khóa, phải phân tách câu trả lời theo từng khóa; không gộp chung hoặc tự chọn một khóa đại diện.
 - Giữ nguyên số liệu, tỷ lệ, thời hạn, Điều, khoản, điểm và thông tin liên hệ. Không suy rộng quy định cho đối tượng khác.
@@ -85,7 +84,6 @@ RETRIEVAL_METADATA:
 - intent: {retrieval_result.get("intent")}
 - strategy: {retrieval_result.get("strategy")}
 - execution_mode: {retrieval_result.get("execution_mode")}
-- retrieval_query: {retrieval_result.get("retrieval_query")}
 
 Chỉ xuất câu trả lời cuối cùng cho sinh viên."""
 

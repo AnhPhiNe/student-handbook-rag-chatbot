@@ -105,12 +105,14 @@ def _fuzzy_similarity(left: str, right: str) -> float:
     overlap = len(left_tokens & right_tokens) / max(len(left_tokens | right_tokens), 1)
     sequence = SequenceMatcher(None, left_norm, right_norm).ratio()
     containment = 0.0
-    if min(len(left_norm), len(right_norm)) >= 3 and (
-        left_norm in right_norm or right_norm in left_norm
-    ):
-        containment = 0.84 + 0.12 * (
-            min(len(left_norm), len(right_norm)) / max(len(left_norm), len(right_norm))
+    if min(len(left_norm), len(right_norm)) >= 3:
+        short_str, long_str = (
+            (left_norm, right_norm)
+            if len(left_norm) < len(right_norm)
+            else (right_norm, left_norm)
         )
+        if re.search(rf"(?<![a-z0-9]){re.escape(short_str)}(?![a-z0-9])", long_str):
+            containment = 0.84 + 0.12 * (len(short_str) / len(long_str))
     return min(1.0, max(sequence, overlap, containment))
 
 

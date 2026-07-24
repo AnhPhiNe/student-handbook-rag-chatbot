@@ -98,16 +98,12 @@ def _build_source_label(metadata: dict[str, Any]) -> str | None:
         return str(label)
 
     chunk_type = metadata.get("chunk_type")
-    if chunk_type == "form":
-        return "Biểu mẫu"
     if chunk_type == "faculty_directory":
         return "Khoa/tổ"
     if chunk_type == "program_directory":
         return "Ngành đào tạo"
     if chunk_type == "contact":
         return "Thông tin liên hệ"
-    if chunk_type == "procedure":
-        return "Quy trình"
     if chunk_type == "rule":
         return "Quy định"
     if chunk_type == "table":
@@ -206,28 +202,6 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
                 "applicability": lookup_result.get("applicability"),
                 "content": preview
                 or "Du lieu nganh dao tao duoc trich xuat tu So tay sinh vien HCMUE.",
-            }
-        ]
-
-    if lookup_result.get("lookup_type") == "form_template":
-        forms = lookup_result.get("result") or []
-        first_form = forms[0] if forms else {}
-        return [
-            {
-                "chunk_type": "form_template",
-                "title": first_form.get("form_name") or lookup_result.get("table_name"),
-                "source_pages": lookup_result.get("source_pages", []),
-                "source_label": lookup_result.get("source_label")
-                or "Danh mục biểu mẫu trong Sổ tay sinh viên",
-                "source_url": lookup_result.get("source_url"),
-                "cohort": lookup_result.get("cohort"),
-                "document_id": lookup_result.get("document_id"),
-                "source_section": lookup_result.get("source_section"),
-                "source_parent_id": lookup_result.get("source_parent_id"),
-                "parent_section_id": lookup_result.get("source_parent_id"),
-                "applicability": lookup_result.get("applicability"),
-                "content": first_form.get("summary")
-                or "Dữ liệu biểu mẫu được trích xuất từ Sổ tay sinh viên HCMUE.",
             }
         ]
 

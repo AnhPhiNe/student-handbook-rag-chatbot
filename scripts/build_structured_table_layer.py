@@ -1263,7 +1263,6 @@ def build_structured_data_manifest(
             },
         },
         "separate_catalogs": {
-            "form_template": "data/processed/forms/clean_form_templates.json",
             "formula": "data/processed/tables/formula_rules.json",
         },
         "storage_policy": {

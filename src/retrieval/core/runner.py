@@ -35,7 +35,6 @@ def main() -> None:
 
     scoring_tables = load_json(Path(config["input"]["scoring_tables"]))
     formula_rules = load_json(Path(config["input"]["formula_rules"]))
-    form_templates = load_json(Path(config["input"]["form_templates"]))
     student_service_path = config["input"].get("student_service_directory")
     student_service_directory = (
         load_json(Path(student_service_path)) if student_service_path else []
@@ -77,7 +76,6 @@ def main() -> None:
             collection=collection,
             scoring_tables=scoring_tables,
             formula_rules=formula_rules,
-            form_templates=form_templates,
             office_directory=student_office_profiles,
             student_service_directory=student_service_directory,
             student_faculty_profiles=student_faculty_profiles,

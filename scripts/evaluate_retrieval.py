@@ -109,9 +109,9 @@ def expected_list(case: dict[str, Any], key: str) -> list[str]:
 def normalize_content_type(value: Any) -> str:
     aliases = {
         "faculty": "faculty_directory",
-        "form": "form_templates",
         "office": "office_directory",
-        "procedure": "procedures",
+        "procedure": "regulation_sections",
+        "procedures": "regulation_sections",
         "program": "program_directory",
         "regulation": "regulation_sections",
     }
@@ -122,9 +122,9 @@ def normalize_content_type(value: Any) -> str:
 def normalize_chunk_type(value: Any) -> str:
     aliases = {
         "faculty": "faculty_directory",
-        "form_templates": "form",
         "office": "office_directory",
-        "procedures": "procedure",
+        "procedure": "regulation",
+        "procedures": "regulation",
         "program": "program_directory",
         "regulation_text": "regulation",
         "regulation_sections": "regulation",
@@ -505,9 +505,9 @@ def _content_type_breakdown(case_results: list[dict[str, Any]]) -> dict[str, Any
 def _normalize_report_content_type(content_type: str) -> str:
     aliases = {
         "faculty": "faculty_directory",
-        "form": "form_templates",
         "office": "office_directory",
-        "procedure": "procedures",
+        "procedure": "regulation_sections",
+        "procedures": "regulation_sections",
         "program": "program_directory",
         "regulation": "regulation_sections",
         "scoring_table": "scoring_tables",
@@ -556,7 +556,6 @@ def run_evaluation(config_path: Path, golden_path: Path, scope: str = "all") -> 
 
     scoring_tables = load_project_json(Path(config["input"]["scoring_tables"]))
     formula_rules = load_project_json(Path(config["input"]["formula_rules"]))
-    form_templates = load_project_json(Path(config["input"]["form_templates"]))
     program_directory = load_project_json(Path(config["input"]["program_directory"]))
     entity_registry = load_project_json(Path(config["input"]["entity_registry"]))
     expansion_rules = load_project_json(Path(config["input"]["query_expansion_rules"]))
@@ -576,7 +575,6 @@ def run_evaluation(config_path: Path, golden_path: Path, scope: str = "all") -> 
             collection=collection,
             scoring_tables=scoring_tables,
             formula_rules=formula_rules,
-            form_templates=form_templates,
             program_directory=program_directory,
             entity_registry=entity_registry,
             expansion_rules=expansion_rules,

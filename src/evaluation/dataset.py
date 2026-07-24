@@ -113,6 +113,7 @@ def file_hash(path: Path) -> str:
 
 
 def normalize_query(value: str) -> str:
+    value = re.sub(r"^\s*case\s+\d+\s*:\s*", "", value, flags=re.IGNORECASE)
     text = (
         unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
     )
@@ -144,6 +145,7 @@ def _judgment_ids(case: dict[str, Any]) -> list[str]:
 
 def _record_id(record: dict[str, Any]) -> str:
     for key in (
+        "record_id",
         "service_id",
         "office_profile_id",
         "faculty_profile_id",
@@ -160,20 +162,70 @@ def _record_id(record: dict[str, Any]) -> str:
     return ""
 
 
-def _structured_source_ids(root: Path) -> set[str]:
-    relative_paths = (
-        "data/processed/directories/student_service_directory.json",
-        "data/processed/directories/student_office_profiles.json",
-        "data/processed/directories/student_faculty_profiles.json",
-        "data/processed/directories/program_directory.json",
-        "data/processed/forms/clean_form_templates.json",
-        "data/processed/tables/structured_tables_registry.json",
-        "data/processed/tables/formula_rules.json",
-        "data/processed/tables/foreign_language_equivalency_table.json",
-        "data/processed/tables/scoring_tables.json",
+def _structured_catalog_aliases(
+    catalog: str, record: dict[str, Any]
+) -> set[str]:
+    aliases = {catalog}
+    aliases.update(
+        str(record.get(field) or "").strip()
+        for field in ("lookup_group", "table_type", "table_subtype")
+        if str(record.get(field) or "").strip()
     )
-    identifiers: set[str] = set()
-    for relative in relative_paths:
+    default_alias = {
+        "student_service_directory": "service",
+        "student_office_profiles": "office",
+        "student_faculty_profiles": "faculty",
+        "program_directory": "program",
+        "formula_rules": "formula",
+        "foreign_language_equivalency_table": "foreign_language",
+    }.get(catalog)
+    if default_alias:
+        aliases.add(default_alias)
+    aliases.discard("")
+    if catalog in {"structured_tables_registry", "scoring_tables"}:
+        table_type = str(record.get("table_type") or "").strip()
+        table_id = str(record.get("table_id") or "").strip()
+        table_name = str(record.get("table_name") or "").lower()
+        if table_type == "scholarship":
+            aliases.add("scholarship")
+        elif table_type in {"conduct", "scoring"} or record.get("lookup_group"):
+            aliases.add("scoring")
+        elif table_type == "study_duration":
+            aliases.add("study_duration")
+        elif table_type == "foreign_language":
+            aliases.add("foreign_language")
+        if table_id == "scholarship_classification" or "học bổng" in table_name:
+            aliases.add("scholarship")
+        if table_id == "conduct_classification" or "rèn luyện" in table_name:
+            aliases.update({"conduct", "scoring"})
+    return aliases
+
+
+def _structured_source_index(
+    root: Path,
+) -> dict[tuple[str, str], dict[str, Any]]:
+    relative_paths = {
+        "student_service_directory": (
+            "data/processed/directories/student_service_directory.json"
+        ),
+        "student_office_profiles": (
+            "data/processed/directories/student_office_profiles.json"
+        ),
+        "student_faculty_profiles": (
+            "data/processed/directories/student_faculty_profiles.json"
+        ),
+        "program_directory": "data/processed/directories/program_directory.json",
+        "structured_tables_registry": (
+            "data/processed/tables/structured_tables_registry.json"
+        ),
+        "formula_rules": "data/processed/tables/formula_rules.json",
+        "foreign_language_equivalency_table": (
+            "data/processed/tables/foreign_language_equivalency_table.json"
+        ),
+        "scoring_tables": "data/processed/tables/scoring_tables.json",
+    }
+    index: dict[tuple[str, str], dict[str, Any]] = {}
+    for catalog, relative in relative_paths.items():
         path = root / relative
         if not path.exists():
             continue
@@ -187,8 +239,51 @@ def _structured_source_ids(root: Path) -> set[str]:
             if isinstance(record, dict):
                 record_id = _record_id(record)
                 if record_id:
-                    identifiers.add(record_id)
-    return identifiers
+                    for alias in _structured_catalog_aliases(catalog, record):
+                        index[(alias, record_id)] = record
+    return index
+
+
+def _structured_source_ids(root: Path) -> set[str]:
+    return {record_id for _, record_id in _structured_source_index(root)}
+
+
+def _normalize_eval_cohort(value: Any) -> str | None:
+    normalized = str(value or "").strip().upper().replace("_", "-")
+    if normalized in {"K48", "K49", "K48-K49", "K49-K48"}:
+        return "K48-K49"
+    if normalized in {"K50", "K51"}:
+        return normalized
+    return None
+
+
+def _query_cohorts(query: str) -> set[str]:
+    return {
+        cohort
+        for match in re.findall(
+            r"\bK(?:48(?:\s*[-/]\s*K?49)?|49|50|51)\b",
+            query,
+            flags=re.IGNORECASE,
+        )
+        if (cohort := _normalize_eval_cohort(match.replace(" ", "")))
+    }
+
+
+def _structured_record_matches_cohort(
+    record: dict[str, Any], expected_cohort: str | None
+) -> bool:
+    expected = _normalize_eval_cohort(expected_cohort)
+    if expected is None:
+        return True
+    actual = _normalize_eval_cohort(record.get("cohort"))
+    if actual is not None:
+        return actual == expected
+    applicable = {
+        _normalize_eval_cohort(value)
+        for value in record.get("applicable_cohorts") or []
+    }
+    applicable.discard(None)
+    return not applicable or expected in applicable
 
 
 def _validate_common(case: dict[str, Any], suite: str, errors: list[str]) -> None:
@@ -279,7 +374,12 @@ def validate_bundle(
 
     docstore = load_json(docstore_path)
     docs_by_id = {_doc_id(item): item for item in docstore if _doc_id(item)}
-    structured_ids = _structured_source_ids(docstore_path.parents[3])
+    project_root = docstore_path.parents[3]
+    structured_source_index = _structured_source_index(project_root)
+    structured_ids = {record_id for _, record_id in structured_source_index}
+    strict_structured_sources = bool(manifest.get("strict_structured_sources"))
+    strict_cohort_conflicts = bool(manifest.get("strict_cohort_conflicts"))
+    strict_query_duplicates = bool(manifest.get("strict_query_duplicates"))
 
     seen_ids: set[str] = set()
     normalized_queries: list[tuple[str, str, bool, str | None]] = []
@@ -301,6 +401,26 @@ def validate_bundle(
                     str(case.get("duplicate_group") or "").strip() or None,
                 )
             )
+            explicit_cohorts = _query_cohorts(str(case.get("query") or ""))
+            selected_cohort = _normalize_eval_cohort(case.get("cohort"))
+            cohort_conflict = bool(
+                explicit_cohorts
+                and selected_cohort
+                and selected_cohort not in explicit_cohorts
+            )
+            if (
+                cohort_conflict
+                and case.get("expected_path") != "clarify"
+                and not case.get("cohort_conflict_reviewed")
+            ):
+                message = (
+                    f"{case_id}: query cohort {sorted(explicit_cohorts)} conflicts "
+                    f"with selected cohort {selected_cohort}"
+                )
+                if strict_cohort_conflicts:
+                    errors.append(message)
+                else:
+                    warnings.append(message)
 
             if suite in {"retrieval", "answers"}:
                 judgments = case.get("relevance_judgments")
@@ -378,10 +498,35 @@ def validate_bundle(
                     )
                 for source in structured_sources:
                     source_id = str((source or {}).get("source_id") or "").strip()
-                    if source_id and source_id not in structured_ids:
-                        errors.append(
-                            f"{case_id}: unknown structured source_id={source_id}"
+                    catalog = str((source or {}).get("catalog") or "").strip()
+                    if not source_id:
+                        errors.append(f"{case_id}: empty structured source_id")
+                        continue
+                    if source_id not in structured_ids:
+                        errors.append(f"{case_id}: unknown structured source_id={source_id}")
+                        continue
+                    record = structured_source_index.get((catalog, source_id))
+                    if catalog and record is None:
+                        message = (
+                            f"{case_id}: structured source_id={source_id} does not "
+                            f"belong to catalog={catalog}"
                         )
+                        if strict_structured_sources:
+                            errors.append(message)
+                        else:
+                            warnings.append(message)
+                        continue
+                    if record is not None and not _structured_record_matches_cohort(
+                        record, case.get("cohort")
+                    ):
+                        message = (
+                            f"{case_id}: structured source_id={source_id} does not "
+                            f"apply to cohort={case.get('cohort')}"
+                        )
+                        if strict_structured_sources:
+                            errors.append(message)
+                        else:
+                            warnings.append(message)
             elif suite == "deterministic":
                 for field in ("case_type", "expected_group", "expected_llm_called"):
                     if field not in case:
@@ -396,7 +541,11 @@ def validate_bundle(
         if normalized in normalized_index:
             other_id, other_group = normalized_index[normalized]
             if not duplicate_group or duplicate_group != other_group:
-                errors.append(f"exact duplicate query: {case_id} == {other_id}")
+                message = f"exact duplicate query: {case_id} == {other_id}"
+                if strict_query_duplicates:
+                    errors.append(message)
+                else:
+                    warnings.append(message)
         else:
             normalized_index[normalized] = (case_id, duplicate_group)
 
@@ -511,14 +660,19 @@ def validate_bundle(
 
     answers = datasets.get("answers", [])
     answer_types = Counter(case.get("case_type") for case in answers)
-    if dict(answer_types) != {
+    expected_answer_types = manifest.get("answer_case_type_counts") or {
         "regulation_true_rag": 86,
         "structured_mixed": 4,
         "unanswerable": 10,
-    }:
+    }
+    if dict(answer_types) != expected_answer_types:
         errors.append(f"answer case distribution mismatch: {dict(answer_types)}")
     answer_split = Counter(case.get("eval_split") for case in answers)
-    if dict(answer_split) != {"realistic": 75, "stress": 25}:
+    expected_answer_split = manifest.get("answer_eval_split_counts") or {
+        "realistic": 75,
+        "stress": 25,
+    }
+    if dict(answer_split) != expected_answer_split:
         errors.append(f"answer eval_split mismatch: {dict(answer_split)}")
 
     production = datasets.get("production", [])
@@ -559,12 +713,16 @@ def validate_bundle(
         audit_template = load_json(audit_template_path)
         if expected_audit_hash != stable_json_hash(audit_template):
             errors.append("human audit template hash mismatch")
-        if len(audit_template) != 20:
+        expected_audit_n = int(manifest.get("human_audit_required_n") or 20)
+        expected_repeat_n = int(manifest.get("human_audit_repeat_n") or 5)
+        if len(audit_template) != expected_audit_n:
             errors.append(
-                f"human audit template expected 20 rows, found {len(audit_template)}"
+                f"human audit template expected {expected_audit_n} rows, found {len(audit_template)}"
             )
-        if sum(bool(row.get("repeat_for_consistency")) for row in audit_template) != 5:
-            errors.append("human audit template must mark exactly 5 repeated scores")
+        if sum(bool(row.get("repeat_for_consistency")) for row in audit_template) != expected_repeat_n:
+            errors.append(
+                f"human audit template must mark exactly {expected_repeat_n} repeated scores"
+            )
 
     counts = {suite: len(cases) for suite, cases in datasets.items()}
     breakdowns = {

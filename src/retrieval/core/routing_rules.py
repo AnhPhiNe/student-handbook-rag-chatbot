@@ -12,7 +12,7 @@ except ModuleNotFoundError:  # pragma: no cover - exercised in minimal runtimes.
 DEFAULT_RULES_PATH = Path("configs/query_routing_rules.yaml")
 
 FALLBACK_RULES: dict[str, list[str]] = {
-    "form_signal": ["mau don", "don xin", "bieu mau", "phieu", "form", "mau"],
+    "document_requirement_signal": ["mau don", "don xin", "bieu mau", "phieu", "mau"],
     "regulation_signal": [
         "dieu kien",
         "quy dinh",
@@ -43,7 +43,7 @@ FALLBACK_RULES: dict[str, list[str]] = {
     ],
     "gpa_signal": ["gpa", "diem trung binh", "tbc", "tb"],
     "scholarship_score_signal": ["diem hoc bong"],
-    "ktx_form_signal": ["don", "mau", "giay", "ho so"],
+    "ktx_document_signal": ["don", "mau", "giay", "ho so"],
     "ktx_regulation_signal": [
         "quy trinh",
         "tieu chi",
@@ -53,7 +53,7 @@ FALLBACK_RULES: dict[str, list[str]] = {
         "xet",
         "hoi dong",
     ],
-    "mixed_form_signal": ["mau don", "don", "bieu mau", "giay xac nhan", "ho so"],
+    "mixed_document_signal": ["mau don", "don", "bieu mau", "giay xac nhan", "ho so"],
     "mixed_regulation_signal": [
         "dieu kien",
         "quy dinh",

@@ -30,16 +30,6 @@ def build_retrieval_plan(
     q = query.lower()
     rules = load_query_routing_rules()
 
-    if contains_any(q, rules["mixed_form_signal"]):
-        plans.append(
-            {
-                "purpose": "form",
-                "query": retrieval_query,
-                "chunk_types": ["form"],
-                "top_k": 2,
-            }
-        )
-
     if contains_any(q, rules["mixed_regulation_signal"]):
         plans.append(
             {

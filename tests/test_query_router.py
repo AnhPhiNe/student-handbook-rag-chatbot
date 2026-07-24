@@ -10,8 +10,8 @@ class QueryRouterTest(unittest.TestCase):
             "thông tin Khoa CNTT": ("faculty_query", "semantic_filtered_rerank"),
             "diem tb tinh kieu j": ("formula_query", "formula_lookup"),
             "Muon tam nghi hoc can mau don nao?": (
-                "form_query",
-                "form_lookup",
+                "regulation_query",
+                "semantic_filtered",
             ),
             "Diem ren luyen 85 la loai gi?": (
                 "score_lookup_query",
@@ -52,7 +52,6 @@ class QueryRouterTest(unittest.TestCase):
                 self.assertNotIn(
                     route["strategy"],
                     {
-                        "form_lookup",
                         "formula_lookup",
                         "scholarship_classification_lookup",
                         "student_service_lookup",

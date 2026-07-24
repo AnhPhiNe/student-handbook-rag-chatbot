@@ -21,6 +21,7 @@ class ChatRequest(BaseModel):
         cohort (str | None): Một chuỗi định danh nhóm người dùng, thường được sử dụng
             cho các thử nghiệm A/B hoặc phân tích. Mặc định là `None`.
     """
+
     query: str
     include_debug: bool = False
     chat_history: list[dict[str, str]] | None = None
@@ -41,13 +42,17 @@ class ChatResponse(BaseModel):
             có thể khác với `query` gốc nếu có quá trình viết lại câu hỏi. Mặc định là `None`.
         query_rewrite (dict[str, Any] | None): Thông tin chi tiết về quá trình viết lại câu hỏi,
             nếu có. Mặc định là `None`.
+        query_handling (dict[str, Any] | None): Quyết định chuẩn hóa hoặc nối ngữ cảnh
+            đã được Router kiểm tra trước khi truy vấn.
         request_id (str | None): Một ID duy nhất cho mỗi yêu cầu, giúp theo dõi. Mặc định là `None`.
         run_id (str | None): Một ID duy nhất cho mỗi lần chạy xử lý nội bộ. Mặc định là `None`.
         latency_ms (float | None): Thời gian xử lý yêu cầu tính bằng mili giây. Mặc định là `None`.
     """
+
     answer: str
     status: str
     effective_query: str | None = None
+    query_handling: dict[str, Any] | None = None
     query_rewrite: dict[str, Any] | None = None
     request_id: str | None = None
     run_id: str | None = None
@@ -90,6 +95,7 @@ class ChatFeedbackRequest(BaseModel):
         error_message (str | None): Thông báo lỗi chi tiết (nếu có). Mặc định là `None`.
         debug (dict[str, Any] | None): Thông tin gỡ lỗi bổ sung liên quan đến phản hồi. Mặc định là `None`.
     """
+
     run_id: str
     score: float
     comment: str | None = None
@@ -115,6 +121,7 @@ class HealthResponse(BaseModel):
         service (str): Tên của dịch vụ đang được kiểm tra.
         version (str): Phiên bản hiện tại của dịch vụ.
     """
+
     status: str
     service: str
     version: str
@@ -131,6 +138,7 @@ class ArtifactStatus(BaseModel):
         exists (bool): Nếu là `True`, tài nguyên được tìm thấy và tồn tại.
         kind (str): Loại của tài nguyên, ví dụ: "model" (mô hình), "data" (dữ liệu), "config" (cấu hình).
     """
+
     path: str
     exists: bool
     kind: str
@@ -147,5 +155,6 @@ class ArtifactHealthResponse(BaseModel):
         required_artifacts (list[ArtifactStatus]): Một danh sách các đối tượng `ArtifactStatus`,
             mỗi đối tượng mô tả trạng thái của một tài nguyên cần thiết.
     """
+
     status: str
     required_artifacts: list[ArtifactStatus]

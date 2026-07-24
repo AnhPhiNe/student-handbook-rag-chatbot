@@ -9,6 +9,7 @@ from collections import defaultdict
 from typing import Any
 from src.retrieval.core.cross_encoder_reranker import get_local_reranker
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
+from src.common.cohort import normalize_cohort
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
     FieldCondition,
@@ -27,6 +28,20 @@ SUPPORTED_RETRIEVAL_MODES = {
 }
 GRAPH_SUPPLEMENT_PARENT_LIMIT = 5
 PHORANKER_EVAL_MODES = {"full", "no_graph"}
+
+
+def _chunk_matches_regulation_scope(
+    chunk: dict[str, Any], cohort: str | None = None
+) -> bool:
+    metadata = chunk.get("metadata") or {}
+    if metadata.get("content_type") != "regulation_text":
+        return False
+    if _is_supplemental_regulation_metadata(metadata):
+        return False
+    expected_cohort = normalize_cohort(cohort)
+    if expected_cohort:
+        return normalize_cohort(metadata.get("cohort")) == expected_cohort
+    return True
 
 def _query_points_with_retry(
     client: QdrantClient,
@@ -321,7 +336,11 @@ class HybridRetrieverV7:
         ]
         
         # --- BM25 RETRIEVAL & RECIPROCAL RANK FUSION (RRF) ---
-        bm25_results = self.bm25.search_bm25(query, top_k=search_limit)
+        bm25_results = [
+            (score, chunk)
+            for score, chunk in self.bm25.search_bm25(query, top_k=search_limit)
+            if _chunk_matches_regulation_scope(chunk, cohort)
+        ]
         
         # Union of chunk IDs
         dense_chunk_ids = [str(c.get("_id") or c.get("chunk_id") or "") for _, c in vector_scored]
@@ -716,9 +735,10 @@ def run_hybrid_retrieval_pipeline(
 
         qdrant_url = os.getenv("QDRANT_URL")
         qdrant_key = os.getenv("QDRANT_API_KEY")
-        collection_name = os.getenv(
-            "STUDENT_RAG_HYBRID_COLLECTION",
-            "student_handbook_semantic_v7",
+        collection_name = (
+            os.getenv("STUDENT_RAG_HYBRID_COLLECTION")
+            or os.getenv("QDRANT_COLLECTION_NAME")
+            or "student_handbook_semantic_v7"
         )
         logger.info("Initializing hybrid regulation retriever V7...")
         _GLOBAL_RETRIEVER = HybridRetrieverV7(

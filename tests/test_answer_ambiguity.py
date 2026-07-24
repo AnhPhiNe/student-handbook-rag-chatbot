@@ -75,7 +75,7 @@ class AnswerAmbiguityTest(unittest.TestCase):
         self.assertTrue(
             detect_ambiguous_query(
                 "Giấy tờ sinh viên làm ở đâu?",
-                _retrieval(retrieved_items=[_item("form", 0.77), _item("procedure", 0.73)]),
+                _retrieval(retrieved_items=[_item("regulation", 0.77), _item("regulation", 0.73)]),
             )
         )
 
@@ -84,9 +84,9 @@ class AnswerAmbiguityTest(unittest.TestCase):
             intent="regulation_query",
             retrieved_items=[_item("regulation", 0.81), _item("regulation", 0.76)],
         )
-        clear_form = _retrieval(
-            intent="form_query",
-            retrieved_items=[_item("form", 0.81), _item("procedure", 0.78)],
+        clear_document_policy = _retrieval(
+            intent="regulation_query",
+            retrieved_items=[_item("regulation", 0.81), _item("regulation", 0.78)],
         )
         deterministic_score = {
             "structured_result": {
@@ -103,7 +103,7 @@ class AnswerAmbiguityTest(unittest.TestCase):
             detect_ambiguous_query("Có giới hạn số lần học lại một môn không?", clear_regulation)
         )
         self.assertFalse(
-            detect_ambiguous_query("Muốn tạm nghỉ học cần mẫu đơn nào?", clear_form)
+            detect_ambiguous_query("Muốn tạm nghỉ học cần mẫu đơn nào?", clear_document_policy)
         )
         self.assertFalse(
             detect_ambiguous_query("Điểm rèn luyện 85 là loại gì?", deterministic_score)
@@ -112,7 +112,7 @@ class AnswerAmbiguityTest(unittest.TestCase):
     def test_close_retrieval_conflict_only_triggers_for_under_specified_query(self) -> None:
         mixed_retrieval = _retrieval(
             intent="mixed_query",
-            retrieved_items=[_item("form", 0.80), _item("office_directory", 0.75)],
+            retrieved_items=[_item("regulation", 0.80), _item("office_directory", 0.75)],
         )
 
         self.assertTrue(detect_ambiguous_query("Giấy tờ", mixed_retrieval))

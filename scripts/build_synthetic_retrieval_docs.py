@@ -12,7 +12,6 @@ DOCSTORE_PATH = ROOT / "data" / "processed" / "chunks" / "all_docstore_items.jso
 REPORT_PATH = ROOT / "data" / "processed" / "metadata" / "synthetic_retrieval_docs_report.json"
 
 TABLE_DIR = ROOT / "data" / "processed" / "tables"
-FORM_DIR = ROOT / "data" / "processed" / "forms"
 DIRECTORY_DIR = ROOT / "data" / "processed" / "directories"
 
 COHORT_DOCUMENT_IDS = {
@@ -285,35 +284,6 @@ def build_threshold_parent(record: dict[str, Any]) -> dict[str, Any] | None:
     )
 
 
-def build_form_parents(record: dict[str, Any], index: int) -> list[dict[str, Any]]:
-    cohorts = normalize_cohorts(record.get("applicable_cohorts"))
-    form_id = stable_token(record.get("form_id") or record.get("form_name") or index, f"form_{index}")
-    title = clean_text(record.get("form_name") or form_id)
-    lines = [
-        "Source type: form_template",
-        f"Form name: {title}",
-        list_text("Purpose", record.get("purpose_summary")),
-        list_text("Required fields", record.get("required_fields")),
-        list_text("Required attachments", record.get("required_attachments")),
-        list_text("Applicable cohorts", record.get("applicable_cohorts")),
-    ]
-    content = "\n".join(line for line in lines if line)
-    return [
-        make_parent(
-            parent_id=f"SYN_{cohort}_form_template_{form_id}",
-            cohort=cohort,
-            content_type="form_template",
-            title=title,
-            content=content,
-            source_pages=record.get("source_pages") or [],
-            source_section="form_template",
-            source_record_id=record.get("record_id") or form_id,
-            extra_metadata={"form_name": record.get("form_name")},
-        )
-        for cohort in cohorts
-    ]
-
-
 def build_service_parent(record: dict[str, Any]) -> dict[str, Any] | None:
     cohort = str(record.get("cohort") or "")
     if cohort not in COHORT_DOCUMENT_IDS:
@@ -492,9 +462,6 @@ def build_synthetic_parents() -> list[dict[str, Any]]:
         parent = build_threshold_parent(record)
         if parent:
             parents.append(parent)
-
-    for index, record in enumerate(load_json(FORM_DIR / "clean_form_templates.json", []), start=1):
-        parents.extend(build_form_parents(record, index))
 
     for record in load_json(DIRECTORY_DIR / "student_service_directory.json", []):
         parent = build_service_parent(record)

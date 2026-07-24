@@ -1,10 +1,15 @@
-import os
-import re
 import csv
 import logging
-from typing import Any, List, Dict, Optional
+import os
+import re
+from typing import Any
+
 from rank_bm25 import BM25Okapi
-import underthesea
+
+try:
+    import underthesea
+except ModuleNotFoundError:
+    underthesea = None
 
 logger = logging.getLogger(__name__)
 
@@ -74,8 +79,11 @@ class BM25Retriever:
 
         # Layer 2: Word Segmentation (underthesea)
         try:
-            segmented_words = underthesea.word_tokenize(text_for_segmentation.lower())
-            tokens.extend([w.replace(" ", "_") for w in segmented_words])
+            if underthesea is not None:
+                segmented_words = underthesea.word_tokenize(text_for_segmentation.lower())
+                tokens.extend([w.replace(" ", "_") for w in segmented_words])
+            else:
+                tokens.extend(text_for_segmentation.lower().split())
             
             # Bigrams of adjacent segmented syllables (fallback for bad segmentation)
             syllables = text_for_segmentation.lower().split()
@@ -109,6 +117,59 @@ class BM25Retriever:
         scored_chunks = [sc for sc in scored_chunks if sc[0] > 0.0]
         scored_chunks.sort(key=lambda x: x[0], reverse=True)
         return scored_chunks[:top_k]
+
+    def sparse_search(
+        self,
+        query: str,
+        *,
+        top_k: int = 24,
+        chunk_types: list[str] | None = None,
+        content_types: list[str] | None = None,
+        cohort: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """Return filtered BM25 documents using the shared retriever interface."""
+        if top_k <= 0:
+            return []
+
+        expected_chunk_types = {
+            str(value).strip() for value in (chunk_types or []) if str(value).strip()
+        }
+        expected_content_types = {
+            str(value).strip() for value in (content_types or []) if str(value).strip()
+        }
+        expected_cohort = str(cohort or "").strip()
+
+        results: list[dict[str, Any]] = []
+        for score, chunk in self.search_bm25(query, top_k=len(self.chunks)):
+            metadata = dict(chunk.get("metadata") or {})
+            actual_chunk_type = str(
+                chunk.get("chunk_type") or metadata.get("chunk_type") or ""
+            ).strip()
+            actual_content_type = str(
+                chunk.get("content_type") or metadata.get("content_type") or ""
+            ).strip()
+            actual_cohort = str(
+                chunk.get("cohort") or metadata.get("cohort") or ""
+            ).strip()
+
+            if expected_chunk_types and actual_chunk_type not in expected_chunk_types:
+                continue
+            if (
+                expected_content_types
+                and actual_content_type not in expected_content_types
+            ):
+                continue
+            if expected_cohort and actual_cohort != expected_cohort:
+                continue
+
+            document = dict(chunk)
+            document["metadata"] = metadata
+            document["bm25_score"] = score
+            results.append(document)
+            if len(results) >= top_k:
+                break
+        return results
+
 
 # Global instance for legacy pipeline compat
 _global_bm25_retriever = None

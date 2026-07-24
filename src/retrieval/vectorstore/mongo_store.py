@@ -104,7 +104,7 @@ def get_mongo_store() -> MongoDocStore | DisabledMongoDocStore:
     if not _env_bool("MONGODB_PARENT_LOOKUP_ENABLED", default=True):
         return DisabledMongoDocStore()
 
-    load_project_env()
+    load_project_env(override=False)
 
     if not _env_bool("MONGODB_PARENT_LOOKUP_ENABLED", default=True):
         return DisabledMongoDocStore()

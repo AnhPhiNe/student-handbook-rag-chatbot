@@ -16,6 +16,8 @@ ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_REGISTRY_PATH = ROOT / "configs" / "structured_lookup_registry.yaml"
 ALLOWED_ROUTES = {"structured", "rag", "clarify", "out_of_domain"}
 ALLOWED_EXECUTION_MODES = {"structured", "regulation", "mixed"}
+ALLOWED_CONTEXT_MODES = {"standalone", "follow_up", "ambiguous"}
+ALLOWED_CONFIDENCE_LEVELS = {"high", "medium", "low", "none"}
 LEGACY_STRUCTURED_ROUTES = {"deterministic"}
 LEGACY_STRUCTURED_MODES = {"direct_lookup", "structured_reasoning"}
 REGULATION_TABLE_LOOKUPS = {
@@ -90,6 +92,18 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
 
 def router_json_schema() -> dict[str, Any]:
     return {
+        "context_mode": "standalone|follow_up|ambiguous",
+        "context_confidence": "high|medium|low|none",
+        "normalized_query": "orthographic correction only or original query",
+        "normalization_confidence": "high|medium|low|none",
+        "corrections": [
+            {
+                "original_span": "exact span from QUERY",
+                "normalized_span": "corrected spelling",
+            }
+        ],
+        "standalone_query": "history-grounded query for follow_up or null",
+        "referenced_turns": [],
         "route": "structured|rag|clarify|out_of_domain",
         "execution_mode": "structured|regulation|mixed",
         "intent": "intent name",
@@ -112,7 +126,10 @@ def normalize_router_decision(
 ) -> dict[str, Any]:
     raw_route = str(payload.get("route") or "rag").strip().lower()
     raw_execution_mode = str(payload.get("execution_mode") or "").strip().lower()
-    if raw_route in LEGACY_STRUCTURED_ROUTES or raw_execution_mode in LEGACY_STRUCTURED_MODES:
+    if (
+        raw_route in LEGACY_STRUCTURED_ROUTES
+        or raw_execution_mode in LEGACY_STRUCTURED_MODES
+    ):
         route = "structured"
         execution_mode = "structured"
     elif raw_route == "structured":
@@ -147,9 +164,7 @@ def normalize_router_decision(
 
     slots = payload.get("slots") if isinstance(payload.get("slots"), dict) else {}
     spans = (
-        payload.get("slot_spans")
-        if isinstance(payload.get("slot_spans"), dict)
-        else {}
+        payload.get("slot_spans") if isinstance(payload.get("slot_spans"), dict) else {}
     )
     for slot_name, slot_value in slots.items():
         if not isinstance(slot_value, dict) or isinstance(spans.get(slot_name), dict):
@@ -182,7 +197,60 @@ def normalize_router_decision(
     if not retrieval_query or len(retrieval_query) > 600:
         retrieval_query = query.strip()
 
+    raw_context_mode = str(payload.get("context_mode") or "standalone").strip().lower()
+    context_mode = (
+        raw_context_mode if raw_context_mode in ALLOWED_CONTEXT_MODES else "ambiguous"
+    )
+    raw_context_confidence = (
+        str(payload.get("context_confidence") or "none").strip().lower()
+    )
+    context_confidence = (
+        raw_context_confidence
+        if raw_context_confidence in ALLOWED_CONFIDENCE_LEVELS
+        else "none"
+    )
+    raw_normalization_confidence = (
+        str(payload.get("normalization_confidence") or "none").strip().lower()
+    )
+    normalization_confidence = (
+        raw_normalization_confidence
+        if raw_normalization_confidence in ALLOWED_CONFIDENCE_LEVELS
+        else "none"
+    )
+    normalized_query = str(payload.get("normalized_query") or query).strip()
+    if not normalized_query or len(normalized_query) > 600:
+        normalized_query = query.strip()
+    standalone_query = str(payload.get("standalone_query") or "").strip() or None
+    if standalone_query and len(standalone_query) > 600:
+        standalone_query = None
+    corrections = payload.get("corrections")
+    if not isinstance(corrections, list):
+        corrections = []
+    referenced_turns = payload.get("referenced_turns")
+    if not isinstance(referenced_turns, list):
+        referenced_turns = []
+
     return {
+        "context_mode": context_mode,
+        "context_confidence": context_confidence,
+        "normalized_query": normalized_query,
+        "normalization_confidence": normalization_confidence,
+        "corrections": [
+            {
+                "original_span": str(item.get("original_span") or "").strip(),
+                "normalized_span": str(item.get("normalized_span") or "").strip(),
+            }
+            for item in corrections
+            if isinstance(item, dict)
+            and str(item.get("original_span") or "").strip()
+            and str(item.get("normalized_span") or "").strip()
+        ],
+        "standalone_query": standalone_query,
+        "referenced_turns": [
+            int(item)
+            for item in referenced_turns
+            if isinstance(item, int) and not isinstance(item, bool) and item >= 0
+        ],
         "route": route,
         "execution_mode": execution_mode,
         "intent": intent,
@@ -210,9 +278,13 @@ def _is_present(value: Any) -> bool:
 
 def _span_is_grounded(span: Any, source_text: str) -> bool:
     if isinstance(span, dict):
-        return bool(span) and all(_span_is_grounded(value, source_text) for value in span.values())
+        return bool(span) and all(
+            _span_is_grounded(value, source_text) for value in span.values()
+        )
     if isinstance(span, list):
-        return bool(span) and all(_span_is_grounded(value, source_text) for value in span)
+        return bool(span) and all(
+            _span_is_grounded(value, source_text) for value in span
+        )
     normalized = _normalize_text(span)
     return bool(normalized) and normalized in _normalize_text(source_text)
 
@@ -229,9 +301,7 @@ def _matches_type(value: Any, expected: str) -> bool:
     return True
 
 
-def _validate_slot_contract(
-    slots: dict[str, Any], spec: dict[str, Any]
-) -> list[str]:
+def _validate_slot_contract(slots: dict[str, Any], spec: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     for slot_name, schema in (spec.get("slot_schema") or {}).items():
         if slot_name not in slots:
@@ -423,7 +493,9 @@ def decision_to_legacy_routing(
     execution_mode = decision.get("execution_mode") or "regulation"
     intent = decision.get("intent") or "open_question"
     configured_types = (registry.get("rag_intents") or {}).get(intent)
-    target_types = decision.get("target_chunk_types") or configured_types or ["regulation"]
+    target_types = (
+        decision.get("target_chunk_types") or configured_types or ["regulation"]
+    )
     legacy_intent = "regulation_query"
     strategy = "semantic_filtered"
     if len(target_types) > 1:
@@ -442,4 +514,6 @@ def decision_to_legacy_routing(
 
 def registry_digest(registry: dict[str, Any] | None = None) -> str:
     registry = registry or load_lookup_registry()
-    return json.dumps(registry, ensure_ascii=True, sort_keys=True, separators=(",", ":"))
+    return json.dumps(
+        registry, ensure_ascii=True, sort_keys=True, separators=(",", ":")
+    )

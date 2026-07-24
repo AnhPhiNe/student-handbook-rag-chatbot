@@ -24,7 +24,6 @@ DETERMINISTIC_STRATEGIES = {
     "student_service_lookup",
     "office_lookup",
     "program_lookup",
-    "form_lookup",
     "formula_lookup",
     "structured_lookup",
 }
@@ -52,7 +51,6 @@ def _run_case(case: dict[str, Any], resources: dict[str, Any]) -> dict[str, Any]
         formula_rules=resources["formula_rules"],
         entity_registry=[],
         expansion_rules=[],
-        form_templates=resources["form_templates"],
         office_directory=resources["student_office_profiles"],
         student_service_directory=resources["student_service_directory"],
         foreign_language_tables=resources["foreign_language_tables"],
@@ -177,7 +175,6 @@ def main() -> None:
     resources = {
         "scoring_tables": _load_json(ROOT / "data" / "processed" / "tables" / "scoring_tables.json", []),
         "formula_rules": _load_json(ROOT / "data" / "processed" / "tables" / "formula_rules.json", []),
-        "form_templates": _load_json(ROOT / "data" / "processed" / "forms" / "clean_form_templates.json", []),
         "student_service_directory": _load_json(ROOT / "data" / "processed" / "directories" / "student_service_directory.json", []),
         "student_office_profiles": _load_json(ROOT / "data" / "processed" / "directories" / "student_office_profiles.json", []),
         "foreign_language_tables": _load_json(ROOT / "data" / "processed" / "tables" / "foreign_language_equivalency_table.json", []),

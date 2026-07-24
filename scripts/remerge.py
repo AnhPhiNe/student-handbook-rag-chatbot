@@ -27,15 +27,13 @@ def remerge():
     merge_chunks(get_outputs("formula_chunks"), chunk_dir / "formula_chunks.json")
     print("Merging directory chunks...")
     merge_chunks(get_outputs("directory_chunks"), chunk_dir / "directory_chunks.json")
-    print("Merging procedure chunks...")
-    merge_chunks(get_outputs("procedure_chunks"), chunk_dir / "procedure_chunks.json")
     print("Merging docstore items...")
     merge_docstore(get_outputs("docstore_items"), chunk_dir / "all_docstore_items.json")
     
     # Combine into all_chunks
     print("Combining all chunks...")
     all_chunks = []
-    for c in ["regulation_chunks", "table_chunks", "formula_chunks", "directory_chunks", "procedure_chunks"]:
+    for c in ["regulation_chunks", "table_chunks", "formula_chunks", "directory_chunks"]:
         with open(chunk_dir / f"{c}.json", "r", encoding="utf-8") as f:
             all_chunks.extend(json.load(f))
             

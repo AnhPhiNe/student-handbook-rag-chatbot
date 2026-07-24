@@ -190,9 +190,14 @@ def compact_judge_packet(
         for citation in actual_citations[:5]
         if isinstance(citation, dict)
     )
+    structured_context = _build_structured_judge_context(answer_record)
     context = "\n".join(
         part
-        for part in (str(answer_record.get("context_used") or ""), citation_context)
+        for part in (
+            structured_context,
+            str(answer_record.get("context_used") or ""),
+            citation_context,
+        )
         if part.strip()
     )
     required = [str(item) for item in case.get("required_facts") or []]
@@ -298,6 +303,30 @@ def compact_judge_packet(
     return packet
 
 
+def _build_structured_judge_context(answer_record: dict[str, Any]) -> str:
+    parts: list[str] = []
+    for key, label in (
+        ("structured_result", "STRUCTURED_RESULT"),
+        ("formula_result", "FORMULA_RESULT"),
+        ("tool_result", "TOOL_RESULT"),
+    ):
+        value = answer_record.get(key)
+        if not value:
+            continue
+        parts.append(f"{label}:\n{_bounded_json(value, max_chars=5_000)}")
+    citations = answer_record.get("citations_used") or answer_record.get("citations") or []
+    if citations:
+        parts.append(f"CITATION_METADATA:\n{_bounded_json(citations[:5], max_chars=2_500)}")
+    return "\n\n".join(parts)
+
+
+def _bounded_json(value: Any, *, max_chars: int) -> str:
+    text = json.dumps(value, ensure_ascii=False, default=str)
+    if len(text) <= max_chars:
+        return text
+    return text[:max_chars].rsplit(",", 1)[0] + " ...[truncated]"
+
+
 def _fact_matches_context(fact_norm: str, context_norm: str) -> bool:
     if not fact_norm or not context_norm:
         return False
@@ -316,8 +345,10 @@ def build_judge_prompt(packet: dict[str, Any]) -> str:
         "Score only from the supplied packet. Return exactly one compact JSON object, no markdown. "
         "Each metric is a number from 0 to 1. Do not reward fluent wording over factual correctness.\n"
         "Rubric: answer_correctness measures whether the final answer correctly answers the query and required facts. "
-        "faithfulness only penalizes material answer claims that are not supported by retrieved_context. "
-        "citation_correctness is high when at least one primary citation supports the answer; do not require every extra citation to be perfect. "
+        "faithfulness only penalizes material answer claims that are absent from retrieved_context, STRUCTURED_RESULT, FORMULA_RESULT, TOOL_RESULT, or citation metadata. "
+        "Treat paraphrases, concise summaries, and natural Vietnamese reformulations as supported when the same meaning is present in the packet. "
+        "Do not mark unsupported_claim true merely because the exact wording differs, a harmless explanation is shorter/longer than ground truth, or retrieved_context contains extra noisy sources. "
+        "citation_correctness is high when at least one main citation/source in the packet supports the answer; do not require every extra citation to be perfect. "
         "context_precision measures how much retrieved_context is relevant, so noisy extra context should mainly reduce context_precision. "
         "context_recall measures whether retrieved_context contains enough evidence for the required facts. "
         "If question_specificity is broad, do not expect exhaustive coverage; a scoped summary with correct primary citation can be correct. "
@@ -325,7 +356,7 @@ def build_judge_prompt(packet: dict[str, Any]) -> str:
         "If answerability is unanswerable or expected_answer_behavior is abstain, reward a concise refusal or scoped answer that says the handbook/source does not provide enough direct evidence. "
         "For unanswerable cases, do not require a citation that proves non-existence; citation_correctness should not be low solely because the answer abstains without citations. "
         "For unanswerable cases, unsupported_claim is false when the answer only says the evidence is missing or insufficient. "
-        "Set unsupported_claim true when the answer asserts a positive policy, right, permission, exception, or consequence that the retrieved_context does not support, or when it applies a related source to the asked case without direct evidence. "
+        "Set unsupported_claim true only when the answer asserts a material positive policy, right, permission, exception, contact detail, numeric value, deadline, or consequence that the packet does not support, or when it applies a related source to the asked case without direct evidence. "
         "critical_false_pass is true only if the answer looks acceptable but contains a dangerous/decisive wrong claim.\n"
         "Use exactly these keys and no extra keys: "
         '{"faithfulness":0.0,"answer_relevancy":0.0,"answer_correctness":0.0,'

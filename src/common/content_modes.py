@@ -13,13 +13,13 @@ ARCHIVE_ONLY_TYPES = {
     "low_text_or_blank",
     "abbreviation",
     "general_info",
+    "ktx_procedure_archive",
     "toc_or_index",
     "reference_directory",
 }
 
 STRUCTURED_ONLY_TYPES = {
     "formula_rule",
-    "form_template",
     "scoring_table",
     "threshold_rule",
 }
@@ -29,9 +29,7 @@ RAG_INDEX_TYPES = {
     "office_directory",
     "faculty_directory",
     "program_directory",
-    "procedure",
     "faculty_program_directory",
-    "ktx_admission_procedure",
     "faculty_student_services",
     "scoring_form_table",
 }

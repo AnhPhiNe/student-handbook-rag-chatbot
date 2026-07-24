@@ -17,8 +17,6 @@ LEGACY_COHORT_PREFIXES = ("K50-K51_",)
 GENERATED_OUTPUT_DIRS = (
     Path("data/processed/chunks"),
     Path("data/processed/directories"),
-    Path("data/processed/forms"),
-    Path("data/processed/procedures"),
     Path("data/processed/tables"),
     Path("data/processed/metadata"),
 )
@@ -633,8 +631,7 @@ def _build_content_type_notes(content_type, cohort_entries):
 
     if content_type == "faculty_program_directory":
         notes.append("Cần tách faculty_directory và program_directory theo profile từng sổ tay")
-    if content_type == "form_template":
-        notes.append("Chỉ lưu metadata biểu mẫu, không embed toàn văn mẫu đơn")
+
 
     return notes
 
@@ -802,11 +799,6 @@ def main():
     tool_outputs = {}
     all_chunk_outputs = {}
     regulation_chunk_outputs = {}
-    table_chunk_outputs = {}
-    formula_chunk_outputs = {}
-    form_chunk_outputs = {}
-    directory_chunk_outputs = {}
-    procedure_chunk_outputs = {}
     docstore_outputs = {}
     formula_outputs = {}
     scoring_outputs = {}
@@ -815,13 +807,10 @@ def main():
     faculty_outputs = {}
     program_outputs = {}
     reference_outputs = {}
-    procedure_outputs = {}
     profile_outputs = {}
     audit_outputs = {}
     table_dir = Path("data/processed/tables")
-    form_dir = Path("data/processed/forms")
     directory_dir = Path("data/processed/directories")
-    procedure_dir = Path("data/processed/procedures")
     metadata_dir = Path("data/processed/metadata")
 
     for pdf in pdfs:
@@ -833,10 +822,6 @@ def main():
         tool_dest = chunk_dir / f"{cohort}_tool_rule_chunks.json"
         all_chunks_dest = chunk_dir / f"{cohort}_all_chunks.json"
         regulation_chunks_dest = chunk_dir / f"{cohort}_regulation_chunks.json"
-        table_chunks_dest = chunk_dir / f"{cohort}_table_chunks.json"
-        formula_chunks_dest = chunk_dir / f"{cohort}_formula_chunks.json"
-        directory_chunks_dest = chunk_dir / f"{cohort}_directory_chunks.json"
-        procedure_chunks_dest = chunk_dir / f"{cohort}_procedure_chunks.json"
         docstore_dest = chunk_dir / f"{cohort}_docstore_items.json"
         
         shutil.copy(chunk_dir / "semantic_chunks.json", sem_dest)
@@ -844,10 +829,6 @@ def main():
         shutil.copy(chunk_dir / "tool_rule_chunks.json", tool_dest)
         shutil.copy(chunk_dir / "all_chunks.json", all_chunks_dest)
         shutil.copy(chunk_dir / "regulation_chunks.json", regulation_chunks_dest)
-        shutil.copy(chunk_dir / "table_chunks.json", table_chunks_dest)
-        shutil.copy(chunk_dir / "formula_chunks.json", formula_chunks_dest)
-        shutil.copy(chunk_dir / "directory_chunks.json", directory_chunks_dest)
-        shutil.copy(chunk_dir / "procedure_chunks.json", procedure_chunks_dest)
         shutil.copy(chunk_dir / "docstore_items.json", docstore_dest)
         
         formula_dest = table_dir / f"{cohort}_formula_rules.json"
@@ -857,7 +838,6 @@ def main():
         faculty_dest = directory_dir / f"{cohort}_faculty_directory.json"
         program_dest = directory_dir / f"{cohort}_program_directory.json"
         reference_dest = directory_dir / f"{cohort}_reference_directory.json"
-        procedure_dest = procedure_dir / f"{cohort}_procedures.json"
         profile_dest = metadata_dir / f"{cohort}_document_profile.json"
         audit_dest = metadata_dir / f"{cohort}_content_audit_report.json"
 
@@ -868,7 +848,6 @@ def main():
         shutil.copy(directory_dir / "faculty_directory.json", faculty_dest)
         shutil.copy(directory_dir / "program_directory.json", program_dest)
         shutil.copy(directory_dir / "reference_directory.json", reference_dest)
-        shutil.copy(procedure_dir / "procedures.json", procedure_dest)
         shutil.copy(metadata_dir / "document_profile.json", profile_dest)
         shutil.copy(metadata_dir / "content_audit_report.json", audit_dest)
         
@@ -877,10 +856,6 @@ def main():
         tool_outputs[cohort] = tool_dest
         all_chunk_outputs[cohort] = all_chunks_dest
         regulation_chunk_outputs[cohort] = regulation_chunks_dest
-        table_chunk_outputs[cohort] = table_chunks_dest
-        formula_chunk_outputs[cohort] = formula_chunks_dest
-        directory_chunk_outputs[cohort] = directory_chunks_dest
-        procedure_chunk_outputs[cohort] = procedure_chunks_dest
         docstore_outputs[cohort] = docstore_dest
         formula_outputs[cohort] = formula_dest
         threshold_outputs[cohort] = threshold_dest
@@ -889,7 +864,6 @@ def main():
         faculty_outputs[cohort] = faculty_dest
         program_outputs[cohort] = program_dest
         reference_outputs[cohort] = reference_dest
-        procedure_outputs[cohort] = procedure_dest
         profile_outputs[cohort] = profile_dest
         audit_outputs[cohort] = audit_dest
 
@@ -899,13 +873,12 @@ def main():
     merge_chunks(tool_outputs, chunk_dir / "tool_rule_chunks.json")
     merge_chunks(all_chunk_outputs, chunk_dir / "all_chunks.json")
     merge_chunks(regulation_chunk_outputs, chunk_dir / "regulation_chunks.json")
-    merge_chunks(directory_chunk_outputs, chunk_dir / "directory_chunks.json")
-    merge_chunks(procedure_chunk_outputs, chunk_dir / "procedure_chunks.json")
     merge_docstore(docstore_outputs, chunk_dir / "all_docstore_items.json")
     
     for stale_path in (
         chunk_dir / "table_chunks.json",
         chunk_dir / "formula_chunks.json",
+        chunk_dir / "directory_chunks.json",
     ):
         if stale_path.exists():
             stale_path.unlink()
@@ -937,7 +910,6 @@ def main():
         overrides,
     )
     merge_structured_data(reference_outputs, directory_dir / "reference_directory.json")
-    merge_structured_data(procedure_outputs, procedure_dir / "procedures.json")
     merge_json_documents(profile_outputs, metadata_dir / "document_profiles.json")
     merge_json_documents(audit_outputs, metadata_dir / "content_audit_reports.json")
     # Backward-compatible alias for old config keys and reports.
@@ -977,8 +949,6 @@ def main():
             chunk_dir / "structured_lookup_chunks.json",
             chunk_dir / "tool_rule_chunks.json",
             chunk_dir / "regulation_chunks.json",
-            chunk_dir / "directory_chunks.json",
-            chunk_dir / "procedure_chunks.json",
             chunk_dir / "all_docstore_items.json",
             table_dir / "formula_rules.json",
             table_dir / "threshold_rules.json",
@@ -988,7 +958,6 @@ def main():
             directory_dir / "program_directory.json",
             directory_dir / "faculty_program_directory.json",
             directory_dir / "reference_directory.json",
-            procedure_dir / "procedures.json",
         ]
     )
     validate_retrieval_metadata(
@@ -1004,7 +973,6 @@ def main():
             directory_dir / "office_directory.json",
             directory_dir / "faculty_directory.json",
             directory_dir / "program_directory.json",
-            procedure_dir / "procedures.json",
         ]
     )
     validate_program_directory(directory_dir / "program_directory.json", overrides)
@@ -1035,14 +1003,14 @@ def main():
             "Hệ thống chỉ build Qdrant V7."
         )
 
-    if should_skip("SKIP_REMOTE_PUSH"):
-        print("\nSKIP_REMOTE_PUSH enabled; MongoDB/Qdrant upload skipped.")
-    else:
+    if os.environ.get("PUSH_REMOTE", "").strip().lower() in {"1", "true", "yes", "on"}:
         print(f"\n{'='*50}\n--- PUSHING TO MONGODB & QDRANT CLOUD ---\n{'='*50}")
         subprocess.run([sys.executable, "-m", "scripts.push_to_mongo"], check=True)
         print("Building V7 Child/Parent Index before pushing to Qdrant...")
         subprocess.run([sys.executable, "-m", "scripts.build_v7_child_parent_index"], check=True)
         subprocess.run([sys.executable, "-m", "scripts.push_to_qdrant_v7"], check=True)
+    else:
+        print("\nRemote push skipped. Set PUSH_REMOTE=1 to upload MongoDB/Qdrant.")
 
     print("\nMulti-cohort preprocessing completed successfully!")
 

@@ -47,7 +47,7 @@ TEST_QUERIES = [
     "Muốn xác nhận sinh viên để vay vốn thì làm giấy nào?",
     "Đơn xin thôi học cần khai thông tin gì?",
     "Muốn xin chuyển trường thì dùng biểu mẫu nào?",
-    "Có form theo dõi tiến độ học tập không?",
+    "Có phiếu theo dõi tiến độ học tập không?",
     "Đơn học lại yêu cầu thông tin gì?",
     "Muốn xin hỗ trợ chi phí học tập thì điền mẫu gì?",
     # =========================
@@ -163,7 +163,6 @@ def main() -> None:
 
     scoring_tables = load_json(Path(config["input"]["scoring_tables"]))
     formula_rules = load_json(Path(config["input"]["formula_rules"]))
-    form_templates = load_json(Path(config["input"]["form_templates"]))
     student_service_path = config["input"].get("student_service_directory")
     student_service_directory = (
         load_json(Path(student_service_path)) if student_service_path else []
@@ -197,7 +196,6 @@ def main() -> None:
             collection=collection,
             scoring_tables=scoring_tables,
             formula_rules=formula_rules,
-            form_templates=form_templates,
             student_service_directory=student_service_directory,
             foreign_language_tables=foreign_language_tables,
             structured_tables_registry=structured_tables_registry,

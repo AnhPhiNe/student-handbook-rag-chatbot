@@ -126,7 +126,6 @@ def main() -> None:
         table_chunks=[],
         formula_chunks=[],
         directory_chunks=[],
-        procedure_chunks=[],
         all_chunks=all_chunks,
         validation_issues=validation_issues,
     )

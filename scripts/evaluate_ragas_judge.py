@@ -55,7 +55,6 @@ DEFAULT_OUTPUT_PATH = Path("data/processed/metadata/ragas_judge_report.json")
 DEFAULT_ANSWER_CACHE_PATH = Path("data/processed/metadata/ragas_answer_cache.json")
 DEFAULT_JUDGE_MODEL = "gemini-3.5-flash"
 STRUCTURED_TOOL_CONTENT_TYPES = {
-    "form_templates",
     "formula_rules",
     "program_directory",
     "scoring_tables",
@@ -206,7 +205,8 @@ def format_citations(citations: list[dict[str, Any]]) -> str:
                 "chunk_id": citation.get("chunk_id"),
                 "cohort": citation.get("cohort"),
                 "document_id": citation.get("document_id"),
-                "content_type": citation.get("chunk_type") or citation.get("content_type"),
+                "content_type": citation.get("chunk_type")
+                or citation.get("content_type"),
                 "source_section": citation.get("source_section"),
                 "source_pages": citation.get("source_pages"),
             }
@@ -378,7 +378,6 @@ def generate_answer_cache(
         pipeline.config.setdefault("llm", {})["max_output_tokens"] = max_output_tokens
     pipeline.response_cache.enabled = False
     pipeline.semantic_cache.enabled = False
-    pipeline.query_rewriter.enabled = False
 
     generated = 0
     skipped = 0
@@ -415,11 +414,15 @@ def generate_answer_cache(
         "cache_path": str(cache_path),
         "total_cases": len(cases),
         "ready_cases": sum(1 for item in cache.values() if item.get("answer_ready")),
-        "pending_cases": sum(1 for item in cache.values() if not item.get("answer_ready")),
+        "pending_cases": sum(
+            1 for item in cache.values() if not item.get("answer_ready")
+        ),
         "generated_this_run": generated,
         "skipped_cached": skipped,
         "failed_this_run": failed,
-        "answer_model": "mock" if mock_answers else pipeline.config.get("llm", {}).get("model_name"),
+        "answer_model": "mock"
+        if mock_answers
+        else pipeline.config.get("llm", {}).get("model_name"),
         "max_context_chars": pipeline.config.get("llm", {}).get("max_context_chars"),
         "max_output_tokens": pipeline.config.get("llm", {}).get("max_output_tokens"),
         "disable_answer_fallback": disable_answer_fallback,
@@ -532,9 +535,11 @@ def judge_from_answer_cache(
         }
         save_json(partial_report, output_path)
         if metrics.get("judge_error_type") and not mock_judge:
-            print("   -> Judge API failed (Rate Limit/Error). Stopping evaluation early to prevent empty reports.")
+            print(
+                "   -> Judge API failed (Rate Limit/Error). Stopping evaluation early to prevent empty reports."
+            )
             break
-        
+
         if not mock_judge and index < len(ready_records):
             time.sleep(max(0.0, sleep_seconds))
 
@@ -640,7 +645,9 @@ def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
 
     return {
         "total_cases": len(results),
-        "answered_cases": sum(1 for item in results if item.get("status") == "answered"),
+        "answered_cases": sum(
+            1 for item in results if item.get("status") == "answered"
+        ),
         **_metric_means(results),
         "headline_metric_note": (
             "Use primary_ragas_summary for CV/report RAGAS headline. "
@@ -672,9 +679,7 @@ def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
             for model_used, items in sorted(by_model_used.items())
         },
         "true_rag_summary": _metric_group_summary(by_eval_bucket.get("true_rag", [])),
-        "structured_tool_summary": _metric_group_summary(
-            structured_secondary_results
-        ),
+        "structured_tool_summary": _metric_group_summary(structured_secondary_results),
         "lowest_scored_cases": _lowest_scored_cases(results, limit=15),
         "primary_lowest_scored_cases": _lowest_scored_cases(
             primary_ragas_results,
@@ -702,7 +707,9 @@ def _primary_ragas_results(results: list[dict[str, Any]]) -> list[dict[str, Any]
 def _metric_group_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "cases": len(results),
-        "answered_cases": sum(1 for item in results if item.get("status") == "answered"),
+        "answered_cases": sum(
+            1 for item in results if item.get("status") == "answered"
+        ),
         **_metric_means(results),
     }
 
@@ -835,7 +842,6 @@ def run_evaluation(
         pipeline.config.setdefault("llm", {})["max_output_tokens"] = max_output_tokens
     pipeline.response_cache.enabled = False
     pipeline.semantic_cache.enabled = False
-    pipeline.query_rewriter.enabled = False
 
     judge: GeminiClient | MockJudgeClient
     if mock_judge:
@@ -863,11 +869,13 @@ def run_evaluation(
             f"Rel:{float(metrics.get('answer_relevancy', 0.0)):.2f} "
             f"Corr:{float(metrics.get('answer_correctness', 0.0)):.2f}"
         )
-        
+
         if result.get("status") == "api_error" or metrics.get("judge_error_type"):
-            print("   -> API Error (Generation or Judge). Stopping evaluation early to prevent empty reports.")
+            print(
+                "   -> API Error (Generation or Judge). Stopping evaluation early to prevent empty reports."
+            )
             break
-            
+
         if not mock_judge and index < len(cases):
             time.sleep(max(0.0, sleep_seconds))
 
@@ -880,7 +888,9 @@ def run_evaluation(
         "config_path": str(config_path),
         "cases_path": str(cases_path),
         "judge_model": "mock" if mock_judge else judge_model,
-        "answer_model": "mock" if mock_answers else pipeline.config.get("llm", {}).get("model_name"),
+        "answer_model": "mock"
+        if mock_answers
+        else pipeline.config.get("llm", {}).get("model_name"),
         "max_context_chars": pipeline.config.get("llm", {}).get("max_context_chars"),
         "max_output_tokens": pipeline.config.get("llm", {}).get("max_output_tokens"),
         "disable_answer_fallback": disable_answer_fallback,
@@ -894,7 +904,9 @@ def run_evaluation(
 
 def main() -> None:
     configure_utf8_stdio()
-    parser = argparse.ArgumentParser(description="Evaluate answers with RAGAS-style Gemini Judge.")
+    parser = argparse.ArgumentParser(
+        description="Evaluate answers with RAGAS-style Gemini Judge."
+    )
     parser.add_argument("--config", default=str(DEFAULT_CONFIG_PATH))
     parser.add_argument("--cases", default=str(DEFAULT_CASES_PATH))
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT_PATH))

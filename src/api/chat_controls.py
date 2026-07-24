@@ -55,7 +55,7 @@ class ChatCapacityLimiter:
 
     def enter_queue(self) -> QueueTicket:
         with self._lock:
-            if len(self._queue) >= self.max_queue_size:
+            if self._active_count >= self.max_concurrent and len(self._queue) >= self.max_queue_size:
                 raise ChatCapacityError("queue_full")
             self._ticket_counter += 1
             ticket_id = self._ticket_counter
@@ -173,11 +173,16 @@ def chat_capacity_slot():
         return
 
     limiter = _chat_capacity_limiter(settings)
-    limiter.acquire(timeout_seconds)
+    ticket = limiter.enter_queue()
     try:
-        yield
+        if not ticket.try_acquire(timeout_seconds):
+            raise ChatCapacityError("timeout")
+        try:
+            yield
+        finally:
+            limiter.release()
     finally:
-        limiter.release()
+        ticket.leave_queue()
 
 
 def _chat_capacity_limiter(settings: tuple[int, int, float]) -> ChatCapacityLimiter:

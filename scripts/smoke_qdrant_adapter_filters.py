@@ -35,12 +35,6 @@ TESTS = [
         },
     },
     {
-        "name": "form",
-        "query": "mẫu đơn tạm nghỉ học",
-        "chunk_types": ["form"],
-        "allowed_content_types": {"form", "form_template"},
-    },
-    {
         "name": "structured",
         "query": "IELTS 5.5 tương đương bậc mấy",
         "chunk_types": ["structured_lookup"],

@@ -1,13 +1,18 @@
+from __future__ import annotations
+
 import logging
 import os
 import re
 import unicodedata
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from src.common.cohort import normalize_cohort
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
 
 logger = logging.getLogger(__name__)
 _mongo_store = None
+
+if TYPE_CHECKING:
+    from sentence_transformers import SentenceTransformer
 
 
 def _env_bool(name: str, default: bool = False) -> bool:
@@ -38,7 +43,6 @@ CONTENT_TYPES_BY_CHUNK_TYPE = {
         "faculty_program_directory",
         "student_faculty_profile",
     },
-    "form": {"form", "form_template"},
     "formula": {"formula_rule"},
     "office_directory": {
         "office_directory",
@@ -61,18 +65,12 @@ COMPATIBLE_ENTITY_CHUNK_TYPES = {
         "faculty_directory",
         "program_directory",
     },
-    "form_query": {
-        "form",
-        "regulation",
-        "office_directory",
-    },
     "regulation_query": {
         "regulation",
         "office_directory",
     },
     "mixed_query": {
         "faculty_directory",
-        "form",
         "office_directory",
         "program_directory",
         "regulation",
@@ -102,9 +100,7 @@ def content_types_for_chunk_types(chunk_types: list[str] | None) -> list[str]:
 
 
 def _is_hybrid_regulation_plan(plan: dict[str, Any]) -> bool:
-    chunk_types = set(
-        normalize_chunk_types(plan.get("chunk_types") or [])
-    )
+    chunk_types = set(normalize_chunk_types(plan.get("chunk_types") or []))
     return chunk_types == HYBRID_REGULATION_CHUNK_TYPES
 
 
@@ -138,9 +134,7 @@ def _retrieve_with_hybrid_regulation(
         if isinstance(doc, dict)
     ]
     related_items = [
-        item
-        for item in result.get("related_items", [])
-        if isinstance(item, dict)
+        item for item in result.get("related_items", []) if isinstance(item, dict)
     ]
     if items and related_items:
         metadata = dict(items[0].get("metadata") or {})
@@ -252,10 +246,7 @@ def _extract_related_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
             if not isinstance(related, dict):
                 continue
             related_id = str(
-                related.get("chunk_id")
-                or related.get("_id")
-                or related.get("id")
-                or ""
+                related.get("chunk_id") or related.get("_id") or related.get("id") or ""
             )
             if not related_id or related_id in seen_ids:
                 continue
@@ -315,7 +306,6 @@ def _infer_chunk_type(doc: dict[str, Any]) -> str | None:
         "faculty_directory",
         "office_directory",
         "program_directory",
-        "form",
     }:
         return source_type
     if source_type == "structured_section" or content_type == "regulation_text":
@@ -326,7 +316,6 @@ def _infer_chunk_type(doc: dict[str, Any]) -> str | None:
         "_faculty_": "faculty_directory",
         "_office_": "office_directory",
         "_program_": "program_directory",
-        "_form_": "form",
     }
     for marker, chunk_type in id_markers.items():
         if marker in chunk_id:
@@ -423,7 +412,6 @@ def _metadata_boost(
     if metadata.get("source") == "knowledge_graph":
         boost += 0.05
 
-
     doc_type = _infer_chunk_type(doc)
     if doc_type in set(plan.get("chunk_types") or []):
         boost += 0.05
@@ -476,8 +464,6 @@ def _metadata_boost(
     return min(boost, 0.50)
 
 
-from sentence_transformers import SentenceTransformer
-
 from .citation_builder import (
     build_citation_from_formula,
     build_citation_from_lookup,
@@ -494,10 +480,10 @@ from .entity_linker import (
     normalize_query_with_entities,
 )
 from .formula_lookup import formula_lookup
-from .form_lookup import form_lookup
 from .foreign_language_lookup import foreign_language_lookup
 from .office_lookup import find_grounded_catalog_hint, office_lookup
 from .program_lookup import program_lookup
+from .query_context import query_handling_mode, select_effective_query
 from .query_expansion import expand_query
 from .query_router import deterministic_lookup_allowed, route_query
 from .ai_router import AIRouter
@@ -516,6 +502,8 @@ from .structured_routing import (
     validate_router_decision,
 )
 from .vector_retriever import vector_search
+
+
 def retrieve_with_plan(
     query: str,
     plan: dict[str, Any],
@@ -539,7 +527,9 @@ def retrieve_with_plan(
         plan.get("chunk_types") or []
     )
 
-    if _is_hybrid_regulation_plan(plan) and not _env_bool("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL"):
+    if _is_hybrid_regulation_plan(plan) and not _env_bool(
+        "STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL"
+    ):
         try:
             return _retrieve_with_hybrid_regulation(
                 query=query,
@@ -560,15 +550,15 @@ def retrieve_with_plan(
         vector_results = [
             _ensure_chunk_type_metadata(doc)
             for doc in vector_search(
-            query=plan["query"],
-            model=model,
-            collection=collection,
-            chunk_types=plan["chunk_types"],
-            content_types=plan_content_types,
-            top_k=candidate_k,
-            batch_size=batch_size,
-            normalize_embeddings=normalize_embeddings,
-            cohort=cohort,
+                query=plan["query"],
+                model=model,
+                collection=collection,
+                chunk_types=plan["chunk_types"],
+                content_types=plan_content_types,
+                top_k=candidate_k,
+                batch_size=batch_size,
+                normalize_embeddings=normalize_embeddings,
+                cohort=cohort,
             )
         ]
 
@@ -577,11 +567,11 @@ def retrieve_with_plan(
     sparse_results = [
         _ensure_chunk_type_metadata(doc)
         for doc in bm25_retriever.sparse_search(
-        plan["query"],
-        top_k=candidate_k,
-        chunk_types=plan["chunk_types"],
-        content_types=plan_content_types,
-        cohort=cohort,
+            plan["query"],
+            top_k=candidate_k,
+            chunk_types=plan["chunk_types"],
+            content_types=plan_content_types,
+            cohort=cohort,
         )
     ]
 
@@ -625,13 +615,21 @@ def retrieve_with_plan(
         combined_scores.keys(), key=lambda x: combined_scores[x], reverse=True
     )
     fused_results = [
-        _ensure_chunk_type_metadata(docs_map[doc_id]) for doc_id in sorted_ids[:candidate_k]
+        _ensure_chunk_type_metadata(docs_map[doc_id])
+        for doc_id in sorted_ids[:candidate_k]
     ]
 
     # 4. Local Cross-Encoder Reranking
-    reranked = rerank_with_cross_encoder(
-        query=query, results=fused_results, top_n=candidate_k
-    )
+    if os.environ.get("STUDENT_RAG_DISABLE_PHORANKER") == "1":
+        reranked = fused_results
+        for doc in reranked:
+            rerank = dict(doc.get("rerank") or {})
+            rerank["final_score"] = 0.5  # Neutral score for fallback
+            doc["rerank"] = rerank
+    else:
+        reranked = rerank_with_cross_encoder(
+            query=query, results=fused_results, top_n=candidate_k
+        )
     reranked = [_ensure_chunk_type_metadata(doc) for doc in reranked]
     for doc in reranked:
         rerank = dict(doc.get("rerank") or {})
@@ -680,12 +678,14 @@ def retrieve_with_plan(
             if chunk_id in seen_parents:
                 continue
             seen_parents.add(chunk_id)
-            
+
             try:
                 store = _get_docstore()
                 origin_doc = store.get_document_by_id(chunk_id)
                 if origin_doc and "content" in origin_doc:
-                    doc["content"] = doc.get("text", "") + "\n\n[RAW TEXT]\n" + origin_doc["content"]
+                    doc["content"] = (
+                        doc.get("text", "") + "\n\n[RAW TEXT]\n" + origin_doc["content"]
+                    )
             except Exception as e:
                 logger.error(f"Error fetching chunk doc {chunk_id} from MongoDB: {e}")
 
@@ -807,7 +807,6 @@ def run_retrieval_pipeline(
     formula_rules: list[dict[str, Any]] | None,
     entity_registry: list[dict[str, Any]],
     expansion_rules: list[dict[str, Any]],
-    form_templates: list[dict[str, Any]] | None = None,
     office_directory: list[dict[str, Any]] | None = None,
     student_service_directory: list[dict[str, Any]] | None = None,
     student_faculty_profiles: list[dict[str, Any]] | None = None,
@@ -830,7 +829,11 @@ def run_retrieval_pipeline(
     expanded, planned, and sent to the hybrid child-parent retriever.
     """
     ai_router_enabled = not _env_bool("STUDENT_RAG_DISABLE_AI_ROUTER")
-    query = expand_query(query, expansion_rules)
+    eval_force_regulation_rag = _env_bool(
+        "STUDENT_RAG_EVAL_FORCE_REGULATION_RAG"
+    )
+    raw_query = str(query or "").strip()
+    query = raw_query
     router_decision: dict[str, Any] | None = None
     structured_context_result: dict[str, Any] | None = None
     structured_context_citations: list[dict[str, Any]] = []
@@ -839,8 +842,7 @@ def run_retrieval_pipeline(
 
     if ai_router_enabled:
         grounding_context = "\n".join(
-            str(item.get("content") or "")
-            for item in (chat_history or [])[-2:]
+            str(item.get("content") or "") for item in (chat_history or [])[-4:]
         )
         try:
             ai_router = AIRouter.from_config()
@@ -868,7 +870,7 @@ def run_retrieval_pipeline(
                         router_decision = repaired_decision
             router_decision = normalize_router_decision(
                 router_decision,
-                query=query,
+                query=raw_query,
                 selected_cohort=cohort,
             ) | {
                 key: router_decision.get(key)
@@ -881,15 +883,40 @@ def run_retrieval_pipeline(
                 )
                 if key in router_decision
             }
-            
+
+            router_retrieval_query = str(
+                router_decision.get("retrieval_query") or ""
+            ).strip()
+            query_handling = select_effective_query(
+                raw_query,
+                router_decision,
+                chat_history=chat_history,
+                selected_cohort=cohort,
+            )
+            query = query_handling.effective_query
+            router_decision = {
+                **router_decision,
+                "query_handling": query_handling.to_dict(),
+                "raw_query": raw_query,
+                "effective_query": query,
+                "router_proposed_retrieval_query": router_retrieval_query,
+                "retrieval_query_source": query_handling.source,
+            }
+            if query_handling.needs_clarification:
+                router_decision = {
+                    **router_decision,
+                    "route": "clarify",
+                    "needs_clarification": True,
+                    "clarification_question": query_handling.clarification_question,
+                }
+
             validation_errors = validate_router_decision(
                 router_decision,
-                query=query,
+                query=raw_query,
                 selected_cohort=cohort,
                 grounding_context=grounding_context,
             )
-            
-            
+
             if validation_errors:
                 if "missing_cohort" in validation_errors:
                     router_decision = {
@@ -905,16 +932,24 @@ def run_retrieval_pipeline(
                     router_decision = fallback_to_rag(
                         router_decision,
                         validation_errors,
-                        query=query,
+                        query=raw_query,
                     )
-            if _should_force_regulation_rag(
-                query,
+            if not query_handling.needs_clarification and _should_force_regulation_rag(
+                raw_query,
                 router_decision,
                 cohort=cohort,
             ):
                 router_decision = _force_regulation_rag_decision(
                     router_decision,
                     query=query,
+                )
+            if eval_force_regulation_rag:
+                router_decision = _force_regulation_rag_decision(
+                    router_decision,
+                    query=query,
+                )
+                router_decision["router_fallback"] = (
+                    "evaluation_forced_regulation_rag"
                 )
             routing = decision_to_legacy_routing(router_decision)
             routing["usage"] = router_decision.get("usage")
@@ -923,20 +958,21 @@ def run_retrieval_pipeline(
             routing["router_validation_errors"] = router_decision.get(
                 "router_validation_errors", []
             )
-            rewritten = router_decision.get("retrieval_query") or query
-            detected_entities = detect_entities(rewritten, entity_registry)
+            detected_entities = detect_entities(query, entity_registry)
             if router_decision["route"] == "rag":
                 rewritten_with_entities = normalize_query_with_entities(
-                    rewritten,
+                    query,
                     detected_entities,
                 )
                 retrieval_query = expand_query(rewritten_with_entities, expansion_rules)
             else:
-                retrieval_query = rewritten
+                retrieval_query = query
+            router_decision["retrieval_query"] = retrieval_query
         except Exception as exc:
-            detected_entities = detect_entities(query, entity_registry)
+            query = raw_query
+            detected_entities = detect_entities(raw_query, entity_registry)
             entity_normalized_query = normalize_query_with_entities(
-                query, detected_entities
+                raw_query, detected_entities
             )
             legacy_retrieval_query = expand_query(
                 entity_normalized_query, expansion_rules
@@ -948,25 +984,46 @@ def run_retrieval_pipeline(
                 "lookup_type": None,
                 "slots": {},
                 "slot_spans": {},
+                "context_mode": "standalone",
+                "context_confidence": "none",
+                "normalized_query": raw_query,
+                "normalization_confidence": "none",
+                "corrections": [],
+                "standalone_query": None,
+                "referenced_turns": [],
                 "retrieval_query": legacy_retrieval_query,
                 "target_chunk_types": ["regulation"],
                 "router_error": str(exc),
                 "router_fallback": "qwen_failure_to_raw_query_rag",
+                "raw_query": raw_query,
+                "effective_query": raw_query,
+                "query_handling": {
+                    "raw_query": raw_query,
+                    "effective_query": raw_query,
+                    "mode": query_handling_mode(),
+                    "context_mode": "standalone",
+                    "source": "router_failure_raw_fallback",
+                    "validation_errors": ["router_failure"],
+                    "needs_clarification": False,
+                },
             }
             routing = decision_to_legacy_routing(router_decision)
             routing["router_error"] = str(exc)
             retrieval_query = legacy_retrieval_query
     else:
-        detected_entities = detect_entities(query, entity_registry)
+        query = raw_query
+        detected_entities = detect_entities(raw_query, entity_registry)
         entity_normalized_query = normalize_query_with_entities(
-            query, detected_entities
+            raw_query, detected_entities
         )
         legacy_retrieval_query = expand_query(entity_normalized_query, expansion_rules)
-        routing = route_query(query)
+        routing = route_query(raw_query)
         retrieval_query = legacy_retrieval_query
 
     foreign_language_lookup_result = None
-    if not ai_router_enabled and deterministic_lookup_allowed(query, "foreign_language"):
+    if not ai_router_enabled and deterministic_lookup_allowed(
+        query, "foreign_language"
+    ):
         foreign_language_lookup_result = foreign_language_lookup(
             query,
             foreign_language_tables or [],
@@ -983,7 +1040,9 @@ def run_retrieval_pipeline(
             "structured_result": foreign_language_lookup_result,
             "retrieved_items": [],
             "citations": build_citation_from_lookup(foreign_language_lookup_result),
-            "context_for_llm": build_context_from_lookup(foreign_language_lookup_result),
+            "context_for_llm": build_context_from_lookup(
+                foreign_language_lookup_result
+            ),
             "needs_llm_answer": False,
             "deterministic_validated": True,
             "deterministic_provenance": "legacy_validated_resolver",
@@ -1076,7 +1135,6 @@ def run_retrieval_pipeline(
                 cohort=cohort,
                 scoring_tables=scoring_tables,
                 formula_rules=formula_rules or [],
-                form_templates=form_templates or [],
                 office_directory=office_directory or [],
                 student_service_directory=student_service_directory or [],
                 student_faculty_profiles=student_faculty_profiles or [],
@@ -1113,6 +1171,7 @@ def run_retrieval_pipeline(
         if structured_context_result is None:
             # Structured lookup failed — fallback to RAG instead of dead-end
             import logging as _fb_log
+
             _fb_log.getLogger(__name__).info(
                 "Structured lookup returned None for %s; falling back to RAG",
                 router_decision.get("lookup_type"),
@@ -1212,9 +1271,7 @@ def run_retrieval_pipeline(
             "router_model": routing.get("model_used"),
             "router_cache_hit": routing.get("router_cache_hit", False),
             "router_decision": router_decision,
-            "router_validation_errors": routing.get(
-                "router_validation_errors", []
-            ),
+            "router_validation_errors": routing.get("router_validation_errors", []),
         }
     if intent == "out_of_domain":
         return {
@@ -1234,9 +1291,7 @@ def run_retrieval_pipeline(
             "router_model": routing.get("model_used"),
             "router_cache_hit": routing.get("router_cache_hit", False),
             "router_decision": router_decision,
-            "router_validation_errors": routing.get(
-                "router_validation_errors", []
-            ),
+            "router_validation_errors": routing.get("router_validation_errors", []),
         }
 
     entity_chunk_types = filter_entity_chunk_types(
@@ -1258,7 +1313,9 @@ def run_retrieval_pipeline(
         # Neu entity da biet loai chunk muc tieu, ep retrieval tim dung vung du lieu cua entity do.
         if entity_chunk_types:
             routing["target_chunk_types"] = list(
-                dict.fromkeys(routing.get("target_chunk_types", []) + entity_chunk_types)
+                dict.fromkeys(
+                    routing.get("target_chunk_types", []) + entity_chunk_types
+                )
             )
 
     routing["target_chunk_types"] = normalize_chunk_types(
@@ -1330,7 +1387,9 @@ def run_retrieval_pipeline(
                 if office_lookup_result.get("lookup_scope") == "student_service"
                 else "office_lookup"
             ),
-            "target_chunk_types": [office_lookup_result.get("content_type") or "office_directory"],
+            "target_chunk_types": [
+                office_lookup_result.get("content_type") or "office_directory"
+            ],
             "structured_result": office_lookup_result,
             "retrieved_items": [],
             "citations": build_citation_from_lookup(office_lookup_result),
@@ -1342,68 +1401,6 @@ def run_retrieval_pipeline(
             ),
             "router_usage": routing.get("usage"),
             "router_model": routing.get("model_used"),
-        }
-
-    form_lookup_result = None
-    if intent == "form_query" or "form" in target_chunk_types:
-        form_lookup_result = form_lookup(
-            query,
-            form_templates or [],
-            cohort=cohort,
-        )
-
-    if intent == "form_query":
-        if form_lookup_result is not None:
-            return {
-                "query": query,
-                "retrieval_query": retrieval_query,
-                "detected_entities": detected_entities,
-                "intent": intent,
-                "strategy": "form_lookup",
-                "target_chunk_types": target_chunk_types,
-                "structured_result": form_lookup_result,
-                "retrieved_items": [],
-                "citations": build_citation_from_lookup(form_lookup_result),
-                "context_for_llm": build_context_from_lookup(form_lookup_result),
-                "needs_llm_answer": False,
-                "deterministic_validated": not ai_router_enabled,
-                "deterministic_provenance": (
-                    "legacy_validated_resolver" if not ai_router_enabled else None
-                ),
-                "router_usage": routing.get("usage"),
-                "router_model": routing.get("model_used"),
-            }
-
-        fallback_plan = {
-            "purpose": "form_fallback",
-            "query": retrieval_query,
-            "chunk_types": ["regulation"],
-            "top_k": top_k,
-        }
-        fallback_results = retrieve_with_plan(
-            query=query,
-            plan=fallback_plan,
-            model=model,
-            collection=collection,
-            batch_size=batch_size,
-            normalize_embeddings=normalize_embeddings,
-            detected_entities=detected_entities,
-            cohort=cohort,
-            **candidate_options,
-        )
-
-        return {
-            "query": query,
-            "retrieval_query": retrieval_query,
-            "detected_entities": detected_entities,
-            "intent": intent,
-            "strategy": "form_lookup_fallback_to_vector",
-            "target_chunk_types": target_chunk_types,
-            "structured_result": None,
-            "retrieved_items": fallback_results,
-            "citations": build_citations_from_vector_results(fallback_results),
-            "context_for_llm": build_context_from_vector_results(fallback_results),
-            "needs_llm_answer": True,
         }
 
     if strategy == "formula_lookup":
@@ -1552,9 +1549,6 @@ def run_retrieval_pipeline(
         merged_results
     )
     context_blocks = []
-    if form_lookup_result is not None:
-        citations = build_citation_from_lookup(form_lookup_result) + citations
-        context_blocks.append(build_context_from_lookup(form_lookup_result))
 
     vector_context = build_context_from_vector_results(
         merged_results,
@@ -1571,7 +1565,7 @@ def run_retrieval_pipeline(
         "strategy": strategy,
         "target_chunk_types": target_chunk_types,
         "retrieval_plan": retrieval_plan,
-        "structured_result": structured_context_result or form_lookup_result,
+        "structured_result": structured_context_result,
         "retrieved_items": merged_results,
         "related_items": related_items,
         "citations": citations,

@@ -16,7 +16,6 @@ def get_max_token_limits() -> dict[str, int]:
     """
     return {
         "regulation": 850,
-        "form": 250,
         "table": 250,
         "formula": 180,
         "office_directory": 350,
@@ -24,7 +23,6 @@ def get_max_token_limits() -> dict[str, int]:
         "program_directory": 350,
         "faculty_program_directory": 350,
         "reference_directory": 350,
-        "procedure": 500,
     }
 
 
@@ -88,7 +86,6 @@ def build_chunk_report(
     table_chunks: list[dict[str, Any]],
     formula_chunks: list[dict[str, Any]],
     directory_chunks: list[dict[str, Any]],
-    procedure_chunks: list[dict[str, Any]],
     all_chunks: list[dict[str, Any]],
     validation_issues: list[dict[str, Any]],
 ) -> dict[str, Any]:
@@ -103,10 +100,8 @@ def build_chunk_report(
         regulation_chunks (list[dict[str, Any]]): Danh sách các chunk thuộc loại "regulation".
         table_chunks (list[dict[str, Any]]): Danh sách các chunk thuộc loại "table".
         formula_chunks (list[dict[str, Any]]): Danh sách các chunk thuộc loại "formula".
-        form_chunks (list[dict[str, Any]]): Danh sách các chunk thuộc loại "form".
         directory_chunks (list[dict[str, Any]]): Danh sách các chunk thuộc loại thư mục
             (ví dụ: "office_directory", "faculty_program_directory", "reference_directory").
-        procedure_chunks (list[dict[str, Any]]): Danh sách các chunk thuộc loại "procedure".
         all_chunks (list[dict[str, Any]]): Một danh sách chứa TẤT CẢ các chunk đã được xử lý.
             Mỗi chunk cần có ít nhất các khóa "chunk_type", "index_mode", và "token_count_approx".
         validation_issues (list[dict[str, Any]]): Một danh sách các từ điển, mỗi từ điển
@@ -119,7 +114,6 @@ def build_chunk_report(
             - "table_chunks" (int): Số lượng chunk loại "table".
             - "formula_chunks" (int): Số lượng chunk loại "formula".
             - "directory_chunks" (int): Số lượng chunk loại thư mục.
-            - "procedure_chunks" (int): Số lượng chunk loại "procedure".
             - "chunk_type_count" (dict[str, int]): Số lượng chunk cho mỗi loại chunk.
             - "index_mode_count" (dict[str, int]): Số lượng chunk cho mỗi chế độ index.
             - "avg_token_count_approx" (float): Số lượng token trung bình của tất cả các chunk.
@@ -136,7 +130,6 @@ def build_chunk_report(
         "table_chunks": len(table_chunks),
         "formula_chunks": len(formula_chunks),
         "directory_chunks": len(directory_chunks),
-        "procedure_chunks": len(procedure_chunks),
         "chunk_type_count": dict(Counter(chunk["chunk_type"] for chunk in all_chunks)),
         "index_mode_count": dict(Counter(chunk["index_mode"] for chunk in all_chunks)),
         "avg_token_count_approx": round(

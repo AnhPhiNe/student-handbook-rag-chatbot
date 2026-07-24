@@ -242,9 +242,10 @@ def test_structured_context_selects_k51_pass_fail_table_by_applicability() -> No
 
     assert result is not None
     assert [item["table_subtype"] for item in result["items"]] == [
-        "pass_fail_ungraded"
+        "grade_scale",
+        "pass_fail_ungraded",
     ]
-    assert result["items"][0]["rows"][0]["Thang điểm 10"] == "Từ 5,0 trở lên"
+    assert result["items"][1]["rows"][0]["Thang điểm 10"] == "Từ 5,0 trở lên"
 
 
 def test_structured_context_filters_study_duration_by_training_mode() -> None:

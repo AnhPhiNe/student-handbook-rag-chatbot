@@ -6,7 +6,6 @@ from unittest.mock import patch
 from src.retrieval.core.retrieval_pipeline import run_retrieval_pipeline
 
 
-FORMS_PATH = Path("data/processed/forms/clean_form_templates.json")
 FORMULAS_PATH = Path("data/processed/tables/formula_rules.json")
 SCORING_PATH = Path("data/processed/tables/scoring_tables.json")
 
@@ -16,7 +15,10 @@ def _load(path: Path) -> list[dict]:
 
 
 def _run(query: str, **kwargs):
-    with patch.dict(os.environ, {"STUDENT_RAG_DISABLE_AI_ROUTER": "1"}):
+    with (
+        patch.dict(os.environ, {"STUDENT_RAG_DISABLE_AI_ROUTER": "1"}),
+        patch("src.retrieval.core.retrieval_pipeline.retrieve_with_plan", return_value=[]),
+    ):
         return run_retrieval_pipeline(
             query=query,
             model=None,
@@ -25,21 +27,16 @@ def _run(query: str, **kwargs):
             formula_rules=kwargs.get("formula_rules", []),
             entity_registry=[],
             expansion_rules=[],
-            form_templates=kwargs.get("form_templates", []),
             cohort=kwargs.get("cohort"),
         )
 
 
-def test_form_lookup_is_direct_when_form_matches() -> None:
-    result = _run(
-        "Muon tam nghi hoc can mau don nao?",
-        form_templates=_load(FORMS_PATH),
-    )
+def test_document_requirement_query_uses_regulation_path() -> None:
+    result = _run("Muon tam nghi hoc can mau don nao?")
 
-    assert result["strategy"] == "form_lookup"
-    assert result["needs_llm_answer"] is False
-    assert result["retrieved_items"] == []
-    assert result["structured_result"]["lookup_type"] == "form_template"
+    assert result["strategy"] == "semantic_filtered"
+    assert result["needs_llm_answer"] is True
+    assert result.get("structured_result") in (None, {})
 
 
 def test_formula_lookup_is_direct_when_formula_matches() -> None:

@@ -74,6 +74,7 @@ def main():
     
     print("Connecting to MongoDB Atlas...")
     mongo_store = get_mongo_store()
+    print(f"Target MongoDB collection: {mongo_store.collection.name}")
     
     print("Dropping old collection to avoid orphaned data...")
     mongo_store.drop_collection()

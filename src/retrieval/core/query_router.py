@@ -279,7 +279,7 @@ def classify_request_shape(query: str) -> str:
     if contains_any(ascii_query, formula_terms) or calculation_slots:
         return "formula_or_calculation"
 
-    form_lookup_terms = [
+    document_requirement_terms = [
         "tai bieu mau",
         "tai mau",
         "lay bieu mau",
@@ -289,8 +289,8 @@ def classify_request_shape(query: str) -> str:
         "mau don nao",
         "can don gi",
     ]
-    if contains_any(ascii_query, form_lookup_terms):
-        return "form_lookup"
+    if contains_any(ascii_query, document_requirement_terms):
+        return "document_requirement"
 
     contact_terms = [
         "email",
@@ -473,7 +473,9 @@ def route_query(query: str) -> dict[str, Any]:
 
     program_metadata = infer_program_lookup_metadata(q)
 
-    has_form_signal = contains_any(q, rules["form_signal"])
+    has_document_requirement_signal = contains_any(
+        q, rules["document_requirement_signal"]
+    )
     has_reg_signal = contains_any(q, rules["regulation_signal"])
     has_contact_question = contains_any(q, rules["contact_question"])
     has_contact_question = has_contact_question or contains_any(
@@ -486,11 +488,11 @@ def route_query(query: str) -> dict[str, Any]:
     has_reg_priority_signal = _has_regulation_priority_signal(q)
     has_office_support_signal = _has_office_support_signal(q)
 
-    if request_shape == "form_lookup":
+    if request_shape == "document_requirement":
         return {
-            "intent": "form_query",
-            "strategy": "form_lookup",
-            "target_chunk_types": ["form"],
+            "intent": "regulation_query",
+            "strategy": "semantic_filtered",
+            "target_chunk_types": ["regulation"],
         }
 
     if request_shape == "contact_lookup":
@@ -600,24 +602,42 @@ def route_query(query: str) -> dict[str, Any]:
                 "target_chunk_types": ["office_directory"],
             }
 
-        if has_form_signal or contains_any(q, rules["ktx_form_signal"]):
+        if has_document_requirement_signal or contains_any(
+            q, rules["ktx_document_signal"]
+        ):
             return {
-                "intent": "mixed_query",
-                "strategy": "semantic_multi_filter",
-                "target_chunk_types": ["form", "regulation"],
+                "intent": "needs_clarification",
+                "strategy": "none",
+                "target_chunk_types": [],
+                "needs_clarification": True,
+                "clarification_question": (
+                    "Quy trình/hồ sơ Ký túc xá có thể thay đổi theo hệ thống riêng "
+                    "của Trường. Bạn nên kiểm tra thông báo hoặc liên hệ đơn vị phụ trách KTX."
+                ),
             }
 
         if contains_any(q, rules["ktx_regulation_signal"]):
             return {
-                "intent": "regulation_query",
-                "strategy": "semantic_filtered",
-                "target_chunk_types": ["regulation"],
+                "intent": "needs_clarification",
+                "strategy": "none",
+                "target_chunk_types": [],
+                "needs_clarification": True,
+                "clarification_question": (
+                    "Quy trình/điều kiện Ký túc xá không được dùng làm nguồn RAG chính "
+                    "vì có thể được cập nhật trên hệ thống riêng của Trường. "
+                    "Bạn muốn mình tra thông tin liên hệ KTX/phòng phụ trách không?"
+                ),
             }
 
         return {
-            "intent": "regulation_query",
-            "strategy": "semantic_filtered",
-            "target_chunk_types": ["regulation"],
+            "intent": "needs_clarification",
+            "strategy": "none",
+            "target_chunk_types": [],
+            "needs_clarification": True,
+            "clarification_question": (
+                "Thông tin Ký túc xá nên kiểm tra theo thông báo/hệ thống hiện hành. "
+                "Bạn muốn hỏi thông tin liên hệ hay quy định khác trong sổ tay?"
+            ),
         }
 
     if contains_any(q, ["quy trình", "trình tự", "các bước"]) and contains_any(
@@ -671,7 +691,7 @@ def route_query(query: str) -> dict[str, Any]:
             route["target_chunk_types"] = ["program_directory"]
         return route
 
-    has_direct_form_lookup_signal = contains_any(
+    has_direct_document_requirement_signal = contains_any(
         q,
         [
             "mau don",
@@ -681,21 +701,21 @@ def route_query(query: str) -> dict[str, Any]:
         ],
     )
     if (
-        has_direct_form_lookup_signal
+        has_direct_document_requirement_signal
         and not has_ktx_signal
         and not has_faculty_signal
     ):
         return {
-            "intent": "form_query",
-            "strategy": "form_lookup",
-            "target_chunk_types": ["form"],
+            "intent": "regulation_query",
+            "strategy": "semantic_filtered",
+            "target_chunk_types": ["regulation"],
         }
 
-    if has_form_signal and not has_reg_signal and not has_ktx_signal and not has_faculty_signal:
+    if has_document_requirement_signal and not has_reg_signal and not has_ktx_signal and not has_faculty_signal:
         return {
-            "intent": "form_query",
-            "strategy": "form_lookup",
-            "target_chunk_types": ["form"],
+            "intent": "regulation_query",
+            "strategy": "semantic_filtered",
+            "target_chunk_types": ["regulation"],
         }
 
     if contains_any(q, ["phuc khao", "phúc khảo"]) and contains_any(
@@ -710,8 +730,8 @@ def route_query(query: str) -> dict[str, Any]:
     # If a query contains multiple strong signals, let the AI router resolve the mixed intent.
     # Mixed queries are handled with multi-filter retrieval instead of forcing one intent too early.
     active_signals = []
-    if has_form_signal:
-        active_signals.append("form")
+    if has_document_requirement_signal:
+        active_signals.append("regulation")
     if has_reg_signal:
         active_signals.append("regulation")
     if has_office_signal:
@@ -723,8 +743,8 @@ def route_query(query: str) -> dict[str, Any]:
 
     if len(active_signals) >= 2:
         target_chunk_types = []
-        if has_form_signal:
-            target_chunk_types.append("form")
+        if has_document_requirement_signal:
+            target_chunk_types.append("regulation")
         if has_reg_signal:
             target_chunk_types.append("regulation")
         if has_office_signal:
@@ -744,11 +764,11 @@ def route_query(query: str) -> dict[str, Any]:
     # -----------------------------------
 
     # 4. Form query
-    if has_form_signal:
+    if has_document_requirement_signal:
         return {
-            "intent": "form_query",
-            "strategy": "form_lookup",
-            "target_chunk_types": ["form"],
+            "intent": "regulation_query",
+            "strategy": "semantic_filtered",
+            "target_chunk_types": ["regulation"],
         }
 
     # 5. Prefer faculty/program when the query clearly asks about a khoa/nganh,
@@ -777,11 +797,11 @@ def route_query(query: str) -> dict[str, Any]:
             "target_chunk_types": ["office_directory"],
         }
 
-    if has_form_signal and not has_reg_signal and not has_ktx_signal and not has_faculty_signal:
+    if has_document_requirement_signal and not has_reg_signal and not has_ktx_signal and not has_faculty_signal:
         return {
-            "intent": "form_query",
-            "strategy": "form_lookup",
-            "target_chunk_types": ["form"],
+            "intent": "regulation_query",
+            "strategy": "semantic_filtered",
+            "target_chunk_types": ["regulation"],
         }
 
     if contains_any(q, ["phuc khao", "phúc khảo"]) and contains_any(

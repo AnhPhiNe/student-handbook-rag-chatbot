@@ -5,7 +5,6 @@ from typing import Any
 
 from src.common.cohort import normalize_cohort
 
-from .form_lookup import form_lookup
 from .formula_lookup import formula_lookup
 from .foreign_language_lookup import foreign_language_lookup
 from .office_lookup import office_lookup
@@ -110,7 +109,6 @@ def resolve_structured_decision(
     cohort: str | None,
     scoring_tables: list[dict[str, Any]],
     formula_rules: list[dict[str, Any]],
-    form_templates: list[dict[str, Any]],
     office_directory: list[dict[str, Any]],
     student_service_directory: list[dict[str, Any]],
     student_faculty_profiles: list[dict[str, Any]] | None,
@@ -273,17 +271,6 @@ def resolve_structured_decision(
             result,
             target_chunk_types=[target_content_types[lookup_type]],
         )
-
-    if lookup_type == "form":
-        candidate_text = _slot_text(decision, "purpose")
-        result = form_lookup(
-            query,
-            form_templates,
-            cohort=effective_cohort,
-            candidate_text=candidate_text,
-            require_confident_match=decision.get("intent") != "list_items",
-        )
-        return _resolution(lookup_type, "form_lookup", result)
 
     if lookup_type == "program":
         candidate_text = _slot_text(decision, "program_or_faculty") or query

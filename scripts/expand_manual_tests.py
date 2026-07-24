@@ -135,7 +135,7 @@ def main():
             "expected_status": "answered",
             "expected_llm_called": True,
             "min_citations": 1,
-            "expected_citation_chunk_types": ["procedure"]
+            "expected_citation_chunk_types": ["regulation"]
         },
         {
             "id": "cite_office_edge_001",
@@ -213,12 +213,6 @@ def main():
             "expected_intent": "office_query",
             "expected_strategy": "semantic_filtered_rerank",
             "expected_chunk_ids": ["office_Phòng Kế hoạch - Tài chính"]
-        },
-        {
-            "query": "Mẫu đơn nckh tải ở đâu?",
-            "expected_intent": "form_query",
-            "expected_strategy": "semantic_filtered_rerank",
-            "expected_chunk_ids": ["form_form_p186"]
         },
         {
             "query": "Sinh viên trao đổi là gì?",

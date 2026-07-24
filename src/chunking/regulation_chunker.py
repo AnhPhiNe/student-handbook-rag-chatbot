@@ -18,6 +18,44 @@ from .token_utils import count_tokens_approx, split_text_by_paragraph
 
 
 CLAUSE_PATTERN = re.compile(r"^\d+\.\s+", re.MULTILINE)
+BOUNDARY_STOP_MARKERS = (
+    "THÔNG TIN TRỌNG TÂM",
+    "THONG TIN TRONG TAM",
+    "ĐÃ TÁCH TỪ NGUỒN",
+    "DA TACH TU NGUON",
+    "Nơi nhận:",
+    "CÁC HƯỚNG DẪN LIÊN QUAN",
+    "CAC HUONG DAN LIEN QUAN",
+    "Phần 3\nCÁC QUY TRÌNH",
+    "PHẦN 3\nCÁC QUY TRÌNH",
+    "CÁC QUY TRÌNH, BIỂU MẪU",
+    "QUY TRÌNH XÉT SINH VIÊN VÀO Ở KÝ TÚC XÁ",
+    "THÔNG BÁO\nV/v thực hiện",
+    "THÔNG BÁO\nVề việc thực hiện",
+    "Sinh viên có thể quét mã QR",
+    "Sinh viên tải mẫu đơn tại",
+)
+LOW_VALUE_LINK_PATTERNS = (
+    r"\([^)]*(?:mã\s*qr|qr|https?://|đường\s+dẫn|link)[^)]*\)",
+    r"https?://\S+",
+    r"\b\S*bit\.ly/\S+",
+    r"\b\S*forms\.gle/\S+",
+    r"\b\S*google\.com/forms\S*",
+    r"\s*(?:hoặc\s+)?quét\s+mã\s*qr\b.*$",
+    r"\s*(?:hoặc\s+)?truy\s+cập\s+(?:vào\s+)?(?:đường\s+dẫn|link)\b.*$",
+    r"\s*xem\s+trong\s+(?:đường\s+dẫn|link)\b.*$",
+    r"\s*(?:thông\s+qua|qua|trong)?\s*(?:đường\s+)?dẫn\s+hoặc\s+mã\s*qr\b.*$",
+)
+LOW_VALUE_LINK_TERMS = (
+    "mã qr",
+    " qr",
+    "http://",
+    "https://",
+    "bit.ly",
+    "forms.gle",
+    "google.com/forms",
+    "đường dẫn",
+)
 
 
 def build_regulation_chunk_content(section: dict[str, Any], content: str) -> str:
@@ -34,6 +72,46 @@ def build_regulation_chunk_content(section: dict[str, Any], content: str) -> str
     )
 
 
+def clean_regulation_source_content(content: str) -> str:
+    """Remove generated notes, layout lines, and leaked appendix documents."""
+
+    cleaned = content.replace("\r\n", "\n").replace("\r", "\n").strip()
+    upper_cleaned = cleaned.upper()
+    stop_positions = [
+        upper_cleaned.find(marker.upper())
+        for marker in BOUNDARY_STOP_MARKERS
+        if upper_cleaned.find(marker.upper()) > 0
+    ]
+    if stop_positions:
+        cleaned = cleaned[: min(stop_positions)].strip()
+
+    lines = []
+    for line in cleaned.splitlines():
+        stripped = line.strip()
+        if re.fullmatch(
+            r"\d*\s*SỔ TAY SINH VIÊN KHÓA\s+\d+(?:\s+\d+)?",
+            stripped,
+            flags=re.IGNORECASE,
+        ):
+            continue
+        stripped = _strip_low_value_link_text(stripped)
+        if stripped:
+            lines.append(stripped)
+    return "\n".join(lines).strip()
+
+
+def _strip_low_value_link_text(text: str) -> str:
+    stripped = text.strip()
+    for pattern in LOW_VALUE_LINK_PATTERNS:
+        stripped = re.sub(pattern, "", stripped, flags=re.IGNORECASE).strip()
+    stripped = re.sub(r"\s+([,.;:])", r"\1", stripped)
+    stripped = re.sub(r"\s{2,}", " ", stripped).strip()
+    stripped = re.sub(r"\(\s*\)", "", stripped).strip()
+    if any(term in stripped.lower() for term in LOW_VALUE_LINK_TERMS):
+        return ""
+    return stripped
+
+
 def build_parent_doc_content(
     section: dict[str, Any],
     content: str,
@@ -43,12 +121,12 @@ def build_parent_doc_content(
     """Tạo parent doc có thêm bảng đã chuẩn hóa để LLM không phải đọc bảng bị dính dòng."""
 
     normalized_tables = format_tables_for_parent(tables)
-    highlight_text = format_highlights_for_parent(highlights or [])
+    normalized_highlights = format_highlights_for_parent(highlights or [])
     return join_non_empty(
         [
             build_regulation_chunk_content(section, content),
             normalized_tables,
-            highlight_text,
+            normalized_highlights,
         ]
     )
 
@@ -100,13 +178,14 @@ def build_regulation_chunks(
         if section.get("content_type") != "regulation_text":
             continue
 
-        content = section.get("content", "").strip()
+        content = clean_regulation_source_content(section.get("content", ""))
         if not content:
             continue
 
+        cleaned_section = {**section, "content": content}
         source_pages = source_page_range(section["page_start"], section["page_end"])
-        extracted_tables = extract_regulation_tables(section)
-        extracted_highlights = extract_regulation_highlights(section)
+        extracted_tables = extract_regulation_tables(cleaned_section)
+        extracted_highlights = extract_regulation_highlights(cleaned_section)
         base_metadata = {
             "source_type": "structured_section",
             "document_title": section.get("document_title"),
@@ -123,7 +202,7 @@ def build_regulation_chunks(
         }
 
         full_content = build_parent_doc_content(
-            section,
+            cleaned_section,
             content,
             extracted_tables,
             extracted_highlights,
@@ -160,7 +239,7 @@ def build_regulation_chunks(
                     chunk_id=f"reg_table_{table['table_id']}",
                     chunk_type="regulation_table",
                     index_mode="semantic",
-                    content=build_regulation_table_chunk_content(section, table),
+                    content=build_regulation_table_chunk_content(cleaned_section, table),
                     metadata=table_metadata,
                 )
             )
@@ -182,7 +261,7 @@ def build_regulation_chunks(
                     chunk_id=f"reg_highlight_{highlight['highlight_id']}",
                     chunk_type="regulation_highlight",
                     index_mode="semantic",
-                    content=build_regulation_highlight_chunk_content(section, highlight),
+                    content=build_regulation_highlight_chunk_content(cleaned_section, highlight),
                     metadata=highlight_metadata,
                 )
             )
@@ -203,7 +282,7 @@ def build_regulation_chunks(
         sub_index = 1
 
         for clause in clause_parts:
-            clause_content = build_regulation_chunk_content(section, clause)
+            clause_content = build_regulation_chunk_content(cleaned_section, clause)
 
             if count_tokens_approx(clause_content) <= max_tokens:
                 split_parts = [clause_content]

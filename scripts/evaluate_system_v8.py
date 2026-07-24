@@ -137,11 +137,22 @@ def _run_retrieval_modes(
     reports: dict[str, Any] = {}
     for mode in modes:
         report = evaluate_retrieval(
-            cases, backend=args.backend, mode=mode, limit=args.limit
+            cases,
+            backend=args.backend,
+            mode=mode,
+            scope=args.retrieval_scope,
+            limit=args.limit,
         )
         _finalize_report(report, expected_n=180, provenance=provenance)
         reports[mode] = report
-        _write(report, args.output, f"retrieval_{args.backend}_{mode}_{args.profile}")
+        _write(
+            report,
+            args.output,
+            (
+                f"retrieval_{args.retrieval_scope}_{args.backend}_"
+                f"{mode}_{args.profile}"
+            ),
+        )
     if len(reports) > 1:
         full = reports["full"]["summary"]
         delta = {
@@ -267,6 +278,15 @@ def main() -> None:
             "all",
         ),
         default="vector_primary_graph_supplement",
+    )
+    parser.add_argument(
+        "--retrieval-scope",
+        choices=("pure", "end_to_end"),
+        default="pure",
+        help=(
+            "pure evaluates regulation retrieval after routing; end_to_end also "
+            "counts router clarification/structured/out-of-domain decisions"
+        ),
     )
     parser.add_argument("--dataset", type=Path, default=DEFAULT_DATASET)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)

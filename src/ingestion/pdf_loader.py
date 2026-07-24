@@ -95,15 +95,7 @@ def detect_by_pattern(text: str) -> list[str]:
     if "nội dung đánh giá" in lower_text and "điểm đánh giá" in lower_text:
         matched.append("scoring_table")
 
-    if "phiếu đánh giá kết quả rèn luyện sinh viên" in lower_text:
-        matched.append("form_template")
 
-    if (
-        "kính gửi" in lower_text
-        or "người làm đơn" in lower_text
-        or "đơn xin" in lower_text
-    ):
-        matched.append("form_template")
 
     if "phòng đào tạo" in lower_text or "phòng công tác chính trị" in lower_text:
         matched.append("office_directory")
@@ -254,9 +246,6 @@ def build_extraction_report(pages: list[dict[str, Any]]) -> dict[str, Any]:
         ],
         "possible_table_pages": [
             p["page_number"] for p in pages if p["has_table_hint"]
-        ],
-        "form_template_pages": [
-            p["page_number"] for p in pages if p["content_type"] == "form_template"
         ],
         "office_directory_pages": [
             p["page_number"] for p in pages if p["content_type"] == "office_directory"

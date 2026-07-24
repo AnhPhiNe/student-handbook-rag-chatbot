@@ -25,7 +25,7 @@ from .structured_routing import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v15-simple-vi"
+ROUTER_PROMPT_VERSION = "structured-regulation-v18-context-only"
 
 ROUTER_SYSTEM_PROMPT = """
 Bạn là AI Query Router của hệ thống Sổ tay Sinh viên HCMUE.
@@ -34,15 +34,29 @@ Chỉ phân loại và trích xuất slot. Không trả lời câu hỏi. Chỉ 
 JSON SCHEMA, không Markdown hoặc giải thích. Chỉ dùng lookup_type, intent và field
 được khai báo trong TOOLS; không tự tạo tên mới.
 
+XỬ LÝ NGỮ CẢNH VÀ CHUẨN HÓA
+- context_mode="standalone" khi QUERY tự đủ nghĩa và không cần CHAT HISTORY.
+- context_mode="follow_up" chỉ khi QUERY thật sự nối tiếp một hoặc nhiều lượt trong
+  CHAT HISTORY. Khi đó context_confidence phải là "high", standalone_query chỉ nối
+  thông tin có trong QUERY và các lượt được tham chiếu, referenced_turns chứa đúng
+  chỉ số [n] của các lượt đã dùng.
+- context_mode="ambiguous" khi không đủ chắc chắn QUERY đang nối tiếp chủ đề nào;
+  route="clarify" và đặt clarification_question ngắn gọn.
+- normalized_query chỉ được sửa dấu tiếng Việt, lỗi chính tả nhẹ hoặc viết tắt phổ
+  biến. Không đổi cohort, số liệu, phủ định, thực thể hoặc chủ đề.
+- Nếu có sửa chính tả, corrections phải liệt kê original_span nguyên văn từ QUERY
+  và normalized_span tương ứng. Không sửa thì corrections=[].
+- Không dùng CHAT HISTORY cho một câu standalone chỉ vì lịch sử đang có sẵn.
+
 ROUTE VÀ EXECUTION MODE
 - structured / structured: câu hỏi có thể trả lời từ một bảng hoặc catalog JSON
-  (số liệu, danh sách, liên hệ, ngành, biểu mẫu, công thức). Hệ thống phía sau sẽ
+  (số liệu, danh sách, liên hệ, ngành, công thức). Hệ thống phía sau sẽ
   lấy dữ liệu có thẩm quyền rồi để Answer LLM diễn giải; router không tính đáp án.
 - rag / regulation: phải đọc Điều/khoản để trả lời quy định, điều kiện, thủ tục,
   ngoại lệ, hậu quả, quyền/nghĩa vụ, thời hạn hoặc trường hợp áp dụng.
 - rag / mixed: cần cả dữ liệu structured và quy định. lookup_type chọn đúng một
   nguồn structured chính; target_chunk_types=["regulation"].
-- clarify: Chỉ dùng khi THIẾU THÔNG TIN CỐT LÕI khiến việc tra cứu bất khả thi (ví dụ: hỏi "số điện thoại" hay "địa chỉ" nhưng không nói rõ là của Phòng/Khoa nào, hoặc xin "biểu mẫu" nhưng không nói rõ là biểu mẫu gì). TUYỆT ĐỐI KHÔNG dùng clarify đối với các câu hỏi về quy chế chung (như hoãn thi, cấm thi, xét học bổng, rèn luyện) vì chúng áp dụng chung cho mọi môn/ngành, việc thiếu tên môn/ngành không ảnh hưởng đến việc tìm quy chế.
+- clarify: Chỉ dùng khi THIẾU THÔNG TIN CỐT LÕI khiến việc tra cứu bất khả thi (ví dụ: hỏi "số điện thoại" hay "địa chỉ" nhưng không nói rõ là của Phòng/Khoa nào). TUYỆT ĐỐI KHÔNG dùng clarify đối với các câu hỏi về quy chế chung (như hoãn thi, cấm thi, xét học bổng, rèn luyện) vì chúng áp dụng chung cho mọi môn/ngành, việc thiếu tên môn/ngành không ảnh hưởng đến việc tìm quy chế.
 - out_of_domain: ngoài phạm vi Sổ tay Sinh viên HCMUE.
 
 Với route=structured:
@@ -63,7 +77,10 @@ NGUYÊN TẮC PHÂN LOẠI
 - Chọn structured nếu bảng/catalog có thể cung cấp dữ liệu cần thiết.
 - Chọn regulation nếu phải suy ra điều kiện áp dụng, ngoại lệ hoặc cách xử lý.
 - Chọn mixed khi câu hỏi thực sự cần cả giá trị bảng và quy định liên quan.
-- Hỏi nơi tải một biểu mẫu là structured/form; hỏi thủ tục hoặc hồ sơ là regulation.
+- structured chỉ phù hợp khi người dùng hỏi trực tiếp một giá trị, danh sách hoặc
+  thông tin catalog. Nếu người dùng hỏi giá trị đó đã đủ điều kiện, được phép,
+  được công nhận hoặc dẫn tới hệ quả nào thì dùng regulation hoặc mixed.
+- Không hỗ trợ lookup biểu mẫu riêng trong runtime chính; hỏi hồ sơ, giấy tờ, mẫu đơn hoặc thủ tục phải dùng regulation hoặc mixed nếu cần thêm catalog khác.
 - Hỏi đích danh đơn vị là office/faculty; mô tả dịch vụ và hỏi nơi phụ trách là
   student_service; hỏi ngành, chương trình học, hoặc ngành thuộc khoa nào là program.
 - ĐẶC BIỆT CHÚ Ý: Các câu hỏi về "cơ hội nghề nghiệp", "ra trường làm gì", "vị trí công tác", "làm việc ở đâu" BẮT BUỘC dùng route=structured và lookup_type=program. Tuyệt đối KHÔNG đưa vào regulation trừ khi hỏi về quy chế xét tốt nghiệp.
@@ -86,8 +103,9 @@ SLOT VÀ SLOT_SPANS
   đọc toàn bộ bảng đã chọn cùng câu hỏi gốc.
 
 RETRIEVAL_QUERY
-- Viết lại thành câu độc lập, dễ tìm kiếm; giữ cohort, số liệu, phủ định và mọi
-  yêu cầu độc lập. Chỉ sửa chính tả nhẹ, không thêm thông tin mới.
+- Đây chỉ là candidate phục vụ A/B. Dùng normalized_query cho standalone hoặc
+  standalone_query cho follow_up. Không mở rộng semantic, không thêm entity, quy
+  định, từ đồng nghĩa hoặc chủ đề mới để tối ưu tìm kiếm.
 
 Trước khi xuất JSON, kiểm tra route/mode khớp nhau, lookup_type và intent có trong
 TOOLS, slot đúng schema, span có thật trong nguồn vào, và không có "procedure"
@@ -171,7 +189,8 @@ class GroqRouterKeyPool:
                     tokens_today = int(state.get("tokens_today", 0))
                     if (
                         requests_today < self.config.rpd_limit_per_key
-                        and tokens_today + estimated_tokens <= self.config.tpd_limit_per_key
+                        and tokens_today + estimated_tokens
+                        <= self.config.tpd_limit_per_key
                     ):
                         daily_available = True
                     else:
@@ -188,7 +207,9 @@ class GroqRouterKeyPool:
                         wait_until.append(float(events[0]["at"]) + 60.0)
                         continue
                     if minute_tokens + estimated_tokens > self.config.tpm_limit_per_key:
-                        wait_until.append(float(events[0]["at"]) + 60.0 if events else now + 1.0)
+                        wait_until.append(
+                            float(events[0]["at"]) + 60.0 if events else now + 1.0
+                        )
                         continue
 
                     candidates.append(
@@ -218,7 +239,9 @@ class GroqRouterKeyPool:
                 )
             time.sleep(wait_seconds)
 
-    def record_success(self, key_id: str, *, actual_tokens: int, reserved_tokens: int) -> None:
+    def record_success(
+        self, key_id: str, *, actual_tokens: int, reserved_tokens: int
+    ) -> None:
         with self._lock:
             state = self._key_state(key_id)
             extra = max(0, int(actual_tokens) - int(reserved_tokens))
@@ -367,7 +390,9 @@ class AIRouter:
             or os.environ.get("GROQ_API_KEY")
             or ""
         )
-        self.available_keys = [key.strip() for key in keys_value.split(",") if key.strip()]
+        self.available_keys = [
+            key.strip() for key in keys_value.split(",") if key.strip()
+        ]
         if not self.available_keys:
             raise RuntimeError(
                 "Missing GROQ_ROUTER_API_KEYS, GROQ_API_KEYS, or GROQ_API_KEY."
@@ -410,7 +435,9 @@ class AIRouter:
             request_timeout_seconds=float(config.get("request_timeout_seconds", 5.0)),
             max_retries=int(config.get("max_retries", 1)),
             key_pool_config=key_pool_config,
-            cache_path=str(config.get("cache_path", "data/cache/qwen_router_cache.json")),
+            cache_path=str(
+                config.get("cache_path", "data/cache/qwen_router_cache.json")
+            ),
             cache_enabled=bool(config.get("cache_enabled", True))
             and not cache_disabled,
         )
@@ -534,13 +561,16 @@ class AIRouter:
         routing_hint: dict[str, Any] | None = None,
     ) -> str:
         history_lines = []
-        for item in (chat_history or [])[-2:]:
+        history_window = (chat_history or [])[-4:]
+        for local_index, item in enumerate(history_window):
             role = str(item.get("role") or "user")
             content = str(item.get("content") or "")[:300]
             if content:
-                history_lines.append(f"{role}:{content}")
+                history_lines.append(f"[{local_index}] {role}:{content}")
         history = "\n".join(history_lines) or "none"
-        schema = json.dumps(router_json_schema(), ensure_ascii=False, separators=(",", ":"))
+        schema = json.dumps(
+            router_json_schema(), ensure_ascii=False, separators=(",", ":")
+        )
         hint = json.dumps(routing_hint, ensure_ascii=False, separators=(",", ":"))
         hint_instruction = (
             "CATALOG_HINT is an exact span grounded in production data. Use its lookup_type "
@@ -576,13 +606,15 @@ class AIRouter:
         payload = {
             "query": query.strip(),
             "cohort": cohort,
-            "history": (chat_history or [])[-2:],
+            "history": (chat_history or [])[-4:],
             "routing_hint": routing_hint,
             "model": self.model_name,
             "prompt_version": ROUTER_PROMPT_VERSION,
             "registry": registry_digest(self.registry),
         }
-        raw = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        raw = json.dumps(
+            payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        )
         return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
     @staticmethod

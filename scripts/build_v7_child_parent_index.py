@@ -130,6 +130,9 @@ def _strip_docstore_preamble(content: str) -> str:
 def _strip_generated_focus_sections(content: str) -> str:
     markers = (
         "THONG TIN TRONG TAM",
+        "THÔNG TIN TRỌNG TÂM",
+        "DA TACH TU NGUON",
+        "ĐÃ TÁCH TỪ NGUỒN",
         "NORMALIZED TABLE/LIST:",
         "RELATED SECTION:",
         "RELATED SNIPPET:",
@@ -508,9 +511,19 @@ def _clean_block_text(text: str) -> str:
 
 def _looks_like_section_heading(text: str, metadata: dict[str, Any]) -> bool:
     title = _clean_block_text(str(metadata.get("title") or ""))
+    article = _clean_block_text(str(metadata.get("article") or ""))
     if text == title:
         return True
-    return bool(re.match(r"^(Điều|Chương|Mục)\s+\w+", text, flags=re.IGNORECASE)) and len(text) < 180
+    heading_variants = {
+        _clean_block_text(value)
+        for value in (
+            article,
+            f"{article} {title}".strip(),
+            f"{article.rstrip('.')} {title}".strip(),
+        )
+        if value
+    }
+    return text in heading_variants
 
 
 def _looks_table_like(text: str) -> bool:

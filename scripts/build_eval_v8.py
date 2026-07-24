@@ -43,7 +43,6 @@ V83_STRESS_COUNTS = {"K48-K49": 12, "K50": 11, "K51": 11, "general": 11}
 SYNTHETIC_CONTENT_TYPES = [
     "student_service_directory",
     "student_office_profile",
-    "form_template",
     "structured_lookup",
     "foreign_language_equivalency",
     "formula_rule",
@@ -131,8 +130,6 @@ def topic_group(value: str) -> str:
         return "ngoai_ngu"
     if any(term in text for term in ("phong", "trung tam", "email", "lien he", "ktx")):
         return "phong_ban"
-    if any(term in text for term in ("bieu mau", "don ", "mau ", "form")):
-        return "bieu_mau"
     if any(term in text for term in ("nganh", "khoa", "chuong trinh dao tao")):
         return "nganh_hoc"
     return "khac"
@@ -717,8 +714,6 @@ def synthetic_fallback_query(item: dict[str, Any], cohort: str, index: int) -> s
     content_type = content_type_of(item)
     if content_type in {"student_service_directory", "student_office_profile"}:
         return f"Em học {cohort}, cần tìm đầu mối về {topic}; bên nào phụ trách và liên hệ thế nào ạ?"
-    if content_type == "form_template":
-        return f"Em thuộc {cohort}, cần mẫu {topic} nhưng không nhớ đúng tên biểu mẫu, tìm giúp em với."
     if content_type in {"program_directory", "faculty_program_directory"}:
         return f"Sinh viên {cohort} muốn biết thêm thông tin về {topic} thì xem ở đâu?"
     if content_type == "foreign_language_equivalency":
@@ -753,7 +748,6 @@ DETERMINISTIC_GROUPS = {
     "office": ("office_query", "office_lookup", "office_directory"),
     "program": ("faculty_query", "program_lookup", "program_directory"),
     "faculty": ("faculty_query", "program_lookup", "program_directory"),
-    "form": ("form_query", "form_lookup", "form_template"),
     "formula": ("formula_query", "formula_lookup", "formula"),
 }
 
@@ -766,7 +760,6 @@ EXPECTED_CITATION_TYPES = {
     "office": "office_directory",
     "program": "program_directory",
     "faculty": "program_directory",
-    "form": "form_template",
     "formula": "formula",
 }
 
@@ -784,7 +777,6 @@ def deterministic_assertions(group: str, template_index: int) -> dict[str, Any]:
         "office": (("phongcntt@hcmue.edu.vn",), ("Ký túc xá",)),
         "program": (("Khoa Công nghệ Thông tin",), ("Khoa Công nghệ Thông tin",)),
         "faculty": (("Khoa",), ("ngành",)),
-        "form": (("GIẤY XÁC NHẬN",), ("BIÊN BẢN HỌP LỚP",)),
         "formula": (("Σ(ai × ni) / Σ(ni)",), ("điểm học bổng",)),
     }
     payload: dict[str, Any] = {
@@ -838,10 +830,6 @@ POSITIVE_QUERIES = {
     "faculty": [
         "{cohort} cho em xem thông tin khoa quản lý ngành Công nghệ Thông tin.",
         "Sinh viên {cohort} hỏi khoa nào phụ trách các ngành sư phạm?",
-    ],
-    "form": [
-        "{cohort} cần giấy xác nhận sinh viên thì tải biểu mẫu nào?",
-        "Cho em tìm mẫu biên bản họp lớp áp dụng với {cohort}.",
     ],
     "formula": [
         "Công thức tính điểm trung bình chung của {cohort} là gì?",
@@ -897,12 +885,6 @@ NEGATIVE_QUERIES = {
         "Khoa quản lý có được tự ý thay đổi kết quả học tập của {cohort} không?",
         "Sinh viên {cohort} học sai ngành thì hậu quả theo quy định là gì?",
         "{cohort} muốn xin ngoại lệ chuyển ngành thì hỏi theo điều nào?",
-    ],
-    "form": [
-        "Sau khi nộp mẫu xin nghỉ học của {cohort} thì quy trình xét thế nào?",
-        "{cohort} thiếu chữ ký trong biểu mẫu thì hồ sơ bị xử lý ra sao?",
-        "Điều kiện để {cohort} được xác nhận đang học là gì?",
-        "{cohort} nộp biểu mẫu trễ có được giải quyết ngoại lệ không?",
     ],
     "formula": [
         "Điểm trung bình thấp thì {cohort} có bị cảnh báo học tập không?",
@@ -1061,10 +1043,6 @@ HOLDOUT_POSITIVE_QUERIES = {
         "{cohort} cho em tra khoa quản lý các ngành sư phạm.",
         "Khoa Công nghệ Thông tin trong danh mục {cohort} gắn với những ngành nào?",
     ],
-    "form": [
-        "{cohort} muốn xin xác nhận đang học thì dùng biểu mẫu nào?",
-        "{cohort} cần tải mẫu nào cho biên bản họp lớp?",
-    ],
     "formula": [
         "Cách tính điểm trung bình tích lũy của {cohort} là gì?",
         "Điểm học bổng của {cohort} dùng công thức nào?",
@@ -1119,12 +1097,6 @@ HOLDOUT_NEGATIVE_QUERIES = {
         "Khoa có quyền buộc sinh viên {cohort} chuyển ngành không?",
         "Sinh viên {cohort} muốn khiếu nại khoa phụ trách thì quy trình ra sao?",
         "{cohort} có ngoại lệ nào khi chuyển khoa không?",
-    ],
-    "form": [
-        "Nộp đơn nghỉ học xong thì hồ sơ {cohort} được xét theo trình tự nào?",
-        "Biểu mẫu của {cohort} thiếu chữ ký sẽ bị trả lại hay xử lý thế nào?",
-        "Muốn được xác nhận đang học, {cohort} phải thỏa điều kiện gì?",
-        "Hồ sơ dùng sai mẫu của {cohort} có được xem xét ngoại lệ không?",
     ],
     "formula": [
         "Điểm trung bình thấp khiến {cohort} bị cảnh báo theo quy định nào?",
@@ -1276,10 +1248,6 @@ HOLDOUT_V82_POSITIVE_QUERIES = {
         "Hoc nganh Cong nghe Thong tin khoa {cohort} thi don vi hoc thuat nao quan ly?",
         "Khoa CNTT dang phu trach nhung nganh nao cua {cohort}?",
     ],
-    "form": [
-        "Em {cohort} can mau de chung minh minh dang la sinh vien cua truong.",
-        "Lop {cohort} hop cham diem ren luyen thi can dung bien ban mau nao?",
-    ],
     "formula": [
         "Bieu thuc tong co trong so de tinh diem trung binh cua {cohort} viet the nao?",
         "Cho em cong thuc ket hop diem hoc tap va ren luyen de ra diem hoc bong {cohort}.",
@@ -1328,12 +1296,6 @@ HOLDOUT_V82_NEGATIVE_QUERIES = {
         "Dang hoc mot nganh, {cohort} co the hoc them nganh thu hai theo thu tuc nao?",
         "Neu mot nganh ngung tuyen sinh thi quyen loi cua {cohort} duoc xu ly ra sao?",
         "Chuan dau ra rieng cua nganh CNTT khoa {cohort} gom nhung yeu cau gi?",
-    ],
-    "form": [
-        "Nop sai mau don thi ho so {cohort} duoc xu ly hay tra lai the nao?",
-        "Bieu mau thieu xac nhan cua khoa thi {cohort} co duoc bo sung sau khong?",
-        "Qua han nop don, sinh vien {cohort} co duoc xem xet ngoai le khong?",
-        "Sau khi gui mau nghi hoc, quy trinh phe duyet cho {cohort} dien ra the nao?",
     ],
     "formula": [
         "Diem trung binh cua {cohort} co duoc lam tron de tranh canh bao khong?",
@@ -1561,8 +1523,7 @@ def _record_id(record: dict[str, Any]) -> str:
         "office_profile_id",
         "program_id",
         "table_id",
-        "form_id",
-        "rule_id",
+            "rule_id",
         "formula_id",
         "source_record_id",
     ):

@@ -9,7 +9,6 @@ def build_report(
     faculty_directory: list[dict[str, Any]],
     program_directory: list[dict[str, Any]],
     reference_directory: list[dict[str, Any]],
-    procedures: list[dict[str, Any]],
 ) -> dict[str, Any]:
     return {
         "tables_extracted": len(scoring_tables),
@@ -26,7 +25,6 @@ def build_report(
         "faculty_records_extracted": len(faculty_directory),
         "program_records_extracted": len(program_directory),
         "reference_records_extracted": len(reference_directory),
-        "procedures_extracted": len(procedures),
         "items_need_manual_review": {
             "tables": [
                 table["table_id"]

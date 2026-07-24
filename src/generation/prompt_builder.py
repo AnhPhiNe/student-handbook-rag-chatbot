@@ -43,23 +43,30 @@ def build_answer_prompt(
 {cohort_instruction}
 {source_usage_instruction}
 
+ANSWER_SCOPE_RULES
+- Chỉ trả lời đúng đối tượng, chính sách hoặc giá trị mà câu hỏi đang hỏi. Không tự mở rộng sang địa chỉ, email, thủ tục, hậu quả hoặc ngoại lệ nếu người dùng không hỏi và nguồn không nói trực tiếp.
+- Treat source titles and source_section as the topic anchor. If the query matches a regulation title such as "hình thức đào tạo", answer that regulation; do not reinterpret it as a similarly named office/unit such as "Phòng Đào tạo".
+- Với câu hỏi về liên hệ/đơn vị, chỉ trả lời các trường có trong STRUCTURED_RESULT hoặc CONTEXT. Không suy ra phòng, email, số điện thoại, địa điểm hoặc đơn vị phụ trách từ tên gần giống.
+- Với câu hỏi có/không, quyền, ngoại lệ, hậu quả, thay thế, miễn hoặc thời hạn, chỉ kết luận có hoặc không khi nguồn trực tiếp xác lập đúng quyền, nghĩa vụ hoặc điều cấm được hỏi. Thông tin về lịch/thời điểm không tự chứng minh người dùng có quyền lựa chọn. Nếu không, nêu dữ kiện chắc chắn có liên quan và nói rõ nguồn chưa xác định phần được hỏi.
+- Trả lời ngắn gọn theo mặc định, nhưng phải giữ đủ điều kiện, số liệu, sửa đổi hiệu lực và khác biệt cohort trực tiếp cần thiết để tránh gây hiểu nhầm.
+
 NHIỆM VỤ
-- ĐỊNH DẠNG: Luôn sử dụng in đậm (**văn bản**) cho các cụm từ quan trọng như mốc thời gian, tên thủ tục, con số, hoặc điều kiện cốt lõi để sinh viên dễ theo dõi.
+- Định dạng: dùng in đậm (**văn bản**) cho mốc thời gian, tên thủ tục, con số hoặc điều kiện cốt lõi khi hữu ích.
 - Chỉ sử dụng STRUCTURED_RESULT và CONTEXT; không dùng kiến thức ngoài nguồn.
-- ĐÚNG TRỌNG TÂM VÀ NGẮN GỌN: Trả lời trực tiếp và dứt khoát ngay ở câu đầu tiên. Chỉ nêu các ngoại lệ, điều kiện phụ (từ RELATED SOURCES) NẾU chúng trực tiếp làm thay đổi kết luận hoặc ảnh hưởng thẳng đến quyền lợi người dùng trong bối cảnh câu hỏi. Không liệt kê lan man các chính sách rườm rà không liên quan.
+- Nếu STRUCTURED_RESULT và CONTEXT không đủ căn cứ cho câu hỏi, nói rằng chưa tìm thấy trong Sổ tay thay vì tự suy diễn.
 - STRUCTURED_RESULT là nguồn chuẩn cho bảng và danh mục. CONTEXT là nguồn chuẩn cho quy định, điều kiện và thủ tục.
-- PRIMARY SOURCES là căn cứ chính. Nếu RELATED SOURCES chứa thủ tục, quy định liên quan hữu ích (vd: cách khiếu nại, biểu mẫu, quy trình tiếp theo), hãy chủ động bổ sung thành một mục '💡 Lưu ý thêm' hoặc '📌 Thông tin liên quan' một cách ngắn gọn để hỗ trợ sinh viên tốt hơn. Không được tạo ra kết luận mới hoặc phủ định nguồn chính.
-- Nếu có APPLICABLE AMENDMENTS, nội dung thay thế/bổ sung trong đó có thứ tự hiệu lực cao hơn câu chữ cũ bị sửa, nhưng chỉ trong đúng phạm vi điều/khoản/điểm và cohort được nêu.
-- XỬ LÝ XUNG ĐỘT KHÓA (COHORT): Nếu người dùng không nêu rõ Khóa và CONTEXT chứa nhiều phiên bản quy định khác nhau thuộc các Khóa khác nhau, BẮT BUỘC phải phân tách câu trả lời thành từng mục riêng biệt cho từng Khóa (ví dụ: "Đối với K48-K50:..." và "Đối với K51:..."). Tuyệt đối không gộp chung, tóm tắt chung, hoặc tự ý chọn một Khóa để đại diện.
+- PRIMARY SOURCES là căn cứ chính. RELATED SOURCES là các Điều liên quan do graph kéo từ nguồn chính; luôn kiểm tra và trình bày trong mục riêng nếu có.
+- Khi có RELATED SOURCES, dùng format Expanded Graph Answer: (1) Kết luận chính, (2) Nội dung từ nguồn chính, (3) Các Điều liên quan được nguồn dẫn chiếu, (4) Lưu ý phạm vi.
+- Trong mục "Các Điều liên quan được nguồn dẫn chiếu", tóm tắt từng RELATED SOURCE đủ các ý chính liên quan, bao gồm số liệu, điều kiện, khoản/điểm, ngoại lệ, mốc thời gian và bảng nếu có. Không chỉ viết chung chung "theo Điều X".
+- RELATED SOURCES dùng để bổ sung/giải thích nguồn chính; không dùng để phủ định hoặc thay thế kết luận chính trừ khi RELATED chứa sửa đổi, ngoại lệ hoặc điều kiện hiệu lực rõ ràng.
+- Nếu có APPLICABLE AMENDMENTS, nội dung thay thế/bổ sung trong đó có thứ tự hiệu lực cao hơn câu chữ cũ, nhưng chỉ trong đúng phạm vi điều/khoản/điểm và cohort được nêu.
+- Nếu người dùng không nêu rõ khóa và CONTEXT chứa nhiều phiên bản quy định khác nhau theo khóa, phải phân tách câu trả lời theo từng khóa; không gộp chung hoặc tự chọn một khóa đại diện.
 - Giữ nguyên số liệu, tỷ lệ, thời hạn, Điều, khoản, điểm và thông tin liên hệ. Không suy rộng quy định cho đối tượng khác.
-- XỬ LÝ ĐIỀU KIỆN CỤ THỂ: Nếu câu hỏi chứa các bối cảnh/điều kiện đặc thù (vd: lưu ban, ngoại trú) nhưng CONTEXT chỉ cung cấp quy định chung, BẮT BUỘC phải làm rõ: "Nguồn không đề cập riêng...". Tuyệt đối không tự khẳng định quy định chung bao hàm trường hợp riêng.
-- XỬ LÝ ĐƠN VỊ / TỔ CHỨC: Phải phân biệt rõ tên các đơn vị (Ví dụ: "Phòng" và "Khoa" là hai cấp hoàn toàn khác nhau). Nếu sinh viên hỏi về một đơn vị cụ thể (vd: "Khoa CNTT") nhưng nguồn chỉ có thông tin về đơn vị khác có tên gần giống (vd: "Phòng Công nghệ thông tin"), BẮT BUỘC phải đính chính rõ ràng nguồn không nhắc đến đơn vị sinh viên hỏi, mà chỉ có quy định cho đơn vị kia. Tuyệt đối không tự ý đánh đồng.
-- TỪ ĐỒNG NGHĨA VÀ NGÔN NGỮ THÔNG DỤNG: Khách hàng/Sinh viên thường dùng từ ngữ thông dụng, rút gọn để diễn đạt. BẮT BUỘC phải tự động phân tích bản chất của sự việc và liên kết linh hoạt với các quy định, quy trình, thuật ngữ hành chính chính thức trong văn bản có ý nghĩa tương đương. Tuyệt đối không được bỏ sót thông tin, quy định hay điều kiện chỉ vì văn bản không sử dụng đúng từ khóa mà sinh viên hỏi. Trả lời bao quát trọn vẹn quy trình tương đương về mặt bản chất pháp lý.
+- Phân biệt rõ "Phòng" và "Khoa". Nếu nguồn chỉ có đơn vị gần tên nhưng không phải đơn vị được hỏi, phải nói rõ nguồn không xác nhận đơn vị được hỏi.
 - Với bảng, chỉ dùng record có `applicability` phù hợp với hình thức đào tạo, loại học phần hoặc đối tượng được hỏi; nếu chưa đủ thông tin để chọn, hãy hỏi lại.
-- NGUYÊN TẮC SUY DIỄN PHÁP LÝ: Tuyệt đối không tự suy diễn các quyền lợi, ngoại lệ, hoặc điều cấm từ các quy định thuần túy về thời gian, quy trình, hoặc thủ tục. Chỉ kết luận sinh viên "được phép", "có quyền", hoặc "bắt buộc" khi văn bản chứa từ ngữ trực tiếp quy định điều đó. Nếu không có, phải giữ thái độ trung lập và báo nguồn không quy định.
-- CẤM TƯ VẤN VƯỢT QUYỀN: Tuyệt đối không tự ý trấn an, khuyên bảo sinh viên (ví dụ: "bạn không cần lo lắng", "hãy yên tâm"). Không tự suy đoán hậu quả của một hành vi (ví dụ: nợ học phí) nếu Sổ tay không quy định rõ. Chỉ nêu nghĩa vụ phải làm hoặc kết luận trung lập dựa trên câu chữ.
-- Với câu hỏi có/không, chỉ kết luận có hoặc không khi nguồn trực tiếp xác lập đúng quyền, nghĩa vụ hoặc điều cấm được hỏi. Nếu nguồn chỉ nêu thông tin gần nghĩa, hãy nói nguồn chưa xác định phần đó rồi mới nêu dữ kiện chắc chắn có liên quan.
-- TUYỆT ĐỐI KHÔNG SỬ DỤNG chú thích trong câu dạng [1], [2]. Trình bày câu trả lời tự nhiên, không chèn số thứ tự trích dẫn vì giao diện đã tự động hiển thị nguồn bên dưới. Không hiển thị quá trình suy luận, nhãn kỹ thuật hoặc tự thêm mục nguồn.
+- Không tự suy diễn quyền lợi, ngoại lệ hoặc điều cấm từ quy định chỉ nói về thời gian/quy trình/thủ tục.
+- Không trấn an hoặc khuyên bảo vượt nguồn. Chỉ nêu nghĩa vụ, kết luận hoặc dữ kiện dựa trên câu chữ.
+- Không chèn chú thích dạng [1], [2] trong câu trả lời vì giao diện đã hiển thị nguồn bên dưới. Không hiển thị quá trình suy luận, nhãn kỹ thuật hoặc tự thêm mục nguồn.
 
 CÂU HỎI CỦA SINH VIÊN
 {query}
@@ -100,9 +107,7 @@ def build_prompt(
     )
 
 
-def limit_context(
-    context: str, max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS
-) -> str:
+def limit_context(context: str, max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS) -> str:
     context = (context or "").strip()
     if len(context) <= max_context_chars:
         return context
@@ -179,7 +184,10 @@ def _source_usage_instruction(context: str) -> str:
     return """
 SOURCE_USAGE_RULES
 - PRIMARY SOURCES are the main evidence for the final answer and citations.
-- RELATED SOURCES are graph supplements. Extract helpful related procedures, forms, or next steps and proactively suggest them to the user under a '💡 Lưu ý thêm' section.
+- RELATED SOURCES are optional graph supplements. Use them only when they directly answer the same asked issue or add a condition/exception that changes the answer.
+- If a PRIMARY SOURCE explicitly references an article/clause/point that appears in RELATED SOURCES, summarize the relevant content from that RELATED SOURCE instead of only naming the referenced article.
+- When RELATED SOURCES are present, include a separate "Các Điều liên quan được nguồn dẫn chiếu" section and summarize each related source with its key facts, numbers, conditions, exceptions, deadlines, and table values when available.
+- Do not add extra sections beyond the expanded graph section unless the user asks for next steps, procedures, or broader related rules.
 - Do not let RELATED SOURCES replace, reorder, or override PRIMARY SOURCES.
 - Prefer citations from PRIMARY SOURCES. Use a RELATED SOURCE only when it directly supports an extra contextual point.
 - If a RELATED SOURCE appears to conflict with PRIMARY SOURCES, do not use it to negate the answer unless a PRIMARY SOURCE also supports that conclusion.

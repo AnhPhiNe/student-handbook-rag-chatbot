@@ -3,7 +3,6 @@ from typing import Any
 
 
 INTENT_CHUNK_PRIORITY = {
-    "form_query": ["form"],
     "office_query": ["office_directory"],
     "faculty_query": ["program_directory", "faculty_directory", "faculty_program_directory"],
     "regulation_query": ["regulation"],
@@ -12,7 +11,6 @@ INTENT_CHUNK_PRIORITY = {
     "formula_query": ["formula"],
     "calculation_query": ["formula", "tool"],
     "mixed_query": [
-        "form", 
         "regulation",
         "office_directory",
         "program_directory",
@@ -101,8 +99,6 @@ def select_relevant_citations(
             "structured_lookup",
             "program_directory",
             "office_directory",
-            "form",
-            "form_template",
         }
         lookup_citations = [
             citation

@@ -13,7 +13,7 @@ from qdrant_client.models import Distance, PayloadSchemaType, PointStruct, Vecto
 from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
 
-COLLECTION_NAME = "student_handbook_semantic_v7"
+DEFAULT_COLLECTION_NAME = "student_handbook_semantic_v7"
 DATA_PATH = Path("data/processed/chunks/v7_child_parent_chunks.json")
 
 
@@ -26,6 +26,7 @@ def main() -> None:
     load_dotenv()
     qdrant_url = os.getenv("QDRANT_URL")
     qdrant_api_key = os.getenv("QDRANT_API_KEY")
+    collection_name = os.getenv("QDRANT_COLLECTION_NAME", DEFAULT_COLLECTION_NAME)
     if not qdrant_url or not qdrant_api_key:
         print("Missing QDRANT_URL or QDRANT_API_KEY.")
         sys.exit(1)
@@ -85,16 +86,16 @@ def main() -> None:
     vector_size = model.get_sentence_embedding_dimension()
 
     client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key, timeout=90.0)
-    if client.collection_exists(COLLECTION_NAME):
-        print(f"Collection {COLLECTION_NAME} exists. Deleting before reload.")
-        client.delete_collection(COLLECTION_NAME)
+    if client.collection_exists(collection_name):
+        print(f"Collection {collection_name} exists. Deleting before reload.")
+        client.delete_collection(collection_name)
 
     client.create_collection(
-        collection_name=COLLECTION_NAME,
+        collection_name=collection_name,
         vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
     )
-    print(f"Created {COLLECTION_NAME} with vector size {vector_size}")
-    create_payload_indexes(client)
+    print(f"Created {collection_name} with vector size {vector_size}")
+    create_payload_indexes(client, collection_name)
 
     texts = [str(chunk.get("content") or "") for chunk in chunks]
     embeddings = model.encode(
@@ -121,14 +122,14 @@ def main() -> None:
     batch_size = 64
     for start in tqdm(range(0, len(points), batch_size), desc="Upserting V7"):
         client.upsert(
-            collection_name=COLLECTION_NAME,
+            collection_name=collection_name,
             points=points[start : start + batch_size],
         )
 
-    print(f"Done. Upserted {len(points)} points into {COLLECTION_NAME}.")
+    print(f"Done. Upserted {len(points)} points into {collection_name}.")
 
 
-def create_payload_indexes(client: QdrantClient) -> None:
+def create_payload_indexes(client: QdrantClient, collection_name: str) -> None:
     for field in (
         "chunk_type",
         "content_type",
@@ -137,7 +138,7 @@ def create_payload_indexes(client: QdrantClient) -> None:
         "parent_section_id",
     ):
         client.create_payload_index(
-            collection_name=COLLECTION_NAME,
+            collection_name=collection_name,
             field_name=field,
             field_schema=PayloadSchemaType.KEYWORD,
             wait=True,

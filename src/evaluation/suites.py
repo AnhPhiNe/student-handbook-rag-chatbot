@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import re
 import statistics
@@ -32,7 +33,6 @@ DETERMINISTIC_STRATEGIES = {
     "student_service_lookup",
     "office_lookup",
     "program_lookup",
-    "form_lookup",
     "formula_lookup",
     "structured_lookup",
     "structured_table",
@@ -107,6 +107,8 @@ def _item_parent_id(item: dict[str, Any]) -> str:
         or metadata.get("chunk_id")
         or ""
     )
+
+
 def _flatten_text(value: Any) -> str:
     if isinstance(value, dict):
         return " ".join(_flatten_text(item) for item in value.values())
@@ -156,7 +158,6 @@ def load_runtime_resources(root: Path = ROOT) -> dict[str, Any]:
     paths = {
         "scoring_tables": "data/processed/tables/scoring_tables.json",
         "formula_rules": "data/processed/tables/formula_rules.json",
-        "form_templates": "data/processed/forms/clean_form_templates.json",
         "student_service_directory": "data/processed/directories/student_service_directory.json",
         "student_office_profiles": "data/processed/directories/student_office_profiles.json",
         "foreign_language_tables": "data/processed/tables/foreign_language_equivalency_table.json",
@@ -225,7 +226,6 @@ def evaluate_deterministic(
                     formula_rules=resources["formula_rules"],
                     entity_registry=[],
                     expansion_rules=[],
-                    form_templates=resources["form_templates"],
                     office_directory=resources["student_office_profiles"],
                     student_service_directory=resources["student_service_directory"],
                     foreign_language_tables=resources["foreign_language_tables"],
@@ -252,7 +252,10 @@ def evaluate_deterministic(
                 )
                 if result.get("needs_clarification"):
                     actual_group = "clarification"
-                elif result.get("out_of_domain") or result.get("intent") == "out_of_domain":
+                elif (
+                    result.get("out_of_domain")
+                    or result.get("intent") == "out_of_domain"
+                ):
                     actual_group = "guardrail"
                 elif structured_group:
                     actual_group = "structured"
@@ -465,9 +468,7 @@ def evaluate_deterministic(
             os.environ["STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED"] = previous_router_wait
 
     positives = [
-        row
-        for row in rows
-        if row["expected_group"] in {"deterministic", "structured"}
+        row for row in rows if row["expected_group"] in {"deterministic", "structured"}
     ]
     negatives = [
         row
@@ -475,13 +476,11 @@ def evaluate_deterministic(
         if row["expected_group"] not in {"deterministic", "structured"}
     ]
     tp = sum(
-        row.get("actual_group") in {"deterministic", "structured"}
-        for row in positives
+        row.get("actual_group") in {"deterministic", "structured"} for row in positives
     )
     fn = len(positives) - tp
     fp = sum(
-        row.get("actual_group") in {"deterministic", "structured"}
-        for row in negatives
+        row.get("actual_group") in {"deterministic", "structured"} for row in negatives
     )
     tn = len(negatives) - fp
     precision = tp / (tp + fp) if tp + fp else 0.0
@@ -558,6 +557,7 @@ def evaluate_retrieval(
     *,
     backend: str,
     mode: str = "full",
+    scope: str = "pure",
     limit: int | None = None,
     pipeline_factory: Callable[[], Any] | None = None,
 ) -> dict[str, Any]:
@@ -575,15 +575,24 @@ def evaluate_retrieval(
         )
     if backend == "chroma" and mode != "full":
         raise ValueError("Chroma is reproducibility-only; ablations require Qdrant")
+    if scope not in {"pure", "end_to_end"}:
+        raise ValueError("scope must be pure or end_to_end")
     previous_backend = os.environ.get("STUDENT_RAG_USE_QDRANT")
     previous_hybrid = os.environ.get("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL")
     previous_mode = os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE")
+    previous_force_regulation = os.environ.get(
+        "STUDENT_RAG_EVAL_FORCE_REGULATION_RAG"
+    )
     os.environ["STUDENT_RAG_USE_QDRANT"] = "1" if backend == "qdrant" else "0"
     if backend == "chroma":
         os.environ["STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL"] = "1"
     else:
         os.environ.pop("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL", None)
     os.environ["STUDENT_RAG_EVAL_RETRIEVAL_MODE"] = mode
+    if scope == "pure":
+        os.environ["STUDENT_RAG_EVAL_FORCE_REGULATION_RAG"] = "1"
+    else:
+        os.environ.pop("STUDENT_RAG_EVAL_FORCE_REGULATION_RAG", None)
     if pipeline_factory is None:
         from src.generation.answer_pipeline import AnswerPipeline
 
@@ -606,13 +615,18 @@ def evaluate_retrieval(
                     if requested_cohort in {None, "", "general", "all"}
                     else requested_cohort
                 )
-                result = pipeline._run_retrieval(
-                    case["query"], cohort=retrieval_cohort
-                )
+                result = pipeline._run_retrieval(case["query"], cohort=retrieval_cohort)
                 items = result.get("retrieved_items") or []
+                related_items = result.get("related_items") or []
                 ranked_ids = [_item_parent_id(item) for item in items]
+                related_ids = [_item_parent_id(item) for item in related_items]
                 expected_ids = {
                     item["parent_section_id"] for item in case["relevance_judgments"]
+                }
+                supporting_ids = {
+                    item["parent_section_id"]
+                    for item in case["relevance_judgments"]
+                    if int(item.get("grade") or 0) == 1
                 }
                 if not ranked_ids and result.get("structured_result"):
                     ranked_ids = _structured_expected_ids(
@@ -638,6 +652,12 @@ def evaluate_retrieval(
                     not structured
                     or _cohort_matches(structured.get("cohort"), case.get("cohort"))
                 )
+                related_cohort_ok = all(
+                    _cohort_matches(
+                        (item.get("metadata") or {}).get("cohort"), case.get("cohort")
+                    )
+                    for item in related_items
+                )
                 actual_content_types = {
                     (item.get("metadata") or {}).get("content_type") for item in items
                 }
@@ -649,19 +669,63 @@ def evaluate_retrieval(
                     and actual_content_types <= expected_content_types
                 )
                 retrieval_telemetry = _first_retrieval_telemetry(items)
+                router_decision = result.get("router_decision") or {}
+                query_handling = result.get("query_handling") or (
+                    router_decision.get("query_handling")
+                    if isinstance(router_decision, dict)
+                    else {}
+                )
+                if not isinstance(query_handling, dict):
+                    query_handling = {}
                 rows.append(
                     {
                         **case,
                         **metrics,
                         "ranked_parent_ids": ranked_ids,
+                        "related_parent_ids": related_ids,
                         "actual_intent": result.get("intent"),
                         "actual_strategy": result.get("strategy"),
+                        "raw_query": result.get("raw_query") or case["query"],
+                        "effective_query": result.get("effective_query")
+                        or query_handling.get("effective_query")
+                        or case["query"],
+                        "query_handling_source": query_handling.get("source"),
+                        "query_handling_validation_errors": query_handling.get(
+                            "validation_errors"
+                        )
+                        or [],
+                        "router_route": (
+                            router_decision.get("route")
+                            if isinstance(router_decision, dict)
+                            else None
+                        ),
+                        "router_execution_mode": (
+                            router_decision.get("execution_mode")
+                            if isinstance(router_decision, dict)
+                            else None
+                        ),
                         "citation_binding": bool(expected_ids & citation_ids)
                         or bool(metrics["hit_at_5"]),
                         "cohort_match": cohort_ok,
                         "content_type_match": content_ok,
+                        "related_cohort_match": related_cohort_ok,
+                        "graph_related_hit": bool(expected_ids & set(related_ids)),
+                        "graph_supporting_hit": (
+                            bool(supporting_ids & set(related_ids))
+                            if supporting_ids
+                            else None
+                        ),
+                        "graph_supporting_recall": (
+                            len(supporting_ids & set(related_ids)) / len(supporting_ids)
+                            if supporting_ids
+                            else None
+                        ),
+                        "context_hit_at_10": bool(
+                            expected_ids & set([*ranked_ids, *related_ids])
+                        ),
                         "empty_retrieval": not bool(items),
                         "cohort_leak": not cohort_ok,
+                        "related_cohort_leak": not related_cohort_ok,
                         "synthetic_leak": case["case_type"] == "regulation_true_rag"
                         and not content_ok,
                         "retrieval_telemetry": retrieval_telemetry,
@@ -698,8 +762,14 @@ def evaluate_retrieval(
                         "citation_binding": False,
                         "cohort_match": False,
                         "content_type_match": False,
+                        "related_cohort_match": False,
+                        "graph_related_hit": False,
+                        "graph_supporting_hit": None,
+                        "graph_supporting_recall": None,
+                        "context_hit_at_10": False,
                         "empty_retrieval": True,
                         "cohort_leak": False,
+                        "related_cohort_leak": False,
                         "synthetic_leak": False,
                         "latency_ms": (time.perf_counter() - started) * 1000,
                     }
@@ -716,13 +786,19 @@ def evaluate_retrieval(
         _restore_env("STUDENT_RAG_USE_QDRANT", previous_backend)
         _restore_env("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL", previous_hybrid)
         _restore_env("STUDENT_RAG_EVAL_RETRIEVAL_MODE", previous_mode)
+        _restore_env(
+            "STUDENT_RAG_EVAL_FORCE_REGULATION_RAG",
+            previous_force_regulation,
+        )
 
     true_rag = [row for row in rows if row["case_type"] == "regulation_true_rag"]
     summary = _retrieval_summary(rows, true_rag)
+    summary["retrieval_scope"] = scope
     return {
         "suite": "retrieval",
         "backend": backend,
         "mode": mode,
+        "scope": scope,
         "summary": summary,
         "breakdowns": _retrieval_breakdowns(rows),
         "cases": rows,
@@ -761,12 +837,43 @@ def _retrieval_summary(
             "empty_retrieval_rate": safe_mean(
                 [float(bool(row.get("empty_retrieval"))) for row in rows]
             ),
+            "context_hit_at_10": safe_mean(
+                [float(bool(row.get("context_hit_at_10"))) for row in headline]
+            ),
+            "graph_related_hit_rate": safe_mean(
+                [float(bool(row.get("graph_related_hit"))) for row in headline]
+            ),
+            "graph_supporting_hit_rate": safe_mean(
+                [
+                    float(bool(row.get("graph_supporting_hit")))
+                    for row in headline
+                    if row.get("graph_supporting_hit") is not None
+                ]
+            ),
+            "graph_supporting_recall": safe_mean(
+                [
+                    float(row["graph_supporting_recall"])
+                    for row in headline
+                    if row.get("graph_supporting_recall") is not None
+                ]
+            ),
+            "related_cohort_leak_rate": safe_mean(
+                [float(bool(row.get("related_cohort_leak"))) for row in rows]
+            ),
             "latency_ms": _latency_summary([float(row["latency_ms"]) for row in rows]),
             "realistic_score": safe_mean(
-                [float(row.get("hit_at_5", 0.0)) for row in headline if row.get("eval_split") == "realistic"]
+                [
+                    float(row.get("hit_at_5", 0.0))
+                    for row in headline
+                    if row.get("eval_split") == "realistic"
+                ]
             ),
             "stress_score": safe_mean(
-                [float(row.get("hit_at_5", 0.0)) for row in headline if row.get("eval_split") == "stress"]
+                [
+                    float(row.get("hit_at_5", 0.0))
+                    for row in headline
+                    if row.get("eval_split") == "stress"
+                ]
             ),
             "phoranker_candidate_chunks": _latency_summary(
                 [
@@ -789,7 +896,14 @@ def _retrieval_summary(
 
 def _retrieval_breakdowns(rows: list[dict[str, Any]]) -> dict[str, Any]:
     output: dict[str, Any] = {}
-    for field in ("cohort", "topic", "query_style", "question_style", "expected_path", "eval_split"):
+    for field in (
+        "cohort",
+        "topic",
+        "query_style",
+        "question_style",
+        "expected_path",
+        "eval_split",
+    ):
         groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
         for row in rows:
             groups[str(row.get(field) or "unknown")].append(row)
@@ -940,6 +1054,9 @@ def judge_answers(
             "expected_path": case.get("expected_path"),
             "eval_split": case.get("eval_split"),
             "generation_model": answer.get("model_used"),
+            "effective_query": answer.get("effective_query"),
+            "query_handling": answer.get("query_handling"),
+            "router_decision": answer.get("router_decision"),
             "judge": result,
             **deterministic,
             "judge_latency_ms": (time.perf_counter() - started) * 1000,
@@ -999,10 +1116,7 @@ def judge_answers(
     for split in ("realistic", "stress"):
         split_valid = [row for row in valid if row.get("eval_split") == split]
         summary[f"{split}_score"] = safe_mean(
-            [
-                row["judge"]["scores"]["answer_correctness"]
-                for row in split_valid
-            ]
+            [row["judge"]["scores"]["answer_correctness"] for row in split_valid]
         )
     return {
         "suite": "judge",
@@ -1014,9 +1128,7 @@ def judge_answers(
 
 def _answer_checks(case: dict[str, Any], answer: dict[str, Any]) -> dict[str, Any]:
     text = _normalize_eval_text(answer.get("answer") or "")
-    required = [
-        _normalize_eval_text(item) for item in case.get("required_facts") or []
-    ]
+    required = [_normalize_eval_text(item) for item in case.get("required_facts") or []]
     numeric = re.findall(r"\d+(?:[.,]\d+)?%?", " ".join(required))
     expected_ids = {
         item["parent_section_id"] for item in case.get("expected_citations") or []
@@ -1031,7 +1143,9 @@ def _answer_checks(case: dict[str, Any], answer: dict[str, Any]) -> dict[str, An
         "out_of_domain",
         "low_confidence",
     } or _answer_text_abstains(text)
-    citation_exact_match = bool(expected_ids & actual_ids) if expected_ids else not actual_ids
+    citation_exact_match = (
+        bool(expected_ids & actual_ids) if expected_ids else not actual_ids
+    )
     required_fact_hit = (
         all(_soft_fact_match(fact, text) for fact in required) if required else True
     )
@@ -1121,32 +1235,93 @@ def _question_handling_correct(
 def build_human_audit_template(
     cases: list[dict[str, Any]], rows: list[dict[str, Any]]
 ) -> list[dict[str, Any]]:
-    row_ids = {row["id"] for row in rows}
-    selected: list[dict[str, Any]] = []
-    buckets = (
-        ("regulation_true_rag", 12),
-        ("structured_mixed", 4),
-        ("unanswerable", 4),
-    )
-    for case_type, count in buckets:
-        candidates = [
-            case
-            for case in cases
-            if case["id"] in row_ids and case.get("case_type") == case_type
-        ]
-        for case in candidates[:count]:
-            selected.append(
-                {
-                    "id": case["id"],
-                    "case_type": case_type,
-                    "human_score": None,
-                    "critical_false_pass": None,
-                    "notes": "",
-                    "repeat_for_consistency": len(selected) < 5,
-                    "repeat_score": None,
-                }
+    rows_by_id = {str(row["id"]): row for row in rows}
+    candidates = [case for case in cases if str(case["id"]) in rows_by_id]
+
+    def risk_key(case: dict[str, Any]) -> tuple[float, float, str]:
+        row = rows_by_id[str(case["id"])]
+        scores = (row.get("judge") or {}).get("scores") or {}
+        core_scores = [
+            float(scores.get(metric, 1.0))
+            for metric in (
+                "faithfulness",
+                "answer_correctness",
+                "citation_correctness",
             )
-    return selected
+        ]
+        risk = (
+            2.0 * float(bool(scores.get("critical_false_pass")))
+            + float(bool(scores.get("unsupported_claim")))
+            + (1.0 - safe_mean(core_scores))
+        )
+        has_judge = float(bool(scores))
+        return (-has_judge, -risk, str(case["id"]))
+
+    risk_candidates = sorted(candidates, key=risk_key)
+    low_risk_audit = [
+        case
+        for case in risk_candidates
+        if (rows_by_id[str(case["id"])].get("judge") or {}).get("scores")
+    ][:10]
+    selected_ids = {str(case["id"]) for case in low_risk_audit}
+
+    def stratum(case: dict[str, Any]) -> tuple[str, str, str]:
+        return (
+            str(case.get("case_type") or "unknown"),
+            str(case.get("eval_split") or "unknown"),
+            str(case.get("cohort") or "general"),
+        )
+
+    def seeded_order(case: dict[str, Any]) -> str:
+        return hashlib.sha256(
+            f"v9-human-audit:{case['id']}".encode("utf-8")
+        ).hexdigest()
+
+    remaining_by_stratum: dict[tuple[str, str, str], list[dict[str, Any]]] = (
+        defaultdict(list)
+    )
+    for case in candidates:
+        if str(case["id"]) not in selected_ids:
+            remaining_by_stratum[stratum(case)].append(case)
+    for group in remaining_by_stratum.values():
+        group.sort(key=seeded_order)
+
+    random_audit: list[dict[str, Any]] = []
+    strata = sorted(remaining_by_stratum)
+    while len(random_audit) < 15 and strata:
+        next_strata: list[tuple[str, str, str]] = []
+        for key in strata:
+            group = remaining_by_stratum[key]
+            if group and len(random_audit) < 15:
+                random_audit.append(group.pop(0))
+            if group:
+                next_strata.append(key)
+        strata = next_strata
+
+    chosen = [
+        *[(case, "risk_low_score") for case in low_risk_audit],
+        *[(case, "stratified_random") for case in random_audit],
+    ]
+    return [
+        {
+            "id": case["id"],
+            "case_type": case.get("case_type"),
+            "cohort": case.get("cohort"),
+            "eval_split": case.get("eval_split"),
+            "selection_reason": reason,
+            "human_score": None,
+            "human_correctness": None,
+            "human_faithfulness": None,
+            "human_citation_correctness": None,
+            "unsupported_claim_actual": None,
+            "root_cause": None,
+            "critical_false_pass": None,
+            "notes": "",
+            "repeat_for_consistency": index < 5,
+            "repeat_score": None,
+        }
+        for index, (case, reason) in enumerate(chosen)
+    ]
 
 
 def evaluate_production(
@@ -1178,6 +1353,10 @@ def evaluate_production(
         status_code = 0
         body = b""
         try:
+            stream_done = False
+            stream_error = False
+            stream_token_chars = 0
+            stream_metadata: dict[str, Any] = {}
             with urllib_request.urlopen(
                 req, timeout=float(case.get("timeout_seconds", 90))
             ) as response:
@@ -1190,12 +1369,22 @@ def evaluate_production(
                         decoded = line.decode("utf-8", errors="replace").strip()
                         if decoded.startswith("event:"):
                             current_event = decoded.split(":", 1)[1].strip()
-                        elif (
-                            decoded.startswith("data:")
-                            and current_event == "token"
-                            and ttft is None
-                        ):
-                            ttft = (time.perf_counter() - started) * 1000
+                            stream_done = stream_done or current_event == "done"
+                            stream_error = stream_error or current_event == "error"
+                        elif decoded.startswith("data:"):
+                            raw_data = decoded.split(":", 1)[1].strip()
+                            try:
+                                event_data = json.loads(raw_data)
+                            except json.JSONDecodeError:
+                                event_data = {}
+                            if current_event == "metadata":
+                                stream_metadata = event_data
+                            elif current_event == "token":
+                                stream_token_chars += len(
+                                    str(event_data.get("text") or "")
+                                )
+                                if ttft is None:
+                                    ttft = (time.perf_counter() - started) * 1000
                     body = b"".join(chunks)
                 else:
                     body = response.read()
@@ -1203,16 +1392,47 @@ def evaluate_production(
             parsed = (
                 json.loads(body.decode("utf-8")) if endpoint.endswith("chat") else {}
             )
-            debug = parsed.get("debug") or {}
+            response_payload = (
+                stream_metadata if endpoint.endswith("/stream") else parsed
+            )
+            debug = response_payload.get("debug") or {}
             telemetry = debug.get("evaluation_telemetry") or {}
+            transport_success = 200 <= status_code < 300
+            if endpoint.endswith("/stream"):
+                payload_success = (
+                    stream_done
+                    and not stream_error
+                    and (
+                        stream_token_chars > 0
+                        or str(stream_metadata.get("status") or "")
+                        in {
+                            "needs_clarification",
+                            "out_of_domain",
+                        }
+                    )
+                )
+                answer_chars = stream_token_chars
+            else:
+                answer_text = str(parsed.get("answer") or "").strip()
+                payload_success = bool(answer_text) and not parsed.get("error_type")
+                answer_chars = len(answer_text)
             return {
                 **case,
-                "success": 200 <= status_code < 300,
+                "success": transport_success and payload_success,
+                "transport_success": transport_success,
+                "payload_success": payload_success,
                 "status_code": status_code,
                 "latency_ms": (time.perf_counter() - started) * 1000,
                 "ttft_ms": ttft,
-                "used_cache": parsed.get("used_cache"),
-                "source_count": len(parsed.get("citations_used") or []),
+                "answer_chars": answer_chars,
+                "stream_done": stream_done if endpoint.endswith("/stream") else None,
+                "stream_error": stream_error if endpoint.endswith("/stream") else None,
+                "used_cache": response_payload.get("used_cache"),
+                "source_count": len(
+                    response_payload.get("citations_used")
+                    or response_payload.get("citations")
+                    or []
+                ),
                 "context_chars": int(
                     debug.get("context_used_length")
                     or telemetry.get("context_chars")
@@ -1282,6 +1502,12 @@ def evaluate_production(
     summary = {
         "n": len(rows),
         "success_rate": safe_mean([float(row["success"]) for row in rows]),
+        "transport_success_rate": safe_mean(
+            [float(bool(row.get("transport_success"))) for row in rows]
+        ),
+        "payload_success_rate": safe_mean(
+            [float(bool(row.get("payload_success"))) for row in rows]
+        ),
         "error_rate": safe_mean([float(not row["success"]) for row in rows]),
         "http_429_rate": safe_mean(
             [float(row.get("status_code") == 429) for row in rows]
@@ -1302,6 +1528,9 @@ def evaluate_production(
         "context_chars_mean": safe_mean(
             [float(row.get("context_chars", 0)) for row in rows]
         ),
+        "answer_chars_mean": safe_mean(
+            [float(row.get("answer_chars", 0)) for row in rows]
+        ),
         "source_utilization": safe_mean(
             [min(1.0, float(row.get("source_count", 0)) / 5.0) for row in rows]
         ),
@@ -1320,7 +1549,11 @@ def evaluate_production(
         "retry_count": sum(int(row.get("retry_count") or 0) for row in rows),
         "cooldown_events": sum(int(row.get("cooldown_events") or 0) for row in rows),
         "realistic_score": safe_mean(
-            [float(row["success"]) for row in rows if row.get("eval_split") == "realistic"]
+            [
+                float(row["success"])
+                for row in rows
+                if row.get("eval_split") == "realistic"
+            ]
         ),
         "stress_score": safe_mean(
             [float(row["success"]) for row in rows if row.get("eval_split") == "stress"]

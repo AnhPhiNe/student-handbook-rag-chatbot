@@ -89,13 +89,19 @@ def evaluate_case(case: dict[str, Any], pipeline: AnswerPipeline) -> dict[str, A
     tool_result = result.get("tool_result") or {}
 
     checks = {
-        "intent_match": _optional_match(case.get("expected_intent"), result.get("intent")),
+        "intent_match": _optional_match(
+            case.get("expected_intent"), result.get("intent")
+        ),
         "strategy_match": _optional_match(
             case.get("expected_strategy"),
             result.get("strategy"),
         ),
-        "status_match": _optional_match(case.get("expected_status"), result.get("status")),
-        "llm_called_match": _optional_match(case.get("expected_llm_called"), result.get("llm_called")),
+        "status_match": _optional_match(
+            case.get("expected_status"), result.get("status")
+        ),
+        "llm_called_match": _optional_match(
+            case.get("expected_llm_called"), result.get("llm_called")
+        ),
         "lookup_type_match": _optional_match(
             case.get("expected_lookup_type"),
             structured_result.get("lookup_type"),
@@ -104,7 +110,9 @@ def evaluate_case(case: dict[str, Any], pipeline: AnswerPipeline) -> dict[str, A
             case.get("expected_tool_name"),
             tool_result.get("tool_name"),
         ),
-        "answer_contains_match": _contains_all(answer, case.get("expected_answer_contains", [])),
+        "answer_contains_match": _contains_all(
+            answer, case.get("expected_answer_contains", [])
+        ),
         "answer_not_contains_match": _contains_none(
             answer,
             case.get("expected_answer_not_contains", []),
@@ -121,7 +129,8 @@ def evaluate_case(case: dict[str, Any], pipeline: AnswerPipeline) -> dict[str, A
             structured_result,
             case.get("expected_structured_items_exclude"),
         ),
-        "citation_count_match": len(citations_used) >= int(case.get("min_citations", 0)),
+        "citation_count_match": len(citations_used)
+        >= int(case.get("min_citations", 0)),
         "citation_type_match": _citation_types_match(
             citations_used,
             case.get("expected_citation_chunk_types"),
@@ -257,7 +266,6 @@ def run_evaluation(config_path: Path, cases_path: Path) -> dict[str, Any]:
     os.environ["STUDENT_RAG_OFFLINE_EVAL"] = "1"
     pipeline = AnswerPipeline(config_path=config_path, llm_client=OfflineLlmClient())
     pipeline.response_cache.enabled = False
-    pipeline.query_rewriter.enabled = False
     pipeline.semantic_cache.enabled = False
 
     cases = load_json(cases_path)
@@ -275,7 +283,9 @@ def run_evaluation(config_path: Path, cases_path: Path) -> dict[str, Any]:
 def main() -> None:
     configure_utf8_stdio()
 
-    parser = argparse.ArgumentParser(description="Evaluate answer behavior without calling Gemini.")
+    parser = argparse.ArgumentParser(
+        description="Evaluate answer behavior without calling Gemini."
+    )
     parser.add_argument("--config", default=str(DEFAULT_CONFIG_PATH))
     parser.add_argument("--cases", default=str(DEFAULT_CASES_PATH))
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT_PATH))
@@ -291,7 +301,10 @@ def main() -> None:
         print(f"{key}: {value}")
     print(f"Saved report: {args.output}")
 
-    if args.fail_under_pass_rate is not None and summary["pass_rate"] < args.fail_under_pass_rate:
+    if (
+        args.fail_under_pass_rate is not None
+        and summary["pass_rate"] < args.fail_under_pass_rate
+    ):
         sys.exit(1)
 
 

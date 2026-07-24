@@ -227,7 +227,6 @@ def debug_case(
     config: dict[str, Any],
     scoring_tables: list[dict[str, Any]],
     formula_rules: list[dict[str, Any]],
-    form_templates: list[dict[str, Any]],
     student_service_directory: list[dict[str, Any]],
     foreign_language_tables: list[dict[str, Any]],
     structured_tables_registry: list[dict[str, Any]],
@@ -243,7 +242,6 @@ def debug_case(
         collection=collection,
         scoring_tables=scoring_tables,
         formula_rules=formula_rules,
-        form_templates=form_templates,
         student_service_directory=student_service_directory,
         foreign_language_tables=foreign_language_tables,
         structured_tables_registry=structured_tables_registry,
@@ -316,7 +314,6 @@ def main() -> None:
     expansion_rules = load_json(Path(config["input"]["query_expansion_rules"]))
     scoring_tables = load_json(Path(config["input"]["scoring_tables"]))
     formula_rules = load_json(Path(config["input"]["formula_rules"]))
-    form_templates = load_json(Path(config["input"]["form_templates"]))
     student_service_path = config["input"].get("student_service_directory")
     student_service_directory = (
         load_json(Path(student_service_path)) if student_service_path else []
@@ -347,7 +344,6 @@ def main() -> None:
             config=config,
             scoring_tables=scoring_tables,
             formula_rules=formula_rules,
-            form_templates=form_templates,
             student_service_directory=student_service_directory,
             foreign_language_tables=foreign_language_tables,
             structured_tables_registry=structured_tables_registry,

@@ -199,9 +199,9 @@ class ApiRoutesTest(unittest.TestCase):
         with patch.dict("os.environ", {}, clear=True):
             self.assertEqual(chat_controls.chat_capacity_settings(), (3, 10, 15.0))
 
-    def test_chat_rate_limit_defaults_to_10(self) -> None:
+    def test_chat_rate_limit_defaults_to_5(self) -> None:
         with patch.dict("os.environ", {}, clear=True):
-            self.assertEqual(chat_controls.rate_limit_per_minute(), 10)
+            self.assertEqual(chat_controls.rate_limit_per_minute(), 5)
 
     def test_chat_stream_rejects_empty_query(self) -> None:
         response = self.client.post("/chat/stream", json={"query": "   "})

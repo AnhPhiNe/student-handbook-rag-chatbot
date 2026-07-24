@@ -32,11 +32,15 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_router_schema_uses_simple_contract_and_new_cache_version() -> None:
     schema = router_json_schema()
 
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v14-simple-vi"
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v18-context-only"
     assert "answer_scope" not in schema
     assert "requires_direct_evidence" not in schema
     assert "route" in schema
     assert "retrieval_query" in schema
+    assert "context_mode" in schema
+    assert "normalized_query" in schema
+    assert "standalone_query" in schema
+    assert "referenced_turns" in schema
 
 
 def _load(relative: str) -> list[dict]:
@@ -49,7 +53,6 @@ def _resources() -> dict:
         "formula_rules": _load("data/processed/tables/formula_rules.json"),
         "entity_registry": [],
         "expansion_rules": [],
-        "form_templates": _load("data/processed/forms/clean_form_templates.json"),
         "office_directory": _load(
             "data/processed/directories/student_office_profiles.json"
         ),
@@ -106,7 +109,6 @@ def test_registry_covers_all_production_lookup_types() -> None:
         "office",
         "faculty",
         "program",
-        "form",
         "formula",
     }
 
@@ -156,34 +158,58 @@ def test_structured_table_decision_sends_full_table_to_answer_llm() -> None:
     assert can_answer_deterministically(result) is False
 
 
-def test_rag_form_candidate_cannot_bypass_generation() -> None:
-    form_candidate = {
-        "lookup_type": "form_template",
-        "result": [{"form_name": "Unverified candidate"}],
-        "content_type": "form_template",
-        "source_pages": [1],
-    }
-    with patch(
-        "src.retrieval.core.retrieval_pipeline.form_lookup",
-        return_value=form_candidate,
-    ):
-        result = _run_with_decision(
-            "Quy trinh nop bieu mau nay nhu the nao?",
-            {
-                "route": "rag",
-                "intent": "mixed",
-                "lookup_type": None,
-                "cohort": "K50",
-                "slots": {},
-                "slot_spans": {},
-                "retrieval_query": "Quy trinh nop bieu mau",
-                "target_chunk_types": ["form", "regulation"],
-            },
-        )
+def test_form_target_type_is_not_treated_as_structured_result() -> None:
+    result = _run_with_decision(
+        "Quy trinh nop bieu mau nay nhu the nao?",
+        {
+            "route": "rag",
+            "execution_mode": "regulation",
+            "intent": "regulation",
+            "lookup_type": None,
+            "cohort": "K50",
+            "slots": {},
+            "slot_spans": {},
+            "retrieval_query": "Quy trinh nop bieu mau",
+            "target_chunk_types": ["regulation"],
+        },
+    )
 
-    assert result["structured_result"] == form_candidate
+    assert result.get("structured_result") in (None, {})
     assert result.get("deterministic_validated") is not True
     assert can_answer_deterministically(result) is False
+
+
+def test_pure_retrieval_eval_bypasses_router_clarification() -> None:
+    decision = {
+        "route": "clarify",
+        "execution_mode": "clarify",
+        "intent": "ambiguous",
+        "lookup_type": None,
+        "cohort": "K50",
+        "slots": {},
+        "slot_spans": {},
+        "retrieval_query": "hoc bong K50",
+        "target_chunk_types": [],
+        "needs_clarification": True,
+        "clarification_question": "Ban muon hoi loai hoc bong nao?",
+    }
+
+    with patch.dict(
+        os.environ,
+        {"STUDENT_RAG_EVAL_FORCE_REGULATION_RAG": "1"},
+    ):
+        result = _run_with_decision(
+            "K50 hoc bong duoc quy dinh nhu the nao?",
+            decision,
+        )
+
+    assert result["intent"] == "regulation_query"
+    assert result["router_decision"]["route"] == "rag"
+    assert result["router_decision"]["execution_mode"] == "regulation"
+    assert result["router_decision"]["router_fallback"] == (
+        "evaluation_forced_regulation_rag"
+    )
+    assert result.get("needs_clarification") is not True
 
 
 def test_mixed_mode_combines_full_table_with_regulation_path() -> None:
@@ -299,7 +325,9 @@ def test_office_and_service_catalog_resolve_common_query_shapes(
     assert result["structured_result"]["match_score"] >= 0.72
 
 
-def test_tied_typed_candidates_request_clarification_instead_of_using_data_order() -> None:
+def test_tied_typed_candidates_request_clarification_instead_of_using_data_order() -> (
+    None
+):
     records = [
         {
             "record_id": "office-a",
@@ -484,7 +512,37 @@ def test_policy_route_skips_structured_resolver_and_uses_rag() -> None:
 
     assert result["needs_llm_answer"] is True
     assert result.get("structured_result") is None
-    assert result["retrieval_query"].startswith("Dieu kien xet tot nghiep")
+    assert result["retrieval_query"].startswith("K50 chua co IELTS")
+    assert result["router_decision"]["router_proposed_retrieval_query"].startswith(
+        "Dieu kien xet tot nghiep"
+    )
+    assert (
+        result["router_decision"]["retrieval_query_source"] == "validated_normalization"
+    )
+
+
+def test_rag_search_never_executes_router_generated_query() -> None:
+    result = _run_with_decision(
+        "K51 xep loai ren luyen nhu the nao?",
+        {
+            "route": "rag",
+            "execution_mode": "regulation",
+            "intent": "policy",
+            "lookup_type": None,
+            "cohort": "K51",
+            "slots": {},
+            "slot_spans": {},
+            "retrieval_query": "Dia chi Phong Cong tac sinh vien K51",
+            "target_chunk_types": ["regulation"],
+        },
+        cohort="K51",
+    )
+
+    assert result["retrieval_query"].startswith("K51 xep loai ren luyen")
+    assert (
+        result["router_decision"]["router_proposed_retrieval_query"]
+        == "Dia chi Phong Cong tac sinh vien K51"
+    )
 
 
 def test_faculty_contact_uses_faculty_catalog_not_office_catalog() -> None:
@@ -889,7 +947,11 @@ def test_rate_limit_failover_can_use_every_available_key(tmp_path: Path) -> None
         ),
     )
     clients = []
-    for side_effect in (RuntimeError("429 rate limit"), RuntimeError("429 quota"), response):
+    for side_effect in (
+        RuntimeError("429 rate limit"),
+        RuntimeError("429 quota"),
+        response,
+    ):
         client = Mock()
         client.chat.completions.create.side_effect = (
             [side_effect] if isinstance(side_effect, Exception) else None

@@ -41,7 +41,7 @@ def summarize_human_audit(
     return {
         "required_n": 20,
         "completed_n": len(completed),
-        "complete": len(completed) == 20,
+        "complete": len(completed) >= 20,
         "human_judge_mae": safe_mean(differences),
         "agreement_within_0_15": safe_mean(agreement),
         "critical_false_passes": critical_false_passes,

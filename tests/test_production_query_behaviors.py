@@ -25,8 +25,8 @@ class ProductionQueryBehaviorsTest(unittest.TestCase):
             "thông tin khoa van hoc": ("faculty_query", "semantic_filtered_rerank"),
             "diem tb tinh kieu j": ("formula_query", "formula_lookup"),
             "xin giay tam hoan nghia vu quan su": (
-                "form_query",
-                "form_lookup",
+                "regulation_query",
+                "semantic_filtered",
             ),
         }
 

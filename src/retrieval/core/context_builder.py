@@ -91,8 +91,6 @@ def _context_item_title(item: dict[str, Any], metadata: dict[str, Any]) -> str:
 def build_context_from_lookup(lookup_result: dict[str, Any]) -> str:
     if lookup_result.get("lookup_type") == "structured_context":
         return build_context_from_structured_context(lookup_result)
-    if lookup_result.get("lookup_type") == "form_template":
-        return build_context_from_form_lookup(lookup_result)
     if lookup_result.get("lookup_type") == "program_directory":
         return build_context_from_program_lookup(lookup_result)
     if lookup_result.get("lookup_type") == "office_directory":
@@ -228,30 +226,6 @@ def build_context_from_program_lookup(lookup_result: dict[str, Any]) -> str:
             f"{index}. {program.get('program_name')} - "
             f"{program.get('faculty_name') or 'Chua xac dinh khoa phu trach'} "
             f"(trang {program.get('source_pages')})"
-        )
-
-    return "\n".join(lines)
-
-
-def build_context_from_form_lookup(lookup_result: dict[str, Any]) -> str:
-    forms = lookup_result.get("result") or []
-    lines = [
-        f"Kết quả tra cứu biểu mẫu: {lookup_result.get('table_name')}",
-        f"Câu hỏi: {lookup_result.get('input_value')}",
-        f"Khóa áp dụng: {lookup_result.get('cohort') or 'không xác định'}",
-    ]
-
-    for index, form in enumerate(forms, start=1):
-        fields = form.get("required_fields_detected") or []
-        field_text = ", ".join(fields) if fields else "không phát hiện field rõ ràng"
-        lines.extend(
-            [
-                "",
-                f"[Biểu mẫu {index}] {form.get('form_name')}",
-                f"Trang nguồn: {form.get('source_pages')}",
-                f"Thông tin cần điền: {field_text}",
-                f"Tóm tắt/đoạn nhận diện: {form.get('summary')}",
-            ]
         )
 
     return "\n".join(lines)

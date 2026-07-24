@@ -195,12 +195,10 @@ SPECIFIC_ACTION_SIGNALS = [
 ]
 
 CHUNK_TYPE_LABELS = {
-    "form": "biểu mẫu/giấy tờ",
     "office_directory": "đơn vị/phòng ban liên hệ",
     "faculty_directory": "khoa/tổ",
     "program_directory": "ngành đào tạo",
     "faculty_program_directory": "khoa/ngành đào tạo",
-    "procedure": "quy trình/thủ tục",
     "regulation": "điều kiện/quy định",
 }
 
@@ -249,8 +247,6 @@ def can_answer_deterministically(retrieval_result: dict[str, Any]) -> bool:
     structured_res = retrieval_result.get("structured_result")
     if _has_result(structured_res):
         if structured_res.get("lookup_type") == "program_directory":
-            return True
-        if structured_res.get("lookup_type") == "form_template":
             return True
         if structured_res.get("lookup_type") == "office_directory":
             return True
@@ -312,21 +308,21 @@ def build_fallback_answer(
     if reason == "retrieval_error":
         return (
             "Mình gặp lỗi khi tra cứu dữ liệu sổ tay cho câu hỏi này. "
-            "Bạn thử lại sau hoặc hỏi hẹp hơn theo biểu mẫu, phòng ban, "
+            "Bạn thử lại sau hoặc hỏi hẹp hơn theo phòng ban, "
             "quy định hay mốc điểm cần tra nhé."
         )
 
     if reason == "out_of_domain":
         return (
             "Mình chưa tìm thấy thông tin phù hợp trong Sổ tay sinh viên cho câu hỏi này. "
-            "Sổ tay chủ yếu hỗ trợ các nội dung như quy định học vụ, biểu mẫu, "
+            "Sổ tay chủ yếu hỗ trợ các nội dung như quy định học vụ, "
             "điểm rèn luyện, học bổng, ký túc xá, phòng ban và khoa/ngành. "
             "Bạn có thể hỏi lại theo một nội dung liên quan đến sổ tay nhé."
         )
 
     return (
         "Mình chưa tìm thấy thông tin đủ rõ trong Sổ tay sinh viên cho câu hỏi này. "
-        "Bạn có thể hỏi cụ thể hơn về biểu mẫu, phòng ban, quy định, mốc điểm "
+        "Bạn có thể hỏi cụ thể hơn về phòng ban, quy định, mốc điểm "
         "hoặc thủ tục cần tra cứu."
     )
 
@@ -372,25 +368,25 @@ def build_clarification_question(query: str, retrieval_result: dict[str, Any]) -
         )
 
     if ambiguity_kind == "student_documents":
-        return "Bạn muốn hỏi giấy xác nhận sinh viên, giấy vay vốn, hay biểu mẫu khác?"
+        return "Bạn muốn hỏi giấy xác nhận sinh viên, giấy vay vốn, hay quy định nộp giấy tờ?"
 
     if ambiguity_kind == "scholarship":
         return (
-            "Bạn muốn hỏi điều kiện xét học bổng, hồ sơ/biểu mẫu, "
+            "Bạn muốn hỏi điều kiện xét học bổng, hồ sơ/giấy tờ, "
             "hay đơn vị tiếp nhận/liên hệ?"
         )
 
     if ambiguity_kind == "generic_contact":
         return (
             "Bạn muốn liên hệ về vấn đề gì: học vụ, học bổng, ký túc xá, "
-            "biểu mẫu/giấy tờ, hay một phòng/khoa cụ thể?"
+            "giấy tờ, hay một phòng/khoa cụ thể?"
         )
 
     options = _clarification_options_from_retrieval(retrieval_result)
     if len(options) >= 2:
         return f"Bạn muốn hỏi về {', '.join(options[:-1])} hay {options[-1]}?"
 
-    return "Bạn muốn hỏi cụ thể về thủ tục, biểu mẫu, quy định hay đơn vị liên hệ?"
+    return "Bạn muốn hỏi cụ thể về thủ tục, quy định hay đơn vị liên hệ?"
 
 
 def build_ambiguity_note(query: str, retrieval_result: dict[str, Any]) -> str:
@@ -444,11 +440,7 @@ def _ambiguity_kind(query: str, retrieval_result: dict[str, Any]) -> str | None:
     normalized_query = _normalize_query(query)
     ascii_query = _ascii_text(normalized_query)
 
-    # Tach cac tin hieu scope de phan biet: cau co "phong/khoa" ro thi bot mo ho hon.
     has_contact_signal = _contains_any(ascii_query, CONTACT_SIGNALS)
-    has_office_signal = _contains_any(ascii_query, EXPLICIT_OFFICE_SIGNALS)
-    has_faculty_signal = _contains_any(ascii_query, EXPLICIT_FACULTY_SIGNALS)
-    has_explicit_scope = has_office_signal or has_faculty_signal
     if _is_generic_contact_query(ascii_query):
         return "generic_contact"
 
@@ -678,8 +670,6 @@ def _has_formula_result(value: Any) -> bool:
 def _format_structured_result(structured_result: dict[str, Any]) -> str:
     if structured_result.get("lookup_type") == "program_directory":
         return _format_program_directory_result(structured_result)
-    if structured_result.get("lookup_type") == "form_template":
-        return _format_form_template_result(structured_result)
     if structured_result.get("lookup_type") == "office_directory":
         return _format_office_directory_result(structured_result)
     if structured_result.get("lookup_type") == "foreign_language_equivalency":
@@ -715,29 +705,6 @@ def _format_structured_result(structured_result: dict[str, Any]) -> str:
         return f"Tra theo {table_name}, giá trị {input_value} có kết quả: {fields}."
 
     return f"Tra theo {table_name}, giá trị {input_value} có kết quả: {row}."
-
-
-def _format_form_template_result(structured_result: dict[str, Any]) -> str:
-    forms = structured_result.get("result") or []
-    if not forms:
-        return "Mình chưa tìm thấy biểu mẫu phù hợp trong danh mục biểu mẫu hiện có."
-
-    lines = ["Mình tìm thấy biểu mẫu phù hợp trong trang Biểu mẫu:"]
-    for form in forms[:3]:
-        name = form.get("form_name") or "Biểu mẫu"
-        summary = _compact_text(form.get("summary"), limit=140)
-        pages = form.get("source_pages") or []
-        page_text = f" (trang {', '.join(str(page) for page in pages)})" if pages else ""
-        if summary and summary != name:
-            lines.append(f"- {name}{page_text}: {summary}")
-        else:
-            lines.append(f"- {name}{page_text}")
-
-    input_value = structured_result.get("input_value")
-    if input_value:
-        lines.insert(0, f"Với yêu cầu “{input_value}”:")
-    lines.append("Bạn có thể mở trang Biểu mẫu để tìm, lọc và tải đúng mẫu cần dùng.")
-    return "\n".join(lines)
 
 
 def _format_office_directory_result(structured_result: dict[str, Any]) -> str:

@@ -11,7 +11,6 @@ from .directory_parser import (
 from .audit_builder import build_content_audit
 from .formula_rules import extract_formula_rules
 from .io_utils import load_json, load_yaml, save_json
-from .procedure_parser import extract_procedures
 from .program_faculty_enricher import enrich_program_faculty_names
 from .program_parser import extract_program_directory
 from .report_builder import build_report
@@ -29,7 +28,6 @@ NON_EMBEDDED_CONTENT_TYPES = {
     "faculty_directory",
     "program_directory",
     "reference_directory",
-    "procedure",
 }
 
 def main() -> None:
@@ -52,7 +50,6 @@ def main() -> None:
         faculty_directory,
     )
     reference_directory = extract_reference_directory(pages)
-    procedures = extract_procedures(pages)
     content_audit_report = build_content_audit(pages, sections)
 
     record_groups = [
@@ -63,7 +60,6 @@ def main() -> None:
         (faculty_directory, "faculty_directory"),
         (program_directory, "program_directory"),
         (reference_directory, "reference_directory"),
-        (procedures, "procedure"),
     ]
     
     for group, content_type in record_groups:
@@ -73,10 +69,7 @@ def main() -> None:
             if content_type in NON_EMBEDDED_CONTENT_TYPES:
                 record.setdefault("embedding_enabled", False)
 
-                if content_type == "procedure":
-                    record.setdefault("retrieval_mode", "structured_lookup")
-                else:
-                    record.setdefault("retrieval_mode", "deterministic")
+                record.setdefault("retrieval_mode", "deterministic")
             else:
                 record.setdefault("embedding_enabled", True)
                 record.setdefault("retrieval_mode", "semantic")
@@ -102,7 +95,6 @@ def main() -> None:
         faculty_directory=faculty_directory,
         program_directory=program_directory,
         reference_directory=reference_directory,
-        procedures=procedures,
     )
 
     save_json(scoring_tables, Path(config["output"]["scoring_tables"]))
@@ -114,7 +106,6 @@ def main() -> None:
     # Backward-compatible alias while retrieval/chunking migrates off the old name.
     save_json(faculty_directory, Path(config["output"]["faculty_program_directory"]))
     save_json(reference_directory, Path(config["output"]["reference_directory"]))
-    save_json(procedures, Path(config["output"]["procedures"]))
     save_json(report, Path(config["output"]["report"]))
     save_json(content_audit_report, Path(config["output"]["content_audit_report"]))
 
@@ -126,7 +117,6 @@ def main() -> None:
     print(f"Faculty records: {len(faculty_directory)}")
     print(f"Program records: {len(program_directory)}")
     print(f"Reference records: {len(reference_directory)}")
-    print(f"Procedures: {len(procedures)}")
 
 
 if __name__ == "__main__":

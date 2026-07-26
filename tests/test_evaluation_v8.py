@@ -26,6 +26,7 @@ from src.evaluation.suites import (
     generate_answers,
     summarize_deterministic_rows,
 )
+from src.evaluation.human_audit import summarize_human_audit
 from src.generation.gemini_client import GeminiKeyPool, GeminiKeyPoolConfig
 from src.generation.gemini_client import GeminiClient
 
@@ -148,6 +149,31 @@ def test_deterministic_summary_counts_nested_router_validation_errors() -> None:
     summary = summarize_deterministic_rows(rows)
 
     assert summary["router_validation_failure_rate"] == 0.5
+
+
+def test_human_audit_uses_template_size_and_repeat_flags() -> None:
+    audit_rows = [
+        {
+            "id": f"case-{index}",
+            "human_score": 1.0 if index < 24 else None,
+            "repeat_for_consistency": index < 5,
+            "repeat_score": 1.0 if index < 5 else None,
+            "critical_false_pass": False,
+        }
+        for index in range(25)
+    ]
+    judge_rows = [{"id": f"case-{index}", "judge": {}} for index in range(25)]
+
+    incomplete = summarize_human_audit(audit_rows, judge_rows)
+    audit_rows[-1]["human_score"] = 1.0
+    complete = summarize_human_audit(audit_rows, judge_rows)
+
+    assert incomplete["required_n"] == 25
+    assert incomplete["completed_n"] == 24
+    assert incomplete["complete"] is False
+    assert complete["complete"] is True
+    assert complete["repeat_required_n"] == 5
+    assert complete["repeat_completed_n"] == 5
 
 
 def test_compact_packet_keeps_required_fact() -> None:

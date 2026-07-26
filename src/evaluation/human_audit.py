@@ -35,17 +35,21 @@ def summarize_human_audit(
         critical_false_passes += int(bool(row.get("critical_false_pass")))
 
     repeated = [row for row in completed if row.get("repeat_score") is not None]
+    required_n = len(audit_rows)
+    repeat_required_n = sum(
+        bool(row.get("repeat_for_consistency")) for row in audit_rows
+    )
     consistency = [
         abs(float(row["human_score"]) - float(row["repeat_score"])) for row in repeated
     ]
     return {
-        "required_n": 20,
+        "required_n": required_n,
         "completed_n": len(completed),
-        "complete": len(completed) >= 20,
+        "complete": required_n > 0 and len(completed) >= required_n,
         "human_judge_mae": safe_mean(differences),
         "agreement_within_0_15": safe_mean(agreement),
         "critical_false_passes": critical_false_passes,
-        "repeat_required_n": 5,
+        "repeat_required_n": repeat_required_n,
         "repeat_completed_n": len(repeated),
         "human_repeat_mae": safe_mean(consistency),
     }

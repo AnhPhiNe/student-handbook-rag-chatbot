@@ -82,13 +82,27 @@ def in_range(value: float, range_text: str) -> bool:
 def lookup_conduct_classification(
     query: str, tables: list[dict[str, Any]]
 ) -> Optional[dict[str, Any]]:
+    table = find_table(tables, "conduct_classification")
+    if not table:
+        return None
+
     # Tra bang diem ren luyen: input la mot so diem, output la xep loai.
     value = extract_number(query)
     if value is None:
-        return None
-
-    table = find_table(tables, "conduct_classification")
-    if not table:
+        normalized_query = normalize_text(query)
+        for row in table["rows"]:
+            label = normalize_text(row.get("label"))
+            if label and re.search(
+                rf"(?<![a-z0-9]){re.escape(label)}(?![a-z0-9])",
+                normalized_query,
+            ):
+                return {
+                    "lookup_type": "conduct_classification",
+                    "input_value": query,
+                    "result": row,
+                    "source_pages": table.get("source_pages", []),
+                    "table_name": table.get("table_name"),
+                } | _metadata_from_tables([table])
         return None
 
     for row in table["rows"]:

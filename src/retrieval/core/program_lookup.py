@@ -220,6 +220,7 @@ def _filter_by_program_topic(
         "cho",
         "cua",
         "danh",
+        "do",
         "em",
         "gi",
         "khoa",
@@ -298,6 +299,7 @@ def program_lookup(
 
     candidates = _filter_by_cohort(program_directory, cohort)
     normalized_cohort = normalize_cohort(cohort)
+    topic_filtered_for_faculty = False
     if routed_to_program_exists:
         if not normalized_cohort or not candidates:
             return None
@@ -333,7 +335,11 @@ def program_lookup(
     if scope == "faculty" and not faculty_entities:
         inferred_faculty_names = _infer_faculty_names_from_query(candidates, query)
         if not inferred_faculty_names:
-            return None
+            topic_matches = _filter_by_program_topic(candidates, query)
+            if not topic_matches:
+                return None
+            candidates = topic_matches
+            topic_filtered_for_faculty = True
     lookup_scope = "school"
     if routed_to_program_faculty:
         candidates = _filter_by_program_name(candidates, query) or _filter_by_program_topic(
@@ -343,13 +349,20 @@ def program_lookup(
         if not candidates:
             return None
 
-    if asks_faculty_programs and not asks_school_programs and not routed_to_program_faculty:
+    if (
+        asks_faculty_programs
+        and not asks_school_programs
+        and not routed_to_program_faculty
+        and not topic_filtered_for_faculty
+    ):
         candidates = (
             _filter_by_faculty(candidates, faculty_entities)
             if faculty_entities
             else _filter_by_faculty_names(candidates, inferred_faculty_names)
         )
         lookup_scope = "faculty"
+    elif topic_filtered_for_faculty:
+        lookup_scope = "program_topic_faculty"
 
     candidates = _sort_programs(_dedupe_programs(candidates))
     if not candidates:
@@ -365,6 +378,9 @@ def program_lookup(
     return {
         "lookup_type": "program_directory",
         "lookup_scope": lookup_scope,
+        "source_lookup_type": (
+            "faculty" if lookup_scope == "program_topic_faculty" else None
+        ),
         "input_value": query,
         "result": result,
         "program_count": len(result),

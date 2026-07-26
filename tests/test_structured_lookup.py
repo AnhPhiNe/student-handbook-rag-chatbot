@@ -4,7 +4,11 @@ import unittest
 
 from src.generation.answer_guardrails import build_deterministic_answer
 from src.extraction.scoring_tables import build_scoring_tables
-from src.retrieval.core.structured_lookup import structured_lookup
+from src.retrieval.core.program_lookup import program_lookup
+from src.retrieval.core.structured_lookup import (
+    structured_lookup,
+    structured_lookup_from_slots,
+)
 
 
 class StructuredLookupTest(unittest.TestCase):
@@ -51,6 +55,68 @@ class StructuredLookupTest(unittest.TestCase):
             },
         )
         self.assertIn("điểm chữ A", answer)
+
+
+    def test_conduct_label_maps_back_to_score_range(self) -> None:
+        tables = [
+            {
+                "table_id": "conduct_classification",
+                "cohort": "K50",
+                "document_id": "handbook",
+                "source_section": "conduct_article",
+                "source_pages": [1],
+                "table_name": "Phan loai ket qua ren luyen",
+                "rows": [
+                    {"range": "80-duoi 90", "label": "Tot"},
+                    {"range": "90-100", "label": "Xuat sac"},
+                ],
+            }
+        ]
+
+        result = structured_lookup_from_slots(
+            {"operation": "conduct_classification", "score_or_grade": "Tot"},
+            tables,
+            cohort="K50",
+        )
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["lookup_type"], "conduct_classification")
+        self.assertEqual(result["result"]["range"], "80-duoi 90")
+
+    def test_program_topic_faculty_lookup_lists_matching_programs(self) -> None:
+        programs = [
+            {
+                "program_name": "Su pham Tin hoc",
+                "faculty_name": "Khoa Cong nghe Thong tin",
+                "cohort": "K50",
+                "document_id": "handbook",
+                "source_section": "program_directory",
+            },
+            {
+                "program_name": "Cong nghe Thong tin",
+                "faculty_name": "Khoa Cong nghe Thong tin",
+                "cohort": "K50",
+                "document_id": "handbook",
+                "source_section": "program_directory",
+            },
+        ]
+
+        result = program_lookup(
+            "cac nganh su pham do khoa nao quan ly",
+            programs,
+            cohort="K50",
+            routing={
+                "content_type": "program_directory",
+                "action": "list",
+                "scope": "faculty",
+            },
+        )
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["lookup_scope"], "program_topic_faculty")
+        self.assertEqual(result["source_lookup_type"], "faculty")
+        self.assertEqual(result["program_count"], 1)
+        self.assertEqual(result["result"][0]["program_name"], "Su pham Tin hoc")
 
 
 if __name__ == "__main__":

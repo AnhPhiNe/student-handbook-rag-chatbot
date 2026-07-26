@@ -76,6 +76,24 @@ def _is_structured_path(
     return bool(needs_llm_answer) and strategy in DETERMINISTIC_STRATEGIES
 
 
+def _router_validation_errors(result: dict[str, Any]) -> list[str]:
+    direct_errors = result.get("router_validation_errors")
+    if isinstance(direct_errors, list):
+        normalized_direct = [
+            str(error) for error in direct_errors if str(error).strip()
+        ]
+        if normalized_direct:
+            return normalized_direct
+
+    router_decision = result.get("router_decision")
+    if not isinstance(router_decision, dict):
+        return []
+    nested_errors = router_decision.get("router_validation_errors")
+    if not isinstance(nested_errors, list):
+        return []
+    return [str(error) for error in nested_errors if str(error).strip()]
+
+
 def _lookup_match_text(structured: dict[str, Any], lookup_type: str) -> str:
     return " ".join(
         str(value or "")
@@ -531,10 +549,7 @@ def evaluate_deterministic(
                         "router_model": router_model,
                         "router_cache_hit": router_cache_hit,
                         "router_api_success": router_api_success,
-                        "router_validation_errors": result.get(
-                            "router_validation_errors"
-                        )
-                        or [],
+                        "router_validation_errors": _router_validation_errors(result),
                         "router_decision": result.get("router_decision") or {},
                         "passed": passed,
                         "latency_ms": (time.perf_counter() - started) * 1000,
@@ -576,12 +591,32 @@ def evaluate_deterministic(
         else:
             os.environ["STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED"] = previous_router_wait
 
+    return {
+        "suite": "deterministic",
+        "summary": summarize_deterministic_rows(rows),
+        "cases": rows,
+    }
+
+
+def summarize_deterministic_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    normalized_rows: list[dict[str, Any]] = []
+    for row in rows:
+        normalized = dict(row)
+        nested_errors = _router_validation_errors(normalized)
+        if nested_errors:
+            normalized["router_validation_errors"] = nested_errors
+        else:
+            normalized.setdefault("router_validation_errors", [])
+        normalized_rows.append(normalized)
+
     positives = [
-        row for row in rows if row["expected_group"] in {"deterministic", "structured"}
+        row
+        for row in normalized_rows
+        if row["expected_group"] in {"deterministic", "structured"}
     ]
     negatives = [
         row
-        for row in rows
+        for row in normalized_rows
         if row["expected_group"] not in {"deterministic", "structured"}
     ]
     tp = sum(
@@ -595,9 +630,11 @@ def evaluate_deterministic(
     precision = tp / (tp + fp) if tp + fp else 0.0
     recall = tp / (tp + fn) if tp + fn else 0.0
     summary = {
-        "n": len(rows),
-        "passed": sum(bool(row.get("passed")) for row in rows),
-        "exactness": safe_mean([float(bool(row.get("passed"))) for row in rows]),
+        "n": len(normalized_rows),
+        "passed": sum(bool(row.get("passed")) for row in normalized_rows),
+        "exactness": safe_mean(
+            [float(bool(row.get("passed"))) for row in normalized_rows]
+        ),
         "precision": precision,
         "recall": recall,
         "f1": 2 * precision * recall / (precision + recall)
@@ -641,24 +678,34 @@ def evaluate_deterministic(
         "structured_item_count_accuracy": safe_mean(
             [float(bool(row.get("structured_item_count_correct"))) for row in positives]
         ),
-        "cross_cohort_leak": sum(bool(row.get("cross_cohort_leak")) for row in rows),
+        "cross_cohort_leak": sum(
+            bool(row.get("cross_cohort_leak")) for row in normalized_rows
+        ),
         "router_api_success_rate": safe_mean(
-            [float(bool(row.get("router_api_success"))) for row in rows]
+            [float(bool(row.get("router_api_success"))) for row in normalized_rows]
         ),
         "router_cache_hit_rate": safe_mean(
-            [float(bool(row.get("router_cache_hit"))) for row in rows]
+            [float(bool(row.get("router_cache_hit"))) for row in normalized_rows]
         ),
         "router_validation_failure_rate": safe_mean(
-            [float(bool(row.get("router_validation_errors"))) for row in rows]
+            [
+                float(bool(row.get("router_validation_errors")))
+                for row in normalized_rows
+            ]
         ),
-        "latency_ms": _latency_summary([row["latency_ms"] for row in rows]),
+        "latency_ms": _latency_summary(
+            [row["latency_ms"] for row in normalized_rows]
+        ),
         "pass_ci95": wilson_interval(
-            sum(bool(row.get("passed")) for row in rows), len(rows)
+            sum(bool(row.get("passed")) for row in normalized_rows),
+            len(normalized_rows),
         ),
-        "realistic_score": _split_pass_rate(_split_rows(rows, "realistic")),
-        "stress_score": _split_pass_rate(_split_rows(rows, "stress")),
+        "realistic_score": _split_pass_rate(
+            _split_rows(normalized_rows, "realistic")
+        ),
+        "stress_score": _split_pass_rate(_split_rows(normalized_rows, "stress")),
     }
-    return {"suite": "deterministic", "summary": summary, "cases": rows}
+    return summary
 
 
 def evaluate_retrieval(

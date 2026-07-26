@@ -37,6 +37,7 @@ DEFAULT_OUTPUT = ROOT / "data" / "eval" / "reports" / "v8_4_holdout"
 DEFAULT_DOCSTORE = ROOT / "data" / "processed" / "chunks" / "all_docstore_items.json"
 AI_ROUTER_CONFIG = ROOT / "configs" / "ai_router.yaml"
 LOOKUP_REGISTRY_CONFIG = ROOT / "configs" / "structured_lookup_registry.yaml"
+RETRIEVAL_CONFIG = ROOT / "configs" / "retrieval.yaml"
 
 
 def _git_commit() -> str:
@@ -51,6 +52,10 @@ def _git_commit() -> str:
 def _provenance(dataset_dir: Path, backend: str) -> dict[str, Any]:
     manifest = load_json(dataset_dir / "manifest.json")
     router_config = yaml.safe_load(AI_ROUTER_CONFIG.read_text(encoding="utf-8")) or {}
+    retrieval_config = (
+        yaml.safe_load(RETRIEVAL_CONFIG.read_text(encoding="utf-8")) or {}
+    )
+    vectorstore_config = retrieval_config.get("vectorstore") or {}
     config_hashes = dict(manifest.get("config_hashes") or {})
     config_hashes.update(
         {
@@ -68,9 +73,27 @@ def _provenance(dataset_dir: Path, backend: str) -> dict[str, Any]:
         "generation_model": manifest.get("generation_model"),
         "query_rewriter_model": manifest.get("query_rewriter_model"),
         "router_provider": router_config.get("provider", "groq"),
-        "router_model": router_config.get("model_name", "qwen/qwen3.6-27b"),
+        "router_model": os.environ.get("STUDENT_RAG_ROUTER_MODEL")
+        or router_config.get("model_name", "qwen/qwen3.6-27b"),
+        "router_reasoning_effort": os.environ.get(
+            "STUDENT_RAG_ROUTER_REASONING_EFFORT"
+        )
+        or router_config.get("reasoning_effort", "auto"),
+        "router_max_output_tokens": int(
+            os.environ.get("STUDENT_RAG_ROUTER_MAX_OUTPUT_TOKENS")
+            or router_config.get("max_output_tokens", 256)
+        ),
+        "router_response_format": os.environ.get(
+            "STUDENT_RAG_ROUTER_RESPONSE_FORMAT"
+        )
+        or router_config.get("response_format", "auto"),
         "judge_model": manifest.get("judge_model"),
         "backend": backend,
+        "qdrant_collection": os.environ.get("QDRANT_COLLECTION_NAME")
+        or vectorstore_config.get("collection_name"),
+        "mongodb_parent_collection": os.environ.get(
+            "MONGODB_PARENT_COLLECTION", "parent_docs_v7"
+        ),
         "python": platform.python_version(),
         "platform": platform.platform(),
     }

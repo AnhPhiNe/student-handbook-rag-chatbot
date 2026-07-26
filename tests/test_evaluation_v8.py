@@ -20,7 +20,12 @@ from src.evaluation.judge import (
 )
 from src.evaluation.metrics import retrieval_metrics, wilson_interval
 from src.evaluation.reporting import write_report_bundle
-from src.evaluation.suites import _answer_checks, evaluate_retrieval, generate_answers
+from src.evaluation.suites import (
+    _answer_checks,
+    evaluate_retrieval,
+    generate_answers,
+    summarize_deterministic_rows,
+)
 from src.generation.gemini_client import GeminiKeyPool, GeminiKeyPoolConfig
 from src.generation.gemini_client import GeminiClient
 
@@ -111,6 +116,38 @@ def test_retrieval_metrics_are_graded_and_rank_sensitive() -> None:
 def test_wilson_interval_bounds_probability() -> None:
     interval = wilson_interval(98, 100)
     assert 0 <= interval["low"] <= interval["high"] <= 1
+
+
+def test_deterministic_summary_counts_nested_router_validation_errors() -> None:
+    rows = [
+        {
+            "expected_group": "structured",
+            "actual_group": "rag",
+            "passed": False,
+            "router_api_success": True,
+            "router_cache_hit": False,
+            "router_validation_errors": [],
+            "router_decision": {
+                "router_validation_errors": ["missing_slot:score_or_level"]
+            },
+            "latency_ms": 10.0,
+            "eval_split": "realistic",
+        },
+        {
+            "expected_group": "rag",
+            "actual_group": "rag",
+            "passed": True,
+            "router_api_success": True,
+            "router_cache_hit": False,
+            "router_decision": {"router_validation_errors": []},
+            "latency_ms": 20.0,
+            "eval_split": "stress",
+        },
+    ]
+
+    summary = summarize_deterministic_rows(rows)
+
+    assert summary["router_validation_failure_rate"] == 0.5
 
 
 def test_compact_packet_keeps_required_fact() -> None:

@@ -3,10 +3,12 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import threading
 import time
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime, timedelta
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Any
 
@@ -26,6 +28,12 @@ from .structured_routing import (
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
 ROUTER_PROMPT_VERSION = "structured-regulation-v18-context-only"
+_DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
+_RETRY_TEXT_RE = re.compile(
+    r"(?:try again in|retry after)\s+"
+    r"((?:\d+(?:\.\d+)?\s*(?:ms|[hms])\s*)+)",
+    re.IGNORECASE,
+)
 
 ROUTER_SYSTEM_PROMPT = """
 Bạn là AI Query Router của hệ thống Sổ tay Sinh viên HCMUE.
@@ -113,6 +121,69 @@ trong target_chunk_types. Chỉ xuất JSON.
 """
 
 
+def _parse_duration_seconds(value: str | None) -> float | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    try:
+        return max(0.0, float(text))
+    except ValueError:
+        pass
+
+    total = 0.0
+    matched = False
+    for amount_text, unit in _DURATION_TOKEN_RE.findall(text):
+        matched = True
+        amount = float(amount_text)
+        normalized_unit = unit.lower()
+        if normalized_unit == "h":
+            total += amount * 3600.0
+        elif normalized_unit == "m":
+            total += amount * 60.0
+        elif normalized_unit == "ms":
+            total += amount / 1000.0
+        else:
+            total += amount
+    return total if matched else None
+
+
+def _retry_after_seconds(exc: Exception) -> float | None:
+    response = getattr(exc, "response", None)
+    headers = getattr(response, "headers", None) or {}
+    for header_name in (
+        "retry-after",
+        "x-ratelimit-reset-tokens",
+        "x-ratelimit-reset-requests",
+    ):
+        header_value = headers.get(header_name)
+        if header_value is None:
+            header_value = headers.get(header_name.title())
+        parsed = _parse_duration_seconds(header_value)
+        if parsed is not None:
+            return parsed
+        if header_name == "retry-after" and header_value:
+            try:
+                retry_at = parsedate_to_datetime(str(header_value))
+                return max(
+                    0.0,
+                    retry_at.timestamp() - datetime.now().astimezone().timestamp(),
+                )
+            except (TypeError, ValueError, OverflowError):
+                pass
+
+    match = _RETRY_TEXT_RE.search(str(exc))
+    return _parse_duration_seconds(match.group(1)) if match else None
+
+
+def _next_local_midnight_timestamp() -> float:
+    local_now = datetime.now().astimezone()
+    return (
+        (local_now + timedelta(days=1))
+        .replace(hour=0, minute=0, second=0, microsecond=0)
+        .timestamp()
+    )
+
+
 @dataclass(frozen=True)
 class GroqRouterPoolConfig:
     rpm_limit_per_key: int = 30
@@ -182,33 +253,66 @@ class GroqRouterKeyPool:
                 candidates: list[tuple[int, int, float, int, str]] = []
                 wait_until: list[float] = []
                 daily_available = False
+                daily_reasons: set[str] = set()
+                state_changed = False
                 for index, key in enumerate(self.keys):
                     key_id = self.fingerprint(key)
                     state = self._key_state(key_id)
                     requests_today = int(state.get("requests_today", 0))
                     tokens_today = int(state.get("tokens_today", 0))
-                    if (
-                        requests_today < self.config.rpd_limit_per_key
-                        and tokens_today + estimated_tokens
-                        <= self.config.tpd_limit_per_key
-                    ):
-                        daily_available = True
-                    else:
+                    if requests_today >= self.config.rpd_limit_per_key:
+                        daily_reasons.add("daily_request_quota")
+                        state_changed |= self._mark_unavailable(
+                            state,
+                            reason="daily_request_quota",
+                            available_at=_next_local_midnight_timestamp(),
+                        )
                         continue
+                    if (
+                        tokens_today + estimated_tokens
+                        > self.config.tpd_limit_per_key
+                    ):
+                        daily_reasons.add("daily_token_quota")
+                        state_changed |= self._mark_unavailable(
+                            state,
+                            reason="daily_token_quota",
+                            available_at=_next_local_midnight_timestamp(),
+                        )
+                        continue
+                    daily_available = True
 
                     cooldown_until = float(state.get("cooldown_until", 0.0))
                     if cooldown_until > now:
                         wait_until.append(cooldown_until)
+                        state_changed |= self._mark_unavailable(
+                            state,
+                            reason=str(
+                                state.get("unavailable_reason") or "api_rate_limit"
+                            ),
+                            available_at=cooldown_until,
+                        )
                         continue
 
                     events = list(state.get("minute_events", []))
                     minute_tokens = sum(int(event.get("tokens", 0)) for event in events)
                     if len(events) >= self.config.rpm_limit_per_key:
-                        wait_until.append(float(events[0]["at"]) + 60.0)
+                        available_at = float(events[0]["at"]) + 60.0
+                        wait_until.append(available_at)
+                        state_changed |= self._mark_unavailable(
+                            state,
+                            reason="rpm_limit",
+                            available_at=available_at,
+                        )
                         continue
                     if minute_tokens + estimated_tokens > self.config.tpm_limit_per_key:
-                        wait_until.append(
+                        available_at = (
                             float(events[0]["at"]) + 60.0 if events else now + 1.0
+                        )
+                        wait_until.append(available_at)
+                        state_changed |= self._mark_unavailable(
+                            state,
+                            reason="tpm_limit",
+                            available_at=available_at,
                         )
                         continue
 
@@ -228,10 +332,24 @@ class GroqRouterKeyPool:
                     return self.keys[index], key_id, index
 
                 if not daily_available:
-                    raise RuntimeError("all_qwen_router_keys_daily_quota_exhausted")
+                    available_at = _next_local_midnight_timestamp()
+                    if state_changed:
+                        self._save_state()
+                    reason = (
+                        next(iter(daily_reasons))
+                        if len(daily_reasons) == 1
+                        else "daily_quota"
+                    )
+                    wait_seconds = max(0.0, available_at - now)
+                    raise RuntimeError(
+                        f"all_qwen_router_keys_{reason}_exhausted_"
+                        f"retry_after_{wait_seconds:.1f}s"
+                    )
 
                 next_time = min(wait_until) if wait_until else now + 1.0
                 wait_seconds = max(0.1, min(60.0, next_time - now))
+                if state_changed:
+                    self._save_state()
 
             if not self.config.wait_when_limited:
                 raise RuntimeError(
@@ -261,10 +379,26 @@ class GroqRouterKeyPool:
             state["last_error_type"] = error_type
             self._save_state()
 
-    def record_rate_limit(self, key_id: str) -> None:
+    def record_rate_limit(
+        self,
+        key_id: str,
+        *,
+        retry_after_seconds: float | None = None,
+    ) -> None:
         with self._lock:
             state = self._key_state(key_id)
-            state["cooldown_until"] = time.time() + self.config.cooldown_seconds
+            retry_seconds = (
+                max(0.1, float(retry_after_seconds))
+                if retry_after_seconds is not None
+                else self.config.cooldown_seconds
+            )
+            available_at = time.time() + retry_seconds
+            state["cooldown_until"] = available_at
+            self._mark_unavailable(
+                state,
+                reason="api_rate_limit",
+                available_at=available_at,
+            )
             state["failure_count"] = int(state.get("failure_count", 0)) + 1
             state["last_error_type"] = "rate_limit"
             self._save_state()
@@ -285,8 +419,25 @@ class GroqRouterKeyPool:
                 "last_used_at": 0.0,
                 "failure_count": 0,
                 "last_error_type": None,
+                "unavailable_reason": None,
+                "available_at": 0.0,
             }
         return states[state_key]
+
+    @staticmethod
+    def _mark_unavailable(
+        state: dict[str, Any],
+        *,
+        reason: str,
+        available_at: float,
+    ) -> bool:
+        changed = (
+            state.get("unavailable_reason") != reason
+            or float(state.get("available_at", 0.0)) != float(available_at)
+        )
+        state["unavailable_reason"] = reason
+        state["available_at"] = float(available_at)
+        return changed
 
     def _record_attempt(
         self, key_id: str, now: float, today: str, estimated_tokens: int
@@ -297,6 +448,8 @@ class GroqRouterKeyPool:
         state["tokens_today"] = int(state.get("tokens_today", 0)) + estimated_tokens
         state["daily_reset_date"] = today
         state["last_used_at"] = now
+        state["unavailable_reason"] = None
+        state["available_at"] = 0.0
         self._save_state()
 
     def _reset_daily(self, today: str) -> None:
@@ -305,6 +458,9 @@ class GroqRouterKeyPool:
                 state["daily_reset_date"] = today
                 state["requests_today"] = 0
                 state["tokens_today"] = 0
+                if str(state.get("unavailable_reason") or "").startswith("daily_"):
+                    state["unavailable_reason"] = None
+                    state["available_at"] = 0.0
 
     def _prune_windows(self, now: float) -> None:
         for state in self._state.get("keys", {}).values():
@@ -313,6 +469,12 @@ class GroqRouterKeyPool:
                 for event in state.get("minute_events", [])
                 if now - float(event.get("at", 0.0)) < 60.0
             ]
+            if (
+                state.get("unavailable_reason") in {"rpm_limit", "tpm_limit"}
+                and float(state.get("available_at", 0.0)) <= now
+            ):
+                state["unavailable_reason"] = None
+                state["available_at"] = 0.0
 
     def _load_state(self) -> None:
         if not self._state_path.exists():
@@ -537,7 +699,10 @@ class AIRouter:
                 last_error = exc
                 error_type = self._classify_error(exc)
                 if error_type == "rate_limit":
-                    self.key_pool.record_rate_limit(key_id)
+                    self.key_pool.record_rate_limit(
+                        key_id,
+                        retry_after_seconds=_retry_after_seconds(exc),
+                    )
                     continue
                 self.key_pool.record_failure(key_id, error_type)
                 if error_type not in {"timeout", "api_error", "transient_error"}:
@@ -581,6 +746,14 @@ class AIRouter:
         )
         return (
             f"{hint_instruction}"
+            "DOMAIN: The assistant only answers questions about HCMUE student "
+            "handbooks, academic regulations, student policies, cohorts, programs, "
+            "departments, student services, formulas, and structured handbook tables. "
+            "If QUERY asks about unrelated topics such as finance, travel, food, "
+            "sports, device repair, creative writing, translation, promotions, "
+            "or general web/current information, set route='out_of_domain', "
+            "execution_mode='regulation', lookup_type=null, target_chunk_types=[], "
+            "and needs_clarification=false. Do not route unrelated queries to RAG.\n\n"
             f"TOOLS (type | intents | required slots | purpose):\n"
             f"{compact_registry_for_prompt(self.registry)}\n\n"
             f"JSON SCHEMA:\n"

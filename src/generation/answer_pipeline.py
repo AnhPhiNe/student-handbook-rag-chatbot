@@ -954,6 +954,31 @@ class AnswerPipeline:
                 "raw_query": query,
                 "deterministic_validated": False,
             }
+
+        if router_decision.get("route") == "out_of_domain":
+            router_decision = {
+                **router_decision,
+                "intent": "out_of_domain",
+            }
+            return {
+                "query": query,
+                "retrieval_query": query,
+                "intent": "out_of_domain",
+                "strategy": "none",
+                "router_decision": router_decision,
+                "structured_result": None,
+                "retrieved_items": [],
+                "citations": [],
+                "needs_llm_answer": False,
+                "needs_clarification": False,
+                "clarification_question": None,
+                "out_of_domain": True,
+                "selected_cohort": cohort,
+                "query_handling": query_handling,
+                "effective_query": effective_query,
+                "raw_query": query,
+                "deterministic_validated": False,
+            }
         
         if router_decision.get("execution_mode") == "structured":
             from src.retrieval.core.structured_dispatcher import resolve_structured_decision

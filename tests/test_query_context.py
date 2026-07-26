@@ -307,6 +307,30 @@ def test_answer_pipeline_uses_validated_query_before_slang(monkeypatch) -> None:
     assert result["query_handling"]["source"] == "validated_normalization"
 
 
+def test_answer_pipeline_canonicalizes_out_of_domain_metadata() -> None:
+    pipeline = _minimal_pipeline()
+
+    class DummyRouter:
+        def route(self, query, chat_history=None):
+            return _decision(
+                route="out_of_domain",
+                execution_mode="regulation",
+                intent="open_question",
+                lookup_type=None,
+                normalized_query=query,
+                retrieval_query=query,
+            )
+
+    pipeline.router = DummyRouter()
+    result = pipeline._run_retrieval("Ty gia do la hom nay the nao?")
+
+    assert result["out_of_domain"] is True
+    assert result["intent"] == "out_of_domain"
+    assert result["strategy"] == "none"
+    assert result["needs_llm_answer"] is False
+    assert result["router_decision"]["intent"] == "out_of_domain"
+
+
 def test_answer_pipeline_pure_retrieval_bypasses_router(monkeypatch) -> None:
     pipeline = _minimal_pipeline()
 

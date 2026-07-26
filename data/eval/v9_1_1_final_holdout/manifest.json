@@ -1,0 +1,79 @@
+{
+  "version": "v9.1.1-final-routing-retrieval-split",
+  "frozen": true,
+  "created_at_utc": "2026-07-26T09:01:35.522098+00:00",
+  "description": "V9.1.1 final holdout with source-complete student questions, applicability-aware K51 grading annotation, and separate pure-retrieval versus end-to-end routing reports.",
+  "counts": {
+    "deterministic": 120,
+    "retrieval": 180,
+    "answers": 100,
+    "production": 60
+  },
+  "dataset_hashes": {
+    "deterministic": "92034956d1915fcf292f2a019b0c902570f58756a979c9f4096b914d95ed1d75",
+    "retrieval": "b8e3499d1d55aa08ac5b3df7fb688c02a362aaeade179ae5fbe7b3d17957bee9",
+    "answers": "a8f9942c166b98996a1b1e5c0e0a9108ddea7d14edf953aae1a2cba616c6d972",
+    "production": "b65892825a85e7cdb28964ae4e8f40935b698b00039b3a4c0c328d914842acf7"
+  },
+  "auxiliary_hashes": {
+    "human_audit_template": "a90d6a1c5270c760a1e17626d8aba2c02827fcbaff9932935f0fb6ad6dd74cd1"
+  },
+  "git_commit": "e38bfef3774f7330f4f5d8a55ddec412f2c933b9",
+  "config_hashes": {
+    "answer_generation": "2993ae8463e84dcaa7b931f4ed0e81079231727f56df2e2699b2065d3aec9114",
+    "retrieval": "b0bd57b1ecb9f1151650753a567c7abeb5c790450a1d3fbd0f9bbaadf4e76758",
+    "ai_router": "c3d0ffa23a822252402e12bab18c9594f4f535aa9fa3251d92f30179a9c832d9",
+    "structured_lookup_registry": "f77d4c92d0bd5a2b583f4f13211465a670771be9dfcc37cc892f49cbbcb52a24"
+  },
+  "docstore_hash": "45bc97d0cf558e2c93c7803430f57c1a3e6229211cbc480b5043fda5b09d234f",
+  "generation_provider": "gemini",
+  "generation_model": "gemini-3.1-flash-lite",
+  "router_provider": "groq",
+  "router_model": "qwen/qwen3.6-27b",
+  "judge_provider": "groq",
+  "judge_model": "openai/gpt-oss-120b",
+  "headline_backend": "qdrant_cloud+mongodb",
+  "strict_structured_sources": true,
+  "strict_cohort_conflicts": true,
+  "strict_query_duplicates": true,
+  "structured_catalogs": [
+    "foreign_language",
+    "study_duration",
+    "scholarship",
+    "scoring",
+    "conduct",
+    "service",
+    "office",
+    "faculty",
+    "program",
+    "formula"
+  ],
+  "excluded_catalogs": [
+    "form"
+  ],
+  "answer_case_type_counts": {
+    "regulation_true_rag": 60,
+    "structured_answer": 20,
+    "mixed_answer": 10,
+    "unanswerable": 10
+  },
+  "answer_eval_split_counts": {
+    "realistic": 75,
+    "stress": 25
+  },
+  "human_audit_required_n": 25,
+  "human_audit_repeat_n": 5,
+  "holdout_policy": "single_run_no_post_tuning",
+  "predecessor_bundle": "v9_1_final_holdout",
+  "retrieval_evaluation": {
+    "headline_scope": "pure",
+    "secondary_scope": "end_to_end",
+    "pure_scope_policy": "Evaluate only regulation ranking after routing and query normalization; router decisions are scored separately."
+  },
+  "annotation_revision_count": 1,
+  "structured_source_revision_count": 0,
+  "annotation_revision_policy": "The K51 grading item-count expectation was aligned with the approved applicability-specific tables; no query or source annotation inherited from V9.1 was changed.",
+  "inherited_annotation_revision_count": 12,
+  "deterministic_annotation_revision_count": 1,
+  "inherited_structured_source_revision_count": 2
+}

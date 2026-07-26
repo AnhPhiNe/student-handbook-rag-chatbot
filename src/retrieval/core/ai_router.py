@@ -19,15 +19,18 @@ from src.common.env_loader import load_project_env
 
 from .structured_routing import (
     compact_registry_for_prompt,
+    fallback_to_rag,
     load_lookup_registry,
     normalize_router_decision,
     registry_digest,
     router_json_schema,
+    router_response_schema,
+    validate_router_decision,
 )
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v18-context-only"
+ROUTER_PROMPT_VERSION = "structured-regulation-v19-compact"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -36,88 +39,44 @@ _RETRY_TEXT_RE = re.compile(
 )
 
 ROUTER_SYSTEM_PROMPT = """
-Bạn là AI Query Router của hệ thống Sổ tay Sinh viên HCMUE.
+Bạn là AI Router của hệ thống Sổ tay Sinh viên HCMUE.
+Chỉ phân loại và trích xuất dữ liệu; không trả lời câu hỏi. Chỉ xuất một JSON
+đúng OUTPUT CONTRACT, không Markdown hay giải thích.
 
-Chỉ phân loại và trích xuất slot. Không trả lời câu hỏi. Chỉ xuất một JSON đúng
-JSON SCHEMA, không Markdown hoặc giải thích. Chỉ dùng lookup_type, intent và field
-được khai báo trong TOOLS; không tự tạo tên mới.
+NGỮ CẢNH VÀ CHUẨN HÓA
+- standalone: QUERY tự đủ nghĩa; không lấy thông tin từ CHAT HISTORY.
+- follow_up: QUERY thật sự nối tiếp lịch sử. Chỉ dùng khi context_confidence=high;
+  standalone_query chỉ ghép thông tin có trong QUERY và referenced_turns.
+- ambiguous: không xác định chắc ngữ cảnh; route=clarify và hỏi lại ngắn gọn.
+- normalized_query chỉ sửa dấu, lỗi chính tả nhẹ hoặc viết tắt phổ biến.
+  Không đổi cohort, số liệu, phủ định, thực thể hay chủ đề.
+- Nếu có sửa, corrections phải chứa original_span nguyên văn và normalized_span.
 
-XỬ LÝ NGỮ CẢNH VÀ CHUẨN HÓA
-- context_mode="standalone" khi QUERY tự đủ nghĩa và không cần CHAT HISTORY.
-- context_mode="follow_up" chỉ khi QUERY thật sự nối tiếp một hoặc nhiều lượt trong
-  CHAT HISTORY. Khi đó context_confidence phải là "high", standalone_query chỉ nối
-  thông tin có trong QUERY và các lượt được tham chiếu, referenced_turns chứa đúng
-  chỉ số [n] của các lượt đã dùng.
-- context_mode="ambiguous" khi không đủ chắc chắn QUERY đang nối tiếp chủ đề nào;
-  route="clarify" và đặt clarification_question ngắn gọn.
-- normalized_query chỉ được sửa dấu tiếng Việt, lỗi chính tả nhẹ hoặc viết tắt phổ
-  biến. Không đổi cohort, số liệu, phủ định, thực thể hoặc chủ đề.
-- Nếu có sửa chính tả, corrections phải liệt kê original_span nguyên văn từ QUERY
-  và normalized_span tương ứng. Không sửa thì corrections=[].
-- Không dùng CHAT HISTORY cho một câu standalone chỉ vì lịch sử đang có sẵn.
+PHÂN LUỒNG
+- structured/structured: tra trực tiếp bảng hoặc catalog JSON trong TOOLS.
+- rag/regulation: cần đọc Điều/khoản về quy định, điều kiện, thủ tục, ngoại lệ,
+  hậu quả, quyền, nghĩa vụ hoặc trường hợp áp dụng.
+- rag/mixed: cần cả một nguồn structured chính và quy định.
+- clarify: thiếu entity/cohort cốt lõi khiến tra cứu không xác định được.
+  Không clarify câu hỏi quy chế chung chỉ vì thiếu tên môn hoặc ngành.
+- out_of_domain: ngoài phạm vi sổ tay sinh viên HCMUE.
 
-ROUTE VÀ EXECUTION MODE
-- structured / structured: câu hỏi có thể trả lời từ một bảng hoặc catalog JSON
-  (số liệu, danh sách, liên hệ, ngành, công thức). Hệ thống phía sau sẽ
-  lấy dữ liệu có thẩm quyền rồi để Answer LLM diễn giải; router không tính đáp án.
-- rag / regulation: phải đọc Điều/khoản để trả lời quy định, điều kiện, thủ tục,
-  ngoại lệ, hậu quả, quyền/nghĩa vụ, thời hạn hoặc trường hợp áp dụng.
-- rag / mixed: cần cả dữ liệu structured và quy định. lookup_type chọn đúng một
-  nguồn structured chính; target_chunk_types=["regulation"].
-- clarify: Chỉ dùng khi THIẾU THÔNG TIN CỐT LÕI khiến việc tra cứu bất khả thi (ví dụ: hỏi "số điện thoại" hay "địa chỉ" nhưng không nói rõ là của Phòng/Khoa nào). TUYỆT ĐỐI KHÔNG dùng clarify đối với các câu hỏi về quy chế chung (như hoãn thi, cấm thi, xét học bổng, rèn luyện) vì chúng áp dụng chung cho mọi môn/ngành, việc thiếu tên môn/ngành không ảnh hưởng đến việc tìm quy chế.
-- out_of_domain: ngoài phạm vi Sổ tay Sinh viên HCMUE.
+RÀNG BUỘC
+- Chỉ dùng lookup_type và intent khai báo trong TOOLS.
+- structured dùng đúng một tool; regulation có lookup_type=null,
+  intent=regulation; mixed chọn đúng một tool chính.
+- Giá trị, danh sách và thông tin catalog dùng structured. Điều kiện áp dụng,
+  ngoại lệ hoặc hệ quả dùng regulation; cần cả hai thì dùng mixed.
+- Hỏi đích danh đơn vị dùng office/faculty; mô tả dịch vụ cần làm dùng
+  student_service; ngành, chương trình, đầu ra nghề nghiệp dùng program.
+- Không có form/procedure tool. Hồ sơ, biểu mẫu và quy trình là regulation.
+- formula chỉ tra công thức, không tính toán.
+- Giữ cohort nếu có; không tự đoán cohort hoặc entity.
+- slots tuân thủ TOOLS. slot_spans phải xuất hiện nguyên văn trong QUERY hoặc
+  CHAT HISTORY. Không bịa slot để thỏa contract.
+- Không tự tạo dữ liệu, tool, intent hoặc chủ đề mới.
 
-Với route=structured:
-- execution_mode="structured";
-- lookup_type là đúng một tool trong TOOLS;
-- intent thuộc tool đó;
-- target_chunk_types=[];
-- slots chỉ mô tả yêu cầu và đối tượng, không chứa câu trả lời suy đoán.
-
-Với route=rag, execution_mode=regulation:
-- lookup_type=null;
-- intent="regulation";
-- target_chunk_types=["regulation"].
-Hệ thống không có procedure chunk type; mọi thủ tục/quy trình vẫn là regulation.
-
-NGUYÊN TẮC PHÂN LOẠI
-- Từ "bao nhiêu", "tối đa", "điểm", "IELTS" không tự quyết định route.
-- Chọn structured nếu bảng/catalog có thể cung cấp dữ liệu cần thiết.
-- Chọn regulation nếu phải suy ra điều kiện áp dụng, ngoại lệ hoặc cách xử lý.
-- Chọn mixed khi câu hỏi thực sự cần cả giá trị bảng và quy định liên quan.
-- structured chỉ phù hợp khi người dùng hỏi trực tiếp một giá trị, danh sách hoặc
-  thông tin catalog. Nếu người dùng hỏi giá trị đó đã đủ điều kiện, được phép,
-  được công nhận hoặc dẫn tới hệ quả nào thì dùng regulation hoặc mixed.
-- Không hỗ trợ lookup biểu mẫu riêng trong runtime chính; hỏi hồ sơ, giấy tờ, mẫu đơn hoặc thủ tục phải dùng regulation hoặc mixed nếu cần thêm catalog khác.
-- Hỏi đích danh đơn vị là office/faculty; mô tả dịch vụ và hỏi nơi phụ trách là
-  student_service; hỏi ngành, chương trình học, hoặc ngành thuộc khoa nào là program.
-- ĐẶC BIỆT CHÚ Ý: Các câu hỏi về "cơ hội nghề nghiệp", "ra trường làm gì", "vị trí công tác", "làm việc ở đâu" BẮT BUỘC dùng route=structured và lookup_type=program. Tuyệt đối KHÔNG đưa vào regulation trừ khi hỏi về quy chế xét tốt nghiệp.
-- CHỐNG OVER-ROUTING: Không tự động ép các từ "điều kiện", "ra trường" vào regulation nếu nó đi kèm với bối cảnh nghề nghiệp hoặc giới thiệu ngành học.
-- formula chỉ cung cấp công thức/hướng dẫn áp dụng, không thực hiện calculator.
-
-COHORT VÀ ENTITY
-- Giữ cohort K48-K49, K50 hoặc K51 nếu có. Không tự chọn cohort.
-- Nếu dữ liệu phụ thuộc cohort mà QUERY/HISTORY/UI không có cohort, dùng clarify.
-- Giữ nguyên entity người dùng nhập, kể cả viết tắt hoặc không dấu. Resolver sẽ
-  đối chiếu entity với catalog; router không tự mở rộng hoặc sửa sang entity khác.
-
-SLOT VÀ SLOT_SPANS
-- Tuân thủ slot_schema trong TOOLS.
-- slot_spans phải là đoạn xuất hiện nguyên văn trong QUERY hoặc CHAT HISTORY.
-- Các field chuẩn hóa như requested_field/operation có thể nằm trong slots, nhưng
-  span của chúng vẫn phải là cụm từ nguyên văn thể hiện yêu cầu của người dùng.
-- Không bịa slot chỉ để thỏa schema. Nếu thiếu slot nhận diện entity/cohort quan
-  trọng thì dùng clarify; slot chi tiết của bảng có thể để trống vì Answer LLM sẽ
-  đọc toàn bộ bảng đã chọn cùng câu hỏi gốc.
-
-RETRIEVAL_QUERY
-- Đây chỉ là candidate phục vụ A/B. Dùng normalized_query cho standalone hoặc
-  standalone_query cho follow_up. Không mở rộng semantic, không thêm entity, quy
-  định, từ đồng nghĩa hoặc chủ đề mới để tối ưu tìm kiếm.
-
-Trước khi xuất JSON, kiểm tra route/mode khớp nhau, lookup_type và intent có trong
-TOOLS, slot đúng schema, span có thật trong nguồn vào, và không có "procedure"
-trong target_chunk_types. Chỉ xuất JSON.
+Tự kiểm tra route/mode, tool/intent, slot/span và cohort trước khi xuất JSON.
 """
 
 
@@ -342,7 +301,7 @@ class GroqRouterKeyPool:
                     )
                     wait_seconds = max(0.0, available_at - now)
                     raise RuntimeError(
-                        f"all_qwen_router_keys_{reason}_exhausted_"
+                        f"all_ai_router_keys_{reason}_exhausted_"
                         f"retry_after_{wait_seconds:.1f}s"
                     )
 
@@ -353,7 +312,7 @@ class GroqRouterKeyPool:
 
             if not self.config.wait_when_limited:
                 raise RuntimeError(
-                    f"all_qwen_router_keys_temporarily_limited_retry_after_{wait_seconds:.1f}s"
+                    f"all_ai_router_keys_temporarily_limited_retry_after_{wait_seconds:.1f}s"
                 )
             time.sleep(wait_seconds)
 
@@ -532,7 +491,7 @@ class RouterDecisionCache:
 
 
 class AIRouter:
-    """Primary Qwen query-understanding router with a strict JSON contract."""
+    """Groq-backed query-understanding router with a strict JSON contract."""
 
     def __init__(
         self,
@@ -541,6 +500,8 @@ class AIRouter:
         max_output_tokens: int = 256,
         request_timeout_seconds: float = 5.0,
         max_retries: int = 1,
+        reasoning_effort: str = "auto",
+        response_format: str = "auto",
         key_pool_config: GroqRouterPoolConfig | dict[str, Any] | None = None,
         cache_path: str = "data/cache/qwen_router_cache.json",
         cache_enabled: bool = True,
@@ -564,6 +525,8 @@ class AIRouter:
         self.max_output_tokens = max(64, int(max_output_tokens))
         self.request_timeout_seconds = max(1.0, float(request_timeout_seconds))
         self.max_retries = max(0, int(max_retries))
+        self.reasoning_effort = str(reasoning_effort or "auto").strip().lower()
+        self.response_format = str(response_format or "auto").strip().lower()
         self.registry = load_lookup_registry()
         self.key_pool = GroqRouterKeyPool(
             self.available_keys,
@@ -590,12 +553,32 @@ class AIRouter:
                 "yes",
                 "on",
             }
+        model_name = str(
+            os.environ.get("STUDENT_RAG_ROUTER_MODEL")
+            or config.get("model_name")
+            or DEFAULT_ROUTER_MODEL
+        )
+        max_output_tokens = int(
+            os.environ.get("STUDENT_RAG_ROUTER_MAX_OUTPUT_TOKENS")
+            or config.get("max_output_tokens")
+            or 256
+        )
         return cls(
-            model_name=str(config.get("model_name", DEFAULT_ROUTER_MODEL)),
+            model_name=model_name,
             temperature=float(config.get("temperature", 0.0)),
-            max_output_tokens=int(config.get("max_output_tokens", 256)),
+            max_output_tokens=max_output_tokens,
             request_timeout_seconds=float(config.get("request_timeout_seconds", 5.0)),
             max_retries=int(config.get("max_retries", 1)),
+            reasoning_effort=str(
+                os.environ.get("STUDENT_RAG_ROUTER_REASONING_EFFORT")
+                or config.get("reasoning_effort")
+                or "auto"
+            ),
+            response_format=str(
+                os.environ.get("STUDENT_RAG_ROUTER_RESPONSE_FORMAT")
+                or config.get("response_format")
+                or "auto"
+            ),
             key_pool_config=key_pool_config,
             cache_path=str(
                 config.get("cache_path", "data/cache/qwen_router_cache.json")
@@ -618,6 +601,8 @@ class AIRouter:
             chat_history=chat_history,
             routing_hint=routing_hint,
         )
+        response_format = self._response_format_payload()
+        prompt_stats = self._prompt_stats(dynamic_prompt, response_format)
         cache_key = self._cache_key(
             query,
             cohort=cohort,
@@ -630,16 +615,12 @@ class AIRouter:
                 "model_used": self.model_name,
                 "usage": None,
                 "router_cache_hit": True,
+                "prompt_stats": prompt_stats,
             }
 
         estimated_tokens = max(
             128,
-            (
-                len(ROUTER_SYSTEM_PROMPT)
-                + len(dynamic_prompt)
-                + self.max_output_tokens * 4
-            )
-            // 4,
+            int(prompt_stats["estimated_input_tokens"]) + self.max_output_tokens,
         )
         attempts = 0
         transient_failures = 0
@@ -668,8 +649,8 @@ class AIRouter:
                     ],
                     temperature=self.temperature,
                     max_tokens=self.max_output_tokens,
-                    reasoning_effort="none",
-                    response_format={"type": "json_object"},
+                    reasoning_effort=self._resolved_reasoning_effort(),
+                    response_format=response_format,
                 )
                 raw = response.choices[0].message.content or ""
                 parsed = self._extract_json_object(raw)
@@ -685,6 +666,25 @@ class AIRouter:
                     query=query,
                     selected_cohort=cohort,
                 )
+                grounding_context = "\n".join(
+                    str(item.get("content") or "")
+                    for item in (chat_history or [])[-4:]
+                    if isinstance(item, dict)
+                )
+                validation_errors = validate_router_decision(
+                    decision,
+                    query=query,
+                    selected_cohort=cohort,
+                    grounding_context=grounding_context,
+                    registry=self.registry,
+                )
+                if validation_errors:
+                    decision = fallback_to_rag(
+                        decision,
+                        validation_errors,
+                        query=query,
+                    )
+                decision["router_validation_errors"] = validation_errors
                 if self.cache:
                     self.cache.set(cache_key, decision)
                 return {
@@ -694,6 +694,7 @@ class AIRouter:
                     "key_fingerprint": key_id,
                     "router_cache_hit": False,
                     "attempts": attempts,
+                    "prompt_stats": prompt_stats,
                 }
             except Exception as exc:
                 last_error = exc
@@ -715,7 +716,7 @@ class AIRouter:
                     f"on key {key_index}:{key_id}."
                 )
 
-        raise RuntimeError(f"qwen_router_failed: {last_error}")
+        raise RuntimeError(f"ai_router_failed: {last_error}")
 
     def _build_prompt(
         self,
@@ -738,35 +739,63 @@ class AIRouter:
         )
         hint = json.dumps(routing_hint, ensure_ascii=False, separators=(",", ":"))
         hint_instruction = (
-            "CATALOG_HINT is an exact span grounded in production data. Use its lookup_type "
-            "and entity_text to emit a structured decision, then infer only intent and "
-            "requested_field from QUERY. Do not copy unit contact facts into the answer. "
+            "CATALOG_HINT is grounded production metadata. Use its lookup_type and "
+            "entity_text; infer only intent/requested_field from QUERY.\n"
             if routing_hint
             else ""
         )
         return (
             f"{hint_instruction}"
-            "DOMAIN: The assistant only answers questions about HCMUE student "
-            "handbooks, academic regulations, student policies, cohorts, programs, "
-            "departments, student services, formulas, and structured handbook tables. "
-            "If QUERY asks about unrelated topics such as finance, travel, food, "
-            "sports, device repair, creative writing, translation, promotions, "
-            "or general web/current information, set route='out_of_domain', "
-            "execution_mode='regulation', lookup_type=null, target_chunk_types=[], "
-            "and needs_clarification=false. Do not route unrelated queries to RAG.\n\n"
-            f"TOOLS (type | intents | required slots | purpose):\n"
+            "TOOLS:\n"
             f"{compact_registry_for_prompt(self.registry)}\n\n"
-            f"JSON SCHEMA:\n"
+            f"OUTPUT CONTRACT:\n"
             f"{schema}\n\n"
-            f"CATALOG_HINT:\n"
-            f"{hint if routing_hint else 'none'}\n\n"
-            f"COHORT:\n"
-            f"{cohort or 'unknown'}\n\n"
-            f"CHAT HISTORY:\n"
-            f"{history}\n\n"
-            f"QUERY:\n"
-            f"{query}"
+            f"CATALOG_HINT: {hint if routing_hint else 'none'}\n"
+            f"COHORT: {cohort or 'unknown'}\n"
+            f"CHAT HISTORY:\n{history}\n"
+            f"QUERY: {query}"
         )
+
+    def _resolved_reasoning_effort(self) -> str:
+        if self.reasoning_effort != "auto":
+            return self.reasoning_effort
+        return "low" if "gpt-oss" in self.model_name.lower() else "none"
+
+    def _resolved_response_format(self) -> str:
+        if self.response_format != "auto":
+            return self.response_format
+        return "json_schema" if "gpt-oss" in self.model_name.lower() else "json_object"
+
+    def _response_format_payload(self) -> dict[str, Any]:
+        if self._resolved_response_format() == "json_schema":
+            return {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "router_decision",
+                    "strict": False,
+                    "schema": router_response_schema(),
+                },
+            }
+        return {"type": "json_object"}
+
+    @staticmethod
+    def _prompt_stats(
+        dynamic_prompt: str,
+        response_format: dict[str, Any],
+    ) -> dict[str, int]:
+        system_chars = len(ROUTER_SYSTEM_PROMPT.strip())
+        dynamic_chars = len(dynamic_prompt)
+        schema_chars = len(
+            json.dumps(response_format, ensure_ascii=False, separators=(",", ":"))
+        )
+        total_chars = system_chars + dynamic_chars + schema_chars
+        return {
+            "system_chars": system_chars,
+            "dynamic_chars": dynamic_chars,
+            "response_format_chars": schema_chars,
+            "total_chars": total_chars,
+            "estimated_input_tokens": max(1, total_chars // 4),
+        }
 
     def _cache_key(
         self,
@@ -796,10 +825,10 @@ class AIRouter:
         start = stripped.find("{")
         end = stripped.rfind("}")
         if start < 0 or end < start:
-            raise ValueError("Qwen router response did not contain JSON.")
+            raise ValueError("AI router response did not contain JSON.")
         value = json.loads(stripped[start : end + 1])
         if not isinstance(value, dict):
-            raise ValueError("Qwen router JSON must be an object.")
+            raise ValueError("AI router JSON must be an object.")
         return value
 
     @staticmethod

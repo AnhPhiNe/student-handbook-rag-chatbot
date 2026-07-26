@@ -117,7 +117,7 @@ tools:
 
   program:
     data_category: directory_table
-    description: Tra nganh dao tao, khoa phu trach, hoac liet ke nganh.
+    description: Tra nganh dao tao, khoa phu trach, danh sach nganh, mo ta chuong trinh va dau ra/co hoi nghe nghiep.
     intents: [direct_value, list_items, exists]
     required_slots:
       direct_value: [program_or_faculty, requested_field]

@@ -72,18 +72,27 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
     for name, spec in registry["tools"].items():
         intents = ",".join(spec.get("intents") or [])
         required = spec.get("required_slots") or {}
-        contract = {
-            "required_slots": required,
-            "slot_schema": spec.get("slot_schema") or {},
-            "operand_requirements": spec.get("operand_requirements") or {},
-        }
+        slot_contract: dict[str, Any] = {}
+        for slot_name, slot_spec in (spec.get("slot_schema") or {}).items():
+            compact_spec: dict[str, Any] = {}
+            allowed_values = (
+                slot_spec.get("enum") or slot_spec.get("canonical_values") or []
+            )
+            if allowed_values:
+                compact_spec["values"] = allowed_values
+            slot_contract[slot_name] = compact_spec
         lines.append(
             "|".join(
                 (
                     name,
-                    intents,
-                    json.dumps(contract, ensure_ascii=True, separators=(",", ":")),
-                    str(spec.get("description") or ""),
+                    f"use={spec.get('description') or ''}",
+                    f"intents={intents}",
+                    "required="
+                    + json.dumps(required, ensure_ascii=True, separators=(",", ":")),
+                    "slots="
+                    + json.dumps(
+                        slot_contract, ensure_ascii=True, separators=(",", ":")
+                    ),
                 )
             )
         )
@@ -115,10 +124,90 @@ def router_json_schema() -> dict[str, Any]:
         "cohort": "K48-K49|K50|K51|null",
         "slots": {},
         "slot_spans": {},
-        "retrieval_query": "standalone Vietnamese search query",
-        "target_chunk_types": [],
-        "needs_clarification": False,
         "clarification_question": None,
+    }
+
+
+def router_response_schema() -> dict[str, Any]:
+    """JSON Schema used by providers that support structured output."""
+
+    tools = list(load_lookup_registry().get("tools", {}).keys())
+    return {
+        "type": "object",
+        "additionalProperties": False,
+        "properties": {
+            "context_mode": {
+                "type": "string",
+                "enum": ["standalone", "follow_up", "ambiguous"],
+            },
+            "context_confidence": {
+                "type": "string",
+                "enum": ["high", "medium", "low", "none"],
+            },
+            "normalized_query": {"type": ["string", "null"]},
+            "normalization_confidence": {
+                "type": "string",
+                "enum": ["high", "medium", "low", "none"],
+            },
+            "corrections": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "properties": {
+                        "original_span": {"type": "string"},
+                        "normalized_span": {"type": "string"},
+                    },
+                    "required": ["original_span", "normalized_span"],
+                },
+            },
+            "standalone_query": {"type": ["string", "null"]},
+            "referenced_turns": {
+                "type": "array",
+                "items": {"type": "integer"},
+            },
+            "route": {
+                "type": "string",
+                "enum": ["structured", "rag", "clarify", "out_of_domain"],
+            },
+            "execution_mode": {
+                "type": "string",
+                "enum": ["structured", "regulation", "mixed"],
+            },
+            "intent": {"type": "string"},
+            "lookup_type": {
+                "anyOf": [
+                    {"type": "string", "enum": tools},
+                    {"type": "null"},
+                ]
+            },
+            "cohort": {
+                "anyOf": [
+                    {"type": "string", "enum": ["K48-K49", "K50", "K51"]},
+                    {"type": "null"},
+                ]
+            },
+            "slots": {"type": "object", "additionalProperties": True},
+            "slot_spans": {"type": "object", "additionalProperties": True},
+            "clarification_question": {"type": ["string", "null"]},
+        },
+        "required": [
+            "context_mode",
+            "context_confidence",
+            "normalized_query",
+            "normalization_confidence",
+            "corrections",
+            "standalone_query",
+            "referenced_turns",
+            "route",
+            "execution_mode",
+            "intent",
+            "lookup_type",
+            "cohort",
+            "slots",
+            "slot_spans",
+            "clarification_question",
+        ],
     }
 
 
@@ -191,7 +280,11 @@ def normalize_router_decision(
             intent = allowed_intents[0]
     target_types = payload.get("target_chunk_types")
     if not isinstance(target_types, list):
-        target_types = []
+        target_types = (
+            ["regulation"]
+            if route == "rag" and execution_mode in {"regulation", "mixed"}
+            else []
+        )
 
     payload_cohort = normalize_cohort(payload.get("cohort"))
     selected = normalize_cohort(selected_cohort)
@@ -265,7 +358,8 @@ def normalize_router_decision(
         "slot_spans": spans,
         "retrieval_query": retrieval_query,
         "target_chunk_types": [str(item) for item in target_types if item],
-        "needs_clarification": bool(payload.get("needs_clarification")),
+        "needs_clarification": route == "clarify"
+        or bool(payload.get("needs_clarification")),
         "clarification_question": payload.get("clarification_question"),
     }
 

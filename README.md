@@ -73,7 +73,7 @@ flowchart TD
     Structured --> Prompt["Grounded answer prompt"]
     Mongo --> Prompt
     Prompt --> Gemini["Gemini 3.1 Flash-Lite"]
-    Gemini --> Output["Answer + citation metadata"]
+    Gemini --> Output["Answer + citations when available"]
 
     API -. exact response key .-> Cache["Redis + local JSON cache"]
 ```
@@ -107,7 +107,7 @@ The Router can select one of nine structured lookup groups:
 | Program | Program existence, faculty ownership, and cohort-specific lists |
 | Formula | Defined GPA or scholarship formulas, without performing calculations |
 
-The resolver reads cohort-tagged JSON, validates required slots and provenance, and passes the grounded result to Gemini for consistent natural-language phrasing. A compatibility direct-answer formatter still exists for tests, but it is disabled in the production configuration.
+The resolver reads cohort-tagged JSON, validates required slots and provenance, and passes the grounded result to Gemini for consistent natural-language phrasing. Structured provenance is retained internally, although a structured answer does not always expose a user-facing citation. A compatibility direct-answer formatter still exists for tests, but it is disabled in the production configuration.
 
 The backend intentionally has **no structured form or procedure lookup**. Form and procedure requests are handled only when the regulation corpus contains enough relevant evidence. The frontend may still provide independent UI utilities.
 
@@ -136,7 +136,7 @@ Qdrant stores only `regulation_text`. Structured JSON rows are not inserted as s
 - The graph can add up to five **RELATED SOURCES** for directly referenced articles and conditions.
 - The context safety cap is `160,000` characters, with a per-document cap of `50,000`.
 - PRIMARY sources determine the main answer. RELATED sources explain directly referenced rules without replacing the primary conclusion.
-- Citation metadata remains bound to the parent section, cohort, document, and source pages.
+- RAG citation metadata remains bound to the parent section, cohort, document, and source pages.
 
 ### 5. Reliability controls
 
@@ -158,7 +158,8 @@ The release-candidate storage was rebuilt from the three handbook cohorts:
 | Qdrant regulation chunks | 3,300 |
 | Child chunks | 2,822 |
 | Section-heading chunks | 478 |
-| Regulation graph edges | 103 |
+| Active regulation graph nodes | 130 / 478 parent sections (27.20% coverage) |
+| Directed regulation graph edges | 103 |
 | Qdrant content types | `regulation_text` only |
 | Qdrant collection | `student_handbook_semantic_v9_candidate` |
 | MongoDB collection | `parent_docs_v9_candidate` |
@@ -175,7 +176,7 @@ Structured data is stored separately in `data/processed/tables/` and `data/proce
 
 ## Evaluation
 
-The final evaluation uses the frozen **V9.1.1 holdout** and records dataset hashes, document-store hash, configuration hashes, Git commit, model IDs, storage collections, Python version, and run timestamp.
+The final evaluation uses the frozen **V9.1.1 holdout** and records dataset hashes, document-store hash, configuration hashes, Git commit, model IDs, storage collections, Python version, and run timestamp. Quality suites used Qwen routing with `reasoning_effort=none`; the V25 production-performance run used `reasoning_effort=auto`. These suite-specific settings are retained in each report's provenance.
 
 | Suite | Cases | Purpose |
 |---|---:|---|
@@ -207,17 +208,19 @@ The three misses were conservative router validation failures rather than false-
 
 This suite includes Qwen routing and validated query handling before retrieval.
 
-| Metric | Result | 95% CI |
-|---|---:|---:|
-| Hit@1 | 68.33% | 61.67-75.00% |
-| Hit@3 | 87.78% | 82.78-92.22% |
-| Hit@5 | 92.22% | 87.78-96.11% |
-| MRR | 78.49% | 73.37-83.33% |
-| nDCG@5 | 80.61% | 75.98-84.76% |
-| Cohort match | 99.44% | - |
-| Content-type match | 97.22% | - |
-| Cohort leak rate | 0.00% | - |
-| Retrieval p95 | 3.20s | - |
+| Metric | Result |
+|---|---:|
+| Hit@1 | 68.33% |
+| Hit@3 | 87.78% |
+| Hit@5 | 92.22% |
+| MRR | 78.49% |
+| nDCG@5 | 80.61% |
+| Cohort match | 99.44% |
+| Content-type match | 97.22% |
+| Cohort leak rate | 0.00% |
+| Retrieval p95 | 3.20s |
+
+Bootstrap 95% confidence intervals were computed for the headline ranking metrics and retained in the locally generated evaluation reports.
 
 ### Generated-answer evaluation
 
@@ -234,22 +237,26 @@ This suite includes Qwen routing and validated query handling before retrieval.
 | Numeric accuracy | 95.00% |
 | Abstention correctness | 85.00% |
 
-The Judge flagged unsupported claims in 37% of cases. Manual review found that the Judge was frequently stricter than the handbook evidence warranted, so automated scores are reported together with the human audit rather than presented as ground truth.
+The Judge flagged unsupported claims in 37% of cases. Root-cause review classified nine of the 25 audited cases as Judge false positives, so automated scores are reported as diagnostics and calibrated against the human audit rather than presented as ground truth.
 
 ### Human audit
 
-The 15 stratified-random cases are the representative headline sample:
+The manual audit covered **25 cases in total**: 15 stratified-random cases for headline calibration and 10 intentionally selected low-Judge-score cases for targeted failure analysis. The two groups are reported separately because the risk subset is deliberately non-random.
+
+Stratified calibration sample (`n = 15`):
 
 | Metric | Result |
 |---|---:|
-| Human score | 93.33% |
 | Correctness | 96.67% |
 | Faithfulness | 96.67% |
 | Citation correctness | 93.33% |
 | Actual unsupported claims | 1 / 15 |
 | Critical false passes | 0 / 15 |
 
-Ten additional cases were intentionally selected from the lowest Judge scores for failure analysis. They are not mixed into the representative headline average:
+<details>
+<summary>Targeted risk audit (10 intentionally difficult cases)</summary>
+
+These cases were selected from the lowest automated Judge scores to discover failures, not to estimate overall production accuracy.
 
 | Diagnostic metric | Result |
 |---|---:|
@@ -258,26 +265,32 @@ Ten additional cases were intentionally selected from the lowest Judge scores fo
 | Citation correctness | 50.00% |
 | Actual unsupported claims | 5 / 10 |
 
-This risk subset exposed a small tail of generation, retrieval, and annotation failures while also identifying Judge false positives.
+This subset exposed generation, retrieval, and annotation failures while also identifying Judge false positives.
 
-### Production performance and robustness
+</details>
 
-The V25 production run executed 60 requests against a local FastAPI server configured with the release-candidate Qdrant and MongoDB collections.
+### Production-configured performance and robustness
+
+The V25 performance run executed 60 requests against a local FastAPI server configured with the release-candidate Qdrant and MongoDB collections. It measures request completion, response protocol, latency, caching, streaming, and burst behavior; it is not an answer-correctness score.
 
 | Metric | Result |
 |---|---:|
-| Successful requests | 60 / 60 |
+| Technically completed requests | 60 / 60 |
 | Transport success | 100.00% |
 | Payload success | 100.00% |
+| Expected response-status accuracy | 91.67% |
 | HTTP 429 rate | 0.00% |
 | Timeout rate | 0.00% |
 | Overall latency p95 | 5.83s |
 | Cold regulation RAG p95 | 13.17s |
-| Deterministic/structured p95 | 2.47s |
+| Deterministic scenario p95 | 2.47s |
+| Structured-path p95 | 4.69s |
 | Streaming TTFT p95 | 1.84s |
 | Burst success, concurrency 3 and 5 | 10 / 10 |
 | Warm-cache hit rate | 90.00% |
 | Telemetry coverage | 100.00% |
+
+The five response-status mismatches were behavior-label mismatches rather than transport failures; four were clarify cases that returned a valid payload without the expected clarification status.
 
 Fault injection passed **13 / 13** scenarios, including rate limits, key cooldown, exhausted quotas, streaming timeout, empty Gemini output, transport disconnect, concurrent Gemini calls, retrieval errors, Mongo parent misses, and API capacity saturation.
 
@@ -312,9 +325,9 @@ Fault injection passed **13 / 13** scenarios, including rate limits, key cooldow
 student_handbook_rag/
 |-- configs/                  # Runtime, router, retrieval, and ingestion configuration
 |-- data/
-|   |-- raw/                  # Source handbooks
-|   |-- processed/            # Parent docs, regulation chunks, graph, tables, directories
-|   `-- eval/                 # Frozen datasets and local evaluation reports
+|   |-- raw/                  # Local source handbooks; not committed
+|   |-- processed/            # Generated runtime artifacts; not committed
+|   `-- eval/                 # Frozen datasets plus ignored local reports
 |-- frontend/                 # React + Vite application
 |-- scripts/                  # Build, storage, deployment, and evaluation commands
 |-- src/
@@ -331,6 +344,15 @@ student_handbook_rag/
 ## Local Setup
 
 ### Backend
+
+A fresh clone contains the source code and frozen evaluation datasets, but not the handbook PDFs or generated `data/processed/` artifacts. Running the complete backend locally requires:
+
+- explicit Qdrant and MongoDB release-candidate collection settings;
+- Gemini and Groq API keys;
+- the processed tables, directories, graph, and chunk artifacts; and
+- the BGE-M3 model, downloaded once or already available in the local model cache.
+
+The deployed Hugging Face Space already contains the approved processed artifacts. For frontend development, the React app can use that deployed API without rebuilding the backend data locally.
 
 ```bash
 python -m venv .venv
@@ -366,6 +388,7 @@ GEMINI_API_KEYS=gemini_key_1,gemini_key_2
 GROQ_API_KEYS=groq_key_1,groq_key_2
 
 # Release-candidate storage.
+# Set these explicitly; do not rely on legacy V7 fallback names.
 QDRANT_URL=https://your-cluster.qdrant.io
 QDRANT_API_KEY=your_qdrant_key
 QDRANT_COLLECTION_NAME=student_handbook_semantic_v9_candidate
@@ -449,7 +472,8 @@ python scripts/evaluate_system_v8.py --suite production --profile full \
 python -m scripts.build_v7_child_parent_index
 python -m src.ingestion.graph_extractor
 
-# Push the current regulation chunks to the configured Qdrant collection.
+# Push parents and regulation chunks to the explicitly configured collections.
+python -m scripts.push_to_mongo
 python scripts/push_to_qdrant_v7.py
 
 # Backend checks.

@@ -1,7 +1,7 @@
 import os
 import json
 import logging
-from typing import List, Dict, Any, Set
+from typing import List, Dict, Any
 import networkx as nx
 
 logger = logging.getLogger("graph_traverser")

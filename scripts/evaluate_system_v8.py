@@ -482,6 +482,8 @@ def main() -> None:
             "tests/test_gemini_client.py::GeminiClientTest::test_streaming_call_times_out_without_chunks",
             "tests/test_gemini_client.py::GeminiClientTest::test_generate_retries_next_key_after_rate_limit",
             "tests/test_gemini_client.py::GeminiClientTest::test_generate_stream_retries_next_key_after_rate_limit",
+            "tests/test_gemini_client.py::GeminiClientTest::test_disconnect_is_classified_as_transient",
+            "tests/test_gemini_client.py::GeminiClientTest::test_concurrent_generate_uses_request_local_clients",
             "tests/test_gemini_client.py::GeminiKeyPoolTest::test_key_pool_load_balances_between_keys",
             "tests/test_gemini_client.py::GeminiKeyPoolTest::test_key_pool_skips_key_in_cooldown",
             "tests/test_gemini_client.py::GeminiKeyPoolTest::test_key_pool_blocks_daily_exhausted_keys",

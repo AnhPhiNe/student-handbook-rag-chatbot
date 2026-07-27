@@ -15,7 +15,10 @@ echo ==============================================
 echo.
 
 echo [1/5] Preparing clean package directory...
-if exist "%TEMP_DIR%" rmdir /s /q "%TEMP_DIR%"
+if exist "%TEMP_DIR%" rmdir /s /q "%TEMP_DIR%" 2>nul
+if exist "%TEMP_DIR%" timeout /t 1 /nobreak >nul
+if exist "%TEMP_DIR%" rmdir /s /q "%TEMP_DIR%" 2>nul
+if exist "%TEMP_DIR%" goto :error
 mkdir "%TEMP_DIR%"
 if errorlevel 1 goto :error
 
@@ -98,7 +101,10 @@ git push hf main:main --force
 if errorlevel 1 goto :error_in_temp
 popd
 
-rmdir /s /q "%TEMP_DIR%"
+rmdir /s /q "%TEMP_DIR%" 2>nul
+if exist "%TEMP_DIR%" timeout /t 1 /nobreak >nul
+if exist "%TEMP_DIR%" rmdir /s /q "%TEMP_DIR%" 2>nul
+if exist "%TEMP_DIR%" echo Warning: deployment succeeded, but %TEMP_DIR% could not be removed.
 echo.
 echo ==============================================
 echo  Deployment successful

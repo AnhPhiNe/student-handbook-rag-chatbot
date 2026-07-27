@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from src.evaluation.dataset import validate_bundle
+from src.evaluation.gates import evaluate_gates
 from src.evaluation.judge import (
     PINNED_JUDGE_MODEL,
     GroqJudgeClient,
@@ -22,6 +23,7 @@ from src.evaluation.metrics import retrieval_metrics, wilson_interval
 from src.evaluation.reporting import write_report_bundle
 from src.evaluation.suites import (
     _answer_checks,
+    _summarize_production_rows,
     evaluate_retrieval,
     generate_answers,
     summarize_deterministic_rows,
@@ -149,6 +151,96 @@ def test_deterministic_summary_counts_nested_router_validation_errors() -> None:
     summary = summarize_deterministic_rows(rows)
 
     assert summary["router_validation_failure_rate"] == 0.5
+
+
+def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:
+    rows = [
+        {
+            "scenario": "cold_rag",
+            "expected_path": "regulation_rag",
+            "success": True,
+            "transport_success": True,
+            "payload_success": True,
+            "expected_status_match": True,
+            "status_code": 200,
+            "latency_ms": 1_000.0,
+            "ttft_ms": None,
+            "used_cache": False,
+            "telemetry": {"retrieval_ms": 100},
+            "eval_split": "realistic",
+        },
+        {
+            "scenario": "cold_rag",
+            "expected_path": "structured",
+            "success": True,
+            "transport_success": True,
+            "payload_success": True,
+            "expected_status_match": True,
+            "status_code": 200,
+            "latency_ms": 300.0,
+            "ttft_ms": None,
+            "used_cache": False,
+            "telemetry": {"routing_ms": 100},
+            "eval_split": "realistic",
+        },
+        {
+            "scenario": "deterministic",
+            "expected_path": "structured",
+            "success": True,
+            "transport_success": True,
+            "payload_success": True,
+            "expected_status_match": True,
+            "status_code": 200,
+            "latency_ms": 200.0,
+            "ttft_ms": None,
+            "used_cache": False,
+            "telemetry": {"routing_ms": 100},
+            "eval_split": "realistic",
+        },
+        {
+            "scenario": "warm_cache",
+            "expected_path": "regulation_rag",
+            "success": True,
+            "transport_success": True,
+            "payload_success": True,
+            "expected_status_match": True,
+            "status_code": 200,
+            "latency_ms": 100.0,
+            "ttft_ms": None,
+            "used_cache": True,
+            "telemetry": {"cache_hit": True},
+            "eval_split": "realistic",
+        },
+        {
+            "scenario": "streaming",
+            "expected_path": "regulation_rag",
+            "success": True,
+            "transport_success": True,
+            "payload_success": True,
+            "expected_status_match": True,
+            "status_code": 200,
+            "latency_ms": 800.0,
+            "ttft_ms": 120.0,
+            "used_cache": None,
+            "telemetry": {},
+            "eval_split": "realistic",
+        },
+    ]
+
+    summary = _summarize_production_rows(rows)
+
+    assert summary["streaming_ttft_ms"]["mean"] == 120.0
+    assert summary["streaming_ttft_coverage"] == 1.0
+    assert summary["cold_regulation_rag_latency_ms"]["p95"] == 1_000.0
+    assert summary["cold_cache_hit_rate"] == 0.0
+    assert summary["warm_cache_hit_rate"] == 1.0
+    assert summary["cache_protocol_valid"] is True
+    assert summary["response_status_accuracy"] == 1.0
+    assert summary["by_expected_path"]["structured"]["n"] == 2
+    assert evaluate_gates("production", summary)["passed"] is True
+
+    summary["cold_cache_hit_rate"] = 0.5
+    assert evaluate_gates("production", summary)["passed"] is False
 
 
 def test_human_audit_uses_template_size_and_repeat_flags() -> None:

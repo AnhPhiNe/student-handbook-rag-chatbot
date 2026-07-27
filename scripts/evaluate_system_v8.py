@@ -30,6 +30,7 @@ from src.evaluation.suites import (
     generate_answers,
     judge_answers,
 )
+from src.generation.answer_pipeline import PIPELINE_VERSION
 
 
 DEFAULT_DATASET = ROOT / "data" / "eval" / "v8_4_holdout"
@@ -38,6 +39,7 @@ DEFAULT_DOCSTORE = ROOT / "data" / "processed" / "chunks" / "all_docstore_items.
 AI_ROUTER_CONFIG = ROOT / "configs" / "ai_router.yaml"
 LOOKUP_REGISTRY_CONFIG = ROOT / "configs" / "structured_lookup_registry.yaml"
 RETRIEVAL_CONFIG = ROOT / "configs" / "retrieval.yaml"
+ANSWER_GENERATION_CONFIG = ROOT / "configs" / "answer_generation.yaml"
 
 
 def _git_commit() -> str:
@@ -55,12 +57,19 @@ def _provenance(dataset_dir: Path, backend: str) -> dict[str, Any]:
     retrieval_config = (
         yaml.safe_load(RETRIEVAL_CONFIG.read_text(encoding="utf-8")) or {}
     )
+    answer_config = (
+        yaml.safe_load(ANSWER_GENERATION_CONFIG.read_text(encoding="utf-8")) or {}
+    )
     vectorstore_config = retrieval_config.get("vectorstore") or {}
+    llm_config = answer_config.get("llm") or {}
+    cache_config = answer_config.get("cache") or {}
     config_hashes = dict(manifest.get("config_hashes") or {})
     config_hashes.update(
         {
             "ai_router": _file_hash(AI_ROUTER_CONFIG),
             "structured_lookup_registry": _file_hash(LOOKUP_REGISTRY_CONFIG),
+            "retrieval": _file_hash(RETRIEVAL_CONFIG),
+            "answer_generation": _file_hash(ANSWER_GENERATION_CONFIG),
         }
     )
     return {
@@ -70,8 +79,11 @@ def _provenance(dataset_dir: Path, backend: str) -> dict[str, Any]:
         "dataset_hashes": manifest.get("dataset_hashes"),
         "docstore_hash": manifest.get("docstore_hash"),
         "config_hashes": config_hashes,
-        "generation_model": manifest.get("generation_model"),
-        "query_rewriter_model": manifest.get("query_rewriter_model"),
+        "generation_model": llm_config.get("model_name")
+        or manifest.get("generation_model"),
+        "dataset_generation_model": manifest.get("generation_model"),
+        "answer_pipeline_version": PIPELINE_VERSION,
+        "response_cache_mode": "exact" if cache_config.get("enabled", True) else "off",
         "router_provider": router_config.get("provider", "groq"),
         "router_model": os.environ.get("STUDENT_RAG_ROUTER_MODEL")
         or router_config.get("model_name", "qwen/qwen3.6-27b"),

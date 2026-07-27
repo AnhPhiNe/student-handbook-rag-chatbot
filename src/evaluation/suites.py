@@ -1483,6 +1483,164 @@ def build_human_audit_template(
     ]
 
 
+def _expected_response_status(expected_path: str | None) -> str:
+    if expected_path == "clarify":
+        return "needs_clarification"
+    if expected_path == "out_of_domain":
+        return "out_of_domain"
+    return "answered"
+
+
+def _summarize_production_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    streaming_rows = [row for row in rows if row.get("scenario") == "streaming"]
+    cold_rows = [row for row in rows if row.get("scenario") == "cold_rag"]
+    warm_rows = [row for row in rows if row.get("scenario") == "warm_cache"]
+    cold_regulation_rows = [
+        row for row in cold_rows if row.get("expected_path") == "regulation_rag"
+    ]
+
+    cold_cache_observed = [
+        row for row in cold_rows if row.get("used_cache") is not None
+    ]
+    warm_cache_observed = [
+        row for row in warm_rows if row.get("used_cache") is not None
+    ]
+    cold_cache_hit_rate = safe_mean(
+        [float(bool(row.get("used_cache"))) for row in cold_cache_observed]
+    )
+    warm_cache_hit_rate = safe_mean(
+        [float(bool(row.get("used_cache"))) for row in warm_cache_observed]
+    )
+    cold_cache_coverage = (
+        len(cold_cache_observed) / len(cold_rows) if cold_rows else 0.0
+    )
+    warm_cache_coverage = (
+        len(warm_cache_observed) / len(warm_rows) if warm_rows else 0.0
+    )
+    streaming_ttft_coverage = (
+        len([row for row in streaming_rows if row.get("ttft_ms") is not None])
+        / len(streaming_rows)
+        if streaming_rows
+        else 0.0
+    )
+
+    summary: dict[str, Any] = {
+        "n": len(rows),
+        "success_rate": safe_mean([float(row["success"]) for row in rows]),
+        "transport_success_rate": safe_mean(
+            [float(bool(row.get("transport_success"))) for row in rows]
+        ),
+        "payload_success_rate": safe_mean(
+            [float(bool(row.get("payload_success"))) for row in rows]
+        ),
+        "response_status_accuracy": safe_mean(
+            [
+                float(bool(row.get("expected_status_match")))
+                for row in rows
+                if row.get("expected_path")
+            ]
+        ),
+        "error_rate": safe_mean([float(not row["success"]) for row in rows]),
+        "http_429_rate": safe_mean(
+            [float(row.get("status_code") == 429) for row in rows]
+        ),
+        "timeout_rate": safe_mean(
+            [
+                float("timed out" in str(row.get("error") or "").lower())
+                for row in rows
+            ]
+        ),
+        "latency_ms": _latency_summary([row["latency_ms"] for row in rows]),
+        "streaming_ttft_ms": _latency_summary(
+            [
+                row["ttft_ms"]
+                for row in streaming_rows
+                if row.get("ttft_ms") is not None
+            ]
+        ),
+        "streaming_ttft_coverage": streaming_ttft_coverage,
+        "cold_regulation_rag_latency_ms": _latency_summary(
+            [row["latency_ms"] for row in cold_regulation_rows]
+        ),
+        "cache_hit_rate": safe_mean(
+            [float(bool(row.get("used_cache"))) for row in rows]
+        ),
+        "cold_cache_hit_rate": cold_cache_hit_rate,
+        "warm_cache_hit_rate": warm_cache_hit_rate,
+        "cold_cache_status_coverage": cold_cache_coverage,
+        "warm_cache_status_coverage": warm_cache_coverage,
+        "cache_protocol_valid": (
+            cold_cache_coverage == 1.0
+            and warm_cache_coverage == 1.0
+            and cold_cache_hit_rate == 0.0
+            and warm_cache_hit_rate is not None
+            and warm_cache_hit_rate >= 0.90
+        ),
+        "source_count_mean": safe_mean(
+            [float(row.get("source_count", 0)) for row in rows]
+        ),
+        "context_chars_mean": safe_mean(
+            [float(row.get("context_chars", 0)) for row in rows]
+        ),
+        "answer_chars_mean": safe_mean(
+            [float(row.get("answer_chars", 0)) for row in rows]
+        ),
+        "source_utilization": safe_mean(
+            [min(1.0, float(row.get("source_count", 0)) / 5.0) for row in rows]
+        ),
+        "telemetry_coverage": safe_mean(
+            [
+                float(bool(row.get("telemetry")))
+                for row in rows
+                if row.get("scenario") != "streaming"
+            ]
+        ),
+        "key_distribution": dict(
+            Counter(
+                row.get("key_fingerprint")
+                for row in rows
+                if row.get("key_fingerprint")
+            )
+        ),
+        "retry_count": sum(int(row.get("retry_count") or 0) for row in rows),
+        "cooldown_events": sum(
+            int(row.get("cooldown_events") or 0) for row in rows
+        ),
+        "realistic_score": safe_mean(
+            [
+                float(row["success"])
+                for row in rows
+                if row.get("eval_split") == "realistic"
+            ]
+        ),
+        "stress_score": safe_mean(
+            [float(row["success"]) for row in rows if row.get("eval_split") == "stress"]
+        ),
+        "by_scenario": {},
+        "by_expected_path": {},
+    }
+    for scenario in sorted({str(row["scenario"]) for row in rows}):
+        group = [row for row in rows if row["scenario"] == scenario]
+        summary["by_scenario"][scenario] = {
+            "n": len(group),
+            "success_rate": safe_mean([float(row["success"]) for row in group]),
+            "latency_ms": _latency_summary([row["latency_ms"] for row in group]),
+        }
+    for expected_path in sorted(
+        {str(row["expected_path"]) for row in rows if row.get("expected_path")}
+    ):
+        group = [row for row in rows if row.get("expected_path") == expected_path]
+        summary["by_expected_path"][expected_path] = {
+            "n": len(group),
+            "success_rate": safe_mean([float(row["success"]) for row in group]),
+            "status_accuracy": safe_mean(
+                [float(bool(row.get("expected_status_match"))) for row in group]
+            ),
+            "latency_ms": _latency_summary([row["latency_ms"] for row in group]),
+        }
+    return summary
+
+
 def evaluate_production(
     cases: list[dict[str, Any]],
     *,
@@ -1547,7 +1705,6 @@ def evaluate_production(
                     body = b"".join(chunks)
                 else:
                     body = response.read()
-                    ttft = (time.perf_counter() - started) * 1000
             parsed = (
                 json.loads(body.decode("utf-8")) if endpoint.endswith("chat") else {}
             )
@@ -1575,6 +1732,8 @@ def evaluate_production(
                 answer_text = str(parsed.get("answer") or "").strip()
                 payload_success = bool(answer_text) and not parsed.get("error_type")
                 answer_chars = len(answer_text)
+            response_status = str(response_payload.get("status") or "")
+            expected_status = _expected_response_status(case.get("expected_path"))
             return {
                 **case,
                 "success": transport_success and payload_success,
@@ -1586,6 +1745,11 @@ def evaluate_production(
                 "answer_chars": answer_chars,
                 "stream_done": stream_done if endpoint.endswith("/stream") else None,
                 "stream_error": stream_error if endpoint.endswith("/stream") else None,
+                "response_status": response_status,
+                "response_intent": response_payload.get("intent"),
+                "response_strategy": response_payload.get("strategy"),
+                "expected_response_status": expected_status,
+                "expected_status_match": response_status == expected_status,
                 "used_cache": response_payload.get("used_cache"),
                 "source_count": len(
                     response_payload.get("citations_used")
@@ -1609,6 +1773,10 @@ def evaluate_production(
                 "status_code": status_code,
                 "latency_ms": (time.perf_counter() - started) * 1000,
                 "ttft_ms": ttft,
+                "expected_response_status": _expected_response_status(
+                    case.get("expected_path")
+                ),
+                "expected_status_match": False,
                 "error": str(exc),
             }
 
@@ -1658,74 +1826,7 @@ def evaluate_production(
                     refresh=False,
                 )
 
-    summary = {
-        "n": len(rows),
-        "success_rate": safe_mean([float(row["success"]) for row in rows]),
-        "transport_success_rate": safe_mean(
-            [float(bool(row.get("transport_success"))) for row in rows]
-        ),
-        "payload_success_rate": safe_mean(
-            [float(bool(row.get("payload_success"))) for row in rows]
-        ),
-        "error_rate": safe_mean([float(not row["success"]) for row in rows]),
-        "http_429_rate": safe_mean(
-            [float(row.get("status_code") == 429) for row in rows]
-        ),
-        "timeout_rate": safe_mean(
-            [float("timed out" in str(row.get("error") or "").lower()) for row in rows]
-        ),
-        "latency_ms": _latency_summary([row["latency_ms"] for row in rows]),
-        "streaming_ttft_ms": _latency_summary(
-            [row["ttft_ms"] for row in rows if row.get("ttft_ms") is not None]
-        ),
-        "cache_hit_rate": safe_mean(
-            [float(bool(row.get("used_cache"))) for row in rows]
-        ),
-        "source_count_mean": safe_mean(
-            [float(row.get("source_count", 0)) for row in rows]
-        ),
-        "context_chars_mean": safe_mean(
-            [float(row.get("context_chars", 0)) for row in rows]
-        ),
-        "answer_chars_mean": safe_mean(
-            [float(row.get("answer_chars", 0)) for row in rows]
-        ),
-        "source_utilization": safe_mean(
-            [min(1.0, float(row.get("source_count", 0)) / 5.0) for row in rows]
-        ),
-        "telemetry_coverage": safe_mean(
-            [
-                float(bool(row.get("telemetry")))
-                for row in rows
-                if row.get("scenario") != "streaming"
-            ]
-        ),
-        "key_distribution": dict(
-            Counter(
-                row.get("key_fingerprint") for row in rows if row.get("key_fingerprint")
-            )
-        ),
-        "retry_count": sum(int(row.get("retry_count") or 0) for row in rows),
-        "cooldown_events": sum(int(row.get("cooldown_events") or 0) for row in rows),
-        "realistic_score": safe_mean(
-            [
-                float(row["success"])
-                for row in rows
-                if row.get("eval_split") == "realistic"
-            ]
-        ),
-        "stress_score": safe_mean(
-            [float(row["success"]) for row in rows if row.get("eval_split") == "stress"]
-        ),
-        "by_scenario": {},
-    }
-    for scenario in sorted({row["scenario"] for row in rows}):
-        group = [row for row in rows if row["scenario"] == scenario]
-        summary["by_scenario"][scenario] = {
-            "n": len(group),
-            "success_rate": safe_mean([float(row["success"]) for row in group]),
-            "latency_ms": _latency_summary([row["latency_ms"] for row in group]),
-        }
+    summary = _summarize_production_rows(rows)
     return {
         "suite": "production",
         "base_url": base_url,

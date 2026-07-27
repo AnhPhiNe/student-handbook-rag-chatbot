@@ -47,8 +47,14 @@ def evaluate_gates(suite: str, summary: dict[str, Any]) -> dict[str, Any]:
         maximum("critical_false_passes", 1.0)
     elif suite == "production":
         minimum("success_rate", 0.98)
+        minimum("response_status_accuracy", 0.95)
         maximum("http_429_rate", 0.0)
         minimum("telemetry_coverage", 1.0)
+        maximum("cold_cache_hit_rate", 0.0)
+        minimum("warm_cache_hit_rate", 0.90)
+        minimum("cold_cache_status_coverage", 1.0)
+        minimum("warm_cache_status_coverage", 1.0)
+        minimum("streaming_ttft_coverage", 1.0)
         scenario = summary.get("by_scenario") or {}
         derived = {
             "deterministic_p95_ms": (
@@ -57,9 +63,9 @@ def evaluate_gates(suite: str, summary: dict[str, Any]) -> dict[str, Any]:
             "warm_cache_p95_ms": (
                 (scenario.get("warm_cache") or {}).get("latency_ms") or {}
             ).get("p95"),
-            "rag_p95_ms": (
-                (scenario.get("cold_rag") or {}).get("latency_ms") or {}
-            ).get("p95"),
+            "rag_p95_ms": (summary.get("cold_regulation_rag_latency_ms") or {}).get(
+                "p95"
+            ),
             "streaming_ttft_p95_ms": (summary.get("streaming_ttft_ms") or {}).get(
                 "p95"
             ),

@@ -1,0 +1,65 @@
+# Secrets and local environment overrides
+.env
+.env.*
+!.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Python environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Frontend dependencies and build output
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+.vercel/
+
+# Generated and private data
+/data/raw/
+/data/processed/
+/data/cache/
+/data/vectorstore/
+/data/eval/reports/
+/data/eval/v7_new/
+/data/eval/v9_final_holdout/
+/crawl_data/
+
+# Runtime and deployment artifacts
+/logs/
+/scratch/
+/.hf_deploy_temp/
+*.log
+*.lock
+
+# Local Codex and MCP tooling
+/.agents/
+/codebase-memory-mcp-bin/
+
+# Root-level investigation files
+/debug*.txt
+/test_*.py
+/test_*.json
+/verify_*.py
+/verify_*.json
+/human_audit_*.json
+/human_audit_*.md
+/human_validation_samples.csv
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo

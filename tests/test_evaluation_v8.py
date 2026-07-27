@@ -3,7 +3,9 @@ from __future__ import annotations
 import json
 import os
 import shutil
+from io import BytesIO
 from pathlib import Path
+from urllib.error import HTTPError
 
 import pytest
 
@@ -24,6 +26,7 @@ from src.evaluation.reporting import write_report_bundle
 from src.evaluation.suites import (
     _answer_checks,
     _summarize_production_rows,
+    evaluate_production,
     evaluate_retrieval,
     generate_answers,
     summarize_deterministic_rows,
@@ -241,6 +244,37 @@ def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:
 
     summary["cold_cache_hit_rate"] = 0.5
     assert evaluate_gates("production", summary)["passed"] is False
+
+
+def test_production_eval_records_http_error_status(monkeypatch: pytest.MonkeyPatch) -> None:
+    def raise_rate_limit(*_args, **_kwargs):
+        raise HTTPError(
+            url="http://127.0.0.1:8000/chat",
+            code=429,
+            msg="Too Many Requests",
+            hdrs=None,
+            fp=BytesIO(b'{"detail":"Rate limit exceeded"}'),
+        )
+
+    monkeypatch.setattr(
+        "src.evaluation.suites.urllib_request.urlopen", raise_rate_limit
+    )
+    report = evaluate_production(
+        [
+            {
+                "id": "rate-limit",
+                "scenario": "cold_rag",
+                "query": "q",
+                "cohort": "K50",
+                "expected_path": "regulation_rag",
+                "eval_split": "stress",
+            }
+        ],
+        base_url="http://127.0.0.1:8000",
+    )
+
+    assert report["cases"][0]["status_code"] == 429
+    assert report["summary"]["http_429_rate"] == 1.0
 
 
 def test_human_audit_uses_template_size_and_repeat_flags() -> None:

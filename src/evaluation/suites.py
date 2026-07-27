@@ -11,6 +11,7 @@ from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, Callable
+from urllib import error as urllib_error
 from urllib import request as urllib_request
 from tqdm import tqdm
 
@@ -1765,6 +1766,25 @@ def evaluate_production(
                 "retry_count": int(telemetry.get("retry_count") or 0),
                 "cooldown_events": int(telemetry.get("cooldown_events") or 0),
                 "telemetry": telemetry,
+            }
+        except urllib_error.HTTPError as exc:
+            try:
+                error_body = exc.read().decode("utf-8", errors="replace")
+            except OSError:
+                error_body = ""
+            return {
+                **case,
+                "success": False,
+                "transport_success": False,
+                "payload_success": False,
+                "status_code": int(exc.code),
+                "latency_ms": (time.perf_counter() - started) * 1000,
+                "ttft_ms": ttft,
+                "expected_response_status": _expected_response_status(
+                    case.get("expected_path")
+                ),
+                "expected_status_match": False,
+                "error": f"HTTP {exc.code}: {error_body or exc.reason}",
             }
         except Exception as exc:
             return {

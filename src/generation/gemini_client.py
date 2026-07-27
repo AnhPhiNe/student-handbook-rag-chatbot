@@ -289,8 +289,8 @@ class GeminiClient:
             current_key, key_id, key_index = self.key_pool.acquire_key()
             attempts += 1
             try:
-                self._client = self._genai.Client(api_key=current_key)
-                text = self._generate_once(prompt)
+                request_client = self._genai.Client(api_key=current_key)
+                text = self._generate_once(prompt, client=request_client)
                 if not text:
                     raise RuntimeError("Gemini API returned an empty response.")
 
@@ -336,10 +336,11 @@ class GeminiClient:
             "model_used": self.model_name,
         }
 
-    def _generate_once(self, prompt: str) -> str:
+    def _generate_once(self, prompt: str, *, client: Any | None = None) -> str:
+        request_client = client or self._client
         executor = ThreadPoolExecutor(max_workers=1)
         future = executor.submit(
-            self._client.models.generate_content,
+            request_client.models.generate_content,
             model=self.model_name,
             contents=prompt,
             config=self._config,
@@ -391,6 +392,18 @@ class GeminiClient:
             for token in ["503", "unavailable", "deadline", "temporarily", "transient"]
         ):
             return "api_error"
+        if any(
+            token in text
+            for token in [
+                "disconnected",
+                "connection reset",
+                "connection aborted",
+                "connecterror",
+                "remoteprotocolerror",
+                "network error",
+            ]
+        ):
+            return "transient_error"
         if any(token in text for token in ["timeout", "timed out"]):
             return "timeout"
         if any(token in text for token in ["api", "google", "gemini"]):
@@ -405,8 +418,8 @@ class GeminiClient:
             current_key, key_id, key_index = self.key_pool.acquire_key()
             attempts += 1
             try:
-                self._client = self._genai.Client(api_key=current_key)
-                yield from self._generate_stream_once(prompt)
+                request_client = self._genai.Client(api_key=current_key)
+                yield from self._generate_stream_once(prompt, client=request_client)
                 self.key_pool.record_success(key_id)
                 return
             except Exception as exc:
@@ -430,12 +443,18 @@ class GeminiClient:
                 time.sleep(delay)
         raise RuntimeError("Gemini streaming failed after all retry attempts.")
 
-    def _generate_stream_once(self, prompt: str) -> Iterator[str]:
+    def _generate_stream_once(
+        self,
+        prompt: str,
+        *,
+        client: Any | None = None,
+    ) -> Iterator[str]:
+        request_client = client or self._client
         output_queue: queue.Queue[tuple[str, str | Exception | None]] = queue.Queue()
 
         def worker() -> None:
             try:
-                response = self._client.models.generate_content_stream(
+                response = request_client.models.generate_content_stream(
                     model=self.model_name,
                     contents=prompt,
                     config=self._config,

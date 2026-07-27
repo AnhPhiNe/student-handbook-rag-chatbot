@@ -499,7 +499,7 @@ def test_gemini_empty_response_is_not_success() -> None:
     client._genai = type(
         "GenAI", (), {"Client": staticmethod(lambda api_key: object())}
     )()
-    client._generate_once = lambda _prompt: ""
+    client._generate_once = lambda _prompt, **_kwargs: ""
     result = client.generate("prompt")
     assert result["ok"] is False
     assert "empty response" in result["error_message"]

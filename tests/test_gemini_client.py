@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import time
 import unittest
+from concurrent.futures import ThreadPoolExecutor
+from threading import Barrier, Lock
 
 from src.generation.gemini_client import GeminiClient, GeminiKeyPool
 
@@ -73,7 +75,7 @@ class GeminiClientTest(unittest.TestCase):
 
         calls = {"count": 0}
 
-        def generate_once(prompt: str) -> str:
+        def generate_once(prompt: str, *, client=None) -> str:
             calls["count"] += 1
             if calls["count"] == 1:
                 raise RuntimeError("429 rate limit")
@@ -103,7 +105,7 @@ class GeminiClientTest(unittest.TestCase):
 
         calls = {"count": 0}
 
-        def stream_once(prompt: str):
+        def stream_once(prompt: str, *, client=None):
             calls["count"] += 1
             if calls["count"] == 1:
                 raise RuntimeError("429 resource_exhausted")
@@ -116,6 +118,54 @@ class GeminiClientTest(unittest.TestCase):
         self.assertEqual(chunks, ["chunk"])
         self.assertEqual(fake_pool.rate_limited, [("fp-one", "rate_limit")])
         self.assertEqual(fake_pool.successes, ["fp-two"])
+
+    def test_disconnect_is_classified_as_transient(self) -> None:
+        error_type = GeminiClient._classify_error(
+            RuntimeError("Server disconnected without sending a response.")
+        )
+
+        self.assertEqual(error_type, "transient_error")
+        self.assertTrue(GeminiClient._should_retry(error_type))
+
+    def test_concurrent_generate_uses_request_local_clients(self) -> None:
+        client = object.__new__(GeminiClient)
+        fake_pool = _FakePool()
+        fake_pool_lock = Lock()
+        original_acquire_key = fake_pool.acquire_key
+
+        def acquire_key():
+            with fake_pool_lock:
+                return original_acquire_key()
+
+        fake_pool.acquire_key = acquire_key
+        client.available_keys = ["secret-one", "secret-two"]
+        client.model_name = "fake-model"
+        client.max_retries = 0
+        client.retry_base_delay_seconds = 0
+        client.retry_max_delay_seconds = 0
+        client.key_pool = fake_pool
+        client._genai = _FakeGenAI()
+        client._config = object()
+        barrier = Barrier(2)
+
+        def generate_once(prompt: str, *, client=None) -> str:
+            barrier.wait(timeout=1)
+            return f"{prompt}:{client['api_key']}"
+
+        client._generate_once = generate_once
+
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            results = list(executor.map(client.generate, ["first", "second"]))
+
+        key_by_fingerprint = {
+            "fp-one": "secret-one",
+            "fp-two": "secret-two",
+        }
+        for result in results:
+            self.assertTrue(result["ok"])
+            self.assertTrue(
+                result["text"].endswith(key_by_fingerprint[result["key_fingerprint"]])
+            )
 
 
 class GeminiKeyPoolTest(unittest.TestCase):

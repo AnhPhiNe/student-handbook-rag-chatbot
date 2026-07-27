@@ -466,14 +466,11 @@ The current backend suite contains **153 passing tests**.
 
 ## Known Limitations
 
-- The knowledge base covers the three processed handbook cohorts, not every university policy or later official update.
-- Structured form and procedure catalogs are intentionally excluded from the backend.
-- Formula lookup returns handbook formulas but does not act as a general calculator.
-- A small low-confidence tail remains for ambiguous, unanswerable, and cross-referenced questions; citations should be checked for important decisions.
-- The automated Judge has measurable false positives, especially when the evaluation packet omits supporting context.
-- Gemini and Groq throughput remains bounded by provider quotas. The current key-state cache is appropriate for a single backend process; multi-replica deployment should move quota state to Redis or a database.
-- BM25 is built from Qdrant payloads during startup, so large future collections will require a persisted sparse index.
+- The knowledge base covers the three processed handbook cohorts; later official updates require a controlled rebuild and re-evaluation.
+- Structured form and procedure catalogs are intentionally outside the current backend scope.
+- Ambiguous, unanswerable, and deeply cross-referenced questions can still fail; students should verify citations before making important decisions.
+- Provider quotas and local key-state persistence are suitable for the current single-process deployment. Multi-replica scaling requires shared quota state in Redis or a database.
 
 ## License and Attribution
 
-This project is released under the MIT License. Handbook content belongs to its respective source documents and institution. The software is intended for learning, experimentation, and community support.
+The project source code is released under the MIT License. Handbook text, tables, and other institutional content are not relicensed by this repository and remain the property of their respective sources and institution. The software is intended for learning, experimentation, and community support.

@@ -851,6 +851,17 @@ class AIRouter:
             return "timeout"
         if any(token in text for token in ("503", "unavailable", "temporarily")):
             return "transient_error"
+        if any(
+            token in text
+            for token in (
+                "disconnected",
+                "connecterror",
+                "connection reset",
+                "network",
+                "remoteprotocolerror",
+            )
+        ):
+            return "transient_error"
         if any(token in text for token in ("groq", "api", "connection")):
             return "api_error"
         return "invalid_response"

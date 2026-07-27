@@ -69,6 +69,12 @@ def test_model_defaults_select_supported_reasoning_and_format(
     assert gpt_oss._response_format_payload()["type"] == "json_schema"
 
 
+def test_router_treats_upstream_disconnect_as_transient() -> None:
+    error = RuntimeError("Server disconnected without sending a response.")
+
+    assert AIRouter._classify_error(error) == "transient_error"
+
+
 def test_from_config_accepts_model_environment_override(
     monkeypatch,
     tmp_path: Path,

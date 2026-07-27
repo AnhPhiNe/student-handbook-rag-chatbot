@@ -1,353 +1,348 @@
 # HCMUE AI - Student Handbook RAG Assistant
 
-> **Version:** 1.0.0-beta (Updated: July 2026) | **License:** MIT
-> Independent, non-commercial student project for the HCMUE student community.
-> This is not an official application of Ho Chi Minh City University of Education.
-> The assistant is built to help students look up handbook information faster, while important decisions should still be verified from citations or official offices.
+> **Release candidate:** V9.1.1 dataset / V25 runtime (July 2026)  
+> Independent, non-commercial student project. This is not an official application of Ho Chi Minh City University of Education. Important academic or financial decisions should be verified against the cited handbook section or an official university office.
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11-3670A0?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11">
   <img src="https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
-  <img src="https://img.shields.io/badge/React%20%2B%20Vite-Frontend-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Vite">
-  <img src="https://img.shields.io/badge/Qdrant-Vector%20DB-E21727?style=for-the-badge" alt="Qdrant">
+  <img src="https://img.shields.io/badge/React%20%2B%20Vite-Frontend-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React and Vite">
+  <img src="https://img.shields.io/badge/Qdrant-Vector%20Search-E21727?style=for-the-badge" alt="Qdrant">
   <img src="https://img.shields.io/badge/MongoDB-Parent%20Docs-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
   <img src="https://img.shields.io/badge/Gemini-Answer%20Generation-8E75B2?style=for-the-badge&logo=google&logoColor=white" alt="Gemini">
-  <img src="https://img.shields.io/badge/Multi--Key-Load%20Balancing-1F6FEB?style=for-the-badge" alt="Multi-key load balancing">
   <br>
+  <a href="https://www.hcmuebot.id.vn">
+    <img src="https://img.shields.io/badge/Live_Chat-hcmuebot.id.vn-0A66C2?style=for-the-badge" alt="Live chat">
+  </a>
   <a href="https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api">
-    <img src="https://img.shields.io/badge/Live_API_Demo-HuggingFace-FFD21E?style=for-the-badge&logo=huggingface" alt="Live API Demo">
+    <img src="https://img.shields.io/badge/API-Hugging_Face_Spaces-FFD21E?style=for-the-badge&logo=huggingface" alt="Hugging Face API">
   </a>
 </p>
 
 ## Overview
 
-![Chat Interface Placeholder](./frontend/public/chat_ui_screenshot.png)
+![HCMUE AI chat interface](./frontend/public/chat_ui_screenshot.png)
 
-**HCMUE AI Student Handbook Assistant** is a cohort-aware Retrieval-Augmented Generation system for answering questions from HCMUE student handbooks.
+HCMUE AI is a cohort-aware retrieval and generation system for the **K48-K49, K50, and K51** HCMUE student handbooks. It is designed around two different information shapes:
+
+- **Structured catalogs** for grade tables, study duration, scholarships, foreign-language equivalency, formulas, programs, faculties, offices, and student services.
+- **Regulation RAG** for policies, conditions, consequences, exceptions, and cross-referenced handbook articles.
+
+The runtime does not flatten every table row into the vector collection. Structured data remains queryable JSON, while Qdrant contains only regulation text. This keeps retrieval focused without losing exact table and directory data.
 
 ## Live Demo
 
-- **Frontend Chat UI (Custom Domain):** [hcmuebot.id.vn](https://hcmuebot.id.vn)
-- **Backend API & Interactive Swagger UI:** [HCMUE Handbook RAG (Hugging Face Space)](https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api)
+- **Student-facing chat:** [https://www.hcmuebot.id.vn](https://www.hcmuebot.id.vn)
+- **Backend Space:** [https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api](https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api)
+- **Source repository:** [https://github.com/AnhPhiNe/student-handbook-rag-chatbot](https://github.com/AnhPhiNe/student-handbook-rag-chatbot)
 
-Unlike a simple "PDF chatbot", this project separates the system into two complementary layers:
+Example questions:
 
-- **Structured lookup** for information that must be exact, such as program lists, grade thresholds, scoring tables, formulas, offices, and forms.
-- **True RAG retrieval** for longer regulations and policy sections that need explanation, context, and citations.
+- `K51 diem D+ co qua mon khong?`
+- `K50 hoc toi da bao nhieu nam?`
+- `PDT o dau va email la gi?`
+- `Khoa CNTT K51 co nhung nganh nao?`
+- `Dieu kien tam ngung hoc la gi?`
+- `Neu vuot thoi gian hoc toi da thi xu ly the nao?`
 
-### Why this is not just a PDF chatbot
-
-The system is designed around the actual failure modes of handbook QA: different cohorts can have different rules, structured facts should not be guessed by an LLM, and long regulations need parent-section context with reliable citations. HCMUE AI therefore uses a deterministic-first pipeline for exact facts, then falls back to cohort-aware child-parent RAG with reranking, full top-5 context packing, and citation binding instead of sending raw PDF chunks directly to a chat model.
-
-The result is a production-oriented public beta assistant that can answer practical student questions such as:
-
-- "Khoa Cong nghe Thong tin co nhung nganh nao?"
-- "K50 diem D+ co qua mon khong?"
-- "K51 diem D+ co qua mon khong?"
-- "Muon phuc khao diem thi thi lam sao?"
-- "Van de hoc phi lien he phong nao?"
-- "Tam nghi hoc can bieu mau nao?"
-
-## Key Features
-
-### 1. Cohort-Aware Handbook Reasoning
-
-The system supports handbook differences between **K48-K49**, **K50**, and **K51** instead of treating all documents as one flat knowledge base.
-
-- Every indexed chunk carries `cohort`, `document_id`, `chunk_type`, `content_type`, and `source_pages`.
-- Frontend tools and chat answers respect the selected cohort.
-- Grade thresholds and program lists are handled differently when handbook rules differ by cohort.
-
-### 2. Pure Dense Vector Retrieval
-
-For true RAG questions, the system utilizes a streamlined, highly optimized pure vector pipeline:
-
-- Dense vector search with `BAAI/bge-m3`.
-- Entity expansion for aliases such as faculty names, office names, and common abbreviations.
-- Metadata filtering and boosting by cohort and content type.
-
-### 3. Deterministic Lookup for Exact Facts
-
-Information that should not be "generated from vibes" is extracted into structured stores:
-
-- `program_directory`: majors, faculties, career descriptions, cohort applicability.
-- `student_service_directory`: student services, offices, responsibilities, emails, phones, and locations.
-- `scoring_tables`: grade conversion, academic classification, conduct classification, and scholarship classification tables.
-- `structured_tables_registry`: standardized handbook tables such as study duration.
-- `foreign_language_equivalency_table`: certificate equivalency for foreign-language output standards.
-- `threshold_rules`: pass/fail thresholds and policy cutoffs.
-- `formula_rules`: GPA, scholarship, and tuition-related formulas where available.
-- `form_templates`: form name, purpose, source page, and routing to the Forms page.
-
-This architecture significantly reduces LLM hallucination on high-frequency student questions. To avoid LLM math limitations and hallucinated calculations, complex logic such as GPA and tuition estimation is offloaded to dedicated **Deterministic UI Tools** instead of relying on the LLM to compute results through generation.
-
-### 4. Parent-Child Retrieval Architecture
-
-The project uses a parent-child retrieval design:
-
-- **Qdrant Cloud** stores V7 child/table/heading chunks for fast retrieval.
-- **MongoDB Atlas** stores parent regulation sections for richer context expansion and source display.
-- The app currently uses Qdrant collection `student_handbook_semantic_v7`.
-
-### 5. Production-Oriented LLM Pipeline
-
-The generation layer includes:
-
-- Deterministic pre-router lookup for exact table/directory/formula questions.
-- AI router for intent and retrieval strategy.
-- Query expansion (Regex) to normalize slang and abbreviations.
-- Query rewriting for accentless Vietnamese, typo-prone queries, and short queries.
-- Gemini Flash-Lite answer generation with multi-key quota-aware load balancing.
-- Full top-5 parent-section context packing for true-RAG answers.
-- Citation selection that prefers matching cohort, content type, section, and page metadata.
-- Guardrails for out-of-domain, unsafe, ambiguous, or low-context questions.
-
-## Engineering Highlights
-
-- **Cohort-aware RAG architecture:** metadata filtering and cohort-specific routing for `K48-K49`, `K50`, and `K51`.
-- **Deterministic-first router:** answers exact table, directory, form, formula, study-duration, scholarship, and foreign-language queries without an LLM call.
-- **V7 child-parent retrieval:** Qdrant indexes small `section_heading`, `child`, and `table_like` chunks while MongoDB stores full parent sections for citations.
-- **Hybrid V8 Retrieval Stack:** Dense retrieval with `BAAI/bge-m3` combined with BM25 Sparse Index (Regex + Underthesea Tokenizer) for literal token protection and robust semantic matching.
-- **Full top-5 context packing:** sends richer parent-section context to Gemini while preserving source/citation metadata.
-- **Layered evaluation:** router/lookup metrics, retrieval metrics, generation quality, and RAGAS-style Gemini Judge are reported separately.
-- **Production guardrails:** cohort filtering, citation binding, Gemini key-pool load balancing, cache support, rate limits, and queue/backpressure settings.
-
-## System Snapshot
-
-| Component | Current State |
-|---|---:|
-| Supported cohorts | K48-K49, K50, K51 |
-| Retrieval design | V7 child-parent regulation retrieval |
-| Parent docstore | MongoDB Atlas |
-| Deterministic lookup groups | programs, services/offices, forms, scoring, formulas, study duration, scholarship, foreign language |
-| Qdrant collection | `student_handbook_semantic_v7` |
-| Answer model | Gemini Flash-Lite with local multi-key load balancing |
-| Evaluation status | Production Ready (V9.1 Human Audit Passed) |
-
-## Architecture
-
-```mermaid
-flowchart LR
-    User["Student"] --> Frontend["React / Vite UI"]
-    Frontend --> API["FastAPI Backend"]
-
-    API --> Guard["Input Guardrails"]
-    Guard --> LookupFirst["Deterministic Pre-Router Lookup"]
-    LookupFirst --> Router["AI Router + Routing Rules"]
-
-    LookupFirst -->|exact tables / directories / formulas| Lookup["Structured Lookup"]
-    Router -->|regulations| Retrieval["Hybrid V8 (BM25 + Qdrant)"]
-
-    Retrieval --> Qdrant["Qdrant Cloud (Dense)"]
-    Retrieval --> BM25["Local BM25 Index (Sparse)"]
-    Retrieval --> Graph["Directed Rule Graph Expansion"]
-    Qdrant --> RRF["Reciprocal Rank Fusion (RRF)"]
-    BM25 --> RRF
-    RRF --> Mongo["MongoDB Atlas\nParent Docs"]
-
-    Lookup --> Answer["Deterministic Answer Formatter"]
-    Mongo --> Gemini["Gemini Answer Generator\nFull top-5 context"]
-    Gemini --> Citation["Citations + Source Metadata"]
-    Answer --> Citation
-    Citation --> Frontend
-
-    API -. optional .-> Cache["Redis / Local JSON Cache"]
-    API -. optional .-> Trace["Langfuse Tracing"]
-```
-
-## RAG Processing Pipeline
+## Current Architecture
 
 ```mermaid
 flowchart TD
-    Query["User Query"] --> Validate["Validate Query"]
-    Validate --> ExpandQuery["Query Expansion (Regex)"]
-    ExpandQuery --> Rewrite["Query Rewriter"]
-    Rewrite --> Lookup{"Deterministic lookup?"}
+    User["Student query + selected cohort"] --> API["FastAPI guardrails"]
+    API --> Router["Qwen 3.6 27B Router"]
+    Router --> Query["Validated query handling"]
 
-    Lookup -->|yes| Structured["JSON / tool lookup"]
-    Structured --> StructuredAnswer["Deterministic Answer Builder"]
+    Query -->|structured| Resolver["Cohort-aware JSON resolver"]
+    Query -->|regulation or mixed| Retrieval["Hybrid regulation retrieval"]
+    Query -->|ambiguous| Clarify["Clarification response"]
+    Query -->|out of domain| Reject["Out-of-domain response"]
 
-    Lookup -->|no| Route{"Router Decision"}
-    Route -->|True RAG| Expand["Entity Expansion"]
-    Expand --> Vector["Qdrant Dense Retrieval"]
-    Expand --> Sparse["BM25 Sparse Retrieval"]
-    Expand --> Graph["Directed Graph Expansion"]
-    Vector --> RRF["RRF Fusion"]
+    Resolver --> Structured["Validated structured facts + provenance"]
+
+    Retrieval --> Dense["BGE-M3 dense search in Qdrant"]
+    Retrieval --> Sparse["BM25 lexical search"]
+    Dense --> RRF["Reciprocal Rank Fusion"]
     Sparse --> RRF
-    RRF --> Merge["Candidate Merge"]
-    Graph --> Merge
-    Merge --> Parent["Mongo Parent Sections"]
-    Parent --> Context["Full Top-5 Context Allocation"]
+    RRF --> Primary["Top 5 PRIMARY parent sections"]
+    Primary --> Graph["Outbound graph expansion, depth 2"]
+    Graph --> Related["Up to 5 RELATED parent sections"]
+    Primary --> Mongo["MongoDB full parent lookup"]
+    Related --> Mongo
 
-    StructuredAnswer --> Generate["Final Answer"]
-    Context --> Generate
-    Generate --> Cite["Citation Formatter"]
-    Cite --> Output["Answer + Sources"]
+    Structured --> Prompt["Grounded answer prompt"]
+    Mongo --> Prompt
+    Prompt --> Gemini["Gemini 3.1 Flash-Lite"]
+    Gemini --> Output["Answer + citation metadata"]
+
+    API -. exact response key .-> Cache["Redis + local JSON cache"]
 ```
 
-### Pipeline Breakdown
+### 1. Query handling and routing
 
-- **Input validation, expansion & rewriting:** Filters invalid queries, resolves cohort context, expands abbreviations (e.g., CNTT), and rewrites typo-prone queries.
-- **Deterministic lookup:** Handles exact facts from JSON/tool stores before vector retrieval or answer-generation LLM calls.
-- **Intent routing:** Sends remaining long-form questions to the Hybrid RAG pipeline.
-- **Hybrid retrieval & generation:** Combines Qdrant Dense Search + BM25 Sparse Search via RRF (Reciprocal Rank Fusion), expands context via MongoDB, and uses Gemini with strict cohort/citation guardrails.
+The system uses `qwen/qwen3.6-27b` through Groq as a compact structured router. It returns a typed decision for:
 
-## Data and Ingestion Design
+- `structured`
+- `rag` with `regulation` or `mixed` execution
+- `clarify`
+- `out_of_domain`
 
-The pipeline processes each handbook through a document profile instead of relying on one-off hardcoded sections.
+The router may normalize missing accents, common typos, abbreviations, and conversational follow-ups. A validator chooses the effective query and rejects unsafe normalization that changes the cohort, numbers, or conversational meaning. The HCMUE slang dictionary is applied to the retrieval query, not to the user-visible question.
 
-```mermaid
-flowchart TD
-    PDF["Raw Handbook PDFs"] --> Parse["PDF Parsing"]
-    Parse --> Profile["Document Profile\ncohort, pages, section map"]
-    Profile --> Extract["Structured Extraction"]
-    Profile --> Chunk["Semantic Chunking"]
+There is no separate semantic QueryRewriter model in the current runtime.
 
-    Extract --> Program["program_directory"]
-    Extract --> Office["office_directory"]
-    Extract --> Form["form_templates"]
-    Extract --> Score["scoring_tables / threshold_rules / formula_rules"]
+### 2. Structured catalogs
 
-    Chunk --> V7["V7 child/table/heading chunks"]
-    V7 --> Qdrant["Qdrant Cloud v7"]
-    Chunk --> Docstore["MongoDB parent_docs"]
-```
+The Router can select one of nine structured lookup groups:
 
+| Group | Typical data |
+|---|---|
+| Foreign language | IELTS, TOEFL, JLPT, HSK, TOPIK equivalency |
+| Study duration | Standard and maximum duration by training mode |
+| Scholarship | Scholarship score classification |
+| Scoring | Grade conversion, pass/fail, academic and conduct classification |
+| Student service | Responsible unit for a requested student service |
+| Office | Email, phone, website, and office location |
+| Faculty | Faculty contact information |
+| Program | Program existence, faculty ownership, and cohort-specific lists |
+| Formula | Defined GPA or scholarship formulas, without performing calculations |
 
-## Source Code Architecture
+The resolver reads cohort-tagged JSON, validates required slots and provenance, and passes the grounded result to Gemini for consistent natural-language phrasing. A compatibility direct-answer formatter still exists for tests, but it is disabled in the production configuration.
+
+The backend intentionally has **no structured form or procedure lookup**. Form and procedure requests are handled only when the regulation corpus contains enough relevant evidence. The frontend may still provide independent UI utilities.
+
+### 3. Regulation retrieval
+
+The production retrieval path is:
 
 ```text
-student_handbook_rag/
-|-- configs/                  # Runtime, retrieval, embedding, extraction configs
-|-- data/
-|   |-- raw/                  # Original source PDFs
-|   |-- processed/            # Structured data, chunks, metadata artifacts
-|   `-- eval/                 # Golden evaluation datasets
-|-- docs/                     # Technical specifications, testing, and script guides
-|-- frontend/                 # React + Vite frontend
-|-- scripts/                  # Ingestion, deployment, evaluation, debug scripts
-|-- src/
-|   |-- api/                  # FastAPI app, routes, schemas
-|   |-- chunking/             # Semantic, table, form, directory chunkers
-|   |-- common/               # Shared env/config helpers
-|   |-- extraction/           # Structured extraction logic
-|   |-- generation/           # LLM clients, prompts, answer pipeline, citations
-|   |-- ingestion/            # PDF loading and input handling
-|   |-- preprocessing/        # Section parsing and cleanup
-|   |-- retrieval/            # Router, lookup, BM25, vector retrieval, reranking
-|   `-- services/             # Answer orchestration service
-`-- tests/                    # Unit and integration tests
+Validated query
+-> BGE-M3 dense search, top 24 child candidates
+-> BM25 lexical search, top 24 child candidates
+-> Reciprocal Rank Fusion
+-> group candidates by parent section
+-> top 5 PRIMARY parent sections
+-> outbound graph expansion, depth 2
+-> up to 5 deduplicated RELATED parent sections
+-> MongoDB full parent lookup
+-> Gemini context
 ```
+
+Qdrant stores only `regulation_text`. Structured JSON rows are not inserted as synthetic vector chunks. PhoRanker remains available for controlled retrieval ablations but is not on the default production request path.
+
+### 4. Context and citations
+
+- Gemini receives up to five full **PRIMARY SOURCES**.
+- The graph can add up to five **RELATED SOURCES** for directly referenced articles and conditions.
+- The context safety cap is `160,000` characters, with a per-document cap of `50,000`.
+- PRIMARY sources determine the main answer. RELATED sources explain directly referenced rules without replacing the primary conclusion.
+- Citation metadata remains bound to the parent section, cohort, document, and source pages.
+
+### 5. Reliability controls
+
+- Gemini `gemini-3.1-flash-lite` generation with request-local clients.
+- Quota-aware least-recently-used key selection.
+- Per-key local safety limits: `12 RPM`, `450 RPD`, and a `65s` cooldown after rate limits.
+- Retry and key failover for `429`, timeout, unavailable, and transport-disconnect errors.
+- Concurrency-safe key state and request-local Gemini clients.
+- Exact response caching with Redis and local JSON fallback; no semantic-cache verifier.
+- FastAPI rate limiting, bounded concurrency, queue backpressure, streaming, and Langfuse tracing.
+
+## Data Snapshot
+
+The release-candidate storage was rebuilt from the three handbook cohorts:
+
+| Artifact | Count / state |
+|---|---:|
+| MongoDB parent sections | 478 |
+| Qdrant regulation chunks | 3,300 |
+| Child chunks | 2,822 |
+| Section-heading chunks | 478 |
+| Regulation graph edges | 103 |
+| Qdrant content types | `regulation_text` only |
+| Qdrant collection | `student_handbook_semantic_v9_candidate` |
+| MongoDB collection | `parent_docs_v9_candidate` |
+
+Parent distribution:
+
+| Cohort | Parent sections |
+|---|---:|
+| K48-K49 | 131 |
+| K50 | 166 |
+| K51 | 181 |
+
+Structured data is stored separately in `data/processed/tables/` and `data/processed/directories/`.
 
 ## Evaluation
 
-The evaluation design separates deterministic behavior from generated RAG behavior.
+The final evaluation uses the frozen **V9.1.1 holdout** and records dataset hashes, document-store hash, configuration hashes, Git commit, model IDs, storage collections, Python version, and run timestamp.
 
-### 1. Structured / Tool Evaluation
+| Suite | Cases | Purpose |
+|---|---:|---|
+| Structured routing and resolution | 120 | Positive lookups, hard negatives, ambiguity, and out-of-domain behavior |
+| End-to-end regulation retrieval | 180 | Router, query handling, Qdrant/BM25, graph, and Mongo parent binding |
+| Generated-answer Judge | 100 | 60 regulation, 20 structured, 10 mixed, and 10 unanswerable cases |
+| Human audit | 25 | 15 stratified-random headline cases and 10 low-Judge-score diagnostic cases |
+| Production performance | 60 | Cold RAG, structured, warm cache, streaming, and burst traffic |
+| Fault injection | 13 | Provider, quota, retrieval, storage, and concurrency failures |
 
-Structured questions are checked with exactness, item count, cohort correctness, and citation metadata. This avoids incorrectly using LLM-as-a-Judge for answers that should be deterministic.
+### Structured routing and resolution
 
-| Metric | Score |
+| Metric | Result |
 |---|---:|
-| Cases | 120 |
-| Pass rate | 96.67% |
-| Deterministic exactness | 96.67% |
-| Citation metadata accuracy | 96.67% |
-| Intent accuracy | 98.15% |
-| Strategy accuracy | 98.15% |
-| Structured item count accuracy | 98.33% |
+| Cases passed | 117 / 120 |
+| Exactness | 97.50% |
+| Precision | 100.00% |
+| Recall | 95.00% |
+| F1 | 97.44% |
+| Intent accuracy | 97.22% |
+| Strategy accuracy | 97.22% |
+| Structured value exactness | 100.00% |
+| Citation metadata accuracy | 100.00% |
+| Cross-cohort leaks | 0 |
 
-### 2. True-RAG Retrieval Evaluation
+The three misses were conservative router validation failures rather than false-positive structured answers.
 
-Retrieval is evaluated only on generated true-RAG regulation cases. Structured lookups such as programs, scoring, forms, and office contacts are excluded from this headline retrieval metric.
+### End-to-end regulation retrieval
 
-| Metric | Score |
+This suite includes Qwen routing and validated query handling before retrieval.
+
+| Metric | Result | 95% CI |
+|---|---:|---:|
+| Hit@1 | 68.33% | 61.67-75.00% |
+| Hit@3 | 87.78% | 82.78-92.22% |
+| Hit@5 | 92.22% | 87.78-96.11% |
+| MRR | 78.49% | 73.37-83.33% |
+| nDCG@5 | 80.61% | 75.98-84.76% |
+| Cohort match | 99.44% | - |
+| Content-type match | 97.22% | - |
+| Cohort leak rate | 0.00% | - |
+| Retrieval p95 | 3.20s | - |
+
+### Generated-answer evaluation
+
+`openai/gpt-oss-120b` is used as a strict RAGAS-style Judge. This is an automated diagnostic layer, not the sole quality claim.
+
+| Metric | Result |
 |---|---:|
-| Cases | 180 |
-| Hit@1 | 70.00% |
-| Hit@3 | 87.22% |
-| Hit@5 | 93.89% |
-| MRR | 79.36% |
-| nDCG@5 | 81.12% |
+| Faithfulness | 72.81% |
+| Answer relevancy | 87.64% |
+| Answer correctness | 77.81% |
+| Context precision | 70.40% |
+| Context recall | 81.51% |
+| Citation correctness | 79.36% |
+| Numeric accuracy | 95.00% |
+| Abstention correctness | 85.00% |
 
-### 3. RAGAS-Style Automated Judge (V8.5 Generation)
+The Judge flagged unsupported claims in 37% of cases. Manual review found that the Judge was frequently stricter than the handbook evidence warranted, so automated scores are reported together with the human audit rather than presented as ground truth.
 
-Generated true-RAG answers (100 cases) were automatically evaluated using a RAGAS-style Judge (`gpt-oss-120b`).
+### Human audit
 
-| Metric | Score |
+The 15 stratified-random cases are the representative headline sample:
+
+| Metric | Result |
 |---|---:|
-| Faithfulness | 79.31% |
-| Answer Relevancy | 86.25% |
-| Context Precision | 70.26% |
-| Context Recall | 81.87% |
-| Answer Correctness | 76.26% |
-| Citation Correctness | 83.48% |
+| Human score | 93.33% |
+| Correctness | 96.67% |
+| Faithfulness | 96.67% |
+| Citation correctness | 93.33% |
+| Actual unsupported claims | 1 / 15 |
+| Critical false passes | 0 / 15 |
 
-*Note: The automated judge reported a strict Faithfulness score (79.31%). A deep dive revealed the AI Judge exhibited a high false-positive penalty rate when evaluating complex legal reasoning. To establish ground truth, a manual Human Audit was conducted.*
+Ten additional cases were intentionally selected from the lowest Judge scores for failure analysis. They are not mixed into the representative headline average:
 
-### 4. Human Audit (PDF-Verified) & Production Robustness
-
-Generated true-RAG answers were further evaluated using a strict PDF-verified manual audit on a 25-case stratified sample to calibrate the automated metrics. The system was also tested for production robustness (60 requests) against a local Uvicorn/FastAPI server.
-
-**Manual Audit (PDF-Verified):**
-| Metric | Score |
+| Diagnostic metric | Result |
 |---|---:|
-| Audit Sample | 30 cases |
-| Human Correctness | 85.00% |
-| Human Faithfulness | 93.30% |
-| Citation Correctness | 90.00% |
-| AI-Human Judge MAE | 0.147 |
+| Correctness | 35.00% |
+| Faithfulness | 50.00% |
+| Citation correctness | 50.00% |
+| Actual unsupported claims | 5 / 10 |
 
-**Production Robustness (60 requests):**
-| Metric | Latency (p95) | Success Rate | Note |
-|---|---:|---:|---|
-| Cold RAG | 8.75s | 75.00% | Initial uncached retrieval + generation |
-| Warm Cache | 7.49s | 80.00% | (Cache hits bypassed, latency includes routing) |
-| Streaming | 7.06s | 70.00% | Time-to-first-token (TTFT) |
-| Deterministic | 4.97s | 70.00% | Structured lookup fallback |
-| Burst (Concurrency) | 6.51s | 30.00% | Graceful degradation via 429 Rate Limits |
+This risk subset exposed a small tail of generation, retrieval, and annotation failures while also identifying Judge false positives.
 
-*Note: Success rates during local evaluation are bounded by external LLM provider Free-Tier rate limits (Gemini/Groq).*
+### Production performance and robustness
 
-### How to read these numbers
+The V25 production run executed 60 requests against a local FastAPI server configured with the release-candidate Qdrant and MongoDB collections.
 
+| Metric | Result |
+|---|---:|
+| Successful requests | 60 / 60 |
+| Transport success | 100.00% |
+| Payload success | 100.00% |
+| HTTP 429 rate | 0.00% |
+| Timeout rate | 0.00% |
+| Overall latency p95 | 5.83s |
+| Cold regulation RAG p95 | 13.17s |
+| Deterministic/structured p95 | 2.47s |
+| Streaming TTFT p95 | 1.84s |
+| Burst success, concurrency 3 and 5 | 10 / 10 |
+| Warm-cache hit rate | 90.00% |
+| Telemetry coverage | 100.00% |
 
-- **Cohort Segregation (K50 vs K51):** The system enforces strict isolation between K50 and K51 regulations. In the production UI, students select a cohort before asking, so cohort-specific retrieval and citation are more representative than no-cohort general stress tests.
-- **V7 Retrieval Tradeoff:** Hit@1 is intentionally not the only goal. The RAG pipeline uses top-k evidence, parent expansion, and reranking, so Hit@3/Hit@5 and citation correctness better reflect the user-facing answer quality.
-- **RAGAS Scope:** RAGAS-style Judge is reported only for generated true-RAG answers. Deterministic lookup cases are measured separately with exactness and item-count checks.
-- **Context Packing:** The generation prompt uses retrieved parent sections with table/list normalization and query-focused snippets. Citation binding remains attached to the retrieved parent section.
-- Metrics are reported as layered quality gates instead of one blended score.
+Fault injection passed **13 / 13** scenarios, including rate limits, key cooldown, exhausted quotas, streaming timeout, empty Gemini output, transport disconnect, concurrent Gemini calls, retrieval errors, Mongo parent misses, and API capacity saturation.
 
+## How to Interpret the Results
 
-## Tech Stack
+- The project reports structured resolution, retrieval, generated answers, human audit, and production behavior separately. There is no blended score that hides a weak layer.
+- Retrieval numbers are end-to-end and include the Router and query handling, which is closer to the deployed user path than isolated vector-search metrics.
+- LLM-as-a-Judge scores are retained for reproducibility, but the stratified human audit is the primary answer-quality calibration.
+- The 10-case risk subset is deliberately difficult and must not be treated as a random estimate of overall user quality.
+- The system is presented as an evaluated, production-oriented release candidate, not as an official or error-free academic decision system.
 
-| Layer | Tools |
+## Technology Stack
+
+| Layer | Technology |
 |---|---|
-| Frontend | ⚛️ React, Vite, TypeScript, lucide-react |
-| Backend | ⚡ FastAPI, Uvicorn, Pydantic |
-| Embeddings | 🧠 BAAI/bge-m3 |
-| Vector store | 🗄️ Qdrant Cloud, local Chroma for offline eval |
-| Parent docstore | 🍃 MongoDB Atlas |
-| LLM provider | 🤖 Groq model fallback chain |
-| Cache | 🚀 Redis when available, local JSON fallback |
-| Evaluation | 📊 deterministic eval, retrieval eval, RAGAS-style Gemini Judge |
-| Deployment | ☁️ Vercel (Frontend), Hugging Face Spaces (Backend) |
+| Frontend | React, Vite, TypeScript, lucide-react |
+| API | FastAPI, Uvicorn, Pydantic |
+| Router | Groq `qwen/qwen3.6-27b` |
+| Answer model | Google `gemini-3.1-flash-lite` |
+| Judge | Groq `openai/gpt-oss-120b` |
+| Embeddings | `BAAI/bge-m3` |
+| Retrieval | Qdrant dense search, BM25, RRF, NetworkX graph |
+| Parent store | MongoDB Atlas |
+| Structured store | Versioned local JSON catalogs |
+| Cache | Redis with local JSON fallback |
+| Observability | Langfuse and evaluation telemetry |
+| Deployment | Vercel frontend, Hugging Face Spaces backend |
 
-## Setup
+## Repository Layout
+
+```text
+student_handbook_rag/
+|-- configs/                  # Runtime, router, retrieval, and ingestion configuration
+|-- data/
+|   |-- raw/                  # Source handbooks
+|   |-- processed/            # Parent docs, regulation chunks, graph, tables, directories
+|   `-- eval/                 # Frozen datasets and local evaluation reports
+|-- frontend/                 # React + Vite application
+|-- scripts/                  # Build, storage, deployment, and evaluation commands
+|-- src/
+|   |-- api/                  # FastAPI routes, schemas, controls, telemetry
+|   |-- chunking/             # Regulation child-parent chunk construction
+|   |-- extraction/           # Structured catalog extraction
+|   |-- generation/           # Gemini client, prompt, cache, citations, answer pipeline
+|   |-- ingestion/            # PDF and graph ingestion
+|   |-- preprocessing/        # Section parsing and cleanup
+|   `-- retrieval/            # Router, structured resolvers, dense/BM25/graph retrieval
+`-- tests/                    # Unit and integration tests
+```
+
+## Local Setup
 
 ### Backend
 
 ```bash
-# 1. Create virtual environment
 python -m venv .venv
 
-# 2. Activate it
-source .venv/bin/activate  # macOS / Linux
-# .venv\Scripts\activate   # Windows
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
 
-# 3. Install and run
+# macOS / Linux
+source .venv/bin/activate
+
 pip install -r requirements.txt
-uvicorn src.api.main:app --host 0.0.0.0 --port 7860
+python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000
 ```
 
 ### Frontend
@@ -360,85 +355,125 @@ npm run dev
 
 ## Environment Variables
 
-Create a `.env` file in the repository root. Do not commit real secrets.
+Create `.env` in the repository root and never commit real secrets:
 
 ```env
-# LLM
-GROQ_API_KEYS=your_groq_key_1
-GEMINI_API_KEY=your_gemini_key_for_eval
+# Gemini answer generation. Plural form enables load balancing.
+GEMINI_API_KEYS=gemini_key_1,gemini_key_2
+# GEMINI_API_KEY=single_key_fallback
 
-# Vector database
-VECTORDB_PROVIDER=qdrant_cloud
-QDRANT_URL=https://your-qdrant-cluster-url
+# Groq Router and evaluation Judge.
+GROQ_API_KEYS=groq_key_1,groq_key_2
+
+# Release-candidate storage.
+QDRANT_URL=https://your-cluster.qdrant.io
 QDRANT_API_KEY=your_qdrant_key
+QDRANT_COLLECTION_NAME=student_handbook_semantic_v9_candidate
+MONGODB_URL=mongodb+srv://...
+MONGODB_PARENT_COLLECTION=parent_docs_v9_candidate
 
-# Optional tracing / observability
-LANGFUSE_SECRET_KEY=sk-lf-your-secret-key
-LANGFUSE_PUBLIC_KEY=pk-lf-your-public-key
+# Optional two-tier cache and tracing.
+REDIS_URL=rediss://...
+LANGFUSE_SECRET_KEY=sk-lf-...
+LANGFUSE_PUBLIC_KEY=pk-lf-...
 LANGFUSE_HOST=https://cloud.langfuse.com
 
-# Parent document store
-MONGODB_URL=mongodb+srv://...
-MONGODB_PARENT_COLLECTION=parent_docs
-
-# For all other configurations (Redis, MongoDB, CORS, etc.), see `.env.example`.
+# API controls.
+STUDENT_RAG_RATE_LIMIT_PER_MINUTE=20
+STUDENT_RAG_MAX_CONCURRENT_CHAT=3
+STUDENT_RAG_MAX_QUEUE_SIZE=10
+STUDENT_RAG_QUEUE_TIMEOUT_SECONDS=15
 ```
 
-## Useful Commands
+Router overrides are optional:
 
-### Run offline evaluations
-
-```bash
-python scripts/evaluate_system_v8.py --suite validate --profile full --dataset data/eval/v9_1_1_final_holdout
-python scripts/evaluate_system_v8.py --suite deterministic --profile full --dataset data/eval/v9_1_1_final_holdout
-python scripts/evaluate_system_v8.py --suite retrieval --profile full --backend qdrant --retrieval-scope end_to_end --dataset data/eval/v9_1_1_final_holdout
+```env
+STUDENT_RAG_ROUTER_MODEL=qwen/qwen3.6-27b
+STUDENT_RAG_ROUTER_MAX_OUTPUT_TOKENS=384
+STUDENT_RAG_ROUTER_REASONING_EFFORT=auto
 ```
 
-### Build V7 retrieval artifacts
+See `.env.example` for the complete template.
+
+## Evaluation Commands
 
 ```bash
-python scripts/build_v7_child_parent_index.py
+# Validate the frozen dataset and source bindings.
+python scripts/evaluate_system_v8.py --suite validate --profile full \
+  --dataset data/eval/v9_1_1_final_holdout \
+  --output data/eval/reports/v9_1_1_release_candidate
+
+# Structured routing and resolution.
+python scripts/evaluate_system_v8.py --suite deterministic --profile full \
+  --dataset data/eval/v9_1_1_final_holdout \
+  --output data/eval/reports/v9_1_1_release_candidate
+
+# End-to-end Router + query handling + retrieval.
+python scripts/evaluate_system_v8.py --suite retrieval --profile full \
+  --backend qdrant \
+  --ablation vector_primary_graph_supplement \
+  --retrieval-scope end_to_end \
+  --dataset data/eval/v9_1_1_final_holdout \
+  --output data/eval/reports/v9_1_1_release_candidate
+
+# Generate answers once, then Judge the cached answers.
+python scripts/evaluate_system_v8.py --suite generate --profile full \
+  --backend qdrant \
+  --dataset data/eval/v9_1_1_final_holdout \
+  --output data/eval/reports/v9_1_1_release_candidate
+
+python scripts/evaluate_system_v8.py --suite judge --profile full \
+  --backend qdrant \
+  --dataset data/eval/v9_1_1_final_holdout \
+  --output data/eval/reports/v9_1_1_release_candidate
+
+# Fault injection does not call the production LLM APIs.
+python scripts/evaluate_system_v8.py --suite faults --profile full \
+  --dataset data/eval/v9_1_1_final_holdout \
+  --output data/eval/reports/v9_1_1_release_candidate_v25
 ```
 
-### Push V7 child-parent vectors to Qdrant
+For production performance, start the API first and then run:
 
 ```bash
+python scripts/evaluate_system_v8.py --suite production --profile full \
+  --base-url http://127.0.0.1:8000 \
+  --dataset data/eval/v9_1_1_final_holdout \
+  --output data/eval/reports/v9_1_1_release_candidate_v25
+```
+
+## Build and Test
+
+```bash
+# Rebuild regulation chunks and graph after source-boundary changes.
+python -m scripts.build_v7_child_parent_index
+python -m src.ingestion.graph_extractor
+
+# Push the current regulation chunks to the configured Qdrant collection.
 python scripts/push_to_qdrant_v7.py
-```
 
-### Deploy backend to Hugging Face Space
+# Backend checks.
+python -m pytest -q tests
+python -m ruff check src tests scripts/evaluate_system_v8.py
 
-```bash
-deploy_hf.bat
-```
-
-### Frontend checks
-
-```bash
+# Frontend checks.
 cd frontend
 npm run lint
 npm run build
 ```
 
-## Testing
+The current backend suite contains **153 passing tests**.
 
-*(See `docs/TESTING.md` for the Smoke Test Checklist and Evaluation instructions)*
+## Known Limitations
 
-## Known Limitations & Roadmap
-
-- **Limitation:** Procedure/form workflows are not yet fully OCR/crawled when source pages rely on images, QR codes, or external forms.
-  **Roadmap:** Build a clean procedure directory from OCR and official linked sources.
-- **Limitation:** K50 retrieval is harder than other cohorts because similar regulations can mention cao dang/GDMN and undergraduate rules in nearby sections.
-  **Roadmap:** Continue improving scope-aware reranking without adding brittle question-specific heuristics.
-- **Limitation:** Production scaling is bounded by the free/low-cost hosting tier and external LLM rate limits.
-  **Roadmap:** Add queue/backpressure defaults and upgrade hosting only when real traffic requires it.
-- **Limitation:** The AI Judge and generation model might incorrectly conclude that rules aren't met if a handbook omits explicit procedures (e.g., the handbook mentions graduation processing months, but omits whether students can delay receiving the diploma).
-  **Roadmap:** Collect and inject unwritten faculty-level practices into the deterministic tool registry.
-- **Limitation:** No internal quality dashboard.
-  **Roadmap:** Build an admin dashboard with authentication and feedback clustering.
+- The knowledge base covers the three processed handbook cohorts, not every university policy or later official update.
+- Structured form and procedure catalogs are intentionally excluded from the backend.
+- Formula lookup returns handbook formulas but does not act as a general calculator.
+- A small low-confidence tail remains for ambiguous, unanswerable, and cross-referenced questions; citations should be checked for important decisions.
+- The automated Judge has measurable false positives, especially when the evaluation packet omits supporting context.
+- Gemini and Groq throughput remains bounded by provider quotas. The current key-state cache is appropriate for a single backend process; multi-replica deployment should move quota state to Redis or a database.
+- BM25 is built from Qdrant payloads during startup, so large future collections will require a persisted sparse index.
 
 ## License and Attribution
 
-This project is licensed under the **MIT License**.
-
-This project is built for learning, experimentation, and community support. Handbook content belongs to its respective source documents and should be verified through official HCMUE channels for important decisions.
+This project is released under the MIT License. Handbook content belongs to its respective source documents and institution. The software is intended for learning, experimentation, and community support.

@@ -377,7 +377,6 @@ def generate_answer_cache(
     if max_output_tokens is not None:
         pipeline.config.setdefault("llm", {})["max_output_tokens"] = max_output_tokens
     pipeline.response_cache.enabled = False
-    pipeline.semantic_cache.enabled = False
 
     generated = 0
     skipped = 0
@@ -841,7 +840,6 @@ def run_evaluation(
     if max_output_tokens is not None:
         pipeline.config.setdefault("llm", {})["max_output_tokens"] = max_output_tokens
     pipeline.response_cache.enabled = False
-    pipeline.semantic_cache.enabled = False
 
     judge: GeminiClient | MockJudgeClient
     if mock_judge:

@@ -266,7 +266,6 @@ def run_evaluation(config_path: Path, cases_path: Path) -> dict[str, Any]:
     os.environ["STUDENT_RAG_OFFLINE_EVAL"] = "1"
     pipeline = AnswerPipeline(config_path=config_path, llm_client=OfflineLlmClient())
     pipeline.response_cache.enabled = False
-    pipeline.semantic_cache.enabled = False
 
     cases = load_json(cases_path)
     results = [evaluate_case(case, pipeline) for case in cases]

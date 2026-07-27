@@ -389,9 +389,9 @@ MONGODB_PARENT_COLLECTION=parent_docs
 ### Run offline evaluations
 
 ```bash
-python scripts/evaluate_router_behavior.py --cases data/eval/final_router_holdout_v7.json
-python scripts/evaluate_answers.py --cases data/eval/final_structured_tool_holdout_v7.json
-python scripts/evaluate_retrieval.py --golden data/eval/final_true_rag_holdout_v7.json --scope regulation-v7
+python scripts/evaluate_system_v8.py --suite validate --profile full --dataset data/eval/v9_1_1_final_holdout
+python scripts/evaluate_system_v8.py --suite deterministic --profile full --dataset data/eval/v9_1_1_final_holdout
+python scripts/evaluate_system_v8.py --suite retrieval --profile full --backend qdrant --retrieval-scope end_to_end --dataset data/eval/v9_1_1_final_holdout
 ```
 
 ### Build V7 retrieval artifacts

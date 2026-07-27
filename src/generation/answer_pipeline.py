@@ -33,12 +33,11 @@ from .prompt_builder import (
     build_answer_prompt,
 )
 from .response_cache import get_response_cache
-from .semantic_cache import SemanticCache
 
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v20-router-context-only"
+PIPELINE_VERSION = "v21-router-exact-cache"
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
 )
@@ -152,18 +151,15 @@ class AnswerPipeline:
             self.collection = None
 
         llm_config = self.config["llm"]
-        if llm_config.get("provider") not in ["gemini", "groq"]:
+        if llm_config.get("provider") != "gemini":
             raise ValueError(
-                "AnswerPipeline currently supports only llm.provider='gemini' or 'groq'."
+                "AnswerPipeline requires llm.provider='gemini'."
             )
 
         if _env_bool("STUDENT_RAG_OFFLINE_EVAL"):
-            self.config.setdefault("semantic_cache", {})["enabled"] = False
             self.config.setdefault("cache", {})["enabled"] = False
         elif _env_bool("STUDENT_RAG_QUALITY_EVAL"):
-            # Quality evaluation must exercise rewriting/retrieval/generation,
-            # while response caches would hide model and retrieval regressions.
-            self.config.setdefault("semantic_cache", {})["enabled"] = False
+            # Quality evaluation must exercise retrieval and generation.
             self.config.setdefault("cache", {})["enabled"] = False
 
         self._llm_client = llm_client
@@ -176,17 +172,11 @@ class AnswerPipeline:
         self.request_sleep_seconds = float(llm_config.get("request_sleep_seconds", 2))
         self._last_llm_call_at = 0.0
 
+        cache_config = self.config.get("cache", {})
         self.response_cache = get_response_cache(
-            path=Path("data/processed/cache/response_cache.json"),
-            enabled=self.config.get("cache", {}).get("enabled", True),
-            ttl_seconds=self.config.get("cache", {}).get("ttl_seconds", 86400),
-        )
-
-        semantic_config = self.config.get("semantic_cache", {})
-        self.semantic_cache = SemanticCache(
-            config=semantic_config,
-            embedding_model=self.model,
-            pipeline_version=PIPELINE_VERSION,
+            path=Path(cache_config.get("path", "data/cache/answer_response_cache.json")),
+            enabled=cache_config.get("enabled", True),
+            ttl_seconds=cache_config.get("ttl_seconds", 86400),
         )
 
     def answer(
@@ -217,26 +207,6 @@ class AnswerPipeline:
 
         # Let an explicit cohort in the query win over the UI selector.
         cohort = _normalize_retrieval_cohort(resolve_cohort_from_query(query, cohort))
-
-        # LLM-Evaluated Semantic Cache (before retrieval)
-        is_standalone = not chat_history or len(chat_history) == 0
-        if is_standalone:
-            semantic_cache_key = self.semantic_cache.lookup(query, cohort=cohort)
-            if semantic_cache_key:
-                cached = self.response_cache.get(semantic_cache_key)
-                if cached:
-                    return self._build_output(
-                        query=query,
-                        retrieval_result={},
-                        final_answer=str(cached.get("answer") or ""),
-                        context_used="",
-                        selected_citations=cached.get("citations") or [],
-                        status=str(cached.get("status") or "answered"),
-                        error_type=cached.get("error_type"),
-                        error_message=cached.get("error_message"),
-                        llm_called=False,
-                        used_cache=True,
-                    )
 
         try:
             retrieval_started = time.monotonic()
@@ -541,9 +511,6 @@ class AnswerPipeline:
             },
         )
 
-        if is_standalone:
-            self.semantic_cache.store(query, cache_key, cohort=cohort)
-
         return output
 
     def answer_stream(
@@ -571,31 +538,6 @@ class AnswerPipeline:
         start_time_router = datetime.now(timezone.utc).isoformat()
         effective_query = query
         cohort = _normalize_retrieval_cohort(resolve_cohort_from_query(query, cohort))
-
-        # LLM-Evaluated Semantic Cache (before retrieval)
-        is_standalone = not chat_history or len(chat_history) == 0
-        if is_standalone:
-            semantic_cache_key = self.semantic_cache.lookup(query, cohort=cohort)
-            if semantic_cache_key:
-                cached = self.response_cache.get(semantic_cache_key)
-                if cached:
-                    yield {
-                        "type": "progress",
-                        "message": "Đang truy xuất từ bộ nhớ đệm...",
-                    }
-                    yield {
-                        "type": "metadata",
-                        "run_id": run_id,
-                        "status": str(cached.get("status") or "answered"),
-                        "intent": None,
-                        "strategy": None,
-                        "citations_used": cached.get("citations") or [],
-                        "llm_called": False,
-                        "used_cache": True,
-                    }
-                    yield {"type": "token", "text": str(cached.get("answer") or "")}
-                    yield {"type": "done", "tracker": tracker}
-                    return
 
         yield {"type": "progress", "message": "Đang tìm kiếm thông tin trong Sổ tay..."}
         try:
@@ -1078,24 +1020,6 @@ class AnswerPipeline:
                     ),
                     api_key_env_var=llm_config.get("api_key_env_var", "GEMINI_API_KEY"),
                     key_pool_config=llm_config.get("key_pool"),
-                )
-            elif provider == "groq":
-                from .groq_client import GroqClient
-
-                self._llm_client = GroqClient(
-                    model_name=llm_config.get("model_name", "llama-3.3-70b-versatile"),
-                    temperature=llm_config.get("temperature", 0.2),
-                    max_output_tokens=llm_config.get("max_output_tokens", 1024),
-                    max_retries=llm_config.get("max_retries", 3),
-                    retry_base_delay_seconds=llm_config.get(
-                        "retry_base_delay_seconds", 2
-                    ),
-                    retry_max_delay_seconds=llm_config.get(
-                        "retry_max_delay_seconds", 20
-                    ),
-                    request_timeout_seconds=llm_config.get(
-                        "request_timeout_seconds", 60
-                    ),
                 )
         return self._llm_client
 

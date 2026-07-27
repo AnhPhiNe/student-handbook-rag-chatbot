@@ -66,7 +66,7 @@ def push_trace_to_langfuse(
         trace_tags.append(f"strategy:{meta['strategy']}")
     
     # Detect model from metadata or use default
-    used_model = model or meta.get("model") or "llama-3.3-70b-versatile"
+    used_model = model or meta.get("model") or "gemini-3.1-flash-lite"
     
     # Build usage info for cost calculation
     usage_body = {}

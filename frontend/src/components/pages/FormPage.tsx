@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Download, FileText, Search } from 'lucide-react';
+import { HorizontalScrollHint } from '../HorizontalScrollHint';
 
 const CATEGORIES = [
   { id: 'ctct_hssv', name: 'Công tác Chính trị - HSSV' },
@@ -120,6 +121,7 @@ const FRIENDLY_NAMES: Record<string, string> = {
 export function FormPage() {
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0].id);
   const [searchQuery, setSearchQuery] = useState('');
+  const categoryTabsRef = useRef<HTMLDivElement | null>(null);
 
   const getFilteredForms = () => {
     if (!searchQuery.trim()) {
@@ -157,7 +159,7 @@ export function FormPage() {
         <p>Danh sách 45 mẫu đơn thông dụng chia theo 5 danh mục phòng ban.</p>
       </div>
 
-      <div className="category-tabs">
+      <div className="category-tabs" ref={categoryTabsRef}>
         {CATEGORIES.map(cat => (
           <button 
             key={cat.id} 
@@ -171,6 +173,7 @@ export function FormPage() {
           </button>
         ))}
       </div>
+      <HorizontalScrollHint targetRef={categoryTabsRef} />
 
       <div className="form-controls">
         <div className="search-box">

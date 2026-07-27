@@ -13,11 +13,11 @@ import { CourseTargetPage } from './components/pages/CourseTargetPage';
 import { ScholarshipPage } from './components/pages/ScholarshipPage';
 import { ToolsPage } from './components/pages/ToolsPage';
 import { TuitionPage } from './components/pages/TuitionPage';
+import { SurvivalGuidePage } from './components/pages/SurvivalGuidePage';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { MobileHeader } from './components/MobileHeader';
 import { BottomTabBar } from './components/BottomTabBar';
 import { ToastProvider } from './components/Toast';
-import { ScrollCue } from './components/ScrollCue';
 import { useMediaQuery } from './hooks/useMediaQuery';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { BugReportModal } from './components/BugReportModal';
@@ -72,7 +72,6 @@ function App() {
           <Sidebar 
             activeTab={activeTab}
             onTabChange={setActiveTab}
-            onNewChat={clearMessages}
             isCollapsed={sidebarCollapsed}
             isMobileOpen={isMobileMenuOpen}
             onClose={() => setIsMobileMenuOpen(false)}
@@ -139,8 +138,8 @@ function App() {
             {activeTab === 'scholarship' && <ScholarshipPage />}
             {activeTab === 'tuition' && <TuitionPage />}
             {activeTab === 'credits' && <CreditsPage />}
+            {activeTab === 'survival-guide' && <SurvivalGuidePage />}
             {activeTab === 'huong-dan' && <GuidePage />}
-            <ScrollCue activeTab={activeTab} />
           </div>
 
           {isMobile && (

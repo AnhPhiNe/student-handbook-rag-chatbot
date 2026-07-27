@@ -1,4 +1,4 @@
-import { MessageSquare, FileText, BookOpen, Wrench, Home } from 'lucide-react';
+import { MessageSquare, FileText, BookOpen, Wrench, Home, Sparkles } from 'lucide-react';
 
 interface BottomTabBarProps {
   activeTab: string;
@@ -11,6 +11,7 @@ export function BottomTabBar({ activeTab, onTabChange }: BottomTabBarProps) {
     { id: 'home', icon: Home, label: 'Trang chủ' },
     { id: 'chat', icon: MessageSquare, label: 'Chat' },
     { id: 'bieu-mau', icon: FileText, label: 'Biểu mẫu' },
+    { id: 'survival-guide', icon: Sparkles, label: 'Học tập' },
     { id: 'tools', icon: Wrench, label: 'Công cụ' },
     { id: 'huong-dan', icon: BookOpen, label: 'Hướng dẫn' }
   ];

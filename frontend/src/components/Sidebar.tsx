@@ -1,10 +1,9 @@
-import { Award, Calculator, FileText, GraduationCap, HelpCircle, MessageSquare, Plus, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home, Bug } from 'lucide-react';
+import { Award, Calculator, FileText, GraduationCap, HelpCircle, MessageSquare, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home, Bug, Sparkles } from 'lucide-react';
 const logoHcmue = '/logo_hcmue.png?v=2';
 
 interface SidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
-  onNewChat: () => void;
   isCollapsed: boolean;
   isMobileOpen: boolean;
   onClose: () => void;
@@ -12,7 +11,7 @@ interface SidebarProps {
   onOpenBugReport: () => void;
 }
 
-export function Sidebar({ activeTab, onTabChange, onNewChat, isCollapsed, isMobileOpen, onClose, onToggleCollapse, onOpenBugReport }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onClose, onToggleCollapse, onOpenBugReport }: SidebarProps) {
   const handleTabClick = (tab: string) => {
     onTabChange(tab);
     onClose(); // close mobile menu on selection
@@ -42,12 +41,6 @@ export function Sidebar({ activeTab, onTabChange, onNewChat, isCollapsed, isMobi
             <p>AI Assistant</p>
           </div>
         </button>
-
-        <button className="new-chat-btn" onClick={() => { onNewChat(); handleTabClick('chat'); }}>
-          <Plus size={18} />
-          <span>Chat mới</span>
-        </button>
-
         <nav className="sidebar-nav">
           <div className="sidebar-nav-section">
             <div className="sidebar-nav-title">Hỏi đáp</div>
@@ -99,6 +92,11 @@ export function Sidebar({ activeTab, onTabChange, onNewChat, isCollapsed, isMobi
 
           <div className="sidebar-nav-section">
             <div className="sidebar-nav-title">Tra cứu</div>
+            <button className={`nav-item ${activeTab === 'survival-guide' ? 'active' : ''}`} onClick={() => handleTabClick('survival-guide')} aria-label="Phương pháp học tập">
+              {activeTab === 'survival-guide' && <div className="active-indicator" />}
+              <Sparkles size={18} />
+              <span>Phương pháp học tập</span>
+            </button>
             <button className={`nav-item ${activeTab === 'bieu-mau' ? 'active' : ''}`} onClick={() => handleTabClick('bieu-mau')} aria-label="Biểu mẫu">
               {activeTab === 'bieu-mau' && <div className="active-indicator" />}
               <FileText size={18} />

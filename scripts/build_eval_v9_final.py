@@ -30,7 +30,6 @@ from scripts.build_eval_v8 import (  # noqa: E402
     RETRIEVAL_CONFIG_PATH,
     UNANSWERABLE_QUERIES,
     clean_topic,
-    content_of,
     content_type_of,
     document_id_of,
     enrich_case,

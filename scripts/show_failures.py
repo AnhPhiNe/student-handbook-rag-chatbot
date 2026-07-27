@@ -16,12 +16,12 @@ for i, c in enumerate(failed[:5], 1):
     print(f"Hỏi: {c['query']}")
     
     expected = [j['parent_section_id'] for j in c.get('relevance_judgments', [])]
-    print(f"Đáp án BẮT BUỘC (Bot chấm điểm đòi):")
+    print("Đáp án BẮT BUỘC (Bot chấm điểm đòi):")
     for ex in expected:
         print(f"  - {ex}")
         
     ranked = c.get('ranked_parent_ids', [])[:3]
-    print(f"Qdrant tìm ra (Top 3):")
+    print("Qdrant tìm ra (Top 3):")
     for r in ranked:
         print(f"  - {r}")
     print()

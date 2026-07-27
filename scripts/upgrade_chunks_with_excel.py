@@ -1,6 +1,5 @@
 import json
 import pandas as pd
-import os
 import re
 from unidecode import unidecode
 
@@ -14,12 +13,12 @@ def slugify(text):
     return "".join(word.capitalize() for word in words)
 
 def process_batch(prefix_excel, prefix_json):
-    print(f"\n======================================")
+    print("\n======================================")
     print(f"Xử lý lô dữ liệu: {prefix_excel}")
     excel_path = f'data/raw/gpt_extracted/{prefix_excel}_extracted.xlsx'
     
     if prefix_json == "K48_49":
-        json_path = f'data/processed/chunks/K48-K49_docstore_items.json'
+        json_path = 'data/processed/chunks/K48-K49_docstore_items.json'
     else:
         json_path = f'data/processed/chunks/{prefix_json}_docstore_items.json'
         
@@ -41,7 +40,7 @@ def process_batch(prefix_excel, prefix_json):
         if pd.notna(trang_raw):
             try:
                 trang_str = str(int(float(trang_raw)))
-            except:
+            except (TypeError, ValueError):
                 trang_str = str(trang_raw).strip()
 
         comp_key = f"{dieu}_{trang_str}"
@@ -126,7 +125,7 @@ def main():
         result = process_batch(excel, json_file)
         all_chunks.extend(result)
         
-    print(f"\n======================================")
+    print("\n======================================")
     print(f"Tổng cộng {len(all_chunks)} khối văn bản Vàng đã được ép ID thành công!")
     
     output_file = 'data/processed/chunks/all_docstore_items.json'

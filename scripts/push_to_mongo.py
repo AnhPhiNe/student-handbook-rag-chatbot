@@ -1,6 +1,5 @@
 import sys
 import os
-import yaml
 from collections import Counter
 # Thêm thư mục gốc vào PYTHONPATH để có thể import src
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -11,10 +10,6 @@ from pathlib import Path
 
 def main():
     sys.stdout.reconfigure(encoding='utf-8')
-    print("Loading chunking config...")
-    with open("configs/chunking.yaml", "r", encoding="utf-8") as f:
-        config = yaml.safe_load(f)
-    
     docstore_path = Path(
         os.getenv(
             "MONGO_DOCSTORE_PATH",

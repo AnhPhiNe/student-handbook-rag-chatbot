@@ -1749,6 +1749,8 @@ def evaluate_production(
                 "response_status": response_status,
                 "response_intent": response_payload.get("intent"),
                 "response_strategy": response_payload.get("strategy"),
+                "response_error_type": response_payload.get("error_type"),
+                "response_error_message": response_payload.get("error_message"),
                 "expected_response_status": expected_status,
                 "expected_status_match": response_status == expected_status,
                 "used_cache": response_payload.get("used_cache"),

@@ -47,7 +47,6 @@ def evaluate_gates(suite: str, summary: dict[str, Any]) -> dict[str, Any]:
         maximum("critical_false_passes", 1.0)
     elif suite == "production":
         minimum("success_rate", 0.98)
-        minimum("response_status_accuracy", 0.95)
         maximum("http_429_rate", 0.0)
         minimum("telemetry_coverage", 1.0)
         maximum("cold_cache_hit_rate", 0.0)

@@ -170,6 +170,15 @@ Qdrant stores only `regulation_text`. Structured JSON rows are not inserted as s
 - Exact response caching with Redis and local JSON fallback; no semantic-cache verifier.
 - FastAPI rate limiting, bounded concurrency, queue backpressure, streaming, and Langfuse tracing.
 
+## Design Trade-offs
+
+The backend favors predictable grounding over maximizing every retrieval metric:
+
+- Structured tables, directories, and formulas stay in JSON instead of being expanded into thousands of vector chunks. This preserves exact cohort-specific values and keeps regulation retrieval from becoming noisy.
+- Qdrant indexes only `regulation_text`; table text that naturally appears inside handbook articles is still searchable, but synthetic per-row table chunks are not created.
+- Dense retrieval is combined with BM25 through Reciprocal Rank Fusion. This keeps abbreviation- and keyword-heavy student questions useful without putting a reranker on the default request path.
+- The regulation graph is used as supporting context only. PRIMARY sources answer the question; RELATED sources explain directly referenced articles without changing the main citation order.
+
 ## Frontend Experience
 
 The React frontend is designed for students who want quick answers, not an admin dashboard. The interface keeps the global cohort selector visible, uses a health badge backed by `/health`, and labels cohort-, year-, or formula-specific tools with contextual badges so users know what data scope is being applied.
@@ -287,21 +296,7 @@ Stratified calibration sample (`n = 15`):
 | Actual unsupported claims | 1 / 15 |
 | Critical false passes | 0 / 15 |
 
-<details>
-<summary>Targeted risk audit (10 intentionally difficult cases)</summary>
-
-These cases were selected from the lowest automated Judge scores to discover failures, not to estimate overall production accuracy.
-
-| Diagnostic metric | Result |
-|---|---:|
-| Correctness | 35.00% |
-| Faithfulness | 50.00% |
-| Citation correctness | 50.00% |
-| Actual unsupported claims | 5 / 10 |
-
-This subset exposed generation, retrieval, and annotation failures while also identifying Judge false positives.
-
-</details>
+A separate set of **10 low-Judge-score cases** was reviewed only as a targeted risk audit. Because this subset is intentionally non-random, it is excluded from the headline accuracy table and kept in the audit artifact for remediation analysis.
 
 ### Production-configured performance and robustness
 

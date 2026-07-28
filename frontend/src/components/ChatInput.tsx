@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 
 const PLACEHOLDERS = [
-  "Hỏi chi tiết về học bổng, điểm rèn luyện...",
+  "Học bổng khuyến khích học tập cần điều kiện gì?",
   "Quy định xét vớt tốt nghiệp như thế nào?",
   "Sinh viên năm 4 cần lưu ý gì về chuẩn đầu ra?",
   "Mất thẻ sinh viên thì phải làm sao?"
@@ -145,6 +145,7 @@ export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps
             ref={textareaRef}
             className="chat-textarea"
             placeholder={placeholder}
+            aria-label="Nhập câu hỏi cho trợ lý AI"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}

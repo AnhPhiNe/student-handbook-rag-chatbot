@@ -76,6 +76,7 @@ export function FaqPage({ cohort, onAskQuestion }: FaqPageProps) {
 
       <div className="faq-toolbar">
         <label className="faq-search-box">
+          <span className="sr-only">Tìm kiếm câu hỏi phổ biến</span>
           <Search size={18} />
           <input
             value={searchTerm}
@@ -83,7 +84,7 @@ export function FaqPage({ cohort, onAskQuestion }: FaqPageProps) {
               setSearchTerm(event.target.value);
               setOpenId(null);
             }}
-            placeholder="Tìm theo điểm, học bổng, KTX, phúc khảo..."
+            placeholder="VD: học bổng, KTX hoặc phúc khảo"
           />
         </label>
         <div className="faq-category-pills">

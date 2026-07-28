@@ -227,7 +227,6 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
               <h2 className="hero-title" style={{ fontSize: '1.5rem', marginTop: '1rem', color: 'var(--primary)' }}>{greeting}</h2>
               <p className="hero-subtitle" style={{ marginTop: '0.5rem', fontSize: '1.125rem' }}>Mình là trợ lý AI của Đại học Sư phạm TP.HCM</p>
               <p className="hero-desc">Bạn cần tìm gì trong sổ tay sinh viên hôm nay?</p>
-              <p className="hero-tip">Bấm một chủ đề bên dưới để xem các câu hỏi mẫu có thể hỏi ngay.</p>
             </div>
 
             {/* Action Cards Grid */}
@@ -277,7 +276,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
         </div>
       )}
 
-      <header className="chat-header">
+      <header className="chat-header conversation-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <button 
             className="back-btn" 

@@ -134,7 +134,10 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
   return (
     <div className="page-container tool-page">
       <div className="page-header">
-        <h1>Mục tiêu môn học</h1>
+        <h1 className="page-title-with-icon">
+          <Target aria-hidden="true" />
+          <span>Mục tiêu môn học</span>
+        </h1>
         <p>Tính điểm thi cuối kỳ cần đạt dựa trên các cột điểm thành phần và bảng quy đổi của {cohort}.</p>
         <PageContextBadges cohort={cohort} source="Thang điểm áp dụng theo khóa" advisory />
       </div>
@@ -219,7 +222,7 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
                           value={comp.score}
                           onChange={(e) => updateComponent(comp.id, 'score', e.target.value)}
                           className="tool-input small"
-                          placeholder="Chưa có"
+                          placeholder="VD: 7.5"
                           style={{ width: '100%' }}
                         />
                       </td>

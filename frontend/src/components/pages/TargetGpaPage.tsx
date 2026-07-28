@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Target, AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Target, TrendingUp } from 'lucide-react';
 
 export function TargetGpaPage() {
   const [currentGpa, setCurrentGpa] = useState('');
@@ -34,7 +34,10 @@ export function TargetGpaPage() {
   return (
     <div className="page-container tool-page">
       <div className="page-header">
-        <h1>Mục tiêu GPA</h1>
+        <h1 className="page-title-with-icon">
+          <TrendingUp aria-hidden="true" />
+          <span>Mục tiêu GPA</span>
+        </h1>
         <p>Tính điểm trung bình học kỳ cần đạt để kéo GPA tích lũy lên mức mong muốn.</p>
       </div>
 
@@ -53,7 +56,7 @@ export function TargetGpaPage() {
                   value={currentGpa}
                   onChange={(e) => setCurrentGpa(e.target.value)}
                   className="tool-input"
-                  placeholder="Ví dụ: 2.50"
+                  placeholder="VD: 2.50"
                 />
               </label>
               <label className="tool-field">
@@ -64,7 +67,7 @@ export function TargetGpaPage() {
                   value={currentCredits}
                   onChange={(e) => setCurrentCredits(e.target.value)}
                   className="tool-input"
-                  placeholder="Ví dụ: 100"
+                  placeholder="VD: 100"
                 />
               </label>
             </div>
@@ -81,7 +84,7 @@ export function TargetGpaPage() {
                   value={targetGpa}
                   onChange={(e) => setTargetGpa(e.target.value)}
                   className="tool-input"
-                  placeholder="Ví dụ: 3.20"
+                  placeholder="VD: 3.20"
                 />
               </label>
               <label className="tool-field">
@@ -92,7 +95,7 @@ export function TargetGpaPage() {
                   value={futureCredits}
                   onChange={(e) => setFutureCredits(e.target.value)}
                   className="tool-input"
-                  placeholder="Ví dụ: 15"
+                  placeholder="VD: 15"
                 />
               </label>
             </div>
@@ -146,6 +149,7 @@ export function TargetGpaPage() {
           ) : (
              <div style={{ marginTop: '1rem', textAlign: 'center' }}>
                <div className="result-number text-gradient">--</div>
+               <p className="result-pill">Chưa có kết quả</p>
                <p className="tool-note" style={{ marginTop: '1rem' }}>
                  Nhập đầy đủ thông tin để tính điểm GPA cần đạt ở học kỳ tới.
                </p>

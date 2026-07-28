@@ -405,7 +405,7 @@ export function AdmissionPage() {
                     className="tool-input"
                     value={programQuery}
                     onChange={(event) => setProgramQuery(event.target.value)}
-                    placeholder="Nhập tên ngành, ví dụ: Công nghệ thông tin"
+                    placeholder="VD: Công nghệ thông tin"
                     autoFocus={hasSelectedProgram}
                   />
                 </div>
@@ -564,7 +564,7 @@ export function AdmissionPage() {
                     step="0.01"
                     value={score}
                     onChange={(event) => setScore(event.target.value)}
-                    placeholder="Ví dụ: 24.75"
+                    placeholder="VD: 24.75"
                   />
                 </label>
               ) : (
@@ -583,7 +583,7 @@ export function AdmissionPage() {
                           onChange={(event) =>
                             setSubjectScores((current) => ({ ...current, [subject.key]: event.target.value }))
                           }
-                          placeholder="0 - 10"
+                          placeholder="VD: 8.5"
                         />
                       </label>
                     ))}
@@ -597,7 +597,7 @@ export function AdmissionPage() {
                         step="0.01"
                         value={priorityScore}
                         onChange={(event) => setPriorityScore(event.target.value)}
-                        placeholder="Nếu có"
+                        placeholder="VD: 0.75"
                       />
                     </label>
                   </div>

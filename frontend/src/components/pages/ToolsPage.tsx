@@ -1,89 +1,159 @@
-import { Award, Calculator, CircleHelp, GraduationCap, School, ShieldCheck, TrendingUp, Target } from 'lucide-react';
+import {
+  Award,
+  BookOpenCheck,
+  Calculator,
+  FileText,
+  GraduationCap,
+  LayoutGrid,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  TrendingUp,
+  type LucideIcon,
+} from 'lucide-react';
 
 interface ToolsPageProps {
   onNavigate: (tab: string) => void;
 }
 
-const TOOLS = [
+interface ToolItem {
+  id: string;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  tone: 'blue' | 'rose' | 'cyan' | 'violet' | 'orange' | 'green';
+}
+
+interface ToolGroup {
+  title: string;
+  tools: ToolItem[];
+}
+
+const TOOL_GROUPS: ToolGroup[] = [
   {
-    id: 'gpa',
-    title: 'Tính GPA',
-    description: 'Tính GPA học kỳ theo tín chỉ, điểm thang 10 hoặc điểm chữ.',
-    icon: GraduationCap,
-    color: '#3b82f6',
+    title: 'Tính toán',
+    tools: [
+      {
+        id: 'gpa',
+        title: 'Tính GPA',
+        description: 'Tính GPA học kỳ theo tín chỉ và điểm.',
+        icon: GraduationCap,
+        tone: 'blue',
+      },
+      {
+        id: 'target-gpa',
+        title: 'Mục tiêu GPA',
+        description: 'Ước tính GPA cần đạt cho mục tiêu tích lũy.',
+        icon: TrendingUp,
+        tone: 'rose',
+      },
+      {
+        id: 'course-target',
+        title: 'Mục tiêu môn học',
+        description: 'Tính điểm cuối kỳ cần đạt.',
+        icon: Target,
+        tone: 'cyan',
+      },
+      {
+        id: 'scholarship',
+        title: 'Tính điểm học bổng',
+        description: 'Ước tính điểm xét học bổng.',
+        icon: Award,
+        tone: 'violet',
+      },
+      {
+        id: 'tuition',
+        title: 'Ước tính học phí',
+        description: 'Ước tính theo ngành và số tín chỉ.',
+        icon: Calculator,
+        tone: 'orange',
+      },
+      {
+        id: 'credits',
+        title: 'Kiểm tra hạ bằng',
+        description: 'Kiểm tra điều kiện hạ mức bằng.',
+        icon: ShieldCheck,
+        tone: 'green',
+      },
+    ],
   },
   {
-    id: 'target-gpa',
-    title: 'Mục tiêu GPA',
-    description: 'Tính điểm trung bình cần đạt để kéo GPA tích lũy lên mức mong muốn.',
-    icon: TrendingUp,
-    color: '#f43f5e',
-  },
-  {
-    id: 'course-target',
-    title: 'Mục tiêu môn học',
-    description: 'Tính điểm thi cuối kỳ cần đạt dựa trên các cột điểm thành phần linh hoạt.',
-    icon: Target,
-    color: '#0ea5e9',
-  },
-  {
-    id: 'scholarship',
-    title: 'Tính điểm học bổng',
-    description: 'Tính điểm học bổng và xếp loại tham khảo.',
-    icon: Award,
-    color: '#8b5cf6',
-  },
-  {
-    id: 'tuition',
-    title: 'Ước tính học phí',
-    description: 'Tra học phí theo ngành, năm học và số tín chỉ.',
-    icon: Calculator,
-    color: '#f59e0b',
-  },
-  {
-    id: 'admissions',
-    title: 'Tuyển sinh',
-    description: 'Tra cứu điểm chuẩn và ước lượng mức độ an toàn tham khảo theo ngành, phương thức, tổ hợp.',
-    icon: School,
-    color: '#2563eb',
-  },
-  {
-    id: 'credits',
-    title: 'Kiểm tra hạ bằng',
-    description: 'Kiểm tra điều kiện hạ mức bằng tốt nghiệp do học lại.',
-    icon: ShieldCheck,
-    color: '#10b981',
-  },
-  {
-    id: 'faq',
-    title: 'Câu hỏi phổ biến',
-    description: 'Xem nhanh các câu hỏi hay gặp và gửi câu hỏi vào AI khi cần giải thích chi tiết.',
-    icon: CircleHelp,
-    color: '#0ea5e9',
+    title: 'Tài nguyên',
+    tools: [
+      {
+        id: 'survival-guide',
+        title: 'Phương pháp học tập',
+        description: 'Gợi ý cách ghi nhớ và tập trung.',
+        icon: Sparkles,
+        tone: 'violet',
+      },
+      {
+        id: 'bieu-mau',
+        title: 'Biểu mẫu',
+        description: 'Tìm và tải biểu mẫu sinh viên.',
+        icon: FileText,
+        tone: 'green',
+      },
+      {
+        id: 'huong-dan',
+        title: 'Hướng dẫn sử dụng',
+        description: 'Xem cách sử dụng hệ thống.',
+        icon: BookOpenCheck,
+        tone: 'blue',
+      },
+    ],
   },
 ];
 
 export function ToolsPage({ onNavigate }: ToolsPageProps) {
   return (
-    <div className="page-container">
-      <div className="page-header">
-        <h1>Công cụ sinh viên</h1>
-        <p>Các công cụ tính toán nhanh, chạy trực tiếp trên trình duyệt và không dùng chatbot.</p>
-      </div>
+    <div className="page-container tools-page">
+      <div className="tools-shell">
+        <div className="page-header tools-page-header">
+          <h1 className="page-title-with-icon">
+            <LayoutGrid aria-hidden="true" />
+            <span>Công cụ sinh viên</span>
+          </h1>
+          <p>Chọn công cụ bạn cần.</p>
+          <div className="page-context-badges tools-summary-badges" aria-label="Tổng quan danh mục công cụ">
+            <span className="page-context-badge primary">
+              <Calculator size={14} aria-hidden="true" />
+              6 công cụ tính toán
+            </span>
+            <span className="page-context-badge">
+              <Search size={14} aria-hidden="true" />
+              3 tài nguyên
+            </span>
+          </div>
+        </div>
 
-      <div className="category-grid">
-        {TOOLS.map((tool) => {
-          const Icon = tool.icon;
-          return (
-            <button key={tool.id} className="category-card" onClick={() => onNavigate(tool.id)}>
-              <div className="category-icon" style={{ color: tool.color, backgroundColor: `${tool.color}15` }}>
-                <Icon size={24} />
-              </div>
-              <h2 className="category-title">{tool.title}</h2>
-              <p className="category-desc">{tool.description}</p>
-            </button>
-          );
-        })}
+        {TOOL_GROUPS.map((group, groupIndex) => (
+          <section className="tool-group" key={group.title} aria-labelledby={`tool-group-${groupIndex}`}>
+            <div className="tool-group-heading">
+              <h2 id={`tool-group-${groupIndex}`}>{group.title}</h2>
+            </div>
+            <div className="category-grid">
+              {group.tools.map((tool) => {
+                const Icon = tool.icon;
+                return (
+                  <button
+                    key={tool.id}
+                    type="button"
+                    className={`category-card tool-card tone-${tool.tone}`}
+                    onClick={() => onNavigate(tool.id)}
+                  >
+                    <span className="category-icon">
+                      <Icon size={24} aria-hidden="true" />
+                    </span>
+                    <span className="category-title">{tool.title}</span>
+                    <span className="category-desc">{tool.description}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        ))}
       </div>
     </div>
   );

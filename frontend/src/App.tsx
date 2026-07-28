@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Sun, Moon, Trash2 } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { ChatArea } from './components/ChatArea';
@@ -23,10 +23,19 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import { BugReportModal } from './components/BugReportModal';
 import { CohortSelectionModal } from './components/CohortSelectionModal';
 import { SystemStatusBadge } from './components/SystemStatusBadge';
+import { MobileScrollAffordance } from './components/MobileScrollAffordance';
 import { normalizeFrontendCohort, type Cohort } from './utils/gradeScale';
 
-const COHORT_AWARE_TABS = new Set(['home', 'chat', 'gpa', 'course-target']);
-const RECENT_TOOL_TABS = new Set(['chat', 'gpa', 'tuition', 'survival-guide']);
+const COHORT_SELECTOR_TABS = new Set([
+  'home',
+  'chat',
+  'gpa',
+  'target-gpa',
+  'course-target',
+  'scholarship',
+  'tuition',
+  'credits',
+]);
 
 function App() {
   const defaultTheme = (new Date().getHours() >= 18 || new Date().getHours() < 6) ? 'dark' : 'light';
@@ -42,10 +51,10 @@ function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isBugModalOpen, setIsBugModalOpen] = useState(false);
   const [isCohortModalDismissed, setIsCohortModalDismissed] = useState(false);
-  const [recentTools, setRecentTools] = useLocalStorage<string[]>('hcmue-recent-tools', []);
+  const contentAreaRef = useRef<HTMLDivElement>(null);
   
   const isMobile = useMediaQuery('(max-width: 900px)');
-  const shouldShowCohortSelector = COHORT_AWARE_TABS.has(activeTab);
+  const shouldShowCohortSelector = COHORT_SELECTOR_TABS.has(activeTab);
 
   // Sync theme with HTML data attribute
   useEffect(() => {
@@ -58,11 +67,6 @@ function App() {
 
   const handleNavigate = (nextTab: string) => {
     setActiveTab(nextTab);
-    if (!RECENT_TOOL_TABS.has(nextTab)) return;
-    setRecentTools((current) => [
-      nextTab,
-      ...current.filter((tab) => tab !== nextTab),
-    ].slice(0, 3));
   };
 
   return (
@@ -91,16 +95,7 @@ function App() {
             onOpenBugReport={() => setIsBugModalOpen(true)}
           />
           
-          <div className="content-area" style={{ position: 'relative' }}>
-            {!isMobile && (
-              <div className="top-context-strip" aria-hidden="true">
-                <span className="top-context-dot" />
-                <span>HCMUE AI Assistant</span>
-                <span className="top-context-divider" />
-                <span>Dữ liệu sổ tay sinh viên 3 khóa</span>
-              </div>
-            )}
-
+          <div ref={contentAreaRef} className="content-area" style={{ position: 'relative' }}>
             {/* Global Controls */}
             {!isMobile && (
               <div className={`global-controls ${shouldShowCohortSelector ? '' : 'compact'}`}>
@@ -134,7 +129,7 @@ function App() {
               </div>
             )}
             
-            {activeTab === 'home' && <HomePage onNavigate={handleNavigate} recentTools={recentTools} />}
+            {activeTab === 'home' && <HomePage onNavigate={handleNavigate} />}
             {activeTab === 'chat' && (
               <ChatArea 
                 messages={messages}
@@ -161,6 +156,13 @@ function App() {
             {activeTab === 'credits' && <CreditsPage />}
             {activeTab === 'survival-guide' && <SurvivalGuidePage />}
             {activeTab === 'huong-dan' && <GuidePage />}
+            {isMobile && (
+              <MobileScrollAffordance
+                activeKey={activeTab}
+                containerRef={contentAreaRef}
+                disabled={activeTab === 'chat'}
+              />
+            )}
           </div>
 
           {isMobile && (

@@ -12,7 +12,7 @@ export function ScholarshipPage() {
   const [query, setQuery] = useState('');
   const [selectedProgram, setSelectedProgram] = useState<TuitionProgram | null>(null);
   const [focusedIndex, setFocusedIndex] = useState(-1);
-  const [schoolYear, setSchoolYear] = useState<SchoolYear>('2025-2026');
+  const [schoolYear, setSchoolYear] = useState<SchoolYear | ''>('');
 
   const suggestions = useMemo(() => searchTuitionPrograms(query), [query]);
 
@@ -46,7 +46,7 @@ export function ScholarshipPage() {
     }
   };
 
-  const tuitionFee = selectedProgram?.perCredit[schoolYear] ?? 0;
+  const tuitionFee = schoolYear ? selectedProgram?.perCredit[schoolYear] ?? 0 : 0;
 
   const result = useMemo(() => {
     if (!academicScore || !conductScore) return null;
@@ -68,9 +68,12 @@ export function ScholarshipPage() {
   return (
     <div className="page-container tool-page">
       <div className="page-header">
-        <h1>Tính điểm học bổng</h1>
+        <h1 className="page-title-with-icon">
+          <Award aria-hidden="true" />
+          <span>Tính điểm học bổng</span>
+        </h1>
         <p>Tính điểm học bổng khuyến khích học tập tham khảo theo công thức trong Sổ tay sinh viên.</p>
-        <PageContextBadges schoolYear={schoolYear} source="Công thức học bổng và bảng học phí" advisory />
+        <PageContextBadges schoolYear={schoolYear || undefined} source="Công thức học bổng và bảng học phí" advisory />
       </div>
 
       <div className="tool-layout split">
@@ -89,7 +92,7 @@ export function ScholarshipPage() {
                     step="0.01"
                     value={academicScore}
                     onChange={(event) => setAcademicScore(event.target.value)}
-                    placeholder="Nhập điểm học tập"
+                    placeholder="VD: 3.20"
                   />
                   <button type="button" className="number-btn" onClick={handleIncAcademic} aria-label="Tăng"><Plus size={16} /></button>
                 </div>
@@ -105,7 +108,7 @@ export function ScholarshipPage() {
                     step="1"
                     value={conductScore}
                     onChange={(event) => setConductScore(event.target.value)}
-                    placeholder="Nhập điểm rèn luyện"
+                    placeholder="VD: 85"
                   />
                   <button type="button" className="number-btn" onClick={handleIncConduct} aria-label="Tăng"><Plus size={16} /></button>
                 </div>
@@ -128,7 +131,7 @@ export function ScholarshipPage() {
                       setFocusedIndex(-1);
                     }}
                     onKeyDown={handleKeyDown}
-                    placeholder="Nhập mã ngành hoặc tên ngành"
+                    placeholder="VD: Công nghệ thông tin hoặc 7480201"
                   />
                 </div>
               </label>
@@ -154,7 +157,8 @@ export function ScholarshipPage() {
               <div className="tool-form-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
                 <label className="tool-field">
                   <span>Năm học</span>
-                  <select className="tool-select" value={schoolYear} onChange={(event) => setSchoolYear(event.target.value as SchoolYear)}>
+                  <select className="tool-select" value={schoolYear} onChange={(event) => setSchoolYear(event.target.value as SchoolYear | '')}>
+                    <option value="" disabled>Chọn năm học</option>
                     {SCHOOL_YEARS.map((year) => (
                       <option key={year} value={year}>{year}</option>
                     ))}
@@ -168,12 +172,12 @@ export function ScholarshipPage() {
                     min="15"
                     value={credits}
                     onChange={(event) => setCredits(event.target.value)}
-                    placeholder="Tối thiểu 15"
+                    placeholder="VD: 18"
                   />
                 </label>
               </div>
 
-              {selectedProgram && (
+              {selectedProgram && schoolYear && (
                 <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', padding: '0.75rem', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '6px', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
                   Học phí 1 tín chỉ ({schoolYear}): <strong>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(tuitionFee)}</strong>
                 </div>

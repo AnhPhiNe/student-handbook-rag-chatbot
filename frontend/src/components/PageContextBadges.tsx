@@ -26,7 +26,7 @@ export function PageContextBadges({
       {schoolYear && (
         <span className="page-context-badge primary">
           <CalendarDays size={14} aria-hidden="true" />
-          Năm học {schoolYear}
+          Đang chọn: {schoolYear}
         </span>
       )}
       <span className="page-context-badge">

@@ -120,13 +120,18 @@ Báo lỗi hệ thống
         <p>
           Hệ thống có chỗ nào chưa tốt hoặc bạn gặp lỗi gì,
           hãy mô tả bên dưới để gửi phản hồi cho nhóm phát triển.
+          Lịch sử chat sẽ được tự động đính kèm để hỗ trợ kiểm tra.
         </p>
 
+        <label className="bug-field-label" htmlFor="bug-description">
+          Mô tả vấn đề
+        </label>
         <textarea
+          id="bug-description"
           ref={textareaRef}
           value={bugText}
           onChange={(e) => setBugText(e.target.value)}
-          placeholder="Mô tả lỗi (Ví dụ: Bot trả lời sai quy định học bổng). Lịch sử chat sẽ được tự động đính kèm để Admin kiểm tra!"
+          placeholder="VD: Bot trích sai điều kiện học bổng K51."
           rows={5}
         />
       </div>

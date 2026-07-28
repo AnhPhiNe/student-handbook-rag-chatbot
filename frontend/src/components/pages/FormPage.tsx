@@ -155,7 +155,10 @@ export function FormPage() {
   return (
     <div className="page-container">
       <div className="page-header">
-        <h1>Biểu mẫu & Đơn từ</h1>
+        <h1 className="page-title-with-icon">
+          <FileText aria-hidden="true" />
+          <span>Biểu mẫu & Đơn từ</span>
+        </h1>
         <p>Danh sách 45 mẫu đơn thông dụng chia theo 5 danh mục phòng ban.</p>
       </div>
 
@@ -180,7 +183,8 @@ export function FormPage() {
           <Search size={18} className="search-icon" />
           <input 
             type="text" 
-            placeholder="Tìm kiếm biểu mẫu..." 
+            placeholder="VD: đơn xin nghỉ học"
+            aria-label="Tìm kiếm biểu mẫu"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

@@ -496,7 +496,7 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
                   className="inline-feedback-input"
                   value={feedbackText} 
                   onChange={e => setFeedbackText(e.target.value)} 
-                  placeholder="Ví dụ: Trả lời sai thông tin học bổng..."
+                  placeholder="VD: Trả lời sai điều kiện học bổng K51."
                   rows={2}
                   disabled={isSubmitting}
                 />

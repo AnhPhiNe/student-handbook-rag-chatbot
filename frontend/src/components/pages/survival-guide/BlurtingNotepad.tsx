@@ -107,8 +107,9 @@ export function BlurtingNotepad() {
           ref={textareaRef}
           className="blurting-textarea"
           placeholder={isRunning
-            ? "Viết ra MỌI THỨ bạn nhớ được... Đừng lo về chính tả hay thứ tự!"
-            : "Nhấn 'Bắt đầu xả lũ' rồi ghi ra toàn bộ kiến thức bạn nhớ được mà không cần mở tài liệu..."}
+            ? "VD: Khái niệm chính, công thức và ba ý bạn còn nhớ..."
+            : "Bấm 'Bắt đầu xả lũ' để mở vùng ghi nhớ."}
+          aria-label="Nội dung kiến thức nhớ được"
           value={text}
           onChange={e => setText(e.target.value)}
           disabled={!isRunning}

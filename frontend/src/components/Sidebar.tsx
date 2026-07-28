@@ -91,7 +91,7 @@ export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onC
           </div>
 
           <div className="sidebar-nav-section">
-            <div className="sidebar-nav-title">Tra cứu</div>
+            <div className="sidebar-nav-title">Tài nguyên</div>
             <button className={`nav-item ${activeTab === 'survival-guide' ? 'active' : ''}`} onClick={() => handleTabClick('survival-guide')} aria-label="Phương pháp học tập">
               {activeTab === 'survival-guide' && <div className="active-indicator" />}
               <Sparkles size={18} />

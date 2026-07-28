@@ -1,7 +1,7 @@
 import {
-  Calculator,
-  Clock3,
-  GraduationCap,
+  ArrowRight,
+  FileText,
+  LayoutGrid,
   MessageSquare,
   Sparkles,
   type LucideIcon,
@@ -11,7 +11,6 @@ const logoHcmue = '/logo_hcmue.png?v=2';
 
 interface HomePageProps {
   onNavigate: (tab: string) => void;
-  recentTools: string[];
 }
 
 interface HomeAction {
@@ -19,7 +18,7 @@ interface HomeAction {
   title: string;
   description: string;
   icon: LucideIcon;
-  tone: 'blue' | 'orange' | 'violet' | 'cyan';
+  tone: 'blue' | 'violet' | 'cyan' | 'green';
 }
 
 const HOME_ACTIONS: HomeAction[] = [
@@ -31,18 +30,11 @@ const HOME_ACTIONS: HomeAction[] = [
     tone: 'blue',
   },
   {
-    id: 'gpa',
-    title: 'Tính GPA',
-    description: 'Quy đổi điểm và tính GPA học kỳ theo đúng khóa đang chọn.',
-    icon: GraduationCap,
+    id: 'tools',
+    title: 'Công cụ sinh viên',
+    description: 'Tính GPA, lập mục tiêu, ước tính học phí và kiểm tra các điều kiện học tập.',
+    icon: LayoutGrid,
     tone: 'violet',
-  },
-  {
-    id: 'tuition',
-    title: 'Ước tính học phí',
-    description: 'Tra theo ngành, năm học và số tín chỉ dự kiến đăng ký.',
-    icon: Calculator,
-    tone: 'orange',
   },
   {
     id: 'survival-guide',
@@ -51,16 +43,16 @@ const HOME_ACTIONS: HomeAction[] = [
     icon: Sparkles,
     tone: 'cyan',
   },
+  {
+    id: 'bieu-mau',
+    title: 'Biểu mẫu',
+    description: 'Tìm kiếm và tải nhanh các biểu mẫu sinh viên hiện có trên hệ thống.',
+    icon: FileText,
+    tone: 'green',
+  },
 ];
 
-const ACTION_BY_ID = new Map(HOME_ACTIONS.map((action) => [action.id, action]));
-
-export function HomePage({ onNavigate, recentTools }: HomePageProps) {
-  const quickActions = (recentTools.length > 0 ? recentTools : ['chat', 'gpa', 'tuition'])
-    .map((id) => ACTION_BY_ID.get(id))
-    .filter((action): action is HomeAction => Boolean(action))
-    .slice(0, 3);
-
+export function HomePage({ onNavigate }: HomePageProps) {
   return (
     <div className="page-container home-page">
       <div className="home-shell">
@@ -73,40 +65,9 @@ export function HomePage({ onNavigate, recentTools }: HomePageProps) {
           </p>
         </header>
 
-        <section className="home-quick-section" aria-labelledby="home-quick-title">
-          <div className="home-section-heading">
-            <div>
-              <span className="home-section-kicker">
-                <Clock3 size={15} aria-hidden="true" />
-                {recentTools.length > 0 ? 'Dùng gần đây' : 'Gợi ý bắt đầu'}
-              </span>
-              <h2 id="home-quick-title">Tiếp tục công việc của bạn</h2>
-            </div>
-          </div>
-          <div className="home-quick-actions">
-            {quickActions.map((action) => {
-              const Icon = action.icon;
-              return (
-                <button
-                  key={action.id}
-                  type="button"
-                  className="home-quick-action"
-                  onClick={() => onNavigate(action.id)}
-                >
-                  <Icon size={17} aria-hidden="true" />
-                  <span>{action.title}</span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
         <section className="home-actions-section" aria-labelledby="home-actions-title">
           <div className="home-section-heading">
-            <div>
-              <span className="home-section-kicker">Thao tác chính</span>
-              <h2 id="home-actions-title">Bạn muốn làm gì?</h2>
-            </div>
+            <h2 id="home-actions-title">Bạn muốn làm gì?</h2>
           </div>
           <div className="home-action-grid">
             {HOME_ACTIONS.map((action) => {
@@ -125,7 +86,7 @@ export function HomePage({ onNavigate, recentTools }: HomePageProps) {
                     <strong>{action.title}</strong>
                     <span>{action.description}</span>
                   </span>
-                  <span className="home-action-arrow" aria-hidden="true">→</span>
+                  <ArrowRight className="home-action-arrow" size={20} aria-hidden="true" />
                 </button>
               );
             })}

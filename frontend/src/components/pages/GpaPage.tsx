@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Plus, RotateCcw, Trash2 } from 'lucide-react';
+import { GraduationCap, Plus, RotateCcw, Trash2 } from 'lucide-react';
 import {
   calculateGpa,
   getCourseGrade,
@@ -17,6 +17,12 @@ import { PageContextBadges } from '../PageContextBadges';
 interface GpaPageProps {
   cohort: Cohort;
 }
+
+const COURSE_NAME_EXAMPLES = [
+  'VD: Cơ sở dữ liệu',
+  'VD: Tiếng Anh 2',
+  'VD: Pháp luật đại cương',
+];
 
 function newCourse(id: string, cohort: Cohort): CourseInput {
   return {
@@ -59,7 +65,10 @@ export function GpaPage({ cohort }: GpaPageProps) {
   return (
     <div className="page-container tool-page">
       <div className="page-header">
-        <h1>Tính GPA học kỳ</h1>
+        <h1 className="page-title-with-icon">
+          <GraduationCap aria-hidden="true" />
+          <span>Tính GPA học kỳ</span>
+        </h1>
         <p>Nhập danh sách học phần, số tín chỉ và điểm để tính GPA theo bảng quy đổi đang áp dụng cho {cohort}.</p>
         <PageContextBadges cohort={cohort} source="Bảng quy đổi Sổ tay sinh viên" />
       </div>
@@ -113,7 +122,8 @@ export function GpaPage({ cohort }: GpaPageProps) {
                           className="tool-input"
                           value={course.name}
                           onChange={(event) => updateCourse(course.id, { name: event.target.value })}
-                          placeholder="Tên môn..."
+                          placeholder={COURSE_NAME_EXAMPLES[index % COURSE_NAME_EXAMPLES.length]}
+                          aria-label={`Tên môn học ${index + 1}`}
                         />
                       </td>
                       <td>
@@ -124,7 +134,8 @@ export function GpaPage({ cohort }: GpaPageProps) {
                           step="0.5"
                           value={course.credits}
                           onChange={(event) => updateCourse(course.id, { credits: event.target.value })}
-                          placeholder="0"
+                          placeholder="VD: 3"
+                          aria-label={`Số tín chỉ môn ${index + 1}`}
                         />
                       </td>
                       {showCourseGroup && (
@@ -161,7 +172,8 @@ export function GpaPage({ cohort }: GpaPageProps) {
                             step="0.1"
                             value={course.score10}
                             onChange={(event) => updateCourse(course.id, { score10: event.target.value })}
-                            placeholder="0.0"
+                            placeholder="VD: 8.5"
+                            aria-label={`Điểm thang 10 môn ${index + 1}`}
                           />
                         ) : (
                           <select

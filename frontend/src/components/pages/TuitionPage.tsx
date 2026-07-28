@@ -7,7 +7,7 @@ export function TuitionPage() {
   const [query, setQuery] = useState('');
   const [selectedProgram, setSelectedProgram] = useState<TuitionProgram | null>(null);
   const [focusedIndex, setFocusedIndex] = useState(-1);
-  const [schoolYear, setSchoolYear] = useState<SchoolYear>('2025-2026');
+  const [schoolYear, setSchoolYear] = useState<SchoolYear | ''>('');
   const [credits, setCredits] = useState('');
 
   const suggestions = useMemo(() => searchTuitionPrograms(query), [query]);
@@ -47,17 +47,20 @@ export function TuitionPage() {
     }
   };
 
-  const annual = selectedProgram?.annual[schoolYear] ?? 0;
+  const annual = schoolYear ? selectedProgram?.annual[schoolYear] ?? 0 : 0;
   const semester = annual / 2;
-  const perCredit = selectedProgram?.perCredit[schoolYear] ?? 0;
+  const perCredit = schoolYear ? selectedProgram?.perCredit[schoolYear] ?? 0 : 0;
   const creditEstimate = hasValidCredits ? perCredit * creditCount : 0;
 
   return (
     <div className="page-container tool-page">
       <div className="page-header">
-        <h1>Ước tính học phí</h1>
+        <h1 className="page-title-with-icon">
+          <Calculator aria-hidden="true" />
+          <span>Ước tính học phí</span>
+        </h1>
         <p>Tra theo bảng học phí theo ngành và năm học, sau đó ước tính học kỳ hoặc số tín chỉ đăng ký.</p>
-        <PageContextBadges schoolYear={schoolYear} source="Bảng học phí theo ngành" advisory />
+        <PageContextBadges schoolYear={schoolYear || undefined} source="Bảng học phí theo ngành" advisory />
       </div>
 
       <div className="tool-layout">
@@ -75,7 +78,7 @@ export function TuitionPage() {
                   setFocusedIndex(-1);
                 }}
                 onKeyDown={handleKeyDown}
-                placeholder="Nhập mã ngành hoặc tên ngành"
+                placeholder="VD: Công nghệ thông tin hoặc 7480201"
               />
             </div>
           </label>
@@ -101,7 +104,8 @@ export function TuitionPage() {
           <div className="tool-form-grid">
             <label className="tool-field">
               <span>Năm học</span>
-              <select className="tool-select" value={schoolYear} onChange={(event) => setSchoolYear(event.target.value as SchoolYear)}>
+              <select className="tool-select" value={schoolYear} onChange={(event) => setSchoolYear(event.target.value as SchoolYear | '')}>
+                <option value="" disabled>Chọn năm học</option>
                 {SCHOOL_YEARS.map((year) => (
                   <option key={year} value={year}>{year}</option>
                 ))}
@@ -117,7 +121,7 @@ export function TuitionPage() {
                   step="1"
                   value={credits}
                   onChange={(event) => setCredits(event.target.value)}
-                  placeholder="Nhập số tín chỉ"
+                  placeholder="VD: 18"
                 />
                 <button type="button" className="number-btn" onClick={handleIncrement} aria-label="Tăng"><Plus size={16} /></button>
               </div>
@@ -128,7 +132,7 @@ export function TuitionPage() {
         <aside className="tool-result-card">
           <Calculator size={28} className="result-icon" />
           <p className="result-label">Kết quả học phí</p>
-          {selectedProgram ? (
+          {selectedProgram && schoolYear ? (
             <>
               <h3 className="result-title">{selectedProgram.name}</h3>
               <p className="result-subtitle">{selectedProgram.code} · Năm học {schoolYear}</p>
@@ -140,7 +144,11 @@ export function TuitionPage() {
               </div>
             </>
           ) : (
-            <p className="tool-note">Hãy chọn một ngành từ danh sách gợi ý để xem kết quả.</p>
+            <p className="tool-note">
+              {selectedProgram
+                ? 'Hãy chọn năm học để xem kết quả.'
+                : 'Hãy chọn một ngành từ danh sách gợi ý để xem kết quả.'}
+            </p>
           )}
         </aside>
       </div>

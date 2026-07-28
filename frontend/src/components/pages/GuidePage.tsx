@@ -1,4 +1,4 @@
-import { MessageSquare, Wrench, ShieldAlert, Navigation, FileText, Bug, CheckCircle2, Zap, Target, Calculator, Award, GraduationCap } from 'lucide-react';
+import { MessageSquare, Wrench, ShieldAlert, FileText, Bug, CheckCircle2, Zap, Target, Calculator, Award, GraduationCap, HelpCircle } from 'lucide-react';
 
 export function GuidePage() {
   return (
@@ -7,11 +7,9 @@ export function GuidePage() {
         
         {/* Header Section */}
         <div className="page-header center" style={{ marginBottom: '3rem', textAlign: 'center' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary-light), var(--primary))', color: 'white', marginBottom: '1.5rem', boxShadow: '0 10px 25px rgba(59, 130, 246, 0.3)' }}>
-            <Navigation size={40} />
-          </div>
-          <h1 className="article-title" style={{ fontSize: '2.5rem', background: 'linear-gradient(to right, var(--primary), #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '1rem' }}>
-            Hướng dẫn sử dụng toàn tập
+          <h1 className="article-title page-title-with-icon guide-page-title">
+            <HelpCircle aria-hidden="true" />
+            <span>Hướng dẫn sử dụng toàn tập</span>
           </h1>
           <p className="article-meta" style={{ fontSize: '1.1rem', maxWidth: '650px', margin: '0 auto', lineHeight: '1.6' }}>
             Khám phá cách tối ưu hóa trải nghiệm của bạn trên Sổ tay Sinh viên HCMUE. Nắm bắt thông tin, tính toán điểm số và giải đáp thắc mắc chỉ trong vài cú click!

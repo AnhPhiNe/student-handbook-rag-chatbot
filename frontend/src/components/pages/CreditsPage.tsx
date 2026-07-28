@@ -21,7 +21,10 @@ export function CreditsPage() {
   return (
     <div className="page-container tool-page">
       <div className="page-header">
-        <h1>Kiểm tra điều kiện hạ bằng</h1>
+        <h1 className="page-title-with-icon">
+          <ShieldCheck aria-hidden="true" />
+          <span>Kiểm tra điều kiện hạ bằng</span>
+        </h1>
         <p>Ước tính ngưỡng 5% tổng tín chỉ để theo dõi rủi ro bị hạ bậc bằng tốt nghiệp.</p>
         <PageContextBadges
           source="Khoản 3 Điều 15 Quy chế đào tạo"
@@ -44,7 +47,7 @@ export function CreditsPage() {
                   step="1"
                   value={totalCredits}
                   onChange={(event) => setTotalCredits(event.target.value)}
-                  placeholder="Nhập tổng tín chỉ"
+                  placeholder="VD: 130"
                 />
                 <button type="button" className="number-btn" onClick={handleIncTotal} aria-label="Tăng"><Plus size={16} /></button>
               </div>
@@ -59,7 +62,7 @@ export function CreditsPage() {
                   step="1"
                   value={checkedCredits}
                   onChange={(event) => setCheckedCredits(event.target.value)}
-                  placeholder="Nhập số tín chỉ đã rớt"
+                  placeholder="VD: 6"
                 />
                 <button type="button" className="number-btn" onClick={handleIncChecked} aria-label="Tăng"><Plus size={16} /></button>
               </div>

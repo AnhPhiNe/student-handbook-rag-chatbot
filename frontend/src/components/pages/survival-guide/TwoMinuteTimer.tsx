@@ -67,7 +67,8 @@ export function TwoMinuteTimer() {
         <Zap size={16} className="two-min-input-icon" />
         <input
           className="two-min-input"
-          placeholder="Gõ task bạn đang né tránh..."
+          placeholder="VD: Mở tài liệu và đọc trang đầu tiên"
+          aria-label="Nhiệm vụ hai phút"
           value={task}
           onChange={e => setTask(e.target.value)}
           disabled={isRunning}

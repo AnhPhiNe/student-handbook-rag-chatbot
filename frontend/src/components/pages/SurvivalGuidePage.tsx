@@ -134,7 +134,10 @@ export function SurvivalGuidePage() {
   return (
     <div className="survival-guide-container">
       <div className="sg-header">
-        <h1><Sparkles size={28} className="text-primary" /> Phương pháp học tập ở HCMUE</h1>
+        <h1 className="page-title-with-icon">
+          <Sparkles aria-hidden="true" />
+          <span>Phương pháp học tập ở HCMUE</span>
+        </h1>
         <p>Kho tàng phương pháp học tập khoa học giúp bạn tối ưu hóa thời gian và công sức!</p>
       </div>
 

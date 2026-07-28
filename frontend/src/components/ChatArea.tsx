@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { GraduationCap, Gift, ArrowDown, Lock, Medal, ArrowLeft, BookOpen, Phone, Shield, Lightbulb } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
@@ -214,60 +215,63 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
     setShowQuestionTips(false);
   };
 
+  const questionTipsModal = showQuestionTips && !hasMessages && typeof document !== 'undefined'
+    ? createPortal(
+      <div className="chat-tips-modal-overlay">
+        <div
+          ref={questionTipsDialogRef}
+          className="chat-tips-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="chat-tips-title"
+          tabIndex={-1}
+        >
+          <div className="chat-tips-icon" aria-hidden="true">
+            <Lightbulb size={24} />
+          </div>
+          <div className="chat-tips-copy">
+            <p className="chat-tips-kicker">Trước khi hỏi</p>
+            <h2 id="chat-tips-title">Hỏi cụ thể để tìm đúng nguồn</h2>
+            <p>
+              Bạn vẫn có thể hỏi tự nhiên. Chỉ cần nhớ 3 điểm này:
+            </p>
+          </div>
+
+          <div className="chat-tips-list">
+            <div>
+              <strong>Ghi dấu đầy đủ</strong>
+              <span>Tránh nhập không dấu khi hỏi quy định.</span>
+            </div>
+            <div>
+              <strong>Ít viết tắt</strong>
+              <span>Ưu tiên tên đầy đủ nếu không chắc.</span>
+            </div>
+            <div>
+              <strong>Một câu, một ý</strong>
+              <span>Đừng gộp học bổng, học phí, tốt nghiệp.</span>
+            </div>
+            <div className="chat-tips-example">
+              <strong>Ví dụ tốt</strong>
+              <span>K50 xét học bổng KKHT cần điều kiện gì?</span>
+            </div>
+          </div>
+
+          <button className="chat-tips-primary-btn" type="button" onClick={dismissQuestionTips}>
+            Đã hiểu
+          </button>
+        </div>
+      </div>,
+      document.body,
+    )
+    : null;
+
   // Không sử dụng cold start delay giả nữa, mọi thứ để tự nhiên
 
   // ============ EMPTY STATE ============
   if (!hasMessages) {
     return (
       <main className="chat-area">
-        {showQuestionTips && (
-          <div className="chat-tips-modal-overlay" onMouseDown={(event) => {
-            if (event.target === event.currentTarget) dismissQuestionTips();
-          }}>
-            <div
-              ref={questionTipsDialogRef}
-              className="chat-tips-modal"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="chat-tips-title"
-              tabIndex={-1}
-            >
-              <div className="chat-tips-icon" aria-hidden="true">
-                <Lightbulb size={24} />
-              </div>
-              <div className="chat-tips-copy">
-                <p className="chat-tips-kicker">Trước khi hỏi</p>
-                <h2 id="chat-tips-title">Hỏi cụ thể để tìm đúng nguồn</h2>
-                <p>
-                  Bạn vẫn có thể hỏi tự nhiên. Chỉ cần nhớ 3 điểm này:
-                </p>
-              </div>
-
-              <div className="chat-tips-list">
-                <div>
-                  <strong>Ghi dấu đầy đủ</strong>
-                  <span>Tránh nhập không dấu khi hỏi quy định.</span>
-                </div>
-                <div>
-                  <strong>Ít viết tắt</strong>
-                  <span>Ưu tiên tên đầy đủ nếu không chắc.</span>
-                </div>
-                <div>
-                  <strong>Một câu, một ý</strong>
-                  <span>Đừng gộp học bổng, học phí, tốt nghiệp.</span>
-                </div>
-                <div className="chat-tips-example">
-                  <strong>Ví dụ tốt</strong>
-                  <span>K50 xét học bổng KKHT cần điều kiện gì?</span>
-                </div>
-              </div>
-
-              <button className="chat-tips-primary-btn" type="button" onClick={dismissQuestionTips}>
-                Đã hiểu
-              </button>
-            </div>
-          </div>
-        )}
+        {questionTipsModal}
 
         {IS_MAINTENANCE_MODE && (
           <div className="maintenance-overlay">

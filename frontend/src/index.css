@@ -1741,7 +1741,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 .chat-tips-modal {
   position: relative;
-  overflow: hidden;
+  max-height: calc(100dvh - 1.8rem);
+  overflow-y: auto;
   width: min(92vw, 560px);
   border: 1px solid rgba(148, 163, 184, 0.32);
   border-radius: 18px;
@@ -2360,7 +2361,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     line-height: 1.35;
   }
   .chat-tips-modal-overlay {
-    align-items: flex-end;
+    align-items: center;
+    justify-content: center;
     padding: 0.9rem;
   }
   .chat-tips-modal {

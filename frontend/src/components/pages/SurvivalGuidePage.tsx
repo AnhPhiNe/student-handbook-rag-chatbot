@@ -37,6 +37,7 @@ export function SurvivalGuidePage() {
   const tabFilterRef = useRef<HTMLDivElement | null>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastTipTriggerRef = useRef<HTMLButtonElement | null>(null);
 
   // Scroll fade-in: re-observe after every render so newly mounted sections get picked up
   const attachObserver = useCallback(() => {
@@ -81,13 +82,24 @@ export function SurvivalGuidePage() {
         key={tip.id}
         className="sg-card"
         style={{ '--sg-color': tip.color } as React.CSSProperties}
-        onClick={() => setSelectedTip(tip)}
       >
         <div className="sg-glow" />
+        <button
+          type="button"
+          className="sg-card-open"
+          onClick={(event) => {
+            lastTipTriggerRef.current = event.currentTarget;
+            setSelectedTip(tip);
+          }}
+          aria-label={`Xem chi tiết ${tip.title}`}
+        >
+          <span className="sr-only">Xem chi tiết {tip.title}</span>
+        </button>
         <button
           className={`sg-bookmark-btn ${isSaved ? 'active' : ''}`}
           onClick={e => handleBookmark(e, tip.id)}
           title={isSaved ? 'Bỏ lưu' : 'Lưu phương pháp này'}
+          aria-label={`${isSaved ? 'Bỏ lưu' : 'Lưu'} ${tip.title}`}
         >
           <Bookmark size={15} fill={isSaved ? 'currentColor' : 'none'} />
         </button>
@@ -185,7 +197,10 @@ export function SurvivalGuidePage() {
       {selectedTip && (
         <TipDetailModal
           tip={selectedTip}
-          onClose={() => setSelectedTip(null)}
+          onClose={() => {
+            setSelectedTip(null);
+            window.requestAnimationFrame(() => lastTipTriggerRef.current?.focus());
+          }}
         />
       )}
 

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Minus, Plus, Calculator, Search } from 'lucide-react';
 import { SCHOOL_YEARS, formatVnd, searchTuitionPrograms, type SchoolYear, type TuitionProgram } from '../../data/tuitionRates';
+import { PageContextBadges } from '../PageContextBadges';
 
 export function TuitionPage() {
   const [query, setQuery] = useState('');
@@ -56,6 +57,7 @@ export function TuitionPage() {
       <div className="page-header">
         <h1>Ước tính học phí</h1>
         <p>Tra theo bảng học phí theo ngành và năm học, sau đó ước tính học kỳ hoặc số tín chỉ đăng ký.</p>
+        <PageContextBadges schoolYear={schoolYear} source="Bảng học phí theo ngành" advisory />
       </div>
 
       <div className="tool-layout">
@@ -108,7 +110,7 @@ export function TuitionPage() {
             <label className="tool-field">
               <span>Số tín chỉ học kỳ (tùy chọn)</span>
               <div className="number-input-group">
-                <button type="button" className="number-btn" onClick={handleDecrement} aria-label="Giảm" tabIndex={-1}><Minus size={16} /></button>
+                <button type="button" className="number-btn" onClick={handleDecrement} aria-label="Giảm"><Minus size={16} /></button>
                 <input
                   type="number"
                   min="0"
@@ -117,7 +119,7 @@ export function TuitionPage() {
                   onChange={(event) => setCredits(event.target.value)}
                   placeholder="Nhập số tín chỉ"
                 />
-                <button type="button" className="number-btn" onClick={handleIncrement} aria-label="Tăng" tabIndex={-1}><Plus size={16} /></button>
+                <button type="button" className="number-btn" onClick={handleIncrement} aria-label="Tăng"><Plus size={16} /></button>
               </div>
             </label>
           </div>

@@ -12,6 +12,11 @@ interface ModalProps {
   onOpenTip?: (tipId: string) => void;
 }
 
+type RadioSelection =
+  | ['goal', ImprovementGoal]
+  | ['content', ContentType]
+  | ['time', TimeAvailable];
+
 const PROBLEMS: { id: CurrentProblem; label: string }[] = [
   { id: 'procrastinate', label: '🥱 Hay trì hoãn, khó bắt đầu' },
   { id: 'distracted', label: '📱 Dễ xao nhãng, mất tập trung' },
@@ -86,14 +91,10 @@ export function SelfAssessmentModal({ isOpen, onClose, onOpenTip }: ModalProps) 
   const toggleProblem = (id: CurrentProblem) => {
     setAnswers(prev => {
       const isSelected = prev.problems.includes(id);
-      let newProblems = [];
-      
-      if (isSelected) {
-        newProblems = prev.problems.filter(p => p !== id);
-      } else {
-        if (prev.problems.length >= 3) return prev; // Max 3
-        newProblems = [...prev.problems, id];
-      }
+      if (!isSelected && prev.problems.length >= 3) return prev;
+      const newProblems = isSelected
+        ? prev.problems.filter(p => p !== id)
+        : [...prev.problems, id];
 
       // Auto-advance if exactly 3 are selected
       if (newProblems.length === 3) {
@@ -116,14 +117,20 @@ export function SelfAssessmentModal({ isOpen, onClose, onOpenTip }: ModalProps) 
     }
   };
 
-  const handleRadioSelect = (field: keyof AssessmentAnswers, value: any) => {
-    setAnswers(prev => ({ ...prev, [field]: value }));
+  const handleRadioSelect = (...[field, value]: RadioSelection) => {
+    if (field === 'goal') {
+      setAnswers(prev => ({ ...prev, goal: value }));
+    } else if (field === 'content') {
+      setAnswers(prev => ({ ...prev, content: value }));
+    } else {
+      setAnswers(prev => ({ ...prev, time: value }));
+    }
     // Auto advance after a brief delay for UX
     setTimeout(() => {
       if (field === 'goal') setStep(3);
       if (field === 'content') setStep(4);
       if (field === 'time') {
-        const res = evaluateStudyHabits({ ...answers, [field]: value });
+        const res = evaluateStudyHabits({ ...answers, time: value });
         setResult(res);
         setActiveMethodId(res.primaryMethodId);
         setStep(5);

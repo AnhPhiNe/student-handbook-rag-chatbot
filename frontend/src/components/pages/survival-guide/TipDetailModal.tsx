@@ -6,6 +6,7 @@ import { TwoMinuteTimer } from './TwoMinuteTimer';
 import { ParkinsonsCalculator } from './ParkinsonsCalculator';
 import { SmartGoalBuilder } from './SmartGoalBuilder';
 import { BlurtingNotepad } from './BlurtingNotepad';
+import { useAccessibleDialog } from '../../../hooks/useAccessibleDialog';
 
 const TOOL_MAP: Record<string, React.ComponentType> = {
   'pomodoro': PomodoroTimer,
@@ -23,16 +24,25 @@ interface TipDetailModalProps {
 export const TipDetailModal = React.memo(function TipDetailModal({ tip, onClose }: TipDetailModalProps) {
   const ToolComponent = TOOL_MAP[tip.id] ?? null;
   const [view, setView] = useState<'description' | 'tool'>('description');
+  const dialogRef = useAccessibleDialog<HTMLDivElement>({
+    isOpen: true,
+    onClose,
+  });
 
   return (
     <div
       className="sg-modal-overlay"
       onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={tip.title}
     >
-      <div className="sg-modal-content" onClick={e => e.stopPropagation()}>
+      <div
+        ref={dialogRef}
+        className="sg-modal-content"
+        onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tip-detail-title"
+        tabIndex={-1}
+      >
 
         {/* ── DESCRIPTION VIEW ─────────────────────────── */}
         {view === 'description' && (
@@ -45,7 +55,7 @@ export const TipDetailModal = React.memo(function TipDetailModal({ tip, onClose 
               >
                 <tip.icon size={22} />
               </div>
-              <h2 className="sg-title" style={{ marginBottom: 0, fontSize: '1.4rem' }}>
+              <h2 id="tip-detail-title" className="sg-title" style={{ marginBottom: 0, fontSize: '1.4rem' }}>
                 {tip.title}
               </h2>
               <button className="sg-modal-close" onClick={onClose} aria-label="Đóng">
@@ -113,7 +123,7 @@ export const TipDetailModal = React.memo(function TipDetailModal({ tip, onClose 
               </div>
               <div className="sg-tool-header-text">
                 <span className="sg-tool-header-label">🛠️ Công cụ tương tác</span>
-                <span className="sg-tool-header-title">{tip.title}</span>
+                <span id="tip-detail-title" className="sg-tool-header-title">{tip.title}</span>
               </div>
               <button className="sg-modal-close" onClick={onClose} aria-label="Đóng">
                 <X size={20} />

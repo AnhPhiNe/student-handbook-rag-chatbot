@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Play, Eye, EyeOff, RotateCcw } from 'lucide-react';
+import { createAudioContext } from '../../../utils/audio';
 
 const DURATION = 15 * 60; // 15 minutes
 
@@ -22,7 +23,8 @@ export function BlurtingNotepad() {
           setIsDone(true);
           setShowText(false);
           try {
-            const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const ctx = createAudioContext();
+            if (!ctx) return 0;
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.connect(gain);

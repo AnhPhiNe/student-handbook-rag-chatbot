@@ -1,69 +1,136 @@
-import { MessageSquare, Wrench, FileText, Navigation } from 'lucide-react';
+import {
+  Calculator,
+  Clock3,
+  GraduationCap,
+  MessageSquare,
+  Sparkles,
+  type LucideIcon,
+} from 'lucide-react';
+
 const logoHcmue = '/logo_hcmue.png?v=2';
 
 interface HomePageProps {
   onNavigate: (tab: string) => void;
+  recentTools: string[];
 }
 
-export function HomePage({ onNavigate }: HomePageProps) {
+interface HomeAction {
+  id: string;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  tone: 'blue' | 'orange' | 'violet' | 'cyan';
+}
+
+const HOME_ACTIONS: HomeAction[] = [
+  {
+    id: 'chat',
+    title: 'Hỏi AI',
+    description: 'Tra quy chế, học bổng, điểm rèn luyện và xem nguồn từ Sổ tay sinh viên.',
+    icon: MessageSquare,
+    tone: 'blue',
+  },
+  {
+    id: 'gpa',
+    title: 'Tính GPA',
+    description: 'Quy đổi điểm và tính GPA học kỳ theo đúng khóa đang chọn.',
+    icon: GraduationCap,
+    tone: 'violet',
+  },
+  {
+    id: 'tuition',
+    title: 'Ước tính học phí',
+    description: 'Tra theo ngành, năm học và số tín chỉ dự kiến đăng ký.',
+    icon: Calculator,
+    tone: 'orange',
+  },
+  {
+    id: 'survival-guide',
+    title: 'Phương pháp học tập',
+    description: 'Khám phá cách ghi nhớ, tập trung và quản lý mục tiêu hiệu quả.',
+    icon: Sparkles,
+    tone: 'cyan',
+  },
+];
+
+const ACTION_BY_ID = new Map(HOME_ACTIONS.map((action) => [action.id, action]));
+
+export function HomePage({ onNavigate, recentTools }: HomePageProps) {
+  const quickActions = (recentTools.length > 0 ? recentTools : ['chat', 'gpa', 'tuition'])
+    .map((id) => ACTION_BY_ID.get(id))
+    .filter((action): action is HomeAction => Boolean(action))
+    .slice(0, 3);
+
   return (
-    <div className="page-container home-page" style={{ display: 'flex', flexDirection: 'column' }}>
-      <div className="article-layout" style={{ margin: 'auto', maxWidth: '1200px', width: '100%' }}>
-        <div className="page-header center" style={{ paddingBottom: '0', marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0' }}>
-            <img src={logoHcmue} alt="HCMUE Logo" className="animated-logo" style={{ width: '140px', height: '140px', objectFit: 'contain' }} />
-          </div>
-          <h1 className="article-title" style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Sổ tay Sinh viên HCMUE</h1>
-          <p className="article-meta" style={{ fontSize: '0.95rem', maxWidth: '800px', margin: '0 auto', lineHeight: '1.5' }}>
-            Trợ lý AI và bộ công cụ tự động giúp bạn dễ dàng theo dõi điểm số, học phí và giải đáp mọi thắc mắc về quy chế của trường.
+    <div className="page-container home-page">
+      <div className="home-shell">
+        <header className="home-hero">
+          <img src={logoHcmue} alt="HCMUE" className="animated-logo home-logo" />
+          <h1>Sổ tay Sinh viên HCMUE</h1>
+          <p>
+            Trợ lý AI và bộ công cụ giúp bạn tra cứu quy chế, theo dõi điểm số
+            và ước tính các thông tin học tập cần thiết.
           </p>
-        </div>
+        </header>
 
-        <div className="article-content" style={{ marginTop: 0 }}>
-          <div className="action-cards-grid" style={{ marginBottom: 0, gap: '0.75rem' }}>
-            
-            <div className="action-card" onClick={() => onNavigate('chat')} style={{ flexDirection: 'column', padding: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
-                <div style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', padding: '0.5rem', borderRadius: '10px' }}>
-                  <MessageSquare size={20} />
-                </div>
-                <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Trợ lý AI (Chat)</h3>
-              </div>
-              <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.4' }}>Hỏi đáp mọi vấn đề về quy chế, học bổng, ký túc xá, điểm rèn luyện... AI sẽ trích xuất nguồn từ Sổ tay sinh viên.</p>
+        <section className="home-quick-section" aria-labelledby="home-quick-title">
+          <div className="home-section-heading">
+            <div>
+              <span className="home-section-kicker">
+                <Clock3 size={15} aria-hidden="true" />
+                {recentTools.length > 0 ? 'Dùng gần đây' : 'Gợi ý bắt đầu'}
+              </span>
+              <h2 id="home-quick-title">Tiếp tục công việc của bạn</h2>
             </div>
-
-            <div className="action-card" onClick={() => onNavigate('tools')} style={{ flexDirection: 'column', padding: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
-                <div style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', padding: '0.5rem', borderRadius: '10px' }}>
-                  <Wrench size={20} />
-                </div>
-                <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Tiện ích Tự động</h3>
-              </div>
-              <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.4' }}>Không cần bấm máy tính! Hệ thống tự động tính GPA, dự đoán học bổng, cảnh báo rớt môn và ước tính học phí chỉ trong chớp mắt.</p>
-            </div>
-
-            <div className="action-card" onClick={() => onNavigate('bieu-mau')} style={{ flexDirection: 'column', padding: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
-                <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '0.5rem', borderRadius: '10px' }}>
-                  <FileText size={20} />
-                </div>
-                <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Kho Biểu mẫu</h3>
-              </div>
-              <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.4' }}>Tìm kiếm và tải xuống nhanh chóng các loại đơn từ, giấy xác nhận, mẫu nghiên cứu khoa học.</p>
-            </div>
-
-            <div className="action-card" onClick={() => onNavigate('huong-dan')} style={{ flexDirection: 'column', padding: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
-                <div style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#8b5cf6', padding: '0.5rem', borderRadius: '10px' }}>
-                  <Navigation size={20} />
-                </div>
-                <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Hướng dẫn sử dụng</h3>
-              </div>
-              <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.95rem' }}>Bạn mới đến đây lần đầu? Hãy đọc qua hướng dẫn "cầm tay chỉ việc" để sử dụng web hiệu quả nhất.</p>
-            </div>
-
           </div>
-        </div>
+          <div className="home-quick-actions">
+            {quickActions.map((action) => {
+              const Icon = action.icon;
+              return (
+                <button
+                  key={action.id}
+                  type="button"
+                  className="home-quick-action"
+                  onClick={() => onNavigate(action.id)}
+                >
+                  <Icon size={17} aria-hidden="true" />
+                  <span>{action.title}</span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="home-actions-section" aria-labelledby="home-actions-title">
+          <div className="home-section-heading">
+            <div>
+              <span className="home-section-kicker">Thao tác chính</span>
+              <h2 id="home-actions-title">Bạn muốn làm gì?</h2>
+            </div>
+          </div>
+          <div className="home-action-grid">
+            {HOME_ACTIONS.map((action) => {
+              const Icon = action.icon;
+              return (
+                <button
+                  key={action.id}
+                  type="button"
+                  className={`home-action-card tone-${action.tone}`}
+                  onClick={() => onNavigate(action.id)}
+                >
+                  <span className="home-action-icon">
+                    <Icon size={22} aria-hidden="true" />
+                  </span>
+                  <span className="home-action-copy">
+                    <strong>{action.title}</strong>
+                    <span>{action.description}</span>
+                  </span>
+                  <span className="home-action-arrow" aria-hidden="true">→</span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Minus, Plus, Award, Info, Search } from 'lucide-react';
 import { calculateScholarshipScore } from '../../utils/scholarship';
 import { SCHOOL_YEARS, searchTuitionPrograms, type SchoolYear, type TuitionProgram } from '../../data/tuitionRates';
+import { PageContextBadges } from '../PageContextBadges';
 
 export function ScholarshipPage() {
   const [academicScore, setAcademicScore] = useState('');
@@ -69,6 +70,7 @@ export function ScholarshipPage() {
       <div className="page-header">
         <h1>Tính điểm học bổng</h1>
         <p>Tính điểm học bổng khuyến khích học tập tham khảo theo công thức trong Sổ tay sinh viên.</p>
+        <PageContextBadges schoolYear={schoolYear} source="Công thức học bổng và bảng học phí" advisory />
       </div>
 
       <div className="tool-layout split">
@@ -79,7 +81,7 @@ export function ScholarshipPage() {
               <label className="tool-field">
                 <span>Điểm học tập thang 4</span>
                 <div className="number-input-group">
-                  <button type="button" className="number-btn" onClick={handleDecAcademic} aria-label="Giảm" tabIndex={-1}><Minus size={16} /></button>
+                  <button type="button" className="number-btn" onClick={handleDecAcademic} aria-label="Giảm"><Minus size={16} /></button>
                   <input
                     type="number"
                     min="0"
@@ -89,13 +91,13 @@ export function ScholarshipPage() {
                     onChange={(event) => setAcademicScore(event.target.value)}
                     placeholder="Nhập điểm học tập"
                   />
-                  <button type="button" className="number-btn" onClick={handleIncAcademic} aria-label="Tăng" tabIndex={-1}><Plus size={16} /></button>
+                  <button type="button" className="number-btn" onClick={handleIncAcademic} aria-label="Tăng"><Plus size={16} /></button>
                 </div>
               </label>
               <label className="tool-field">
                 <span>Điểm rèn luyện thang 100</span>
                 <div className="number-input-group">
-                  <button type="button" className="number-btn" onClick={handleDecConduct} aria-label="Giảm" tabIndex={-1}><Minus size={16} /></button>
+                  <button type="button" className="number-btn" onClick={handleDecConduct} aria-label="Giảm"><Minus size={16} /></button>
                   <input
                     type="number"
                     min="0"
@@ -105,7 +107,7 @@ export function ScholarshipPage() {
                     onChange={(event) => setConductScore(event.target.value)}
                     placeholder="Nhập điểm rèn luyện"
                   />
-                  <button type="button" className="number-btn" onClick={handleIncConduct} aria-label="Tăng" tabIndex={-1}><Plus size={16} /></button>
+                  <button type="button" className="number-btn" onClick={handleIncConduct} aria-label="Tăng"><Plus size={16} /></button>
                 </div>
               </label>
             </div>

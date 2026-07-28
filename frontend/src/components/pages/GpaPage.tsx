@@ -12,6 +12,7 @@ import {
   type CourseInput,
   type LetterGrade,
 } from '../../utils/gradeScale';
+import { PageContextBadges } from '../PageContextBadges';
 
 interface GpaPageProps {
   cohort: Cohort;
@@ -60,6 +61,7 @@ export function GpaPage({ cohort }: GpaPageProps) {
       <div className="page-header">
         <h1>Tính GPA học kỳ</h1>
         <p>Nhập danh sách học phần, số tín chỉ và điểm để tính GPA theo bảng quy đổi đang áp dụng cho {cohort}.</p>
+        <PageContextBadges cohort={cohort} source="Bảng quy đổi Sổ tay sinh viên" />
       </div>
 
       <div className="tool-layout wide">

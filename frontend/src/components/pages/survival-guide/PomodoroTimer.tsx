@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Play, Pause, RotateCcw, Settings } from 'lucide-react';
 import { HorizontalScrollHint } from '../../HorizontalScrollHint';
+import { createAudioContext } from '../../../utils/audio';
 
 type TimerMode = 'focus' | 'short-break' | 'long-break';
 
@@ -13,7 +14,8 @@ const LABELS: Record<TimerMode, string> = {
 
 function beep(type: 'end' | 'start') {
   try {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const ctx = createAudioContext();
+    if (!ctx) return;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.connect(gain);

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Bug, X, Send } from 'lucide-react';
 import { useToast } from './Toast';
 import type { Message } from '../hooks/useChat';
+import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 
 interface BugReportModalProps {
   isOpen: boolean;
@@ -18,6 +19,12 @@ export function BugReportModal({
   const [bugText, setBugText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const dialogRef = useAccessibleDialog<HTMLDivElement>({
+    isOpen,
+    onClose: () => setIsOpen(false),
+    initialFocusRef: textareaRef,
+  });
 
   const handleSubmit = async () => {
     if (!bugText.trim()) {
@@ -81,10 +88,15 @@ onClick={() => setIsOpen(false)}
 >
 <div
 className="bug-modal"
+ref={dialogRef}
+role="dialog"
+aria-modal="true"
+aria-labelledby="bug-modal-title"
+tabIndex={-1}
 onClick={(e) => e.stopPropagation()}
 >
 <div className="bug-header">
-<h3>
+<h3 id="bug-modal-title">
 <Bug
 size={20}
 style={{
@@ -98,6 +110,7 @@ Báo lỗi hệ thống
         <button
           className="close-btn"
           onClick={() => setIsOpen(false)}
+          aria-label="Đóng hộp thoại báo lỗi"
         >
           <X size={20} />
         </button>
@@ -110,11 +123,11 @@ Báo lỗi hệ thống
         </p>
 
         <textarea
+          ref={textareaRef}
           value={bugText}
           onChange={(e) => setBugText(e.target.value)}
           placeholder="Mô tả lỗi (Ví dụ: Bot trả lời sai quy định học bổng). Lịch sử chat sẽ được tự động đính kèm để Admin kiểm tra!"
           rows={5}
-          autoFocus
         />
       </div>
 

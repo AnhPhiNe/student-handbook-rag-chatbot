@@ -22,10 +22,11 @@ import { useMediaQuery } from './hooks/useMediaQuery';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { BugReportModal } from './components/BugReportModal';
 import { CohortSelectionModal } from './components/CohortSelectionModal';
-import { ActiveUsersBadge } from './components/ActiveUsersBadge';
+import { SystemStatusBadge } from './components/SystemStatusBadge';
 import { normalizeFrontendCohort, type Cohort } from './utils/gradeScale';
 
 const COHORT_AWARE_TABS = new Set(['home', 'chat', 'gpa', 'course-target']);
+const RECENT_TOOL_TABS = new Set(['chat', 'gpa', 'tuition', 'survival-guide']);
 
 function App() {
   const defaultTheme = (new Date().getHours() >= 18 || new Date().getHours() < 6) ? 'dark' : 'light';
@@ -40,6 +41,8 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isBugModalOpen, setIsBugModalOpen] = useState(false);
+  const [isCohortModalDismissed, setIsCohortModalDismissed] = useState(false);
+  const [recentTools, setRecentTools] = useLocalStorage<string[]>('hcmue-recent-tools', []);
   
   const isMobile = useMediaQuery('(max-width: 900px)');
   const shouldShowCohortSelector = COHORT_AWARE_TABS.has(activeTab);
@@ -51,6 +54,15 @@ function App() {
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
+  const handleNavigate = (nextTab: string) => {
+    setActiveTab(nextTab);
+    if (!RECENT_TOOL_TABS.has(nextTab)) return;
+    setRecentTools((current) => [
+      nextTab,
+      ...current.filter((tab) => tab !== nextTab),
+    ].slice(0, 3));
   };
 
   return (
@@ -71,7 +83,7 @@ function App() {
           
           <Sidebar 
             activeTab={activeTab}
-            onTabChange={setActiveTab}
+            onTabChange={handleNavigate}
             isCollapsed={sidebarCollapsed}
             isMobileOpen={isMobileMenuOpen}
             onClose={() => setIsMobileMenuOpen(false)}
@@ -80,10 +92,19 @@ function App() {
           />
           
           <div className="content-area" style={{ position: 'relative' }}>
+            {!isMobile && (
+              <div className="top-context-strip" aria-hidden="true">
+                <span className="top-context-dot" />
+                <span>HCMUE AI Assistant</span>
+                <span className="top-context-divider" />
+                <span>Dữ liệu sổ tay sinh viên 3 khóa</span>
+              </div>
+            )}
+
             {/* Global Controls */}
             {!isMobile && (
               <div className={`global-controls ${shouldShowCohortSelector ? '' : 'compact'}`}>
-                <ActiveUsersBadge />
+                <SystemStatusBadge />
                 {activeTab === 'chat' && messages.length > 0 && (
                   <button className="theme-toggle" onClick={() => {
                     if (window.confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử chat không?")) {
@@ -113,7 +134,7 @@ function App() {
               </div>
             )}
             
-            {activeTab === 'home' && <HomePage onNavigate={setActiveTab} />}
+            {activeTab === 'home' && <HomePage onNavigate={handleNavigate} recentTools={recentTools} />}
             {activeTab === 'chat' && (
               <ChatArea 
                 messages={messages}
@@ -125,13 +146,13 @@ function App() {
                 onRegenerate={regenerateLastMessage}
                 theme={theme}
                 onToggleTheme={toggleTheme}
-                onNavigateTab={setActiveTab}
+                onNavigateTab={handleNavigate}
                 onClearChat={clearMessages}
                 cohort={cohort}
               />
             )}
             {activeTab === 'bieu-mau' && <FormPage />}
-            {activeTab === 'tools' && <ToolsPage onNavigate={setActiveTab} />}
+            {activeTab === 'tools' && <ToolsPage onNavigate={handleNavigate} />}
             {activeTab === 'gpa' && <GpaPage key={cohort} cohort={cohort} />}
             {activeTab === 'target-gpa' && <TargetGpaPage />}
             {activeTab === 'course-target' && <CourseTargetPage key={cohort} cohort={cohort} />}
@@ -145,13 +166,18 @@ function App() {
           {isMobile && (
             <BottomTabBar 
               activeTab={activeTab} 
-              onTabChange={setActiveTab} 
+              onTabChange={handleNavigate}
             />
           )}
 
           <BugReportModal isOpen={isBugModalOpen} setIsOpen={setIsBugModalOpen} messages={messages} />
           
-          {!storedCohort && <CohortSelectionModal onSelect={setCohort} />}
+          {!storedCohort && !isCohortModalDismissed && (
+            <CohortSelectionModal
+              onSelect={setCohort}
+              onDismiss={() => setIsCohortModalDismissed(true)}
+            />
+          )}
         </div>
       </ToastProvider>
     </ErrorBoundary>

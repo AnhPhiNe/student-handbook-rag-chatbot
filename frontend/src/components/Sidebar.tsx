@@ -36,7 +36,7 @@ export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onC
           <div className="sidebar-logo-text">
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               HCMUE
-              <span style={{ backgroundColor: 'rgba(245, 158, 11, 0.2)', color: '#F59E0B', fontSize: '0.65rem', padding: '0.125rem 0.375rem', borderRadius: '4px', letterSpacing: '0.5px' }}>BETA</span>
+              <span className="sidebar-beta-badge">BETA</span>
             </h2>
             <p>AI Assistant</p>
           </div>

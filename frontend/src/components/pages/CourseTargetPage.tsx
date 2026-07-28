@@ -9,6 +9,7 @@ import {
   type CourseGroup,
   type LetterGrade,
 } from '../../utils/gradeScale';
+import { PageContextBadges } from '../PageContextBadges';
 
 interface CourseTargetPageProps {
   cohort: Cohort;
@@ -135,6 +136,7 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
       <div className="page-header">
         <h1>Mục tiêu môn học</h1>
         <p>Tính điểm thi cuối kỳ cần đạt dựa trên các cột điểm thành phần và bảng quy đổi của {cohort}.</p>
+        <PageContextBadges cohort={cohort} source="Thang điểm áp dụng theo khóa" advisory />
       </div>
 
       <div className="tool-layout split">

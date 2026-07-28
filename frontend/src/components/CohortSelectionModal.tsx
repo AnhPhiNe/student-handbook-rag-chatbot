@@ -1,19 +1,33 @@
 import type { Cohort } from '../utils/gradeScale';
+import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 
 interface CohortSelectionModalProps {
   onSelect: (cohort: Cohort) => void;
+  onDismiss: () => void;
 }
 
-export function CohortSelectionModal({ onSelect }: CohortSelectionModalProps) {
+export function CohortSelectionModal({ onSelect, onDismiss }: CohortSelectionModalProps) {
+  const dialogRef = useAccessibleDialog<HTMLDivElement>({
+    isOpen: true,
+    onClose: onDismiss,
+  });
+
   return (
     <div className="cohort-modal-overlay">
-      <div className="cohort-modal-content">
+      <div
+        ref={dialogRef}
+        className="cohort-modal-content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cohort-modal-title"
+        tabIndex={-1}
+      >
         <div className="cohort-modal-header">
           {/* Fallback to simple text if logo fails or use a generic icon */}
           <div className="modal-logo-container">
              <span className="modal-logo-icon">🎓</span>
           </div>
-          <h2>Chào mừng đến với Sổ tay Sinh viên</h2>
+          <h2 id="cohort-modal-title">Chào mừng đến với Sổ tay Sinh viên</h2>
           <p>
             Trợ lý AI và các công cụ tra cứu cần biết bạn thuộc Khóa nào để cung cấp
             quy chế và thông tin chính xác nhất. Vui lòng chọn Khóa của bạn:

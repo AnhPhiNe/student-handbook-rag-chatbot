@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, Zap } from 'lucide-react';
+import { createAudioContext } from '../../../utils/audio';
 
 const DURATION = 120;
 
@@ -19,7 +20,8 @@ export function TwoMinuteTimer() {
           setIsRunning(false);
           setIsDone(true);
           try {
-            const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const ctx = createAudioContext();
+            if (!ctx) return 0;
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.connect(gain); gain.connect(ctx.destination);

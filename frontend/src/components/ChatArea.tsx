@@ -1,12 +1,14 @@
 import { useRef, useEffect, useState } from 'react';
-import { GraduationCap, Gift, ArrowDown, Lock, Medal, ArrowLeft, BookOpen, Phone, Shield } from 'lucide-react';
+import { GraduationCap, Gift, ArrowDown, Lock, Medal, ArrowLeft, BookOpen, Phone, Shield, Lightbulb } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';
 import type { Cohort } from '../utils/gradeScale';
+import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 const botAvatarImg = '/bot_avatar.png';
 
 const IS_MAINTENANCE_MODE = false;
+const CHAT_TIPS_STORAGE_KEY = 'hcmue-chat-question-tips-seen';
 
 
 interface ChatAreaProps {
@@ -126,6 +128,17 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasMessages = messages.length > 0;
+  const [showQuestionTips, setShowQuestionTips] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.localStorage.getItem(CHAT_TIPS_STORAGE_KEY) !== 'true';
+  });
+  const questionTipsDialogRef = useAccessibleDialog<HTMLDivElement>({
+    isOpen: showQuestionTips && !hasMessages,
+    onClose: () => {
+      window.localStorage.setItem(CHAT_TIPS_STORAGE_KEY, 'true');
+      setShowQuestionTips(false);
+    },
+  });
 
   const hour = new Date().getHours();
   let greeting: string;
@@ -196,12 +209,66 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
     }
   };
 
+  const dismissQuestionTips = () => {
+    window.localStorage.setItem(CHAT_TIPS_STORAGE_KEY, 'true');
+    setShowQuestionTips(false);
+  };
+
   // Không sử dụng cold start delay giả nữa, mọi thứ để tự nhiên
 
   // ============ EMPTY STATE ============
   if (!hasMessages) {
     return (
       <main className="chat-area">
+        {showQuestionTips && (
+          <div className="chat-tips-modal-overlay" onMouseDown={(event) => {
+            if (event.target === event.currentTarget) dismissQuestionTips();
+          }}>
+            <div
+              ref={questionTipsDialogRef}
+              className="chat-tips-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="chat-tips-title"
+              tabIndex={-1}
+            >
+              <div className="chat-tips-icon" aria-hidden="true">
+                <Lightbulb size={24} />
+              </div>
+              <div className="chat-tips-copy">
+                <p className="chat-tips-kicker">Trước khi hỏi</p>
+                <h2 id="chat-tips-title">Hỏi cụ thể để tìm đúng nguồn</h2>
+                <p>
+                  Bạn vẫn có thể hỏi tự nhiên. Chỉ cần nhớ 3 điểm này:
+                </p>
+              </div>
+
+              <div className="chat-tips-list">
+                <div>
+                  <strong>Ghi dấu đầy đủ</strong>
+                  <span>Tránh nhập không dấu khi hỏi quy định.</span>
+                </div>
+                <div>
+                  <strong>Ít viết tắt</strong>
+                  <span>Ưu tiên tên đầy đủ nếu không chắc.</span>
+                </div>
+                <div>
+                  <strong>Một câu, một ý</strong>
+                  <span>Đừng gộp học bổng, học phí, tốt nghiệp.</span>
+                </div>
+                <div className="chat-tips-example">
+                  <strong>Ví dụ tốt</strong>
+                  <span>K50 xét học bổng KKHT cần điều kiện gì?</span>
+                </div>
+              </div>
+
+              <button className="chat-tips-primary-btn" type="button" onClick={dismissQuestionTips}>
+                Đã hiểu
+              </button>
+            </div>
+          </div>
+        )}
+
         {IS_MAINTENANCE_MODE && (
           <div className="maintenance-overlay">
             <div className="maintenance-card">

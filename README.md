@@ -19,6 +19,18 @@
   </a>
 </p>
 
+<p align="center">
+  Cohort-aware AI assistant for HCMUE student handbooks, combining structured lookup, regulation RAG, citation binding, and a student-facing React interface.
+</p>
+
+| Capability | Release-candidate result |
+|---|---:|
+| Structured lookup exactness | 97.50% on 120 holdout cases |
+| End-to-end retrieval Hit@5 | 92.22% on 180 holdout cases |
+| Human-audited answer faithfulness | 96.67% on 15 stratified-random cases |
+| Production transport and payload success | 100.00% on 60 local API requests |
+| Streaming TTFT p95 | 1.84s |
+
 ## Overview
 
 ![HCMUE AI chat interface](./frontend/public/chat_ui_screenshot.png)
@@ -29,6 +41,8 @@ HCMUE AI is a cohort-aware retrieval and generation system for the **K48-K49, K5
 - **Regulation RAG** for policies, conditions, consequences, exceptions, and cross-referenced handbook articles.
 
 The runtime does not flatten every table row into the vector collection. Structured data remains queryable JSON, while Qdrant contains only regulation text. This keeps retrieval focused without losing exact table and directory data.
+
+The frontend is built as a student utility hub rather than only a chatbot: students can ask handbook questions, select their cohort, use GPA and tuition tools, browse forms, and open study-method cards from the same responsive interface.
 
 ## Live Demo
 
@@ -46,6 +60,14 @@ Example questions:
 - `Neu vuot thoi gian hoc toi da thi xu ly the nao?`
 
 ## Current Architecture
+
+The current release is intentionally split into three paths:
+
+| Path | Used for | Why it exists |
+|---|---|---|
+| Structured resolver | Tables, offices, faculties, programs, services, formulas | Exact cohort-aware answers without vector-search ambiguity |
+| Regulation RAG | Conditions, procedures, exceptions, consequences | Full handbook articles with citations and graph-supported context |
+| Mixed answering | Questions that need both a structured fact and a regulation source | Prevents the LLM from guessing table values while still explaining policy |
 
 ```mermaid
 flowchart TD
@@ -147,6 +169,18 @@ Qdrant stores only `regulation_text`. Structured JSON rows are not inserted as s
 - Concurrency-safe key state and request-local Gemini clients.
 - Exact response caching with Redis and local JSON fallback; no semantic-cache verifier.
 - FastAPI rate limiting, bounded concurrency, queue backpressure, streaming, and Langfuse tracing.
+
+## Frontend Experience
+
+The React frontend is designed for students who want quick answers, not an admin dashboard. The interface keeps the global cohort selector visible, uses a health badge backed by `/health`, and labels cohort-, year-, or formula-specific tools with contextual badges so users know what data scope is being applied.
+
+Key UX decisions:
+
+- Sidebar navigation is grouped by intent: question answering, student tools, and resources.
+- Chat uses cohort-aware citations and a mobile back pattern so a conversation can be reopened without losing state.
+- Calculators run in-browser for immediate feedback and display `Chưa có kết quả` until the user enters enough data.
+- Long tab rows use a horizontal hint only when overflow exists.
+- Light and dark themes share the same design tokens for status, inputs, results, and focus states.
 
 ## Data Snapshot
 

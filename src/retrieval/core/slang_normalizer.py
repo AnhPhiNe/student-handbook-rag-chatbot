@@ -69,7 +69,29 @@ class SlangNormalizer:
         pattern_str = r"\b(" + "|".join(escaped_keys) + r")\b"
         return re.compile(pattern_str, re.IGNORECASE | re.UNICODE)
 
-    def normalize(self, query: str) -> str:
+    @staticmethod
+    def _clean(query: str) -> str:
+        return re.sub(r"\s+", " ", query).strip()
+
+    def replace_for_router(self, query: str) -> str:
+        """Apply only meaning-preserving replacements before routing."""
+        if not query:
+            return query
+
+        normalized = query
+        if self.replace_pattern:
+
+            def replace_match(match):
+                matched_text = match.group(1)
+                replacement = self.replace_dict.get(matched_text.lower())
+                return replacement if replacement else matched_text
+
+            normalized = self.replace_pattern.sub(replace_match, normalized)
+
+        return self._clean(normalized)
+
+    def normalize_for_retrieval(self, query: str) -> str:
+        """Apply retrieval expansions, then canonical replacements."""
         if not query:
             return query
 
@@ -77,8 +99,9 @@ class SlangNormalizer:
 
         # 1. Expand (A -> A + B)
         if self.expand_pattern:
-            def expand_match(m):
-                matched_text = m.group(1)
+
+            def expand_match(match):
+                matched_text = match.group(1)
                 replacement = self.expand_dict.get(matched_text.lower())
                 if replacement:
                     # Keep original text but append the expansion
@@ -89,13 +112,16 @@ class SlangNormalizer:
 
         # 2. Replace (A -> B)
         if self.replace_pattern:
-            def replace_match(m):
-                matched_text = m.group(1)
+
+            def replace_match(match):
+                matched_text = match.group(1)
                 replacement = self.replace_dict.get(matched_text.lower())
                 return replacement if replacement else matched_text
 
             normalized = self.replace_pattern.sub(replace_match, normalized)
 
-        # Clean up extra spaces
-        normalized = re.sub(r"\s+", " ", normalized).strip()
-        return normalized
+        return self._clean(normalized)
+
+    def normalize(self, query: str) -> str:
+        """Backward-compatible alias for full retrieval normalization."""
+        return self.normalize_for_retrieval(query)

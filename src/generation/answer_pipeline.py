@@ -812,7 +812,7 @@ class AnswerPipeline:
                 "needs_clarification": False,
                 "clarification_question": None,
             }
-            retrieval_query = self.slang_normalizer.normalize(query)
+            retrieval_query = self.slang_normalizer.normalize_for_retrieval(query)
             result = run_hybrid_retrieval_pipeline(
                 query=query,
                 model=self.model,
@@ -864,7 +864,11 @@ class AnswerPipeline:
             from src.retrieval.core.ai_router import AIRouter
             self.router = AIRouter.from_config()
             
-        router_decision = self.router.route(query, chat_history=chat_history)
+        router_input_query = self.slang_normalizer.replace_for_router(query)
+        router_decision = self.router.route(
+            router_input_query,
+            chat_history=chat_history,
+        )
         handling = select_effective_query(
             query,
             router_decision,
@@ -877,6 +881,7 @@ class AnswerPipeline:
             **router_decision,
             "query_handling": query_handling,
             "effective_query": effective_query,
+            "router_input_query": router_input_query,
         }
         if handling.needs_clarification:
             return {
@@ -924,7 +929,9 @@ class AnswerPipeline:
                 "deterministic_validated": False,
             }
 
-        normalized_retrieval_query = self.slang_normalizer.normalize(effective_query)
+        normalized_retrieval_query = self.slang_normalizer.normalize_for_retrieval(
+            effective_query
+        )
 
         if router_decision.get("execution_mode") == "structured":
             from src.retrieval.core.structured_dispatcher import resolve_structured_decision

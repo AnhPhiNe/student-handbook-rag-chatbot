@@ -30,6 +30,23 @@ def test_explicit_acronyms_are_case_insensitive(tmp_path) -> None:
     assert normalizer.normalize("Cntt") == "công nghệ thông tin"
 
 
+def test_router_replacement_does_not_apply_retrieval_expansion(tmp_path) -> None:
+    normalizer = SlangNormalizer(
+        _write_vocabulary(tmp_path),
+        program_directory=[],
+    )
+
+    query = "cntt có học bổng không?"
+
+    assert (
+        normalizer.replace_for_router(query)
+        == "công nghệ thông tin có học bổng không?"
+    )
+    assert normalizer.normalize_for_retrieval(query) == (
+        "công nghệ thông tin có học bổng học bổng khuyến khích học tập không?"
+    )
+
+
 def test_unique_generated_acronyms_are_replaced_case_insensitively(tmp_path) -> None:
     normalizer = SlangNormalizer(
         _write_vocabulary(tmp_path),

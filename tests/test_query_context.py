@@ -6,6 +6,7 @@ from src.retrieval.core.query_context import (
     validate_follow_up_query,
     validate_normalized_query,
 )
+from src.retrieval.core.slang_normalizer import SlangNormalizer
 
 
 def _decision(**overrides):
@@ -258,8 +259,14 @@ def _minimal_pipeline() -> AnswerPipeline:
     pipeline.program_directory = []
 
     class DummySlangNormalizer:
-        def normalize(self, value: str) -> str:
+        def replace_for_router(self, value: str) -> str:
+            return f"router::{value}"
+
+        def normalize_for_retrieval(self, value: str) -> str:
             return f"slang::{value}"
+
+        def normalize(self, value: str) -> str:
+            return self.normalize_for_retrieval(value)
 
     pipeline.slang_normalizer = DummySlangNormalizer()
     return pipeline
@@ -267,15 +274,17 @@ def _minimal_pipeline() -> AnswerPipeline:
 
 def test_answer_pipeline_uses_validated_query_before_slang(monkeypatch) -> None:
     pipeline = _minimal_pipeline()
+    routed = {}
 
     class DummyRouter:
         def route(self, query, chat_history=None):
+            routed["query"] = query
             return _decision(
                 route="rag",
                 execution_mode="regulation",
                 intent="open_question",
                 lookup_type=None,
-                normalized_query=query,
+                normalized_query=query.removeprefix("router::"),
                 retrieval_query="K50 dia chi phong dao tao",
             )
 
@@ -302,6 +311,10 @@ def test_answer_pipeline_uses_validated_query_before_slang(monkeypatch) -> None:
 
     assert captured["query"] == "K50 rot mon thi sao?"
     assert captured["retrieval_query"] == "slang::K50 rot mon thi sao?"
+    assert routed["query"] == "router::K50 rot mon thi sao?"
+    assert result["router_decision"]["router_input_query"] == (
+        "router::K50 rot mon thi sao?"
+    )
     assert result["effective_query"] == "K50 rot mon thi sao?"
     assert result["router_decision"]["retrieval_query"] == "K50 dia chi phong dao tao"
     assert result["query_handling"]["source"] == "validated_normalization"
@@ -311,9 +324,11 @@ def test_answer_pipeline_uses_slang_normalization_for_structured_lookup(
     monkeypatch,
 ) -> None:
     pipeline = _minimal_pipeline()
+    routed = {}
 
     class DummyRouter:
         def route(self, query, chat_history=None):
+            routed["query"] = query
             return _decision(
                 route="structured",
                 execution_mode="structured",
@@ -342,9 +357,63 @@ def test_answer_pipeline_uses_slang_normalization_for_structured_lookup(
 
     result = pipeline._run_retrieval("cntt có ngành nào?", cohort="K51")
 
+    assert routed["query"] == "router::cntt có ngành nào?"
     assert captured["query"] == "slang::cntt có ngành nào?"
     assert result["retrieval_query"] == "slang::cntt có ngành nào?"
     assert result["strategy"] == "structured"
+
+
+def test_answer_pipeline_replaces_acronym_before_program_routing() -> None:
+    pipeline = _minimal_pipeline()
+    pipeline.program_directory = [
+        {
+            "program_name": "Công nghệ Thông tin",
+            "faculty_name": "Khoa Công nghệ Thông tin",
+            "cohort": "K51",
+            "document_id": "so_tay_sinh_vien_khoa_51",
+            "source_section": "program_directory",
+        }
+    ]
+    pipeline.slang_normalizer = SlangNormalizer(
+        program_directory=pipeline.program_directory,
+    )
+    routed = {}
+
+    class DummyRouter:
+        def route(self, query, chat_history=None):
+            routed["query"] = query
+            return _decision(
+                route="structured",
+                execution_mode="structured",
+                intent="direct_value",
+                lookup_type="program",
+                normalized_query=query,
+                retrieval_query=query,
+                slots={
+                    "program_or_faculty": "Công nghệ Thông tin",
+                    "requested_field": "faculty",
+                    "scope": "school",
+                },
+            )
+
+    pipeline.router = DummyRouter()
+    result = pipeline._run_retrieval("ngành cntt ở khoa nào", cohort="K51")
+
+    assert routed["query"] == "ngành công nghệ thông tin ở khoa nào"
+    assert result["raw_query"] == "ngành cntt ở khoa nào"
+    assert result["retrieval_query"] == "ngành công nghệ thông tin ở khoa nào"
+    assert result["structured_result"]["result"] == [
+        {
+            "program_name": "Công nghệ Thông tin",
+            "faculty_name": "Khoa Công nghệ Thông tin",
+            "source_pages": [],
+            "source_section": "program_directory",
+            "cohort": "K51",
+            "document_id": "so_tay_sinh_vien_khoa_51",
+            "summary": None,
+            "raw_text": None,
+        }
+    ]
 
 
 def test_answer_pipeline_canonicalizes_out_of_domain_metadata() -> None:

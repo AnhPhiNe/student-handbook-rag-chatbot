@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, BookOpen, Sparkles, Wrench, ArrowLeft } from 'lucide-react';
 import type { StudyTip } from '../../../data/survivalGuide';
 import { PomodoroTimer } from './PomodoroTimer';
@@ -29,7 +30,7 @@ export const TipDetailModal = React.memo(function TipDetailModal({ tip, onClose 
     onClose,
   });
 
-  return (
+  return createPortal(
     <div
       className="sg-modal-overlay"
       onClick={onClose}
@@ -95,7 +96,7 @@ export const TipDetailModal = React.memo(function TipDetailModal({ tip, onClose 
                   onClick={() => setView('tool')}
                 >
                   <Wrench size={17} />
-                  <span>🛠️ Thử ngay công cụ tương tác</span>
+                  <span>Thử ngay công cụ tương tác</span>
                   <span className="sg-open-tool-arrow">→</span>
                 </button>
               </div>
@@ -138,6 +139,7 @@ export const TipDetailModal = React.memo(function TipDetailModal({ tip, onClose 
         )}
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 });

@@ -173,41 +173,41 @@ function generateActionPlan(method: string, time: TimeAvailable | null): string 
   
   switch (method) {
     case 'pomodoro':
-      return "1️⃣ Chọn DUY NHẤT một nhiệm vụ cần làm.\n2️⃣ Đặt đồng hồ 25 phút. Tắt WiFi điện thoại, cất ra xa.\n3️⃣ Học tập trung 100% đến khi chuông reo (không dừng giữa chừng).\n4️⃣ Đứng dậy nghỉ ngơi 5 phút (uống nước, vươn vai). Lặp lại vòng mới.";
+      return "1️⃣ Đặt đồng hồ 25 phút.\n2️⃣ Tập trung học, không dừng giữa chừng.\n3️⃣ Nghỉ 5 phút và lặp lại.";
     case 'parkinson':
-      return "1️⃣ Khối lượng bài tập này bình thường làm mất bao lâu? (VD: 60 phút).\n2️⃣ Cắt bỏ 30% thời gian, tự ra hạn chót giả (Fake Deadline) là 40 phút.\n3️⃣ Đặt đồng hồ đếm ngược 40 phút và bắt đầu chạy đua với thời gian.\n(Áp lực đếm ngược sẽ triệt tiêu hoàn toàn sự xao nhãng của bạn).";
+      return "1️⃣ Ước lượng thời gian làm bài (VD: 60 phút).\n2️⃣ Cắt giảm 30% thời gian (còn 40 phút).\n3️⃣ Ép mình hoàn thành trong giới hạn đó.";
     case 'eat-that-frog':
-      return "1️⃣ Trước khi đi ngủ, xác định '1 Con Ếch' (Bài tập khó nhất, ngán nhất).\n2️⃣ Sáng hôm sau thức dậy, khoan lướt điện thoại hay check tin nhắn.\n3️⃣ Ngồi vào bàn và 'ăn' con ếch đó ngay lập tức trong 1 giờ đầu tiên.\n4️⃣ Xong việc khó nhất, cả ngày còn lại tâm lý của bạn sẽ cực kỳ thư thái.";
+      return "1️⃣ Chọn ra nhiệm vụ khó nhất trong ngày.\n2️⃣ Làm nó ngay đầu tiên vào buổi sáng.\n3️⃣ Tận hưởng cảm giác nhẹ nhõm cả ngày.";
     case 'smart-goals':
-      return "Thay vì nói 'Tuần này sẽ học Tiếng Anh', hãy viết theo công thức:\n1️⃣ Cụ thể: Học thuộc 50 từ vựng chuyên ngành IT.\n2️⃣ Đo lường: Test đạt 45/50 từ trên Quizlet.\n3️⃣ Thời gian: Hoàn thành trước 9h tối thứ Bảy tuần này.\n👉 Viết mục tiêu này ra giấy và dán ngay trước mặt bàn học.";
+      return "1️⃣ Mục tiêu cụ thể: VD 'Học 50 từ vựng'.\n2️⃣ Rõ thời hạn: 'Xong trước 9h tối nay'.\n3️⃣ Đảm bảo mục tiêu đó vừa sức.";
     case 'if-then-planning':
-      return "Lập trình sẵn hành động cho bộ não bằng cú pháp NẾU - THÌ:\n1️⃣ NẾU ăn tối xong lúc 19h ➡️ THÌ tôi sẽ ngồi ngay vào bàn mở sách Toán.\n2️⃣ NẾU đang học mà thèm cầm điện thoại ➡️ THÌ tôi sẽ uống 1 ngụm nước và hít thở sâu 3 lần.\n👉 Ghi chú 2 câu này dán lên màn hình máy tính.";
+      return "1️⃣ Lập câu điều kiện NẾU - THÌ.\n2️⃣ VD: NẾU ăn cơm xong ➡️ THÌ học bài luôn.\n3️⃣ Gắn việc học vào một thói quen cố định.";
     case 'spaced-repetition':
-      return "1️⃣ Tải ứng dụng Anki (trên điện thoại hoặc máy tính).\n2️⃣ Tạo các thẻ Flashcard cho kiến thức bạn vừa học hôm nay.\n3️⃣ Mỗi ngày chỉ cần mở app ra ôn tập 15 phút. App sẽ tự động tính toán để lặp lại thẻ nhớ vào đúng khoảnh khắc bạn sắp quên nó (1 ngày, 3 ngày, 7 ngày).";
+      return "1️⃣ Tạo flashcard những ý chính vừa học.\n2️⃣ Ôn lại vào ngày hôm sau.\n3️⃣ Ôn lại tiếp sau 3 ngày và 7 ngày.";
     case 'active-recall':
       return isShortTime
-        ? "1️⃣ Đọc tài liệu thật tập trung trong 15 phút.\n2️⃣ Gấp sách lại (tuyệt đối không được nhìn lén).\n3️⃣ Lấy giấy nháp, cố gắng nhớ và tự viết ra 3 ý quan trọng nhất.\n4️⃣ Mở sách ra dò lại, dùng bút đỏ đánh dấu vào những chỗ mình quên để học lại."
-        : "1️⃣ Đọc xong một chương, khoan đọc qua chương mới.\n2️⃣ Gấp sách lại. Ghi ra lề vở các câu hỏi (VD: Tại sao A lại dẫn đến B?).\n3️⃣ Đóng vai giáo viên, tự trả lời to thành tiếng các câu hỏi đó.\n4️⃣ Chỗ nào ấp úng, lập tức mở tài liệu ra coi lại đúng chỗ đó.";
+        ? "1️⃣ Đọc sách 15 phút rồi gấp lại.\n2️⃣ Tự viết ra giấy 3 ý quan trọng nhất.\n3️⃣ Mở sách dò lại và ghi chú chỗ sai."
+        : "1️⃣ Đọc xong 1 chương thì gấp sách lại.\n2️⃣ Tự đặt câu hỏi và tự trả lời to lên.\n3️⃣ Chỗ nào ấp úng mới được mở sách xem.";
     case 'interleaving':
-      return "1️⃣ Đừng bao giờ ngồi giải 10 bài toán cùng 1 dạng liên tiếp nhau.\n2️⃣ Hãy chia nhỏ: Làm 3 bài Đại số, chuyển sang 3 bài Hình học, rồi làm 3 bài Lý.\n3️⃣ Việc liên tục chuyển đổi môn học sẽ khiến não bộ phải 'khởi động' lại nhiều lần, từ đó giúp kiến thức bám sâu vào trí nhớ dài hạn hơn.";
+      return "1️⃣ Chọn bài tập của 2-3 chương khác nhau.\n2️⃣ Trộn chúng lại để làm xen kẽ.\n3️⃣ Luyện phản xạ nhận diện dạng bài.";
     case 'worked-examples':
-      return "1️⃣ Tìm một bài giải mẫu chuẩn xác (có giải thích từng bước).\n2️⃣ Khoan cắm đầu vào giải. Hãy đọc và phân tích kỹ: Tại sao bước 1 lại dẫn đến bước 2? Dấu hiệu nào để dùng công thức này?\n3️⃣ Khi đã hiểu logic gốc, đóng bài mẫu lại và tự giải một bài tương tự.";
+      return "1️⃣ Đọc và phân tích kỹ 1 bài mẫu chuẩn.\n2️⃣ Hiểu logic tại sao có các bước đó.\n3️⃣ Đóng lại và tự giải 1 bài y chang.";
     case 'feynman':
-      return "1️⃣ Chọn một khái niệm rất khó mà bạn đang mơ hồ.\n2️⃣ Lấy giấy trắng, giả vờ bạn đang soạn bài để giảng lại cho một đứa trẻ lớp 5.\n3️⃣ Viết bằng ngôn từ đời thường nhất, tuyệt đối không dùng từ chuyên ngành.\n4️⃣ Nếu thấy bí hoặc viết rườm rà ➡️ Bạn chưa hiểu sâu, hãy mở sách học lại.";
+      return "1️⃣ Chọn 1 khái niệm bạn thấy khó.\n2️⃣ Viết lại bằng ngôn ngữ cực kỳ bình dân.\n3️⃣ Nếu bị vấp chữ, bạn cần học lại phần đó.";
     case 'blurting':
-      return "1️⃣ Dành 15 phút đọc kỹ tài liệu.\n2️⃣ Gấp tài liệu lại, lấy một tờ giấy A4 trắng tinh.\n3️⃣ 'Đổ tràn' (Blurt) tất cả mọi thứ bạn nhớ trong đầu ra giấy (từ khóa, sơ đồ, hình vẽ) một cách nhanh nhất.\n4️⃣ Mở sách ra, dùng bút đỏ bổ sung những phần còn thiếu vào tờ giấy.";
+      return "1️⃣ Đọc lướt qua tài liệu.\n2️⃣ Lấy nháp trắng, viết ra TẤT CẢ những gì nhớ được.\n3️⃣ Mở sách, dùng bút đỏ bổ sung ý còn thiếu.";
     case 'dual-coding':
-      return "1️⃣ Chia tờ giấy note làm 2 cột.\n2️⃣ Cột trái: Ghi chép các khái niệm bằng chữ (text).\n3️⃣ Cột phải: Ngay lập tức phác thảo một hình vẽ, biểu đồ hoặc icon vui nhộn mô tả cho khái niệm đó.\n(Sự kết hợp Hình + Chữ sẽ kích hoạt cả 2 bán cầu não cùng lúc).";
+      return "1️⃣ Ghi chú khái niệm bằng chữ ở bên trái.\n2️⃣ Tự vẽ 1 sơ đồ/icon minh họa ở bên phải.\n3️⃣ Nhìn hình để gợi nhớ chữ.";
     case 'mind-map':
-      return "1️⃣ Lấy một tờ giấy A4 nằm ngang. Viết tên Môn học / Chương vào chính giữa.\n2️⃣ Vẽ tối đa 4-5 nhánh lớn túa ra xung quanh cho các ý chính.\n3️⃣ Tuyệt đối chỉ dùng TỪ KHÓA ngắn gọn trên các nhánh, không viết cả câu dài.\n4️⃣ Dùng ít nhất 3 màu bút khác nhau để kích thích thị giác.";
+      return "1️⃣ Viết tên bài học ở giữa giấy.\n2️⃣ Vẽ các nhánh tỏa ra cho từng ý chính.\n3️⃣ Chỉ dùng từ khóa ngắn gọn, không viết dài.";
     case 'cornell-notes':
-      return '1️⃣ Kẻ trang giấy thành 3 phần: cột trái nhỏ (Câu hỏi), cột phải lớn (Ghi chú), phần cuối (Tóm tắt).\n2️⃣ Trong giờ học: chỉ viết vào cột PHẢI, ghi ý chính bằng từ khóa – không chép nguyên văn.\n3️⃣ Trong vòng 24h sau buổi học: điền cột TRÁI với các câu hỏi về nội dung vừa ghi.\n4️⃣ Viết phần tóm tắt cuối trang bằng ngôn ngữ của chính bạn (1-3 câu ngắn gọn).';
+      return "1️⃣ Cột phải: Ghi bài giảng (chỉ ý chính).\n2️⃣ Cột trái: Đặt câu hỏi ôn tập (ghi sau).\n3️⃣ Dưới cùng: Viết 1-2 câu tóm tắt toàn bài.";
     case 'two-minute-rule':
-      return '1️⃣ Nhìn vào task khó nhất bạn đang né tránh.\n2️⃣ Xác định "hành động đầu tiên" nhỏ nhất của nó (VD: Mở file, Gõ tiêu đề, Đọc 1 trang).\n3️⃣ Dùng timer bên dưới, đặt 2 phút và làm NGAY hành động đó.\n4️⃣ Khi chuông reo, não bạn đã "vào số" – hãy tiếp tục, bạn sẽ không muốn dừng lại nữa!';
+      return "1️⃣ Tìm 1 việc rất nhỏ (VD: Mở file Word).\n2️⃣ Bắt tay vào làm NGAY bước đó.\n3️⃣ Khi vượt qua bước đầu, bạn sẽ tự động làm tiếp.";
     case 'retrieval-practice':
       return isShortTime
-        ? '1️⃣ Lấy đề thi năm trước hoặc tự viết 5 câu hỏi về nội dung vừa học.\n2️⃣ Đặt giờ 20 phút, cố gắng trả lời không nhìn sách.\n3️⃣ Hết giờ, mở sách đối chiếu và ghi lại những chỗ còn sai.'
-        : '1️⃣ Tìm đề thi năm trước của môn cần ôn.\n2️⃣ Đặt đồng hồ bằng đúng thời gian thi thật (90-120 phút).\n3️⃣ Làm bài KHÔNG MỞ SÁCH, KHÔNG TRA GOOGLE – chỗ nào không biết thì bỏ qua.\n4️⃣ Hết giờ: chấm điểm, ghi lại lỗi sai. Đó chính là danh sách ôn tập ưu tiên của bạn.';
+        ? "1️⃣ Lấy đề thi năm ngoái ra giải.\n2️⃣ Đặt giờ 20 phút không mở tài liệu.\n3️⃣ Chấm điểm và học bù chỗ sai."
+        : "1️⃣ Tải đề thi thật các năm trước.\n2️⃣ Canh giờ 90 phút và tự giải như thi thật.\n3️⃣ Câu nào sai chính là trọng tâm ôn tập.";
     default:
       return "1️⃣ Chọn một phần nội dung bạn đang cần học nhất.\n2️⃣ Chia nhỏ nó ra thành các đầu việc nhỏ.\n3️⃣ Bắt đầu hành động ngay lập tức trong 25 phút tiếp theo mà không suy nghĩ thêm.";
   }

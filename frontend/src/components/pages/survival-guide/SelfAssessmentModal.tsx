@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, ChevronLeft, ChevronRight, CheckCircle2, RotateCcw, AlertCircle, BookOpen } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { X, ChevronLeft, ChevronRight, ChevronDown, CheckCircle2, RotateCcw, AlertCircle, BookOpen } from 'lucide-react';
 import { 
   type CurrentProblem, type ImprovementGoal, type ContentType, type TimeAvailable, 
   type AssessmentAnswers, type EvaluationResult, evaluateStudyHabits 
@@ -63,6 +64,26 @@ export function SelfAssessmentModal({ isOpen, onClose, onOpenTip }: ModalProps) 
   const [activeMethodId, setActiveMethodId] = useState<string | null>(null);
   
   const modalRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isAtBottom, setIsAtBottom] = useState(false);
+  const [isScrollable, setIsScrollable] = useState(false);
+
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+    setIsScrollable(scrollHeight > clientHeight + 5);
+    setIsAtBottom(scrollHeight - scrollTop <= clientHeight + 10);
+  };
+
+  useEffect(() => {
+    // Check scroll state after a short delay to allow DOM to render
+    const timer = setTimeout(handleScroll, 50);
+    window.addEventListener('resize', handleScroll);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, [step, isOpen]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -149,7 +170,7 @@ export function SelfAssessmentModal({ isOpen, onClose, onOpenTip }: ModalProps) 
   const activeTip = activeMethodData ? survivalGuideTips.find(t => t.id === activeMethodData.id) : null;
   const supportTips = result ? result.allMethods.filter(m => m.id !== activeMethodData?.id).map(m => survivalGuideTips.find(t => t.id === m.id)).filter(Boolean) : [];
 
-  return (
+  return createPortal(
     <div className="sg-modal-overlay" onClick={handleOverlayClick} role="dialog" aria-modal="true">
       <div className="sg-modal-content assessment-modal" ref={modalRef}>
         <div className="sg-modal-header">
@@ -173,7 +194,7 @@ export function SelfAssessmentModal({ isOpen, onClose, onOpenTip }: ModalProps) 
           </div>
         )}
 
-        <div className="sg-modal-body">
+        <div className="sg-modal-body" ref={scrollRef} onScroll={handleScroll}>
           {/* STEP 1: Problems */}
           {step === 1 && (
             <div className="assessment-step animate-in">
@@ -213,9 +234,16 @@ export function SelfAssessmentModal({ isOpen, onClose, onOpenTip }: ModalProps) 
               </div>
 
               <div className="step-footer">
+                {isScrollable && !isAtBottom && (
+                  <div className="modal-scroll-arrow" onClick={() => {
+                    if (scrollRef.current) scrollRef.current.scrollBy({ top: 100, behavior: 'smooth' });
+                  }}>
+                    <ChevronDown size={20} strokeWidth={2.5} />
+                  </div>
+                )}
                 {answers.problems.length === 0 && (
                   <div className="validation-msg">
-                    <AlertCircle size={16} /> Vui lòng chọn ít nhất 1 vấn đề
+                    <AlertCircle size={16} /> Chọn ít nhất 1 vấn đề
                   </div>
                 )}
                 <button 
@@ -421,7 +449,10 @@ export function SelfAssessmentModal({ isOpen, onClose, onOpenTip }: ModalProps) 
                     className="sg-view-detail-btn"
                     onClick={() => onOpenTip(activeMethodId || result.primaryMethodId)}
                   >
-                    <BookOpen size={16} /> Xem chi tiết &amp; thử tool tương tác
+                    <BookOpen size={16} /> 
+                    {['pomodoro', 'two-minute-rule', 'parkinson', 'smart-goals', 'blurting'].includes(activeMethodId || result.primaryMethodId) 
+                      ? 'Xem chi tiết & thử tool tương tác' 
+                      : 'Xem thông tin chi tiết về phương pháp'}
                   </button>
                 )}
               </div>
@@ -447,11 +478,23 @@ export function SelfAssessmentModal({ isOpen, onClose, onOpenTip }: ModalProps) 
                   </div>
                 </div>
               )}
+
+              {/* Sticky empty footer for the scroll indicator */}
+              <div className="step-footer" style={{ borderTop: 'none', padding: 0, marginTop: 0, background: 'transparent', height: 0, pointerEvents: 'none' }}>
+                {isScrollable && !isAtBottom && (
+                  <div className="modal-scroll-arrow" style={{ pointerEvents: 'auto' }} onClick={() => {
+                    if (scrollRef.current) scrollRef.current.scrollBy({ top: 100, behavior: 'smooth' });
+                  }}>
+                    <ChevronDown size={20} strokeWidth={2.5} />
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

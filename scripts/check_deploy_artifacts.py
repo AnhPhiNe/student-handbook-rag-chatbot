@@ -21,10 +21,8 @@ REQUIRED_ARTIFACTS = [
     ("data/processed/directories/student_office_profiles.json", "file"),
     ("data/processed/directories/student_faculty_profiles.json", "file"),
     ("data/processed/entities/entity_registry.json", "file"),
-    ("data/processed/entities/query_expansion_rules.json", "file"),
     ("data/processed/chunks/all_docstore_items.json", "file"),
-    ("data/processed/chunks/v7_child_parent_chunks.json", "file"),
-    ("data/vectorstore/chroma", "dir"),
+    ("data/processed/chunks/child_parent_chunks.json", "file"),
 ]
 
 

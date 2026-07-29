@@ -17,7 +17,7 @@ embedding:
 
 vectorstore:
   persist_dir: data/vectorstore/chroma
-  collection_name: student_handbook_semantic_v7
+  collection_name: student_handbook_semantic_v9_candidate
 
 retrieval:
   default_top_k: 5

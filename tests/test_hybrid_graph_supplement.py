@@ -5,8 +5,8 @@ from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 from src.retrieval.core.hybrid_pipeline import (
+    ChildParentHybridRetriever,
     DEFAULT_RETRIEVAL_MODE,
-    HybridRetrieverV7,
     select_graph_related_parent_candidates,
 )
 
@@ -73,8 +73,8 @@ def _vector_hits(count: int = 24) -> list[SimpleNamespace]:
     ]
 
 
-def _retriever_stub() -> HybridRetrieverV7:
-    retriever = HybridRetrieverV7.__new__(HybridRetrieverV7)
+def _retriever_stub() -> ChildParentHybridRetriever:
+    retriever = ChildParentHybridRetriever.__new__(ChildParentHybridRetriever)
     retriever.collection_name = "test"
     retriever.qdrant_client = object()
     retriever.embed_model = Mock()
@@ -111,7 +111,7 @@ def test_default_retrieval_groups_twenty_four_vector_chunks_before_graph() -> No
             return_value=hits,
         ),
     ):
-        result = HybridRetrieverV7.retrieve(
+        result = ChildParentHybridRetriever.retrieve(
             retriever,
             "dieu kien hoc bong",
             top_k_vector=12,
@@ -149,7 +149,7 @@ def test_full_ablation_reranks_the_same_twenty_four_vector_chunks() -> None:
             return_value=hits,
         ),
     ):
-        HybridRetrieverV7.retrieve(
+        ChildParentHybridRetriever.retrieve(
             retriever,
             "dieu kien hoc bong",
             top_k_vector=12,
@@ -171,7 +171,7 @@ def test_full_ablation_reranks_the_same_twenty_four_vector_chunks() -> None:
 
 
 def test_parent_grouping_keeps_phoranker_order_and_top_k() -> None:
-    retriever = HybridRetrieverV7.__new__(HybridRetrieverV7)
+    retriever = ChildParentHybridRetriever.__new__(ChildParentHybridRetriever)
     retriever.collection_name = "test"
     retriever.parent_cache = {}
     retriever.mongo_store = Mock()
@@ -216,7 +216,7 @@ def test_parent_grouping_keeps_phoranker_order_and_top_k() -> None:
         ),
     ]
 
-    results = HybridRetrieverV7._group_parent_results(
+    results = ChildParentHybridRetriever._group_parent_results(
         retriever,
         query="query",
         scored_chunks=scored,

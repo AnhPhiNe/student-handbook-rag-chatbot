@@ -21,7 +21,7 @@ CHUNK_TYPE_BY_CONTENT_TYPE = {}
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build V7 child-parent regulation chunks for Qdrant."
+        description="Build child-parent regulation chunks for Qdrant."
     )
     parser.add_argument(
         "--docstore",
@@ -30,8 +30,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--output",
-        default="data/processed/chunks/v7_child_parent_chunks.json",
-        help="Output V7 child/table/heading chunks.",
+        default="data/processed/chunks/child_parent_chunks.json",
+        help="Output child/table/heading chunks.",
     )
     parser.add_argument(
         "--max-child-chars",
@@ -45,8 +45,8 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     parents = json.loads(Path(args.docstore).read_text(encoding="utf-8"))
-    chunks = build_v7_chunks(parents, max_child_chars=args.max_child_chars)
-    validate_v7_chunks(chunks, parents)
+    chunks = build_child_parent_chunks(parents, max_child_chars=args.max_child_chars)
+    validate_child_parent_chunks(chunks, parents)
 
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -54,7 +54,7 @@ def main() -> None:
 
     by_granularity = Counter(chunk["metadata"]["chunk_granularity"] for chunk in chunks)
     by_cohort = Counter(chunk["metadata"]["cohort"] for chunk in chunks)
-    print(f"Built {len(chunks)} V7 chunks -> {output}")
+    print(f"Built {len(chunks)} child-parent chunks -> {output}")
     print("By granularity:", dict(sorted(by_granularity.items())))
     print("By cohort:", dict(sorted(by_cohort.items())))
 
@@ -209,7 +209,7 @@ def _classify_text_block(text: str) -> tuple[str, str | None, str | None]:
     return "clause", None, None
 
 
-def build_v7_chunks(
+def build_child_parent_chunks(
     parents: list[dict[str, Any]],
     *,
     max_child_chars: int = 1600,
@@ -250,7 +250,7 @@ def build_v7_chunks(
 
                 block_index = int(block.get("block_index") or 0)
                 chunk_id = (
-                    f"v7_{parent_id}_{granularity}_{block_index:04d}_{part_index:02d}"
+                    f"cp_{parent_id}_{granularity}_{block_index:04d}_{part_index:02d}"
                 )
                 chunks.append(
                     {
@@ -282,7 +282,9 @@ def build_v7_chunks(
     return chunks
 
 
-def validate_v7_chunks(chunks: list[dict[str, Any]], parents: list[dict[str, Any]]) -> None:
+def validate_child_parent_chunks(
+    chunks: list[dict[str, Any]], parents: list[dict[str, Any]]
+) -> None:
     parent_by_id: dict[str, dict[str, Any]] = {}
     for parent in parents:
         metadata = parent.get("metadata") or {}
@@ -351,7 +353,9 @@ def validate_v7_chunks(chunks: list[dict[str, Any]], parents: list[dict[str, Any
 
     if errors:
         preview = "\n".join(errors[:30])
-        raise SystemExit(f"V7 validation failed with {len(errors)} errors:\n{preview}")
+        raise SystemExit(
+            f"Child-parent validation failed with {len(errors)} errors:\n{preview}"
+        )
 
 
 def _base_metadata(parent: dict[str, Any], parent_id: str) -> dict[str, Any]:
@@ -391,7 +395,7 @@ def _make_heading_chunk(parent: dict[str, Any], base_metadata: dict[str, Any]) -
         ]
         if part
     )
-    chunk_id = f"v7_{base_metadata['parent_section_id']}_section_heading"
+    chunk_id = f"cp_{base_metadata['parent_section_id']}_section_heading"
     return {
         "_id": chunk_id,
         "chunk_id": chunk_id,

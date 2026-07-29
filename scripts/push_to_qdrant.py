@@ -13,8 +13,8 @@ from qdrant_client.models import Distance, PayloadSchemaType, PointStruct, Vecto
 from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
 
-DEFAULT_COLLECTION_NAME = "student_handbook_semantic_v7"
-DATA_PATH = Path("data/processed/chunks/v7_child_parent_chunks.json")
+DEFAULT_COLLECTION_NAME = "student_handbook_semantic_v9_candidate"
+DATA_PATH = Path("data/processed/chunks/child_parent_chunks.json")
 
 
 def string_to_uuid(value: str) -> str:
@@ -31,15 +31,16 @@ def main() -> None:
         print("Missing QDRANT_URL or QDRANT_API_KEY.")
         sys.exit(1)
     if not DATA_PATH.exists():
-        print(f"Missing {DATA_PATH}. Run scripts/build_v7_child_parent_index.py first.")
+        print(f"Missing {DATA_PATH}. Run scripts/build_child_parent_index.py first.")
         sys.exit(1)
 
     chunks = json.loads(DATA_PATH.read_text(encoding="utf-8"))
-    print(f"Loaded {len(chunks)} V7 child-parent chunks from {DATA_PATH}")
+    print(f"Loaded {len(chunks)} child-parent chunks from {DATA_PATH}")
     
     if not isinstance(chunks, list) or not chunks:
         raise RuntimeError(
-            "Từ chối push Qdrant vì file V7 rỗng hoặc sai định dạng."
+            "Refusing to push Qdrant because the child-parent chunk file is empty "
+            "or malformed."
         )
 
     expected_cohorts = {"K48-K49", "K50", "K51"}
@@ -50,12 +51,12 @@ def main() -> None:
         if (chunk.get("metadata") or {}).get("cohort")
     }
 
-    print(f"V7 cohorts: {sorted(actual_cohorts)}")
+    print(f"Child-parent cohorts: {sorted(actual_cohorts)}")
 
     if actual_cohorts != expected_cohorts:
         raise RuntimeError(
-            "Từ chối ghi đè Qdrant vì file V7 không đủ 3 cohort. "
-            f"Hiện có: {sorted(actual_cohorts)}"
+            "Refusing to overwrite Qdrant because the child-parent chunk file "
+            f"does not contain all 3 cohorts. Current cohorts: {sorted(actual_cohorts)}"
         )
         
     allowed_content_types = {
@@ -75,7 +76,7 @@ def main() -> None:
 
     if invalid_content_types:
         raise RuntimeError(
-            "V7 còn chứa content_type không được phép embedding: "
+            "Child-parent chunks still contain non-indexable content_type values: "
             + ", ".join(invalid_content_types)
         )
 
@@ -120,7 +121,7 @@ def main() -> None:
         )
 
     batch_size = 64
-    for start in tqdm(range(0, len(points), batch_size), desc="Upserting V7"):
+    for start in tqdm(range(0, len(points), batch_size), desc="Upserting chunks"):
         client.upsert(
             collection_name=collection_name,
             points=points[start : start + batch_size],

@@ -153,7 +153,7 @@ def select_graph_related_parent_candidates(
     return ranked[: max(0, int(max_related_total))]
 
 
-class HybridRetrieverV7:
+class ChildParentHybridRetriever:
     """Child-parent retriever for regulation_text.
 
     Qdrant stores small section_heading/child/table_like chunks. Mongo/docstore keeps
@@ -166,7 +166,7 @@ class HybridRetrieverV7:
         self,
         qdrant_url: str,
         qdrant_key: str,
-        collection_name: str = "student_handbook_semantic_v7",
+        collection_name: str = "student_handbook_semantic_v9_candidate",
     ):
         self.qdrant_client = QdrantClient(
             url=qdrant_url,
@@ -199,7 +199,7 @@ class HybridRetrieverV7:
         import threading
         def _build():
             try:
-                # Fetch all v7 child chunks from MongoDB to build BM25 index
+                # Fetch child chunks from Qdrant to build the BM25 index.
                 # Assuming collection name matches the semantic collection logic
                 # For this implementation, we query the chunk collection or use parent chunks
                 logger.info("Starting BM25 index build...")
@@ -266,7 +266,7 @@ class HybridRetrieverV7:
         graph_depth: int = 2,
         cohort: str | None = None,
     ) -> list[dict[str, Any]]:
-        """Retrieve parent-bound regulation sources using V7 child/table chunks.
+        """Retrieve parent-bound regulation sources using child/table chunks.
 
         Production ranks parents by their best vector hit, then attaches
         outbound graph neighbors as context-only related sources. PhoRanker is
@@ -288,7 +288,7 @@ class HybridRetrieverV7:
             graph_depth = 0
 
         retrieval_started = time.perf_counter()
-        logger.info("==> V7 query: %s", query)
+        logger.info("==> Child-parent query: %s", query)
         query_vector = self.embed_model.encode(query).tolist()
         query_filter = _v7_query_filter(cohort)
         search_limit = max(top_k_vector * 2, 24)
@@ -482,7 +482,7 @@ class HybridRetrieverV7:
                 )
             except Exception as exc:
                 logger.warning(
-                    "V7 graph supplement expansion failed, using primary only: %s",
+                    "Graph supplement expansion failed, using primary only: %s",
                     exc,
                 )
 
@@ -721,7 +721,7 @@ def run_hybrid_retrieval_pipeline(
 ) -> dict[str, Any]:
     """Run the configured hybrid regulation retriever and return pipeline-shaped output.
 
-    Runtime uses the V7 child-parent retriever. The adapter keeps the same
+    Runtime uses the child-parent regulation retriever. The adapter keeps the same
     output contract as the broader retrieval pipeline so the answer layer and
     UI do not need separate code paths.
     """
@@ -738,10 +738,10 @@ def run_hybrid_retrieval_pipeline(
         collection_name = (
             os.getenv("STUDENT_RAG_HYBRID_COLLECTION")
             or os.getenv("QDRANT_COLLECTION_NAME")
-            or "student_handbook_semantic_v7"
+            or "student_handbook_semantic_v9_candidate"
         )
-        logger.info("Initializing hybrid regulation retriever V7...")
-        _GLOBAL_RETRIEVER = HybridRetrieverV7(
+        logger.info("Initializing child-parent regulation retriever...")
+        _GLOBAL_RETRIEVER = ChildParentHybridRetriever(
             qdrant_url,
             qdrant_key,
             collection_name=collection_name,
@@ -812,7 +812,7 @@ if __name__ == "__main__":
     qdrant_url = os.getenv("QDRANT_URL")
     qdrant_key = os.getenv("QDRANT_API_KEY")
 
-    retriever = HybridRetrieverV7(qdrant_url, qdrant_key)
+    retriever = ChildParentHybridRetriever(qdrant_url, qdrant_key)
     res = retriever.retrieve("Dieu kien xet hoc bong la gi?")
     for r in res:
         print(f"[{r['rerank_score']:.4f}] {r['metadata']['title']}")

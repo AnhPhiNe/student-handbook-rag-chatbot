@@ -115,8 +115,8 @@ def artifact_health() -> ArtifactHealthResponse:
             kind="processed_json",
         ),
         ArtifactStatus(
-            path="data/processed/chunks/v7_child_parent_chunks.json",
-            exists=Path("data/processed/chunks/v7_child_parent_chunks.json").is_file(),
+            path="data/processed/chunks/child_parent_chunks.json",
+            exists=Path("data/processed/chunks/child_parent_chunks.json").is_file(),
             kind="processed_json",
         ),
     ]

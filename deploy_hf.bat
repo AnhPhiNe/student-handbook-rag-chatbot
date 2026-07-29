@@ -51,7 +51,7 @@ call :copy_file "data\processed\graphs\document_edges.json" "%TEMP_DIR%\data\pro
 if errorlevel 1 goto :error
 call :copy_file "data\processed\chunks\all_docstore_items.json" "%TEMP_DIR%\data\processed\chunks\all_docstore_items.json"
 if errorlevel 1 goto :error
-call :copy_file "data\processed\chunks\v7_child_parent_chunks.json" "%TEMP_DIR%\data\processed\chunks\v7_child_parent_chunks.json"
+call :copy_file "data\processed\chunks\child_parent_chunks.json" "%TEMP_DIR%\data\processed\chunks\child_parent_chunks.json"
 if errorlevel 1 goto :error
 call :copy_file "crawl_data\chuong_trinh_dao_tao.csv" "%TEMP_DIR%\crawl_data\chuong_trinh_dao_tao.csv"
 if errorlevel 1 goto :error

@@ -417,7 +417,7 @@ GEMINI_API_KEYS=gemini_key_1,gemini_key_2
 GROQ_API_KEYS=groq_key_1,groq_key_2
 
 # Release-candidate storage.
-# Set these explicitly; do not rely on legacy V7 fallback names.
+# Set these explicitly; do not rely on fallback names.
 QDRANT_URL=https://your-cluster.qdrant.io
 QDRANT_API_KEY=your_qdrant_key
 QDRANT_COLLECTION_NAME=student_handbook_semantic_v9_candidate
@@ -498,12 +498,12 @@ python scripts/evaluate_system.py --suite production --profile full \
 
 ```bash
 # Rebuild regulation chunks and graph after source-boundary changes.
-python -m scripts.build_v7_child_parent_index
+python -m scripts.build_child_parent_index
 python -m src.ingestion.graph_extractor
 
 # Push parents and regulation chunks to the explicitly configured collections.
 python -m scripts.push_to_mongo
-python scripts/push_to_qdrant_v7.py
+python scripts/push_to_qdrant.py
 
 # Backend checks.
 python -m pytest -q tests

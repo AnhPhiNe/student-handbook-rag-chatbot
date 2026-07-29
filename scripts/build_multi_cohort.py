@@ -1000,15 +1000,15 @@ def main():
     else:
         print(
             "\nLegacy vector store disabled. "
-            "Hệ thống chỉ build Qdrant V7."
+            "The pipeline only builds the child-parent Qdrant index."
         )
 
     if os.environ.get("PUSH_REMOTE", "").strip().lower() in {"1", "true", "yes", "on"}:
         print(f"\n{'='*50}\n--- PUSHING TO MONGODB & QDRANT CLOUD ---\n{'='*50}")
         subprocess.run([sys.executable, "-m", "scripts.push_to_mongo"], check=True)
-        print("Building V7 Child/Parent Index before pushing to Qdrant...")
-        subprocess.run([sys.executable, "-m", "scripts.build_v7_child_parent_index"], check=True)
-        subprocess.run([sys.executable, "-m", "scripts.push_to_qdrant_v7"], check=True)
+        print("Building child-parent index before pushing to Qdrant...")
+        subprocess.run([sys.executable, "-m", "scripts.build_child_parent_index"], check=True)
+        subprocess.run([sys.executable, "-m", "scripts.push_to_qdrant"], check=True)
     else:
         print("\nRemote push skipped. Set PUSH_REMOTE=1 to upload MongoDB/Qdrant.")
 

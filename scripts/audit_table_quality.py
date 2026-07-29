@@ -9,7 +9,7 @@ from typing import Any
 
 
 DEFAULT_DOCSTORE_PATH = Path("data/processed/chunks/all_docstore_items.json")
-DEFAULT_V7_PATH = Path("data/processed/chunks/v7_child_parent_chunks.json")
+DEFAULT_CHUNK_INDEX_PATH = Path("data/processed/chunks/child_parent_chunks.json")
 DEFAULT_OUTPUT_PATH = Path("data/processed/metadata/table_quality_report.json")
 DEFAULT_REGISTRY_PATH = Path("data/processed/tables/structured_tables_registry.json")
 DEFAULT_DIRECTORY_DIR = Path("data/processed/directories")
@@ -153,7 +153,7 @@ def classify_item(item: dict[str, Any]) -> dict[str, Any] | None:
 
 def build_report(
     docstore_path: Path = DEFAULT_DOCSTORE_PATH,
-    v7_path: Path = DEFAULT_V7_PATH,
+    chunk_index_path: Path = DEFAULT_CHUNK_INDEX_PATH,
     registry_path: Path = DEFAULT_REGISTRY_PATH,
     directory_dir: Path = DEFAULT_DIRECTORY_DIR,
 ) -> dict[str, Any]:
@@ -186,10 +186,10 @@ def build_report(
         if has_error
     ]
 
-    v7_chunks = load_json(v7_path, [])
+    chunk_index = load_json(chunk_index_path, [])
     table_like_chunks = [
         chunk
-        for chunk in v7_chunks
+        for chunk in chunk_index
         if isinstance(chunk, dict)
         and (
             chunk.get("chunk_type") == "table_like_row"
@@ -246,13 +246,13 @@ def build_report(
     return {
         "status": "ok",
         "docstore_path": str(docstore_path),
-        "v7_path": str(v7_path),
+        "chunk_index_path": str(chunk_index_path),
         "summary": {
             "docstore_item_count": len(items),
             "classified_item_count": len(classified),
             "category_counts": dict(sorted(category_counts.items())),
             "cohort_category_counts": dict(sorted(cohort_counts.items())),
-            "v7_table_like_chunk_count": len(table_like_chunks),
+            "table_like_chunk_count": len(table_like_chunks),
             "regulation_table_registry_count": len(registry),
             "directory_table_record_count": sum(
                 value["count"] for value in directory_catalogs.values()
@@ -278,7 +278,11 @@ def build_report(
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Audit the two table categories.")
     parser.add_argument("--docstore-path", type=Path, default=DEFAULT_DOCSTORE_PATH)
-    parser.add_argument("--v7-path", type=Path, default=DEFAULT_V7_PATH)
+    parser.add_argument(
+        "--chunk-index-path",
+        type=Path,
+        default=DEFAULT_CHUNK_INDEX_PATH,
+    )
     parser.add_argument("--output-path", type=Path, default=DEFAULT_OUTPUT_PATH)
     parser.add_argument("--registry-path", type=Path, default=DEFAULT_REGISTRY_PATH)
     parser.add_argument("--directory-dir", type=Path, default=DEFAULT_DIRECTORY_DIR)
@@ -289,7 +293,7 @@ def main() -> None:
     args = parse_args()
     report = build_report(
         args.docstore_path,
-        args.v7_path,
+        args.chunk_index_path,
         args.registry_path,
         args.directory_dir,
     )

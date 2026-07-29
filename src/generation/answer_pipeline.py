@@ -37,7 +37,7 @@ from .response_cache import get_response_cache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v25-gemini-threadsafe-retry"
+PIPELINE_VERSION = "v26-acronym-aware-router"
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
 )

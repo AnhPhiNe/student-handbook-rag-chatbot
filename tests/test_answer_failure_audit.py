@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from scripts.audit_answer_failures_v8 import (
+from scripts.audit_answer_failures import (
     build_answer_failure_audit,
     build_human_audit_sample,
 )

@@ -221,27 +221,27 @@ def _nested_counter_to_dict(data: dict[str, Counter[str]]) -> dict[str, dict[str
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build an offline failure audit from V8 answer and judge reports."
+        description="Build an offline failure audit from generated answer and judge reports."
     )
     parser.add_argument(
         "--cases",
         type=Path,
-        default=Path("data/eval/v8_4_holdout/generated_answer_cases.json"),
+        default=Path("data/eval/final_holdout/generated_answer_cases.json"),
     )
     parser.add_argument(
         "--answers",
         type=Path,
-        default=Path("data/eval/reports/v8_4_holdout/answer_cache_full.json"),
+        default=Path("data/eval/reports/release_candidate/answer_cache_full.json"),
     )
     parser.add_argument(
         "--judge",
         type=Path,
-        default=Path("data/eval/reports/v8_4_holdout/generated_answer_judge_full.json"),
+        default=Path("data/eval/reports/release_candidate/generated_answer_judge_full.json"),
     )
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("data/eval/reports/v8_4_holdout/answer_failure_audit.json"),
+        default=Path("data/eval/reports/release_candidate/answer_failure_audit.json"),
     )
     parser.add_argument("--human-audit-output", type=Path, default=None)
     parser.add_argument("--low-count", type=int, default=20)

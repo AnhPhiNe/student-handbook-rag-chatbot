@@ -1,6 +1,6 @@
 # HCMUE AI - Student Handbook RAG Assistant
 
-> **Release candidate:** V9.1.1 dataset / V25 runtime (July 2026)  
+> **Release candidate:** final holdout / V25 runtime (July 2026)  
 > Independent, non-commercial student project. This is not an official application of Ho Chi Minh City University of Education. Important academic or financial decisions should be verified against the cited handbook section or an official university office.
 
 <p align="center">
@@ -219,7 +219,7 @@ Structured data is stored separately in `data/processed/tables/` and `data/proce
 
 ## Evaluation
 
-The final evaluation uses the frozen **V9.1.1 holdout** and records dataset hashes, document-store hash, configuration hashes, Git commit, model IDs, storage collections, Python version, and run timestamp. Quality suites used Qwen routing with `reasoning_effort=none`; the V25 production-performance run used `reasoning_effort=auto`. These suite-specific settings are retained in each report's provenance.
+The final evaluation uses the frozen **final holdout** and records dataset hashes, document-store hash, configuration hashes, Git commit, model IDs, storage collections, Python version, and run timestamp. Quality suites used Qwen routing with `reasoning_effort=none`; the V25 production-performance run used `reasoning_effort=auto`. These suite-specific settings are retained in each report's provenance.
 
 | Suite | Cases | Purpose |
 |---|---:|---|
@@ -451,47 +451,47 @@ See `.env.example` for the complete template.
 
 ```bash
 # Validate the frozen dataset and source bindings.
-python scripts/evaluate_system_v8.py --suite validate --profile full \
-  --dataset data/eval/v9_1_1_final_holdout \
-  --output data/eval/reports/v9_1_1_release_candidate
+python scripts/evaluate_system.py --suite validate --profile full \
+  --dataset data/eval/final_holdout \
+  --output data/eval/reports/release_candidate
 
 # Structured routing and resolution.
-python scripts/evaluate_system_v8.py --suite deterministic --profile full \
-  --dataset data/eval/v9_1_1_final_holdout \
-  --output data/eval/reports/v9_1_1_release_candidate
+python scripts/evaluate_system.py --suite deterministic --profile full \
+  --dataset data/eval/final_holdout \
+  --output data/eval/reports/release_candidate
 
 # End-to-end Router + query handling + retrieval.
-python scripts/evaluate_system_v8.py --suite retrieval --profile full \
+python scripts/evaluate_system.py --suite retrieval --profile full \
   --backend qdrant \
   --ablation vector_primary_graph_supplement \
   --retrieval-scope end_to_end \
-  --dataset data/eval/v9_1_1_final_holdout \
-  --output data/eval/reports/v9_1_1_release_candidate
+  --dataset data/eval/final_holdout \
+  --output data/eval/reports/release_candidate
 
 # Generate answers once, then Judge the cached answers.
-python scripts/evaluate_system_v8.py --suite generate --profile full \
+python scripts/evaluate_system.py --suite generate --profile full \
   --backend qdrant \
-  --dataset data/eval/v9_1_1_final_holdout \
-  --output data/eval/reports/v9_1_1_release_candidate
+  --dataset data/eval/final_holdout \
+  --output data/eval/reports/release_candidate
 
-python scripts/evaluate_system_v8.py --suite judge --profile full \
+python scripts/evaluate_system.py --suite judge --profile full \
   --backend qdrant \
-  --dataset data/eval/v9_1_1_final_holdout \
-  --output data/eval/reports/v9_1_1_release_candidate
+  --dataset data/eval/final_holdout \
+  --output data/eval/reports/release_candidate
 
 # Fault injection does not call the production LLM APIs.
-python scripts/evaluate_system_v8.py --suite faults --profile full \
-  --dataset data/eval/v9_1_1_final_holdout \
-  --output data/eval/reports/v9_1_1_release_candidate_v25
+python scripts/evaluate_system.py --suite faults --profile full \
+  --dataset data/eval/final_holdout \
+  --output data/eval/reports/production_release_candidate
 ```
 
 For production performance, start the API first and then run:
 
 ```bash
-python scripts/evaluate_system_v8.py --suite production --profile full \
+python scripts/evaluate_system.py --suite production --profile full \
   --base-url http://127.0.0.1:8000 \
-  --dataset data/eval/v9_1_1_final_holdout \
-  --output data/eval/reports/v9_1_1_release_candidate_v25
+  --dataset data/eval/final_holdout \
+  --output data/eval/reports/production_release_candidate
 ```
 
 ## Build and Test
@@ -507,7 +507,7 @@ python scripts/push_to_qdrant_v7.py
 
 # Backend checks.
 python -m pytest -q tests
-python -m ruff check src tests scripts/evaluate_system_v8.py
+python -m ruff check src tests scripts/evaluate_system.py
 
 # Frontend checks.
 cd frontend

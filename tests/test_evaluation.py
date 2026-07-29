@@ -55,9 +55,9 @@ def _valid_judge_payload() -> str:
     )
 
 
-def test_frozen_v91_bundle_is_valid() -> None:
+def test_frozen_final_bundle_is_valid() -> None:
     result = validate_bundle(
-        ROOT / "data" / "eval" / "v9_1_final_holdout",
+        ROOT / "data" / "eval" / "final_holdout",
         ROOT / "data" / "processed" / "chunks" / "all_docstore_items.json",
     )
     assert result["valid"], result["errors"]
@@ -68,32 +68,10 @@ def test_frozen_v91_bundle_is_valid() -> None:
         "production": 60,
     }
 
-
-def test_frozen_v91_holdout_is_unseen_from_v8() -> None:
-    holdout_dir = ROOT / "data" / "eval" / "v9_1_final_holdout"
-    result = validate_bundle(
-        holdout_dir,
-        ROOT / "data" / "processed" / "chunks" / "all_docstore_items.json",
-    )
-    main_cases = json.loads(
-        (ROOT / "data" / "eval" / "v8" / "deterministic_tool_cases.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    holdout_cases = json.loads(
-        (holdout_dir / "deterministic_tool_cases.json").read_text(encoding="utf-8")
-    )
-
-    assert result["valid"], result["errors"]
-    assert {case["query"].casefold() for case in main_cases}.isdisjoint(
-        {case["query"].casefold() for case in holdout_cases}
-    )
-
-
 def test_validator_rejects_query_reused_from_legacy_eval(tmp_path: Path) -> None:
     eval_root = tmp_path / "eval"
-    bundle_dir = eval_root / "v9_1_final_holdout"
-    shutil.copytree(ROOT / "data" / "eval" / "v9_1_final_holdout", bundle_dir)
+    bundle_dir = eval_root / "final_holdout"
+    shutil.copytree(ROOT / "data" / "eval" / "final_holdout", bundle_dir)
     deterministic = json.loads(
         (bundle_dir / "deterministic_tool_cases.json").read_text(encoding="utf-8")
     )

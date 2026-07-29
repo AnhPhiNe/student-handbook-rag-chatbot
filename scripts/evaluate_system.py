@@ -33,8 +33,8 @@ from src.evaluation.suites import (
 from src.generation.answer_pipeline import PIPELINE_VERSION
 
 
-DEFAULT_DATASET = ROOT / "data" / "eval" / "v8_4_holdout"
-DEFAULT_OUTPUT = ROOT / "data" / "eval" / "reports" / "v8_4_holdout"
+DEFAULT_DATASET = ROOT / "data" / "eval" / "final_holdout"
+DEFAULT_OUTPUT = ROOT / "data" / "eval" / "reports" / "release_candidate"
 DEFAULT_DOCSTORE = ROOT / "data" / "processed" / "chunks" / "all_docstore_items.json"
 AI_ROUTER_CONFIG = ROOT / "configs" / "ai_router.yaml"
 LOOKUP_REGISTRY_CONFIG = ROOT / "configs" / "structured_lookup_registry.yaml"
@@ -317,10 +317,10 @@ def main() -> None:
     parser.add_argument(
         "--retrieval-scope",
         choices=("pure", "end_to_end"),
-        default="pure",
+        default="end_to_end",
         help=(
-            "pure evaluates regulation retrieval after routing; end_to_end also "
-            "counts router clarification/structured/out-of-domain decisions"
+            "end_to_end scores routing/query-handling and retrieval together; "
+            "pure is retained only for retriever-only diagnostics"
         ),
     )
     parser.add_argument("--dataset", type=Path, default=DEFAULT_DATASET)
@@ -444,7 +444,7 @@ def main() -> None:
             resume=args.resume,
             limit=args.limit,
         )
-        audit_path = args.human_audit or (args.output / "human_audit_v8.json")
+        audit_path = args.human_audit or (args.output / "human_audit.json")
         if args.human_audit is None and not audit_path.exists():
             template = report.get("human_audit_template") or []
             audit_path.write_text(
@@ -487,10 +487,10 @@ def main() -> None:
             "tests/test_gemini_client.py::GeminiKeyPoolTest::test_key_pool_load_balances_between_keys",
             "tests/test_gemini_client.py::GeminiKeyPoolTest::test_key_pool_skips_key_in_cooldown",
             "tests/test_gemini_client.py::GeminiKeyPoolTest::test_key_pool_blocks_daily_exhausted_keys",
-            "tests/test_evaluation_v8.py::test_gemini_pool_reports_all_keys_temporarily_limited",
-            "tests/test_evaluation_v8.py::test_gemini_empty_response_is_not_success",
-            "tests/test_evaluation_v8.py::test_retrieval_exception_stays_in_denominator",
-            "tests/test_evaluation_v8.py::test_mongo_parent_miss_cannot_count_as_retrieval_hit",
+            "tests/test_evaluation.py::test_gemini_pool_reports_all_keys_temporarily_limited",
+            "tests/test_evaluation.py::test_gemini_empty_response_is_not_success",
+            "tests/test_evaluation.py::test_retrieval_exception_stays_in_denominator",
+            "tests/test_evaluation.py::test_mongo_parent_miss_cannot_count_as_retrieval_hit",
             "tests/api/test_api_routes.py::ApiRoutesTest::test_chat_returns_busy_when_capacity_is_full",
         ]
         junit_path = args.output / "fault_injection_junit.xml"

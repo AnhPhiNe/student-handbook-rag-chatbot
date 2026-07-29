@@ -41,9 +41,25 @@ call :copy_file "LICENSE" "%TEMP_DIR%\LICENSE"
 if errorlevel 1 goto :error
 
 echo [3/5] Copying runtime data allowlist...
-call :copy_dir "data\processed\tables" "%TEMP_DIR%\data\processed\tables"
+call :copy_file "data\processed\tables\scoring_tables.json" "%TEMP_DIR%\data\processed\tables\scoring_tables.json"
 if errorlevel 1 goto :error
-call :copy_dir "data\processed\directories" "%TEMP_DIR%\data\processed\directories"
+call :copy_file "data\processed\tables\formula_rules.json" "%TEMP_DIR%\data\processed\tables\formula_rules.json"
+if errorlevel 1 goto :error
+call :copy_file "data\processed\tables\structured_tables_registry.json" "%TEMP_DIR%\data\processed\tables\structured_tables_registry.json"
+if errorlevel 1 goto :error
+call :copy_file "data\processed\tables\foreign_language_equivalency_table.json" "%TEMP_DIR%\data\processed\tables\foreign_language_equivalency_table.json"
+if errorlevel 1 goto :error
+call :copy_file "data\processed\directories\student_service_directory.json" "%TEMP_DIR%\data\processed\directories\student_service_directory.json"
+if errorlevel 1 goto :error
+call :copy_file "data\processed\directories\student_office_profiles.json" "%TEMP_DIR%\data\processed\directories\student_office_profiles.json"
+if errorlevel 1 goto :error
+call :copy_file "data\processed\directories\student_faculty_profiles.json" "%TEMP_DIR%\data\processed\directories\student_faculty_profiles.json"
+if errorlevel 1 goto :error
+call :copy_file "data\processed\directories\faculty_directory.json" "%TEMP_DIR%\data\processed\directories\faculty_directory.json"
+if errorlevel 1 goto :error
+call :copy_file "data\processed\directories\program_directory.json" "%TEMP_DIR%\data\processed\directories\program_directory.json"
+if errorlevel 1 goto :error
+call :copy_file "data\processed\directories\faculty_program_directory.json" "%TEMP_DIR%\data\processed\directories\faculty_program_directory.json"
 if errorlevel 1 goto :error
 call :copy_dir "data\processed\entities" "%TEMP_DIR%\data\processed\entities"
 if errorlevel 1 goto :error
@@ -52,8 +68,6 @@ if errorlevel 1 goto :error
 call :copy_file "data\processed\chunks\all_docstore_items.json" "%TEMP_DIR%\data\processed\chunks\all_docstore_items.json"
 if errorlevel 1 goto :error
 call :copy_file "data\processed\chunks\child_parent_chunks.json" "%TEMP_DIR%\data\processed\chunks\child_parent_chunks.json"
-if errorlevel 1 goto :error
-call :copy_file "crawl_data\chuong_trinh_dao_tao.csv" "%TEMP_DIR%\crawl_data\chuong_trinh_dao_tao.csv"
 if errorlevel 1 goto :error
 
 echo [4/5] Writing Hugging Face Space metadata...

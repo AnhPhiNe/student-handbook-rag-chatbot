@@ -174,6 +174,54 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertEqual(first.status_code, 200)
         self.assertEqual(second.status_code, 429)
         self.assertEqual(second.json()["detail"], "Rate limit exceeded")
+        self.assertEqual(second.headers["Retry-After"], "60")
+
+    def test_chat_rate_limit_separates_browsers_on_the_same_ip(self) -> None:
+        first_client = "00000000-0000-4000-8000-000000000001"
+        second_client = "00000000-0000-4000-8000-000000000002"
+        env = {
+            "STUDENT_RAG_RATE_LIMIT_PER_MINUTE": "1",
+            "STUDENT_RAG_IP_RATE_LIMIT_PER_MINUTE": "10",
+        }
+        with patch.dict("os.environ", env):
+            first = self.client.post(
+                "/chat",
+                headers={"X-Client-ID": first_client},
+                json={"query": "Email phong dao tao?"},
+            )
+            second = self.client.post(
+                "/chat",
+                headers={"X-Client-ID": second_client},
+                json={"query": "Email phong dao tao?"},
+            )
+            repeated = self.client.post(
+                "/chat",
+                headers={"X-Client-ID": first_client},
+                json={"query": "Email phong dao tao?"},
+            )
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        self.assertEqual(repeated.status_code, 429)
+
+    def test_chat_keeps_public_ip_abuse_guard(self) -> None:
+        env = {
+            "STUDENT_RAG_RATE_LIMIT_PER_MINUTE": "10",
+            "STUDENT_RAG_IP_RATE_LIMIT_PER_MINUTE": "2",
+        }
+        with patch.dict("os.environ", env):
+            responses = [
+                self.client.post(
+                    "/chat",
+                    headers={
+                        "X-Client-ID": f"00000000-0000-4000-8000-{index:012d}",
+                    },
+                    json={"query": "Email phong dao tao?"},
+                )
+                for index in range(1, 4)
+            ]
+
+        self.assertEqual([response.status_code for response in responses], [200, 200, 429])
 
     def test_chat_returns_busy_when_capacity_is_full(self) -> None:
         with patch.dict(
@@ -202,6 +250,7 @@ class ApiRoutesTest(unittest.TestCase):
     def test_chat_rate_limit_defaults_to_5(self) -> None:
         with patch.dict("os.environ", {}, clear=True):
             self.assertEqual(chat_controls.rate_limit_per_minute(), 5)
+            self.assertEqual(chat_controls.ip_rate_limit_per_minute(), 120)
 
     def test_chat_stream_rejects_empty_query(self) -> None:
         response = self.client.post("/chat/stream", json={"query": "   "})
@@ -220,10 +269,16 @@ class ApiRoutesTest(unittest.TestCase):
         )
 
     def test_chat_and_stream_share_rate_limit(self) -> None:
+        client_id = "00000000-0000-4000-8000-000000000003"
         with patch.dict("os.environ", {"STUDENT_RAG_RATE_LIMIT_PER_MINUTE": "1"}):
-            first = self.client.post("/chat", json={"query": "Email phong dao tao?"})
+            first = self.client.post(
+                "/chat",
+                headers={"X-Client-ID": client_id},
+                json={"query": "Email phong dao tao?"},
+            )
             second = self.client.post(
                 "/chat/stream",
+                headers={"X-Client-ID": client_id},
                 json={"query": "Email phong dao tao?"},
             )
 

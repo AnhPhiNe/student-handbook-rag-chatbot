@@ -1,21 +1,27 @@
 from __future__ import annotations
 
 import contextlib
+import math
 import os
 import threading
 import time
 from collections import defaultdict, deque
 from typing import Deque
+from uuid import UUID
 
 from fastapi import HTTPException, Request
 
 
 DEFAULT_MAX_QUERY_CHARS = 1000
 DEFAULT_RATE_LIMIT_PER_MINUTE = 5
+DEFAULT_IP_RATE_LIMIT_PER_MINUTE = 120
 DEFAULT_MAX_CONCURRENT_CHAT = 3
 DEFAULT_MAX_QUEUE_SIZE = 10
 DEFAULT_QUEUE_TIMEOUT_SECONDS = 15.0
+CLIENT_ID_HEADER = "X-Client-ID"
 _RATE_LIMIT_BUCKETS: dict[str, Deque[float]] = defaultdict(deque)
+_RATE_LIMIT_LOCK = threading.Lock()
+_RATE_LIMIT_LAST_CLEANUP = 0.0
 _CAPACITY_LOCK = threading.Lock()
 _CAPACITY_LIMITER = None
 _CAPACITY_SETTINGS: tuple[int, int, float] | None = None
@@ -126,40 +132,73 @@ def validate_chat_query(raw_query: str) -> str:
 
 
 def enforce_chat_rate_limit(request: Request) -> None:
-    """Áp dụng giới hạn số lượng yêu cầu (rate limit) cho mỗi người dùng.
-
-    Hàm này theo dõi số lượng yêu cầu mà một người dùng (được xác định bằng địa chỉ IP)
-    gửi trong một khoảng thời gian nhất định (mặc định là 1 phút).
-    Nếu người dùng gửi quá nhiều yêu cầu, họ sẽ bị chặn và nhận lỗi HTTP 429.
-
-    Args:
-        request (Request): Đối tượng yêu cầu HTTP từ FastAPI, chứa thông tin về người gửi
-                           (ví dụ: địa chỉ IP của client).
-
-    Returns:
-        None: Hàm không trả về giá trị nào. Nếu giới hạn bị vượt quá, nó sẽ ném ra lỗi.
-
-    Raises:
-        HTTPException: Nếu người dùng vượt quá giới hạn số lượng yêu cầu (status_code=429).
-    """
-    limit = rate_limit_per_minute()
-    if limit <= 0:  # Nếu giới hạn là 0 hoặc âm, tức là không áp dụng giới hạn
+    """Apply a per-browser limit plus a broader public-IP abuse guard."""
+    client_limit = rate_limit_per_minute()
+    ip_limit = ip_rate_limit_per_minute()
+    if client_limit <= 0 and ip_limit <= 0:
         return
 
     client_host = request.client.host if request.client else "unknown"
-    now = time.monotonic()  # Lấy thời gian hiện tại
-    bucket = _RATE_LIMIT_BUCKETS[client_host]  # Lấy "thùng" chứa các yêu cầu của client này
+    client_id = _validated_client_id(request.headers.get(CLIENT_ID_HEADER))
+    checks: list[tuple[str, int]] = []
 
-    # Xóa các yêu cầu đã cũ hơn 60 giây (1 phút) khỏi "thùng"
-    while bucket and now - bucket[0] >= 60:
-        bucket.popleft()
+    if client_id:
+        if client_limit > 0:
+            checks.append((f"client:{client_id}", client_limit))
+        if ip_limit > 0:
+            checks.append((f"ip:{client_host}", ip_limit))
+    else:
+        # Older or non-browser clients keep working without the custom header.
+        fallback_limit = client_limit if client_limit > 0 else ip_limit
+        if fallback_limit > 0:
+            checks.append((f"ip:{client_host}", fallback_limit))
 
-    # Nếu số lượng yêu cầu còn lại trong "thùng" đã đạt đến giới hạn
-    if len(bucket) >= limit:
-        raise HTTPException(status_code=429, detail="Rate limit exceeded")
+    now = time.monotonic()
+    with _RATE_LIMIT_LOCK:
+        _cleanup_rate_limit_buckets(now)
+        retry_after = 0
+        for key, limit in checks:
+            bucket = _RATE_LIMIT_BUCKETS[key]
+            while bucket and now - bucket[0] >= 60:
+                bucket.popleft()
+            if len(bucket) >= limit:
+                retry_after = max(1, math.ceil(60 - (now - bucket[0])))
+                break
 
-    # Thêm thời gian của yêu cầu hiện tại vào "thùng"
-    bucket.append(now)
+        if retry_after:
+            raise HTTPException(
+                status_code=429,
+                detail="Rate limit exceeded",
+                headers={"Retry-After": str(retry_after)},
+            )
+
+        for key, _ in checks:
+            _RATE_LIMIT_BUCKETS[key].append(now)
+
+
+def _validated_client_id(raw_value: str | None) -> str | None:
+    """Accept only anonymous UUIDs so arbitrary headers cannot grow bucket keys."""
+    if not raw_value:
+        return None
+    try:
+        return str(UUID(raw_value.strip()))
+    except (ValueError, AttributeError):
+        return None
+
+
+def _cleanup_rate_limit_buckets(now: float) -> None:
+    """Remove inactive sliding-window buckets once per minute."""
+    global _RATE_LIMIT_LAST_CLEANUP
+    if now - _RATE_LIMIT_LAST_CLEANUP < 60:
+        return
+    expired_keys = [
+        key
+        for key, bucket in _RATE_LIMIT_BUCKETS.items()
+        if not bucket or now - bucket[-1] >= 60
+    ]
+    for key in expired_keys:
+        _RATE_LIMIT_BUCKETS.pop(key, None)
+    _RATE_LIMIT_LAST_CLEANUP = now
 
 
 @contextlib.contextmanager
@@ -259,6 +298,15 @@ def rate_limit_per_minute() -> int:
         # Nếu giá trị trong biến môi trường không phải là số, dùng giá trị mặc định
         return DEFAULT_RATE_LIMIT_PER_MINUTE
     return max(0, value)  # Đảm bảo giá trị trả về ít nhất là 0
+
+
+def ip_rate_limit_per_minute() -> int:
+    """Return the broader public-IP abuse limit for identified browser clients."""
+    return _env_int(
+        "STUDENT_RAG_IP_RATE_LIMIT_PER_MINUTE",
+        DEFAULT_IP_RATE_LIMIT_PER_MINUTE,
+        minimum=0,
+    )
 
 
 def _env_int(name: str, default: int, *, minimum: int) -> int:

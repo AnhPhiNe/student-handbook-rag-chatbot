@@ -168,7 +168,8 @@ Qdrant stores only `regulation_text`. Structured JSON rows are not inserted as s
 - Retry and key failover for `429`, timeout, unavailable, and transport-disconnect errors.
 - Concurrency-safe key state and request-local Gemini clients.
 - Exact response caching with Redis and local JSON fallback; no semantic-cache verifier.
-- FastAPI rate limiting, bounded concurrency, queue backpressure, streaming, and Langfuse tracing.
+- Two-tier FastAPI rate limiting: an anonymous browser UUID receives its own quota, while a broader public-IP guard still limits abuse from rotating clients. API clients without `X-Client-ID` fall back to IP limiting.
+- Bounded concurrency, queue backpressure, streaming, and Langfuse tracing.
 
 ## Design Trade-offs
 
@@ -430,7 +431,10 @@ LANGFUSE_PUBLIC_KEY=pk-lf-...
 LANGFUSE_HOST=https://cloud.langfuse.com
 
 # API controls.
+# Per anonymous browser installation. Requests without X-Client-ID fall back to IP.
 STUDENT_RAG_RATE_LIMIT_PER_MINUTE=20
+# Broader abuse guard for all browsers sharing one public IP.
+STUDENT_RAG_IP_RATE_LIMIT_PER_MINUTE=120
 STUDENT_RAG_MAX_CONCURRENT_CHAT=3
 STUDENT_RAG_MAX_QUEUE_SIZE=10
 STUDENT_RAG_QUEUE_TIMEOUT_SECONDS=15

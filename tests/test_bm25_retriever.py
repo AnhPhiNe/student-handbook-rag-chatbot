@@ -60,7 +60,7 @@ def test_sparse_search_returns_empty_for_unbuilt_index() -> None:
     assert retriever.sparse_search("hoc bong", top_k=5) == []
 
 
-def test_acronym_registry_merges_config_directory_and_fallback(tmp_path) -> None:
+def test_acronym_registry_merges_config_and_directory(tmp_path) -> None:
     vocabulary_path = tmp_path / "query_vocabulary.yaml"
     vocabulary_path.write_text(
         """
@@ -69,6 +69,8 @@ replace_slangs:
     replace_with: Công tác chính trị và Học sinh, sinh viên
   - match: KTX
     replace_with: ký túc xá
+  - match: GPA
+    replace_with: điểm trung bình
   - match: hoc phi
     replace_with: học phí
 """.strip(),
@@ -109,13 +111,13 @@ replace_slangs:
     assert retriever._is_known_acronym_token("ktx")
 
 
-def test_acronym_registry_uses_fallback_when_sources_are_missing(tmp_path) -> None:
+def test_acronym_registry_is_empty_when_sources_are_missing(tmp_path) -> None:
     retriever = BM25Retriever(
         vocabulary_path=tmp_path / "missing.yaml",
         program_directory_path=tmp_path / "missing.json",
     )
 
-    assert {"CNTT", "GDQP", "GPA", "KTX"} <= retriever.acronym_whitelist
+    assert retriever.acronym_whitelist == set()
 
 
 def test_tokenize_preserves_configured_acronyms(tmp_path) -> None:
@@ -137,3 +139,41 @@ replace_slangs:
     tokens = retriever._tokenize("Liên hệ CTCT&HSSV")
 
     assert "ctcthssv" in tokens
+
+
+def test_bm25_matches_full_name_from_safe_generated_acronym(tmp_path) -> None:
+    vocabulary_path = tmp_path / "query_vocabulary.yaml"
+    vocabulary_path.write_text("replace_slangs: []", encoding="utf-8")
+    directory_path = tmp_path / "program_directory.json"
+    directory_path.write_text(
+        """
+[
+  {
+    "program_name": "Giáo dục Mầm non",
+    "faculty_name": "Khoa Giáo dục Mầm non"
+  }
+]
+""".strip(),
+        encoding="utf-8",
+    )
+    retriever = BM25Retriever(
+        vocabulary_path=vocabulary_path,
+        program_directory_path=directory_path,
+    )
+    expected = _chunk(
+        "expected",
+        "Ngành Giáo dục Mầm non đào tạo giáo viên.",
+        cohort="K51",
+    )
+    retriever.build_bm25_index(
+        [
+            expected,
+            _chunk("other-1", "Quy định học phí sinh viên.", cohort="K51"),
+            _chunk("other-2", "Thông tin ký túc xá.", cohort="K51"),
+        ]
+    )
+
+    results = retriever.search_bm25("gdmn", top_k=3)
+
+    assert results
+    assert results[0][1]["chunk_id"] == "expected"

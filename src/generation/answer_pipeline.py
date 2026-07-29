@@ -124,7 +124,9 @@ class AnswerPipeline:
             if query_expansion_rules_path and Path(query_expansion_rules_path).is_file()
             else {}
         )
-        self.slang_normalizer = SlangNormalizer()
+        self.slang_normalizer = SlangNormalizer(
+            program_directory=self.program_directory,
+        )
 
 
         self.model = load_embedding_model(self.config["embedding"]["model_name"])
@@ -921,12 +923,14 @@ class AnswerPipeline:
                 "raw_query": query,
                 "deterministic_validated": False,
             }
-        
+
+        normalized_retrieval_query = self.slang_normalizer.normalize(effective_query)
+
         if router_decision.get("execution_mode") == "structured":
             from src.retrieval.core.structured_dispatcher import resolve_structured_decision
             resolution = resolve_structured_decision(
                 router_decision,
-                query=effective_query,
+                query=normalized_retrieval_query,
                 cohort=cohort,
                 scoring_tables=self.scoring_tables,
                 formula_rules=self.formula_rules,
@@ -942,7 +946,7 @@ class AnswerPipeline:
                 is_clarification = resolution.result_kind == "clarification"
                 return {
                     "query": query,
-                    "retrieval_query": router_decision.get("retrieval_query") or query,
+                    "retrieval_query": normalized_retrieval_query,
                     "intent": router_decision.get("intent"),
                     "strategy": resolution.strategy,
                     "router_decision": router_decision,
@@ -960,8 +964,6 @@ class AnswerPipeline:
                     "deterministic_validated": not is_clarification
                 }
 
-        normalized_retrieval_query = self.slang_normalizer.normalize(effective_query)
-        
         result = run_hybrid_retrieval_pipeline(
             query=effective_query,
             model=self.model,

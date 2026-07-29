@@ -307,6 +307,46 @@ def test_answer_pipeline_uses_validated_query_before_slang(monkeypatch) -> None:
     assert result["query_handling"]["source"] == "validated_normalization"
 
 
+def test_answer_pipeline_uses_slang_normalization_for_structured_lookup(
+    monkeypatch,
+) -> None:
+    pipeline = _minimal_pipeline()
+
+    class DummyRouter:
+        def route(self, query, chat_history=None):
+            return _decision(
+                route="structured",
+                execution_mode="structured",
+                intent="program_lookup",
+                lookup_type="program",
+                normalized_query=query,
+                retrieval_query=query,
+            )
+
+    class StructuredResolution:
+        result = {"items": [{"program_name": "Công nghệ Thông tin"}]}
+        result_kind = "answer"
+        strategy = "structured"
+
+    captured = {}
+
+    def fake_resolver(decision, **kwargs):
+        captured.update(kwargs)
+        return StructuredResolution()
+
+    pipeline.router = DummyRouter()
+    monkeypatch.setattr(
+        "src.retrieval.core.structured_dispatcher.resolve_structured_decision",
+        fake_resolver,
+    )
+
+    result = pipeline._run_retrieval("cntt có ngành nào?", cohort="K51")
+
+    assert captured["query"] == "slang::cntt có ngành nào?"
+    assert result["retrieval_query"] == "slang::cntt có ngành nào?"
+    assert result["strategy"] == "structured"
+
+
 def test_answer_pipeline_canonicalizes_out_of_domain_metadata() -> None:
     pipeline = _minimal_pipeline()
 

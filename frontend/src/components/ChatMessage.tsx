@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, Brain, ExternalLink } from 'lucide-react';
 import type { Citation, Message } from '../hooks/useChat';
+import { getApiClientHeaders } from '../utils/clientIdentity';
 import { useToast } from './Toast';
 const userAvatarImg = '/user_avatar.png';
 const botAvatarImg = '/bot_avatar.png';
@@ -248,7 +249,7 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
     try {
       await fetch(`${API_BASE_URL}/chat/feedback`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getApiClientHeaders(),
         body: JSON.stringify({
           run_id: message.runId,
           score: type === 'like' ? 1.0 : 0.0,

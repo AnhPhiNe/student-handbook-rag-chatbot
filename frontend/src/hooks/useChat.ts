@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { getApiClientHeaders } from '../utils/clientIdentity';
 
 export interface Citation {
   chunk_id: string;
@@ -99,7 +100,7 @@ export function useChat(cohort: string = 'K48-K49') {
 
       const response = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getApiClientHeaders(),
         body: JSON.stringify({ query: userMsg.content, chat_history: chatHistory, cohort }),
         signal: controller.signal
       });

@@ -27,7 +27,7 @@ retrieval:
 llm:
   provider: gemini
   model_name: gemini-3.1-flash-lite
-  api_key_env_var: GEMINI_API_KEY
+  api_keys_env_var: GEMINI_API_KEYS
   temperature: 0.0
   max_output_tokens: 4096
   max_retries: 3

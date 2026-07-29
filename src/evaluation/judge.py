@@ -57,7 +57,7 @@ class JudgeQuotaPool:
 
     def __init__(self, keys: list[str], config: JudgeConfig) -> None:
         if not keys:
-            raise ValueError("Missing GROQ_API_KEYS or GROQ_API_KEY for V8 Judge")
+            raise ValueError("Missing GROQ_API_KEYS for the generated-answer Judge")
         self.keys = list(dict.fromkeys(key.strip() for key in keys if key.strip()))
         self.config = config
         self._lock = threading.Lock()
@@ -68,7 +68,7 @@ class JudgeQuotaPool:
 
     @classmethod
     def from_environment(cls, config: JudgeConfig) -> "JudgeQuotaPool":
-        raw = os.environ.get("GROQ_API_KEYS") or os.environ.get("GROQ_API_KEY") or ""
+        raw = os.environ.get("GROQ_API_KEYS") or ""
         return cls([item.strip() for item in raw.split(",") if item.strip()], config)
 
     def acquire(self, estimated_input_tokens: int) -> tuple[str, str]:

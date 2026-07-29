@@ -43,7 +43,7 @@ class MongoDocStore:
         self,
         uri: str,
         db_name: str = "chatbotHCMUE",
-        collection_name: str = "parent_docs_v7",
+        collection_name: str = "parent_docs_v9_candidate",
         timeout_ms: int = 30000,
         failure_backoff_seconds: int = 300,
     ):
@@ -115,7 +115,9 @@ def get_mongo_store() -> MongoDocStore | DisabledMongoDocStore:
 
     timeout_ms = _env_int("MONGODB_TIMEOUT_MS", 30000)
     failure_backoff_seconds = _env_int("MONGODB_FAILURE_BACKOFF_SECONDS", 300)
-    collection_name = os.environ.get("MONGODB_PARENT_COLLECTION", "parent_docs_v7")
+    collection_name = os.environ.get(
+        "MONGODB_PARENT_COLLECTION", "parent_docs_v9_candidate"
+    )
     return MongoDocStore(
         uri=uri,
         collection_name=collection_name,

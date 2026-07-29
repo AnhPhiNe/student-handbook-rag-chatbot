@@ -104,7 +104,7 @@ def _provenance(dataset_dir: Path, backend: str) -> dict[str, Any]:
         "qdrant_collection": os.environ.get("QDRANT_COLLECTION_NAME")
         or vectorstore_config.get("collection_name"),
         "mongodb_parent_collection": os.environ.get(
-            "MONGODB_PARENT_COLLECTION", "parent_docs_v7"
+            "MONGODB_PARENT_COLLECTION", "parent_docs_v9_candidate"
         ),
         "python": platform.python_version(),
         "platform": platform.platform(),
@@ -388,8 +388,8 @@ def main() -> None:
 
     if args.suite in {"deterministic", "all"}:
         _require_env(
-            ("GROQ_ROUTER_API_KEYS", "GROQ_API_KEYS", "GROQ_API_KEY"),
-            "A Groq API key is required for the Qwen structured router",
+            ("GROQ_ROUTER_API_KEYS", "GROQ_API_KEYS"),
+            "A Groq API key pool is required for the Qwen structured router",
         )
         report = evaluate_deterministic(deterministic_cases, limit=args.limit)
         _finalize_report(report, expected_n=120, provenance=provenance)
@@ -409,8 +409,8 @@ def main() -> None:
     answer_cache_path = args.output / f"answer_cache_{args.profile}.json"
     if args.suite in {"generate", "all"}:
         _require_env(
-            ("GEMINI_API_KEYS", "GEMINI_API_KEY"),
-            "Gemini API key is required for answer generation",
+            ("GEMINI_API_KEYS",),
+            "GEMINI_API_KEYS is required for answer generation",
         )
         _require_env(
             ("QDRANT_URL",), "QDRANT_URL is required for production answer generation"
@@ -430,8 +430,8 @@ def main() -> None:
 
     if args.suite in {"judge", "all"}:
         _require_env(
-            ("GROQ_API_KEYS", "GROQ_API_KEY"),
-            "Groq API key is required for gpt-oss-120b Judge",
+            ("GROQ_API_KEYS",),
+            "GROQ_API_KEYS is required for gpt-oss-120b Judge",
         )
         if not answer_cache_path.exists():
             raise SystemExit(

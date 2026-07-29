@@ -411,7 +411,6 @@ Create `.env` in the repository root and never commit real secrets:
 ```env
 # Gemini answer generation. Plural form enables load balancing.
 GEMINI_API_KEYS=gemini_key_1,gemini_key_2
-# GEMINI_API_KEY=single_key_fallback
 
 # Groq Router and evaluation Judge.
 GROQ_API_KEYS=groq_key_1,groq_key_2

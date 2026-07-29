@@ -235,17 +235,17 @@ class GeminiClient:
         retry_base_delay_seconds: float = 2,
         retry_max_delay_seconds: float = 20,
         request_timeout_seconds: float = 60,
-        api_key_env_var: str = "GEMINI_API_KEY",
+        api_keys_env_var: str = "GEMINI_API_KEYS",
         key_pool_config: GeminiKeyPoolConfig | dict[str, Any] | None = None,
     ) -> None:
         load_project_env()
-        self.api_key_env_var = api_key_env_var
+        self.api_keys_env_var = api_keys_env_var
 
-        keys_str = os.environ.get(f"{api_key_env_var}S") or os.environ.get(api_key_env_var)
+        keys_str = os.environ.get(api_keys_env_var)
         if not keys_str:
             raise RuntimeError(
-                f"Missing {api_key_env_var}S or {api_key_env_var}. "
-                "Add it to .env or set this environment variable before running Gemini calls."
+                f"Missing {api_keys_env_var}. Add a comma-separated key pool "
+                "to .env or set this environment variable before running Gemini calls."
             )
         self.available_keys = [key.strip() for key in keys_str.split(",") if key.strip()]
 

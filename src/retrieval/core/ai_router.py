@@ -510,7 +510,6 @@ class AIRouter:
         keys_value = (
             os.environ.get("GROQ_ROUTER_API_KEYS")
             or os.environ.get("GROQ_API_KEYS")
-            or os.environ.get("GROQ_API_KEY")
             or ""
         )
         self.available_keys = [
@@ -518,7 +517,7 @@ class AIRouter:
         ]
         if not self.available_keys:
             raise RuntimeError(
-                "Missing GROQ_ROUTER_API_KEYS, GROQ_API_KEYS, or GROQ_API_KEY."
+                "Missing GROQ_ROUTER_API_KEYS or GROQ_API_KEYS."
             )
         self.model_name = model_name
         self.temperature = float(temperature)

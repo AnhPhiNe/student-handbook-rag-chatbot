@@ -17,7 +17,7 @@ from src.retrieval.core.structured_routing import (
 
 
 def _router(monkeypatch, tmp_path: Path, *, model_name: str) -> AIRouter:
-    monkeypatch.setenv("GROQ_API_KEY", "test-router-key")
+    monkeypatch.setenv("GROQ_API_KEYS", "test-router-key")
     return AIRouter(
         model_name=model_name,
         cache_enabled=False,
@@ -79,7 +79,7 @@ def test_from_config_accepts_model_environment_override(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    monkeypatch.setenv("GROQ_API_KEY", "test-router-key")
+    monkeypatch.setenv("GROQ_API_KEYS", "test-router-key")
     monkeypatch.setenv("STUDENT_RAG_ROUTER_MODEL", "openai/gpt-oss-20b")
     monkeypatch.setenv("STUDENT_RAG_ROUTER_MAX_OUTPUT_TOKENS", "1024")
     config_path = tmp_path / "router.yaml"

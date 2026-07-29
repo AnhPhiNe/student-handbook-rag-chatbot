@@ -1018,7 +1018,9 @@ class AnswerPipeline:
                     request_timeout_seconds=llm_config.get(
                         "request_timeout_seconds", 60
                     ),
-                    api_key_env_var=llm_config.get("api_key_env_var", "GEMINI_API_KEY"),
+                    api_keys_env_var=llm_config.get(
+                        "api_keys_env_var", "GEMINI_API_KEYS"
+                    ),
                     key_pool_config=llm_config.get("key_pool"),
                 )
         return self._llm_client

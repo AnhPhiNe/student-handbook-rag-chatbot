@@ -43,7 +43,13 @@ function getHfRuntimeUrl(spaceId: string): string | null {
 function statusFromHfStage(stage: string | undefined): SystemStatus | null {
   const normalizedStage = stage?.toUpperCase();
   if (!normalizedStage || normalizedStage === 'RUNNING') return null;
-  if (normalizedStage === 'BUILDING' || normalizedStage === 'RUNNING_BUILDING' || normalizedStage === 'SLEEPING') {
+  if (
+    normalizedStage === 'BUILDING'
+    || normalizedStage === 'RUNNING_BUILDING'
+    || normalizedStage === 'RUNNING_APP_STARTING'
+    || normalizedStage === 'APP_STARTING'
+    || normalizedStage === 'SLEEPING'
+  ) {
     return 'degraded';
   }
   return 'offline';

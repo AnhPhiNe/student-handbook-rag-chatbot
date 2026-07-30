@@ -405,9 +405,9 @@ export function SelfAssessmentModal({ isOpen, onClose, onOpenTip }: ModalProps) 
                 <div className="primary-method" style={{ '--sg-color': activeTip.color } as React.CSSProperties}>
                   <div className="primary-icon"><activeTip.icon size={28} /></div>
                   <div className="primary-info" style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.15rem' }}>
-                      <h2 style={{ margin: 0 }}>{activeTip.title}</h2>
-                      <button className="restart-text-btn" onClick={resetForm} style={{ padding: '0.5rem 1rem', fontSize: '0.95rem' }}>
+                    <div className="title-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
+                      <h2 style={{ fontSize: '1.5rem', marginBottom: '0.25rem', textWrap: 'balance' } as React.CSSProperties}>{activeTip.title}</h2>
+                      <button className="restart-text-btn" onClick={resetForm} style={{ padding: '0.5rem 1rem', fontSize: '0.95rem', flexShrink: 0, whiteSpace: 'nowrap' }}>
                         <RotateCcw size={16} /> Đánh giá lại
                       </button>
                     </div>

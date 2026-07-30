@@ -184,7 +184,7 @@ SOURCE_USAGE_RULES
 - PRIMARY SOURCES are the main evidence for the final answer and citations.
 - RELATED SOURCES are optional graph supplements. Use them only when they directly answer the same asked issue or add a condition/exception that changes the answer.
 - If a PRIMARY SOURCE explicitly references an article/clause/point that appears in RELATED SOURCES, summarize the relevant content from that RELATED SOURCE instead of only naming the referenced article.
-- When RELATED SOURCES are present, include a separate "Các Điều liên quan được nguồn dẫn chiếu" section and summarize each related source with its key facts, numbers, conditions, exceptions, deadlines, and table values when available.
+- When RELATED SOURCES are present, include a separate "Các Điều liên quan được nguồn dẫn chiếu" section (preceded by a horizontal line `---`) and summarize each related source with its key facts, numbers, conditions, exceptions, deadlines, and table values when available.
 - Do not add extra sections beyond the expanded graph section unless the user asks for next steps, procedures, or broader related rules.
 - Do not let RELATED SOURCES replace, reorder, or override PRIMARY SOURCES.
 - Prefer citations from PRIMARY SOURCES. Use a RELATED SOURCE only when it directly supports an extra contextual point.

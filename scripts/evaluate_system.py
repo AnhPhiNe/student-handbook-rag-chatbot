@@ -25,6 +25,7 @@ from src.evaluation.human_audit import summarize_human_audit
 from src.evaluation.reporting import write_report_bundle
 from src.evaluation.suites import (
     evaluate_deterministic,
+    evaluate_graph_supplement,
     evaluate_production,
     evaluate_retrieval,
     generate_answers,
@@ -292,6 +293,7 @@ def main() -> None:
             "validate",
             "deterministic",
             "retrieval",
+            "graph",
             "generate",
             "judge",
             "production",
@@ -405,6 +407,15 @@ def main() -> None:
                 "MONGODB_URL is required for headline parent-section retrieval",
             )
         _run_retrieval_modes(retrieval_cases, args, provenance)
+
+    if args.suite in {"graph", "all"}:
+        report = evaluate_graph_supplement(limit=args.limit)
+        _finalize_report(
+            report,
+            expected_n=int((report.get("summary") or {}).get("n") or 0),
+            provenance=provenance,
+        )
+        _write(report, args.output, f"graph_supplement_{args.profile}")
 
     answer_cache_path = args.output / f"answer_cache_{args.profile}.json"
     if args.suite in {"generate", "all"}:

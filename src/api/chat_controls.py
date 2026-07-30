@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import ipaddress
 import math
 import os
 import threading
@@ -19,6 +20,11 @@ DEFAULT_MAX_CONCURRENT_CHAT = 3
 DEFAULT_MAX_QUEUE_SIZE = 10
 DEFAULT_QUEUE_TIMEOUT_SECONDS = 15.0
 CLIENT_ID_HEADER = "X-Client-ID"
+TRUE_CLIENT_IP_HEADERS = (
+    "CF-Connecting-IP",
+    "X-Real-IP",
+    "X-Forwarded-For",
+)
 _RATE_LIMIT_BUCKETS: dict[str, Deque[float]] = defaultdict(deque)
 _RATE_LIMIT_LOCK = threading.Lock()
 _RATE_LIMIT_LAST_CLEANUP = 0.0
@@ -138,7 +144,7 @@ def enforce_chat_rate_limit(request: Request) -> None:
     if client_limit <= 0 and ip_limit <= 0:
         return
 
-    client_host = request.client.host if request.client else "unknown"
+    client_host = _client_ip_for_rate_limit(request)
     client_id = _validated_client_id(request.headers.get(CLIENT_ID_HEADER))
     checks: list[tuple[str, int]] = []
 
@@ -184,6 +190,41 @@ def _validated_client_id(raw_value: str | None) -> str | None:
         return str(UUID(raw_value.strip()))
     except (ValueError, AttributeError):
         return None
+
+
+def _client_ip_for_rate_limit(request: Request) -> str:
+    """Return a stable client IP, optionally trusting reverse proxy headers."""
+    fallback = request.client.host if request.client else "unknown"
+    if not _trust_proxy_headers():
+        return fallback
+
+    for header in TRUE_CLIENT_IP_HEADERS:
+        raw_value = request.headers.get(header)
+        if not raw_value:
+            continue
+        candidates = raw_value.split(",") if header == "X-Forwarded-For" else [raw_value]
+        for candidate in candidates:
+            value = candidate.strip()
+            if _is_valid_ip(value):
+                return value
+    return fallback
+
+
+def _trust_proxy_headers() -> bool:
+    return os.getenv("STUDENT_RAG_TRUST_PROXY_HEADERS", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+
+
+def _is_valid_ip(value: str) -> bool:
+    try:
+        ipaddress.ip_address(value)
+    except ValueError:
+        return False
+    return True
 
 
 def _cleanup_rate_limit_buckets(now: float) -> None:

@@ -997,29 +997,6 @@ def _retrieval_summary(
             "empty_retrieval_rate": safe_mean(
                 [float(bool(row.get("empty_retrieval"))) for row in rows]
             ),
-            "context_hit_at_10": safe_mean(
-                [float(bool(row.get("context_hit_at_10"))) for row in headline]
-            ),
-            "graph_related_hit_rate": safe_mean(
-                [float(bool(row.get("graph_related_hit"))) for row in headline]
-            ),
-            "graph_supporting_hit_rate": safe_mean(
-                [
-                    float(bool(row.get("graph_supporting_hit")))
-                    for row in headline
-                    if row.get("graph_supporting_hit") is not None
-                ]
-            ),
-            "graph_supporting_recall": safe_mean(
-                [
-                    float(row["graph_supporting_recall"])
-                    for row in headline
-                    if row.get("graph_supporting_recall") is not None
-                ]
-            ),
-            "related_cohort_leak_rate": safe_mean(
-                [float(bool(row.get("related_cohort_leak"))) for row in rows]
-            ),
             "latency_ms": _latency_summary([float(row["latency_ms"]) for row in rows]),
             "realistic_score": safe_mean(
                 [
@@ -1052,6 +1029,133 @@ def _retrieval_summary(
         }
     )
     return summary
+
+
+def _cohort_from_parent_id(parent_id: str) -> str | None:
+    if parent_id.startswith("K48-K49_"):
+        return "K48-K49"
+    if parent_id.startswith("K50_"):
+        return "K50"
+    if parent_id.startswith("K51_"):
+        return "K51"
+    return None
+
+
+def evaluate_graph_supplement(
+    *,
+    edges_path: Path | None = None,
+    graph_depth: int = 2,
+    related_limit: int = 5,
+    limit: int | None = None,
+) -> dict[str, Any]:
+    """Evaluate bounded graph expansion separately from headline retrieval.
+
+    This suite answers: when a primary parent has an outbound graph edge to a
+    related parent, does the production graph selector surface that target
+    inside the RELATED SOURCES budget?
+    """
+
+    from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
+    from src.retrieval.core.hybrid_pipeline import (
+        select_graph_related_parent_candidates,
+    )
+
+    actual_edges_path = edges_path or (
+        ROOT / "data" / "processed" / "graphs" / "document_edges.json"
+    )
+    edge_rows = load_json(actual_edges_path)
+    if limit is not None:
+        edge_rows = edge_rows[:limit]
+
+    traverser = NetworkXGraphTraverser(str(actual_edges_path))
+    rows: list[dict[str, Any]] = []
+    progress = _progress_cases(
+        edge_rows,
+        limit=None,
+        desc="Graph Supplement Eval",
+    )
+    for index, edge in enumerate(progress, start=1):
+        source = str(edge.get("source") or "").strip()
+        target = str(edge.get("target") or "").strip()
+        progress.set_postfix_str(source or f"edge-{index}")
+        started = time.perf_counter()
+        expanded_nodes = (
+            traverser.expand_context([source], max_depth=graph_depth)
+            if source
+            else []
+        )
+        selected = select_graph_related_parent_candidates(
+            [source],
+            expanded_nodes,
+            max_related_total=related_limit,
+        )
+        expanded_ids = [str(node.get("id") or "") for node in expanded_nodes]
+        selected_ids = [str(item.get("parent_id") or "") for item in selected]
+        target_nodes = [
+            node for node in expanded_nodes if str(node.get("id") or "") == target
+        ]
+        target_depth = (
+            min(int(node.get("depth") or 99) for node in target_nodes)
+            if target_nodes
+            else None
+        )
+        source_cohort = _cohort_from_parent_id(source)
+        selected_cohort_leak = any(
+            _cohort_from_parent_id(parent_id) not in {None, source_cohort}
+            for parent_id in selected_ids
+        )
+        rows.append(
+            {
+                "id": edge.get("id") or f"graph_edge_{index:03d}",
+                "source_parent_id": source,
+                "target_parent_id": target,
+                "relation": edge.get("relation"),
+                "reason": edge.get("reason"),
+                "source_in_graph": bool(source and source in traverser.graph),
+                "target_in_graph": bool(target and target in traverser.graph),
+                "target_expanded": target in expanded_ids,
+                "target_selected": target in selected_ids,
+                "target_depth": target_depth,
+                "expanded_parent_count": len(expanded_ids),
+                "selected_related_parent_count": len(selected_ids),
+                "selected_related_parent_ids": selected_ids,
+                "related_cohort_leak": selected_cohort_leak,
+                "latency_ms": (time.perf_counter() - started) * 1000,
+            }
+        )
+    selected_counts = [
+        float(row["selected_related_parent_count"]) for row in rows
+    ]
+    summary = {
+        "n": len(rows),
+        "graph_nodes": traverser.graph.number_of_nodes(),
+        "graph_edges": traverser.graph.number_of_edges(),
+        "graph_depth": graph_depth,
+        "related_limit": related_limit,
+        "source_coverage": safe_mean(
+            [float(bool(row["source_in_graph"])) for row in rows]
+        ),
+        "target_coverage": safe_mean(
+            [float(bool(row["target_in_graph"])) for row in rows]
+        ),
+        "direct_expansion_recall": safe_mean(
+            [float(bool(row["target_expanded"])) for row in rows]
+        ),
+        "related_selection_recall_at_5": safe_mean(
+            [float(bool(row["target_selected"])) for row in rows]
+        ),
+        "related_cohort_leak_rate": safe_mean(
+            [float(bool(row["related_cohort_leak"])) for row in rows]
+        ),
+        "selected_related_parent_count": _latency_summary(selected_counts),
+        "latency_ms": _latency_summary([float(row["latency_ms"]) for row in rows]),
+    }
+    return {
+        "suite": "graph",
+        "evaluation": "graph_supplement",
+        "summary": summary,
+        "cases": rows,
+    }
 
 
 def _retrieval_breakdowns(rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -1484,12 +1588,29 @@ def build_human_audit_template(
     ]
 
 
-def _expected_response_status(expected_path: str | None) -> str:
+def _expected_response_status(case: dict[str, Any]) -> str:
+    expected_path = case.get("expected_path")
+    expected_behavior = case.get("expected_answer_behavior")
+    if expected_path == "clarify" and expected_behavior == "abstain":
+        return "answered_or_guardrail"
     if expected_path == "clarify":
         return "needs_clarification"
     if expected_path == "out_of_domain":
         return "out_of_domain"
     return "answered"
+
+
+def _response_status_matches_expected(
+    response_status: str,
+    expected_status: str,
+) -> bool:
+    if expected_status == "answered_or_guardrail":
+        return response_status in {
+            "answered",
+            "needs_clarification",
+            "out_of_domain",
+        }
+    return response_status == expected_status
 
 
 def _summarize_production_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -1734,7 +1855,7 @@ def evaluate_production(
                 payload_success = bool(answer_text) and not parsed.get("error_type")
                 answer_chars = len(answer_text)
             response_status = str(response_payload.get("status") or "")
-            expected_status = _expected_response_status(case.get("expected_path"))
+            expected_status = _expected_response_status(case)
             return {
                 **case,
                 "success": transport_success and payload_success,
@@ -1752,7 +1873,10 @@ def evaluate_production(
                 "response_error_type": response_payload.get("error_type"),
                 "response_error_message": response_payload.get("error_message"),
                 "expected_response_status": expected_status,
-                "expected_status_match": response_status == expected_status,
+                "expected_status_match": _response_status_matches_expected(
+                    response_status,
+                    expected_status,
+                ),
                 "used_cache": response_payload.get("used_cache"),
                 "source_count": len(
                     response_payload.get("citations_used")
@@ -1782,9 +1906,7 @@ def evaluate_production(
                 "status_code": int(exc.code),
                 "latency_ms": (time.perf_counter() - started) * 1000,
                 "ttft_ms": ttft,
-                "expected_response_status": _expected_response_status(
-                    case.get("expected_path")
-                ),
+                "expected_response_status": _expected_response_status(case),
                 "expected_status_match": False,
                 "error": f"HTTP {exc.code}: {error_body or exc.reason}",
             }
@@ -1795,9 +1917,7 @@ def evaluate_production(
                 "status_code": status_code,
                 "latency_ms": (time.perf_counter() - started) * 1000,
                 "ttft_ms": ttft,
-                "expected_response_status": _expected_response_status(
-                    case.get("expected_path")
-                ),
+                "expected_response_status": _expected_response_status(case),
                 "expected_status_match": False,
                 "error": str(exc),
             }

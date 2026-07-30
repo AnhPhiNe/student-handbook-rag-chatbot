@@ -89,6 +89,38 @@ class ResponseCacheTest(unittest.TestCase):
 
             self.assertNotEqual(key_v1, key_v2)
 
+    def test_cache_key_changes_with_namespace(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cache = ResponseCache(Path(tmpdir) / "cache.json")
+            retrieval_result = {
+                "retrieval_query": "hoc bong",
+                "structured_result": None,
+                "tool_result": None,
+            }
+
+            with patch.dict(
+                "os.environ",
+                {"STUDENT_RAG_RESPONSE_CACHE_NAMESPACE": "production-eval-a"},
+            ):
+                key_a = cache.make_cache_key(
+                    query="dieu kien hoc bong",
+                    retrieval_result=retrieval_result,
+                    selected_citations=[],
+                    cohort="K50",
+                )
+            with patch.dict(
+                "os.environ",
+                {"STUDENT_RAG_RESPONSE_CACHE_NAMESPACE": "production-eval-b"},
+            ):
+                key_b = cache.make_cache_key(
+                    query="dieu kien hoc bong",
+                    retrieval_result=retrieval_result,
+                    selected_citations=[],
+                    cohort="K50",
+                )
+
+            self.assertNotEqual(key_a, key_b)
+
 
 if __name__ == "__main__":
     unittest.main()

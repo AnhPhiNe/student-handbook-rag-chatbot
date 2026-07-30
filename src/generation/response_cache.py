@@ -93,6 +93,9 @@ class ResponseCache:
         payload = {
             "query": query,
             "cohort": cohort,
+            "cache_namespace": os.getenv(
+                "STUDENT_RAG_RESPONSE_CACHE_NAMESPACE", "default"
+            ),
             "pipeline_version": pipeline_version,
             "context_fingerprint": context_fingerprint or {},
             "retrieval_query": retrieval_result.get("retrieval_query"),

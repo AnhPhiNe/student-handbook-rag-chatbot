@@ -13,7 +13,7 @@
     "deterministic": "92034956d1915fcf292f2a019b0c902570f58756a979c9f4096b914d95ed1d75",
     "retrieval": "b8e3499d1d55aa08ac5b3df7fb688c02a362aaeade179ae5fbe7b3d17957bee9",
     "answers": "a8f9942c166b98996a1b1e5c0e0a9108ddea7d14edf953aae1a2cba616c6d972",
-    "production": "b65892825a85e7cdb28964ae4e8f40935b698b00039b3a4c0c328d914842acf7"
+    "production": "64d6fde03a6d48b35df98115fec1170ac5f9ce5f534736673018249caede2343"
   },
   "auxiliary_hashes": {
     "human_audit_template": "a90d6a1c5270c760a1e17626d8aba2c02827fcbaff9932935f0fb6ad6dd74cd1"
@@ -70,9 +70,9 @@
     "secondary_scope": null,
     "end_to_end_scope_policy": "Evaluate Qwen routing, validated query handling, Qdrant retrieval, graph supplementation, Mongo parent binding, and citation metadata together."
   },
-  "annotation_revision_count": 1,
+  "annotation_revision_count": 2,
   "structured_source_revision_count": 0,
-  "annotation_revision_policy": "The K51 grading item-count expectation was aligned with the approved applicability-specific tables; no query or source annotation inherited from V9.1 was changed.",
+  "annotation_revision_policy": "The K51 grading item-count expectation was aligned with the approved applicability-specific tables; one broad production query was reclassified from direct regulation RAG to clarify because the backend correctly asks for scope before answering.",
   "inherited_annotation_revision_count": 12,
   "deterministic_annotation_revision_count": 1,
   "inherited_structured_source_revision_count": 2

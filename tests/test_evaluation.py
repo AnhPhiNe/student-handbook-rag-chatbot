@@ -25,7 +25,11 @@ from src.evaluation.metrics import retrieval_metrics, wilson_interval
 from src.evaluation.reporting import write_report_bundle
 from src.evaluation.suites import (
     _answer_checks,
+    _expected_response_status,
+    _response_status_matches_expected,
+    _retrieval_summary,
     _summarize_production_rows,
+    evaluate_graph_supplement,
     evaluate_production,
     evaluate_retrieval,
     generate_answers,
@@ -95,6 +99,58 @@ def test_retrieval_metrics_are_graded_and_rank_sensitive() -> None:
     assert scores["hit_at_3"] == 1
     assert scores["reciprocal_rank"] == pytest.approx(0.5)
     assert 0 < scores["ndcg_at_5"] < 1
+
+
+def test_retrieval_summary_excludes_graph_supplement_metrics() -> None:
+    rows = [
+        {
+            "case_type": "regulation_true_rag",
+            "hit_at_1": 1.0,
+            "hit_at_3": 1.0,
+            "hit_at_5": 1.0,
+            "mrr": 1.0,
+            "ndcg_at_5": 1.0,
+            "citation_binding": True,
+            "cohort_match": True,
+            "content_type_match": True,
+            "empty_retrieval": False,
+            "cohort_leak": False,
+            "synthetic_leak": False,
+            "context_hit_at_10": True,
+            "graph_related_hit": True,
+            "related_cohort_leak": False,
+            "latency_ms": 10.0,
+            "eval_split": "realistic",
+        }
+    ]
+
+    summary = _retrieval_summary(rows, rows)
+
+    assert "graph_related_hit_rate" not in summary
+    assert "graph_supporting_hit_rate" not in summary
+    assert "context_hit_at_10" not in summary
+    assert summary["hit_at_5"] == 1.0
+
+
+def test_graph_supplement_eval_scores_related_selection_cap(tmp_path: Path) -> None:
+    edges = [
+        {"source": "K50_Source", "target": f"K50_Target_{index}", "relation": "ref"}
+        for index in range(6)
+    ]
+    edges_path = tmp_path / "document_edges.json"
+    edges_path.write_text(json.dumps(edges), encoding="utf-8")
+
+    report = evaluate_graph_supplement(edges_path=edges_path, related_limit=5)
+
+    selected = {
+        row["target_parent_id"]
+        for row in report["cases"]
+        if row["target_selected"]
+    }
+    assert len(report["cases"]) == 6
+    assert report["summary"]["direct_expansion_recall"] == 1.0
+    assert report["summary"]["related_selection_recall_at_5"] == pytest.approx(5 / 6)
+    assert selected == {f"K50_Target_{index}" for index in range(5)}
 
 
 def test_wilson_interval_bounds_probability() -> None:
@@ -222,6 +278,21 @@ def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:
 
     summary["cold_cache_hit_rate"] = 0.5
     assert evaluate_gates("production", summary)["passed"] is False
+
+
+def test_production_clarify_abstain_accepts_guardrail_statuses() -> None:
+    expected_status = _expected_response_status(
+        {
+            "expected_path": "clarify",
+            "expected_answer_behavior": "abstain",
+        }
+    )
+
+    assert expected_status == "answered_or_guardrail"
+    assert _response_status_matches_expected("answered", expected_status)
+    assert _response_status_matches_expected("needs_clarification", expected_status)
+    assert _response_status_matches_expected("out_of_domain", expected_status)
+    assert not _response_status_matches_expected("error", expected_status)
 
 
 def test_production_eval_records_http_error_status(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -1610,15 +1610,12 @@
     "tags": [
       "production",
       "burst",
-      "true_rag",
-      "citation_required",
-      "numeric_fact",
-      "realistic",
-      "regulation_rag"
+      "clarify",
+      "realistic"
     ],
-    "expected_intent": "regulation_query",
-    "expected_strategy": "hybrid_graph_retrieval",
-    "expected_path": "regulation_rag",
+    "expected_intent": "clarification_query",
+    "expected_strategy": "clarify_or_abstain",
+    "expected_path": "clarify",
     "concurrency": 3,
     "stream": false,
     "repeat_of": null,
@@ -1627,8 +1624,8 @@
     "topic": "khac",
     "question_style": "realistic",
     "cohort_sensitivity": "single_cohort",
-    "question_specificity": "specific",
-    "expected_answer_behavior": "direct_answer",
+    "question_specificity": "broad",
+    "expected_answer_behavior": "clarify_or_scope",
     "eval_split": "realistic"
   },
   {

@@ -223,6 +223,59 @@ class ApiRoutesTest(unittest.TestCase):
 
         self.assertEqual([response.status_code for response in responses], [200, 200, 429])
 
+    def test_rate_limit_ignores_forwarded_for_by_default(self) -> None:
+        env = {
+            "STUDENT_RAG_RATE_LIMIT_PER_MINUTE": "10",
+            "STUDENT_RAG_IP_RATE_LIMIT_PER_MINUTE": "1",
+        }
+        with patch.dict("os.environ", env, clear=False):
+            first = self.client.post(
+                "/chat",
+                headers={
+                    "X-Client-ID": "00000000-0000-4000-8000-000000000001",
+                    "X-Forwarded-For": "203.0.113.10",
+                },
+                json={"query": "Email phong dao tao?"},
+            )
+            second = self.client.post(
+                "/chat",
+                headers={
+                    "X-Client-ID": "00000000-0000-4000-8000-000000000002",
+                    "X-Forwarded-For": "203.0.113.11",
+                },
+                json={"query": "Email phong dao tao?"},
+            )
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 429)
+
+    def test_rate_limit_can_trust_forwarded_for_when_enabled(self) -> None:
+        env = {
+            "STUDENT_RAG_RATE_LIMIT_PER_MINUTE": "10",
+            "STUDENT_RAG_IP_RATE_LIMIT_PER_MINUTE": "1",
+            "STUDENT_RAG_TRUST_PROXY_HEADERS": "true",
+        }
+        with patch.dict("os.environ", env, clear=False):
+            first = self.client.post(
+                "/chat",
+                headers={
+                    "X-Client-ID": "00000000-0000-4000-8000-000000000001",
+                    "X-Forwarded-For": "203.0.113.10, 10.16.0.1",
+                },
+                json={"query": "Email phong dao tao?"},
+            )
+            second = self.client.post(
+                "/chat",
+                headers={
+                    "X-Client-ID": "00000000-0000-4000-8000-000000000002",
+                    "X-Forwarded-For": "203.0.113.11, 10.16.0.1",
+                },
+                json={"query": "Email phong dao tao?"},
+            )
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+
     def test_chat_returns_busy_when_capacity_is_full(self) -> None:
         with patch.dict(
             "os.environ",

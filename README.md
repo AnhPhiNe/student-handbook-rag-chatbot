@@ -304,9 +304,14 @@ The Judge flagged unsupported claims in 38% of cases. Root-cause review classifi
 
 ### Human audit
 
-The manual audit covered **25 cases in total**: 15 stratified-random cases for headline calibration and 10 intentionally selected low-Judge-score cases for targeted failure analysis. The two groups are reported separately because the risk subset is deliberately non-random.
+The manual audit covered **25 cases total**, split into two intentionally different groups:
 
-Stratified calibration sample (`n = 15`):
+- **15 stratified-random cases** form the representative headline calibration sample.
+- **10 lowest-Judge-score cases** were audited only to diagnose failure modes.
+
+The risk subset is deliberately non-random, so it is not averaged into the headline metrics.
+
+#### Headline calibration sample (`n = 15`)
 
 | Metric | Result |
 |---|---:|
@@ -316,7 +321,9 @@ Stratified calibration sample (`n = 15`):
 | Actual unsupported claims | 1 / 15 |
 | Critical false passes | 0 / 15 |
 
-A separate set of **10 low-Judge-score cases** was reviewed only as a targeted risk audit. Because this subset is intentionally non-random, it is excluded from the headline accuracy table and kept in the audit artifact for remediation analysis.
+#### Targeted risk audit (`n = 10`)
+
+The remaining 10 audited cases were intentionally selected from the lowest automated Judge scores. They are kept in the audit artifact for remediation analysis and are excluded from the headline table because they over-sample known weak cases.
 
 ### Production-configured performance and robustness
 

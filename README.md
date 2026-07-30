@@ -1,6 +1,6 @@
 # HCMUE AI - Student Handbook RAG Assistant
 
-> **Release candidate:** final holdout / V25 runtime (July 2026)  
+> **Release candidate:** final holdout / V26 acronym-aware runtime (July 2026)  
 > Independent, non-commercial student project. This is not an official application of Ho Chi Minh City University of Education. Important academic or financial decisions should be verified against the cited handbook section or an official university office.
 
 <p align="center">
@@ -29,7 +29,7 @@
 | End-to-end retrieval Hit@5 | 92.22% on 180 holdout cases |
 | Human-audited answer faithfulness | 96.67% on 15 stratified-random cases |
 | Production transport and payload success | 100.00% on 60 local API requests |
-| Streaming TTFT p95 | 1.84s |
+| Streaming TTFT p95 | 2.38s |
 
 ## Overview
 
@@ -220,12 +220,13 @@ Structured data is stored separately in `data/processed/tables/` and `data/proce
 
 ## Evaluation
 
-The final evaluation uses the frozen **final holdout** and records dataset hashes, document-store hash, configuration hashes, Git commit, model IDs, storage collections, Python version, and run timestamp. Quality suites used Qwen routing with `reasoning_effort=none`; the V25 production-performance run used `reasoning_effort=auto`. These suite-specific settings are retained in each report's provenance.
+The final evaluation uses the frozen **final holdout** and records dataset hashes, document-store hash, configuration hashes, Git commit, model IDs, storage collections, Python version, and run timestamp. Quality and production suites used the V26 Qwen routing configuration with `reasoning_effort=none`; suite-specific settings are retained in each report's provenance.
 
 | Suite | Cases | Purpose |
 |---|---:|---|
 | Structured routing and resolution | 120 | Positive lookups, hard negatives, ambiguity, and out-of-domain behavior |
 | End-to-end regulation retrieval | 180 | Router, query handling, Qdrant/BM25, graph, and Mongo parent binding |
+| Graph supplement | 103 edges | Graph expansion and RELATED-source selection from extracted regulation references |
 | Generated-answer Judge | 100 | 60 regulation, 20 structured, 10 mixed, and 10 unanswerable cases |
 | Human audit | 25 | 15 stratified-random headline cases and 10 low-Judge-score diagnostic cases |
 | Production performance | 60 | Cold RAG, structured, warm cache, streaming, and burst traffic |
@@ -266,22 +267,40 @@ This suite includes Qwen routing and validated query handling before retrieval.
 
 Bootstrap 95% confidence intervals were computed for the headline ranking metrics and retained in the locally generated evaluation reports.
 
+### Graph supplement
+
+Graph quality is reported separately from headline retrieval because it answers a different question: once a regulation edge has been extracted, does the runtime graph selector surface the referenced parent section inside the RELATED-source budget?
+
+| Metric | Result |
+|---|---:|
+| Evaluated graph edges | 103 |
+| Active graph nodes | 130 |
+| Source coverage | 100.00% |
+| Target coverage | 100.00% |
+| Direct expansion recall | 100.00% |
+| RELATED selection recall@5 | 100.00% |
+| Related cohort leak rate | 0.00% |
+| Selected RELATED parents, mean | 1.71 |
+| Graph selection p95 | 0.06ms |
+
+This validates the production graph traversal and bounded RELATED-source selector over the extracted graph. It does not claim that every possible textual cross-reference in the handbooks was extracted.
+
 ### Generated-answer evaluation
 
 `openai/gpt-oss-120b` is used as a strict RAGAS-style Judge. This is an automated diagnostic layer, not the sole quality claim.
 
 | Metric | Result |
 |---|---:|
-| Faithfulness | 72.81% |
-| Answer relevancy | 87.64% |
-| Answer correctness | 77.81% |
-| Context precision | 70.40% |
-| Context recall | 81.51% |
-| Citation correctness | 79.36% |
+| Faithfulness | 74.97% |
+| Answer relevancy | 86.89% |
+| Answer correctness | 79.55% |
+| Context precision | 69.24% |
+| Context recall | 79.99% |
+| Citation correctness | 78.95% |
 | Numeric accuracy | 95.00% |
-| Abstention correctness | 85.00% |
+| Abstention correctness | 86.00% |
 
-The Judge flagged unsupported claims in 37% of cases. Root-cause review classified nine of the 25 audited cases as Judge false positives, so automated scores are reported as diagnostics and calibrated against the human audit rather than presented as ground truth.
+The Judge flagged unsupported claims in 38% of cases. Root-cause review classified ten of the 25 audited cases as Judge false positives, so automated scores are reported as diagnostics and calibrated against the human audit rather than presented as ground truth.
 
 ### Human audit
 
@@ -301,26 +320,27 @@ A separate set of **10 low-Judge-score cases** was reviewed only as a targeted r
 
 ### Production-configured performance and robustness
 
-The V25 performance run executed 60 requests against a local FastAPI server configured with the release-candidate Qdrant and MongoDB collections. It measures request completion, response protocol, latency, caching, streaming, and burst behavior; it is not an answer-correctness score.
+The V26 performance run executed 60 requests against a local FastAPI server configured with the release-candidate Qdrant and MongoDB collections. It measures request completion, response protocol, latency, caching, streaming, and burst behavior; it is not an answer-correctness score.
 
 | Metric | Result |
 |---|---:|
 | Technically completed requests | 60 / 60 |
 | Transport success | 100.00% |
 | Payload success | 100.00% |
-| Expected response-status accuracy | 91.67% |
+| Expected response-status accuracy | 100.00% |
 | HTTP 429 rate | 0.00% |
 | Timeout rate | 0.00% |
-| Overall latency p95 | 5.83s |
-| Cold regulation RAG p95 | 13.17s |
-| Deterministic scenario p95 | 2.47s |
-| Structured-path p95 | 4.69s |
-| Streaming TTFT p95 | 1.84s |
+| Overall latency p95 | 6.75s |
+| Cold regulation RAG p95 | 12.96s |
+| Deterministic scenario p95 | 2.43s |
+| Structured-path p95 | 4.55s |
+| Streaming TTFT p95 | 2.38s |
 | Burst success, concurrency 3 and 5 | 10 / 10 |
+| Cold-cache hit rate | 0.00% |
 | Warm-cache hit rate | 90.00% |
-| Telemetry coverage | 100.00% |
+| Cache protocol valid | true |
 
-The five response-status mismatches were behavior-label mismatches rather than transport failures; four were clarify cases that returned a valid payload without the expected clarification status.
+Response-status accuracy is evaluated separately from transport success so that clarification, out-of-domain, structured, and RAG responses can be checked as protocol behavior rather than only as HTTP 200 responses.
 
 Fault injection passed **13 / 13** scenarios, including rate limits, key cooldown, exhausted quotas, streaming timeout, empty Gemini output, transport disconnect, concurrent Gemini calls, retrieval errors, Mongo parent misses, and API capacity saturation.
 
@@ -445,7 +465,7 @@ Router overrides are optional:
 ```env
 STUDENT_RAG_ROUTER_MODEL=qwen/qwen3.6-27b
 STUDENT_RAG_ROUTER_MAX_OUTPUT_TOKENS=384
-STUDENT_RAG_ROUTER_REASONING_EFFORT=auto
+STUDENT_RAG_ROUTER_REASONING_EFFORT=none
 ```
 
 See `.env.example` for the complete template.
@@ -468,6 +488,11 @@ python scripts/evaluate_system.py --suite retrieval --profile full \
   --backend qdrant \
   --ablation vector_primary_graph_supplement \
   --retrieval-scope end_to_end \
+  --dataset data/eval/final_holdout \
+  --output data/eval/reports/release_candidate
+
+# Graph RELATED-source expansion over extracted regulation edges.
+python scripts/evaluate_system.py --suite graph --profile full \
   --dataset data/eval/final_holdout \
   --output data/eval/reports/release_candidate
 

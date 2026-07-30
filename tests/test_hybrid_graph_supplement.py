@@ -129,7 +129,7 @@ def test_default_retrieval_groups_twenty_four_vector_chunks_before_graph() -> No
     telemetry = retriever._group_parent_results.call_args.kwargs[
         "retrieval_telemetry"
     ]
-    assert telemetry["ranking_method"] == "vector"
+    assert telemetry["ranking_method"] == "rrf"
     assert telemetry["phoranker_used"] is False
     retriever._graph_related_parent_results.assert_called_once()
     assert result == retriever._group_parent_results.return_value

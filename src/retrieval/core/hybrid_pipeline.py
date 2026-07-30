@@ -268,7 +268,7 @@ class ChildParentHybridRetriever:
     ) -> list[dict[str, Any]]:
         """Retrieve parent-bound regulation sources using child/table chunks.
 
-        Production ranks parents by their best vector hit, then attaches
+        Production ranks parents using hybrid retrieval (BM25 + dense) combined with RRF, then attaches
         outbound graph neighbors as context-only related sources. PhoRanker is
         reserved for controlled evaluation modes over the same vector pool.
         """
@@ -409,7 +409,7 @@ class ChildParentHybridRetriever:
             "qdrant_search_limit": search_limit,
             "qdrant_seed_chunks": qdrant_seed_chunk_count,
             "qdrant_seed_parents": len(seed_parent_ids),
-            "ranking_method": "phoranker" if phoranker_used else "vector",
+            "ranking_method": "phoranker" if phoranker_used else "rrf",
             "phoranker_used": phoranker_used,
             "phoranker_candidate_chunks": (
                 qdrant_seed_chunk_count if phoranker_used else 0
@@ -529,7 +529,7 @@ class ChildParentHybridRetriever:
                 "related_graph_depth": candidate["depth"],
                 "related_source_primary_id": candidate["source_primary_id"],
                 "related_source_primary_rank": candidate["source_primary_rank"],
-                "v7_collection": self.collection_name,
+                "collection": self.collection_name,
                 "parent_source": "mongodb",
                 "child_source": "graph",
             }
@@ -634,7 +634,7 @@ class ChildParentHybridRetriever:
                 "content_type": "regulation_text",
                 "chunk_granularity": "parent_bound_context",
                 "retrieval_role": "primary",
-                "v7_collection": self.collection_name,
+                "collection": self.collection_name,
                 "parent_source": "mongodb",
                 "child_source": "qdrant",
                 "retrieval_telemetry": retrieval_telemetry or {},

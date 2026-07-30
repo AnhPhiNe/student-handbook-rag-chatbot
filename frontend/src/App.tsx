@@ -1,19 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { Sun, Moon, Trash2 } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { ChatArea } from './components/ChatArea';
 import { useChat } from './hooks/useChat';
-import { HomePage } from './components/pages/HomePage';
-import { FormPage } from './components/pages/FormPage';
-import { GuidePage } from './components/pages/GuidePage';
-import { CreditsPage } from './components/pages/CreditsPage';
-import { GpaPage } from './components/pages/GpaPage';
-import { TargetGpaPage } from './components/pages/TargetGpaPage';
-import { CourseTargetPage } from './components/pages/CourseTargetPage';
-import { ScholarshipPage } from './components/pages/ScholarshipPage';
-import { ToolsPage } from './components/pages/ToolsPage';
-import { TuitionPage } from './components/pages/TuitionPage';
-import { SurvivalGuidePage } from './components/pages/SurvivalGuidePage';
+const HomePage = React.lazy(() => import('./components/pages/HomePage').then(module => ({ default: module.HomePage })));
+const FormPage = React.lazy(() => import('./components/pages/FormPage').then(module => ({ default: module.FormPage })));
+const GuidePage = React.lazy(() => import('./components/pages/GuidePage').then(module => ({ default: module.GuidePage })));
+const GpaPage = React.lazy(() => import('./components/pages/GpaPage').then(module => ({ default: module.GpaPage })));
+const TargetGpaPage = React.lazy(() => import('./components/pages/TargetGpaPage').then(module => ({ default: module.TargetGpaPage })));
+const CourseTargetPage = React.lazy(() => import('./components/pages/CourseTargetPage').then(module => ({ default: module.CourseTargetPage })));
+const ScholarshipPage = React.lazy(() => import('./components/pages/ScholarshipPage').then(module => ({ default: module.ScholarshipPage })));
+const ToolsPage = React.lazy(() => import('./components/pages/ToolsPage').then(module => ({ default: module.ToolsPage })));
+const TuitionPage = React.lazy(() => import('./components/pages/TuitionPage').then(module => ({ default: module.TuitionPage })));
+const SurvivalGuidePage = React.lazy(() => import('./components/pages/SurvivalGuidePage').then(module => ({ default: module.SurvivalGuidePage })));
+const CreditsPage = React.lazy(() => import('./components/pages/CreditsPage').then(module => ({ default: module.CreditsPage })));
+const AdmissionPage = React.lazy(() => import('./components/pages/AdmissionPage').then(module => ({ default: module.AdmissionPage })));
+const FaqPage = React.lazy(() => import('./components/pages/FaqPage').then(module => ({ default: module.FaqPage })));
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { MobileHeader } from './components/MobileHeader';
 import { BottomTabBar } from './components/BottomTabBar';
@@ -129,33 +131,37 @@ function App() {
               </div>
             )}
             
-            {activeTab === 'home' && <HomePage onNavigate={handleNavigate} />}
-            {activeTab === 'chat' && (
-              <ChatArea 
-                messages={messages}
-                isTyping={isTyping}
-                progressMessage={progressMessage}
-                onSendMessage={sendMessage}
-                onSendHardcoded={sendHardcodedMessage}
-                onRetry={retryLastMessage}
-                onRegenerate={regenerateLastMessage}
-                theme={theme}
-                onToggleTheme={toggleTheme}
-                onNavigateTab={handleNavigate}
-                onClearChat={clearMessages}
-                cohort={cohort}
-              />
-            )}
-            {activeTab === 'bieu-mau' && <FormPage />}
-            {activeTab === 'tools' && <ToolsPage onNavigate={handleNavigate} />}
-            {activeTab === 'gpa' && <GpaPage key={cohort} cohort={cohort} />}
-            {activeTab === 'target-gpa' && <TargetGpaPage />}
-            {activeTab === 'course-target' && <CourseTargetPage key={cohort} cohort={cohort} />}
-            {activeTab === 'scholarship' && <ScholarshipPage />}
-            {activeTab === 'tuition' && <TuitionPage />}
-            {activeTab === 'credits' && <CreditsPage />}
-            {activeTab === 'survival-guide' && <SurvivalGuidePage />}
-            {activeTab === 'huong-dan' && <GuidePage />}
+            <Suspense fallback={<div className="p-8 text-center text-text-secondary">Đang tải trang...</div>}>
+              {activeTab === 'home' && <HomePage onNavigate={handleNavigate} />}
+              {activeTab === 'chat' && (
+                <ChatArea 
+                  messages={messages}
+                  isTyping={isTyping}
+                  progressMessage={progressMessage}
+                  onSendMessage={sendMessage}
+                  onSendHardcoded={sendHardcodedMessage}
+                  onRetry={retryLastMessage}
+                  onRegenerate={regenerateLastMessage}
+                  theme={theme}
+                  onToggleTheme={toggleTheme}
+                  onNavigateTab={handleNavigate}
+                  onClearChat={clearMessages}
+                  cohort={cohort}
+                />
+              )}
+              {activeTab === 'bieu-mau' && <FormPage />}
+              {activeTab === 'tools' && <ToolsPage onNavigate={handleNavigate} />}
+              {activeTab === 'gpa' && <GpaPage key={cohort} cohort={cohort} />}
+              {activeTab === 'target-gpa' && <TargetGpaPage />}
+              {activeTab === 'course-target' && <CourseTargetPage key={cohort} cohort={cohort} />}
+              {activeTab === 'scholarship' && <ScholarshipPage />}
+              {activeTab === 'tuition' && <TuitionPage />}
+              {activeTab === 'credits' && <CreditsPage />}
+              {activeTab === 'survival-guide' && <SurvivalGuidePage />}
+              {activeTab === 'huong-dan' && <GuidePage />}
+              {activeTab === 'tuyen-sinh' && <AdmissionPage />}
+              {activeTab === 'faq' && <FaqPage cohort={cohort} onAskQuestion={(q) => { setActiveTab('chat'); sendMessage(q); }} />}
+            </Suspense>
             {isMobile && (
               <MobileScrollAffordance
                 activeKey={activeTab}

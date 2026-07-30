@@ -101,7 +101,7 @@ def test_from_config_accepts_model_environment_override(
     router = AIRouter.from_config(config_path)
 
     assert router.model_name == "openai/gpt-oss-20b"
-    assert router._resolved_reasoning_effort() == "low"
+    assert router._resolved_reasoning_effort() == "none"
     assert router.max_output_tokens == 1024
 
 

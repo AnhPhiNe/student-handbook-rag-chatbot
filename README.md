@@ -255,15 +255,15 @@ This suite includes Qwen routing and validated query handling before retrieval.
 
 | Metric | Result |
 |---|---:|
-| Hit@1 | 68.33% |
-| Hit@3 | 87.78% |
+| Hit@1 | 67.78% |
+| Hit@3 | 87.22% |
 | Hit@5 | 92.22% |
-| MRR | 78.49% |
-| nDCG@5 | 80.61% |
-| Cohort match | 99.44% |
+| MRR | 77.86% |
+| nDCG@5 | 80.22% |
+| Cohort match | 100% |
 | Content-type match | 97.22% |
 | Cohort leak rate | 0.00% |
-| Retrieval p95 | 3.20s |
+| Retrieval p95 | 2.19s |
 
 Bootstrap 95% confidence intervals were computed for the headline ranking metrics and retained in the locally generated evaluation reports.
 
@@ -550,7 +550,7 @@ npm run lint
 npm run build
 ```
 
-The current backend suite contains **153 passing tests**.
+The current backend suite contains **170 passing tests**.
 
 ## Known Limitations
 

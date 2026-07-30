@@ -1,7 +1,7 @@
 enabled: true
 provider: groq
 model_name: qwen/qwen3.6-27b
-reasoning_effort: auto
+reasoning_effort: none
 response_format: auto
 temperature: 0.0
 max_output_tokens: 384

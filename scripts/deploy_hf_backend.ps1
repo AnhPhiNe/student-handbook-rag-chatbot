@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 $RootDir = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $TempDir = Join-Path $RootDir ".hf_deploy_temp"
 $HfSpaceUrl = "https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api"
-$CommitMessage = "Deploy V25 FastAPI RAG backend"
+$CommitMessage = "Deploy V26 FastAPI RAG backend"
 
 function Assert-InWorkspace {
     param([string]$Path)

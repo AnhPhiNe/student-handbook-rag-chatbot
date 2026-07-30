@@ -2922,10 +2922,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 
 .system-status-badge.checking {
+  border-color: color-mix(in srgb, var(--status-checking) 28%, var(--border-color));
   color: var(--status-checking);
 }
 
+.system-status-badge.degraded {
+  border-color: color-mix(in srgb, var(--warning) 38%, var(--border-color));
+  color: var(--warning);
+}
+
 .system-status-badge.offline {
+  border-color: color-mix(in srgb, var(--status-offline) 32%, var(--border-color));
   color: var(--status-offline);
 }
 

@@ -94,6 +94,17 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.json()["detail"], "Admin API key required")
 
+    def test_readiness_is_public_and_reports_degraded_without_required_env(self) -> None:
+        with patch.dict("os.environ", {}, clear=True):
+            response = self.client.get("/health/readiness")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["service"], "student_handbook_rag")
+        self.assertIn(payload["status"], {"ok", "degraded"})
+        self.assertIsInstance(payload["ready"], bool)
+        self.assertGreaterEqual(payload["missing_count"], 0)
+
     def test_artifact_health_uses_qdrant_env_for_cloud_provider(self) -> None:
         with patch.dict(
             "os.environ",
@@ -113,6 +124,29 @@ class ApiRoutesTest(unittest.TestCase):
         paths = {item["path"] for item in response.json()["required_artifacts"]}
         self.assertIn("QDRANT_URL", paths)
         self.assertIn("QDRANT_API_KEY", paths)
+        self.assertNotIn("data/vectorstore/chroma", paths)
+
+    def test_artifact_health_uses_qdrant_env_for_qdrant_provider(self) -> None:
+        with patch.dict(
+            "os.environ",
+            {
+                "VECTORDB_PROVIDER": "qdrant",
+                "QDRANT_URL": "https://example.qdrant.io",
+                "QDRANT_API_KEY": "test-key",
+                "QDRANT_COLLECTION_NAME": "student_handbook_semantic_v9_candidate",
+                "STUDENT_RAG_ADMIN_API_KEY": "secret",
+            },
+        ):
+            response = self.client.get(
+                "/health/artifacts",
+                headers={"X-Admin-API-Key": "secret"},
+            )
+
+        self.assertEqual(response.status_code, 200)
+        paths = {item["path"] for item in response.json()["required_artifacts"]}
+        self.assertIn("QDRANT_URL", paths)
+        self.assertIn("QDRANT_API_KEY", paths)
+        self.assertIn("QDRANT_COLLECTION_NAME", paths)
         self.assertNotIn("data/vectorstore/chroma", paths)
 
     def test_chat_maps_answer_service_response_without_debug(self) -> None:

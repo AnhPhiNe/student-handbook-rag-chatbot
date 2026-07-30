@@ -6,10 +6,127 @@ from pathlib import Path
 from fastapi import APIRouter, Depends
 
 from src.api.deps import verify_admin_api_key
-from src.api.schemas import ArtifactHealthResponse, ArtifactStatus, HealthResponse
+from src.api.schemas import ArtifactHealthResponse, ArtifactStatus, HealthResponse, ReadinessResponse
 
 
 router = APIRouter(tags=["health"])
+SERVICE_NAME = "student_handbook_rag"
+SERVICE_VERSION = "0.1.0"
+
+
+def _artifact(path: str, exists: bool, kind: str) -> ArtifactStatus:
+    return ArtifactStatus(path=path, exists=exists, kind=kind)
+
+
+def _uses_qdrant_provider(provider: str) -> bool:
+    return provider.strip().lower() in {"qdrant", "qdrant_cloud"}
+
+
+def _required_artifacts() -> list[ArtifactStatus]:
+    required = [
+        _artifact(
+            "configs/answer_generation.yaml",
+            Path("configs/answer_generation.yaml").is_file(),
+            "config",
+        ),
+        _artifact(
+            "configs/hcmue_slang_dictionary.yaml",
+            Path("configs/hcmue_slang_dictionary.yaml").is_file(),
+            "config",
+        ),
+        _artifact(
+            "data/processed/tables/scoring_tables.json",
+            Path("data/processed/tables/scoring_tables.json").is_file(),
+            "processed_json",
+        ),
+        _artifact(
+            "data/processed/tables/formula_rules.json",
+            Path("data/processed/tables/formula_rules.json").is_file(),
+            "processed_json",
+        ),
+        _artifact(
+            "data/processed/tables/structured_tables_registry.json",
+            Path("data/processed/tables/structured_tables_registry.json").is_file(),
+            "processed_json",
+        ),
+        _artifact(
+            "data/processed/tables/foreign_language_equivalency_table.json",
+            Path("data/processed/tables/foreign_language_equivalency_table.json").is_file(),
+            "processed_json",
+        ),
+        _artifact(
+            "data/processed/directories/student_service_directory.json",
+            Path("data/processed/directories/student_service_directory.json").is_file(),
+            "processed_json",
+        ),
+        _artifact(
+            "data/processed/directories/student_office_profiles.json",
+            Path("data/processed/directories/student_office_profiles.json").is_file(),
+            "processed_json",
+        ),
+        _artifact(
+            "data/processed/entities/entity_registry.json",
+            Path("data/processed/entities/entity_registry.json").is_file(),
+            "processed_json",
+        ),
+        _artifact(
+            "data/processed/chunks/all_docstore_items.json",
+            Path("data/processed/chunks/all_docstore_items.json").is_file(),
+            "processed_json",
+        ),
+        _artifact(
+            "data/processed/chunks/child_parent_chunks.json",
+            Path("data/processed/chunks/child_parent_chunks.json").is_file(),
+            "processed_json",
+        ),
+        _artifact(
+            "data/processed/graphs/document_edges.json",
+            Path("data/processed/graphs/document_edges.json").is_file(),
+            "processed_json",
+        ),
+    ]
+
+    vectordb_provider = os.environ.get("VECTORDB_PROVIDER", "qdrant").strip().lower()
+    if _uses_qdrant_provider(vectordb_provider):
+        required.extend(
+            [
+                _artifact("QDRANT_URL", bool(os.environ.get("QDRANT_URL")), "env"),
+                _artifact("QDRANT_API_KEY", bool(os.environ.get("QDRANT_API_KEY")), "env"),
+                _artifact(
+                    "QDRANT_COLLECTION_NAME",
+                    bool(os.environ.get("QDRANT_COLLECTION_NAME")),
+                    "env",
+                ),
+            ]
+        )
+    else:
+        required.append(
+            _artifact(
+                "data/vectorstore/chroma",
+                Path("data/vectorstore/chroma").is_dir(),
+                "vectorstore",
+            )
+        )
+
+    required.extend(
+        [
+            _artifact("MONGODB_URL", bool(os.environ.get("MONGODB_URL")), "env"),
+            _artifact(
+                "MONGODB_PARENT_COLLECTION",
+                bool(os.environ.get("MONGODB_PARENT_COLLECTION")),
+                "env",
+            ),
+            _artifact("GROQ_API_KEYS", bool(os.environ.get("GROQ_API_KEYS")), "env"),
+            _artifact("GEMINI_API_KEYS", bool(os.environ.get("GEMINI_API_KEYS")), "env"),
+        ]
+    )
+    return required
+
+
+def _artifact_health_response() -> ArtifactHealthResponse:
+    required = _required_artifacts()
+    status = "ok" if all(item.exists for item in required) else "missing_artifacts"
+    return ArtifactHealthResponse(status=status, required_artifacts=required)
 
 
 @router.api_route("/health", methods=["GET", "HEAD"], response_model=HealthResponse)
@@ -30,8 +147,28 @@ def health() -> HealthResponse:
     """
     return HealthResponse(
         status="ok",
-        service="student_handbook_rag",
-        version="0.1.0",
+        service=SERVICE_NAME,
+        version=SERVICE_VERSION,
+    )
+
+
+@router.get("/health/readiness", response_model=ReadinessResponse)
+def readiness() -> ReadinessResponse:
+    """
+    Public readiness check for the frontend status badge.
+
+    This endpoint does not expose secret values. It only reports whether the
+    current container has the required runtime files and environment variables.
+    """
+    artifact_status = _artifact_health_response()
+    missing_count = sum(1 for item in artifact_status.required_artifacts if not item.exists)
+    ready = artifact_status.status == "ok"
+    return ReadinessResponse(
+        status="ok" if ready else "degraded",
+        service=SERVICE_NAME,
+        version=SERVICE_VERSION,
+        ready=ready,
+        missing_count=missing_count,
     )
 
 
@@ -68,85 +205,4 @@ def artifact_health() -> ArtifactHealthResponse:
                                                                   "processed_json",
                                                                   "vectorstore", "env").
     """
-    required = [
-        ArtifactStatus(
-            path="configs/answer_generation.yaml",
-            exists=Path("configs/answer_generation.yaml").is_file(),
-            kind="config",
-        ),
-        ArtifactStatus(
-            path="data/processed/tables/scoring_tables.json",
-            exists=Path("data/processed/tables/scoring_tables.json").is_file(),
-            kind="processed_json",
-        ),
-        ArtifactStatus(
-            path="data/processed/tables/formula_rules.json",
-            exists=Path("data/processed/tables/formula_rules.json").is_file(),
-            kind="processed_json",
-        ),
-        ArtifactStatus(
-            path="data/processed/tables/structured_tables_registry.json",
-            exists=Path("data/processed/tables/structured_tables_registry.json").is_file(),
-            kind="processed_json",
-        ),
-        ArtifactStatus(
-            path="data/processed/tables/foreign_language_equivalency_table.json",
-            exists=Path("data/processed/tables/foreign_language_equivalency_table.json").is_file(),
-            kind="processed_json",
-        ),
-        ArtifactStatus(
-            path="data/processed/directories/student_service_directory.json",
-            exists=Path("data/processed/directories/student_service_directory.json").is_file(),
-            kind="processed_json",
-        ),
-        ArtifactStatus(
-            path="data/processed/directories/student_office_profiles.json",
-            exists=Path("data/processed/directories/student_office_profiles.json").is_file(),
-            kind="processed_json",
-        ),
-        ArtifactStatus(
-            path="data/processed/entities/entity_registry.json",
-            exists=Path("data/processed/entities/entity_registry.json").is_file(),
-            kind="processed_json",
-        ),
-        ArtifactStatus(
-            path="data/processed/chunks/all_docstore_items.json",
-            exists=Path("data/processed/chunks/all_docstore_items.json").is_file(),
-            kind="processed_json",
-        ),
-        ArtifactStatus(
-            path="data/processed/chunks/child_parent_chunks.json",
-            exists=Path("data/processed/chunks/child_parent_chunks.json").is_file(),
-            kind="processed_json",
-        ),
-    ]
-
-    vectordb_provider = os.environ.get("VECTORDB_PROVIDER", "chroma").strip().lower()
-    if vectordb_provider == "qdrant_cloud":
-        # Khi deploy tren Hugging Face bang Qdrant Cloud, vectorstore nam tren cloud
-        # nen health check chi can dam bao secret ket noi da duoc cau hinh.
-        required.extend(
-            [
-                ArtifactStatus(
-                    path="QDRANT_URL",
-                    exists=bool(os.environ.get("QDRANT_URL")),
-                    kind="env",
-                ),
-                ArtifactStatus(
-                    path="QDRANT_API_KEY",
-                    exists=bool(os.environ.get("QDRANT_API_KEY")),
-                    kind="env",
-                ),
-            ]
-        )
-    else:
-        required.append(
-            ArtifactStatus(
-                path="data/vectorstore/chroma",
-                exists=Path("data/vectorstore/chroma").is_dir(),
-                kind="vectorstore",
-            )
-        )
-
-    status = "ok" if all(item.exists for item in required) else "missing_artifacts"
-    return ArtifactHealthResponse(status=status, required_artifacts=required)
+    return _artifact_health_response()

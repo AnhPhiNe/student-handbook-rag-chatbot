@@ -127,6 +127,14 @@ class HealthResponse(BaseModel):
     version: str
 
 
+class ReadinessResponse(BaseModel):
+    status: str
+    service: str
+    version: str
+    ready: bool
+    missing_count: int = 0
+
+
 class ArtifactStatus(BaseModel):
     """Đại diện cho trạng thái của một tài nguyên (artifact) cụ thể.
 

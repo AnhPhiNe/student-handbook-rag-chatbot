@@ -17,6 +17,9 @@ from typing import Any
 from src.common.env_loader import load_project_env
 
 
+QDRANT_PROVIDERS = {"qdrant", "qdrant_cloud"}
+
+
 def get_vectordb_provider() -> str:
     """Trả về tên provider vector database đang được cấu hình."""
     load_project_env()
@@ -49,7 +52,7 @@ def create_collection(
     """
     provider = get_vectordb_provider()
 
-    if provider == "qdrant_cloud":
+    if provider in QDRANT_PROVIDERS:
         print(
             f"☁️  [VectorDB] Đang kết nối đến Qdrant Cloud cho collection '{collection_name}'..."
         )

@@ -1,7 +1,9 @@
 # HCMUE AI - Student Handbook RAG Assistant
 
-> **Release candidate:** final holdout / V26 acronym-aware runtime (July 2026)  
-> Independent, non-commercial student project. This is not an official application of Ho Chi Minh City University of Education. Important academic or financial decisions should be verified against the cited handbook section or an official university office.
+<p align="center">
+  <strong>Cohort-aware RAG assistant for HCMUE student handbooks.</strong><br>
+  Structured lookup, regulation retrieval, citation binding, and student-facing utilities in one React + FastAPI application.
+</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11-3670A0?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11">
@@ -20,16 +22,12 @@
 </p>
 
 <p align="center">
-  Cohort-aware AI assistant for HCMUE student handbooks, combining structured lookup, regulation RAG, citation binding, and a student-facing React interface.
+  <a href="https://www.hcmuebot.id.vn"><strong>Live demo</strong></a>
+  |
+  <a href="https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api"><strong>Backend API</strong></a>
+  |
+  <a href="#evaluation"><strong>Evaluation</strong></a>
 </p>
-
-| Capability | Release-candidate result |
-|---|---:|
-| Structured lookup exactness | 97.50% on 120 holdout cases |
-| End-to-end retrieval Hit@5 | 92.22% on 180 holdout cases |
-| Human-audited answer faithfulness | 96.67% on 15 stratified-random cases |
-| Production transport and payload success | 100.00% on 60 local API requests |
-| Streaming TTFT p95 | 2.38s |
 
 ## Overview
 
@@ -43,6 +41,8 @@ HCMUE AI is a cohort-aware retrieval and generation system for the **K48-K49, K5
 The runtime does not flatten every table row into the vector collection. Structured data remains queryable JSON, while Qdrant contains only regulation text. This keeps retrieval focused without losing exact table and directory data.
 
 The frontend is built as a student utility hub rather than only a chatbot: students can ask handbook questions, select their cohort, use GPA and tuition tools, browse forms, and open study-method cards from the same responsive interface.
+
+> **Project status:** V26 acronym-aware release candidate, evaluated on the final holdout in July 2026. This is an independent, non-commercial student project and is not an official HCMUE application. Important academic or financial decisions should still be verified against the cited handbook section or an official university office.
 
 ## Live Demo
 

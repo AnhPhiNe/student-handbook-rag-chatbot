@@ -48,6 +48,7 @@ def _result_supports_requested_field(
         "email": "emails",
         "office": "office",
         "website": "websites",
+        "services": "responsibilities",
     }
     record_field = field_map.get(requested_field)
     if record_field is None:

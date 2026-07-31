@@ -349,7 +349,7 @@ def _summarize_office(record: dict[str, Any]) -> dict[str, Any]:
     phones = record.get("phones") or _extract_phones(raw_text)
     websites = record.get("websites") or _extract_websites(raw_text)
     internal_numbers = record.get("internal_numbers") or _extract_internal_numbers(raw_text)
-    responsibilities = record.get("responsibilities") or _extract_responsibilities(raw_text)
+    responsibilities = record.get("responsibilities") or record.get("services") or _extract_responsibilities(raw_text)
     if record.get("service"):
         responsibilities = [str(record["service"])] + [
             item for item in responsibilities if item != record.get("service")

@@ -85,7 +85,7 @@ tools:
 
   office:
     data_category: directory_table
-    description: Tra email, phone, website hoac dia chi cua mot don vi cu the, ke ca khi ten don vi la viet tat; trach nhiem, quyen han va quy dinh phai RAG.
+    description: Tra email, phone, website, dia chi, hoac nhiem vu, trach nhiem, cac mang cong viec ho tro sinh vien cua mot don vi cu the. Quy dinh, thu tuc va bieu mau thi phai RAG.
     intents: [contact]
     default_intent: contact
     required_slots:
@@ -94,7 +94,7 @@ tools:
       office: {type: string}
       requested_field:
         type: string
-        enum: [phone, email, office, website, all]
+        enum: [phone, email, office, website, services, all]
     strategy: office_lookup
     response_intent: office_query
     target_chunk_types: [office_directory]

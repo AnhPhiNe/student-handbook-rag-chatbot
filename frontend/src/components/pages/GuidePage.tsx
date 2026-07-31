@@ -1,4 +1,4 @@
-import { MessageSquare, Wrench, ShieldAlert, FileText, Bug, CheckCircle2, Zap, Target, Calculator, Award, GraduationCap, HelpCircle } from 'lucide-react';
+import { MessageSquare, Wrench, ShieldAlert, FileText, Bug, CheckCircle2, Zap, Target, Award, GraduationCap, HelpCircle } from 'lucide-react';
 
 export function GuidePage() {
   return (

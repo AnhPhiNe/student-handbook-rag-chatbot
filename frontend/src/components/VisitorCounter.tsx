@@ -7,14 +7,47 @@ const FALLBACK_KEY = 'hcmue_visitor_count_v2';
 // Shared promise to prevent multiple instances (Desktop & Mobile) from double-fetching
 let sharedFetchPromise: Promise<number> | null = null;
 
-export function VisitorCounter() {
-  const [count, setCount] = useState<number>(() => {
-    const saved = localStorage.getItem(FALLBACK_KEY);
-    return saved ? parseInt(saved, 10) : BASE_VISITS;
-  });
+let hasAnimated = false;
+
+function AnimatedDigit({ char }: { char: string }) {
+  const [oldChar, setOldChar] = useState(char);
+  const [newChar, setNewChar] = useState(char);
+  const [isRolling, setIsRolling] = useState(false);
 
   useEffect(() => {
-    // Only fetch once per page load (syncs Desktop and Mobile components)
+    if (char !== newChar) {
+      // Start rolling!
+      setOldChar(newChar);
+      setNewChar(char);
+      setIsRolling(true);
+
+      const timer = setTimeout(() => {
+        setIsRolling(false);
+        setOldChar(char); // Snap back to top seamlessly
+      }, 600); // matches CSS animation duration
+      
+      return () => clearTimeout(timer);
+    }
+  }, [char, newChar]);
+
+  return (
+    <span className="digit-container">
+      <span className={`digit-track ${isRolling ? 'rolling' : ''}`}>
+        <span>{oldChar}</span>
+        <span>{newChar}</span>
+      </span>
+    </span>
+  );
+}
+
+export function VisitorCounter() {
+  const [displayCount, setDisplayCount] = useState<number | null>(() => {
+    const saved = localStorage.getItem(FALLBACK_KEY);
+    return saved ? parseInt(saved, 10) : null;
+  });
+
+  // Effect to handle data fetching (only once)
+  useEffect(() => {
     if (!sharedFetchPromise) {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 4000);
@@ -41,11 +74,29 @@ export function VisitorCounter() {
         });
     }
 
-    // All instances will resolve the exact same number from the shared promise
     let isMounted = true;
     sharedFetchPromise.then(total => {
-      if (isMounted) {
-        setCount(total);
+      if (!isMounted) return;
+
+      if (!hasAnimated) {
+        hasAnimated = true;
+        
+        const saved = localStorage.getItem(FALLBACK_KEY);
+        if (saved) {
+          // Returning user: initial state is already `saved`. 
+          // Just set to `total` after a small delay. If total > saved, it naturally rolls!
+          setTimeout(() => {
+            if (isMounted) setDisplayCount(total);
+          }, 500); // 0.5s delay
+        } else {
+          // New user: Show total - 1, then roll to total
+          setDisplayCount(total - 1);
+          setTimeout(() => {
+            if (isMounted) setDisplayCount(total);
+          }, 500); // 0.5s delay
+        }
+      } else {
+        setDisplayCount(total);
       }
     });
 
@@ -57,7 +108,15 @@ export function VisitorCounter() {
   return (
     <div className="visitor-counter">
       <div className="visitor-label">Lượt truy cập</div>
-      <div className="visitor-number">{count.toLocaleString('vi-VN')}</div>
+      <div className="visitor-number">
+        {displayCount !== null ? (
+          displayCount.toLocaleString('vi-VN').split('').map((char, i) => (
+            <AnimatedDigit key={displayCount.toString().length - i} char={char} />
+          ))
+        ) : (
+          <span style={{ opacity: 0.5, letterSpacing: '2px' }}>...</span>
+        )}
+      </div>
     </div>
   );
 }

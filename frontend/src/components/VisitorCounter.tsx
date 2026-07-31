@@ -52,7 +52,7 @@ export function VisitorCounter() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-      sharedFetchPromise = fetch('https://api.counterapi.dev/v1/hcmue-student-handbook/visits/up', { signal: controller.signal })
+      sharedFetchPromise = fetch('/counter-api/v1/hcmue-student-handbook/visits/up', { signal: controller.signal })
         .then(res => res.json())
         .then(data => {
           clearTimeout(timeoutId);

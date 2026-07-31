@@ -244,7 +244,7 @@ def resolve_structured_decision(
         if result is not None and result.get("resolution_status") == "ambiguous":
             options = result.get("clarification_options") or []
             result["clarification_question"] = (
-                "Bạn đang muốn hỏi đơn vị nào: " + ", ".join(options) + "?"
+                "Câu hỏi của bạn liên quan đến nhiều đơn vị. Bạn cần hỗ trợ cụ thể về mảng nào dưới đây?\n\n" + "\n".join(options)
             )
             return _resolution(
                 lookup_type,

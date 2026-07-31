@@ -434,14 +434,33 @@ def office_lookup(
         if not ranked or match_score < minimum_confidence:
             return None
         if len(ranked) > 1 and score_margin < 0.08:
-            options = [
-                _strip_order_prefix(item["record"].get("unit_name") or item["record"].get("unit"))
-                for item in ranked[:3]
-            ]
+            options = []
+            seen_units = set()
+            for item in ranked[:3]:
+                record = item["record"]
+                unit = _strip_order_prefix(record.get("unit_name") or record.get("unit"))
+                if unit in seen_units:
+                    continue
+                seen_units.add(unit)
+                
+                service = record.get("service")
+                if not service:
+                    resps = record.get("responsibilities")
+                    if resps and isinstance(resps, list) and len(resps) > 0:
+                        service = resps[0]
+                
+                if service:
+                    svc_text = str(service).strip()
+                    if len(svc_text) > 250:
+                        svc_text = svc_text[:247] + "..."
+                    options.append(f"- **{unit}**: {svc_text}")
+                else:
+                    options.append(f"- **{unit}**")
+
             return {
                 "lookup_type": "office_directory",
                 "resolution_status": "ambiguous",
-                "clarification_options": list(dict.fromkeys(options)),
+                "clarification_options": options,
                 "candidate_text": candidate_text or query,
                 "match_score": round(match_score, 4),
                 "score_margin": round(score_margin, 4),

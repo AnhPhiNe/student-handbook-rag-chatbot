@@ -23,6 +23,7 @@ import { ToastProvider } from './components/Toast';
 import { useMediaQuery } from './hooks/useMediaQuery';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { BugReportModal } from './components/BugReportModal';
+import { VisitorCounter } from './components/VisitorCounter';
 import { CohortSelectionModal } from './components/CohortSelectionModal';
 import { SystemStatusBadge } from './components/SystemStatusBadge';
 import { MobileScrollAffordance } from './components/MobileScrollAffordance';
@@ -100,7 +101,11 @@ function App() {
           <div ref={contentAreaRef} className="content-area" style={{ position: 'relative' }}>
             {/* Global Controls */}
             {!isMobile && (
-              <div className={`global-controls ${shouldShowCohortSelector ? '' : 'compact'}`}>
+              <>
+                <div className="header-left-controls">
+                  <VisitorCounter />
+                </div>
+                <div className={`global-controls ${shouldShowCohortSelector ? '' : 'compact'}`}>
                 <SystemStatusBadge />
                 {activeTab === 'chat' && messages.length > 0 && (
                   <button className="theme-toggle" onClick={() => {
@@ -126,9 +131,10 @@ function App() {
                 )}
                 <button className="theme-toggle" onClick={toggleTheme}>
                   {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-                  <span>{theme === 'light' ? 'Chế độ tối' : 'Chế độ sáng'}</span>
+                  <span>Chế độ {theme === 'light' ? 'tối' : 'sáng'}</span>
                 </button>
               </div>
+              </>
             )}
             
             <Suspense fallback={

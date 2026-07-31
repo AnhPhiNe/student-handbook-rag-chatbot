@@ -1,0 +1,53 @@
+.visitor-counter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.25rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+[data-theme='dark'] .visitor-counter {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.visitor-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.1rem;
+}
+
+.visitor-number {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* Position in the top left of the content area */
+.header-left-controls {
+  position: absolute;
+  top: 16px;
+  left: 24px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .header-left-controls {
+    display: none; /* Hide on mobile to save space, or we can move it to MobileHeader */
+  }
+}

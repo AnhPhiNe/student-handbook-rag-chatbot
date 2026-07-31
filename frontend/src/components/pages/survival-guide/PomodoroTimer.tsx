@@ -85,6 +85,7 @@ export function PomodoroTimer() {
 
   return (
     <div className="pomodoro-timer">
+      <HorizontalScrollHint targetRef={modeTabsRef} className="compact" />
       <div className="pom-mode-tabs" ref={modeTabsRef}>
         {(Object.keys(LABELS) as TimerMode[]).map(m => (
           <button
@@ -96,7 +97,6 @@ export function PomodoroTimer() {
           </button>
         ))}
       </div>
-      <HorizontalScrollHint targetRef={modeTabsRef} className="compact" />
 
       <div className="pom-clock-wrap">
         <svg className="pom-svg" viewBox="0 0 120 120">

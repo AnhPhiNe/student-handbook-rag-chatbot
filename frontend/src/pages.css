@@ -127,7 +127,58 @@
   cursor: pointer;
   box-shadow: var(--shadow-sm);
   transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  animation: cardEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  position: relative;
+  overflow: hidden;
 }
+
+@keyframes cardEntrance {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.home-action-card:nth-child(1) { animation-delay: 0.05s; }
+.home-action-card:nth-child(2) { animation-delay: 0.15s; }
+.home-action-card:nth-child(3) { animation-delay: 0.25s; }
+.home-action-card:nth-child(4) { animation-delay: 0.35s; }
+
+@keyframes shimmerWave {
+  0% { transform: translateX(-150%) skewX(-15deg); }
+  100% { transform: translateX(250%) skewX(-15deg); }
+}
+
+.home-action-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.5), 
+    transparent
+  );
+  transform: translateX(-150%) skewX(-15deg);
+  z-index: 10;
+  pointer-events: none;
+  animation: shimmerWave 3.5s infinite;
+}
+
+[data-theme='dark'] .home-action-card::after {
+  background: linear-gradient(
+    90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.08), 
+    transparent
+  );
+}
+
+.home-action-card:nth-child(1)::after { animation-delay: 0s; }
+.home-action-card:nth-child(2)::after { animation-delay: 0.3s; }
+.home-action-card:nth-child(3)::after { animation-delay: 0.6s; }
+.home-action-card:nth-child(4)::after { animation-delay: 0.9s; }
 
 .home-action-card:hover {
   transform: translateY(-3px);

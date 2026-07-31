@@ -158,6 +158,7 @@ export function SurvivalGuidePage() {
       </div>
 
       {/* Tab Filter */}
+      <HorizontalScrollHint targetRef={tabFilterRef} />
       <div className="sg-tab-filter" ref={tabFilterRef}>
         {TABS.map(tab => (
           <button
@@ -172,7 +173,6 @@ export function SurvivalGuidePage() {
           </button>
         ))}
       </div>
-      <HorizontalScrollHint targetRef={tabFilterRef} />
 
       {/* Content */}
       <div className="sg-sections-container">

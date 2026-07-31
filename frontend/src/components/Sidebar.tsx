@@ -115,7 +115,7 @@ export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onC
             <Bug size={14} />
             <span>Báo lỗi / Góp ý</span>
           </button>
-          <p>Phiên bản 1.0.0 · © 2026 HCMUE</p>
+          <p>Dự án cá nhân vì sinh viên HCMUE · Phiên bản 1.0</p>
         </div>
       </aside>
     </>

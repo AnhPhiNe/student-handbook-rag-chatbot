@@ -162,6 +162,7 @@ export function FormPage() {
         <p>Danh sách 45 mẫu đơn thông dụng chia theo 5 danh mục phòng ban.</p>
       </div>
 
+      <HorizontalScrollHint targetRef={categoryTabsRef} />
       <div className="category-tabs" ref={categoryTabsRef}>
         {CATEGORIES.map(cat => (
           <button 
@@ -176,7 +177,6 @@ export function FormPage() {
           </button>
         ))}
       </div>
-      <HorizontalScrollHint targetRef={categoryTabsRef} />
 
       <div className="form-controls">
         <div className="search-box">

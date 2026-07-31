@@ -67,7 +67,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
         <section className="home-actions-section" aria-labelledby="home-actions-title">
           <div className="home-section-heading">
-            <h2 id="home-actions-title">Bạn muốn làm gì?</h2>
+            <h2 id="home-actions-title">Hôm nay bạn cần mình giúp gì nào? ✨</h2>
           </div>
           <div className="home-action-grid">
             {HOME_ACTIONS.map((action) => {

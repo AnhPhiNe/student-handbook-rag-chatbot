@@ -2,7 +2,7 @@ import { MessageSquare, Wrench, ShieldAlert, FileText, Bug, CheckCircle2, Zap, T
 
 export function GuidePage() {
   return (
-    <div className="page-container" style={{ animation: 'fadeIn 0.5s ease-out' }}>
+    <div className="page-container">
       <div className="article-layout" style={{ maxWidth: '900px', margin: '0 auto', paddingBottom: '3rem' }}>
         
         {/* Header Section */}
@@ -71,13 +71,10 @@ export function GuidePage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {[
                 { icon: GraduationCap, title: 'Tính điểm GPA', desc: 'Nhập điểm các môn học để tính toán chính xác điểm trung bình tích lũy hệ 4 và hệ 10.', color: '#3b82f6' },
-                { icon: Target, title: 'Mục tiêu GPA & Môn học', desc: 'Hệ thống sẽ tính toán và "kê đơn" cho bạn cần đạt bao nhiêu điểm trong kỳ tới để đạt được mức GPA mục tiêu (VD: Bằng Giỏi, Xuất sắc).', color: '#10b981' },
-                { icon: Award, title: 'Tính điểm học bổng', desc: 'Dự đoán khả năng đạt học bổng và ước tính số tiền nhận được dựa trên điểm học tập và điểm rèn luyện của bạn.', color: '#f59e0b' },
-                { icon: Calculator, title: 'Ước tính học phí', desc: 'Tra cứu nhanh mức học phí tín chỉ tùy theo ngành học và khóa học của bạn một cách chính xác.', color: '#8b5cf6' },
-                { icon: ShieldAlert, title: 'Cảnh báo rủi ro hạ bằng', desc: 'Kiểm tra xem số tín chỉ học lại của bạn đã vượt quá giới hạn 5% dẫn đến nguy cơ bị hạ bậc bằng tốt nghiệp hay chưa.', color: '#ef4444' }
+                { icon: Target, title: 'Mục tiêu GPA & Môn học', desc: 'Hệ thống sẽ tính toán và "kê đơn" cho bạn cần đạt bao nhiêu điểm trong kỳ tới để đạt được mức GPA mục tiêu.', color: '#10b981' }
               ].map((tool, idx) => (
-                <div key={idx} className="hover-card" style={{ display: 'flex', alignItems: 'flex-start', gap: '1.25rem', padding: '1.25rem 1.5rem', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-color)', transition: 'all 0.2s', cursor: 'default' }}>
-                  <div style={{ padding: '0.6rem', background: `rgba(${tool.color === '#3b82f6' ? '59, 130, 246' : tool.color === '#10b981' ? '16, 185, 129' : tool.color === '#f59e0b' ? '245, 158, 11' : tool.color === '#8b5cf6' ? '139, 92, 246' : '239, 68, 68'}, 0.1)`, color: tool.color, borderRadius: '10px' }}>
+                <div key={idx} className="hover-card" style={{ display: 'flex', alignItems: 'flex-start', gap: '1.25rem', padding: '1.25rem 1.5rem', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-color)', transition: 'all 0.2s', cursor: 'default', animation: 'actionCardEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards', animationDelay: `${idx * 0.15 + 0.3}s` }}>
+                  <div style={{ padding: '0.6rem', background: `rgba(${tool.color === '#3b82f6' ? '59, 130, 246' : '16, 185, 129'}, 0.1)`, color: tool.color, borderRadius: '10px' }}>
                     <tool.icon size={22} />
                   </div>
                   <div>
@@ -89,13 +86,33 @@ export function GuidePage() {
             </div>
           </section>
 
-          {/* Section 3: Forms */}
+          {/* Section 3: Survival Guide */}
+          <section className="guide-section">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div style={{ padding: '0.75rem', borderRadius: '12px', background: 'rgba(139, 92, 246, 0.1)', color: '#8b5cf6' }}>
+                <Award size={28} />
+              </div>
+              <h2 style={{ margin: 0, fontSize: '1.75rem' }}>3. Phương pháp Học tập</h2>
+            </div>
+            
+            <p style={{ fontSize: '1.05rem', lineHeight: '1.7', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+              Không chỉ cung cấp công cụ tính điểm, Sổ tay còn trang bị cho bạn hệ thống các phương pháp học tập khoa học như Pomodoro, Feynman, Cornell... được tinh chỉnh dành riêng cho môi trường đại học.
+            </p>
+            
+            <div style={{ padding: '1.75rem', background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(139, 92, 246, 0.15))', borderRadius: '16px', border: '1px solid rgba(139, 92, 246, 0.2)' }}>
+              <p style={{ margin: '0 0 1.25rem 0', fontSize: '1.05rem', lineHeight: '1.6' }}>
+                Hãy làm bài Test ngắn trong mục Phương pháp Học tập để AI chẩn đoán "bệnh lười" của bạn và đưa ra lộ trình học tập phù hợp nhất!
+              </p>
+            </div>
+          </section>
+
+          {/* Section 4: Forms */}
           <section className="guide-section">
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
               <div style={{ padding: '0.75rem', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>
                 <FileText size={28} />
               </div>
-              <h2 style={{ margin: 0, fontSize: '1.75rem' }}>3. Thư viện Biểu mẫu</h2>
+              <h2 style={{ margin: 0, fontSize: '1.75rem' }}>4. Thư viện Biểu mẫu</h2>
             </div>
             
             <div style={{ padding: '1.75rem', background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.15))', borderRadius: '16px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
@@ -109,13 +126,13 @@ export function GuidePage() {
             </div>
           </section>
 
-          {/* Section 4: Bug Report */}
+          {/* Section 5: Bug Report */}
           <section className="guide-section">
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
               <div style={{ padding: '0.75rem', borderRadius: '12px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
                 <Bug size={28} />
               </div>
-              <h2 style={{ margin: 0, fontSize: '1.75rem' }}>4. Báo lỗi & Góp ý</h2>
+              <h2 style={{ margin: 0, fontSize: '1.75rem' }}>5. Báo lỗi & Góp ý</h2>
             </div>
             
             <p style={{ fontSize: '1.05rem', lineHeight: '1.7', color: 'var(--text-secondary)' }}>
@@ -124,7 +141,7 @@ export function GuidePage() {
             
             <div className="tip-box" style={{ background: 'var(--bg-primary)', borderLeft: '4px solid var(--danger)', margin: '1.5rem 0 0 0', padding: '1.25rem' }}>
               <p style={{ margin: 0, fontSize: '1rem', lineHeight: '1.6' }}>
-                Bất cứ lúc nào bạn gặp lỗi hiển thị, lỗi tính toán hoặc muốn đóng góp ý tưởng, hãy nhấn vào biểu tượng <strong>Côn trùng (Bug) màu đỏ</strong> ở góc phải màn hình, hoặc chọn nút <strong>Báo lỗi / Góp ý</strong> ở thanh menu bên trái. Đội ngũ phát triển luôn sẵn sàng lắng nghe!
+                Bất cứ lúc nào bạn gặp lỗi hiển thị, lỗi tính toán hoặc muốn đóng góp ý tưởng, hãy nhấn vào nút <strong>Báo lỗi / Góp ý (biểu tượng con bọ)</strong> nằm ở góc dưới của thanh menu bên trái. Đội ngũ phát triển luôn sẵn sàng lắng nghe!
               </p>
             </div>
           </section>

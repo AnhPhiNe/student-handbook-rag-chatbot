@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import { Target, Plus, Trash2, AlertCircle } from 'lucide-react';
 import {
   getCourseGroupOptions,
@@ -10,6 +10,7 @@ import {
   type LetterGrade,
 } from '../../utils/gradeScale';
 import { PageContextBadges } from '../PageContextBadges';
+import { HorizontalScrollHint } from '../HorizontalScrollHint';
 
 interface CourseTargetPageProps {
   cohort: Cohort;
@@ -37,6 +38,7 @@ const GRADE_META: Record<LetterGrade, { name: string; color: string }> = {
 };
 
 export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
+  const tableWrapRef = useRef<HTMLDivElement>(null);
   const [courseGroup, setCourseGroup] = useState<CourseGroup>(getDefaultCourseGroup(cohort));
   const [components, setComponents] = useState<ScoreComponent[]>([
     { id: 'comp-1', name: 'Quá trình', weight: '20', score: '' },
@@ -168,8 +170,8 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
               </div>
             )}
 
-            <div className="scroll-hint">Vuốt ngang để xem bảng</div>
-            <div className="tool-table-wrap">
+            <HorizontalScrollHint targetRef={tableWrapRef} text="Vuốt ngang để xem bảng" />
+            <div className="tool-table-wrap" ref={tableWrapRef}>
               <table className="tool-table gpa-table" style={{ width: '100%', minWidth: '400px' }}>
                 <thead>
                   <tr>

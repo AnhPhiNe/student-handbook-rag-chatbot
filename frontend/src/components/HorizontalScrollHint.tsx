@@ -1,13 +1,13 @@
 import { useEffect, useState, type RefObject } from 'react';
-import { MoveRight } from 'lucide-react';
 
 interface HorizontalScrollHintProps {
   targetRef: RefObject<HTMLElement | null>;
   className?: string;
+  text?: string;
 }
 
-export function HorizontalScrollHint({ targetRef, className = '' }: HorizontalScrollHintProps) {
-  const [isVisible, setIsVisible] = useState(false);
+export function HorizontalScrollHint({ targetRef, className = '', text = 'Vuốt ngang để xem tiếp' }: HorizontalScrollHintProps) {
+  const [status, setStatus] = useState({ hasOverflow: false, isNearEnd: false });
 
   useEffect(() => {
     const target = targetRef.current;
@@ -16,7 +16,7 @@ export function HorizontalScrollHint({ targetRef, className = '' }: HorizontalSc
     const updateVisibility = () => {
       const hasOverflow = target.scrollWidth - target.clientWidth > 12;
       const isNearEnd = target.scrollLeft + target.clientWidth >= target.scrollWidth - 16;
-      setIsVisible(hasOverflow && !isNearEnd);
+      setStatus({ hasOverflow, isNearEnd });
     };
 
     const resizeObserver = new ResizeObserver(updateVisibility);
@@ -33,12 +33,20 @@ export function HorizontalScrollHint({ targetRef, className = '' }: HorizontalSc
     };
   }, [targetRef]);
 
-  if (!isVisible) return null;
+  if (!status.hasOverflow) return null;
 
   return (
-    <div className={`horizontal-scroll-hint ${className}`} role="status" aria-live="polite">
-      <MoveRight size={14} />
-      <span>Vuốt ngang để xem tiếp</span>
+    <div 
+      className={`horizontal-scroll-hint ${className}`} 
+      style={{ 
+        opacity: status.isNearEnd ? 0 : 1,
+        visibility: status.isNearEnd ? 'hidden' : 'visible',
+        animation: status.isNearEnd ? 'none' : undefined
+      }}
+      role="status" 
+      aria-live="polite"
+    >
+      {text}
     </div>
   );
 }

@@ -11,6 +11,9 @@ interface BugReportModalProps {
   messages?: Message[];
 }
 
+// TODO: Thay thế đường link bên dưới bằng link Web App của riêng bạn (ở Bước 3)
+const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx8NdzeyluYyVe9H-RkRZJkJCr4TTPpxHLsoU7qs0RzX1NbuetREIn4woPTKQ_LZ3MKxw/exec';
+
 export function BugReportModal({
   isOpen,
   setIsOpen,
@@ -44,7 +47,7 @@ export function BugReportModal({
 
     try {
       const response = await fetch(
-        'https://script.google.com/macros/s/AKfycbx3XMBqzTArTmlTc2KE7_twFepC5Bg9bqjIeWDAVT3fPv8s1OAlqRvXboMdLiZW2i8w/exec',
+        GOOGLE_APPS_SCRIPT_URL,
         {
           method: 'POST',
           headers: {

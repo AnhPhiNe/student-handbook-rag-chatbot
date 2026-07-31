@@ -1,5 +1,6 @@
 import { Award, Calculator, FileText, GraduationCap, HelpCircle, MessageSquare, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home, Bug, Sparkles } from 'lucide-react';
 const logoHcmue = '/logo_hcmue.png?v=2';
+import { VisitorCounter } from './VisitorCounter';
 
 interface SidebarProps {
   activeTab: string;
@@ -9,9 +10,10 @@ interface SidebarProps {
   onClose: () => void;
   onToggleCollapse: () => void;
   onOpenBugReport: () => void;
+  showVisitorCounter?: boolean;
 }
 
-export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onClose, onToggleCollapse, onOpenBugReport }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onClose, onToggleCollapse, onOpenBugReport, showVisitorCounter }: SidebarProps) {
   const handleTabClick = (tab: string) => {
     onTabChange(tab);
     onClose(); // close mobile menu on selection
@@ -111,6 +113,11 @@ export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onC
         </nav>
 
         <div className="sidebar-footer">
+          {showVisitorCounter && (
+            <div className="sidebar-visitor-wrapper" style={{ marginBottom: '12px' }}>
+              <VisitorCounter />
+            </div>
+          )}
           <button type="button" onClick={onOpenBugReport} className="sidebar-feedback-btn">
             <Bug size={14} />
             <span>Báo lỗi / Góp ý</span>

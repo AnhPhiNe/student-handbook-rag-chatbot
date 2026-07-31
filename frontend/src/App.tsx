@@ -96,6 +96,7 @@ function App() {
             onClose={() => setIsMobileMenuOpen(false)}
             onToggleCollapse={() => setSidebarCollapsed(prev => !prev)}
             onOpenBugReport={() => setIsBugModalOpen(true)}
+            showVisitorCounter={isMobile}
           />
           
           <div ref={contentAreaRef} className="content-area" style={{ position: 'relative' }}>

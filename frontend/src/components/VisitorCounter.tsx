@@ -44,7 +44,7 @@ export function VisitorCounter() {
 
   return (
     <div className="visitor-counter">
-      <div className="visitor-label">LƯỢT TRUY CẬP</div>
+      <div className="visitor-label">Lượt truy cập</div>
       <div className="visitor-number">{count.toLocaleString('vi-VN')}</div>
     </div>
   );

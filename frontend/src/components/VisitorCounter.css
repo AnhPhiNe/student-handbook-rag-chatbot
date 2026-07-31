@@ -51,3 +51,34 @@
     display: none; /* Hide on mobile to save space, or we can move it to MobileHeader */
   }
 }
+
+/* Sidebar specific styles */
+.sidebar-visitor-wrapper .visitor-counter {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 88%;
+  max-width: 230px;
+  margin: 0 auto;
+  padding: 0;
+}
+.sidebar-visitor-wrapper .visitor-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: normal;
+}
+.sidebar-visitor-wrapper .visitor-number {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+

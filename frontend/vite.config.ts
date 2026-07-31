@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api/system-sync': {
+      '/api/visits': {
         target: 'https://api.counterapi.dev/v1/hcmue-student-handbook/visits/up',
         changeOrigin: true,
         rewrite: () => ''

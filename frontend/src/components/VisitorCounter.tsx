@@ -7,8 +7,6 @@ const FALLBACK_KEY = 'hcmue_visitor_count_v2';
 // Shared promise to prevent multiple instances (Desktop & Mobile) from double-fetching
 let sharedFetchPromise: Promise<number> | null = null;
 
-let hasAnimated = false;
-
 function AnimatedDigit({ char }: { char: string }) {
   const [oldChar, setOldChar] = useState(char);
   const [newChar, setNewChar] = useState(char);
@@ -48,55 +46,42 @@ export function VisitorCounter() {
 
   // Effect to handle data fetching (only once)
   useEffect(() => {
+    let isMounted = true;
+
     if (!sharedFetchPromise) {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-      sharedFetchPromise = fetch('/api/system-sync', { signal: controller.signal })
-        .then(res => res.json())
+      sharedFetchPromise = fetch('/api/visits', { 
+        signal: controller.signal,
+        cache: 'no-store' 
+      })
+        .then(res => {
+          if (!res.ok) throw new Error('Network response was not ok');
+          return res.json();
+        })
         .then(data => {
           clearTimeout(timeoutId);
           if (data && typeof data.count === 'number') {
-            const total = BASE_VISITS + data.count;
-            localStorage.setItem(FALLBACK_KEY, total.toString());
-            return total;
-          } else {
-            throw new Error('Dữ liệu đếm không hợp lệ');
+            return BASE_VISITS + data.count;
           }
+          throw new Error('Invalid data format');
         })
         .catch(err => {
-          clearTimeout(timeoutId);
-          console.warn('Sử dụng bộ đếm dự phòng:', err);
+          console.warn('Visitor counter fallback:', err);
           const savedCount = parseInt(localStorage.getItem(FALLBACK_KEY) || '0', 10);
-          const newCount = Math.max(savedCount + 1, BASE_VISITS);
-          localStorage.setItem(FALLBACK_KEY, newCount.toString());
-          return newCount;
+          return Math.max(savedCount + 1, BASE_VISITS);
         });
     }
 
-    let isMounted = true;
     sharedFetchPromise.then(total => {
-      if (!isMounted) return;
-
-      if (!hasAnimated) {
-        hasAnimated = true;
-        
-        const saved = localStorage.getItem(FALLBACK_KEY);
-        if (saved) {
-          // Returning user: initial state is already `saved`. 
-          // Just set to `total` after a small delay. If total > saved, it naturally rolls!
-          setTimeout(() => {
-            if (isMounted) setDisplayCount(total);
-          }, 500); // 0.5s delay
-        } else {
-          // New user: Show total - 1, then roll to total
-          setDisplayCount(total - 1);
-          setTimeout(() => {
-            if (isMounted) setDisplayCount(total);
-          }, 500); // 0.5s delay
-        }
-      } else {
-        setDisplayCount(total);
+      if (isMounted) {
+        localStorage.setItem(FALLBACK_KEY, total.toString());
+        // User requested to always show "..." first, then show (total - 1), then roll to total
+        setDisplayCount(total - 1);
+        setTimeout(() => {
+          if (isMounted) setDisplayCount(total);
+        }, 500);
       }
     });
 

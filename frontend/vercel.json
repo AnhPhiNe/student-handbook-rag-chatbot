@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/counter-api/:match*",
-      "destination": "https://api.counterapi.dev/:match*"
+      "source": "/api/system-sync",
+      "destination": "https://api.counterapi.dev/v1/hcmue-student-handbook/visits/up"
     },
     {
       "source": "/(.*)",

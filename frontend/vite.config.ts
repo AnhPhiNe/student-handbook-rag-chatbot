@@ -6,15 +6,15 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
+      '/api/system-sync': {
+        target: 'https://api.counterapi.dev/v1/hcmue-student-handbook/visits/up',
+        changeOrigin: true,
+        rewrite: () => ''
+      },
       '/api': {
         target: 'http://127.0.0.1:8000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
-      },
-      '/counter-api': {
-        target: 'https://api.counterapi.dev',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/counter-api/, '')
       }
     }
   }

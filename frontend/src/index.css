@@ -2087,7 +2087,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .action-card:nth-child(5) { animation-delay: 0.45s; }
 .action-card:nth-child(6) { animation-delay: 0.55s; }
 
-.action-card::after {
+.sg-card, .tool-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.action-card::after, .tool-card::after, .sg-card::after {
   content: '';
   position: absolute;
   top: 0;
@@ -2104,9 +2109,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   z-index: 10;
   pointer-events: none;
   animation: shimmerWave 3.5s infinite;
+  animation-delay: var(--shimmer-delay, 0s);
 }
 
-[data-theme='dark'] .action-card::after {
+[data-theme='dark'] .action-card::after,
+[data-theme='dark'] .tool-card::after,
+[data-theme='dark'] .sg-card::after {
   background: linear-gradient(
     90deg, 
     transparent, 

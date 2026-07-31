@@ -60,10 +60,10 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  width: 88%;
-  max-width: 230px;
-  margin: 0 auto;
-  padding: 0;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 0.78rem;
 }
 .sidebar-visitor-wrapper .visitor-label {
   font-size: 0.8rem;

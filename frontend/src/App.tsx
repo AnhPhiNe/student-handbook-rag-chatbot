@@ -81,7 +81,6 @@ function App() {
               onMenuToggle={() => setIsMobileMenuOpen(true)} 
               theme={theme} 
               onToggleTheme={toggleTheme} 
-              onOpenBugReport={() => setIsBugModalOpen(true)}
               cohort={cohort}
               onCohortChange={setCohort}
               showCohortSelector={shouldShowCohortSelector}

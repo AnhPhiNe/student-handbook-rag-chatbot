@@ -76,7 +76,7 @@ async function checkHfSpaceStage(parentSignal: AbortSignal): Promise<SystemStatu
   }
 }
 
-export function SystemStatusBadge() {
+export function SystemStatusBadge({ compact = false }: { compact?: boolean }) {
   const [status, setStatus] = useState<SystemStatus>('checking');
 
   useEffect(() => {
@@ -146,6 +146,18 @@ export function SystemStatusBadge() {
     degraded: 'Backend phản hồi nhưng chưa đủ điều kiện sẵn sàng, có thể đang build hoặc cập nhật cấu hình',
     offline: 'Không thể kết nối tới dịch vụ HCMUE AI',
   };
+
+  if (compact) {
+    return (
+      <div
+        className={`system-status-dot ${status}`}
+        role="status"
+        aria-live="polite"
+        title={titleByStatus[status]}
+        style={{ width: '10px', height: '10px', display: 'inline-block', flexShrink: 0, margin: '0 4px', borderRadius: '50%', backgroundColor: 'currentColor' }}
+      />
+    );
+  }
 
   return (
     <div

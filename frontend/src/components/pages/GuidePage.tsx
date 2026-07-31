@@ -1,6 +1,10 @@
-import { MessageSquare, Wrench, ShieldAlert, FileText, Bug, CheckCircle2, Zap, Target, Award, GraduationCap, HelpCircle } from 'lucide-react';
+import { MessageSquare, Wrench, ShieldAlert, FileText, Bug, CheckCircle2, Zap, Target, Award, GraduationCap, HelpCircle, Calculator } from 'lucide-react';
 
-export function GuidePage() {
+interface GuidePageProps {
+  onNavigate?: (tabId: string) => void;
+}
+
+export function GuidePage({ onNavigate }: GuidePageProps) {
   return (
     <div className="page-container">
       <div className="article-layout" style={{ maxWidth: '900px', margin: '0 auto', paddingBottom: '3rem' }}>
@@ -70,11 +74,15 @@ export function GuidePage() {
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {[
-                { icon: GraduationCap, title: 'Tính điểm GPA', desc: 'Nhập điểm các môn học để tính toán chính xác điểm trung bình tích lũy hệ 4 và hệ 10.', color: '#3b82f6' },
-                { icon: Target, title: 'Mục tiêu GPA & Môn học', desc: 'Hệ thống sẽ tính toán và "kê đơn" cho bạn cần đạt bao nhiêu điểm trong kỳ tới để đạt được mức GPA mục tiêu.', color: '#10b981' }
+                { id: 'gpa', icon: GraduationCap, title: 'Tính điểm GPA', desc: 'Nhập điểm các môn học để tính toán chính xác điểm trung bình tích lũy hệ 4 và hệ 10.', color: '#3b82f6' },
+                { id: 'target-gpa', icon: Target, title: 'Mục tiêu GPA', desc: 'Hệ thống sẽ tính toán và "kê đơn" cho bạn cần đạt bao nhiêu điểm trong kỳ tới để đạt được mức GPA mục tiêu.', color: '#10b981' },
+                { id: 'course-target', icon: Target, title: 'Mục tiêu môn học', desc: 'Tính toán chi tiết điểm số cần đạt ở các cột điểm thành phần để đạt được điểm chữ mong muốn cho từng môn.', color: '#10b981' },
+                { id: 'scholarship', icon: Award, title: 'Tính điểm học bổng', desc: 'Dự đoán khả năng đạt học bổng và ước tính số tiền nhận được dựa trên điểm học và rèn luyện.', color: '#f59e0b' },
+                { id: 'tuition', icon: Calculator, title: 'Ước tính học phí', desc: 'Tra cứu nhanh mức học phí tín chỉ tùy theo ngành học và khóa học của bạn.', color: '#8b5cf6' },
+                { id: 'credits', icon: ShieldAlert, title: 'Kiểm tra hạ bằng', desc: 'Kiểm tra xem số tín chỉ học lại đã vượt quá giới hạn 5% dẫn đến nguy cơ hạ bậc bằng tốt nghiệp hay chưa.', color: '#ef4444' }
               ].map((tool, idx) => (
-                <div key={idx} className="hover-card" style={{ display: 'flex', alignItems: 'flex-start', gap: '1.25rem', padding: '1.25rem 1.5rem', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-color)', transition: 'all 0.2s', cursor: 'default', animation: 'actionCardEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards', animationDelay: `${idx * 0.15 + 0.3}s` }}>
-                  <div style={{ padding: '0.6rem', background: `rgba(${tool.color === '#3b82f6' ? '59, 130, 246' : '16, 185, 129'}, 0.1)`, color: tool.color, borderRadius: '10px' }}>
+                <div key={idx} className="hover-card" onClick={() => tool.id && onNavigate?.(tool.id)} style={{ display: 'flex', alignItems: 'flex-start', gap: '1.25rem', padding: '1.25rem 1.5rem', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-color)', transition: 'all 0.2s', cursor: 'pointer', animation: 'actionCardEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards', animationDelay: `${idx * 0.15 + 0.3}s` }}>
+                  <div style={{ padding: '0.6rem', background: `rgba(${tool.color === '#3b82f6' ? '59, 130, 246' : tool.color === '#10b981' ? '16, 185, 129' : tool.color === '#f59e0b' ? '245, 158, 11' : tool.color === '#8b5cf6' ? '139, 92, 246' : '239, 68, 68'}, 0.1)`, color: tool.color, borderRadius: '10px' }}>
                     <tool.icon size={22} />
                   </div>
                   <div>
@@ -99,10 +107,14 @@ export function GuidePage() {
               Không chỉ cung cấp công cụ tính điểm, Sổ tay còn trang bị cho bạn hệ thống các phương pháp học tập khoa học như Pomodoro, Feynman, Cornell... được tinh chỉnh dành riêng cho môi trường đại học.
             </p>
             
-            <div style={{ padding: '1.75rem', background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(139, 92, 246, 0.15))', borderRadius: '16px', border: '1px solid rgba(139, 92, 246, 0.2)' }}>
+            <div className="hover-card" onClick={() => onNavigate?.('survival-guide')} style={{ padding: '1.75rem', background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(139, 92, 246, 0.15))', borderRadius: '16px', border: '1px solid rgba(139, 92, 246, 0.2)', cursor: 'pointer' }}>
               <p style={{ margin: '0 0 1.25rem 0', fontSize: '1.05rem', lineHeight: '1.6' }}>
-                Hãy làm bài Test ngắn trong mục Phương pháp Học tập để AI chẩn đoán "bệnh lười" của bạn và đưa ra lộ trình học tập phù hợp nhất!
+                Khám phá kho tàng bí kíp trị dứt điểm các "căn bệnh" phổ biến của sinh viên.
               </p>
+              <ul style={{ margin: 0, paddingLeft: '1.5rem', lineHeight: '1.7', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <li><strong>Bộ lọc theo triệu chứng:</strong> Chỉ cần chọn vấn đề bạn đang gặp phải như "Hay trì hoãn", "Mau quên" hay "Học vẹt", hệ thống sẽ tự động đề xuất phương pháp cứu nguy tức thì.</li>
+                <li><strong>Đồng hồ tích hợp:</strong> Trải nghiệm ngay các phương pháp như Đồng hồ Pomodoro hoặc Quy tắc 2 phút trực tiếp trên web mà không cần tải app khác.</li>
+              </ul>
             </div>
           </section>
 
@@ -115,7 +127,7 @@ export function GuidePage() {
               <h2 style={{ margin: 0, fontSize: '1.75rem' }}>4. Thư viện Biểu mẫu</h2>
             </div>
             
-            <div style={{ padding: '1.75rem', background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.15))', borderRadius: '16px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+            <div className="hover-card" onClick={() => onNavigate?.('bieu-mau')} style={{ padding: '1.75rem', background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.15))', borderRadius: '16px', border: '1px solid rgba(16, 185, 129, 0.2)', cursor: 'pointer' }}>
               <p style={{ margin: '0 0 1.25rem 0', fontSize: '1.05rem', lineHeight: '1.6' }}>
                 Không cần vất vả tìm kiếm link tải trên các nhóm lớp nữa. Toàn bộ các loại đơn từ, giấy xác nhận, mẫu nghiên cứu khoa học đều được tập hợp sẵn tại mục <strong>Biểu mẫu</strong>.
               </p>

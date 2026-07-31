@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
-import { Sun, Moon, Trash2 } from 'lucide-react';
+import { Sun, Moon, Trash2, Loader2 } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { ChatArea } from './components/ChatArea';
 import { useChat } from './hooks/useChat';
@@ -131,7 +131,12 @@ function App() {
               </div>
             )}
             
-            <Suspense fallback={<div className="p-8 text-center text-text-secondary">Đang tải trang...</div>}>
+            <Suspense fallback={
+              <div className="page-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: '60vh', gap: '1rem', color: 'var(--text-secondary)' }}>
+                <Loader2 size={40} style={{ color: 'var(--primary)', animation: 'spin 1s linear infinite' }} />
+                <p style={{ fontSize: '1.1rem', animation: 'pulse-opacity 2s ease-in-out infinite' }}>Đang tải nội dung...</p>
+              </div>
+            }>
               {activeTab === 'home' && <HomePage onNavigate={handleNavigate} />}
               {activeTab === 'chat' && (
                 <ChatArea 
@@ -158,7 +163,7 @@ function App() {
               {activeTab === 'tuition' && <TuitionPage />}
               {activeTab === 'credits' && <CreditsPage />}
               {activeTab === 'survival-guide' && <SurvivalGuidePage />}
-              {activeTab === 'huong-dan' && <GuidePage />}
+              {activeTab === 'huong-dan' && <GuidePage onNavigate={handleNavigate} />}
               {activeTab === 'tuyen-sinh' && <AdmissionPage />}
               {activeTab === 'faq' && <FaqPage cohort={cohort} onAskQuestion={(q) => { setActiveTab('chat'); sendMessage(q); }} />}
             </Suspense>

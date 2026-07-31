@@ -134,13 +134,14 @@ export function ToolsPage({ onNavigate }: ToolsPageProps) {
               <h2 id={`tool-group-${groupIndex}`}>{group.title}</h2>
             </div>
             <div className="category-grid">
-              {group.tools.map((tool) => {
+              {group.tools.map((tool, idx) => {
                 const Icon = tool.icon;
                 return (
                   <button
                     key={tool.id}
                     type="button"
                     className={`category-card tool-card tone-${tool.tone}`}
+                    style={{ '--shimmer-delay': `${idx * 0.15}s` } as React.CSSProperties}
                     onClick={() => onNavigate(tool.id)}
                   >
                     <span className="category-icon">

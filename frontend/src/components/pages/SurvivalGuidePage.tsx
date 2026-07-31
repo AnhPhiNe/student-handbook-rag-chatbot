@@ -81,14 +81,14 @@ export function SurvivalGuidePage() {
   const focusTips = filteredTips.filter(t => t.category === 'focus');
   const goalsTips = filteredTips.filter(t => t.category === 'goals');
 
-  const renderCard = (tip: StudyTip) => {
+  const renderCard = (tip: StudyTip, idx: number) => {
     const IconComponent = tip.icon;
     const isSaved = saved.includes(tip.id);
     return (
       <div
         key={tip.id}
         className="sg-card"
-        style={{ '--sg-color': tip.color } as React.CSSProperties}
+        style={{ '--sg-color': tip.color, '--shimmer-delay': `${idx * 0.15}s` } as React.CSSProperties}
       >
         <div className="sg-glow" />
         <button

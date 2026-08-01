@@ -128,6 +128,32 @@ def test_graduation_rank_slang_adds_regulation_anchor() -> None:
     assert "công nhận tốt nghiệp và cấp bằng tốt nghiệp" in normalized
 
 
+def test_accentless_slangs_use_same_canonical_mappings() -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    router_query = normalizer.replace_for_router(
+        "K50 hoc lai hay hoc cai thien moi bi ha bang?"
+    )
+    normalized = normalizer.normalize_for_retrieval(
+        "K50 hoc lai hay hoc cai thien moi bi ha bang?"
+    )
+
+    assert "ha bang" not in router_query
+    assert "hạng tốt nghiệp bị giảm đi một mức" in router_query
+    assert "khối lượng tín chỉ học lại vượt quá 5%" in normalized
+    assert "kỷ luật cảnh cáo trở lên" in normalized
+    assert "học phần đã đạt đăng ký học lại để cải thiện điểm" in normalized
+    assert "học phần chưa đạt phải học lại" in normalized
+
+
+def test_program_acronym_replacement_handles_lowercase_user_input() -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router("nganh cntt o khoa nao") == (
+        "nganh công nghệ thông tin o khoa nao"
+    )
+
+
 def test_ambiguous_slangs_expand_but_do_not_replace_for_router() -> None:
     normalizer = SlangNormalizer(program_directory=[])
 

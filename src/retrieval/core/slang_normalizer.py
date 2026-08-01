@@ -1,4 +1,5 @@
 import re
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -52,13 +53,39 @@ class SlangNormalizer:
             match_str = str(item.get("match", "")).strip().lower()
             replace_str = str(item.get("replace_with", "")).strip().lower()
             if match_str and replace_str:
-                self.replace_dict[match_str] = replace_str
+                self._add_mapping_with_accentless_alias(
+                    self.replace_dict, match_str, replace_str
+                )
 
         for item in data.get("expand_slangs", []):
             match_str = str(item.get("match", "")).strip().lower()
             expand_str = str(item.get("expand_with", "")).strip().lower()
             if match_str and expand_str:
-                self.expand_dict[match_str] = expand_str
+                self._add_mapping_with_accentless_alias(
+                    self.expand_dict, match_str, expand_str
+                )
+
+    @staticmethod
+    def _strip_accents(value: str) -> str:
+        value = value.replace("\u0110", "D").replace("\u0111", "d")
+        normalized = unicodedata.normalize("NFD", value)
+        return "".join(
+            character
+            for character in normalized
+            if unicodedata.category(character) != "Mn"
+        )
+
+    @classmethod
+    def _add_mapping_with_accentless_alias(
+        cls,
+        target: dict[str, str],
+        match_str: str,
+        replacement: str,
+    ) -> None:
+        target[match_str] = replacement
+        accentless = cls._strip_accents(match_str)
+        if accentless != match_str:
+            target.setdefault(accentless, replacement)
 
     def _build_regex(self, keys):
         if not keys:

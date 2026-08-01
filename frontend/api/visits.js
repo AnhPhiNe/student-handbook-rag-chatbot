@@ -5,8 +5,15 @@ export const config = {
 export default async function handler(request) {
   try {
     const requestUrl = new URL(request.url);
-    const mode = requestUrl.searchParams.get('mode') === 'get' ? 'get' : 'up';
-    const res = await fetch(`https://api.counterapi.dev/v1/hcmue-student-handbook/visits/${mode}`, {
+    const increment = requestUrl.searchParams.get('increment') === 'true'
+      || requestUrl.searchParams.get('mode') === 'up';
+    const apiBaseUrl = process.env.VISITOR_API_BASE_URL
+      || process.env.VITE_API_BASE_URL
+      || 'https://anhfeee-hcmue-handbook-rag-api.hf.space';
+    const metricsUrl = new URL('/api/metrics/visits', apiBaseUrl);
+    metricsUrl.searchParams.set('increment', increment ? 'true' : 'false');
+
+    const res = await fetch(metricsUrl.toString(), {
       headers: {
         'Accept': 'application/json'
       }
@@ -20,15 +27,9 @@ export default async function handler(request) {
     }
 
     const data = await res.json();
-    const count = typeof data.count === 'number'
-      ? data.count
-      : typeof data.value === 'number'
-        ? data.value
-        : null;
-    const payload = count === null ? data : { ...data, count };
     
     // Add cache-control to ensure Vercel doesn't cache this response
-    return new Response(JSON.stringify(payload), {
+    return new Response(JSON.stringify(data), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',

@@ -7,9 +7,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api/visits': {
-        target: 'https://api.counterapi.dev/v1/hcmue-student-handbook/visits/up',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
-        rewrite: () => ''
+        rewrite: (path) => path.replace(/^\/api\/visits/, '/api/metrics/visits')
       },
       '/api': {
         target: 'http://127.0.0.1:8000',

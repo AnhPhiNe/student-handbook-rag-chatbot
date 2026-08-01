@@ -1,7 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import './VisitorCounter.css';
 
-const BASE_VISITS = 150;
 const ROLL_START = 100;
 const ROLL_DURATION_MS = 900;
 
@@ -38,7 +37,7 @@ function ensureVisitorCountLoaded(): Promise<number | null> {
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), 4000);
 
-  sharedFetchPromise = fetch('/api/visits?mode=up', {
+  sharedFetchPromise = fetch('/api/visits?increment=true', {
     signal: controller.signal,
     cache: 'no-store',
   })
@@ -48,7 +47,7 @@ function ensureVisitorCountLoaded(): Promise<number | null> {
     })
     .then(data => {
       if (data && typeof data.count === 'number') {
-        return BASE_VISITS + data.count;
+        return data.count;
       }
       throw new Error('Invalid visitor counter payload');
     })

@@ -69,10 +69,16 @@ def main() -> None:
     for raw_path, kind in REQUIRED_ARTIFACTS:
         path = Path(raw_path)
         error = validate_artifact(path, kind)
-        status = "OK" if error is None else "FAIL"
+        status = "OK" if error is None else ("WARN" if args.warn_only else "FAIL")
         print(f"{status}: {raw_path}" + (f" ({error})" if error else ""))
         if error is not None:
             failures.append((raw_path, error))
+
+    if failures and args.warn_only:
+        print(
+            "\nArtifact audit completed in warn-only mode. "
+            "This is expected in GitHub CI when deploy-time data/processed artifacts are not committed."
+        )
 
     if failures and not args.warn_only:
         print("\nInvalid deploy artifacts:")

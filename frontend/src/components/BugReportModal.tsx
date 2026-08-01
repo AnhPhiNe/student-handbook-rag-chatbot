@@ -13,6 +13,7 @@ interface BugReportModalProps {
 
 // TODO: Thay thế đường link bên dưới bằng link Web App của riêng bạn (ở Bước 3)
 const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx8NdzeyluYyVe9H-RkRZJkJCr4TTPpxHLsoU7qs0RzX1NbuetREIn4woPTKQ_LZ3MKxw/exec';
+const BUG_REPORT_CONTEXT_MESSAGE_LIMIT = 1;
 
 export function BugReportModal({
   isOpen,
@@ -39,7 +40,9 @@ export function BugReportModal({
 
     let chatHistory = '';
     if (messages && messages.length > 0) {
-      const lastMessages = messages.filter(m => !m.isStreaming).slice(-6);
+      const lastMessages = messages
+        .filter(m => !m.isStreaming)
+        .slice(-BUG_REPORT_CONTEXT_MESSAGE_LIMIT);
       chatHistory = lastMessages
         .map(m => `[${m.role === 'user' ? 'Sinh viên' : 'Bot'}] ${m.content}`)
         .join('\n\n');

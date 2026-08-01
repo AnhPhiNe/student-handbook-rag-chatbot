@@ -18,8 +18,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.evaluation.dataset import DATASET_FILES, load_json, validate_bundle
 from src.common.env_loader import load_project_env
+from src.evaluation.dataset import DATASET_FILES, load_json, validate_bundle
 from src.evaluation.gates import evaluate_gates
 from src.evaluation.human_audit import summarize_human_audit
 from src.evaluation.reporting import write_report_bundle

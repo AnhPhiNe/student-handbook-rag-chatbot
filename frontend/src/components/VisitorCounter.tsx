@@ -39,10 +39,7 @@ function AnimatedDigit({ char }: { char: string }) {
 }
 
 export function VisitorCounter() {
-  const [displayCount, setDisplayCount] = useState<number | null>(() => {
-    const saved = localStorage.getItem(FALLBACK_KEY);
-    return saved ? parseInt(saved, 10) : null;
-  });
+  const [displayCount, setDisplayCount] = useState<number | null>(null);
 
   // Effect to handle data fetching (only once)
   useEffect(() => {

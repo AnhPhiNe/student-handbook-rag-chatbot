@@ -944,6 +944,24 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font-family: var(--font-display);
 }
 
+.chat-header-inner {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+}
+
+.chat-title-container {
+  display: flex;
+  align-items: center;
+}
+
+@media (min-width: 901px) {
+  .chat-header-inner {
+    padding-left: 170px; /* Close to VisitorCounter */
+  }
+}
+
 .theme-toggle {
   display: flex;
   align-items: center;

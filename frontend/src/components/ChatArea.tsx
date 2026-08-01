@@ -54,7 +54,7 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
   'hoc-vu': {
     response: buildQuickAccessResponse(
       'Học tập & Điểm số',
-      'Dùng mục này khi bạn thắc mắc về quá trình học, lịch học, điểm số và thi cử:\n\n- **Học vụ:** quy định đăng ký tín chỉ, hủy môn, học lại, học cải thiện.\n- **Điểm số & Thi cử:** cách tính điểm trung bình (GPA), quy đổi điểm chữ, vắng thi, gian lận thi cử.\n- **Học vụ khác:** điều kiện chuyển ngành, chuyển trường, cảnh báo học vụ.'
+      'Dùng mục này khi bạn thắc mắc về quá trình học, lịch học, điểm số và thi cử:\n\n- **Học vụ:** quy định đăng ký tín chỉ, hủy môn, học lại, học cải\u00A0thiện.\n- **Điểm số & Thi cử:** cách tính điểm trung bình (GPA), quy đổi điểm chữ, vắng thi, gian lận thi\u00A0cử.\n- **Học vụ khác:** điều kiện chuyển ngành, chuyển trường, cảnh báo học\u00A0vụ.'
     ),
     suggestions: [
       'Học cải thiện tính điểm thế nào?',
@@ -66,7 +66,7 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
   'bao-luu': {
     response: buildQuickAccessResponse(
       'Bảo lưu & Tốt nghiệp',
-      'Dùng mục này khi bạn quan tâm đến việc tạm dừng học hoặc thủ tục ra trường:\n\n- **Bảo lưu/Tạm nghỉ:** điều kiện bảo lưu kết quả, thời gian tối đa được bảo lưu, thủ tục xin học lại.\n- **Thôi học:** quy định buộc thôi học, tự nguyện xin thôi học.\n- **Tốt nghiệp:** điều kiện để được xét tốt nghiệp, quy trình đăng ký xét và nhận bằng.'
+      'Dùng mục này khi bạn quan tâm đến việc tạm dừng học hoặc điều kiện ra trường:\n\n- **Bảo lưu/Tạm nghỉ:** điều kiện bảo lưu kết quả, thời gian tối đa được bảo lưu, quy định xin học\u00A0lại.\n- **Thôi học:** quy định buộc thôi học, tự nguyện xin thôi\u00A0học.\n- **Tốt nghiệp:** điều kiện để được xét tốt nghiệp, quy định về việc xét và nhận\u00A0bằng.'
     ),
     suggestions: [
       'Năm nhất có được xin bảo lưu?',
@@ -90,7 +90,7 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
   'ren-luyen': {
     response: buildQuickAccessResponse(
       'Rèn luyện & Khen thưởng',
-      'Dùng mục này khi bạn muốn hỏi về quá trình rèn luyện và xử lý vi phạm:\n\n- **Điểm rèn luyện:** bao nhiêu điểm là tốt/xuất sắc, tiêu chí chấm điểm gồm những gì.\n- **Khen thưởng:** điều kiện được khen thưởng, danh hiệu hoặc các hình thức ghi nhận sinh viên.\n- **Kỷ luật/vi phạm:** vi phạm quy chế thi bị xử lý ra sao, khiển trách/cảnh cáo bao lâu được xóa.'
+      'Dùng mục này khi bạn muốn hỏi về quá trình rèn luyện và xử lý vi phạm:\n\n- **Điểm rèn luyện:** bao nhiêu điểm là tốt/xuất sắc, tiêu chí chấm điểm gồm những\u00A0gì.\n- **Khen thưởng:** điều kiện được khen thưởng, danh hiệu hoặc các hình thức ghi nhận sinh\u00A0viên.\n- **Kỷ luật/vi phạm:** vi phạm quy chế thi bị xử lý ra sao, khiển trách/cảnh cáo bao lâu được\u00A0xóa.'
     ),
     suggestions: [
       'Điểm rèn luyện dưới 50 bị cảnh báo?',
@@ -102,7 +102,7 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
   'lien-he': {
     response: buildQuickAccessResponse(
       'Phòng ban & Liên hệ',
-      'Dùng mục này khi bạn không biết nên liên hệ đơn vị nào trong trường:\n\n- **Phòng Đào tạo / CTSV:** hỏi về lịch học, bảng điểm, học bổng, giấy xác nhận, tạm nghỉ.\n- **Ký túc xá & Trạm y tế:** quy định, thủ tục đăng ký, giờ giấc hoạt động.\n- **Liên hệ khác:** số điện thoại, email, địa chỉ các Phòng, Khoa hoặc hỗ trợ tài khoản sinh viên.'
+      'Dùng mục này khi bạn không biết nên liên hệ đơn vị nào trong trường:\n\n- **Phòng Đào tạo / CTSV:** hỏi về lịch học, bảng điểm, học bổng, giấy xác nhận, tạm nghỉ.\n- **Ký túc xá & Trạm y tế:** quy định, điều kiện đăng ký, giờ giấc hoạt động.\n- **Liên hệ khác:** số điện thoại, email, địa chỉ các Phòng, Khoa hoặc hỗ trợ tài khoản sinh viên.'
     ),
     suggestions: [
       'Số điện thoại của Phòng Đào tạo?',
@@ -348,7 +348,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
       )}
 
       <header className="chat-header conversation-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div className="chat-header-inner">
           <button 
             className="back-btn" 
             onClick={handleBackToTopics} 
@@ -357,7 +357,9 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
             <ArrowLeft size={16} />
             <span>Quay lại</span>
           </button>
-          <h2 className="chat-title" style={{ margin: 0 }}>Hội thoại với HCMUE AI</h2>
+          <div className="chat-title-container">
+            <h2 className="chat-title" style={{ margin: 0 }}>Hội thoại với HCMUE AI</h2>
+          </div>
         </div>
       </header>
 

@@ -408,3 +408,9 @@ expand_slangs:
   expand_with: điểm chưa hoàn thiện do chưa đủ dữ liệu
 - match: điểm R
   expand_with: điểm học phần được miễn học và công nhận tín chỉ
+- match: hạ bằng
+  expand_with: giảm hạng tốt nghiệp hoặc giảm đi một mức
+- match: hạ hạng
+  expand_with: giảm hạng tốt nghiệp hoặc giảm đi một mức
+- match: rớt bằng
+  expand_with: giảm hạng tốt nghiệp hoặc giảm đi một mức

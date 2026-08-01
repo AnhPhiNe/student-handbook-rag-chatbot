@@ -41,6 +41,13 @@ from src.generation.gemini_client import GeminiClient
 
 
 ROOT = Path(__file__).resolve().parents[1]
+DOCSTORE_PATH = ROOT / "data" / "processed" / "chunks" / "all_docstore_items.json"
+
+
+def _require_docstore_artifact() -> Path:
+    if not DOCSTORE_PATH.is_file():
+        pytest.skip("deploy-time docstore artifact is not committed in CI checkout")
+    return DOCSTORE_PATH
 
 
 def _valid_judge_payload() -> str:
@@ -62,7 +69,7 @@ def _valid_judge_payload() -> str:
 def test_frozen_final_bundle_is_valid() -> None:
     result = validate_bundle(
         ROOT / "data" / "eval" / "final_holdout",
-        ROOT / "data" / "processed" / "chunks" / "all_docstore_items.json",
+        _require_docstore_artifact(),
     )
     assert result["valid"], result["errors"]
     assert result["counts"] == {
@@ -86,7 +93,7 @@ def test_validator_rejects_query_reused_from_legacy_eval(tmp_path: Path) -> None
 
     result = validate_bundle(
         bundle_dir,
-        ROOT / "data" / "processed" / "chunks" / "all_docstore_items.json",
+        _require_docstore_artifact(),
     )
 
     assert result["valid"] is False

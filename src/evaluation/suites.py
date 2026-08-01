@@ -45,7 +45,7 @@ CONTENT_TYPE_ALIASES = {
         "student_service_directory",
         "student_office_profile",
     },
-    "formula": {"formula", "formula_rule"},
+    "formula": {"formula", "formula_rule", "structured_lookup"},
 }
 LOOKUP_TYPE_ALIASES = {
     "scoring": {

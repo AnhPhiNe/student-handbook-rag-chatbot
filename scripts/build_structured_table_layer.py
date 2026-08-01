@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
 from src.extraction.directory_parser import extract_office_directory
 from src.chunking.regulation_table_extractor import (
     extract_pass_fail_ungraded_table,
+    extract_regulation_tables,
     table_metadata_payload,
 )
 
@@ -641,6 +642,55 @@ def attach_pass_fail_ungraded_tables(items: list[dict[str, Any]]) -> int:
         updated_meta["table_quality_status"] = "approved"
         item["metadata"] = updated_meta
         attached_count += 1
+    return attached_count
+
+
+def attach_study_duration_tables(items: list[dict[str, Any]]) -> int:
+    """Attach study-duration tables extracted from the training-regulation articles."""
+
+    attached_count = 0
+    for item in items:
+        if not isinstance(item, dict) or not item.get("_id"):
+            continue
+        meta = metadata(item)
+        source_pages = [
+            int(page)
+            for page in (meta.get("source_pages") or [])
+            if isinstance(page, int) or str(page).isdigit()
+        ]
+        page_start = min(source_pages) if source_pages else meta.get("page_start") or 1
+        page_end = max(source_pages) if source_pages else meta.get("page_end") or page_start
+        section = {
+            "section_id": str(item["_id"]),
+            "title": meta.get("title"),
+            "article": meta.get("article"),
+            "content": str(item.get("content") or ""),
+            "page_start": page_start,
+            "page_end": page_end,
+        }
+        study_tables = [
+            table
+            for table in extract_regulation_tables(section)
+            if table.get("table_kind") == "study_duration"
+        ]
+        if not study_tables:
+            continue
+
+        tables = [table for table in item.get("tables") or [] if isinstance(table, dict)]
+        existing_ids = {str(table.get("table_id")) for table in tables}
+        additions = [
+            table_metadata_payload(table)
+            for table in study_tables
+            if str(table.get("table_id")) not in existing_ids
+        ]
+        if not additions:
+            continue
+        item["tables"] = [*tables, *additions]
+        updated_meta = dict(meta)
+        updated_meta["has_table"] = True
+        updated_meta["table_quality_status"] = "approved"
+        item["metadata"] = updated_meta
+        attached_count += len(additions)
     return attached_count
 
 
@@ -1296,8 +1346,12 @@ def build_structured_table_layer(
     items, boundary_report = repair_boundary_leaks(items)
     attach_foreign_language_tables(items)
     attach_scholarship_tables(items, table_dir / SCORING_TABLES_PATH.name)
+    study_duration_attached_count = attach_study_duration_tables(items)
     pass_fail_attached_count = attach_pass_fail_ungraded_tables(items)
     registry = build_registry(items, table_dir / SCORING_TABLES_PATH.name)
+    study_duration_table_count = sum(
+        record.get("table_type") == "study_duration" for record in registry
+    )
     pass_fail_table_count = sum(
         record.get("table_subtype") == "pass_fail_ungraded" for record in registry
     )
@@ -1358,6 +1412,8 @@ def build_structured_table_layer(
         "structured_table_registry_count": len(registry),
         "foreign_language_table_count": len(foreign_tables),
         "foreign_language_rows_per_table": len(FOREIGN_LANGUAGE_ROWS),
+        "study_duration_table_count": study_duration_table_count,
+        "study_duration_attached_count": study_duration_attached_count,
         "pass_fail_ungraded_table_count": pass_fail_table_count,
         "pass_fail_ungraded_attached_count": pass_fail_attached_count,
         "student_service_count": len(services),

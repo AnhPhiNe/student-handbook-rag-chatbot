@@ -3,8 +3,6 @@ replace_slangs:
   replace_with: đăng ký học phần không thành công
 - match: đủ điều kiện ra trường
   replace_with: đủ điều kiện tốt nghiệp
-- match: học lại sau bảo lưu
-  replace_with: tiếp nhận trở lại học sau nghỉ học tạm thời
 - match: học bổng khuyến học
   replace_with: học bổng khuyến khích học tập
 - match: không add được môn
@@ -73,8 +71,6 @@ replace_slangs:
   replace_with: xét tốt nghiệp
 - match: nợ quốc phòng
   replace_with: chưa hoàn thành học phần giáo dục quốc phòng và an ninh
-- match: dính biên bản
-  replace_with: vi phạm nội quy hoặc quy chế
 - match: xin bảng điểm
   replace_with: cấp bảng điểm
 - match: CTCT và HSSV
@@ -117,8 +113,6 @@ replace_slangs:
   replace_with: thi kết thúc học phần
 - match: bị đuổi học
   replace_with: buộc thôi học
-- match: chuyển khoa
-  replace_with: chuyển ngành
 - match: tiền trường
   replace_with: học phí
 - match: nợ thể chất
@@ -199,10 +193,6 @@ replace_slangs:
   replace_with: điểm học phần
 - match: thang 10
   replace_with: thang điểm 10
-- match: gap year
-  replace_with: nghỉ học tạm thời
-- match: treo học
-  replace_with: đình chỉ học tập có thời hạn
 - match: quay cóp
   replace_with: gian lận trong thi, kiểm tra
 - match: email sv
@@ -265,8 +255,6 @@ replace_slangs:
   replace_with: đăng ký học phần
 - match: bỏ thi
   replace_with: vắng mặt trong buổi thi không có lý do chính đáng
-- match: thi bù
-  replace_with: kỳ thi phụ
 - match: ĐTBHK
   replace_with: điểm trung bình học kỳ
 - match: ĐTBTL
@@ -317,8 +305,6 @@ replace_slangs:
   replace_with: đồ án tốt nghiệp
 - match: TLTN
   replace_with: tiểu luận tốt nghiệp
-- match: form
-  replace_with: biểu mẫu
 - match: BCH
   replace_with: Ban Chấp hành
 - match: BCS
@@ -355,7 +341,25 @@ replace_slangs:
   replace_with: học phần
 - match: HB
   replace_with: học bổng
+- match: hạ bằng
+  replace_with: hạng tốt nghiệp bị giảm đi một mức công nhận tốt nghiệp và cấp bằng tốt nghiệp
+- match: hạ bậc
+  replace_with: hạng tốt nghiệp bị giảm đi một mức công nhận tốt nghiệp và cấp bằng tốt nghiệp
+- match: hạ hạng
+  replace_with: hạng tốt nghiệp bị giảm đi một mức công nhận tốt nghiệp và cấp bằng tốt nghiệp
 expand_slangs:
+- match: học lại sau bảo lưu
+  expand_with: tiếp nhận trở lại học sau nghỉ học tạm thời bảo lưu kết quả học tập
+- match: dính biên bản
+  expand_with: vi phạm nội quy quy chế kỷ luật cảnh cáo
+- match: chuyển khoa
+  expand_with: chuyển ngành chuyển chương trình đào tạo
+- match: thi bù
+  expand_with: kỳ thi phụ thi bổ sung
+- match: gap year
+  expand_with: nghỉ học tạm thời bảo lưu kết quả học tập
+- match: treo học
+  expand_with: đình chỉ học tập có thời hạn tạm dừng tiến độ học tập
 - match: học phần chưa đạt
   expand_with: đăng ký học lại hoặc tín chỉ nợ đọng
 - match: học bổng trường
@@ -365,7 +369,7 @@ expand_slangs:
 - match: xét tốt nghiệp
   expand_with: điều kiện, quy trình hoặc đợt xét tốt nghiệp
 - match: học cải thiện
-  expand_with: đăng ký học lại học phần đã đạt để cải thiện điểm
+  expand_with: học phần đã đạt đăng ký học lại để cải thiện điểm
 - match: bảo lưu điểm
   expand_with: bảo lưu kết quả học tập hoặc bảo lưu điểm học phần
 - match: chuẩn đầu ra
@@ -393,7 +397,7 @@ expand_slangs:
 - match: bảo lưu
   expand_with: nghỉ học tạm thời hoặc bảo lưu kết quả học tập
 - match: học lại
-  expand_with: đăng ký học lại học phần chưa đạt hoặc tiếp nhận trở lại học sau nghỉ học tạm thời
+  expand_with: học phần chưa đạt phải học lại
 - match: điểm F+
   expand_with: điểm học phần không đạt
 - match: học phí
@@ -408,9 +412,5 @@ expand_slangs:
   expand_with: điểm chưa hoàn thiện do chưa đủ dữ liệu
 - match: điểm R
   expand_with: điểm học phần được miễn học và công nhận tín chỉ
-- match: hạ bằng
-  expand_with: giảm hạng tốt nghiệp hoặc giảm đi một mức
-- match: hạ hạng
-  expand_with: giảm hạng tốt nghiệp hoặc giảm đi một mức
 - match: rớt bằng
-  expand_with: giảm hạng tốt nghiệp hoặc giảm đi một mức
+  expand_with: hạng tốt nghiệp bị giảm đi một mức công nhận tốt nghiệp và cấp bằng tốt nghiệp

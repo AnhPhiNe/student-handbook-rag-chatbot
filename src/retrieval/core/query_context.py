@@ -269,6 +269,17 @@ def validate_normalized_query(
         ).ratio()
         if similarity < 0.50:
             return ["normalization_correction_changes_meaning"]
+        has_substitution = any(
+            opcode == "replace"
+            for opcode, *_ in SequenceMatcher(
+                None, original_ascii, normalized_span_ascii
+            ).get_opcodes()
+        )
+        if has_substitution and not _is_safe_typo_correction(
+            original_ascii,
+            normalized_span_ascii,
+        ):
+            return ["normalization_correction_substitutes_content"]
         corrected = corrected.replace(original_ascii, normalized_span_ascii, 1)
 
     if SequenceMatcher(None, corrected, normalized_ascii).ratio() < 0.92:
@@ -437,6 +448,52 @@ def _ascii_text(value: Any) -> str:
 
 def _tokens(value: Any) -> set[str]:
     return set(re.findall(r"[a-z0-9]+", _ascii_text(value)))
+
+
+def _is_safe_typo_correction(original_ascii: str, normalized_ascii: str) -> bool:
+    original_tokens = re.findall(r"[a-z0-9]+", original_ascii)
+    normalized_tokens = re.findall(r"[a-z0-9]+", normalized_ascii)
+    if len(original_tokens) != len(normalized_tokens):
+        return False
+    if not original_tokens:
+        return False
+    return all(
+        _is_single_typo(original, normalized)
+        for original, normalized in zip(original_tokens, normalized_tokens)
+    )
+
+
+def _is_single_typo(original: str, normalized: str) -> bool:
+    if original == normalized:
+        return True
+    if abs(len(original) - len(normalized)) > 1:
+        return False
+    if len(original) == len(normalized):
+        differences = [
+            index
+            for index, (left, right) in enumerate(zip(original, normalized))
+            if left != right
+        ]
+        if len(differences) == 1:
+            return True
+        if len(differences) == 2:
+            first, second = differences
+            return (
+                second == first + 1
+                and original[first] == normalized[second]
+                and original[second] == normalized[first]
+            )
+        return False
+
+    shorter, longer = (
+        (original, normalized)
+        if len(original) < len(normalized)
+        else (normalized, original)
+    )
+    for index in range(len(longer)):
+        if shorter == longer[:index] + longer[index + 1 :]:
+            return True
+    return False
 
 
 def _content_tokens(value: Any) -> set[str]:

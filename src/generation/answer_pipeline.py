@@ -7,6 +7,7 @@ from typing import Any
 
 
 from src.common.cohort import resolve_cohort_from_query
+from src.retrieval.core.citation_builder import build_citation_from_lookup
 from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline
 from src.retrieval.core.query_context import select_effective_query
 from src.retrieval.core.vector_retriever import (
@@ -37,7 +38,7 @@ from .response_cache import get_response_cache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v26-acronym-aware-router"
+PIPELINE_VERSION = "v26-acronym-aware-router-structured-citations"
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
 )
@@ -951,6 +952,11 @@ class AnswerPipeline:
             )
             if resolution and resolution.result:
                 is_clarification = resolution.result_kind == "clarification"
+                structured_citations = (
+                    []
+                    if is_clarification
+                    else build_citation_from_lookup(resolution.result)
+                )
                 return {
                     "query": query,
                     "retrieval_query": normalized_retrieval_query,
@@ -959,7 +965,7 @@ class AnswerPipeline:
                     "router_decision": router_decision,
                     "structured_result": resolution.result,
                     "retrieved_items": [],
-                    "citations": [],
+                    "citations": structured_citations,
                     "needs_llm_answer": False,
                     "needs_clarification": is_clarification,
                     "clarification_question": resolution.result.get("clarification_question") if is_clarification else None,

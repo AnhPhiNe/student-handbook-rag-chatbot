@@ -39,6 +39,33 @@ function Copy-RequiredFile {
     Copy-Item -LiteralPath $sourcePath -Destination $destPath -Force
 }
 
+function Copy-RequiredJsonArtifact {
+    param(
+        [string]$Source,
+        [string]$Destination
+    )
+    $sourcePath = Join-Path $RootDir $Source
+    if (-not (Test-Path -LiteralPath $sourcePath -PathType Leaf)) {
+        throw "Missing required runtime artifact: $Source"
+    }
+    $raw = Get-Content -Raw -LiteralPath $sourcePath
+    if ([string]::IsNullOrWhiteSpace($raw)) {
+        throw "Runtime artifact is empty: $Source"
+    }
+    try {
+        $parsed = $raw | ConvertFrom-Json
+    }
+    catch {
+        throw "Runtime artifact is not valid JSON: $Source"
+    }
+    $isEmptyArray = $parsed -is [array] -and $parsed.Count -eq 0
+    $isEmptyObject = -not ($parsed -is [array]) -and $parsed.PSObject.Properties.Count -eq 0
+    if ($isEmptyArray -or $isEmptyObject) {
+        throw "Runtime artifact must not be [] or {}: $Source"
+    }
+    Copy-RequiredFile $Source $Destination
+}
+
 function Copy-RequiredDirectory {
     param(
         [string]$Source,
@@ -89,20 +116,20 @@ Copy-RequiredFile ".env.example" ".env.example"
 Copy-RequiredFile "LICENSE" "LICENSE"
 
 Write-Host "[3/5] Copying runtime data allowlist..."
-Copy-RequiredFile "data\processed\tables\scoring_tables.json" "data\processed\tables\scoring_tables.json"
-Copy-RequiredFile "data\processed\tables\formula_rules.json" "data\processed\tables\formula_rules.json"
-Copy-RequiredFile "data\processed\tables\structured_tables_registry.json" "data\processed\tables\structured_tables_registry.json"
-Copy-RequiredFile "data\processed\tables\foreign_language_equivalency_table.json" "data\processed\tables\foreign_language_equivalency_table.json"
-Copy-RequiredFile "data\processed\directories\student_service_directory.json" "data\processed\directories\student_service_directory.json"
-Copy-RequiredFile "data\processed\directories\student_office_profiles.json" "data\processed\directories\student_office_profiles.json"
-Copy-RequiredFile "data\processed\directories\student_faculty_profiles.json" "data\processed\directories\student_faculty_profiles.json"
-Copy-RequiredFile "data\processed\directories\faculty_directory.json" "data\processed\directories\faculty_directory.json"
-Copy-RequiredFile "data\processed\directories\program_directory.json" "data\processed\directories\program_directory.json"
-Copy-RequiredFile "data\processed\directories\faculty_program_directory.json" "data\processed\directories\faculty_program_directory.json"
+Copy-RequiredJsonArtifact "data\processed\tables\scoring_tables.json" "data\processed\tables\scoring_tables.json"
+Copy-RequiredJsonArtifact "data\processed\tables\formula_rules.json" "data\processed\tables\formula_rules.json"
+Copy-RequiredJsonArtifact "data\processed\tables\structured_tables_registry.json" "data\processed\tables\structured_tables_registry.json"
+Copy-RequiredJsonArtifact "data\processed\tables\foreign_language_equivalency_table.json" "data\processed\tables\foreign_language_equivalency_table.json"
+Copy-RequiredJsonArtifact "data\processed\directories\student_service_directory.json" "data\processed\directories\student_service_directory.json"
+Copy-RequiredJsonArtifact "data\processed\directories\student_office_profiles.json" "data\processed\directories\student_office_profiles.json"
+Copy-RequiredJsonArtifact "data\processed\directories\student_faculty_profiles.json" "data\processed\directories\student_faculty_profiles.json"
+Copy-RequiredJsonArtifact "data\processed\directories\faculty_directory.json" "data\processed\directories\faculty_directory.json"
+Copy-RequiredJsonArtifact "data\processed\directories\program_directory.json" "data\processed\directories\program_directory.json"
+Copy-RequiredJsonArtifact "data\processed\directories\faculty_program_directory.json" "data\processed\directories\faculty_program_directory.json"
 Copy-RequiredDirectory "data\processed\entities" "data\processed\entities"
-Copy-RequiredFile "data\processed\graphs\document_edges.json" "data\processed\graphs\document_edges.json"
-Copy-RequiredFile "data\processed\chunks\all_docstore_items.json" "data\processed\chunks\all_docstore_items.json"
-Copy-RequiredFile "data\processed\chunks\child_parent_chunks.json" "data\processed\chunks\child_parent_chunks.json"
+Copy-RequiredJsonArtifact "data\processed\graphs\document_edges.json" "data\processed\graphs\document_edges.json"
+Copy-RequiredJsonArtifact "data\processed\chunks\all_docstore_items.json" "data\processed\chunks\all_docstore_items.json"
+Copy-RequiredJsonArtifact "data\processed\chunks\child_parent_chunks.json" "data\processed\chunks\child_parent_chunks.json"
 
 Write-Host "[4/5] Writing Hugging Face Space metadata..."
 @"

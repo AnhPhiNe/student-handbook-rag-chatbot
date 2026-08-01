@@ -162,6 +162,87 @@ def _record_id(record: dict[str, Any]) -> str:
     return ""
 
 
+def _slug_tail(value: str, prefix: str) -> str:
+    if not value.startswith(prefix):
+        return ""
+    return value[len(prefix) :].strip("_")
+
+
+def _legacy_structured_record_ids(
+    catalog: str,
+    record: dict[str, Any],
+) -> set[str]:
+    """Accept equivalent structured IDs from older frozen holdout manifests.
+
+    Runtime artifacts evolved from per-cohort directory files and extracted
+    table IDs into a cleaner shared registry. The holdout still references some
+    of those older IDs, so the validator maps them to the same current records
+    instead of forcing the dataset to be rewritten.
+    """
+
+    ids: set[str] = set()
+    cohort = str(record.get("cohort") or "").strip()
+    normalized_cohort = _normalize_eval_cohort(cohort)
+
+    for key in (
+        "record_id",
+        "service_id",
+        "office_profile_id",
+        "faculty_profile_id",
+        "program_id",
+        "table_id",
+        "form_id",
+        "rule_id",
+        "formula_id",
+        "source_record_id",
+    ):
+        value = str(record.get(key) or "").strip()
+        if value:
+            ids.add(value)
+
+    table_id = str(record.get("table_id") or "").strip()
+    table_subtype = str(record.get("table_subtype") or "").strip()
+    source_parent_id = str(record.get("source_parent_id") or "").strip()
+    if table_id:
+        ids.add(table_id)
+    if source_parent_id and table_subtype:
+        ids.add(f"{source_parent_id}_{table_subtype}")
+        if source_parent_id.startswith("K48-K49_"):
+            ids.add(f"{source_parent_id.removeprefix('K48-K49_')}_{table_subtype}")
+
+    if catalog in {"structured_tables_registry", "scoring_tables"} and normalized_cohort:
+        scoring_table_id = str(record.get("table_id") or "").strip()
+        if scoring_table_id in {"grade_10_to_letter", "grade_10_to_letter_foundation"}:
+            ids.add(f"{normalized_cohort}_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general")
+        if scoring_table_id in {"conduct_classification", "conduct"}:
+            ids.add(
+                f"{normalized_cohort}_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
+            )
+            ids.add(
+                f"{normalized_cohort}_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification"
+            )
+
+    if catalog == "student_faculty_profiles":
+        source_record_id = str(record.get("source_record_id") or "").strip()
+        profile_id = str(record.get("faculty_profile_id") or "").strip()
+        slug = _slug_tail(profile_id, "all_")
+        if source_record_id and slug:
+            for cohort_alias in ("K48-K49", "K50", "K51"):
+                ids.add(f"{cohort_alias}_{slug}")
+                ids.add(f"{cohort_alias}_{cohort_alias}_{slug}")
+
+    if catalog == "program_directory":
+        record_id = str(record.get("record_id") or "").strip()
+        if record_id:
+            for cohort_alias in ("K50", "K51"):
+                ids.add(f"{cohort_alias}_{record_id}")
+            if record_id.startswith("program_"):
+                ids.add(record_id.replace("program_", "k48_derived_program_", 1))
+
+    ids.discard("")
+    return ids
+
+
 def _structured_catalog_aliases(
     catalog: str, record: dict[str, Any]
 ) -> set[str]:
@@ -239,8 +320,41 @@ def _structured_source_index(
             if isinstance(record, dict):
                 record_id = _record_id(record)
                 if record_id:
-                    for alias in _structured_catalog_aliases(catalog, record):
-                        index[(alias, record_id)] = record
+                    for source_id in _legacy_structured_record_ids(catalog, record):
+                        for alias in _structured_catalog_aliases(catalog, record):
+                            index[(alias, source_id)] = record
+    docstore_path = root / "data/processed/chunks/all_docstore_items.json"
+    if docstore_path.exists():
+        try:
+            docstore = load_json(docstore_path)
+        except json.JSONDecodeError:
+            docstore = []
+        if isinstance(docstore, list):
+            for item in docstore:
+                if not isinstance(item, dict):
+                    continue
+                metadata = _doc_metadata(item)
+                parent_id = _doc_id(item)
+                if "QuyCheDaoTao_Chuong1_Dieu3" not in parent_id:
+                    continue
+                record = {
+                    "record_id": f"{parent_id}_study_duration_chinh_quy",
+                    "table_id": f"{parent_id}_study_duration_chinh_quy",
+                    "table_type": "study_duration",
+                    "table_subtype": "study_duration_chinh_quy",
+                    "table_name": "Thời gian học tập chuẩn và tối đa",
+                    "cohort": metadata.get("cohort") or item.get("cohort"),
+                    "source_parent_id": parent_id,
+                    "document_id": metadata.get("document_id")
+                    or item.get("document_id"),
+                }
+                for source_id in _legacy_structured_record_ids(
+                    "structured_tables_registry", record
+                ):
+                    for alias in _structured_catalog_aliases(
+                        "structured_tables_registry", record
+                    ):
+                        index[(alias, source_id)] = record
     return index
 
 

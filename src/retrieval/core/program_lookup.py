@@ -124,8 +124,14 @@ def _filter_by_cohort(
     return [
         record
         for record in records
-        if normalize_cohort(record.get("cohort")) == normalized_cohort
+        if _is_shared_record(record)
+        or normalize_cohort(record.get("cohort")) == normalized_cohort
     ]
+
+
+def _is_shared_record(record: dict[str, Any]) -> bool:
+    value = str(record.get("cohort") or "").strip().lower()
+    return value in {"all", "general", "shared", "*"}
 
 
 def _filter_by_faculty(

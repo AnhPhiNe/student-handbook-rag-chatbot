@@ -25,7 +25,7 @@
     "ai_router": "c3d0ffa23a822252402e12bab18c9594f4f535aa9fa3251d92f30179a9c832d9",
     "structured_lookup_registry": "f77d4c92d0bd5a2b583f4f13211465a670771be9dfcc37cc892f49cbbcb52a24"
   },
-  "docstore_hash": "45bc97d0cf558e2c93c7803430f57c1a3e6229211cbc480b5043fda5b09d234f",
+  "docstore_hash": "e4415c708c771c04e0ca67501337be57fe3fe92983b0654905f96c82607b579e",
   "generation_provider": "gemini",
   "generation_model": "gemini-3.1-flash-lite",
   "router_provider": "groq",

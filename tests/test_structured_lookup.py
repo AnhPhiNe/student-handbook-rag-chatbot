@@ -118,6 +118,37 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertEqual(result["program_count"], 1)
         self.assertEqual(result["result"][0]["program_name"], "Su pham Tin hoc")
 
+    def test_program_lookup_accepts_shared_directory_for_selected_cohort(self) -> None:
+        programs = [
+            {
+                "program_name": "Cong nghe Thong tin",
+                "faculty_name": "Khoa Cong nghe Thong tin",
+                "cohort": "all",
+                "document_id": "program-directory",
+                "source_section": "program_directory",
+                "source_pages": [207],
+            }
+        ]
+
+        result = program_lookup(
+            "nganh cong nghe thong tin o khoa nao",
+            programs,
+            cohort="K51",
+            routing={
+                "content_type": "program_directory",
+                "action": "resolve_faculty",
+                "scope": "school",
+            },
+        )
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["lookup_scope"], "program")
+        self.assertEqual(result["program_count"], 1)
+        self.assertEqual(
+            result["result"][0]["faculty_name"],
+            "Khoa Cong nghe Thong tin",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

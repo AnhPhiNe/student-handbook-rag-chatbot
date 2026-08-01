@@ -54,6 +54,46 @@ def test_accepts_declared_typo_correction() -> None:
     assert errors == []
 
 
+def test_accepts_single_character_typo_substitution() -> None:
+    errors = validate_normalized_query(
+        "K50 hox phi bao nhieu?",
+        "K50 hoc phi bao nhieu?",
+        confidence="high",
+        corrections=[
+            {
+                "original_span": "hox",
+                "normalized_span": "hoc",
+            }
+        ],
+    )
+
+    assert errors == []
+
+
+def test_rejects_declared_valid_word_substitution() -> None:
+    raw_query = "học lại hay học cải thiện mới bị hạ bằng"
+    normalized_query = "học lại hay học cải thiện mới bị hủy bằng"
+
+    result = select_effective_query(
+        raw_query,
+        _decision(
+            normalized_query=normalized_query,
+            corrections=[
+                {
+                    "original_span": "hạ bằng",
+                    "normalized_span": "hủy bằng",
+                }
+            ],
+        ),
+    )
+
+    assert result.effective_query == raw_query
+    assert result.source == "raw_query_fallback"
+    assert result.validation_errors == (
+        "normalization_correction_substitutes_content",
+    )
+
+
 def test_rejects_undeclared_semantic_change() -> None:
     errors = validate_normalized_query(
         "K50 hình thức đào tạo được quy định sao?",
@@ -402,6 +442,7 @@ def test_answer_pipeline_replaces_acronym_before_program_routing() -> None:
     assert routed["query"] == "ngành công nghệ thông tin ở khoa nào"
     assert result["raw_query"] == "ngành cntt ở khoa nào"
     assert result["retrieval_query"] == "ngành công nghệ thông tin ở khoa nào"
+    assert result["citations"][0]["chunk_type"] == "program_directory"
     assert result["structured_result"]["result"] == [
         {
             "program_name": "Công nghệ Thông tin",

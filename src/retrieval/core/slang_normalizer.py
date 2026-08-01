@@ -91,13 +91,30 @@ class SlangNormalizer:
         return self._clean(normalized)
 
     def normalize_for_retrieval(self, query: str) -> str:
-        """Apply retrieval expansions, then canonical replacements."""
+        """Apply canonical replacements first, then expand unmatched text."""
         if not query:
             return query
 
         normalized = query
+        protected_replacements: dict[str, str] = {}
 
-        # 1. Expand (A -> A + B)
+        # 1. Protect exact canonical replacements so shorter expansions inside
+        # the same phrase cannot break high-confidence matches such as
+        # "học bổng KKHT" before the generic "học bổng" expansion runs.
+        if self.replace_pattern:
+
+            def protect_replace_match(match):
+                matched_text = match.group(1)
+                replacement = self.replace_dict.get(matched_text.lower())
+                if not replacement:
+                    return matched_text
+                placeholder = f"__SLANG_CANONICAL_{len(protected_replacements)}__"
+                protected_replacements[placeholder] = replacement
+                return placeholder
+
+            normalized = self.replace_pattern.sub(protect_replace_match, normalized)
+
+        # 2. Expand unmatched ambiguous phrases (A -> A + B).
         if self.expand_pattern:
 
             def expand_match(match):
@@ -110,7 +127,12 @@ class SlangNormalizer:
 
             normalized = self.expand_pattern.sub(expand_match, normalized)
 
-        # 2. Replace (A -> B)
+        # 3. Restore protected canonical phrases.
+        for placeholder, replacement in protected_replacements.items():
+            normalized = normalized.replace(placeholder, replacement)
+
+        # 4. Final canonical pass for any replacement introduced through
+        # fallback paths or expansion text.
         if self.replace_pattern:
 
             def replace_match(match):

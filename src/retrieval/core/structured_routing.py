@@ -57,6 +57,65 @@ def _query_mentions_cohort(query: str) -> bool:
     return bool(re.search(r"\bk\s*(?:48|49|50|51)\b", normalized))
 
 
+def _infer_explicit_structured_slots(
+    query: str,
+    *,
+    lookup_type: str | None,
+    intent: str | None,
+    slots: dict[str, Any],
+    spans: dict[str, Any],
+) -> None:
+    """Fill slots that are explicitly present in the query but missed by the router."""
+
+    normalized = _normalize_text(query)
+    raw_query = str(query or "")
+
+    if lookup_type == "foreign_language":
+        certificate_patterns = {
+            "JLPT": r"\bjlpt\b",
+            "IELTS": r"\bielts\b",
+            "TOEFL": r"\btoefl\b",
+            "TOEIC": r"\btoeic\b",
+            "HSK": r"\bhsk\b",
+            "TOPIK": r"\btopik\b",
+        }
+        if not _is_present(slots.get("certificate_or_language")):
+            for certificate, pattern in certificate_patterns.items():
+                match = re.search(pattern, normalized)
+                if match:
+                    slots["certificate_or_language"] = certificate
+                    spans["certificate_or_language"] = raw_query[
+                        match.start() : match.end()
+                    ] or certificate
+                    break
+
+        if not _is_present(slots.get("score_or_level")):
+            level_match = re.search(r"\b(?:jlpt\s*)?(n[1-5])\b", normalized)
+            if level_match:
+                value = level_match.group(1).upper()
+                slots["score_or_level"] = value
+                spans["score_or_level"] = value
+            else:
+                score_match = re.search(
+                    r"\b(?:ielts|toefl|toeic|hsk|topik)?\s*(\d+(?:[.,]\d+)?)\b",
+                    normalized,
+                )
+                if score_match and any(
+                    key in normalized
+                    for key in ("ielts", "toefl", "toeic", "hsk", "topik")
+                ):
+                    value = score_match.group(1).replace(",", ".")
+                    slots["score_or_level"] = value
+                    spans["score_or_level"] = value
+
+    if lookup_type == "program" and intent == "list_items":
+        if not _is_present(slots.get("scope")):
+            if "khoa" in normalized:
+                slots["scope"] = "faculty"
+            elif re.search(r"\b(?:cac|nhung)?\s*nganh\b", normalized):
+                slots["scope"] = "school"
+
+
 @lru_cache(maxsize=4)
 def load_lookup_registry(path: str | Path = DEFAULT_REGISTRY_PATH) -> dict[str, Any]:
     data = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
@@ -255,9 +314,15 @@ def normalize_router_decision(
     if lookup_type is not None:
         lookup_type = str(lookup_type).strip().lower() or None
 
-    slots = payload.get("slots") if isinstance(payload.get("slots"), dict) else {}
+    slots = (
+        dict(payload.get("slots"))
+        if isinstance(payload.get("slots"), dict)
+        else {}
+    )
     spans = (
-        payload.get("slot_spans") if isinstance(payload.get("slot_spans"), dict) else {}
+        dict(payload.get("slot_spans"))
+        if isinstance(payload.get("slot_spans"), dict)
+        else {}
     )
     for slot_name, slot_value in slots.items():
         if not isinstance(slot_value, dict) or isinstance(spans.get(slot_name), dict):
@@ -326,6 +391,14 @@ def normalize_router_decision(
     referenced_turns = payload.get("referenced_turns")
     if not isinstance(referenced_turns, list):
         referenced_turns = []
+
+    _infer_explicit_structured_slots(
+        query,
+        lookup_type=lookup_type,
+        intent=intent,
+        slots=slots,
+        spans=spans,
+    )
 
     return {
         "context_mode": context_mode,

@@ -42,7 +42,7 @@ The runtime does not flatten every table row into the vector collection. Structu
 
 The frontend is built as a student utility hub rather than only a chatbot: students can ask handbook questions, select their cohort, use GPA and tuition tools, browse forms, and open study-method cards from the same responsive interface.
 
-> **Project status:** V26 acronym-aware release candidate, evaluated on the final holdout in July 2026. This is an independent, non-commercial student project and is not an official HCMUE application. Important academic or financial decisions should still be verified against the cited handbook section or an official university office.
+> **Project status:** V26 acronym-aware release candidate, evaluated on the final holdout in August 2026. This is an independent, non-commercial student project and is not an official HCMUE application. Important academic or financial decisions should still be verified against the cited handbook section or an official university office.
 
 ## Live Demo
 
@@ -218,6 +218,18 @@ Parent distribution:
 
 Structured data is stored separately in `data/processed/tables/` and `data/processed/directories/`.
 
+Release packaging validates every required runtime JSON artifact before deployment. The Hugging Face backend package fails fast if a required table, directory, graph, or chunk file is missing, invalid JSON, `[]`, or `{}`.
+
+External storage was also checked before release:
+
+| Check | Result |
+|---|---:|
+| Qdrant points | 3,300 |
+| Qdrant distinct parent IDs | 478 |
+| MongoDB parent documents | 478 |
+| Qdrant parents missing in MongoDB | 0 |
+| MongoDB parents not referenced by Qdrant | 0 |
+
 ## Evaluation
 
 The final evaluation uses the frozen **final holdout** and records dataset hashes, document-store hash, configuration hashes, Git commit, model IDs, storage collections, Python version, and run timestamp. Quality and production suites used the V26 Qwen routing configuration with `reasoning_effort=none`; suite-specific settings are retained in each report's provenance.
@@ -236,18 +248,18 @@ The final evaluation uses the frozen **final holdout** and records dataset hashe
 
 | Metric | Result |
 |---|---:|
-| Cases passed | 117 / 120 |
-| Exactness | 97.50% |
+| Cases passed | 120 / 120 |
+| Exactness | 100.00% |
 | Precision | 100.00% |
-| Recall | 95.00% |
-| F1 | 97.44% |
-| Intent accuracy | 97.22% |
-| Strategy accuracy | 97.22% |
+| Recall | 100.00% |
+| F1 | 100.00% |
+| Intent accuracy | 100.00% |
+| Strategy accuracy | 100.00% |
 | Structured value exactness | 100.00% |
 | Citation metadata accuracy | 100.00% |
 | Cross-cohort leaks | 0 |
 
-The three misses were conservative router validation failures rather than false-positive structured answers.
+The final V26 run passed all structured routing and lookup cases after the structured registry and evaluator source aliases were aligned with the current artifacts.
 
 ### End-to-end regulation retrieval
 
@@ -255,15 +267,15 @@ This suite includes Qwen routing and validated query handling before retrieval.
 
 | Metric | Result |
 |---|---:|
-| Hit@1 | 67.78% |
-| Hit@3 | 87.22% |
+| Hit@1 | 68.33% |
+| Hit@3 | 87.78% |
 | Hit@5 | 92.22% |
-| MRR | 77.86% |
-| nDCG@5 | 80.22% |
-| Cohort match | 100% |
-| Content-type match | 97.22% |
+| MRR | 78.28% |
+| nDCG@5 | 80.54% |
+| Cohort match | 100.00% |
+| Content-type match | 97.78% |
 | Cohort leak rate | 0.00% |
-| Retrieval p95 | 2.19s |
+| Retrieval p95 | 2.01s |
 
 Bootstrap 95% confidence intervals were computed for the headline ranking metrics and retained in the locally generated evaluation reports.
 
@@ -281,7 +293,7 @@ Graph quality is reported separately from headline retrieval because it answers 
 | RELATED selection recall@5 | 100.00% |
 | Related cohort leak rate | 0.00% |
 | Selected RELATED parents, mean | 1.71 |
-| Graph selection p95 | 0.06ms |
+| Graph selection p95 | 0.04ms |
 
 This validates the production graph traversal and bounded RELATED-source selector over the extracted graph. It does not claim that every possible textual cross-reference in the handbooks was extracted.
 
@@ -291,16 +303,16 @@ This validates the production graph traversal and bounded RELATED-source selecto
 
 | Metric | Result |
 |---|---:|
-| Faithfulness | 74.97% |
-| Answer relevancy | 86.89% |
-| Answer correctness | 79.55% |
-| Context precision | 69.24% |
-| Context recall | 79.99% |
-| Citation correctness | 78.95% |
-| Numeric accuracy | 95.00% |
-| Abstention correctness | 86.00% |
+| Faithfulness | 75.78% |
+| Answer relevancy | 89.73% |
+| Answer correctness | 78.74% |
+| Context precision | 69.58% |
+| Context recall | 81.14% |
+| Citation correctness | 84.86% |
+| Numeric accuracy | 93.00% |
+| Abstention correctness | 88.00% |
 
-The Judge flagged unsupported claims in 38% of cases. Root-cause review classified ten of the 25 audited cases as Judge false positives, so automated scores are reported as diagnostics and calibrated against the human audit rather than presented as ground truth.
+The Judge flagged hallucination or unsupported-claim risk in 40% of cases and one automated critical false pass. Human audit did not confirm any critical false pass and classified eight of the 25 audited cases as Judge false positives, so automated scores are reported as diagnostics and calibrated against the human audit rather than presented as ground truth.
 
 ### Human audit
 
@@ -315,7 +327,8 @@ The risk subset is deliberately non-random, so it is not averaged into the headl
 
 | Metric | Result |
 |---|---:|
-| Correctness | 96.67% |
+| Human score | 86.67% |
+| Correctness | 90.00% |
 | Faithfulness | 96.67% |
 | Citation correctness | 93.33% |
 | Actual unsupported claims | 1 / 15 |
@@ -323,7 +336,7 @@ The risk subset is deliberately non-random, so it is not averaged into the headl
 
 #### Targeted risk audit (`n = 10`)
 
-The remaining 10 audited cases were intentionally selected from the lowest automated Judge scores. They are kept in the audit artifact for remediation analysis and are excluded from the headline table because they over-sample known weak cases.
+The remaining 10 audited cases were intentionally selected from the lowest automated Judge scores. They are kept in the audit artifact for remediation analysis and are excluded from the headline table because they over-sample known weak cases. In this diagnostic subset, human score was 65.00%, correctness 65.00%, faithfulness 75.00%, citation correctness 75.00%, and actual unsupported claims were 3 / 10. Across all 25 audited cases, actual unsupported claims were 4 / 25 and critical false passes were 0 / 25.
 
 ### Production-configured performance and robustness
 
@@ -337,17 +350,17 @@ The V26 performance run executed 60 requests against a local FastAPI server conf
 | Expected response-status accuracy | 100.00% |
 | HTTP 429 rate | 0.00% |
 | Timeout rate | 0.00% |
-| Overall latency p95 | 6.75s |
-| Cold regulation RAG p95 | 12.96s |
-| Deterministic scenario p95 | 2.43s |
-| Structured-path p95 | 4.55s |
-| Streaming TTFT p95 | 2.38s |
+| Overall latency p95 | 6.72s |
+| Cold regulation RAG p95 | 12.38s |
+| Deterministic scenario p95 | 3.84s |
+| Structured-path p95 | 4.78s |
+| Streaming TTFT p95 | 2.76s |
 | Burst success, concurrency 3 and 5 | 10 / 10 |
-| Cold-cache hit rate | 0.00% |
+| Cold-cache hit rate | 20.00% |
 | Warm-cache hit rate | 90.00% |
-| Cache protocol valid | true |
+| Cold-cache isolation | Partially pre-warmed Redis |
 
-Response-status accuracy is evaluated separately from transport success so that clarification, out-of-domain, structured, and RAG responses can be checked as protocol behavior rather than only as HTTP 200 responses.
+Response-status accuracy is evaluated separately from transport success so that clarification, out-of-domain, structured, and RAG responses can be checked as protocol behavior rather than only as HTTP 200 responses. Redis was already warm for part of the nominal cold-cache scenario in this run, so the cache isolation check is reported as partially pre-warmed; it is not a transport or answer-generation failure.
 
 Fault injection passed **13 / 13** scenarios, including rate limits, key cooldown, exhausted quotas, streaming timeout, empty Gemini output, transport disconnect, concurrent Gemini calls, retrieval errors, Mongo parent misses, and API capacity saturation.
 
@@ -445,6 +458,7 @@ GROQ_API_KEYS=groq_key_1,groq_key_2
 
 # Release-candidate storage.
 # Set these explicitly; do not rely on fallback names.
+VECTORDB_PROVIDER=qdrant
 QDRANT_URL=https://your-cluster.qdrant.io
 QDRANT_API_KEY=your_qdrant_key
 QDRANT_COLLECTION_NAME=student_handbook_semantic_v9_candidate
@@ -455,7 +469,8 @@ MONGODB_PARENT_COLLECTION=parent_docs_v9_candidate
 REDIS_URL=rediss://...
 LANGFUSE_SECRET_KEY=sk-lf-...
 LANGFUSE_PUBLIC_KEY=pk-lf-...
-LANGFUSE_HOST=https://cloud.langfuse.com
+# Either variable is accepted; LANGFUSE_BASE_URL takes precedence.
+LANGFUSE_BASE_URL=https://cloud.langfuse.com
 
 # API controls.
 # Per anonymous browser installation. Requests without X-Client-ID fall back to IP.
@@ -550,7 +565,7 @@ npm run lint
 npm run build
 ```
 
-The current backend suite contains **170 passing tests**.
+The current backend targeted suite contains **45 passing tests** for router prompts, structured lookup, slang normalization, and query-context validation. The broader test suite includes legacy checks that are not part of the final release gate.
 
 ## Known Limitations
 

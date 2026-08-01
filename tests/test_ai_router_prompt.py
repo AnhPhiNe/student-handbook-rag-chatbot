@@ -12,7 +12,9 @@ from src.retrieval.core.ai_router import (
 )
 from src.retrieval.core.structured_routing import (
     compact_registry_for_prompt,
+    normalize_router_decision,
     router_json_schema,
+    validate_router_decision,
 )
 
 
@@ -75,6 +77,41 @@ def test_router_treats_upstream_disconnect_as_transient() -> None:
     assert AIRouter._classify_error(error) == "transient_error"
 
 
+def test_router_treats_provider_json_validation_failure_as_transient() -> None:
+    error = RuntimeError("json_validate_failed: Failed to generate JSON.")
+
+    assert AIRouter._classify_error(error) == "transient_error"
+
+
+def test_router_falls_back_to_regulation_rag_after_provider_error(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    class _Completions:
+        @staticmethod
+        def create(**_kwargs):
+            raise RuntimeError("json_validate_failed: Failed to generate JSON.")
+
+    class _FakeGroq:
+        def __init__(self, **_kwargs) -> None:
+            self.chat = SimpleNamespace(completions=_Completions())
+
+    monkeypatch.setattr(ai_router_module, "Groq", _FakeGroq)
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+
+    decision = router.route(
+        "K48-K49: co duoc xin nang diem ren luyen neu thieu minh chung khong?",
+        cohort="K48-K49",
+    )
+
+    assert decision["route"] == "rag"
+    assert decision["execution_mode"] == "regulation"
+    assert decision["target_chunk_types"] == ["regulation"]
+    assert decision["retrieval_query"].startswith("K48-K49")
+    assert decision["router_error_type"] == "transient_error"
+    assert decision["router_fallback"] == "router_error_to_rag"
+
+
 def test_from_config_accepts_model_environment_override(
     monkeypatch,
     tmp_path: Path,
@@ -113,7 +150,7 @@ def test_invalid_structured_decision_falls_back_to_safe_rag(
     payload = {
         "context_mode": "standalone",
         "context_confidence": "high",
-        "normalized_query": "K50 học những ngành nào?",
+        "normalized_query": "K50 học gì?",
         "normalization_confidence": "high",
         "corrections": [],
         "standalone_query": None,
@@ -154,9 +191,57 @@ def test_invalid_structured_decision_falls_back_to_safe_rag(
     monkeypatch.setattr(ai_router_module, "Groq", _FakeGroq)
     router = _router(monkeypatch, tmp_path, model_name="openai/gpt-oss-20b")
 
-    decision = router.route("K50 học những ngành nào?", cohort="K50")
+    decision = router.route("K50 học gì?", cohort="K50")
 
     assert decision["route"] == "rag"
     assert "missing_slot:scope" in decision["router_validation_errors"]
     assert request["reasoning_effort"] == "low"
     assert request["response_format"]["type"] == "json_schema"
+
+
+def test_router_normalization_infers_explicit_jlpt_level_slot() -> None:
+    query = "K50 JLPT N3 tương đương bậc mấy?"
+    decision = normalize_router_decision(
+        {
+            "route": "structured",
+            "execution_mode": "structured",
+            "intent": "direct_value",
+            "lookup_type": "foreign_language",
+            "cohort": "K50",
+            "slots": {"certificate_or_language": "JLPT"},
+            "slot_spans": {"certificate_or_language": "JLPT"},
+        },
+        query=query,
+        selected_cohort="K50",
+    )
+
+    assert decision["slots"]["score_or_level"] == "N3"
+    assert validate_router_decision(
+        decision,
+        query=query,
+        selected_cohort="K50",
+    ) == []
+
+
+def test_router_normalization_infers_program_list_scope_from_faculty_query() -> None:
+    query = "Khoa Công nghệ Thông tin có những ngành nào?"
+    decision = normalize_router_decision(
+        {
+            "route": "structured",
+            "execution_mode": "structured",
+            "intent": "list_items",
+            "lookup_type": "program",
+            "cohort": "K51",
+            "slots": {},
+            "slot_spans": {},
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert decision["slots"]["scope"] == "faculty"
+    assert validate_router_decision(
+        decision,
+        query=query,
+        selected_cohort="K51",
+    ) == []

@@ -30,7 +30,7 @@ from .structured_routing import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v19-compact"
+ROUTER_PROMPT_VERSION = "structured-regulation-v20-compact"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -50,6 +50,8 @@ NGỮ CẢNH VÀ CHUẨN HÓA
 - ambiguous: không xác định chắc ngữ cảnh; route=clarify và hỏi lại ngắn gọn.
 - normalized_query chỉ sửa dấu, lỗi chính tả nhẹ hoặc viết tắt phổ biến.
   Không đổi cohort, số liệu, phủ định, thực thể hay chủ đề.
+- Không thay một từ đã hợp lệ bằng từ gần âm hoặc khái niệm khác. Nếu không chắc,
+  giữ nguyên từ người dùng đã viết.
 - Nếu có sửa, corrections phải chứa original_span nguyên văn và normalized_span.
 
 PHÂN LUỒNG
@@ -715,7 +717,62 @@ class AIRouter:
                     f"on key {key_index}:{key_id}."
                 )
 
-        raise RuntimeError(f"ai_router_failed: {last_error}")
+        if last_error is not None:
+            return self._fallback_after_router_error(
+                query,
+                cohort=cohort,
+                attempts=attempts,
+                prompt_stats=prompt_stats,
+                error=last_error,
+            )
+        raise RuntimeError("ai_router_failed: no_attempts")
+
+    def _fallback_after_router_error(
+        self,
+        query: str,
+        *,
+        cohort: str | None,
+        attempts: int,
+        prompt_stats: dict[str, Any],
+        error: Exception,
+    ) -> dict[str, Any]:
+        error_type = self._classify_error(error)
+        decision = normalize_router_decision(
+            {
+                "context_mode": "standalone",
+                "context_confidence": "none",
+                "normalized_query": query,
+                "normalization_confidence": "none",
+                "corrections": [],
+                "standalone_query": None,
+                "referenced_turns": [],
+                "route": "rag",
+                "execution_mode": "regulation",
+                "intent": "open_question",
+                "lookup_type": None,
+                "cohort": cohort,
+                "slots": {},
+                "slot_spans": {},
+                "target_chunk_types": ["regulation"],
+                "retrieval_query": query,
+                "clarification_question": None,
+            },
+            query=query,
+            selected_cohort=cohort,
+        )
+        return {
+            **decision,
+            "model_used": self.model_name,
+            "usage": None,
+            "key_fingerprint": None,
+            "router_cache_hit": False,
+            "attempts": attempts,
+            "prompt_stats": prompt_stats,
+            "router_validation_errors": [],
+            "router_error_type": error_type,
+            "router_error": str(error),
+            "router_fallback": "router_error_to_rag",
+        }
 
     def _build_prompt(
         self,
@@ -849,6 +906,15 @@ class AIRouter:
         if any(token in text for token in ("timeout", "timed out", "deadline")):
             return "timeout"
         if any(token in text for token in ("503", "unavailable", "temporarily")):
+            return "transient_error"
+        if any(
+            token in text
+            for token in (
+                "json_validate_failed",
+                "failed to generate json",
+                "failed_generation",
+            )
+        ):
             return "transient_error"
         if any(
             token in text

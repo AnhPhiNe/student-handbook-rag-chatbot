@@ -13,7 +13,24 @@ interface BugReportModalProps {
 
 // TODO: Thay thế đường link bên dưới bằng link Web App của riêng bạn (ở Bước 3)
 const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx8NdzeyluYyVe9H-RkRZJkJCr4TTPpxHLsoU7qs0RzX1NbuetREIn4woPTKQ_LZ3MKxw/exec';
-const BUG_REPORT_CONTEXT_MESSAGE_LIMIT = 1;
+const BUG_REPORT_CONTEXT_MESSAGE_LIMIT = 2;
+
+function buildBugReportContext(messages?: Message[]) {
+  const lastMessages = (messages ?? [])
+    .filter(m => !m.isStreaming)
+    .slice(-BUG_REPORT_CONTEXT_MESSAGE_LIMIT);
+  const latestQuestion = [...lastMessages]
+    .reverse()
+    .find(m => m.role === 'user')?.content ?? '';
+  const latestAnswer = [...lastMessages]
+    .reverse()
+    .find(m => m.role !== 'user')?.content ?? '';
+
+  return {
+    question: latestQuestion,
+    chatbotAnswer: latestAnswer,
+  };
+}
 
 export function BugReportModal({
   isOpen,
@@ -37,16 +54,7 @@ export function BugReportModal({
     }
 
     setIsSubmitting(true);
-
-    let chatHistory = '';
-    if (messages && messages.length > 0) {
-      const lastMessages = messages
-        .filter(m => !m.isStreaming)
-        .slice(-BUG_REPORT_CONTEXT_MESSAGE_LIMIT);
-      chatHistory = lastMessages
-        .map(m => `[${m.role === 'user' ? 'Sinh viên' : 'Bot'}] ${m.content}`)
-        .join('\n\n');
-    }
+    const reportContext = buildBugReportContext(messages);
 
     try {
       const response = await fetch(
@@ -57,8 +65,10 @@ export function BugReportModal({
             'Content-Type': 'text/plain;charset=utf-8',
           },
           body: JSON.stringify({
-            message: bugText,
-            history: chatHistory
+            timestamp: new Date().toISOString(),
+            description: bugText.trim(),
+            question: reportContext.question,
+            chatbot_answer: reportContext.chatbotAnswer,
           }),
         }
       );
@@ -126,7 +136,7 @@ Báo lỗi hệ thống
         <p>
           Hệ thống có chỗ nào chưa tốt hoặc bạn gặp lỗi gì,
           hãy mô tả bên dưới để gửi phản hồi cho nhóm phát triển.
-          Lịch sử chat sẽ được tự động đính kèm để hỗ trợ kiểm tra.
+          Câu hỏi và câu trả lời gần nhất sẽ được gửi kèm để hỗ trợ kiểm tra.
         </p>
 
         <label className="bug-field-label" htmlFor="bug-description">

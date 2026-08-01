@@ -125,3 +125,10 @@
   0% { transform: translateY(0); }
   100% { transform: translateY(-50%); }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .digit-track.rolling {
+    animation: none;
+    transform: translateY(-50%);
+  }
+}

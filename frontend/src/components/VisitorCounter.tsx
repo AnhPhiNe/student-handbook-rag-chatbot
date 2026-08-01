@@ -1,8 +1,9 @@
-import { useEffect, useSyncExternalStore } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import './VisitorCounter.css';
 
 const BASE_VISITS = 150;
-const FALLBACK_KEY = 'hcmue_visitor_count_v2';
+const ROLL_START = 100;
+const ROLL_DURATION_MS = 900;
 
 type VisitorSnapshot = {
   count: number | null;
@@ -11,30 +12,11 @@ type VisitorSnapshot = {
 
 const listeners = new Set<() => void>();
 
-function getStoredCount(): number | null {
-  try {
-    const saved = localStorage.getItem(FALLBACK_KEY);
-    if (!saved) return null;
-    const value = Number.parseInt(saved, 10);
-    return Number.isFinite(value) ? value : null;
-  } catch {
-    return null;
-  }
-}
-
-function setStoredCount(count: number) {
-  try {
-    localStorage.setItem(FALLBACK_KEY, count.toString());
-  } catch {
-    // Storage may be unavailable in private browsing modes.
-  }
-}
-
 let visitorSnapshot: VisitorSnapshot = {
-  count: getStoredCount(),
+  count: null,
   isLoading: true,
 };
-let sharedFetchPromise: Promise<number> | null = null;
+let sharedFetchPromise: Promise<number | null> | null = null;
 
 function emitVisitorSnapshot(next: VisitorSnapshot) {
   visitorSnapshot = next;
@@ -50,7 +32,7 @@ function getVisitorSnapshot() {
   return visitorSnapshot;
 }
 
-function ensureVisitorCountLoaded(): Promise<number> {
+function ensureVisitorCountLoaded(): Promise<number | null> {
   if (sharedFetchPromise) return sharedFetchPromise;
 
   const controller = new AbortController();
@@ -66,32 +48,37 @@ function ensureVisitorCountLoaded(): Promise<number> {
     })
     .then(data => {
       if (data && typeof data.count === 'number') {
-        const total = BASE_VISITS + data.count;
-        setStoredCount(total);
-        return total;
+        return BASE_VISITS + data.count;
       }
       throw new Error('Invalid visitor counter payload');
     })
     .catch(err => {
       console.warn('Visitor counter fallback:', err);
-      return getStoredCount() ?? BASE_VISITS;
+      return null;
     })
     .finally(() => {
       window.clearTimeout(timeoutId);
     });
 
   sharedFetchPromise.then(total => {
-    emitVisitorSnapshot({ count: total, isLoading: false });
+    emitVisitorSnapshot({
+      count: total,
+      isLoading: false,
+    });
   });
 
   return sharedFetchPromise;
+}
+
+function formatCounterChar(char: string) {
+  return char === ' ' ? '\u00a0' : char;
 }
 
 function AnimatedDigit({ char }: { char: string }) {
   return (
     <span className="digit-container">
       <span className="digit-track">
-        <span>{char}</span>
+        <span>{formatCounterChar(char)}</span>
       </span>
     </span>
   );
@@ -103,18 +90,57 @@ export function VisitorCounter() {
     getVisitorSnapshot,
     getVisitorSnapshot,
   );
+  const [displayCount, setDisplayCount] = useState<number | null>(null);
 
   useEffect(() => {
     void ensureVisitorCountLoaded();
   }, []);
 
+  useEffect(() => {
+    if (count === null) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion || count <= ROLL_START) {
+      const frame = window.requestAnimationFrame(() => setDisplayCount(count));
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    let animationFrame = 0;
+    let startTime: number | null = null;
+
+    const animate = (timestamp: number) => {
+      if (startTime === null) {
+        startTime = timestamp;
+      }
+
+      const progress = Math.min((timestamp - startTime) / ROLL_DURATION_MS, 1);
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      const nextCount = Math.round(ROLL_START + (count - ROLL_START) * easedProgress);
+      setDisplayCount(nextCount);
+
+      if (progress < 1) {
+        animationFrame = window.requestAnimationFrame(animate);
+      }
+    };
+
+    const startFrame = window.requestAnimationFrame(() => {
+      setDisplayCount(ROLL_START);
+      animationFrame = window.requestAnimationFrame(animate);
+    });
+
+    return () => {
+      window.cancelAnimationFrame(startFrame);
+      window.cancelAnimationFrame(animationFrame);
+    };
+  }, [count]);
+
   return (
     <div className="visitor-counter">
       <div className="visitor-label">Lượt truy cập</div>
       <div className="visitor-number">
-        {!isLoading && count !== null ? (
-          count.toLocaleString('vi-VN').split('').map((char, i) => (
-            <AnimatedDigit key={`${count}-${i}`} char={char} />
+        {!isLoading && displayCount !== null ? (
+          displayCount.toLocaleString('vi-VN').split('').map((char, i) => (
+            <AnimatedDigit key={`${displayCount}-${i}`} char={char} />
           ))
         ) : (
           <span style={{ opacity: 0.5, letterSpacing: '2px' }}>...</span>

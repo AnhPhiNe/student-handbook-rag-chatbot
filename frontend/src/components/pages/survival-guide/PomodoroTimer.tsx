@@ -37,8 +37,26 @@ export function PomodoroTimer() {
   const [showSettings, setShowSettings] = useState(false);
   const modeTabsRef = useRef<HTMLDivElement | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Real-time tracking: store the wall-clock timestamp when the timer was started
+  // and how many seconds were remaining at that moment.
+  const startTimestampRef = useRef<number>(0);
+  const startSecondsRef = useRef<number>(0);
   const totalSeconds = customMinutes[mode] * 60;
   const progress = secondsLeft / totalSeconds;
+
+  const handleTimerEnd = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    setIsRunning(false);
+    beep('end');
+    if (mode === 'focus') {
+      setRounds(r => r + 1);
+      setMode('short-break');
+      setSecondsLeft(customMinutes['short-break'] * 60);
+    } else {
+      setMode('focus');
+      setSecondsLeft(customMinutes.focus * 60);
+    }
+  }, [mode, customMinutes]);
 
   const switchMode = useCallback((newMode: TimerMode) => {
     setMode(newMode);
@@ -47,29 +65,48 @@ export function PomodoroTimer() {
     if (intervalRef.current) clearInterval(intervalRef.current);
   }, [customMinutes]);
 
+  // Core timer: uses Date.now() to compute real elapsed time,
+  // immune to browser throttling when tab is inactive.
   useEffect(() => {
     if (!isRunning) return;
-    intervalRef.current = setInterval(() => {
-      setSecondsLeft(prev => {
-        if (prev <= 1) {
-          clearInterval(intervalRef.current!);
-          setIsRunning(false);
-          beep('end');
-          if (mode === 'focus') {
-            setRounds(r => r + 1);
-            setMode('short-break');
-            setSecondsLeft(customMinutes['short-break'] * 60);
-          } else {
-            setMode('focus');
-            setSecondsLeft(customMinutes.focus * 60);
-          }
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+
+    startTimestampRef.current = Date.now();
+    startSecondsRef.current = secondsLeft;
+
+    const tick = () => {
+      const elapsedSecs = Math.floor((Date.now() - startTimestampRef.current) / 1000);
+      const remaining = startSecondsRef.current - elapsedSecs;
+      if (remaining <= 0) {
+        setSecondsLeft(0);
+        handleTimerEnd();
+      } else {
+        setSecondsLeft(remaining);
+      }
+    };
+
+    intervalRef.current = setInterval(tick, 1000);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [isRunning, mode, customMinutes]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRunning, handleTimerEnd]);
+
+  // When the user returns to the tab, immediately recalculate time
+  // so the display jumps to the correct value without waiting for the next tick.
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && isRunning) {
+        const elapsedSecs = Math.floor((Date.now() - startTimestampRef.current) / 1000);
+        const remaining = startSecondsRef.current - elapsedSecs;
+        if (remaining <= 0) {
+          setSecondsLeft(0);
+          handleTimerEnd();
+        } else {
+          setSecondsLeft(remaining);
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+  }, [isRunning, handleTimerEnd]);
 
   const minutes = Math.floor(secondsLeft / 60).toString().padStart(2, '0');
   const seconds = (secondsLeft % 60).toString().padStart(2, '0');

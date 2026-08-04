@@ -20,6 +20,7 @@ export interface Message {
   role: 'user' | 'bot';
   content: string;
   isStreaming?: boolean;
+  isHardcoded?: boolean;
   timestamp: string;
   responseTimeMs?: number;
   ttftMs?: number;
@@ -89,7 +90,7 @@ export function useChat(cohort: string = 'K48-K49') {
 
     try {
       const chatHistory = messages
-        .filter(m => !m.isStreaming)
+        .filter(m => !m.isStreaming && !m.isHardcoded)
         .map(m => ({
           role: m.role === 'bot' ? 'assistant' : 'user',
           content: m.content
@@ -238,6 +239,7 @@ export function useChat(cohort: string = 'K48-K49') {
       id: Date.now().toString(), 
       role: 'user', 
       content: userText,
+      isHardcoded: true,
       timestamp 
     };
     
@@ -247,6 +249,7 @@ export function useChat(cohort: string = 'K48-K49') {
       role: 'bot',
       content: botResponse,
       isStreaming: false,
+      isHardcoded: true,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       confidence: 'high',
       suggestions

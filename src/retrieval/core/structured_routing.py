@@ -20,12 +20,6 @@ ALLOWED_CONTEXT_MODES = {"standalone", "follow_up", "ambiguous"}
 ALLOWED_CONFIDENCE_LEVELS = {"high", "medium", "low", "none"}
 LEGACY_STRUCTURED_ROUTES = {"deterministic"}
 LEGACY_STRUCTURED_MODES = {"direct_lookup", "structured_reasoning"}
-REGULATION_TABLE_LOOKUPS = {
-    "foreign_language",
-    "study_duration",
-    "scholarship_classification",
-    "scoring",
-}
 COHORT_SCOPED_LOOKUPS = {
     "foreign_language",
     "study_duration",
@@ -634,60 +628,6 @@ def fallback_to_rag(
         "router_validation_errors": list(errors),
         "router_rejected_decision": rejected_decision,
         "router_fallback": "invalid_structured_decision_to_rag",
-    }
-
-
-def decision_to_legacy_routing(
-    decision: dict[str, Any], registry: dict[str, Any] | None = None
-) -> dict[str, Any]:
-    registry = registry or load_lookup_registry()
-    route = decision["route"]
-    if route == "clarify":
-        return {
-            "intent": "needs_clarification",
-            "strategy": "none",
-            "target_chunk_types": [],
-            "needs_clarification": True,
-            "clarification_question": decision.get("clarification_question"),
-        }
-    if route == "out_of_domain":
-        return {
-            "intent": "out_of_domain",
-            "strategy": "none",
-            "target_chunk_types": [],
-        }
-    if route == "structured":
-        spec = registry["tools"][decision["lookup_type"]]
-        return {
-            "intent": str(
-                spec.get("response_intent") or f"{decision['lookup_type']}_query"
-            ),
-            "strategy": "structured_json",
-            "target_chunk_types": [],
-            "lookup_type": decision["lookup_type"],
-            "slots": decision.get("slots") or {},
-            "execution_mode": "structured",
-        }
-
-    execution_mode = decision.get("execution_mode") or "regulation"
-    intent = decision.get("intent") or "open_question"
-    configured_types = (registry.get("rag_intents") or {}).get(intent)
-    target_types = (
-        decision.get("target_chunk_types") or configured_types or ["regulation"]
-    )
-    legacy_intent = "regulation_query"
-    strategy = "semantic_filtered"
-    if len(target_types) > 1:
-        legacy_intent = "mixed_query"
-        strategy = "semantic_multi_filter"
-    return {
-        "intent": legacy_intent,
-        "strategy": strategy,
-        "target_chunk_types": list(target_types),
-        "content_types": list(decision.get("content_types") or []),
-        "execution_mode": execution_mode,
-        "lookup_type": decision.get("lookup_type"),
-        "slots": decision.get("slots") or {},
     }
 
 

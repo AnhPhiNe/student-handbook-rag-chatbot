@@ -1,36 +1,6 @@
 from typing import Any
 
 
-def _legacy_build_context_from_vector_results(
-    results: list[dict[str, Any]], max_items: int = 5
-) -> str:
-    blocks = []
-
-    for idx, item in enumerate(results[:max_items], start=1):
-        metadata = item.get("metadata", {})
-        title = (
-            metadata.get("title")
-            or metadata.get("form_name")
-            or metadata.get("unit_name")
-            or metadata.get("faculty_or_unit_name")
-            or metadata.get("program_name")
-            or metadata.get("faculty_name")
-            or metadata.get("procedure_name")
-            or metadata.get("rule_name")
-            or item.get("chunk_id")
-        )
-
-        blocks.append(
-            f"[Nguồn {idx}]\n"
-            f"Tiêu đề: {title}\n"
-            f"Loại: {metadata.get('chunk_type')}\n"
-            f"Trang: {metadata.get('source_pages')}\n"
-            f"Nội dung:\n{item.get('content')}"
-        )
-
-    return "\n\n---\n\n".join(blocks)
-
-
 def build_context_from_vector_results(
     results: list[dict[str, Any]],
     max_items: int = 5,

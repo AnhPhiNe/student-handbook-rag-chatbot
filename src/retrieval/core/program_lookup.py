@@ -128,11 +128,6 @@ def _filter_by_cohort(
     ]
 
 
-def _is_shared_record(record: dict[str, Any]) -> bool:
-    value = str(record.get("cohort") or "").strip().lower()
-    return value in {"all", "general", "shared", "*"}
-
-
 def _filter_by_faculty(
     records: list[dict[str, Any]],
     faculty_entities: list[dict[str, Any]],

@@ -59,13 +59,19 @@ LOW_VALUE_LINK_TERMS = (
 
 
 def build_regulation_chunk_content(section: dict[str, Any], content: str) -> str:
+    raw_title = str(section.get("title") or "").strip()
+    article = str(section.get("article") or "").strip()
+    clean_title = raw_title
+    if article and clean_title.lower().startswith(article.lower()):
+        clean_title = clean_title[len(article):].lstrip(" .:-")
+
     return join_non_empty(
         [
             f"Tài liệu: {section.get('document_title') or ''}",
             f"Phần: {section.get('part') or ''}",
             f"Chương: {section.get('chapter') or ''}",
-            f"Điều: {section.get('article') or ''}",
-            f"Tiêu đề: {section.get('title') or ''}",
+            f"Điều: {article}" if article else "",
+            f"Tiêu đề: {clean_title}" if clean_title else "",
             "Nội dung:",
             content,
         ]

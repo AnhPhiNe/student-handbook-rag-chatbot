@@ -73,10 +73,16 @@ def build_regulation_table_chunk_content(
     section: dict[str, Any],
     table: dict[str, Any],
 ) -> str:
+    raw_title = str(section.get("title") or "").strip()
+    article = str(section.get("article") or "").strip()
+    clean_title = raw_title
+    if article and clean_title.lower().startswith(article.lower()):
+        clean_title = clean_title[len(article):].lstrip(" .:-")
+
     parts = [
         f"Tài liệu: {section.get('document_title') or ''}",
-        f"Điều: {section.get('article') or ''}",
-        f"Tiêu đề: {section.get('title') or ''}",
+        f"Điều: {article}" if article else "",
+        f"Tiêu đề: {clean_title}" if clean_title else "",
         f"Bảng: {table['table_name']}",
     ]
     if table.get("applicability"):
@@ -475,17 +481,6 @@ def _rows_to_markdown(columns: list[str], rows: list[dict[str, Any]]) -> str:
         for row in rows
     ]
     return "\n".join([header, divider, *body])
-
-
-def _between(text: str, start_marker: str, end_marker: str) -> str:
-    start = text.find(start_marker)
-    if start < 0:
-        return ""
-    start += len(start_marker)
-    end = text.find(end_marker, start)
-    if end < 0:
-        return text[start:]
-    return text[start:end]
 
 
 def _collapse_space(text: str) -> str:

@@ -676,44 +676,6 @@ def _v7_query_filter(cohort: str | None) -> Filter:
     return Filter(must=conditions)
 
 
-def _format_v7_focused_context(
-    parent_metadata: dict[str, Any],
-    focused_chunks: list[tuple[float, dict[str, Any]]],
-) -> str:
-    title = (
-        parent_metadata.get("title")
-        or parent_metadata.get("article")
-        or "Regulation source"
-    )
-    lines = [
-        "FOCUSED EVIDENCE FROM SOURCE:",
-        f"Parent source: {title}",
-    ]
-    seen: set[str] = set()
-    for score, chunk in focused_chunks:
-        metadata = chunk.get("metadata") or {}
-        content = str(chunk.get("content") or "").strip()
-        content = (
-            content.split("Content:", 1)[-1].strip()
-            if "Content:" in content
-            else content
-        )
-        if not content:
-            continue
-        key = " ".join(content.lower().split())
-        if key in seen:
-            continue
-        seen.add(key)
-        granularity = metadata.get("chunk_granularity") or "child"
-        marker = metadata.get("clause_marker")
-        prefix = f"- [{granularity}"
-        if marker:
-            prefix += f" {marker}"
-        prefix += f" | score {float(score):.3f}] "
-        lines.append(prefix + content)
-    return "\n".join(lines)
-
-
 _GLOBAL_RETRIEVER = None
 _ARTICLE_LABEL_PATTERN = re.compile(
     r"(?<![A-Za-zÀ-ỹ])(?:Điều|Dieu)[\s_-]*(\d+[a-z]?)\b", re.IGNORECASE

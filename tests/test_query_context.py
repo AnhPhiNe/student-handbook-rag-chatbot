@@ -272,7 +272,6 @@ def test_answer_output_propagates_query_handling() -> None:
     assert output["effective_query"] == handling["effective_query"]
     assert output["query_handling"] == handling
     assert output["router_decision"]["query_handling"] == handling
-    assert output["query_rewrite"] is None
 
 
 def _minimal_pipeline() -> AnswerPipeline:

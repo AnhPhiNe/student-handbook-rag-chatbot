@@ -39,9 +39,7 @@ class ChatResponse(BaseModel):
         answer (str): Câu trả lời chính được tạo ra bởi hệ thống.
         status (str): Trạng thái của yêu cầu, ví dụ: "success" (thành công) hoặc "error" (lỗi).
         effective_query (str | None): Câu hỏi thực tế đã được xử lý bởi hệ thống,
-            có thể khác với `query` gốc nếu có quá trình viết lại câu hỏi. Mặc định là `None`.
-        query_rewrite (dict[str, Any] | None): Thông tin chi tiết về quá trình viết lại câu hỏi,
-            nếu có. Mặc định là `None`.
+            có thể khác với `query` gốc nếu có quá trình chuẩn hóa câu hỏi. Mặc định là `None`.
         query_handling (dict[str, Any] | None): Quyết định chuẩn hóa hoặc nối ngữ cảnh
             đã được Router kiểm tra trước khi truy vấn.
         request_id (str | None): Một ID duy nhất cho mỗi yêu cầu, giúp theo dõi. Mặc định là `None`.
@@ -53,7 +51,6 @@ class ChatResponse(BaseModel):
     status: str
     effective_query: str | None = None
     query_handling: dict[str, Any] | None = None
-    query_rewrite: dict[str, Any] | None = None
     request_id: str | None = None
     run_id: str | None = None
     latency_ms: float | None = None

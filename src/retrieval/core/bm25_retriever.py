@@ -172,9 +172,6 @@ class BM25Retriever:
             actual_content_type = str(
                 chunk.get("content_type") or metadata.get("content_type") or ""
             ).strip()
-            actual_cohort = str(
-                chunk.get("cohort") or metadata.get("cohort") or ""
-            ).strip()
 
             if expected_chunk_types and actual_chunk_type not in expected_chunk_types:
                 continue

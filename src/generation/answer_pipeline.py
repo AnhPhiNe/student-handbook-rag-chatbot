@@ -1188,7 +1188,6 @@ class AnswerPipeline:
             or (query_handling or {}).get("effective_query")
             or query,
             "query_handling": query_handling,
-            "query_rewrite": None,
             "router_decision": router_decision,
             "answer": final_answer,
             "status": status,

@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import re
+from typing import Any
 
 
 COHORT_GROUPS = {
@@ -53,9 +56,6 @@ def resolve_cohort_from_query(query: str, fallback: str | None = None) -> str | 
     if match:
         return normalize_cohort(f"K{match.group(1)}")
     return cohort
-
-
-from typing import Any
 
 
 def is_cohort_applicable(

@@ -117,66 +117,6 @@ def limit_context(context: str, max_context_chars: int = DEFAULT_MAX_CONTEXT_CHA
     )
 
 
-def _selected_context_or_fallback(
-    retrieval_result: dict[str, Any],
-    selected_citations: list[dict[str, Any]],
-    max_context_chars: int,
-) -> str:
-    selected_chunk_ids = {
-        str(citation.get("chunk_id"))
-        for citation in selected_citations
-        if citation.get("chunk_id")
-    }
-    selected_titles = {
-        str(citation.get("title") or "").strip().lower()
-        for citation in selected_citations
-        if citation.get("title")
-    }
-
-    blocks: list[str] = []
-    for item in retrieval_result.get("retrieved_items", []) or []:
-        metadata = item.get("metadata", {}) or {}
-        chunk_id = str(item.get("chunk_id") or "")
-        title = str(
-            metadata.get("title")
-            or metadata.get("form_name")
-            or metadata.get("unit_name")
-            or metadata.get("faculty_or_unit_name")
-            or metadata.get("procedure_name")
-            or chunk_id
-        ).strip()
-
-        if selected_chunk_ids and chunk_id not in selected_chunk_ids:
-            continue
-        if (
-            not selected_chunk_ids
-            and selected_titles
-            and title.lower() not in selected_titles
-        ):
-            continue
-
-        blocks.append(
-            "\n".join(
-                [
-                    f"Tiêu đề: {title}",
-                    f"Loại: {metadata.get('chunk_type')}",
-                    f"Trang: {metadata.get('source_pages')}",
-                    f"Nội dung: {item.get('content')}",
-                ]
-            )
-        )
-
-    if blocks:
-        return limit_context(
-            "\n\n---\n\n".join(blocks), max_context_chars=max_context_chars
-        )
-
-    return limit_context(
-        str(retrieval_result.get("context_for_llm") or ""),
-        max_context_chars=max_context_chars,
-    )
-
-
 def _source_usage_instruction(context: str) -> str:
     normalized_context = str(context or "").upper()
     if (

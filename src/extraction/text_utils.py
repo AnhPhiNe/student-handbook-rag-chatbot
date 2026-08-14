@@ -20,12 +20,3 @@ def get_pages_by_type(
 
 def source_page_range(start: int, end: int) -> list[int]:
     return list(range(start, end + 1))
-
-
-def extract_first_line(block: str) -> str:
-    for line in block.splitlines():
-        line = line.strip()
-        if line:
-            return line
-
-    return "Unknown"

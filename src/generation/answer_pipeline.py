@@ -1065,6 +1065,32 @@ class AnswerPipeline:
             strategy=router_decision.get("execution_mode") or "hybrid_graph_retrieval",
             retrieval_query=normalized_retrieval_query,
         )
+        if not result.get("structured_result"):
+            from src.retrieval.core.structured_dispatcher import resolve_structured_decision
+            supp_resolution = resolve_structured_decision(
+                router_decision,
+                query=normalized_retrieval_query,
+                cohort=cohort,
+                scoring_tables=self.scoring_tables,
+                formula_rules=self.formula_rules,
+                office_directory=self.student_office_profiles,
+                student_service_directory=self.student_service_directory,
+                student_faculty_profiles=self.student_faculty_profiles,
+                foreign_language_tables=self.foreign_language_tables,
+                structured_tables_registry=self.structured_tables_registry,
+                program_directory=self.program_directory,
+                model=self.model,
+            )
+            if supp_resolution and supp_resolution.result:
+                result["structured_result"] = supp_resolution.result
+                supp_citations = build_citation_from_lookup(supp_resolution.result)
+                supp_citations = enrich_citations_with_parent_details(
+                    supp_citations,
+                    getattr(self, "parent_sources_by_id", {}),
+                )
+                existing_citations = result.get("citations") or []
+                result["citations"] = supp_citations + existing_citations
+
         result["selected_cohort"] = cohort
         result["router_decision"] = router_decision
         result["raw_query"] = query

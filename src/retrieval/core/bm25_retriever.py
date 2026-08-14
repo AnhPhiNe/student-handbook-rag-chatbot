@@ -5,6 +5,7 @@ from typing import Any
 
 from rank_bm25 import BM25Okapi
 
+from src.common.cohort import is_cohort_applicable
 from src.retrieval.core.acronym_registry import (
     DEFAULT_PROGRAM_DIRECTORY_PATH,
     DEFAULT_VOCABULARY_PATH,
@@ -182,7 +183,7 @@ class BM25Retriever:
                 and actual_content_type not in expected_content_types
             ):
                 continue
-            if expected_cohort and actual_cohort != expected_cohort:
+            if expected_cohort and not is_cohort_applicable(chunk, expected_cohort):
                 continue
 
             document = dict(chunk)

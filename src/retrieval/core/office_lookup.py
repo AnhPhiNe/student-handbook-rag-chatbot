@@ -432,7 +432,42 @@ def office_lookup(
         )
         if not ranked or match_score < minimum_confidence:
             return None
-        if len(ranked) > 1 and score_margin < 0.08:
+
+        _IGNORED_SPAN_WORDS = {"dia", "chi", "so", "thong", "tin", "ban", "khoa", "phong", "dien", "thoai", "email"}
+        search_text = normalize_text(candidate_text or query)
+        raw_query_norm = normalize_text(query)
+        effective_search = raw_query_norm if len(raw_query_norm) > len(search_text) else search_text
+        has_conjunction = (
+            any(conj in f" {effective_search} " for conj in [" va ", " voi ", " cung ", " hoac ", " lan "])
+            or "," in (candidate_text or query)
+        )
+
+        span_matches = []
+        for r_item in ranked:
+            for val in _candidate_values(r_item["record"]):
+                val_norm = normalize_text(val)
+                if len(val_norm) < 3 or val_norm in _IGNORED_SPAN_WORDS:
+                    continue
+                for m in re.finditer(rf"(?<![a-z0-9]){re.escape(val_norm)}(?![a-z0-9])", effective_search):
+                    span_matches.append((len(val_norm), m.start(), m.end(), val_norm, r_item))
+
+        span_matches.sort(key=lambda x: (x[0], len(x[3].split())), reverse=True)
+
+        accepted_spans = []
+        multi_entity_items = []
+        seen_entity_keys = set()
+        for length, start, end, val_norm, r_item in span_matches:
+            is_subsumed = any(acc_s <= start and end <= acc_e for acc_s, acc_e in accepted_spans)
+            if not is_subsumed:
+                accepted_spans.append((start, end))
+                ekey = _entity_key(r_item["record"])
+                if ekey not in seen_entity_keys:
+                    seen_entity_keys.add(ekey)
+                    multi_entity_items.append(r_item)
+
+        if len(multi_entity_items) > 1:
+            ranked = multi_entity_items
+        elif len(ranked) > 1 and score_margin < 0.08 and not has_conjunction:
             options = []
             seen_units = set()
             for item in ranked[:3]:
@@ -464,7 +499,8 @@ def office_lookup(
                 "match_score": round(match_score, 4),
                 "score_margin": round(score_margin, 4),
             }
-        ranked = ranked[:1]
+        else:
+            ranked = ranked[:1]
     matches = [
         _summarize_office(item["record"])
         | {

@@ -462,9 +462,17 @@ def _span_is_grounded(span: Any, source_text: str) -> bool:
 
 def _matches_type(value: Any, expected: str) -> bool:
     if expected == "string":
-        return isinstance(value, str) and bool(value.strip())
+        if isinstance(value, str):
+            return bool(value.strip())
+        if isinstance(value, list):
+            return bool(value) and all(isinstance(v, str) and bool(v.strip()) for v in value)
+        return False
     if expected == "number":
-        return isinstance(value, int | float) and not isinstance(value, bool)
+        if isinstance(value, int | float) and not isinstance(value, bool):
+            return True
+        if isinstance(value, list):
+            return bool(value) and all(isinstance(v, int | float) and not isinstance(v, bool) for v in value)
+        return False
     if expected == "object":
         return isinstance(value, dict)
     if expected == "array":

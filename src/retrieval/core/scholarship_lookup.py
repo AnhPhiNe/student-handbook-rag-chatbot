@@ -2,7 +2,11 @@ import re
 import unicodedata
 from typing import Any
 
-from src.common.cohort import normalize_cohort, resolve_cohort_from_query
+from src.common.cohort import (
+    is_cohort_applicable,
+    normalize_cohort,
+    resolve_cohort_from_query,
+)
 from src.retrieval.core.structured_lookup import in_range
 
 
@@ -90,15 +94,16 @@ def _filter_tables(
     return [
         table
         for table in candidates
-        if normalize_cohort(table.get("cohort")) == normalized_cohort
+        if is_cohort_applicable(table, normalized_cohort)
     ]
 
 
-def _requested_label(query_norm: str) -> str | None:
+def _requested_labels(query_norm: str) -> list[str]:
+    labels = []
     for label, aliases in LABEL_ALIASES.items():
         if any(alias in query_norm for alias in aliases):
-            return label
-    return None
+            labels.append(label)
+    return labels
 
 
 def _rows_for_query(
@@ -106,10 +111,11 @@ def _rows_for_query(
     table: dict[str, Any],
 ) -> tuple[list[dict[str, Any]], float | None]:
     rows = list(table.get("rows") or [])
-    label = _requested_label(query_norm)
-    if label:
+    labels = _requested_labels(query_norm)
+    if labels:
+        norm_labels = {normalize_text(lbl) for lbl in labels}
         return [
-            row for row in rows if normalize_text(row.get("label")) == normalize_text(label)
+            row for row in rows if normalize_text(row.get("label")) in norm_labels
         ], None
 
     numbers = _extract_numbers(_strip_cohort_numbers(query_norm))

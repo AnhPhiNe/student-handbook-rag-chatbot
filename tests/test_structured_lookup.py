@@ -4,7 +4,9 @@ import unittest
 
 from src.generation.answer_guardrails import build_deterministic_answer
 from src.extraction.scoring_tables import build_scoring_tables
+from src.retrieval.core.office_lookup import office_lookup
 from src.retrieval.core.program_lookup import program_lookup
+from src.retrieval.core.scholarship_lookup import scholarship_classification_lookup
 from src.retrieval.core.structured_lookup import (
     structured_lookup,
     structured_lookup_from_slots,
@@ -238,6 +240,163 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertEqual(res_k51["program_count"], 3)
         names_k51 = {p["program_name"] for p in res_k51["result"]}
         self.assertEqual(names_k51, {"Công nghệ Giáo dục", "Công nghệ Thông tin", "Sư phạm Tin học"})
+
+    def test_multi_entity_program_lookup_all_matched(self):
+        programs = [
+            {"program_name": "Công nghệ Giáo dục", "faculty_name": "Khoa Công nghệ Thông tin", "cohort": "K51"},
+            {"program_name": "Công nghệ Thông tin", "faculty_name": "Khoa Công nghệ Thông tin", "cohort": "K51"},
+            {"program_name": "Sư phạm Tin học", "faculty_name": "Khoa Công nghệ Thông tin", "cohort": "K51"},
+            {"program_name": "Sư phạm Toán học", "faculty_name": "Khoa Toán - Tin học", "cohort": "K51"},
+        ]
+
+        query = "cơ hội việc làm của ngành Công nghệ Giáo dục, Công nghệ Thông tin, Sư phạm Tin học"
+        res = program_lookup(
+            query,
+            programs,
+            cohort="K51",
+            routing={"content_type": "program_directory", "action": "resolve_faculty", "scope": "school"},
+        )
+        self.assertIsNotNone(res)
+        self.assertEqual(res["program_count"], 3)
+        names = {p["program_name"] for p in res["result"]}
+        self.assertEqual(names, {"Công nghệ Giáo dục", "Công nghệ Thông tin", "Sư phạm Tin học"})
+
+    def test_program_lookup_subsumption_protection(self):
+        programs = [
+            {"program_name": "Tin học", "faculty_name": "Khoa CNTT", "cohort": "K51"},
+            {"program_name": "Sư phạm Tin học", "faculty_name": "Khoa CNTT", "cohort": "K51"},
+        ]
+        query = "ngành Sư phạm Tin học"
+        res = program_lookup(
+            query,
+            programs,
+            cohort="K51",
+            routing={"content_type": "program_directory", "action": "resolve_faculty", "scope": "school"},
+        )
+        self.assertIsNotNone(res)
+    def test_multi_entity_office_and_faculty_lookup_all_matched(self):
+        units = [
+            {
+                "unit_name": "Khoa Công nghệ Thông tin",
+                "aliases": ["khoa cntt", "cntt"],
+                "emails": ["khoacntt@hcmue.edu.vn"],
+                "cohort": "K51",
+            },
+            {
+                "unit_name": "Phòng Công nghệ Thông tin",
+                "aliases": ["phong cntt"],
+                "emails": ["phongcntt@hcmue.edu.vn"],
+                "cohort": "K51",
+            },
+        ]
+        query = "email của khoa cntt và phòng cntt là gì"
+        res = office_lookup(
+            query,
+            units,
+            cohort="K51",
+            candidate_text=query,
+            require_confident_match=True,
+        )
+        self.assertIsNotNone(res)
+        self.assertEqual(len(res["result"]), 2)
+        names = {u["unit_name"] for u in res["result"]}
+        self.assertEqual(names, {"Khoa Công nghệ Thông tin", "Phòng Công nghệ Thông tin"})
+
+    def test_office_lookup_conjunction_prevents_false_ambiguity(self):
+        units = [
+            {
+                "unit_name": "Phòng Đào tạo",
+                "aliases": ["phong dao tao", "phong dt"],
+                "emails": ["phongdt@hcmue.edu.vn"],
+                "cohort": "K51",
+            },
+            {
+                "unit_name": "Phòng Công tác chính trị và Học sinh, sinh viên",
+                "aliases": ["phong cong tac chinh tri hoc sinh sinh vien", "phong ctct hssv"],
+                "emails": ["hopthusinhvien@hcmue.edu.vn"],
+                "cohort": "K51",
+            },
+        ]
+        query = "email của phòng đào tạo và phòng công tác chính trị học sinh sinh viên"
+        res = office_lookup(
+            query,
+            units,
+            cohort="K51",
+            candidate_text=query,
+            require_confident_match=True,
+        )
+        self.assertIsNotNone(res)
+        self.assertNotEqual(res.get("resolution_status"), "ambiguous")
+        self.assertEqual(len(res["result"]), 2)
+
+    def test_multi_entity_scholarship_lookup_all_matched(self):
+        tables = [
+            {
+                "table_id": "scholarship_classification",
+                "table_name": "Xếp loại học bổng khuyến khích học tập",
+                "cohort": "K51",
+                "rows": [
+                    {"label": "Khá", "scholarship_score_range": "2.56-3.352"},
+                    {"label": "Giỏi", "scholarship_score_range": "3.36-3.832"},
+                    {"label": "Xuất sắc", "scholarship_score_range": ">=3.84"},
+                ],
+            }
+        ]
+        query = "điểm học bổng loại khá và loại giỏi là bao nhiêu"
+        res = scholarship_classification_lookup(query, tables, cohort="K51")
+        self.assertIsNotNone(res)
+        self.assertEqual(res["result"]["result_count"], 2)
+        labels = {r["label"] for r in res["result"]["rows"]}
+        self.assertEqual(labels, {"Khá", "Giỏi"})
+
+    def test_inter_table_multi_structured_resolution(self):
+        from src.retrieval.core.structured_dispatcher import resolve_structured_decision
+
+        decision = {"lookup_type": "foreign_language", "slots": {}}
+        query = "ielts 6.0 quy đổi ra bậc mấy và điểm học bổng loại giỏi là bao nhiêu"
+        fl_tables = [
+            {
+                "table_id": "foreign_language_equivalency_table",
+                "table_name": "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ",
+                "cohort": "K51",
+                "applicable_cohorts": ["K51"],
+                "rows": [
+                    {
+                        "language": "Tiếng Anh",
+                        "certificate": "IELTS",
+                        "level_or_scale": "IELTS",
+                        "equivalent_level_3": "4.0 - 5.0",
+                        "equivalent_level_4": "5.5 - 6.5",
+                    }
+                ],
+            }
+        ]
+        scoring_tables = [
+            {
+                "table_id": "scholarship_classification",
+                "table_name": "Xếp loại học bổng khuyến khích học tập",
+                "cohort": "K51",
+                "rows": [
+                    {"label": "Giỏi", "scholarship_score_range": "3.36-3.832"},
+                ],
+            }
+        ]
+        res = resolve_structured_decision(
+            decision,
+            query=query,
+            cohort="K51",
+            scoring_tables=scoring_tables,
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=fl_tables,
+            structured_tables_registry=[],
+            program_directory=[],
+        )
+        self.assertIsNotNone(res)
+        self.assertEqual(res.lookup_type, "multi_structured")
+        self.assertEqual(res.result.get("lookup_count"), 2)
 
 
 if __name__ == "__main__":

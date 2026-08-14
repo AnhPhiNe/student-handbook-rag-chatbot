@@ -660,7 +660,9 @@ def _ascii_text(text: str) -> str:
 
 
 def _has_result(value: Any) -> bool:
-    return isinstance(value, dict) and value.get("result") is not None
+    if not isinstance(value, dict):
+        return False
+    return value.get("result") is not None or bool(value.get("sub_lookups")) or bool(value.get("items"))
 
 
 def _has_formula_result(value: Any) -> bool:

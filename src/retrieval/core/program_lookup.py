@@ -195,24 +195,109 @@ def _filter_by_faculty_names(
     ]
 
 
+def _get_program_name_forms(raw_name: Any) -> set[str]:
+    """Sinh tap hop cac bien the nhan dien hop le tu ten nganh bang thuat toan tong quat.
+    
+    Quy tac ngon ngu hoc tong quat (Zero hardcode):
+    1. Tach bo chu thich trong ngoac don: (Tieng Viet...), (trinh do cao dang...)
+    2. Rut gon hau to hoc thuat 'hoc': Toan hoc -> Toan, Tin hoc -> Tin, Hoa hoc -> Hoa...
+    3. Rut gon hau to 'quoc' trong ten quoc gia / ngon ngu: Trung Quoc -> Trung, Han Quoc -> Han...
+    4. Rut gon tien to su pham: Su pham X -> SP X
+    5. Tu dong sinh viet tat chu cai dau (First-letter Acronym) cho cum >= 3 tu:
+       Cong nghe Thong tin -> cntt, Giao duc Mam non -> gdmn, Giao duc Tieu hoc -> gdth...
+    """
+    forms = set()
+    norm_full = normalize_text(raw_name)
+    if norm_full:
+        forms.add(norm_full)
+    
+    base = re.sub(r"\(.*?\)", "", str(raw_name or "")).strip()
+    norm_base = normalize_text(base)
+    if not norm_base:
+        return forms
+    forms.add(norm_base)
+    
+    words = norm_base.split()
+    
+    # 1. Tu dong sinh Acronym tu chu cai dau cho cum tu (do dai >= 3)
+    if len(words) >= 3:
+        forms.add("".join(w[0] for w in words))
+    elif len(words) == 2 and "thong tin" in norm_base:
+        forms.add("".join(w[0] for w in words))
+        
+    # 2. Boc tach hau to hoc thuat 'hoc' (Academic suffix)
+    if len(words) > 1 and words[-1] == "hoc" and words[-2] not in {"tieu", "trung", "dai", "cao"}:
+        base_no_hoc = " ".join(words[:-1])
+        forms.add(base_no_hoc)
+        if len(words[:-1]) >= 3:
+            forms.add("".join(w[0] for w in words[:-1]))
+
+    # 3. Boc tach hau to 'quoc' trong ten quoc gia/ngon ngu
+    if len(words) > 1 and words[-1] == "quoc":
+        base_no_quoc = " ".join(words[:-1])
+        forms.add(base_no_quoc)
+        if len(words[:-1]) >= 3:
+            forms.add("".join(w[0] for w in words[:-1]))
+            
+    # 4. Tiền tố 'su pham' -> 'sp'
+    if norm_base.startswith("su pham "):
+        rem = norm_base[8:]
+        forms.add("sp " + rem)
+        rem_words = rem.split()
+        if len(rem_words) > 1 and rem_words[-1] == "hoc" and rem_words[-2] not in {"tieu", "trung", "dai", "cao"}:
+            forms.add("sp " + " ".join(rem_words[:-1]))
+        if len(rem_words) > 1 and rem_words[-1] == "quoc":
+            forms.add("sp " + " ".join(rem_words[:-1]))
+        if len(rem_words) >= 2:
+            forms.add("sp" + "".join(w[0] for w in rem_words))
+            
+    return forms
+
+
 def _filter_by_program_name(
     records: list[dict[str, Any]],
     query: str,
 ) -> list[dict[str, Any]]:
     text = normalize_text(query)
-    matches = [
-        record
-        for record in records
-        if normalize_text(record.get("program_name")) in text
-    ]
-    if len(matches) > 1:
-        max_len = max(len(normalize_text(record.get("program_name"))) for record in matches)
-        matches = [
-            record
-            for record in matches
-            if len(normalize_text(record.get("program_name"))) == max_len
-        ]
-    return matches
+    found_matches: list[tuple[int, int, dict[str, Any]]] = []
+    for record in records:
+        raw_name = record.get("program_name")
+        forms = _get_program_name_forms(raw_name)
+        for form in forms:
+            if not form:
+                continue
+            if len(form) <= 4:
+                for m in re.finditer(rf"(?<![a-z0-9]){re.escape(form)}(?![a-z0-9])", text):
+                    found_matches.append((m.start(), m.end(), record))
+            else:
+                start = 0
+                while True:
+                    idx = text.find(form, start)
+                    if idx == -1:
+                        break
+                    end = idx + len(form)
+                    found_matches.append((idx, end, record))
+                    start = idx + 1
+
+    if not found_matches:
+        return []
+
+    found_matches.sort(key=lambda item: (item[1] - item[0]), reverse=True)
+
+    kept_records: list[dict[str, Any]] = []
+    accepted_spans: list[tuple[int, int]] = []
+
+    for start, end, record in found_matches:
+        is_subsumed = any(
+            acc_start <= start and end <= acc_end
+            for acc_start, acc_end in accepted_spans
+        )
+        if not is_subsumed:
+            accepted_spans.append((start, end))
+            if record not in kept_records:
+                kept_records.append(record)
+
+    return kept_records
 
 
 def _filter_by_program_topic(
@@ -220,36 +305,35 @@ def _filter_by_program_topic(
     query: str,
 ) -> list[dict[str, Any]]:
     text = normalize_text(query)
-    stopwords = {
-        "cac",
-        "cho",
-        "cua",
-        "danh",
-        "do",
-        "em",
-        "gi",
-        "khoa",
-        "la",
-        "ly",
-        "nao",
-        "nganh",
-        "nhung",
-        "phu",
-        "quan",
-        "sach",
-        "thuoc",
-        "tra",
-        "trach",
-        "truc",
+    grammar_stopwords = {
+        "cac", "cho", "cua", "danh", "do", "em", "gi", "khoa", "la",
+        "nao", "nganh", "nhung", "sach", "tra", "ve", "hoi", "hoc", "truong",
+        "co", "trong", "tai", "theo", "voi", "nhu", "the"
     }
-    topic_tokens = {token for token in text.split() if token not in stopwords}
-    if len(topic_tokens) < 2:
+    query_tokens = [token for token in text.split() if token not in grammar_stopwords and len(token) >= 2]
+    if not query_tokens:
         return []
-    return [
-        record
-        for record in records
-        if topic_tokens.issubset(set(normalize_text(record.get("program_name")).split()))
-    ]
+
+    query_token_set = set(query_tokens)
+    scored_candidates: list[tuple[float, dict[str, Any]]] = []
+
+    for record in records:
+        prog_tokens = set(normalize_text(record.get("program_name")).split())
+        prog_tokens_clean = {t for t in prog_tokens if t not in grammar_stopwords and len(t) >= 2}
+        if not prog_tokens_clean:
+            continue
+        overlap = len(query_token_set & prog_tokens_clean)
+        if overlap >= 1:
+            score = overlap / len(prog_tokens_clean)
+            if overlap >= 2 or score >= 0.5 or query_token_set.issubset(prog_tokens_clean):
+                scored_candidates.append((score, record))
+
+    if not scored_candidates:
+        return []
+
+    scored_candidates.sort(key=lambda item: item[0], reverse=True)
+    best_score = scored_candidates[0][0]
+    return [record for score, record in scored_candidates if score >= best_score * 0.8]
 
 
 def _group_counts(records: list[dict[str, Any]]) -> dict[str, int]:

@@ -4,7 +4,7 @@ import re
 import unicodedata
 from typing import Any
 
-from src.common.cohort import normalize_cohort
+from src.common.cohort import is_cohort_applicable, normalize_cohort
 
 
 def formula_lookup(
@@ -15,7 +15,7 @@ def formula_lookup(
 ) -> dict[str, Any] | None:
     cohort = normalize_cohort(cohort)
     if cohort:
-        formula_rules = [r for r in formula_rules if r.get("cohort") == cohort]
+        formula_rules = [r for r in formula_rules if is_cohort_applicable(r, cohort)]
 
     if slots:
         formula_type = str(slots.get("formula_type") or "").strip()

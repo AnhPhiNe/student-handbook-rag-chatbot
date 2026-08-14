@@ -297,7 +297,7 @@ def validate_follow_up_query(
     selected_cohort: str | None,
 ) -> list[str]:
     errors: list[str] = []
-    if _confidence(confidence) != "high":
+    if _confidence(confidence) not in {"high", "medium"}:
         errors.append("follow_up_not_high_confidence")
     if not standalone_query:
         errors.append("missing_standalone_query")
@@ -337,8 +337,17 @@ def validate_follow_up_query(
     standalone_content = _content_tokens(standalone_query)
     grounded_content = _content_tokens(grounded_text)
     if raw_content:
-        retained_ratio = len(raw_content & standalone_content) / len(raw_content)
-        if retained_ratio < 0.65:
+        dropped_tokens = len(raw_content - standalone_content)
+        max_allowed_dropped = (
+            0
+            if len(raw_content) <= 2
+            else (
+                1
+                if len(raw_content) <= 5
+                else max(2, int(len(raw_content) * 0.35))
+            )
+        )
+        if dropped_tokens > max_allowed_dropped:
             errors.append("follow_up_dropped_current_topic")
     if len(standalone_content - grounded_content) > 2:
         errors.append("follow_up_added_ungrounded_content")

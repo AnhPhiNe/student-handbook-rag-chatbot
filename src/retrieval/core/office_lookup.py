@@ -84,11 +84,22 @@ def _office_search_text(record: dict[str, Any]) -> str:
 
 
 def _candidate_values(record: dict[str, Any]) -> list[str]:
+    base_unit = _strip_order_prefix(record.get("unit_name") or record.get("unit"))
     values = [
-        _strip_order_prefix(record.get("unit_name") or record.get("unit")),
+        base_unit,
         str(record.get("service") or "").strip(),
         *(str(alias).strip() for alias in record.get("aliases") or []),
     ]
+    if base_unit and any(delim in base_unit for delim in ["–", "-", "/"]):
+        parts = re.split(r"\s*[–\-/]\s*", base_unit)
+        if len(parts) >= 2:
+            prefix = parts[0].split()[0] if parts[0].split() else ""
+            for p in parts:
+                p_clean = p.strip()
+                if p_clean:
+                    values.append(p_clean)
+                    if prefix and not p_clean.startswith(prefix):
+                        values.append(f"{prefix} {p_clean}")
     return list(dict.fromkeys(value for value in values if value))
 
 
@@ -465,7 +476,12 @@ def office_lookup(
                     seen_entity_keys.add(ekey)
                     multi_entity_items.append(r_item)
 
+        top_span = span_matches[0] if span_matches else None
+        tied_spans = [s for s in span_matches if s[1] == top_span[1] and s[2] == top_span[2]] if top_span else []
+
         if len(multi_entity_items) > 1:
+            ranked = multi_entity_items
+        elif len(multi_entity_items) == 1 and len(tied_spans) <= 1:
             ranked = multi_entity_items
         elif len(ranked) > 1 and score_margin < 0.08 and not has_conjunction:
             options = []

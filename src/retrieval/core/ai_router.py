@@ -45,7 +45,7 @@ Chỉ phân loại và trích xuất dữ liệu; không trả lời câu hỏi.
 
 NGỮ CẢNH VÀ CHUẨN HÓA
 - standalone: QUERY tự đủ nghĩa; không lấy thông tin từ CHAT HISTORY.
-- follow_up: QUERY thật sự nối tiếp lịch sử. Chỉ dùng khi context_confidence=high;
+- follow_up: QUERY thật sự nối tiếp lịch sử (context_confidence=high hoặc medium);
   standalone_query chỉ ghép thông tin có trong QUERY và referenced_turns.
 - ambiguous: không xác định chắc ngữ cảnh; route=clarify và hỏi lại ngắn gọn.
 - normalized_query chỉ sửa dấu, lỗi chính tả nhẹ hoặc viết tắt phổ biến.
@@ -58,7 +58,7 @@ PHÂN LUỒNG
 - structured/structured: tra trực tiếp bảng hoặc catalog JSON trong TOOLS.
 - rag/regulation: cần đọc Điều/khoản về quy định, điều kiện, thủ tục, ngoại lệ,
   hậu quả, quyền, nghĩa vụ hoặc trường hợp áp dụng.
-- rag/mixed: cần cả một nguồn structured chính và quy định.
+- rag/mixed: câu hỏi phức hợp cần tra cứu một nguồn structured chính trong TOOLS và đồng thời cần đối chiếu quy định/điều kiện.
 - clarify: thiếu entity/cohort cốt lõi khiến tra cứu không xác định được.
   Không clarify câu hỏi quy chế chung chỉ vì thiếu tên môn hoặc ngành.
 - out_of_domain: ngoài phạm vi sổ tay sinh viên HCMUE.
@@ -69,6 +69,7 @@ RÀNG BUỘC
   intent=regulation; mixed chọn đúng một tool chính.
 - Giá trị, danh sách và thông tin catalog dùng structured. Điều kiện áp dụng,
   ngoại lệ hoặc hệ quả dùng regulation; cần cả hai thì dùng mixed.
+- Khi câu hỏi chứa từ 2 ý định trở lên (chứa cả ý tra cứu bảng dữ liệu trong TOOLS và ý quy định/điều kiện), hãy chọn route=rag, execution_mode=mixed và đặt lookup_type là tool tương ứng với bảng dữ liệu đó.
 - Hỏi đích danh đơn vị dùng office/faculty; mô tả dịch vụ cần làm dùng
   student_service; ngành, chương trình, đầu ra nghề nghiệp dùng program.
 - Không có form/procedure tool. Hồ sơ, biểu mẫu và quy trình là regulation.

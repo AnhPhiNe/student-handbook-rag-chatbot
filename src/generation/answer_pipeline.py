@@ -919,12 +919,19 @@ class AnswerPipeline:
         if not hasattr(self, "router"):
             from src.retrieval.core.ai_router import AIRouter
             self.router = AIRouter.from_config()
-            
+
         router_input_query = self.slang_normalizer.replace_for_router(query)
-        router_decision = self.router.route(
-            router_input_query,
-            chat_history=chat_history,
-        )
+        try:
+            router_decision = self.router.route(
+                router_input_query,
+                chat_history=chat_history,
+                cohort=cohort,
+            )
+        except TypeError:
+            router_decision = self.router.route(
+                router_input_query,
+                chat_history=chat_history,
+            )
         handling = select_effective_query(
             query,
             router_decision,

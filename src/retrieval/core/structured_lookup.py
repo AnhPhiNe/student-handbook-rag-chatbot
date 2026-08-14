@@ -273,73 +273,9 @@ def _contains_letter_grade(text: str, grade: str) -> bool:
     return re.search(pattern, normalized_text) is not None
 
 
-def should_use_structured_lookup(query: str) -> bool:
-    q = query.lower()
-    ascii_q = normalize_text(query)
-    ascii_lookup_phrases = [
-        "ren luyen",
-        "hoc luc",
-        "gpa",
-        "diem trung binh",
-        "quy doi",
-        "thang diem 4",
-        "thang 4",
-        "diem chu",
-        "xep loai",
-        "loai gi",
-        "qua mon",
-        "qua hoc phan",
-        "rot mon",
-        "diem d",
-        "diem d+",
-        "d+",
-        "diem f",
-        "bi f",
-        "he thong tinh",
-        "tinh nhu the nao",
-        "tinh the nao",
-        "bao nhieu diem",
-        "may diem",
-        "dat",
-        "khong dat",
-    ]
-    if any(phrase in ascii_q for phrase in ascii_lookup_phrases):
-        return True
-
-    # Cau hoi ve quy trinh (hoc lai, huy mon) thi la regulation.
-    # Nhung neu hoi "may diem thi rot/qua" thi cho phep tra bang.
-    regulation_phrases = [
-        "học lại",
-        "hủy môn",
-    ]
-    if any(phrase in q for phrase in regulation_phrases):
-        return False
-
-    lookup_phrases = [
-        "rèn luyện",
-        "học lực",
-        "gpa",
-        "điểm trung bình",
-        "quy đổi",
-        "thang điểm 4",
-        "thang 4",
-        "điểm chữ",
-        "xếp loại",
-        "loại gì",
-        "qua môn",
-        "rớt môn",
-        "bao nhiêu điểm",
-        "mấy điểm",
-    ]
-
-    return any(phrase in q for phrase in lookup_phrases)
-
-
 def structured_lookup(
     query: str, tables: list[dict[str, Any]], cohort: str | None = None
 ) -> Optional[dict[str, Any]]:
-    if not should_use_structured_lookup(query):
-        return None
 
     cohort = normalize_cohort(cohort)
     if cohort:

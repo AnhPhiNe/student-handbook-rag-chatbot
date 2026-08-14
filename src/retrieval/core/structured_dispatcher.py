@@ -407,13 +407,8 @@ def resolve_structured_decision(
 
     primary_res = _resolve_single_lookup(lookup_type, **lookup_kwargs) if lookup_type else None
 
-    # Dynamic Table Probing for Inter-Table Composite Resolution (Structure A + Structure B)
-    query_norm = " " + normalize_text(query) + " "
-    has_conjunction = any(conj in query_norm for conj in [" va ", " voi ", " cung ", " hoac ", " lan "]) or "," in query
-
-    # Khi Router da xac dinh la cau hoi quy che don le (regulation) khong co lien tu noi thi khong tham do danh ba
-    is_pure_single_regulation = decision.get("execution_mode") == "regulation" and not lookup_type
-    if is_pure_single_regulation and not has_conjunction:
+    # When Router explicitly determines single pure regulation without lookup_type, skip structured probing
+    if decision.get("execution_mode") == "regulation" and not lookup_type:
         return None
 
     candidate_domains = [
@@ -427,24 +422,23 @@ def resolve_structured_decision(
         "student_service",
     ]
 
-    if has_conjunction or not primary_res or not primary_res.result:
-        collected: list[StructuredResolution] = []
-        seen_lookups: set[str] = set()
-        if primary_res and _is_valid_probe_result(primary_res):
-            collected.append(primary_res)
-            seen_lookups.add(primary_res.lookup_type)
-            if primary_res.lookup_type in {"office", "faculty", "student_service"}:
-                seen_lookups.update({"office", "faculty", "student_service"})
+    collected: list[StructuredResolution] = []
+    seen_lookups: set[str] = set()
+    if primary_res and _is_valid_probe_result(primary_res):
+        collected.append(primary_res)
+        seen_lookups.add(primary_res.lookup_type)
+        if primary_res.lookup_type in {"office", "faculty", "student_service"}:
+            seen_lookups.update({"office", "faculty", "student_service"})
 
-        for cand_type in candidate_domains:
-            if cand_type in seen_lookups:
-                continue
-            cand_res = _resolve_single_lookup(cand_type, **lookup_kwargs)
-            if _is_valid_probe_result(cand_res):
-                collected.append(cand_res)
-                seen_lookups.add(cand_type)
-                if cand_type in {"office", "faculty", "student_service"}:
-                    seen_lookups.update({"office", "faculty", "student_service"})
+    for cand_type in candidate_domains:
+        if cand_type in seen_lookups:
+            continue
+        cand_res = _resolve_single_lookup(cand_type, **lookup_kwargs)
+        if _is_valid_probe_result(cand_res):
+            collected.append(cand_res)
+            seen_lookups.add(cand_type)
+            if cand_type in {"office", "faculty", "student_service"}:
+                seen_lookups.update({"office", "faculty", "student_service"})
 
         if len(collected) >= 2:
             combined_result = {

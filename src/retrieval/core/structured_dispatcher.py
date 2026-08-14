@@ -363,7 +363,7 @@ def _is_valid_probe_result(
             return bool(res_data["table"])
         if res_data.get("exists") is True:
             return True
-        if res_data.get("formula"):
+        if res_data.get("formula_text"):
             return True
     elif isinstance(res_data, list):
         return len(res_data) > 0
@@ -406,6 +406,12 @@ def resolve_structured_decision(
     }
 
     primary_res = _resolve_single_lookup(lookup_type, **lookup_kwargs) if lookup_type else None
+
+    # If AI Router already identified a specific single lookup_type and it successfully resolved,
+    # return primary_res directly without overly broad probing
+    if primary_res and _is_valid_probe_result(primary_res):
+        if decision.get("intent") not in {"multi_intent", "mixed"} and not decision.get("multi_lookup"):
+            return primary_res
 
     # When Router explicitly determines single pure regulation without lookup_type, skip structured probing
     if decision.get("execution_mode") == "regulation" and not lookup_type:

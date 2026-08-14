@@ -37,8 +37,9 @@ DETERMINISTIC_STRATEGIES = {
     "formula_lookup",
     "structured_lookup",
     "structured_table",
+    "multi_structured_lookup",
 }
-STRUCTURED_STRATEGIES = {"structured_table"}
+STRUCTURED_STRATEGIES = {"structured_table", "multi_structured_lookup"}
 CONTENT_TYPE_ALIASES = {
     "office_directory": {
         "office_directory",

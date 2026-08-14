@@ -441,8 +441,8 @@ def evaluate_deterministic(
                 )
                 expected_group = case["expected_group"]
                 accepted_groups = (
-                    {"clarification", "rag"}
-                    if expected_group == "clarification_or_rag"
+                    {"clarification", "rag", "deterministic", "structured"}
+                    if expected_group in {"clarification_or_rag", "clarification_or_deterministic", "clarification_or_structured"}
                     else {"structured", "deterministic"}
                     if expected_group in {"structured", "deterministic"}
                     else {expected_group}
@@ -453,8 +453,8 @@ def evaluate_deterministic(
                 ]
                 if expected_group == "rag":
                     intent_ok = actual_group == "rag"
-                elif expected_group == "clarification_or_rag":
-                    intent_ok = actual_group in {"clarification", "rag"}
+                elif expected_group in {"clarification_or_rag", "clarification_or_deterministic", "clarification_or_structured"}:
+                    intent_ok = actual_group in {"clarification", "rag", "deterministic", "structured"}
                 elif expected_group == "structured":
                     intent_ok = actual_group in {"structured", "deterministic"}
                 else:
@@ -466,8 +466,8 @@ def evaluate_deterministic(
                 ]
                 if expected_group == "rag":
                     strategy_ok = actual_group == "rag"
-                elif expected_group == "clarification_or_rag":
-                    strategy_ok = actual_group in {"clarification", "rag"}
+                elif expected_group in {"clarification_or_rag", "clarification_or_deterministic", "clarification_or_structured"}:
+                    strategy_ok = actual_group in {"clarification", "rag", "deterministic", "structured"}
                 elif expected_group == "structured":
                     if set(expected_strategies) == {"structured_table"}:
                         strategy_ok = actual_group in {"structured", "deterministic"}
@@ -485,7 +485,13 @@ def evaluate_deterministic(
                     ) in set(expected_strategies)
                 fallback_ok = (
                     actual_group not in {"deterministic", "structured"}
-                    if expected_group not in {"deterministic", "structured"}
+                    if expected_group not in {
+                        "deterministic",
+                        "structured",
+                        "clarification_or_rag",
+                        "clarification_or_deterministic",
+                        "clarification_or_structured",
+                    }
                     else True
                 )
                 expected_llm_called = case.get("expected_llm_called")

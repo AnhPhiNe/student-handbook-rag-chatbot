@@ -7,6 +7,7 @@ from unittest.mock import Mock, patch
 from src.retrieval.core.hybrid_pipeline import (
     ChildParentHybridRetriever,
     DEFAULT_RETRIEVAL_MODE,
+    _build_related_references,
     select_graph_related_parent_candidates,
 )
 
@@ -56,6 +57,41 @@ def test_graph_supplement_prefers_lower_depth_then_primary_rank() -> None:
         "late-depth-one",
         "early-depth-two",
     ]
+
+
+def test_related_references_are_ui_metadata_not_answer_evidence() -> None:
+    references = _build_related_references(
+        [
+            {
+                "chunk_id": "K51_dieu_3",
+                "content": "Nội dung đầy đủ của Điều 3. " * 40,
+                "metadata": {
+                    "title": "Điều 3 — Thời gian đào tạo",
+                    "source_pages": [12],
+                    "source_url": "https://example.edu/handbook.pdf",
+                    "cohort": "K51",
+                    "related_graph_depth": 1,
+                    "related_source_primary_id": "K51_dieu_15",
+                },
+            }
+        ]
+    )
+
+    assert len(references) == 1
+    reference = references[0]
+    assert reference["id"] == "R1"
+    assert reference["primary_chunk_id"] == "K51_dieu_15"
+    assert reference["related_chunk_id"] == "K51_dieu_3"
+    assert reference["title"] == "Điều 3 — Thời gian đào tạo"
+    assert reference["article_label"] == "Điều 3"
+    assert reference["source_pages"] == [12]
+    assert reference["source_url"] == "https://example.edu/handbook.pdf"
+    assert reference["cohort"] == "K51"
+    assert reference["graph_depth"] == 1
+    assert reference["preview"].startswith("Nội dung đầy đủ của Điều 3.")
+    assert reference["preview"].endswith("…")
+    assert len(reference["preview"]) <= 480
+    assert reference["content"] == ("Nội dung đầy đủ của Điều 3. " * 40).strip()
 
 
 def _vector_hits(count: int = 24) -> list[SimpleNamespace]:

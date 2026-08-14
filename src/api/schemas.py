@@ -61,6 +61,7 @@ class ChatResponse(BaseModel):
     strategy: str | None = None
     citations: list[dict[str, Any]] | None = None
     citations_used: list[dict[str, Any]] | None = None
+    related_references: list[dict[str, Any]] | None = None
     llm_called: bool = False
     used_cache: bool = False
     clarification_needed: bool = False

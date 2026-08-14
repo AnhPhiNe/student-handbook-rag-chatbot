@@ -38,7 +38,7 @@ HCMUE AI is a cohort-aware retrieval and generation system for the **K48-K49, K5
 - **Structured catalogs** for grade tables, study duration, scholarships, foreign-language equivalency, formulas, programs, faculties, offices, and student services.
 - **Regulation RAG** for policies, conditions, consequences, exceptions, and cross-referenced handbook articles.
 
-The runtime does not flatten every table row into the vector collection. Structured data remains queryable JSON, while Qdrant contains only regulation text. This keeps retrieval focused without losing exact table and directory data.
+The runtime keeps structured catalogs queryable as cohort-aware JSON rather than embedding every row. For a small, rule-based set of regulation tables, it also creates parent-linked semantic table chunks so table-specific questions can find the correct handbook article without exposing internal chunk IDs to students.
 
 The frontend is built as a student utility hub rather than only a chatbot: students can ask handbook questions, select their cohort, use GPA and tuition tools, browse forms, and open study-method cards from the same responsive interface.
 
@@ -175,8 +175,8 @@ Qdrant stores only `regulation_text`. Structured JSON rows are not inserted as s
 
 The backend favors predictable grounding over maximizing every retrieval metric:
 
-- Structured tables, directories, and formulas stay in JSON instead of being expanded into thousands of vector chunks. This preserves exact cohort-specific values and keeps regulation retrieval from becoming noisy.
-- Qdrant indexes only `regulation_text`; table text that naturally appears inside handbook articles is still searchable, but synthetic per-row table chunks are not created.
+- Structured tables, directories, and formulas stay in JSON instead of being expanded into thousands of vector rows. This preserves exact cohort-specific values and keeps regulation retrieval from becoming noisy.
+- Regulation text is indexed semantically. A small, rule-based set of recognized regulation tables also produces a parent-linked `regulation_table` chunk; it is a retrieval signal, not a user-facing source. The UI resolves it back to the parent article and identifies the related table.
 - Dense retrieval is combined with BM25 through Reciprocal Rank Fusion. This keeps abbreviation- and keyword-heavy student questions useful without putting a reranker on the default request path.
 - The regulation graph is used as supporting context only. PRIMARY sources answer the question; RELATED sources explain directly referenced articles without changing the main citation order.
 

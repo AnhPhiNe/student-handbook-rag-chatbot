@@ -7,12 +7,36 @@ export interface Citation {
   metadata?: Record<string, unknown>;
   score?: number;
   title?: string;
+  source_section?: string;
   source_pages?: number[];
   source_label?: string;
   source_url?: string;
   cohort?: string;
   applicability?: string;
   chunk_type?: string;
+  parent_section_id?: string;
+  parent_article?: string;
+  parent_title?: string;
+  parent_content?: string;
+  table_name?: string;
+  detail_kind?: 'article' | 'table';
+}
+
+export interface RelatedReference {
+  id: string;
+  primary_chunk_id: string;
+  related_chunk_id: string;
+  title: string;
+  source_pages?: number[];
+  source_url?: string;
+  cohort?: string;
+  graph_depth?: number;
+  preview?: string;
+  content?: string;
+  article_label?: string;
+  source_kind?: 'primary' | 'related';
+  table_name?: string;
+  detail_kind?: 'article' | 'table';
 }
 
 export interface Message {
@@ -26,6 +50,7 @@ export interface Message {
   ttftMs?: number;
   confidence?: 'high' | 'medium' | 'low';
   citations?: Citation[];
+  relatedReferences?: RelatedReference[];
   runId?: string;
   usedCache?: boolean;
   suggestions?: string[];
@@ -77,6 +102,7 @@ export function useChat(cohort: string = 'K48-K49') {
     let ttftMs: number | null = null;
     let currentBotContent = "";
     let capturedCitations: Citation[] = [];
+    let capturedRelatedReferences: RelatedReference[] = [];
     let capturedRunId: string | null = null;
     let capturedUsedCache = false;
 
@@ -143,6 +169,9 @@ export function useChat(cohort: string = 'K48-K49') {
                 if (data.citations_used) {
                   capturedCitations = data.citations_used;
                 }
+                if (data.related_references) {
+                  capturedRelatedReferences = data.related_references;
+                }
                 if (data.run_id) {
                   capturedRunId = data.run_id;
                 }
@@ -195,6 +224,7 @@ export function useChat(cohort: string = 'K48-K49') {
                     ttftMs: ttftMs || undefined,
                     confidence,
                     citations: capturedCitations,
+                    relatedReferences: capturedRelatedReferences,
                     runId: capturedRunId || undefined,
                     usedCache: capturedUsedCache
                   } : m

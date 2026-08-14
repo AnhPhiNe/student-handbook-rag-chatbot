@@ -6,6 +6,7 @@ input:
   student_faculty_profiles: data/processed/directories/student_faculty_profiles.json
   foreign_language_equivalency_table: data/processed/tables/foreign_language_equivalency_table.json
   structured_tables_registry: data/processed/tables/structured_tables_registry.json
+  parent_docstore: data/processed/chunks/all_docstore_items.json
   program_directory: data/processed/directories/program_directory.json
   entity_registry: data/processed/entities/entity_registry.json
   query_expansion_rules: data/processed/entities/query_expansion_rules.json

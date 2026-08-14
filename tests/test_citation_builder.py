@@ -1,4 +1,35 @@
-from src.retrieval.core.citation_builder import sanitize_citation_content
+from src.retrieval.core.citation_builder import (
+    enrich_citations_with_parent_details,
+    sanitize_citation_content,
+)
+
+
+def test_enriches_structured_table_citation_with_parent_article_details():
+    citation = {
+        "chunk_type": "structured_lookup",
+        "title": "Thời gian học tập chuẩn và tối đa",
+        "source_parent_id": "K48-K49_Dieu3",
+        "content": "Đào tạo đại học cấp bằng thứ nhất",
+    }
+    parent = {
+        "_id": "K48-K49_Dieu3",
+        "content": "Nội dung Điều 3 đầy đủ, bao gồm bảng thời gian học tập.",
+        "metadata": {
+            "article": "Điều 3.",
+            "title": "Chương trình đào tạo và thời gian học tập",
+        },
+    }
+
+    result = enrich_citations_with_parent_details(
+        [citation],
+        {"K48-K49_Dieu3": parent},
+    )
+
+    assert result[0]["parent_article"] == "Điều 3."
+    assert result[0]["parent_title"] == "Chương trình đào tạo và thời gian học tập"
+    assert result[0]["parent_content"] == parent["content"]
+    assert result[0]["table_name"] == citation["title"]
+    assert result[0]["detail_kind"] == "table"
 
 
 def test_sanitize_citation_content_removes_internal_focus_block_and_joins_pdf_lines():

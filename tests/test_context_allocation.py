@@ -160,7 +160,7 @@ def test_full_sources_keeps_top_five_content_when_under_budget() -> None:
     assert len(context) <= 20000
 
 
-def test_full_sources_formats_related_sources_separately() -> None:
+def test_full_sources_excludes_related_sources_from_llm_context() -> None:
     retrieval_result = {
         "retrieved_items": [
             _item("primary-1", "primary body", 0.9),
@@ -192,11 +192,11 @@ def test_full_sources_formats_related_sources_separately() -> None:
     )
 
     assert "PRIMARY SOURCES" in context
-    assert "RELATED SOURCES" in context
     assert "[1]" in context
-    assert "[R1]" in context
     assert "primary body" in context
-    assert "related body" in context
+    assert "RELATED SOURCES" not in context
+    assert "Related section" not in context
+    assert "related body" not in context
 
 
 def test_full_sources_truncates_only_when_global_budget_is_exceeded() -> None:

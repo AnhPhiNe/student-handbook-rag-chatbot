@@ -7,7 +7,10 @@ from typing import Any
 
 
 from src.common.cohort import resolve_cohort_from_query
-from src.retrieval.core.citation_builder import build_citation_from_lookup
+from src.retrieval.core.citation_builder import (
+    build_citation_from_lookup,
+    enrich_citations_with_parent_details,
+)
 from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline
 from src.retrieval.core.query_context import select_effective_query
 from src.retrieval.core.vector_retriever import (
@@ -15,7 +18,12 @@ from src.retrieval.core.vector_retriever import (
     load_embedding_model,
 )
 from src.retrieval.core.slang_normalizer import SlangNormalizer
-from .answer_formatter import format_final_answer, format_final_response
+from .answer_formatter import (
+    format_final_answer,
+    format_final_response,
+    missing_primary_article_anchors,
+    normalize_unlabeled_enumeration_references,
+)
 from .answer_guardrails import (
     build_clarification_question,
     build_deterministic_answer,
@@ -38,7 +46,8 @@ from .response_cache import get_response_cache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v26-acronym-aware-router-structured-citations"
+PIPELINE_VERSION = "v30-parent-aware-table-citations"
+STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
 )
@@ -116,6 +125,17 @@ class AnswerPipeline:
             and Path(structured_tables_registry_path).is_file()
             else []
         )
+        parent_docstore_path = self.config["input"].get("parent_docstore")
+        parent_docstore_items = (
+            load_json(parent_docstore_path)
+            if parent_docstore_path and Path(parent_docstore_path).is_file()
+            else []
+        )
+        self.parent_sources_by_id = {
+            str(item.get("_id")): item
+            for item in parent_docstore_items
+            if isinstance(item, dict) and item.get("_id")
+        }
         self.program_directory = load_json(self.config["input"]["program_directory"])
         self.entity_registry = load_json(self.config["input"]["entity_registry"])
         
@@ -417,8 +437,8 @@ class AnswerPipeline:
                 used_cache=True,
             )
 
-        # Đưa TOÀN BỘ retrieved_items (đã qua ngưỡng 0.70) vào context cho LLM.
-        # selected_citations chỉ dùng cho UI hiển thị nguồn tham khảo.
+        all_citations = retrieval_result.get("citations") or []
+
         prompt_started = time.monotonic()
         prompt = build_answer_prompt(
             query=effective_query,
@@ -446,7 +466,7 @@ class AnswerPipeline:
                 retrieval_result=retrieval_result,
                 final_answer=final_answer,
                 context_used=context_used,
-                selected_citations=selected_citations,
+                selected_citations=all_citations,
                 status="api_error",
                 error_type="api_init_error",
                 error_message=str(exc),
@@ -476,7 +496,7 @@ class AnswerPipeline:
                 retrieval_result=retrieval_result,
                 final_answer=final_answer,
                 context_used=context_used,
-                selected_citations=selected_citations,
+                selected_citations=all_citations,
                 status="api_error",
                 error_type=error_type,
                 error_message=llm_result.get("error_message"),
@@ -489,13 +509,14 @@ class AnswerPipeline:
 
         final_answer = format_final_response(
             llm_text,
+            primary_citations=selected_citations,
         )
         output = self._build_output(
             query=query,
             retrieval_result=retrieval_result,
             final_answer=final_answer,
             context_used=context_used,
-            selected_citations=selected_citations,
+            selected_citations=all_citations,
             status="answered",
             error_type=None,
             error_message=None,
@@ -510,7 +531,7 @@ class AnswerPipeline:
                 "status": "answered",
                 "error_type": None,
                 "error_message": None,
-                "citations": selected_citations,
+                "citations": all_citations,
             },
         )
 
@@ -729,8 +750,9 @@ class AnswerPipeline:
             yield {"type": "done", "tracker": tracker}
             return
 
-        # Đưa TOÀN BỘ retrieved_items (đã qua ngưỡng 0.70) vào context cho LLM.
-        # selected_citations chỉ dùng cho UI hiển thị nguồn tham khảo.
+        all_citations = retrieval_result.get("citations") or []
+        related_references = retrieval_result.get("related_references") or []
+
         prompt = build_answer_prompt(
             query=effective_query,
             retrieval_result=retrieval_result,
@@ -749,7 +771,8 @@ class AnswerPipeline:
             "strategy": retrieval_result.get("strategy"),
             "effective_query": effective_query,
             "query_handling": retrieval_result.get("query_handling"),
-            "citations_used": selected_citations,
+            "citations_used": all_citations,
+            "related_references": related_references,
             "llm_called": True,
         }
 
@@ -757,10 +780,42 @@ class AnswerPipeline:
             llm_client = self._get_llm_client()
             start_time_llm = datetime.now(timezone.utc).isoformat()
             self._throttle_llm_call()
+            streamed_answer_parts: list[str] = []
+            pending_stream_text = ""
             for chunk in llm_client.generate_stream(prompt):
-                yield {"type": "token", "text": chunk}
+                chunk_text = str(chunk)
+                streamed_answer_parts.append(chunk_text)
+                pending_stream_text += chunk_text
+                pending_stream_text = normalize_unlabeled_enumeration_references(
+                    pending_stream_text
+                )
+                if len(pending_stream_text) > STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:
+                    safe_text = pending_stream_text[
+                        :-STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS
+                    ]
+                    pending_stream_text = pending_stream_text[
+                        -STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:
+                    ]
+                    yield {"type": "token", "text": safe_text}
+
+            if pending_stream_text:
+                yield {
+                    "type": "token",
+                    "text": normalize_unlabeled_enumeration_references(
+                        pending_stream_text
+                    ),
+                }
             end_time_llm = datetime.now(timezone.utc).isoformat()
             self._last_llm_call_at = time.monotonic()
+
+            missing_anchors = missing_primary_article_anchors(
+                "".join(streamed_answer_parts), selected_citations
+            )
+            if missing_anchors:
+                yield {
+                    "type": "token",
+                    "text": f"\n\n**Căn cứ:** {', '.join(missing_anchors)}.",
+                }
 
             if (
                 hasattr(llm_client, "_last_stream_usage")
@@ -957,6 +1012,10 @@ class AnswerPipeline:
                     if is_clarification
                     else build_citation_from_lookup(resolution.result)
                 )
+                structured_citations = enrich_citations_with_parent_details(
+                    structured_citations,
+                    getattr(self, "parent_sources_by_id", {}),
+                )
                 return {
                     "query": query,
                     "retrieval_query": normalized_retrieval_query,
@@ -1095,6 +1154,7 @@ class AnswerPipeline:
             "retrieval_query": retrieval_result.get("retrieval_query"),
             "citations": retrieval_result.get("citations", []),
             "citations_used": selected_citations,
+            "related_references": retrieval_result.get("related_references", []),
             "structured_result": retrieval_result.get("structured_result"),
             "formula_result": retrieval_result.get("formula_result"),
             "tool_result": retrieval_result.get("tool_result"),

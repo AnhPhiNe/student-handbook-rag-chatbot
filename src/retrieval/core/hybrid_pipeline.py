@@ -4,6 +4,7 @@ from src.retrieval.vectorstore.mongo_store import get_mongo_store
 load_dotenv()
 os.environ["TRANSFORMERS_VERBOSITY"] = "error"
 import logging
+import re
 import time
 from collections import defaultdict
 from typing import Any
@@ -714,6 +715,75 @@ def _format_v7_focused_context(
 
 
 _GLOBAL_RETRIEVER = None
+_ARTICLE_LABEL_PATTERN = re.compile(
+    r"(?<![A-Za-zÀ-ỹ])(?:Điều|Dieu)[\s_-]*(\d+[a-z]?)\b", re.IGNORECASE
+)
+
+
+def _article_label(*values: Any) -> str | None:
+    """Extract an article label from the source's own metadata or heading."""
+    for value in values:
+        match = _ARTICLE_LABEL_PATTERN.search(str(value or ""))
+        if match:
+            return f"Điều {match.group(1).lower()}"
+    return None
+
+
+def _build_related_references(
+    related_items: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Build UI-only navigation records for graph-related parent sections.
+
+    Related sections are intentionally excluded from the LLM prompt and from
+    answer citations. The client can use these lightweight records to attach a
+    hover card or dialog to an article mentioned by a primary source.
+    """
+    references: list[dict[str, Any]] = []
+    for index, item in enumerate(related_items, start=1):
+        metadata = item.get("metadata") or {}
+        related_chunk_id = str(
+            item.get("chunk_id") or item.get("_id") or item.get("id") or ""
+        ).strip()
+        primary_chunk_id = str(
+            metadata.get("related_source_primary_id") or ""
+        ).strip()
+        if not related_chunk_id or not primary_chunk_id:
+            continue
+
+        title = str(
+            metadata.get("title")
+            or metadata.get("source_section")
+            or metadata.get("rule_name")
+            or related_chunk_id
+        ).strip()
+        content = " ".join(str(item.get("content") or "").split())
+        article_label = _article_label(
+            metadata.get("source_section"), metadata.get("title"), content[:600]
+        )
+        if article_label and article_label.casefold() not in title.casefold():
+            title = f"{article_label} — {title}"
+        preview = content[:480].rstrip()
+        if len(content) > len(preview):
+            preview += "…"
+
+        references.append(
+            {
+                "id": f"R{index}",
+                "primary_chunk_id": primary_chunk_id,
+                "related_chunk_id": related_chunk_id,
+                "title": title,
+                "source_pages": metadata.get("source_pages") or [],
+                "source_url": metadata.get("source_url")
+                or metadata.get("url")
+                or metadata.get("document_url"),
+                "cohort": metadata.get("cohort"),
+                "graph_depth": metadata.get("related_graph_depth"),
+                "article_label": article_label,
+                "preview": preview,
+                "content": content,
+            }
+        )
+    return references
 
 
 def run_hybrid_retrieval_pipeline(
@@ -782,6 +852,7 @@ def run_hybrid_retrieval_pipeline(
     from .context_builder import build_context_from_vector_results
 
     citations = build_citations_from_vector_results(formatted_results)
+    related_references = _build_related_references(related_items)
 
     return {
         "query": query,
@@ -794,6 +865,7 @@ def run_hybrid_retrieval_pipeline(
         "tool_result": None,
         "retrieved_items": formatted_results,
         "related_items": related_items,
+        "related_references": related_references,
         "citations": citations,
         "context_for_llm": build_context_from_vector_results(
             formatted_results,

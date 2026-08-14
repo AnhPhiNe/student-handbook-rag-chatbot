@@ -68,22 +68,14 @@ def build_context_for_prompt(
         retrieval_result.get("retrieved_items") or [],
         selected_citations=selected_citations or [],
     )
-    related_items = _filter_related_items(
-        retrieval_result.get("related_items") or [],
-        primary_items=items,
-    )
     if not items:
-        return truncate_text(
-            str(retrieval_result.get("context_for_llm") or ""),
-            max_context_chars,
-            sentence_boundary=config.sentence_boundary,
-        )
+        return ""
 
     headers = [_source_header(index, item) for index, item in enumerate(items, start=1)]
+
     if config.strategy == "full_sources":
         return _build_full_sources_context(
             items,
-            related_items=related_items,
             headers=headers,
             max_context_chars=max_context_chars,
             allocation_config=config,
@@ -128,7 +120,6 @@ def build_context_for_prompt(
 def _build_full_sources_context(
     items: list[dict[str, Any]],
     *,
-    related_items: list[dict[str, Any]] | None = None,
     headers: list[str],
     max_context_chars: int,
     allocation_config: ContextAllocationConfig,
@@ -150,56 +141,27 @@ def _build_full_sources_context(
     primary_blocks = [
         f"{header}{content}" for header, content in zip(headers, capped_contents, strict=False)
     ]
-    sections: list[str] = []
-    if primary_blocks:
-        sections.append("PRIMARY SOURCES\n\n" + separator.join(primary_blocks))
-
-    related = list(related_items or [])
-    related_headers = [
-        _source_header(index, item, source_role="related")
-        for index, item in enumerate(related, start=1)
-    ]
-    related_contents = [
-        truncate_text(
-            _strip_generated_focus_sections(str(item.get("content") or "").strip()),
-            per_source_cap,
-            sentence_boundary=allocation_config.sentence_boundary,
-        )
-        for item in related
-    ]
-    related_blocks = [
-        f"{header}{content}"
-        for header, content in zip(
-            related_headers,
-            related_contents,
-            strict=False,
-        )
-    ]
-    if related_blocks:
-        sections.append("RELATED SOURCES\n\n" + separator.join(related_blocks))
-
-    full_context = "\n\n===\n\n".join(sections)
+    full_context = "PRIMARY SOURCES\n\n" + separator.join(primary_blocks)
     if len(full_context) <= max_context_chars:
         return full_context
 
-    all_items = [*items, *related]
-    all_headers = [*headers, *related_headers]
-    all_contents = [*capped_contents, *related_contents]
-    separator_budget = max(0, len(separator) * max(len(all_items) - 1, 0))
-    section_budget = len("PRIMARY SOURCES\n\n") + (
-        len("\n\n===\n\nRELATED SOURCES\n\n") if related else 0
+    separator_budget = max(0, len(separator) * max(len(items) - 1, 0))
+    header_budget = (
+        sum(len(header) for header in headers)
+        + separator_budget
+        + len("PRIMARY SOURCES\n\n")
     )
-    header_budget = sum(len(header) for header in all_headers) + separator_budget + section_budget
     content_budget = max(0, max_context_chars - header_budget)
     budgets = allocate_context_budget(
-        all_items,
+        items,
         total_budget=content_budget,
         min_chars_per_doc=allocation_config.min_chars_per_doc,
         max_chars_per_doc=allocation_config.max_chars_per_doc,
         strategy="score_weighted",
     )
+
     truncated_blocks: list[str] = []
-    for header, content, budget in zip(all_headers, all_contents, budgets, strict=False):
+    for header, content, budget in zip(headers, capped_contents, budgets, strict=False):
         truncated_content = truncate_text(
             content,
             budget,
@@ -208,20 +170,8 @@ def _build_full_sources_context(
         truncated_blocks.append(
             f"{header}{truncated_content}"
         )
-    primary_count = len(items)
-    truncated_sections: list[str] = []
-    if primary_count:
-        truncated_sections.append(
-            "PRIMARY SOURCES\n\n"
-            + separator.join(truncated_blocks[:primary_count])
-        )
-    if related:
-        truncated_sections.append(
-            "RELATED SOURCES\n\n"
-            + separator.join(truncated_blocks[primary_count:])
-        )
     return truncate_text(
-        "\n\n===\n\n".join(truncated_sections),
+        "PRIMARY SOURCES\n\n" + separator.join(truncated_blocks),
         max_context_chars,
         sentence_boundary=allocation_config.sentence_boundary,
     )
@@ -655,28 +605,6 @@ def _filter_retrieved_items(
     return filtered
 
 
-def _filter_related_items(
-    items: list[Any],
-    *,
-    primary_items: list[dict[str, Any]],
-) -> list[dict[str, Any]]:
-    primary_ids = {
-        str(item.get("chunk_id") or item.get("_id") or item.get("id") or "")
-        for item in primary_items
-    }
-    filtered: list[dict[str, Any]] = []
-    seen_ids: set[str] = set()
-    for item in items:
-        if not isinstance(item, dict):
-            continue
-        item_id = str(item.get("chunk_id") or item.get("_id") or item.get("id") or "")
-        if not item_id or item_id in primary_ids or item_id in seen_ids:
-            continue
-        seen_ids.add(item_id)
-        filtered.append(item)
-    return filtered
-
-
 def _legacy_source_header(index: int, item: dict[str, Any]) -> str:
     metadata = item.get("metadata", {}) or {}
     title = _item_title(item, metadata)
@@ -708,32 +636,13 @@ def _legacy_source_header(index: int, item: dict[str, Any]) -> str:
     )
 
 
-def _source_header(
-    index: int,
-    item: dict[str, Any],
-    *,
-    source_role: str = "primary",
-) -> str:
+def _source_header(index: int, item: dict[str, Any]) -> str:
     metadata = item.get("metadata", {}) or {}
     title = _item_title(item, metadata)
-
-    if source_role == "related":
-        source_label = f"[R{index}]"
-        role_line = "Role: RELATED - graph supplement for context only"
-        graph_lines = [
-            f"Graph depth: {metadata.get('related_graph_depth')}",
-            f"Linked from primary: {metadata.get('related_source_primary_id')}",
-        ]
-    else:
-        source_label = f"[{index}]"
-        role_line = "Role: PRIMARY - direct vector match for answer and citation"
-        graph_lines = []
-
     return "\n".join(
         [
-            source_label,
-            role_line,
-            *graph_lines,
+            f"[{index}]",
+            "Role: PRIMARY - direct vector match for answer and citation",
             f"Title: {title}",
             f"Type: {metadata.get('chunk_type')}",
             f"Pages: {metadata.get('source_pages')}",

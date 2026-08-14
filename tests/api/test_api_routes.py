@@ -25,6 +25,7 @@ class FakeAnswerService:
             "retrieval_query": query,
             "citations": [{"source": "directory"}],
             "citations_used": [{"source": "directory", "page": 1}],
+            "related_references": [{"id": "R1", "title": "Điều 3"}],
             "llm_called": False,
             "used_cache": True,
             "clarification_needed": False,
@@ -161,6 +162,7 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertEqual(payload["intent"], "office_query")
         self.assertEqual(payload["strategy"], "structured_lookup")
         self.assertEqual(payload["citations_used"], [{"source": "directory", "page": 1}])
+        self.assertEqual(payload["related_references"], [{"id": "R1", "title": "Điều 3"}])
         self.assertFalse(payload["llm_called"])
         self.assertTrue(payload["used_cache"])
         self.assertIsInstance(payload["request_id"], str)

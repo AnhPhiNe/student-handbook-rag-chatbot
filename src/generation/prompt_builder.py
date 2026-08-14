@@ -53,12 +53,12 @@ ANSWER_SCOPE_RULES
 
 NHIỆM VỤ
 - Định dạng: dùng in đậm (**văn bản**) cho mốc thời gian, tên thủ tục, con số hoặc điều kiện cốt lõi khi hữu ích.
+- Khi liệt kê nhiều trường hợp, dùng danh sách Markdown đánh số `1.`, `2.`, `3.`. Không gọi “mục 1, 2, 3” nếu các mục đó không được đánh số rõ ngay trong câu trả lời.
 - Chỉ sử dụng STRUCTURED_RESULT và CONTEXT; không dùng kiến thức ngoài nguồn.
 - Nếu STRUCTURED_RESULT và CONTEXT không đủ căn cứ cho câu hỏi, nói rằng chưa tìm thấy trong Sổ tay thay vì tự suy diễn.
 - STRUCTURED_RESULT là nguồn chuẩn cho bảng và danh mục. CONTEXT là nguồn chuẩn cho quy định, điều kiện và thủ tục.
-- PRIMARY SOURCES là căn cứ chính. RELATED SOURCES là thông tin bổ sung.
-- BẮT BUỘC: Nếu văn bản ở PRIMARY SOURCES có dẫn chiếu đến một Điều/Khoản khác (ví dụ: "theo quy định tại Điều 3", "theo Điều 15"), BẠN PHẢI tìm nội dung của Điều/Khoản đó trong RELATED SOURCES hoặc PRIMARY SOURCES để lấy con số, điều kiện cụ thể và GIẢI THÍCH TRỰC TIẾP vào câu trả lời (ví dụ: "theo Điều 3, thời gian tối đa là 8 năm"). TUYỆT ĐỐI KHÔNG được chép lại câu dẫn chiếu chung chung mà không giải thích ý nghĩa của nó.
-- Trình bày câu trả lời một cách tự nhiên, mạch lạc. Nếu RELATED SOURCES được PRIMARY dẫn chiếu trực tiếp hoặc bổ sung điều kiện làm thay đổi cách hiểu, hãy giải thích rõ trong mục "Các Điều liên quan được nguồn dẫn chiếu".
+- PRIMARY SOURCES là căn cứ duy nhất để trả lời. Các điều khoản liên quan được giao diện liên kết riêng, không nằm trong CONTEXT.
+- Không chèn mã trích dẫn dạng [1], [R1] hoặc chú thích nguồn vào câu trả lời; giao diện sẽ hiển thị nguồn và liên kết điều khoản liên quan.
 - Nếu có APPLICABLE AMENDMENTS, nội dung thay thế/bổ sung trong đó có thứ tự hiệu lực cao hơn câu chữ cũ, nhưng chỉ trong đúng phạm vi điều/khoản/điểm và cohort được nêu.
 - Nếu người dùng không nêu rõ khóa và CONTEXT chứa nhiều phiên bản quy định khác nhau theo khóa, phải phân tách câu trả lời theo từng khóa; không gộp chung hoặc tự chọn một khóa đại diện.
 - Giữ nguyên số liệu, tỷ lệ, thời hạn, Điều, khoản, điểm và thông tin liên hệ. Không suy rộng quy định cho đối tượng khác.
@@ -66,7 +66,7 @@ NHIỆM VỤ
 - Với bảng, chỉ dùng record có `applicability` phù hợp với hình thức đào tạo, loại học phần hoặc đối tượng được hỏi; nếu chưa đủ thông tin để chọn, hãy hỏi lại.
 - Không tự suy diễn quyền lợi, ngoại lệ hoặc điều cấm từ quy định chỉ nói về thời gian/quy trình/thủ tục.
 - Không trấn an hoặc khuyên bảo vượt nguồn. Chỉ nêu nghĩa vụ, kết luận hoặc dữ kiện dựa trên câu chữ.
-- Không chèn chú thích dạng [1], [2] trong câu trả lời vì giao diện đã hiển thị nguồn bên dưới. Không hiển thị quá trình suy luận, nhãn kỹ thuật hoặc tự thêm mục nguồn.
+- Không hiển thị quá trình suy luận, nhãn kỹ thuật hoặc tự thêm mục nguồn.
 
 CÂU HỎI CỦA SINH VIÊN
 {query}
@@ -178,18 +178,18 @@ def _selected_context_or_fallback(
 
 
 def _source_usage_instruction(context: str) -> str:
-    if "PRIMARY SOURCES" not in str(context or ""):
+    normalized_context = str(context or "").upper()
+    if (
+        "PRIMARY SOURCES" not in normalized_context
+        and "ROLE: PRIMARY" not in normalized_context
+    ):
         return ""
     return """
 SOURCE_USAGE_RULES
-- PRIMARY SOURCES are the main evidence for the final answer and citations.
-- RELATED SOURCES are optional graph supplements. Use them only when they directly answer the same asked issue or add a condition/exception that changes the answer.
-- If a PRIMARY SOURCE explicitly references an article/clause/point that appears in RELATED SOURCES, summarize the relevant content from that RELATED SOURCE instead of only naming the referenced article.
-- When RELATED SOURCES are present, include a separate "Các Điều liên quan được nguồn dẫn chiếu" section (preceded by a horizontal line `---`) and summarize each related source with its key facts, numbers, conditions, exceptions, deadlines, and table values when available.
-- Do not add extra sections beyond the expanded graph section unless the user asks for next steps, procedures, or broader related rules.
-- Do not let RELATED SOURCES replace, reorder, or override PRIMARY SOURCES.
-- Prefer citations from PRIMARY SOURCES. Use a RELATED SOURCE only when it directly supports an extra contextual point.
-- If a RELATED SOURCE appears to conflict with PRIMARY SOURCES, do not use it to negate the answer unless a PRIMARY SOURCE also supports that conclusion.
+- PRIMARY SOURCES are the main evidence for the final answer.
+- Only use facts contained in PRIMARY SOURCES. Do not infer facts from references to other articles.
+- When a PRIMARY SOURCE header identifies an applicable Điều, retain the exact “Điều X” in the final answer; do not replace it with a generic reference.
+- Do not output bracketed source markers; the client renders source and related-reference affordances separately.
 """
 
 

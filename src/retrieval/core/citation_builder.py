@@ -83,6 +83,50 @@ def _starts_new_paragraph(line: str) -> bool:
     return bool(_NEW_PARAGRAPH_RE.match(line))
 
 
+def enrich_citations_with_parent_details(
+    citations: list[dict[str, Any]],
+    parents_by_id: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Attach display-safe parent metadata to citations that point to a handbook section.
+
+    Structured lookups intentionally keep a short table preview as their citation
+    content. The UI still needs the parent article for an Article reference to be
+    truthful and readable, so this function adds it without changing retrieval.
+    """
+
+    enriched: list[dict[str, Any]] = []
+    for citation in citations:
+        item = dict(citation)
+        parent_id = str(
+            item.get("parent_section_id")
+            or item.get("source_parent_id")
+            or item.get("source_section")
+            or ""
+        ).strip()
+        parent = parents_by_id.get(parent_id)
+        if not parent:
+            enriched.append(item)
+            continue
+
+        metadata = parent.get("metadata") or {}
+        if not isinstance(metadata, dict):
+            metadata = {}
+        parent_content = str(parent.get("content") or "").strip()
+
+        item["parent_section_id"] = parent_id
+        item["source_parent_id"] = parent_id
+        item["parent_article"] = metadata.get("article")
+        item["parent_title"] = metadata.get("title")
+        item["parent_content"] = parent_content or None
+        item["detail_kind"] = "table" if item.get("chunk_type") == "structured_lookup" else "article"
+        if item.get("chunk_type") == "structured_lookup":
+            item["table_name"] = item.get("title")
+
+        enriched.append(item)
+
+    return enriched
+
+
 def _build_source_label(metadata: dict[str, Any]) -> str | None:
     label = _first_value(
         metadata,

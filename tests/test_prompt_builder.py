@@ -34,6 +34,8 @@ class PromptBuilderTest(unittest.TestCase):
         self.assertIn("K51", prompt)
         self.assertIn("Chỉ sử dụng STRUCTURED_RESULT và CONTEXT", prompt)
         self.assertIn("nói rằng chưa tìm thấy trong Sổ tay", prompt)
+        self.assertIn("retain the exact “Điều X”", prompt)
+        self.assertIn("danh sách Markdown đánh số", prompt)
 
     def test_structured_result_no_longer_forces_1500_char_context_cap(self) -> None:
         long_content = ("nội dung dài " * 160) + "TAIL_MARKER_CONTEXT_VAN_CON"

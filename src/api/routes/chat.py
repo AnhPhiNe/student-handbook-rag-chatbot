@@ -104,6 +104,7 @@ def _to_chat_response(
         run_id=result.get("run_id"),
         latency_ms=result.get("latency_ms"),
         citations_used=citations_used if isinstance(citations_used, list) else [],
+        related_references=result.get("related_references") or [],
         clarification_needed=bool(result.get("clarification_needed", False)),
         intent=result.get("intent"),
         strategy=result.get("strategy"),

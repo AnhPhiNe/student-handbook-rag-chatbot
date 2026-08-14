@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
-import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, Brain, ExternalLink } from 'lucide-react';
-import type { Citation, Message } from '../hooks/useChat';
+import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, Brain, ExternalLink, X } from 'lucide-react';
+import type { Citation, Message, RelatedReference } from '../hooks/useChat';
 import { getApiClientHeaders } from '../utils/clientIdentity';
 import { useToast } from './Toast';
+import { RelatedReferenceLink } from './RelatedReference';
+import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 const userAvatarImg = '/user_avatar.png';
 const botAvatarImg = '/bot_avatar.png';
 
@@ -24,6 +27,99 @@ function getRelativeTime(timestamp: string): string {
   return timestamp;
 }
 
+function escapeRegex(value: string): string {
+  return value.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
+function relatedReferenceHref(referenceId: string): string {
+  return `#related-reference-${encodeURIComponent(referenceId)}`;
+}
+
+function relatedReferenceIdFromHref(href: string | undefined): string | null {
+  const prefix = '#related-reference-';
+  if (!href?.startsWith(prefix)) return null;
+  return decodeURIComponent(href.slice(prefix.length));
+}
+
+function articleLabelFromText(value: string): string | null {
+  const match = value.match(/(?:Điều|Dieu)[\s_-]*(\d+[a-z]?)/iu);
+  return match ? `Điều ${match[1].toLocaleLowerCase('vi')}` : null;
+}
+
+function referenceArticleLabel(reference: RelatedReference): string | null {
+  return articleLabelFromText(reference.article_label ?? '')
+    ?? articleLabelFromText(reference.title);
+}
+
+function buildPrimaryArticleReferences(citations: Citation[]): RelatedReference[] {
+  return citations.flatMap((citation, index) => {
+    const content = (citation.parent_content || citation.content).trim();
+    const article = articleLabelFromText(citation.parent_article ?? '')
+      ?? articleLabelFromText(
+        `${citation.source_section ?? ''} ${citation.title ?? ''} ${citation.content.slice(0, 600)}`,
+      );
+    if (!article || !content) return [];
+    const parentTitle = citation.parent_title?.trim();
+    const titleParts = [citation.source_section, citation.title]
+      .filter((value, position, values): value is string => Boolean(value) && values.indexOf(value) === position);
+    const baseTitle = titleParts.join(' — ') || citation.chunk_id;
+    const title = parentTitle
+      ? (parentTitle.includes(article) ? parentTitle : `${article} — ${parentTitle}`)
+      : (baseTitle.includes(article) ? baseTitle : `${article} — ${baseTitle}`);
+
+    const previewSource = citation.content.trim() || content;
+    const preview = previewSource.slice(0, 480).trim();
+    return [{
+      id: `P${index + 1}`,
+      primary_chunk_id: citation.chunk_id,
+      related_chunk_id: citation.chunk_id,
+      title,
+      source_pages: citation.source_pages,
+      source_url: citation.source_url,
+      cohort: citation.cohort,
+      preview: content.length > preview.length ? `${preview}…` : preview,
+      content,
+      article_label: article,
+      source_kind: 'primary',
+      table_name: citation.table_name,
+      detail_kind: citation.detail_kind,
+    }];
+  });
+}
+
+function addArticleReferenceLinks(
+  content: string,
+  references: RelatedReference[],
+): string {
+  let linkedContent = content;
+  const referencesByArticle = new Map<string, { reference: RelatedReference; article: string }>();
+  for (const reference of references) {
+    const article = referenceArticleLabel(reference);
+    if (!article) continue;
+    const key = article.toLocaleLowerCase('vi');
+    const current = referencesByArticle.get(key);
+    if (!current || reference.source_kind === 'primary') {
+      referencesByArticle.set(key, { reference, article });
+    }
+  }
+  const sortedReferences = [...referencesByArticle.values()]
+    .filter((entry): entry is { reference: RelatedReference; article: string } => Boolean(entry.article))
+    .sort((left, right) => right.article.length - left.article.length);
+
+  for (const { reference, article } of sortedReferences) {
+    const articlePattern = escapeRegex(article);
+    const mentionPattern = new RegExp(
+      `(^|[^\\p{L}\\p{N}_])(${articlePattern})(?![\\p{L}\\p{N}_])`,
+      'giu',
+    );
+    linkedContent = linkedContent.replace(
+      mentionPattern,
+      `$1[$2](${relatedReferenceHref(reference.id)})`,
+    );
+  }
+  return linkedContent;
+}
+
 // eslint-disable-next-line react-refresh/only-export-components
 export function formatCitationContent(text: string): string {
   let cleaned = text;
@@ -41,8 +137,149 @@ export function formatCitationContent(text: string): string {
   return cleaned.trim();
 }
 
-function formatCitationContentForDisplay(text: string): string {
+const NORMALIZED_TABLE_MARKER = 'BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:';
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function parseMarkdownTableRow(line: string): string[] {
+  return line
+    .split('|')
+    .slice(1, -1)
+    .map((cell) => cell.trim());
+}
+
+function normalizedTableHeaders(tableBlock: string): string[][] {
+  const content = tableBlock.replace(NORMALIZED_TABLE_MARKER, '').trim();
+  const starts = [...content.matchAll(/(?:^|\s)(Bảng:\s*)/gu)];
+
+  return starts.flatMap((match, index) => {
+    const start = match.index ?? 0;
+    const end = starts[index + 1]?.index ?? content.length;
+    const block = content.slice(start, end).trim();
+    const tableLines = block.slice(block.indexOf('|'))
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith('|'));
+    if (tableLines.length < 2) return [];
+
+    const headers = parseMarkdownTableRow(tableLines[0]);
+    const separator = parseMarkdownTableRow(tableLines[1]);
+    return headers.length && separator.length === headers.length
+      && separator.every((cell) => /^:?-{3,}:?$/u.test(cell))
+      ? [headers]
+      : [];
+  });
+}
+
+function stripFlattenedSourceTables(text: string, normalizedTableBlock: string): string {
+  const headers = normalizedTableHeaders(normalizedTableBlock);
   let cleaned = text;
+
+  for (const headerRow of headers) {
+    const headerPattern = headerRow
+      .map((cell) => escapeRegex(cell).replace(/\s+/gu, '\\s+'))
+      .join('\\s*\\n\\s*');
+    // The source PDF exposes tables as a run of short lines. When that same
+    // table has a normalized version below, suppress the flattened copy until
+    // the next legal point, amendment note, or table scope label.
+    const flattenedTablePattern = new RegExp(
+      `(^|\\n)\\s*${headerPattern}(?:\\s*\\n[\\s\\S]*?)(?=\\n\\s*(?:${headerPattern}|[a-zđ]\\)\\d*\\s+|\\d+\\s+Điểm này|Đối với các học phần|\\d+\\.\\s)|$)`,
+      'gimu',
+    );
+    cleaned = cleaned.replace(flattenedTablePattern, '$1');
+  }
+
+  return cleaned.replace(/\n{3,}/gu, '\n\n').trim();
+}
+
+function renderNormalizedTables(tableBlock: string): string {
+  const content = tableBlock.replace(NORMALIZED_TABLE_MARKER, '').trim();
+  const starts = [...content.matchAll(/(?:^|\s)(Bảng:\s*)/gu)];
+  if (!starts.length) return '';
+
+  return starts.map((match, index) => {
+    const start = match.index ?? 0;
+    const end = starts[index + 1]?.index ?? content.length;
+    const block = content.slice(start, end).trim();
+    const title = block.match(/^Bảng:\s*(.*?)(?=\s+Phạm vi áp dụng:|\s+\||$)/su)?.[1]?.trim();
+    const applicability = block.match(/Phạm vi áp dụng:\s*(.*?)(?=\s+\||$)/su)?.[1]?.trim();
+    const pipeIndex = block.indexOf('|');
+    if (!title || pipeIndex < 0) return '';
+
+    // Markdown table rows must be parsed one line at a time. Splitting the
+    // entire block on "|" makes the newline between rows look like an extra
+    // cell, which shifts all columns after the separator row.
+    const tableLines = block.slice(pipeIndex)
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith('|'));
+    if (tableLines.length < 3) return '';
+
+    const headers = parseMarkdownTableRow(tableLines[0]);
+    const separator = parseMarkdownTableRow(tableLines[1]);
+    if (!headers.length || separator.length !== headers.length
+      || !separator.every((cell) => /^:?-{3,}:?$/u.test(cell))) return '';
+
+    const rows = tableLines.slice(2)
+      .map(parseMarkdownTableRow)
+      .filter((row) => row.length === headers.length && row.some(Boolean));
+
+    if (!rows.length) return '';
+
+    return [
+      '<section class="citation-normalized-table">',
+      '<div class="citation-normalized-table-heading">',
+      '<span>Bảng trong tài liệu</span>',
+      `<h4>${escapeHtml(title)}</h4>`,
+      applicability ? `<p>${escapeHtml(applicability)}</p>` : '',
+      '</div>',
+      '<div class="citation-normalized-table-scroll">',
+      '<table>',
+      `<thead><tr>${headers.map((header) => `<th scope="col">${escapeHtml(header)}</th>`).join('')}</tr></thead>`,
+      `<tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')}</tbody>`,
+      '</table>',
+      '</div>',
+      '</section>',
+    ].join('');
+  }).filter(Boolean).join('\n\n');
+}
+
+function formatLegalSectionMarkers(text: string): string {
+  // Only list markers at a physical line start are structural. Values such as
+  // "thang điểm 10." and "nhận điểm 0." occur inside normal sentences.
+  return text.replace(/(^|\n)\s*(\d+\.|[a-zđ]\))\s+/gimu, (_match, prefix, marker) => (
+    `${prefix}\n\n**${marker}** `
+  ));
+}
+
+function repairPdfLayoutArtifacts(text: string): string {
+  return text
+    // Footnote superscripts can be flattened immediately after a legal point,
+    // for example "a)4 Hệ thống...". They are not part of the point label.
+    .replace(/([a-zđ]\))\d+(?=\s+[A-ZÀ-ỸĐ])/gimu, '$1')
+    // A PDF line wrap may split "học tập)" into "học tậ\np)". The trailing
+    // p is part of the word, not a new point p).
+    .replace(/học\s+tậ\s*\n\s*p\)(?=\s)/giu, 'học tập)');
+}
+
+function formatAmendmentFootnotes(text: string): string {
+  return text.replace(
+    /(^|\n)(\d+)\s+(Điểm này (?:(?:đã\s+)?được sửa đổi|được bổ sung)[\s\S]*?Cụ thể như sau:)/gimu,
+    (_match, prefix, footnoteNumber, note) => (
+      `${prefix}\n\n**Ghi chú cập nhật ${footnoteNumber}:** ${note}`
+    ),
+  );
+}
+
+function formatCitationContentForDisplay(text: string): string {
+  let cleaned = repairPdfLayoutArtifacts(text);
 
   if (cleaned.includes('THÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:')) {
     cleaned = cleaned.split('THÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:')[0].trim();
@@ -52,12 +289,25 @@ function formatCitationContentForDisplay(text: string): string {
     cleaned = cleaned.split('Nội dung:').slice(1).join('Nội dung:').trim();
   }
 
-  return cleaned
+  const tableMarkerIndex = cleaned.indexOf(NORMALIZED_TABLE_MARKER);
+  const normalizedTables = tableMarkerIndex >= 0
+    ? renderNormalizedTables(cleaned.slice(tableMarkerIndex))
+    : '';
+  if (tableMarkerIndex >= 0) {
+    cleaned = stripFlattenedSourceTables(
+      cleaned.slice(0, tableMarkerIndex).trim(),
+      cleaned.slice(tableMarkerIndex),
+    );
+  }
+
+  const formattedText = formatLegalSectionMarkers(formatAmendmentFootnotes(cleaned))
     .replace(/(?:^|\n)(\d+\.)\s/g, '\n\n**$1** ')
     .replace(/(?:^|\n)([a-zđ]\))\s/gi, '\n\n*$1* ')
     .replace(/(?:^|\n)([-•])\s/g, '\n\n$1 ')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+
+  return [formattedText, normalizedTables].filter(Boolean).join('\n\n');
 }
 
 function normalizeCitationLabel(value?: string): string {
@@ -179,7 +429,14 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
   const defaultShowSources = !!(message.citations && message.citations.length > 0 && message.citations.length <= 2);
   const [showSources, setShowSources] = useState(defaultShowSources);
   const [expandedCitations, setExpandedCitations] = useState<Set<number>>(new Set());
+  const [activeRelatedReference, setActiveRelatedReference] = useState<RelatedReference | null>(null);
   const [copied, setCopied] = useState(false);
+  const relatedReferenceCloseRef = useRef<HTMLButtonElement>(null);
+  const relatedReferenceDialogRef = useAccessibleDialog<HTMLDivElement>({
+    isOpen: activeRelatedReference !== null,
+    onClose: () => setActiveRelatedReference(null),
+    initialFocusRef: relatedReferenceCloseRef,
+  });
 
   const toggleCitation = (idx: number) => {
     setExpandedCitations(prev => {
@@ -308,6 +565,10 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
     displayContent = parts[0].trim();
     thinkContent = parts[1].trim();
   }
+  const relatedReferences = message.relatedReferences ?? [];
+  const primaryReferences = buildPrimaryArticleReferences(message.citations ?? []);
+  const articleReferences = [...primaryReferences, ...relatedReferences];
+  const renderedContent = addArticleReferenceLinks(displayContent, articleReferences);
 
   return (
     <div className="message-wrapper bot" aria-live="polite">
@@ -349,7 +610,31 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
                   )}
                 </div>
               )}
-              {displayContent && <ReactMarkdown>{displayContent}</ReactMarkdown>}
+              {displayContent && (
+                <ReactMarkdown
+                  components={{
+                    a: ({ href, children }) => {
+                      const referenceId = relatedReferenceIdFromHref(href);
+                      const reference = referenceId
+                        ? articleReferences.find((item) => item.id === referenceId)
+                        : undefined;
+                      if (reference) {
+                        return (
+                          <RelatedReferenceLink
+                            reference={reference}
+                            onOpenDetail={setActiveRelatedReference}
+                          >
+                            {children}
+                          </RelatedReferenceLink>
+                        );
+                      }
+                      return <a href={href}>{children}</a>;
+                    },
+                  }}
+                >
+                  {renderedContent}
+                </ReactMarkdown>
+              )}
             </>
           )}
           
@@ -524,6 +809,71 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
               </button>
             ))}
           </div>
+        )}
+
+        {activeRelatedReference && createPortal(
+          <div
+            className="related-reference-dialog-overlay"
+            onClick={() => setActiveRelatedReference(null)}
+          >
+            <div
+              ref={relatedReferenceDialogRef}
+              className="related-reference-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="related-reference-dialog-title"
+              tabIndex={-1}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="related-reference-dialog-header">
+                <div>
+                  <span className="related-reference-dialog-eyebrow">
+                    {activeRelatedReference.source_kind === 'primary'
+                      ? 'Căn cứ từ nguồn chính'
+                      : 'Điều khoản được nguồn chính dẫn chiếu'}
+                  </span>
+                  <h3 id="related-reference-dialog-title">{activeRelatedReference.title}</h3>
+                  <div className="related-reference-dialog-meta">
+                    {activeRelatedReference.cohort && <span>{activeRelatedReference.cohort}</span>}
+                    {activeRelatedReference.source_pages?.length ? <span>Trang {activeRelatedReference.source_pages.join(', ')}</span> : null}
+                  </div>
+                </div>
+                <button
+                  ref={relatedReferenceCloseRef}
+                  type="button"
+                  className="related-reference-dialog-close"
+                  onClick={() => setActiveRelatedReference(null)}
+                  aria-label="Đóng nội dung điều khoản liên quan"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              {activeRelatedReference.detail_kind === 'table' && activeRelatedReference.table_name && (
+                <div className="related-reference-dialog-table-context">
+                  <span>Bảng liên quan trong Điều này</span>
+                  <strong>{activeRelatedReference.table_name}</strong>
+                </div>
+              )}
+              <div className="related-reference-dialog-content citation-markdown">
+                <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                  {formatCitationContentForDisplay(activeRelatedReference.content || activeRelatedReference.preview || '')}
+                </ReactMarkdown>
+              </div>
+              {activeRelatedReference.source_url && (
+                <div className="related-reference-dialog-actions">
+                  <a
+                    className="citation-source-link"
+                    href={activeRelatedReference.source_url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <ExternalLink size={14} /> Mở tài liệu gốc
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>,
+          document.body,
         )}
 
 

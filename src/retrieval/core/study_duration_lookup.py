@@ -2,7 +2,11 @@ import re
 import unicodedata
 from typing import Any
 
-from src.common.cohort import normalize_cohort, resolve_cohort_from_query
+from src.common.cohort import (
+    is_cohort_applicable,
+    normalize_cohort,
+    resolve_cohort_from_query,
+)
 
 
 def normalize_text(value: Any) -> str:
@@ -24,7 +28,7 @@ def _filter_by_cohort(
     return [
         table
         for table in candidates
-        if normalize_cohort(table.get("cohort")) == normalized_cohort
+        if is_cohort_applicable(table, normalized_cohort)
     ]
 
 

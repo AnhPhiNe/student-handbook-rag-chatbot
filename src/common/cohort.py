@@ -53,3 +53,49 @@ def resolve_cohort_from_query(query: str, fallback: str | None = None) -> str | 
     if match:
         return normalize_cohort(f"K{match.group(1)}")
     return cohort
+
+
+from typing import Any
+
+
+def is_cohort_applicable(
+    record_or_table: dict[str, Any] | None,
+    target_cohort: str | None,
+) -> bool:
+    """Check if a table or directory record is applicable to target_cohort.
+
+    Supports:
+    - Direct cohort match (record.cohort == target_cohort)
+    - Multi-cohort list (target_cohort in record.applicable_cohorts)
+    - Shared / wildcard cohorts (record.cohort in {'all', 'general', 'shared', '*'})
+    - Global queries (target_cohort in {None, '', 'all', 'general', 'shared', '*'})
+    """
+    if not isinstance(record_or_table, dict):
+        return False
+
+    norm_target = normalize_cohort(target_cohort)
+    if not norm_target or str(norm_target).lower() in {"", "all", "general", "shared", "*"}:
+        return True
+
+    meta = record_or_table.get("metadata") if isinstance(record_or_table.get("metadata"), dict) else {}
+    applicable_raw = record_or_table.get("applicable_cohorts") or meta.get("applicable_cohorts") or []
+    if isinstance(applicable_raw, list):
+        applicable_normalized = {
+            normalize_cohort(c)
+            for c in applicable_raw
+            if c is not None
+        }
+        if norm_target in applicable_normalized:
+            return True
+
+    record_cohort = normalize_cohort(
+        record_or_table.get("cohort")
+        or meta.get("cohort")
+        or record_or_table.get("source_cohort")
+        or meta.get("source_cohort")
+    )
+    if not record_cohort or str(record_cohort).lower() in {"", "all", "general", "shared", "*"}:
+        return True
+
+    return record_cohort == norm_target
+

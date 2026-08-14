@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from src.common.cohort import normalize_cohort
+from src.common.cohort import is_cohort_applicable, normalize_cohort
 
 from .formula_lookup import formula_lookup
 from .foreign_language_lookup import foreign_language_lookup
@@ -72,7 +72,7 @@ def _bind_regulation_source(
         for table in registry
         if table.get("data_category") == "regulation_table"
         and table.get("table_type") == table_type
-        and (not cohort or normalize_cohort(table.get("cohort")) == cohort)
+        and is_cohort_applicable(table, cohort)
         and (
             not subtypes
             or str(table.get("table_subtype") or "") in subtypes

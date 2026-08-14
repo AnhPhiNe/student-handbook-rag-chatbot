@@ -752,8 +752,11 @@ def _format_foreign_language_equivalency_result(
     result = structured_result.get("result") or {}
     items = structured_result.get("items") or []
     cohort = structured_result.get("cohort")
+    source_cohort = structured_result.get("source_cohort")
     prefix = "Theo bảng quy đổi chuẩn đầu ra ngoại ngữ"
-    if cohort:
+    if source_cohort and cohort and source_cohort != cohort:
+        prefix += f" (ban hành tại Sổ tay {source_cohort}, áp dụng cho {cohort})"
+    elif cohort:
         prefix += f" áp dụng cho {cohort}"
 
     if isinstance(result, dict) and result.get("matched_level"):

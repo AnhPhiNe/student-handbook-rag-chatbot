@@ -386,18 +386,9 @@ def _query_cohorts(query: str) -> set[str]:
 def _structured_record_matches_cohort(
     record: dict[str, Any], expected_cohort: str | None
 ) -> bool:
-    expected = _normalize_eval_cohort(expected_cohort)
-    if expected is None:
-        return True
-    actual = _normalize_eval_cohort(record.get("cohort"))
-    if actual is not None:
-        return actual == expected
-    applicable = {
-        _normalize_eval_cohort(value)
-        for value in record.get("applicable_cohorts") or []
-    }
-    applicable.discard(None)
-    return not applicable or expected in applicable
+    from src.common.cohort import is_cohort_applicable
+
+    return is_cohort_applicable(record, expected_cohort)
 
 
 def _validate_common(case: dict[str, Any], suite: str, errors: list[str]) -> None:
@@ -558,9 +549,11 @@ def validate_bundle(
                     metadata = _doc_metadata(doc)
                     expected_cohort = case.get("cohort")
                     actual_cohort = metadata.get("cohort") or doc.get("cohort")
+                    from src.common.cohort import is_cohort_applicable
+
                     if (
                         expected_cohort not in {None, "", "general", "all"}
-                        and actual_cohort != expected_cohort
+                        and not is_cohort_applicable(doc, expected_cohort)
                     ):
                         errors.append(
                             f"{case_id}: source cohort {actual_cohort!r} != {expected_cohort!r}"

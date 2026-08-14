@@ -2,7 +2,11 @@ import re
 import unicodedata
 from typing import Any
 
-from src.common.cohort import normalize_cohort, resolve_cohort_from_query
+from src.common.cohort import (
+    is_cohort_applicable,
+    normalize_cohort,
+    resolve_cohort_from_query,
+)
 
 
 CERTIFICATE_ALIASES = {
@@ -55,7 +59,7 @@ def _filter_by_cohort(
     return [
         table
         for table in tables
-        if normalize_cohort(table.get("cohort")) == normalized_cohort
+        if is_cohort_applicable(table, normalized_cohort)
     ]
 
 
@@ -258,6 +262,7 @@ def _build_lookup_result(
     rows: list[dict[str, Any]],
     matched_level: str | None = None,
     matched_value: float | None = None,
+    effective_cohort: str | None = None,
 ) -> dict[str, Any]:
     result_rows = [
         _build_result_row(row, matched_level if len(rows) == 1 else None, matched_value)
@@ -283,7 +288,10 @@ def _build_lookup_result(
         "table_name": table.get("table_name")
         or "Bang quy doi chuan dau ra ngoai ngu",
         "source_label": "Bang quy doi chuan dau ra ngoai ngu trong So tay sinh vien HCMUE",
-        "cohort": table.get("cohort"),
+        "cohort": effective_cohort or table.get("cohort"),
+        "source_cohort": table.get("source_cohort") or table.get("cohort"),
+        "applicable_cohorts": table.get("applicable_cohorts"),
+        "applicability": table.get("applicability"),
         "document_id": table.get("document_id"),
         "source_section": table.get("source_section_id") or table.get("source_section"),
         "content_type": "structured_lookup",
@@ -374,4 +382,5 @@ def foreign_language_lookup(
         rows=matched_rows,
         matched_level=matched_level,
         matched_value=matched_value,
+        effective_cohort=effective_cohort,
     )

@@ -1869,19 +1869,19 @@
     ],
     "relevance_judgments": [
       {
-        "parent_section_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4",
+        "parent_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4",
         "grade": 2,
-        "cohort": "K51",
-        "document_id": "so_tay_sinh_vien_khoa_51",
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
         "content_type": "regulation_text",
         "source_section": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp",
         "source_pages": []
       },
       {
-        "parent_section_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1",
+        "parent_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1",
         "grade": 1,
-        "cohort": "K51",
-        "document_id": "so_tay_sinh_vien_khoa_51",
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
         "content_type": "regulation_text",
         "source_section": "Phạm vi điều chỉnh và đối tượng áp dụng",
         "source_pages": []
@@ -4907,7 +4907,7 @@
     "expected_structured_sources": [
       {
         "catalog": "foreign_language",
-        "source_id": "K48_K49_foreign_language_equivalency_dieu8"
+        "source_id": "K50_foreign_language_equivalency_dieu8"
       }
     ],
     "ground_truth": "Tra loi dua tren structured catalog dung cohort va dung source.",
@@ -5904,7 +5904,7 @@
     "expected_structured_sources": [
       {
         "catalog": "foreign_language",
-        "source_id": "K48_K49_foreign_language_equivalency_dieu8"
+        "source_id": "K50_foreign_language_equivalency_dieu8"
       }
     ],
     "ground_truth": "Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học 1. Sinh viên được xin nghỉ học tạm thời trong các trường hợp sau: a) Được điều động vào lực lượng vũ trang; Được cơ quan có thẩm quyền điều động, đại diện quốc gia tham dự các kỳ thi, giải đấu quốc tế;",

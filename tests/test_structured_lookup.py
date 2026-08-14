@@ -149,6 +149,96 @@ class StructuredLookupTest(unittest.TestCase):
             "Khoa Cong nghe Thong tin",
         )
 
+    def test_is_cohort_applicable_and_foreign_language_inheritance(self) -> None:
+        from src.common.cohort import is_cohort_applicable
+        from src.retrieval.core.foreign_language_lookup import foreign_language_lookup
+
+        table = {
+            "table_id": "K50_foreign_language_equivalency_dieu8",
+            "cohort": "K50",
+            "applicable_cohorts": ["K48-K49", "K50", "K51"],
+            "applicability": "Điều 1 áp dụng cho sinh viên từ khóa 2022 trở đi.",
+            "rows": [
+                {
+                    "language": "Tiếng Anh",
+                    "certificate": "IELTS",
+                    "equivalent_level_3": "4.0 - 5.0",
+                    "equivalent_level_4": "5.5 - 6.5",
+                }
+            ],
+            "source_pages": [112],
+            "document_id": "so_tay_sinh_vien_khoa_50",
+        }
+
+        self.assertTrue(is_cohort_applicable(table, "K48-K49"))
+        self.assertTrue(is_cohort_applicable(table, "K50"))
+        self.assertTrue(is_cohort_applicable(table, "K51"))
+        self.assertFalse(is_cohort_applicable(table, "K47"))
+
+        # Test lookup for K51 and K48-K49 queries
+        for cohort in ["K48-K49", "K50", "K51"]:
+            res = foreign_language_lookup("IELTS 6.0 quy đổi bậc mấy", [table], cohort=cohort)
+            self.assertIsNotNone(res, f"Expected match for cohort {cohort}")
+            self.assertEqual(res["result"]["matched_level"], "bac_4")
+            self.assertEqual(res["cohort"], cohort)
+            self.assertEqual(res["source_cohort"], "K50")
+
+    def test_program_lookup_faculty_programs_per_cohort_counts(self) -> None:
+        programs = [
+            {
+                "program_name": "Công nghệ Thông tin",
+                "faculty_name": "Khoa Công nghệ Thông tin",
+                "cohort": "K48-K49",
+                "document_id": "so_tay_sinh_vien_khoa_48_49",
+            },
+            {
+                "program_name": "Sư phạm Tin học",
+                "faculty_name": "Khoa Công nghệ Thông tin",
+                "cohort": "K48-K49",
+                "document_id": "so_tay_sinh_vien_khoa_48_49",
+            },
+            {
+                "program_name": "Công nghệ Giáo dục",
+                "faculty_name": "Khoa Công nghệ Thông tin",
+                "cohort": "K51",
+                "document_id": "so_tay_sinh_vien_khoa_51",
+            },
+            {
+                "program_name": "Công nghệ Thông tin",
+                "faculty_name": "Khoa Công nghệ Thông tin",
+                "cohort": "K51",
+                "document_id": "so_tay_sinh_vien_khoa_51",
+            },
+            {
+                "program_name": "Sư phạm Tin học",
+                "faculty_name": "Khoa Công nghệ Thông tin",
+                "cohort": "K51",
+                "document_id": "so_tay_sinh_vien_khoa_51",
+            },
+        ]
+
+        res_k49 = program_lookup(
+            "Khoa Công nghệ Thông tin",
+            programs,
+            cohort="K48-K49",
+            routing={"content_type": "program_directory", "action": "list", "scope": "faculty"},
+        )
+        self.assertIsNotNone(res_k49)
+        self.assertEqual(res_k49["program_count"], 2)
+        names_k49 = {p["program_name"] for p in res_k49["result"]}
+        self.assertEqual(names_k49, {"Công nghệ Thông tin", "Sư phạm Tin học"})
+
+        res_k51 = program_lookup(
+            "Khoa Công nghệ Thông tin",
+            programs,
+            cohort="K51",
+            routing={"content_type": "program_directory", "action": "list", "scope": "faculty"},
+        )
+        self.assertIsNotNone(res_k51)
+        self.assertEqual(res_k51["program_count"], 3)
+        names_k51 = {p["program_name"] for p in res_k51["result"]}
+        self.assertEqual(names_k51, {"Công nghệ Giáo dục", "Công nghệ Thông tin", "Sư phạm Tin học"})
+
 
 if __name__ == "__main__":
     unittest.main()

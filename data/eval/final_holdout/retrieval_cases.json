@@ -2085,10 +2085,10 @@
     ],
     "relevance_judgments": [
       {
-        "parent_section_id": "K48-K49_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu6",
+        "parent_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu6",
         "grade": 2,
-        "cohort": "K48-K49",
-        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
         "content_type": "regulation_text",
         "source_section": "Lệ phí kiểm tra trình độ đầu vào, học và thi kết thúc chương trình ngoại ngữ",
         "source_pages": []
@@ -4594,19 +4594,19 @@
     ],
     "relevance_judgments": [
       {
-        "parent_section_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4",
+        "parent_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4",
         "grade": 2,
-        "cohort": "K51",
-        "document_id": "so_tay_sinh_vien_khoa_51",
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
         "content_type": "regulation_text",
         "source_section": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp",
         "source_pages": []
       },
       {
-        "parent_section_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1",
+        "parent_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1",
         "grade": 1,
-        "cohort": "K51",
-        "document_id": "so_tay_sinh_vien_khoa_51",
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
         "content_type": "regulation_text",
         "source_section": "Phạm vi điều chỉnh và đối tượng áp dụng",
         "source_pages": []
@@ -5613,10 +5613,10 @@
     ],
     "relevance_judgments": [
       {
-        "parent_section_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu7",
+        "parent_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu7",
         "grade": 2,
-        "cohort": "K51",
-        "document_id": "so_tay_sinh_vien_khoa_51",
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
         "content_type": "regulation_text",
         "source_section": "Điều khoản chuyển tiếp",
         "source_pages": []
@@ -5940,10 +5940,10 @@
     ],
     "relevance_judgments": [
       {
-        "parent_section_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu6",
+        "parent_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu6",
         "grade": 2,
-        "cohort": "K51",
-        "document_id": "so_tay_sinh_vien_khoa_51",
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
         "content_type": "regulation_text",
         "source_section": "Lệ phí kiểm tra trình độ đầu vào, học và thi kết thúc chương trình ngoại ngữ",
         "source_pages": []
@@ -7689,24 +7689,6 @@
           111,
           112
         ]
-      },
-      {
-        "parent_section_id": "K48-K49_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4",
-        "grade": 1,
-        "cohort": "K48-K49",
-        "document_id": "so_tay_sinh_vien_khoa_48_49",
-        "content_type": "regulation_text",
-        "source_section": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp",
-        "source_pages": []
-      },
-      {
-        "parent_section_id": "K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4",
-        "grade": 1,
-        "cohort": "K51",
-        "document_id": "so_tay_sinh_vien_khoa_51",
-        "content_type": "regulation_text",
-        "source_section": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp",
-        "source_pages": []
       }
     ],
     "near_duplicate_reviewed": true,
@@ -8617,10 +8599,10 @@
     ],
     "relevance_judgments": [
       {
-        "parent_section_id": "K48-K49_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu5",
+        "parent_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu5",
         "grade": 2,
-        "cohort": "K48-K49",
-        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
         "content_type": "regulation_text",
         "source_section": "Quy trình và thủ tục công nhận trình độ ngoại ngữ để xét tốt nghiệp",
         "source_pages": []

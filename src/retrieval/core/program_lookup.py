@@ -3,7 +3,7 @@ import unicodedata
 from collections import defaultdict
 from typing import Any
 
-from src.common.cohort import normalize_cohort
+from src.common.cohort import is_cohort_applicable, normalize_cohort
 
 
 def normalize_text(text: Any) -> str:
@@ -124,8 +124,7 @@ def _filter_by_cohort(
     return [
         record
         for record in records
-        if _is_shared_record(record)
-        or normalize_cohort(record.get("cohort")) == normalized_cohort
+        if is_cohort_applicable(record, normalized_cohort)
     ]
 
 

@@ -348,19 +348,10 @@ def _resolve_single_lookup(
 
 def _is_valid_probe_result(
     resolution: StructuredResolution | None,
-    lookup_type: str,
-    query_text: str,
 ) -> bool:
     if not resolution or not resolution.result or resolution.result_kind == "clarification":
         return False
     res_data = resolution.result
-    if lookup_type in {"office", "faculty", "student_service"}:
-        sel_method = res_data.get("selection_method")
-        if sel_method == "catalog_fuzzy":
-            q_norm = normalize_text(query_text)
-            cues = ("email", "sdt", "dien thoai", "dia chi", "o dau", "lien he", "phong", "khoa", "van phong", "trung tam", "tram")
-            if not any(cue in q_norm for cue in cues):
-                return False
     if isinstance(res_data, dict):
         if "result" in res_data and isinstance(res_data["result"], list):
             return len(res_data["result"]) > 0
@@ -418,6 +409,13 @@ def resolve_structured_decision(
 
     # Dynamic Table Probing for Inter-Table Composite Resolution (Structure A + Structure B)
     query_norm = " " + normalize_text(query) + " "
+    has_conjunction = any(conj in query_norm for conj in [" va ", " voi ", " cung ", " hoac ", " lan "]) or "," in query
+
+    # Khi Router da xac dinh la cau hoi quy che don le (regulation) khong co lien tu noi thi khong tham do danh ba
+    is_pure_single_regulation = decision.get("execution_mode") == "regulation" and not lookup_type
+    if is_pure_single_regulation and not has_conjunction:
+        return None
+
     candidate_domains = [
         "foreign_language",
         "scholarship_classification",
@@ -429,11 +427,10 @@ def resolve_structured_decision(
         "student_service",
     ]
 
-    has_conjunction = any(conj in query_norm for conj in [" va ", " voi ", " cung ", " hoac ", " lan "]) or "," in query
     if has_conjunction or not primary_res or not primary_res.result:
         collected: list[StructuredResolution] = []
         seen_lookups: set[str] = set()
-        if primary_res and _is_valid_probe_result(primary_res, primary_res.lookup_type, query):
+        if primary_res and _is_valid_probe_result(primary_res):
             collected.append(primary_res)
             seen_lookups.add(primary_res.lookup_type)
             if primary_res.lookup_type in {"office", "faculty", "student_service"}:
@@ -443,7 +440,7 @@ def resolve_structured_decision(
             if cand_type in seen_lookups:
                 continue
             cand_res = _resolve_single_lookup(cand_type, **lookup_kwargs)
-            if _is_valid_probe_result(cand_res, cand_type, query):
+            if _is_valid_probe_result(cand_res):
                 collected.append(cand_res)
                 seen_lookups.add(cand_type)
                 if cand_type in {"office", "faculty", "student_service"}:

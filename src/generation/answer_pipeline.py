@@ -1065,7 +1065,11 @@ class AnswerPipeline:
             strategy=router_decision.get("execution_mode") or "hybrid_graph_retrieval",
             retrieval_query=normalized_retrieval_query,
         )
-        if not result.get("structured_result"):
+        # Only resolve structured tables if explicitly designated by Router (e.g. mixed mode or lookup_type present)
+        if not result.get("structured_result") and (
+            router_decision.get("execution_mode") == "mixed"
+            or router_decision.get("lookup_type")
+        ):
             from src.retrieval.core.structured_dispatcher import resolve_structured_decision
             supp_resolution = resolve_structured_decision(
                 router_decision,
@@ -1089,7 +1093,15 @@ class AnswerPipeline:
                     getattr(self, "parent_sources_by_id", {}),
                 )
                 existing_citations = result.get("citations") or []
-                result["citations"] = supp_citations + existing_citations
+                all_cits = supp_citations + existing_citations
+                seen_cit_keys = set()
+                deduped_cits = []
+                for cit in all_cits:
+                    key = (cit.get("document_id"), cit.get("title") or cit.get("source_parent_id"), tuple(cit.get("source_pages") or []))
+                    if key not in seen_cit_keys:
+                        seen_cit_keys.add(key)
+                        deduped_cits.append(cit)
+                result["citations"] = deduped_cits[:5]
 
         result["selected_cohort"] = cohort
         result["router_decision"] = router_decision

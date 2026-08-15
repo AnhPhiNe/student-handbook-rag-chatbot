@@ -172,14 +172,14 @@ def push_trace_to_langsmith(
             extra_dict["usage"] = final_usage
 
         # 1. Tạo Root Run (Parent Chain)
-        meta.setdefault("cohort", session_id)
+        meta.setdefault("cohort", resolved_cohort)
         client.create_run(
             id=run_uuid,
             name=name or "HCMUE Student Handbook Assistant",
             run_type="chain",
             inputs={
                 "query": input_text,
-                "chat_history": meta.get("chat_history", []),
+                "student_cohort": resolved_cohort,
             },
             outputs={
                 "answer": output_text,

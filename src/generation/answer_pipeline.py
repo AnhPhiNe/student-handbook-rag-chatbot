@@ -1124,7 +1124,7 @@ class AnswerPipeline:
             provider = llm_config.get("provider", "gemini")
             if provider == "gemini":
                 self._llm_client = GeminiClient(
-                    model_name=llm_config.get("model_name", "gemini-2.5-flash"),
+                    model_name=llm_config.get("model_name", "gemini-3.1-flash-lite"),
                     temperature=llm_config.get("temperature", 0.2),
                     max_output_tokens=llm_config.get("max_output_tokens", 1024),
                     max_retries=llm_config.get("max_retries", 3),

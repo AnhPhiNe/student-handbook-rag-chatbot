@@ -3,7 +3,7 @@ from typing import Any
 class UsageTracker:
     """
     Sổ cái ghi nhận cấu trúc Pipeline RAG.
-    Được sử dụng để chuyển số liệu token usage và độ trễ của từng model lên Langfuse.
+    Được sử dụng để chuyển số liệu token usage và độ trễ của từng model lên LangSmith.
     """
     def __init__(self):
         self._steps: list[dict[str, Any]] = []

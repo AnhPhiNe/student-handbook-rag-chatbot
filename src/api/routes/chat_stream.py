@@ -21,7 +21,7 @@ from uuid import uuid4
 import threading
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
-from src.api.langfuse_helper import push_trace_to_langfuse
+from src.api.langsmith_helper import push_trace_to_langsmith
 
 from src.api.chat_controls import (
     ChatCapacityError,
@@ -137,7 +137,7 @@ def chat_stream(
                     query,
                     chat_history=request.chat_history,
                     cohort=request.cohort,
-                    langfuse_trace_id=request_id,
+                    trace_id=request_id,
                 )
                 for chunk in stream:
                     chunk_type = chunk.get("type", "")
@@ -158,8 +158,9 @@ def chat_stream(
                     elif chunk_type == "done":
                         done_latency = round((time.perf_counter() - started_at) * 1000, 2)
                         tracker = chunk.get("tracker")
+                        # Push trace to LangSmith (Realtime)
                         threading.Thread(
-                            target=push_trace_to_langfuse,
+                            target=push_trace_to_langsmith,
                             args=(
                                 request_id, 
                                 "Chat (Stream)", 

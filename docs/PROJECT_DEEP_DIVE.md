@@ -28,7 +28,7 @@ Runtime hiện tại là **V26 acronym-aware runtime**, dùng:
 - Vector DB: Qdrant Cloud collection `student_handbook_semantic_v9_candidate`.
 - Parent store: MongoDB collection `parent_docs_v9_candidate`.
 - Cache: Redis + local exact response cache.
-- Observability: Langfuse.
+- Observability: LangSmith.
 - Frontend: React + Vite + TypeScript.
 - Backend: FastAPI + Uvicorn.
 
@@ -305,7 +305,7 @@ File: `src/api/routes/chat.py`
 3. Rate limit bằng `enforce_chat_rate_limit`.
 4. Lấy capacity slot bằng `chat_capacity_slot`.
 5. Gọi `answer_service.answer(...)`.
-6. Push trace Langfuse trong thread nền.
+6. Push trace LangSmith trong thread nền.
 7. Convert kết quả nội bộ sang `ChatResponse`.
 
 Debug payload chỉ trả khi:
@@ -796,13 +796,13 @@ Các config quan trọng:
 
 ## 14. Observability
 
-Langfuse được dùng để push trace sau request.
+LangSmith được dùng để push realtime trace sau request.
 
 Trace gồm:
 
 | Field | Nghĩa |
 |---|---|
-| request id | Id duy nhất của request để nối log API, Langfuse và eval row. |
+| request id | Id duy nhất của request để nối log API, LangSmith và eval row. |
 | cohort | Khóa áp dụng cuối cùng của request. |
 | query | Effective query hoặc query đã xử lý, tùy trace stage. |
 | answer | Câu trả lời cuối cùng hoặc preview, dùng để debug chất lượng. |
@@ -813,7 +813,7 @@ Trace gồm:
 | latency | Thời gian xử lý request/stage. |
 | tracker steps | Các bước telemetry nội bộ như routing, retrieval, prompt, generation, cache hit/miss. |
 
-Langfuse lỗi 401 hoặc thiếu credential không làm chat fail; nó chỉ ảnh hưởng observability.
+LangSmith lỗi hoặc thiếu credential không làm chat fail; nó chỉ ảnh hưởng observability.
 
 ## 15. Frontend Architecture
 
@@ -1305,7 +1305,8 @@ Public variables thường cần:
 | `QDRANT_COLLECTION_NAME` | Tên collection Qdrant đang phục vụ production. | `student_handbook_semantic_v9_candidate`. |
 | `MONGODB_PARENT_COLLECTION` | Tên collection Mongo chứa parent docs. | `parent_docs_v9_candidate`. |
 | `MONGODB_TIMEOUT_MS` | Timeout khi đọc Mongo parent docs. | `3000`. |
-| `LANGFUSE_BASE_URL` | Host Langfuse đúng region. | Ví dụ `https://jp.cloud.langfuse.com` nếu key thuộc JP region. |
+| `LANGCHAIN_TRACING_V2` | Bật LangSmith Tracing V2. | `true`. |
+| `LANGCHAIN_PROJECT` | Tên project LangSmith. | `hcmue-student-handbook-rag`. |
 | `STUDENT_RAG_ROUTER_MODEL` | Model Router cố định ở deploy. | `qwen/qwen3.6-27b`. |
 | `STUDENT_RAG_ROUTER_REASONING_EFFORT` | Reasoning effort cho Router. | `none`. |
 | `STUDENT_RAG_ROUTER_MAX_OUTPUT_TOKENS` | Output budget cho JSON Router. | `384`. |
@@ -1320,8 +1321,7 @@ Secrets:
 | `REDIS_URL` | Redis URL cho cache nếu có. |
 | `GROQ_API_KEYS` | Danh sách key Groq dùng cho Qwen Router rotation. |
 | `GEMINI_API_KEYS` | Danh sách key Gemini dùng cho answer generation rotation. |
-| `LANGFUSE_PUBLIC_KEY` | Public key Langfuse. Vẫn để secret để gom credential ở một nơi. |
-| `LANGFUSE_SECRET_KEY` | Secret key Langfuse. |
+| `LANGCHAIN_API_KEY` | API Key của LangSmith (Personal Access Token). |
 
 ## 19. Module Map
 
@@ -1380,7 +1380,7 @@ sequenceDiagram
     participant Q as Qwen Router
     participant R as Retrieval/Structured
     participant G as Gemini
-    participant L as Langfuse
+    participant L as LangSmith
 
     FE->>API: POST /chat/stream
     API->>API: validate query + rate limit + capacity queue

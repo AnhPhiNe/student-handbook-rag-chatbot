@@ -248,7 +248,7 @@ Qdrant stores semantic chunks with cohort tags. MongoDB Atlas stores complete pa
 - **Instant 0ms Failover:** Upon receiving HTTP `429 Rate Limit`, the client immediately cools down the offending key and acquires the next healthy key with zero blocking sleep.
 - **Sliding-Window Protection:** Real-time sliding window (60s) calculates exact cooldown fractions when all keys reach RPM capacity.
 - **Two-Tier Caching:** Redis Cloud distributed cache with automatic local JSON disk fallback (`data/cache/answer_response_cache.json`) using SHA-256 context-aware fingerprinting.
-- **API Guardrails:** Client UUID rate limiting, public-IP abuse protection, burst capacity semaphores, and Langfuse tracing.
+- **API Guardrails:** Client UUID rate limiting, public-IP abuse protection, burst capacity semaphores, and LangSmith realtime tracing.
 
 ---
 
@@ -452,7 +452,7 @@ Live benchmarking against the FastAPI server evaluating latency, streaming TTFT,
 | **Docstore & Parent Store** | MongoDB Atlas (462 parent sections) |
 | **Knowledge Graph** | NetworkX In-Memory Directed MultiDiGraph (95 edges, depth 2) |
 | **Two-Tier Cache** | Redis Cloud + Local JSON Fallback (SHA-256 context fingerprint) |
-| **Observability** | Langfuse Cloud tracing and evaluation telemetry |
+| **Observability** | LangSmith Realtime Tracing & LLM Monitoring |
 | **Deployment** | Vercel (Frontend), Hugging Face Spaces (Backend API) |
 
 ---
@@ -536,10 +536,10 @@ MONGODB_PARENT_COLLECTION=parent_docs_v9_candidate
 # Two-Tier Response Caching (Optional Redis)
 REDIS_URL=rediss://default:password@your-redis-host:6379
 
-# Observability (Langfuse)
-LANGFUSE_PUBLIC_KEY=pk-lf-...
-LANGFUSE_SECRET_KEY=sk-lf-...
-LANGFUSE_BASE_URL=https://cloud.langfuse.com
+# Observability (LangSmith Realtime Tracing)
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_API_KEY=lsv2_pt_...
+LANGCHAIN_PROJECT=hcmue-student-handbook-rag
 
 # API Protection Guardrails
 STUDENT_RAG_RATE_LIMIT_PER_MINUTE=20

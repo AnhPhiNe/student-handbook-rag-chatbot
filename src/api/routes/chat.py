@@ -16,9 +16,8 @@ from src.api.chat_controls import (
 )
 from src.api.deps import get_answer_service
 from src.api.schemas import ChatRequest, ChatResponse, ChatFeedbackRequest
-from langfuse import Langfuse
 import threading
-from src.api.langfuse_helper import push_trace_to_langfuse
+from src.api.langsmith_helper import push_trace_to_langsmith, push_feedback_to_langsmith
 
 
 router = APIRouter(tags=["chat"])
@@ -157,11 +156,12 @@ def chat(
                 query,
                 chat_history=request.chat_history,
                 cohort=request.cohort,
-                langfuse_trace_id=request_id,
+                trace_id=request_id,
             )
             sync_latency = round((time.perf_counter() - started_at) * 1000, 2)
+            # Push trace to LangSmith (Realtime)
             threading.Thread(
-                target=push_trace_to_langfuse,
+                target=push_trace_to_langsmith,
                 args=(
                     request_id,
                     "Chat (Sync)",
@@ -236,42 +236,26 @@ def chat(
 
 @router.post("/chat/feedback")
 def submit_feedback(request: ChatFeedbackRequest):
-    """Gửi phản hồi (feedback) của người dùng về một câu trả lời cụ thể.
-
-    Đây là một API endpoint nhận phản hồi từ người dùng về chất lượng của
-    một câu trả lời đã được cung cấp. Phản hồi này (ví dụ: thích/không thích,
-    điểm số, bình luận) sẽ được ghi lại vào Langfuse để theo dõi và cải thiện
-    hiệu suất của chatbot.
+    """Gửi phản hồi (feedback) của người dùng về một câu trả lời cụ thể lên LangSmith.
 
     Args:
         request (ChatFeedbackRequest): Đối tượng chứa thông tin phản hồi từ người dùng.
             Bao gồm `run_id` (ID của lần chạy chatbot đã tạo ra câu trả lời),
-            `score` (điểm đánh giá, ví dụ: 1 cho thích, 0 cho không thích),
+            `score` (điểm đánh giá: 1 cho thích, 0 cho không thích),
             và `comment` (bình luận chi tiết của người dùng).
 
     Returns:
-        dict: Một từ điển báo hiệu trạng thái thành công của việc gửi phản hồi,
-            ví dụ: `{"status": "success"}`.
-
-    Raises:
-        HTTPException:
-            - Nếu `run_id` không được cung cấp trong yêu cầu, một lỗi HTTP 400
-              (Bad Request) sẽ được trả về.
-            - Nếu có lỗi xảy ra trong quá trình gửi phản hồi đến Langfuse,
-              một lỗi HTTP 500 (Internal Server Error) sẽ được trả về.
+        dict: `{"status": "success"}`.
     """
     if not request.run_id:
         raise HTTPException(status_code=400, detail="run_id is required")
 
     try:
-        langfuse = Langfuse()
-        langfuse.create_score(
-            trace_id=request.run_id,
-            name="user_score",
-            value=request.score,
-            comment=request.comment,
-        )
-        langfuse.flush()
+        threading.Thread(
+            target=push_feedback_to_langsmith,
+            args=(request.run_id, request.score, request.comment),
+            daemon=True,
+        ).start()
         return {"status": "success"}
     except Exception as exc:
         logger.exception("feedback_submission_failed", extra={"run_id": request.run_id})

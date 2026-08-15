@@ -15,7 +15,7 @@ if TestClient is not None:
 
 
 class FakeAnswerService:
-    def answer(self, query: str, chat_history: list | None = None, cohort: str | None = None, langfuse_trace_id: str | None = None) -> dict:
+    def answer(self, query: str, chat_history: list | None = None, cohort: str | None = None, trace_id: str | None = None) -> dict:
         return {
             "query": query,
             "answer": "Email Phong Dao tao la pdt@example.edu.vn.",
@@ -34,7 +34,7 @@ class FakeAnswerService:
             "error_message": None,
         }
 
-    def answer_stream(self, query: str, chat_history: list | None = None, cohort: str | None = None, langfuse_trace_id: str | None = None):
+    def answer_stream(self, query: str, chat_history: list | None = None, cohort: str | None = None, trace_id: str | None = None):
         yield {
             "type": "metadata",
             "status": "answered",

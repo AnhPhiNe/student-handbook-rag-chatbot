@@ -173,6 +173,8 @@ def push_trace_to_langsmith(
 
         # 1. Tạo Root Run (Parent Chain)
         meta.setdefault("cohort", resolved_cohort)
+        citations_payload = meta.get("citations_used") or []
+        related_payload = meta.get("related_references") or []
         client.create_run(
             id=run_uuid,
             name=name or "HCMUE Student Handbook Assistant",
@@ -184,8 +186,9 @@ def push_trace_to_langsmith(
             outputs={
                 "answer": output_text,
                 "status": meta.get("status", "ok"),
-                "citations_count": len(meta.get("citations_used") or []),
-                "related_references_count": len(meta.get("related_references") or []),
+                "citations_count": len(citations_payload),
+                "citations": citations_payload,
+                "related_references": related_payload,
             },
             start_time=start_time,
             end_time=end_time,

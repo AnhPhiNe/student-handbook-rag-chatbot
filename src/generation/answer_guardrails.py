@@ -1,6 +1,6 @@
 import re
 import unicodedata
-from typing import Any, Callable
+from typing import Any
 
 
 def is_context_empty(retrieval_result: dict[str, Any]) -> bool:

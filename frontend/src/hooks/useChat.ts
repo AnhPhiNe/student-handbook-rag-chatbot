@@ -100,7 +100,6 @@ export function useChat(cohort: string = 'K48-K49') {
     const botMsgId = (Date.now() + 1).toString();
     const startTime = Date.now();
     let ttftMs: number | null = null;
-    let currentBotContent = "";
     let capturedCitations: Citation[] = [];
     let capturedRelatedReferences: RelatedReference[] = [];
     let capturedRunId: string | null = null;
@@ -113,6 +112,54 @@ export function useChat(cohort: string = 'K48-K49') {
       isStreaming: true,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }]);
+
+    let targetBotContent = "";
+    let displayedBotContent = "";
+    let streamDone = false;
+    let streamError = false;
+    let donePayload: {
+      responseTimeMs: number;
+      confidence: 'high' | 'medium' | 'low';
+      citations: Citation[];
+      relatedReferences: RelatedReference[];
+      runId?: string;
+      usedCache: boolean;
+    } | null = null;
+
+    // Bộ đệm làm mịn hiệu ứng gõ chữ (Smooth Typewriter Ticker: 16ms/frame)
+    const typingTimer = setInterval(() => {
+      if (displayedBotContent.length < targetBotContent.length) {
+        const diff = targetBotContent.length - displayedBotContent.length;
+        // Tự động điều chỉnh số ký tự mỗi tick để gõ nhịp nhàng:
+        const step = diff > 100 ? 8 : diff > 40 ? 4 : diff > 15 ? 2 : 1;
+        displayedBotContent = targetBotContent.slice(0, displayedBotContent.length + step);
+
+        setMessages(prev => prev.map(m => 
+          m.id === botMsgId ? { ...m, content: displayedBotContent, queuePosition: null } : m
+        ));
+      } else if (streamDone || streamError) {
+        clearInterval(typingTimer);
+        setIsTyping(false);
+        setProgressMessage('');
+
+        if (donePayload) {
+          setMessages(prev => prev.map(m => 
+            m.id === botMsgId ? { 
+              ...m, 
+              content: targetBotContent,
+              isStreaming: false,
+              responseTimeMs: donePayload!.responseTimeMs,
+              ttftMs: ttftMs || undefined,
+              confidence: donePayload!.confidence,
+              citations: donePayload!.citations,
+              relatedReferences: donePayload!.relatedReferences,
+              runId: donePayload!.runId,
+              usedCache: donePayload!.usedCache
+            } : m
+          ));
+        }
+      }
+    }, 16);
 
     try {
       const chatHistory = messages
@@ -155,7 +202,6 @@ export function useChat(cohort: string = 'K48-K49') {
           if (part.startsWith('event: ')) {
             const lines = part.split('\n');
             const eventType = lines.find(line => line.startsWith('event: '))?.replace('event: ', '') || '';
-            // SSE data co the bi tach thanh nhieu dong, nen gom tat ca data: truoc khi JSON.parse.
             const dataStr = lines
               .filter(line => line.startsWith('data: '))
               .map(line => line.replace('data: ', ''))
@@ -191,44 +237,33 @@ export function useChat(cohort: string = 'K48-K49') {
                 if (ttftMs === null) {
                   ttftMs = Date.now() - startTime;
                 }
-                currentBotContent += data.text;
-                setMessages(prev => prev.map(m => 
-                  m.id === botMsgId ? { ...m, content: currentBotContent, queuePosition: null } : m
-                ));
+                targetBotContent += (data.text || "");
               } else if (eventType === 'done' || eventType === 'error') {
-                setIsTyping(false);
-                setProgressMessage('');
                 const responseTimeMs = Date.now() - startTime;
                 
                 if (eventType === 'error' && data.error_message) {
-                  currentBotContent = data.error_message;
+                  targetBotContent = data.error_message;
+                  streamError = true;
                 }
                 
-                // Mock confidence based on citations if not provided
                 let confidence: 'high' | 'medium' | 'low' = 'low';
                 if (capturedCitations.length > 0) confidence = 'high';
 
-                // Check for fallback error string from Gemini
-                if (currentBotContent.includes("Hiện tại mình chưa gọi được mô hình AI")) {
+                if (targetBotContent.includes("Hiện tại mình chưa gọi được mô hình AI")) {
                   setSystemStatus('error');
                 } else {
                   setSystemStatus('normal');
                 }
 
-                setMessages(prev => prev.map(m => 
-                  m.id === botMsgId ? { 
-                    ...m, 
-                    content: currentBotContent,
-                    isStreaming: false,
-                    responseTimeMs,
-                    ttftMs: ttftMs || undefined,
-                    confidence,
-                    citations: capturedCitations,
-                    relatedReferences: capturedRelatedReferences,
-                    runId: capturedRunId || undefined,
-                    usedCache: capturedUsedCache
-                  } : m
-                ));
+                donePayload = {
+                  responseTimeMs,
+                  confidence,
+                  citations: capturedCitations,
+                  relatedReferences: capturedRelatedReferences,
+                  runId: capturedRunId || undefined,
+                  usedCache: capturedUsedCache
+                };
+                streamDone = true;
               }
             } catch (err) {
               console.error("Parse error", err);
@@ -237,6 +272,7 @@ export function useChat(cohort: string = 'K48-K49') {
         }
       }
     } catch (error) {
+      clearInterval(typingTimer);
       console.error("Fetch error:", error);
       setSystemStatus('error');
       const responseTimeMs = Date.now() - startTime;
@@ -257,7 +293,6 @@ export function useChat(cohort: string = 'K48-K49') {
       ));
       setIsTyping(false);
     }
-  // BẮT BUỘC phải truyền `messages` và `cohort` vào dependency array.
   }, [messages, isTyping, cohort]);
 
   const sendHardcodedMessage = useCallback((userText: string, botResponse: string, suggestions?: string[]) => {

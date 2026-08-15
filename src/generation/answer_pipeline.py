@@ -226,6 +226,12 @@ class AnswerPipeline:
         )
         _evaluation_telemetry.set(telemetry)
         effective_query = query
+        run_id = None
+        from src.api.usage_tracker import UsageTracker
+        from datetime import datetime, timezone
+
+        tracker = UsageTracker()
+        start_time_router = datetime.now(timezone.utc).isoformat()
 
         # Let an explicit cohort in the query win over the UI selector.
         cohort = _normalize_retrieval_cohort(resolve_cohort_from_query(query, cohort))
@@ -237,6 +243,16 @@ class AnswerPipeline:
                 cohort,
                 chat_history=chat_history,
             )
+            if retrieval_result.get("router_usage"):
+                tracker.record(
+                    step_name="AI Router",
+                    model=retrieval_result.get("router_model", ""),
+                    input_tokens=retrieval_result["router_usage"].get("input", 0),
+                    output_tokens=retrieval_result["router_usage"].get("output", 0),
+                    total_tokens=retrieval_result["router_usage"].get("total", 0),
+                    start_time=start_time_router,
+                    end_time=datetime.now(timezone.utc).isoformat(),
+                )
             if telemetry is not None:
                 telemetry["routing_retrieval_parent_lookup_ms"] = (
                     time.monotonic() - retrieval_started
@@ -444,13 +460,27 @@ class AnswerPipeline:
             )
 
         self._throttle_llm_call()
+        start_time_llm = datetime.now(timezone.utc).isoformat()
         llm_started = time.monotonic()
         llm_result = llm_client.generate(prompt)
+        end_time_llm = datetime.now(timezone.utc).isoformat()
         if telemetry is not None:
             telemetry["gemini_ms"] = (time.monotonic() - llm_started) * 1000
             telemetry["key_fingerprint"] = llm_result.get("key_fingerprint")
             telemetry["retry_count"] = max(0, int(llm_result.get("attempts") or 1) - 1)
         self._last_llm_call_at = time.monotonic()
+
+        if llm_result.get("ok"):
+            u = llm_result.get("usage") or {}
+            tracker.record(
+                step_name="LLM Generation",
+                model=llm_result.get("model_used") or "gemini-3.1-flash-lite",
+                input_tokens=u.get("input", 0),
+                output_tokens=u.get("output", 0),
+                total_tokens=u.get("total", 0),
+                start_time=start_time_llm,
+                end_time=end_time_llm,
+            )
 
         if not llm_result.get("ok"):
             error_type = llm_result.get("error_type") or "api_error"
@@ -472,6 +502,7 @@ class AnswerPipeline:
                 llm_called=True,
                 used_cache=False,
                 model_used=llm_result.get("model_used"),
+                tracker=tracker,
             )
 
         llm_text = str(llm_result.get("text") or "").strip()
@@ -492,6 +523,7 @@ class AnswerPipeline:
             llm_called=True,
             used_cache=False,
             model_used=llm_result.get("model_used"),
+            tracker=tracker,
         )
         self.response_cache.set(
             cache_key,
@@ -1141,6 +1173,7 @@ class AnswerPipeline:
         used_cache: bool,
         clarification_needed: bool = False,
         model_used: str | None = None,
+        tracker: Any = None,
     ) -> dict[str, Any]:
         router_decision = retrieval_result.get("router_decision")
         query_handling = retrieval_result.get("query_handling")
@@ -1188,6 +1221,7 @@ class AnswerPipeline:
             "used_cache": used_cache,
             "clarification_needed": clarification_needed,
             "context_used": context_used,
+            "tracker": tracker,
             "evaluation_telemetry": self._finalize_evaluation_telemetry(
                 used_cache=used_cache,
                 llm_called=llm_called,

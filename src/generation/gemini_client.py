@@ -278,6 +278,9 @@ class GeminiClient:
             temperature=temperature,
             max_output_tokens=max_output_tokens,
         )
+        self._last_stream_usage: dict[str, int] | None = None
+        self._last_stream_model: str = model_name
+        self._last_usage: dict[str, int] | None = None
 
     def generate(self, prompt: str) -> dict[str, Any]:
         attempts = 0
@@ -295,6 +298,11 @@ class GeminiClient:
                     raise RuntimeError("Gemini API returned an empty response.")
 
                 self.key_pool.record_success(key_id)
+                usage_dict = getattr(self, "_last_usage", None) or {
+                    "input": max(1, len(prompt) // 4),
+                    "output": max(1, len(str(text)) // 4),
+                    "total": max(1, len(prompt) // 4) + max(1, len(str(text)) // 4),
+                }
                 return {
                     "ok": True,
                     "text": text,
@@ -303,6 +311,7 @@ class GeminiClient:
                     "attempts": attempts,
                     "model_used": self.model_name,
                     "key_fingerprint": key_id,
+                    "usage": usage_dict,
                 }
             except Exception as exc:
                 last_error_type = self._classify_error(exc)
@@ -359,7 +368,19 @@ class GeminiClient:
         else:
             executor.shutdown(wait=True, cancel_futures=False)
 
-        return (getattr(response, "text", None) or "").strip()
+        text = (getattr(response, "text", None) or "").strip()
+        usage_obj = getattr(response, "usage_metadata", None)
+        if usage_obj:
+            inp = int(getattr(usage_obj, "prompt_token_count", 0) or 0)
+            out = int(getattr(usage_obj, "candidates_token_count", 0) or 0)
+            tot = int(getattr(usage_obj, "total_token_count", 0) or (inp + out))
+            self._last_usage = {"input": inp, "output": out, "total": tot}
+        else:
+            inp = max(1, len(prompt) // 4)
+            out = max(1, len(text) // 4)
+            self._last_usage = {"input": inp, "output": out, "total": inp + out}
+
+        return text
 
     def _retry_delay(self, attempt_index: int) -> float:
         capped_attempt = max(0, attempt_index - 1)
@@ -450,9 +471,13 @@ class GeminiClient:
         client: Any | None = None,
     ) -> Iterator[str]:
         request_client = client or self._client
-        output_queue: queue.Queue[tuple[str, str | Exception | None]] = queue.Queue()
+        output_queue: queue.Queue[tuple[str, str | dict[str, int] | Exception | None]] = queue.Queue()
+        self._last_stream_model = self.model_name
+        self._last_stream_usage = None
 
         def worker() -> None:
+            captured_usage = None
+            accumulated_text = ""
             try:
                 response = request_client.models.generate_content_stream(
                     model=self.model_name,
@@ -462,7 +487,22 @@ class GeminiClient:
                 for chunk in response:
                     text = getattr(chunk, "text", None) or ""
                     if text:
+                        accumulated_text += text
                         output_queue.put(("text", text))
+                    u = getattr(chunk, "usage_metadata", None)
+                    if u:
+                        inp = int(getattr(u, "prompt_token_count", 0) or 0)
+                        out = int(getattr(u, "candidates_token_count", 0) or 0)
+                        tot = int(getattr(u, "total_token_count", 0) or (inp + out))
+                        if tot:
+                            captured_usage = {"input": inp, "output": out, "total": tot}
+
+                if not captured_usage:
+                    inp = max(1, len(prompt) // 4)
+                    out = max(1, len(accumulated_text) // 4)
+                    captured_usage = {"input": inp, "output": out, "total": inp + out}
+
+                output_queue.put(("usage", captured_usage))
                 output_queue.put(("done", None))
             except Exception as exc:
                 output_queue.put(("error", exc))
@@ -483,6 +523,9 @@ class GeminiClient:
 
             if item_type == "text":
                 yield str(payload)
+            elif item_type == "usage":
+                if isinstance(payload, dict):
+                    self._last_stream_usage = payload
             elif item_type == "error":
                 if isinstance(payload, Exception):
                     raise payload

@@ -93,10 +93,10 @@ def build_trace_metadata(
 
 def push_trace_to_langsmith(
     trace_id: str,
-    name: str,
-    session_id: str | None,
-    input_text: str | Any,
-    output_text: str | Any,
+    name: str = "HCMUE Student Handbook Assistant",
+    session_id: str | None = None,
+    input_text: str | Any = "",
+    output_text: str | Any = "",
     metadata: dict | None = None,
     latency_ms: float | None = None,
     model: str | None = None,
@@ -153,11 +153,16 @@ def push_trace_to_langsmith(
         final_usage = dict(usage or {})
         if not final_usage and tracker and hasattr(tracker, "get_total_usage"):
             tot = tracker.get_total_usage()
-            if tot.get("total_tokens") or tot.get("input_tokens") or tot.get("output_tokens"):
+            inp = int(tot.get("input_tokens", 0))
+            out = int(tot.get("output_tokens", 0))
+            t_tok = int(tot.get("total_tokens", 0)) or (inp + out)
+            if t_tok or inp or out:
                 final_usage = {
-                    "input_tokens": tot.get("input_tokens", 0),
-                    "output_tokens": tot.get("output_tokens", 0),
-                    "total_tokens": tot.get("total_tokens", 0),
+                    "input_tokens": inp,
+                    "output_tokens": out,
+                    "total_tokens": t_tok,
+                    "prompt_tokens": inp,
+                    "completion_tokens": out,
                 }
 
         extra_dict: dict[str, Any] = {
@@ -199,30 +204,70 @@ def push_trace_to_langsmith(
                     if "llm" in step_name.lower() or "gemini" in step_name.lower() or "router" in step_name.lower()
                     else "retriever"
                 )
-                step_latency = step.get("latency_ms", 0)
-                step_end = now
-                step_start = now - timedelta(milliseconds=step_latency) if step_latency else now
+                # Parse start/end datetime for exact LLM latency calculation
+                step_start_raw = step.get("start_time")
+                step_end_raw = step.get("end_time")
+                step_start = None
+                step_end = None
+                if step_start_raw and step_end_raw:
+                    try:
+                        step_start = datetime.fromisoformat(str(step_start_raw))
+                        step_end = datetime.fromisoformat(str(step_end_raw))
+                    except Exception:
+                        pass
+
+                if not step_start or not step_end:
+                    step_lat = step.get("latency_ms") or 1500
+                    step_end = now
+                    step_start = now - timedelta(milliseconds=step_lat)
+
+                inp = int(step.get("input_tokens", 0))
+                out = int(step.get("output_tokens", 0))
+                t_tok = int(step.get("total_tokens", 0)) or (inp + out)
                 step_usage = {
-                    "input_tokens": step.get("input_tokens", 0),
-                    "output_tokens": step.get("output_tokens", 0),
-                    "total_tokens": step.get("total_tokens", 0),
+                    "input_tokens": inp,
+                    "output_tokens": out,
+                    "total_tokens": t_tok,
+                    "prompt_tokens": inp,
+                    "completion_tokens": out,
                 }
+
+                step_model = step.get("model") or "gemini-3.1-flash-lite"
+                provider = "google_genai" if "gemini" in step_model.lower() else "groq"
                 step_extra: dict[str, Any] = {
                     "metadata": {
                         **step.get("metadata", {}),
-                        "model": step.get("model", ""),
+                        "model": step_model,
+                        "ls_provider": provider,
+                        "ls_model_name": step_model,
+                        "ls_model_type": "chat",
+                    },
+                    "invocation_params": {
+                        "model": step_model,
+                        "model_name": step_model,
                     },
                 }
                 if step_usage.get("total_tokens"):
                     step_extra["usage"] = step_usage
+
+                step_outputs: dict[str, Any] = step.get("outputs") or {}
+                if not step_outputs:
+                    step_outputs = {
+                        "output": output_text,
+                        "generations": [{"text": output_text}],
+                        "llm_output": {
+                            "token_usage": step_usage,
+                            "model_name": step_model,
+                        },
+                    }
 
                 client.create_run(
                     id=uuid.uuid4(),
                     name=step_name,
                     run_type=step_type,
                     parent_run_id=run_uuid,
-                    inputs=step.get("inputs", {"query": input_text}),
-                    outputs=step.get("outputs", {}),
+                    inputs=step.get("inputs", {"query": input_text, "prompts": [input_text]}),
+                    outputs=step_outputs,
                     start_time=step_start,
                     end_time=step_end,
                     project_name=project_name,

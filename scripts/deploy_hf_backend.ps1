@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 $RootDir = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $TempDir = Join-Path $RootDir ".hf_deploy_temp"
 $HfSpaceUrl = "https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api"
-$CommitMessage = "Deploy V26 FastAPI RAG backend"
+$CommitMessage = "Deploy release candidate FastAPI RAG backend with complete structured catalogs and graph"
 
 function Assert-InWorkspace {
     param([string]$Path)
@@ -116,18 +116,10 @@ Copy-RequiredFile ".env.example" ".env.example"
 Copy-RequiredFile "LICENSE" "LICENSE"
 
 Write-Host "[3/5] Copying runtime data allowlist..."
-Copy-RequiredJsonArtifact "data\processed\tables\scoring_tables.json" "data\processed\tables\scoring_tables.json"
-Copy-RequiredJsonArtifact "data\processed\tables\formula_rules.json" "data\processed\tables\formula_rules.json"
-Copy-RequiredJsonArtifact "data\processed\tables\structured_tables_registry.json" "data\processed\tables\structured_tables_registry.json"
-Copy-RequiredJsonArtifact "data\processed\tables\foreign_language_equivalency_table.json" "data\processed\tables\foreign_language_equivalency_table.json"
-Copy-RequiredJsonArtifact "data\processed\directories\student_service_directory.json" "data\processed\directories\student_service_directory.json"
-Copy-RequiredJsonArtifact "data\processed\directories\student_office_profiles.json" "data\processed\directories\student_office_profiles.json"
-Copy-RequiredJsonArtifact "data\processed\directories\student_faculty_profiles.json" "data\processed\directories\student_faculty_profiles.json"
-Copy-RequiredJsonArtifact "data\processed\directories\faculty_directory.json" "data\processed\directories\faculty_directory.json"
-Copy-RequiredJsonArtifact "data\processed\directories\program_directory.json" "data\processed\directories\program_directory.json"
-Copy-RequiredJsonArtifact "data\processed\directories\faculty_program_directory.json" "data\processed\directories\faculty_program_directory.json"
+Copy-RequiredDirectory "data\processed\tables" "data\processed\tables"
+Copy-RequiredDirectory "data\processed\directories" "data\processed\directories"
 Copy-RequiredDirectory "data\processed\entities" "data\processed\entities"
-Copy-RequiredJsonArtifact "data\processed\graphs\document_edges.json" "data\processed\graphs\document_edges.json"
+Copy-RequiredDirectory "data\processed\graphs" "data\processed\graphs"
 Copy-RequiredJsonArtifact "data\processed\chunks\all_docstore_items.json" "data\processed\chunks\all_docstore_items.json"
 Copy-RequiredJsonArtifact "data\processed\chunks\child_parent_chunks.json" "data\processed\chunks\child_parent_chunks.json"
 

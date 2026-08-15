@@ -26,9 +26,7 @@ from .answer_formatter import (
 )
 from .answer_guardrails import (
     build_clarification_question,
-    build_deterministic_answer,
     build_fallback_answer,
-    can_answer_deterministically,
     detect_ambiguous_query,
     is_low_confidence,
     is_out_of_domain_query,
@@ -173,7 +171,8 @@ class AnswerPipeline:
             )
             self.collection = None
 
-        llm_config = self.config["llm"]
+        llm_config = self.config.get("llm", {})
+        self.llm_config = llm_config
         if llm_config.get("provider") != "gemini":
             raise ValueError(
                 "AnswerPipeline requires llm.provider='gemini'."
@@ -353,37 +352,7 @@ class AnswerPipeline:
                 used_cache=False,
             )
         citations_config = self.config.get("citations", {})
-
         guardrails_config = self.config.get("guardrails", {})
-        # Compatibility fast path only. Production keeps this disabled so every
-        # validated structured payload is phrased consistently by the answer LLM.
-        if guardrails_config.get(
-            "allow_deterministic_direct_answer", True
-        ) and can_answer_deterministically(retrieval_result):
-            selected_citations = select_relevant_citations(
-                retrieval_result.get("citations"),
-                intent=retrieval_result.get("intent"),
-                retrieval_result=retrieval_result,
-                max_sources=int(citations_config.get("max_sources", 2)),
-            )
-            final_answer = format_final_answer(
-                build_deterministic_answer(
-                    effective_query, retrieval_result, selected_citations
-                ),
-                selected_citations,
-            )
-            return self._build_output(
-                query=query,
-                retrieval_result=retrieval_result,
-                final_answer=final_answer,
-                context_used=context_used,
-                selected_citations=selected_citations,
-                status="answered",
-                error_type=None,
-                error_message=None,
-                llm_called=False,
-                used_cache=False,
-            )
 
         selected_citations = select_relevant_citations(
             retrieval_result.get("citations"),
@@ -537,6 +506,60 @@ class AnswerPipeline:
 
         return output
 
+    def _build_stream_metadata(
+        self,
+        retrieval_result: dict[str, Any] | None,
+        *,
+        status: str,
+        effective_query: str,
+        fallback_reason: str | None = None,
+        citations_used: list[dict[str, Any]] | None = None,
+        related_references: list[dict[str, Any]] | None = None,
+        llm_called: bool = False,
+        run_id: str | None = None,
+        query_type_override: str | None = None,
+    ) -> dict[str, Any]:
+        """Build standardized metadata chunk for streaming responses dynamically."""
+        res = retrieval_result or {}
+        router_decision = res.get("router_decision") or {}
+        query_handling = res.get("query_handling") or router_decision.get("query_handling") or {}
+
+        execution_mode = res.get("execution_mode") or router_decision.get("execution_mode") or "regulation"
+        lookup_type = res.get("lookup_type") or router_decision.get("lookup_type")
+        query_type = (
+            query_type_override
+            or res.get("query_type")
+            or router_decision.get("query_type")
+            or query_handling.get("context_mode")
+            or "standalone"
+        )
+        model_name = (getattr(self, "llm_config", {}) or {}).get("model_name", "gemini-3.1-flash-lite")
+
+        resolved_fallback = fallback_reason or ("none" if status == "answered" else status)
+        resolved_citations = citations_used if citations_used is not None else (res.get("citations_used") or res.get("citations") or [])
+        resolved_related = related_references if related_references is not None else (res.get("related_references") or [])
+
+        return {
+            "type": "metadata",
+            "run_id": run_id,
+            "cohort": (res.get("cohort") or (router_decision or {}).get("cohort") or "default"),
+            "status": status,
+            "intent": res.get("intent") or router_decision.get("intent"),
+            "strategy": res.get("strategy") or router_decision.get("strategy"),
+            "execution_mode": execution_mode,
+            "lookup_type": lookup_type,
+            "query_type": query_type,
+            "model": model_name,
+            "effective_query": effective_query,
+            "query_handling": query_handling if query_handling else None,
+            "fallback_reason": resolved_fallback,
+            "citations_used": resolved_citations,
+            "related_references": resolved_related,
+            "detected_entities": res.get("detected_entities") or [],
+            "target_chunk_types": res.get("target_chunk_types") or [],
+            "llm_called": llm_called,
+        }
+
     def answer_stream(
         self,
         query: str,
@@ -590,14 +613,13 @@ class AnswerPipeline:
             fallback = build_fallback_answer(
                 query=effective_query, retrieval_result=None, reason="retrieval_error"
             )
-            yield {
-                "type": "metadata",
-                "run_id": run_id,
-                "status": "retrieval_error",
-                "intent": None,
-                "strategy": None,
-                "citations_used": [],
-            }
+            yield self._build_stream_metadata(
+                None,
+                status="retrieval_error",
+                effective_query=effective_query,
+                fallback_reason="retrieval_error",
+                run_id=run_id,
+            )
             yield {"type": "token", "text": fallback}
             yield {"type": "done", "tracker": tracker}
             return
@@ -606,16 +628,13 @@ class AnswerPipeline:
             clarification_msg = retrieval_result.get(
                 "clarification_question", "Bạn có thể làm rõ câu hỏi được không?"
             )
-            yield {
-                "type": "metadata",
-                "run_id": run_id,
-                "status": "needs_clarification",
-                "intent": retrieval_result.get("intent"),
-                "strategy": retrieval_result.get("strategy"),
-                "effective_query": effective_query,
-                "query_handling": retrieval_result.get("query_handling"),
-                "citations_used": [],
-            }
+            yield self._build_stream_metadata(
+                retrieval_result,
+                status="needs_clarification",
+                effective_query=effective_query,
+                fallback_reason="needs_clarification",
+                run_id=run_id,
+            )
             yield {"type": "token", "text": clarification_msg}
             yield {"type": "done", "tracker": tracker}
             return
@@ -625,17 +644,14 @@ class AnswerPipeline:
             clarification_msg = build_clarification_question(
                 effective_query, retrieval_result
             )
-            yield {
-                "type": "metadata",
-                "run_id": run_id,
-                "status": "needs_clarification",
-                "intent": retrieval_result.get("intent"),
-                "strategy": retrieval_result.get("strategy"),
-                "effective_query": effective_query,
-                "query_handling": retrieval_result.get("query_handling"),
-                "citations_used": [],
-                "llm_called": False,
-            }
+            yield self._build_stream_metadata(
+                retrieval_result,
+                status="needs_clarification",
+                effective_query=effective_query,
+                fallback_reason="ambiguous_query",
+                query_type_override="ambiguous",
+                run_id=run_id,
+            )
             yield {"type": "token", "text": clarification_msg}
             yield {"type": "done", "tracker": tracker}
             return
@@ -648,15 +664,13 @@ class AnswerPipeline:
                 "thủ tục hành chính, học bổng, rèn luyện, ký túc xá, thông tin phòng ban và khoa/ngành. "
                 "Bạn có thể hỏi lại theo một nội dung liên quan đến sổ tay nhé!"
             )
-            yield {
-                "type": "metadata",
-                "run_id": run_id,
-                "status": "out_of_domain",
-                "intent": "out_of_domain",
-                "strategy": "none",
-                "citations_used": [],
-                "llm_called": False,
-            }
+            yield self._build_stream_metadata(
+                retrieval_result,
+                status="out_of_domain",
+                effective_query=effective_query,
+                fallback_reason="out_of_domain",
+                run_id=run_id,
+            )
             yield {"type": "token", "text": out_of_domain_msg}
             yield {"type": "done", "tracker": tracker}
             return
@@ -667,17 +681,13 @@ class AnswerPipeline:
                 retrieval_result,
                 reason="out_of_domain",
             )
-            yield {
-                "type": "metadata",
-                "run_id": run_id,
-                "status": "out_of_domain",
-                "intent": retrieval_result.get("intent"),
-                "strategy": retrieval_result.get("strategy"),
-                "effective_query": effective_query,
-                "query_handling": retrieval_result.get("query_handling"),
-                "citations_used": [],
-                "llm_called": False,
-            }
+            yield self._build_stream_metadata(
+                retrieval_result,
+                status="out_of_domain",
+                effective_query=effective_query,
+                fallback_reason="out_of_domain",
+                run_id=run_id,
+            )
             yield {"type": "token", "text": out_of_domain_msg}
             yield {"type": "done", "tracker": tracker}
             return
@@ -686,37 +696,6 @@ class AnswerPipeline:
 
         citations_config = self.config.get("citations", {})
         guardrails_config = self.config.get("guardrails", {})
-
-        # Deterministic answers: yield as single chunk (no LLM needed)
-        if guardrails_config.get(
-            "allow_deterministic_direct_answer", True
-        ) and can_answer_deterministically(retrieval_result):
-            selected_citations = select_relevant_citations(
-                retrieval_result.get("citations"),
-                intent=retrieval_result.get("intent"),
-                retrieval_result=retrieval_result,
-                max_sources=int(citations_config.get("max_sources", 2)),
-            )
-            final_answer = format_final_answer(
-                build_deterministic_answer(
-                    effective_query, retrieval_result, selected_citations
-                ),
-                selected_citations,
-            )
-            yield {
-                "type": "metadata",
-                "run_id": run_id,
-                "status": "answered",
-                "intent": retrieval_result.get("intent"),
-                "strategy": retrieval_result.get("strategy"),
-                "effective_query": effective_query,
-                "query_handling": retrieval_result.get("query_handling"),
-                "citations_used": selected_citations,
-                "llm_called": False,
-            }
-            yield {"type": "token", "text": final_answer}
-            yield {"type": "done", "tracker": tracker}
-            return
 
         selected_citations = select_relevant_citations(
             retrieval_result.get("citations"),
@@ -735,17 +714,14 @@ class AnswerPipeline:
                 ),
                 selected_citations,
             )
-            yield {
-                "type": "metadata",
-                "run_id": run_id,
-                "status": "low_confidence",
-                "intent": retrieval_result.get("intent"),
-                "strategy": retrieval_result.get("strategy"),
-                "effective_query": effective_query,
-                "query_handling": retrieval_result.get("query_handling"),
-                "citations_used": selected_citations,
-                "llm_called": False,
-            }
+            yield self._build_stream_metadata(
+                retrieval_result,
+                status="low_confidence",
+                effective_query=effective_query,
+                fallback_reason="low_confidence",
+                citations_used=selected_citations,
+                run_id=run_id,
+            )
             yield {"type": "token", "text": final_answer}
             yield {"type": "done", "tracker": tracker}
             return
@@ -763,18 +739,15 @@ class AnswerPipeline:
         )
 
         yield {"type": "progress", "message": "Đang tổng hợp câu trả lời..."}
-        yield {
-            "type": "metadata",
-            "run_id": run_id,
-            "status": "answered",
-            "intent": retrieval_result.get("intent"),
-            "strategy": retrieval_result.get("strategy"),
-            "effective_query": effective_query,
-            "query_handling": retrieval_result.get("query_handling"),
-            "citations_used": all_citations,
-            "related_references": related_references,
-            "llm_called": True,
-        }
+        yield self._build_stream_metadata(
+            retrieval_result,
+            status="answered",
+            effective_query=effective_query,
+            citations_used=all_citations,
+            related_references=related_references,
+            llm_called=True,
+            run_id=run_id,
+        )
 
         try:
             llm_client = self._get_llm_client()
@@ -1177,16 +1150,15 @@ class AnswerPipeline:
             query_handling = None
         run_id = None
         if model_used is None:
-            if used_cache:
-                model_used = "cache"
-            elif not llm_called:
-                model_used = "deterministic"
+            llm_cfg = getattr(self, "llm_config", {}) or {}
+            model_used = llm_cfg.get("model_name", "gemini-3.1-flash-lite")
         return {
             "run_id": run_id,
             "query": query,
             "effective_query": retrieval_result.get("effective_query")
             or (query_handling or {}).get("effective_query")
             or query,
+            "cohort": retrieval_result.get("cohort") or (router_decision or {}).get("cohort") or "default",
             "query_handling": query_handling,
             "router_decision": router_decision,
             "answer": final_answer,
@@ -1195,6 +1167,14 @@ class AnswerPipeline:
             "error_message": error_message,
             "intent": retrieval_result.get("intent"),
             "strategy": retrieval_result.get("strategy"),
+            "execution_mode": retrieval_result.get("execution_mode") or (router_decision or {}).get("execution_mode") or "regulation",
+            "lookup_type": retrieval_result.get("lookup_type") or (router_decision or {}).get("lookup_type"),
+            "query_type": retrieval_result.get("query_type") or (router_decision or {}).get("query_type") or "standalone",
+            "detected_entities": retrieval_result.get("detected_entities") or [],
+            "target_chunk_types": retrieval_result.get("target_chunk_types") or [],
+            "raw_query": query,
+            "fallback_reason": error_type or (status if status in {"out_of_domain", "needs_clarification", "low_confidence", "retrieval_error", "api_error"} else "none"),
+            "retrieved_chunks_count": len(retrieval_result.get("retrieved_items") or []),
             "retrieval_query": retrieval_result.get("retrieval_query"),
             "citations": retrieval_result.get("citations", []),
             "citations_used": selected_citations,
@@ -1204,6 +1184,7 @@ class AnswerPipeline:
             "tool_result": retrieval_result.get("tool_result"),
             "llm_called": llm_called,
             "model_used": model_used,
+            "model": model_used,
             "used_cache": used_cache,
             "clarification_needed": clarification_needed,
             "context_used": context_used,

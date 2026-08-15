@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import threading
 import time
 from typing import Any
 from uuid import uuid4
@@ -16,8 +17,11 @@ from src.api.chat_controls import (
 )
 from src.api.deps import get_answer_service
 from src.api.schemas import ChatRequest, ChatResponse, ChatFeedbackRequest
-import threading
-from src.api.langsmith_helper import push_trace_to_langsmith, push_feedback_to_langsmith
+from src.api.langsmith_helper import (
+    push_trace_to_langsmith,
+    push_feedback_to_langsmith,
+    build_trace_metadata,
+)
 
 
 router = APIRouter(tags=["chat"])
@@ -159,6 +163,13 @@ def chat(
                 trace_id=request_id,
             )
             sync_latency = round((time.perf_counter() - started_at) * 1000, 2)
+            trace_metadata = build_trace_metadata(
+                result,
+                query=query,
+                cohort=request.cohort,
+                chat_history=request.chat_history,
+                latency_ms=sync_latency,
+            )
             # Push trace to LangSmith (Realtime)
             threading.Thread(
                 target=push_trace_to_langsmith,
@@ -170,23 +181,9 @@ def chat(
                     str(result.get("answer") or ""),
                 ),
                 kwargs={
-                    "metadata": {
-                        "status": result.get("status"),
-                        "intent": result.get("intent"),
-                        "strategy": result.get("strategy"),
-                        "model": result.get("model"),
-                        "citations_used": result.get("citations_used") or result.get("citations") or [],
-                        "related_references": result.get("related_references") or [],
-                        "detected_entities": result.get("detected_entities") or [],
-                        "target_chunk_types": result.get("target_chunk_types") or [],
-                        "suggestions": result.get("suggestions") or [],
-                        "used_cache": result.get("used_cache", False),
-                        "llm_called": result.get("llm_called", True),
-                        "response_time_ms": sync_latency,
-                        "chat_history": request.chat_history or [],
-                    },
+                    "metadata": trace_metadata,
                     "latency_ms": sync_latency,
-                    "model": result.get("model"),
+                    "model": trace_metadata.get("model"),
                     "tags": ["sync"],
                     "tracker": result.get("tracker"),
                 },

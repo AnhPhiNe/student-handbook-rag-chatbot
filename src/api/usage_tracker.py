@@ -25,4 +25,16 @@ class UsageTracker:
         return self._steps
         
     def total_tokens(self) -> int:
-        return sum(step["total_tokens"] for step in self._steps)
+        return sum(int(step.get("total_tokens") or 0) for step in self._steps)
+
+    def get_total_usage(self) -> dict[str, int]:
+        input_tokens = sum(int(step.get("input_tokens") or 0) for step in self._steps)
+        output_tokens = sum(int(step.get("output_tokens") or 0) for step in self._steps)
+        total_tokens = sum(int(step.get("total_tokens") or 0) for step in self._steps)
+        if total_tokens == 0 and (input_tokens > 0 or output_tokens > 0):
+            total_tokens = input_tokens + output_tokens
+        return {
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+            "total_tokens": total_tokens,
+        }

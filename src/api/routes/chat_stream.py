@@ -21,7 +21,7 @@ from uuid import uuid4
 import threading
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
-from src.api.langsmith_helper import push_trace_to_langsmith
+from src.api.langsmith_helper import push_trace_to_langsmith, build_trace_metadata
 
 from src.api.chat_controls import (
     ChatCapacityError,
@@ -162,7 +162,15 @@ def chat_stream(
                         done_latency = round((time.perf_counter() - started_at) * 1000, 2)
                         ttft_ms = round((first_token_at - started_at) * 1000, 2) if first_token_at else done_latency
                         tracker = chunk.get("tracker")
-                        # Push trace to LangSmith (Realtime)
+                        trace_metadata = build_trace_metadata(
+                            final_metadata,
+                            query=query,
+                            cohort=request.cohort,
+                            chat_history=request.chat_history,
+                            latency_ms=done_latency,
+                            ttft_ms=ttft_ms,
+                            status_override=final_status,
+                        )
                         threading.Thread(
                             target=push_trace_to_langsmith,
                             args=(
@@ -173,23 +181,9 @@ def chat_stream(
                                 full_text, 
                             ),
                             kwargs={
-                                "metadata": {
-                                    "status": final_status,
-                                    "intent": final_metadata.get("intent"),
-                                    "strategy": final_metadata.get("strategy"),
-                                    "model": final_metadata.get("model"),
-                                    "citations_used": final_metadata.get("citations_used") or final_metadata.get("citations") or [],
-                                    "related_references": final_metadata.get("related_references") or [],
-                                    "detected_entities": final_metadata.get("detected_entities") or [],
-                                    "target_chunk_types": final_metadata.get("target_chunk_types") or [],
-                                    "suggestions": final_metadata.get("suggestions") or [],
-                                    "used_cache": final_metadata.get("used_cache", False),
-                                    "llm_called": final_metadata.get("llm_called", True),
-                                    "ttft_ms": ttft_ms,
-                                    "chat_history": request.chat_history or [],
-                                },
+                                "metadata": trace_metadata,
                                 "latency_ms": done_latency,
-                                "model": final_metadata.get("model"),
+                                "model": trace_metadata.get("model"),
                                 "tags": ["stream"],
                                 "tracker": tracker,
                             },

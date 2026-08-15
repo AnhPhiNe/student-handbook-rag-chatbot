@@ -35,6 +35,16 @@ def _required_artifacts() -> list[ArtifactStatus]:
             "config",
         ),
         _artifact(
+            "configs/structured_lookup_registry.yaml",
+            Path("configs/structured_lookup_registry.yaml").is_file(),
+            "config",
+        ),
+        _artifact(
+            "configs/retrieval.yaml",
+            Path("configs/retrieval.yaml").is_file(),
+            "config",
+        ),
+        _artifact(
             "data/processed/tables/scoring_tables.json",
             Path("data/processed/tables/scoring_tables.json").is_file(),
             "processed_json",
@@ -42,6 +52,11 @@ def _required_artifacts() -> list[ArtifactStatus]:
         _artifact(
             "data/processed/tables/formula_rules.json",
             Path("data/processed/tables/formula_rules.json").is_file(),
+            "processed_json",
+        ),
+        _artifact(
+            "data/processed/tables/threshold_rules.json",
+            Path("data/processed/tables/threshold_rules.json").is_file(),
             "processed_json",
         ),
         _artifact(
@@ -62,6 +77,21 @@ def _required_artifacts() -> list[ArtifactStatus]:
         _artifact(
             "data/processed/directories/student_office_profiles.json",
             Path("data/processed/directories/student_office_profiles.json").is_file(),
+            "processed_json",
+        ),
+        _artifact(
+            "data/processed/directories/student_faculty_profiles.json",
+            Path("data/processed/directories/student_faculty_profiles.json").is_file(),
+            "processed_json",
+        ),
+        _artifact(
+            "data/processed/directories/faculty_directory.json",
+            Path("data/processed/directories/faculty_directory.json").is_file(),
+            "processed_json",
+        ),
+        _artifact(
+            "data/processed/directories/program_directory.json",
+            Path("data/processed/directories/program_directory.json").is_file(),
             "processed_json",
         ),
         _artifact(

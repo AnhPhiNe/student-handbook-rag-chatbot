@@ -83,6 +83,13 @@ def _office_search_text(record: dict[str, Any]) -> str:
     )
 
 
+def _generate_generic_acronym(phrase: str) -> str:
+    tokens = [t for t in normalize_text(phrase).split() if t not in STOPWORDS]
+    if len(tokens) >= 2:
+        return "".join(t[0] for t in tokens).upper()
+    return ""
+
+
 def _candidate_values(record: dict[str, Any]) -> list[str]:
     base_unit = _strip_order_prefix(record.get("unit_name") or record.get("unit"))
     values = [
@@ -90,16 +97,30 @@ def _candidate_values(record: dict[str, Any]) -> list[str]:
         str(record.get("service") or "").strip(),
         *(str(alias).strip() for alias in record.get("aliases") or []),
     ]
-    if base_unit and any(delim in base_unit for delim in ["–", "-", "/"]):
-        parts = re.split(r"\s*[–\-/]\s*", base_unit)
+    # Generic linguistic & acronym expansion
+    match_prefix = re.match(r"^(Khoa|Phòng|Ban|Trung tâm|Viện)\s+(.+)$", base_unit, flags=re.IGNORECASE)
+    if match_prefix:
+        prefix, stem = match_prefix.group(1), match_prefix.group(2)
+        values.append(stem)
+        # Suffix qualifier stripping (e.g. 'Tiếng Hàn Quốc' -> 'Tiếng Hàn')
+        if stem.lower().endswith(" quốc"):
+            short_stem = stem[:-5].strip()
+            values.extend([short_stem, f"{prefix} {short_stem}"])
+        # Conjunction & compound splitting (e.g. 'Công tác chính trị và Học sinh, sinh viên')
+        parts = re.split(r"\s+(?:và|–|-|/|,)\s+", stem, flags=re.IGNORECASE)
         if len(parts) >= 2:
-            prefix = parts[0].split()[0] if parts[0].split() else ""
             for p in parts:
                 p_clean = p.strip()
-                if p_clean:
-                    values.append(p_clean)
-                    if prefix and not p_clean.startswith(prefix):
-                        values.append(f"{prefix} {p_clean}")
+                if p_clean and len(p_clean) >= 3:
+                    values.extend([p_clean, f"{prefix} {p_clean}"])
+                    acronym = _generate_generic_acronym(p_clean)
+                    if acronym:
+                        values.extend([acronym, f"{prefix} {acronym}"])
+        # Full stem acronym
+        full_acronym = _generate_generic_acronym(stem)
+        if full_acronym:
+            values.extend([full_acronym, f"{prefix} {full_acronym}"])
+
     return list(dict.fromkeys(value for value in values if value))
 
 
@@ -515,8 +536,7 @@ def office_lookup(
                 "match_score": round(match_score, 4),
                 "score_margin": round(score_margin, 4),
             }
-        else:
-            ranked = ranked[:1]
+    effective_top_k = max(top_k, len(multi_entity_items)) if "multi_entity_items" in locals() and len(multi_entity_items) > 1 else top_k
     matches = [
         _summarize_office(item["record"])
         | {
@@ -525,7 +545,7 @@ def office_lookup(
             "semantic_score": round(item["semantic_score"], 4),
             "selection_method": item["selection_method"],
         }
-        for item in ranked[:top_k]
+        for item in ranked[:effective_top_k]
     ]
 
     if not matches:

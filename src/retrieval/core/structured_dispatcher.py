@@ -407,12 +407,6 @@ def resolve_structured_decision(
 
     primary_res = _resolve_single_lookup(lookup_type, **lookup_kwargs) if lookup_type else None
 
-    # If AI Router already identified a specific single lookup_type and it successfully resolved,
-    # return primary_res directly without overly broad probing
-    if primary_res and _is_valid_probe_result(primary_res):
-        if decision.get("intent") not in {"multi_intent", "mixed"} and not decision.get("multi_lookup"):
-            return primary_res
-
     # When Router explicitly determines single pure regulation without lookup_type, skip structured probing
     if decision.get("execution_mode") == "regulation" and not lookup_type:
         return None
@@ -446,44 +440,44 @@ def resolve_structured_decision(
             if cand_type in {"office", "faculty", "student_service"}:
                 seen_lookups.update({"office", "faculty", "student_service"})
 
-        if len(collected) >= 2:
-            combined_result = {
-                "lookup_type": "multi_structured",
-                "input_value": query,
-                "cohort": effective_cohort,
-                "lookup_count": len(collected),
-                "result": [
-                    {
-                        "lookup_type": item.lookup_type,
-                        "table_name": item.result.get("table_name") or item.lookup_type,
-                        "data": item.result.get("result") or item.result.get("items") or item.result,
-                    }
-                    for item in collected
-                ],
-                "sub_lookups": [
-                    {
-                        "lookup_type": item.lookup_type,
-                        "strategy": item.strategy,
-                        "table_name": item.result.get("table_name") or item.lookup_type,
-                        "data": item.result.get("result") or item.result.get("items") or item.result,
-                    }
-                    for item in collected
-                ],
-                "source_pages": sorted(list({p for item in collected for p in (item.result.get("source_pages") or [])})),
-                "table_name": "Các bảng tra cứu liên quan",
-                "source_label": "Dữ liệu tra cứu tổng hợp trong Sổ tay sinh viên HCMUE",
-                "content_type": "multi_structured_lookup",
-            }
-            all_target_chunks = list({ct for item in collected for ct in item.target_chunk_types})
-            return StructuredResolution(
-                lookup_type="multi_structured",
-                strategy="multi_structured_lookup",
-                result_kind="multi_structured",
-                result=combined_result,
-                target_chunk_types=all_target_chunks,
-            )
-        elif len(collected) == 1 and not primary_res:
-            return collected[0]
+    if len(collected) >= 2:
+        combined_result = {
+            "lookup_type": "multi_structured",
+            "input_value": query,
+            "cohort": effective_cohort,
+            "lookup_count": len(collected),
+            "result": [
+                {
+                    "lookup_type": item.lookup_type,
+                    "table_name": item.result.get("table_name") or item.lookup_type,
+                    "data": item.result.get("result") or item.result.get("items") or item.result,
+                }
+                for item in collected
+            ],
+            "sub_lookups": [
+                {
+                    "lookup_type": item.lookup_type,
+                    "strategy": item.strategy,
+                    "table_name": item.result.get("table_name") or item.lookup_type,
+                    "data": item.result.get("result") or item.result.get("items") or item.result,
+                }
+                for item in collected
+            ],
+            "source_pages": sorted(list({p for item in collected for p in (item.result.get("source_pages") or [])})),
+            "table_name": "Các bảng tra cứu liên quan",
+            "source_label": "Dữ liệu tra cứu tổng hợp trong Sổ tay sinh viên HCMUE",
+            "content_type": "multi_structured_lookup",
+        }
+        all_target_chunks = list({ct for item in collected for ct in item.target_chunk_types})
+        return StructuredResolution(
+            lookup_type="multi_structured",
+            strategy="multi_structured_lookup",
+            result_kind="multi_structured",
+            result=combined_result,
+            target_chunk_types=all_target_chunks,
+        )
+    elif len(collected) == 1:
+        return collected[0]
 
     return primary_res
 

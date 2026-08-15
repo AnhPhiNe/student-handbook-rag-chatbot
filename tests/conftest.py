@@ -22,8 +22,13 @@ def mock_env_vars():
 
 @pytest.fixture(autouse=True)
 def mock_langsmith():
-    """Mock LangSmith client to prevent telemetry emission during tests."""
-    with patch("langsmith.Client", autospec=True) as mock_ls:
-        mock_instance = MagicMock()
-        mock_ls.return_value = mock_instance
-        yield mock_instance
+    """Mock LangSmith helpers to prevent telemetry emission during tests."""
+    with patch("src.api.langsmith_helper.push_trace_to_langsmith") as mock_push, \
+         patch("src.api.langsmith_helper.push_feedback_to_langsmith") as mock_feedback, \
+         patch("src.api.langsmith_helper.get_langsmith_client") as mock_client:
+        mock_client.return_value = None
+        yield {
+            "push": mock_push,
+            "feedback": mock_feedback,
+            "client": mock_client,
+        }

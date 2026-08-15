@@ -88,8 +88,16 @@ def push_trace_to_langsmith(
             id=run_uuid,
             name=name or "HCMUE Student Handbook Assistant",
             run_type="chain",
-            inputs={"query": input_text, "chat_history": meta.get("chat_history", [])},
-            outputs={"answer": output_text, "status": meta.get("status", "ok")},
+            inputs={
+                "query": input_text,
+                "cohort": session_id,
+                "chat_history": meta.get("chat_history", []),
+            },
+            outputs={
+                "answer": output_text,
+                "status": meta.get("status", "ok"),
+                "citations_count": len(meta.get("citations_used") or []),
+            },
             start_time=start_time,
             end_time=end_time,
             project_name=project_name,

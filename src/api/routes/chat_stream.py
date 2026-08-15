@@ -139,6 +139,7 @@ def chat_stream(
                     cohort=request.cohort,
                     trace_id=request_id,
                 )
+                first_token_at = None
                 for chunk in stream:
                     chunk_type = chunk.get("type", "")
                     if chunk_type == "metadata":
@@ -148,6 +149,8 @@ def chat_stream(
                         final_status = str(chunk.get("status") or final_status)
                         yield _sse_event("metadata", chunk)
                     elif chunk_type == "token":
+                        if first_token_at is None:
+                            first_token_at = time.perf_counter()
                         full_text += chunk.get("text", "")
                         yield _sse_event("token", {"text": chunk.get("text", "")})
                     elif chunk_type == "progress":
@@ -157,6 +160,7 @@ def chat_stream(
                         )
                     elif chunk_type == "done":
                         done_latency = round((time.perf_counter() - started_at) * 1000, 2)
+                        ttft_ms = round((first_token_at - started_at) * 1000, 2) if first_token_at else done_latency
                         tracker = chunk.get("tracker")
                         # Push trace to LangSmith (Realtime)
                         threading.Thread(
@@ -176,7 +180,13 @@ def chat_stream(
                                     "model": final_metadata.get("model"),
                                     "citations_used": final_metadata.get("citations_used") or final_metadata.get("citations") or [],
                                     "related_references": final_metadata.get("related_references") or [],
+                                    "detected_entities": final_metadata.get("detected_entities") or [],
+                                    "target_chunk_types": final_metadata.get("target_chunk_types") or [],
+                                    "suggestions": final_metadata.get("suggestions") or [],
                                     "used_cache": final_metadata.get("used_cache", False),
+                                    "llm_called": final_metadata.get("llm_called", True),
+                                    "ttft_ms": ttft_ms,
+                                    "chat_history": request.chat_history or [],
                                 },
                                 "latency_ms": done_latency,
                                 "model": final_metadata.get("model"),

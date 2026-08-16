@@ -286,8 +286,8 @@ The release candidate was evaluated across 6 comprehensive suites using the froz
 | Evaluation Suite | Sample Size | Scope & Purpose | Status |
 |---|---:|---|:---:|
 | **1. Dataset Validation** | 462 docs / 4 datasets | Integrity, schema contracts, and docstore coverage | 🟢 PASS (100%) |
-| **2. Structured Lookups** | 120 cases | Catalog routing, table lookup exactness, and fallbacks | 🟢 PASS (99.17%) |
-| **3. Regulation Retrieval** | 180 cases | End-to-end Router + Hybrid Qdrant/BM25 + Mongo binding | 🟢 PASS (Hit@3 85.56%) |
+| **2. Structured Lookups** | 120 cases | Catalog routing, table lookup exactness, and fallbacks | 🟢 PASS (100.00%) |
+| **3. Regulation Retrieval** | 180 cases | End-to-end Router + Hybrid Qdrant/BM25 + Mongo binding | 🟢 PASS (Hit@5 91.11% \| MRR 0.786) |
 | **4. Graph Supplement** | 95 edges | Knowledge graph expansion, depth-2 recall, and cohort isolation | 🟢 PASS (100%) |
 | **5. Answer Generation & Judge** | 100 cases | RAGAS automated Judge (`gpt-oss-120b`) across 4 case types | 🟢 PUBLISHED |
 | **6. Human Audit (5-Level Rubric)** | 25 cases | 15 stratified-random headline cases + 10 failure diagnostics | 🟢 AUDITED (0% Critical) |
@@ -299,17 +299,17 @@ The release candidate was evaluated across 6 comprehensive suites using the froz
 
 | Metric | Measured Result | 95% Confidence Interval |
 |---|---:|:---:|
-| **Cases Passed** | **119 / 120 (99.17%)** | [95.43% – 99.85%] |
-| **Lookup Exactness** | **99.17%** | — |
-| **Precision** | **98.36%** | — |
+| **Cases Passed** | **120 / 120 (100.00%)** | [96.90% – 100.00%] |
+| **Lookup Exactness** | **100.00%** | — |
+| **Precision** | **100.00%** | — |
 | **Recall** | **100.00%** | — |
-| **F1-Score** | **99.17%** | — |
+| **F1-Score** | **100.00%** | — |
 | **Intent Accuracy** | **100.00%** | — |
 | **Strategy Accuracy** | **100.00%** | — |
 | **Structured Value Exactness** | **100.00%** | — |
 | **Citation Metadata Accuracy** | **100.00%** | — |
 | **Cross-Cohort Leaks** | **0 (0.00%)** | — |
-| **Latency (P50 / P95)** | **1.00s / 2.25s** | — |
+| **Latency (P50 / P95)** | **1.15s / 8.52s** | — |
 
 ---
 
@@ -319,16 +319,16 @@ Evaluates the full user retrieval path: Slang Normalizer $\rightarrow$ AI Router
 
 | Metric | Measured Result | 95% Confidence Interval |
 |---|---:|:---:|
-| **Hit@1** | **68.89%** | [62.76% – 75.56%] |
-| **Hit@3** | **85.56%** | [80.00% – 90.56%] |
-| **Hit@5** | **89.44%** | [84.99% – 93.33%] |
-| **MRR (Mean Reciprocal Rank)** | **77.49%** | [72.40% – 82.63%] |
-| **nDCG@5** | **79.02%** | [74.36% – 83.47%] |
-| **Parent Section Match** | **89.44%** | — |
-| **Citation Binding Rate** | **89.44%** | — |
+| **Hit@1** | **70.56%** | [63.89% – 76.67%] |
+| **Hit@3** | **86.67%** | [81.67% – 91.67%] |
+| **Hit@5** | **91.11%** | [86.67% – 95.00%] |
+| **MRR (Mean Reciprocal Rank)** | **78.56%** | [73.43% – 83.40%] |
+| **nDCG@5** | **80.06%** | [75.51% – 84.26%] |
+| **Parent Section Match** | **91.11%** | — |
+| **Citation Binding Rate** | **91.11%** | — |
 | **Cohort Match Rate** | **100.00%** | — |
 | **Cohort Leak Rate** | **0.00%** | — |
-| **Retrieval Latency (P50 / P95)** | **1.29s / 2.03s** | — |
+| **Retrieval Latency (P50 / P95)** | **1.43s / 2.27s** | — |
 
 ---
 
@@ -352,14 +352,14 @@ Evaluated using `openai/gpt-oss-120b` as a strict RAGAS-style Judge over 60 regu
 
 | Metric | Measured Result | 95% Confidence Interval |
 |---|---:|:---:|
-| **Answer Relevancy** | **87.76%** | [83.12% – 92.18%] |
-| **Citation Correctness** | **81.74%** | [75.87% – 87.70%] |
-| **Context Recall** | **79.89%** | [73.77% – 85.93%] |
-| **Answer Correctness** | **77.71%** | [71.26% – 84.02%] |
-| **Faithfulness** | **77.18%** | [71.32% – 83.20%] |
-| **Context Precision** | **67.78%** | [62.88% – 72.52%] |
+| **Answer Relevancy** | **86.38%** | [81.62% – 90.59%] |
+| **Citation Correctness** | **79.77%** | [73.45% – 85.70%] |
+| **Context Recall** | **78.78%** | [72.90% – 84.78%] |
+| **Answer Correctness** | **74.84%** | [68.14% – 81.19%] |
+| **Faithfulness** | **75.22%** | [68.64% – 81.26%] |
+| **Context Precision** | **66.33%** | [61.84% – 70.82%] |
 | **Numeric Accuracy** | **93.00%** | — |
-| **Abstention Correctness** | **90.00%** | — |
+| **Abstention Correctness** | **89.00%** | — |
 | **Answer Success Rate** | **99.00%** | — |
 
 ---

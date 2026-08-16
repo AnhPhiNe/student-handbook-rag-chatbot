@@ -14,6 +14,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .pytest-*/
+.tmp/
 .ruff_cache/
 .mypy_cache/
 .coverage
@@ -27,7 +28,6 @@ frontend/.vite/
 
 # Generated and private data
 /data/raw/
-/data/processed/
 /data/cache/
 /data/vectorstore/
 /data/eval/reports/

@@ -1,0 +1,25 @@
+{
+  "status": "ok",
+  "docstore_path": "data\\processed\\chunks\\all_docstore_items.json",
+  "source_cohort": "K50",
+  "source_document_id": "so_tay_sinh_vien_khoa_50",
+  "source_section_count": 8,
+  "applicable_cohorts": [
+    "K48-K49",
+    "K50",
+    "K51"
+  ],
+  "derived_section_count": 0,
+  "removed_legacy_derived_section_count": 0,
+  "total_docstore_items": 462,
+  "source_parent_ids": [
+    "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1",
+    "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu2",
+    "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu3",
+    "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4",
+    "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu5",
+    "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu6",
+    "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu7",
+    "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8"
+  ]
+}

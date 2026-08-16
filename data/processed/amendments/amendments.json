@@ -1,0 +1,86 @@
+[
+  {
+    "amendment_id": "amd-180a73da018b80016035",
+    "target_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+    "target_kind": "diem",
+    "target_anchor": "d",
+    "source_document_id": "4743/QĐ-ĐHSP",
+    "source_locator": "khoản 2, Điều 1, Quyết định số 4743/QĐ-ĐHSP",
+    "replacement_text": "d) Đánh giá các học phần tốt nghiệp thực hiện theo hướng dẫn, quy định hiện hành của Trường. Sinh viên có học phần tốt nghiệp bị điểm dưới C, phải thực hiện lại học phần tốt nghiệp tương ứng.",
+    "applicability": {
+      "kind": "min_admission_year",
+      "year": 2025
+    },
+    "cohort": "K51"
+  },
+  {
+    "amendment_id": "amd-1eb5b0ba5c07e1927322",
+    "target_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+    "target_kind": "diem",
+    "target_anchor": "b",
+    "source_document_id": "4743/QĐ-ĐHSP",
+    "source_locator": "khoản 4, Điều 1, Quyết định số 4743/QĐ-ĐHSP",
+    "replacement_text": "b) Sinh viên có điểm học phần đạt được đăng ký học lại chính học phần đó để cải thiện điểm. Điểm đánh giá cao nhất trong những điểm mà sinh viên đã đạt của học phần là điểm chính thức của học phần.",
+    "applicability": {
+      "kind": "min_admission_year",
+      "year": 2025
+    },
+    "cohort": "K51"
+  },
+  {
+    "amendment_id": "amd-206d789ba469f43906af",
+    "target_parent_id": "K51_QuyCheDaoTao_Chuong4_Dieu17",
+    "target_kind": "diem",
+    "target_anchor": "c",
+    "source_document_id": "4743/QĐ-ĐHSP",
+    "source_locator": "khoản 6, Điều 1, Quyết định số 4743/QĐ-ĐHSP",
+    "replacement_text": "c) Hai tuần trước khi hết thời gian tạm dừng học tập, sinh viên phải làm đơn gửi Phòng CTCT&HSSV để tiếp nhận trở lại học tập. Sau thời gian nghỉ học tạm thời, sinh viên trở lại Trường sẽ tiếp tục được học tập theo chương trình đào tạo của khóa tuyển sinh. Trường hợp sinh viên chưa thể trở lại học phải làm đơn xin gia hạn thời gian tạm dừng học tập. Quá thời gian tạm dừng học tập sinh viên không trở lại Trường học tập xem như tự ý bỏ học.",
+    "applicability": {
+      "kind": "min_admission_year",
+      "year": 2025
+    },
+    "cohort": "K51"
+  },
+  {
+    "amendment_id": "amd-2aceab7ea0e80ee04e96",
+    "target_parent_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+    "target_kind": "khoan",
+    "target_anchor": "6",
+    "source_document_id": "4743/QĐ-ĐHSP",
+    "source_locator": "khoản 1, Điều 1, Quyết định số 4743/QĐ-ĐHSP",
+    "replacement_text": "a) Thời gian học tập chuẩn toàn khoá và thời gian học tập tối đa đối với hình thức đào tạo chính quy và đào tạo vừa làm vừa học được quy định như sau: Hình thức đào tạo Thời gian học tập chuẩn Thời gian học tập tối đa Chính quy 04 năm học 06 năm học Vừa làm vừa học 05 năm học 7,5 năm học b) Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ.",
+    "applicability": {
+      "kind": "min_admission_year",
+      "year": 2025
+    },
+    "cohort": "K51"
+  },
+  {
+    "amendment_id": "amd-36a6e26e4af954caeb61",
+    "target_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+    "target_kind": "diem",
+    "target_anchor": "đ",
+    "source_document_id": "4743/QĐ-ĐHSP",
+    "source_locator": "khoản 2, Điều 1, Quyết định số 4743/QĐ-ĐHSP",
+    "replacement_text": "Đối với các học phần thực tập, việc đánh giá học phần được thực hiện theo quy định trong Quy chế thực tập hiện hành của Trường.",
+    "applicability": {
+      "kind": "min_admission_year",
+      "year": 2025
+    },
+    "cohort": "K51"
+  },
+  {
+    "amendment_id": "amd-c0fc14ecdcb288156d2d",
+    "target_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu12",
+    "target_kind": "diem",
+    "target_anchor": "d",
+    "source_document_id": "4743/QĐ-ĐHSP",
+    "source_locator": "khoản 5, Điều 1, Quyết định số 4743/QĐ-ĐHSP",
+    "replacement_text": "d) Sinh viên năm thứ tư: M1 + M2 + M3 ≤ N ≤ M1 + M2 + M3 +M4.",
+    "applicability": {
+      "kind": "min_admission_year",
+      "year": 2025
+    },
+    "cohort": "K51"
+  }
+]

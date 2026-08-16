@@ -1,0 +1,76 @@
+{
+  "schema_version": "two-table-categories-v1",
+  "categories": {
+    "regulation_table": {
+      "path": "data\\processed\\tables\\structured_tables_registry.json",
+      "count": 26,
+      "table_type_counts": {
+        "conduct": 3,
+        "foreign_language": 1,
+        "scholarship": 3,
+        "scoring": 13,
+        "study_duration": 6
+      },
+      "cohort_counts": {
+        "K48-K49": 8,
+        "K50": 9,
+        "K51": 9
+      },
+      "qdrant_indexed_from_json": false
+    },
+    "directory_table": {
+      "catalogs": {
+        "student_service_directory": {
+          "path": "data\\processed\\directories\\student_service_directory.json",
+          "count": 239,
+          "cohort_counts": {
+            "K48-K49": 79,
+            "K50": 80,
+            "K51": 80
+          }
+        },
+        "student_office_profiles": {
+          "path": "data\\processed\\directories\\student_office_profiles.json",
+          "count": 65,
+          "cohort_counts": {
+            "K48-K49": 22,
+            "K50": 22,
+            "K51": 21
+          }
+        },
+        "student_faculty_profiles": {
+          "path": "data\\processed\\directories\\student_faculty_profiles.json",
+          "count": 78,
+          "cohort_counts": {
+            "K48-K49": 23,
+            "K50": 23,
+            "K51": 32
+          }
+        },
+        "program_directory": {
+          "path": "data\\processed\\directories\\program_directory.json",
+          "count": 128,
+          "cohort_counts": {
+            "K48-K49": 42,
+            "K50": 42,
+            "K51": 44
+          }
+        }
+      },
+      "qdrant_indexed_from_json": false
+    }
+  },
+  "separate_catalogs": {
+    "formula": "data/processed/tables/formula_rules.json"
+  },
+  "storage_policy": {
+    "qdrant": "regulation_text_only",
+    "mongo": "full_parent_regulation_with_structured_tables",
+    "structured_json": "local_source_of_truth"
+  },
+  "validation": {
+    "missing_regulation_table_source_count": 0,
+    "missing_regulation_table_sources": [],
+    "synthetic_citation_source_count": 0
+  }
+}

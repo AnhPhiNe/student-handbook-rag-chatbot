@@ -19,6 +19,16 @@ def clean_answer(text: str) -> str:
     text = re.sub(r"\s*```$", "", text)
     text = re.sub(r"[ \t]+\n", "\n", text)
     text = re.sub(r"\n{3,}", "\n\n", text)
+    # Loại bỏ hoàn toàn các nhãn kỹ thuật nội bộ nếu LLM vô tình sinh ra
+    text = re.sub(
+        r"\s*\(\s*(?:được\s+)?(?:sửa\s+đổi[,\s]+)?bổ\s+sung\s+bởi\s+AMENDMENT\s*\d*\s*\)",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+    text = re.sub(r"\[AMENDMENT\s*\d*\]", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"\bAMENDMENT\s*\d+\b", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"[ ]{2,}", " ", text)
     return text.strip()
 
 

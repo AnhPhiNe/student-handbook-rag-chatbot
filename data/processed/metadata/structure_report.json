@@ -1,0 +1,946 @@
+{
+  "total_sections": 173,
+  "total_article_sections": 173,
+  "total_non_article_sections": 0,
+  "content_type_count": {
+    "regulation_text": 173
+  },
+  "section_level_count": {
+    "article": 173
+  },
+  "sections_with_tables": [
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+      "title": "Chương trình đào tạo và thời gian học tập",
+      "page_start": 9,
+      "page_end": 11
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "title": "Đánh giá và tính điểm học phần",
+      "page_start": 16,
+      "page_end": 19
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+      "page_start": 19,
+      "page_end": 21
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "title": "Phân loại kết quả rèn luyện",
+      "page_start": 91,
+      "page_end": 91
+    }
+  ],
+  "sections_with_formulas": [
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+      "title": "Chương trình đào tạo và thời gian học tập",
+      "page_start": 9,
+      "page_end": 11
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong2_Dieu9",
+      "title": "Tổ chức đăng ký học tập",
+      "page_start": 15,
+      "page_end": 16
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "title": "Đánh giá và tính điểm học phần",
+      "page_start": 16,
+      "page_end": 19
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+      "page_start": 19,
+      "page_end": 21
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu12",
+      "title": "Xử lý kết quả học tập đối với hình thức đào tạo chính quy",
+      "page_start": 21,
+      "page_end": 22
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu17",
+      "title": "Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo, chuyển hình thức học",
+      "page_start": 26,
+      "page_end": 27
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong5_Dieu24",
+      "title": "Hiệu lực thi hành",
+      "page_start": 30,
+      "page_end": 31
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+      "page_start": 70,
+      "page_end": 72
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+      "title": "Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương tiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh viên người dân tộc thiểu số",
+      "page_start": 73,
+      "page_end": 73
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+      "title": "Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học",
+      "page_start": 73,
+      "page_end": 75
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "title": "Quy định về việc thôi học, chuyển trường, chuyển ngành, buộc thôi học",
+      "page_start": 75,
+      "page_end": 76
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu37",
+      "title": "Hội đồng Khen thưởng và Kỷ luật sinh viên",
+      "page_start": 80,
+      "page_end": 81
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong7_Dieu40",
+      "title": "Hiệu lực thi hành",
+      "page_start": 81,
+      "page_end": 82
+    },
+    {
+      "section_id": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu10",
+      "title": "Hiệu lực thi hành",
+      "page_start": 87,
+      "page_end": 88
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong5_Dieu18",
+      "title": "Điều khoản thi hành",
+      "page_start": 98,
+      "page_end": 98
+    },
+    {
+      "section_id": "K51_QuyDinhNgoaiTru_Chuong4_Dieu10",
+      "title": "Phòng Công nghệ Thông tin",
+      "page_start": 109,
+      "page_end": 109
+    },
+    {
+      "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
+      "title": "Điều khoản thi hành",
+      "page_start": 122,
+      "page_end": 123
+    },
+    {
+      "section_id": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu5",
+      "title": "Thời gian làm việc",
+      "page_start": 124,
+      "page_end": 125
+    },
+    {
+      "section_id": "K51_QuyDinhQuyTacUngXu_Chuong5_Dieu18",
+      "title": "Điều khoản thi hành",
+      "page_start": 130,
+      "page_end": 131
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1",
+      "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+      "page_start": 131,
+      "page_end": 132
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
+      "title": "Xác định nhu cầu đào tạo giáo viên và phương thức thực hiện hỗ trợ sinh viên sư phạm",
+      "page_start": 132,
+      "page_end": 134
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "title": "Chi phí bồi hoàn và cách tính chi phí bồi hoàn",
+      "page_start": 137,
+      "page_end": 138
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "title": "Thu hồi kinh phí hỗ trợ",
+      "page_start": 138,
+      "page_end": 139
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
+      "title": "Quy định chuyển tiếp",
+      "page_start": 143,
+      "page_end": 143
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
+      "title": "Hiệu lực và trách nhiệm thi hành",
+      "page_start": 143,
+      "page_end": 145
+    },
+    {
+      "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu6",
+      "title": "Tiêu chuẩn đối với sinh viên",
+      "page_start": 147,
+      "page_end": 149
+    },
+    {
+      "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15",
+      "title": "Hiệu lực thi hành",
+      "page_start": 155,
+      "page_end": 170
+    }
+  ],
+  "sections_with_scoring_rules": [
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong1_Dieu2",
+      "title": "Tín chỉ và học phần",
+      "page_start": 8,
+      "page_end": 9
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "title": "Đánh giá và tính điểm học phần",
+      "page_start": 16,
+      "page_end": 19
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+      "page_start": 19,
+      "page_end": 21
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu12",
+      "title": "Xử lý kết quả học tập đối với hình thức đào tạo chính quy",
+      "page_start": 21,
+      "page_end": 22
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu13",
+      "title": "Xử lý kết quả học tập đối với hình thức đào tạo vừa làm vừa học",
+      "page_start": 22,
+      "page_end": 23
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu15",
+      "title": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+      "page_start": 23,
+      "page_end": 25
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu16",
+      "title": "Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học",
+      "page_start": 25,
+      "page_end": 26
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu19",
+      "title": "Học cùng lúc hai chương trình",
+      "page_start": 27,
+      "page_end": 28
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong2_Dieu5",
+      "title": "Công tác quản lý sinh viên",
+      "page_start": 57,
+      "page_end": 58
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu24",
+      "title": "Lớp sinh viên",
+      "page_start": 68,
+      "page_end": 69
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+      "page_start": 70,
+      "page_end": 72
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "title": "Trình tự và thủ tục xét cấp học bổng",
+      "page_start": 72,
+      "page_end": 73
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+      "title": "Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học",
+      "page_start": 73,
+      "page_end": 75
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "title": "Quy định về việc thôi học, chuyển trường, chuyển ngành, buộc thôi học",
+      "page_start": 75,
+      "page_end": 76
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu32",
+      "title": "Nội dung, hình thức khen thưởng",
+      "page_start": 76,
+      "page_end": 77
+    },
+    {
+      "section_id": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu8",
+      "title": "Đánh giá kết quả hoạt động",
+      "page_start": 86,
+      "page_end": 86
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu1",
+      "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+      "page_start": 88,
+      "page_end": 88
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu3",
+      "title": "Nội dung đánh giá và thang điểm",
+      "page_start": 88,
+      "page_end": 89
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu4",
+      "title": "Đánh giá về ý thức học tập",
+      "page_start": 89,
+      "page_end": 89
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu5",
+      "title": "Đánh giá về ý thức và kết quả chấp hành quy chế, nội quy, quy định trong Trường",
+      "page_start": 89,
+      "page_end": 90
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu6",
+      "title": "Đánh giá về ý thức và kết quả tham gia các hoạt động chính trị – xã hội, văn hóa, văn nghệ, thể thao, phòng chống tệ nạn xã hội",
+      "page_start": 90,
+      "page_end": 90
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu7",
+      "title": "Đánh giá về phẩm chất công dân và quan hệ với cộng đồng",
+      "page_start": 90,
+      "page_end": 90
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu8",
+      "title": "Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các đoàn thể, tổ chức trong Nhà trường hoặc sinh viên đạt được thành tích đặc biệt trong học tập, rèn luyện",
+      "page_start": 90,
+      "page_end": 91
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "title": "Phân loại kết quả rèn luyện",
+      "page_start": 91,
+      "page_end": 91
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu10",
+      "title": "Các trường hợp xem xét phân loại điểm rèn luyện",
+      "page_start": 91,
+      "page_end": 92
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu11",
+      "title": "Quy trình đánh giá kết quả rèn luyện sinh viên",
+      "page_start": 92,
+      "page_end": 93
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu12",
+      "title": "Hội đồng đánh giá kết quả rèn luyện của sinh viên",
+      "page_start": 93,
+      "page_end": 95
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu13",
+      "title": "Thời gian đánh giá kết quả rèn luyện",
+      "page_start": 95,
+      "page_end": 95
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu14",
+      "title": "Sử dụng kết quả rèn luyện",
+      "page_start": 95,
+      "page_end": 96
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong5_Dieu16",
+      "title": "Trách nhiệm của các đơn vị liên quan",
+      "page_start": 96,
+      "page_end": 98
+    },
+    {
+      "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
+      "title": "Quy trình tổ chức và tiến độ triển khai hoạt động nghiên cứu khoa học của sinh viên",
+      "page_start": 114,
+      "page_end": 117
+    },
+    {
+      "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu8",
+      "title": "Tổ chức triển khai ứng dụng tiến bộ khoa học và công nghệ vào thực tiễn",
+      "page_start": 117,
+      "page_end": 117
+    },
+    {
+      "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu13",
+      "title": "Trách nhiệm và quyền lợi của người hướng dẫn sinh viên nghiên cứu khoa học",
+      "page_start": 121,
+      "page_end": 121
+    },
+    {
+      "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu6",
+      "title": "Tiêu chuẩn đối với sinh viên",
+      "page_start": 147,
+      "page_end": 149
+    },
+    {
+      "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu7",
+      "title": "Tiêu chuẩn đối với học viên sau đại học",
+      "page_start": 149,
+      "page_end": 151
+    }
+  ],
+  "sections_with_thresholds": [
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong2_Dieu7",
+      "title": "Kế hoạch giảng dạy và học tập",
+      "page_start": 12,
+      "page_end": 13
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong2_Dieu8",
+      "title": "Tổ chức giảng dạy và học tập",
+      "page_start": 13,
+      "page_end": 15
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong2_Dieu9",
+      "title": "Tổ chức đăng ký học tập",
+      "page_start": 15,
+      "page_end": 16
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "title": "Đánh giá và tính điểm học phần",
+      "page_start": 16,
+      "page_end": 19
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+      "page_start": 19,
+      "page_end": 21
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu12",
+      "title": "Xử lý kết quả học tập đối với hình thức đào tạo chính quy",
+      "page_start": 21,
+      "page_end": 22
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu13",
+      "title": "Xử lý kết quả học tập đối với hình thức đào tạo vừa làm vừa học",
+      "page_start": 22,
+      "page_end": 23
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu14",
+      "title": "Công nhận kết quả học tập và chuyển đổi tín chỉ",
+      "page_start": 23,
+      "page_end": 23
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu15",
+      "title": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+      "page_start": 23,
+      "page_end": 25
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu16",
+      "title": "Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học",
+      "page_start": 25,
+      "page_end": 26
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu18",
+      "title": "Trao đổi sinh viên và hợp tác trong đào tạo",
+      "page_start": 27,
+      "page_end": 27
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu19",
+      "title": "Học cùng lúc hai chương trình",
+      "page_start": 27,
+      "page_end": 28
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+      "page_start": 70,
+      "page_end": 72
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+      "title": "Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học",
+      "page_start": 73,
+      "page_end": 75
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu32",
+      "title": "Nội dung, hình thức khen thưởng",
+      "page_start": 76,
+      "page_end": 77
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu34",
+      "title": "Hình thức kỷ luật và nội dung vi phạm",
+      "page_start": 78,
+      "page_end": 79
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu4",
+      "title": "Đánh giá về ý thức học tập",
+      "page_start": 89,
+      "page_end": 89
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu5",
+      "title": "Đánh giá về ý thức và kết quả chấp hành quy chế, nội quy, quy định trong Trường",
+      "page_start": 89,
+      "page_end": 90
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu6",
+      "title": "Đánh giá về ý thức và kết quả tham gia các hoạt động chính trị – xã hội, văn hóa, văn nghệ, thể thao, phòng chống tệ nạn xã hội",
+      "page_start": 90,
+      "page_end": 90
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu7",
+      "title": "Đánh giá về phẩm chất công dân và quan hệ với cộng đồng",
+      "page_start": 90,
+      "page_end": 90
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu8",
+      "title": "Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các đoàn thể, tổ chức trong Nhà trường hoặc sinh viên đạt được thành tích đặc biệt trong học tập, rèn luyện",
+      "page_start": 90,
+      "page_end": 91
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "title": "Phân loại kết quả rèn luyện",
+      "page_start": 91,
+      "page_end": 91
+    },
+    {
+      "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu1",
+      "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+      "page_start": 112,
+      "page_end": 113
+    },
+    {
+      "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
+      "title": "Quy trình tổ chức và tiến độ triển khai hoạt động nghiên cứu khoa học của sinh viên",
+      "page_start": 114,
+      "page_end": 117
+    },
+    {
+      "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
+      "title": "Chuyển đổi điểm nghiên cứu khoa học của sinh viên",
+      "page_start": 121,
+      "page_end": 122
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
+      "title": "Giải thích từ ngữ",
+      "page_start": 132,
+      "page_end": 132
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "title": "Thu hồi kinh phí hỗ trợ",
+      "page_start": 138,
+      "page_end": 139
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
+      "title": "Quy định chuyển tiếp",
+      "page_start": 143,
+      "page_end": 143
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
+      "title": "Hiệu lực và trách nhiệm thi hành",
+      "page_start": 143,
+      "page_end": 145
+    },
+    {
+      "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu6",
+      "title": "Tiêu chuẩn đối với sinh viên",
+      "page_start": 147,
+      "page_end": 149
+    },
+    {
+      "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu7",
+      "title": "Tiêu chuẩn đối với học viên sau đại học",
+      "page_start": 149,
+      "page_end": 151
+    },
+    {
+      "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15",
+      "title": "Hiệu lực thi hành",
+      "page_start": 155,
+      "page_end": 170
+    }
+  ],
+  "sections_need_structured_extraction": [
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+      "title": "Chương trình đào tạo và thời gian học tập",
+      "content_type": "regulation_text",
+      "page_start": 9,
+      "page_end": 11
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong2_Dieu7",
+      "title": "Kế hoạch giảng dạy và học tập",
+      "content_type": "regulation_text",
+      "page_start": 12,
+      "page_end": 13
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong2_Dieu8",
+      "title": "Tổ chức giảng dạy và học tập",
+      "content_type": "regulation_text",
+      "page_start": 13,
+      "page_end": 15
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong2_Dieu9",
+      "title": "Tổ chức đăng ký học tập",
+      "content_type": "regulation_text",
+      "page_start": 15,
+      "page_end": 16
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "title": "Đánh giá và tính điểm học phần",
+      "content_type": "regulation_text",
+      "page_start": 16,
+      "page_end": 19
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+      "content_type": "regulation_text",
+      "page_start": 19,
+      "page_end": 21
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu12",
+      "title": "Xử lý kết quả học tập đối với hình thức đào tạo chính quy",
+      "content_type": "regulation_text",
+      "page_start": 21,
+      "page_end": 22
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu13",
+      "title": "Xử lý kết quả học tập đối với hình thức đào tạo vừa làm vừa học",
+      "content_type": "regulation_text",
+      "page_start": 22,
+      "page_end": 23
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu14",
+      "title": "Công nhận kết quả học tập và chuyển đổi tín chỉ",
+      "content_type": "regulation_text",
+      "page_start": 23,
+      "page_end": 23
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu15",
+      "title": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+      "content_type": "regulation_text",
+      "page_start": 23,
+      "page_end": 25
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu16",
+      "title": "Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học",
+      "content_type": "regulation_text",
+      "page_start": 25,
+      "page_end": 26
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu17",
+      "title": "Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo, chuyển hình thức học",
+      "content_type": "regulation_text",
+      "page_start": 26,
+      "page_end": 27
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu18",
+      "title": "Trao đổi sinh viên và hợp tác trong đào tạo",
+      "content_type": "regulation_text",
+      "page_start": 27,
+      "page_end": 27
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu19",
+      "title": "Học cùng lúc hai chương trình",
+      "content_type": "regulation_text",
+      "page_start": 27,
+      "page_end": 28
+    },
+    {
+      "section_id": "K51_QuyCheDaoTao_Chuong5_Dieu24",
+      "title": "Hiệu lực thi hành",
+      "content_type": "regulation_text",
+      "page_start": 30,
+      "page_end": 31
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+      "content_type": "regulation_text",
+      "page_start": 70,
+      "page_end": 72
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+      "title": "Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương tiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh viên người dân tộc thiểu số",
+      "content_type": "regulation_text",
+      "page_start": 73,
+      "page_end": 73
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+      "title": "Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học",
+      "content_type": "regulation_text",
+      "page_start": 73,
+      "page_end": 75
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "title": "Quy định về việc thôi học, chuyển trường, chuyển ngành, buộc thôi học",
+      "content_type": "regulation_text",
+      "page_start": 75,
+      "page_end": 76
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu32",
+      "title": "Nội dung, hình thức khen thưởng",
+      "content_type": "regulation_text",
+      "page_start": 76,
+      "page_end": 77
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu34",
+      "title": "Hình thức kỷ luật và nội dung vi phạm",
+      "content_type": "regulation_text",
+      "page_start": 78,
+      "page_end": 79
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu37",
+      "title": "Hội đồng Khen thưởng và Kỷ luật sinh viên",
+      "content_type": "regulation_text",
+      "page_start": 80,
+      "page_end": 81
+    },
+    {
+      "section_id": "K51_QuyCheCongTacSinhVien_Chuong7_Dieu40",
+      "title": "Hiệu lực thi hành",
+      "content_type": "regulation_text",
+      "page_start": 81,
+      "page_end": 82
+    },
+    {
+      "section_id": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu10",
+      "title": "Hiệu lực thi hành",
+      "content_type": "regulation_text",
+      "page_start": 87,
+      "page_end": 88
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu4",
+      "title": "Đánh giá về ý thức học tập",
+      "content_type": "regulation_text",
+      "page_start": 89,
+      "page_end": 89
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu5",
+      "title": "Đánh giá về ý thức và kết quả chấp hành quy chế, nội quy, quy định trong Trường",
+      "content_type": "regulation_text",
+      "page_start": 89,
+      "page_end": 90
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu6",
+      "title": "Đánh giá về ý thức và kết quả tham gia các hoạt động chính trị – xã hội, văn hóa, văn nghệ, thể thao, phòng chống tệ nạn xã hội",
+      "content_type": "regulation_text",
+      "page_start": 90,
+      "page_end": 90
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu7",
+      "title": "Đánh giá về phẩm chất công dân và quan hệ với cộng đồng",
+      "content_type": "regulation_text",
+      "page_start": 90,
+      "page_end": 90
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu8",
+      "title": "Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các đoàn thể, tổ chức trong Nhà trường hoặc sinh viên đạt được thành tích đặc biệt trong học tập, rèn luyện",
+      "content_type": "regulation_text",
+      "page_start": 90,
+      "page_end": 91
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "title": "Phân loại kết quả rèn luyện",
+      "content_type": "regulation_text",
+      "page_start": 91,
+      "page_end": 91
+    },
+    {
+      "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong5_Dieu18",
+      "title": "Điều khoản thi hành",
+      "content_type": "regulation_text",
+      "page_start": 98,
+      "page_end": 98
+    },
+    {
+      "section_id": "K51_QuyDinhNgoaiTru_Chuong4_Dieu10",
+      "title": "Phòng Công nghệ Thông tin",
+      "content_type": "regulation_text",
+      "page_start": 109,
+      "page_end": 109
+    },
+    {
+      "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu1",
+      "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+      "content_type": "regulation_text",
+      "page_start": 112,
+      "page_end": 113
+    },
+    {
+      "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
+      "title": "Quy trình tổ chức và tiến độ triển khai hoạt động nghiên cứu khoa học của sinh viên",
+      "content_type": "regulation_text",
+      "page_start": 114,
+      "page_end": 117
+    },
+    {
+      "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
+      "title": "Chuyển đổi điểm nghiên cứu khoa học của sinh viên",
+      "content_type": "regulation_text",
+      "page_start": 121,
+      "page_end": 122
+    },
+    {
+      "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
+      "title": "Điều khoản thi hành",
+      "content_type": "regulation_text",
+      "page_start": 122,
+      "page_end": 123
+    },
+    {
+      "section_id": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu5",
+      "title": "Thời gian làm việc",
+      "content_type": "regulation_text",
+      "page_start": 124,
+      "page_end": 125
+    },
+    {
+      "section_id": "K51_QuyDinhQuyTacUngXu_Chuong5_Dieu18",
+      "title": "Điều khoản thi hành",
+      "content_type": "regulation_text",
+      "page_start": 130,
+      "page_end": 131
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1",
+      "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
+      "content_type": "regulation_text",
+      "page_start": 131,
+      "page_end": 132
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
+      "title": "Giải thích từ ngữ",
+      "content_type": "regulation_text",
+      "page_start": 132,
+      "page_end": 132
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
+      "title": "Xác định nhu cầu đào tạo giáo viên và phương thức thực hiện hỗ trợ sinh viên sư phạm",
+      "content_type": "regulation_text",
+      "page_start": 132,
+      "page_end": 134
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "title": "Chi phí bồi hoàn và cách tính chi phí bồi hoàn",
+      "content_type": "regulation_text",
+      "page_start": 137,
+      "page_end": 138
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "title": "Thu hồi kinh phí hỗ trợ",
+      "content_type": "regulation_text",
+      "page_start": 138,
+      "page_end": 139
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
+      "title": "Quy định chuyển tiếp",
+      "content_type": "regulation_text",
+      "page_start": 143,
+      "page_end": 143
+    },
+    {
+      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
+      "title": "Hiệu lực và trách nhiệm thi hành",
+      "content_type": "regulation_text",
+      "page_start": 143,
+      "page_end": 145
+    },
+    {
+      "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu6",
+      "title": "Tiêu chuẩn đối với sinh viên",
+      "content_type": "regulation_text",
+      "page_start": 147,
+      "page_end": 149
+    },
+    {
+      "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu7",
+      "title": "Tiêu chuẩn đối với học viên sau đại học",
+      "content_type": "regulation_text",
+      "page_start": 149,
+      "page_end": 151
+    },
+    {
+      "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15",
+      "title": "Hiệu lực thi hành",
+      "content_type": "regulation_text",
+      "page_start": 155,
+      "page_end": 170
+    }
+  ],
+  "validation_issues": []
+}

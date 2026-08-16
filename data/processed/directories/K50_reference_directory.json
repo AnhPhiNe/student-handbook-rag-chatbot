@@ -1,0 +1,50 @@
+[
+  {
+    "record_id": "reference_p209",
+    "content_type": "reference_directory",
+    "name": "Tài liệu tham khảo/trang tra cứu 209",
+    "source_pages": [
+      209
+    ],
+    "raw_text": "Phần 5\nDANH SÁCH BẢO TÀNG\nVÀ DI TÍCH LỊCH SỬ TRÊN ĐỊA BÀN\nTHÀNH PHỐ HỒ CHÍ MINH",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "reference_directory",
+    "content_mode": "archive_only"
+  },
+  {
+    "record_id": "reference_p210",
+    "content_type": "reference_directory",
+    "name": "Tài liệu tham khảo/trang tra cứu 210",
+    "source_pages": [
+      210
+    ],
+    "raw_text": "DANH SÁCH CÁC NHÀ BẢO TÀNG\nTẠI THÀNH PHỐ HỒ CHÍ MINH\n1. Bảo tàng Lịch sử Việt Nam – Thành phố Hồ Chí Minh\nSố 2 Nguyễn Bỉnh Khiêm, Phường Bến Nghé, Quận 1\n2. Bảo tàng Thành phố Hồ Chí Minh\nSố 65 Lý Tự Trọng, Phường Bến Nghé, Quận 1\n3. Bảo tàng Chứng tích Chiến tranh\nSố 28 Võ Văn Tần, Phường 6, Quận 3\n4. Bảo tàng Hồ Chí Minh – Chi nhánh Thành phố Hồ Chí Minh\nSố 1 Nguyễn Tất Thành, Phường 12, Quận 4\n5. Bảo tàng Tôn Đức Thắng\nSố 5 Tôn Đức Thắng, Phường Bến Nghé, Quận 1\n6. Bảo tàng Chiến dịch Hồ Chí Minh\nSố 2 Lê Duẩn, Phường Bến Nghé, Quận 1\n7. Bảo tàng Phụ nữ Nam bộ\nSố 202 Võ Thị Sáu, Phường 7, Quận 3\n8. Bảo tàng Lực lượng Vũ trang miền Đông Nam bộ\nSố 247 Hoàng Văn Thụ, Phường 1, quận Tân Bình\n9. Bảo tàng Mỹ thuật – Thành phố Hồ Chí Minh\nSố 97A Phó Đức Chính, Phường Nguyễn Thái Bình, Quận 1\n10. Bảo tàng Địa chất\nSố 2 Nguyễn Bỉnh Khiêm, Phường Bến Nghé, Quận 1\n11. Bảo tàng Y học Cổ truyền Việt Nam\nSố 41 Hoàng Dư Khương, Phường 12, Quận 10\n12. Bảo tàng Áo dài\nSố 206/19/30 Long Thuận, Phường Long Phước, Quận 9\n13. Bảo tàng Tranh 3D Artinus\n02-04 đường Số 9, KDC Him Lam, Phường Tân Hưng, Quận 7",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "reference_directory",
+    "content_mode": "archive_only"
+  },
+  {
+    "record_id": "reference_p211",
+    "content_type": "reference_directory",
+    "name": "Tài liệu tham khảo/trang tra cứu 211",
+    "source_pages": [
+      211
+    ],
+    "raw_text": "DANH SÁCH CÁC DI TÍCH LỊCH SỬ\nĐÃ ĐƯỢC XẾP HẠNG TRÊN ĐỊA BÀN\nTHÀNH PHỐ HỒ CHÍ MINH\nSinh viên truy cập đường dẫn http://tracuu.hcmue.edu.vn/ditichlichsu\nhoặc quét mã QR bên dưới để tìm hiểu thêm các di tích lịch sử – văn hóa\ntrên địa bàn Thành phố Hồ Chí Minh:",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "reference_directory",
+    "content_mode": "archive_only"
+  }
+]

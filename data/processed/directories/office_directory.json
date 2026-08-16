@@ -1,0 +1,1147 @@
+[
+  {
+    "record_id": "K48-K49_office_1",
+    "content_type": "office_directory",
+    "unit_name": "1. Phòng Công nghệ Thông tin",
+    "source_pages": [
+      129
+    ],
+    "raw_text": "1. Phòng Công nghệ Thông tin\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 166\nEmail\n: phongcntt@hcmue.edu.vn\nWebsite\n: phongcntt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Quản lý email của sinh viên được cấp theo tên miền của Trường\nĐại học Sư phạm Thành phố Hồ Chí Minh;\n– Quản lý trang thông tin điện tử của Trường;\n– Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào\ntạo theo học chế tín chỉ;\n– Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại\nhọc Sư phạm Thành phố Hồ Chí Minh;\n– Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm\ncủa Trường;\n– Các công tác khác có liên quan đến Công nghệ Thông tin.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_1"
+  },
+  {
+    "record_id": "K48-K49_office_2",
+    "content_type": "office_directory",
+    "unit_name": "2. Phòng Công tác chính trị và Học sinh, sinh viên",
+    "source_pages": [
+      129,
+      130
+    ],
+    "raw_text": "2. Phòng Công tác chính trị và Học sinh, sinh viên\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 127, 128, 143\nEmail\n: phongctct@hcmue.edu.vn\nhopthusinhvien@hcmue.edu.vn\nWebsite\n: phongctct.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.108, P.109, P.110\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Công tác giáo dục chính trị tư tưởng;\n− Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội\ncấp Trường;\n− Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh\nviên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên\nquan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng\ntiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến\nsinh viên; theo dõi phát triển Đảng trong sinh viên;\n− Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm\ncho sinh viên.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_2"
+  },
+  {
+    "record_id": "K48-K49_office_3",
+    "content_type": "office_directory",
+    "unit_name": "3. Phòng Đào tạo",
+    "source_pages": [
+      130,
+      131
+    ],
+    "raw_text": "3. Phòng Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 141, 142\nEmail\n: phongdt@hcmue.edu.vn\nWebsite\n: phongdt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.106, P.107\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức tuyển sinh các hệ;\n− Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ;\nxây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo\ndõi, giám sát hoạt động dạy và học của giảng viên và sinh viên;\n− Xây dựng và triển khai kế hoạch thực tập, thực tế năm học;\n− Tổ chức xét tuyển ngành học thứ hai (song ngành) cho sinh viên\nđang theo học tại Trường;\n− Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo\nkế hoạch thời gian năm học;\n− Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận\ntốt nghiệp tạm thời, văn bằng tốt nghiệp;\n− Thông báo các nội dung liên quan đến công tác đào tạo trên cổng\nthông tin trực tuyến.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_3"
+  },
+  {
+    "record_id": "K48-K49_office_4",
+    "content_type": "office_directory",
+    "unit_name": "4. Phòng Hợp tác Quốc tế",
+    "source_pages": [
+      131
+    ],
+    "raw_text": "4. Phòng Hợp tác Quốc tế\nĐiện thoại liên lạc\n: (028) 38391080\nsố máy nội bộ: 172, 173\nEmail\n: phonghtqt@hcmue.edu.vn\nWebsite\n: phonghtqt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.111,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Thông báo, tổ chức giới thiệu các loại học bổng quốc tế đến\nsinh viên;\n− Học bổng du học các nước nói tiếng Anh; Trung Quốc; Nhật;\nHàn; Pháp;\n− Trao đổi sinh viên ngắn hạn;\n− Thực tập ngắn hạn ở nước ngoài;\n− Giao lưu văn hóa – học thuật với sinh viên nước ngoài.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_4"
+  },
+  {
+    "record_id": "K48-K49_office_5",
+    "content_type": "office_directory",
+    "unit_name": "5. Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học",
+    "source_pages": [
+      131
+    ],
+    "raw_text": "5. Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 177\nEmail\n: phongkhcn@hcmue.edu.vn\ntapchikhoahoc@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.112,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức xét duyệt đề tài, đề xuất cấp kinh phí hỗ trợ, theo dõi\ntiến độ thực hiện đề tài NCKH sinh viên, tổ chức Hội nghị Sinh viên\nNCKH, lập hồ sơ đề nghị khen thưởng sinh viên đạt giải thưởng sinh viên\nNCKH cấp Bộ, cấp Trường;\n− Quản lý Tạp chí Khoa học.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_5"
+  },
+  {
+    "record_id": "K48-K49_office_6",
+    "content_type": "office_directory",
+    "unit_name": "6. Phòng Kế hoạch – Tài chính",
+    "source_pages": [
+      132
+    ],
+    "raw_text": "6. Phòng Kế hoạch – Tài chính\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 136, 137, 138, 139, 140\nEmail\n: phongkhtc@hcmue.edu.vn\nWebsite\n: phongkhtc.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.205,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Thu học phí, lệ phí các hệ đào tạo;\n− Cấp phát HBKKHT và trợ cấp các loại chế độ chính sách cho\nsinh viên các hệ đào tạo.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_6"
+  },
+  {
+    "record_id": "K48-K49_office_7",
+    "content_type": "office_directory",
+    "unit_name": "7. Phòng Quản trị – Thiết bị",
+    "source_pages": [
+      132
+    ],
+    "raw_text": "7. Phòng Quản trị – Thiết bị\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 197, 198\nEmail\n: phongqttb@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng trệt, P.004, P.005, P.006,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Quản lý lớp học, giảng đường, phòng họp;\n− Cho mượn amply, micro lớp học;\n− Quản lý thiết bị trình chiếu, máy vi tính lớp học;\n− Quản lý dịch vụ căn tin, bãi giữ xe tại 280 An Dương Vương,\nQuận 5 và 222 Lê Văn Sỹ, Quận 3.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_7"
+  },
+  {
+    "record_id": "K48-K49_office_8",
+    "content_type": "office_directory",
+    "unit_name": "8. Phòng Sau Đại học",
+    "source_pages": [
+      132,
+      133
+    ],
+    "raw_text": "8. Phòng Sau Đại học\nĐiện thoại liên lạc\n: (028) 38391077 – (028) 38352020\nsố máy nội bộ: 181, 182, 183, 184\nEmail\n: phongsdh@hcmue.edu.vn\nWebsite\n: phongsdh.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng 1, P.102, P.103, P.104,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức ôn tập, tiếp nhận hồ sơ, tổ chức thi tuyển sinh Sau Đại học;\n− Chuyển tiếp sinh đào tạo trình độ Thạc sĩ và Tiến sĩ;\n− Lập hồ sơ xét tuyển nghiên cứu sinh.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_8"
+  },
+  {
+    "record_id": "K48-K49_office_9",
+    "content_type": "office_directory",
+    "unit_name": "9. Phòng Tổ chức – Hành chính",
+    "source_pages": [
+      133
+    ],
+    "raw_text": "9. Phòng Tổ chức – Hành chính\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 179, 148, 213\nEmail\n: phongtchc@hcmue.edu.vn\nWebsite\n: phongtchc.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.104, P.105,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Đóng dấu các loại văn bản khi đã có chữ ký của người có thẩm quyền;\n− Nhận và phân loại thư, bưu phẩm chuyển về các khoa cho sinh viên.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_9"
+  },
+  {
+    "record_id": "K48-K49_office_10",
+    "content_type": "office_directory",
+    "unit_name": "10. Phòng Thanh tra Đào tạo",
+    "source_pages": [
+      133
+    ],
+    "raw_text": "10. Phòng Thanh tra Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 160\nEmail\n: phongthanhtra@hcmue.edu.vn\nWebsite\n: phongttdt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.209,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tiếp nhận và giải quyết những phản ánh liên quan đến công tác\nđào tạo;\n− Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_10"
+  },
+  {
+    "record_id": "K48-K49_office_11",
+    "content_type": "office_directory",
+    "unit_name": "11. Phòng Khảo thí và Đảm bảo chất lượng",
+    "source_pages": [
+      134
+    ],
+    "raw_text": "11. Phòng Khảo thí và Đảm bảo chất lượng\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 147, 218, 219, 146\nEmail\n: phongkhaothi@hcmue.edu.vn\nWebsite\n: phongkhaothi.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.202, P.206,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của\nNhà trường nhằm đảm bảo chất lượng giáo dục theo sứ mạng và các mục\ntiêu, chiến lược đề ra;\n− Cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc học tập;\n− Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu\ncầu của sinh viên;\n− Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_11"
+  },
+  {
+    "record_id": "K48-K49_office_12",
+    "content_type": "office_directory",
+    "unit_name": "12. Thư viện",
+    "source_pages": [
+      134,
+      135
+    ],
+    "raw_text": "12. Thư viện\nĐiện thoại liên lạc\n:\nBộ phận Phục vụ (Mượn/trả): (028) 35260834\nBộ phận Thông tin Thư mục: (028) 35261043 hoặc (028) 38308905,\nsố nội bộ: 234\nEmail\n: thuvien@hcmue.edu.vn\nWebsite\n: lib.hcmue.edu.vn\nFanpage\n: https://www.facebook.com/lib.hcmue.edu.vn\nVăn phòng làm việc\n:\nCơ sở 1: Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 8,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ sở 2: Nhà B, tầng 2, 3, số 222 Lê Văn Sỹ, Phường 14, Quận 3,\nTP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu;\n− Hướng dẫn sinh viên sử dụng thư viện;\n− Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin;\n− Cung cấp các sản phẩm, dịch vụ thông tin;\n− Tư vấn, trao đổi, phổ biến thông tin cho sinh viên.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_12"
+  },
+  {
+    "record_id": "K48-K49_office_13",
+    "content_type": "office_directory",
+    "unit_name": "13. Trạm Y tế",
+    "source_pages": [
+      135
+    ],
+    "raw_text": "13. Trạm Y tế\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 152\nEmail\n: tramyte@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng trệt, P.006,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên;\n− Khám cấp cứu;\n− Khám bệnh, cấp phát thuốc thông thường;\n− Làm thẻ và phát thẻ BHYT.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_13"
+  },
+  {
+    "record_id": "K48-K49_office_14",
+    "content_type": "office_directory",
+    "unit_name": "14. Trường Trung học Thực hành – ĐHSP",
+    "source_pages": [
+      135
+    ],
+    "raw_text": "14. Trường Trung học Thực hành – ĐHSP\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 115, 116, 117, 118\nEmail\n: truongthth@hcmue.edu.vn\nWebsite\n: thth.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà J, tầng trệt,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Hỗ trợ học sinh NCKH;\n− Dự giờ tìm hiểu hoạt động dạy và học;\n− Phối hợp hoạt động trong công tác Đoàn.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_14"
+  },
+  {
+    "record_id": "K48-K49_office_15",
+    "content_type": "office_directory",
+    "unit_name": "15. Nhà xuất bản ĐHSP Thành phố Hồ Chí Minh",
+    "source_pages": [
+      136
+    ],
+    "raw_text": "15. Nhà xuất bản ĐHSP Thành phố Hồ Chí Minh\nĐiện thoại liên lạc\n: (028) 39381382\nEmail\n: nxb@hcmue.edu.vn\nWebsite\n: nxb.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng trệt: P.007, tầng 1: P.114,\ntầng 2: P.212, số 280 An Dương Vương,\nPhường 4, Quận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− In ấn giáo trình phục vụ sinh viên các hệ đào tạo;\n− Xuất bản và phát hành sách phục vụ sinh viên trong và ngoài trường.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_15"
+  },
+  {
+    "record_id": "K48-K49_office_16",
+    "content_type": "office_directory",
+    "unit_name": "16. Ký túc xá",
+    "source_pages": [
+      136
+    ],
+    "raw_text": "16. Ký túc xá\nĐiện thoại liên lạc\n: (028) 38650758\nEmail\n: ktx@hcmue.edu.vn\nVăn phòng làm việc\n: 351B Lạc Long Quân, Phường 5,\nQuận 11, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tiếp nhận sinh viên, bố trí chỗ ở và quản lý sinh viên nội trú;\n− Tổ chức các hoạt động ngoại khoá trong và ngoài khu nội trú\ngiúp sinh viên rèn luyện kỹ năng.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_16"
+  },
+  {
+    "record_id": "K48-K49_office_17",
+    "content_type": "office_directory",
+    "unit_name": "17. Viện Nghiên cứu Giáo dục",
+    "source_pages": [
+      136
+    ],
+    "raw_text": "17. Viện Nghiên cứu Giáo dục\nĐiện thoại liên lạc\n: (028) 38224813\nEmail\n: vienncgd@hcmue.edu.vn\nWebsite\n: www.ier.edu.vn\nVăn phòng làm việc\n: 115 Hai Bà Trưng, Quận 1, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\nViện thường xuyên tổ chức các lớp bồi dưỡng cho sinh viên như sau:\n− Phương pháp NCKH Giáo dục;\n− Thiết kế bài giảng điện tử;\n− Phương pháp học tập hiệu quả cho sinh viên bậc Đại học.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_17"
+  },
+  {
+    "record_id": "K48-K49_office_18",
+    "content_type": "office_directory",
+    "unit_name": "18. Trung tâm Phát triển kỹ năng Sư phạm",
+    "source_pages": [
+      137
+    ],
+    "raw_text": "18. Trung tâm Phát triển kỹ năng Sư phạm\nĐiện thoại liên lạc\n: (028) 38397868,\nsố máy nội bộ: 169, 170\nEmail\n: trungtamptknsp@hcmue.edu.vn\nWebsite\n: trungtamptknsp.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.201,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức các hoạt động tập giảng, kiến tập và thực tập giảng tại\ncác phòng học trực tuyến, phòng học ảo và phòng học thông minh;\n− Phối hợp với Phòng Đào tạo và các khoa chuyên môn để xây\ndựng nội dung, kế hoạch, quy chế thực tập và rèn luyện nghiệp vụ cho\nsinh viên;\n− Tổ chức hội thảo khoa học và các hoạt động NCKH về giáo dục\nvà kỹ năng, NVSP;\n− Tổ chức các dịch vụ công về kỹ năng sử dụng các phần mềm dạy\nhọc; các chiến lược và kỹ thuật dạy học trong và ngoài lớp học; kỹ năng\nthiết kế các công cụ dạy học; kỹ năng quản lý hệ thống học tập; kỹ năng\nkiểm tra đánh giá kết quả học tập; phương pháp dạy học tích hợp, phân\nhóa; mô hình và phương pháp dạy – học STEM…",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_18"
+  },
+  {
+    "record_id": "K48-K49_office_19",
+    "content_type": "office_directory",
+    "unit_name": "19. Trung tâm Tin học",
+    "source_pages": [
+      137,
+      138
+    ],
+    "raw_text": "19. Trung tâm Tin học\nĐiện thoại liên lạc\n: (028) 38392549\nEmail\n: trungtamtinhoc@hcmue.edu.vn\nWebsite\n: thsp.hcmue.edu.vn\nVăn phòng ghi danh\n: 221 Nguyễn Văn Cừ, Phường 4,\nQuận 5, TP. HCM.\nPhòng làm việc\n:\nDãy A, tầng trệt, P.004, P.005\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Giảng dạy chương trình Tin học cơ bản cho sinh viên năm 1 của\ntoàn Trường;\n− Đào tạo và giảng dạy các chương trình Tin học văn phòng, Tin\nhọc ứng dụng và ứng dụng công nghệ thông tin trong dạy học bộ môn\ncho sinh viên, học viên trong và ngoài Trường.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_19"
+  },
+  {
+    "record_id": "K48-K49_office_20",
+    "content_type": "office_directory",
+    "unit_name": "20. Trung tâm Ngoại ngữ",
+    "source_pages": [
+      138
+    ],
+    "raw_text": "20. Trung tâm Ngoại ngữ\nĐiện thoại liên lạc\n: (028) 38355084\nEmail\n: trungtamnn@hcmue.edu.vn\nWebsite\n: ttnnsp.edu.vn\nPhòng làm việc\n: Dãy nhà B, tầng 6, P.601, P.602, P.608\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\nTổ chức các loại hình lớp học ngoại ngữ, luyện thi, tổ chức thi các\nchứng chỉ ngoại ngữ quốc gia và phối hợp tổ chức thi cấp chứng chỉ\nngoại ngữ quốc tế, cụ thể là:\n− Giảng dạy các Chương trình Ngoại ngữ Tổng quát theo Khung\nnăng lực Ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các\nkỹ năng ngoại ngữ từ cơ bản đến nâng cao;\n− Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ\ntheo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam;\n− Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL,\nTOEIC, IELTS, HSK, DELF, DALF, N1-N5… Phối hợp với các Tổ chức\nKhảo thí Quốc tế tổ chức các kỳ thi nói trên.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_20"
+  },
+  {
+    "record_id": "K48-K49_office_21",
+    "content_type": "office_directory",
+    "unit_name": "21. Đoàn Thanh niên và Hội Sinh viên Trường",
+    "source_pages": [
+      138,
+      139
+    ],
+    "raw_text": "21. Đoàn Thanh niên và Hội Sinh viên Trường\n+ Văn phòng Đoàn Thanh niên:\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 145\nEmail\n: vpdoantn@hcmue.edu.vn\nWebsite\n: youth.hcmue.edu.vn\nPhòng làm việc\n: Nhà A, tầng trệt, P.001,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\n+ Văn phòng Hội Sinh viên:\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 208\nEmail\n: vphoisinhvien@hcmue.edu.vn\nPhòng làm việc\n: Nhà A, tầng trệt, P.001,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_21"
+  },
+  {
+    "record_id": "K48-K49_office_22",
+    "content_type": "office_directory",
+    "unit_name": "22. Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp",
+    "source_pages": [
+      139,
+      140,
+      176,
+      177,
+      178,
+      179,
+      180
+    ],
+    "raw_text": "22. Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp\nĐiện thoại liên lạc\n: (028) 3835 2020\nsố máy nội bộ: 168\nEmail\n: csaed@hcmue.edu.vn\nWebsite\n: csaed.hcmue.edu.vn\nPhòng làm việc\n: Nhà A, tầng 1, P.101\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức dịch vụ hỗ trợ đời sống của sinh viên: giới thiệu việc\nlàm, thông tin học bổng, khảo sát và giới thiệu chỗ trọ…;\n− Tổ chức các hoạt động trang bị, bồi dưỡng kỹ năng thực hành xã\nhội, các kiến thức, kỹ năng về khởi nghiệp cần thiết cho sinh viên theo\ntừng đối tượng và chuyên ngành;\n− Tập huấn kỹ năng và hướng dẫn sinh viên tham gia các chương\ntrình, dự án khởi nghiệp; tổ chức các hoạt động tạo môi trường để hỗ trợ\nsinh viên hình thành và hiện thực hóa các ý tưởng, dự án khởi nghiệp,\ngóp phần tạo việc làm cho sinh viên sau khi tốt nghiệp;\n− Phối hợp các đơn vị tuyển chọn và quản lý các nhóm cộng tác\nviên (là sinh viên) hỗ trợ cho công tác tổ chức các sự kiện trong trường;\n− Tổ chức và phối hợp tổ chức các hoạt động nhằm nâng cao chuyên\nmôn nghiệp vụ cho sinh viên khi tốt nghiệp;\n− Xây dựng và điều hành các kênh thông tin của trung tâm để nắm\nbắt và giải quyết các nhu cầu hỗ trợ sinh viên;\n− Tổ chức ngày hội việc làm, và các hoạt động giúp sinh viên tiếp\ncận với các nguồn lực của xã hội.\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\nĐƠN XIN TẠM NGHỈ HỌC\nKính gửi:\n- Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh;\n- Trưởng Khoa ................................................................................ ;\n- Trưởng phòng Phòng Công tác chính trị và Học sinh, sinh viên.\nTôi tên: ..................................... Mã số sinh viên: .....................................\nNgày sinh: ................................ Hộ khẩu thường trú: ...............................\n......................................................................................................................\nHiện đang học lớp SV: ........................ Khoa: ........................ Khóa: ........\nĐịa chỉ email: ..............................................................................................\nĐiểm TBC các học phần tích lũy từ đầu khóa học là .................................\n(bảng điểm kèm theo)\nNay tôi làm đơn này gửi đến Ông (bà) Hiệu trưởng, Ông (bà) Trưởng\nkhoa Khoa ………………………., Ông (bà) Trưởng phòng Phòng Công\ntác chính trị và Học sinh, sinh viên cho phép tôi được tạm nghỉ học kể từ\nHK ............ năm học .................... đến hết HK .................. năm học .........\nLí do xin tạm nghỉ: .................................................................................\nRất mong được sự chấp thuận của Quý Lãnh đạo Nhà trường.\nTôi xin chân thành cảm ơn.\nTP. HCM, ngày ..... tháng ..... năm 20.....\nNgười làm đơn\n(Ký và ghi rõ họ tên)\nÝ kiến của Trưởng khoa\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\nĐƠN XIN HỌC LẠI\nKính gửi:\n- Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh;\n- Trưởng khoa ................................................................................;\n- Lãnh đạo Phòng Công tác chính trị và Học sinh, sinh viên.\nTôi tên là: ...................................................... MSSV: ...............................\nHệ đào tạo: .................................................... Khóa học: ...........................\nNgành học: .................................................... Lớp SV: ..............................\nNgày sinh: ..................................................... Nơi sinh: ............................\nHộ khẩu thường trú: ....................................................................................\nĐịa chỉ hiện nay: .........................................................................................\nSố điện thoại: ......................... Email (do Trường cấp): .............................\nTrong năm học ......... – ........tôi có làm đơn xin tạm nghỉ học ........ học\nkỳ (từ học kỳ ........ năm học ....... – ......... đến học kỳ ........ năm học ........ –\n..........) theo Quyết định số............/QĐ-ĐHSP do Hiệu trưởng Trường Đại\nhọc Sư phạm Thành phố Hồ Chí Minh ký ngày ........ tháng ........ năm .........\nĐến nay đã hết thời gian xin tạm nghỉ học, kính đề nghị Ban Giám\nhiệu Nhà trường cho phép tôi được trở lại Trường tiếp tục học tập.\nTôi mong muốn được tiếp tục học tập theo chương trình đào tạo của\nKhóa (*): ........................\nTôi xin chân thành cảm ơn./.\nTP. HCM, ngày ...... tháng ..... năm ......\nNgười làm đơn\n(Ký tên và ghi rõ họ tên)\nÝ kiến của Lãnh đạo Khoa\n(*): SV liên hệ CVHT để được tư vấn và lựa chọn CTĐT theo khóa học phù hợp với tiến độ học tập,\ncó thể điều chỉnh hay giữ nguyên như cũ.\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\nĐƠN XIN THÔI HỌC\nKính gửi:\n- Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh;\n- Trưởng khoa ............................................................................. ;\n- Trưởng phòng Phòng Công tác chính trị và Học sinh, sinh viên.\nTôi tên: ............................................. Mã số sinh viên: ...............................\nNgày sinh: ......................... Hộ khẩu thường trú: .......................................\n......................................................................................................................\nHiện đang học lớp SV: ..................... Khoa: .................. Khóa: ...................\nĐịa chỉ email: ..............................................................................................\nTôi làm đơn này kính đề nghị Ông (bà) Hiệu trưởng, Ông (bà) Trưởng\nkhoa, Khoa ..……………………………., Ông (bà) Trưởng phòng Phòng\nCTCT và HSSV Trường cho phép tôi được thôi học kể từ học kỳ .............\nnăm học ......................\nLí do thôi học: ........................................................................................\nTôi xin cam đoan đã đóng đầy đủ học phí trong thời gian học tại Trường\nvà xin được bồi hoàn đầy đủ chi phí đào tạo theo quy định.\nRất mong được sự chấp thuận của Quý Lãnh đạo Nhà trường.\nTôi xin chân thành cảm ơn.\nTP. HCM, ngày ..... tháng ..... năm 20.....\nNgười làm đơn\n(Ký và ghi rõ họ tên)\nÝ kiến của Trưởng khoa\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\nĐƠN XIN TRỢ CẤP XÃ HỘI\nKính gửi:\n- Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh;\n- Trưởng phòng Phòng Công tác chính trị và Học sinh, sinh viên.\nHọ và tên sinh viên: .....................................................................................\nNgày sinh: ................. Nơi sinh: ..................... Dân tộc: ...............................\nKhoa: ......................... MSSV: ......................................................................\nNgành: ....................... Lớp: ............................ Hệ đào tạo: ...........................\nĐiện thoại: ................. Địa chỉ email: ...........................................................\nCó hộ khẩu gốc tại: ......................................................................................\n......................................................................................................................\nTôi thuộc đối tượng: .....................................................................................\nSố tài khoản cá nhân: ...................................................................................\ntại Ngân hàng: …………………………………………………………….\nTôi làm đơn này xin Trường xét cho tôi được hưởng trợ cấp xã hội đối\nvới học sinh, sinh viên theo quy định của Nhà nước.\nTôi xin cam đoan những lời khai trên và những chứng từ kèm theo là\nđúng sự thật.\nNếu có sai sót tôi xin hoàn toàn chịu trách nhiệm trước pháp luật, kể\ncả buộc thôi học và truy nộp tất cả số tiền được cấp.\nTP. HCM, ngày ..... tháng ..... năm 20…\nNgười viết đơn\n(Ký và ghi rõ họ tên)\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc\nĐƠN XIN VÀO Ở KÝ TÚC XÁ\nKính gửi:\n- Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh;\n- Trưởng phòng Phòng Công tác chính trị và Học sinh, sinh viên;\n- Giám đốc Ký túc xá Trường Đại học Sư phạm Thành phố Hồ Chí Minh.\nHọ và tên sinh viên: ....................................................................... Nam ¨ , Nữ ¨\nNgày tháng năm sinh: ..............................................................................................\nSinh viên lớp: ........................... Khóa: ......................... MSSV: ............................\nNơi đăng ký hộ khẩu thường trú: ............................................................................\nHọ và tên cha: ............................................................ Năm sinh: ...........................\nNghề nghiệp: ...........................................................................................................\nHọ và tên mẹ: ............................................................. Năm sinh: ...........................\nNghề nghiệp: ............................................................................................................\nDiện chính sách xã hội (đánh dấu vào các ô theo diện sinh viên đang hưởng\nchính sách):\n1. Anh hùng lực lượng vũ trang nhân dân, anh hùng lao động, thương binh,\nbệnh binh, người hưởng chính sách như thương binh, HSSV khuyết tật. ¨\n2. Con liệt sĩ, con thương binh, con bệnh binh, con của người hưởng chính sách\nnhư thương binh, con của người có công với cách mạng. ¨\n3. Người có hộ khẩu thường trú tại vùng cao, vùng có điều kiện kinh tế – xã hội\nđặc biệt khó khăn. ¨\n4. Người dân tộc thiểu số. ¨\n5. Con mồ côi cả cha lẫn mẹ. ¨\n6. HSSV trong gia đình thuộc hộ nghèo theo quy định của Thủ tướng Chính phủ. ¨\n7. Sinh viên nữ. ¨\n8. HSSV tích cực tham gia các hoạt động của Nhà trường, Đoàn TNCS Hồ Chí\nMinh, Hội Sinh viên VN, khu KTX hoặc các tổ chức xã hội. ¨\nHoàn cảnh gia đình:\n............................................................................................................................\nTôi làm đơn này kính đề nghị Ông (bà) Hiệu trưởng và Quý phòng, ban xét\ncho tôi được vào ở Ký túc xá. Nếu được xét và bố trí chỗ ở, tôi cam kết sẽ thực\nhiện tốt Quy chế Công tác HSSV nội trú do Bộ Giáo dục và Đào tạo ban hành\ncũng như Nội quy Ký túc xá của Nhà trường.\nTôi xin chân thành cảm ơn.\nTP. HCM, ngày ..... tháng ..... năm 20.....\nNgười làm đơn\n(Ký và ghi rõ họ tên)",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_22"
+  },
+  {
+    "record_id": "K50_office_1",
+    "content_type": "office_directory",
+    "unit_name": "1. Phòng Công nghệ Thông tin",
+    "source_pages": [
+      173
+    ],
+    "raw_text": "1. Phòng Công nghệ Thông tin\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 166\nEmail\n: phongcntt@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Quản lý email của sinh viên được cấp theo tên miền của Trường\nĐại học Sư phạm Thành phố Hồ Chí Minh;\n– Quản lý trang thông tin điện tử của Trường;\n– Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào\ntạo theo học chế tín chỉ;\n– Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại\nhọc Sư phạm Thành phố Hồ Chí Minh;\n– Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm\ncủa Trường;\n– Các công tác khác có liên quan đến công nghệ thông tin.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_1"
+  },
+  {
+    "record_id": "K50_office_2",
+    "content_type": "office_directory",
+    "unit_name": "2. Phòng Công tác chính trị và Học sinh, sinh viên",
+    "source_pages": [
+      173,
+      174
+    ],
+    "raw_text": "2. Phòng Công tác chính trị và Học sinh, sinh viên\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 127, 128, 143\nEmail\n: hopthusinhvien@hcmue.edu.vn\nWebsite\n: ctsv.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.108, P.109, P.110\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM Những công việc của đơn vị liên quan đến sinh viên:\n– Công tác giáo dục chính trị, tư tưởng;\n– Công tác giáo dục pháp luật;\n– Công tác giáo dục đạo đức, lối sống, kỹ năng sống;\n– Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội\ncấp Trường;\n– Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến\nsinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá\nnhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh\nviên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học\ntập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh\nviên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên;\ntheo dõi phát triển Đảng trong sinh viên;\n– Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm\ncho sinh viên;\n– Tiếp nhận thông tin phản ánh của sinh viên.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_2"
+  },
+  {
+    "record_id": "K50_office_3",
+    "content_type": "office_directory",
+    "unit_name": "3. Phòng Đào tạo",
+    "source_pages": [
+      174,
+      175
+    ],
+    "raw_text": "3. Phòng Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 141, 142\nEmail\n: phongdt@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.106, P.107\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức tuyển sinh các hệ;\n– Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ;\nxây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo\ndõi, giám sát hoạt động dạy và học của giảng viên và sinh viên;\n– Xây dựng và triển khai kế hoạch thực tập, thực tế năm học;\n– Tổ chức xét tuyển đào tạo theo hình thức học cùng lúc hai chương\ntrình (song ngành) cho sinh viên đang theo học tại Trường Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo\nkế hoạch thời gian năm học;\n– Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận\ntốt nghiệp tạm thời, văn bằng tốt nghiệp;\n– Thông báo các nội dung liên quan đến công tác đào tạo trên cổng\nthông tin trực tuyến.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_3"
+  },
+  {
+    "record_id": "K50_office_4",
+    "content_type": "office_directory",
+    "unit_name": "4. Phòng Hợp tác Quốc tế",
+    "source_pages": [
+      175
+    ],
+    "raw_text": "4. Phòng Hợp tác Quốc tế\nĐiện thoại liên lạc\n: (028) 3891080\nsố máy nội bộ: 172, 173\nEmail\n: phonghtqt@hcmue.edu.vn\nWebsite\n: phonghtqt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.111,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Hỗ trợ dịch thuật, tổ chức sự kiện trong và ngoài nước;\n– Thông báo thông tin học bổng ở các trường, doanh nghiệp đối tác\nnước ngoài;\n– Tổ chức giao lưu văn hóa – trao đổi học thuật.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_4"
+  },
+  {
+    "record_id": "K50_office_5",
+    "content_type": "office_directory",
+    "unit_name": "5. Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học",
+    "source_pages": [
+      175,
+      176
+    ],
+    "raw_text": "5. Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 177\nEmail\n: phongkhcn@hcmue.edu.vn\ntapchikhoahoc@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.112,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức xét duyệt đề tài, đề xuất cấp kinh phí hỗ trợ, theo dõi tiến\nđộ thực hiện đề tài NCKH sinh viên, tổ chức Hội nghị Sinh viên NCKH lập hồ sơ đề nghị khen thưởng sinh viên đạt giải thưởng sinh viên NCKH\ncấp Bộ, cấp Trường;\n– Quản lý Tạp chí Khoa học.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_5"
+  },
+  {
+    "record_id": "K50_office_6",
+    "content_type": "office_directory",
+    "unit_name": "6. Phòng Kế hoạch – Tài chính",
+    "source_pages": [
+      176
+    ],
+    "raw_text": "6. Phòng Kế hoạch – Tài chính\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 136, 137, 138, 139, 140\nEmail\n: phongkhtc@hcmue.edu.vn,\nhocphi@hcmue.edu.vn\nWebsite\n: phongkhtc.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.205,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Thu học phí, lệ phí các hệ đào tạo;\n– Cấp phát HBKKHT và trợ cấp các loại chế độ chính sách cho sinh\nviên các hệ đào tạo.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_6"
+  },
+  {
+    "record_id": "K50_office_7",
+    "content_type": "office_directory",
+    "unit_name": "7. Phòng Quản trị – Thiết bị",
+    "source_pages": [
+      176,
+      177
+    ],
+    "raw_text": "7. Phòng Quản trị – Thiết bị\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 197, 198\nEmail\n: phongqttb@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng trệt, P.004, P.005, P.006,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Quản lý lớp học, giảng đường, phòng họp;\n– Cho mượn amply, micro lớp học;\n– Quản lý thiết bị trình chiếu, máy vi tính lớp học;\n– Quản lý dịch vụ căn tin, bãi giữ xe tại 280 An Dương Vương,\nQuận 5 và 222 Lê Văn Sỹ, Quận 3",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_7"
+  },
+  {
+    "record_id": "K50_office_8",
+    "content_type": "office_directory",
+    "unit_name": "8. Phòng Sau Đại học",
+    "source_pages": [
+      177
+    ],
+    "raw_text": "8. Phòng Sau Đại học\nĐiện thoại liên lạc\n: (028) 38391077 – (028) 38352020\nsố máy nội bộ: 181, 182, 183, 184\nEmail\n: phongsdh@hcmue.edu.vn\nWebsite\n: phongsdh.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng 1, P.102, P.103, P.104,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức tư vấn chiêu sinh, tiếp nhận hồ sơ chương trình bổ sung\nkiến thức trình độ tiến sĩ, thạc sĩ;\n– Tổ chức tư vấn tuyển sinh, tiếp nhận hồ sơ đăng ký xét tuyển và\nxét tuyển sinh trình độ tiến sĩ, thạc sĩ;\n– Tổ chức đào tạo chương trình bổ sung kiến thức, đào tạo trình độ\nthạc sĩ và tiến sĩ;\n– Sinh viên truy cập đường dẫn sau để đọc các thông tin về Quy chế tuyển\nsinh và đào tạo trình độ thạc sĩ: http://tracuu.hcmue.edu.vn/Quyche_Thacsi.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_8"
+  },
+  {
+    "record_id": "K50_office_9",
+    "content_type": "office_directory",
+    "unit_name": "9. Phòng Thanh tra Đào tạo",
+    "source_pages": [
+      177,
+      178
+    ],
+    "raw_text": "9. Phòng Thanh tra Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 160\nEmail\n: phongthanhtra@hcmue.edu.vn\nWebsite\n: phongttdt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.209,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tiếp nhận và giải quyết những phản ánh liên quan đến công tác\nđào tạo;\n– Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_9"
+  },
+  {
+    "record_id": "K50_office_10",
+    "content_type": "office_directory",
+    "unit_name": "10. Phòng Khảo thí và Đảm bảo chất lượng",
+    "source_pages": [
+      178
+    ],
+    "raw_text": "10. Phòng Khảo thí và Đảm bảo chất lượng\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 146, 147, 218, 219\nEmail\n: phongkhaothi@hcmue.edu.vn\nWebsite\n: phongkhaothi.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.202, P.206,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của\nNhà trường nhằm đảm bảo chất lượng giáo dục theo sứ mạng và các mục\ntiêu, chiến lược đề ra;\n– Cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc\nhọc tập;\n– Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu\ncủa sinh viên;\n– Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_10"
+  },
+  {
+    "record_id": "K50_office_11",
+    "content_type": "office_directory",
+    "unit_name": "11. Thư viện",
+    "source_pages": [
+      178,
+      179
+    ],
+    "raw_text": "11. Thư viện\nĐiện thoại liên lạc\n: (028) 38352020 – (028) 38308905 –\n(028) 35261042\nsố máy nội bộ: 231, 234\nEmail\n: thuvien@hcmue.edu.vn\nWebsite\n: lib.hcmue.edu.vn\nFanpage\n: https://www.facebook.com/lib.hcmue.edu.vn\nVăn phòng làm việc\n: Tòa nhà Thư viện – Nhà làm việc Giáo\nsư, tầng 1 – 7, số 280 An Dương Vương,\nPhường 4, Quận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu;\n– Hướng dẫn sinh viên sử dụng thư viện Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin;\n– Cung cấp các sản phẩm, dịch vụ thông tin;\n– Tư vấn, trao đổi, phổ biến thông tin cho sinh viên.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_11"
+  },
+  {
+    "record_id": "K50_office_12",
+    "content_type": "office_directory",
+    "unit_name": "12. Trạm Y tế",
+    "source_pages": [
+      179
+    ],
+    "raw_text": "12. Trạm Y tế\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 152\nEmail\n: tramyte@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng trệt, P.006,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Phối hợp tổ chức khám sức khỏe đầu khóa học cho tân sinh viên;\n– Khám cấp cứu;\n– Khám bệnh, cấp phát thuốc thông thường;\n– Làm thẻ và phát thẻ BHYT.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_12"
+  },
+  {
+    "record_id": "K50_office_13",
+    "content_type": "office_directory",
+    "unit_name": "13. Trường Trung học Thực hành – ĐHSP",
+    "source_pages": [
+      179
+    ],
+    "raw_text": "13. Trường Trung học Thực hành – ĐHSP\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 115, 116, 117, 118\nEmail\n: truongthth@hcmue.edu.vn\nWebsite\n: thth.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà J, tầng trệt,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Hỗ trợ học sinh NCKH;\n– Dự giờ tìm hiểu hoạt động dạy và học;\n– Phối hợp hoạt động trong công tác Đoàn.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_13"
+  },
+  {
+    "record_id": "K50_office_14",
+    "content_type": "office_directory",
+    "unit_name": "14. Nhà xuất bản ĐHSP Thành phố Hồ Chí Minh",
+    "source_pages": [
+      179,
+      180
+    ],
+    "raw_text": "14. Nhà xuất bản ĐHSP Thành phố Hồ Chí Minh\nĐiện thoại liên lạc\n: (028) 39381382\nEmail\n: nxb@hcmue.edu.vn Website\n: nxbdsh.vn\nVăn phòng làm việc\n: Nhà A, tầng trệt: P.007, tầng 1: P.114,\ntầng 2: P.212, số 280 An Dương Vương,\nPhường 4, Quận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– In ấn giáo trình phục vụ sinh viên các hệ đào tạo;\n– Xuất bản và phát hành sách phục vụ sinh viên trong và ngoài trường.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_14"
+  },
+  {
+    "record_id": "K50_office_15",
+    "content_type": "office_directory",
+    "unit_name": "15. Ký túc xá",
+    "source_pages": [
+      180
+    ],
+    "raw_text": "15. Ký túc xá\nĐiện thoại liên lạc\n: (028) 38650758\nEmail\n: ktx@hcmue.edu.vn\nVăn phòng làm việc\n: 351A Lạc Long Quân, Phường 5,\nQuận 11, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tiếp nhận sinh viên, bố trí chỗ ở và quản lý sinh viên nội trú;\n– Tổ chức các hoạt động ngoại khóa trong và ngoài khu nội trú giúp\nsinh viên rèn luyện kỹ năng.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_15"
+  },
+  {
+    "record_id": "K50_office_16",
+    "content_type": "office_directory",
+    "unit_name": "16. Viện Nghiên cứu Giáo dục",
+    "source_pages": [
+      180
+    ],
+    "raw_text": "16. Viện Nghiên cứu Giáo dục\nĐiện thoại liên lạc\n: (028) 38224813\nEmail\n: vienncgd@hcmue.edu.vn\nWebsite\n: www.ier.edu.vn\nVăn phòng làm việc\n: 115 Hai Bà Trưng, Quận 1, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\nViện thường xuyên tổ chức các lớp bồi dưỡng cho sinh viên như sau:\n– Phương pháp NCKH Giáo dục;\n– Thiết kế bài giảng điện tử;\n– Phương pháp học tập hiệu quả cho sinh viên bậc Đại học.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_16"
+  },
+  {
+    "record_id": "K50_office_17",
+    "content_type": "office_directory",
+    "unit_name": "17. Trung tâm Phát triển kỹ năng sư phạm",
+    "source_pages": [
+      180,
+      181
+    ],
+    "raw_text": "17. Trung tâm Phát triển kỹ năng sư phạm\nĐiện thoại liên lạc\n: (028) 38397868\nsố máy nội bộ: 169 Email\n: trungtamptknsp@hcmue.edu.vn\nWebsite\n: trungtamptknsp.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.201,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức các hoạt động tập giảng, kiến tập và thực tập giảng tại các\nphòng học trực tuyến, phòng học ảo và phòng học thông minh;\n– Phối hợp với Phòng Đào tạo và các khoa chuyên môn để xây\ndựng nội dung, kế hoạch, quy chế thực tập và rèn luyện nghiệp vụ cho\nsinh viên;\n– Tổ chức hội thảo khoa học và các hoạt động NCKH về giáo dục và\nkỹ năng, nghiệp vụ sư phạm;\n– Tổ chức các dịch vụ công về kỹ năng sử dụng các phần mềm dạy\nhọc; các chiến lược và kỹ thuật dạy học trong và ngoài lớp học; kỹ năng\nthiết kế các công cụ dạy học; kỹ năng quản lý hệ thống học tập; kỹ năng\nkiểm tra đánh giá kết quả học tập; phương pháp dạy học tích hợp, phân\nhóa; mô hình và phương pháp dạy – học STEM,…",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_17"
+  },
+  {
+    "record_id": "K50_office_18",
+    "content_type": "office_directory",
+    "unit_name": "18. Trung tâm Tin học",
+    "source_pages": [
+      181,
+      182
+    ],
+    "raw_text": "18. Trung tâm Tin học\nĐiện thoại liên lạc\n: (028) 38392549\nEmail\n: trungtamtinhoc@hcmue.edu.vn\nWebsite\n: thsp.hcmue.edu.vn\nVăn phòng ghi danh\n: 221 Nguyễn Văn Cừ, Phường 4,\nQuận 5, TP. HCM.\nPhòng làm việc\n:\nDãy A, tầng trệt, P.004, P.005\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Giảng dạy chương trình Tin học cơ bản cho sinh viên năm 1 của\ntoàn Trường Đào tạo và giảng dạy các chương trình Tin học văn phòng, Tin học\nứng dụng và ứng dụng công nghệ thông tin trong dạy học bộ môn cho\nsinh viên, học viên trong và ngoài Trường.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_18"
+  },
+  {
+    "record_id": "K50_office_19",
+    "content_type": "office_directory",
+    "unit_name": "19. Trung tâm Ngoại ngữ",
+    "source_pages": [
+      182
+    ],
+    "raw_text": "19. Trung tâm Ngoại ngữ\nĐiện thoại liên lạc\n: (028) 38355084\nEmail\n: trungtamnn@hcmue.edu.vn\nWebsite\n: ttnnsp.edu.vn\nPhòng làm việc\n: Dãy nhà B, tầng 6, P.601, P.602, P.608,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\nTổ chức các loại hình lớp học ngoại ngữ, luyện thi, tổ chức thi các\nchứng chỉ ngoại ngữ quốc gia và phối hợp tổ chức thi cấp chứng chỉ\nngoại ngữ quốc tế, cụ thể là:\n– Giảng dạy các Chương trình Ngoại ngữ tổng quát theo Khung\nnăng lực ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các\nkỹ năng ngoại ngữ từ cơ bản đến nâng cao;\n– Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo\nKhung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam;\n– Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL,\nTOEIC, IELTS, HSK, DELF, DALF, N1 – N5,… Phối hợp với các Tổ\nchức Khảo thí Quốc tế tổ chức các kỳ thi nói trên.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_19"
+  },
+  {
+    "record_id": "K50_office_20",
+    "content_type": "office_directory",
+    "unit_name": "20. Đoàn Thanh niên và Hội Sinh viên Trường",
+    "source_pages": [
+      182,
+      183
+    ],
+    "raw_text": "20. Đoàn Thanh niên và Hội Sinh viên Trường\n+ Văn phòng Đoàn Thanh niên:\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 145\nEmail\n: vpdoantn@hcmue.edu.vn\nWebsite\n: youth.hcmue.edu.vn\nPhòng làm việc\n: Nhà A, tầng trệt, P.001,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM + Văn phòng Hội Sinh viên:\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 208\nEmail\n: vphoisinhvien@hcmue.edu.vn\nPhòng làm việc\n: Nhà A, tầng trệt, P.001,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_20"
+  },
+  {
+    "record_id": "K50_office_21",
+    "content_type": "office_directory",
+    "unit_name": "21. Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp",
+    "source_pages": [
+      183,
+      184
+    ],
+    "raw_text": "21. Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 168\nEmail\n: csaed@hcmue.edu.vn\nWebsite\n: csaed.hcmue.edu.vn\nPhòng làm việc\n: Nhà A, tầng 1, P.101,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức dịch vụ hỗ trợ đời sống của sinh viên: giới thiệu việc làm,\nthông tin học bổng, khảo sát và giới thiệu chỗ trọ,…;\n– Tổ chức các hoạt động trang bị, bồi dưỡng kỹ năng thực hành xã\nhội, các kiến thức, kỹ năng về khởi nghiệp cần thiết cho sinh viên theo\ntừng đối tượng và chuyên ngành;\n– Tập huấn kỹ năng và hướng dẫn sinh viên tham gia các chương\ntrình, dự án khởi nghiệp; tổ chức các hoạt động tạo môi trường để hỗ trợ\nsinh viên hình thành và hiện thực hóa các ý tưởng, dự án khởi nghiệp,\ngóp phần tạo việc làm cho sinh viên sau khi tốt nghiệp;\n– Phối hợp các đơn vị tuyển chọn và quản lý các nhóm cộng tác viên\n(là sinh viên) hỗ trợ cho công tác tổ chức các sự kiện trong trường;\n– Tổ chức và phối hợp tổ chức các hoạt động nhằm nâng cao chuyên\nmôn nghiệp vụ cho sinh viên khi tốt nghiệp;\n– Xây dựng và điều hành các kênh thông tin của trung tâm để nắm\nbắt và giải quyết các nhu cầu hỗ trợ sinh viên Tổ chức ngày hội việc làm và các hoạt động giúp sinh viên tiếp\ncận với các nguồn lực của xã hội.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_21"
+  },
+  {
+    "record_id": "K50_office_22",
+    "content_type": "office_directory",
+    "unit_name": "21. Phân hiệu Long An",
+    "source_pages": [
+      184,
+      206,
+      207
+    ],
+    "raw_text": "21. Phân hiệu Long An\nĐiện thoại liên lạc\n: (027) 23511329\nEmail\n: phlongan@hcmue.edu.vn\nĐịa chỉ\n: 934 Quốc lộ 1A, phường Khánh Hậu,\nthành phố Tân An, tỉnh Long An\nĐào tạo các ngành\n: 06 ngành trình độ đại học (Sư phạm Tiếng\nAnh, Sư phạm Ngữ văn, Sư phạm Toán\nhọc, Giáo dục thể chất, Giáo dục Tiểu\nhọc và Giáo dục Mầm non) và 01 ngành\ntrình độ cao đẳng sư phạm (Giáo dục\nMầm non)\nThông tin liên lạc các tổ:\n+ Tổ Đào tạo – Khảo thí – Công tác sinh viên:\nĐiện thoại liên lạc\n: (027) 23512281\n+ Tổ Hành chính – Quản trị:\nĐiện thoại liên lạc\n: (027) 23511329 MỘT SỐ CÔNG VIỆC CỦA CÁC PHÒNG VÀ\nTRUNG TÂM LIÊN QUAN ĐẾN SINH VIÊN\nTT\nNội dung\nĐơn vị\nLiên hệ\nThông tin về CTĐT,\nhọc phần và tốt nghiệp\nPhòng\nĐào\ntạo\nĐiện thoại liên lạc: (028)\n38352020, số máy nội bộ: 141,\nEmail: phongdt@hcmue.edu.vn\nVăn phòng làm việc: Nhà A,\ntầng 1, P.106, P.107\n– Các vấn đề về công\ntác sinh viên (xin tạm\nnghỉ học, vào học lại,\nthôi học, xin miễn\ngiảm học phí, học\nbổng,…)\n– Xin giấy xác nhận\nsinh viên\n– Đăng ký làm lại thẻ\nsinh viên\nPhòng\nCông\ntác\nchính\ntrị và\nHọc\nsinh,\nsinh\nviên\nĐiện thoại liên lạc: (028)\n38352020, số máy nội bộ: 127,\n128, 143\nEmail:\nhopthusinhvien@hcmue.edu.vn\nVăn phòng làm việc: Nhà A,\ntầng 1, P.108, P.109, P.110\nVề học phí và các quy\nđịnh về tài chính\nPhòng\nKế\nhoạch\n– Tài\nchính\nĐiện thoại liên lạc: (028)\n38352020,\nsố máy nội bộ: 136, 137, 138,\n139, 140\nEmail:\nphongkhtc@hcmue.edu.vn,\nhocphi@hcmue.edu.vn\nVăn phòng làm việc: Nhà A,\ntầng 2, P Các vấn đề về điểm\nsố, việc thi cử\n– Xét miễn các học\nphần ngoại ngữ và tin\nhọc\nPhòng\nKhảo\nthí và\nĐảm\nbảo\nchất\nlượng\nĐiện thoại liên lạc: (028)\n38352020, số máy nội bộ: 146,\n147, 218, 219\nEmail:\nphongkhaothi@hcmue.edu.vn\nVăn phòng làm việc: Nhà A,\ntầng 2, P.202, P.206\nVề tài khoản trên hệ\nthống phần mềm quản\nlý đào tạo\nPhòng\nCông\nnghệ\nThông\ntin\nĐiện thoại liên lạc: (028)\n38352020, số máy nội bộ: 166\nEmail:\nphongcntt@hcmue.edu.vn\nVăn phòng làm việc: Nhà A,\ntầng 5, P.503\nMượn\nphòng\nhọc,\nmượn thiết bị\nPhòng\nQuản\ntrị –\nThiết\nbị\nĐiện thoại liên lạc: (028)\n38352020, số máy nội bộ: 197,\nEmail:\nphongqttb@hcmue.edu.vn\nVăn phòng làm việc: Nhà C,\ntầng trệt, P.004, P.005, P.006\nĐăng\nký\nlàm\nthẻ\nBHYT\nTrạm\nY tế\nĐiện thoại liên lạc: (028)\n38352020, số máy nội bộ: 152\nEmail: tramyte@hcmue.edu.vn\nVăn phòng làm việc: Nhà A,\ntầng trệt, P.006",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_22"
+  },
+  {
+    "record_id": "K51_office_1",
+    "content_type": "office_directory",
+    "unit_name": "1. Phòng Công nghệ Thông tin",
+    "source_pages": [
+      195
+    ],
+    "raw_text": "1. Phòng Công nghệ Thông tin\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 166\nEmail\n: phongcntt@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 5, P.503,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Quản lý email của sinh viên được cấp theo tên miền của Trường\nĐại học Sư phạm Thành phố Hồ Chí Minh;\n– Quản lý trang thông tin điện tử của Trường;\n– Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào\ntạo theo học chế tín chỉ;\n– Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại\nhọc Sư phạm Thành phố Hồ Chí Minh;\n– Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm\ncủa Trường;\n– Các công tác khác có liên quan đến công nghệ thông tin.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_1"
+  },
+  {
+    "record_id": "K51_office_2",
+    "content_type": "office_directory",
+    "unit_name": "2. Phòng Công tác chính trị và Học sinh, sinh viên",
+    "source_pages": [
+      195,
+      196
+    ],
+    "raw_text": "2. Phòng Công tác chính trị và Học sinh, sinh viên\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 127, 128, 143\nEmail\n: hopthusinhvien@hcmue.edu.vn\nWebsite\n: ctsv.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.108, P.109, P.110\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM Những công việc của đơn vị liên quan đến sinh viên:\n– Công tác giáo dục chính trị, tư tưởng;\n– Công tác giáo dục pháp luật;\n– Công tác giáo dục đạo đức, lối sống, kỹ năng sống;\n– Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội\ncấp Trường;\n– Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến\nsinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá\nnhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh\nviên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học\ntập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh\nviên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên;\ntheo dõi phát triển Đảng trong sinh viên;\n– Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm\ncho sinh viên;\n– Tiếp nhận thông tin phản ánh của sinh viên.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_2"
+  },
+  {
+    "record_id": "K51_office_3",
+    "content_type": "office_directory",
+    "unit_name": "3. Phòng Đào tạo",
+    "source_pages": [
+      196,
+      197
+    ],
+    "raw_text": "3. Phòng Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 141, 142\nEmail\n: phongdt@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.106, P.107\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức tuyển sinh các hệ;\n– Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ;\nxây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo\ndõi, giám sát hoạt động dạy và học của giảng viên và sinh viên;\n– Xây dựng và triển khai kế hoạch thực tập, thực tế năm học;\n– Tổ chức xét tuyển đào tạo theo hình thức học cùng lúc hai chương\ntrình (song ngành) cho sinh viên đang theo học tại Trường Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo\nkế hoạch thời gian năm học;\n– Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận\ntốt nghiệp tạm thời, văn bằng tốt nghiệp;\n– Thông báo các nội dung liên quan đến công tác đào tạo trên cổng\nthông tin trực tuyến.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_3"
+  },
+  {
+    "record_id": "K51_office_4",
+    "content_type": "office_directory",
+    "unit_name": "4. Phòng Hợp tác Quốc tế",
+    "source_pages": [
+      197
+    ],
+    "raw_text": "4. Phòng Hợp tác Quốc tế\nĐiện thoại liên lạc\n: (028) 3891080\nsố máy nội bộ: 172, 173\nEmail\n: phonghtqt@hcmue.edu.vn\nWebsite\n: phonghtqt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.111,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Hỗ trợ dịch thuật, tổ chức sự kiện trong và ngoài nước;\n– Thông báo thông tin học bổng ở các trường, doanh nghiệp đối tác\nnước ngoài;\n– Tổ chức giao lưu văn hóa – trao đổi học thuật.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_4"
+  },
+  {
+    "record_id": "K51_office_5",
+    "content_type": "office_directory",
+    "unit_name": "5. Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học",
+    "source_pages": [
+      197,
+      198
+    ],
+    "raw_text": "5. Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 177\nEmail\n: phongkhcn@hcmue.edu.vn\ntapchikhoahoc@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.112,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức xét duyệt đề tài, đề xuất cấp kinh phí hỗ trợ, theo dõi tiến\nđộ thực hiện đề tài NCKH sinh viên, tổ chức Hội nghị Sinh viên NCKH lập hồ sơ đề nghị khen thưởng sinh viên đạt giải thưởng sinh viên NCKH\ncấp Bộ, cấp Trường;\n– Quản lý Tạp chí Khoa học.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_5"
+  },
+  {
+    "record_id": "K51_office_6",
+    "content_type": "office_directory",
+    "unit_name": "6. Phòng Kế hoạch – Tài chính",
+    "source_pages": [
+      198
+    ],
+    "raw_text": "6. Phòng Kế hoạch – Tài chính\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 136, 137, 138, 139, 140\nEmail\n: phongkhtc@hcmue.edu.vn,\nhocphi@hcmue.edu.vn\nWebsite\n: phongkhtc.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.205,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Thực hiện thu học phí, lệ phí theo quy định đối với các hệ đào tạo\ntheo phương thức không dùng tiền mặt;\n– Thực hiện việc cấp HBKKHT và chi trả các chế độ, chính sách\nhỗ trợ cho sinh viên các hệ đào tạo.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_6"
+  },
+  {
+    "record_id": "K51_office_7",
+    "content_type": "office_directory",
+    "unit_name": "7. Phòng Quản trị – Thiết bị",
+    "source_pages": [
+      198,
+      199
+    ],
+    "raw_text": "7. Phòng Quản trị – Thiết bị\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 197, 198\nEmail\n: phongqttb@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng trệt, P.004, P.005, P.006,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Quản lý lớp học, giảng đường, phòng họp;\n– Cho mượn amply, micro lớp học;\n– Quản lý thiết bị trình chiếu, máy vi tính lớp học;\n– Quản lý dịch vụ căn tin, bãi giữ xe tại 280 An Dương Vương,\nphường Chợ Quán và 222 Lê Văn Sỹ, phường Nhiêu Lộc",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_7"
+  },
+  {
+    "record_id": "K51_office_8",
+    "content_type": "office_directory",
+    "unit_name": "8. Phòng Sau Đại học",
+    "source_pages": [
+      199
+    ],
+    "raw_text": "8. Phòng Sau Đại học\nĐiện thoại liên lạc\n: (028) 38391077 – (028) 38352020\nsố máy nội bộ: 181, 182, 183, 184\nEmail\n: phongsdh@hcmue.edu.vn\nWebsite\n: phongsdh.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng 1, P.102, P.103, P.104,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức tư vấn chiêu sinh, tiếp nhận hồ sơ chương trình bổ sung\nkiến thức trình độ tiến sĩ, thạc sĩ;\n– Tổ chức tư vấn tuyển sinh, tiếp nhận hồ sơ đăng ký xét tuyển và\nxét tuyển sinh trình độ tiến sĩ, thạc sĩ;\n– Tổ chức đào tạo chương trình bổ sung kiến thức, đào tạo trình độ\nthạc sĩ và tiến sĩ;\n– Sinh viên truy cập đường dẫn sau để đọc các thông tin về Quy chế tuyển\nsinh và đào tạo trình độ thạc sĩ: http://tracuu.hcmue.edu.vn/Quyche_Thacsi.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_8"
+  },
+  {
+    "record_id": "K51_office_9",
+    "content_type": "office_directory",
+    "unit_name": "9. Phòng Thanh tra Đào tạo",
+    "source_pages": [
+      199,
+      200
+    ],
+    "raw_text": "9. Phòng Thanh tra Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 160\nEmail\n: phongthanhtra@hcmue.edu.vn\nWebsite\n: phongttdt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.209,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tiếp nhận và giải quyết những phản ánh liên quan đến công tác\nđào tạo;\n– Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_9"
+  },
+  {
+    "record_id": "K51_office_10",
+    "content_type": "office_directory",
+    "unit_name": "10. Phòng Khảo thí và Đảm bảo chất lượng",
+    "source_pages": [
+      200
+    ],
+    "raw_text": "10. Phòng Khảo thí và Đảm bảo chất lượng\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 146, 147, 218, 219\nEmail\n: phongkhaothi@hcmue.edu.vn\nWebsite\n: phongkhaothi.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.202, P.206,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của\nNhà trường nhằm đảm bảo chất lượng giáo dục theo sứ mạng và các mục\ntiêu, chiến lược đề ra;\n– Cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc\nhọc tập;\n– Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu\ncủa sinh viên;\n– Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_10"
+  },
+  {
+    "record_id": "K51_office_11",
+    "content_type": "office_directory",
+    "unit_name": "11. Thư viện",
+    "source_pages": [
+      200,
+      201
+    ],
+    "raw_text": "11. Thư viện\nĐiện thoại liên lạc\n: Giám đốc: (028) 35261042\nHướng dẫn thông tin: (028) 38352020 – 231\nDịch vụ thông tin: (028) 38308905 – 234\nPhòng nghiệp vụ: (028) 38352020 – 233\nPhòng đọc: (028) 38352020 – 232\nEmail\n: thuvien@hcmue.edu.vn\nWebsite\n: lib.hcmue.edu.vn\nFanpage\n: https://www.facebook.com/lib.hcmue.edu.vn\nVăn phòng làm việc\n: Tòa nhà Thư viện – Nhà làm việc Giáo\nsư, tầng 1 – 7, số 280 An Dương Vương,\nphường Chợ Quán, TP. HCM Những công việc của đơn vị liên quan đến sinh viên:\n– Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu;\n– Hướng dẫn sinh viên sử dụng thư viện;\n– Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin;\n– Cung cấp các sản phẩm, dịch vụ thông tin;\n– Tư vấn, trao đổi, phổ biến thông tin cho sinh viên.\n– Tổ chức các sự kiện văn hóa, triển lãm sách và các hoạt động\nnhằm phát triển văn hoá đọc cho sinh viên.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_11"
+  },
+  {
+    "record_id": "K51_office_12",
+    "content_type": "office_directory",
+    "unit_name": "12. Trạm Y tế",
+    "source_pages": [
+      201
+    ],
+    "raw_text": "12. Trạm Y tế\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 152\nEmail\n: tramyte@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng trệt, P.011,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Phối hợp tổ chức khám sức khỏe đầu khóa học cho tân sinh viên;\n– Khám cấp cứu;\n– Khám bệnh, cấp phát thuốc thông thường;\n– Làm thẻ và phát thẻ bảo hiểm y tế.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_12"
+  },
+  {
+    "record_id": "K51_office_13",
+    "content_type": "office_directory",
+    "unit_name": "13. Trường Trung học Thực hành – Đại học Sư phạm",
+    "source_pages": [
+      201,
+      202
+    ],
+    "raw_text": "13. Trường Trung học Thực hành – Đại học Sư phạm\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 115, 116, 117, 118\nEmail\n: truongthth@hcmue.edu.vn\nWebsite\n: thth.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà J, tầng trệt,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM Những công việc của đơn vị liên quan đến sinh viên:\n– Hỗ trợ học sinh NCKH;\n– Dự giờ tìm hiểu hoạt động dạy và học;\n– Phối hợp hoạt động trong công tác Đoàn.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_13"
+  },
+  {
+    "record_id": "K51_office_14",
+    "content_type": "office_directory",
+    "unit_name": "14. Nhà xuất bản Đại học Sư phạm Thành phố Hồ Chí Minh",
+    "source_pages": [
+      202
+    ],
+    "raw_text": "14. Nhà xuất bản Đại học Sư phạm Thành phố Hồ Chí Minh\nĐiện thoại liên lạc\n: (028) 39381382\nEmail\n: nxb@hcmue.edu.vn\nWebsite\n: nxbdsh.vn\nVăn phòng làm việc\n: Nhà A, tầng trệt: P.007, tầng 1: P.114,\ntầng 2: P.212, số 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– In ấn giáo trình phục vụ sinh viên các hệ đào tạo;\n– Xuất bản và phát hành sách phục vụ sinh viên trong và ngoài trường.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_14"
+  },
+  {
+    "record_id": "K51_office_15",
+    "content_type": "office_directory",
+    "unit_name": "15. Ký túc xá",
+    "source_pages": [
+      202
+    ],
+    "raw_text": "15. Ký túc xá\nĐiện thoại liên lạc\n: (028) 38650758\nEmail\n: ktx@hcmue.edu.vn\nVăn phòng làm việc\n: 351A Lạc Long Quân, phường Hoà Bình,\nTP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tiếp nhận sinh viên, bố trí chỗ ở và quản lý sinh viên nội trú;\n– Tổ chức các hoạt động ngoại khóa trong và ngoài khu nội trú giúp\nsinh viên rèn luyện kỹ năng.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_15"
+  },
+  {
+    "record_id": "K51_office_16",
+    "content_type": "office_directory",
+    "unit_name": "16. Viện Nghiên cứu Giáo dục",
+    "source_pages": [
+      202,
+      203
+    ],
+    "raw_text": "16. Viện Nghiên cứu Giáo dục\nĐiện thoại liên lạc\n: (028) 38224813\nEmail\n: vienncgd@hcmue.edu.vn\nWebsite\n: www.ier.edu.vn\nVăn phòng làm việc\n: 115 Hai Bà Trưng, phường Sài Gòn,\nTP. HCM Những công việc của đơn vị liên quan đến sinh viên:\nViện thường xuyên tổ chức các lớp bồi dưỡng cho sinh viên như sau:\n– Phương pháp NCKH Giáo dục;\n– Thiết kế bài giảng điện tử;\n– Phương pháp học tập hiệu quả cho sinh viên bậc Đại học.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_16"
+  },
+  {
+    "record_id": "K51_office_17",
+    "content_type": "office_directory",
+    "unit_name": "17. Trung tâm Phát triển kỹ năng sư phạm",
+    "source_pages": [
+      203
+    ],
+    "raw_text": "17. Trung tâm Phát triển kỹ năng sư phạm\nĐiện thoại liên lạc\n: (028) 38397868\nsố máy nội bộ: 169, 170\nEmail\n: trungtamptknsp@hcmue.edu.vn\nWebsite\n: trungtamptknsp.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.201,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức các hoạt động tập giảng, kiến tập và thực tập giảng tại các\nphòng học trực tuyến, phòng học ảo và phòng học thông minh;\n– Phối hợp với Phòng Đào tạo và các khoa chuyên môn để xây dựng\nnội dung, kế hoạch, quy chế thực tập và rèn luyện nghiệp vụ cho sinh viên;\n– Tổ chức hội thảo khoa học và các hoạt động NCKH về giáo dục và\nkỹ năng, nghiệp vụ sư phạm;\n– Tổ chức các dịch vụ công về kỹ năng sử dụng các phần mềm dạy\nhọc; các chiến lược và kỹ thuật dạy học trong và ngoài lớp học; kỹ năng\nthiết kế các công cụ dạy học; kỹ năng quản lý hệ thống học tập; kỹ năng\nkiểm tra đánh giá kết quả học tập; phương pháp dạy học tích hợp, phân\nhóa; mô hình và phương pháp dạy – học STEM,…",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_17"
+  },
+  {
+    "record_id": "K51_office_18",
+    "content_type": "office_directory",
+    "unit_name": "18. Trung tâm Tin học",
+    "source_pages": [
+      203,
+      204
+    ],
+    "raw_text": "18. Trung tâm Tin học\nĐiện thoại liên lạc\n: (028) 38392549\nEmail\n: trungtamtinhoc@hcmue.edu.vn\nWebsite\n: thsp.hcmue.edu.vn Văn phòng ghi danh\n: 221 Nguyễn Văn Cừ, phường Chợ Quán,\nTP. HCM.\nVăn phòng làm việc\n: Dãy A, tầng trệt, P.004, P.005\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Giảng dạy chương trình Tin học cơ bản cho sinh viên năm 1 của\ntoàn Trường;\n– Đào tạo và giảng dạy các chương trình Tin học văn phòng, Tin học\nứng dụng và ứng dụng công nghệ thông tin trong dạy học bộ môn cho\nsinh viên, học viên trong và ngoài Trường.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_18"
+  },
+  {
+    "record_id": "K51_office_19",
+    "content_type": "office_directory",
+    "unit_name": "19. Trung tâm Ngoại ngữ",
+    "source_pages": [
+      204,
+      205
+    ],
+    "raw_text": "19. Trung tâm Ngoại ngữ\nĐiện thoại liên lạc\n: (028) 38355084\nEmail\n: trungtamnn@hcmue.edu.vn\nWebsite\n: ttnnsp.edu.vn\nVăn phòng làm việc\n: Dãy nhà B, tầng 6, P.601, P.602, P.608,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\nTổ chức các loại hình lớp học ngoại ngữ, luyện thi, tổ chức thi các\nchứng chỉ ngoại ngữ quốc gia và phối hợp tổ chức thi cấp chứng chỉ\nngoại ngữ quốc tế, cụ thể là:\n– Giảng dạy các Chương trình Ngoại ngữ tổng quát theo Khung\nnăng lực ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các\nkỹ năng ngoại ngữ từ cơ bản đến nâng cao;\n– Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo\nKhung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam;\n– Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL,\nTOEIC, IELTS, HSK, DELF, DALF, N1 – N5,… Phối hợp với các Tổ\nchức Khảo thí Quốc tế tổ chức các kỳ thi nói trên",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_19"
+  },
+  {
+    "record_id": "K51_office_20",
+    "content_type": "office_directory",
+    "unit_name": "20. Đoàn Thanh niên và Hội Sinh viên Trường",
+    "source_pages": [
+      205
+    ],
+    "raw_text": "20. Đoàn Thanh niên và Hội Sinh viên Trường\n+ Văn phòng Đoàn Thanh niên:\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 145\nEmail\n: vpdoantn@hcmue.edu.vn\nWebsite\n: youth.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng trệt, P.001,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\n+ Văn phòng Hội Sinh viên:\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 208\nEmail\n: vphoisinhvien@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng trệt, P.001,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_20"
+  },
+  {
+    "record_id": "K51_office_21",
+    "content_type": "office_directory",
+    "unit_name": "21. Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp",
+    "source_pages": [
+      205,
+      206,
+      221,
+      222,
+      223,
+      224
+    ],
+    "raw_text": "21. Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 168\nEmail\n: csaed@hcmue.edu.vn\nWebsite\n: csaed.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.101,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức dịch vụ hỗ trợ đời sống của sinh viên: giới thiệu việc làm,\nthông tin học bổng, khảo sát và giới thiệu chỗ trọ,…;\n– Tổ chức các hoạt động trang bị, bồi dưỡng kỹ năng thực hành xã\nhội, các kiến thức, kỹ năng về khởi nghiệp cần thiết cho sinh viên theo\ntừng đối tượng và chuyên ngành Tập huấn kỹ năng và hướng dẫn sinh viên tham gia các chương\ntrình, dự án khởi nghiệp; tổ chức các hoạt động tạo môi trường để hỗ trợ\nsinh viên hình thành và hiện thực hóa các ý tưởng, dự án khởi nghiệp,\ngóp phần tạo việc làm cho sinh viên sau khi tốt nghiệp;\n– Phối hợp các đơn vị tuyển chọn và quản lý các nhóm cộng tác viên\n(là sinh viên) hỗ trợ cho công tác tổ chức các sự kiện trong trường;\n– Tổ chức và phối hợp tổ chức các hoạt động nhằm nâng cao chuyên\nmôn nghiệp vụ cho sinh viên khi tốt nghiệp;\n– Xây dựng và điều hành các kênh thông tin của trung tâm để nắm\nbắt và giải quyết các nhu cầu hỗ trợ sinh viên;\n– Tổ chức ngày hội việc làm và các hoạt động giúp sinh viên tiếp\ncận với các nguồn lực của xã hội MỘT SỐ CÔNG VIỆC CỦA CÁC TỔ, PHÒNG\nVÀ TRUNG TÂM LIÊN QUAN ĐẾN SINH VIÊN\nI. Tại cơ sở chính\nTT\nNội dung\nĐơn vị\nLiên hệ\nThông tin về CTĐT,\nhọc phần và tốt nghiệp\nPhòng\nĐào\ntạo\nĐiện thoại liên lạc:\n(028) 38352020,\nsố máy nội bộ: 141, 142\nEmail:\nphongdt@hcmue.edu.vn\nVăn phòng làm việc: Nhà A,\ntầng 1, P.106, P.107\n– Các vấn đề về công\ntác sinh viên (xin tạm\nnghỉ học, vào học lại,\nthôi học, xin miễn giảm\nhọc phí, học bổng,…)\n– Xin giấy xác nhận\nsinh viên\n– Đăng ký làm lại thẻ\nsinh viên\nPhòng\nCông\ntác\nchính\ntrị và\nHọc\nsinh,\nsinh\nviên\nĐiện thoại liên lạc:\n(028) 38352020,\nsố máy nội bộ: 127, 128, 143\nEmail:\nhopthusinhvien@hcmue.edu.vn\nVăn phòng làm việc: Nhà A,\ntầng 1, P.108, P.109, P.110\nVề học phí và các quy\nđịnh về tài chính\nPhòng\nKế\nhoạch\n– Tài\nchính\nĐiện thoại liên lạc:\n(028) 38352020,\nsố máy nội bộ: 136, 137, 138,\n139, 140\nEmail:\nphongkhtc@hcmue.edu.vn,\nhocphi@hcmue.edu.vn\nVăn phòng làm việc: Nhà A,\ntầng 2, P.205 Các vấn đề về điểm\nsố, việc thi cử\n– Xét miễn các học\nphần ngoại ngữ và tin\nhọc\nPhòng\nKhảo\nthí và\nĐảm\nbảo\nchất\nlượng\nĐiện thoại liên lạc:\n(028) 38352020,\nsố máy nội bộ: 146, 147, 218,\nEmail:\nphongkhaothi@hcmue.edu.vn\nVăn phòng làm việc: Nhà A,\ntầng 2, P.202, P.206\nVề tài khoản trên hệ\nthống phần mềm quản\nlý đào tạo\nPhòng\nCông\nnghệ\nThông\ntin\nĐiện thoại liên lạc:\n(028) 38352020,\nsố máy nội bộ: 166\nEmail:\nphongcntt@hcmue.edu.vn\nVăn phòng làm việc: Nhà A,\ntầng 5, P.503\nMượn phòng học, mượn\nthiết bị\nPhòng\nQuản\ntrị –\nThiết\nbị\nĐiện thoại liên lạc:\n(028) 38352020,\nsố máy nội bộ: 197, 198\nEmail:\nphongqttb@hcmue.edu.vn\nVăn phòng làm việc: Nhà C,\ntầng trệt, P.004, P.005, P.006\nĐăng ký làm thẻ bảo\nhiểm y tế\nTrạm\nY tế\nĐiện thoại liên lạc:\n(028) 38352020,\nsố máy nội bộ: 152\nEmail:\ntramyte@hcmue.edu.vn\nVăn phòng làm việc: Nhà A,\ntầng trệt, P II. Tại Phân hiệu Long An\nTT\nNội dung\nĐơn vị\nLiên hệ\n– Thông tin về CTĐT,\nhọc phần và tốt nghiệp\n– Các vấn đề về công\ntác sinh viên (xin tạm\nnghỉ học, vào học lại,\nthôi học, xin miễn giảm\nhọc phí, học bổng,…)\n– Xin giấy xác nhận\nsinh viên\n– Đăng ký làm lại thẻ\nsinh viên\n– Các vấn đề về điểm\nsố, việc thi cử\n– Xét miễn các học phần\nngoại ngữ và tin học\nTổ\nĐào tạo\n– Khảo\nthí –\nCông\ntác sinh\nviên\nĐiện thoại liên lạc:\n(027) 23512281\nEmail:\nlongan.dtktctsv@hcmue.edu.vn\nVăn phòng làm việc:\nKhu Hiệu bộ, Phân hiệu Long An\n– Về học phí và các\nquy định về tài chính\n– Mượn phòng học,\nmượn thiết bị\n– Đăng ký làm thẻ bảo\nhiểm y tế\nTổ\nHành\nchính –\nQuản\ntrị\nĐiện thoại liên lạc:\n(027) 23511329\nEmail:\nlongan.hcqt@hcmue.edu.vn\nVăn phòng làm việc:\nKhu Hiệu bộ, Phân hiệu Long An\nVề tài khoản trên hệ\nthống phần mềm quản\nlý đào tạo\nPhòng\nCông\nnghệ\nThông\ntin\nĐiện thoại liên lạc:\n(028) 38352020,\nsố máy nội bộ: 166\nEmail:\nphongcntt@hcmue.edu.vn\nVăn phòng làm việc: Nhà A –\ncơ sở chính, tầng 5, P.503 III. Tại Phân hiệu Gia Lai\nTT\nNội dung\nĐơn vị\nLiên hệ\n– Thông tin về CTĐT,\nhọc phần và tốt nghiệp\n– Các vấn đề về công\ntác sinh viên (xin tạm\nnghỉ học, vào học lại,\nthôi học, xin miễn giảm\nhọc phí, học bổng,…)\n– Xin giấy xác nhận\nsinh viên\n– Đăng ký làm lại thẻ\nsinh viên\n– Các vấn đề về điểm\nsố, việc thi cử\n– Xét miễn các học phần\nngoại ngữ và tin học\nTổ\nĐào tạo –\nKhảo thí –\nCông tác\nsinh viên\nĐiện thoại liên lạc:\n(026) 93877365\nEmail:\ngialai.dtktsv@hcmue.edu.vn\nVăn phòng làm việc:\nNhà làm việc hành chính,\nPhân hiệu Gia Lai\n– Về học phí và các\nquy định về tài chính\n– Mượn phòng học,\nmượn thiết bị\n– Đăng ký làm thẻ bảo\nhiểm y tế\nTổ\nHành\nchính –\nQuản trị\nĐiện thoại liên lạc:\n(026) 93877244\nEmail:\ngialai.dtktsv@hcmue.edu.vn\nVăn phòng làm việc:\nNhà làm việc hành chính,\nPhân hiệu Gia Lai\nVề tài khoản trên hệ\nthống phần mềm quản\nlý đào tạo\nPhòng\nCông nghệ\nThông tin\nĐiện thoại liên lạc:\n(028) 38352020,\nsố máy nội bộ: 166\nEmail:\nphongcntt@hcmue.edu.vn\nVăn phòng làm việc: Nhà A\n– cơ sở chính, tầng 5, P.503",
+    "needs_manual_review": false,
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "office_directory",
+    "content_mode": "rag_index",
+    "source_record_id": "office_21"
+  }
+]

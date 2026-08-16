@@ -1,0 +1,1438 @@
+[
+  {
+    "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+    "data_category": "regulation_table",
+    "table_type": "conduct",
+    "table_subtype": "conduct_classification",
+    "table_name": "Bảng phân loại kết quả rèn luyện",
+    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "source_parent_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+    "source_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+    "title": "Phân loại kết quả rèn luyện",
+    "applicability": null,
+    "columns": [
+      "Khung điểm",
+      "Xếp loại"
+    ],
+    "rows": [
+      {
+        "Khung điểm": "Từ 90 đến 100 điểm",
+        "Xếp loại": "Xuất sắc"
+      },
+      {
+        "Khung điểm": "Từ 80 đến dưới 90 điểm",
+        "Xếp loại": "Tốt"
+      },
+      {
+        "Khung điểm": "Từ 65 đến dưới 80 điểm",
+        "Xếp loại": "Khá"
+      },
+      {
+        "Khung điểm": "Từ 50 đến dưới 65 điểm",
+        "Xếp loại": "Trung bình"
+      },
+      {
+        "Khung điểm": "Từ 35 đến dưới 50 điểm",
+        "Xếp loại": "Yếu"
+      },
+      {
+        "Khung điểm": "Dưới 35 điểm",
+        "Xếp loại": "Kém"
+      }
+    ],
+    "source_pages": [
+      74
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "scholarship_classification",
+    "data_category": "regulation_table",
+    "table_type": "scholarship",
+    "table_subtype": "scholarship_classification",
+    "table_name": "Xếp loại học bổng khuyến khích học tập",
+    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "source_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+    "applicability": null,
+    "columns": [],
+    "rows": [
+      {
+        "label": "Khá",
+        "scholarship_score_range": "2.56-3.352",
+        "academic_score_range": "2.50-3.19",
+        "conduct_score_condition": ">=70"
+      },
+      {
+        "label": "Giỏi",
+        "scholarship_score_range": "3.20-3.672",
+        "academic_score_range": "3.20-3.59",
+        "conduct_score_condition": ">=80"
+      },
+      {
+        "label": "Xuất sắc",
+        "scholarship_score_range": "3.60-4.0",
+        "academic_score_range": "3.60-4.0",
+        "conduct_score_condition": ">=90"
+      }
+    ],
+    "source_pages": [
+      52,
+      53
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+    "data_category": "regulation_table",
+    "table_type": "scoring",
+    "table_subtype": "grade_scale",
+    "table_name": "Bảng quy đổi thang điểm 10 sang điểm chữ",
+    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+    "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+    "title": "Đánh giá và tính điểm học phần",
+    "applicability": null,
+    "columns": [
+      "Loại",
+      "Thang điểm 10",
+      "Thang điểm chữ"
+    ],
+    "rows": [
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "8,5 - 10",
+        "Thang điểm chữ": "A"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "7,8 - 8,4",
+        "Thang điểm chữ": "B+"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "7,0 - 7,7",
+        "Thang điểm chữ": "B"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "6,3 - 6,9",
+        "Thang điểm chữ": "C+"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "5,5 - 6,2",
+        "Thang điểm chữ": "C"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "4,8 - 5,4",
+        "Thang điểm chữ": "D+"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "4,0 - 4,7",
+        "Thang điểm chữ": "D"
+      },
+      {
+        "Loại": "Không đạt",
+        "Thang điểm 10": "3,0 - 3,9",
+        "Thang điểm chữ": "F+"
+      },
+      {
+        "Loại": "Không đạt",
+        "Thang điểm 10": "0,0 - 2,9",
+        "Thang điểm chữ": "F"
+      }
+    ],
+    "source_pages": [
+      18,
+      19,
+      20,
+      21
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
+    "data_category": "regulation_table",
+    "table_type": "scoring",
+    "table_subtype": "pass_fail_ungraded",
+    "table_name": "Bảng đánh giá học phần đạt/không đạt không phân mức",
+    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+    "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+    "title": "Đánh giá và tính điểm học phần",
+    "applicability": "Áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập.",
+    "columns": [
+      "Kết quả",
+      "Thang điểm 10",
+      "Điểm chữ",
+      "Tính vào điểm trung bình học tập"
+    ],
+    "rows": [
+      {
+        "Kết quả": "Đạt",
+        "Thang điểm 10": "Từ 5,0 trở lên",
+        "Điểm chữ": "P",
+        "Tính vào điểm trung bình học tập": "Không"
+      },
+      {
+        "Kết quả": "Chưa đạt",
+        "Thang điểm 10": "Dưới 5,0",
+        "Điểm chữ": "Không quy đổi thành P",
+        "Tính vào điểm trung bình học tập": "Không"
+      }
+    ],
+    "source_pages": [
+      18,
+      19,
+      20,
+      21
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+    "data_category": "regulation_table",
+    "table_type": "scoring",
+    "table_subtype": "academic_classification",
+    "table_name": "Bảng xếp loại học lực theo thang điểm 4",
+    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+    "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+    "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+    "applicability": null,
+    "columns": [
+      "Xếp loại",
+      "Thang điểm 4"
+    ],
+    "rows": [
+      {
+        "Xếp loại": "Xuất sắc",
+        "Thang điểm 4": "Từ 3,6 đến 4,0"
+      },
+      {
+        "Xếp loại": "Giỏi",
+        "Thang điểm 4": "Từ 3,2 đến dưới 3,6"
+      },
+      {
+        "Xếp loại": "Khá",
+        "Thang điểm 4": "Từ 2,5 đến dưới 3,2"
+      },
+      {
+        "Xếp loại": "Trung bình",
+        "Thang điểm 4": "Từ 2,0 đến dưới 2,5"
+      },
+      {
+        "Xếp loại": "Yếu",
+        "Thang điểm 4": "Từ 1,0 đến dưới 2,0"
+      },
+      {
+        "Xếp loại": "Kém",
+        "Thang điểm 4": "Dưới 1,0"
+      }
+    ],
+    "source_pages": [
+      21,
+      22,
+      23
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+    "data_category": "regulation_table",
+    "table_type": "scoring",
+    "table_subtype": "letter_to_grade4",
+    "table_name": "Bảng quy đổi điểm chữ sang thang điểm 4",
+    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+    "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+    "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+    "applicability": null,
+    "columns": [
+      "Thang điểm chữ",
+      "Thang điểm 4"
+    ],
+    "rows": [
+      {
+        "Thang điểm chữ": "A",
+        "Thang điểm 4": "4,0"
+      },
+      {
+        "Thang điểm chữ": "B+",
+        "Thang điểm 4": "3,5"
+      },
+      {
+        "Thang điểm chữ": "B",
+        "Thang điểm 4": "3,0"
+      },
+      {
+        "Thang điểm chữ": "C+",
+        "Thang điểm 4": "2,5"
+      },
+      {
+        "Thang điểm chữ": "C",
+        "Thang điểm 4": "2,0"
+      },
+      {
+        "Thang điểm chữ": "D+",
+        "Thang điểm 4": "1,5"
+      },
+      {
+        "Thang điểm chữ": "D",
+        "Thang điểm 4": "1,0"
+      },
+      {
+        "Thang điểm chữ": "F+",
+        "Thang điểm 4": "0,5"
+      },
+      {
+        "Thang điểm chữ": "F",
+        "Thang điểm 4": "0,0"
+      }
+    ],
+    "source_pages": [
+      21,
+      22,
+      23
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+    "data_category": "regulation_table",
+    "table_type": "study_duration",
+    "table_subtype": "study_duration",
+    "table_name": "Thời gian học tập chuẩn và tối đa",
+    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+    "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+    "title": "Chương trình đào tạo và thời gian học tập",
+    "applicability": "Áp dụng cho hình thức đào tạo chính quy.",
+    "columns": [
+      "Chương trình đào tạo",
+      "Thời gian học tập chuẩn",
+      "Thời gian học tập tối đa"
+    ],
+    "rows": [
+      {
+        "Chương trình đào tạo": "Đào tạo đại học cấp bằng thứ nhất",
+        "Thời gian học tập chuẩn": "4 năm học",
+        "Thời gian học tập tối đa": "8 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
+        "Thời gian học tập chuẩn": "1,5 năm học",
+        "Thời gian học tập tối đa": "3 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
+        "Thời gian học tập chuẩn": "2,5 năm học",
+        "Thời gian học tập tối đa": "5 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
+        "Thời gian học tập chuẩn": "2 năm học",
+        "Thời gian học tập tối đa": "4 năm học"
+      }
+    ],
+    "source_pages": [
+      11,
+      12,
+      13
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+    "data_category": "regulation_table",
+    "table_type": "study_duration",
+    "table_subtype": "study_duration",
+    "table_name": "Thời gian học tập chuẩn và tối đa",
+    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+    "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+    "title": "Chương trình đào tạo và thời gian học tập",
+    "applicability": "Áp dụng cho hình thức đào tạo vừa làm vừa học.",
+    "columns": [
+      "Chương trình đào tạo",
+      "Thời gian học tập chuẩn",
+      "Thời gian học tập tối đa"
+    ],
+    "rows": [
+      {
+        "Chương trình đào tạo": "Đào tạo đại học cấp bằng thứ nhất",
+        "Thời gian học tập chuẩn": "5 năm học",
+        "Thời gian học tập tối đa": "9 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
+        "Thời gian học tập chuẩn": "2 năm học",
+        "Thời gian học tập tối đa": "4 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
+        "Thời gian học tập chuẩn": "3 năm học",
+        "Thời gian học tập tối đa": "6 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
+        "Thời gian học tập chuẩn": "2,5 năm học",
+        "Thời gian học tập tối đa": "5 năm học"
+      }
+    ],
+    "source_pages": [
+      11,
+      12,
+      13
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+    "data_category": "regulation_table",
+    "table_type": "conduct",
+    "table_subtype": "conduct_classification",
+    "table_name": "Bảng phân loại kết quả rèn luyện",
+    "cohort": "K50",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "source_parent_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+    "source_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+    "title": "Phân loại kết quả rèn luyện",
+    "applicability": null,
+    "columns": [
+      "Khung điểm",
+      "Xếp loại"
+    ],
+    "rows": [
+      {
+        "Khung điểm": "Từ 90 đến 100 điểm",
+        "Xếp loại": "Xuất sắc"
+      },
+      {
+        "Khung điểm": "Từ 80 đến dưới 90 điểm",
+        "Xếp loại": "Tốt"
+      },
+      {
+        "Khung điểm": "Từ 65 đến dưới 80 điểm",
+        "Xếp loại": "Khá"
+      },
+      {
+        "Khung điểm": "Từ 50 đến dưới 65 điểm",
+        "Xếp loại": "Trung bình"
+      },
+      {
+        "Khung điểm": "Từ 35 đến dưới 50 điểm",
+        "Xếp loại": "Yếu"
+      },
+      {
+        "Khung điểm": "Dưới 35 điểm",
+        "Xếp loại": "Kém"
+      }
+    ],
+    "source_pages": [
+      94
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K50_foreign_language_equivalency_dieu8",
+    "data_category": "regulation_table",
+    "table_type": "foreign_language",
+    "table_subtype": "foreign_language_equivalency",
+    "table_name": "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4",
+    "cohort": "K50",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "source_parent_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8",
+    "source_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8",
+    "title": "Tổ chức thực hiện",
+    "applicability": "Điều 1 quy định áp dụng cho sinh viên đại học từ khóa tuyển sinh năm 2022 trở đi; nguồn trích dẫn vẫn là Sổ tay K50.",
+    "columns": [
+      "language",
+      "certificate",
+      "level_or_scale",
+      "equivalent_level_3",
+      "equivalent_level_4"
+    ],
+    "rows": [
+      {
+        "language": "Tiếng Anh",
+        "certificate": "TOEFL iBT",
+        "level_or_scale": "TOEFL iBT",
+        "equivalent_level_3": "30 - 45",
+        "equivalent_level_4": "46 - 93"
+      },
+      {
+        "language": "Tiếng Anh",
+        "certificate": "TOEFL ITP",
+        "level_or_scale": "TOEFL ITP",
+        "equivalent_level_3": "450 - 499",
+        "equivalent_level_4": ""
+      },
+      {
+        "language": "Tiếng Anh",
+        "certificate": "IELTS",
+        "level_or_scale": "IELTS",
+        "equivalent_level_3": "4.0 - 5.0",
+        "equivalent_level_4": "5.5 - 6.5"
+      },
+      {
+        "language": "Tiếng Anh",
+        "certificate": "Cambridge Assessment English / Linguaskill",
+        "level_or_scale": "Cambridge/Linguaskill",
+        "equivalent_level_3": "B1 Preliminary; B1 Business Preliminary; Linguaskill 140 - 159",
+        "equivalent_level_4": "B2 First; B2 Business Vantage; Linguaskill 160 - 179"
+      },
+      {
+        "language": "Tiếng Anh",
+        "certificate": "TOEIC (4 kỹ năng)",
+        "level_or_scale": "Nghe, Đọc, Nói, Viết",
+        "equivalent_level_3": "Nghe 275 - 399; Đọc 275 - 384; Nói 120 - 159; Viết 120 - 149",
+        "equivalent_level_4": "Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179"
+      },
+      {
+        "language": "Tiếng Pháp",
+        "certificate": "TCF / DELF",
+        "level_or_scale": "TCF, DELF",
+        "equivalent_level_3": "TCF 300 - 399; DELF B1",
+        "equivalent_level_4": "TCF 400 - 499; DELF B2"
+      },
+      {
+        "language": "Tiếng Trung Quốc",
+        "certificate": "Hanyu Shuiping Kaoshi (HSK)",
+        "level_or_scale": "HSK",
+        "equivalent_level_3": "HSK bậc 3",
+        "equivalent_level_4": "HSK bậc 4"
+      },
+      {
+        "language": "Tiếng Nhật",
+        "certificate": "Japanese Language Proficiency Test (JLPT)",
+        "level_or_scale": "JLPT",
+        "equivalent_level_3": "N4",
+        "equivalent_level_4": "N3"
+      },
+      {
+        "language": "Tiếng Nga",
+        "certificate": "ТРКИ - Тест по русскому языку как иностранному",
+        "level_or_scale": "ТРКИ",
+        "equivalent_level_3": "ТРКИ-1",
+        "equivalent_level_4": "ТРКИ-2"
+      },
+      {
+        "language": "Tiếng Hàn Quốc",
+        "certificate": "TOPIK II",
+        "level_or_scale": "TOPIK II",
+        "equivalent_level_3": "TOPIK II (120)",
+        "equivalent_level_4": "TOPIK II (150)"
+      }
+    ],
+    "source_pages": [
+      112,
+      113,
+      114,
+      115,
+      116
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true,
+    "source_cohort": "K50",
+    "source_document_id": "so_tay_sinh_vien_khoa_50",
+    "source_content_sha256": "2c38946d2c4ca515cd3e98fee953c771c71030bdcd8d4651d8d153aba91d8bb3",
+    "applicable_cohorts": [
+      "K48-K49",
+      "K50",
+      "K51"
+    ],
+    "applicability_basis_parent_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1",
+    "applicability_validated": true
+  },
+  {
+    "table_id": "scholarship_classification",
+    "data_category": "regulation_table",
+    "table_type": "scholarship",
+    "table_subtype": "scholarship_classification",
+    "table_name": "Xếp loại học bổng khuyến khích học tập",
+    "cohort": "K50",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "source_parent_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "source_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+    "applicability": null,
+    "columns": [],
+    "rows": [
+      {
+        "label": "Khá",
+        "scholarship_score_range": "2.56-3.352",
+        "academic_score_range": "2.50-3.19",
+        "conduct_score_condition": ">=70"
+      },
+      {
+        "label": "Giỏi",
+        "scholarship_score_range": "3.20-3.672",
+        "academic_score_range": "3.20-3.59",
+        "conduct_score_condition": ">=80"
+      },
+      {
+        "label": "Xuất sắc",
+        "scholarship_score_range": "3.60-4.0",
+        "academic_score_range": "3.60-4.0",
+        "conduct_score_condition": ">=90"
+      }
+    ],
+    "source_pages": [
+      71,
+      72,
+      73
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+    "data_category": "regulation_table",
+    "table_type": "scoring",
+    "table_subtype": "grade_scale",
+    "table_name": "Bảng quy đổi thang điểm 10 sang điểm chữ",
+    "cohort": "K50",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "source_parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+    "source_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+    "title": "Đánh giá và tính điểm học phần",
+    "applicability": null,
+    "columns": [
+      "Loại",
+      "Thang điểm 10",
+      "Thang điểm chữ"
+    ],
+    "rows": [
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "8,5 - 10",
+        "Thang điểm chữ": "A"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "7,8 - 8,4",
+        "Thang điểm chữ": "B+"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "7,0 - 7,7",
+        "Thang điểm chữ": "B"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "6,3 - 6,9",
+        "Thang điểm chữ": "C+"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "5,5 - 6,2",
+        "Thang điểm chữ": "C"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "4,8 - 5,4",
+        "Thang điểm chữ": "D+"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "4,0 - 4,7",
+        "Thang điểm chữ": "D"
+      },
+      {
+        "Loại": "Không đạt",
+        "Thang điểm 10": "3,0 - 3,9",
+        "Thang điểm chữ": "F+"
+      },
+      {
+        "Loại": "Không đạt",
+        "Thang điểm 10": "0,0 - 2,9",
+        "Thang điểm chữ": "F"
+      }
+    ],
+    "source_pages": [
+      16,
+      17,
+      18,
+      19
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
+    "data_category": "regulation_table",
+    "table_type": "scoring",
+    "table_subtype": "pass_fail_ungraded",
+    "table_name": "Bảng đánh giá học phần đạt/không đạt không phân mức",
+    "cohort": "K50",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "source_parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+    "source_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+    "title": "Đánh giá và tính điểm học phần",
+    "applicability": "Áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập.",
+    "columns": [
+      "Kết quả",
+      "Thang điểm 10",
+      "Điểm chữ",
+      "Tính vào điểm trung bình học tập"
+    ],
+    "rows": [
+      {
+        "Kết quả": "Đạt",
+        "Thang điểm 10": "Từ 5,0 trở lên",
+        "Điểm chữ": "P",
+        "Tính vào điểm trung bình học tập": "Không"
+      },
+      {
+        "Kết quả": "Chưa đạt",
+        "Thang điểm 10": "Dưới 5,0",
+        "Điểm chữ": "Không quy đổi thành P",
+        "Tính vào điểm trung bình học tập": "Không"
+      }
+    ],
+    "source_pages": [
+      16,
+      17,
+      18,
+      19
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+    "data_category": "regulation_table",
+    "table_type": "scoring",
+    "table_subtype": "academic_classification",
+    "table_name": "Bảng xếp loại học lực theo thang điểm 4",
+    "cohort": "K50",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "source_parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+    "source_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+    "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+    "applicability": null,
+    "columns": [
+      "Xếp loại",
+      "Thang điểm 4"
+    ],
+    "rows": [
+      {
+        "Xếp loại": "Xuất sắc",
+        "Thang điểm 4": "Từ 3,6 đến 4,0"
+      },
+      {
+        "Xếp loại": "Giỏi",
+        "Thang điểm 4": "Từ 3,2 đến dưới 3,6"
+      },
+      {
+        "Xếp loại": "Khá",
+        "Thang điểm 4": "Từ 2,5 đến dưới 3,2"
+      },
+      {
+        "Xếp loại": "Trung bình",
+        "Thang điểm 4": "Từ 2,0 đến dưới 2,5"
+      },
+      {
+        "Xếp loại": "Yếu",
+        "Thang điểm 4": "Từ 1,0 đến dưới 2,0"
+      },
+      {
+        "Xếp loại": "Kém",
+        "Thang điểm 4": "Dưới 1,0"
+      }
+    ],
+    "source_pages": [
+      19,
+      20,
+      21
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+    "data_category": "regulation_table",
+    "table_type": "scoring",
+    "table_subtype": "letter_to_grade4",
+    "table_name": "Bảng quy đổi điểm chữ sang thang điểm 4",
+    "cohort": "K50",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "source_parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+    "source_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+    "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+    "applicability": null,
+    "columns": [
+      "Thang điểm chữ",
+      "Thang điểm 4"
+    ],
+    "rows": [
+      {
+        "Thang điểm chữ": "A",
+        "Thang điểm 4": "4,0"
+      },
+      {
+        "Thang điểm chữ": "B+",
+        "Thang điểm 4": "3,5"
+      },
+      {
+        "Thang điểm chữ": "B",
+        "Thang điểm 4": "3,0"
+      },
+      {
+        "Thang điểm chữ": "C+",
+        "Thang điểm 4": "2,5"
+      },
+      {
+        "Thang điểm chữ": "C",
+        "Thang điểm 4": "2,0"
+      },
+      {
+        "Thang điểm chữ": "D+",
+        "Thang điểm 4": "1,5"
+      },
+      {
+        "Thang điểm chữ": "D",
+        "Thang điểm 4": "1,0"
+      },
+      {
+        "Thang điểm chữ": "F+",
+        "Thang điểm 4": "0,5"
+      },
+      {
+        "Thang điểm chữ": "F",
+        "Thang điểm 4": "0,0"
+      }
+    ],
+    "source_pages": [
+      19,
+      20,
+      21
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+    "data_category": "regulation_table",
+    "table_type": "study_duration",
+    "table_subtype": "study_duration",
+    "table_name": "Thời gian học tập chuẩn và tối đa",
+    "cohort": "K50",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "source_parent_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+    "source_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+    "title": "Chương trình đào tạo và thời gian học tập",
+    "applicability": "Áp dụng cho hình thức đào tạo chính quy.",
+    "columns": [
+      "Chương trình đào tạo",
+      "Thời gian học tập chuẩn",
+      "Thời gian học tập tối đa"
+    ],
+    "rows": [
+      {
+        "Chương trình đào tạo": "Đào tạo đại học cấp bằng thứ nhất",
+        "Thời gian học tập chuẩn": "4 năm học",
+        "Thời gian học tập tối đa": "8 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
+        "Thời gian học tập chuẩn": "1,5 năm học",
+        "Thời gian học tập tối đa": "3 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
+        "Thời gian học tập chuẩn": "2,5 năm học",
+        "Thời gian học tập tối đa": "5 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
+        "Thời gian học tập chuẩn": "2 năm học",
+        "Thời gian học tập tối đa": "4 năm học"
+      }
+    ],
+    "source_pages": [
+      9,
+      10,
+      11
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+    "data_category": "regulation_table",
+    "table_type": "study_duration",
+    "table_subtype": "study_duration",
+    "table_name": "Thời gian học tập chuẩn và tối đa",
+    "cohort": "K50",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "source_parent_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+    "source_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+    "title": "Chương trình đào tạo và thời gian học tập",
+    "applicability": "Áp dụng cho hình thức đào tạo vừa làm vừa học.",
+    "columns": [
+      "Chương trình đào tạo",
+      "Thời gian học tập chuẩn",
+      "Thời gian học tập tối đa"
+    ],
+    "rows": [
+      {
+        "Chương trình đào tạo": "Đào tạo đại học cấp bằng thứ nhất",
+        "Thời gian học tập chuẩn": "5 năm học",
+        "Thời gian học tập tối đa": "9 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
+        "Thời gian học tập chuẩn": "2 năm học",
+        "Thời gian học tập tối đa": "4 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
+        "Thời gian học tập chuẩn": "3 năm học",
+        "Thời gian học tập tối đa": "6 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
+        "Thời gian học tập chuẩn": "2,5 năm học",
+        "Thời gian học tập tối đa": "5 năm học"
+      }
+    ],
+    "source_pages": [
+      9,
+      10,
+      11
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification",
+    "data_category": "regulation_table",
+    "table_type": "conduct",
+    "table_subtype": "conduct_classification",
+    "table_name": "Bảng phân loại kết quả rèn luyện",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_parent_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+    "source_section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+    "title": "Phân loại kết quả rèn luyện",
+    "applicability": null,
+    "columns": [
+      "Khung điểm",
+      "Xếp loại"
+    ],
+    "rows": [
+      {
+        "Khung điểm": "Từ 90 đến 100 điểm",
+        "Xếp loại": "Xuất sắc"
+      },
+      {
+        "Khung điểm": "Từ 80 đến dưới 90 điểm",
+        "Xếp loại": "Tốt"
+      },
+      {
+        "Khung điểm": "Từ 65 đến dưới 80 điểm",
+        "Xếp loại": "Khá"
+      },
+      {
+        "Khung điểm": "Từ 50 đến dưới 65 điểm",
+        "Xếp loại": "Trung bình"
+      },
+      {
+        "Khung điểm": "Từ 35 đến dưới 50 điểm",
+        "Xếp loại": "Yếu"
+      },
+      {
+        "Khung điểm": "Dưới 35 điểm",
+        "Xếp loại": "Kém"
+      }
+    ],
+    "source_pages": [
+      91
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "scholarship_classification",
+    "data_category": "regulation_table",
+    "table_type": "scholarship",
+    "table_subtype": "scholarship_classification",
+    "table_name": "Xếp loại học bổng khuyến khích học tập",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_parent_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "source_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+    "applicability": null,
+    "columns": [],
+    "rows": [
+      {
+        "label": "Khá",
+        "scholarship_score_range": "2.56-3.352",
+        "academic_score_range": "2.50-3.19",
+        "conduct_score_condition": ">=70"
+      },
+      {
+        "label": "Giỏi",
+        "scholarship_score_range": "3.20-3.672",
+        "academic_score_range": "3.20-3.59",
+        "conduct_score_condition": ">=80"
+      },
+      {
+        "label": "Xuất sắc",
+        "scholarship_score_range": "3.60-4.0",
+        "academic_score_range": "3.60-4.0",
+        "conduct_score_condition": ">=90"
+      }
+    ],
+    "source_pages": [
+      70,
+      71,
+      72
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+    "data_category": "regulation_table",
+    "table_type": "scoring",
+    "table_subtype": "grade_scale",
+    "table_name": "Bảng quy đổi điểm học phần nhóm nền tảng",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+    "source_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+    "title": "Đánh giá và tính điểm học phần",
+    "applicability": "Áp dụng cho học phần giáo dục đại cương/học phần chung thuộc nhóm nền tảng.",
+    "columns": [
+      "Loại",
+      "Thang điểm 10",
+      "Thang điểm chữ"
+    ],
+    "rows": [
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "8,5 - 10",
+        "Thang điểm chữ": "A"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "7,8 - 8,4",
+        "Thang điểm chữ": "B+"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "7,0 - 7,7",
+        "Thang điểm chữ": "B"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "6,3 - 6,9",
+        "Thang điểm chữ": "C+"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "5,5 - 6,2",
+        "Thang điểm chữ": "C"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "4,8 - 5,4",
+        "Thang điểm chữ": "D+"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "4,0 - 4,7",
+        "Thang điểm chữ": "D"
+      },
+      {
+        "Loại": "Không đạt",
+        "Thang điểm 10": "3,0 - 3,9",
+        "Thang điểm chữ": "F+"
+      },
+      {
+        "Loại": "Không đạt",
+        "Thang điểm 10": "0,0 - 2,9",
+        "Thang điểm chữ": "F"
+      }
+    ],
+    "source_pages": [
+      16,
+      17,
+      18,
+      19
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+    "data_category": "regulation_table",
+    "table_type": "scoring",
+    "table_subtype": "grade_scale",
+    "table_name": "Bảng quy đổi điểm học phần còn lại",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+    "source_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+    "title": "Đánh giá và tính điểm học phần",
+    "applicability": "Áp dụng cho các học phần còn lại.",
+    "columns": [
+      "Loại",
+      "Thang điểm 10",
+      "Thang điểm chữ"
+    ],
+    "rows": [
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "8,5 - 10",
+        "Thang điểm chữ": "A"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "7,8 - 8,4",
+        "Thang điểm chữ": "B+"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "7,0 - 7,7",
+        "Thang điểm chữ": "B"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "6,3 - 6,9",
+        "Thang điểm chữ": "C+"
+      },
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "5,5 - 6,2",
+        "Thang điểm chữ": "C"
+      },
+      {
+        "Loại": "Không đạt",
+        "Thang điểm 10": "4,8 - 5,4",
+        "Thang điểm chữ": "D+"
+      },
+      {
+        "Loại": "Không đạt",
+        "Thang điểm 10": "4,0 - 4,7",
+        "Thang điểm chữ": "D"
+      },
+      {
+        "Loại": "Không đạt",
+        "Thang điểm 10": "3,0 - 3,9",
+        "Thang điểm chữ": "F+"
+      },
+      {
+        "Loại": "Không đạt",
+        "Thang điểm 10": "0,0 - 2,9",
+        "Thang điểm chữ": "F"
+      }
+    ],
+    "source_pages": [
+      16,
+      17,
+      18,
+      19
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
+    "data_category": "regulation_table",
+    "table_type": "scoring",
+    "table_subtype": "pass_fail_ungraded",
+    "table_name": "Bảng đánh giá học phần đạt/không đạt không phân mức",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+    "source_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+    "title": "Đánh giá và tính điểm học phần",
+    "applicability": "Áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập.",
+    "columns": [
+      "Kết quả",
+      "Thang điểm 10",
+      "Điểm chữ",
+      "Tính vào điểm trung bình học tập"
+    ],
+    "rows": [
+      {
+        "Kết quả": "Đạt",
+        "Thang điểm 10": "Từ 5,0 trở lên",
+        "Điểm chữ": "P",
+        "Tính vào điểm trung bình học tập": "Không"
+      },
+      {
+        "Kết quả": "Chưa đạt",
+        "Thang điểm 10": "Dưới 5,0",
+        "Điểm chữ": "Không quy đổi thành P",
+        "Tính vào điểm trung bình học tập": "Không"
+      }
+    ],
+    "source_pages": [
+      16,
+      17,
+      18,
+      19
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+    "data_category": "regulation_table",
+    "table_type": "scoring",
+    "table_subtype": "academic_classification",
+    "table_name": "Bảng xếp loại học lực theo thang điểm 4",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+    "source_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+    "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+    "applicability": null,
+    "columns": [
+      "Xếp loại",
+      "Thang điểm 4"
+    ],
+    "rows": [
+      {
+        "Xếp loại": "Xuất sắc",
+        "Thang điểm 4": "Từ 3,6 đến 4,0"
+      },
+      {
+        "Xếp loại": "Giỏi",
+        "Thang điểm 4": "Từ 3,2 đến dưới 3,6"
+      },
+      {
+        "Xếp loại": "Khá",
+        "Thang điểm 4": "Từ 2,5 đến dưới 3,2"
+      },
+      {
+        "Xếp loại": "Trung bình",
+        "Thang điểm 4": "Từ 2,0 đến dưới 2,5"
+      },
+      {
+        "Xếp loại": "Yếu",
+        "Thang điểm 4": "Từ 1,0 đến dưới 2,0"
+      },
+      {
+        "Xếp loại": "Kém",
+        "Thang điểm 4": "Dưới 1,0"
+      }
+    ],
+    "source_pages": [
+      19,
+      20,
+      21
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+    "data_category": "regulation_table",
+    "table_type": "scoring",
+    "table_subtype": "letter_to_grade4",
+    "table_name": "Bảng quy đổi điểm chữ sang thang điểm 4",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+    "source_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+    "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+    "applicability": null,
+    "columns": [
+      "Thang điểm chữ",
+      "Thang điểm 4"
+    ],
+    "rows": [
+      {
+        "Thang điểm chữ": "A",
+        "Thang điểm 4": "4,0"
+      },
+      {
+        "Thang điểm chữ": "B+",
+        "Thang điểm 4": "3,5"
+      },
+      {
+        "Thang điểm chữ": "B",
+        "Thang điểm 4": "3,0"
+      },
+      {
+        "Thang điểm chữ": "C+",
+        "Thang điểm 4": "2,5"
+      },
+      {
+        "Thang điểm chữ": "C",
+        "Thang điểm 4": "2,0"
+      },
+      {
+        "Thang điểm chữ": "D+",
+        "Thang điểm 4": "1,5"
+      },
+      {
+        "Thang điểm chữ": "D",
+        "Thang điểm 4": "1,0"
+      },
+      {
+        "Thang điểm chữ": "F+",
+        "Thang điểm 4": "0,5"
+      },
+      {
+        "Thang điểm chữ": "F",
+        "Thang điểm 4": "0,0"
+      }
+    ],
+    "source_pages": [
+      19,
+      20,
+      21
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+    "data_category": "regulation_table",
+    "table_type": "study_duration",
+    "table_subtype": "study_duration",
+    "table_name": "Thời gian học tập chuẩn và tối đa",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_parent_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+    "source_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+    "title": "Chương trình đào tạo và thời gian học tập",
+    "applicability": "Áp dụng cho hình thức đào tạo chính quy (theo sửa đổi bổ sung tại QĐ 4743/QĐ-ĐHSP áp dụng từ khóa 2025 trở đi).",
+    "columns": [
+      "Chương trình đào tạo",
+      "Thời gian học tập chuẩn",
+      "Thời gian học tập tối đa"
+    ],
+    "rows": [
+      {
+        "Chương trình đào tạo": "Đào tạo đại học cấp bằng thứ nhất",
+        "Thời gian học tập chuẩn": "04 năm học",
+        "Thời gian học tập tối đa": "06 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
+        "Thời gian học tập chuẩn": "1,5 năm học",
+        "Thời gian học tập tối đa": "03 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
+        "Thời gian học tập chuẩn": "2,5 năm học",
+        "Thời gian học tập tối đa": "05 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
+        "Thời gian học tập chuẩn": "02 năm học",
+        "Thời gian học tập tối đa": "04 năm học"
+      }
+    ],
+    "source_pages": [
+      9,
+      10,
+      11
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+    "data_category": "regulation_table",
+    "table_type": "study_duration",
+    "table_subtype": "study_duration",
+    "table_name": "Thời gian học tập chuẩn và tối đa",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_parent_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+    "source_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+    "title": "Chương trình đào tạo và thời gian học tập",
+    "applicability": "Áp dụng cho hình thức đào tạo vừa làm vừa học (theo sửa đổi bổ sung tại QĐ 4743/QĐ-ĐHSP áp dụng từ khóa 2025 trở đi).",
+    "columns": [
+      "Chương trình đào tạo",
+      "Thời gian học tập chuẩn",
+      "Thời gian học tập tối đa"
+    ],
+    "rows": [
+      {
+        "Chương trình đào tạo": "Đào tạo đại học cấp bằng thứ nhất",
+        "Thời gian học tập chuẩn": "05 năm học",
+        "Thời gian học tập tối đa": "7,5 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
+        "Thời gian học tập chuẩn": "02 năm học",
+        "Thời gian học tập tối đa": "04 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
+        "Thời gian học tập chuẩn": "03 năm học",
+        "Thời gian học tập tối đa": "06 năm học"
+      },
+      {
+        "Chương trình đào tạo": "Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
+        "Thời gian học tập chuẩn": "2,5 năm học",
+        "Thời gian học tập tối đa": "05 năm học"
+      }
+    ],
+    "source_pages": [
+      9,
+      10,
+      11
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  }
+]

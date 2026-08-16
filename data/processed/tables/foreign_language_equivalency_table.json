@@ -1,0 +1,114 @@
+[
+  {
+    "table_id": "K50_foreign_language_equivalency_dieu8",
+    "data_category": "regulation_table",
+    "table_type": "foreign_language",
+    "table_subtype": "foreign_language_equivalency",
+    "table_name": "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4",
+    "cohort": "K50",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "source_parent_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8",
+    "source_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8",
+    "title": "Tổ chức thực hiện",
+    "applicability": "Điều 1 quy định áp dụng cho sinh viên đại học từ khóa tuyển sinh năm 2022 trở đi; nguồn trích dẫn vẫn là Sổ tay K50.",
+    "columns": [
+      "language",
+      "certificate",
+      "level_or_scale",
+      "equivalent_level_3",
+      "equivalent_level_4"
+    ],
+    "rows": [
+      {
+        "language": "Tiếng Anh",
+        "certificate": "TOEFL iBT",
+        "level_or_scale": "TOEFL iBT",
+        "equivalent_level_3": "30 - 45",
+        "equivalent_level_4": "46 - 93"
+      },
+      {
+        "language": "Tiếng Anh",
+        "certificate": "TOEFL ITP",
+        "level_or_scale": "TOEFL ITP",
+        "equivalent_level_3": "450 - 499",
+        "equivalent_level_4": ""
+      },
+      {
+        "language": "Tiếng Anh",
+        "certificate": "IELTS",
+        "level_or_scale": "IELTS",
+        "equivalent_level_3": "4.0 - 5.0",
+        "equivalent_level_4": "5.5 - 6.5"
+      },
+      {
+        "language": "Tiếng Anh",
+        "certificate": "Cambridge Assessment English / Linguaskill",
+        "level_or_scale": "Cambridge/Linguaskill",
+        "equivalent_level_3": "B1 Preliminary; B1 Business Preliminary; Linguaskill 140 - 159",
+        "equivalent_level_4": "B2 First; B2 Business Vantage; Linguaskill 160 - 179"
+      },
+      {
+        "language": "Tiếng Anh",
+        "certificate": "TOEIC (4 kỹ năng)",
+        "level_or_scale": "Nghe, Đọc, Nói, Viết",
+        "equivalent_level_3": "Nghe 275 - 399; Đọc 275 - 384; Nói 120 - 159; Viết 120 - 149",
+        "equivalent_level_4": "Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179"
+      },
+      {
+        "language": "Tiếng Pháp",
+        "certificate": "TCF / DELF",
+        "level_or_scale": "TCF, DELF",
+        "equivalent_level_3": "TCF 300 - 399; DELF B1",
+        "equivalent_level_4": "TCF 400 - 499; DELF B2"
+      },
+      {
+        "language": "Tiếng Trung Quốc",
+        "certificate": "Hanyu Shuiping Kaoshi (HSK)",
+        "level_or_scale": "HSK",
+        "equivalent_level_3": "HSK bậc 3",
+        "equivalent_level_4": "HSK bậc 4"
+      },
+      {
+        "language": "Tiếng Nhật",
+        "certificate": "Japanese Language Proficiency Test (JLPT)",
+        "level_or_scale": "JLPT",
+        "equivalent_level_3": "N4",
+        "equivalent_level_4": "N3"
+      },
+      {
+        "language": "Tiếng Nga",
+        "certificate": "ТРКИ - Тест по русскому языку как иностранному",
+        "level_or_scale": "ТРКИ",
+        "equivalent_level_3": "ТРКИ-1",
+        "equivalent_level_4": "ТРКИ-2"
+      },
+      {
+        "language": "Tiếng Hàn Quốc",
+        "certificate": "TOPIK II",
+        "level_or_scale": "TOPIK II",
+        "equivalent_level_3": "TOPIK II (120)",
+        "equivalent_level_4": "TOPIK II (150)"
+      }
+    ],
+    "source_pages": [
+      112,
+      113,
+      114,
+      115,
+      116
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true,
+    "source_cohort": "K50",
+    "source_document_id": "so_tay_sinh_vien_khoa_50",
+    "source_content_sha256": "2c38946d2c4ca515cd3e98fee953c771c71030bdcd8d4651d8d153aba91d8bb3",
+    "applicable_cohorts": [
+      "K48-K49",
+      "K50",
+      "K51"
+    ],
+    "applicability_basis_parent_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1",
+    "applicability_validated": true
+  }
+]

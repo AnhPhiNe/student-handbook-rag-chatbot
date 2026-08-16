@@ -1,0 +1,5800 @@
+{
+  "status": "ok",
+  "total_docstore_items": 462,
+  "total_edges": 95,
+  "total_skipped": 961,
+  "skip_counts": {
+    "self_reference": 926,
+    "duplicate_edge": 35
+  },
+  "coverage": {
+    "K48-K49": {
+      "parent_sections": 123,
+      "graph_nodes": 39,
+      "coverage_pct": 31.71
+    },
+    "K50": {
+      "parent_sections": 166,
+      "graph_nodes": 44,
+      "coverage_pct": 26.51
+    },
+    "K51": {
+      "parent_sections": 173,
+      "graph_nodes": 37,
+      "coverage_pct": 21.39
+    }
+  },
+  "validation": {
+    "missing_nodes": [],
+    "graph_nodes_missing_in_docstore": 0,
+    "cross_cohort_edges": 0
+  },
+  "skipped": [
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16",
+      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu17",
+      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu19",
+      "reference_article": 19,
+      "reference_text": "Điều 19"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu19",
+      "reference_article": 19,
+      "reference_text": "Điều 19"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu20",
+      "reference_article": 20,
+      "reference_text": "Điều 20"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu20",
+      "reference_article": 20,
+      "reference_text": "Điều 20"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu21",
+      "reference_article": 21,
+      "reference_text": "Điều 21"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu21",
+      "reference_article": 21,
+      "reference_text": "Điều 21"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu22",
+      "reference_article": 22,
+      "reference_text": "Điều 22"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu22",
+      "reference_article": 22,
+      "reference_text": "Điều 22"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu23",
+      "reference_article": 23,
+      "reference_text": "Điều 23"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu23",
+      "reference_article": 23,
+      "reference_text": "Điều 23"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu24",
+      "reference_article": 24,
+      "reference_text": "Điều 24"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu24",
+      "reference_article": 24,
+      "reference_text": "Điều 24"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu19",
+      "reference_article": 19,
+      "reference_text": "Điều 19"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu19",
+      "reference_article": 19,
+      "reference_text": "Điều 19"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu20",
+      "reference_article": 20,
+      "reference_text": "Điều 20"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu20",
+      "reference_article": 20,
+      "reference_text": "Điều 20"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu21",
+      "reference_article": 21,
+      "reference_text": "Điều 21"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu21",
+      "reference_article": 21,
+      "reference_text": "Điều 21"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu22",
+      "reference_article": 22,
+      "reference_text": "Điều 22"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu22",
+      "reference_article": 22,
+      "reference_text": "Điều 22"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu23",
+      "reference_article": 23,
+      "reference_text": "Điều 23"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu23",
+      "reference_article": 23,
+      "reference_text": "Điều 23"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu24",
+      "reference_article": 24,
+      "reference_text": "Điều 24"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu24",
+      "reference_article": 24,
+      "reference_text": "Điều 24"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu25",
+      "reference_article": 25,
+      "reference_text": "Điều 25"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu25",
+      "reference_article": 25,
+      "reference_text": "Điều 25"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu26",
+      "reference_article": 26,
+      "reference_text": "Điều 26"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu26",
+      "reference_article": 26,
+      "reference_text": "Điều 26"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "reference_article": 27,
+      "reference_text": "Điều 27"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "reference_article": 27,
+      "reference_text": "Điều 27"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "reference_article": 28,
+      "reference_text": "Điều 28"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "reference_article": 28,
+      "reference_text": "Điều 28"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+      "reference_article": 29,
+      "reference_text": "Điều 29"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+      "reference_article": 29,
+      "reference_text": "Điều 29"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+      "reference_article": 30,
+      "reference_text": "Điều 30"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+      "reference_article": 30,
+      "reference_text": "Điều 30"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "reference_article": 31,
+      "reference_text": "Điều 31"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "reference_article": 31,
+      "reference_text": "Điều 31"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
+      "reference_article": 32,
+      "reference_text": "Điều 32"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
+      "reference_article": 32,
+      "reference_text": "Điều 32"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
+      "target": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu17",
+      "reference_text": "khoản 1, Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu33",
+      "reference_article": 33,
+      "reference_text": "Điều 33"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu33",
+      "reference_article": 33,
+      "reference_text": "Điều 33"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu34",
+      "reference_article": 34,
+      "reference_text": "Điều 34"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu34",
+      "reference_article": 34,
+      "reference_text": "Điều 34"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu35",
+      "reference_article": 35,
+      "reference_text": "Điều 35"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu35",
+      "reference_article": 35,
+      "reference_text": "Điều 35"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu36",
+      "reference_article": 36,
+      "reference_text": "Điều 36"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu36",
+      "reference_article": 36,
+      "reference_text": "Điều 36"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu37",
+      "reference_article": 37,
+      "reference_text": "Điều 37"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu37",
+      "reference_article": 37,
+      "reference_text": "Điều 37"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu38",
+      "reference_article": 38,
+      "reference_text": "Điều 38"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu38",
+      "reference_article": 38,
+      "reference_text": "Điều 38"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu39",
+      "reference_article": 39,
+      "reference_text": "Điều 39"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu39",
+      "reference_article": 39,
+      "reference_text": "Điều 39"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong7_Dieu40",
+      "reference_article": 40,
+      "reference_text": "Điều 40"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong7_Dieu40",
+      "reference_article": 40,
+      "reference_text": "Điều 40"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong7_Dieu41",
+      "reference_article": 41,
+      "reference_text": "Điều 41"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong7_Dieu41",
+      "reference_article": 41,
+      "reference_text": "Điều 41"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong4_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong4_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "Điểm b khoản 1 Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "Điểm b khoản 1 Điều 6"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "khoản 1 Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "khoản 1 Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong1_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong1_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong1_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong1_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong3_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong3_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong3_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong3_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K50_QuyCheDaoTao_Chuong4_Dieu16",
+      "target": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K50_QuyCheDaoTao_Chuong4_Dieu17",
+      "target": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong4_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong4_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong4_Dieu19",
+      "reference_article": 19,
+      "reference_text": "Điều 19"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong4_Dieu19",
+      "reference_article": 19,
+      "reference_text": "Điều 19"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong4_Dieu20",
+      "reference_article": 20,
+      "reference_text": "Điều 20"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong4_Dieu20",
+      "reference_article": 20,
+      "reference_text": "Điều 20"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong4_Dieu21",
+      "reference_article": 21,
+      "reference_text": "Điều 21"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong4_Dieu21",
+      "reference_article": 21,
+      "reference_text": "Điều 21"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong5_Dieu22",
+      "reference_article": 22,
+      "reference_text": "Điều 22"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong5_Dieu22",
+      "reference_article": 22,
+      "reference_text": "Điều 22"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong5_Dieu23",
+      "reference_article": 23,
+      "reference_text": "Điều 23"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong5_Dieu23",
+      "reference_article": 23,
+      "reference_text": "Điều 23"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong5_Dieu24",
+      "reference_article": 24,
+      "reference_text": "Điều 24"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDaoTao_Chuong5_Dieu24",
+      "reference_article": 24,
+      "reference_text": "Điều 24"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu19",
+      "reference_article": 19,
+      "reference_text": "Điều 19"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu19",
+      "reference_article": 19,
+      "reference_text": "Điều 19"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu20",
+      "reference_article": 20,
+      "reference_text": "Điều 20"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu20",
+      "reference_article": 20,
+      "reference_text": "Điều 20"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu21",
+      "reference_article": 21,
+      "reference_text": "Điều 21"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu21",
+      "reference_article": 21,
+      "reference_text": "Điều 21"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu22",
+      "reference_article": 22,
+      "reference_text": "Điều 22"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu22",
+      "reference_article": 22,
+      "reference_text": "Điều 22"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu23",
+      "reference_article": 23,
+      "reference_text": "Điều 23"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu23",
+      "reference_article": 23,
+      "reference_text": "Điều 23"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu24",
+      "reference_article": 24,
+      "reference_text": "Điều 24"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu24",
+      "reference_article": 24,
+      "reference_text": "Điều 24"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu25",
+      "reference_article": 25,
+      "reference_text": "Điều 25"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu25",
+      "reference_article": 25,
+      "reference_text": "Điều 25"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu26",
+      "reference_article": 26,
+      "reference_text": "Điều 26"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu26",
+      "reference_article": 26,
+      "reference_text": "Điều 26"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "reference_article": 27,
+      "reference_text": "Điều 27"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "reference_article": 27,
+      "reference_text": "Điều 27"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "target": "K50_QuyCheCongTacSinhVien_Chuong1_Dieu3",
+      "reference_text": "khoản 6 Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "reference_article": 28,
+      "reference_text": "Điều 28"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "reference_article": 28,
+      "reference_text": "Điều 28"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+      "reference_article": 29,
+      "reference_text": "Điều 29"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+      "reference_article": 29,
+      "reference_text": "Điều 29"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+      "reference_article": 30,
+      "reference_text": "Điều 30"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+      "reference_article": 30,
+      "reference_text": "Điều 30"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+      "target": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu16",
+      "reference_text": "khoản 1 Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "reference_article": 31,
+      "reference_text": "Điều 31"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "reference_article": 31,
+      "reference_text": "Điều 31"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "target": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu17",
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "target": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu17",
+      "reference_text": "khoản 1 Điều 17"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "target": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu12",
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu32",
+      "reference_article": 32,
+      "reference_text": "Điều 32"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu32",
+      "reference_article": 32,
+      "reference_text": "Điều 32"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu33",
+      "reference_article": 33,
+      "reference_text": "Điều 33"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu33",
+      "reference_article": 33,
+      "reference_text": "Điều 33"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu33",
+      "reference_article": 33,
+      "reference_text": "điểm b khoản 2 Điều 33"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu34",
+      "reference_article": 34,
+      "reference_text": "Điều 34"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu34",
+      "reference_article": 34,
+      "reference_text": "Điều 34"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu35",
+      "reference_article": 35,
+      "reference_text": "Điều 35"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu35",
+      "reference_article": 35,
+      "reference_text": "Điều 35"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu36",
+      "reference_article": 36,
+      "reference_text": "Điều 36"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu36",
+      "reference_article": 36,
+      "reference_text": "Điều 36"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu37",
+      "reference_article": 37,
+      "reference_text": "Điều 37"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu37",
+      "reference_article": 37,
+      "reference_text": "Điều 37"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu38",
+      "reference_article": 38,
+      "reference_text": "Điều 38"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong6_Dieu38",
+      "reference_article": 38,
+      "reference_text": "Điều 38"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong7_Dieu39",
+      "reference_article": 39,
+      "reference_text": "Điều 39"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong7_Dieu39",
+      "reference_article": 39,
+      "reference_text": "Điều 39"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong7_Dieu40",
+      "reference_article": 40,
+      "reference_text": "Điều 40"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheCongTacSinhVien_Chuong7_Dieu40",
+      "reference_article": 40,
+      "reference_text": "Điều 40"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong3_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong3_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong3_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong3_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong5_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong5_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong5_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_QuyDinhQuyTacUngXu_Chuong5_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "target": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "điểm b khoản 1 Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "điểm b khoản 1 Điều 6"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "khoản 1 Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "target": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "khoản 1 Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong1_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong1_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong1_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong1_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "target": "K51_QuyCheDaoTao_Chuong1_Dieu1",
+      "reference_text": "khoản 2, Điều 1"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "target": "K51_QuyCheDaoTao_Chuong1_Dieu1",
+      "reference_text": "khoản 3, Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_QuyCheDaoTao_Chuong4_Dieu16",
+      "target": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_QuyCheDaoTao_Chuong4_Dieu17",
+      "target": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong4_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong4_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong4_Dieu19",
+      "reference_article": 19,
+      "reference_text": "Điều 19"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong4_Dieu19",
+      "reference_article": 19,
+      "reference_text": "Điều 19"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong4_Dieu20",
+      "reference_article": 20,
+      "reference_text": "Điều 20"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong4_Dieu20",
+      "reference_article": 20,
+      "reference_text": "Điều 20"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong4_Dieu21",
+      "reference_article": 21,
+      "reference_text": "Điều 21"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong4_Dieu21",
+      "reference_article": 21,
+      "reference_text": "Điều 21"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong5_Dieu22",
+      "reference_article": 22,
+      "reference_text": "Điều 22"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong5_Dieu22",
+      "reference_article": 22,
+      "reference_text": "Điều 22"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong5_Dieu23",
+      "reference_article": 23,
+      "reference_text": "Điều 23"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong5_Dieu23",
+      "reference_article": 23,
+      "reference_text": "Điều 23"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong5_Dieu24",
+      "reference_article": 24,
+      "reference_text": "Điều 24"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDaoTao_Chuong5_Dieu24",
+      "reference_article": 24,
+      "reference_text": "Điều 24"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu19",
+      "reference_article": 19,
+      "reference_text": "Điều 19"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu19",
+      "reference_article": 19,
+      "reference_text": "Điều 19"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu20",
+      "reference_article": 20,
+      "reference_text": "Điều 20"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu20",
+      "reference_article": 20,
+      "reference_text": "Điều 20"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu21",
+      "reference_article": 21,
+      "reference_text": "Điều 21"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu21",
+      "reference_article": 21,
+      "reference_text": "Điều 21"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu22",
+      "reference_article": 22,
+      "reference_text": "Điều 22"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu22",
+      "reference_article": 22,
+      "reference_text": "Điều 22"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu23",
+      "reference_article": 23,
+      "reference_text": "Điều 23"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu23",
+      "reference_article": 23,
+      "reference_text": "Điều 23"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu24",
+      "reference_article": 24,
+      "reference_text": "Điều 24"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu24",
+      "reference_article": 24,
+      "reference_text": "Điều 24"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu25",
+      "reference_article": 25,
+      "reference_text": "Điều 25"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu25",
+      "reference_article": 25,
+      "reference_text": "Điều 25"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu26",
+      "reference_article": 26,
+      "reference_text": "Điều 26"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu26",
+      "reference_article": 26,
+      "reference_text": "Điều 26"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "reference_article": 27,
+      "reference_text": "Điều 27"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "reference_article": 27,
+      "reference_text": "Điều 27"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "reference_article": 28,
+      "reference_text": "Điều 28"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "reference_article": 28,
+      "reference_text": "Điều 28"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+      "reference_article": 29,
+      "reference_text": "Điều 29"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+      "reference_article": 29,
+      "reference_text": "Điều 29"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+      "reference_article": 30,
+      "reference_text": "Điều 30"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+      "reference_article": 30,
+      "reference_text": "Điều 30"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+      "target": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu16",
+      "reference_text": "khoản 1 Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "reference_article": 31,
+      "reference_text": "Điều 31"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "reference_article": 31,
+      "reference_text": "Điều 31"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "target": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu17",
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "target": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu17",
+      "reference_text": "khoản 1 Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu32",
+      "reference_article": 32,
+      "reference_text": "Điều 32"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu32",
+      "reference_article": 32,
+      "reference_text": "Điều 32"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu33",
+      "reference_article": 33,
+      "reference_text": "Điều 33"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu33",
+      "reference_article": 33,
+      "reference_text": "Điều 33"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu33",
+      "reference_article": 33,
+      "reference_text": "điểm b khoản 2 Điều 33"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu34",
+      "reference_article": 34,
+      "reference_text": "Điều 34"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu34",
+      "reference_article": 34,
+      "reference_text": "Điều 34"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu35",
+      "reference_article": 35,
+      "reference_text": "Điều 35"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu35",
+      "reference_article": 35,
+      "reference_text": "Điều 35"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu36",
+      "reference_article": 36,
+      "reference_text": "Điều 36"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu36",
+      "reference_article": 36,
+      "reference_text": "Điều 36"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu37",
+      "reference_article": 37,
+      "reference_text": "Điều 37"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu37",
+      "reference_article": 37,
+      "reference_text": "Điều 37"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu38",
+      "reference_article": 38,
+      "reference_text": "Điều 38"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu38",
+      "reference_article": 38,
+      "reference_text": "Điều 38"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong7_Dieu39",
+      "reference_article": 39,
+      "reference_text": "Điều 39"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong7_Dieu39",
+      "reference_article": 39,
+      "reference_text": "Điều 39"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong7_Dieu40",
+      "reference_article": 40,
+      "reference_text": "Điều 40"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheCongTacSinhVien_Chuong7_Dieu40",
+      "reference_article": 40,
+      "reference_text": "Điều 40"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong5_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong5_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong5_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong5_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong5_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyCheDanhGiaRenLuyen_Chuong5_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong3_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong3_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNgoaiTru_Chuong4_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong3_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong3_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong3_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong3_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong5_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong5_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong5_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhQuyTacUngXu_Chuong5_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "target": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "điểm b khoản 1 Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "khoản 1 Điều 6"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "khoản 1 Điều 6"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "khoản 1 Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
+      "target": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "khoản 1 Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "target": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "khoản 1 Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong1_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong1_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong1_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    }
+  ]
+}

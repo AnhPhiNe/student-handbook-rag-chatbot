@@ -1,0 +1,518 @@
+{
+  "cohorts": [
+    "K48-K49",
+    "K50",
+    "K51"
+  ],
+  "documents": {
+    "K48-K49": {
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "file_name": "so-tay-sinh-vien-khoa-48-49.pdf",
+      "total_pages": 188,
+      "content_mode_count": {
+        "archive_only": 18,
+        "rag_index": 164,
+        "structured_only": 6
+      }
+    },
+    "K50": {
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "file_name": "so-tay-sinh-vien-khoa-50.pdf",
+      "total_pages": 220,
+      "content_mode_count": {
+        "archive_only": 20,
+        "rag_index": 200
+      }
+    },
+    "K51": {
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "file_name": "so-tay-sinh-vien-khoa-51.pdf",
+      "total_pages": 232,
+      "content_mode_count": {
+        "archive_only": 19,
+        "rag_index": 213
+      }
+    }
+  },
+  "by_content_type": [
+    {
+      "content_type": "abbreviation",
+      "by_cohort": {
+        "K48-K49": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 1,
+          "page_start": 3,
+          "page_end": 3,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        },
+        "K50": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 1,
+          "page_start": 2,
+          "page_end": 2,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        },
+        "K51": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 1,
+          "page_start": 2,
+          "page_end": 2,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        }
+      },
+      "diff_notes": [
+        "Khác vị trí/phạm vi trang giữa các khóa"
+      ]
+    },
+    {
+      "content_type": "cover_page",
+      "by_cohort": {
+        "K48-K49": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 1,
+          "page_start": 1,
+          "page_end": 1,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        },
+        "K50": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 1,
+          "page_start": 1,
+          "page_end": 1,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        },
+        "K51": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 1,
+          "page_start": 1,
+          "page_end": 1,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        }
+      },
+      "diff_notes": []
+    },
+    {
+      "content_type": "faculty_program_directory",
+      "by_cohort": {
+        "K48-K49": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 25,
+          "page_start": 141,
+          "page_end": 185,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        },
+        "K50": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 21,
+          "page_start": 185,
+          "page_end": 205,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        },
+        "K51": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 31,
+          "page_start": 177,
+          "page_end": 220,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        }
+      },
+      "diff_notes": [
+        "Khác vị trí/phạm vi trang giữa các khóa",
+        "Cần tách faculty_directory và program_directory theo profile từng sổ tay"
+      ]
+    },
+    {
+      "content_type": "faculty_student_services",
+      "by_cohort": {
+        "K48-K49": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 1,
+          "page_start": 160,
+          "page_end": 160,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        },
+        "K50": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 1,
+          "page_start": 208,
+          "page_end": 208,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        },
+        "K51": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 1,
+          "page_start": 225,
+          "page_end": 225,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        }
+      },
+      "diff_notes": [
+        "Khác vị trí/phạm vi trang giữa các khóa"
+      ]
+    },
+    {
+      "content_type": "general_info",
+      "by_cohort": {
+        "K48-K49": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 3,
+          "page_start": 5,
+          "page_end": 7,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        },
+        "K50": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 4,
+          "page_start": 3,
+          "page_end": 6,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        },
+        "K51": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 4,
+          "page_start": 3,
+          "page_end": 6,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        }
+      },
+      "diff_notes": [
+        "Khác vị trí/phạm vi trang giữa các khóa"
+      ]
+    },
+    {
+      "content_type": "ktx_procedure_archive",
+      "by_cohort": {
+        "K48-K49": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 2,
+          "page_start": 161,
+          "page_end": 162,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        },
+        "K50": {
+          "exists": false,
+          "content_mode": null,
+          "page_count": 0,
+          "page_start": null,
+          "page_end": null
+        },
+        "K51": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 4,
+          "page_start": 173,
+          "page_end": 176,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        }
+      },
+      "diff_notes": [
+        "Không có trong: K50",
+        "Khác vị trí/phạm vi trang giữa các khóa"
+      ]
+    },
+    {
+      "content_type": "low_text_or_blank",
+      "by_cohort": {
+        "K48-K49": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 2,
+          "page_start": 2,
+          "page_end": 4,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        },
+        "K50": {
+          "exists": false,
+          "content_mode": null,
+          "page_count": 0,
+          "page_start": null,
+          "page_end": null
+        },
+        "K51": {
+          "exists": false,
+          "content_mode": null,
+          "page_count": 0,
+          "page_start": null,
+          "page_end": null
+        }
+      },
+      "diff_notes": [
+        "Không có trong: K50, K51"
+      ]
+    },
+    {
+      "content_type": "office_directory",
+      "by_cohort": {
+        "K48-K49": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 17,
+          "page_start": 129,
+          "page_end": 180,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        },
+        "K50": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 14,
+          "page_start": 173,
+          "page_end": 207,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        },
+        "K51": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 17,
+          "page_start": 194,
+          "page_end": 224,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        }
+      },
+      "diff_notes": [
+        "Khác vị trí/phạm vi trang giữa các khóa"
+      ]
+    },
+    {
+      "content_type": "reference_directory",
+      "by_cohort": {
+        "K48-K49": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 4,
+          "page_start": 163,
+          "page_end": 166,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        },
+        "K50": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 3,
+          "page_start": 209,
+          "page_end": 211,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        },
+        "K51": {
+          "exists": false,
+          "content_mode": null,
+          "page_count": 0,
+          "page_start": null,
+          "page_end": null
+        }
+      },
+      "diff_notes": [
+        "Không có trong: K51",
+        "Khác vị trí/phạm vi trang giữa các khóa"
+      ]
+    },
+    {
+      "content_type": "regulation_text",
+      "by_cohort": {
+        "K48-K49": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 116,
+          "page_start": 8,
+          "page_end": 128,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        },
+        "K50": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 161,
+          "page_start": 7,
+          "page_end": 170,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        },
+        "K51": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 157,
+          "page_start": 7,
+          "page_end": 170,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        }
+      },
+      "diff_notes": [
+        "Khác vị trí/phạm vi trang giữa các khóa"
+      ]
+    },
+    {
+      "content_type": "scoring_form_table",
+      "by_cohort": {
+        "K48-K49": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 5,
+          "page_start": 82,
+          "page_end": 86,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        },
+        "K50": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 3,
+          "page_start": 103,
+          "page_end": 105,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        },
+        "K51": {
+          "exists": true,
+          "content_mode": "rag_index",
+          "page_count": 7,
+          "page_start": 99,
+          "page_end": 105,
+          "needs_embedding": true,
+          "needs_structured_lookup": false
+        }
+      },
+      "diff_notes": [
+        "Khác vị trí/phạm vi trang giữa các khóa"
+      ]
+    },
+    {
+      "content_type": "scoring_table",
+      "by_cohort": {
+        "K48-K49": {
+          "exists": true,
+          "content_mode": "structured_only",
+          "page_count": 6,
+          "page_start": 169,
+          "page_end": 174,
+          "needs_embedding": false,
+          "needs_structured_lookup": true
+        },
+        "K50": {
+          "exists": false,
+          "content_mode": null,
+          "page_count": 0,
+          "page_start": null,
+          "page_end": null
+        },
+        "K51": {
+          "exists": false,
+          "content_mode": null,
+          "page_count": 0,
+          "page_start": null,
+          "page_end": null
+        }
+      },
+      "diff_notes": [
+        "Không có trong: K50, K51"
+      ]
+    },
+    {
+      "content_type": "toc_or_index",
+      "by_cohort": {
+        "K48-K49": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 3,
+          "page_start": 186,
+          "page_end": 188,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        },
+        "K50": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 9,
+          "page_start": 212,
+          "page_end": 220,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        },
+        "K51": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 7,
+          "page_start": 226,
+          "page_end": 232,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        }
+      },
+      "diff_notes": [
+        "Khác vị trí/phạm vi trang giữa các khóa"
+      ]
+    },
+    {
+      "content_type": "unknown",
+      "by_cohort": {
+        "K48-K49": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 2,
+          "page_start": 167,
+          "page_end": 168,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        },
+        "K50": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 2,
+          "page_start": 171,
+          "page_end": 172,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        },
+        "K51": {
+          "exists": true,
+          "content_mode": "archive_only",
+          "page_count": 2,
+          "page_start": 171,
+          "page_end": 172,
+          "needs_embedding": false,
+          "needs_structured_lookup": false
+        }
+      },
+      "diff_notes": [
+        "Khác vị trí/phạm vi trang giữa các khóa"
+      ]
+    }
+  ]
+}

@@ -10,8 +10,7 @@ def test_appends_primary_article_anchor_when_llm_omits_it() -> None:
     citations = [{"source_section": "Điều 24. Học lại", "title": "Quy chế đào tạo"}]
 
     assert ensure_primary_article_anchors(answer, citations) == (
-        "Sinh viên được đăng ký học lại học phần chưa đạt.\n\n"
-        "**Căn cứ:** Điều 24."
+        "Sinh viên được đăng ký học lại học phần chưa đạt."
     )
 
 
@@ -26,7 +25,7 @@ def test_extracts_article_anchor_from_normalized_parent_section_id() -> None:
     citations = [{"source_section": "K48-K49_QuyCheDaoTao_Chuong1_Dieu3"}]
 
     assert ensure_primary_article_anchors("Thời gian tối đa là 8 năm.", citations) == (
-        "Thời gian tối đa là 8 năm.\n\n**Căn cứ:** Điều 3."
+        "Thời gian tối đa là 8 năm."
     )
 
 

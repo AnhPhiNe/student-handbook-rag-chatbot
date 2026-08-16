@@ -130,6 +130,13 @@ def push_trace_to_langsmith(
         trace_tags.append(f"lookup:{meta['lookup_type']}")
     if meta.get("status"):
         trace_tags.append(f"status:{meta['status']}")
+    if (
+        meta.get("is_multi_cohort")
+        or (isinstance(meta.get("cohorts"), list) and len(meta["cohorts"]) >= 2)
+        or (isinstance(resolved_cohort, list) and len(resolved_cohort) >= 2)
+        or ("," in str(resolved_cohort))
+    ):
+        trace_tags.append("comparison:true")
 
     used_model = model or meta.get("model") or "gemini-3.1-flash-lite"
     meta.setdefault("model", used_model)

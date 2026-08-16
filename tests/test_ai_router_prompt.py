@@ -54,7 +54,7 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
         chat_history=[],
     )
 
-    assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6500
+    assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
     assert ROUTER_PROMPT_VERSION.endswith("compact")
 
 
@@ -245,3 +245,50 @@ def test_router_normalization_infers_program_list_scope_from_faculty_query() -> 
         query=query,
         selected_cohort="K51",
     ) == []
+
+
+def test_router_normalization_handles_multi_cohort_comparison() -> None:
+    query = "K50 và K51 thì mấy điểm mới qua môn?"
+    decision = normalize_router_decision(
+        {
+            "route": "rag",
+            "execution_mode": "regulation",
+            "intent": "regulation",
+            "lookup_type": None,
+            "cohort": "K50",
+            "cohorts": ["K50", "K51"],
+            "is_multi_cohort": True,
+            "slots": {},
+            "slot_spans": {},
+        },
+        query=query,
+        selected_cohort="K50",
+    )
+
+    assert decision["is_multi_cohort"] is True
+    assert decision["cohorts"] == ["K50", "K51"]
+    assert decision["cohort"] == "K50"
+
+
+def test_router_normalization_preserves_single_cohort_backward_compatibility() -> None:
+    query = "K50 mấy điểm qua môn?"
+    decision = normalize_router_decision(
+        {
+            "route": "rag",
+            "execution_mode": "regulation",
+            "intent": "regulation",
+            "lookup_type": None,
+            "cohort": "K50",
+            "cohorts": ["K50"],
+            "is_multi_cohort": False,
+            "slots": {},
+            "slot_spans": {},
+        },
+        query=query,
+        selected_cohort="K50",
+    )
+
+    assert decision["is_multi_cohort"] is False
+    assert decision["cohorts"] == ["K50"]
+    assert decision["cohort"] == "K50"
+

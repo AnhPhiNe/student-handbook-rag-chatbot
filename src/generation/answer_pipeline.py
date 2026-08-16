@@ -1001,6 +1001,114 @@ class AnswerPipeline:
             effective_query
         )
 
+        cohorts = router_decision.get("cohorts") or []
+        is_multi_cohort = bool(
+            router_decision.get("is_multi_cohort") and len(cohorts) >= 2
+        )
+
+        if not is_multi_cohort:
+            return self._execute_single_cohort_retrieval(
+                query=query,
+                effective_query=effective_query,
+                normalized_retrieval_query=normalized_retrieval_query,
+                cohort=cohort,
+                router_decision=router_decision,
+                query_handling=query_handling,
+                chat_history=chat_history,
+            )
+
+        sub_results: list[dict[str, Any]] = []
+        for c in cohorts:
+            sub_res = self._execute_single_cohort_retrieval(
+                query=query,
+                effective_query=effective_query,
+                normalized_retrieval_query=normalized_retrieval_query,
+                cohort=c,
+                router_decision=router_decision,
+                query_handling=query_handling,
+                chat_history=chat_history,
+            )
+            sub_results.append(sub_res)
+
+        merged_retrieved_items: list[dict[str, Any]] = []
+        seen_item_keys: set[Any] = set()
+        for sub in sub_results:
+            for item in sub.get("retrieved_items") or []:
+                item_cohort = (
+                    item.get("metadata", {}).get("cohort")
+                    or sub.get("selected_cohort")
+                )
+                item_id = str(item.get("chunk_id") or item.get("_id") or "")
+                key = (item_cohort, item_id)
+                if key not in seen_item_keys:
+                    seen_item_keys.add(key)
+                    merged_retrieved_items.append(item)
+
+        merged_citations: list[dict[str, Any]] = []
+        seen_cit_keys: set[Any] = set()
+        for sub in sub_results:
+            for cit in sub.get("citations") or []:
+                cit_cohort = cit.get("cohort") or sub.get("selected_cohort")
+                key = (
+                    cit_cohort,
+                    cit.get("document_id"),
+                    cit.get("title") or cit.get("source_parent_id"),
+                    tuple(cit.get("source_pages") or []),
+                )
+                if key not in seen_cit_keys:
+                    seen_cit_keys.add(key)
+                    merged_citations.append(cit)
+
+        structured_results_list = [
+            sub.get("structured_result")
+            for sub in sub_results
+            if sub.get("structured_result")
+        ]
+        if len(structured_results_list) > 1:
+            merged_structured: Any = {
+                "lookup_type": "multi_cohort_structured",
+                "cohorts": cohorts,
+                "sub_lookups": structured_results_list,
+                "result": structured_results_list,
+                "table_name": f"So sánh bảng số liệu các khóa: {', '.join(cohorts)}",
+                "source_label": "Dữ liệu bảng quy chế tra cứu theo từng khóa",
+            }
+        elif len(structured_results_list) == 1:
+            merged_structured = structured_results_list[0]
+        else:
+            merged_structured = None
+
+        return {
+            "query": query,
+            "retrieval_query": normalized_retrieval_query,
+            "intent": router_decision.get("intent") or "multi_cohort_comparison",
+            "strategy": "multi_cohort_fusion",
+            "router_decision": router_decision,
+            "structured_result": merged_structured,
+            "retrieved_items": merged_retrieved_items,
+            "citations": merged_citations[:10],
+            "needs_llm_answer": True,
+            "needs_clarification": False,
+            "clarification_question": None,
+            "out_of_domain": False,
+            "selected_cohort": ", ".join(cohorts),
+            "query_handling": query_handling,
+            "effective_query": effective_query,
+            "raw_query": query,
+            "deterministic_validated": False,
+        }
+
+    def _execute_single_cohort_retrieval(
+        self,
+        *,
+        query: str,
+        effective_query: str,
+        normalized_retrieval_query: str,
+        cohort: str | None,
+        router_decision: dict[str, Any],
+        query_handling: dict[str, Any],
+        chat_history: list[dict[str, str]] | None = None,
+    ) -> dict[str, Any]:
         if router_decision.get("execution_mode") == "structured":
             from src.retrieval.core.structured_dispatcher import resolve_structured_decision
             resolution = resolve_structured_decision(

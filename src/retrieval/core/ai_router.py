@@ -75,6 +75,7 @@ RÀNG BUỘC
 - Không có form/procedure tool. Hồ sơ, biểu mẫu và quy trình là regulation.
 - formula chỉ tra công thức, không tính toán.
 - Giữ cohort nếu có; không tự đoán cohort hoặc entity.
+- cohort và cohorts: Nếu QUERY chỉ nêu 1 khóa duy nhất, đặt cohort và cohorts=[cohort], is_multi_cohort=false. Nếu QUERY đề cập hoặc so sánh từ 2 khóa trở lên, hãy trích xuất tất cả các khóa vào mảng cohorts, đặt is_multi_cohort=true và cohort là khóa đầu tiên.
 - slots tuân thủ TOOLS. slot_spans phải xuất hiện nguyên văn trong QUERY hoặc
   CHAT HISTORY. Không bịa slot để thỏa contract.
 - Không tự tạo dữ liệu, tool, intent hoặc chủ đề mới.

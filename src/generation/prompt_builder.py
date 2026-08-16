@@ -61,6 +61,7 @@ NHIỆM VỤ
 - Không chèn mã trích dẫn dạng [1], [R1] hoặc chú thích nguồn vào câu trả lời; giao diện sẽ hiển thị nguồn và liên kết điều khoản liên quan.
 - Nếu có APPLICABLE AMENDMENTS, nội dung thay thế/bổ sung trong đó có thứ tự hiệu lực cao hơn câu chữ cũ, nhưng chỉ trong đúng phạm vi điều/khoản/điểm và cohort được nêu.
 - Nếu người dùng không nêu rõ khóa và CONTEXT chứa nhiều phiên bản quy định khác nhau theo khóa, phải phân tách câu trả lời theo từng khóa; không gộp chung hoặc tự chọn một khóa đại diện.
+- Khi câu hỏi so sánh hoặc hỏi về từ 2 khóa trở lên (ví dụ K50 và K51), hãy trình bày rõ ràng theo từng khóa: "1. Đối với Khóa X: ..." và "2. Đối với Khóa Y: ...", sử dụng in đậm cho các con số, thang điểm và điều kiện cốt lõi; tuyệt đối không gộp chung hoặc lấy quy định của khóa này áp đặt cho khóa kia.
 - Nếu câu hỏi chỉ định rõ một hình thức/hệ đào tạo (chính quy, vừa làm vừa học, liên thông, văn bằng 2), chỉ trả lời phần quy định cho hệ đó. Nếu câu hỏi không chỉ định rõ hệ đào tạo, hãy nêu rõ thông tin cho từng hệ đào tạo có trong nguồn để người dùng tự đối chiếu.
 - Giữ nguyên số liệu, tỷ lệ, thời hạn, Điều, khoản, điểm và thông tin liên hệ. Không suy rộng quy định cho đối tượng khác.
 - Phân biệt rõ "Phòng" và "Khoa". Nếu nguồn chỉ có đơn vị gần tên nhưng không phải đơn vị được hỏi, phải nói rõ nguồn không xác nhận đơn vị được hỏi.
@@ -134,15 +135,28 @@ SOURCE_USAGE_RULES
 """
 
 
-def _cohort_instruction(cohort: str | None) -> str:
+def _cohort_instruction(cohort: str | list[str] | None) -> str:
     if not cohort:
         return ""
+    if isinstance(cohort, list):
+        cohort_list = [str(c).strip() for c in cohort if str(c).strip()]
+    else:
+        cohort_list = [c.strip() for c in str(cohort).split(",") if c.strip()]
+
     year_mapping = ", ".join(
         f"{label}=" + "/".join(str(year) for year in years)
         for label, years in COHORT_ADMISSION_YEARS.items()
     )
+    if len(cohort_list) >= 2:
+        cohort_display = ", ".join(cohort_list)
+        return (
+            f"Câu hỏi đang yêu cầu so sánh/truy vấn giữa các nhóm khóa: {cohort_display}. "
+            f"Ánh xạ năm nhập học: {year_mapping}. "
+            "Hãy đối chiếu tài liệu và trả lời rành mạch theo từng khóa."
+        )
+    single_cohort = cohort_list[0] if cohort_list else str(cohort).strip()
     return (
-        f"Sinh viên đang hỏi thuộc nhóm khóa: {cohort}. "
+        f"Sinh viên đang hỏi thuộc nhóm khóa: {single_cohort}. "
         f"Ánh xạ năm nhập học: {year_mapping}. "
         "Nếu tài liệu có quy định áp dụng theo năm hoặc khóa, phải đối chiếu để trả lời đúng cohort."
     )

@@ -12,9 +12,11 @@ def build_context_from_vector_results(
     for idx, item in enumerate(results[:max_items], start=1):
         metadata = item.get("metadata", {})
         title = _context_item_title(item, metadata)
+        cohort_line = f"Cohort: {metadata.get('cohort')}\n" if metadata.get("cohort") else ""
         primary_blocks.append(
             f"[{idx}]\n"
             f"Title: {title}\n"
+            f"{cohort_line}"
             f"Type: {metadata.get('chunk_type')}\n"
             f"Pages: {metadata.get('source_pages')}\n"
             f"Content:\n{item.get('content')}"

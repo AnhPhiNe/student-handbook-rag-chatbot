@@ -175,6 +175,8 @@ def router_json_schema() -> dict[str, Any]:
         "intent": "intent name",
         "lookup_type": lookup_type_enum,
         "cohort": "K48-K49|K50|K51|null",
+        "cohorts": ["K48-K49", "K50", "K51"],
+        "is_multi_cohort": False,
         "slots": {},
         "slot_spans": {},
         "clarification_question": None,
@@ -240,6 +242,14 @@ def router_response_schema() -> dict[str, Any]:
                     {"type": "null"},
                 ]
             },
+            "cohorts": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": ["K48-K49", "K50", "K51"],
+                },
+            },
+            "is_multi_cohort": {"type": ["boolean", "null"]},
             "slots": {"type": "object", "additionalProperties": True},
             "slot_spans": {"type": "object", "additionalProperties": True},
             "clarification_question": {"type": ["string", "null"]},
@@ -257,6 +267,8 @@ def router_response_schema() -> dict[str, Any]:
             "intent",
             "lookup_type",
             "cohort",
+            "cohorts",
+            "is_multi_cohort",
             "slots",
             "slot_spans",
             "clarification_question",
@@ -345,9 +357,25 @@ def normalize_router_decision(
             else []
         )
 
+    raw_cohorts = payload.get("cohorts")
+    if isinstance(raw_cohorts, list):
+        payload_cohorts = [normalize_cohort(c) for c in raw_cohorts if normalize_cohort(c)]
+    else:
+        payload_cohorts = []
     payload_cohort = normalize_cohort(payload.get("cohort"))
+    if payload_cohort and payload_cohort not in payload_cohorts:
+        payload_cohorts.insert(0, payload_cohort)
+    payload_cohorts = list(dict.fromkeys(payload_cohorts))
+
+    is_multi_cohort = len(payload_cohorts) >= 2 or bool(payload.get("is_multi_cohort") and len(payload_cohorts) >= 2)
     selected = normalize_cohort(selected_cohort)
-    cohort = selected or payload_cohort
+    if is_multi_cohort:
+        cohorts = payload_cohorts
+        cohort = payload_cohorts[0]
+    else:
+        cohort = selected or payload_cohort
+        cohorts = [cohort] if cohort else []
+        is_multi_cohort = False
 
     retrieval_query = str(payload.get("retrieval_query") or query).strip()
     if not retrieval_query or len(retrieval_query) > 600:
@@ -420,6 +448,8 @@ def normalize_router_decision(
         "intent": intent,
         "lookup_type": lookup_type,
         "cohort": cohort,
+        "cohorts": cohorts,
+        "is_multi_cohort": is_multi_cohort,
         "router_cohort": payload_cohort,
         "slots": slots,
         "slot_spans": spans,

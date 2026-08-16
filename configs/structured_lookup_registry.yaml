@@ -51,7 +51,7 @@ tools:
 
   scoring:
     data_category: regulation_table
-    description: Quy doi/xep loai diem 10, diem chu, thang 4, GPA, ren luyen; gom hoc phan dat/khong dat khong tinh GPA.
+    description: Tra cuu va quy doi thang diem hoc phan (thang 10, diem chu, thang 4, dat/khong dat), xep loai hoc luc hoac diem ren luyen.
     intents: [direct_value, list_items, compare]
     required_slots:
       direct_value: [operation]

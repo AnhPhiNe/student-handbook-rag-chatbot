@@ -594,17 +594,21 @@ def _filter_retrieved_items(
 def _source_header(index: int, item: dict[str, Any]) -> str:
     metadata = item.get("metadata", {}) or {}
     title = _item_title(item, metadata)
-    return "\n".join(
-        [
-            f"[{index}]",
-            "Role: PRIMARY - direct vector match for answer and citation",
-            f"Title: {title}",
-            f"Type: {metadata.get('chunk_type')}",
-            f"Pages: {metadata.get('source_pages')}",
-            "Content:",
-            "",
-        ]
-    )
+    cohort_val = metadata.get("cohort") or item.get("cohort")
+    lines = [
+        f"[{index}]",
+        "Role: PRIMARY - direct vector match for answer and citation",
+        f"Title: {title}",
+        f"Type: {metadata.get('chunk_type')}",
+    ]
+    if cohort_val:
+        lines.append(f"Cohort: {cohort_val}")
+    lines.extend([
+        f"Pages: {metadata.get('source_pages')}",
+        "Content:",
+        "",
+    ])
+    return "\n".join(lines)
 
 
 def _item_title(item: dict[str, Any], metadata: dict[str, Any]) -> str:

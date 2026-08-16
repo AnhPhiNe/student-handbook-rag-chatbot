@@ -278,6 +278,49 @@ function formatAmendmentFootnotes(text: string): string {
   );
 }
 
+function renderAllMarkdownTables(text: string): string {
+  const tableRegex = /(?:^|\n)(\|[^\n]+\|\s*\n\|(?:\s*:?-+:?\s*\|)+\s*\n(?:\|[^\n]+\|\s*(?:\n|$))+)/gu;
+
+  return text.replace(tableRegex, (_match, tableBlock) => {
+    const tableLines = tableBlock
+      .trim()
+      .split('\n')
+      .map((line: string) => line.trim())
+      .filter((line: string) => line.startsWith('|'));
+
+    if (tableLines.length < 3) return tableBlock;
+
+    const headers = parseMarkdownTableRow(tableLines[0]);
+    const separator = parseMarkdownTableRow(tableLines[1]);
+
+    if (
+      !headers.length ||
+      separator.length !== headers.length ||
+      !separator.every((cell: string) => /^:?-{3,}:?$/u.test(cell))
+    ) {
+      return tableBlock;
+    }
+
+    const rows = tableLines
+      .slice(2)
+      .map(parseMarkdownTableRow)
+      .filter((row: string[]) => row.length === headers.length && row.some(Boolean));
+
+    if (!rows.length) return tableBlock;
+
+    return [
+      '\n\n<section class="citation-normalized-table">',
+      '<div class="citation-normalized-table-scroll">',
+      '<table>',
+      `<thead><tr>${headers.map((header: string) => `<th scope="col">${escapeHtml(header)}</th>`).join('')}</tr></thead>`,
+      `<tbody>${rows.map((row: string[]) => `<tr>${row.map((cell: string) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')}</tbody>`,
+      '</table>',
+      '</div>',
+      '</section>\n\n',
+    ].join('');
+  });
+}
+
 function formatCitationContentForDisplay(text: string): string {
   let cleaned = repairPdfLayoutArtifacts(text);
 
@@ -300,76 +343,20 @@ function formatCitationContentForDisplay(text: string): string {
     );
   }
 
-  const formattedText = formatLegalSectionMarkers(formatAmendmentFootnotes(cleaned))
+  let formattedText = formatLegalSectionMarkers(formatAmendmentFootnotes(cleaned))
     .replace(/(?:^|\n)(\d+\.)\s/g, '\n\n**$1** ')
     .replace(/(?:^|\n)([a-zđ]\))\s/gi, '\n\n*$1* ')
     .replace(/(?:^|\n)([-•])\s/g, '\n\n$1 ')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 
+  formattedText = renderAllMarkdownTables(formattedText);
+
   return [formattedText, normalizedTables].filter(Boolean).join('\n\n');
 }
 
-function normalizeCitationLabel(value?: string): string {
-  const text = (value || '').trim();
-  if (!text) return '';
-
-  const normalized = text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[–—]/g, '-')
-    .replace(/\s+/g, ' ');
-
-  const labelMap: Record<string, string> = {
-    'danh sach nganh dao tao': 'Danh sách ngành đào tạo',
-    'danh muc nganh dao tao trong so tay sinh vien hcmue': 'Danh mục ngành đào tạo trong Sổ tay sinh viên HCMUE',
-    'program directory': 'Danh sách ngành đào tạo',
-    'program_directory': 'Danh sách ngành đào tạo',
-    'faculty directory': 'Danh bạ khoa/đơn vị',
-    'faculty_directory': 'Danh bạ khoa/đơn vị',
-    'office directory': 'Danh bạ phòng ban',
-    'office_directory': 'Danh bạ phòng ban',
-    'form templates': 'Biểu mẫu',
-    'form_templates': 'Biểu mẫu',
-    'scoring tables': 'Bảng điểm',
-    'scoring_tables': 'Bảng điểm',
-    'threshold rules': 'Quy định ngưỡng điểm',
-    'threshold_rules': 'Quy định ngưỡng điểm',
-    'regulation sections': 'Quy định',
-    'regulation_sections': 'Quy định',
-  };
-
-  return labelMap[normalized] || text;
-}
-
 function getCitationTypeLabel(citation: Citation): string {
-  const sourceLabel = normalizeCitationLabel(citation.source_label);
-  if (sourceLabel) return sourceLabel;
-  switch (citation.chunk_type) {
-    case 'structured_lookup':
-      return 'Bảng quy định';
-    case 'program_directory':
-      return 'Danh sách ngành đào tạo';
-    case 'faculty_directory':
-      return 'Danh bạ khoa/đơn vị';
-    case 'office_directory':
-      return 'Danh bạ phòng ban';
-    case 'form_templates':
-      return 'Biểu mẫu';
-    case 'formula':
-      return 'Công thức/quy tắc';
-    case 'form':
-      return 'Biểu mẫu';
-    case 'contact':
-      return 'Liên hệ';
-    case 'procedure':
-      return 'Quy trình';
-    case 'rule':
-      return 'Quy định';
-    default:
-      return 'Nguồn tham khảo';
-  }
+  return citation.source_label || citation.table_name || 'Nguồn tham khảo';
 }
 
 function getCompactExcerpt(text: string, maxLength = 220): string {
@@ -382,45 +369,47 @@ function getCompactExcerpt(text: string, maxLength = 220): string {
 }
 
 function highlightKeywords(text: string, query?: string): string {
-  if (!query) return text;
+  if (!query || !text) return text;
   
-  const cleanQuery = query.replace(/[?!.,;]/g, '').toLowerCase().trim();
-  const words = cleanQuery.split(/\s+/);
-  
+  const cleanQuery = query.replace(/[?!.,;:()[\]{}"'`]/g, ' ').toLowerCase().trim();
+  const words = cleanQuery.split(/\s+/).filter(Boolean);
+  if (words.length === 0) return text;
+
+  const STOPWORDS = new Set([
+    'là', 'gì', 'như', 'thế', 'nào', 'ở', 'đâu', 'khi', 'có', 'được', 'không',
+    'cho', 'tôi', 'làm', 'sao', 'và', 'hoặc', 'thì', 'của', 'về', 'trong',
+    'đến', 'này', 'đó', 'tại', 'với', 'các', 'những', 'một', 'hai', 'ba',
+    'bạn', 'em', 'mình', 'hỏi', 'giúp', 'đã', 'sẽ', 'đang', 'bao', 'nhiêu', 'mấy', 'ai'
+  ]);
+
   const phrases: string[] = [];
-  
-  // Create N-grams (from 4 words down to 2 words)
+
+  // N-grams from 4 words down to 2 words
   const maxN = Math.min(words.length, 4);
   for (let n = maxN; n >= 2; n--) {
     for (let i = 0; i <= words.length - n; i++) {
-      phrases.push(words.slice(i, i + n).join(' '));
+      const slice = words.slice(i, i + n);
+      if (!STOPWORDS.has(slice[0]) || !STOPWORDS.has(slice[slice.length - 1])) {
+        phrases.push(slice.join(' '));
+      }
     }
   }
-  
-  // Only add single words if they are long enough (e.g. English keywords like "deadline", "scholarship")
-  // Or if the user only typed exactly 1 word
-  if (words.length === 1) {
-    phrases.push(words[0]);
-  } else {
-    words.forEach(w => {
-      if (w.length > 5) phrases.push(w);
-    });
-  }
-  
-  // Filter out common stop phrases and short phrases
-  const stopPhrases = ['là gì', 'như thế nào', 'ở đâu', 'thế nào', 'khi nào', 'có được', 'không được', 'cho tôi', 'làm sao'];
+
+  // Meaningful single words
+  words.forEach(w => {
+    if (!STOPWORDS.has(w) && w.length >= 3) {
+      phrases.push(w);
+    }
+  });
+
   const validPhrases = [...new Set(phrases)]
-    .filter(p => p.length > 2 && !stopPhrases.includes(p))
-    .sort((a, b) => b.length - a.length); // Sort longest first
-    
+    .filter(p => p.length >= 3)
+    .sort((a, b) => b.length - a.length);
+
   if (validPhrases.length === 0) return text;
-  
-  // Escape regex special chars
+
   const escapeRegex = (s: string) => s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-  
-  // Build a single Regex with alternation: (phrase1|phrase2|...)
-  // This single-pass replacement prevents nested <mark> tags!
-  const pattern = new RegExp(`(${validPhrases.map(escapeRegex).join('|')})`, 'gi');
+  const pattern = new RegExp(`(?<![<a-zA-Z0-9À-ỹ])(${validPhrases.map(escapeRegex).join('|')})(?![>a-zA-Z0-9À-ỹ])`, 'giu');
   
   return text.replace(pattern, '<mark>$1</mark>');
 }
@@ -637,7 +626,7 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
               )}
             </>
           )}
-          
+
           {message.isStreaming && displayContent && (
             <span style={{ display: 'inline-block', width: '8px', height: '16px', background: 'var(--accent-color)', animation: 'blink 1s step-end infinite', marginLeft: '4px', verticalAlign: 'middle' }}></span>
           )}
@@ -659,8 +648,8 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
                     const isExpanded = expandedCitations.has(idx);
                     const pagesLabel = cit.source_pages?.length ? `Trang ${cit.source_pages.join(', ')}` : '';
                     const excerpt = cit.content ? getCompactExcerpt(cit.content) : '';
-                    const citationTitle = normalizeCitationLabel(cit.title || cit.chunk_id);
-                    const applicability = normalizeCitationLabel(cit.applicability);
+                    const citationTitle = cit.title || cit.chunk_id;
+                    const applicability = cit.applicability;
                     return (
                       <div key={idx} className="citation-card">
                         <div className="citation-card-header" onClick={() => toggleCitation(idx)}>
@@ -718,8 +707,6 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
           </button>
         )}
 
-
-
         {!message.isStreaming && !isErrorMsg && (
           <div className="message-metadata" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
             <div style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
@@ -755,21 +742,19 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
               </div>
               
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: 'auto' }}>
-              {message.usedCache ? (
-                <span className="metadata-badge cache" title="Câu trả lời được lấy từ bộ nhớ đệm giúp tốc độ phản hồi tức thì">
-                  ⚡ Từ bộ nhớ đệm
-                </span>
-              ) : (
-                message.responseTimeMs && (
+                {message.usedCache ? (
+                  <span className="metadata-badge cache" title="Câu trả lời được lấy từ bộ nhớ đệm giúp tốc độ phản hồi tức thì">
+                    ⚡ Từ bộ nhớ đệm
+                  </span>
+                ) : message.responseTimeMs ? (
                   <span 
                     className="metadata-badge latency" 
                     title={`Tổng thời gian phản hồi: ${(message.responseTimeMs / 1000).toFixed(2)}s${message.ttftMs ? ` (Từ đầu tiên: ${(message.ttftMs / 1000).toFixed(2)}s)` : ''}`}
                   >
                     ⏱️ {(message.responseTimeMs / 1000).toFixed(1)}s
                   </span>
-                )
-              )}
-            </div>
+                ) : null}
+              </div>
             </div>
 
             {showInlineFeedback && (
@@ -794,7 +779,6 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
                 </div>
               </div>
             )}
-
           </div>
         )}
 
@@ -856,7 +840,10 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
               )}
               <div className="related-reference-dialog-content citation-markdown">
                 <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-                  {formatCitationContentForDisplay(activeRelatedReference.content || activeRelatedReference.preview || '')}
+                  {highlightKeywords(
+                    formatCitationContentForDisplay(activeRelatedReference.content || activeRelatedReference.preview || ''),
+                    query
+                  )}
                 </ReactMarkdown>
               </div>
               {activeRelatedReference.source_url && (

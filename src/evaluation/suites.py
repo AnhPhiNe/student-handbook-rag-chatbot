@@ -1238,9 +1238,10 @@ def generate_answers(
             started = time.perf_counter()
             try:
                 output = pipeline.answer(case["query"], cohort=case.get("cohort"))
+                clean_output = {k: v for k, v in output.items() if k != "tracker"}
                 record = {
                     "id": case["id"],
-                    **output,
+                    **clean_output,
                     "latency_ms": (time.perf_counter() - started) * 1000,
                 }
             except Exception as exc:
@@ -1262,7 +1263,7 @@ def generate_answers(
             )
             cache_path.parent.mkdir(parents=True, exist_ok=True)
             cache_path.write_text(
-                json.dumps(list(by_id.values()), ensure_ascii=False, indent=2),
+                json.dumps(list(by_id.values()), ensure_ascii=False, indent=2, default=str),
                 encoding="utf-8",
             )
     finally:
@@ -1346,7 +1347,7 @@ def judge_answers(
         )
         checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
         checkpoint_path.write_text(
-            json.dumps(list(judged.values()), ensure_ascii=False, indent=2),
+            json.dumps(list(judged.values()), ensure_ascii=False, indent=2, default=str),
             encoding="utf-8",
         )
     rows = [judged[c["id"]] for c in cases[:limit] if c["id"] in judged]

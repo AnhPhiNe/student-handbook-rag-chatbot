@@ -55,6 +55,7 @@ export interface Message {
   usedCache?: boolean;
   suggestions?: string[];
   queuePosition?: number | null;
+  userQuery?: string;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
@@ -110,6 +111,7 @@ export function useChat(cohort: string = 'K48-K49') {
       role: 'bot', 
       content: "", 
       isStreaming: true,
+      userQuery: text,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }]);
 
@@ -135,7 +137,7 @@ export function useChat(cohort: string = 'K48-K49') {
         displayedBotContent = targetBotContent.slice(0, displayedBotContent.length + step);
 
         setMessages(prev => prev.map(m => 
-          m.id === botMsgId ? { ...m, content: displayedBotContent, queuePosition: null } : m
+          m.id === botMsgId ? { ...m, content: displayedBotContent, userQuery: text, queuePosition: null } : m
         ));
       } else if (streamDone || streamError) {
         clearInterval(typingTimer);
@@ -147,6 +149,7 @@ export function useChat(cohort: string = 'K48-K49') {
             m.id === botMsgId ? { 
               ...m, 
               content: targetBotContent,
+              userQuery: text,
               isStreaming: false,
               responseTimeMs: donePayload!.responseTimeMs,
               ttftMs: ttftMs || undefined,

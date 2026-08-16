@@ -455,15 +455,19 @@ def resolve_structured_decision(
                 for item in collected
             ],
             "sub_lookups": [
-                {
-                    "lookup_type": item.lookup_type,
-                    "strategy": item.strategy,
-                    "table_name": item.result.get("table_name") or item.lookup_type,
-                    "data": item.result.get("result") or item.result.get("items") or item.result,
-                }
+                item.result
                 for item in collected
+                if item.result and isinstance(item.result, dict)
             ],
-            "source_pages": sorted(list({p for item in collected for p in (item.result.get("source_pages") or [])})),
+            "source_pages": sorted(
+                list(
+                    {
+                        p
+                        for item in collected
+                        for p in (item.result.get("source_pages") or [])
+                    }
+                )
+            ),
             "table_name": "Các bảng tra cứu liên quan",
             "source_label": "Dữ liệu tra cứu tổng hợp trong Sổ tay sinh viên HCMUE",
             "content_type": "multi_structured_lookup",

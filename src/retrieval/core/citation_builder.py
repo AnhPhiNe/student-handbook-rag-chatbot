@@ -193,7 +193,60 @@ def build_citations_from_vector_results(
     return citations
 
 
+def format_rows_as_markdown_table(
+    rows: list[dict[str, Any]],
+    columns: list[str] | None = None,
+    column_labels: dict[str, str] | None = None,
+) -> str:
+    """Format structured table rows into a standard GitHub Markdown table."""
+    if not rows:
+        return ""
+    if not columns:
+        cols: list[str] = []
+        for r in rows:
+            if isinstance(r, dict):
+                for k in r.keys():
+                    if (
+                        k not in cols
+                        and not k.startswith("_")
+                        and k not in ("matched_level", "matched_value")
+                    ):
+                        cols.append(k)
+        columns = cols
+    if not columns:
+        return ""
+
+    labels = column_labels or {}
+    headers = [str(labels.get(c, c)) for c in columns]
+    header_line = "| " + " | ".join(headers) + " |"
+    separator_line = "| " + " | ".join("---" for _ in columns) + " |"
+
+    body_lines: list[str] = []
+    for r in rows:
+        if isinstance(r, dict):
+            row_vals = [
+                str(r.get(c, "")).replace("\n", " ").replace("|", "\\|").strip()
+                for c in columns
+            ]
+            body_lines.append("| " + " | ".join(row_vals) + " |")
+
+    return "\n".join([header_line, separator_line] + body_lines)
+
+
 def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, Any]]:
+    if not lookup_result or not isinstance(lookup_result, dict):
+        return []
+
+    # 1. Multi-cohort structured comparison
+    if lookup_result.get("lookup_type") == "multi_cohort_structured":
+        sub_citations: list[dict[str, Any]] = []
+        for sub in lookup_result.get("sub_lookups") or []:
+            if isinstance(sub, dict):
+                sub_citations.extend(build_citation_from_lookup(sub))
+        if sub_citations:
+            return sub_citations
+
+    # 2. Structured context (multiple tables bundled)
     if lookup_result.get("lookup_type") == "structured_context":
         citations = []
         seen = set()
@@ -203,10 +256,19 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
             if key in seen:
                 continue
             seen.add(key)
+            t_name = item.get("table_name") or "Bảng dữ liệu Sổ tay sinh viên"
+            r = item.get("rows") or []
+            c = item.get("columns")
+            table_md = format_rows_as_markdown_table(r, c)
+            content = (
+                f"**{t_name}**\n\n{table_md}"
+                if table_md
+                else f"{t_name}: {len(r)} dòng dữ liệu."
+            )
             citations.append(
                 {
                     "chunk_type": "structured_lookup",
-                    "title": item.get("table_name") or "Bảng dữ liệu Sổ tay sinh viên",
+                    "title": t_name,
                     "source_pages": item.get("source_pages") or [],
                     "source_label": "Bảng dữ liệu được chuẩn hóa từ Sổ tay sinh viên HCMUE",
                     "cohort": item.get("cohort"),
@@ -214,29 +276,31 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
                     "source_section": source_parent_id,
                     "source_parent_id": source_parent_id,
                     "parent_section_id": source_parent_id,
-                    "content": f"{item.get('table_name')}: {len(item.get('rows') or [])} dòng được chọn.",
+                    "content": content,
                 }
             )
         return citations
 
-    if lookup_result.get("lookup_type") == "program_directory":
-        programs = lookup_result.get("result") or []
-        preview = "; ".join(
-            str(program.get("program_name"))
-            for program in programs[:8]
-            if program.get("program_name")
-        )
-        if len(programs) > 8:
-            preview = f"{preview}; ..."
-
+    # 3. Program directory
+    if lookup_result.get("lookup_type") in ("program_directory", "program"):
+        programs = lookup_result.get("result") or lookup_result.get("items") or []
+        if isinstance(programs, dict):
+            programs = [programs]
+        prog_labels = {
+            "program_code": "Mã ngành",
+            "program_name": "Tên ngành đào tạo",
+            "degree_level": "Trình độ",
+            "faculty_name": "Khoa quản lý",
+        }
+        prog_cols = ["program_code", "program_name", "degree_level", "faculty_name"]
+        table_md = format_rows_as_markdown_table(programs, prog_cols, prog_labels)
         return [
             {
                 "chunk_type": "program_directory",
-                "title": lookup_result.get("table_name")
-                or "Danh sach nganh dao tao",
+                "title": lookup_result.get("table_name") or "Danh mục ngành đào tạo",
                 "source_pages": lookup_result.get("source_pages", []),
                 "source_label": lookup_result.get("source_label")
-                or "Danh muc nganh dao tao trong So tay sinh vien HCMUE",
+                or "Danh mục ngành đào tạo trong Sổ tay sinh viên HCMUE",
                 "source_url": lookup_result.get("source_url"),
                 "cohort": lookup_result.get("cohort"),
                 "document_id": lookup_result.get("document_id"),
@@ -244,26 +308,39 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
                 "source_parent_id": lookup_result.get("source_parent_id"),
                 "parent_section_id": lookup_result.get("source_parent_id"),
                 "applicability": lookup_result.get("applicability"),
-                "content": preview
-                or "Du lieu nganh dao tao duoc trich xuat tu So tay sinh vien HCMUE.",
+                "content": table_md
+                or "Dữ liệu ngành đào tạo được trích xuất từ Sổ tay sinh viên HCMUE.",
             }
         ]
 
-    if lookup_result.get("lookup_type") == "office_directory":
-        offices = lookup_result.get("result") or []
-        preview = "; ".join(
-            str(office.get("unit_name"))
-            for office in offices[:5]
-            if office.get("unit_name")
-        )
+    # 4. Office directory / Faculty profiles
+    if lookup_result.get("lookup_type") in (
+        "office_directory",
+        "student_office",
+        "student_faculty",
+    ):
+        offices = lookup_result.get("result") or lookup_result.get("items") or []
+        if isinstance(offices, dict):
+            offices = [offices]
         first_office = offices[0] if offices else {}
+        off_labels = {
+            "unit_name": "Tên đơn vị / Phòng ban",
+            "location": "Địa điểm / Phòng",
+            "email": "Email",
+            "phone": "Số điện thoại",
+            "website": "Website",
+        }
+        off_cols = ["unit_name", "location", "email", "phone", "website"]
+        table_md = format_rows_as_markdown_table(offices, off_cols, off_labels)
         return [
             {
                 "chunk_type": "office_directory",
-                "title": first_office.get("unit_name") or lookup_result.get("table_name"),
+                "title": first_office.get("unit_name")
+                or lookup_result.get("table_name")
+                or "Danh bạ phòng ban",
                 "source_pages": lookup_result.get("source_pages", []),
                 "source_label": lookup_result.get("source_label")
-                or "Danh muc phong ban/lien he trong So tay sinh vien",
+                or "Danh mục phòng ban / liên hệ trong Sổ tay sinh viên",
                 "source_url": lookup_result.get("source_url"),
                 "cohort": lookup_result.get("cohort"),
                 "document_id": lookup_result.get("document_id"),
@@ -271,26 +348,45 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
                 "source_parent_id": lookup_result.get("source_parent_id"),
                 "parent_section_id": lookup_result.get("source_parent_id"),
                 "applicability": lookup_result.get("applicability"),
-                "content": preview
-                or "Du lieu phong ban/lien he duoc trich xuat tu So tay sinh vien HCMUE.",
+                "content": table_md
+                or "Dữ liệu phòng ban / liên hệ được trích xuất từ Sổ tay sinh viên HCMUE.",
             }
         ]
 
-    if lookup_result.get("lookup_type") == "foreign_language_equivalency":
-        items = lookup_result.get("items") or []
-        preview = "; ".join(
-            str(item.get("certificate"))
-            for item in items[:5]
-            if item.get("certificate")
+    # 5. Foreign Language Equivalency
+    if lookup_result.get("lookup_type") in (
+        "foreign_language_equivalency",
+        "foreign_language",
+    ):
+        items = lookup_result.get("items") or (
+            [lookup_result.get("result")]
+            if lookup_result.get("result")
+            and isinstance(lookup_result.get("result"), dict)
+            else []
         )
+        fl_labels = {
+            "language": "Ngoại ngữ",
+            "certificate": "Chứng chỉ",
+            "level_or_scale": "Thang đo / Kỹ năng",
+            "equivalent_level_3": "Bậc 3 (B1)",
+            "equivalent_level_4": "Bậc 4 (B2)",
+        }
+        fl_cols = [
+            "language",
+            "certificate",
+            "level_or_scale",
+            "equivalent_level_3",
+            "equivalent_level_4",
+        ]
+        table_md = format_rows_as_markdown_table(items, fl_cols, fl_labels)
         return [
             {
                 "chunk_type": "structured_lookup",
                 "title": lookup_result.get("table_name")
-                or "Bang quy doi chuan dau ra ngoai ngu",
+                or "Bảng quy đổi chuẩn đầu ra ngoại ngữ",
                 "source_pages": lookup_result.get("source_pages", []),
                 "source_label": lookup_result.get("source_label")
-                or "Bang quy doi chuan dau ra ngoai ngu trong So tay sinh vien HCMUE",
+                or "Bảng quy đổi chuẩn đầu ra ngoại ngữ trong Sổ tay sinh viên HCMUE",
                 "source_url": lookup_result.get("source_url"),
                 "cohort": lookup_result.get("cohort"),
                 "document_id": lookup_result.get("document_id"),
@@ -298,34 +394,39 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
                 "source_parent_id": lookup_result.get("source_parent_id"),
                 "parent_section_id": lookup_result.get("source_parent_id"),
                 "applicability": lookup_result.get("applicability"),
-                "content": preview
-                or "Du lieu quy doi chuan dau ra ngoai ngu duoc trich xuat tu So tay sinh vien HCMUE.",
+                "content": table_md
+                or "Dữ liệu quy đổi chuẩn đầu ra ngoại ngữ được trích xuất từ Sổ tay sinh viên HCMUE.",
             }
         ]
 
-    if lookup_result.get("lookup_type") in {
-        "study_duration",
-        "scholarship_classification",
-    }:
+    # 6. Study Duration
+    if lookup_result.get("lookup_type") == "study_duration":
         items = lookup_result.get("items") or []
-        if lookup_result.get("lookup_type") == "study_duration":
-            preview = "; ".join(
-                str(row.get("Chương trình đào tạo"))
-                for table in items[:3]
-                for row in (table.get("rows") or [])[:2]
-                if row.get("Chương trình đào tạo")
-            )
-        else:
-            preview = "; ".join(
-                str(row.get("label")) for row in items[:5] if row.get("label")
-            )
+        md_tables = []
+        for t in items:
+            if isinstance(t, dict):
+                app = t.get("applicability") or t.get("table_name") or ""
+                r = t.get("rows") or []
+                c = t.get("columns") or [
+                    "Chương trình đào tạo",
+                    "Thời gian học tập chuẩn",
+                    "Thời gian học tập tối đa",
+                ]
+                md = format_rows_as_markdown_table(r, c)
+                if md:
+                    if app:
+                        md_tables.append(f"**{app}**\n\n{md}")
+                    else:
+                        md_tables.append(md)
+        table_md = "\n\n".join(md_tables)
         return [
             {
                 "chunk_type": "structured_lookup",
-                "title": lookup_result.get("table_name") or "Bang tra cuu",
+                "title": lookup_result.get("table_name")
+                or "Thời gian học tập chuẩn và tối đa",
                 "source_pages": lookup_result.get("source_pages", []),
                 "source_label": lookup_result.get("source_label")
-                or "Bang du lieu duoc trich xuat tu So tay sinh vien HCMUE",
+                or "Bảng thời gian đào tạo trong Sổ tay sinh viên HCMUE",
                 "source_url": lookup_result.get("source_url"),
                 "cohort": lookup_result.get("cohort"),
                 "document_id": lookup_result.get("document_id"),
@@ -333,11 +434,66 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
                 "source_parent_id": lookup_result.get("source_parent_id"),
                 "parent_section_id": lookup_result.get("source_parent_id"),
                 "applicability": lookup_result.get("applicability"),
-                "content": preview
-                or "Du lieu bang duoc trich xuat tu So tay sinh vien HCMUE.",
+                "content": table_md
+                or "Dữ liệu thời gian đào tạo được trích xuất từ Sổ tay sinh viên HCMUE.",
             }
         ]
 
+    # 7. Scholarship Classification
+    if lookup_result.get("lookup_type") == "scholarship_classification":
+        items = lookup_result.get("items") or (
+            [lookup_result.get("result")]
+            if lookup_result.get("result")
+            and isinstance(lookup_result.get("result"), dict)
+            else []
+        )
+        sch_labels = {
+            "label": "Loại học bổng",
+            "scholarship_score": "Điểm học bổng",
+            "min_gpa": "Điểm học tập (GPA)",
+            "min_conduct": "Điểm rèn luyện",
+        }
+        table_md = format_rows_as_markdown_table(items, column_labels=sch_labels)
+        return [
+            {
+                "chunk_type": "structured_lookup",
+                "title": lookup_result.get("table_name")
+                or "Bảng xếp loại học bổng khuyến khích học tập",
+                "source_pages": lookup_result.get("source_pages", []),
+                "source_label": lookup_result.get("source_label")
+                or "Bảng xếp loại học bổng trong Sổ tay sinh viên HCMUE",
+                "source_url": lookup_result.get("source_url"),
+                "cohort": lookup_result.get("cohort"),
+                "document_id": lookup_result.get("document_id"),
+                "source_section": lookup_result.get("source_section"),
+                "source_parent_id": lookup_result.get("source_parent_id"),
+                "parent_section_id": lookup_result.get("source_parent_id"),
+                "applicability": lookup_result.get("applicability"),
+                "content": table_md
+                or "Dữ liệu xếp loại học bổng được trích xuất từ Sổ tay sinh viên HCMUE.",
+            }
+        ]
+
+    # 8. General structured lookup fallback (scoring, academic, conduct, etc.)
+    rows = lookup_result.get("rows")
+    if not rows and lookup_result.get("items") and isinstance(lookup_result["items"], list):
+        if (
+            lookup_result["items"]
+            and isinstance(lookup_result["items"][0], dict)
+            and "rows" in lookup_result["items"][0]
+        ):
+            rows = []
+            for sub_t in lookup_result["items"]:
+                rows.extend(sub_t.get("rows", []))
+        else:
+            rows = lookup_result["items"]
+    elif not rows and lookup_result.get("result") and isinstance(lookup_result["result"], list):
+        rows = lookup_result["result"]
+    elif not rows and lookup_result.get("result") and isinstance(lookup_result["result"], dict):
+        rows = [lookup_result["result"]]
+
+    cols = lookup_result.get("columns")
+    table_md = format_rows_as_markdown_table(rows, cols) if rows else ""
     return [
         {
             "chunk_type": "structured_lookup",
@@ -353,7 +509,8 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
             "source_parent_id": lookup_result.get("source_parent_id"),
             "parent_section_id": lookup_result.get("source_parent_id"),
             "applicability": lookup_result.get("applicability"),
-            "content": "Dữ liệu được trích xuất trực tiếp từ cơ sở dữ liệu bảng quy chế trong Sổ tay Sinh viên HCMUE.",
+            "content": table_md
+            or "Dữ liệu được trích xuất trực tiếp từ cơ sở dữ liệu bảng quy chế trong Sổ tay Sinh viên HCMUE.",
         }
     ]
 

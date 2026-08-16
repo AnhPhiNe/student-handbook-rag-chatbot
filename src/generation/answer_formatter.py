@@ -100,12 +100,8 @@ def missing_primary_article_anchors(
 def ensure_primary_article_anchors(
     answer: str, primary_citations: list[dict[str, Any]] | None
 ) -> str:
-    """Append a concise, source-backed article anchor when the LLM omitted it."""
-    answer = remove_existing_sources_section(answer)
-    missing_anchors = missing_primary_article_anchors(answer, primary_citations)
-    if not answer or not missing_anchors:
-        return answer
-    return f"{answer}\n\n**Căn cứ:** {', '.join(missing_anchors)}."
+    """Return answer cleaned without appending redundant citation anchors."""
+    return remove_existing_sources_section(answer)
 
 
 def format_final_response(
@@ -120,4 +116,4 @@ def format_final_response(
     if ambiguity_note:
         answer = f"{clean_answer(ambiguity_note)}\n\n{answer}".strip()
 
-    return ensure_primary_article_anchors(answer, primary_citations)
+    return answer

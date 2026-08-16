@@ -142,6 +142,23 @@ def _extract_study_duration_tables(
         r"(Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
     ]
     
+    amendment_rows = {}
+    for marker in ("sửa đổi, bổ sung", "sửa đổi bổ sung"):
+        idx_m = lowered.find(marker)
+        if idx_m != -1:
+            amendment_text = normalized[idx_m:]
+            amendment_pattern = (
+                r"(Chính quy|Vừa làm vừa học|Đào tạo đại học[^\n0-9]*)\s+"
+                r"([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)"
+            )
+            for match in re.finditer(amendment_pattern, amendment_text, flags=re.IGNORECASE):
+                lbl = match.group(1).strip().lower()
+                amendment_rows[lbl] = {
+                    "Thời gian học tập chuẩn": match.group(2).strip(),
+                    "Thời gian học tập tối đa": match.group(3).strip(),
+                }
+            break
+
     tables = []
     for suffix, block_text, applicability in blocks:
         rows = []
@@ -155,6 +172,18 @@ def _extract_study_duration_tables(
                     }
                 )
         if rows:
+            if amendment_rows:
+                mode_key = (
+                    "chính quy"
+                    if suffix == "chinh_quy"
+                    else ("vừa làm vừa học" if suffix == "vua_lam_vua_hoc" else "")
+                )
+                if mode_key and mode_key in amendment_rows:
+                    amended_data = amendment_rows[mode_key]
+                    for r in rows:
+                        if r.get("Chương trình đào tạo") == "Đào tạo đại học cấp bằng thứ nhất":
+                            r["Thời gian học tập chuẩn"] = amended_data["Thời gian học tập chuẩn"]
+                            r["Thời gian học tập tối đa"] = amended_data["Thời gian học tập tối đa"]
             tables.append(
                 _make_table(
                     section,

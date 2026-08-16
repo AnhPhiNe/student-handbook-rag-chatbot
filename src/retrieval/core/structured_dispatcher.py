@@ -249,7 +249,7 @@ def _resolve_single_lookup(
             routing=routing,
             candidate_text=candidate_text,
             require_confident_match=True,
-            model=model,
+            model=model if lookup_type == "student_service" else None,
         )
         if result is not None and result.get("resolution_status") == "ambiguous":
             options = result.get("clarification_options") or []
@@ -421,6 +421,10 @@ def resolve_structured_decision(
         "office",
         "student_service",
     ]
+
+    # Nếu Router đã chỉ định đích danh lookup_type và đã tìm thấy kết quả hợp lệ, trả về ngay lập tức
+    if lookup_type and primary_res and _is_valid_probe_result(primary_res):
+        return primary_res
 
     collected: list[StructuredResolution] = []
     seen_lookups: set[str] = set()

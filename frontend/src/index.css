@@ -2940,17 +2940,27 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   color: var(--primary);
 }
 
-/* ===== NEW STYLES ===== */
-.message-bubble mark {
-  background-color: rgba(232, 134, 58, 0.2);
-  color: inherit;
-  padding: 0 0.15rem;
-  border-radius: 2px;
-  font-weight: 500;
+/* ===== KEYWORD HIGHLIGHTING STYLES ===== */
+.message-bubble mark,
+.citation-card-content mark,
+.citation-markdown mark,
+.related-reference-dialog-content mark {
+  background: linear-gradient(120deg, rgba(245, 158, 11, 0.22) 0%, rgba(251, 191, 36, 0.3) 100%);
+  color: #B45309;
+  padding: 0.12rem 0.35rem;
+  margin: 0 0.05rem;
+  border-radius: 4px;
+  font-weight: 600;
+  border-bottom: 1.5px solid rgba(245, 158, 11, 0.5);
 }
-[data-theme='dark'] .message-bubble mark {
-  background-color: rgba(245, 158, 11, 0.25);
-  color: #FCD34D;
+
+[data-theme='dark'] .message-bubble mark,
+[data-theme='dark'] .citation-card-content mark,
+[data-theme='dark'] .citation-markdown mark,
+[data-theme='dark'] .related-reference-dialog-content mark {
+  background: linear-gradient(120deg, rgba(245, 158, 11, 0.28) 0%, rgba(217, 119, 6, 0.32) 100%);
+  color: #FDE68A;
+  border-bottom: 1.5px solid rgba(251, 191, 36, 0.6);
 }
 
 .suggestion-pills-container {

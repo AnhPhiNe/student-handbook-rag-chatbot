@@ -1118,15 +1118,7 @@ class AnswerPipeline:
             )
             if resolution and resolution.result:
                 is_clarification = resolution.result_kind == "clarification"
-                structured_citations = (
-                    []
-                    if is_clarification
-                    else build_citation_from_lookup(resolution.result)
-                )
-                structured_citations = enrich_citations_with_parent_details(
-                    structured_citations,
-                    getattr(self, "parent_sources_by_id", {}),
-                )
+                structured_citations = []
                 return {
                     "query": query,
                     "retrieval_query": normalized_retrieval_query,
@@ -1198,21 +1190,6 @@ class AnswerPipeline:
             )
             if supp_resolution and supp_resolution.result:
                 result["structured_result"] = supp_resolution.result
-                supp_citations = build_citation_from_lookup(supp_resolution.result)
-                supp_citations = enrich_citations_with_parent_details(
-                    supp_citations,
-                    getattr(self, "parent_sources_by_id", {}),
-                )
-                existing_citations = result.get("citations") or []
-                all_cits = supp_citations + existing_citations
-                seen_cit_keys = set()
-                deduped_cits = []
-                for cit in all_cits:
-                    key = (cit.get("document_id"), cit.get("title") or cit.get("source_parent_id"), tuple(cit.get("source_pages") or []))
-                    if key not in seen_cit_keys:
-                        seen_cit_keys.add(key)
-                        deduped_cits.append(cit)
-                result["citations"] = deduped_cits[:5]
 
         result["selected_cohort"] = cohort
         result["router_decision"] = router_decision

@@ -813,15 +813,6 @@ class AnswerPipeline:
             end_time_llm = datetime.now(timezone.utc).isoformat()
             self._last_llm_call_at = time.monotonic()
 
-            missing_anchors = missing_primary_article_anchors(
-                "".join(streamed_answer_parts), selected_citations
-            )
-            if missing_anchors:
-                yield {
-                    "type": "token",
-                    "text": f"\n\n**Căn cứ:** {', '.join(missing_anchors)}.",
-                }
-
             if (
                 hasattr(llm_client, "_last_stream_usage")
                 and llm_client._last_stream_usage

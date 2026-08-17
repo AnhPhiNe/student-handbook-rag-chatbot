@@ -23,6 +23,91 @@ class StructuredResolution:
     target_chunk_types: list[str]
 
 
+_CANDIDATE_DOMAINS = [
+    "foreign_language",
+    "scholarship_classification",
+    "study_duration",
+    "scoring",
+    "formula",
+    "program",
+    "office",
+    "student_service",
+]
+
+
+def _secondary_lookup_types(query: str, primary_lookup_type: str) -> list[str]:
+    normalized = normalize_text(query)
+    signals = {
+        "foreign_language": (
+            "ngoai ngu",
+            "ielts",
+            "toefl",
+            "toeic",
+            "jlpt",
+            "hsk",
+            "topik",
+        ),
+        "scholarship_classification": ("hoc bong",),
+        "study_duration": (
+            "thoi gian hoc",
+            "thoi gian dao tao",
+            "hoc tap toi da",
+            "nam hoc toi da",
+        ),
+        "scoring": (
+            "gpa",
+            "hoc luc",
+            "ren luyen",
+            "diem chu",
+            "diem trung binh",
+            "thang diem",
+            "thang 4",
+            "qua mon",
+            "rot mon",
+        ),
+        "formula": ("cong thuc", "cach tinh", "tinh diem"),
+        "program": (
+            "nganh",
+            "chuong trinh dao tao",
+            "thuoc khoa",
+            "khoa nao",
+        ),
+        "office": (
+            "phong ban",
+            "van phong",
+            "dia chi",
+            "dien thoai",
+            "email",
+            "lien he",
+            "website",
+        ),
+        "student_service": (
+            "dich vu sinh vien",
+            "ho tro sinh vien",
+            "nop ho so",
+        ),
+    }
+    return [
+        lookup_type
+        for lookup_type in _CANDIDATE_DOMAINS
+        if lookup_type != primary_lookup_type
+        and any(signal in normalized for signal in signals[lookup_type])
+    ]
+
+
+def _secondary_probe_decision(
+    decision: dict[str, Any],
+    lookup_type: str,
+) -> dict[str, Any]:
+    return {
+        **decision,
+        "intent": None,
+        "lookup_type": lookup_type,
+        "slots": {},
+        "slot_spans": {},
+    }
+
+
 def _slot_text(decision: dict[str, Any], *names: str) -> str:
     spans = decision.get("slot_spans") or {}
     slots = decision.get("slots") or {}
@@ -411,24 +496,18 @@ def resolve_structured_decision(
     if decision.get("execution_mode") == "regulation" and not lookup_type:
         return None
 
-    candidate_domains = [
-        "foreign_language",
-        "scholarship_classification",
-        "study_duration",
-        "scoring",
-        "formula",
-        "program",
-        "office",
-        "student_service",
-    ]
-
-    # Nếu Router đã chỉ định đích danh lookup_type và đã tìm thấy kết quả hợp lệ, trả về ngay lập tức
-    if lookup_type and primary_res and _is_valid_probe_result(primary_res):
+    primary_is_valid = _is_valid_probe_result(primary_res)
+    candidate_domains = (
+        _secondary_lookup_types(query, lookup_type)
+        if lookup_type and primary_is_valid
+        else _CANDIDATE_DOMAINS
+    )
+    if primary_is_valid and not candidate_domains:
         return primary_res
 
     collected: list[StructuredResolution] = []
     seen_lookups: set[str] = set()
-    if primary_res and _is_valid_probe_result(primary_res):
+    if primary_is_valid and primary_res:
         collected.append(primary_res)
         seen_lookups.add(primary_res.lookup_type)
         if primary_res.lookup_type in {"office", "faculty", "student_service"}:
@@ -437,7 +516,13 @@ def resolve_structured_decision(
     for cand_type in candidate_domains:
         if cand_type in seen_lookups:
             continue
-        cand_res = _resolve_single_lookup(cand_type, **lookup_kwargs)
+        candidate_kwargs = lookup_kwargs
+        if cand_type != lookup_type:
+            candidate_kwargs = {
+                **lookup_kwargs,
+                "decision": _secondary_probe_decision(decision, cand_type),
+            }
+        cand_res = _resolve_single_lookup(cand_type, **candidate_kwargs)
         if _is_valid_probe_result(cand_res):
             collected.append(cand_res)
             seen_lookups.add(cand_type)

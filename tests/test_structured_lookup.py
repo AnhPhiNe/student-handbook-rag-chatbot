@@ -352,7 +352,13 @@ class StructuredLookupTest(unittest.TestCase):
     def test_inter_table_multi_structured_resolution(self):
         from src.retrieval.core.structured_dispatcher import resolve_structured_decision
 
-        decision = {"lookup_type": "foreign_language", "slots": {}}
+        decision = {
+            "lookup_type": "foreign_language",
+            "slots": {
+                "certificate_or_language": "IELTS",
+                "score_or_level": "6.0",
+            },
+        }
         query = "ielts 6.0 quy đổi ra bậc mấy và điểm học bổng loại giỏi là bao nhiêu"
         fl_tables = [
             {
@@ -397,6 +403,59 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertIsNotNone(res)
         self.assertEqual(res.lookup_type, "multi_structured")
         self.assertEqual(res.result.get("lookup_count"), 2)
+
+    def test_single_foreign_language_lookup_does_not_probe_scoring_table(self):
+        from src.retrieval.core.structured_dispatcher import resolve_structured_decision
+
+        res = resolve_structured_decision(
+            {
+                "lookup_type": "foreign_language",
+                "slots": {
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "6.0",
+                },
+            },
+            query="ielts 6.0 quy đổi ra bậc mấy",
+            cohort="K51",
+            scoring_tables=[
+                {
+                    "table_id": "grade_10_to_letter",
+                    "lookup_group": "grade_10_to_letter",
+                    "cohort": "K51",
+                    "rows": [
+                        {
+                            "score_10_range": "5.5-6.4",
+                            "letter_grade": "C",
+                        }
+                    ],
+                }
+            ],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=[
+                {
+                    "table_id": "foreign_language_equivalency_table",
+                    "table_name": "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ",
+                    "cohort": "K51",
+                    "applicable_cohorts": ["K51"],
+                    "rows": [
+                        {
+                            "language": "Tiếng Anh",
+                            "certificate": "IELTS",
+                            "level_or_scale": "IELTS",
+                            "equivalent_level_4": "5.5 - 6.5",
+                        }
+                    ],
+                }
+            ],
+            structured_tables_registry=[],
+            program_directory=[],
+        )
+
+        self.assertIsNotNone(res)
+        self.assertEqual(res.lookup_type, "foreign_language")
 
 
 if __name__ == "__main__":

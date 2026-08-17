@@ -9,6 +9,7 @@ from src.retrieval.core.ai_router import (
     AIRouter,
     ROUTER_PROMPT_VERSION,
     ROUTER_SYSTEM_PROMPT,
+    RouterDecisionCache,
 )
 from src.retrieval.core.structured_routing import (
     compact_registry_for_prompt,
@@ -44,6 +45,29 @@ def test_router_contract_omits_fields_derived_by_code() -> None:
     assert "retrieval_query" not in contract
     assert "target_chunk_types" not in contract
     assert "needs_clarification" not in contract
+
+
+def test_router_cache_removes_legacy_retrieval_query(tmp_path: Path) -> None:
+    cache_path = tmp_path / "router-cache.json"
+    cache_path.write_text(
+        json.dumps(
+            {
+                "cache-key": {
+                    "route": "rag",
+                    "normalized_query": "K50 điều kiện tốt nghiệp",
+                    "retrieval_query": "legacy router rewrite",
+                }
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    decision = RouterDecisionCache(str(cache_path)).get("cache-key")
+
+    assert decision is not None
+    assert decision["normalized_query"] == "K50 điều kiện tốt nghiệp"
+    assert "retrieval_query" not in decision
 
 
 def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None:
@@ -107,7 +131,8 @@ def test_router_falls_back_to_regulation_rag_after_provider_error(
     assert decision["route"] == "rag"
     assert decision["execution_mode"] == "regulation"
     assert decision["target_chunk_types"] == ["regulation"]
-    assert decision["retrieval_query"].startswith("K48-K49")
+    assert "retrieval_query" not in decision
+    assert decision["normalized_query"].startswith("K48-K49")
     assert decision["router_error_type"] == "transient_error"
     assert decision["router_fallback"] == "router_error_to_rag"
 

@@ -18,7 +18,6 @@ def _decision(**overrides):
         "corrections": [],
         "standalone_query": None,
         "referenced_turns": [],
-        "retrieval_query": "router candidate",
     }
     decision.update(overrides)
     return decision
@@ -223,8 +222,10 @@ def test_query_handling_ab_modes() -> None:
     )
 
     assert raw.source == "raw_query"
-    assert router_generated.source == "router_retrieval_query"
+    assert router_generated.source == "validated_normalization"
+    assert router_generated.effective_query == decision["normalized_query"]
     assert context_only.source == "validated_normalization"
+    assert context_only.effective_query == decision["normalized_query"]
 
 
 def test_follow_up_validator_rejects_new_ungrounded_topic() -> None:
@@ -324,7 +325,6 @@ def test_answer_pipeline_uses_validated_query_before_slang(monkeypatch) -> None:
                 intent="open_question",
                 lookup_type=None,
                 normalized_query=query.removeprefix("router::"),
-                retrieval_query="K50 dia chi phong dao tao",
             )
 
     captured = {}
@@ -355,7 +355,7 @@ def test_answer_pipeline_uses_validated_query_before_slang(monkeypatch) -> None:
         "router::K50 rot mon thi sao?"
     )
     assert result["effective_query"] == "K50 rot mon thi sao?"
-    assert result["router_decision"]["retrieval_query"] == "K50 dia chi phong dao tao"
+    assert "retrieval_query" not in result["router_decision"]
     assert result["query_handling"]["source"] == "validated_normalization"
 
 
@@ -374,7 +374,6 @@ def test_answer_pipeline_uses_slang_normalization_for_structured_lookup(
                 intent="program_lookup",
                 lookup_type="program",
                 normalized_query=query,
-                retrieval_query=query,
             )
 
     class StructuredResolution:
@@ -427,7 +426,6 @@ def test_answer_pipeline_replaces_acronym_before_program_routing() -> None:
                 intent="direct_value",
                 lookup_type="program",
                 normalized_query=query,
-                retrieval_query=query,
                 slots={
                     "program_or_faculty": "Công nghệ Thông tin",
                     "requested_field": "faculty",
@@ -467,7 +465,6 @@ def test_answer_pipeline_canonicalizes_out_of_domain_metadata() -> None:
                 intent="open_question",
                 lookup_type=None,
                 normalized_query=query,
-                retrieval_query=query,
             )
 
     pipeline.router = DummyRouter()

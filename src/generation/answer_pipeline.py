@@ -988,9 +988,7 @@ class AnswerPipeline:
                 "deterministic_validated": False,
             }
 
-        normalized_retrieval_query = self.slang_normalizer.normalize_for_retrieval(
-            effective_query
-        )
+        retrieval_query = self.slang_normalizer.normalize_for_retrieval(effective_query)
 
         cohorts = router_decision.get("cohorts") or []
         is_multi_cohort = bool(
@@ -1001,7 +999,7 @@ class AnswerPipeline:
             return self._execute_single_cohort_retrieval(
                 query=query,
                 effective_query=effective_query,
-                normalized_retrieval_query=normalized_retrieval_query,
+                retrieval_query=retrieval_query,
                 cohort=cohort,
                 router_decision=router_decision,
                 query_handling=query_handling,
@@ -1013,7 +1011,7 @@ class AnswerPipeline:
             sub_res = self._execute_single_cohort_retrieval(
                 query=query,
                 effective_query=effective_query,
-                normalized_retrieval_query=normalized_retrieval_query,
+                retrieval_query=retrieval_query,
                 cohort=c,
                 router_decision=router_decision,
                 query_handling=query_handling,
@@ -1071,7 +1069,7 @@ class AnswerPipeline:
 
         return {
             "query": query,
-            "retrieval_query": normalized_retrieval_query,
+            "retrieval_query": retrieval_query,
             "intent": router_decision.get("intent") or "multi_cohort_comparison",
             "strategy": "multi_cohort_fusion",
             "router_decision": router_decision,
@@ -1094,7 +1092,7 @@ class AnswerPipeline:
         *,
         query: str,
         effective_query: str,
-        normalized_retrieval_query: str,
+        retrieval_query: str,
         cohort: str | None,
         router_decision: dict[str, Any],
         query_handling: dict[str, Any],
@@ -1104,7 +1102,7 @@ class AnswerPipeline:
             from src.retrieval.core.structured_dispatcher import resolve_structured_decision
             resolution = resolve_structured_decision(
                 router_decision,
-                query=normalized_retrieval_query,
+                query=retrieval_query,
                 cohort=cohort,
                 scoring_tables=self.scoring_tables,
                 formula_rules=self.formula_rules,
@@ -1121,7 +1119,7 @@ class AnswerPipeline:
                 structured_citations = []
                 return {
                     "query": query,
-                    "retrieval_query": normalized_retrieval_query,
+                    "retrieval_query": retrieval_query,
                     "intent": router_decision.get("intent"),
                     "strategy": resolution.strategy,
                     "router_decision": router_decision,
@@ -1166,7 +1164,7 @@ class AnswerPipeline:
             chat_history=chat_history,
             intent=router_decision.get("intent"),
             strategy=router_decision.get("execution_mode") or "hybrid_graph_retrieval",
-            retrieval_query=normalized_retrieval_query,
+            retrieval_query=retrieval_query,
         )
         # Only resolve structured tables if explicitly designated by Router (e.g. mixed mode or lookup_type present)
         if not result.get("structured_result") and (
@@ -1176,7 +1174,7 @@ class AnswerPipeline:
             from src.retrieval.core.structured_dispatcher import resolve_structured_decision
             supp_resolution = resolve_structured_decision(
                 router_decision,
-                query=normalized_retrieval_query,
+                query=retrieval_query,
                 cohort=cohort,
                 scoring_tables=self.scoring_tables,
                 formula_rules=self.formula_rules,

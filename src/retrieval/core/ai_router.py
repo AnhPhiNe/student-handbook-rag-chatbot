@@ -476,7 +476,11 @@ class RouterDecisionCache:
     def get(self, key: str) -> dict[str, Any] | None:
         with self._lock:
             value = self._items.get(key)
-            return dict(value) if isinstance(value, dict) else None
+            if not isinstance(value, dict):
+                return None
+            decision = dict(value)
+            decision.pop("retrieval_query", None)
+            return decision
 
     def set(self, key: str, value: dict[str, Any]) -> None:
         with self._lock:
@@ -685,7 +689,6 @@ class AIRouter:
                     decision = fallback_to_rag(
                         decision,
                         validation_errors,
-                        query=query,
                     )
                 decision["router_validation_errors"] = validation_errors
                 if self.cache:
@@ -756,7 +759,6 @@ class AIRouter:
                 "slots": {},
                 "slot_spans": {},
                 "target_chunk_types": ["regulation"],
-                "retrieval_query": query,
                 "clarification_question": None,
             },
             query=query,

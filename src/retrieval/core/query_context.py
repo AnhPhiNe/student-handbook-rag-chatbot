@@ -129,21 +129,6 @@ def select_effective_query(
             context_confidence=context_confidence,
         )
 
-    if selected_mode == "router_generated":
-        proposed = _clean_query(router_decision.get("retrieval_query")) or raw_query
-        return QueryHandlingResult(
-            raw_query=raw_query,
-            effective_query=proposed,
-            mode=selected_mode,
-            context_mode=context_mode,
-            source="router_retrieval_query" if proposed != raw_query else "raw_query",
-            normalized_query=normalized_query,
-            standalone_query=standalone_query,
-            referenced_turns=referenced_turns,
-            normalization_confidence=normalization_confidence,
-            context_confidence=context_confidence,
-        )
-
     if context_mode == "ambiguous":
         return _clarification_result(
             raw_query,

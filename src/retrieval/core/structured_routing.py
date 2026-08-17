@@ -377,10 +377,6 @@ def normalize_router_decision(
         cohorts = [cohort] if cohort else []
         is_multi_cohort = False
 
-    retrieval_query = str(payload.get("retrieval_query") or query).strip()
-    if not retrieval_query or len(retrieval_query) > 600:
-        retrieval_query = query.strip()
-
     raw_context_mode = str(payload.get("context_mode") or "standalone").strip().lower()
     context_mode = (
         raw_context_mode if raw_context_mode in ALLOWED_CONTEXT_MODES else "ambiguous"
@@ -453,7 +449,6 @@ def normalize_router_decision(
         "router_cohort": payload_cohort,
         "slots": slots,
         "slot_spans": spans,
-        "retrieval_query": retrieval_query,
         "target_chunk_types": [str(item) for item in target_types if item],
         "needs_clarification": route == "clarify"
         or bool(payload.get("needs_clarification")),
@@ -619,7 +614,7 @@ def validate_router_decision(
 
 
 def fallback_to_rag(
-    decision: dict[str, Any], errors: list[str], *, query: str
+    decision: dict[str, Any], errors: list[str]
 ) -> dict[str, Any]:
     lookup_type = decision.get("lookup_type")
     office_scope = lookup_type in {"office", "student_service"}
@@ -640,7 +635,6 @@ def fallback_to_rag(
         "lookup_type": None,
         "slots": {},
         "slot_spans": {},
-        "retrieval_query": decision.get("retrieval_query") or query,
         "target_chunk_types": (
             ["office_directory"]
             if office_scope

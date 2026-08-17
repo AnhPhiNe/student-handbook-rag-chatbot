@@ -21,7 +21,6 @@ from src.retrieval.core.slang_normalizer import SlangNormalizer
 from .answer_formatter import (
     format_final_answer,
     format_final_response,
-    missing_primary_article_anchors,
     normalize_unlabeled_enumeration_references,
 )
 from .answer_guardrails import (
@@ -226,7 +225,6 @@ class AnswerPipeline:
         )
         _evaluation_telemetry.set(telemetry)
         effective_query = query
-        run_id = None
         from src.api.usage_tracker import UsageTracker
         from datetime import datetime, timezone
 
@@ -1116,7 +1114,15 @@ class AnswerPipeline:
             )
             if resolution and resolution.result:
                 is_clarification = resolution.result_kind == "clarification"
-                structured_citations = []
+                structured_citations = (
+                    []
+                    if is_clarification
+                    else build_citation_from_lookup(resolution.result)
+                )
+                structured_citations = enrich_citations_with_parent_details(
+                    structured_citations,
+                    getattr(self, "parent_sources_by_id", {}),
+                )
                 return {
                     "query": query,
                     "retrieval_query": retrieval_query,
@@ -1188,6 +1194,17 @@ class AnswerPipeline:
             )
             if supp_resolution and supp_resolution.result:
                 result["structured_result"] = supp_resolution.result
+                structured_citations = build_citation_from_lookup(
+                    supp_resolution.result
+                )
+                structured_citations = enrich_citations_with_parent_details(
+                    structured_citations,
+                    getattr(self, "parent_sources_by_id", {}),
+                )
+                result["citations"] = [
+                    *(result.get("citations") or []),
+                    *structured_citations,
+                ]
 
         result["selected_cohort"] = cohort
         result["router_decision"] = router_decision

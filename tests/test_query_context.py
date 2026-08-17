@@ -401,6 +401,62 @@ def test_answer_pipeline_uses_slang_normalization_for_structured_lookup(
     assert result["strategy"] == "structured"
 
 
+def test_answer_pipeline_appends_source_backed_citation_for_mixed_lookup(
+    monkeypatch,
+) -> None:
+    pipeline = _minimal_pipeline()
+
+    class DummyRouter:
+        def route(self, query, chat_history=None):
+            return _decision(
+                route="mixed",
+                execution_mode="mixed",
+                intent="mixed_query",
+                lookup_type="academic_classification",
+                normalized_query=query,
+            )
+
+    class StructuredResolution:
+        result = {
+            "lookup_type": "academic_classification",
+            "result": {"label": "Giỏi", "range": "3.20-3.59"},
+            "table_name": "Xếp loại học lực",
+            "source_pages": [42],
+            "source_parent_id": "K51_Dieu18",
+            "document_id": "so_tay_sinh_vien_khoa_51",
+            "cohort": "K51",
+        }
+
+    def fake_hybrid_pipeline(**kwargs):
+        return {
+            "query": kwargs["query"],
+            "retrieval_query": kwargs["retrieval_query"],
+            "intent": "mixed_query",
+            "strategy": "mixed",
+            "structured_result": None,
+            "retrieved_items": [],
+            "citations": [],
+            "out_of_domain": False,
+        }
+
+    pipeline.router = DummyRouter()
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.run_hybrid_retrieval_pipeline",
+        fake_hybrid_pipeline,
+    )
+    monkeypatch.setattr(
+        "src.retrieval.core.structured_dispatcher.resolve_structured_decision",
+        lambda *args, **kwargs: StructuredResolution(),
+    )
+
+    result = pipeline._run_retrieval("GPA 3.4 được loại gì?", cohort="K51")
+
+    assert result["structured_result"] == StructuredResolution.result
+    assert result["citations"][0]["parent_section_id"] == "K51_Dieu18"
+    assert result["citations"][0]["document_id"] == "so_tay_sinh_vien_khoa_51"
+    assert result["citations"][0]["cohort"] == "K51"
+
+
 def test_answer_pipeline_replaces_acronym_before_program_routing() -> None:
     pipeline = _minimal_pipeline()
     pipeline.program_directory = [
@@ -440,6 +496,9 @@ def test_answer_pipeline_replaces_acronym_before_program_routing() -> None:
     assert result["raw_query"] == "ngành cntt ở khoa nào"
     assert result["retrieval_query"] == "ngành công nghệ thông tin ở khoa nào"
     assert result["citations"][0]["chunk_type"] == "program_directory"
+    assert result["citations"][0]["document_id"] == "so_tay_sinh_vien_khoa_51"
+    assert result["citations"][0]["source_section"] == "program_directory"
+    assert result["citations"][0]["cohort"] == "K51"
     assert result["structured_result"]["result"] == [
         {
             "program_name": "Công nghệ Thông tin",

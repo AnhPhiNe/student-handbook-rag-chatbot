@@ -61,3 +61,23 @@ def test_select_relevant_citations_prefers_matching_cohort_and_chunk_type():
     )
 
     assert [citation["chunk_id"] for citation in selected] == ["right_cohort"]
+
+
+def test_select_relevant_citations_keeps_formula_for_structured_result():
+    formula = {
+        "chunk_id": "formula:course-grade",
+        "chunk_type": "formula",
+        "title": "Công thức điểm học phần",
+        "source_section": "K51_Dieu16",
+        "source_pages": [38],
+        "cohort": "K51",
+    }
+
+    selected = select_relevant_citations(
+        [formula],
+        intent="calculation_query",
+        retrieval_result={"structured_result": {"lookup_type": "formula"}},
+        max_sources=2,
+    )
+
+    assert selected == [formula]

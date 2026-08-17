@@ -132,9 +132,29 @@ def enrich_citations_with_parent_details(
         item["parent_article"] = metadata.get("article")
         item["parent_title"] = metadata.get("title")
         item["parent_content"] = parent_content or None
-        item["detail_kind"] = "table" if item.get("chunk_type") == "structured_lookup" else "article"
-        if item.get("chunk_type") == "structured_lookup":
+        is_table = item.get("chunk_type") in {
+            "office_directory",
+            "program_directory",
+            "structured_lookup",
+        }
+        item["detail_kind"] = "table" if is_table else "article"
+        if is_table:
             item["table_name"] = item.get("title")
+        if not item.get("source_pages"):
+            item["source_pages"] = parse_source_pages(metadata.get("source_pages"))
+        if not item.get("source_label"):
+            item["source_label"] = _build_source_label(metadata)
+        if not item.get("source_url"):
+            item["source_url"] = _first_value(
+                metadata,
+                ("source_url", "url", "document_url"),
+            )
+        if not item.get("cohort"):
+            item["cohort"] = metadata.get("cohort")
+        if not item.get("document_id"):
+            item["document_id"] = metadata.get("document_id")
+        if not item.get("applicability"):
+            item["applicability"] = metadata.get("applicability")
 
         enriched.append(item)
 
@@ -207,11 +227,252 @@ def build_citations_from_vector_results(
     return citations
 
 
-def build_citation_from_lookup(_lookup_result: dict[str, Any]) -> list[dict[str, Any]]:
-    """Structured lookups provide self-contained answers without synthetic citation cards."""
+_CITATION_METADATA_KEYS = {
+    "applicability",
+    "cohort",
+    "content_type",
+    "document_id",
+    "source_pages",
+    "source_parent_id",
+    "source_parent_ids",
+    "source_section",
+    "source_section_id",
+    "source_url",
+}
+
+_COLUMN_LABELS = {
+    "certificate": "Chứng chỉ",
+    "degree_level": "Trình độ",
+    "equivalent_level_3": "Bậc 3 (B1)",
+    "equivalent_level_4": "Bậc 4 (B2)",
+    "faculty_name": "Khoa quản lý",
+    "label": "Xếp loại",
+    "language": "Ngoại ngữ",
+    "level_or_scale": "Thang đo / Kỹ năng",
+    "program_code": "Mã ngành",
+    "program_name": "Tên ngành đào tạo",
+    "scholarship_score_range": "Khoảng điểm học bổng",
+}
+
+
+def _format_citation_value(value: Any) -> str:
+    if isinstance(value, list):
+        return ", ".join(_format_citation_value(item) for item in value)
+    if isinstance(value, dict):
+        return "; ".join(
+            f"{key}: {_format_citation_value(item)}"
+            for key, item in value.items()
+            if item not in (None, "", [])
+        )
+    return str(value or "").replace("\n", " ").replace("|", "\\|").strip()
+
+
+def format_rows_as_markdown_table(
+    rows: list[dict[str, Any]],
+    columns: list[str] | None = None,
+) -> str:
+    if not rows:
+        return ""
+
+    normalized_rows = []
+    for row in rows:
+        normalized = dict(row)
+        nested_row = normalized.pop("row", None)
+        if isinstance(nested_row, dict):
+            normalized.update(nested_row)
+        normalized_rows.append(normalized)
+
+    if columns is None:
+        columns = []
+        for row in normalized_rows:
+            for key in row:
+                if key not in columns and key not in _CITATION_METADATA_KEYS and not key.startswith("_"):
+                    columns.append(key)
+    if not columns:
+        return ""
+
+    header = "| " + " | ".join(_COLUMN_LABELS.get(key, key) for key in columns) + " |"
+    separator = "| " + " | ".join("---" for _ in columns) + " |"
+    body = [
+        "| "
+        + " | ".join(_format_citation_value(row.get(key)) for key in columns)
+        + " |"
+        for row in normalized_rows
+    ]
+    return "\n".join([header, separator, *body])
+
+
+def _lookup_rows(lookup_result: dict[str, Any]) -> list[dict[str, Any]]:
+    for key in ("rows", "items", "result"):
+        value = lookup_result.get(key)
+        if isinstance(value, dict):
+            return [value]
+        if isinstance(value, list) and all(isinstance(item, dict) for item in value):
+            return value
     return []
 
 
-def build_citation_from_formula(_formula_result: dict[str, Any]) -> list[dict[str, Any]]:
-    """Formula lookups provide self-contained answers without synthetic citation cards."""
-    return []
+def _lookup_content(lookup_result: dict[str, Any]) -> str:
+    if lookup_result.get("lookup_type") == "formula":
+        parts = [
+            str(lookup_result.get("rule_name") or "").strip(),
+            str(lookup_result.get("formula_text") or "").strip(),
+            str(lookup_result.get("source_article") or "").strip(),
+        ]
+        return "\n\n".join(part for part in parts if part)
+
+    nested_tables = [
+        item
+        for item in (lookup_result.get("items") or [])
+        if isinstance(item, dict) and isinstance(item.get("rows"), list)
+    ]
+    if nested_tables:
+        sections = []
+        for table in nested_tables:
+            table_content = format_rows_as_markdown_table(
+                table.get("rows") or [],
+                table.get("columns"),
+            )
+            if not table_content:
+                continue
+            label = table.get("applicability") or table.get("table_name")
+            sections.append(
+                f"**{label}**\n\n{table_content}" if label else table_content
+            )
+        return "\n\n".join(sections)
+
+    rows = _lookup_rows(lookup_result)
+    return format_rows_as_markdown_table(rows, lookup_result.get("columns"))
+
+
+def _source_parent_ids(lookup_result: dict[str, Any]) -> list[str | None]:
+    values = lookup_result.get("source_parent_ids") or []
+    if isinstance(values, str):
+        values = [values]
+    single = (
+        lookup_result.get("source_parent_id")
+        or lookup_result.get("parent_section_id")
+        or lookup_result.get("source_section")
+    )
+    if single:
+        values = [single, *values]
+    parent_ids = list(dict.fromkeys(str(value).strip() for value in values if value))
+    return parent_ids or [None]
+
+
+def _has_source_reference(citation: dict[str, Any]) -> bool:
+    return any(
+        citation.get(key)
+        for key in (
+            "document_id",
+            "parent_section_id",
+            "source_pages",
+            "source_section",
+            "source_url",
+        )
+    )
+
+
+def _build_lookup_citations(lookup_result: dict[str, Any]) -> list[dict[str, Any]]:
+    lookup_type = str(lookup_result.get("lookup_type") or "structured_lookup")
+    chunk_type = (
+        "formula"
+        if lookup_type == "formula"
+        else "program_directory"
+        if lookup_type in {"program", "program_directory"}
+        else "office_directory"
+        if lookup_type in {"office", "office_directory", "student_office", "student_faculty"}
+        else "structured_lookup"
+    )
+    title = (
+        lookup_result.get("rule_name")
+        if chunk_type == "formula"
+        else lookup_result.get("table_name")
+    ) or "Nguồn dữ liệu Sổ tay sinh viên"
+    source_pages = parse_source_pages(lookup_result.get("source_pages"))
+    content = _lookup_content(lookup_result)
+    citations = []
+
+    for parent_id in _source_parent_ids(lookup_result):
+        source_section = parent_id or lookup_result.get("source_section")
+        identity = (
+            parent_id
+            or lookup_result.get("document_id")
+            or source_section
+            or lookup_type
+        )
+        citation = {
+            "chunk_id": f"structured:{lookup_type}:{identity}:{lookup_result.get('cohort') or 'shared'}",
+            "chunk_type": chunk_type,
+            "title": title,
+            "table_name": title if chunk_type != "formula" else None,
+            "detail_kind": "article" if chunk_type == "formula" else "table",
+            "source_pages": source_pages,
+            "source_label": lookup_result.get("source_label")
+            or ("Công thức/quy tắc trong Sổ tay sinh viên HCMUE" if chunk_type == "formula" else "Dữ liệu tra cứu trong Sổ tay sinh viên HCMUE"),
+            "source_url": lookup_result.get("source_url"),
+            "cohort": lookup_result.get("cohort"),
+            "document_id": lookup_result.get("document_id"),
+            "source_section": source_section,
+            "source_parent_id": parent_id,
+            "parent_section_id": parent_id,
+            "applicability": lookup_result.get("applicability"),
+            "content": content,
+        }
+        if _has_source_reference(citation):
+            citations.append(citation)
+
+    return citations
+
+
+def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, Any]]:
+    if not lookup_result or not isinstance(lookup_result, dict):
+        return []
+
+    lookup_type = lookup_result.get("lookup_type")
+    if lookup_type in {"multi_cohort_structured", "multi_structured"}:
+        citations = []
+        for child in lookup_result.get("sub_lookups") or []:
+            if isinstance(child, dict):
+                citations.extend(build_citation_from_lookup(child))
+        return _deduplicate_structured_citations(citations)
+
+    if lookup_type == "structured_context":
+        citations = []
+        for item in lookup_result.get("items") or []:
+            if not isinstance(item, dict):
+                continue
+            child = dict(lookup_result)
+            child.update(item)
+            child["lookup_type"] = item.get("lookup_type") or "structured_lookup"
+            citations.extend(_build_lookup_citations(child))
+        return _deduplicate_structured_citations(citations)
+
+    return _build_lookup_citations(lookup_result)
+
+
+def _deduplicate_structured_citations(
+    citations: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    deduplicated = []
+    seen = set()
+    for citation in citations:
+        key = (
+            citation.get("parent_section_id"),
+            citation.get("document_id"),
+            citation.get("cohort"),
+            citation.get("title"),
+        )
+        if key in seen:
+            continue
+        seen.add(key)
+        deduplicated.append(citation)
+    return deduplicated
+
+
+def build_citation_from_formula(formula_result: dict[str, Any]) -> list[dict[str, Any]]:
+    if not formula_result or not isinstance(formula_result, dict):
+        return []
+    normalized = dict(formula_result)
+    normalized["lookup_type"] = "formula"
+    return _build_lookup_citations(normalized)

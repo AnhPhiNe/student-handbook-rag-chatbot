@@ -85,10 +85,7 @@ def select_relevant_citations(
 
     retrieval_result = retrieval_result or {}
 
-    if (
-        _has_result(retrieval_result.get("tool_result"))
-        or intent == "calculation_query"
-    ):
+    if _has_result(retrieval_result.get("tool_result")):
         return []
 
     if _has_result(retrieval_result.get("structured_result")) or intent in {
@@ -96,6 +93,7 @@ def select_relevant_citations(
         "structured_lookup",
     }:
         structured_chunk_types = {
+            "formula",
             "structured_lookup",
             "program_directory",
             "office_directory",

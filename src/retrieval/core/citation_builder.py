@@ -425,6 +425,10 @@ def _build_lookup_citations(lookup_result: dict[str, Any]) -> list[dict[str, Any
             "source_parent_id": parent_id,
             "parent_section_id": parent_id,
             "applicability": source_record.get("applicability"),
+            "request_index": lookup_result.get("request_index"),
+            "query_span": lookup_result.get("query_span"),
+            "request_cohort": lookup_result.get("request_cohort")
+            or lookup_result.get("cohort"),
             "content": _lookup_content(lookup_result, source_record),
         }
         citations.append(citation)
@@ -437,6 +441,23 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
         return []
 
     lookup_type = lookup_result.get("lookup_type")
+    if lookup_type == "multi_request":
+        citations = []
+        for sub_result in lookup_result.get("sub_results") or []:
+            if not isinstance(sub_result, dict):
+                continue
+            child = sub_result.get("result")
+            if not isinstance(child, dict):
+                continue
+            child = {
+                **child,
+                "request_index": sub_result.get("request_index"),
+                "query_span": sub_result.get("query_span"),
+                "request_cohort": sub_result.get("cohort"),
+            }
+            citations.extend(build_citation_from_lookup(child))
+        return _deduplicate_structured_citations(citations)
+
     if lookup_type in {"multi_cohort_structured", "multi_structured"}:
         citations = []
         for child in lookup_result.get("sub_lookups") or []:
@@ -465,6 +486,9 @@ def _deduplicate_structured_citations(
     seen = set()
     for citation in citations:
         key = (
+            citation.get("request_index"),
+            citation.get("query_span"),
+            citation.get("request_cohort"),
             citation.get("parent_section_id"),
             citation.get("document_id"),
             citation.get("cohort"),

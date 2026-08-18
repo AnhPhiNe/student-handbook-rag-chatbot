@@ -28,91 +28,6 @@ class StructuredResolution:
     target_chunk_types: list[str]
 
 
-_CANDIDATE_DOMAINS = [
-    "foreign_language",
-    "scholarship_classification",
-    "study_duration",
-    "scoring",
-    "formula",
-    "program",
-    "office",
-    "student_service",
-]
-
-
-def _secondary_lookup_types(query: str, primary_lookup_type: str) -> list[str]:
-    normalized = normalize_text(query)
-    signals = {
-        "foreign_language": (
-            "ngoai ngu",
-            "ielts",
-            "toefl",
-            "toeic",
-            "jlpt",
-            "hsk",
-            "topik",
-        ),
-        "scholarship_classification": ("hoc bong",),
-        "study_duration": (
-            "thoi gian hoc",
-            "thoi gian dao tao",
-            "hoc tap toi da",
-            "nam hoc toi da",
-        ),
-        "scoring": (
-            "gpa",
-            "hoc luc",
-            "ren luyen",
-            "diem chu",
-            "diem trung binh",
-            "thang diem",
-            "thang 4",
-            "qua mon",
-            "rot mon",
-        ),
-        "formula": ("cong thuc", "cach tinh", "tinh diem"),
-        "program": (
-            "nganh",
-            "chuong trinh dao tao",
-            "thuoc khoa",
-            "khoa nao",
-        ),
-        "office": (
-            "phong ban",
-            "van phong",
-            "dia chi",
-            "dien thoai",
-            "email",
-            "lien he",
-            "website",
-        ),
-        "student_service": (
-            "dich vu sinh vien",
-            "ho tro sinh vien",
-            "nop ho so",
-        ),
-    }
-    return [
-        lookup_type
-        for lookup_type in _CANDIDATE_DOMAINS
-        if lookup_type != primary_lookup_type
-        and any(signal in normalized for signal in signals[lookup_type])
-    ]
-
-
-def _secondary_probe_decision(
-    decision: dict[str, Any],
-    lookup_type: str,
-) -> dict[str, Any]:
-    return {
-        **decision,
-        "intent": None,
-        "lookup_type": lookup_type,
-        "slots": {},
-        "slot_spans": {},
-    }
-
-
 def _slot_text(decision: dict[str, Any], *names: str) -> str:
     spans = decision.get("slot_spans") or {}
     slots = decision.get("slots") or {}
@@ -433,15 +348,19 @@ def _resolve_single_lookup(
 
 
 
-def _is_valid_probe_result(
+def _has_structured_result(
     resolution: StructuredResolution | None,
 ) -> bool:
     if not resolution or not resolution.result or resolution.result_kind == "clarification":
         return False
     res_data = resolution.result
     if isinstance(res_data, dict):
-        if "result" in res_data and isinstance(res_data["result"], list):
-            return len(res_data["result"]) > 0
+        if "result" in res_data:
+            result = res_data["result"]
+            if isinstance(result, (dict, list)):
+                return bool(result)
+            if result is not None:
+                return True
         if "rows" in res_data and isinstance(res_data["rows"], list):
             return len(res_data["rows"]) > 0
         if "items" in res_data and isinstance(res_data["items"], list):
@@ -455,6 +374,105 @@ def _is_valid_probe_result(
     elif isinstance(res_data, list):
         return len(res_data) > 0
     return False
+
+
+def _request_applies_to_cohort(
+    request: dict[str, Any],
+    cohort: str | None,
+) -> bool:
+    normalized_cohort = normalize_cohort(cohort)
+    refs = [
+        normalized
+        for value in request.get("cohort_refs") or []
+        if (normalized := normalize_cohort(value))
+    ]
+    return not refs or not normalized_cohort or normalized_cohort in refs
+
+
+def _decision_for_request(
+    decision: dict[str, Any],
+    request: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        **decision,
+        "intent": request.get("intent"),
+        "lookup_type": request.get("lookup_type"),
+        "slots": dict(request.get("slots") or {}),
+        "slot_spans": dict(request.get("slot_spans") or {}),
+    }
+
+
+def _with_request_metadata(
+    resolution: StructuredResolution,
+    *,
+    request_index: int,
+    query_span: str,
+    cohort: str | None,
+) -> StructuredResolution:
+    result = {
+        **resolution.result,
+        "request_index": request_index,
+        "query_span": query_span,
+        "request_lookup_type": resolution.lookup_type,
+        "request_cohort": normalize_cohort(cohort),
+    }
+    return StructuredResolution(
+        lookup_type=resolution.lookup_type,
+        strategy=resolution.strategy,
+        result_kind=resolution.result_kind,
+        result=result,
+        target_chunk_types=resolution.target_chunk_types,
+    )
+
+
+def _combine_structured_resolutions(
+    resolutions: list[StructuredResolution],
+    *,
+    cohort: str | None,
+) -> StructuredResolution:
+    sub_results = [
+        {
+            "request_index": item.result.get("request_index"),
+            "query_span": item.result.get("query_span"),
+            "lookup_type": item.lookup_type,
+            "cohort": normalize_cohort(cohort),
+            "resolution_status": "resolved",
+            "result": item.result,
+            "source_records": item.result.get("source_records") or [],
+        }
+        for item in resolutions
+    ]
+    combined_result = {
+        "lookup_type": "multi_request",
+        "cohort": normalize_cohort(cohort),
+        "lookup_count": len(resolutions),
+        "sub_results": sub_results,
+        "sub_lookups": [item.result for item in resolutions],
+        "result": sub_results,
+        "source_records": deduplicate_source_records(
+            [
+                source_record
+                for item in resolutions
+                for source_record in item.result.get("source_records") or []
+            ]
+        ),
+        "table_name": "Các nguồn structured theo từng ý hỏi",
+        "source_label": "Dữ liệu tra cứu theo semantic request",
+        "content_type": "multi_structured_lookup",
+    }
+    return StructuredResolution(
+        lookup_type="multi_request",
+        strategy="semantic_request_lookup",
+        result_kind="multi_structured",
+        result=combined_result,
+        target_chunk_types=list(
+            dict.fromkeys(
+                chunk_type
+                for item in resolutions
+                for chunk_type in item.target_chunk_types
+            )
+        ),
+    )
 
 
 def resolve_structured_decision(
@@ -473,7 +491,6 @@ def resolve_structured_decision(
     detected_entities: list[dict[str, Any]] | None = None,
     model: Any | None = None,
 ) -> StructuredResolution | None:
-    lookup_type = str(decision.get("lookup_type") or "").strip()
     effective_cohort = normalize_cohort(cohort or decision.get("cohort"))
 
     lookup_kwargs = {
@@ -492,96 +509,67 @@ def resolve_structured_decision(
         "model": model,
     }
 
-    primary_res = _resolve_single_lookup(lookup_type, **lookup_kwargs) if lookup_type else None
-
-    # When Router explicitly determines single pure regulation without lookup_type, skip structured probing
-    if decision.get("execution_mode") == "regulation" and not lookup_type:
-        return None
-
-    primary_is_valid = _is_valid_probe_result(primary_res)
-    candidate_domains = (
-        _secondary_lookup_types(query, lookup_type)
-        if lookup_type and primary_is_valid
-        else _CANDIDATE_DOMAINS
-    )
-    if primary_is_valid and not candidate_domains:
-        return primary_res
+    raw_requests = decision.get("lookup_requests")
+    if isinstance(raw_requests, list):
+        request_entries = [
+            (index, request)
+            for index, request in enumerate(raw_requests)
+            if isinstance(request, dict)
+            and request.get("request_kind") == "structured"
+            and request.get("lookup_type")
+            and _request_applies_to_cohort(request, effective_cohort)
+        ]
+    else:
+        lookup_type = str(decision.get("lookup_type") or "").strip()
+        request_entries = [
+            (
+                0,
+                {
+                    "lookup_type": lookup_type,
+                    "intent": decision.get("intent"),
+                    "query_span": query,
+                    "slots": decision.get("slots") or {},
+                    "slot_spans": decision.get("slot_spans") or {},
+                },
+            )
+        ] if lookup_type else []
 
     collected: list[StructuredResolution] = []
-    seen_lookups: set[str] = set()
-    if primary_is_valid and primary_res:
-        collected.append(primary_res)
-        seen_lookups.add(primary_res.lookup_type)
-        if primary_res.lookup_type in {"office", "faculty", "student_service"}:
-            seen_lookups.update({"office", "faculty", "student_service"})
-
-    for cand_type in candidate_domains:
-        if cand_type in seen_lookups:
-            continue
-        candidate_kwargs = lookup_kwargs
-        if cand_type != lookup_type:
-            candidate_kwargs = {
-                **lookup_kwargs,
-                "decision": _secondary_probe_decision(decision, cand_type),
-            }
-        cand_res = _resolve_single_lookup(cand_type, **candidate_kwargs)
-        if _is_valid_probe_result(cand_res):
-            collected.append(cand_res)
-            seen_lookups.add(cand_type)
-            if cand_type in {"office", "faculty", "student_service"}:
-                seen_lookups.update({"office", "faculty", "student_service"})
-
-    if len(collected) >= 2:
-        combined_result = {
-            "lookup_type": "multi_structured",
-            "input_value": query,
-            "cohort": effective_cohort,
-            "lookup_count": len(collected),
-            "result": [
-                {
-                    "lookup_type": item.lookup_type,
-                    "table_name": item.result.get("table_name") or item.lookup_type,
-                    "data": item.result.get("result") or item.result.get("items") or item.result,
-                }
-                for item in collected
-            ],
-            "sub_lookups": [
-                item.result
-                for item in collected
-                if item.result and isinstance(item.result, dict)
-            ],
-            "source_records": deduplicate_source_records(
-                [
-                    source_record
-                    for item in collected
-                    for source_record in item.result.get("source_records") or []
-                ]
-            ),
-            "source_pages": sorted(
-                list(
-                    {
-                        p
-                        for item in collected
-                        for p in (item.result.get("source_pages") or [])
-                    }
-                )
-            ),
-            "table_name": "Các bảng tra cứu liên quan",
-            "source_label": "Dữ liệu tra cứu tổng hợp trong Sổ tay sinh viên HCMUE",
-            "content_type": "multi_structured_lookup",
+    for request_index, request in request_entries:
+        request_query = str(request.get("query_span") or query).strip()
+        lookup_query = str(request.get("retrieval_query") or request_query).strip()
+        request_decision = _decision_for_request(decision, request)
+        request_kwargs = {
+            **lookup_kwargs,
+            "decision": request_decision,
+            "query": lookup_query,
         }
-        all_target_chunks = list({ct for item in collected for ct in item.target_chunk_types})
-        return StructuredResolution(
-            lookup_type="multi_structured",
-            strategy="multi_structured_lookup",
-            result_kind="multi_structured",
-            result=combined_result,
-            target_chunk_types=all_target_chunks,
+        resolution = _resolve_single_lookup(
+            str(request.get("lookup_type") or "").strip(),
+            **request_kwargs,
         )
-    elif len(collected) == 1:
-        return collected[0]
+        if resolution and resolution.result_kind == "clarification":
+            return _with_request_metadata(
+                resolution,
+                request_index=request_index,
+                query_span=request_query,
+                cohort=effective_cohort,
+            )
+        if _has_structured_result(resolution) and resolution:
+            collected.append(
+                _with_request_metadata(
+                    resolution,
+                    request_index=request_index,
+                    query_span=request_query,
+                    cohort=effective_cohort,
+                )
+            )
 
-    return primary_res
+    if len(collected) == 1:
+        return collected[0]
+    if collected:
+        return _combine_structured_resolutions(collected, cohort=effective_cohort)
+    return None
 
 
 def _resolution(

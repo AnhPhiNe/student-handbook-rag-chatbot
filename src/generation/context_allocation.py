@@ -603,6 +603,14 @@ def _source_header(index: int, item: dict[str, Any]) -> str:
     ]
     if cohort_val:
         lines.append(f"Cohort: {cohort_val}")
+    request_index = item.get("request_index")
+    if request_index is None:
+        request_index = metadata.get("request_index")
+    query_span = item.get("query_span") or metadata.get("query_span")
+    if request_index is not None:
+        lines.append(f"Request: {request_index}")
+    if query_span:
+        lines.append(f"Query span: {query_span}")
     lines.extend([
         f"Pages: {metadata.get('source_pages')}",
         "Content:",

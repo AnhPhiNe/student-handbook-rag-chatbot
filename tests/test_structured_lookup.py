@@ -391,11 +391,32 @@ class StructuredLookupTest(unittest.TestCase):
         from src.retrieval.core.structured_dispatcher import resolve_structured_decision
 
         decision = {
-            "lookup_type": "foreign_language",
-            "slots": {
-                "certificate_or_language": "IELTS",
-                "score_or_level": "6.0",
-            },
+            "lookup_requests": [
+                {
+                    "request_kind": "structured",
+                    "lookup_type": "foreign_language",
+                    "intent": "direct_value",
+                    "query_span": "ielts 6.0 quy đổi ra bậc mấy",
+                    "slots": {
+                        "certificate_or_language": "IELTS",
+                        "score_or_level": "6.0",
+                    },
+                    "slot_spans": {
+                        "certificate_or_language": "IELTS",
+                        "score_or_level": "6.0",
+                    },
+                    "cohort_refs": ["K51"],
+                },
+                {
+                    "request_kind": "structured",
+                    "lookup_type": "scholarship_classification",
+                    "intent": "direct_value",
+                    "query_span": "điểm học bổng loại giỏi là bao nhiêu",
+                    "slots": {"score_or_label": "Giỏi"},
+                    "slot_spans": {"score_or_label": "giỏi"},
+                    "cohort_refs": ["K51"],
+                },
+            ],
         }
         query = "ielts 6.0 quy đổi ra bậc mấy và điểm học bổng loại giỏi là bao nhiêu"
         fl_tables = [
@@ -445,9 +466,20 @@ class StructuredLookupTest(unittest.TestCase):
             program_directory=[],
         )
         self.assertIsNotNone(res)
-        self.assertEqual(res.lookup_type, "multi_structured")
+        self.assertEqual(res.lookup_type, "multi_request")
         self.assertEqual(res.result.get("lookup_count"), 2)
         self.assertEqual(len(res.result.get("source_records")), 2)
+        self.assertEqual(
+            [item["request_index"] for item in res.result["sub_results"]],
+            [0, 1],
+        )
+        self.assertEqual(
+            [item["query_span"] for item in res.result["sub_results"]],
+            [
+                "ielts 6.0 quy đổi ra bậc mấy",
+                "điểm học bổng loại giỏi là bao nhiêu",
+            ],
+        )
         self.assertEqual(
             {record["table_id"] for record in res.result["source_records"]},
             {

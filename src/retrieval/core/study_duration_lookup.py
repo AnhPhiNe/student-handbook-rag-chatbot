@@ -158,9 +158,11 @@ def study_duration_lookup(
         return None
 
     table_results = []
+    matched_tables = []
     for table in candidates:
         rows = _select_rows(table, query_norm)
         if rows:
+            matched_tables.append(table)
             table_results.append(
                 {
                     "table_id": table.get("table_id"),
@@ -180,7 +182,7 @@ def study_duration_lookup(
     source_records = deduplicate_source_records(
         [
             source_ref
-            for table in candidates
+            for table in matched_tables
             if (
                 source_ref := source_ref_from_record(
                     table,

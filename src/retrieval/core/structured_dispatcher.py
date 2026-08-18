@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from src.common.cohort import is_cohort_applicable, normalize_cohort
+from src.common.cohort import normalize_cohort
 
 from .formula_lookup import formula_lookup
 from .foreign_language_lookup import foreign_language_lookup
@@ -12,6 +12,11 @@ from .program_lookup import program_lookup
 from .scholarship_lookup import scholarship_classification_lookup
 from .study_duration_lookup import study_duration_lookup
 from .structured_lookup import structured_lookup_from_slots
+from .source_contract import (
+    deduplicate_source_records,
+    enrich_source_records_from_registry,
+    source_records_from_result,
+)
 
 
 @dataclass(frozen=True)
@@ -154,37 +159,34 @@ def _bind_regulation_source(
 ) -> dict[str, Any] | None:
     if result is None:
         return None
-    candidates = [
-        table
-        for table in registry
-        if table.get("data_category") == "regulation_table"
-        and table.get("table_type") == table_type
-        and is_cohort_applicable(table, cohort)
-        and (
-            not subtypes
-            or str(table.get("table_subtype") or "") in subtypes
-        )
-    ]
-    source_parent_ids = list(
-        dict.fromkeys(
-            str(table.get("source_parent_id") or table.get("source_section_id"))
-            for table in candidates
-            if table.get("source_parent_id") or table.get("source_section_id")
-        )
-    )
-    if not source_parent_ids:
+    del cohort, table_type, subtypes
+    source_records = source_records_from_result(result)
+    if not source_records:
         return result
+    source_records = enrich_source_records_from_registry(source_records, registry)
     bound = dict(result)
-    bound["source_parent_ids"] = source_parent_ids
-    bound["source_parent_id"] = source_parent_ids[0]
-    bound["source_section"] = source_parent_ids[0]
-    if len({str(table.get("document_id") or "") for table in candidates}) == 1:
-        bound["document_id"] = candidates[0].get("document_id")
+    bound["source_records"] = source_records
+    parent_ids = [
+        str(record.get("parent_section_id"))
+        for record in source_records
+        if record.get("parent_section_id")
+    ]
+    if parent_ids:
+        bound["source_parent_ids"] = list(dict.fromkeys(parent_ids))
+        bound["source_parent_id"] = parent_ids[0]
+        bound["source_section"] = parent_ids[0]
+    document_ids = {
+        record.get("document_id")
+        for record in source_records
+        if record.get("document_id")
+    }
+    if len(document_ids) == 1:
+        bound["document_id"] = next(iter(document_ids))
     bound["source_pages"] = sorted(
         {
             page
-            for table in candidates
-            for page in table.get("source_pages") or []
+            for record in source_records
+            for page in record.get("source_pages") or []
         }
     )
     return bound
@@ -548,6 +550,13 @@ def resolve_structured_decision(
                 for item in collected
                 if item.result and isinstance(item.result, dict)
             ],
+            "source_records": deduplicate_source_records(
+                [
+                    source_record
+                    for item in collected
+                    for source_record in item.result.get("source_records") or []
+                ]
+            ),
             "source_pages": sorted(
                 list(
                     {

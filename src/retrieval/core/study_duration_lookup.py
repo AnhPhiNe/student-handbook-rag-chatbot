@@ -8,6 +8,8 @@ from src.common.cohort import (
     resolve_cohort_from_query,
 )
 
+from .source_contract import deduplicate_source_records, source_ref_from_record
+
 
 def normalize_text(value: Any) -> str:
     text = str(value or "").lower()
@@ -175,6 +177,22 @@ def study_duration_lookup(
     if not table_results:
         return None
 
+    source_records = deduplicate_source_records(
+        [
+            source_ref
+            for table in candidates
+            if (
+                source_ref := source_ref_from_record(
+                    table,
+                    source_kind="table",
+                    table_id=table.get("table_id"),
+                    table_name=table.get("table_name")
+                    or "Thời gian học tập chuẩn và tối đa",
+                )
+            )
+        ]
+    )
+
     source_pages = sorted(
         {
             page
@@ -207,5 +225,6 @@ def study_duration_lookup(
         "source_section": next(iter(source_sections))
         if len(source_sections) == 1
         else "study_duration",
+        "source_records": source_records,
         "content_type": "structured_lookup",
     }

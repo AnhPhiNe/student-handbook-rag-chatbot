@@ -5,6 +5,8 @@ from typing import Any
 
 from src.common.cohort import is_cohort_applicable, normalize_cohort
 
+from .source_contract import source_records_from_records
+
 
 def normalize_text(text: Any) -> str:
     """Chuan hoa chuoi de so khop co dau/khong dau on dinh."""
@@ -412,6 +414,12 @@ def program_lookup(
             "cohort": normalized_cohort,
             "document_id": next(iter(document_ids)) if len(document_ids) == 1 else None,
             "source_section": "program_directory",
+            "source_records": source_records_from_records(
+                matched or cohort_catalog,
+                source_kind="catalog",
+                table_id="program_directory",
+                table_name="Danh sach nganh dao tao",
+            ),
             "content_type": "program_directory",
         }
 
@@ -475,5 +483,11 @@ def program_lookup(
         "cohort": normalized_cohort,
         "document_id": next(iter(document_ids)) if len(document_ids) == 1 else None,
         "source_section": "program_directory",
+        "source_records": source_records_from_records(
+            candidates,
+            source_kind="catalog",
+            table_id="program_directory",
+            table_name="Danh sach nganh dao tao",
+        ),
         "content_type": "program_directory",
     }

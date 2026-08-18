@@ -8,6 +8,8 @@ from src.common.cohort import (
     resolve_cohort_from_query,
 )
 
+from .source_contract import source_ref_from_record
+
 
 CERTIFICATE_ALIASES = {
     "ielts": ["ielts"],
@@ -278,6 +280,13 @@ def _build_lookup_result(
             "matched_value": matched_value,
         }
 
+    source_ref = source_ref_from_record(
+        table,
+        source_kind="table",
+        table_id=table.get("table_id"),
+        table_name=table.get("table_name")
+        or "Bang quy doi chuan dau ra ngoai ngu",
+    )
     return {
         "lookup_type": "foreign_language_equivalency",
         "input_value": query,
@@ -294,6 +303,8 @@ def _build_lookup_result(
         "applicability": table.get("applicability"),
         "document_id": table.get("document_id"),
         "source_section": table.get("source_section_id") or table.get("source_section"),
+        "table_id": table.get("table_id"),
+        "source_records": [source_ref] if source_ref else [],
         "content_type": "structured_lookup",
     }
 

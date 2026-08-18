@@ -79,6 +79,16 @@ def test_builds_program_citation_for_selected_cohort():
             "source_section": "program_directory",
             "document_id": "so_tay_sinh_vien_khoa_51",
             "cohort": "K51",
+            "source_records": [
+                {
+                    "source_kind": "catalog",
+                    "document_id": "so_tay_sinh_vien_khoa_51",
+                    "cohort": "K51",
+                    "table_id": "program_directory",
+                    "table_name": "Danh sách ngành đào tạo",
+                    "source_pages": [8],
+                }
+            ],
         }
     )
 
@@ -87,6 +97,8 @@ def test_builds_program_citation_for_selected_cohort():
     assert citations[0]["source_section"] == "program_directory"
     assert citations[0]["document_id"] == "so_tay_sinh_vien_khoa_51"
     assert citations[0]["cohort"] == "K51"
+    assert citations[0]["source_kind"] == "catalog"
+    assert citations[0]["parent_section_id"] is None
     assert "Công nghệ Thông tin" in citations[0]["content"]
 
 
@@ -109,6 +121,31 @@ def test_builds_formula_citation_from_regulation_source():
     assert citations[0]["parent_section_id"] == "K51_Dieu16"
     assert citations[0]["source_pages"] == [38]
     assert "DHP = 0.4 * QT + 0.6 * CK" in citations[0]["content"]
+
+
+def test_builds_formula_citation_from_canonical_source_record():
+    citations = build_citation_from_formula(
+        {
+            "lookup_type": "formula",
+            "rule_name": "Điểm học phần",
+            "formula_text": "DHP = 0.4 * QT + 0.6 * CK",
+            "source_records": [
+                {
+                    "source_kind": "formula",
+                    "document_id": "so_tay_sinh_vien_khoa_51",
+                    "cohort": "K51",
+                    "source_record_id": "course_grade_formula",
+                    "parent_section_id": "K51_Dieu16",
+                    "source_pages": [38],
+                }
+            ],
+        }
+    )
+
+    assert len(citations) == 1
+    assert citations[0]["source_kind"] == "formula"
+    assert citations[0]["source_record_id"] == "course_grade_formula"
+    assert citations[0]["parent_section_id"] == "K51_Dieu16"
 
 
 def test_sanitize_citation_content_removes_internal_focus_block_and_joins_pdf_lines():

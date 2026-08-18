@@ -150,6 +150,44 @@ class StructuredLookupTest(unittest.TestCase):
             result["result"][0]["faculty_name"],
             "Khoa Cong nghe Thong tin",
         )
+        self.assertEqual(len(result["source_records"]), 1)
+        self.assertEqual(result["source_records"][0]["source_kind"], "catalog")
+        self.assertEqual(
+            result["source_records"][0]["document_id"],
+            "program-directory",
+        )
+        self.assertEqual(result["source_records"][0]["cohort"], "all")
+        self.assertIsNone(result["source_records"][0]["parent_section_id"])
+
+    def test_office_lookup_returns_catalog_source_without_fake_parent(self) -> None:
+        units = [
+            {
+                "unit_name": "Phòng Đào tạo",
+                "aliases": ["phong dao tao", "phong dt"],
+                "emails": ["phongdt@hcmue.edu.vn"],
+                "cohort": "K51",
+                "document_id": "handbook-k51",
+                "source_record_id": "office-3",
+                "source_section": "office_directory",
+                "source_pages": [130, 131],
+            }
+        ]
+
+        result = office_lookup(
+            "email phòng đào tạo",
+            units,
+            cohort="K51",
+            candidate_text="phòng đào tạo",
+            require_confident_match=True,
+        )
+
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result["source_records"]), 1)
+        self.assertEqual(result["source_records"][0]["source_kind"], "catalog")
+        self.assertEqual(result["source_records"][0]["document_id"], "handbook-k51")
+        self.assertEqual(result["source_records"][0]["cohort"], "K51")
+        self.assertEqual(result["source_records"][0]["source_record_id"], "office-3")
+        self.assertIsNone(result["source_records"][0]["parent_section_id"])
 
     def test_is_cohort_applicable_and_foreign_language_inheritance(self) -> None:
         from src.common.cohort import is_cohort_applicable
@@ -365,6 +403,9 @@ class StructuredLookupTest(unittest.TestCase):
                 "table_id": "foreign_language_equivalency_table",
                 "table_name": "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ",
                 "cohort": "K51",
+                "document_id": "handbook-k51",
+                "source_section_id": "K51_Dieu8",
+                "source_pages": [14],
                 "applicable_cohorts": ["K51"],
                 "rows": [
                     {
@@ -382,6 +423,9 @@ class StructuredLookupTest(unittest.TestCase):
                 "table_id": "scholarship_classification",
                 "table_name": "Xếp loại học bổng khuyến khích học tập",
                 "cohort": "K51",
+                "document_id": "handbook-k51",
+                "source_section": "K51_Dieu27",
+                "source_pages": [70],
                 "rows": [
                     {"label": "Giỏi", "scholarship_score_range": "3.36-3.832"},
                 ],
@@ -403,6 +447,14 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertIsNotNone(res)
         self.assertEqual(res.lookup_type, "multi_structured")
         self.assertEqual(res.result.get("lookup_count"), 2)
+        self.assertEqual(len(res.result.get("source_records")), 2)
+        self.assertEqual(
+            {record["table_id"] for record in res.result["source_records"]},
+            {
+                "foreign_language_equivalency_table",
+                "scholarship_classification",
+            },
+        )
 
     def test_single_foreign_language_lookup_does_not_probe_scoring_table(self):
         from src.retrieval.core.structured_dispatcher import resolve_structured_decision

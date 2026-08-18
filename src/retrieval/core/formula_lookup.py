@@ -6,6 +6,8 @@ from typing import Any
 
 from src.common.cohort import is_cohort_applicable, normalize_cohort
 
+from .source_contract import source_ref_from_record
+
 
 def formula_lookup(
     query: str,
@@ -70,6 +72,12 @@ def _find_formula(
 ) -> dict[str, Any] | None:
     for rule in formula_rules:
         if rule.get("rule_id") == rule_id:
+            source_ref = source_ref_from_record(
+                rule,
+                source_kind="formula",
+                source_record_id=rule.get("rule_id"),
+                table_name=rule.get("rule_name"),
+            )
             return {
                 "lookup_type": "formula",
                 "formula_type": str(rule.get("calculation_type") or ""),
@@ -82,6 +90,8 @@ def _find_formula(
                 "cohort": rule.get("cohort"),
                 "document_id": rule.get("document_id"),
                 "source_section": rule.get("source_section"),
+                "source_record_id": rule.get("rule_id"),
+                "source_records": [source_ref] if source_ref else [],
                 "content_type": rule.get("content_type") or "formula_rule",
             }
     return None

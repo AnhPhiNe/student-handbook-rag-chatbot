@@ -4,6 +4,8 @@ from typing import Any, Optional
 
 from src.common.cohort import normalize_cohort
 
+from .source_contract import deduplicate_source_records, source_ref_from_record
+
 
 def extract_number(query: str) -> Optional[float]:
     match = re.search(r"\d+(?:[,.]\d+)?", query)
@@ -41,12 +43,27 @@ def _metadata_from_tables(tables: list[dict[str, Any]]) -> dict[str, Any]:
     source_sections = {
         table.get("source_section") for table in tables if table.get("source_section")
     }
+    source_records = deduplicate_source_records(
+        [
+            source_ref
+            for table in tables
+            if (
+                source_ref := source_ref_from_record(
+                    table,
+                    source_kind="table",
+                    table_id=table.get("table_id"),
+                    table_name=table.get("table_name"),
+                )
+            )
+        ]
+    )
     return {
         "cohort": next(iter(cohorts)) if len(cohorts) == 1 else None,
         "document_id": next(iter(document_ids)) if len(document_ids) == 1 else None,
         "source_section": next(iter(source_sections))
         if len(source_sections) == 1
         else "scoring_table",
+        "source_records": source_records,
         "content_type": "structured_lookup",
     }
 

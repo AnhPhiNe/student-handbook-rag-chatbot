@@ -9,6 +9,8 @@ import numpy as np
 
 from src.common.cohort import is_cohort_applicable, normalize_cohort
 
+from .source_contract import source_records_from_records
+
 
 STOPWORDS = {
     "ai",
@@ -574,18 +576,28 @@ def office_lookup(
         source_label = "Danh muc dich vu sinh vien trong So tay sinh vien HCMUE"
         source_section = "student_service_directory"
         content_type = "student_service_directory"
+        catalog_id = "student_service_directory"
     elif is_faculty:
         lookup_scope = "faculty"
         table_name = "Danh sach Khoa lien he"
         source_label = "Danh muc Khoa/lien he trong So tay sinh vien HCMUE"
         source_section = "student_faculty_profiles"
         content_type = "student_faculty_profile"
+        catalog_id = "student_faculty_profiles"
     else:
         lookup_scope = "office"
         table_name = "Danh sach phong ban lien he"
         source_label = "Danh muc phong ban/lien he trong So tay sinh vien HCMUE"
         source_section = "student_office_profiles"
         content_type = "student_office_profile"
+        catalog_id = "student_office_profiles"
+
+    source_records = source_records_from_records(
+        [item["record"] for item in ranked[:effective_top_k]],
+        source_kind="catalog",
+        table_id=catalog_id,
+        table_name=table_name,
+    )
 
     return {
         "lookup_type": "office_directory",
@@ -600,6 +612,7 @@ def office_lookup(
         "cohort": normalized_cohort,
         "document_id": next(iter(document_ids)) if len(document_ids) == 1 else None,
         "source_section": source_section,
+        "source_records": source_records,
         "content_type": content_type,
         "match_score": round(match_score, 4),
         "score_margin": round(score_margin, 4),

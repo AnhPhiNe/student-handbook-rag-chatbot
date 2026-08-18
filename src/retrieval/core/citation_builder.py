@@ -1,6 +1,8 @@
 import re
 from typing import Any
 
+from .source_contract import source_records_from_result
+
 
 _FOCUS_MARKERS = (
     "THÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:",
@@ -114,7 +116,6 @@ def enrich_citations_with_parent_details(
         parent_id = str(
             item.get("parent_section_id")
             or item.get("source_parent_id")
-            or item.get("source_section")
             or ""
         ).strip()
         parent = parents_by_id.get(parent_id)
@@ -235,6 +236,8 @@ _CITATION_METADATA_KEYS = {
     "source_pages",
     "source_parent_id",
     "source_parent_ids",
+    "source_record_id",
+    "source_records",
     "source_section",
     "source_section_id",
     "source_url",
@@ -312,7 +315,10 @@ def _lookup_rows(lookup_result: dict[str, Any]) -> list[dict[str, Any]]:
     return []
 
 
-def _lookup_content(lookup_result: dict[str, Any]) -> str:
+def _lookup_content(
+    lookup_result: dict[str, Any],
+    source_record: dict[str, Any] | None = None,
+) -> str:
     if lookup_result.get("lookup_type") == "formula":
         parts = [
             str(lookup_result.get("rule_name") or "").strip(),
@@ -326,6 +332,15 @@ def _lookup_content(lookup_result: dict[str, Any]) -> str:
         for item in (lookup_result.get("items") or [])
         if isinstance(item, dict) and isinstance(item.get("rows"), list)
     ]
+    source_table_id = (source_record or {}).get("table_id")
+    if source_table_id:
+        matching_tables = [
+            item
+            for item in nested_tables
+            if item.get("table_id") == source_table_id
+        ]
+        if matching_tables:
+            nested_tables = matching_tables
     if nested_tables:
         sections = []
         for table in nested_tables:
@@ -342,85 +357,77 @@ def _lookup_content(lookup_result: dict[str, Any]) -> str:
         return "\n\n".join(sections)
 
     rows = _lookup_rows(lookup_result)
+    source_record_id = (source_record or {}).get("source_record_id")
+    if source_record_id:
+        matching_rows = [
+            row
+            for row in rows
+            if str(
+                row.get("source_record_id")
+                or row.get("record_id")
+                or row.get("id")
+                or ""
+            ).strip()
+            == str(source_record_id).strip()
+        ]
+        if matching_rows:
+            rows = matching_rows
     return format_rows_as_markdown_table(rows, lookup_result.get("columns"))
-
-
-def _source_parent_ids(lookup_result: dict[str, Any]) -> list[str | None]:
-    values = lookup_result.get("source_parent_ids") or []
-    if isinstance(values, str):
-        values = [values]
-    single = (
-        lookup_result.get("source_parent_id")
-        or lookup_result.get("parent_section_id")
-        or lookup_result.get("source_section")
-    )
-    if single:
-        values = [single, *values]
-    parent_ids = list(dict.fromkeys(str(value).strip() for value in values if value))
-    return parent_ids or [None]
-
-
-def _has_source_reference(citation: dict[str, Any]) -> bool:
-    return any(
-        citation.get(key)
-        for key in (
-            "document_id",
-            "parent_section_id",
-            "source_pages",
-            "source_section",
-            "source_url",
-        )
-    )
 
 
 def _build_lookup_citations(lookup_result: dict[str, Any]) -> list[dict[str, Any]]:
     lookup_type = str(lookup_result.get("lookup_type") or "structured_lookup")
-    chunk_type = (
-        "formula"
-        if lookup_type == "formula"
-        else "program_directory"
-        if lookup_type in {"program", "program_directory"}
-        else "office_directory"
-        if lookup_type in {"office", "office_directory", "student_office", "student_faculty"}
-        else "structured_lookup"
-    )
-    title = (
-        lookup_result.get("rule_name")
-        if chunk_type == "formula"
-        else lookup_result.get("table_name")
-    ) or "Nguồn dữ liệu Sổ tay sinh viên"
-    source_pages = parse_source_pages(lookup_result.get("source_pages"))
-    content = _lookup_content(lookup_result)
     citations = []
 
-    for parent_id in _source_parent_ids(lookup_result):
-        source_section = parent_id or lookup_result.get("source_section")
+    for source_record in source_records_from_result(lookup_result):
+        source_kind = source_record.get("source_kind")
+        if source_kind == "formula":
+            chunk_type = "formula"
+        elif source_kind == "catalog" and lookup_type in {
+            "program",
+            "program_directory",
+        }:
+            chunk_type = "program_directory"
+        elif source_kind == "catalog":
+            chunk_type = "office_directory"
+        else:
+            chunk_type = "structured_lookup"
+
+        title = (
+            source_record.get("table_name")
+            or lookup_result.get("rule_name")
+            or lookup_result.get("table_name")
+            or "Nguồn dữ liệu Sổ tay sinh viên"
+        )
+        parent_id = source_record.get("parent_section_id")
+        source_section = parent_id or source_record.get("table_id")
         identity = (
             parent_id
-            or lookup_result.get("document_id")
-            or source_section
-            or lookup_type
+            or source_record.get("source_record_id")
+            or source_record.get("table_id")
         )
         citation = {
-            "chunk_id": f"structured:{lookup_type}:{identity}:{lookup_result.get('cohort') or 'shared'}",
+            "chunk_id": f"structured:{lookup_type}:{source_record['document_id']}:{identity}",
             "chunk_type": chunk_type,
             "title": title,
             "table_name": title if chunk_type != "formula" else None,
             "detail_kind": "article" if chunk_type == "formula" else "table",
-            "source_pages": source_pages,
+            "source_kind": source_kind,
+            "source_pages": source_record.get("source_pages") or [],
             "source_label": lookup_result.get("source_label")
             or ("Công thức/quy tắc trong Sổ tay sinh viên HCMUE" if chunk_type == "formula" else "Dữ liệu tra cứu trong Sổ tay sinh viên HCMUE"),
-            "source_url": lookup_result.get("source_url"),
-            "cohort": lookup_result.get("cohort"),
-            "document_id": lookup_result.get("document_id"),
+            "source_url": source_record.get("source_url"),
+            "cohort": source_record.get("cohort"),
+            "document_id": source_record.get("document_id"),
+            "table_id": source_record.get("table_id"),
+            "source_record_id": source_record.get("source_record_id"),
             "source_section": source_section,
             "source_parent_id": parent_id,
             "parent_section_id": parent_id,
-            "applicability": lookup_result.get("applicability"),
-            "content": content,
+            "applicability": source_record.get("applicability"),
+            "content": _lookup_content(lookup_result, source_record),
         }
-        if _has_source_reference(citation):
-            citations.append(citation)
+        citations.append(citation)
 
     return citations
 

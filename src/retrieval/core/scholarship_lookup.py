@@ -9,6 +9,8 @@ from src.common.cohort import (
 )
 from src.retrieval.core.structured_lookup import in_range
 
+from .source_contract import source_ref_from_record
+
 
 LABEL_ALIASES = {
     "Khá": ["kha"],
@@ -164,6 +166,13 @@ def scholarship_classification_lookup(
         if score is not None:
             result["matched_score"] = score
 
+    source_ref = source_ref_from_record(
+        table,
+        source_kind="table",
+        table_id=table.get("table_id"),
+        table_name=table.get("table_name")
+        or "Xếp loại học bổng khuyến khích học tập",
+    )
     return {
         "lookup_type": "scholarship_classification",
         "input_value": query,
@@ -176,5 +185,7 @@ def scholarship_classification_lookup(
         "cohort": table.get("cohort"),
         "document_id": table.get("document_id"),
         "source_section": table.get("source_section") or "scoring_table",
+        "table_id": table.get("table_id"),
+        "source_records": [source_ref] if source_ref else [],
         "content_type": "structured_lookup",
     }

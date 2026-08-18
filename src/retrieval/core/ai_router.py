@@ -30,7 +30,8 @@ from .structured_routing import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v20-compact"
+ROUTER_CONTRACT_VERSION = "semantic-requests-v1"
+ROUTER_PROMPT_VERSION = "semantic-requests-v21-compact"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -55,32 +56,34 @@ NGỮ CẢNH VÀ CHUẨN HÓA
 - Nếu có sửa, corrections phải chứa original_span nguyên văn và normalized_span.
 
 PHÂN LUỒNG
-- structured/structured: tra trực tiếp bảng hoặc catalog JSON trong TOOLS.
-- rag/regulation: cần đọc Điều/khoản về quy định, điều kiện, thủ tục, ngoại lệ,
+- Mỗi mệnh đề ngữ nghĩa độc lập tạo một lookup_request.
+- request_kind=structured: tra bảng hoặc catalog JSON trong TOOLS.
+- request_kind=rag: đọc Điều/khoản về quy định, điều kiện, thủ tục, ngoại lệ,
   hậu quả, quyền, nghĩa vụ hoặc trường hợp áp dụng.
-- rag/mixed: câu hỏi phức hợp cần tra cứu một nguồn structured chính trong TOOLS và đồng thời cần đối chiếu quy định/điều kiện.
+- Nhiều entity cùng một domain và cùng mục đích giữ trong một request.
+- Nhiều domain, nhiều quy định hoặc cùng tool nhưng khác mục đích tạo request riêng.
 - clarify: thiếu entity/cohort cốt lõi khiến tra cứu không xác định được.
   Không clarify câu hỏi quy chế chung chỉ vì thiếu tên môn hoặc ngành.
 - out_of_domain: ngoài phạm vi sổ tay sinh viên HCMUE.
 
 RÀNG BUỘC
 - Chỉ dùng lookup_type và intent khai báo trong TOOLS.
-- structured dùng đúng một tool; regulation có lookup_type=null,
-  intent=regulation; mixed chọn đúng một tool chính.
-- Giá trị, danh sách và thông tin catalog dùng structured. Điều kiện áp dụng,
-  ngoại lệ hoặc hệ quả dùng regulation; cần cả hai thì dùng mixed.
-- Khi câu hỏi chứa từ 2 ý định trở lên (chứa cả ý tra cứu bảng dữ liệu trong TOOLS và ý quy định/điều kiện), hãy chọn route=rag, execution_mode=mixed và đặt lookup_type là tool tương ứng với bảng dữ liệu đó.
+- structured request dùng đúng một tool; rag request có lookup_type=null và intent
+  thuộc RAG_INTENTS.
+- query_span là đoạn nguyên văn tương ứng trong QUERY hoặc CHAT HISTORY.
+- Mỗi request chỉ chứa slot thuộc tool của chính request đó. Không lấy số hoặc
+  entity từ mệnh đề khác.
+- Tối đa 6 request, giữ đúng thứ tự mệnh đề trong câu hỏi.
 - Hỏi đích danh đơn vị dùng office/faculty; mô tả dịch vụ cần làm dùng
   student_service; ngành, chương trình, đầu ra nghề nghiệp dùng program.
 - Không có form/procedure tool. Hồ sơ, biểu mẫu và quy trình là regulation.
 - formula chỉ tra công thức, không tính toán.
 - Giữ cohort nếu có; không tự đoán cohort hoặc entity.
 - cohort và cohorts: Nếu QUERY chỉ nêu 1 khóa duy nhất, đặt cohort và cohorts=[cohort], is_multi_cohort=false. Nếu QUERY đề cập hoặc so sánh từ 2 khóa trở lên, hãy trích xuất tất cả các khóa vào mảng cohorts, đặt is_multi_cohort=true và cohort là khóa đầu tiên.
-- slots tuân thủ TOOLS. slot_spans phải xuất hiện nguyên văn trong QUERY hoặc
-  CHAT HISTORY. Không bịa slot để thỏa contract.
+- cohort_refs chỉ chứa cohort áp dụng cho request; để [] nếu kế thừa COHORT.
+- slots tuân thủ TOOLS. slot_spans phải nằm trong query_span. Không bịa slot.
+- Slot free-form giữ cách viết trong query_span; code sẽ canonicalize alias sau.
 - Không tự tạo dữ liệu, tool, intent hoặc chủ đề mới.
-
-Tự kiểm tra route/mode, tool/intent, slot/span và cohort trước khi xuất JSON.
 """
 
 
@@ -689,6 +692,7 @@ class AIRouter:
                     decision = fallback_to_rag(
                         decision,
                         validation_errors,
+                        query=query,
                     )
                 decision["router_validation_errors"] = validation_errors
                 if self.cache:
@@ -872,6 +876,7 @@ class AIRouter:
             "routing_hint": routing_hint,
             "model": self.model_name,
             "prompt_version": ROUTER_PROMPT_VERSION,
+            "contract_version": ROUTER_CONTRACT_VERSION,
             "registry": registry_digest(self.registry),
         }
         raw = json.dumps(

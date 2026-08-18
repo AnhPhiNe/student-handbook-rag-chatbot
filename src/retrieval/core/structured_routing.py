@@ -18,6 +18,8 @@ ALLOWED_ROUTES = {"structured", "rag", "clarify", "out_of_domain"}
 ALLOWED_EXECUTION_MODES = {"structured", "regulation", "mixed"}
 ALLOWED_CONTEXT_MODES = {"standalone", "follow_up", "ambiguous"}
 ALLOWED_CONFIDENCE_LEVELS = {"high", "medium", "low", "none"}
+ALLOWED_REQUEST_KINDS = {"structured", "rag"}
+MAX_LOOKUP_REQUESTS = 6
 LEGACY_STRUCTURED_ROUTES = {"deterministic"}
 LEGACY_STRUCTURED_MODES = {"direct_lookup", "structured_reasoning"}
 COHORT_SCOPED_LOOKUPS = {
@@ -46,9 +48,58 @@ def _normalize_text(value: Any) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+def _normalized_with_offsets(value: Any) -> tuple[str, list[int], list[int]]:
+    text = str(value or "")
+    normalized_chars: list[str] = []
+    starts: list[int] = []
+    ends: list[int] = []
+    pending_space = False
+    pending_space_start = 0
+    for index, char in enumerate(text):
+        folded = char.lower().replace("đ", "d")
+        folded = unicodedata.normalize("NFD", folded)
+        folded = "".join(
+            item for item in folded if unicodedata.category(item) != "Mn"
+        )
+        if folded and all(item.isalnum() or item in "+.," for item in folded):
+            if pending_space and normalized_chars:
+                normalized_chars.append(" ")
+                starts.append(pending_space_start)
+                ends.append(index)
+            pending_space = False
+            for item in folded:
+                normalized_chars.append(item)
+                starts.append(index)
+                ends.append(index + 1)
+        elif normalized_chars:
+            pending_space = True
+            pending_space_start = index
+    return "".join(normalized_chars), starts, ends
+
+
+def _recover_grounded_span(span: Any, source_text: str) -> str | None:
+    requested = _normalize_text(span)
+    if not requested:
+        return None
+    normalized, starts, ends = _normalized_with_offsets(source_text)
+    position = normalized.find(requested)
+    if position < 0:
+        return None
+    end_position = position + len(requested) - 1
+    if end_position >= len(starts):
+        return None
+    return source_text[starts[position] : ends[end_position]].strip()
+
+
 def _query_mentions_cohort(query: str) -> bool:
     normalized = _normalize_text(query)
     return bool(re.search(r"\bk\s*(?:48|49|50|51)\b", normalized))
+
+
+def _cohort_is_grounded(cohort: str, source_text: str) -> bool:
+    normalized_cohort = _normalize_text(cohort)
+    normalized_source = _normalize_text(source_text)
+    return bool(normalized_cohort and normalized_cohort in normalized_source)
 
 
 def _infer_explicit_structured_slots(
@@ -149,14 +200,144 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
                 )
             )
         )
+    rag_intents = ",".join(sorted((registry.get("rag_intents") or {}).keys()))
+    lines.append(f"RAG_INTENTS|{rag_intents}")
     return "\n".join(lines)
+
+
+def _normalize_request_cohorts(
+    value: Any,
+    *,
+    default_cohorts: list[str],
+) -> list[str]:
+    raw_values = value if isinstance(value, list) else []
+    cohorts: list[str] = []
+    for item in raw_values:
+        normalized = normalize_cohort(item)
+        raw_value = str(item or "").strip()
+        if normalized:
+            cohorts.append(normalized)
+        elif raw_value:
+            cohorts.append(raw_value)
+    return list(dict.fromkeys(cohorts or default_cohorts))
+
+
+def _normalize_lookup_request(
+    value: Any,
+    *,
+    query: str,
+    default_cohorts: list[str],
+    registry: dict[str, Any],
+) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        return {
+            "request_kind": "",
+            "lookup_type": None,
+            "intent": "",
+            "query_span": "",
+            "slots": {},
+            "slot_spans": {},
+            "cohort_refs": [],
+            "invalid_request_payload": True,
+        }
+
+    lookup_type = str(value.get("lookup_type") or "").strip().lower() or None
+    request_kind = str(value.get("request_kind") or "").strip().lower()
+    if not request_kind:
+        request_kind = "structured" if lookup_type else "rag"
+    intent = str(value.get("intent") or "").strip().lower()
+    spec = registry.get("tools", {}).get(lookup_type) if lookup_type else None
+    allowed_intents = list((spec or {}).get("intents") or [])
+    if request_kind == "structured" and not intent:
+        default_intent = (spec or {}).get("default_intent")
+        if default_intent in allowed_intents:
+            intent = str(default_intent)
+        elif len(allowed_intents) == 1:
+            intent = str(allowed_intents[0])
+    elif request_kind == "rag" and not intent:
+        intent = "open_question"
+
+    raw_span = str(value.get("query_span") or "").strip()
+    query_span = _recover_grounded_span(raw_span, query) or raw_span
+    slots = dict(value.get("slots")) if isinstance(value.get("slots"), dict) else {}
+    spans = (
+        dict(value.get("slot_spans"))
+        if isinstance(value.get("slot_spans"), dict)
+        else {}
+    )
+    for slot_name, slot_value in slots.items():
+        if not isinstance(slot_value, dict) or isinstance(spans.get(slot_name), dict):
+            continue
+        nested_spans = {
+            key: spans[key]
+            for key in slot_value
+            if key in spans and _is_present(spans[key])
+        }
+        if nested_spans:
+            spans[slot_name] = nested_spans
+
+    if request_kind == "structured":
+        _infer_explicit_structured_slots(
+            query_span,
+            lookup_type=lookup_type,
+            intent=intent,
+            slots=slots,
+            spans=spans,
+        )
+
+    normalized_request = {
+        "request_kind": request_kind,
+        "lookup_type": lookup_type,
+        "intent": intent,
+        "query_span": query_span,
+        "slots": slots,
+        "slot_spans": spans,
+        "cohort_refs": _normalize_request_cohorts(
+            value.get("cohort_refs"),
+            default_cohorts=default_cohorts,
+        ),
+    }
+    if "cohort_refs" in value and not isinstance(value.get("cohort_refs"), list):
+        normalized_request["invalid_cohort_refs_payload"] = True
+    return normalized_request
+
+
+def _legacy_lookup_requests(
+    *,
+    route: str,
+    execution_mode: str,
+    intent: str,
+    lookup_type: str | None,
+    query: str,
+    slots: dict[str, Any],
+    spans: dict[str, Any],
+    cohorts: list[str],
+    registry: dict[str, Any],
+) -> list[dict[str, Any]]:
+    if route not in {"structured", "rag"}:
+        return []
+    request_kind = "structured" if lookup_type else "rag"
+    request_intent = intent
+    if request_kind == "rag" and request_intent not in registry.get("rag_intents", {}):
+        request_intent = "open_question"
+    return [
+        {
+            "request_kind": request_kind,
+            "lookup_type": lookup_type,
+            "intent": request_intent,
+            "query_span": query.strip(),
+            "slots": slots if request_kind == "structured" else {},
+            "slot_spans": spans if request_kind == "structured" else {},
+            "cohort_refs": cohorts,
+            "legacy_execution_mode": execution_mode,
+        }
+    ]
 
 
 def router_json_schema() -> dict[str, Any]:
     registry = load_lookup_registry()
     tools = list(registry.get("tools", {}).keys())
     lookup_type_enum = "|".join(tools) + "|null" if tools else "tool name or null"
-    
     return {
         "context_mode": "standalone|follow_up|ambiguous",
         "context_confidence": "high|medium|low|none",
@@ -171,14 +352,20 @@ def router_json_schema() -> dict[str, Any]:
         "standalone_query": "history-grounded query for follow_up or null",
         "referenced_turns": [],
         "route": "structured|rag|clarify|out_of_domain",
-        "execution_mode": "structured|regulation|mixed",
-        "intent": "intent name",
-        "lookup_type": lookup_type_enum,
         "cohort": "K48-K49|K50|K51|null",
         "cohorts": ["K48-K49", "K50", "K51"],
         "is_multi_cohort": False,
-        "slots": {},
-        "slot_spans": {},
+        "lookup_requests": [
+            {
+                "request_kind": "structured|rag",
+                "lookup_type": lookup_type_enum,
+                "intent": "tool intent or rag intent",
+                "query_span": "grounded semantic clause from QUERY/HISTORY",
+                "slots": {},
+                "slot_spans": {},
+                "cohort_refs": [],
+            }
+        ],
         "clarification_question": None,
     }
 
@@ -225,17 +412,6 @@ def router_response_schema() -> dict[str, Any]:
                 "type": "string",
                 "enum": ["structured", "rag", "clarify", "out_of_domain"],
             },
-            "execution_mode": {
-                "type": "string",
-                "enum": ["structured", "regulation", "mixed"],
-            },
-            "intent": {"type": "string"},
-            "lookup_type": {
-                "anyOf": [
-                    {"type": "string", "enum": tools},
-                    {"type": "null"},
-                ]
-            },
             "cohort": {
                 "anyOf": [
                     {"type": "string", "enum": ["K48-K49", "K50", "K51"]},
@@ -250,8 +426,52 @@ def router_response_schema() -> dict[str, Any]:
                 },
             },
             "is_multi_cohort": {"type": ["boolean", "null"]},
-            "slots": {"type": "object", "additionalProperties": True},
-            "slot_spans": {"type": "object", "additionalProperties": True},
+            "lookup_requests": {
+                "type": "array",
+                "maxItems": MAX_LOOKUP_REQUESTS,
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "properties": {
+                        "request_kind": {
+                            "type": "string",
+                            "enum": sorted(ALLOWED_REQUEST_KINDS),
+                        },
+                        "lookup_type": {
+                            "anyOf": [
+                                {"type": "string", "enum": tools},
+                                {"type": "null"},
+                            ]
+                        },
+                        "intent": {"type": "string"},
+                        "query_span": {"type": "string"},
+                        "slots": {
+                            "type": "object",
+                            "additionalProperties": True,
+                        },
+                        "slot_spans": {
+                            "type": "object",
+                            "additionalProperties": True,
+                        },
+                        "cohort_refs": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": ["K48-K49", "K50", "K51"],
+                            },
+                        },
+                    },
+                    "required": [
+                        "request_kind",
+                        "lookup_type",
+                        "intent",
+                        "query_span",
+                        "slots",
+                        "slot_spans",
+                        "cohort_refs",
+                    ],
+                },
+            },
             "clarification_question": {"type": ["string", "null"]},
         },
         "required": [
@@ -263,14 +483,10 @@ def router_response_schema() -> dict[str, Any]:
             "standalone_query",
             "referenced_turns",
             "route",
-            "execution_mode",
-            "intent",
-            "lookup_type",
             "cohort",
             "cohorts",
             "is_multi_cohort",
-            "slots",
-            "slot_spans",
+            "lookup_requests",
             "clarification_question",
         ],
     }
@@ -284,37 +500,10 @@ def normalize_router_decision(
 ) -> dict[str, Any]:
     raw_route = str(payload.get("route") or "rag").strip().lower()
     raw_execution_mode = str(payload.get("execution_mode") or "").strip().lower()
-    if (
+    legacy_structured = (
         raw_route in LEGACY_STRUCTURED_ROUTES
         or raw_execution_mode in LEGACY_STRUCTURED_MODES
-    ):
-        route = "structured"
-        execution_mode = "structured"
-    elif raw_route == "structured":
-        route = "structured"
-        execution_mode = "structured"
-    elif raw_route in ALLOWED_ROUTES:
-        route = raw_route
-        if raw_execution_mode in ALLOWED_EXECUTION_MODES:
-            execution_mode = raw_execution_mode
-        elif route == "rag" and payload.get("lookup_type"):
-            execution_mode = "mixed"
-        else:
-            execution_mode = "regulation"
-    else:
-        route = raw_route
-        execution_mode = raw_execution_mode or "regulation"
-
-    if route == "rag" and execution_mode == "structured":
-        route = "structured"
-    elif route == "structured":
-        execution_mode = "structured"
-    elif raw_execution_mode in ALLOWED_EXECUTION_MODES:
-        execution_mode = raw_execution_mode
-    elif route == "rag" and payload.get("lookup_type"):
-        execution_mode = "mixed"
-    else:
-        execution_mode = "regulation"
+    )
     intent = str(payload.get("intent") or "open_question").strip().lower()
     lookup_type = payload.get("lookup_type")
     if lookup_type is not None:
@@ -341,22 +530,6 @@ def normalize_router_decision(
         if nested_spans:
             spans[slot_name] = nested_spans
 
-    spec = load_lookup_registry()["tools"].get(lookup_type) if lookup_type else None
-    allowed_intents = list((spec or {}).get("intents") or [])
-    if route == "structured" and intent not in allowed_intents:
-        default_intent = (spec or {}).get("default_intent")
-        if default_intent in allowed_intents:
-            intent = str(default_intent)
-        elif len(allowed_intents) == 1:
-            intent = allowed_intents[0]
-    target_types = payload.get("target_chunk_types")
-    if not isinstance(target_types, list):
-        target_types = (
-            ["regulation"]
-            if route == "rag" and execution_mode in {"regulation", "mixed"}
-            else []
-        )
-
     raw_cohorts = payload.get("cohorts")
     if isinstance(raw_cohorts, list):
         payload_cohorts = [normalize_cohort(c) for c in raw_cohorts if normalize_cohort(c)]
@@ -376,6 +549,103 @@ def normalize_router_decision(
         cohort = selected or payload_cohort
         cohorts = [cohort] if cohort else []
         is_multi_cohort = False
+
+    registry = load_lookup_registry()
+    explicit_requests = "lookup_requests" in payload
+    if explicit_requests:
+        raw_requests = payload.get("lookup_requests")
+        values = raw_requests if isinstance(raw_requests, list) else []
+        lookup_requests = [
+            _normalize_lookup_request(
+                value,
+                query=query,
+                default_cohorts=cohorts,
+                registry=registry,
+            )
+            for value in values
+        ]
+    else:
+        if legacy_structured:
+            raw_route = "structured"
+        if raw_route == "structured":
+            raw_execution_mode = "structured"
+        elif raw_route == "rag" and lookup_type:
+            raw_execution_mode = "mixed"
+        elif raw_route == "rag":
+            raw_execution_mode = "regulation"
+        lookup_requests = [
+            _normalize_lookup_request(
+                value,
+                query=query,
+                default_cohorts=cohorts,
+                registry=registry,
+            )
+            for value in _legacy_lookup_requests(
+                route=raw_route,
+                execution_mode=raw_execution_mode,
+                intent=intent,
+                lookup_type=lookup_type,
+                query=query,
+                slots=slots,
+                spans=spans,
+                cohorts=cohorts,
+                registry=registry,
+            )
+        ]
+
+    structured_requests = [
+        request
+        for request in lookup_requests
+        if request.get("request_kind") == "structured"
+    ]
+    rag_requests = [
+        request for request in lookup_requests if request.get("request_kind") == "rag"
+    ]
+    if raw_route in {"clarify", "out_of_domain"} and not lookup_requests:
+        route = raw_route
+        execution_mode = "regulation"
+    elif len(lookup_requests) == 1 and structured_requests:
+        route = "structured"
+        execution_mode = "structured"
+    elif len(lookup_requests) == 1 and rag_requests:
+        route = "rag"
+        execution_mode = "regulation"
+    elif lookup_requests:
+        route = "rag"
+        execution_mode = "mixed"
+    else:
+        route = raw_route if raw_route in ALLOWED_ROUTES else "rag"
+        execution_mode = "regulation"
+
+    primary_request = structured_requests[0] if structured_requests else (
+        lookup_requests[0] if lookup_requests else None
+    )
+    if len(lookup_requests) > 1:
+        intent = "multi_request"
+    elif primary_request:
+        intent = str(primary_request.get("intent") or intent)
+    if primary_request and primary_request.get("request_kind") == "structured":
+        lookup_type = primary_request.get("lookup_type")
+        slots = dict(primary_request.get("slots") or {})
+        spans = dict(primary_request.get("slot_spans") or {})
+    elif not primary_request:
+        lookup_type = None
+        slots = {}
+        spans = {}
+
+    target_types = sorted(
+        {
+            target
+            for request in lookup_requests
+            for target in (
+                registry.get("tools", {})
+                .get(request.get("lookup_type"), {})
+                .get("target_chunk_types", [])
+                if request.get("request_kind") == "structured"
+                else ["regulation"]
+            )
+        }
+    )
 
     raw_context_mode = str(payload.get("context_mode") or "standalone").strip().lower()
     context_mode = (
@@ -410,14 +680,6 @@ def normalize_router_decision(
     if not isinstance(referenced_turns, list):
         referenced_turns = []
 
-    _infer_explicit_structured_slots(
-        query,
-        lookup_type=lookup_type,
-        intent=intent,
-        slots=slots,
-        spans=spans,
-    )
-
     return {
         "context_mode": context_mode,
         "context_confidence": context_confidence,
@@ -450,6 +712,8 @@ def normalize_router_decision(
         "slots": slots,
         "slot_spans": spans,
         "target_chunk_types": [str(item) for item in target_types if item],
+        "lookup_requests": lookup_requests,
+        "request_plan_provided": explicit_requests,
         "needs_clarification": route == "clarify"
         or bool(payload.get("needs_clarification")),
         "clarification_question": payload.get("clarification_question"),
@@ -477,6 +741,32 @@ def _span_is_grounded(span: Any, source_text: str) -> bool:
         )
     normalized = _normalize_text(span)
     return bool(normalized) and normalized in _normalize_text(source_text)
+
+
+def _normalized_leaf_values(value: Any) -> list[str]:
+    if isinstance(value, dict):
+        return [
+            normalized
+            for item in value.values()
+            for normalized in _normalized_leaf_values(item)
+        ]
+    if isinstance(value, list | tuple | set):
+        return [
+            normalized
+            for item in value
+            for normalized in _normalized_leaf_values(item)
+        ]
+    normalized = _normalize_text(value)
+    return [normalized] if normalized else []
+
+
+def _slot_value_matches_span(value: Any, span: Any) -> bool:
+    values = _normalized_leaf_values(value)
+    spans = _normalized_leaf_values(span)
+    return bool(values and spans) and all(
+        any(item == source or item in source or source in item for source in spans)
+        for item in values
+    )
 
 
 def _matches_type(value: Any, expected: str) -> bool:
@@ -522,6 +812,116 @@ def _validate_slot_contract(slots: dict[str, Any], spec: dict[str, Any]) -> list
     return errors
 
 
+def _validate_lookup_request(
+    request: dict[str, Any],
+    *,
+    index: int,
+    source_text: str,
+    selected_cohort: str | None,
+    registry: dict[str, Any],
+) -> list[str]:
+    prefix = f"request:{index}:"
+    errors: list[str] = []
+    if request.get("invalid_request_payload"):
+        return [f"{prefix}invalid_payload"]
+
+    request_kind = request.get("request_kind")
+    if request_kind not in ALLOWED_REQUEST_KINDS:
+        return [f"{prefix}invalid_request_kind"]
+
+    query_span = str(request.get("query_span") or "").strip()
+    if not query_span:
+        errors.append(f"{prefix}missing_query_span")
+    elif len(query_span) > 600:
+        errors.append(f"{prefix}query_span_too_long")
+    elif not _span_is_grounded(query_span, source_text):
+        errors.append(f"{prefix}ungrounded_query_span")
+
+    cohort_refs = request.get("cohort_refs") or []
+    if request.get("invalid_cohort_refs_payload"):
+        errors.append(f"{prefix}invalid_cohort_refs")
+    if not isinstance(cohort_refs, list):
+        errors.append(f"{prefix}invalid_cohort_refs")
+        cohort_refs = []
+    normalized_selected = normalize_cohort(selected_cohort)
+    for cohort in cohort_refs:
+        normalized_cohort = normalize_cohort(cohort)
+        if not normalized_cohort:
+            errors.append(f"{prefix}invalid_cohort")
+        elif normalized_cohort != normalized_selected and not _cohort_is_grounded(
+            normalized_cohort,
+            source_text,
+        ):
+            errors.append(f"{prefix}ungrounded_cohort:{normalized_cohort}")
+
+    lookup_type = request.get("lookup_type")
+    intent = request.get("intent")
+    slots = request.get("slots") or {}
+    spans = request.get("slot_spans") or {}
+    if not isinstance(slots, dict) or not isinstance(spans, dict):
+        errors.append(f"{prefix}invalid_slots")
+        return errors
+
+    if request_kind == "rag":
+        if lookup_type:
+            errors.append(f"{prefix}rag_request_has_lookup_type")
+        if intent not in registry.get("rag_intents", {}):
+            errors.append(f"{prefix}unsupported_rag_intent")
+        if slots or spans:
+            errors.append(f"{prefix}rag_request_has_slots")
+        return errors
+
+    spec = registry.get("tools", {}).get(lookup_type)
+    if not spec:
+        errors.append(f"{prefix}unknown_lookup_type")
+        return errors
+    if lookup_type in COHORT_SCOPED_LOOKUPS and not cohort_refs:
+        errors.append(f"{prefix}missing_cohort")
+
+    allowed_intents = set(spec.get("intents") or [])
+    if intent not in allowed_intents:
+        errors.append(f"{prefix}unsupported_intent")
+    contract_intent = intent if intent in allowed_intents else spec.get("default_intent")
+    required = list((spec.get("required_slots") or {}).get(contract_intent, []))
+    slot_schema = spec.get("slot_schema") or {}
+    for slot_name in slots:
+        if slot_name not in slot_schema:
+            errors.append(f"{prefix}unknown_slot:{slot_name}")
+    for slot_name in spans:
+        if slot_name not in slot_schema:
+            errors.append(f"{prefix}unknown_slot_span:{slot_name}")
+
+    request_source = query_span
+    for slot_name in required:
+        if not _is_present(slots.get(slot_name)):
+            errors.append(f"{prefix}missing_slot:{slot_name}")
+
+    for slot_name, value in slots.items():
+        if not _is_present(value) or slot_name in UNGROUNDED_SCHEMA_SLOTS:
+            continue
+        span = spans.get(slot_name)
+        schema = slot_schema.get(slot_name) or {}
+        if not _is_present(span):
+            errors.append(f"{prefix}missing_slot_span:{slot_name}")
+        elif not _span_is_grounded(span, request_source):
+            errors.append(f"{prefix}ungrounded_slot:{slot_name}")
+        elif not (schema.get("enum") or schema.get("canonical_values")) and not (
+            _slot_value_matches_span(value, span)
+        ):
+            errors.append(f"{prefix}slot_value_mismatch:{slot_name}")
+
+    for slot_name, span in spans.items():
+        if slot_name in UNGROUNDED_SCHEMA_SLOTS:
+            continue
+        if _is_present(span) and not _span_is_grounded(span, request_source):
+            errors.append(f"{prefix}ungrounded_slot:{slot_name}")
+
+    errors.extend(
+        f"{prefix}{error}" for error in _validate_slot_contract(slots, spec)
+    )
+    return errors
+
+
 def validate_router_decision(
     decision: dict[str, Any],
     *,
@@ -551,70 +951,45 @@ def validate_router_decision(
     if route == "rag" and execution_mode == "structured":
         errors.append("rag_cannot_use_structured_mode")
 
+    lookup_requests = decision.get("lookup_requests")
     if route not in {"structured", "rag"}:
         if route == "clarify" and not decision.get("clarification_question"):
             errors.append("missing_clarification_question")
+        if lookup_requests:
+            errors.append("non_answer_route_has_requests")
         return errors
 
-    if execution_mode == "regulation":
-        if decision.get("lookup_type"):
-            errors.append("regulation_must_not_select_lookup")
+    if not isinstance(lookup_requests, list) or not lookup_requests:
+        errors.append("missing_lookup_requests")
         return errors
+    if len(lookup_requests) > MAX_LOOKUP_REQUESTS:
+        errors.append("too_many_lookup_requests")
 
-    if route == "structured" and execution_mode != "structured":
-        return errors
-    if route == "rag" and execution_mode != "mixed":
-        errors.append("rag_lookup_requires_mixed_mode")
-
-    lookup_type = decision.get("lookup_type")
-    spec = registry["tools"].get(lookup_type)
-    if not spec:
-        errors.append("unknown_lookup_type")
-        return errors
-    if (
-        execution_mode == "structured"
-        and lookup_type in COHORT_SCOPED_LOOKUPS
-        and not normalize_cohort(decision.get("cohort"))
-        and not _query_mentions_cohort(query)
-    ):
-        errors.append("missing_cohort")
-
-    intent = decision.get("intent")
-    allowed_intents = set(spec.get("intents") or [])
-    if route == "structured" and intent not in allowed_intents:
-        errors.append("unsupported_intent")
-
-    slots = decision.get("slots") or {}
-    spans = decision.get("slot_spans") or {}
-    contract_intent = (
-        intent if intent in allowed_intents else spec.get("default_intent")
+    standalone_query = str(decision.get("standalone_query") or "").strip()
+    source_text = "\n".join(
+        part for part in (query, standalone_query, grounding_context) if part
     )
-    required = list((spec.get("required_slots") or {}).get(contract_intent, []))
-    source_text = f"{query}\n{grounding_context}".strip()
-    for slot_name in required:
-        if not _is_present(slots.get(slot_name)):
-            errors.append(f"missing_slot:{slot_name}")
+    for index, request in enumerate(lookup_requests):
+        if not isinstance(request, dict):
+            errors.append(f"request:{index}:invalid_payload")
             continue
-        if slot_name in UNGROUNDED_SCHEMA_SLOTS:
-            continue
-        if not _is_present(spans.get(slot_name)):
-            errors.append(f"missing_slot_span:{slot_name}")
-        elif not _span_is_grounded(spans[slot_name], source_text):
-            errors.append(f"ungrounded_slot:{slot_name}")
-
-    for slot_name, span in spans.items():
-        if slot_name in required or slot_name in UNGROUNDED_SCHEMA_SLOTS:
-            continue
-        if _is_present(span) and not _span_is_grounded(span, source_text):
-            errors.append(f"ungrounded_slot:{slot_name}")
-
-    errors.extend(_validate_slot_contract(slots, spec))
-
+        errors.extend(
+            _validate_lookup_request(
+                request,
+                index=index,
+                source_text=source_text,
+                selected_cohort=selected_cohort,
+                registry=registry,
+            )
+        )
     return errors
 
 
 def fallback_to_rag(
-    decision: dict[str, Any], errors: list[str]
+    decision: dict[str, Any],
+    errors: list[str],
+    *,
+    query: str | None = None,
 ) -> dict[str, Any]:
     lookup_type = decision.get("lookup_type")
     office_scope = lookup_type in {"office", "student_service"}
@@ -626,7 +1001,14 @@ def fallback_to_rag(
         "lookup_type": decision.get("lookup_type"),
         "slots": decision.get("slots") or {},
         "slot_spans": decision.get("slot_spans") or {},
+        "lookup_requests": decision.get("lookup_requests") or [],
     }
+    fallback_query = str(
+        query
+        or decision.get("normalized_query")
+        or decision.get("standalone_query")
+        or ""
+    ).strip()
     return {
         **decision,
         "route": "rag",
@@ -635,6 +1017,17 @@ def fallback_to_rag(
         "lookup_type": None,
         "slots": {},
         "slot_spans": {},
+        "lookup_requests": [
+            {
+                "request_kind": "rag",
+                "lookup_type": None,
+                "intent": "open_question",
+                "query_span": fallback_query,
+                "slots": {},
+                "slot_spans": {},
+                "cohort_refs": decision.get("cohorts") or [],
+            }
+        ],
         "target_chunk_types": (
             ["office_directory"]
             if office_scope

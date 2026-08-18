@@ -1,0 +1,461 @@
+from __future__ import annotations
+
+from typing import Any
+
+import pytest
+
+from src.retrieval.core.structured_routing import (
+    MAX_LOOKUP_REQUESTS,
+    fallback_to_rag,
+    normalize_router_decision,
+    validate_router_decision,
+)
+
+
+def _request(
+    *,
+    request_kind: str,
+    intent: str,
+    query_span: str,
+    lookup_type: str | None = None,
+    slots: dict[str, Any] | None = None,
+    slot_spans: dict[str, Any] | None = None,
+    cohort_refs: list[str] | Any | None = None,
+) -> dict[str, Any]:
+    return {
+        "request_kind": request_kind,
+        "lookup_type": lookup_type,
+        "intent": intent,
+        "query_span": query_span,
+        "slots": slots or {},
+        "slot_spans": slot_spans or {},
+        "cohort_refs": [] if cohort_refs is None else cohort_refs,
+    }
+
+
+def _normalize(
+    query: str,
+    requests: list[Any] | Any,
+    *,
+    selected_cohort: str | None = "K50",
+    cohort: str | None = "K50",
+    cohorts: list[str] | None = None,
+) -> dict[str, Any]:
+    return normalize_router_decision(
+        {
+            "context_mode": "standalone",
+            "context_confidence": "high",
+            "normalized_query": query,
+            "normalization_confidence": "high",
+            "corrections": [],
+            "standalone_query": None,
+            "referenced_turns": [],
+            "route": "rag",
+            "cohort": cohort,
+            "cohorts": cohorts if cohorts is not None else ([cohort] if cohort else []),
+            "is_multi_cohort": bool(cohorts and len(cohorts) > 1),
+            "lookup_requests": requests,
+            "clarification_question": None,
+        },
+        query=query,
+        selected_cohort=selected_cohort,
+    )
+
+
+def _errors(
+    decision: dict[str, Any],
+    query: str,
+    *,
+    selected_cohort: str | None = "K50",
+) -> list[str]:
+    return validate_router_decision(
+        decision,
+        query=query,
+        selected_cohort=selected_cohort,
+    )
+
+
+def test_legacy_top_level_decision_becomes_one_request() -> None:
+    query = "K50 IELTS 6.0 tương đương bậc mấy?"
+    decision = normalize_router_decision(
+        {
+            "route": "structured",
+            "execution_mode": "structured",
+            "intent": "direct_value",
+            "lookup_type": "foreign_language",
+            "cohort": "K50",
+            "slots": {
+                "certificate_or_language": "IELTS",
+                "score_or_level": "6.0",
+            },
+            "slot_spans": {
+                "certificate_or_language": "IELTS",
+                "score_or_level": "6.0",
+            },
+        },
+        query=query,
+        selected_cohort="K50",
+    )
+
+    assert decision["request_plan_provided"] is False
+    assert len(decision["lookup_requests"]) == 1
+    assert decision["lookup_requests"][0]["query_span"].startswith(query[:-1])
+    assert _errors(decision, query) == []
+
+
+def test_two_structured_domains_keep_slots_isolated() -> None:
+    query = "IELTS 6.0 tương đương bậc mấy và GPA 3.4 xếp loại gì?"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="direct_value",
+                query_span="IELTS 6.0 tương đương bậc mấy",
+                slots={
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "6.0",
+                },
+                slot_spans={
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "6.0",
+                },
+            ),
+            _request(
+                request_kind="structured",
+                lookup_type="scoring",
+                intent="direct_value",
+                query_span="GPA 3.4 xếp loại gì",
+                slots={
+                    "operation": "academic_classification",
+                    "score_or_grade": 3.4,
+                },
+                slot_spans={"score_or_grade": "3.4"},
+            ),
+        ],
+    )
+
+    assert decision["route"] == "rag"
+    assert decision["execution_mode"] == "mixed"
+    assert decision["intent"] == "multi_request"
+    assert [item["lookup_type"] for item in decision["lookup_requests"]] == [
+        "foreign_language",
+        "scoring",
+    ]
+    assert decision["lookup_requests"][0]["slots"]["score_or_level"] == "6.0"
+    assert decision["lookup_requests"][1]["slots"]["score_or_grade"] == 3.4
+    assert _errors(decision, query) == []
+
+
+def test_two_regulations_become_two_rag_requests() -> None:
+    query = "Điều kiện cảnh báo học vụ và thủ tục xin bảo lưu là gì?"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="rag",
+                intent="policy",
+                query_span="Điều kiện cảnh báo học vụ",
+            ),
+            _request(
+                request_kind="rag",
+                intent="procedure",
+                query_span="thủ tục xin bảo lưu",
+            ),
+        ],
+    )
+
+    assert len(decision["lookup_requests"]) == 2
+    assert all(item["request_kind"] == "rag" for item in decision["lookup_requests"])
+    assert _errors(decision, query) == []
+
+
+def test_same_tool_can_appear_in_two_requests() -> None:
+    query = "GPA 3.4 xếp loại gì, còn GPA 2.7 xếp loại gì?"
+    requests = []
+    for span, score in (
+        ("GPA 3.4 xếp loại gì", 3.4),
+        ("GPA 2.7 xếp loại gì", 2.7),
+    ):
+        requests.append(
+            _request(
+                request_kind="structured",
+                lookup_type="scoring",
+                intent="direct_value",
+                query_span=span,
+                slots={
+                    "operation": "academic_classification",
+                    "score_or_grade": score,
+                },
+                slot_spans={"score_or_grade": str(score)},
+            )
+        )
+
+    decision = _normalize(query, requests)
+
+    assert [item["lookup_type"] for item in decision["lookup_requests"]] == [
+        "scoring",
+        "scoring",
+    ]
+    assert _errors(decision, query) == []
+
+
+def test_multiple_entities_in_one_domain_stay_in_one_request() -> None:
+    query = "IELTS 5.5 và 6.0 tương đương các bậc nào?"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="direct_value",
+                query_span=query,
+                slots={
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": ["5.5", "6.0"],
+                },
+                slot_spans={
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": ["5.5", "6.0"],
+                },
+            )
+        ],
+    )
+
+    assert len(decision["lookup_requests"]) == 1
+    assert _errors(decision, query) == []
+
+
+def test_ungrounded_query_span_is_rejected() -> None:
+    query = "IELTS 6.0 tương đương bậc mấy?"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="rag",
+                intent="policy",
+                query_span="điều kiện tốt nghiệp",
+            )
+        ],
+    )
+
+    assert "request:0:ungrounded_query_span" in _errors(decision, query)
+
+
+def test_slot_cannot_be_grounded_by_another_request() -> None:
+    query = "IELTS 6.0 tương đương bậc mấy và GPA 3.4 xếp loại gì?"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="direct_value",
+                query_span="IELTS 6.0 tương đương bậc mấy",
+                slots={
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "3.4",
+                },
+                slot_spans={
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "3.4",
+                },
+            )
+        ],
+    )
+
+    assert "request:0:ungrounded_slot:score_or_level" in _errors(decision, query)
+
+
+@pytest.mark.parametrize(
+    ("slots", "slot_spans", "expected_error"),
+    [
+        (
+            {"certificate_or_language": "TOEFL", "score_or_level": "6.0"},
+            {"certificate_or_language": "IELTS", "score_or_level": "6.0"},
+            "request:0:slot_value_mismatch:certificate_or_language",
+        ),
+        (
+            {"certificate_or_language": "IELTS", "score_or_level": "3.4"},
+            {"certificate_or_language": "IELTS", "score_or_level": "6.0"},
+            "request:0:slot_value_mismatch:score_or_level",
+        ),
+    ],
+)
+def test_free_form_slot_value_must_match_its_grounded_span(
+    slots: dict[str, Any],
+    slot_spans: dict[str, Any],
+    expected_error: str,
+) -> None:
+    query = "IELTS 6.0 tương đương bậc mấy?"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="direct_value",
+                query_span=query,
+                slots=slots,
+                slot_spans=slot_spans,
+            )
+        ],
+    )
+
+    assert expected_error in _errors(decision, query)
+
+
+@pytest.mark.parametrize(
+    ("lookup_request", "expected_error"),
+    [
+        (
+            _request(
+                request_kind="structured",
+                lookup_type="unknown_tool",
+                intent="direct_value",
+                query_span="IELTS 6.0",
+            ),
+            "request:0:unknown_lookup_type",
+        ),
+        (
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="calculate",
+                query_span="IELTS 6.0",
+                slots={"invented": "6.0"},
+                slot_spans={"invented": "6.0"},
+            ),
+            "request:0:unsupported_intent",
+        ),
+        (
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="list_items",
+                query_span="IELTS 6.0",
+                slots={"invented": "6.0"},
+                slot_spans={"invented": "6.0"},
+            ),
+            "request:0:unknown_slot:invented",
+        ),
+    ],
+)
+def test_unknown_contract_values_are_rejected(
+    lookup_request: dict[str, Any],
+    expected_error: str,
+) -> None:
+    query = "IELTS 6.0"
+    decision = _normalize(query, [lookup_request])
+
+    assert expected_error in _errors(decision, query)
+
+
+def test_request_cohorts_may_inherit_selected_cohort() -> None:
+    query = "IELTS 6.0 tương đương bậc mấy?"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="direct_value",
+                query_span=query,
+                slots={
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "6.0",
+                },
+                slot_spans={
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "6.0",
+                },
+            )
+        ],
+    )
+
+    assert decision["lookup_requests"][0]["cohort_refs"] == ["K50"]
+    assert _errors(decision, query) == []
+
+
+@pytest.mark.parametrize("cohort_refs", [["K51"], ["K99"], "K51"])
+def test_ungrounded_or_malformed_request_cohorts_are_rejected(
+    cohort_refs: Any,
+) -> None:
+    query = "IELTS 6.0 tương đương bậc mấy?"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="direct_value",
+                query_span=query,
+                slots={
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "6.0",
+                },
+                slot_spans={
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "6.0",
+                },
+                cohort_refs=cohort_refs,
+            )
+        ],
+    )
+
+    errors = _errors(decision, query)
+    assert any("cohort" in error for error in errors)
+
+
+def test_request_limit_is_enforced() -> None:
+    query = "Quy định học vụ là gì?"
+    requests = [
+        _request(request_kind="rag", intent="policy", query_span=query)
+        for _ in range(MAX_LOOKUP_REQUESTS + 1)
+    ]
+    decision = _normalize(query, requests)
+
+    assert "too_many_lookup_requests" in _errors(decision, query)
+
+
+@pytest.mark.parametrize("requests", [[], "invalid", ["invalid"]])
+def test_empty_or_malformed_explicit_request_plan_is_rejected(requests: Any) -> None:
+    query = "Điều kiện tốt nghiệp là gì?"
+    decision = _normalize(query, requests)
+    errors = _errors(decision, query)
+
+    assert errors
+    assert "missing_lookup_requests" in errors or "request:0:invalid_payload" in errors
+
+
+def test_invalid_plan_falls_back_to_one_whole_query_rag_request() -> None:
+    query = "IELTS 6.0 tương đương bậc mấy và điều kiện tốt nghiệp là gì?"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="unknown_tool",
+                intent="direct_value",
+                query_span="IELTS 6.0 tương đương bậc mấy",
+            )
+        ],
+    )
+    errors = _errors(decision, query)
+    fallback = fallback_to_rag(decision, errors, query=query)
+
+    assert fallback["route"] == "rag"
+    assert fallback["execution_mode"] == "regulation"
+    assert fallback["lookup_requests"] == [
+        {
+            "request_kind": "rag",
+            "lookup_type": None,
+            "intent": "open_question",
+            "query_span": query,
+            "slots": {},
+            "slot_spans": {},
+            "cohort_refs": ["K50"],
+        }
+    ]
+    assert _errors(fallback, query) == []

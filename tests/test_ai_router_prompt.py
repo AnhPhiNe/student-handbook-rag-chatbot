@@ -15,6 +15,7 @@ from src.retrieval.core.structured_routing import (
     compact_registry_for_prompt,
     normalize_router_decision,
     router_json_schema,
+    router_response_schema,
     validate_router_decision,
 )
 
@@ -45,6 +46,18 @@ def test_router_contract_omits_fields_derived_by_code() -> None:
     assert "retrieval_query" not in contract
     assert "target_chunk_types" not in contract
     assert "needs_clarification" not in contract
+    assert "execution_mode" not in contract
+    assert "intent" not in contract
+    assert "lookup_type" not in contract
+    assert "slots" not in contract
+    assert "slot_spans" not in contract
+
+    response_properties = router_response_schema()["properties"]
+    assert "execution_mode" not in response_properties
+    assert "intent" not in response_properties
+    assert "lookup_type" not in response_properties
+    assert "slots" not in response_properties
+    assert "slot_spans" not in response_properties
 
 
 def test_router_cache_removes_legacy_retrieval_query(tmp_path: Path) -> None:
@@ -219,7 +232,7 @@ def test_invalid_structured_decision_falls_back_to_safe_rag(
     decision = router.route("K50 học gì?", cohort="K50")
 
     assert decision["route"] == "rag"
-    assert "missing_slot:scope" in decision["router_validation_errors"]
+    assert "request:0:missing_slot:scope" in decision["router_validation_errors"]
     assert request["reasoning_effort"] == "low"
     assert request["response_format"]["type"] == "json_schema"
 

@@ -480,10 +480,12 @@ def _lookup_grade_10_value(
         or "grade_10_to_letter" in str(table.get("table_id") or "")
     ]
     matches: list[dict[str, Any]] = []
+    matched_tables: list[dict[str, Any]] = []
     for table in matching_tables:
+        table_matches = []
         for row in table.get("rows") or []:
             if in_range(value, str(row.get("score_10_range") or row.get("range") or "")):
-                matches.append(
+                table_matches.append(
                     {
                         "table_id": table.get("table_id"),
                         "table_name": table.get("table_name"),
@@ -492,6 +494,9 @@ def _lookup_grade_10_value(
                         "row": row,
                     }
                 )
+        if table_matches:
+            matched_tables.append(table)
+            matches.extend(table_matches)
     if not matches:
         return None
     return _with_metadata(
@@ -503,11 +508,11 @@ def _lookup_grade_10_value(
             "source_pages": sorted(
                 {
                     page
-                    for table in matching_tables
+                    for table in matched_tables
                     for page in table.get("source_pages", [])
                 }
             ),
             "table_name": "Quy doi thang diem 10 sang diem chu",
         },
-        matching_tables,
+        matched_tables,
     )

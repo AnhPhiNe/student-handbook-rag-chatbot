@@ -43,6 +43,47 @@ class StructuredLookupTest(unittest.TestCase):
         first = result["result"][0]
         self.assertEqual(first["row"]["letter_grade"], "A")
 
+    def test_numeric_grade_citation_uses_only_tables_with_matching_rows(self) -> None:
+        tables = [
+            {
+                "table_id": "grade_10_to_letter_used",
+                "lookup_group": "grade_10_to_letter",
+                "table_name": "Bảng được dùng",
+                "cohort": "K51",
+                "document_id": "handbook-k51-used",
+                "source_section": "K51_Dieu_Used",
+                "source_pages": [10],
+                "rows": [
+                    {"score_10_range": "8.0-10.0", "letter_grade": "A"},
+                ],
+            },
+            {
+                "table_id": "grade_10_to_letter_unused",
+                "lookup_group": "grade_10_to_letter",
+                "table_name": "Bảng không khớp",
+                "cohort": "K51",
+                "document_id": "handbook-k51-unused",
+                "source_section": "K51_Dieu_Unused",
+                "source_pages": [99],
+                "rows": [
+                    {"score_10_range": "0.0-4.0", "letter_grade": "F"},
+                ],
+            },
+        ]
+
+        result = structured_lookup_from_slots(
+            {"operation": "grade_10_to_letter", "score_or_grade": 8.5},
+            tables,
+            cohort="K51",
+        )
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["source_pages"], [10])
+        self.assertEqual(
+            [record["table_id"] for record in result["source_records"]],
+            ["grade_10_to_letter_used"],
+        )
+
     def test_numeric_grade_answer_mentions_letter_grade(self) -> None:
         result = structured_lookup("Điểm 8.5 tương ứng điểm chữ nào?", self.tables)
         self.assertIsNotNone(result)

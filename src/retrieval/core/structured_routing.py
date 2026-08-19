@@ -1047,7 +1047,7 @@ def validate_router_decision(
     return errors
 
 
-def fallback_to_rag(
+def reject_invalid_plan(
     decision: dict[str, Any],
     errors: list[str],
     *,

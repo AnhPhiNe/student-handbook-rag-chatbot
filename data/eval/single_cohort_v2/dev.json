@@ -1,0 +1,6241 @@
+[
+  {
+    "id": "dev-001",
+    "category": "single_structured",
+    "query": "Sinh viên hỏi K51, IELTS 6.1 tương đương bậc mấy (tình huống 1)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-002",
+    "category": "single_structured",
+    "query": "Sinh viên hỏi K51, IELTS 6.2 tương đương bậc mấy (tình huống 2)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-003",
+    "category": "single_structured",
+    "query": "Sinh viên hỏi K51, IELTS 6.3 tương đương bậc mấy (tình huống 3)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-004",
+    "category": "single_structured",
+    "query": "Sinh viên hỏi K51, IELTS 6.4 tương đương bậc mấy (tình huống 4)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-005",
+    "category": "single_structured",
+    "query": "Sinh viên hỏi K51, IELTS 6.0 tương đương bậc mấy (tình huống 5)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-006",
+    "category": "single_structured",
+    "query": "Sinh viên hỏi K51, IELTS 6.1 tương đương bậc mấy (tình huống 6)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-007",
+    "category": "single_structured",
+    "query": "Sinh viên hỏi K51, IELTS 6.2 tương đương bậc mấy (tình huống 7)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-008",
+    "category": "single_structured",
+    "query": "Sinh viên hỏi K51, IELTS 6.3 tương đương bậc mấy (tình huống 8)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-009",
+    "category": "single_structured",
+    "query": "Sinh viên hỏi K51, IELTS 6.4 tương đương bậc mấy (tình huống 9)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-010",
+    "category": "single_structured",
+    "query": "Sinh viên hỏi K51, IELTS 6.0 tương đương bậc mấy (tình huống 10)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-011",
+    "category": "single_rag",
+    "query": "K51 cần biết thủ tục bảo lưu học tập tình huống 1.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu học tập tình huống 1",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-012",
+    "category": "single_rag",
+    "query": "K51 cần biết thủ tục bảo lưu học tập tình huống 2.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu học tập tình huống 2",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-013",
+    "category": "single_rag",
+    "query": "K51 cần biết thủ tục bảo lưu học tập tình huống 3.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu học tập tình huống 3",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-014",
+    "category": "single_rag",
+    "query": "K51 cần biết thủ tục bảo lưu học tập tình huống 4.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu học tập tình huống 4",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-015",
+    "category": "single_rag",
+    "query": "K51 cần biết thủ tục bảo lưu học tập tình huống 5.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu học tập tình huống 5",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-016",
+    "category": "single_rag",
+    "query": "K51 cần biết thủ tục bảo lưu học tập tình huống 6.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu học tập tình huống 6",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-017",
+    "category": "single_rag",
+    "query": "K51 cần biết thủ tục bảo lưu học tập tình huống 7.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu học tập tình huống 7",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-018",
+    "category": "single_rag",
+    "query": "K51 cần biết thủ tục bảo lưu học tập tình huống 8.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu học tập tình huống 8",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-019",
+    "category": "single_rag",
+    "query": "K51 cần biết thủ tục bảo lưu học tập tình huống 9.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu học tập tình huống 9",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-020",
+    "category": "single_rag",
+    "query": "K51 cần biết thủ tục bảo lưu học tập tình huống 10.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu học tập tình huống 10",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-021",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.1 tương đương bậc nào và GPA 3.1 xếp loại gì, tình huống 1?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.1",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-022",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.2 tương đương bậc nào và GPA 3.2 xếp loại gì, tình huống 2?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.2",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-023",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.3 tương đương bậc nào và GPA 3.3 xếp loại gì, tình huống 3?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.3",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-024",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.4 tương đương bậc nào và GPA 3.4 xếp loại gì, tình huống 4?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.4",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-025",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.0 tương đương bậc nào và GPA 3.5 xếp loại gì, tình huống 5?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.5",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.5"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-026",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.1 tương đương bậc nào và GPA 3.6 xếp loại gì, tình huống 6?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.6",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.6"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-027",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.2 tương đương bậc nào và GPA 3.7 xếp loại gì, tình huống 7?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.7",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.7"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-028",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.3 tương đương bậc nào và GPA 3.8 xếp loại gì, tình huống 8?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.8",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.8"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-029",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.4 tương đương bậc nào và GPA 3.0 xếp loại gì, tình huống 9?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.0",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-030",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.0 tương đương bậc nào và GPA 3.1 xếp loại gì, tình huống 10?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.1",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-031",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.1 tương đương bậc nào và GPA 3.2 xếp loại gì, tình huống 11?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.2",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-032",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.2 tương đương bậc nào và GPA 3.3 xếp loại gì, tình huống 12?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.3",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-033",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.3 tương đương bậc nào và GPA 3.4 xếp loại gì, tình huống 13?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.4",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-034",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.4 tương đương bậc nào và GPA 3.5 xếp loại gì, tình huống 14?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.5",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.5"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-035",
+    "category": "multi_entity",
+    "query": "K51: IELTS 6.0 tương đương bậc nào và GPA 3.6 xếp loại gì, tình huống 15?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.6",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.6"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-036",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.1 tương đương bậc nào và GPA 3.1 xếp loại gì, tình huống 1?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.1",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-037",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.2 tương đương bậc nào và GPA 3.2 xếp loại gì, tình huống 2?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.2",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-038",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.3 tương đương bậc nào và GPA 3.3 xếp loại gì, tình huống 3?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.3",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-039",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.4 tương đương bậc nào và GPA 3.4 xếp loại gì, tình huống 4?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.4",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-040",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.0 tương đương bậc nào và GPA 3.5 xếp loại gì, tình huống 5?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.5",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.5"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-041",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.1 tương đương bậc nào và GPA 3.6 xếp loại gì, tình huống 6?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.6",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.6"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-042",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.2 tương đương bậc nào và GPA 3.7 xếp loại gì, tình huống 7?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.7",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.7"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-043",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.3 tương đương bậc nào và GPA 3.8 xếp loại gì, tình huống 8?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.8",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.8"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-044",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.4 tương đương bậc nào và GPA 3.0 xếp loại gì, tình huống 9?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.0",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-045",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.0 tương đương bậc nào và GPA 3.1 xếp loại gì, tình huống 10?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.1",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-046",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.1 tương đương bậc nào và GPA 3.2 xếp loại gì, tình huống 11?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.2",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-047",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.2 tương đương bậc nào và GPA 3.3 xếp loại gì, tình huống 12?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.3",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-048",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.3 tương đương bậc nào và GPA 3.4 xếp loại gì, tình huống 13?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.4",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-049",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.4 tương đương bậc nào và GPA 3.5 xếp loại gì, tình huống 14?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.5",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.5"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-050",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.0 tương đương bậc nào và GPA 3.6 xếp loại gì, tình huống 15?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.6",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.6"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-051",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.1 tương đương bậc nào và GPA 3.7 xếp loại gì, tình huống 16?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.7",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.7"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-052",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.2 tương đương bậc nào và GPA 3.8 xếp loại gì, tình huống 17?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.8",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.8"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-053",
+    "category": "two_structured",
+    "query": "K51: IELTS 6.3 tương đương bậc nào và GPA 3.0 xếp loại gì, tình huống 18?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.0",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-054",
+    "category": "mixed",
+    "query": "K51, IELTS 6.1 là bậc nào và quy trình bảo lưu tình huống 1 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 1",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-055",
+    "category": "mixed",
+    "query": "K51, IELTS 6.2 là bậc nào và quy trình bảo lưu tình huống 2 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 2",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-056",
+    "category": "mixed",
+    "query": "K51, IELTS 6.3 là bậc nào và quy trình bảo lưu tình huống 3 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 3",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-057",
+    "category": "mixed",
+    "query": "K51, IELTS 6.4 là bậc nào và quy trình bảo lưu tình huống 4 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 4",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-058",
+    "category": "mixed",
+    "query": "K51, IELTS 6.0 là bậc nào và quy trình bảo lưu tình huống 5 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 5",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-059",
+    "category": "mixed",
+    "query": "K51, IELTS 6.1 là bậc nào và quy trình bảo lưu tình huống 6 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 6",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-060",
+    "category": "mixed",
+    "query": "K51, IELTS 6.2 là bậc nào và quy trình bảo lưu tình huống 7 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 7",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-061",
+    "category": "mixed",
+    "query": "K51, IELTS 6.3 là bậc nào và quy trình bảo lưu tình huống 8 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 8",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-062",
+    "category": "mixed",
+    "query": "K51, IELTS 6.4 là bậc nào và quy trình bảo lưu tình huống 9 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 9",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-063",
+    "category": "mixed",
+    "query": "K51, IELTS 6.0 là bậc nào và quy trình bảo lưu tình huống 10 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 10",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-064",
+    "category": "mixed",
+    "query": "K51, IELTS 6.1 là bậc nào và quy trình bảo lưu tình huống 11 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 11",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-065",
+    "category": "mixed",
+    "query": "K51, IELTS 6.2 là bậc nào và quy trình bảo lưu tình huống 12 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 12",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-066",
+    "category": "mixed",
+    "query": "K51, IELTS 6.3 là bậc nào và quy trình bảo lưu tình huống 13 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 13",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-067",
+    "category": "mixed",
+    "query": "K51, IELTS 6.4 là bậc nào và quy trình bảo lưu tình huống 14 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 14",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-068",
+    "category": "mixed",
+    "query": "K51, IELTS 6.0 là bậc nào và quy trình bảo lưu tình huống 15 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 15",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-069",
+    "category": "mixed",
+    "query": "K51, IELTS 6.1 là bậc nào và quy trình bảo lưu tình huống 16 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 16",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-070",
+    "category": "mixed",
+    "query": "K51, IELTS 6.2 là bậc nào và quy trình bảo lưu tình huống 17 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 17",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-071",
+    "category": "mixed",
+    "query": "K51, IELTS 6.3 là bậc nào và quy trình bảo lưu tình huống 18 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 18",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-072",
+    "category": "mixed",
+    "query": "K51, IELTS 6.4 là bậc nào và quy trình bảo lưu tình huống 19 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 19",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-073",
+    "category": "mixed",
+    "query": "K51, IELTS 6.0 là bậc nào và quy trình bảo lưu tình huống 20 ra sao?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "quy trình bảo lưu tình huống 20",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-074",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 1 và quy định thôi học tình huống 1.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 1",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 1",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-075",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 2 và quy định thôi học tình huống 2.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 2",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 2",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-076",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 3 và quy định thôi học tình huống 3.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 3",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 3",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-077",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 4 và quy định thôi học tình huống 4.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 4",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 4",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-078",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 5 và quy định thôi học tình huống 5.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 5",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 5",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-079",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 6 và quy định thôi học tình huống 6.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 6",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 6",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-080",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 7 và quy định thôi học tình huống 7.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 7",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 7",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-081",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 8 và quy định thôi học tình huống 8.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 8",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 8",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-082",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 9 và quy định thôi học tình huống 9.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 9",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 9",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-083",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 10 và quy định thôi học tình huống 10.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 10",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 10",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-084",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 11 và quy định thôi học tình huống 11.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 11",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 11",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-085",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 12 và quy định thôi học tình huống 12.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 12",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 12",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-086",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 13 và quy định thôi học tình huống 13.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 13",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 13",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-087",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 14 và quy định thôi học tình huống 14.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 14",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 14",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-088",
+    "category": "two_regulations",
+    "query": "K51 hỏi điều kiện tốt nghiệp tình huống 15 và quy định thôi học tình huống 15.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "policy",
+          "query_span": "điều kiện tốt nghiệp tình huống 15",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "quy định thôi học tình huống 15",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-089",
+    "category": "three_to_six_requests",
+    "query": "K51: IELTS 6.1 bậc gì, GPA 3.1 loại gì, bảo lưu tình huống 1 thế nào?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.1",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r3",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "bảo lưu tình huống 1",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-090",
+    "category": "three_to_six_requests",
+    "query": "K51: IELTS 6.2 bậc gì, GPA 3.2 loại gì, bảo lưu tình huống 2 thế nào?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.2",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r3",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "bảo lưu tình huống 2",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-091",
+    "category": "three_to_six_requests",
+    "query": "K51: IELTS 6.3 bậc gì, GPA 3.3 loại gì, bảo lưu tình huống 3 thế nào?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.3",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r3",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "bảo lưu tình huống 3",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-092",
+    "category": "three_to_six_requests",
+    "query": "K51: IELTS 6.4 bậc gì, GPA 3.4 loại gì, bảo lưu tình huống 4 thế nào?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.4",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r3",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "bảo lưu tình huống 4",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-093",
+    "category": "three_to_six_requests",
+    "query": "K51: IELTS 6.0 bậc gì, GPA 3.5 loại gì, bảo lưu tình huống 5 thế nào?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.5",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.5"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r3",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "bảo lưu tình huống 5",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-094",
+    "category": "three_to_six_requests",
+    "query": "K51: IELTS 6.1 bậc gì, GPA 3.6 loại gì, bảo lưu tình huống 6 thế nào?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.6",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.6"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r3",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "bảo lưu tình huống 6",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-095",
+    "category": "three_to_six_requests",
+    "query": "K51: IELTS 6.2 bậc gì, GPA 3.7 loại gì, bảo lưu tình huống 7 thế nào?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.7",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.7"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r3",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "bảo lưu tình huống 7",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-096",
+    "category": "three_to_six_requests",
+    "query": "K51: IELTS 6.3 bậc gì, GPA 3.8 loại gì, bảo lưu tình huống 8 thế nào?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.8",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.8"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r3",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "bảo lưu tình huống 8",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-097",
+    "category": "three_to_six_requests",
+    "query": "K51: IELTS 6.4 bậc gì, GPA 3.0 loại gì, bảo lưu tình huống 9 thế nào?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.0",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r3",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "bảo lưu tình huống 9",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-098",
+    "category": "three_to_six_requests",
+    "query": "K51: IELTS 6.0 bậc gì, GPA 3.1 loại gì, bảo lưu tình huống 10 thế nào?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.1",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r3",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "bảo lưu tình huống 10",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-099",
+    "category": "three_to_six_requests",
+    "query": "K51: IELTS 6.1 bậc gì, GPA 3.2 loại gì, bảo lưu tình huống 11 thế nào?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.2",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r3",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "bảo lưu tình huống 11",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-100",
+    "category": "three_to_six_requests",
+    "query": "K51: IELTS 6.2 bậc gì, GPA 3.3 loại gì, bảo lưu tình huống 12 thế nào?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "structured",
+          "lookup_type": "scoring",
+          "intent": "direct_value",
+          "query_span": "GPA 3.3",
+          "slots": {
+            "operation": "academic_classification",
+            "score_or_grade": "3.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r3",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "bảo lưu tình huống 12",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-101",
+    "category": "robustness",
+    "query": "k51 IELTS 6.1 tuong duong bac may, tình huống 1?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1 tuong duong bac may",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-102",
+    "category": "robustness",
+    "query": "k51 IELTS 6.2 tuong duong bac may, tình huống 2?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2 tuong duong bac may",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-103",
+    "category": "robustness",
+    "query": "k51 IELTS 6.3 tuong duong bac may, tình huống 3?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3 tuong duong bac may",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-104",
+    "category": "robustness",
+    "query": "k51 IELTS 6.4 tuong duong bac may, tình huống 4?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4 tuong duong bac may",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-105",
+    "category": "robustness",
+    "query": "k51 IELTS 6.0 tuong duong bac may, tình huống 5?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0 tuong duong bac may",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-106",
+    "category": "robustness",
+    "query": "k51 IELTS 6.1 tuong duong bac may, tình huống 6?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1 tuong duong bac may",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-107",
+    "category": "robustness",
+    "query": "k51 IELTS 6.2 tuong duong bac may, tình huống 7?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2 tuong duong bac may",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-108",
+    "category": "robustness",
+    "query": "k51 IELTS 6.3 tuong duong bac may, tình huống 8?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3 tuong duong bac may",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-109",
+    "category": "robustness",
+    "query": "k51 IELTS 6.4 tuong duong bac may, tình huống 9?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4 tuong duong bac may",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-110",
+    "category": "robustness",
+    "query": "k51 IELTS 6.0 tuong duong bac may, tình huống 10?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.0 tuong duong bac may",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.0"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-111",
+    "category": "robustness",
+    "query": "k51 IELTS 6.1 tuong duong bac may, tình huống 11?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.1 tuong duong bac may",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.1"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-112",
+    "category": "robustness",
+    "query": "k51 IELTS 6.2 tuong duong bac may, tình huống 12?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.2 tuong duong bac may",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.2"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-113",
+    "category": "robustness",
+    "query": "k51 IELTS 6.3 tuong duong bac may, tình huống 13?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.3 tuong duong bac may",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.3"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-114",
+    "category": "robustness",
+    "query": "k51 IELTS 6.4 tuong duong bac may, tình huống 14?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "foreign_language",
+          "intent": "direct_value",
+          "query_span": "IELTS 6.4 tuong duong bac may",
+          "slots": {
+            "certificate_or_language": "IELTS",
+            "score_or_level": "6.4"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-115",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 1)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 1."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 1",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-116",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 2)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 2."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 2",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-117",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 3)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 3."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 3",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-118",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 4)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 4."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 4",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-119",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 5)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 5."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 5",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-120",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 6)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 6."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 6",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-121",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 7)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 7."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 7",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-122",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 8)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 8."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 8",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-123",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 9)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 9."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 9",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-124",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 10)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 10."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 10",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-125",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 11)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 11."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 11",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-126",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 12)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 12."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 12",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-127",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 13)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 13."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 13",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-128",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 14)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 14."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 14",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-129",
+    "category": "follow_up",
+    "query": "Còn ngoại lệ của nội dung đó (tình huống 15)?",
+    "selected_cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K51 cần xem điều kiện tốt nghiệp tình huống 15."
+      },
+      {
+        "role": "assistant",
+        "content": "Đã tìm thấy mục quy định tốt nghiệp."
+      }
+    ],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "grounded_history",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "consequence_or_exception",
+          "query_span": "ngoại lệ điều kiện tốt nghiệp tình huống 15",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-130",
+    "category": "cohort_resolution",
+    "query": "K50 và K51: IELTS 6.0 tương đương bậc mấy (tình huống 1)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "clarify",
+      "context_mode": "validated",
+      "effective_cohort": null,
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [],
+      "retrieval_executed": false,
+      "partial_status": "not_applicable"
+    }
+  },
+  {
+    "id": "dev-131",
+    "category": "cohort_resolution",
+    "query": "K50 và K51: IELTS 6.0 tương đương bậc mấy (tình huống 2)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "clarify",
+      "context_mode": "validated",
+      "effective_cohort": null,
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [],
+      "retrieval_executed": false,
+      "partial_status": "not_applicable"
+    }
+  },
+  {
+    "id": "dev-132",
+    "category": "cohort_resolution",
+    "query": "K50 và K51: IELTS 6.0 tương đương bậc mấy (tình huống 3)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "clarify",
+      "context_mode": "validated",
+      "effective_cohort": null,
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [],
+      "retrieval_executed": false,
+      "partial_status": "not_applicable"
+    }
+  },
+  {
+    "id": "dev-133",
+    "category": "cohort_resolution",
+    "query": "K50 và K51: IELTS 6.0 tương đương bậc mấy (tình huống 4)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "clarify",
+      "context_mode": "validated",
+      "effective_cohort": null,
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [],
+      "retrieval_executed": false,
+      "partial_status": "not_applicable"
+    }
+  },
+  {
+    "id": "dev-134",
+    "category": "cohort_resolution",
+    "query": "K50 và K51: IELTS 6.0 tương đương bậc mấy (tình huống 5)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "clarify",
+      "context_mode": "validated",
+      "effective_cohort": null,
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [],
+      "retrieval_executed": false,
+      "partial_status": "not_applicable"
+    }
+  },
+  {
+    "id": "dev-135",
+    "category": "cohort_resolution",
+    "query": "K50 và K51: IELTS 6.0 tương đương bậc mấy (tình huống 6)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "clarify",
+      "context_mode": "validated",
+      "effective_cohort": null,
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [],
+      "retrieval_executed": false,
+      "partial_status": "not_applicable"
+    }
+  },
+  {
+    "id": "dev-136",
+    "category": "cohort_resolution",
+    "query": "K50 và K51: IELTS 6.0 tương đương bậc mấy (tình huống 7)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "clarify",
+      "context_mode": "validated",
+      "effective_cohort": null,
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [],
+      "retrieval_executed": false,
+      "partial_status": "not_applicable"
+    }
+  },
+  {
+    "id": "dev-137",
+    "category": "cohort_resolution",
+    "query": "K50 và K51: IELTS 6.0 tương đương bậc mấy (tình huống 8)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "clarify",
+      "context_mode": "validated",
+      "effective_cohort": null,
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [],
+      "retrieval_executed": false,
+      "partial_status": "not_applicable"
+    }
+  },
+  {
+    "id": "dev-138",
+    "category": "cohort_resolution",
+    "query": "K50 và K51: IELTS 6.0 tương đương bậc mấy (tình huống 9)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "clarify",
+      "context_mode": "validated",
+      "effective_cohort": null,
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [],
+      "retrieval_executed": false,
+      "partial_status": "not_applicable"
+    }
+  },
+  {
+    "id": "dev-139",
+    "category": "cohort_resolution",
+    "query": "K50 và K51: IELTS 6.0 tương đương bậc mấy (tình huống 10)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "clarify",
+      "context_mode": "validated",
+      "effective_cohort": null,
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [],
+      "retrieval_executed": false,
+      "partial_status": "not_applicable"
+    }
+  },
+  {
+    "id": "dev-140",
+    "category": "cohort_resolution",
+    "query": "K50 và K51: IELTS 6.0 tương đương bậc mấy (tình huống 11)?",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "clarify",
+      "context_mode": "validated",
+      "effective_cohort": null,
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [],
+      "retrieval_executed": false,
+      "partial_status": "not_applicable"
+    }
+  },
+  {
+    "id": "dev-141",
+    "category": "failure_isolation",
+    "query": "K51 cần email Phòng Công tác Sinh viên tình huống 1, và thủ tục bảo lưu tình huống 1.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "office",
+          "intent": "contact",
+          "query_span": "email Phòng Công tác Sinh viên tình huống 1",
+          "slots": {
+            "office": "Phòng Công tác Sinh viên",
+            "requested_field": "email"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu tình huống 1",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-142",
+    "category": "failure_isolation",
+    "query": "K51 cần email Phòng Công tác Sinh viên tình huống 2, và thủ tục bảo lưu tình huống 2.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "office",
+          "intent": "contact",
+          "query_span": "email Phòng Công tác Sinh viên tình huống 2",
+          "slots": {
+            "office": "Phòng Công tác Sinh viên",
+            "requested_field": "email"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu tình huống 2",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-143",
+    "category": "failure_isolation",
+    "query": "K51 cần email Phòng Công tác Sinh viên tình huống 3, và thủ tục bảo lưu tình huống 3.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "office",
+          "intent": "contact",
+          "query_span": "email Phòng Công tác Sinh viên tình huống 3",
+          "slots": {
+            "office": "Phòng Công tác Sinh viên",
+            "requested_field": "email"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu tình huống 3",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-144",
+    "category": "failure_isolation",
+    "query": "K51 cần email Phòng Công tác Sinh viên tình huống 4, và thủ tục bảo lưu tình huống 4.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "office",
+          "intent": "contact",
+          "query_span": "email Phòng Công tác Sinh viên tình huống 4",
+          "slots": {
+            "office": "Phòng Công tác Sinh viên",
+            "requested_field": "email"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu tình huống 4",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-145",
+    "category": "failure_isolation",
+    "query": "K51 cần email Phòng Công tác Sinh viên tình huống 5, và thủ tục bảo lưu tình huống 5.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "office",
+          "intent": "contact",
+          "query_span": "email Phòng Công tác Sinh viên tình huống 5",
+          "slots": {
+            "office": "Phòng Công tác Sinh viên",
+            "requested_field": "email"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu tình huống 5",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-146",
+    "category": "failure_isolation",
+    "query": "K51 cần email Phòng Công tác Sinh viên tình huống 6, và thủ tục bảo lưu tình huống 6.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "office",
+          "intent": "contact",
+          "query_span": "email Phòng Công tác Sinh viên tình huống 6",
+          "slots": {
+            "office": "Phòng Công tác Sinh viên",
+            "requested_field": "email"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu tình huống 6",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-147",
+    "category": "failure_isolation",
+    "query": "K51 cần email Phòng Công tác Sinh viên tình huống 7, và thủ tục bảo lưu tình huống 7.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "office",
+          "intent": "contact",
+          "query_span": "email Phòng Công tác Sinh viên tình huống 7",
+          "slots": {
+            "office": "Phòng Công tác Sinh viên",
+            "requested_field": "email"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu tình huống 7",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-148",
+    "category": "failure_isolation",
+    "query": "K51 cần email Phòng Công tác Sinh viên tình huống 8, và thủ tục bảo lưu tình huống 8.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "office",
+          "intent": "contact",
+          "query_span": "email Phòng Công tác Sinh viên tình huống 8",
+          "slots": {
+            "office": "Phòng Công tác Sinh viên",
+            "requested_field": "email"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu tình huống 8",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-149",
+    "category": "failure_isolation",
+    "query": "K51 cần email Phòng Công tác Sinh viên tình huống 9, và thủ tục bảo lưu tình huống 9.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "office",
+          "intent": "contact",
+          "query_span": "email Phòng Công tác Sinh viên tình huống 9",
+          "slots": {
+            "office": "Phòng Công tác Sinh viên",
+            "requested_field": "email"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu tình huống 9",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  },
+  {
+    "id": "dev-150",
+    "category": "failure_isolation",
+    "query": "K51 cần email Phòng Công tác Sinh viên tình huống 10, và thủ tục bảo lưu tình huống 10.",
+    "selected_cohort": "K51",
+    "chat_history": [],
+    "expected": {
+      "outcome": "execute",
+      "context_mode": "validated",
+      "effective_cohort": "K51",
+      "effective_cohort_source": "raw_query",
+      "atomic_requests": [
+        {
+          "request_id": "r1",
+          "request_kind": "structured",
+          "lookup_type": "office",
+          "intent": "contact",
+          "query_span": "email Phòng Công tác Sinh viên tình huống 10",
+          "slots": {
+            "office": "Phòng Công tác Sinh viên",
+            "requested_field": "email"
+          },
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        },
+        {
+          "request_id": "r2",
+          "request_kind": "rag",
+          "lookup_type": null,
+          "intent": "procedure",
+          "query_span": "thủ tục bảo lưu tình huống 10",
+          "slots": {},
+          "cohort_refs": [
+            "K51"
+          ],
+          "expected_status": "ok",
+          "source_binding": "request_scoped"
+        }
+      ],
+      "retrieval_executed": true,
+      "partial_status": "complete"
+    }
+  }
+]

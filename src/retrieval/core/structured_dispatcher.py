@@ -10,6 +10,12 @@ from .foreign_language_lookup import foreign_language_lookup
 from .office_lookup import office_lookup
 from .program_lookup import program_lookup
 from .request_execution import RequestExecutionContext
+from .structured_routing import load_lookup_registry
+from .tool_registry import (
+    ToolExecutionInput,
+    ToolResources,
+    build_tool_registry,
+)
 from .scholarship_lookup import scholarship_classification_lookup
 from .study_duration_lookup import study_duration_lookup
 from .structured_lookup import structured_lookup_from_slots
@@ -106,6 +112,39 @@ def _bind_regulation_source(
         }
     )
     return bound
+
+
+def _resolve_registry_lookup(
+    lookup_type: str,
+    *,
+    decision: dict[str, Any],
+    request: dict[str, Any],
+    query: str,
+    effective_cohort: str | None,
+    resources: ToolResources,
+    context: RequestExecutionContext | None,
+) -> StructuredResolution | None:
+    """Execute selected tool only; no tool inference or RAG fallback here."""
+    result = build_tool_registry(load_lookup_registry().get("tools") or {}).execute(
+        lookup_type,
+        ToolExecutionInput(
+            request=request,
+            decision=decision,
+            context=context,
+            query=query,
+            effective_cohort=effective_cohort,
+            resources=resources,
+        ),
+    )
+    if result.result is None:
+        return None
+    return StructuredResolution(
+        lookup_type=lookup_type,
+        strategy=result.strategy,
+        result_kind=result.result_kind,
+        result=result.result,
+        target_chunk_types=result.target_chunk_types,
+    )
 
 
 def _resolve_single_lookup(
@@ -488,21 +527,18 @@ def resolve_structured_decision(
 ) -> StructuredResolution | None:
     effective_cohort = normalize_cohort(cohort or decision.get("cohort"))
 
-    lookup_kwargs = {
-        "decision": decision,
-        "query": query,
-        "effective_cohort": effective_cohort,
-        "scoring_tables": scoring_tables,
-        "formula_rules": formula_rules,
-        "office_directory": office_directory,
-        "student_service_directory": student_service_directory,
-        "student_faculty_profiles": student_faculty_profiles,
-        "foreign_language_tables": foreign_language_tables,
-        "structured_tables_registry": structured_tables_registry,
-        "program_directory": program_directory,
-        "detected_entities": detected_entities,
-        "model": model,
-    }
+    resources = ToolResources(
+        scoring_tables=scoring_tables,
+        formula_rules=formula_rules,
+        office_directory=office_directory,
+        student_service_directory=student_service_directory,
+        student_faculty_profiles=student_faculty_profiles,
+        foreign_language_tables=foreign_language_tables,
+        structured_tables_registry=structured_tables_registry,
+        program_directory=program_directory,
+        detected_entities=detected_entities,
+        model=model,
+    )
 
     raw_requests = decision.get("lookup_requests")
     if isinstance(raw_requests, list):
@@ -543,14 +579,14 @@ def resolve_structured_decision(
             else request_query
         )
         request_decision = _decision_for_request(decision, request)
-        request_kwargs = {
-            **lookup_kwargs,
-            "decision": request_decision,
-            "query": lookup_query,
-        }
-        resolution = _resolve_single_lookup(
+        resolution = _resolve_registry_lookup(
             str(request.get("lookup_type") or "").strip(),
-            **request_kwargs,
+            decision=request_decision,
+            request=request,
+            query=lookup_query,
+            effective_cohort=effective_cohort,
+            resources=resources,
+            context=execution_context,
         )
         if resolution and resolution.result_kind == "clarification":
             return _with_request_metadata(

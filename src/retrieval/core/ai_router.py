@@ -20,7 +20,7 @@ from src.common.env_loader import load_project_env
 from .structured_routing import (
     bind_effective_cohort,
     compact_registry_for_prompt,
-    fallback_to_rag,
+    reject_invalid_plan,
     load_lookup_registry,
     normalize_router_decision,
     registry_digest,
@@ -689,7 +689,7 @@ class AIRouter:
                         *validation_errors,
                     ]
                 if validation_errors:
-                    decision = fallback_to_rag(
+                    decision = reject_invalid_plan(
                         decision,
                         validation_errors,
                         query=validation_query,

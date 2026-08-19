@@ -6,7 +6,7 @@ import pytest
 
 from src.retrieval.core.structured_routing import (
     MAX_LOOKUP_REQUESTS,
-    fallback_to_rag,
+    reject_invalid_plan,
     normalize_router_decision,
     validate_router_decision,
 )
@@ -443,7 +443,7 @@ def test_invalid_plan_clarifies_without_a_whole_query_rag_request() -> None:
         ],
     )
     errors = _errors(decision, query)
-    fallback = fallback_to_rag(decision, errors, query=query)
+    fallback = reject_invalid_plan(decision, errors, query=query)
 
     assert fallback["route"] == "clarify"
     assert fallback["execution_mode"] == "regulation"

@@ -16,7 +16,7 @@ from src.retrieval.core.query_context import select_effective_query
 from src.retrieval.core.request_execution import RequestExecutionContext
 from src.retrieval.core.structured_routing import (
     bind_effective_cohort,
-    fallback_to_rag,
+    reject_invalid_plan,
     load_lookup_registry,
     validate_router_decision,
 )
@@ -616,6 +616,14 @@ class AnswerPipeline:
             "detected_entities": res.get("detected_entities") or [],
             "target_chunk_types": res.get("target_chunk_types") or [],
             "llm_called": llm_called,
+            "debug": {
+                "plan_version": router_decision.get("plan_version"),
+                "effective_cohort": res.get("selected_cohort") or router_decision.get("cohort"),
+                "retrieval_executed": bool(res.get("retrieval_executed")),
+                "partial_status": self._partial_status(res),
+                "request_results": res.get("request_results") or [],
+                "request_execution_contexts": res.get("request_execution_contexts") or [],
+            },
         }
 
     def answer_stream(
@@ -1032,7 +1040,7 @@ class AnswerPipeline:
                 registry=registry,
             )
             if runtime_validation_errors:
-                router_decision = fallback_to_rag(
+                router_decision = reject_invalid_plan(
                     router_decision,
                     runtime_validation_errors,
                     query=effective_query,
@@ -1146,122 +1154,6 @@ class AnswerPipeline:
             "clarification_question": "Hiện tại mình chỉ hỗ trợ một khóa cho mỗi câu hỏi. Bạn hãy chọn hoặc hỏi từng khóa riêng nhé.",
             "out_of_domain": False,
             "selected_cohort": cohort,
-            "query_handling": query_handling,
-            "effective_query": effective_query,
-            "raw_query": query,
-            "deterministic_validated": False,
-        }
-
-        sub_results: list[dict[str, Any]] = []
-        for c in cohorts:
-            sub_res = self._execute_single_cohort_retrieval(
-                query=query,
-                effective_query=effective_query,
-                retrieval_query=retrieval_query,
-                cohort=c,
-                router_decision=router_decision,
-                query_handling=query_handling,
-                chat_history=chat_history,
-            )
-            sub_results.append(sub_res)
-
-        merged_retrieved_items: list[dict[str, Any]] = []
-        seen_item_keys: set[Any] = set()
-        for sub in sub_results:
-            for item in sub.get("retrieved_items") or []:
-                item_cohort = (
-                    item.get("metadata", {}).get("cohort")
-                    or sub.get("selected_cohort")
-                )
-                item_id = str(item.get("chunk_id") or item.get("_id") or "")
-                key = (item.get("request_index"), item_cohort, item_id)
-                if key not in seen_item_keys:
-                    seen_item_keys.add(key)
-                    merged_retrieved_items.append(item)
-
-        merged_citations: list[dict[str, Any]] = []
-        seen_cit_keys: set[Any] = set()
-        for sub in sub_results:
-            for cit in sub.get("citations") or []:
-                cit_cohort = cit.get("cohort") or sub.get("selected_cohort")
-                key = (
-                    cit.get("request_index"),
-                    cit.get("query_span"),
-                    cit_cohort,
-                    cit.get("document_id"),
-                    cit.get("title") or cit.get("source_parent_id"),
-                    tuple(cit.get("source_pages") or []),
-                )
-                if key not in seen_cit_keys:
-                    seen_cit_keys.add(key)
-                    merged_citations.append(cit)
-
-        structured_results_list = [
-            sub.get("structured_result")
-            for sub in sub_results
-            if sub.get("structured_result")
-        ]
-        if len(structured_results_list) > 1:
-            merged_structured: Any = {
-                "lookup_type": "multi_cohort_structured",
-                "cohorts": cohorts,
-                "sub_lookups": structured_results_list,
-                "result": structured_results_list,
-                "table_name": f"So sánh bảng số liệu các khóa: {', '.join(cohorts)}",
-                "source_label": "Dữ liệu bảng quy chế tra cứu theo từng khóa",
-            }
-        elif len(structured_results_list) == 1:
-            merged_structured = structured_results_list[0]
-        else:
-            merged_structured = None
-
-        merged_request_results = [
-            item
-            for sub in sub_results
-            for item in sub.get("request_results") or []
-        ]
-        merged_unresolved_requests = [
-            item
-            for sub in sub_results
-            for item in sub.get("unresolved_lookup_requests") or []
-        ]
-        merged_related_items = [
-            item
-            for sub in sub_results
-            for item in sub.get("related_items") or []
-        ]
-        merged_related_references = [
-            item
-            for sub in sub_results
-            for item in sub.get("related_references") or []
-        ]
-        clarification = next(
-            (
-                sub.get("clarification_question")
-                for sub in sub_results
-                if sub.get("needs_clarification")
-            ),
-            None,
-        )
-
-        return {
-            "query": query,
-            "retrieval_query": retrieval_query,
-            "intent": router_decision.get("intent") or "multi_cohort_comparison",
-            "strategy": "multi_cohort_fusion",
-            "router_decision": router_decision,
-            "structured_result": merged_structured,
-            "retrieved_items": merged_retrieved_items,
-            "related_items": merged_related_items,
-            "related_references": merged_related_references,
-            "citations": merged_citations[:10],
-            "unresolved_lookup_requests": merged_unresolved_requests,
-            "request_results": merged_request_results,
-            "needs_llm_answer": True,
-            "needs_clarification": clarification is not None,
-            "clarification_question": clarification,
-            "out_of_domain": False,
-            "selected_cohort": ", ".join(cohorts),
             "query_handling": query_handling,
             "effective_query": effective_query,
             "raw_query": query,
@@ -2000,10 +1892,7 @@ class AnswerPipeline:
                 "plan_version": (router_decision or {}).get("plan_version"),
                 "effective_cohort": retrieval_result.get("selected_cohort"),
                 "retrieval_executed": bool(retrieval_result.get("retrieval_executed")),
-                "partial": bool(
-                    retrieval_result.get("unresolved_lookup_requests")
-                    and retrieval_result.get("request_results")
-                ),
+                "partial_status": self._partial_status(retrieval_result),
                 "request_results": retrieval_result.get("request_results") or [],
                 "request_execution_contexts": retrieval_result.get(
                     "request_execution_contexts"
@@ -2017,6 +1906,18 @@ class AnswerPipeline:
                 llm_called=llm_called,
             ),
         }
+
+    @staticmethod
+    def _partial_status(retrieval_result: dict[str, Any]) -> str:
+        request_results = retrieval_result.get("request_results") or []
+        if not request_results:
+            return "not_applicable"
+        statuses = [str(item.get("status") or "error") for item in request_results if isinstance(item, dict)]
+        if statuses and all(status == "ok" for status in statuses):
+            return "complete"
+        if any(status == "ok" for status in statuses):
+            return "partial"
+        return "failed"
 
     @staticmethod
     def _finalize_evaluation_telemetry(

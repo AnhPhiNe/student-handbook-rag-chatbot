@@ -3,6 +3,8 @@ rag_cohort_sensitive: true
 
 tools:
   foreign_language:
+    adapter_id: foreign_language
+    source_contract: regulation_table
     data_category: regulation_table
     cohort_sensitive: true
     description: Quy doi chung chi/diem ngoai ngu sang bac chuan dau ra.
@@ -22,6 +24,8 @@ tools:
     target_chunk_types: [structured_lookup]
 
   study_duration:
+    adapter_id: study_duration
+    source_contract: regulation_table
     data_category: regulation_table
     cohort_sensitive: true
     description: Tra thoi gian hoc chuan/toi da theo he va loai chuong trinh.
@@ -41,6 +45,8 @@ tools:
     target_chunk_types: [structured_lookup]
 
   scholarship_classification:
+    adapter_id: scholarship_classification
+    source_contract: regulation_table
     data_category: regulation_table
     cohort_sensitive: true
     description: Xep loai hoc bong tu diem, hoac tra khoang diem cua mot nhan xep loai cu the.
@@ -54,6 +60,8 @@ tools:
     target_chunk_types: [structured_lookup]
 
   scoring:
+    adapter_id: scoring
+    source_contract: regulation_table
     data_category: regulation_table
     cohort_sensitive: true
     description: Tra cuu va quy doi thang diem hoc phan (thang 10, diem chu, thang 4, dat/khong dat), xep loai hoc luc hoac diem ren luyen.
@@ -72,6 +80,9 @@ tools:
     target_chunk_types: [structured_lookup]
 
   student_service:
+    adapter_id: student_service
+    cohort_sensitive: false
+    source_contract: directory_table
     data_category: directory_table
     description: Tim don vi phu trach khi nguoi dung mo ta mot cong viec/dich vu can lam; khong dung cho quy dinh hay thu tuc.
     intents: [direct_value, contact]
@@ -89,6 +100,9 @@ tools:
     target_chunk_types: [office_directory]
 
   office:
+    adapter_id: office
+    cohort_sensitive: false
+    source_contract: directory_table
     data_category: directory_table
     description: Tra email, phone, website, dia chi, hoac nhiem vu, trach nhiem, cac mang cong viec ho tro sinh vien cua mot don vi cu the. Quy dinh, thu tuc va bieu mau thi phai RAG.
     intents: [contact]
@@ -105,6 +119,9 @@ tools:
     target_chunk_types: [office_directory]
 
   faculty:
+    adapter_id: faculty
+    cohort_sensitive: false
+    source_contract: directory_table
     data_category: directory_table
     description: Tra email, phone, website hoac dia chi cua mot Khoa cu the; khong dung cho cau hoi danh sach nganh.
     intents: [contact]
@@ -121,6 +138,9 @@ tools:
     target_chunk_types: [faculty_program_directory]
 
   program:
+    adapter_id: program
+    cohort_sensitive: false
+    source_contract: directory_table
     data_category: directory_table
     description: Tra nganh dao tao, khoa phu trach, danh sach nganh, mo ta chuong trinh va dau ra/co hoi nghe nghiep.
     intents: [direct_value, list_items, exists]
@@ -141,6 +161,8 @@ tools:
     target_chunk_types: [program_directory]
 
   formula:
+    adapter_id: formula
+    source_contract: regulation_table
     description: Tra cong thuc da duoc dinh nghia, khong thuc hien phep tinh.
     cohort_sensitive: true
     intents: [formula]

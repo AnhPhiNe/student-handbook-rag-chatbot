@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from src.generation.answer_pipeline import AnswerPipeline
 from src.retrieval.core.structured_routing import (
     bind_effective_cohort,
-    fallback_to_rag,
+    reject_invalid_plan,
     load_lookup_registry,
     normalize_router_decision,
     validate_router_decision,
@@ -39,7 +39,7 @@ def _pipeline() -> AnswerPipeline:
 
 
 def test_invalid_plan_clarifies_without_creating_rag_request() -> None:
-    decision = fallback_to_rag(
+    decision = reject_invalid_plan(
         {
             "route": "structured",
             "lookup_type": "program",

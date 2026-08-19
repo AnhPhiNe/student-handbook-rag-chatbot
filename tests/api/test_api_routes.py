@@ -178,7 +178,7 @@ class ApiRoutesTest(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         debug = response.json()["debug"]
-        self.assertEqual(debug["retrieval_query"], "Email Phong Dao tao la gi?")
+        self.assertIsNone(debug["retrieval_query"])
         self.assertEqual(debug["context_used_length"], len("short context"))
         self.assertEqual(debug["citations_count"], 1)
         self.assertEqual(debug["citations_used_count"], 1)

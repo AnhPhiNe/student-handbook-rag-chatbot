@@ -49,13 +49,14 @@ def _build_debug_payload(result: dict[str, Any]) -> dict[str, Any]:
     citations = result.get("citations") or []
     citations_used = result.get("citations_used") or []
 
-    return {
+    pipeline_debug = result.get("debug")
+    debug = dict(pipeline_debug) if isinstance(pipeline_debug, dict) else {}
+    debug.update({
         "intent": result.get("intent"),
         "strategy": result.get("strategy"),
         "effective_query": result.get("effective_query"),
         "query_handling": result.get("query_handling"),
         "router_decision": result.get("router_decision"),
-        "retrieval_query": result.get("retrieval_query"),
         "llm_called": bool(result.get("llm_called", False)),
         "used_cache": bool(result.get("used_cache", False)),
         "error_type": result.get("error_type"),
@@ -68,7 +69,10 @@ def _build_debug_payload(result: dict[str, Any]) -> dict[str, Any]:
         "request_id": result.get("request_id"),
         "latency_ms": result.get("latency_ms"),
         "evaluation_telemetry": result.get("evaluation_telemetry"),
-    }
+    })
+    # Compatibility field stays null; request-scoped values remain nested only.
+    debug["retrieval_query"] = None
+    return debug
 
 
 def _to_chat_response(

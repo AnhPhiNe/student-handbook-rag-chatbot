@@ -1,0 +1,60 @@
+{
+  "schema_version": "single-cohort-v2.0",
+  "frozen_at": "2026-08-19T04:20:46.477402+00:00",
+  "baseline_commit": "5d5447cc",
+  "counts": {
+    "single_structured": [
+      10,
+      4
+    ],
+    "single_rag": [
+      10,
+      4
+    ],
+    "multi_entity": [
+      15,
+      6
+    ],
+    "two_structured": [
+      18,
+      7
+    ],
+    "mixed": [
+      20,
+      8
+    ],
+    "two_regulations": [
+      15,
+      6
+    ],
+    "three_to_six_requests": [
+      12,
+      5
+    ],
+    "robustness": [
+      14,
+      6
+    ],
+    "follow_up": [
+      15,
+      6
+    ],
+    "cohort_resolution": [
+      11,
+      4
+    ],
+    "failure_isolation": [
+      10,
+      4
+    ]
+  },
+  "files": {
+    "dev.json": "de211c6249c0f2305b53ece4cc367c427bff575d1d336f4eeb08b5edf7efa20d",
+    "hidden.json": "176fa7e1f3470ee019f79068b9b974ea46060f6007cba3919a089ec4301d6748"
+  },
+  "hidden_policy": "Frozen before prompt tuning; not used for tuning.",
+  "legacy_final_holdout": {
+    "commit": "e38bfef",
+    "preserved": true
+  }
+}

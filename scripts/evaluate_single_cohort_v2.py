@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import subprocess
 import sys
@@ -412,6 +413,7 @@ def run_executor_retrieval(
     pipeline: AnswerPipeline,
     *,
     planner_rows: Mapping[str, Mapping[str, Any]],
+    result_sink: dict[str, dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for case in cases:
@@ -433,6 +435,25 @@ def run_executor_retrieval(
             )
         decision = planner_row.get("validated_decision") or {}
         if expected.get("outcome") != "execute":
+            if result_sink is not None:
+                outcome = str(decision.get("outcome") or "clarify")
+                result_sink[case["id"]] = {
+                    "router_decision": dict(decision),
+                    "effective_query": str(
+                        decision.get("effective_query") or case["query"]
+                    ),
+                    "query_handling": dict(decision.get("query_handling") or {}),
+                    "request_results": [],
+                    "retrieved_items": [],
+                    "citations": [],
+                    "retrieval_executed": False,
+                    "needs_clarification": outcome == "clarify",
+                    "clarification_question": str(
+                        decision.get("clarification_question")
+                        or "Bạn có thể làm rõ câu hỏi được không?"
+                    ),
+                    "out_of_domain": outcome == "out_of_domain",
+                }
             rows.append(
                 {
                     "id": case["id"],
@@ -456,6 +477,8 @@ def run_executor_retrieval(
                 query_handling=dict(decision.get("query_handling") or {}),
                 chat_history=case.get("chat_history") or [],
             )
+            if result_sink is not None:
+                result_sink[case["id"]] = copy.deepcopy(result)
             plan_correct = exact_plan_match(
                 expected, _plan_from_decision(result.get("router_decision") or {})
             )
@@ -515,13 +538,44 @@ def run_executor_retrieval(
 
 
 def run_answers(
-    cases: Iterable[dict[str, Any]], pipeline: AnswerPipeline
+    cases: Iterable[dict[str, Any]],
+    pipeline: AnswerPipeline,
+    *,
+    planner_rows: Mapping[str, Mapping[str, Any]],
+    execution_results: Mapping[str, Mapping[str, Any]],
 ) -> list[dict[str, Any]]:
     rows = []
     for case in cases:
         if case.get("fault_injection"):
             continue
+        planner_row = planner_rows.get(case["id"])
+        if not planner_row or not planner_row.get("passed"):
+            raise ValueError(
+                f"Answer composer received an incorrect plan: {case['id']}"
+            )
+        execution_result = execution_results.get(case["id"])
+        if execution_result is None:
+            rows.append(
+                {
+                    "id": case["id"],
+                    "provider_failure": True,
+                    "failure_type": "missing_validated_execution",
+                }
+            )
+            continue
+        original_run_retrieval = pipeline._run_retrieval
+
+        def use_validated_execution(
+            _query: str,
+            _cohort: str | None,
+            *,
+            chat_history: list[dict[str, str]] | None = None,
+        ) -> dict[str, Any]:
+            del chat_history
+            return copy.deepcopy(dict(execution_result))
+
         try:
+            pipeline._run_retrieval = use_validated_execution  # type: ignore[method-assign]
             result = pipeline.answer(
                 case["query"],
                 chat_history=case.get("chat_history") or [],
@@ -590,6 +644,8 @@ def run_answers(
                     "error_type": type(exc).__name__,
                 }
             )
+        finally:
+            pipeline._run_retrieval = original_run_retrieval  # type: ignore[method-assign]
     return rows
 
 
@@ -754,6 +810,10 @@ def main() -> None:
         )
     if args.run_executor != "none" and args.planner not in {args.run_executor, "both"}:
         parser.error("Executor/retrieval evaluation requires Planner evaluation for the same split.")
+    if args.run_answers != "none" and args.run_executor != args.run_answers:
+        parser.error(
+            "Answer evaluation requires executor/retrieval evaluation for the same split."
+        )
     if args.answers_report and args.run_answers != "none":
         parser.error("Use either --run-answers or --answers-report, not both.")
 
@@ -788,6 +848,7 @@ def main() -> None:
 
     pipeline: AnswerPipeline | None = None
     execution_rows: list[dict[str, Any]] = []
+    execution_results: dict[str, dict[str, Any]] = {}
     answer_rows: list[dict[str, Any]] = []
     if validation.valid and (args.run_executor != "none" or args.run_answers != "none"):
         pipeline = AnswerPipeline()
@@ -803,9 +864,22 @@ def main() -> None:
             planner_rows={
                 row["id"]: row for row in planner_rows.get(args.run_executor, [])
             },
+            result_sink=execution_results,
         )
     if pipeline and args.run_answers != "none":
-        answer_rows = run_answers(_load_cases(args.run_answers), pipeline)
+        passed_ids = {
+            row["id"]
+            for row in planner_rows.get(args.run_answers, [])
+            if row.get("passed")
+        }
+        answer_rows = run_answers(
+            [case for case in _load_cases(args.run_answers) if case["id"] in passed_ids],
+            pipeline,
+            planner_rows={
+                row["id"]: row for row in planner_rows.get(args.run_answers, [])
+            },
+            execution_results=execution_results,
+        )
     answers_report_hash: str | None = None
     if args.answers_report:
         answer_report = json.loads(args.answers_report.read_text(encoding="utf-8"))

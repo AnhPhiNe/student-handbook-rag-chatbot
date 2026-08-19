@@ -22,6 +22,7 @@ from scripts.evaluate_single_cohort_v2 import (
     _citation_isolated,
     _finish_hidden_attempt,
     _start_hidden_attempt,
+    run_answers,
     run_executor_retrieval,
 )
 
@@ -284,6 +285,7 @@ def test_executor_uses_the_already_validated_planner_decision() -> None:
         ],
     }
     pipeline = _Pipeline()
+    result_sink = {}
 
     rows = run_executor_retrieval(
         [{"id": "case-1", "query": "quy chế", "expected": expected}],
@@ -295,11 +297,101 @@ def test_executor_uses_the_already_validated_planner_decision() -> None:
                 "validated_decision": decision,
             }
         },
+        result_sink=result_sink,
     )
 
     assert pipeline.executed_decision == decision
+    assert result_sink["case-1"]["router_decision"] == decision
     assert rows[0]["plan_correct"] is True
     assert rows[0]["status_match"] is True
+
+
+def test_answer_composer_reuses_validated_execution_without_router_call() -> None:
+    expected = {
+        "outcome": "execute",
+        "context_mode": "standalone",
+        "query_mode": "validated",
+        "effective_cohort": "K51",
+        "effective_cohort_source": "selected_cohort",
+        "atomic_requests": [
+            {
+                "request_id": "r1",
+                "request_kind": "rag",
+                "tool_name": None,
+                "intent": "regulation",
+                "query_span": "quy chế",
+                "slots": {},
+                "cohort_refs": ["K51"],
+                "expected_status": "no_match",
+            }
+        ],
+    }
+    decision = {
+        "outcome": "execute",
+        "context_mode": "standalone",
+        "cohort": "K51",
+        "effective_cohort_source": "selected_cohort",
+        "effective_query": "quy chế",
+        "query_handling": {"mode": "validated"},
+        "lookup_requests": [
+            {
+                "request_kind": "rag",
+                "lookup_type": None,
+                "intent": "regulation",
+                "query_span": "quy chế",
+                "slots": {},
+                "cohort_refs": ["K51"],
+            }
+        ],
+    }
+    execution = {
+        "router_decision": decision,
+        "effective_query": "quy chế",
+        "request_results": [{"request_id": "r1", "status": "no_match"}],
+        "retrieved_items": [],
+        "citations": [],
+    }
+
+    class _Pipeline:
+        def _run_retrieval(self, *_args, **_kwargs):
+            raise AssertionError("router/retrieval must not run again")
+
+        def answer(self, query, *, chat_history, cohort):
+            result = self._run_retrieval(
+                query, cohort, chat_history=chat_history
+            )
+            return {
+                "status": "low_confidence",
+                "answer": "Không đủ bằng chứng.",
+                "model_used": None,
+                "llm_called": False,
+                "citations": result["citations"],
+                "retrieved_items": result["retrieved_items"],
+                "router_decision": result["router_decision"],
+                "effective_query": result["effective_query"],
+                "debug": {
+                    "request_results": result["request_results"],
+                    "partial_status": "failed",
+                },
+            }
+
+    rows = run_answers(
+        [
+            {
+                "id": "case-1",
+                "query": "quy chế",
+                "selected_cohort": "K51",
+                "chat_history": [],
+                "expected": expected,
+            }
+        ],
+        _Pipeline(),
+        planner_rows={"case-1": {"id": "case-1", "passed": True}},
+        execution_results={"case-1": execution},
+    )
+
+    assert rows[0]["provider_failure"] is False
+    assert rows[0]["answer_contract_bound"] is True
 
 
 def test_hidden_attempt_retry_requires_zero_output_and_same_binding(

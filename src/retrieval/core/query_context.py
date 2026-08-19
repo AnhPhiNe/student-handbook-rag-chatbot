@@ -369,11 +369,12 @@ def validate_follow_up_query(
     if not standalone_numbers.issubset(grounded_numbers):
         errors.append("follow_up_added_ungrounded_number")
 
-    raw_content = _content_tokens(raw_query)
     standalone_content = _content_tokens(standalone_query)
     grounded_content = _content_tokens(grounded_text)
-    if not raw_content.issubset(standalone_content):
-        errors.append("follow_up_dropped_current_topic")
+    # Additions must be fully attributable to the current query or declared
+    # history evidence. We intentionally do not use token-coverage thresholds:
+    # anaphora replacement may remove surface words while preserving all critical
+    # cohort, number and negation invariants checked above.
     if not standalone_content.issubset(grounded_content):
         errors.append("follow_up_added_ungrounded_content")
     if _negation_markers(raw_query) != _negation_markers(standalone_query):

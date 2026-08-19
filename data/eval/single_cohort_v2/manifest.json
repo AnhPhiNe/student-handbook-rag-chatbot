@@ -3,8 +3,8 @@
   "dataset_version": "single-cohort-gold-v1",
   "frozen_at": "2026-08-19T06:59:31.411314+00:00",
   "baseline_commit": "15f971d5",
-  "prompt_version": "single-cohort-planner-v2.1",
-  "registry_version": 2,
+  "prompt_version": "single-cohort-planner-v2.2",
+  "registry_version": 3,
   "counts": {
     "single_structured": {
       "dev": 10,

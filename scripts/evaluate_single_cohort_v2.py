@@ -12,6 +12,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
+from tqdm import tqdm
+
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -192,8 +194,9 @@ def _validated_planner_decision(
         registry = load_lookup_registry()
         errors = validate_router_decision(
             bound,
-            query=effective_query,
+            query=str(case["query"]),
             selected_cohort=bound.get("cohort"),
+            grounding_context=effective_query,
             registry=registry,
         )
         if errors:
@@ -252,7 +255,7 @@ def run_live_planner(
             f"Planner model must be {PLANNER_MODEL}, got {active_router.model_name}"
         )
     rows: list[dict[str, Any]] = []
-    for case in case_rows:
+    for case in tqdm(case_rows, desc="Planner", unit="case", dynamic_ncols=True):
         try:
             decision = active_router.route(
                 case["query"],
@@ -416,7 +419,13 @@ def run_executor_retrieval(
     result_sink: dict[str, dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    for case in cases:
+    case_rows = list(cases)
+    for case in tqdm(
+        case_rows,
+        desc="Executor/retrieval",
+        unit="case",
+        dynamic_ncols=True,
+    ):
         expected = case["expected"]
         if case.get("fault_injection"):
             rows.append(
@@ -545,7 +554,8 @@ def run_answers(
     execution_results: Mapping[str, Mapping[str, Any]],
 ) -> list[dict[str, Any]]:
     rows = []
-    for case in cases:
+    case_rows = list(cases)
+    for case in tqdm(case_rows, desc="Answer", unit="case", dynamic_ncols=True):
         if case.get("fault_injection"):
             continue
         planner_row = planner_rows.get(case["id"])

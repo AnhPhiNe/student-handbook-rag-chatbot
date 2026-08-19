@@ -10,6 +10,8 @@ import sys
 from pathlib import Path
 from typing import Any, Mapping
 
+from tqdm import tqdm
+
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -155,7 +157,7 @@ def main() -> None:
 
     # Answer quality is conditional on a correctly planned request. Planner failures
     # remain in exact-plan metrics and must not be relabeled as answer-provider errors.
-    for case_id in answer_ids:
+    for case_id in tqdm(answer_ids, desc="Judge", unit="case", dynamic_ncols=True):
         case = cases[case_id]
         if case_id in judged:
             continue

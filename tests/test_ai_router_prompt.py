@@ -38,6 +38,8 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
     assert "operand_requirements" not in prompt_registry
     assert "required=" in prompt_registry
     assert "values" in prompt_registry
+    assert "student_service|" in prompt_registry
+    assert "default=contact" in prompt_registry
 
 
 def test_router_contract_omits_fields_derived_by_code() -> None:
@@ -95,7 +97,9 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     )
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.1"
+    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.2"
+    assert "không dùng dấu \"...\"" in ROUTER_SYSTEM_PROMPT
+    assert "không phải request" in ROUTER_SYSTEM_PROMPT
 
 
 def test_history_window_uses_absolute_turn_ids(monkeypatch, tmp_path: Path) -> None:

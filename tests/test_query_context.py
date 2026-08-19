@@ -273,6 +273,28 @@ def test_follow_up_validator_rejects_new_ungrounded_topic() -> None:
     assert "follow_up_added_ungrounded_content" in errors
 
 
+def test_follow_up_may_drop_presentation_words_without_thresholds() -> None:
+    errors = validate_follow_up_query(
+        "Nội dung đó có ngoại lệ nào? Xin trích đúng nguồn tương ứng.",
+        "K51 quy định bảo lưu có ngoại lệ nào?",
+        referenced_turns=(0,),
+        referenced_evidence=(
+            ReferencedEvidenceSpan(turn_id=0, evidence_span="K51"),
+            ReferencedEvidenceSpan(turn_id=0, evidence_span="quy định bảo lưu"),
+        ),
+        chat_history=[
+            {
+                "role": "user",
+                "content": "Tôi là sinh viên K51, hãy tra quy định bảo lưu.",
+            }
+        ],
+        confidence="high",
+        selected_cohort=None,
+    )
+
+    assert errors == []
+
+
 def test_follow_up_validator_rejects_forged_evidence_span() -> None:
     errors = validate_follow_up_query(
         "Còn K51 thì sao?",

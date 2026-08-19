@@ -1035,8 +1035,9 @@ class AnswerPipeline:
         ):
             runtime_validation_errors = validate_router_decision(
                 router_decision,
-                query=effective_query,
+                query=query,
                 selected_cohort=router_decision.get("cohort"),
+                grounding_context=effective_query,
                 registry=registry,
             )
             if runtime_validation_errors:

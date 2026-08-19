@@ -121,6 +121,7 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
     lines: list[str] = []
     for name, spec in registry["tools"].items():
         intents = ",".join(spec.get("intents") or [])
+        default_intent = spec.get("default_intent") or ""
         required = spec.get("required_slots") or {}
         slot_contract: dict[str, Any] = {}
         for slot_name, slot_spec in (spec.get("slot_schema") or {}).items():
@@ -131,21 +132,24 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
             if allowed_values:
                 compact_spec["values"] = allowed_values
             slot_contract[slot_name] = compact_spec
-        lines.append(
-            "|".join(
-                (
-                    name,
-                    f"use={spec.get('description') or ''}",
-                    f"intents={intents}",
-                    "required="
-                    + json.dumps(required, ensure_ascii=True, separators=(",", ":")),
-                    "slots="
-                    + json.dumps(
-                        slot_contract, ensure_ascii=True, separators=(",", ":")
-                    ),
-                )
-            )
+        fields = [
+            name,
+            f"use={spec.get('description') or ''}",
+            f"intents={intents}",
+        ]
+        if default_intent:
+            fields.append(f"default={default_intent}")
+        fields.extend(
+            [
+                "required="
+                + json.dumps(required, ensure_ascii=True, separators=(",", ":")),
+                "slots="
+                + json.dumps(
+                    slot_contract, ensure_ascii=True, separators=(",", ":")
+                ),
+            ]
         )
+        lines.append("|".join(fields))
     rag_intents = ",".join(sorted((registry.get("rag_intents") or {}).keys()))
     lines.append(f"RAG_INTENTS|{rag_intents}")
     return "\n".join(lines)
@@ -206,6 +210,7 @@ def _normalize_lookup_request(
     raw_span = str(value.get("query_span") or "").strip()
     query_span = _recover_grounded_span(raw_span, query) or raw_span
     slots = dict(value.get("slots")) if isinstance(value.get("slots"), dict) else {}
+    slots = _canonicalize_slots(slots, spec or {})
     spans = (
         dict(value.get("slot_spans"))
         if isinstance(value.get("slot_spans"), dict)
@@ -300,7 +305,7 @@ def router_json_schema() -> dict[str, Any]:
                 "request_kind": "structured|rag",
                 "lookup_type": lookup_type_enum,
                 "intent": "tool intent or rag intent",
-                "query_span": "grounded semantic clause from QUERY/HISTORY",
+                "query_span": "smallest contiguous verbatim topic span from QUERY",
                 "slots": {},
                 "slot_spans": {},
                 "cohort_refs": [],
@@ -777,6 +782,17 @@ def _is_present(value: Any) -> bool:
 
 
 def _span_is_grounded(span: Any, source_text: str) -> bool:
+    if isinstance(span, dict) and set(span) == {"start", "end"}:
+        start = span.get("start")
+        end = span.get("end")
+        return bool(
+            isinstance(start, int)
+            and not isinstance(start, bool)
+            and isinstance(end, int)
+            and not isinstance(end, bool)
+            and 0 <= start < end <= len(source_text)
+            and source_text[start:end].strip()
+        )
     if isinstance(span, dict):
         return bool(span) and all(
             _span_is_grounded(value, source_text) for value in span.values()
@@ -806,13 +822,56 @@ def _normalized_leaf_values(value: Any) -> list[str]:
     return [normalized] if normalized else []
 
 
-def _slot_value_matches_span(value: Any, span: Any) -> bool:
+def _resolved_span_value(span: Any, source_text: str) -> Any:
+    if isinstance(span, dict) and set(span) == {"start", "end"}:
+        if not _span_is_grounded(span, source_text):
+            return None
+        return source_text[int(span["start"]) : int(span["end"])]
+    if isinstance(span, dict):
+        return {
+            key: _resolved_span_value(item, source_text)
+            for key, item in span.items()
+        }
+    if isinstance(span, list):
+        return [_resolved_span_value(item, source_text) for item in span]
+    return span
+
+
+def _slot_value_matches_span(value: Any, span: Any, source_text: str) -> bool:
     values = _normalized_leaf_values(value)
-    spans = _normalized_leaf_values(span)
+    spans = _normalized_leaf_values(_resolved_span_value(span, source_text))
     return bool(values and spans) and all(
         any(item == source or item in source or source in item for source in spans)
         for item in values
     )
+
+
+def _canonicalize_scalar(value: Any, schema: dict[str, Any]) -> Any:
+    if not isinstance(value, str):
+        return value
+    stripped = value.strip()
+    canonical_values = schema.get("canonical_values") or []
+    normalized_value = _normalize_text(stripped)
+    for candidate in canonical_values:
+        if normalized_value == _normalize_text(candidate):
+            return candidate
+    if schema.get("canonical_type") == "number" and re.fullmatch(
+        r"[+-]?\d+(?:[.,]\d+)?",
+        stripped,
+    ):
+        number = float(stripped.replace(",", "."))
+        return int(number) if number.is_integer() else number
+    return value
+
+
+def _canonicalize_slots(
+    slots: dict[str, Any], spec: dict[str, Any]
+) -> dict[str, Any]:
+    schema = spec.get("slot_schema") or {}
+    return {
+        name: _canonicalize_scalar(value, schema.get(name) or {})
+        for name, value in slots.items()
+    }
 
 
 def _matches_type(value: Any, expected: str) -> bool:
@@ -955,8 +1014,8 @@ def _validate_lookup_request(
             errors.append(f"{prefix}missing_slot_span:{slot_name}")
         elif not _span_is_grounded(span, request_source):
             errors.append(f"{prefix}ungrounded_slot:{slot_name}")
-        elif not (schema.get("enum") or schema.get("canonical_values")) and not (
-            _slot_value_matches_span(value, span)
+        elif not schema.get("enum") and not (
+            _slot_value_matches_span(value, span, request_source)
         ):
             errors.append(f"{prefix}slot_value_mismatch:{slot_name}")
 
@@ -980,7 +1039,6 @@ def validate_router_decision(
     grounding_context: str = "",
     registry: dict[str, Any] | None = None,
 ) -> list[str]:
-    del grounding_context
     registry = registry or load_lookup_registry()
     errors: list[str] = []
     route = decision.get("route")
@@ -1030,7 +1088,9 @@ def validate_router_decision(
     if selected and any(value != selected for value in request_cohorts):
         errors.append("request_cohort_conflict")
 
-    source_text = query
+    source_text = " ".join(
+        part.strip() for part in (query, grounding_context) if part and part.strip()
+    )
     for index, request in enumerate(lookup_requests):
         if not isinstance(request, dict):
             errors.append(f"request:{index}:invalid_payload")

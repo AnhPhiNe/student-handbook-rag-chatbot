@@ -32,8 +32,8 @@ from .query_context import select_effective_query
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.1"
-ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.1"
+ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.2"
+ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.2"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -50,6 +50,9 @@ QUERY CONTEXT
 - standalone: chỉ dùng QUERY. follow_up: standalone_query chỉ được ghép từ QUERY
   và referenced_evidence. Mỗi evidence_span phải là đoạn liên tục, nguyên văn trong
   turn thuộc referenced_turn_ids. ambiguous: outcome=clarify, lookup_requests=[].
+- Với follow_up, giữ nguyên mọi số, phủ định và điều kiện của QUERY; thêm đủ topic và
+  cohort từ lịch sử để câu đứng độc lập. Mỗi cụm được thêm phải có evidence_span riêng;
+  không thêm nội dung ngoài QUERY và các evidence_span đã khai báo.
 - normalized_query chỉ được sửa Unicode/dấu hoặc một lỗi gõ cục bộ. Mỗi thay đổi
   phải có correction với original_span nguyên văn trong QUERY và normalized_span.
   Không đổi cohort, số, phủ định, thực thể, điều kiện hoặc chủ đề. Không chắc thì
@@ -63,12 +66,18 @@ SINGLE-COHORT
 
 ATOMIC REQUESTS
 - outcome=execute: mỗi mục tiêu độc lập là một lookup_request theo thứ tự, tối đa 6.
+- Chỉ tạo request khi mục đó cần một kết quả/evidence riêng. Yêu cầu về cách trình bày,
+  trích nguồn, xác nhận, biểu mẫu đầu ra hoặc cách dùng câu trả lời không phải request.
 - structured dùng đúng một tool, intent và slots trong TOOLS. rag có lookup_type=null,
   slots={}, slot_spans={} và intent thuộc RAG_INTENTS.
-- query_span là một đoạn liên tục, nguyên văn của effective query; slot_spans phải
-  nằm trong query_span. Không tự tạo tool, intent, entity, cohort hoặc slot.
+- query_span là đoạn liên tục, nguyên văn, nhỏ nhất trong QUERY đủ định danh đúng một
+  operand/topic. Không thêm từ, không diễn giải, không dùng dấu "...". slot_spans phải
+  trỏ đúng nội dung trong query_span. Không tự tạo tool, intent, entity, cohort hoặc slot.
 - Hai quy định độc lập, hai entity, hoặc hai thao tác khác nhau phải là request riêng.
-- Hồ sơ/quy trình/điều kiện/ngoại lệ là rag. formula chỉ tra công thức.
+- RAG intent=procedure chỉ khi cần các bước/cách thực hiện; policy cho nội dung, điều
+  kiện hoặc quy định; consequence_or_exception cho hậu quả/ngoại lệ. Tên một thủ tục
+  nhưng không hỏi các bước vẫn là policy. formula chỉ tra công thức.
+- Với structured, dùng default_intent trong TOOLS khi yêu cầu không chỉ rõ intent khác.
 - outcome=out_of_domain khi ngoài phạm vi sổ tay. clarify/out_of_domain luôn có
   lookup_requests=[] và không thực hiện retrieval.
 """
@@ -679,8 +688,9 @@ class AIRouter:
                 )
                 validation_errors = validate_router_decision(
                     decision,
-                    query=validation_query,
+                    query=query,
                     selected_cohort=decision.get("cohort"),
+                    grounding_context=validation_query,
                     registry=self.registry,
                 )
                 if query_context.needs_clarification:

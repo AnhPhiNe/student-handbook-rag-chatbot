@@ -522,6 +522,7 @@ class ChildParentHybridRetriever:
             doc["metadata"] = {
                 **parent_metadata,
                 "chunk_id": parent_id,
+                "parent_section_id": parent_id,
                 "chunk_type": "regulation",
                 "content_type": "regulation_text",
                 "chunk_granularity": "parent_graph_related_context",
@@ -631,6 +632,7 @@ class ChildParentHybridRetriever:
             doc["metadata"] = {
                 **parent_metadata,
                 "chunk_id": parent_id,
+                "parent_section_id": parent_id,
                 "chunk_type": "regulation",
                 "content_type": "regulation_text",
                 "chunk_granularity": "parent_bound_context",

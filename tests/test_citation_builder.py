@@ -1,9 +1,30 @@
 from src.retrieval.core.citation_builder import (
+    build_citations_from_vector_results,
     build_citation_from_formula,
     build_citation_from_lookup,
     enrich_citations_with_parent_details,
     sanitize_citation_content,
 )
+
+
+def test_vector_citation_preserves_parent_section_contract():
+    citations = build_citations_from_vector_results(
+        [
+            {
+                "chunk_id": "K51_Dieu9",
+                "document": "Nội dung quy định",
+                "metadata": {
+                    "parent_section_id": "K51_Dieu9",
+                    "document_id": "so_tay_sinh_vien_khoa_51",
+                    "cohort": "K51",
+                    "chunk_type": "regulation",
+                },
+            }
+        ]
+    )
+
+    assert citations[0]["parent_section_id"] == "K51_Dieu9"
+    assert citations[0]["source_parent_id"] == "K51_Dieu9"
 
 
 def test_enriches_structured_table_citation_with_parent_article_details():

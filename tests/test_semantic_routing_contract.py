@@ -148,6 +148,100 @@ def test_two_structured_domains_keep_slots_isolated() -> None:
     assert _errors(decision, query) == []
 
 
+def test_registry_canonicalizes_typed_and_named_slot_values() -> None:
+    query = "k51 ielts 6.0 và GPA 3.4 xếp loại học lực"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="direct_value",
+                query_span="ielts 6.0",
+                slots={
+                    "certificate_or_language": "ielts",
+                    "score_or_level": "6.0",
+                },
+                slot_spans={
+                    "certificate_or_language": "ielts",
+                    "score_or_level": "6.0",
+                },
+            ),
+            _request(
+                request_kind="structured",
+                lookup_type="scoring",
+                intent="direct_value",
+                query_span="GPA 3.4 xếp loại học lực",
+                slots={
+                    "operation": "academic_classification",
+                    "score_or_grade": "3.4",
+                },
+                slot_spans={"score_or_grade": "3.4"},
+            ),
+        ],
+        selected_cohort="K51",
+        cohort="K51",
+    )
+
+    first, second = decision["lookup_requests"]
+    assert first["slots"]["certificate_or_language"] == "IELTS"
+    assert first["slots"]["score_or_level"] == "6.0"
+    assert second["slots"]["score_or_grade"] == 3.4
+    assert _errors(decision, query, selected_cohort="K51") == []
+
+
+def test_slot_offsets_are_valid_provenance_within_query_span() -> None:
+    query = "k51 ielts 6.0 tuong duong bac may"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="direct_value",
+                query_span=query,
+                slots={
+                    "certificate_or_language": "ielts",
+                    "score_or_level": "6.0",
+                },
+                slot_spans={
+                    "certificate_or_language": {"start": 4, "end": 9},
+                    "score_or_level": {"start": 10, "end": 13},
+                },
+            )
+        ],
+        selected_cohort="K51",
+        cohort="K51",
+    )
+
+    assert _errors(decision, query, selected_cohort="K51") == []
+
+
+def test_raw_query_and_grounded_follow_up_both_validate_request_spans() -> None:
+    raw_query = "Nội dung đó có ngoại lệ nào?"
+    standalone = "K51 quy định bảo lưu có ngoại lệ nào?"
+    decision = _normalize(
+        raw_query,
+        [
+            _request(
+                request_kind="rag",
+                intent="consequence_or_exception",
+                query_span="Nội dung đó có ngoại lệ nào",
+                cohort_refs=["K51"],
+            )
+        ],
+        selected_cohort="K51",
+        cohort="K51",
+    )
+
+    assert validate_router_decision(
+        decision,
+        query=raw_query,
+        grounding_context=standalone,
+        selected_cohort="K51",
+    ) == []
+
+
 def test_two_regulations_become_two_rag_requests() -> None:
     query = "Điều kiện cảnh báo học vụ và thủ tục xin bảo lưu là gì?"
     decision = _normalize(

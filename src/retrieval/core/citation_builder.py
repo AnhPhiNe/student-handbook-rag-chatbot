@@ -197,9 +197,16 @@ def build_citations_from_vector_results(
 
     for item in results:
         metadata = item.get("metadata", {})
+        parent_section_id = (
+            metadata.get("parent_section_id")
+            or metadata.get("parent_chunk_id")
+            or item.get("parent_section_id")
+        )
         citations.append(
             {
                 "chunk_id": item.get("chunk_id"),
+                "parent_section_id": parent_section_id,
+                "source_parent_id": parent_section_id,
                 "chunk_type": metadata.get("chunk_type"),
                 "title": metadata.get("title")
                 or metadata.get("form_name")

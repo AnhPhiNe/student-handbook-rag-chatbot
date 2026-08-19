@@ -76,6 +76,7 @@ def main() -> None:
 
     temp_root = ROOT / ".tmp" / "single-cohort-conformance"
     def targeted(name: str, *nodes: str) -> dict[str, Any]:
+        temp_root.mkdir(parents=True, exist_ok=True)
         return _run(
             [
                 str(PYTHON), "-B", "-m", "pytest", *nodes,
@@ -109,6 +110,7 @@ def main() -> None:
         "tests/test_single_cohort_contract.py::test_cohortless_rag_plan_is_rejected",
         "tests/test_single_cohort_contract.py::test_clarify_and_out_of_domain_never_call_retriever",
     )
+    temp_root.mkdir(parents=True, exist_ok=True)
     pytest_run = _run(
         [
             str(PYTHON), "-B", "-m", "pytest", "tests",

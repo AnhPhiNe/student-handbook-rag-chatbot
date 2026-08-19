@@ -1,7 +1,7 @@
 {
   "schema_version": "single-cohort-v2.2",
-  "generated_at": "2026-08-19T06:10:26.812306+00:00",
-  "commit": "2c7bfd102c429beb822592af43ab1e3fd6de8b39",
+  "generated_at": "2026-08-19T06:13:22.655052+00:00",
+  "commit": "f69d077a2ef9995892b6a320fce807062213cb01",
   "provider": "deterministic",
   "data_versions": {
     "structured_registry": "b739720cc8d476d011ababb288ff40812bb004ef04dd73e9f955a398fcc6e575",
@@ -20,7 +20,7 @@
     "ai_router_prompt_source": "d022da06fc24d8ea9c38976fca796904770f081d6b325ffd9d53c717477b7003",
     "answer_config": "0a03853b6f0ed0f4585cb8712326e930275396d939ca65a7a1d2dc4fc44f5aab",
     "answer_prompt_source": "72d43ed9ee5741940b9c95751dabcb54c41566f87c800b2a42e867536d2792e8",
-    "implementation_tree": "5a30e754a6bb379e06c9b76f7d91dadf93a942f8a6ac6058b4f691f941105934"
+    "implementation_tree": "29db27736adc4c29518e7cfb1fad41f9641c1b91eec7cdcfb350241405cef376"
   },
   "counts": {
     "dev": 150,

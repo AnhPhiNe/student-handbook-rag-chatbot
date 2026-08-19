@@ -21,10 +21,40 @@ from scripts import evaluate_single_cohort_v2 as evaluator
 from scripts.evaluate_single_cohort_v2 import (
     _citation_isolated,
     _finish_hidden_attempt,
+    _reuse_answer_report_evaluation,
     _start_hidden_attempt,
     run_answers,
     run_executor_retrieval,
 )
+
+
+def test_answer_report_reuses_planner_and_executor_rows() -> None:
+    planner_row = {"id": "dev-1", "passed": True}
+    execution_row = {"id": "dev-1", "retrieval_hit_at_5": 1.0}
+    answer_row = {"id": "dev-1", "answer": "verified"}
+
+    planner, execution, answers = _reuse_answer_report_evaluation(
+        {
+            "planner": {"dev": {"rows": [planner_row]}},
+            "executor_retrieval": {"rows": [execution_row]},
+            "answers": [answer_row],
+        }
+    )
+
+    assert planner == {"dev": [planner_row]}
+    assert execution == [execution_row]
+    assert answers == [answer_row]
+
+
+def test_answer_report_rejects_unbound_answer_rows() -> None:
+    with pytest.raises(ValueError, match="passed Planner"):
+        _reuse_answer_report_evaluation(
+            {
+                "planner": {"dev": {"rows": [{"id": "dev-1", "passed": False}]}},
+                "executor_retrieval": {"rows": [{"id": "dev-1"}]},
+                "answers": [{"id": "dev-1"}],
+            }
+        )
 
 
 @pytest.fixture(scope="module")

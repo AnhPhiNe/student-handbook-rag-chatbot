@@ -761,6 +761,50 @@ def _read_answer_judgments(
     return rows
 
 
+def _reuse_answer_report_evaluation(
+    answer_report: Mapping[str, Any],
+) -> tuple[
+    dict[str, list[dict[str, Any]]],
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+]:
+    prior_planner = answer_report.get("planner")
+    prior_execution = answer_report.get("executor_retrieval")
+    answer_rows = answer_report.get("answers")
+    if not isinstance(prior_planner, Mapping) or not prior_planner:
+        raise ValueError("Answer report is missing Planner evaluation rows")
+    planner_rows: dict[str, list[dict[str, Any]]] = {}
+    for suite, payload in prior_planner.items():
+        if not isinstance(payload, Mapping) or not isinstance(payload.get("rows"), list):
+            raise ValueError(f"Answer report has invalid Planner rows for {suite}")
+        planner_rows[str(suite)] = list(payload["rows"])
+    if not isinstance(prior_execution, Mapping) or not isinstance(
+        prior_execution.get("rows"), list
+    ):
+        raise ValueError("Answer report is missing executor/retrieval rows")
+    if not isinstance(answer_rows, list):
+        raise ValueError("Answer report is missing answer rows")
+    execution_rows = list(prior_execution["rows"])
+    answers = list(answer_rows)
+    passed_planner_ids = {
+        str(row.get("id") or "")
+        for rows in planner_rows.values()
+        for row in rows
+        if row.get("passed")
+    }
+    execution_ids = {str(row.get("id") or "") for row in execution_rows}
+    answer_ids = [str(row.get("id") or "") for row in answers]
+    if any(not case_id for case_id in answer_ids):
+        raise ValueError("Answer report contains an answer row without an id")
+    if len(answer_ids) != len(set(answer_ids)):
+        raise ValueError("Answer report contains duplicate answer ids")
+    if not set(answer_ids) <= passed_planner_ids:
+        raise ValueError("Answer rows are not bound to passed Planner rows")
+    if not set(answer_ids) <= execution_ids:
+        raise ValueError("Answer rows are not bound to executor/retrieval rows")
+    return planner_rows, execution_rows, answers
+
+
 def _verified_check_report(
     path: Path | None, *, required_checks: tuple[str, ...], deterministic: bool = False
 ) -> tuple[bool | None, dict[str, Any] | None]:
@@ -887,9 +931,20 @@ def main() -> None:
             parser.error("Answer report commit does not match the current commit.")
         if answer_report.get("dataset_hashes") != validation.hashes:
             parser.error("Answer report dataset hashes do not match the frozen bundle.")
+        if answer_report.get("artifact_fingerprint") != _artifact_fingerprint():
+            parser.error("Answer report artifact fingerprint does not match current inputs.")
         if (answer_report.get("models") or {}).get("answer") != ANSWER_MODEL:
             parser.error("Answer report does not use the pinned answer model.")
-        answer_rows = list(answer_report.get("answers") or [])
+        try:
+            prior_planner_rows, prior_execution_rows, answer_rows = (
+                _reuse_answer_report_evaluation(answer_report)
+            )
+        except ValueError as exc:
+            parser.error(str(exc))
+        if not planner_rows:
+            planner_rows = prior_planner_rows
+        if not execution_rows:
+            execution_rows = prior_execution_rows
         if any(str(row.get("id") or "").startswith("hidden-") for row in answer_rows):
             if not args.confirm_hidden_frozen:
                 parser.error("Hidden answer report requires --confirm-hidden-frozen.")

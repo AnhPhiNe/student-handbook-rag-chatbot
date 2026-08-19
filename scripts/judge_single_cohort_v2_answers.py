@@ -20,6 +20,9 @@ from scripts.evaluate_single_cohort_v2 import (  # noqa: E402
     JUDGE_MODEL,
     JUDGE_PROMPT_VERSION,
 )
+from src.evaluation.artifact_fingerprint import (  # noqa: E402
+    release_artifact_fingerprint,
+)
 from src.evaluation.judge import GroqJudgeClient, compact_judge_packet  # noqa: E402
 from src.evaluation.single_cohort_v2 import BUNDLE_DIR, validate_bundle  # noqa: E402
 
@@ -76,6 +79,25 @@ def _judge_case(case: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def _validated_answer_targets(
+    answer_rows: Any,
+    cases: Mapping[str, Mapping[str, Any]],
+    *,
+    split: str,
+) -> tuple[list[str], dict[str, Mapping[str, Any]]]:
+    if not isinstance(answer_rows, list):
+        raise ValueError("Answer report must contain an answers list")
+    answer_ids = [str(row.get("id") or "") for row in answer_rows]
+    if any(not case_id for case_id in answer_ids):
+        raise ValueError("Answer report contains a row without an id")
+    if len(answer_ids) != len(set(answer_ids)):
+        raise ValueError("Answer report contains duplicate case ids")
+    unknown_ids = sorted(set(answer_ids) - set(cases))
+    if unknown_ids:
+        raise ValueError(f"Answer report contains ids outside {split}: {unknown_ids}")
+    return answer_ids, {str(row["id"]): row for row in answer_rows}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--answers", type=Path, required=True)
@@ -102,11 +124,17 @@ def main() -> None:
         raise ValueError("Answer report commit does not match the current commit")
     if answer_payload.get("dataset_hashes") != validation.hashes:
         raise ValueError("Answer report dataset hashes do not match the gold bundle")
+    if answer_payload.get("artifact_fingerprint") != release_artifact_fingerprint(ROOT):
+        raise ValueError("Answer report artifact fingerprint does not match current inputs")
     if (answer_payload.get("models") or {}).get("answer") != ANSWER_MODEL:
         raise ValueError("Answer report does not use the pinned answer model")
     answers_report_hash = hashlib.sha256(args.answers.read_bytes()).hexdigest()
     answer_rows = answer_payload.get("answers")
-    answers = {row["id"]: row for row in answer_rows or []}
+    answer_ids, answers = _validated_answer_targets(
+        answer_rows,
+        cases,
+        split=args.split,
+    )
     existing = _load(args.output) if args.resume and args.output.exists() else []
     if any(
         row.get("answer_model") != ANSWER_MODEL
@@ -116,6 +144,8 @@ def main() -> None:
         for row in existing
     ):
         raise ValueError("Resume judgments do not match the current frozen provenance")
+    if any(str(row.get("id") or "") not in answers for row in existing):
+        raise ValueError("Resume judgments contain ids outside the supplied answer rows")
     judged = {row["id"]: row for row in existing}
     client = GroqJudgeClient()
     if client.config.model_name != JUDGE_MODEL:
@@ -123,25 +153,13 @@ def main() -> None:
             f"Judge model must be {JUDGE_MODEL}, got {client.config.model_name}"
         )
 
-    for case_id, case in cases.items():
+    # Answer quality is conditional on a correctly planned request. Planner failures
+    # remain in exact-plan metrics and must not be relabeled as answer-provider errors.
+    for case_id in answer_ids:
+        case = cases[case_id]
         if case_id in judged:
             continue
-        answer = answers.get(case_id)
-        if answer is None:
-            judged[case_id] = {
-                "id": case_id,
-                "answer_model": ANSWER_MODEL,
-                "judge_model": JUDGE_MODEL,
-                "judge_prompt_version": JUDGE_PROMPT_VERSION,
-                "answers_report_hash": answers_report_hash,
-                "faithfulness": 0.0,
-                "answer_correctness": 0.0,
-                "hallucination": 0.0,
-                "critical_false_pass": False,
-                "provider_failure": True,
-                "error": "missing_answer_row",
-            }
-            continue
+        answer = answers[case_id]
         if answer.get("model_used") not in {None, ANSWER_MODEL}:
             raise ValueError(f"Wrong answer model for {case_id}: {answer.get('model_used')}")
         result = client.judge(compact_judge_packet(_judge_case(case), answer))
@@ -161,13 +179,19 @@ def main() -> None:
         }
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(
-            json.dumps(list(judged.values()), ensure_ascii=False, indent=2) + "\n",
+            json.dumps(
+                [judged[target_id] for target_id in answer_ids if target_id in judged],
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
             encoding="utf-8",
         )
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
-        json.dumps(list(judged.values()), ensure_ascii=False, indent=2) + "\n",
+        json.dumps([judged[target_id] for target_id in answer_ids], ensure_ascii=False, indent=2)
+        + "\n",
         encoding="utf-8",
     )
 

@@ -14,6 +14,12 @@ from src.retrieval.core.citation_builder import (
 from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline
 from src.retrieval.core.query_context import select_effective_query
 from src.retrieval.core.request_execution import RequestExecutionContext
+from src.retrieval.core.structured_routing import (
+    bind_effective_cohort,
+    fallback_to_rag,
+    load_lookup_registry,
+    validate_router_decision,
+)
 from src.retrieval.core.vector_retriever import (
     get_chroma_collection,
     load_embedding_model,
@@ -44,7 +50,7 @@ from .response_cache import get_response_cache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v32-single-cohort-contract"
+PIPELINE_VERSION = "v33-single-cohort-contract-hardening"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -274,6 +280,27 @@ class AnswerPipeline:
                 status="retrieval_error",
                 error_type="retrieval_error",
                 error_message=str(exc),
+                llm_called=False,
+                used_cache=False,
+            )
+
+        if retrieval_result.get("infrastructure_error"):
+            final_answer = build_fallback_answer(
+                query=effective_query,
+                retrieval_result=retrieval_result,
+                reason="retrieval_error",
+            )
+            return self._build_output(
+                query=query,
+                retrieval_result=retrieval_result,
+                final_answer=final_answer,
+                context_used="",
+                selected_citations=[],
+                status="retrieval_error",
+                error_type=str(
+                    retrieval_result.get("error_type") or "retrieval_error"
+                ),
+                error_message=str(retrieval_result.get("error_message") or ""),
                 llm_called=False,
                 used_cache=False,
             )
@@ -655,6 +682,25 @@ class AnswerPipeline:
             yield {"type": "done", "tracker": tracker}
             return
 
+        if retrieval_result.get("infrastructure_error"):
+            fallback = build_fallback_answer(
+                query=effective_query,
+                retrieval_result=retrieval_result,
+                reason="retrieval_error",
+            )
+            yield self._build_stream_metadata(
+                retrieval_result,
+                status="retrieval_error",
+                effective_query=effective_query,
+                fallback_reason=str(
+                    retrieval_result.get("error_type") or "retrieval_error"
+                ),
+                run_id=run_id,
+            )
+            yield {"type": "token", "text": fallback}
+            yield {"type": "done", "tracker": tracker}
+            return
+
         if retrieval_result.get("needs_clarification"):
             clarification_msg = retrieval_result.get(
                 "clarification_question", "Bạn có thể làm rõ câu hỏi được không?"
@@ -937,12 +983,63 @@ class AnswerPipeline:
         )
         query_handling = handling.to_dict()
         effective_query = handling.effective_query or query
+        registry = load_lookup_registry()
+        router_decision = bind_effective_cohort(
+            router_decision,
+            raw_query=query,
+            effective_query=effective_query,
+            selected_cohort=cohort,
+            registry=registry,
+        )
         router_decision = {
             **router_decision,
             "query_handling": query_handling,
             "effective_query": effective_query,
             "router_input_query": router_input_query,
         }
+        if router_decision.get("router_error_type"):
+            return {
+                "query": query,
+                "retrieval_query": None,
+                "retrieval_executed": False,
+                "intent": "router_error",
+                "strategy": "router_infrastructure_error",
+                "router_decision": router_decision,
+                "structured_result": None,
+                "retrieved_items": [],
+                "citations": [],
+                "needs_llm_answer": False,
+                "needs_clarification": False,
+                "clarification_question": None,
+                "out_of_domain": False,
+                "infrastructure_error": True,
+                "error_type": str(router_decision.get("router_error_type")),
+                "error_message": str(router_decision.get("router_error") or ""),
+                "selected_cohort": router_decision.get("cohort"),
+                "query_handling": query_handling,
+                "effective_query": effective_query,
+                "raw_query": query,
+                "deterministic_validated": False,
+            }
+
+        if router_decision.get("route") in {"structured", "rag"} and isinstance(
+            router_decision.get("lookup_requests"), list
+        ):
+            runtime_validation_errors = validate_router_decision(
+                router_decision,
+                query=effective_query,
+                selected_cohort=router_decision.get("cohort"),
+                registry=registry,
+            )
+            if runtime_validation_errors:
+                router_decision = fallback_to_rag(
+                    router_decision,
+                    runtime_validation_errors,
+                    query=effective_query,
+                )
+                router_decision["runtime_validation_errors"] = (
+                    runtime_validation_errors
+                )
         if handling.needs_clarification:
             return {
                 "query": query,
@@ -1021,11 +1118,14 @@ class AnswerPipeline:
         )
 
         if not is_multi_cohort:
+            effective_cohort = _normalize_retrieval_cohort(
+                router_decision.get("cohort")
+            )
             return self._execute_single_cohort_retrieval(
                 query=query,
                 effective_query=effective_query,
                 retrieval_query=retrieval_query,
-                cohort=cohort or _normalize_retrieval_cohort(router_decision.get("cohort")),
+                cohort=effective_cohort,
                 router_decision=router_decision,
                 query_handling=query_handling,
                 chat_history=chat_history,
@@ -1506,7 +1606,15 @@ class AnswerPipeline:
             }
         else:
             structured_result = None
-        needs_llm_answer = has_rag or is_multi_request or bool(unresolved_requests)
+        error_requests = [
+            item for item in request_results if item.get("status") == "error"
+        ]
+        has_verified_result = bool(structured_results) or has_rag
+        infrastructure_error = bool(error_requests) and not has_verified_result
+        needs_llm_answer = bool(
+            has_verified_result
+            and (has_rag or is_multi_request or bool(unresolved_requests))
+        )
         deterministic_validated = bool(
             len(requests) == 1
             and structured_result
@@ -1514,7 +1622,7 @@ class AnswerPipeline:
             and not has_rag
         )
         strategy = "semantic_request_executor"
-        no_verified_result = not structured_results and not has_rag
+        no_verified_result = not has_verified_result and not infrastructure_error
         return {
             "query": query,
             "retrieval_query": retrieval_query,
@@ -1537,12 +1645,24 @@ class AnswerPipeline:
                 else None
             ),
             "out_of_domain": False,
+            "infrastructure_error": infrastructure_error,
+            "error_type": (
+                "request_execution_error" if infrastructure_error else None
+            ),
+            "error_message": (
+                "; ".join(
+                    f"{item.get('request_id')}: {item.get('reason')}"
+                    for item in error_requests
+                )
+                if infrastructure_error
+                else None
+            ),
             "selected_cohort": cohort,
             "query_handling": query_handling,
             "effective_query": effective_query,
             "raw_query": query,
             "deterministic_validated": deterministic_validated,
-            "retrieval_executed": bool(rag_results),
+            "retrieval_executed": bool(requests),
             "request_execution_contexts": [
                 context.debug_dict() for context in execution_contexts.values()
             ],

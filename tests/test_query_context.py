@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from src.generation.answer_pipeline import AnswerPipeline
 from src.retrieval.core.query_context import (
+    ReferencedEvidenceSpan,
     select_effective_query,
     validate_follow_up_query,
     validate_normalized_query,
@@ -17,7 +18,8 @@ def _decision(**overrides):
         "normalization_confidence": "high",
         "corrections": [],
         "standalone_query": None,
-        "referenced_turns": [],
+        "referenced_turn_ids": [],
+        "referenced_evidence": [],
     }
     decision.update(overrides)
     return decision
@@ -147,6 +149,12 @@ def test_builds_valid_follow_up_from_referenced_history() -> None:
         normalized_query="Còn K51 thì sao?",
         standalone_query="K51 thời gian học tối đa của hệ chính quy là bao lâu?",
         referenced_turns=[0],
+        referenced_evidence=[
+            {
+                "turn_id": 0,
+                "evidence_span": "thời gian học tối đa của hệ chính quy là bao lâu?",
+            }
+        ],
     )
 
     result = select_effective_query(
@@ -246,6 +254,12 @@ def test_follow_up_validator_rejects_new_ungrounded_topic() -> None:
         "Còn K51 thì sao?",
         "K51 chuyển đổi tín chỉ và công nhận kết quả học tập thế nào?",
         referenced_turns=(0,),
+        referenced_evidence=(
+            ReferencedEvidenceSpan(
+                turn_id=0,
+                evidence_span="thời gian học tối đa của hệ chính quy là bao lâu?",
+            ),
+        ),
         chat_history=[
             {
                 "role": "user",
@@ -257,6 +271,27 @@ def test_follow_up_validator_rejects_new_ungrounded_topic() -> None:
     )
 
     assert "follow_up_added_ungrounded_content" in errors
+
+
+def test_follow_up_validator_rejects_forged_evidence_span() -> None:
+    errors = validate_follow_up_query(
+        "Còn K51 thì sao?",
+        "K51 thời gian học tối đa là bao lâu?",
+        referenced_turns=(0,),
+        referenced_evidence=(
+            ReferencedEvidenceSpan(
+                turn_id=0,
+                evidence_span="thời gian học tối đa là bao lâu?",
+            ),
+        ),
+        chat_history=[
+            {"role": "user", "content": "K50 thủ tục bảo lưu thế nào?"}
+        ],
+        confidence="high",
+        selected_cohort=None,
+    )
+
+    assert errors == ["follow_up_evidence_span_not_grounded"]
 
 
 def test_answer_output_propagates_query_handling() -> None:

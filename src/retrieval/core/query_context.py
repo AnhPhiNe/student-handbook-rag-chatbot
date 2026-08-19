@@ -47,6 +47,15 @@ _CONTENT_STOPWORDS = {
 
 
 @dataclass(frozen=True)
+class ReferencedEvidenceSpan:
+    turn_id: int
+    evidence_span: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"turn_id": self.turn_id, "evidence_span": self.evidence_span}
+
+
+@dataclass(frozen=True)
 class QueryContextResult:
     raw_query: str
     effective_query: str
@@ -55,7 +64,8 @@ class QueryContextResult:
     effective_query_source: str
     normalized_query: str | None = None
     standalone_query: str | None = None
-    referenced_turns: tuple[int, ...] = ()
+    referenced_turn_ids: tuple[int, ...] = ()
+    referenced_evidence: tuple[ReferencedEvidenceSpan, ...] = ()
     normalization_confidence: str = "none"
     context_confidence: str = "none"
     validation_errors: tuple[str, ...] = ()
@@ -67,6 +77,11 @@ class QueryContextResult:
         """Compatibility alias for older response consumers."""
         return self.effective_query_source
 
+    @property
+    def referenced_turns(self) -> tuple[int, ...]:
+        """Compatibility alias for the pre-v2 field name."""
+        return self.referenced_turn_ids
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "raw_query": self.raw_query,
@@ -77,7 +92,11 @@ class QueryContextResult:
             "effective_query_source": self.effective_query_source,
             "normalized_query": self.normalized_query,
             "standalone_query": self.standalone_query,
-            "referenced_turns": list(self.referenced_turns),
+            "referenced_turn_ids": list(self.referenced_turn_ids),
+            "referenced_turns": list(self.referenced_turn_ids),
+            "referenced_evidence": [
+                item.to_dict() for item in self.referenced_evidence
+            ],
             "normalization_confidence": self.normalization_confidence,
             "context_confidence": self.context_confidence,
             "validation_errors": list(self.validation_errors),
@@ -130,7 +149,13 @@ def select_effective_query(
         router_decision.get("normalization_confidence")
     )
     context_confidence = _confidence(router_decision.get("context_confidence"))
-    referenced_turns = _referenced_turns(router_decision.get("referenced_turns"))
+    referenced_turns = _referenced_turns(
+        router_decision.get("referenced_turn_ids")
+        or router_decision.get("referenced_turns")
+    )
+    referenced_evidence = _referenced_evidence(
+        router_decision.get("referenced_evidence")
+    )
     clarification = _clean_query(router_decision.get("clarification_question"))
 
     if selected_mode == "raw":
@@ -142,7 +167,8 @@ def select_effective_query(
             effective_query_source="raw_query",
             normalized_query=normalized_query,
             standalone_query=standalone_query,
-            referenced_turns=referenced_turns,
+            referenced_turn_ids=referenced_turns,
+            referenced_evidence=referenced_evidence,
             normalization_confidence=normalization_confidence,
             context_confidence=context_confidence,
         )
@@ -155,6 +181,7 @@ def select_effective_query(
             normalized_query,
             standalone_query,
             referenced_turns,
+            referenced_evidence,
             normalization_confidence,
             context_confidence,
             ("ambiguous_context",),
@@ -167,6 +194,7 @@ def select_effective_query(
             raw_query,
             standalone_query,
             referenced_turns=referenced_turns,
+            referenced_evidence=referenced_evidence,
             chat_history=history,
             confidence=context_confidence,
             selected_cohort=selected_cohort,
@@ -179,6 +207,7 @@ def select_effective_query(
                 normalized_query,
                 standalone_query,
                 referenced_turns,
+                referenced_evidence,
                 normalization_confidence,
                 context_confidence,
                 tuple(errors),
@@ -192,7 +221,8 @@ def select_effective_query(
             effective_query_source="grounded_follow_up",
             normalized_query=normalized_query,
             standalone_query=standalone_query,
-            referenced_turns=referenced_turns,
+            referenced_turn_ids=referenced_turns,
+            referenced_evidence=referenced_evidence,
             normalization_confidence=normalization_confidence,
             context_confidence=context_confidence,
         )
@@ -212,7 +242,8 @@ def select_effective_query(
             effective_query_source="validated_normalization",
             normalized_query=normalized_query,
             standalone_query=standalone_query,
-            referenced_turns=referenced_turns,
+            referenced_turn_ids=referenced_turns,
+            referenced_evidence=referenced_evidence,
             normalization_confidence=normalization_confidence,
             context_confidence=context_confidence,
         )
@@ -225,7 +256,8 @@ def select_effective_query(
         effective_query_source="raw_query_fallback",
         normalized_query=normalized_query,
         standalone_query=standalone_query,
-        referenced_turns=referenced_turns,
+        referenced_turn_ids=referenced_turns,
+        referenced_evidence=referenced_evidence,
         normalization_confidence=normalization_confidence,
         context_confidence=context_confidence,
         validation_errors=tuple(normalization_errors),
@@ -277,6 +309,7 @@ def validate_follow_up_query(
     standalone_query: str | None,
     *,
     referenced_turns: tuple[int, ...],
+    referenced_evidence: tuple[ReferencedEvidenceSpan, ...] = (),
     chat_history: list[dict[str, str]],
     confidence: str,
     selected_cohort: str | None,
@@ -296,9 +329,27 @@ def validate_follow_up_query(
         errors.append("follow_up_invalid_referenced_turn")
         return errors
 
-    referenced_text = " ".join(
-        str(chat_history[index].get("content") or "") for index in referenced_turns
-    )
+    if not referenced_evidence:
+        errors.append("follow_up_missing_evidence_spans")
+        return errors
+
+    referenced_text_parts: list[str] = []
+    for evidence in referenced_evidence:
+        if evidence.turn_id not in referenced_turns:
+            errors.append("follow_up_evidence_turn_not_declared")
+            continue
+        if evidence.turn_id < 0 or evidence.turn_id >= len(chat_history):
+            errors.append("follow_up_invalid_evidence_turn")
+            continue
+        turn_content = str(chat_history[evidence.turn_id].get("content") or "")
+        if not evidence.evidence_span or evidence.evidence_span not in turn_content:
+            errors.append("follow_up_evidence_span_not_grounded")
+            continue
+        referenced_text_parts.append(evidence.evidence_span)
+    if errors:
+        return errors
+
+    referenced_text = " ".join(referenced_text_parts)
     grounded_text = f"{raw_query} {referenced_text}".strip()
 
     raw_cohorts = _extract_cohorts(raw_query)
@@ -337,6 +388,7 @@ def _clarification_result(
     normalized_query: str | None,
     standalone_query: str | None,
     referenced_turns: tuple[int, ...],
+    referenced_evidence: tuple[ReferencedEvidenceSpan, ...],
     normalization_confidence: str,
     context_confidence: str,
     errors: tuple[str, ...],
@@ -350,7 +402,8 @@ def _clarification_result(
         effective_query_source="clarification",
         normalized_query=normalized_query,
         standalone_query=standalone_query,
-        referenced_turns=referenced_turns,
+        referenced_turn_ids=referenced_turns,
+        referenced_evidence=referenced_evidence,
         normalization_confidence=normalization_confidence,
         context_confidence=context_confidence,
         validation_errors=errors,
@@ -406,6 +459,25 @@ def _referenced_turns(value: Any) -> tuple[int, ...]:
             continue
         if index >= 0 and index not in output:
             output.append(index)
+    return tuple(output)
+
+
+def _referenced_evidence(value: Any) -> tuple[ReferencedEvidenceSpan, ...]:
+    if not isinstance(value, list):
+        return ()
+    output: list[ReferencedEvidenceSpan] = []
+    for item in value:
+        if not isinstance(item, dict):
+            continue
+        turn_id = item.get("turn_id")
+        if isinstance(turn_id, bool) or not isinstance(turn_id, int) or turn_id < 0:
+            continue
+        evidence_span = str(item.get("evidence_span") or "").strip()
+        if not evidence_span:
+            continue
+        evidence = ReferencedEvidenceSpan(turn_id, evidence_span)
+        if evidence not in output:
+            output.append(evidence)
     return tuple(output)
 
 

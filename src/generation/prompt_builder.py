@@ -29,6 +29,10 @@ def build_answer_prompt(
         allocation_config=context_allocation,
     )
     structured_result = _to_pretty_json(retrieval_result.get("structured_result"))
+    request_results = _to_pretty_json(retrieval_result.get("request_results"))
+    unresolved_requests = _to_pretty_json(
+        retrieval_result.get("unresolved_lookup_requests")
+    )
     cohort_instruction = _cohort_instruction(cohort)
     source_usage_instruction = _source_usage_instruction(context)
     applicable_amendments = format_applicable_amendments(
@@ -55,6 +59,11 @@ NHIỆM VỤ
 - Định dạng: dùng in đậm (**văn bản**) cho mốc thời gian, tên thủ tục, con số hoặc điều kiện cốt lõi khi hữu ích.
 - Khi liệt kê nhiều trường hợp, dùng danh sách Markdown đánh số `1.`, `2.`, `3.`. Không gọi “mục 1, 2, 3” nếu các mục đó không được đánh số rõ ngay trong câu trả lời.
 - Chỉ sử dụng STRUCTURED_RESULT và CONTEXT; không dùng kiến thức ngoài nguồn.
+- REQUEST_RESULTS là trạng thái theo từng request. Chỉ khẳng định nội dung của
+  request có status `ok`; liệt kê ngắn gọn phần `no_match`, `unresolved` hoặc
+  `error` theo query_span. Không biến phần chưa xác minh thành câu trả lời.
+- Evidence, source record và citation có request_id chỉ được dùng cho đúng request_id
+  đó. Không dùng nguồn của request này để hoàn tất request khác.
 - Nếu STRUCTURED_RESULT và CONTEXT không đủ căn cứ cho câu hỏi, nói rằng chưa tìm thấy trong Sổ tay thay vì tự suy diễn.
 - STRUCTURED_RESULT là nguồn chuẩn cho bảng và danh mục. CONTEXT là nguồn chuẩn cho quy định, điều kiện và thủ tục.
 - PRIMARY SOURCES là căn cứ duy nhất để trả lời. Các điều khoản liên quan được giao diện liên kết riêng, không nằm trong CONTEXT.
@@ -77,6 +86,12 @@ DỮ LIỆU
 
 STRUCTURED_RESULT:
 {structured_result if structured_result else "(không có)"}
+
+REQUEST_RESULTS:
+{request_results if request_results else "(không có)"}
+
+UNRESOLVED_REQUESTS:
+{unresolved_requests if unresolved_requests else "(không có)"}
 
 {applicable_amendments if applicable_amendments else "APPLICABLE AMENDMENTS: (không có sửa đổi áp dụng trực tiếp được phát hiện)"}
 

@@ -18,6 +18,7 @@ import yaml
 from src.common.env_loader import load_project_env
 
 from .structured_routing import (
+    bind_effective_cohort,
     compact_registry_for_prompt,
     fallback_to_rag,
     load_lookup_registry,
@@ -31,8 +32,8 @@ from .query_context import select_effective_query
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2"
-ROUTER_PROMPT_VERSION = "single-cohort-planner-v2"
+ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.1"
+ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.1"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -47,7 +48,8 @@ Chỉ xuất JSON hợp lệ theo OUTPUT CONTRACT.
 
 QUERY CONTEXT
 - standalone: chỉ dùng QUERY. follow_up: standalone_query chỉ được ghép từ QUERY
-  và các referenced_turns. ambiguous: outcome=clarify, lookup_requests=[].
+  và referenced_evidence. Mỗi evidence_span phải là đoạn liên tục, nguyên văn trong
+  turn thuộc referenced_turn_ids. ambiguous: outcome=clarify, lookup_requests=[].
 - normalized_query chỉ được sửa Unicode/dấu hoặc một lỗi gõ cục bộ. Mỗi thay đổi
   phải có correction với original_span nguyên văn trong QUERY và normalized_span.
   Không đổi cohort, số, phủ định, thực thể, điều kiện hoặc chủ đề. Không chắc thì
@@ -56,7 +58,8 @@ QUERY CONTEXT
 SINGLE-COHORT
 - outcome=clarify nếu QUERY có từ hai cohort trở lên hoặc request phụ thuộc cohort
   nhưng không xác định được cohort. Không tách hoặc so sánh multi-cohort.
-- Ưu tiên cohort nêu trong QUERY; nếu không có, SELECTED COHORT có thể áp dụng.
+- Ưu tiên cohort nêu trong QUERY; sau đó SELECTED COHORT; cuối cùng cohort được
+  grounding bằng referenced_evidence trong lịch sử. Không có nguồn hợp lệ thì clarify.
 
 ATOMIC REQUESTS
 - outcome=execute: mỗi mục tiêu độc lập là một lookup_request theo thứ tự, tối đa 6.
@@ -667,10 +670,17 @@ class AIRouter:
                     selected_cohort=cohort,
                 )
                 validation_query = query_context.effective_query or query
+                decision = bind_effective_cohort(
+                    decision,
+                    raw_query=query,
+                    effective_query=validation_query,
+                    selected_cohort=cohort,
+                    registry=self.registry,
+                )
                 validation_errors = validate_router_decision(
                     decision,
                     query=validation_query,
-                    selected_cohort=cohort,
+                    selected_cohort=decision.get("cohort"),
                     registry=self.registry,
                 )
                 if query_context.needs_clarification:
@@ -745,7 +755,8 @@ class AIRouter:
                 "normalization_confidence": "none",
                 "corrections": [],
                 "standalone_query": None,
-                "referenced_turns": [],
+                "referenced_turn_ids": [],
+                "referenced_evidence": [],
                 "outcome": "clarify",
                 "route": "clarify",
                 "execution_mode": "regulation",
@@ -786,12 +797,14 @@ class AIRouter:
         routing_hint: dict[str, Any] | None = None,
     ) -> str:
         history_lines = []
-        history_window = (chat_history or [])[-4:]
-        for local_index, item in enumerate(history_window):
+        history_items = chat_history or []
+        history_start = max(0, len(history_items) - 4)
+        history_window = history_items[history_start:]
+        for turn_id, item in enumerate(history_window, start=history_start):
             role = str(item.get("role") or "user")
             content = str(item.get("content") or "")[:300]
             if content:
-                history_lines.append(f"[{local_index}] {role}:{content}")
+                history_lines.append(f"[{turn_id}] {role}:{content}")
         history = "\n".join(history_lines) or "none"
         schema = json.dumps(
             router_json_schema(), ensure_ascii=False, separators=(",", ":")
@@ -868,6 +881,7 @@ class AIRouter:
             "query": query.strip(),
             "cohort": cohort,
             "history": (chat_history or [])[-4:],
+            "history_length": len(chat_history or []),
             "routing_hint": routing_hint,
             "model": self.model_name,
             "prompt_version": ROUTER_PROMPT_VERSION,

@@ -1,4 +1,5 @@
-version: 1
+version: 2
+rag_cohort_sensitive: true
 
 tools:
   foreign_language:

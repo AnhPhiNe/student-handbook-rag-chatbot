@@ -287,7 +287,10 @@ def router_json_schema() -> dict[str, Any]:
             }
         ],
         "standalone_query": "history-grounded query for follow_up or null",
-        "referenced_turns": [],
+        "referenced_turn_ids": [],
+        "referenced_evidence": [
+            {"turn_id": 0, "evidence_span": "exact span from referenced turn"}
+        ],
         "outcome": "execute|clarify|out_of_domain",
         "cohort": "K48-K49|K50|K51|null",
         "cohorts": ["K48-K49", "K50", "K51"],
@@ -341,9 +344,21 @@ def router_response_schema() -> dict[str, Any]:
                 },
             },
             "standalone_query": {"type": ["string", "null"]},
-            "referenced_turns": {
+            "referenced_turn_ids": {
                 "type": "array",
                 "items": {"type": "integer"},
+            },
+            "referenced_evidence": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "properties": {
+                        "turn_id": {"type": "integer"},
+                        "evidence_span": {"type": "string"},
+                    },
+                    "required": ["turn_id", "evidence_span"],
+                },
             },
             "outcome": {
                 "type": "string",
@@ -419,7 +434,8 @@ def router_response_schema() -> dict[str, Any]:
             "normalization_confidence",
             "corrections",
             "standalone_query",
-            "referenced_turns",
+            "referenced_turn_ids",
+            "referenced_evidence",
             "outcome",
             "cohort",
             "cohorts",
@@ -624,9 +640,14 @@ def normalize_router_decision(
     corrections = payload.get("corrections")
     if not isinstance(corrections, list):
         corrections = []
-    referenced_turns = payload.get("referenced_turns")
+    referenced_turns = payload.get("referenced_turn_ids")
+    if not isinstance(referenced_turns, list):
+        referenced_turns = payload.get("referenced_turns")
     if not isinstance(referenced_turns, list):
         referenced_turns = []
+    referenced_evidence = payload.get("referenced_evidence")
+    if not isinstance(referenced_evidence, list):
+        referenced_evidence = []
 
     return {
         "plan_version": PLANNER_CONTRACT_VERSION,
@@ -648,10 +669,27 @@ def normalize_router_decision(
             and str(item.get("normalized_span") or "").strip()
         ],
         "standalone_query": standalone_query,
+        "referenced_turn_ids": [
+            int(item)
+            for item in referenced_turns
+            if isinstance(item, int) and not isinstance(item, bool) and item >= 0
+        ],
         "referenced_turns": [
             int(item)
             for item in referenced_turns
             if isinstance(item, int) and not isinstance(item, bool) and item >= 0
+        ],
+        "referenced_evidence": [
+            {
+                "turn_id": int(item.get("turn_id")),
+                "evidence_span": str(item.get("evidence_span") or "").strip(),
+            }
+            for item in referenced_evidence
+            if isinstance(item, dict)
+            and isinstance(item.get("turn_id"), int)
+            and not isinstance(item.get("turn_id"), bool)
+            and int(item.get("turn_id")) >= 0
+            and str(item.get("evidence_span") or "").strip()
         ],
         "route": route,
         "execution_mode": execution_mode,
@@ -670,6 +708,62 @@ def normalize_router_decision(
         or bool(payload.get("needs_clarification")),
         "clarification_question": payload.get("clarification_question"),
     }
+
+
+def bind_effective_cohort(
+    decision: dict[str, Any],
+    *,
+    raw_query: str,
+    effective_query: str,
+    selected_cohort: str | None,
+    registry: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Bind one cohort from grounded sources using the declared priority order."""
+    registry = registry or load_lookup_registry()
+    raw_cohorts = _explicit_cohorts(raw_query)
+    selected = normalize_cohort(selected_cohort)
+    history_cohorts = _explicit_cohorts(effective_query)
+
+    if raw_cohorts:
+        grounded_cohorts = raw_cohorts
+        source = "raw_query"
+    elif selected:
+        grounded_cohorts = [selected]
+        source = "selected_cohort"
+    else:
+        grounded_cohorts = history_cohorts
+        source = "grounded_history" if history_cohorts else "unresolved"
+
+    is_multi = len(grounded_cohorts) > 1
+    effective_cohort = grounded_cohorts[0] if len(grounded_cohorts) == 1 else None
+    bound_requests: list[Any] = []
+    for request in decision.get("lookup_requests") or []:
+        if not isinstance(request, dict):
+            bound_requests.append(request)
+            continue
+        bound_request = dict(request)
+        refs = list(bound_request.get("cohort_refs") or [])
+        lookup_type = bound_request.get("lookup_type")
+        spec = registry.get("tools", {}).get(lookup_type) if lookup_type else None
+        requires_cohort = (
+            bool(registry.get("rag_cohort_sensitive", True))
+            if bound_request.get("request_kind") == "rag"
+            else bool((spec or {}).get("cohort_sensitive"))
+        )
+        if requires_cohort and not refs and effective_cohort:
+            bound_request["cohort_refs"] = [effective_cohort]
+        bound_requests.append(bound_request)
+
+    bound_decision = {
+        **decision,
+        "cohort": effective_cohort,
+        "cohorts": grounded_cohorts,
+        "is_multi_cohort": is_multi,
+        "effective_cohort_source": source,
+    }
+    if "lookup_requests" in decision:
+        bound_decision["lookup_requests"] = bound_requests
+    return bound_decision
 
 
 def _is_present(value: Any) -> bool:
@@ -821,6 +915,10 @@ def _validate_lookup_request(
             errors.append(f"{prefix}unsupported_rag_intent")
         if slots or spans:
             errors.append(f"{prefix}rag_request_has_slots")
+        if bool(registry.get("rag_cohort_sensitive", True)) and (
+            not normalized_selected or not cohort_refs
+        ):
+            errors.append(f"{prefix}missing_cohort")
         return errors
 
     spec = registry.get("tools", {}).get(lookup_type)
@@ -890,7 +988,7 @@ def validate_router_decision(
         errors.append("invalid_route")
         return errors
 
-    selected = normalize_cohort(selected_cohort)
+    selected = normalize_cohort(decision.get("cohort") or selected_cohort)
     router_cohort = normalize_cohort(decision.get("router_cohort"))
     if selected and router_cohort and selected != router_cohort:
         errors.append("cohort_conflict")
@@ -920,6 +1018,18 @@ def validate_router_decision(
     if len(lookup_requests) > MAX_LOOKUP_REQUESTS:
         errors.append("too_many_lookup_requests")
 
+    request_cohorts = {
+        normalized
+        for request in lookup_requests
+        if isinstance(request, dict)
+        for value in request.get("cohort_refs") or []
+        if (normalized := normalize_cohort(value))
+    }
+    if len(request_cohorts) > 1:
+        errors.append("multi_cohort_not_supported")
+    if selected and any(value != selected for value in request_cohorts):
+        errors.append("request_cohort_conflict")
+
     source_text = query
     for index, request in enumerate(lookup_requests):
         if not isinstance(request, dict):
@@ -930,7 +1040,7 @@ def validate_router_decision(
                 request,
                 index=index,
                 source_text=source_text,
-                selected_cohort=selected_cohort,
+                selected_cohort=selected,
                 registry=registry,
             )
         )

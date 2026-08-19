@@ -256,6 +256,40 @@ class PromptBuilderTest(unittest.TestCase):
         self.assertIn("không tự chứng minh người dùng có quyền lựa chọn", prompt)
         self.assertIn("chỉ kết luận có hoặc không khi nguồn trực tiếp xác lập", prompt)
 
+    def test_partial_result_status_is_visible_to_composer(self) -> None:
+        prompt = build_answer_prompt(
+            query="K51 hỏi điều kiện tốt nghiệp và thủ tục bảo lưu.",
+            retrieval_result={
+                "request_results": [
+                    {
+                        "request_id": "r1",
+                        "query_span": "điều kiện tốt nghiệp",
+                        "status": "ok",
+                    },
+                    {
+                        "request_id": "r2",
+                        "query_span": "thủ tục bảo lưu",
+                        "status": "error",
+                        "reason": "rag_exception:RuntimeError",
+                    },
+                ],
+                "unresolved_lookup_requests": [
+                    {
+                        "request_id": "r2",
+                        "query_span": "thủ tục bảo lưu",
+                        "status": "error",
+                    }
+                ],
+            },
+            cohort="K51",
+        )
+
+        self.assertIn("REQUEST_RESULTS", prompt)
+        self.assertIn("UNRESOLVED_REQUESTS", prompt)
+        self.assertIn('"request_id": "r2"', prompt)
+        self.assertIn('"status": "error"', prompt)
+        self.assertIn("Không dùng nguồn của request này", prompt)
+
 
 if __name__ == "__main__":
     unittest.main()

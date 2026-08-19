@@ -48,15 +48,32 @@ def _request(
     query_span: str,
     lookup_type: str | None = None,
     slots: dict[str, Any] | None = None,
+    slot_spans: dict[str, Any] | None = None,
     cohort_refs: list[str] | None = None,
 ) -> dict[str, Any]:
+    slots = slots or {}
+    if slot_spans is None:
+        code_derived_slots = {
+            "action",
+            "formula_type",
+            "operation",
+            "requested_field",
+            "scope",
+            "source_scale",
+            "target_scale",
+        }
+        slot_spans = {
+            name: str(value)
+            for name, value in slots.items()
+            if name not in code_derived_slots and str(value) in query_span
+        }
     return {
         "request_kind": request_kind,
         "lookup_type": lookup_type,
         "intent": intent,
         "query_span": query_span,
-        "slots": slots or {},
-        "slot_spans": {},
+        "slots": slots,
+        "slot_spans": slot_spans,
         "cohort_refs": cohort_refs or [],
     }
 
@@ -438,6 +455,57 @@ def test_single_request_uses_router_cohort_when_caller_omits_it(monkeypatch) -> 
     assert cohorts == ["K51"]
 
 
+def test_history_grounded_cohort_reaches_retrieval_context(monkeypatch) -> None:
+    pipeline = _pipeline()
+    raw_query = "Còn thì sao?"
+    effective_query = "K51 thời gian học tối đa là bao lâu?"
+    request = _request(
+        request_kind="rag",
+        intent="policy",
+        query_span=effective_query,
+        cohort_refs=[],
+    )
+    decision = _decision(effective_query, [request])
+    decision.update(
+        {
+            "context_mode": "follow_up",
+            "normalized_query": raw_query,
+            "standalone_query": effective_query,
+            "referenced_turn_ids": [0],
+            "referenced_evidence": [
+                {"turn_id": 0, "evidence_span": effective_query}
+            ],
+            "cohort": None,
+            "cohorts": [],
+        }
+    )
+    pipeline.router = Router(decision)
+    observed_cohorts = []
+
+    def fake_hybrid(**kwargs):
+        observed_cohorts.append(kwargs["cohort"])
+        return {
+            "retrieved_items": [],
+            "citations": [],
+            "related_items": [],
+            "related_references": [],
+        }
+
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.run_hybrid_retrieval_pipeline",
+        fake_hybrid,
+    )
+
+    result = pipeline._run_retrieval(
+        raw_query,
+        chat_history=[{"role": "user", "content": effective_query}],
+    )
+
+    assert observed_cohorts == ["K51"]
+    assert result["selected_cohort"] == "K51"
+    assert result["request_execution_contexts"][0]["effective_cohort"] == "K51"
+
+
 def test_context_headers_expose_request_ownership() -> None:
     context = build_context_for_prompt(
         {
@@ -461,3 +529,103 @@ def test_context_headers_expose_request_ownership() -> None:
 
     assert "Request: 2" in context
     assert "Query span: thủ tục xin bảo lưu" in context
+
+
+def test_all_request_exceptions_are_infrastructure_error(monkeypatch) -> None:
+    pipeline = _pipeline()
+    query = "K51 thủ tục bảo lưu thế nào?"
+    requests = [
+        _request(
+            request_kind="rag",
+            intent="procedure",
+            query_span=query,
+            cohort_refs=["K51"],
+        )
+    ]
+
+    def fail_hybrid(**_kwargs):
+        raise RuntimeError("vector store unavailable")
+
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.run_hybrid_retrieval_pipeline",
+        fail_hybrid,
+    )
+
+    result = pipeline._execute_semantic_requests(
+        query=query,
+        effective_query=query,
+        retrieval_query="unused",
+        cohort="K51",
+        router_decision=_decision(query, requests),
+        query_handling={},
+    )
+
+    assert result["infrastructure_error"] is True
+    assert result["error_type"] == "request_execution_error"
+    assert result["needs_clarification"] is False
+    assert result["needs_llm_answer"] is False
+    assert result["request_results"][0]["status"] == "error"
+
+
+def test_partial_success_preserves_error_for_composer(monkeypatch) -> None:
+    pipeline = _pipeline()
+    query = "K51 hỏi điều kiện tốt nghiệp và thủ tục bảo lưu."
+    requests = [
+        _request(
+            request_kind="rag",
+            intent="policy",
+            query_span="điều kiện tốt nghiệp",
+            cohort_refs=["K51"],
+        ),
+        _request(
+            request_kind="rag",
+            intent="procedure",
+            query_span="thủ tục bảo lưu",
+            cohort_refs=["K51"],
+        ),
+    ]
+
+    def partial_hybrid(**kwargs):
+        if kwargs["query"] == "thủ tục bảo lưu":
+            raise RuntimeError("vector store unavailable")
+        return {
+            "retrieved_items": [
+                {
+                    "chunk_id": "graduation-rule",
+                    "content": "Điều kiện tốt nghiệp.",
+                    "metadata": {
+                        "title": "Điều kiện tốt nghiệp",
+                        "chunk_type": "regulation",
+                        "document_id": "handbook-k51",
+                        "cohort": "K51",
+                    },
+                }
+            ],
+            "citations": [],
+            "related_items": [],
+            "related_references": [],
+        }
+
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.run_hybrid_retrieval_pipeline",
+        partial_hybrid,
+    )
+
+    result = pipeline._execute_semantic_requests(
+        query=query,
+        effective_query=query,
+        retrieval_query="unused",
+        cohort="K51",
+        router_decision=_decision(query, requests),
+        query_handling={},
+    )
+
+    assert result["infrastructure_error"] is False
+    assert result["needs_llm_answer"] is True
+    assert [item["status"] for item in result["request_results"]] == [
+        "ok",
+        "error",
+    ]
+    assert result["unresolved_lookup_requests"][0]["query_span"] == (
+        "thủ tục bảo lưu"
+    )

@@ -51,6 +51,9 @@ def test_router_contract_omits_fields_derived_by_code() -> None:
     assert "lookup_type" not in contract
     assert "slots" not in contract
     assert "slot_spans" not in contract
+    assert "referenced_turn_ids" in contract
+    assert "referenced_evidence" in contract
+    assert "referenced_turns" not in contract
 
     response_properties = router_response_schema()["properties"]
     assert "execution_mode" not in response_properties
@@ -92,7 +95,38 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     )
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2"
+    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.1"
+
+
+def test_history_window_uses_absolute_turn_ids(monkeypatch, tmp_path: Path) -> None:
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+    history = [
+        {"role": "user", "content": f"turn-{index}"} for index in range(6)
+    ]
+
+    prompt = router._build_prompt(
+        "Còn trường hợp đó?",
+        cohort=None,
+        chat_history=history,
+    )
+
+    assert "[2] user:turn-2" in prompt
+    assert "[5] user:turn-5" in prompt
+    assert "[0] user:turn-0" not in prompt
+
+    longer_history = [
+        {"role": "user", "content": "older-turn"},
+        *history,
+    ]
+    assert router._cache_key(
+        "Còn trường hợp đó?",
+        cohort=None,
+        chat_history=history,
+    ) != router._cache_key(
+        "Còn trường hợp đó?",
+        cohort=None,
+        chat_history=longer_history,
+    )
 
 
 def test_model_defaults_select_supported_reasoning_and_format(
@@ -192,7 +226,8 @@ def test_invalid_structured_decision_clarifies_without_retrieval(
         "normalization_confidence": "high",
         "corrections": [],
         "standalone_query": None,
-        "referenced_turns": [],
+        "referenced_turn_ids": [],
+        "referenced_evidence": [],
         "route": "structured",
         "execution_mode": "structured",
         "intent": "list_items",

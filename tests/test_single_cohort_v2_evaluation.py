@@ -270,6 +270,33 @@ def test_semantic_plan_uses_registry_declared_rag_intent_equivalence() -> None:
     assert not semantic_plan_match(expected, different_contract)
 
 
+def test_semantic_plan_leaves_intent_effect_to_execution_result_gate() -> None:
+    request = {
+        "request_id": "r1",
+        "request_kind": "structured",
+        "tool_name": "scoring",
+        "intent": "direct_value",
+        "query_span": "GPA 3.2",
+        "slots": {"operation": "academic_classification", "score_or_grade": 3.2},
+        "cohort_refs": ["K51"],
+    }
+    expected = {
+        "outcome": "execute",
+        "context_mode": "standalone",
+        "query_mode": "validated",
+        "effective_cohort": "K51",
+        "effective_cohort_source": "raw_query",
+        "atomic_requests": [request],
+    }
+    actual = {
+        **expected,
+        "atomic_requests": [{**request, "intent": "list_items"}],
+    }
+
+    assert not exact_plan_match(expected, actual)
+    assert semantic_plan_match(expected, actual)
+
+
 def test_semantic_execution_rejects_correct_source_with_wrong_result() -> None:
     source = {
         "record_id": "table-1",
@@ -290,6 +317,69 @@ def test_semantic_execution_rejects_correct_source_with_wrong_result() -> None:
         }
     }
     assert _structured_source_bound(result, request)
+    assert not _structured_result_matches(result, request)
+
+
+def test_semantic_execution_ignores_non_semantic_input_echo() -> None:
+    source = {
+        "record_id": "table-1",
+        "document_id": "handbook-k51",
+        "parent_section_id": "section-1",
+    }
+    request = {
+        "request_id": "r1",
+        "expected_status": "ok",
+        "expected_source_records": [source],
+        "expected_result": {
+            "lookup_type": "scholarship_classification",
+            "input_value": "điểm học bổng loại Giỏi",
+            "result": {
+                "label": "Giỏi",
+                "academic_score_range": "3.20-3.59",
+                "score": 0.8,
+                "selection_method": "catalog_fuzzy",
+            },
+            "source_records": [source],
+        },
+    }
+    result = {
+        "structured_result": {
+            "request_id": "r1",
+            "lookup_type": "scholarship_classification",
+            "input_value": (
+                "điểm học bổng học bổng khuyến khích học tập loại Giỏi"
+            ),
+            "result": {
+                "label": "Giỏi",
+                "academic_score_range": "3.20-3.59",
+                "score": 0.97,
+                "selection_method": "catalog_fuzzy_semantic",
+            },
+            "source_records": [source],
+        }
+    }
+
+    assert _structured_source_bound(result, request)
+    assert _structured_result_matches(result, request)
+
+
+def test_semantic_execution_does_not_ignore_business_score() -> None:
+    request = {
+        "request_id": "r1",
+        "expected_status": "ok",
+        "expected_result": {
+            "lookup_type": "academic_classification",
+            "result": {"score": 3.2, "label": "Giỏi"},
+        },
+    }
+    result = {
+        "structured_result": {
+            "request_id": "r1",
+            "lookup_type": "academic_classification",
+            "result": {"score": 3.0, "label": "Giỏi"},
+        }
+    }
+
     assert not _structured_result_matches(result, request)
 
 

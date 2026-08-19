@@ -29,6 +29,8 @@ def normalize_cohort(cohort: str | None) -> str | None:
         return None
 
     value = cohort.strip().upper().replace("_", "-")
+    if value in {"NULL", "NONE", "N/A", "NA", "UNRESOLVED"}:
+        return None
     if value in VALID_COHORTS:
         return value
     if value in LEGACY_COHORTS:

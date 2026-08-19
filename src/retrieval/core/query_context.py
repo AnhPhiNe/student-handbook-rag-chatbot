@@ -264,6 +264,38 @@ def select_effective_query(
     )
 
 
+def validated_correction_provenance(
+    router_decision: dict[str, Any],
+    query_context: QueryContextResult,
+) -> list[dict[str, str]]:
+    """Return corrections only after the normalized query passed provenance checks."""
+
+    if (
+        query_context.effective_query_source != "validated_normalization"
+        or query_context.validation_errors
+    ):
+        return []
+    if _canonical_query(query_context.raw_query) == _canonical_query(
+        query_context.normalized_query or ""
+    ):
+        # No correction was needed to produce the accepted normalization.
+        # Ignore any model-declared corrections instead of treating unused
+        # declarations as provenance for canonical structured slots.
+        return []
+    errors = validate_normalized_query(
+        query_context.raw_query,
+        query_context.normalized_query,
+        corrections=router_decision.get("corrections"),
+        confidence=query_context.normalization_confidence,
+    )
+    if errors:
+        return []
+    return [
+        {"original_span": original, "normalized_span": normalized}
+        for original, normalized in _corrections(router_decision.get("corrections"))
+    ]
+
+
 def validate_normalized_query(
     raw_query: str,
     normalized_query: str | None,

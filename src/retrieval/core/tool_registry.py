@@ -97,7 +97,10 @@ def _slot_text(request: AtomicToolRequest, *names: str) -> str:
     spans = request.slot_spans
     slots = request.slots
     for name in names:
-        for source in (spans, slots):
+        # Canonical typed values are validator-approved execution inputs.
+        # Source spans are provenance and only serve as a fallback when the
+        # typed slot is absent.
+        for source in (slots, spans):
             value = source.get(name) if isinstance(source, Mapping) else None
             if isinstance(value, str) and value.strip():
                 return value.strip()
@@ -195,7 +198,27 @@ class DirectoryAdapter:
             directory = payload.resources.student_faculty_profiles or []
         else:
             directory = payload.resources.office_directory
-        result = office_lookup(payload.query, directory, cohort=payload.effective_cohort, detected_entities=payload.resources.detected_entities, routing={"intent": "office_query", "content_type": "office_directory", "target_chunk_types": ["office_directory"]}, candidate_text=candidate_text, require_confident_match=True, model=payload.resources.model if self.lookup_type == "student_service" else None)
+        # Execute the selected adapter from validator-approved typed slots.
+        # Raw query text is only the fallback used above when no slot exists;
+        # it must not override a canonical entity after alias/provenance checks.
+        result = office_lookup(
+            candidate_text,
+            directory,
+            cohort=payload.effective_cohort,
+            detected_entities=payload.resources.detected_entities,
+            routing={
+                "intent": "office_query",
+                "content_type": "office_directory",
+                "target_chunk_types": ["office_directory"],
+            },
+            candidate_text=candidate_text,
+            require_confident_match=True,
+            model=(
+                payload.resources.model
+                if self.lookup_type == "student_service"
+                else None
+            ),
+        )
         if result is not None and result.get("resolution_status") == "ambiguous":
             options = result.get("clarification_options") or []
             result = {**result, "clarification_question": "Câu hỏi của bạn liên quan đến nhiều đơn vị. Bạn cần hỗ trợ cụ thể về mảng nào dưới đây?\n\n" + "\n".join(options)}

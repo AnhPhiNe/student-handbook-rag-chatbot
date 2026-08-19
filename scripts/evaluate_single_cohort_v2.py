@@ -36,7 +36,10 @@ from src.evaluation.artifact_fingerprint import (  # noqa: E402
 )
 from src.generation.answer_pipeline import AnswerPipeline  # noqa: E402
 from src.retrieval.core.ai_router import AIRouter  # noqa: E402
-from src.retrieval.core.query_context import select_effective_query  # noqa: E402
+from src.retrieval.core.query_context import (  # noqa: E402
+    select_effective_query,
+    validated_correction_provenance,
+)
 from src.retrieval.core.structured_routing import (  # noqa: E402
     bind_effective_cohort,
     load_lookup_registry,
@@ -202,6 +205,9 @@ def _validated_planner_decision(
             selected_cohort=bound.get("cohort"),
             grounding_context=effective_query,
             registry=registry,
+            validated_corrections=validated_correction_provenance(
+                decision, handling
+            ),
         )
         if errors:
             bound = reject_invalid_plan(bound, errors, query=effective_query)
@@ -432,6 +438,36 @@ def _semantic_subset(expected: Any, actual: Any) -> bool:
     return semantic_value_equal(expected, actual)
 
 
+_STRUCTURED_RANKING_DIAGNOSTICS = {
+    "match_score",
+    "score_margin",
+    "lexical_score",
+    "semantic_score",
+    "selection_method",
+}
+_STRUCTURED_RANKING_MARKERS = {
+    "lexical_score",
+    "semantic_score",
+    "selection_method",
+}
+
+
+def _without_structured_ranking_diagnostics(value: Any) -> Any:
+    """Remove volatile ranking telemetry while retaining business fields."""
+
+    if isinstance(value, Mapping):
+        ranking_record = bool(_STRUCTURED_RANKING_MARKERS.intersection(value))
+        return {
+            key: _without_structured_ranking_diagnostics(item)
+            for key, item in value.items()
+            if key not in _STRUCTURED_RANKING_DIAGNOSTICS
+            and not (key == "score" and ranking_record)
+        }
+    if isinstance(value, list):
+        return [_without_structured_ranking_diagnostics(item) for item in value]
+    return value
+
+
 def _structured_result_matches(
     result: Mapping[str, Any], request: Mapping[str, Any]
 ) -> bool:
@@ -439,7 +475,22 @@ def _structured_result_matches(
     if expected is None:
         return request.get("expected_status") != "ok"
     actual = _structured_request_result(result, request)
-    return actual is not None and _semantic_subset(expected, actual)
+    if actual is None:
+        return False
+    # ``input_value`` is an adapter echo of the execution query, not the
+    # business result.  A validated standalone/retrieval query may expand the
+    # user's wording while resolving to the exact same record.  Comparing this
+    # echo made execution accuracy depend on representation.  Source fields are
+    # deliberately retained here and are additionally checked by the stricter
+    # source-binding gate.
+    semantic_expected = _without_structured_ranking_diagnostics(
+        {
+            key: value
+            for key, value in expected.items()
+            if key != "input_value"
+        }
+    )
+    return _semantic_subset(semantic_expected, actual)
 
 
 def _citation_isolated(result: Mapping[str, Any], request_ids: set[str]) -> bool:

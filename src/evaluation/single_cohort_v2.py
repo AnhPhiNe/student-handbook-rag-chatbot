@@ -502,8 +502,12 @@ def assess_plan(expected: Mapping[str, Any], actual: Mapping[str, Any]) -> PlanA
         for field, value in strict_values.items():
             if left.get(field) != value:
                 reasons.append(f"{prefix}:{field}")
-        if not _intent_semantically_equal(
-            left.get("intent"), right.get("intent"), left.get("request_kind")
+        # Structured intent remains an exact diagnostic because validated
+        # tool/slots plus downstream result checks determine executability.
+        # RAG intents may change retrieval scope, so only registry-declared
+        # source-contract equivalence is accepted.
+        if left.get("request_kind") == "rag" and not _intent_semantically_equal(
+            left.get("intent"), right.get("intent"), "rag"
         ):
             reasons.append(f"{prefix}:intent")
         if not _semantic_span_equal(left.get("query_span"), right.get("query_span")):

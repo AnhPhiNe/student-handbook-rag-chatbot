@@ -840,7 +840,11 @@ def _resolved_span_value(span: Any, source_text: str) -> Any:
 
 
 def _slot_value_matches_span(
-    value: Any, span: Any, source_text: str, schema: dict[str, Any]
+    value: Any,
+    span: Any,
+    source_text: str,
+    schema: dict[str, Any],
+    corrections: list[dict[str, Any]] | None = None,
 ) -> bool:
     values = _normalized_leaf_values(value)
     resolved_span = _resolved_span_value(span, source_text)
@@ -848,10 +852,24 @@ def _slot_value_matches_span(
     canonical_spans = _normalized_leaf_values(
         _canonicalize_scalar(resolved_span, schema)
     )
+    span_values = set(spans)
+    corrected_values = [
+        correction.get("normalized_span")
+        for correction in corrections or []
+        if _normalize_text(correction.get("original_span")) in span_values
+        and _is_present(correction.get("normalized_span"))
+    ]
+    canonical_corrections = [
+        normalized
+        for corrected in corrected_values
+        for normalized in _normalized_leaf_values(
+            _canonicalize_scalar(corrected, schema)
+        )
+    ]
     return bool(values and spans) and all(
         any(
             item == source or item in source or source in item
-            for source in [*spans, *canonical_spans]
+            for source in [*spans, *canonical_spans, *canonical_corrections]
         )
         for item in values
     )
@@ -993,6 +1011,7 @@ def _validate_lookup_request(
     source_text: str,
     selected_cohort: str | None,
     registry: dict[str, Any],
+    corrections: list[dict[str, Any]] | None = None,
 ) -> list[str]:
     prefix = f"request:{index}:"
     errors: list[str] = []
@@ -1084,7 +1103,13 @@ def _validate_lookup_request(
         elif not _span_is_grounded(span, request_source):
             errors.append(f"{prefix}ungrounded_slot:{slot_name}")
         elif not schema.get("enum") and not (
-            _slot_value_matches_span(value, span, request_source, schema)
+            _slot_value_matches_span(
+                value,
+                span,
+                request_source,
+                schema,
+                corrections,
+            )
         ):
             errors.append(f"{prefix}slot_value_mismatch:{slot_name}")
 
@@ -1107,6 +1132,7 @@ def validate_router_decision(
     selected_cohort: str | None = None,
     grounding_context: str = "",
     registry: dict[str, Any] | None = None,
+    validated_corrections: list[dict[str, str]] | None = None,
 ) -> list[str]:
     registry = registry or load_lookup_registry()
     errors: list[str] = []
@@ -1171,6 +1197,7 @@ def validate_router_decision(
                 source_text=source_text,
                 selected_cohort=selected,
                 registry=registry,
+                corrections=validated_corrections or [],
             )
         )
     return errors

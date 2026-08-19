@@ -4,6 +4,11 @@ from typing import Any
 
 import pytest
 
+from src.common.cohort import normalize_cohort
+from src.retrieval.core.query_context import (
+    select_effective_query,
+    validated_correction_provenance,
+)
 from src.retrieval.core.structured_routing import (
     MAX_LOOKUP_REQUESTS,
     reject_invalid_plan,
@@ -68,10 +73,19 @@ def _errors(
     *,
     selected_cohort: str | None = "K50",
 ) -> list[str]:
+    handling = select_effective_query(
+        query,
+        decision,
+        selected_cohort=selected_cohort,
+    )
     return validate_router_decision(
         decision,
         query=query,
         selected_cohort=selected_cohort,
+        grounding_context=handling.effective_query,
+        validated_corrections=validated_correction_provenance(
+            decision, handling
+        ),
     )
 
 
@@ -188,6 +202,136 @@ def test_registry_canonicalizes_typed_and_named_slot_values() -> None:
     assert first["slots"]["score_or_level"] == "6.0"
     assert second["slots"]["score_or_grade"] == 3.4
     assert _errors(decision, query, selected_cohort="K51") == []
+
+
+@pytest.mark.parametrize("value", ["NULL", "null", "None", "N/A", "unresolved"])
+def test_null_like_cohort_sentinels_are_not_real_cohorts(value: str) -> None:
+    assert normalize_cohort(value) is None
+
+
+def test_validated_local_correction_can_ground_canonical_slot_value() -> None:
+    query = "IELST 6.0 đổi bậc"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="direct_value",
+                query_span=query,
+                slots={
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "6.0",
+                },
+                slot_spans={
+                    "certificate_or_language": "IELST",
+                    "score_or_level": "6.0",
+                },
+                cohort_refs=["K50"],
+            )
+        ],
+    )
+    decision["corrections"] = [
+        {"original_span": "IELST", "normalized_span": "IELTS"}
+    ]
+    decision["normalized_query"] = "IELTS 6.0 đổi bậc"
+
+    assert _errors(decision, query) == []
+
+
+def test_unvalidated_content_substitution_cannot_ground_slot_value() -> None:
+    query = "TOEFL 60 đổi bậc"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="direct_value",
+                query_span=query,
+                slots={
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "60",
+                },
+                slot_spans={
+                    "certificate_or_language": "TOEFL",
+                    "score_or_level": "60",
+                },
+                cohort_refs=["K50"],
+            )
+        ],
+    )
+    decision["corrections"] = [
+        {"original_span": "TOEFL", "normalized_span": "IELTS"}
+    ]
+    decision["normalized_query"] = "IELTS 60 đổi bậc"
+
+    assert "request:0:slot_value_mismatch:certificate_or_language" in _errors(
+        decision, query
+    )
+
+
+def test_correction_is_ignored_when_normalization_falls_back_to_raw() -> None:
+    query = "IELST 6.0 đổi bậc"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="direct_value",
+                query_span=query,
+                slots={
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "6.0",
+                },
+                slot_spans={
+                    "certificate_or_language": "IELST",
+                    "score_or_level": "6.0",
+                },
+                cohort_refs=["K50"],
+            )
+        ],
+    )
+    decision["corrections"] = [
+        {"original_span": "not in query", "normalized_span": "IELTS"}
+    ]
+    decision["normalized_query"] = "IELTS 6.0 đổi bậc"
+
+    assert "request:0:slot_value_mismatch:certificate_or_language" in _errors(
+        decision, query
+    )
+
+
+def test_unused_correction_cannot_ground_slot_when_normalized_query_is_unchanged() -> None:
+    query = "TOEFL 60 đổi bậc"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="direct_value",
+                query_span=query,
+                slots={
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "60",
+                },
+                slot_spans={
+                    "certificate_or_language": "TOEFL",
+                    "score_or_level": "60",
+                },
+                cohort_refs=["K50"],
+            )
+        ],
+    )
+    decision["corrections"] = [
+        {"original_span": "TOEFL", "normalized_span": "IELTS"}
+    ]
+
+    assert "request:0:slot_value_mismatch:certificate_or_language" in _errors(
+        decision, query
+    )
 
 
 @pytest.mark.parametrize(

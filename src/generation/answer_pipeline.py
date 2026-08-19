@@ -12,7 +12,10 @@ from src.retrieval.core.citation_builder import (
     enrich_citations_with_parent_details,
 )
 from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline
-from src.retrieval.core.query_context import select_effective_query
+from src.retrieval.core.query_context import (
+    select_effective_query,
+    validated_correction_provenance,
+)
 from src.retrieval.core.request_execution import RequestExecutionContext
 from src.retrieval.core.structured_routing import (
     bind_effective_cohort,
@@ -1039,6 +1042,9 @@ class AnswerPipeline:
                 selected_cohort=router_decision.get("cohort"),
                 grounding_context=effective_query,
                 registry=registry,
+                validated_corrections=validated_correction_provenance(
+                    router_decision, handling
+                ),
             )
             if runtime_validation_errors:
                 router_decision = reject_invalid_plan(

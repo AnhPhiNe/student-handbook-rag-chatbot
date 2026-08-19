@@ -163,7 +163,8 @@ def test_dispatcher_preserves_invalid_adapter_status() -> None:
 def test_directory_adapter_uses_only_selected_catalog(monkeypatch) -> None:
     captured: dict = {}
 
-    def fake_lookup(_query, directory, **_kwargs):
+    def fake_lookup(query, directory, **_kwargs):
+        captured["query"] = query
         captured["directory"] = directory
         return {
             "result": [{"websites": ["https://example.edu"]}],
@@ -204,4 +205,57 @@ def test_directory_adapter_uses_only_selected_catalog(monkeypatch) -> None:
     )
 
     assert result.status == "ok"
+    assert captured["query"] == "Khoa Công nghệ Thông tin"
     assert captured["directory"] == [{"record_id": "faculty-1"}]
+
+
+def test_directory_adapter_prefers_validated_alias_slot_over_raw_typo(
+    monkeypatch,
+) -> None:
+    captured: dict = {}
+
+    def fake_lookup(query, _directory, **kwargs):
+        captured["query"] = query
+        captured["candidate_text"] = kwargs.get("candidate_text")
+        return {
+            "result": [{"unit_name": "Trạm Y tế"}],
+            "source_records": [{"record_id": "service-1"}],
+        }
+
+    monkeypatch.setattr(
+        "src.retrieval.core.tool_registry.office_lookup", fake_lookup
+    )
+    resources = ToolResources(
+        scoring_tables=[],
+        formula_rules=[],
+        office_directory=[],
+        student_service_directory=[{"record_id": "service-1"}],
+        student_faculty_profiles=[],
+        foreign_language_tables=[],
+        structured_tables_registry=[],
+        program_directory=[],
+    )
+    request = AtomicToolRequest(
+        tool_name="student_service",
+        intent="contact",
+        query_span="don vi lo bhyt",
+        slots={"service": "bảo hiểm y tế", "requested_field": "unit"},
+        slot_spans={"service": "bhyt", "requested_field": "don vi"},
+    )
+
+    result = DirectoryAdapter("student_service").execute(
+        ToolExecutionInput(
+            request=request,
+            decision={},
+            context=None,
+            query=request.query_span,
+            effective_cohort="K51",
+            resources=resources,
+        )
+    )
+
+    assert result.status == "ok"
+    assert captured == {
+        "query": "bảo hiểm y tế",
+        "candidate_text": "bảo hiểm y tế",
+    }

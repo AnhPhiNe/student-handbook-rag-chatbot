@@ -28,12 +28,13 @@ from .structured_routing import (
     router_response_schema,
     validate_router_decision,
 )
-from .query_context import select_effective_query
+from .query_context import select_effective_query, validated_correction_provenance
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
 ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.2"
 ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.3"
+ROUTER_VALIDATOR_VERSION = "single-cohort-validator-v2.4"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -684,6 +685,9 @@ class AIRouter:
                     selected_cohort=decision.get("cohort"),
                     grounding_context=validation_query,
                     registry=self.registry,
+                    validated_corrections=validated_correction_provenance(
+                        decision, query_context
+                    ),
                 )
                 if query_context.needs_clarification:
                     validation_errors = [
@@ -888,6 +892,7 @@ class AIRouter:
             "model": self.model_name,
             "prompt_version": ROUTER_PROMPT_VERSION,
             "contract_version": ROUTER_CONTRACT_VERSION,
+            "validator_version": ROUTER_VALIDATOR_VERSION,
             "registry": registry_digest(self.registry),
         }
         raw = json.dumps(

@@ -88,6 +88,22 @@ def test_router_cache_removes_legacy_retrieval_query(tmp_path: Path) -> None:
     assert "retrieval_query" not in decision
 
 
+def test_router_cache_key_is_bound_to_validator_version(
+    monkeypatch, tmp_path: Path
+) -> None:
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+    original = router._cache_key("K51 GPA 3.2", cohort="K51", chat_history=[])
+    monkeypatch.setattr(
+        ai_router_module,
+        "ROUTER_VALIDATOR_VERSION",
+        "single-cohort-validator-next",
+    )
+
+    changed = router._cache_key("K51 GPA 3.2", cohort="K51", chat_history=[])
+
+    assert changed != original
+
+
 def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None:
     router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
     dynamic_prompt = router._build_prompt(

@@ -259,7 +259,7 @@ def test_structured_and_rag_requests_execute_independently(monkeypatch) -> None:
     assert {citation["request_index"] for citation in result["citations"]} == {0, 1}
 
 
-def test_unresolved_structured_request_falls_back_only_its_clause(monkeypatch) -> None:
+def test_unresolved_structured_request_never_falls_back_to_rag(monkeypatch) -> None:
     pipeline = _pipeline()
     query = "IELTS 9.0 tương đương bậc mấy và thủ tục bảo lưu thế nào?"
     requests = [
@@ -300,10 +300,7 @@ def test_unresolved_structured_request_falls_back_only_its_clause(monkeypatch) -
 
     result = pipeline._run_retrieval(query, cohort="K51")
 
-    assert calls == [
-        "IELTS 9.0 tương đương bậc mấy",
-        "thủ tục bảo lưu thế nào",
-    ]
+    assert calls == ["thủ tục bảo lưu thế nào"]
     assert result["unresolved_lookup_requests"][0]["request_index"] == 0
     assert result["unresolved_lookup_requests"][0]["query_span"] == (
         "IELTS 9.0 tương đương bậc mấy"
@@ -350,7 +347,7 @@ def test_same_structured_tool_can_execute_twice() -> None:
     assert [citation["request_index"] for citation in result["citations"]] == [0, 1]
 
 
-def test_request_specific_cohorts_execute_as_request_by_cohort(monkeypatch) -> None:
+def test_request_specific_multi_cohorts_require_clarification(monkeypatch) -> None:
     pipeline = _pipeline()
     query = "K50 hỏi cảnh báo học vụ, K51 hỏi thủ tục bảo lưu."
     requests = [
@@ -405,13 +402,9 @@ def test_request_specific_cohorts_execute_as_request_by_cohort(monkeypatch) -> N
 
     result = pipeline._run_retrieval(query)
 
-    assert calls == [
-        ("K50 hỏi cảnh báo học vụ", "K50"),
-        ("K51 hỏi thủ tục bảo lưu", "K51"),
-    ]
-    assert [item["request_index"] for item in result["retrieved_items"]] == [0, 1]
-    assert [citation["request_index"] for citation in result["citations"]] == [0, 1]
-    assert [item["cohort"] for item in result["request_results"]] == ["K50", "K51"]
+    assert calls == []
+    assert result["needs_clarification"] is True
+    assert result["retrieval_executed"] is False
 
 
 def test_single_request_uses_router_cohort_when_caller_omits_it(monkeypatch) -> None:

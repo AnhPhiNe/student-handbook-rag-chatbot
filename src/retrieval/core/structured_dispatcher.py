@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Mapping
 
 from src.common.cohort import normalize_cohort
 
 from .formula_lookup import formula_lookup
 from .foreign_language_lookup import foreign_language_lookup
-from .office_lookup import normalize_text, office_lookup
+from .office_lookup import office_lookup
 from .program_lookup import program_lookup
+from .request_execution import RequestExecutionContext
 from .scholarship_lookup import scholarship_classification_lookup
 from .study_duration_lookup import study_duration_lookup
 from .structured_lookup import structured_lookup_from_slots
@@ -181,13 +182,6 @@ def _resolve_single_lookup(
             scoring_tables,
             cohort=effective_cohort,
         ) if slots else None
-        if result is None:
-            from .structured_lookup import structured_lookup
-            result = structured_lookup(
-                query,
-                scoring_tables,
-                cohort=effective_cohort,
-            )
         operation = str(slots.get("operation") or "")
         subtype_map = {
             "grade_10_to_letter": {
@@ -227,7 +221,8 @@ def _resolve_single_lookup(
             "faculty": "faculty",
         }[lookup_type]
         candidate_text = (
-            _slot_text(decision, candidate_slot)
+            query
+            or _slot_text(decision, candidate_slot)
             or _slot_text(decision, "faculty")
             or _slot_text(decision, "office")
             or _slot_text(decision, "program_or_faculty")
@@ -288,19 +283,18 @@ def _resolve_single_lookup(
         )
 
     if lookup_type == "program":
-        candidate_text = _slot_text(decision, "program_or_faculty") or query
+        candidate_text = query or _slot_text(decision, "program_or_faculty")
         intent = decision.get("intent")
-        q_norm = normalize_text(candidate_text)
-        scope = str(slots.get("scope") or ("faculty" if "khoa" in q_norm else "school"))
+        scope = str(slots.get("scope") or "school")
         requested_field = str(slots.get("requested_field") or "")
-        if intent == "resolve_faculty" or requested_field == "faculty" or "thuoc khoa" in q_norm or "khoa nao" in q_norm or "o khoa" in q_norm:
+        if intent == "direct_value" and requested_field == "faculty":
             action = "resolve_faculty"
         elif intent == "exists" or requested_field == "exists":
             action = "exists"
-        elif intent == "list_items" or requested_field in {"list", "programs", "nganh"} or "danh sach" in q_norm or "cac nganh" in q_norm or "co nhung nganh" in q_norm:
+        elif intent == "list_items" and requested_field in {"", "programs", "all"}:
             action = "list"
         else:
-            action = "resolve_faculty"
+            return _resolution(lookup_type, "program_lookup", None)
         result = program_lookup(
             candidate_text,
             program_directory,
@@ -490,6 +484,7 @@ def resolve_structured_decision(
     program_directory: list[dict[str, Any]],
     detected_entities: list[dict[str, Any]] | None = None,
     model: Any | None = None,
+    request_contexts: Mapping[int, RequestExecutionContext] | None = None,
 ) -> StructuredResolution | None:
     effective_cohort = normalize_cohort(cohort or decision.get("cohort"))
 
@@ -536,8 +531,17 @@ def resolve_structured_decision(
 
     collected: list[StructuredResolution] = []
     for request_index, request in request_entries:
-        request_query = str(request.get("query_span") or query).strip()
-        lookup_query = str(request.get("retrieval_query") or request_query).strip()
+        execution_context = (request_contexts or {}).get(request_index)
+        request_query = (
+            execution_context.query_span
+            if execution_context
+            else str(request.get("query_span") or query).strip()
+        )
+        lookup_query = (
+            execution_context.retrieval_query
+            if execution_context
+            else request_query
+        )
         request_decision = _decision_for_request(decision, request)
         request_kwargs = {
             **lookup_kwargs,

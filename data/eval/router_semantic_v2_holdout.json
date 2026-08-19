@@ -1,0 +1,238 @@
+[
+  {
+    "id": "holdout-01",
+    "category": "single_structured_paraphrase",
+    "query": "TOEFL iBT 80 được công nhận ở bậc nào trong chuẩn đầu ra?",
+    "cohort": "K51",
+    "expected_requests": [
+      {
+        "request_kind": "structured",
+        "lookup_type": "foreign_language",
+        "span_contains": ["TOEFL", "80"],
+        "cohort_refs": ["K51"]
+      }
+    ]
+  },
+  {
+    "id": "holdout-02",
+    "category": "single_structured_paraphrase",
+    "query": "Nếu đạt B- thì quy đổi sang thang điểm 4 như thế nào?",
+    "cohort": "K51",
+    "expected_requests": [
+      {
+        "request_kind": "structured",
+        "lookup_type": "scoring",
+        "span_contains": ["B-"],
+        "cohort_refs": ["K51"]
+      }
+    ]
+  },
+  {
+    "id": "holdout-03",
+    "category": "single_structured_paraphrase",
+    "query": "Khoa Toán có những chương trình đào tạo nào?",
+    "cohort": "K51",
+    "expected_requests": [
+      {
+        "request_kind": "structured",
+        "lookup_type": "program",
+        "span_contains": ["Khoa Toán", "chương trình đào tạo"]
+      }
+    ]
+  },
+  {
+    "id": "holdout-04",
+    "category": "single_structured_directory",
+    "query": "Cho tôi số điện thoại của Khoa Ngoại ngữ.",
+    "cohort": "K51",
+    "expected_requests": [
+      {
+        "request_kind": "structured",
+        "lookup_type": "faculty",
+        "span_contains": ["Khoa Ngoại ngữ", "số điện thoại"]
+      }
+    ]
+  },
+  {
+    "id": "holdout-05",
+    "category": "same_tool_multiple_targets",
+    "query": "GPA 3.0 thuộc loại nào; còn điểm B+ đổi sang hệ 4 ra sao?",
+    "cohort": "K51",
+    "expected_requests": [
+      {
+        "request_kind": "structured",
+        "lookup_type": "scoring",
+        "span_contains": ["GPA", "3.0"],
+        "cohort_refs": ["K51"]
+      },
+      {
+        "request_kind": "structured",
+        "lookup_type": "scoring",
+        "span_contains": ["B+"],
+        "cohort_refs": ["K51"]
+      }
+    ]
+  },
+  {
+    "id": "holdout-06",
+    "category": "mixed_non_and_connector",
+    "query": "Tôi cần biết thời gian học chuẩn; ngoài ra, điều kiện để được xét tốt nghiệp là gì?",
+    "cohort": "K51",
+    "expected_requests": [
+      {
+        "request_kind": "structured",
+        "lookup_type": "study_duration",
+        "span_contains": ["thời gian học chuẩn"]
+      },
+      {
+        "request_kind": "rag",
+        "span_contains": ["điều kiện để được xét tốt nghiệp"]
+      }
+    ]
+  },
+  {
+    "id": "holdout-07",
+    "category": "two_regulations_non_and_connector",
+    "query": "Tôi muốn hiểu điều kiện học bổng. Đồng thời, thủ tục chuyển ngành thực hiện ra sao?",
+    "cohort": "K51",
+    "expected_requests": [
+      {
+        "request_kind": "rag",
+        "span_contains": ["điều kiện học bổng"]
+      },
+      {
+        "request_kind": "rag",
+        "span_contains": ["thủ tục chuyển ngành"]
+      }
+    ]
+  },
+  {
+    "id": "holdout-08",
+    "category": "three_requests",
+    "query": "IELTS 5.5 quy đổi bậc mấy; email Phòng Đào tạo là gì; và điều kiện cảnh báo học vụ thế nào?",
+    "cohort": "K51",
+    "expected_requests": [
+      {
+        "request_kind": "structured",
+        "lookup_type": "foreign_language",
+        "span_contains": ["IELTS", "5.5"]
+      },
+      {
+        "request_kind": "structured",
+        "lookup_type": "office",
+        "span_contains": ["email Phòng Đào tạo"]
+      },
+      {
+        "request_kind": "rag",
+        "span_contains": ["điều kiện cảnh báo học vụ"]
+      }
+    ]
+  },
+  {
+    "id": "holdout-09",
+    "category": "multi_cohort_same_target",
+    "query": "Đối chiếu yêu cầu qua môn của K49 với K50 giúp tôi.",
+    "cohort": "K49",
+    "expected_requests": [
+      {
+        "request_kind": "structured",
+        "lookup_type": "scoring",
+        "span_contains": ["K49", "K50", "yêu cầu qua môn"],
+        "cohort_refs": ["K49", "K50"]
+      }
+    ]
+  },
+  {
+    "id": "holdout-10",
+    "category": "multi_cohort_distinct_targets",
+    "query": "K49 cần biết điều kiện tốt nghiệp, còn K50 cần biết email Phòng Đào tạo.",
+    "cohort": "K49",
+    "expected_requests": [
+      {
+        "request_kind": "rag",
+        "span_contains": ["K49", "điều kiện tốt nghiệp"],
+        "cohort_refs": ["K49"]
+      },
+      {
+        "request_kind": "structured",
+        "lookup_type": "office",
+        "span_contains": ["K50", "email Phòng Đào tạo"],
+        "cohort_refs": ["K50"]
+      }
+    ]
+  },
+  {
+    "id": "holdout-11",
+    "category": "formula_two_targets",
+    "query": "Xin giải thích công thức tính GPA và công thức điểm học bổng, hai công thức này có gì khác?",
+    "cohort": "K51",
+    "expected_requests": [
+      {
+        "request_kind": "structured",
+        "lookup_type": "formula",
+        "span_contains": ["công thức tính GPA"]
+      },
+      {
+        "request_kind": "structured",
+        "lookup_type": "formula",
+        "span_contains": ["công thức điểm học bổng"]
+      }
+    ]
+  },
+  {
+    "id": "holdout-12",
+    "category": "no_accent_mixed",
+    "query": "K50 va K51 doi chieu thoi gian hoc toi da, dong thoi cho biet thu tuc bao luu.",
+    "cohort": "K50",
+    "expected_requests": [
+      {
+        "request_kind": "structured",
+        "lookup_type": "study_duration",
+        "span_contains": ["K50", "K51", "thoi gian hoc toi da"],
+        "cohort_refs": ["K50", "K51"]
+      },
+      {
+        "request_kind": "rag",
+        "span_contains": ["thu tuc bao luu"]
+      }
+    ]
+  },
+  {
+    "id": "holdout-13",
+    "category": "follow_up",
+    "query": "Còn K51 thì quy định đó thế nào?",
+    "cohort": "K51",
+    "chat_history": [
+      {
+        "role": "user",
+        "content": "K50 điều kiện tốt nghiệp gồm những gì?"
+      }
+    ],
+    "expected_requests": [
+      {
+        "request_kind": "rag",
+        "span_contains": ["K51", "điều kiện tốt nghiệp"],
+        "cohort_refs": ["K51"]
+      }
+    ]
+  },
+  {
+    "id": "holdout-14",
+    "category": "mixed_service_and_regulation",
+    "query": "Đơn vị nào tiếp nhận việc xác nhận sinh viên, và hồ sơ cần chuẩn bị gồm gì?",
+    "cohort": "K51",
+    "expected_requests": [
+      {
+        "request_kind": "structured",
+        "lookup_type": "student_service",
+        "span_contains": ["tiếp nhận việc xác nhận sinh viên"]
+      },
+      {
+        "request_kind": "rag",
+        "span_contains": ["hồ sơ cần chuẩn bị"]
+      }
+    ]
+  }
+]
+
+

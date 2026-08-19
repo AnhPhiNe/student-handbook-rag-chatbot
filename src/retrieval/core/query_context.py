@@ -4,11 +4,12 @@ import os
 import re
 import unicodedata
 from dataclasses import dataclass
-from difflib import SequenceMatcher
 from typing import Any
+import warnings
 
 
-QUERY_HANDLING_MODES = {"raw", "router_generated", "context_only"}
+QUERY_HANDLING_MODES = {"raw", "validated"}
+LEGACY_QUERY_HANDLING_MODES = {"router_generated", "context_only"}
 CONTEXT_MODES = {"standalone", "follow_up", "ambiguous"}
 CONFIDENCE_LEVELS = {"high", "medium", "low", "none"}
 MAX_QUERY_CHARS = 600
@@ -46,12 +47,12 @@ _CONTENT_STOPWORDS = {
 
 
 @dataclass(frozen=True)
-class QueryHandlingResult:
+class QueryContextResult:
     raw_query: str
     effective_query: str
     mode: str
     context_mode: str
-    source: str
+    effective_query_source: str
     normalized_query: str | None = None
     standalone_query: str | None = None
     referenced_turns: tuple[int, ...] = ()
@@ -61,13 +62,19 @@ class QueryHandlingResult:
     needs_clarification: bool = False
     clarification_question: str | None = None
 
+    @property
+    def source(self) -> str:
+        """Compatibility alias for older response consumers."""
+        return self.effective_query_source
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "raw_query": self.raw_query,
             "effective_query": self.effective_query,
             "mode": self.mode,
             "context_mode": self.context_mode,
-            "source": self.source,
+            "source": self.effective_query_source,
+            "effective_query_source": self.effective_query_source,
             "normalized_query": self.normalized_query,
             "standalone_query": self.standalone_query,
             "referenced_turns": list(self.referenced_turns),
@@ -79,15 +86,26 @@ class QueryHandlingResult:
         }
 
 
+# Kept as an import-compatible alias while callers migrate to QueryContextResult.
+QueryHandlingResult = QueryContextResult
+
+
 def query_handling_mode(value: str | None = None) -> str:
     candidate = (
         str(
-            value or os.environ.get("STUDENT_RAG_QUERY_HANDLING_MODE") or "context_only"
+            value or os.environ.get("STUDENT_RAG_QUERY_HANDLING_MODE") or "validated"
         )
         .strip()
         .lower()
     )
-    return candidate if candidate in QUERY_HANDLING_MODES else "context_only"
+    if candidate in LEGACY_QUERY_HANDLING_MODES:
+        warnings.warn(
+            f"Query handling mode '{candidate}' is deprecated; using 'validated'.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return "validated"
+    return candidate if candidate in QUERY_HANDLING_MODES else "validated"
 
 
 def select_effective_query(
@@ -97,7 +115,7 @@ def select_effective_query(
     chat_history: list[dict[str, str]] | None = None,
     selected_cohort: str | None = None,
     mode: str | None = None,
-) -> QueryHandlingResult:
+) -> QueryContextResult:
     raw_query = str(raw_query or "").strip()
     selected_mode = query_handling_mode(mode)
     context_mode = (
@@ -116,12 +134,12 @@ def select_effective_query(
     clarification = _clean_query(router_decision.get("clarification_question"))
 
     if selected_mode == "raw":
-        return QueryHandlingResult(
+        return QueryContextResult(
             raw_query=raw_query,
             effective_query=raw_query,
             mode=selected_mode,
             context_mode=context_mode,
-            source="raw_query",
+            effective_query_source="raw_query",
             normalized_query=normalized_query,
             standalone_query=standalone_query,
             referenced_turns=referenced_turns,
@@ -166,12 +184,12 @@ def select_effective_query(
                 tuple(errors),
                 clarification,
             )
-        return QueryHandlingResult(
+        return QueryContextResult(
             raw_query=raw_query,
             effective_query=standalone_query or raw_query,
             mode=selected_mode,
             context_mode=context_mode,
-            source="grounded_follow_up",
+            effective_query_source="grounded_follow_up",
             normalized_query=normalized_query,
             standalone_query=standalone_query,
             referenced_turns=referenced_turns,
@@ -186,12 +204,12 @@ def select_effective_query(
         confidence=normalization_confidence,
     )
     if normalized_query and not normalization_errors:
-        return QueryHandlingResult(
+        return QueryContextResult(
             raw_query=raw_query,
             effective_query=normalized_query,
             mode=selected_mode,
             context_mode=context_mode,
-            source="validated_normalization",
+            effective_query_source="validated_normalization",
             normalized_query=normalized_query,
             standalone_query=standalone_query,
             referenced_turns=referenced_turns,
@@ -199,12 +217,12 @@ def select_effective_query(
             context_confidence=context_confidence,
         )
 
-    return QueryHandlingResult(
+    return QueryContextResult(
         raw_query=raw_query,
         effective_query=raw_query,
         mode=selected_mode,
         context_mode=context_mode,
-        source="raw_query_fallback",
+        effective_query_source="raw_query_fallback",
         normalized_query=normalized_query,
         standalone_query=standalone_query,
         referenced_turns=referenced_turns,
@@ -230,9 +248,7 @@ def validate_normalized_query(
     if _extract_numbers(raw_query) != _extract_numbers(normalized_query):
         return ["normalization_changed_number"]
 
-    raw_ascii = _ascii_text(raw_query)
-    normalized_ascii = _ascii_text(normalized_query)
-    if raw_ascii == normalized_ascii:
+    if _canonical_query(raw_query) == _canonical_query(normalized_query):
         return []
     if _confidence(confidence) != "high":
         return ["normalization_not_high_confidence"]
@@ -241,33 +257,17 @@ def validate_normalized_query(
     if not correction_items:
         return ["normalization_missing_corrections"]
 
-    corrected = raw_ascii
+    corrected = raw_query
     for original_span, normalized_span in correction_items:
-        original_ascii = _ascii_text(original_span)
-        normalized_span_ascii = _ascii_text(normalized_span)
-        if not original_ascii or original_ascii not in corrected:
+        if not original_span or original_span not in corrected:
             return ["normalization_correction_not_grounded"]
-        if not normalized_span_ascii:
+        if not normalized_span:
             return ["normalization_empty_replacement"]
-        similarity = SequenceMatcher(
-            None, original_ascii, normalized_span_ascii
-        ).ratio()
-        if similarity < 0.50:
-            return ["normalization_correction_changes_meaning"]
-        has_substitution = any(
-            opcode == "replace"
-            for opcode, *_ in SequenceMatcher(
-                None, original_ascii, normalized_span_ascii
-            ).get_opcodes()
-        )
-        if has_substitution and not _is_safe_typo_correction(
-            original_ascii,
-            normalized_span_ascii,
-        ):
+        if not _is_allowed_normalization(original_span, normalized_span):
             return ["normalization_correction_substitutes_content"]
-        corrected = corrected.replace(original_ascii, normalized_span_ascii, 1)
+        corrected = corrected.replace(original_span, normalized_span, 1)
 
-    if SequenceMatcher(None, corrected, normalized_ascii).ratio() < 0.92:
+    if _canonical_query(corrected) != _canonical_query(normalized_query):
         return ["normalization_contains_undeclared_changes"]
     return []
 
@@ -321,21 +321,12 @@ def validate_follow_up_query(
     raw_content = _content_tokens(raw_query)
     standalone_content = _content_tokens(standalone_query)
     grounded_content = _content_tokens(grounded_text)
-    if raw_content:
-        dropped_tokens = len(raw_content - standalone_content)
-        max_allowed_dropped = (
-            0
-            if len(raw_content) <= 2
-            else (
-                1
-                if len(raw_content) <= 5
-                else max(2, int(len(raw_content) * 0.35))
-            )
-        )
-        if dropped_tokens > max_allowed_dropped:
-            errors.append("follow_up_dropped_current_topic")
-    if len(standalone_content - grounded_content) > 2:
+    if not raw_content.issubset(standalone_content):
+        errors.append("follow_up_dropped_current_topic")
+    if not standalone_content.issubset(grounded_content):
         errors.append("follow_up_added_ungrounded_content")
+    if _negation_markers(raw_query) != _negation_markers(standalone_query):
+        errors.append("follow_up_changed_negation")
     return errors
 
 
@@ -350,13 +341,13 @@ def _clarification_result(
     context_confidence: str,
     errors: tuple[str, ...],
     clarification_question: str | None,
-) -> QueryHandlingResult:
-    return QueryHandlingResult(
+) -> QueryContextResult:
+    return QueryContextResult(
         raw_query=raw_query,
         effective_query=raw_query,
         mode=mode,
         context_mode=context_mode,
-        source="clarification",
+        effective_query_source="clarification",
         normalized_query=normalized_query,
         standalone_query=standalone_query,
         referenced_turns=referenced_turns,
@@ -440,6 +431,32 @@ def _ascii_text(value: Any) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+def _canonical_query(value: Any) -> str:
+    """Compare reconstructed text without applying semantic normalization."""
+    return unicodedata.normalize("NFC", str(value or "")).strip()
+
+
+def _is_allowed_normalization(original: str, replacement: str) -> bool:
+    """Allow only accent/Unicode changes or a single local typo correction.
+
+    The caller already proves the full proposal can be reconstructed from these
+    edits, so this predicate deliberately avoids fuzzy whole-query similarity.
+    """
+    original_folded = _ascii_text(original)
+    replacement_folded = _ascii_text(replacement)
+    if not original_folded or not replacement_folded:
+        return False
+    if original_folded == replacement_folded:
+        return True
+    original_tokens = re.findall(r"[a-z0-9]+", original_folded)
+    replacement_tokens = re.findall(r"[a-z0-9]+", replacement_folded)
+    return (
+        len(original_tokens) == len(replacement_tokens) == 1
+        and min(len(original_tokens[0]), len(replacement_tokens[0])) >= 2
+        and _is_single_typo(original_tokens[0], replacement_tokens[0])
+    )
+
+
 def _tokens(value: Any) -> set[str]:
     return set(re.findall(r"[a-z0-9]+", _ascii_text(value)))
 
@@ -496,6 +513,18 @@ def _content_tokens(value: Any) -> set[str]:
         for token in _tokens(value)
         if len(token) >= 2 and token not in _CONTENT_STOPWORDS
     }
+
+
+def _negation_markers(value: Any) -> set[str]:
+    normalized = _ascii_text(value)
+    markers: set[str] = set()
+    if re.search(r"\bkhong\b", normalized):
+        markers.add("khong")
+    if re.search(r"\bchua\b", normalized):
+        markers.add("chua")
+    if re.search(r"\bnot\b", normalized):
+        markers.add("not")
+    return markers
 
 
 def _extract_numbers(value: Any) -> set[str]:

@@ -3,6 +3,7 @@ version: 1
 tools:
   foreign_language:
     data_category: regulation_table
+    cohort_sensitive: true
     description: Quy doi chung chi/diem ngoai ngu sang bac chuan dau ra.
     intents: [direct_value, list_items]
     required_slots:
@@ -21,6 +22,7 @@ tools:
 
   study_duration:
     data_category: regulation_table
+    cohort_sensitive: true
     description: Tra thoi gian hoc chuan/toi da theo he va loai chuong trinh.
     intents: [direct_value, list_items]
     required_slots:
@@ -39,6 +41,7 @@ tools:
 
   scholarship_classification:
     data_category: regulation_table
+    cohort_sensitive: true
     description: Xep loai hoc bong tu diem, hoac tra khoang diem cua mot nhan xep loai cu the.
     intents: [direct_value]
     required_slots:
@@ -51,6 +54,7 @@ tools:
 
   scoring:
     data_category: regulation_table
+    cohort_sensitive: true
     description: Tra cuu va quy doi thang diem hoc phan (thang 10, diem chu, thang 4, dat/khong dat), xep loai hoc luc hoac diem ren luyen.
     intents: [direct_value, list_items, compare]
     required_slots:
@@ -137,6 +141,7 @@ tools:
 
   formula:
     description: Tra cong thuc da duoc dinh nghia, khong thuc hien phep tinh.
+    cohort_sensitive: true
     intents: [formula]
     required_slots:
       formula: [formula_type]

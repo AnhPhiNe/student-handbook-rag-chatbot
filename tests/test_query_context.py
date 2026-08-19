@@ -26,7 +26,14 @@ def _decision(**overrides):
 def test_accepts_accent_only_normalization() -> None:
     result = select_effective_query(
         "K50 thoi gian hoc toi da la bao lau?",
-        _decision(),
+        _decision(
+            corrections=[
+                {
+                    "original_span": "K50 thoi gian hoc toi da la bao lau?",
+                    "normalized_span": "K50 thời gian học tối đa là bao lâu?",
+                }
+            ]
+        ),
     )
 
     assert result.effective_query == "K50 thời gian học tối đa là bao lâu?"
@@ -36,7 +43,7 @@ def test_accepts_accent_only_normalization() -> None:
 
 def test_accepts_declared_typo_correction() -> None:
     raw_query = "K50 hoc bong khuyen khich hc tap"
-    normalized_query = "K50 học bổng khuyến khích học tập"
+    normalized_query = "K50 hoc bong khuyen khich hoc tap"
 
     errors = validate_normalized_query(
         raw_query,
@@ -45,7 +52,7 @@ def test_accepts_declared_typo_correction() -> None:
         corrections=[
             {
                 "original_span": "hc",
-                "normalized_span": "học",
+                    "normalized_span": "hoc",
             }
         ],
     )
@@ -202,6 +209,12 @@ def test_ambiguous_context_requires_clarification() -> None:
 def test_query_handling_ab_modes() -> None:
     decision = _decision(
         normalized_query="K50 thời gian học tối đa là bao lâu?",
+        corrections=[
+            {
+                "original_span": "K50 thoi gian hoc toi da la bao lau?",
+                "normalized_span": "K50 thời gian học tối đa là bao lâu?",
+            }
+        ],
         retrieval_query="K50 thời lượng chương trình và giới hạn đào tạo",
     )
 
@@ -350,10 +363,8 @@ def test_answer_pipeline_uses_validated_query_before_slang(monkeypatch) -> None:
 
     assert captured["query"] == "K50 rot mon thi sao?"
     assert captured["retrieval_query"] == "slang::K50 rot mon thi sao?"
-    assert routed["query"] == "router::K50 rot mon thi sao?"
-    assert result["router_decision"]["router_input_query"] == (
-        "router::K50 rot mon thi sao?"
-    )
+    assert routed["query"] == "K50 rot mon thi sao?"
+    assert result["router_decision"]["router_input_query"] == "K50 rot mon thi sao?"
     assert result["effective_query"] == "K50 rot mon thi sao?"
     assert "retrieval_query" not in result["router_decision"]
     assert result["query_handling"]["source"] == "validated_normalization"
@@ -395,7 +406,7 @@ def test_answer_pipeline_uses_slang_normalization_for_structured_lookup(
 
     result = pipeline._run_retrieval("cntt có ngành nào?", cohort="K51")
 
-    assert routed["query"] == "router::cntt có ngành nào?"
+    assert routed["query"] == "cntt có ngành nào?"
     assert captured["query"] == "slang::cntt có ngành nào?"
     assert result["retrieval_query"] == "slang::cntt có ngành nào?"
     assert result["strategy"] == "structured"
@@ -492,7 +503,7 @@ def test_answer_pipeline_replaces_acronym_before_program_routing() -> None:
     pipeline.router = DummyRouter()
     result = pipeline._run_retrieval("ngành cntt ở khoa nào", cohort="K51")
 
-    assert routed["query"] == "ngành công nghệ thông tin ở khoa nào"
+    assert routed["query"] == "ngành cntt ở khoa nào"
     assert result["raw_query"] == "ngành cntt ở khoa nào"
     assert result["retrieval_query"] == "ngành công nghệ thông tin ở khoa nào"
     assert result["citations"][0]["chunk_type"] == "program_directory"

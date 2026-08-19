@@ -90,6 +90,8 @@ class ResponseCache:
         context_fingerprint: dict[str, Any] | None = None,
         pipeline_version: str | None = None,
     ) -> str:
+        router_decision = retrieval_result.get("router_decision") or {}
+        request_plan = router_decision.get("lookup_requests") or []
         payload = {
             "query": query,
             "cohort": cohort,
@@ -98,13 +100,27 @@ class ResponseCache:
             ),
             "pipeline_version": pipeline_version,
             "context_fingerprint": context_fingerprint or {},
-            "retrieval_query": retrieval_result.get("retrieval_query"),
+            "plan_version": router_decision.get("plan_version"),
+            "effective_cohort": retrieval_result.get("selected_cohort"),
+            "request_plan": [
+                {
+                    "request_kind": request.get("request_kind"),
+                    "lookup_type": request.get("lookup_type"),
+                    "intent": request.get("intent"),
+                    "query_span": request.get("query_span"),
+                    "slots": request.get("slots"),
+                    "cohort_refs": request.get("cohort_refs"),
+                }
+                for request in request_plan
+                if isinstance(request, dict)
+            ],
             "citations": [
                 {
                     "chunk_id": citation.get("chunk_id"),
                     "title": citation.get("title"),
                     "chunk_type": citation.get("chunk_type"),
                     "source_pages": citation.get("source_pages"),
+                    "request_id": citation.get("request_id"),
                 }
                 for citation in (selected_citations or [])
             ],

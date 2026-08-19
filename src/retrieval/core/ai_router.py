@@ -27,11 +27,12 @@ from .structured_routing import (
     router_response_schema,
     validate_router_decision,
 )
+from .query_context import select_effective_query
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_CONTRACT_VERSION = "semantic-requests-v1"
-ROUTER_PROMPT_VERSION = "semantic-requests-v21-compact"
+ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2"
+ROUTER_PROMPT_VERSION = "single-cohort-planner-v2"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -40,50 +41,33 @@ _RETRY_TEXT_RE = re.compile(
 )
 
 ROUTER_SYSTEM_PROMPT = """
-Bạn là AI Router của hệ thống Sổ tay Sinh viên HCMUE.
-Chỉ phân loại và trích xuất dữ liệu; không trả lời câu hỏi. Chỉ xuất một JSON
-đúng OUTPUT CONTRACT, không Markdown hay giải thích.
+Bạn là Retrieval Planner v2 của Sổ tay Sinh viên HCMUE. Bạn chỉ lập kế hoạch
+tra cứu; không trả lời, không tạo citation và không tạo retrieval_query.
+Chỉ xuất JSON hợp lệ theo OUTPUT CONTRACT.
 
-NGỮ CẢNH VÀ CHUẨN HÓA
-- standalone: QUERY tự đủ nghĩa; không lấy thông tin từ CHAT HISTORY.
-- follow_up: QUERY thật sự nối tiếp lịch sử (context_confidence=high hoặc medium);
-  standalone_query chỉ ghép thông tin có trong QUERY và referenced_turns.
-- ambiguous: không xác định chắc ngữ cảnh; route=clarify và hỏi lại ngắn gọn.
-- normalized_query chỉ sửa dấu, lỗi chính tả nhẹ hoặc viết tắt phổ biến.
-  Không đổi cohort, số liệu, phủ định, thực thể hay chủ đề.
-- Không thay một từ đã hợp lệ bằng từ gần âm hoặc khái niệm khác. Nếu không chắc,
-  giữ nguyên từ người dùng đã viết.
-- Nếu có sửa, corrections phải chứa original_span nguyên văn và normalized_span.
+QUERY CONTEXT
+- standalone: chỉ dùng QUERY. follow_up: standalone_query chỉ được ghép từ QUERY
+  và các referenced_turns. ambiguous: outcome=clarify, lookup_requests=[].
+- normalized_query chỉ được sửa Unicode/dấu hoặc một lỗi gõ cục bộ. Mỗi thay đổi
+  phải có correction với original_span nguyên văn trong QUERY và normalized_span.
+  Không đổi cohort, số, phủ định, thực thể, điều kiện hoặc chủ đề. Không chắc thì
+  giữ nguyên QUERY.
 
-PHÂN LUỒNG
-- Mỗi mệnh đề ngữ nghĩa độc lập tạo một lookup_request.
-- request_kind=structured: tra bảng hoặc catalog JSON trong TOOLS.
-- request_kind=rag: đọc Điều/khoản về quy định, điều kiện, thủ tục, ngoại lệ,
-  hậu quả, quyền, nghĩa vụ hoặc trường hợp áp dụng.
-- Nhiều entity cùng một domain và cùng mục đích giữ trong một request.
-- Nhiều domain, nhiều quy định hoặc cùng tool nhưng khác mục đích tạo request riêng.
-- clarify: thiếu entity/cohort cốt lõi khiến tra cứu không xác định được.
-  Không clarify câu hỏi quy chế chung chỉ vì thiếu tên môn hoặc ngành.
-- out_of_domain: ngoài phạm vi sổ tay sinh viên HCMUE.
+SINGLE-COHORT
+- outcome=clarify nếu QUERY có từ hai cohort trở lên hoặc request phụ thuộc cohort
+  nhưng không xác định được cohort. Không tách hoặc so sánh multi-cohort.
+- Ưu tiên cohort nêu trong QUERY; nếu không có, SELECTED COHORT có thể áp dụng.
 
-RÀNG BUỘC
-- Chỉ dùng lookup_type và intent khai báo trong TOOLS.
-- structured request dùng đúng một tool; rag request có lookup_type=null và intent
-  thuộc RAG_INTENTS.
-- query_span là đoạn nguyên văn tương ứng trong QUERY hoặc CHAT HISTORY.
-- Mỗi request chỉ chứa slot thuộc tool của chính request đó. Không lấy số hoặc
-  entity từ mệnh đề khác.
-- Tối đa 6 request, giữ đúng thứ tự mệnh đề trong câu hỏi.
-- Hỏi đích danh đơn vị dùng office/faculty; mô tả dịch vụ cần làm dùng
-  student_service; ngành, chương trình, đầu ra nghề nghiệp dùng program.
-- Không có form/procedure tool. Hồ sơ, biểu mẫu và quy trình là regulation.
-- formula chỉ tra công thức, không tính toán.
-- Giữ cohort nếu có; không tự đoán cohort hoặc entity.
-- cohort và cohorts: Nếu QUERY chỉ nêu 1 khóa duy nhất, đặt cohort và cohorts=[cohort], is_multi_cohort=false. Nếu QUERY đề cập hoặc so sánh từ 2 khóa trở lên, hãy trích xuất tất cả các khóa vào mảng cohorts, đặt is_multi_cohort=true và cohort là khóa đầu tiên.
-- cohort_refs chỉ chứa cohort áp dụng cho request; để [] nếu kế thừa COHORT.
-- slots tuân thủ TOOLS. slot_spans phải nằm trong query_span. Không bịa slot.
-- Slot free-form giữ cách viết trong query_span; code sẽ canonicalize alias sau.
-- Không tự tạo dữ liệu, tool, intent hoặc chủ đề mới.
+ATOMIC REQUESTS
+- outcome=execute: mỗi mục tiêu độc lập là một lookup_request theo thứ tự, tối đa 6.
+- structured dùng đúng một tool, intent và slots trong TOOLS. rag có lookup_type=null,
+  slots={}, slot_spans={} và intent thuộc RAG_INTENTS.
+- query_span là một đoạn liên tục, nguyên văn của effective query; slot_spans phải
+  nằm trong query_span. Không tự tạo tool, intent, entity, cohort hoặc slot.
+- Hai quy định độc lập, hai entity, hoặc hai thao tác khác nhau phải là request riêng.
+- Hồ sơ/quy trình/điều kiện/ngoại lệ là rag. formula chỉ tra công thức.
+- outcome=out_of_domain khi ngoài phạm vi sổ tay. clarify/out_of_domain luôn có
+  lookup_requests=[] và không thực hiện retrieval.
 """
 
 
@@ -676,25 +660,32 @@ class AIRouter:
                     query=query,
                     selected_cohort=cohort,
                 )
-                grounding_context = "\n".join(
-                    str(item.get("content") or "")
-                    for item in (chat_history or [])[-4:]
-                    if isinstance(item, dict)
+                query_context = select_effective_query(
+                    query,
+                    decision,
+                    chat_history=chat_history,
+                    selected_cohort=cohort,
                 )
+                validation_query = query_context.effective_query or query
                 validation_errors = validate_router_decision(
                     decision,
-                    query=query,
+                    query=validation_query,
                     selected_cohort=cohort,
-                    grounding_context=grounding_context,
                     registry=self.registry,
                 )
+                if query_context.needs_clarification:
+                    validation_errors = [
+                        *query_context.validation_errors,
+                        *validation_errors,
+                    ]
                 if validation_errors:
                     decision = fallback_to_rag(
                         decision,
                         validation_errors,
-                        query=query,
+                        query=validation_query,
                     )
                 decision["router_validation_errors"] = validation_errors
+                decision["query_handling"] = query_context.to_dict()
                 if self.cache:
                     self.cache.set(cache_key, decision)
                 return {
@@ -755,15 +746,17 @@ class AIRouter:
                 "corrections": [],
                 "standalone_query": None,
                 "referenced_turns": [],
-                "route": "rag",
+                "outcome": "clarify",
+                "route": "clarify",
                 "execution_mode": "regulation",
-                "intent": "open_question",
+                "intent": "router_error",
                 "lookup_type": None,
                 "cohort": cohort,
                 "slots": {},
                 "slot_spans": {},
-                "target_chunk_types": ["regulation"],
-                "clarification_question": None,
+                "target_chunk_types": [],
+                "lookup_requests": [],
+                "clarification_question": "Mình đang gặp lỗi khi xác định phần cần tra cứu. Bạn hãy thử lại với câu hỏi cụ thể hơn nhé.",
             },
             query=query,
             selected_cohort=cohort,
@@ -779,7 +772,9 @@ class AIRouter:
             "router_validation_errors": [],
             "router_error_type": error_type,
             "router_error": str(error),
-            "router_fallback": "router_error_to_rag",
+            "router_fallback": "router_error_to_clarify",
+            "retrieval_query": None,
+            "retrieval_executed": False,
         }
 
     def _build_prompt(

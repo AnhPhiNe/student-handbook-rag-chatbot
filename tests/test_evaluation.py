@@ -108,6 +108,33 @@ def test_retrieval_metrics_are_graded_and_rank_sensitive() -> None:
     assert 0 < scores["ndcg_at_5"] < 1
 
 
+def test_single_cohort_v2_gates_require_contract_and_quality_metrics() -> None:
+    summary = {
+        "query_contract_invariants": 1.0,
+        "schema_invariants": 1.0,
+        "cohort_invariants": 1.0,
+        "multi_cohort_rejection": 1.0,
+        "structured_source_binding": 1.0,
+        "silent_structured_to_rag_fallback_rate": 0.0,
+        "cross_request_evidence_leakage_rate": 0.0,
+        "critical_false_pass_rate": 0.0,
+        "provider_failure_rate": 0.0,
+        "dev_exact_plan_accuracy": 0.95,
+        "hidden_exact_plan_accuracy": 0.90,
+        "retrieval_hit_at_5": 0.90,
+        "citation_binding": 0.95,
+        "faithfulness": 0.90,
+        "answer_correctness": 0.85,
+        "hallucination_rate": 0.05,
+    }
+
+    result = evaluate_gates("single_cohort_v2", summary)
+
+    assert result["passed"] is True
+    summary["provider_failure_rate"] = 0.01
+    assert evaluate_gates("single_cohort_v2", summary)["passed"] is False
+
+
 def test_retrieval_summary_excludes_graph_supplement_metrics() -> None:
     rows = [
         {

@@ -13,6 +13,7 @@ from src.retrieval.core.citation_builder import (
 )
 from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline
 from src.retrieval.core.query_context import select_effective_query
+from src.retrieval.core.request_execution import RequestExecutionContext
 from src.retrieval.core.vector_retriever import (
     get_chroma_collection,
     load_embedding_model,
@@ -43,7 +44,7 @@ from .response_cache import get_response_cache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v31-semantic-request-executor"
+PIPELINE_VERSION = "v32-single-cohort-contract"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -914,7 +915,9 @@ class AnswerPipeline:
             from src.retrieval.core.ai_router import AIRouter
             self.router = AIRouter.from_config()
 
-        router_input_query = self.slang_normalizer.replace_for_router(query)
+        # The planner sees the immutable user query. Alias/slang expansion is a
+        # code-derived retrieval concern and must not alter planner grounding.
+        router_input_query = query
         try:
             router_decision = self.router.route(
                 router_input_query,
@@ -943,7 +946,8 @@ class AnswerPipeline:
         if handling.needs_clarification:
             return {
                 "query": query,
-                "retrieval_query": query,
+                "retrieval_query": None,
+                "retrieval_executed": False,
                 "intent": router_decision.get("intent"),
                 "strategy": "query_context_clarification",
                 "router_decision": router_decision,
@@ -961,6 +965,28 @@ class AnswerPipeline:
                 "deterministic_validated": False,
             }
 
+        if router_decision.get("route") == "clarify":
+            return {
+                "query": query,
+                "retrieval_query": None,
+                "retrieval_executed": False,
+                "intent": router_decision.get("intent") or "clarify",
+                "strategy": "router_clarification",
+                "router_decision": router_decision,
+                "structured_result": None,
+                "retrieved_items": [],
+                "citations": [],
+                "needs_llm_answer": False,
+                "needs_clarification": True,
+                "clarification_question": router_decision.get("clarification_question"),
+                "out_of_domain": False,
+                "selected_cohort": cohort,
+                "query_handling": query_handling,
+                "effective_query": effective_query,
+                "raw_query": query,
+                "deterministic_validated": False,
+            }
+
         if router_decision.get("route") == "out_of_domain":
             router_decision = {
                 **router_decision,
@@ -968,7 +994,8 @@ class AnswerPipeline:
             }
             return {
                 "query": query,
-                "retrieval_query": query,
+                "retrieval_query": None,
+                "retrieval_executed": False,
                 "intent": "out_of_domain",
                 "strategy": "none",
                 "router_decision": router_decision,
@@ -998,11 +1025,32 @@ class AnswerPipeline:
                 query=query,
                 effective_query=effective_query,
                 retrieval_query=retrieval_query,
-                cohort=cohort or router_decision.get("cohort"),
+                cohort=cohort or _normalize_retrieval_cohort(router_decision.get("cohort")),
                 router_decision=router_decision,
                 query_handling=query_handling,
                 chat_history=chat_history,
             )
+
+        return {
+            "query": query,
+            "retrieval_query": None,
+            "retrieval_executed": False,
+            "intent": "multi_cohort_not_supported",
+            "strategy": "query_context_clarification",
+            "router_decision": router_decision,
+            "structured_result": None,
+            "retrieved_items": [],
+            "citations": [],
+            "needs_llm_answer": False,
+            "needs_clarification": True,
+            "clarification_question": "Hiện tại mình chỉ hỗ trợ một khóa cho mỗi câu hỏi. Bạn hãy chọn hoặc hỏi từng khóa riêng nhé.",
+            "out_of_domain": False,
+            "selected_cohort": cohort,
+            "query_handling": query_handling,
+            "effective_query": effective_query,
+            "raw_query": query,
+            "deterministic_validated": False,
+        }
 
         sub_results: list[dict[str, Any]] = []
         for c in cohorts:
@@ -1277,7 +1325,6 @@ class AnswerPipeline:
             for index, request in enumerate(router_decision.get("lookup_requests") or [])
             if isinstance(request, dict)
             and request.get("request_kind") in {"structured", "rag"}
-            and self._request_applies_to_cohort(request, cohort)
         ]
         if not requests:
             return {
@@ -1302,124 +1349,123 @@ class AnswerPipeline:
                 "deterministic_validated": False,
             }
 
-        structured_requests = [
-            request for _, request in requests if request.get("request_kind") == "structured"
-        ]
-        structured_resolution = None
-        if structured_requests:
-            structured_decision = {
-                **router_decision,
-                "lookup_requests": [
-                    {
-                        **request,
-                        "retrieval_query": self.slang_normalizer.normalize_for_retrieval(
-                            str(request.get("query_span") or effective_query)
-                        ),
-                    }
-                    for request in router_decision.get("lookup_requests") or []
-                    if isinstance(request, dict)
-                ],
-            }
-            structured_resolution = resolve_structured_decision(
-                structured_decision,
-                query=retrieval_query,
-                cohort=cohort,
-                scoring_tables=self.scoring_tables,
-                formula_rules=self.formula_rules,
-                office_directory=self.student_office_profiles,
-                student_service_directory=self.student_service_directory,
-                student_faculty_profiles=self.student_faculty_profiles,
-                foreign_language_tables=self.foreign_language_tables,
-                structured_tables_registry=self.structured_tables_registry,
-                program_directory=self.program_directory,
-                model=self.model,
-            )
-
-        if structured_resolution and structured_resolution.result_kind == "clarification":
-            return {
-                "query": query,
-                "retrieval_query": retrieval_query,
-                "intent": router_decision.get("intent"),
-                "strategy": structured_resolution.strategy,
-                "router_decision": router_decision,
-                "structured_result": structured_resolution.result,
-                "retrieved_items": [],
-                "citations": [],
-                "unresolved_lookup_requests": [],
-                "request_results": [],
-                "needs_llm_answer": False,
-                "needs_clarification": True,
-                "clarification_question": structured_resolution.result.get(
-                    "clarification_question"
-                ),
-                "out_of_domain": False,
-                "selected_cohort": cohort,
-                "query_handling": query_handling,
-                "effective_query": effective_query,
-                "raw_query": query,
-                "deterministic_validated": False,
-            }
-
-        resolved_indexes = self._structured_request_indexes(structured_resolution)
-        structured_result = structured_resolution.result if structured_resolution else None
-        structured_citations = (
-            build_citation_from_lookup(structured_result)
-            if structured_result
-            else []
+        execution_contexts = self._build_request_execution_contexts(
+            requests,
+            effective_query=effective_query,
+            cohort=cohort,
         )
-        structured_citations = enrich_citations_with_parent_details(
-            structured_citations,
-            getattr(self, "parent_sources_by_id", {}),
-        )
+        structured_results: list[dict[str, Any]] = []
+        structured_citations: list[dict[str, Any]] = []
 
         rag_results: list[dict[str, Any]] = []
         unresolved_requests: list[dict[str, Any]] = []
         request_results: list[dict[str, Any]] = []
         for request_index, request in requests:
             request_kind = request.get("request_kind")
-            if request_kind == "structured" and request_index in resolved_indexes:
-                request_results.append(
-                    self._request_result_metadata(
-                        request_index,
-                        request,
-                        status="structured_resolved",
+            execution_context = execution_contexts[request_index]
+            if request_kind == "structured":
+                try:
+                    resolution = resolve_structured_decision(
+                        {**router_decision, "lookup_requests": [request]},
+                        query=effective_query,
                         cohort=cohort,
+                        scoring_tables=self.scoring_tables,
+                        formula_rules=self.formula_rules,
+                        office_directory=self.student_office_profiles,
+                        student_service_directory=self.student_service_directory,
+                        student_faculty_profiles=self.student_faculty_profiles,
+                        foreign_language_tables=self.foreign_language_tables,
+                        structured_tables_registry=self.structured_tables_registry,
+                        program_directory=self.program_directory,
+                        model=self.model,
+                        request_contexts={
+                            0: RequestExecutionContext(
+                                request_id=execution_context.request_id,
+                                request_index=0,
+                                request_kind=execution_context.request_kind,
+                                query_span=execution_context.query_span,
+                                effective_query=execution_context.effective_query,
+                                effective_cohort=execution_context.effective_cohort,
+                                retrieval_query=execution_context.retrieval_query,
+                                retrieval_config=execution_context.retrieval_config,
+                            )
+                        },
                     )
+                except Exception as exc:
+                    resolution = None
+                    unresolved_requests.append(
+                        self._request_result_metadata(
+                            request,
+                            execution_context,
+                            status="error",
+                            reason=f"structured_exception:{type(exc).__name__}",
+                        )
+                    )
+                    request_results.append(unresolved_requests[-1])
+                    continue
+
+                if self._has_structured_value(resolution.result if resolution else None):
+                    resolved_result = {
+                        **resolution.result,
+                        "request_id": execution_context.request_id,
+                        "request_index": execution_context.request_index,
+                        "query_span": execution_context.query_span,
+                        "request_cohort": execution_context.effective_cohort,
+                    }
+                    structured_results.append(resolved_result)
+                    citations = enrich_citations_with_parent_details(
+                        build_citation_from_lookup(resolved_result),
+                        getattr(self, "parent_sources_by_id", {}),
+                    )
+                    structured_citations.extend(
+                        self._annotate_structured_citations(citations, execution_context)
+                    )
+                    request_results.append(
+                        self._request_result_metadata(
+                            request, execution_context, status="ok"
+                        )
+                    )
+                    continue
+
+                reason = (
+                    "structured_clarification"
+                    if resolution and resolution.result_kind == "clarification"
+                    else "structured_no_match"
                 )
+                unresolved = self._request_result_metadata(
+                    request,
+                    execution_context,
+                    status="unresolved",
+                    reason=reason,
+                )
+                unresolved_requests.append(unresolved)
+                request_results.append(unresolved)
                 continue
 
-            request_query = str(request.get("query_span") or effective_query).strip()
-            request_retrieval_query = self.slang_normalizer.normalize_for_retrieval(
-                request_query
-            )
-            rag_result = self._run_semantic_request_rag(
-                request_query=request_query,
-                retrieval_query=request_retrieval_query,
-                request_index=request_index,
-                request=request,
-                cohort=cohort,
-                chat_history=chat_history,
-            )
-            rag_results.append(rag_result)
-            status = "rag_request"
-            if request_kind == "structured":
-                status = "structured_unresolved_rag_fallback"
-                unresolved_requests.append(
-                    self._request_result_metadata(
-                        request_index,
-                        request,
-                        status="unresolved_structured",
-                        cohort=cohort,
-                    )
+            try:
+                rag_result = self._run_semantic_request_rag(
+                    execution_context=execution_context,
+                    request=request,
+                    chat_history=chat_history,
                 )
-            request_results.append(
-                self._request_result_metadata(
-                    request_index,
+            except Exception as exc:
+                unresolved = self._request_result_metadata(
                     request,
-                    status=status,
-                    cohort=cohort,
+                    execution_context,
+                    status="error",
+                    reason=f"rag_exception:{type(exc).__name__}",
                 )
+                unresolved_requests.append(unresolved)
+                request_results.append(unresolved)
+                continue
+            rag_results.append(rag_result)
+            status = "ok" if self._has_rag_evidence(rag_result) else "no_match"
+            metadata = self._request_result_metadata(
+                request, execution_context, status=status
             )
+            request_results.append(metadata)
+            if status != "ok":
+                unresolved_requests.append(metadata)
 
         merged_items: list[dict[str, Any]] = []
         merged_citations = list(structured_citations)
@@ -1433,20 +1479,42 @@ class AnswerPipeline:
 
         merged_items = self._deduplicate_request_items(merged_items)
         merged_citations = self._deduplicate_request_citations(merged_citations)
-        has_rag = bool(rag_results)
+        has_rag = any(self._has_rag_evidence(result) for result in rag_results)
         is_multi_request = len(requests) > 1
-        needs_llm_answer = has_rag or is_multi_request
+        if len(structured_results) == 1:
+            structured_result = structured_results[0]
+        elif structured_results:
+            structured_result = {
+                "lookup_type": "multi_request",
+                "result": structured_results,
+                "sub_results": [
+                    {
+                        "request_id": result.get("request_id"),
+                        "request_index": result.get("request_index"),
+                        "query_span": result.get("query_span"),
+                        "lookup_type": result.get("lookup_type"),
+                        "result": result,
+                        "source_records": result.get("source_records") or [],
+                    }
+                    for result in structured_results
+                ],
+                "source_records": [
+                    source
+                    for result in structured_results
+                    for source in result.get("source_records") or []
+                ],
+            }
+        else:
+            structured_result = None
+        needs_llm_answer = has_rag or is_multi_request or bool(unresolved_requests)
         deterministic_validated = bool(
             len(requests) == 1
             and structured_result
             and not unresolved_requests
             and not has_rag
         )
-        strategy = (
-            structured_resolution.strategy
-            if structured_resolution and not has_rag
-            else "semantic_request_fusion"
-        )
+        strategy = "semantic_request_executor"
+        no_verified_result = not structured_results and not has_rag
         return {
             "query": query,
             "retrieval_query": retrieval_query,
@@ -1461,14 +1529,23 @@ class AnswerPipeline:
             "unresolved_lookup_requests": unresolved_requests,
             "request_results": request_results,
             "needs_llm_answer": needs_llm_answer,
-            "needs_clarification": False,
-            "clarification_question": None,
+            "needs_clarification": no_verified_result,
+            "clarification_question": (
+                "Mình chưa tìm được nguồn đáng tin cậy cho phần bạn hỏi. "
+                "Bạn có thể nêu rõ hơn tên nội dung hoặc chương trình không?"
+                if no_verified_result
+                else None
+            ),
             "out_of_domain": False,
             "selected_cohort": cohort,
             "query_handling": query_handling,
             "effective_query": effective_query,
             "raw_query": query,
             "deterministic_validated": deterministic_validated,
+            "retrieval_executed": bool(rag_results),
+            "request_execution_contexts": [
+                context.debug_dict() for context in execution_contexts.values()
+            ],
         }
 
     @staticmethod
@@ -1498,36 +1575,97 @@ class AnswerPipeline:
         request_index = result.get("request_index")
         return {int(request_index)} if request_index is not None else {0}
 
+    def _build_request_execution_contexts(
+        self,
+        requests: list[tuple[int, dict[str, Any]]],
+        *,
+        effective_query: str,
+        cohort: str | None,
+    ) -> dict[int, RequestExecutionContext]:
+        return {
+            request_index: RequestExecutionContext(
+                request_id=f"r{request_index + 1}",
+                request_index=request_index,
+                request_kind=str(request.get("request_kind") or ""),
+                query_span=str(request.get("query_span") or effective_query).strip(),
+                effective_query=effective_query,
+                effective_cohort=cohort,
+                retrieval_query=self.slang_normalizer.normalize_for_retrieval(
+                    str(request.get("query_span") or effective_query).strip()
+                ),
+                retrieval_config={
+                    "top_k": self.config["retrieval"]["default_top_k"],
+                    "index_version": (self.config.get("input") or {}).get(
+                        "structured_tables_registry"
+                    ),
+                },
+            )
+            for request_index, request in requests
+        }
+
+    @staticmethod
+    def _has_structured_value(result: dict[str, Any] | None) -> bool:
+        if not isinstance(result, dict):
+            return False
+        if result.get("exists") is True or result.get("formula_text"):
+            return True
+        for key in ("result", "rows", "items", "table"):
+            value = result.get(key)
+            if isinstance(value, (list, dict)) and value:
+                return True
+            if value not in (None, "", [], {}):
+                return True
+        return False
+
+    @staticmethod
+    def _has_rag_evidence(result: dict[str, Any]) -> bool:
+        return bool(result.get("retrieved_items") or result.get("citations"))
+
+    @staticmethod
+    def _annotate_structured_citations(
+        citations: list[dict[str, Any]],
+        execution_context: RequestExecutionContext,
+    ) -> list[dict[str, Any]]:
+        return [
+            {
+                **citation,
+                "request_id": execution_context.request_id,
+                "request_index": execution_context.request_index,
+                "query_span": execution_context.query_span,
+                "request_cohort": execution_context.effective_cohort,
+            }
+            for citation in citations
+        ]
+
     @staticmethod
     def _request_result_metadata(
-        request_index: int,
         request: dict[str, Any],
+        execution_context: RequestExecutionContext,
         *,
         status: str,
-        cohort: str | None,
+        reason: str | None = None,
     ) -> dict[str, Any]:
         return {
-            "request_index": request_index,
+            "request_id": execution_context.request_id,
+            "request_index": execution_context.request_index,
             "request_kind": request.get("request_kind"),
             "lookup_type": request.get("lookup_type"),
             "intent": request.get("intent"),
-            "query_span": request.get("query_span"),
-            "cohort": cohort,
+            "query_span": execution_context.query_span,
+            "cohort": execution_context.effective_cohort,
             "status": status,
+            "reason": reason,
         }
 
     def _run_semantic_request_rag(
         self,
         *,
-        request_query: str,
-        retrieval_query: str,
-        request_index: int,
+        execution_context: RequestExecutionContext,
         request: dict[str, Any],
-        cohort: str | None,
         chat_history: list[dict[str, str]] | None,
     ) -> dict[str, Any]:
         result = run_hybrid_retrieval_pipeline(
-            query=request_query,
+            query=execution_context.query_span,
             model=self.model,
             collection=self.collection,
             scoring_tables=self.scoring_tables,
@@ -1545,7 +1683,7 @@ class AnswerPipeline:
             normalize_embeddings=self.config["embedding"].get(
                 "normalize_embeddings", True
             ),
-            cohort=cohort,
+            cohort=execution_context.effective_cohort,
             candidate_multiplier=int(
                 self.config["retrieval"].get("candidate_multiplier", 5)
             ),
@@ -1553,22 +1691,15 @@ class AnswerPipeline:
             chat_history=chat_history,
             intent=request.get("intent") or "open_question",
             strategy="semantic_request_rag",
-            retrieval_query=retrieval_query,
+            retrieval_query=execution_context.retrieval_query,
         )
-        return self._annotate_request_result(
-            result,
-            request_index=request_index,
-            query_span=request_query,
-            cohort=cohort,
-        )
+        return self._annotate_request_result(result, execution_context=execution_context)
 
     @staticmethod
     def _annotate_request_result(
         result: dict[str, Any],
         *,
-        request_index: int,
-        query_span: str,
-        cohort: str | None,
+        execution_context: RequestExecutionContext,
     ) -> dict[str, Any]:
         annotated = dict(result)
         items = []
@@ -1577,32 +1708,36 @@ class AnswerPipeline:
             metadata = dict(enriched.get("metadata") or {})
             metadata.update(
                 {
-                    "request_index": request_index,
-                    "query_span": query_span,
-                    "request_cohort": cohort,
+                    "request_id": execution_context.request_id,
+                    "request_index": execution_context.request_index,
+                    "query_span": execution_context.query_span,
+                    "request_cohort": execution_context.effective_cohort,
                 }
             )
             enriched["metadata"] = metadata
-            enriched["request_index"] = request_index
-            enriched["query_span"] = query_span
-            enriched["request_cohort"] = cohort
+            enriched["request_id"] = execution_context.request_id
+            enriched["request_index"] = execution_context.request_index
+            enriched["query_span"] = execution_context.query_span
+            enriched["request_cohort"] = execution_context.effective_cohort
             items.append(enriched)
         citations = []
         for citation in result.get("citations") or []:
             enriched = dict(citation)
             enriched.update(
                 {
-                    "request_index": request_index,
-                    "query_span": query_span,
-                    "request_cohort": cohort,
+                    "request_id": execution_context.request_id,
+                    "request_index": execution_context.request_index,
+                    "query_span": execution_context.query_span,
+                    "request_cohort": execution_context.effective_cohort,
                 }
             )
             citations.append(enriched)
         annotated["retrieved_items"] = items
         annotated["citations"] = citations
-        annotated["request_index"] = request_index
-        annotated["query_span"] = query_span
-        annotated["request_cohort"] = cohort
+        annotated["request_id"] = execution_context.request_id
+        annotated["request_index"] = execution_context.request_index
+        annotated["query_span"] = execution_context.query_span
+        annotated["request_cohort"] = execution_context.effective_cohort
         return annotated
 
     @staticmethod
@@ -1728,7 +1863,8 @@ class AnswerPipeline:
             "raw_query": query,
             "fallback_reason": error_type or (status if status in {"out_of_domain", "needs_clarification", "low_confidence", "retrieval_error", "api_error"} else "none"),
             "retrieved_chunks_count": len(retrieval_result.get("retrieved_items") or []),
-            "retrieval_query": retrieval_result.get("retrieval_query"),
+            # Deprecated compatibility field. Request-scoped values live in debug.
+            "retrieval_query": None,
             "citations": retrieval_result.get("citations", []),
             "citations_used": selected_citations,
             "related_references": retrieval_result.get("related_references", []),
@@ -1740,6 +1876,20 @@ class AnswerPipeline:
             "model": model_used,
             "used_cache": used_cache,
             "clarification_needed": clarification_needed,
+            "debug": {
+                "plan_version": (router_decision or {}).get("plan_version"),
+                "effective_cohort": retrieval_result.get("selected_cohort"),
+                "retrieval_executed": bool(retrieval_result.get("retrieval_executed")),
+                "partial": bool(
+                    retrieval_result.get("unresolved_lookup_requests")
+                    and retrieval_result.get("request_results")
+                ),
+                "request_results": retrieval_result.get("request_results") or [],
+                "request_execution_contexts": retrieval_result.get(
+                    "request_execution_contexts"
+                )
+                or [],
+            },
             "context_used": context_used,
             "tracker": tracker,
             "evaluation_telemetry": self._finalize_evaluation_telemetry(

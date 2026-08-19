@@ -92,7 +92,7 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     )
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION.endswith("compact")
+    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2"
 
 
 def test_model_defaults_select_supported_reasoning_and_format(
@@ -120,7 +120,7 @@ def test_router_treats_provider_json_validation_failure_as_transient() -> None:
     assert AIRouter._classify_error(error) == "transient_error"
 
 
-def test_router_falls_back_to_regulation_rag_after_provider_error(
+def test_router_clarifies_after_provider_error(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
@@ -141,13 +141,13 @@ def test_router_falls_back_to_regulation_rag_after_provider_error(
         cohort="K48-K49",
     )
 
-    assert decision["route"] == "rag"
+    assert decision["route"] == "clarify"
     assert decision["execution_mode"] == "regulation"
-    assert decision["target_chunk_types"] == ["regulation"]
-    assert "retrieval_query" not in decision
+    assert decision["target_chunk_types"] == []
+    assert decision["retrieval_query"] is None
     assert decision["normalized_query"].startswith("K48-K49")
     assert decision["router_error_type"] == "transient_error"
-    assert decision["router_fallback"] == "router_error_to_rag"
+    assert decision["router_fallback"] == "router_error_to_clarify"
 
 
 def test_from_config_accepts_model_environment_override(
@@ -180,7 +180,7 @@ def test_from_config_accepts_model_environment_override(
     assert router.max_output_tokens == 1024
 
 
-def test_invalid_structured_decision_falls_back_to_safe_rag(
+def test_invalid_structured_decision_clarifies_without_retrieval(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
@@ -231,13 +231,15 @@ def test_invalid_structured_decision_falls_back_to_safe_rag(
 
     decision = router.route("K50 học gì?", cohort="K50")
 
-    assert decision["route"] == "rag"
+    assert decision["route"] == "clarify"
+    assert decision["lookup_requests"] == []
+    assert decision["retrieval_executed"] is False
     assert "request:0:missing_slot:scope" in decision["router_validation_errors"]
     assert request["reasoning_effort"] == "low"
     assert request["response_format"]["type"] == "json_schema"
 
 
-def test_router_normalization_infers_explicit_jlpt_level_slot() -> None:
+def test_router_normalization_does_not_infer_missing_jlpt_slot() -> None:
     query = "K50 JLPT N3 tương đương bậc mấy?"
     decision = normalize_router_decision(
         {
@@ -253,15 +255,17 @@ def test_router_normalization_infers_explicit_jlpt_level_slot() -> None:
         selected_cohort="K50",
     )
 
-    assert decision["slots"]["score_or_level"] == "N3"
-    assert validate_router_decision(
-        decision,
-        query=query,
-        selected_cohort="K50",
-    ) == []
+    assert "score_or_level" not in decision["slots"]
+    assert "request:0:missing_slot:score_or_level" in (
+        validate_router_decision(
+            decision,
+            query=query,
+            selected_cohort="K50",
+        )
+    )
 
 
-def test_router_normalization_infers_program_list_scope_from_faculty_query() -> None:
+def test_router_normalization_does_not_infer_program_scope_from_keywords() -> None:
     query = "Khoa Công nghệ Thông tin có những ngành nào?"
     decision = normalize_router_decision(
         {
@@ -277,12 +281,14 @@ def test_router_normalization_infers_program_list_scope_from_faculty_query() -> 
         selected_cohort="K51",
     )
 
-    assert decision["slots"]["scope"] == "faculty"
-    assert validate_router_decision(
-        decision,
-        query=query,
-        selected_cohort="K51",
-    ) == []
+    assert "scope" not in decision["slots"]
+    assert "request:0:missing_slot:scope" in (
+        validate_router_decision(
+            decision,
+            query=query,
+            selected_cohort="K51",
+        )
+    )
 
 
 def test_router_normalization_handles_multi_cohort_comparison() -> None:

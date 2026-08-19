@@ -84,6 +84,29 @@ def evaluate_gates(suite: str, summary: dict[str, Any]) -> dict[str, Any]:
             }
     elif suite == "faults":
         minimum("pass_rate", 1.0)
+    elif suite == "single_cohort_v2":
+        for name in (
+            "query_contract_invariants",
+            "schema_invariants",
+            "cohort_invariants",
+            "multi_cohort_rejection",
+            "structured_source_binding",
+        ):
+            minimum(name, 1.0)
+        for name in (
+            "silent_structured_to_rag_fallback_rate",
+            "cross_request_evidence_leakage_rate",
+            "critical_false_pass_rate",
+            "provider_failure_rate",
+        ):
+            maximum(name, 0.0)
+        minimum("dev_exact_plan_accuracy", 0.95)
+        minimum("hidden_exact_plan_accuracy", 0.90)
+        minimum("retrieval_hit_at_5", 0.90)
+        minimum("citation_binding", 0.95)
+        minimum("faithfulness", 0.90)
+        minimum("answer_correctness", 0.85)
+        maximum("hallucination_rate", 0.05)
 
     return {
         "passed": bool(checks) and all(check["passed"] for check in checks.values()),

@@ -429,7 +429,7 @@ def test_empty_or_malformed_explicit_request_plan_is_rejected(requests: Any) -> 
     assert "missing_lookup_requests" in errors or "request:0:invalid_payload" in errors
 
 
-def test_invalid_plan_falls_back_to_one_whole_query_rag_request() -> None:
+def test_invalid_plan_clarifies_without_a_whole_query_rag_request() -> None:
     query = "IELTS 6.0 tương đương bậc mấy và điều kiện tốt nghiệp là gì?"
     decision = _normalize(
         query,
@@ -445,17 +445,9 @@ def test_invalid_plan_falls_back_to_one_whole_query_rag_request() -> None:
     errors = _errors(decision, query)
     fallback = fallback_to_rag(decision, errors, query=query)
 
-    assert fallback["route"] == "rag"
+    assert fallback["route"] == "clarify"
     assert fallback["execution_mode"] == "regulation"
-    assert fallback["lookup_requests"] == [
-        {
-            "request_kind": "rag",
-            "lookup_type": None,
-            "intent": "open_question",
-            "query_span": query,
-            "slots": {},
-            "slot_spans": {},
-            "cohort_refs": ["K50"],
-        }
-    ]
+    assert fallback["lookup_requests"] == []
+    assert fallback["retrieval_executed"] is False
+    assert fallback["retrieval_query"] is None
     assert _errors(fallback, query) == []

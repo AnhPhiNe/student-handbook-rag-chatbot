@@ -20,15 +20,9 @@ ALLOWED_CONTEXT_MODES = {"standalone", "follow_up", "ambiguous"}
 ALLOWED_CONFIDENCE_LEVELS = {"high", "medium", "low", "none"}
 ALLOWED_REQUEST_KINDS = {"structured", "rag"}
 MAX_LOOKUP_REQUESTS = 6
+PLANNER_CONTRACT_VERSION = "single-cohort-v2"
 LEGACY_STRUCTURED_ROUTES = {"deterministic"}
 LEGACY_STRUCTURED_MODES = {"direct_lookup", "structured_reasoning"}
-COHORT_SCOPED_LOOKUPS = {
-    "foreign_language",
-    "study_duration",
-    "scholarship_classification",
-    "scoring",
-    "formula",
-}
 UNGROUNDED_SCHEMA_SLOTS = {
     "action",
     "formula_type",
@@ -96,69 +90,21 @@ def _query_mentions_cohort(query: str) -> bool:
     return bool(re.search(r"\bk\s*(?:48|49|50|51)\b", normalized))
 
 
+def _explicit_cohorts(query: str) -> list[str]:
+    """Extract cohort references from user-grounded text in appearance order."""
+    normalized = _normalize_text(query)
+    values: list[str] = []
+    for match in re.finditer(r"\bk\s*(48|49|50|51)\b", normalized):
+        value = "K48-K49" if match.group(1) in {"48", "49"} else f"K{match.group(1)}"
+        if value not in values:
+            values.append(value)
+    return values
+
+
 def _cohort_is_grounded(cohort: str, source_text: str) -> bool:
     normalized_cohort = _normalize_text(cohort)
     normalized_source = _normalize_text(source_text)
     return bool(normalized_cohort and normalized_cohort in normalized_source)
-
-
-def _infer_explicit_structured_slots(
-    query: str,
-    *,
-    lookup_type: str | None,
-    intent: str | None,
-    slots: dict[str, Any],
-    spans: dict[str, Any],
-) -> None:
-    """Fill slots that are explicitly present in the query but missed by the router."""
-
-    normalized = _normalize_text(query)
-    raw_query = str(query or "")
-
-    if lookup_type == "foreign_language":
-        certificate_patterns = {
-            "JLPT": r"\bjlpt\b",
-            "IELTS": r"\bielts\b",
-            "TOEFL": r"\btoefl\b",
-            "TOEIC": r"\btoeic\b",
-            "HSK": r"\bhsk\b",
-            "TOPIK": r"\btopik\b",
-        }
-        if not _is_present(slots.get("certificate_or_language")):
-            for certificate, pattern in certificate_patterns.items():
-                match = re.search(pattern, normalized)
-                if match:
-                    slots["certificate_or_language"] = certificate
-                    spans["certificate_or_language"] = raw_query[
-                        match.start() : match.end()
-                    ] or certificate
-                    break
-
-        if not _is_present(slots.get("score_or_level")):
-            level_match = re.search(r"\b(?:jlpt\s*)?(n[1-5])\b", normalized)
-            if level_match:
-                value = level_match.group(1).upper()
-                slots["score_or_level"] = value
-                spans["score_or_level"] = value
-            else:
-                score_match = re.search(
-                    r"\b(?:ielts|toefl|toeic|hsk|topik)?\s*(\d+(?:[.,]\d+)?)\b",
-                    normalized,
-                )
-                if score_match and any(
-                    key in normalized
-                    for key in ("ielts", "toefl", "toeic", "hsk", "topik")
-                ):
-                    value = score_match.group(1).replace(",", ".")
-                    slots["score_or_level"] = value
-                    spans["score_or_level"] = value
-
-    if lookup_type == "program" and intent == "list_items":
-        if not _is_present(slots.get("scope")):
-            if "khoa" in normalized:
-                slots["scope"] = "faculty"
-            elif re.search(r"\b(?:cac|nhung)?\s*nganh\b", normalized):
-                slots["scope"] = "school"
 
 
 @lru_cache(maxsize=4)
@@ -276,15 +222,6 @@ def _normalize_lookup_request(
         if nested_spans:
             spans[slot_name] = nested_spans
 
-    if request_kind == "structured":
-        _infer_explicit_structured_slots(
-            query_span,
-            lookup_type=lookup_type,
-            intent=intent,
-            slots=slots,
-            spans=spans,
-        )
-
     normalized_request = {
         "request_kind": request_kind,
         "lookup_type": lookup_type,
@@ -351,7 +288,7 @@ def router_json_schema() -> dict[str, Any]:
         ],
         "standalone_query": "history-grounded query for follow_up or null",
         "referenced_turns": [],
-        "route": "structured|rag|clarify|out_of_domain",
+        "outcome": "execute|clarify|out_of_domain",
         "cohort": "K48-K49|K50|K51|null",
         "cohorts": ["K48-K49", "K50", "K51"],
         "is_multi_cohort": False,
@@ -408,10 +345,11 @@ def router_response_schema() -> dict[str, Any]:
                 "type": "array",
                 "items": {"type": "integer"},
             },
-            "route": {
+            "outcome": {
                 "type": "string",
-                "enum": ["structured", "rag", "clarify", "out_of_domain"],
+                "enum": ["execute", "clarify", "out_of_domain"],
             },
+            "route": {"type": ["string", "null"]},
             "cohort": {
                 "anyOf": [
                     {"type": "string", "enum": ["K48-K49", "K50", "K51"]},
@@ -482,7 +420,7 @@ def router_response_schema() -> dict[str, Any]:
             "corrections",
             "standalone_query",
             "referenced_turns",
-            "route",
+            "outcome",
             "cohort",
             "cohorts",
             "is_multi_cohort",
@@ -498,7 +436,12 @@ def normalize_router_decision(
     query: str,
     selected_cohort: str | None = None,
 ) -> dict[str, Any]:
+    raw_outcome = str(payload.get("outcome") or "").strip().lower()
     raw_route = str(payload.get("route") or "rag").strip().lower()
+    if raw_outcome == "execute":
+        raw_route = raw_route if raw_route in {"structured", "rag"} else "rag"
+    elif raw_outcome in {"clarify", "out_of_domain"}:
+        raw_route = raw_outcome
     raw_execution_mode = str(payload.get("execution_mode") or "").strip().lower()
     legacy_structured = (
         raw_route in LEGACY_STRUCTURED_ROUTES
@@ -540,13 +483,18 @@ def normalize_router_decision(
         payload_cohorts.insert(0, payload_cohort)
     payload_cohorts = list(dict.fromkeys(payload_cohorts))
 
-    is_multi_cohort = len(payload_cohorts) >= 2 or bool(payload.get("is_multi_cohort") and len(payload_cohorts) >= 2)
+    explicit_cohorts = _explicit_cohorts(query)
     selected = normalize_cohort(selected_cohort)
-    if is_multi_cohort:
-        cohorts = payload_cohorts
-        cohort = payload_cohorts[0]
+    if len(explicit_cohorts) >= 2:
+        cohorts = explicit_cohorts
+        cohort = explicit_cohorts[0]
+        is_multi_cohort = True
+    elif explicit_cohorts:
+        cohorts = explicit_cohorts
+        cohort = explicit_cohorts[0]
+        is_multi_cohort = False
     else:
-        cohort = selected or payload_cohort
+        cohort = selected
         cohorts = [cohort] if cohort else []
         is_multi_cohort = False
 
@@ -681,6 +629,10 @@ def normalize_router_decision(
         referenced_turns = []
 
     return {
+        "plan_version": PLANNER_CONTRACT_VERSION,
+        "outcome": (
+            "execute" if route in {"structured", "rag"} else route
+        ),
         "context_mode": context_mode,
         "context_confidence": context_confidence,
         "normalized_query": normalized_query,
@@ -875,7 +827,7 @@ def _validate_lookup_request(
     if not spec:
         errors.append(f"{prefix}unknown_lookup_type")
         return errors
-    if lookup_type in COHORT_SCOPED_LOOKUPS and not cohort_refs:
+    if bool(spec.get("cohort_sensitive")) and not cohort_refs:
         errors.append(f"{prefix}missing_cohort")
 
     allowed_intents = set(spec.get("intents") or [])
@@ -930,6 +882,7 @@ def validate_router_decision(
     grounding_context: str = "",
     registry: dict[str, Any] | None = None,
 ) -> list[str]:
+    del grounding_context
     registry = registry or load_lookup_registry()
     errors: list[str] = []
     route = decision.get("route")
@@ -941,6 +894,8 @@ def validate_router_decision(
     router_cohort = normalize_cohort(decision.get("router_cohort"))
     if selected and router_cohort and selected != router_cohort:
         errors.append("cohort_conflict")
+    if decision.get("is_multi_cohort") or len(decision.get("cohorts") or []) > 1:
+        errors.append("multi_cohort_not_supported")
 
     execution_mode = decision.get("execution_mode")
     if execution_mode not in ALLOWED_EXECUTION_MODES:
@@ -965,10 +920,7 @@ def validate_router_decision(
     if len(lookup_requests) > MAX_LOOKUP_REQUESTS:
         errors.append("too_many_lookup_requests")
 
-    standalone_query = str(decision.get("standalone_query") or "").strip()
-    source_text = "\n".join(
-        part for part in (query, standalone_query, grounding_context) if part
-    )
+    source_text = query
     for index, request in enumerate(lookup_requests):
         if not isinstance(request, dict):
             errors.append(f"request:{index}:invalid_payload")
@@ -991,9 +943,6 @@ def fallback_to_rag(
     *,
     query: str | None = None,
 ) -> dict[str, Any]:
-    lookup_type = decision.get("lookup_type")
-    office_scope = lookup_type in {"office", "student_service"}
-    faculty_scope = lookup_type == "faculty"
     rejected_decision = {
         "route": decision.get("route"),
         "execution_mode": decision.get("execution_mode"),
@@ -1003,48 +952,29 @@ def fallback_to_rag(
         "slot_spans": decision.get("slot_spans") or {},
         "lookup_requests": decision.get("lookup_requests") or [],
     }
-    fallback_query = str(
-        query
-        or decision.get("normalized_query")
-        or decision.get("standalone_query")
-        or ""
-    ).strip()
+    del query
     return {
         **decision,
-        "route": "rag",
+        "outcome": "clarify",
+        "route": "clarify",
         "execution_mode": "regulation",
-        "intent": "open_question",
+        "intent": "invalid_plan",
         "lookup_type": None,
         "slots": {},
         "slot_spans": {},
-        "lookup_requests": [
-            {
-                "request_kind": "rag",
-                "lookup_type": None,
-                "intent": "open_question",
-                "query_span": fallback_query,
-                "slots": {},
-                "slot_spans": {},
-                "cohort_refs": decision.get("cohorts") or [],
-            }
-        ],
-        "target_chunk_types": (
-            ["office_directory"]
-            if office_scope
-            else ["faculty_program_directory"]
-            if faculty_scope
-            else ["regulation"]
-        ),
-        "content_types": (
-            ["student_service_directory", "student_office_profile"]
-            if office_scope
-            else ["student_faculty_profile", "faculty_program_directory"]
-            if faculty_scope
-            else []
+        "lookup_requests": [],
+        "target_chunk_types": [],
+        "content_types": [],
+        "retrieval_query": None,
+        "retrieval_executed": False,
+        "needs_clarification": True,
+        "clarification_question": (
+            "Mình chưa xác định được chính xác phần cần tra cứu. "
+            "Bạn có thể viết rõ hơn tên nội dung hoặc chương trình cần hỏi không?"
         ),
         "router_validation_errors": list(errors),
         "router_rejected_decision": rejected_decision,
-        "router_fallback": "invalid_structured_decision_to_rag",
+        "router_fallback": "invalid_plan_to_clarify",
     }
 
 

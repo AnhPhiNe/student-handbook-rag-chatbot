@@ -1,0 +1,20 @@
+{
+  "approval_version": "single-cohort-gold-contract-correction-approval-v1",
+  "proposal_version": "single-cohort-gold-contract-correction-v1",
+  "approved_at": "2026-08-19T09:06:42.6129615Z",
+  "approved_by": "project_owner",
+  "approval_statement": "Phê duyệt 18 gold cohort-source corrections",
+  "approval_commit": "11b63805cf6b27694adb3e21db0eb89b00de2d92",
+  "source_hashes": {
+    "dev.json": "e1907aff3471a40154754dc9f9a388796560b56f306add774bf725c40149914c",
+    "hidden.json": "5a6fca781e6181ae4fc7943fed1e2a941b31406c6b43f7f6d01a130a02e3236f"
+  },
+  "approved_counts": {
+    "dev": 13,
+    "hidden": 5,
+    "total": 18
+  },
+  "scope": "effective_cohort_source only",
+  "from": "raw_query",
+  "to": "selected_cohort"
+}

@@ -1,4 +1,4 @@
-version: 3
+version: 4
 rag_cohort_sensitive: true
 
 tools:
@@ -15,8 +15,8 @@ tools:
     slot_schema:
       certificate_or_language:
         type: string
-        canonical_values: [IELTS, TOEFL, JLPT, HSK, TOPIK]
-        examples: [IELTS, TOEFL, JLPT, HSK, TOPIK]
+        canonical_values: [IELTS, TOEFL iBT, TOEFL ITP, Cambridge, JLPT, HSK, TOPIK]
+        examples: [IELTS, TOEFL iBT, TOEFL ITP, Cambridge, JLPT, HSK, TOPIK]
       score_or_level:
         type: [string, number]
         examples: [5.5, N3, HSK4, TOPIK3]
@@ -55,7 +55,13 @@ tools:
     required_slots:
       direct_value: [score_or_label]
     slot_schema:
-      score_or_label: {type: [string, number]}
+      score_or_label:
+        type: [string, number]
+        aliases:
+          Xuất sắc: [loại xuất sắc, xếp loại xuất sắc]
+          Giỏi: [loại giỏi, xếp loại giỏi]
+          Khá: [loại khá, xếp loại khá]
+          Trung bình: [loại trung bình, xếp loại trung bình]
     strategy: scholarship_classification_lookup
     response_intent: scholarship_classification_lookup_query
     target_chunk_types: [structured_lookup]
@@ -92,7 +98,9 @@ tools:
       direct_value: [service, requested_field]
       contact: [service, requested_field]
     slot_schema:
-      service: {type: string}
+      service:
+        type: string
+        alias_entity_types: [service]
       requested_field:
         type: string
         enum: [unit, phone, email, office, website, all]
@@ -111,7 +119,9 @@ tools:
     required_slots:
       contact: [office, requested_field]
     slot_schema:
-      office: {type: string}
+      office:
+        type: string
+        alias_entity_types: [office]
       requested_field:
         type: string
         enum: [phone, email, office, website, services, all]
@@ -130,7 +140,9 @@ tools:
     required_slots:
       contact: [faculty, requested_field]
     slot_schema:
-      faculty: {type: string}
+      faculty:
+        type: string
+        alias_entity_types: [faculty]
       requested_field:
         type: string
         enum: [phone, email, office, website, all]
@@ -150,7 +162,9 @@ tools:
       list_items: [scope]
       exists: [program_or_faculty]
     slot_schema:
-      program_or_faculty: {type: string}
+      program_or_faculty:
+        type: string
+        alias_entity_types: [program, faculty]
       requested_field:
         type: string
         enum: [faculty, programs, exists, all]

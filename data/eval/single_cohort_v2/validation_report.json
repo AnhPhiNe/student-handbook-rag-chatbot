@@ -1,15 +1,15 @@
 {
   "valid": true,
   "errors": [],
-  "generated_at": "2026-08-19T06:59:31.563234+00:00",
-  "schema_version": "single-cohort-v2.3",
+  "generated_at": "2026-08-19T09:09:15.3578203Z",
+  "schema_version": "single-cohort-v2.4",
   "counts": {
     "dev": 150,
     "hidden": 60
   },
   "hashes": {
-    "dev.json": "e1907aff3471a40154754dc9f9a388796560b56f306add774bf725c40149914c",
-    "hidden.json": "5a6fca781e6181ae4fc7943fed1e2a941b31406c6b43f7f6d01a130a02e3236f"
+    "dev.json": "42a3efadf7251acf2d5b8cba8c64b88ee51039240fddbe896b6837668b0f030d",
+    "hidden.json": "68618ac0100ba4b41ace8f1e27aa1bec8f75e35f1c694dcc9970fa7fa7fbde85"
   },
   "coverage": {
     "tools": [
@@ -53,5 +53,7 @@
     "hidden_human_review_complete": true,
     "gold_ready": true
   },
-  "hidden_frozen": true
+  "hidden_frozen": true,
+  "dataset_version": "single-cohort-gold-v2",
+  "gold_contract_correction_approval_sha256": "44c24f8097c9a862a975e9ca6f82816f09a5acce5eafb2abffc5b205df0953e8"
 }

@@ -1,10 +1,10 @@
 {
   "schema_version": "single-cohort-v2.2",
-  "generated_at": "2026-08-19T06:59:31.108388+00:00",
-  "commit": "878df68e7811577c0572d787abea7aef1e4823de",
+  "generated_at": "2026-08-19T09:14:56.036650+00:00",
+  "commit": "11b63805cf6b27694adb3e21db0eb89b00de2d92",
   "provider": "deterministic",
   "data_versions": {
-    "structured_registry": "b739720cc8d476d011ababb288ff40812bb004ef04dd73e9f955a398fcc6e575",
+    "structured_registry": "fc75ad5ec89527017ac77e9bb85a12d5e58769a6426e7d1685bfe8c548871a64",
     "structured_manifest": "d9a10e874b4b8631bf5dc9e2c076878f32cb4d1461937ed4bfa1e066c4e0bf61",
     "formula_rules": "f5e1d5e634b6293331b557bd4f026f3c636c47e54cbaf266230b4ddf9bcec49c",
     "scoring_tables": "c1e74b9b171b402aaa86712624deff98a0157bb966c96c6ffb54089acc79039c",
@@ -17,10 +17,10 @@
     "chunk_index_manifest": "004f645e1e2562716f41b9bb82c90d67f6d73cb1ad8158fbcc78613ce1c792e8",
     "bm25_index": "55cedc0663448f7e69d748307eaa2eef31a4b4690d16525f26adc321425eab92",
     "ai_router_config": "169a553e6257051ac3344bc1ce26a02b324a5c724fb70c67d9d3b4c0b4724da1",
-    "ai_router_prompt_source": "d022da06fc24d8ea9c38976fca796904770f081d6b325ffd9d53c717477b7003",
+    "ai_router_prompt_source": "60062fb2dffa2b945678ae7061f24f0822e1427228af538616b466f9136bd633",
     "answer_config": "0a03853b6f0ed0f4585cb8712326e930275396d939ca65a7a1d2dc4fc44f5aab",
     "answer_prompt_source": "72d43ed9ee5741940b9c95751dabcb54c41566f87c800b2a42e867536d2792e8",
-    "implementation_tree": "d21ab2468f55878c1525d2dfa4f7e3f275e1cd79d30aac3e4547a1d3d05bf85b"
+    "implementation_tree": "695b91b13c5100a47997651ae90b5073d5c7424222e56b6d9c33baa4e1305070"
   },
   "counts": {
     "dev": 150,
@@ -50,5 +50,15 @@
   },
   "hidden_review_required": 0,
   "gold_ready": true,
-  "dev_review_required": 0
+  "dev_review_required": 0,
+  "frozen_schema_version": "single-cohort-v2.4",
+  "dataset_version": "single-cohort-gold-v2",
+  "gold_contract_correction": {
+    "approval_sha256": "44c24f8097c9a862a975e9ca6f82816f09a5acce5eafb2abffc5b205df0953e8",
+    "dev": 13,
+    "hidden": 5,
+    "field": "effective_cohort_source",
+    "from": "raw_query",
+    "to": "selected_cohort"
+  }
 }

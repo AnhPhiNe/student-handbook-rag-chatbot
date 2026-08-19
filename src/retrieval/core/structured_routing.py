@@ -14,6 +14,8 @@ from src.common.cohort import normalize_cohort
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_REGISTRY_PATH = ROOT / "configs" / "structured_lookup_registry.yaml"
+ENTITY_REGISTRY_PATH = ROOT / "data" / "processed" / "entities" / "entity_registry.json"
+OFFICE_ALIASES_PATH = ROOT / "configs" / "office_aliases.yaml"
 ALLOWED_ROUTES = {"structured", "rag", "clarify", "out_of_domain"}
 ALLOWED_EXECUTION_MODES = {"structured", "regulation", "mixed"}
 ALLOWED_CONTEXT_MODES = {"standalone", "follow_up", "ambiguous"}
@@ -837,13 +839,77 @@ def _resolved_span_value(span: Any, source_text: str) -> Any:
     return span
 
 
-def _slot_value_matches_span(value: Any, span: Any, source_text: str) -> bool:
+def _slot_value_matches_span(
+    value: Any, span: Any, source_text: str, schema: dict[str, Any]
+) -> bool:
     values = _normalized_leaf_values(value)
-    spans = _normalized_leaf_values(_resolved_span_value(span, source_text))
+    resolved_span = _resolved_span_value(span, source_text)
+    spans = _normalized_leaf_values(resolved_span)
+    canonical_spans = _normalized_leaf_values(
+        _canonicalize_scalar(resolved_span, schema)
+    )
     return bool(values and spans) and all(
-        any(item == source or item in source or source in item for source in spans)
+        any(
+            item == source or item in source or source in item
+            for source in [*spans, *canonical_spans]
+        )
         for item in values
     )
+
+
+@lru_cache(maxsize=1)
+def _slot_alias_index() -> dict[str, dict[str, frozenset[str]]]:
+    index: dict[str, dict[str, set[str]]] = {}
+
+    def add(entity_type: str, canonical: Any, aliases: list[Any]) -> None:
+        canonical_text = str(canonical or "").strip()
+        if not canonical_text:
+            return
+        namespace = index.setdefault(entity_type, {})
+        for alias in [canonical_text, *aliases]:
+            normalized = _normalize_text(alias)
+            if normalized:
+                namespace.setdefault(normalized, set()).add(canonical_text)
+
+    if ENTITY_REGISTRY_PATH.is_file():
+        entities = json.loads(ENTITY_REGISTRY_PATH.read_text(encoding="utf-8"))
+        for entity in entities if isinstance(entities, list) else []:
+            add(
+                str(entity.get("entity_type") or ""),
+                entity.get("canonical_name"),
+                list(entity.get("aliases") or []),
+            )
+    if OFFICE_ALIASES_PATH.is_file():
+        aliases = yaml.safe_load(OFFICE_ALIASES_PATH.read_text(encoding="utf-8")) or {}
+        for canonical, values in (aliases.get("unit_aliases") or {}).items():
+            entity_type = "faculty" if _normalize_text(canonical).startswith("khoa ") else "office"
+            add(entity_type, canonical, list(values or []))
+        for service in aliases.get("service_aliases") or []:
+            if isinstance(service, dict):
+                add("service", service.get("match"), list(service.get("aliases") or []))
+        for services in (aliases.get("unit_service_aliases") or {}).values():
+            for service in services or []:
+                if isinstance(service, dict):
+                    add("service", service.get("service"), list(service.get("aliases") or []))
+    return {
+        entity_type: {
+            alias: frozenset(canonical_values)
+            for alias, canonical_values in aliases.items()
+        }
+        for entity_type, aliases in index.items()
+    }
+
+
+def _canonical_alias(value: str, schema: dict[str, Any]) -> str | None:
+    normalized = _normalize_text(value)
+    candidates: set[str] = set()
+    for canonical, aliases in (schema.get("aliases") or {}).items():
+        if normalized in {_normalize_text(canonical), *map(_normalize_text, aliases or [])}:
+            candidates.add(str(canonical))
+    index = _slot_alias_index()
+    for entity_type in schema.get("alias_entity_types") or []:
+        candidates.update(index.get(str(entity_type), {}).get(normalized, ()))
+    return next(iter(candidates)) if len(candidates) == 1 else None
 
 
 def _canonicalize_scalar(value: Any, schema: dict[str, Any]) -> Any:
@@ -855,6 +921,9 @@ def _canonicalize_scalar(value: Any, schema: dict[str, Any]) -> Any:
     for candidate in canonical_values:
         if normalized_value == _normalize_text(candidate):
             return candidate
+    alias = _canonical_alias(stripped, schema)
+    if alias is not None:
+        return alias
     if schema.get("canonical_type") == "number" and re.fullmatch(
         r"[+-]?\d+(?:[.,]\d+)?",
         stripped,
@@ -1015,7 +1084,7 @@ def _validate_lookup_request(
         elif not _span_is_grounded(span, request_source):
             errors.append(f"{prefix}ungrounded_slot:{slot_name}")
         elif not schema.get("enum") and not (
-            _slot_value_matches_span(value, span, request_source)
+            _slot_value_matches_span(value, span, request_source, schema)
         ):
             errors.append(f"{prefix}slot_value_mismatch:{slot_name}")
 

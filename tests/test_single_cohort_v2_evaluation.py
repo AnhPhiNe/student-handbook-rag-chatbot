@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import shutil
 
@@ -15,6 +16,7 @@ from src.evaluation.single_cohort_v2 import (
     evaluate_development_gates,
     evaluate_release_gates,
     exact_plan_match,
+    semantic_plan_match,
     validate_bundle,
 )
 from scripts import evaluate_single_cohort_v2 as evaluator
@@ -23,6 +25,8 @@ from scripts.evaluate_single_cohort_v2 import (
     _finish_hidden_attempt,
     _reuse_answer_report_evaluation,
     _start_hidden_attempt,
+    _structured_result_matches,
+    _structured_source_bound,
     run_answers,
     run_executor_retrieval,
 )
@@ -87,6 +91,243 @@ def test_exact_plan_requires_request_order_and_slots() -> None:
     assert not exact_plan_match(expected, changed)
 
 
+def test_semantic_plan_accepts_only_proven_representation_differences() -> None:
+    expected = {
+        "outcome": "execute",
+        "context_mode": "standalone",
+        "query_mode": "validated",
+        "effective_cohort": "K51",
+        "effective_cohort_source": "raw_query",
+        "atomic_requests": [
+            {
+                "request_id": "r1",
+                "request_kind": "structured",
+                "tool_name": "scoring",
+                "intent": "direct_value",
+                "query_span": "GPA 3.2",
+                "slots": {"score": 3.2, "label": "Giỏi"},
+                "cohort_refs": ["K51"],
+            }
+        ],
+    }
+    actual = {
+        **expected,
+        "atomic_requests": [
+            {
+                **expected["atomic_requests"][0],
+                "query_span": "tra cứu GPA 3.2",
+                "slots": {"score": "3.20", "label": "gioi"},
+            }
+        ],
+    }
+    assert not exact_plan_match(expected, actual)
+    assert semantic_plan_match(expected, actual)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("effective_cohort", "K50"),
+        ("outcome", "clarify"),
+    ],
+)
+def test_semantic_plan_rejects_critical_top_level_changes(field, value) -> None:
+    expected = {
+        "outcome": "execute",
+        "context_mode": "standalone",
+        "query_mode": "validated",
+        "effective_cohort": "K51",
+        "effective_cohort_source": "raw_query",
+        "atomic_requests": [],
+    }
+    assert not semantic_plan_match(expected, {**expected, field: value})
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("context_mode", "follow_up"),
+        ("query_mode", "raw"),
+        ("effective_cohort_source", "selected_cohort"),
+    ],
+)
+def test_semantic_plan_leaves_provenance_representation_to_contract_gate(
+    field, value
+) -> None:
+    expected = {
+        "outcome": "execute",
+        "context_mode": "standalone",
+        "query_mode": "validated",
+        "effective_cohort": "K51",
+        "effective_cohort_source": "raw_query",
+        "atomic_requests": [],
+    }
+    actual = {**expected, field: value}
+
+    assert not exact_plan_match(expected, actual)
+    assert semantic_plan_match(expected, actual)
+
+
+def test_semantic_plan_rejects_wrong_tool_entity_request_count_and_unregistered_alias() -> None:
+    request = {
+        "request_id": "r1",
+        "request_kind": "structured",
+        "tool_name": "foreign_language",
+        "intent": "direct_value",
+        "query_span": "IELTS 5.5",
+        "slots": {"certificate_or_language": "IELTS", "score_or_level": "5.5"},
+        "cohort_refs": ["K51"],
+    }
+    expected = {
+        "outcome": "execute",
+        "context_mode": "standalone",
+        "query_mode": "validated",
+        "effective_cohort": "K51",
+        "effective_cohort_source": "raw_query",
+        "atomic_requests": [request],
+    }
+    wrong_tool = {**expected, "atomic_requests": [{**request, "tool_name": "scoring"}]}
+    wrong_entity = {
+        **expected,
+        "atomic_requests": [
+            {
+                **request,
+                "query_span": "TOEFL 5.5",
+                "slots": {"certificate_or_language": "TOEFL", "score_or_level": "5.5"},
+            }
+        ],
+    }
+    unknown_alias = {
+        **expected,
+        "atomic_requests": [
+            {
+                **request,
+                "slots": {"certificate_or_language": "English test", "score_or_level": "5.5"},
+            }
+        ],
+    }
+    extra_request = {**expected, "atomic_requests": [request, request]}
+    assert not semantic_plan_match(expected, wrong_tool)
+    assert not semantic_plan_match(expected, wrong_entity)
+    assert not semantic_plan_match(expected, unknown_alias)
+    assert not semantic_plan_match(expected, extra_request)
+
+
+def test_semantic_plan_rejects_changed_negation_number_and_condition() -> None:
+    request = {
+        "request_id": "r1",
+        "request_kind": "rag",
+        "tool_name": None,
+        "intent": "policy",
+        "query_span": "nếu GPA 2.5 thì không được tốt nghiệp",
+        "slots": {},
+        "cohort_refs": ["K51"],
+    }
+    expected = {
+        "outcome": "execute",
+        "context_mode": "standalone",
+        "query_mode": "validated",
+        "effective_cohort": "K51",
+        "effective_cohort_source": "raw_query",
+        "atomic_requests": [request],
+    }
+    for span in (
+        "nếu GPA 3.0 thì không được tốt nghiệp",
+        "nếu GPA 2.5 thì được tốt nghiệp",
+        "GPA 2.5 thì không được tốt nghiệp",
+    ):
+        actual = {**expected, "atomic_requests": [{**request, "query_span": span}]}
+        assert not semantic_plan_match(expected, actual)
+
+
+def test_semantic_plan_uses_registry_declared_rag_intent_equivalence() -> None:
+    request = {
+        "request_id": "r1",
+        "request_kind": "rag",
+        "tool_name": None,
+        "intent": "policy",
+        "query_span": "rút học phần",
+        "slots": {},
+        "cohort_refs": ["K51"],
+    }
+    expected = {
+        "outcome": "execute",
+        "context_mode": "standalone",
+        "query_mode": "validated",
+        "effective_cohort": "K51",
+        "effective_cohort_source": "raw_query",
+        "atomic_requests": [request],
+    }
+    equivalent = {
+        **expected,
+        "atomic_requests": [{**request, "intent": "procedure"}],
+    }
+    different_contract = {
+        **expected,
+        "atomic_requests": [{**request, "intent": "open_question"}],
+    }
+    assert semantic_plan_match(expected, equivalent)
+    assert not semantic_plan_match(expected, different_contract)
+
+
+def test_semantic_execution_rejects_correct_source_with_wrong_result() -> None:
+    source = {
+        "record_id": "table-1",
+        "document_id": "handbook-k51",
+        "parent_section_id": "section-1",
+    }
+    request = {
+        "request_id": "r1",
+        "expected_status": "ok",
+        "expected_result": {"result": {"matched_level": "bac_4"}},
+        "expected_source_records": [source],
+    }
+    result = {
+        "structured_result": {
+            "request_id": "r1",
+            "result": {"matched_level": "bac_3"},
+            "source_records": [source],
+        }
+    }
+    assert _structured_source_bound(result, request)
+    assert not _structured_result_matches(result, request)
+
+
+def test_metrics_keep_exact_diagnostic_separate_from_semantic_execution() -> None:
+    planner_rows = {
+        "dev": [
+            {
+                "id": "dev-1",
+                "category": "single_rag",
+                "passed": True,
+                "exact_passed": False,
+                "semantic_passed": True,
+            },
+            {
+                "id": "dev-2",
+                "category": "single_rag",
+                "passed": False,
+                "exact_passed": False,
+                "semantic_passed": False,
+            },
+        ]
+    }
+    metrics = evaluator._metrics(
+        True,
+        planner_rows,
+        [{"id": "dev-1", "semantic_executable": True}],
+        [],
+        [],
+        quality_checks_passed=True,
+        parity_passed=True,
+        conformance_passed=True,
+    )
+    assert metrics["dev_exact_plan"] == 0.0
+    assert metrics["dev_semantic_plan"] == 0.5
+    assert metrics["dev_semantic_executable"] == 0.5
+    assert metrics["dev_semantic_category_floor"] == 0.5
+
+
 def test_manifest_hash_detects_hidden_or_dev_tampering(tmp_path) -> None:
     bundle = tmp_path / "single_cohort_v2"
     shutil.copytree(BUNDLE_DIR, bundle)
@@ -99,17 +340,42 @@ def test_manifest_hash_detects_hidden_or_dev_tampering(tmp_path) -> None:
     assert "frozen hash mismatch: dev.json" in result.errors
 
 
+def test_bundle_validation_rejects_incorrect_cohort_authority(tmp_path) -> None:
+    bundle = tmp_path / "single_cohort_v2"
+    shutil.copytree(BUNDLE_DIR, bundle)
+    dev_path = bundle / "dev.json"
+    dev = json.loads(dev_path.read_text(encoding="utf-8"))
+    target = next(case for case in dev if case["id"] == "dev-robustness-02")
+    target["expected"]["effective_cohort_source"] = "raw_query"
+    dev_path.write_text(
+        json.dumps(dev, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    manifest_path = bundle / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["files"]["dev.json"] = hashlib.sha256(dev_path.read_bytes()).hexdigest()
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    result = validate_bundle(bundle)
+
+    assert not result.valid
+    assert any("cohort source mismatch" in error for error in result.errors)
+
+
 def test_release_gates_fail_closed_when_metrics_are_missing() -> None:
     result = evaluate_release_gates({"contract_invariants": 1.0})
     assert not result.passed
-    assert "hidden_exact_plan" in result.missing_metrics
+    assert "hidden_semantic_executable" in result.missing_metrics
 
 
 def test_development_gate_does_not_require_hidden_metric() -> None:
     result = evaluate_development_gates({"contract_invariants": 1.0})
     assert not result.passed
-    assert "hidden_exact_plan" not in result.missing_metrics
-    assert "dev_exact_plan" in result.missing_metrics
+    assert "hidden_semantic_executable" not in result.missing_metrics
+    assert "dev_semantic_executable" in result.missing_metrics
 
 
 def test_gold_audit_uses_real_sources_and_requires_human_hidden_review(gold_audit) -> None:

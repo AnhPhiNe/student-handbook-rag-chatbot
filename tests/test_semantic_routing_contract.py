@@ -190,6 +190,109 @@ def test_registry_canonicalizes_typed_and_named_slot_values() -> None:
     assert _errors(decision, query, selected_cohort="K51") == []
 
 
+@pytest.mark.parametrize(
+    ("query", "lookup_type", "intent", "slot_name", "value", "span", "expected"),
+    [
+        (
+            "mail pdt",
+            "office",
+            "contact",
+            "office",
+            "Phòng Đào tạo",
+            "pdt",
+            "Phòng Đào tạo",
+        ),
+        (
+            "web khoa cntt",
+            "faculty",
+            "contact",
+            "faculty",
+            "khoa cntt",
+            "khoa cntt",
+            "Khoa Công nghệ Thông tin",
+        ),
+        (
+            "đơn vị hỗ trợ bhyt",
+            "student_service",
+            "contact",
+            "service",
+            "bhyt",
+            "bhyt",
+            "bảo hiểm y tế",
+        ),
+        (
+            "nganh cntt thuộc khoa nào",
+            "program",
+            "direct_value",
+            "program_or_faculty",
+            "nganh cntt",
+            "nganh cntt",
+            "Công nghệ Thông tin",
+        ),
+    ],
+)
+def test_registry_canonicalizes_exact_declared_aliases(
+    query: str,
+    lookup_type: str,
+    intent: str,
+    slot_name: str,
+    value: str,
+    span: str,
+    expected: str,
+) -> None:
+    fixed_slots = {
+        "requested_field": "unit" if lookup_type == "student_service" else "website"
+    }
+    if lookup_type == "program":
+        fixed_slots = {"requested_field": "faculty"}
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type=lookup_type,
+                intent=intent,
+                query_span=query,
+                slots={slot_name: value, **fixed_slots},
+                slot_spans={slot_name: span},
+            )
+        ],
+        selected_cohort="K51",
+        cohort="K51",
+    )
+    request = decision["lookup_requests"][0]
+    assert request["slots"][slot_name] == expected
+    assert _errors(decision, query, selected_cohort="K51") == []
+
+
+def test_registry_preserves_distinct_toefl_certificate_types() -> None:
+    query = "K51 TOEFL iBT 60 tương đương bậc nào"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="foreign_language",
+                intent="direct_value",
+                query_span="TOEFL iBT 60",
+                slots={
+                    "certificate_or_language": "toefl ibt",
+                    "score_or_level": "60",
+                },
+                slot_spans={
+                    "certificate_or_language": "TOEFL iBT",
+                    "score_or_level": "60",
+                },
+            )
+        ],
+        selected_cohort="K51",
+        cohort="K51",
+    )
+    request = decision["lookup_requests"][0]
+    assert request["slots"]["certificate_or_language"] == "TOEFL iBT"
+    assert _errors(decision, query, selected_cohort="K51") == []
+
+
 def test_slot_offsets_are_valid_provenance_within_query_span() -> None:
     query = "k51 ielts 6.0 tuong duong bac may"
     decision = _normalize(

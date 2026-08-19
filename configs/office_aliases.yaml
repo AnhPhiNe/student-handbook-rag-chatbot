@@ -30,6 +30,8 @@ unit_aliases:
   Khoa Khoa học Xã hội: [KHXH, Xã hội]
 
 service_aliases:
+  - match: bảo hiểm y tế
+    aliases: [BHYT, bảo hiểm sức khỏe sinh viên]
   - match: giấy xác nhận sinh viên
     aliases: [giấy xác nhận đang học, giấy đang học, xác nhận sinh viên]
   - match: xác nhận

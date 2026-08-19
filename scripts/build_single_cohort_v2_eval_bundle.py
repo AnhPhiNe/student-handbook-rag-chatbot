@@ -75,7 +75,7 @@ def _case(
     context_mode: str = "standalone",
     query_mode: str = "validated",
     effective_cohort: str | None = "K51",
-    cohort_source: str = "raw_query",
+    cohort_source: str | None = None,
     fault_injection: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     notes = (
@@ -121,6 +121,16 @@ def _case(
         for item in requests
     ) or f"{outcome}:{query.casefold()}"
     explicit_cohorts = set(re.findall(r"\bK(?:48-K49|50|51)\b", query, flags=re.IGNORECASE))
+    if cohort_source is None:
+        cohort_source = (
+            "raw_query"
+            if effective_cohort and explicit_cohorts
+            else "selected_cohort"
+            if effective_cohort and selected_cohort
+            else "grounded_history"
+            if effective_cohort and context_mode == "follow_up" and history
+            else "unresolved"
+        )
     return {
         "id": f"{split}-{category}-{number:02d}",
         "category": category,
@@ -389,7 +399,7 @@ def main() -> None:
         "dataset_version": "single-cohort-gold-candidate-1",
         "frozen_at": datetime.now(UTC).isoformat(),
         "baseline_commit": "15f971d5",
-        "prompt_version": "single-cohort-planner-v2.2",
+        "prompt_version": "single-cohort-planner-v2.3",
         "registry_version": 3,
         "counts": {key: {"dev": value[0], "hidden": value[1]} for key, value in COUNTS.items()},
         "files": {"dev.json": dev_hash, "hidden.json": hidden_hash},

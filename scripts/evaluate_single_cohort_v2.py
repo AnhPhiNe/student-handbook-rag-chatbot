@@ -20,10 +20,14 @@ if str(ROOT) not in sys.path:
 
 from src.evaluation.single_cohort_v2 import (  # noqa: E402
     BUNDLE_DIR,
+    EVALUATION_PROTOCOL_VERSION,
+    assess_plan,
     evaluate_development_gates,
     evaluate_release_gates,
     exact_plan_match,
     failure_taxonomy,
+    semantic_plan_match,
+    semantic_value_equal,
     validate_bundle,
 )
 from src.evaluation.artifact_fingerprint import (  # noqa: E402
@@ -243,7 +247,10 @@ def run_live_planner(
         return [
             {
                 "id": case["id"],
+                "category": case.get("category"),
                 "passed": False,
+                "exact_passed": False,
+                "semantic_passed": False,
                 "failure_type": "provider",
                 "provider_failure": True,
                 "error_type": type(exc).__name__,
@@ -264,12 +271,23 @@ def run_live_planner(
             )
             bound = _validated_planner_decision(case, decision)
             actual = _plan_from_decision(bound)
-            matched = exact_plan_match(case["expected"], actual)
+            assessment = assess_plan(case["expected"], actual)
             rows.append(
                 {
                     "id": case["id"],
-                    "passed": matched,
-                    "failure_type": "pass" if matched else "planner",
+                    "category": case.get("category"),
+                    "passed": assessment.semantic_match,
+                    "exact_passed": assessment.exact_match,
+                    "semantic_passed": assessment.semantic_match,
+                    "mismatch_reasons": list(assessment.mismatch_reasons),
+                    "critical_failure": assessment.critical_failure,
+                    "failure_type": (
+                        "pass"
+                        if assessment.exact_match
+                        else "representation"
+                        if assessment.semantic_match
+                        else "planner"
+                    ),
                     "expected": case["expected"],
                     "actual": actual,
                     "validated_decision": bound,
@@ -280,7 +298,10 @@ def run_live_planner(
             rows.append(
                 {
                     "id": case["id"],
+                    "category": case.get("category"),
                     "passed": False,
+                    "exact_passed": False,
+                    "semantic_passed": False,
                     "failure_type": "provider",
                     "provider_failure": True,
                     "error_type": type(exc).__name__,
@@ -341,30 +362,84 @@ def _source_identity(value: Mapping[str, Any]) -> tuple[str, str, str]:
 def _structured_source_bound(
     result: Mapping[str, Any], request: Mapping[str, Any]
 ) -> bool:
+    nested = _structured_request_result(result, request)
+    if nested is None:
+        return False
+    actual = {_source_identity(record) for record in nested.get("source_records") or []}
+    expected = {
+        _source_identity(record)
+        for record in request.get("expected_source_records") or []
+    }
+    return bool(expected and expected <= actual)
+
+
+def _structured_request_result(
+    result: Mapping[str, Any], request: Mapping[str, Any]
+) -> Mapping[str, Any] | None:
     structured = result.get("structured_result")
     if not isinstance(structured, Mapping):
-        return False
-    candidates = structured.get("sub_results") or [structured]
+        return None
+    sub_results = structured.get("sub_results")
+    candidates = sub_results or [structured]
     for candidate in candidates:
         if not isinstance(candidate, Mapping):
             continue
-        nested = candidate.get("result") if isinstance(candidate.get("result"), Mapping) else candidate
+        nested = (
+            candidate.get("result")
+            if sub_results and isinstance(candidate.get("result"), Mapping)
+            else candidate
+        )
         request_index = int(str(request["request_id"]).removeprefix("r")) - 1
-        if nested.get("request_id") not in {None, request["request_id"]}:
+        candidate_request_id = candidate.get("request_id") or nested.get("request_id")
+        candidate_request_index = candidate.get("request_index")
+        if candidate_request_index is None:
+            candidate_request_index = nested.get("request_index")
+        if candidate_request_id not in {None, request["request_id"]}:
             continue
-        if nested.get("request_index") not in {None, request_index}:
+        if candidate_request_index not in {None, request_index}:
             continue
-        actual = {
-            _source_identity(record)
-            for record in nested.get("source_records") or candidate.get("source_records") or []
-        }
-        expected = {
-            _source_identity(record)
-            for record in request.get("expected_source_records") or []
-        }
-        if expected and expected <= actual:
-            return True
-    return False
+        if not nested.get("source_records") and candidate.get("source_records"):
+            return {**nested, "source_records": candidate.get("source_records")}
+        return nested
+    return None
+
+
+def _semantic_subset(expected: Any, actual: Any) -> bool:
+    if isinstance(expected, Mapping):
+        if not isinstance(actual, Mapping):
+            return False
+        return all(
+            key in actual and _semantic_subset(value, actual[key])
+            for key, value in expected.items()
+        )
+    if isinstance(expected, list):
+        if not isinstance(actual, list) or len(expected) > len(actual):
+            return False
+        unmatched = list(actual)
+        for expected_item in expected:
+            match_index = next(
+                (
+                    index
+                    for index, actual_item in enumerate(unmatched)
+                    if _semantic_subset(expected_item, actual_item)
+                ),
+                None,
+            )
+            if match_index is None:
+                return False
+            unmatched.pop(match_index)
+        return True
+    return semantic_value_equal(expected, actual)
+
+
+def _structured_result_matches(
+    result: Mapping[str, Any], request: Mapping[str, Any]
+) -> bool:
+    expected = request.get("expected_result")
+    if expected is None:
+        return request.get("expected_status") != "ok"
+    actual = _structured_request_result(result, request)
+    return actual is not None and _semantic_subset(expected, actual)
 
 
 def _citation_isolated(result: Mapping[str, Any], request_ids: set[str]) -> bool:
@@ -431,7 +506,9 @@ def run_executor_retrieval(
             rows.append(
                 {
                     "id": case["id"],
+                    "category": case.get("category"),
                     "skipped": True,
+                    "semantic_executable": None,
                     "failure_type": "deterministic_fault_suite",
                     "reason": "Fault injection is executed by deterministic adapter tests.",
                 }
@@ -466,7 +543,11 @@ def run_executor_retrieval(
             rows.append(
                 {
                     "id": case["id"],
+                    "category": case.get("category"),
                     "skipped": True,
+                    "plan_correct": True,
+                    "status_match": True,
+                    "semantic_executable": True,
                     "failure_type": "non_execute_no_retrieval",
                     "provider_failure": False,
                 }
@@ -488,7 +569,7 @@ def run_executor_retrieval(
             )
             if result_sink is not None:
                 result_sink[case["id"]] = copy.deepcopy(result)
-            plan_correct = exact_plan_match(
+            plan_correct = semantic_plan_match(
                 expected, _plan_from_decision(result.get("router_decision") or {})
             )
             expected_requests = expected.get("atomic_requests") or []
@@ -509,35 +590,54 @@ def run_executor_retrieval(
             structured_ok = [request for request in expected_requests if request["request_kind"] == "structured" and request["expected_status"] == "ok"]
             rag_ok = [request for request in expected_requests if request["request_kind"] == "rag" and request["expected_status"] == "ok"]
             citations = result.get("citations") or []
+            rag_hits = [_rag_hit_at_5(result, request) for request in rag_ok]
+            structured_bindings = [
+                _structured_source_bound(result, request) for request in structured_ok
+            ]
+            structured_results = [
+                _structured_result_matches(result, request) for request in structured_ok
+            ]
+            citation_bindings = [
+                _citation_bound(citations, request) for request in structured_ok + rag_ok
+            ]
+            citation_isolated = _citation_isolated(result, request_ids)
+            structured_fallbacks = sum(
+                bool(_request_items(result, request["request_id"]))
+                for request in structured_requests
+            )
+            semantic_executable = bool(
+                plan_correct
+                and status_match
+                and all(rag_hits)
+                and all(structured_bindings)
+                and all(structured_results)
+                and all(citation_bindings)
+                and citation_isolated
+                and structured_fallbacks == 0
+            )
             rows.append(
                 {
                     "id": case["id"],
+                    "category": case.get("category"),
                     "plan_correct": plan_correct,
                     "status_match": status_match,
-                    "rag_hits": [
-                        _rag_hit_at_5(result, request) for request in rag_ok
-                    ] if plan_correct else [],
-                    "structured_bindings": [
-                        _structured_source_bound(result, request)
-                        for request in structured_ok
-                    ],
-                    "citation_bindings": [
-                        _citation_bound(citations, request)
-                        for request in structured_ok + rag_ok
-                    ],
-                    "citation_isolated": _citation_isolated(result, request_ids),
-                    "structured_to_rag_fallbacks": sum(
-                        bool(_request_items(result, request["request_id"]))
-                        for request in structured_requests
-                    ),
+                    "rag_hits": rag_hits if plan_correct else [],
+                    "structured_bindings": structured_bindings,
+                    "structured_result_matches": structured_results,
+                    "citation_bindings": citation_bindings,
+                    "citation_isolated": citation_isolated,
+                    "structured_to_rag_fallbacks": structured_fallbacks,
+                    "semantic_executable": semantic_executable,
                     "provider_failure": False,
-                    "failure_type": "pass" if status_match else "executor",
+                    "failure_type": "pass" if semantic_executable else "executor",
                 }
             )
         except Exception as exc:
             rows.append(
                 {
                     "id": case["id"],
+                    "category": case.get("category"),
+                    "semantic_executable": False,
                     "provider_failure": True,
                     "failure_type": "provider",
                     "error_type": type(exc).__name__,
@@ -616,7 +716,11 @@ def run_answers(
                 for request in successful_requests
             )
             request_ids = {request["request_id"] for request in expected_requests}
-            plan_bound = exact_plan_match(
+            plan_bound = semantic_plan_match(
+                expected,
+                _plan_from_decision(result.get("router_decision") or {}),
+            )
+            exact_plan_bound = exact_plan_match(
                 expected,
                 _plan_from_decision(result.get("router_decision") or {}),
             )
@@ -635,6 +739,8 @@ def run_answers(
                     "effective_query": result.get("effective_query"),
                     "request_results": request_results,
                     "partial_status": (result.get("debug") or {}).get("partial_status"),
+                    "exact_plan_bound": exact_plan_bound,
+                    "semantic_plan_bound": plan_bound,
                     "answer_contract_bound": bool(
                         plan_bound
                         and statuses_bound
@@ -678,7 +784,14 @@ def _metrics(
     metrics: dict[str, Any] = {"contract_invariants": 1.0 if validation_passed else 0.0}
     for suite, rows in planner_rows.items():
         if rows:
-            metrics[f"{suite}_exact_plan"] = _mean(float(row.get("passed", False)) for row in rows)
+            metrics[f"{suite}_exact_plan"] = _mean(
+                float(row.get("exact_passed", row.get("passed", False)))
+                for row in rows
+            )
+            metrics[f"{suite}_semantic_plan"] = _mean(
+                float(row.get("semantic_passed", row.get("passed", False)))
+                for row in rows
+            )
     if execution_rows:
         evaluated = [row for row in execution_rows if not row.get("skipped")]
         rag_hits = [hit for row in evaluated if row.get("plan_correct") for hit in row.get("rag_hits") or []]
@@ -693,6 +806,48 @@ def _metrics(
                 "citation_binding": _mean(float(value) for value in citation_bindings),
             }
         )
+        execution_by_id = {str(row.get("id")): row for row in execution_rows}
+        for suite, rows in planner_rows.items():
+            semantic_ids = {
+                str(row.get("id"))
+                for row in rows
+                if row.get("semantic_passed", row.get("passed", False))
+            }
+            if not semantic_ids or not semantic_ids <= set(execution_by_id):
+                continue
+            case_scores: list[float] = []
+            category_scores: dict[str, list[float]] = {}
+            for row in rows:
+                semantic = bool(
+                    row.get("semantic_passed", row.get("passed", False))
+                )
+                execution = execution_by_id.get(str(row.get("id"))) if semantic else None
+                executable = (
+                    conformance_passed is True
+                    if execution and execution.get("semantic_executable") is None
+                    else bool(execution and execution.get("semantic_executable"))
+                )
+                score = float(semantic and executable)
+                case_scores.append(score)
+                category = str(row.get("category") or "unknown")
+                category_scores.setdefault(category, []).append(score)
+            metrics[f"{suite}_semantic_executable"] = _mean(case_scores)
+            per_category = {
+                category: _mean(values)
+                for category, values in category_scores.items()
+            }
+            metrics[f"{suite}_semantic_categories"] = per_category
+            metrics[f"{suite}_semantic_category_floor"] = min(
+                per_category.values(), default=0.0
+            )
+            safety_values = [
+                per_category[name]
+                for name in ("cohort_resolution", "failure_isolation")
+                if name in per_category
+            ]
+            metrics[f"{suite}_safety_category_floor"] = min(
+                safety_values, default=0.0
+            )
     if judgments:
         valid = [row for row in judgments if not row.get("provider_failure")]
         metrics.update(
@@ -1029,6 +1184,7 @@ def main() -> None:
         "timestamp": datetime.now(UTC).isoformat(),
         "commit": _commit(),
         "schema_version": manifest.get("schema_version"),
+        "evaluation_protocol_version": EVALUATION_PROTOCOL_VERSION,
         "models": {"planner": PLANNER_MODEL, "answer": ANSWER_MODEL, "judge": JUDGE_MODEL},
         "judge_prompt_version": JUDGE_PROMPT_VERSION,
         "prompt_version": manifest.get("prompt_version"),
@@ -1036,7 +1192,21 @@ def main() -> None:
         "dataset_hashes": validation.hashes,
         "artifact_fingerprint": _artifact_fingerprint(),
         "contract": {"passed": validation.valid, "errors": validation.errors, "coverage": validation.coverage},
-        "planner": {suite: {"passed": sum(row.get("passed", False) for row in rows), "total": len(rows), "failure_taxonomy": failure_taxonomy(rows), "rows": rows} for suite, rows in planner_rows.items()},
+        "planner": {
+            suite: {
+                "passed": sum(row.get("passed", False) for row in rows),
+                "exact_passed": sum(
+                    row.get("exact_passed", row.get("passed", False)) for row in rows
+                ),
+                "semantic_passed": sum(
+                    row.get("semantic_passed", row.get("passed", False)) for row in rows
+                ),
+                "total": len(rows),
+                "failure_taxonomy": failure_taxonomy(rows),
+                "rows": rows,
+            }
+            for suite, rows in planner_rows.items()
+        },
         "executor_retrieval": {"failure_taxonomy": failure_taxonomy(execution_rows), "rows": execution_rows},
         "answers": answer_rows,
         "answers_report_hash": answers_report_hash,

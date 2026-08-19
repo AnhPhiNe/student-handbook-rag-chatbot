@@ -58,13 +58,13 @@ def deduplicate_citations(
     if not citations:
         return []
 
-    seen: set[tuple[str, tuple[int, ...]]] = set()
+    seen: set[tuple[tuple[str, str] | None, str, tuple[int, ...]]] = set()
     deduped: list[dict[str, Any]] = []
 
     for citation in citations:
         title = _citation_title(citation).strip().lower()
         pages = tuple(parse_source_pages(citation.get("source_pages")))
-        key = (title, pages)
+        key = (_request_scope(citation), title, pages)
         if key in seen:
             continue
         seen.add(key)
@@ -84,6 +84,13 @@ def select_relevant_citations(
         return []
 
     retrieval_result = retrieval_result or {}
+
+    # Multi-request evidence is request-scoped. A top-level structured result must
+    # not suppress RAG evidence (or another structured source) owned by a sibling
+    # request. Rank all candidates, then keep at least one citation per scope.
+    if len(_request_scopes(deduped)) > 1:
+        ranked = _rank_citations(deduped, intent, retrieval_result)
+        return _select_with_request_coverage(ranked, max_sources)
 
     if _has_result(retrieval_result.get("tool_result")):
         return []
@@ -116,9 +123,18 @@ def select_relevant_citations(
     if intent == "mixed_query":
         return _select_distinct_chunk_types(deduped, max_sources=min(max_sources, 2))
 
+    ranked = _rank_citations(deduped, intent, retrieval_result)
+    return ranked[:max_sources]
+
+
+def _rank_citations(
+    citations: list[dict[str, Any]],
+    intent: str | None,
+    retrieval_result: dict[str, Any],
+) -> list[dict[str, Any]]:
     priorities = INTENT_CHUNK_PRIORITY.get(intent or "", [])
     ranked = sorted(
-        enumerate(deduped),
+        enumerate(citations),
         key=lambda item: (
             _priority_index(item[1], priorities),
             -_metadata_match_score(item[1], retrieval_result),
@@ -126,7 +142,67 @@ def select_relevant_citations(
             item[0],
         ),
     )
-    return [citation for _, citation in ranked[:max_sources]]
+    return [citation for _, citation in ranked]
+
+
+def _select_with_request_coverage(
+    ranked: list[dict[str, Any]],
+    max_sources: int,
+) -> list[dict[str, Any]]:
+    """Select citations without dropping evidence from a sibling request.
+
+    ``max_sources`` remains the normal display budget. For a multi-request plan,
+    request-scope completeness takes precedence and can raise the effective
+    budget up to the number of represented requests (at most the planner limit).
+    """
+    scopes = _request_scopes(ranked)
+    if not scopes:
+        return ranked[:max_sources]
+
+    effective_limit = max(max_sources, len(scopes))
+    selected: list[dict[str, Any]] = []
+    selected_ids: set[int] = set()
+    covered: set[tuple[str, str]] = set()
+
+    for citation in ranked:
+        scope = _request_scope(citation)
+        if scope is None or scope in covered:
+            continue
+        selected.append(citation)
+        selected_ids.add(id(citation))
+        covered.add(scope)
+
+    for citation in ranked:
+        if len(selected) >= effective_limit:
+            break
+        if id(citation) in selected_ids:
+            continue
+        selected.append(citation)
+        selected_ids.add(id(citation))
+
+    return selected
+
+
+def _request_scopes(
+    citations: list[dict[str, Any]],
+) -> set[tuple[str, str]]:
+    return {
+        scope
+        for citation in citations
+        if (scope := _request_scope(citation)) is not None
+    }
+
+
+def _request_scope(citation: dict[str, Any]) -> tuple[str, str] | None:
+    request_id = citation.get("request_id")
+    if request_id is not None and str(request_id).strip():
+        return ("request_id", str(request_id).strip())
+
+    request_index = citation.get("request_index")
+    if request_index is not None:
+        return ("request_index", str(request_index))
+
+    return None
 
 
 def format_sources_text(citations: list[dict[str, Any]] | None) -> str:

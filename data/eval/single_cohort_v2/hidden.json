@@ -18256,7 +18256,7 @@
       "context_mode": "standalone",
       "query_mode": "validated",
       "effective_cohort": "K50",
-      "effective_cohort_source": "raw_query",
+      "effective_cohort_source": "selected_cohort",
       "atomic_requests": [
         {
           "request_id": "r1",
@@ -18448,7 +18448,7 @@
       "context_mode": "standalone",
       "query_mode": "validated",
       "effective_cohort": "K50",
-      "effective_cohort_source": "raw_query",
+      "effective_cohort_source": "selected_cohort",
       "atomic_requests": [
         {
           "request_id": "r1",
@@ -18666,7 +18666,7 @@
       "context_mode": "standalone",
       "query_mode": "validated",
       "effective_cohort": "K50",
-      "effective_cohort_source": "raw_query",
+      "effective_cohort_source": "selected_cohort",
       "atomic_requests": [
         {
           "request_id": "r1",
@@ -18800,7 +18800,7 @@
       "context_mode": "standalone",
       "query_mode": "validated",
       "effective_cohort": "K50",
-      "effective_cohort_source": "raw_query",
+      "effective_cohort_source": "selected_cohort",
       "atomic_requests": [
         {
           "request_id": "r1",
@@ -18917,7 +18917,7 @@
       "context_mode": "standalone",
       "query_mode": "validated",
       "effective_cohort": "K50",
-      "effective_cohort_source": "raw_query",
+      "effective_cohort_source": "selected_cohort",
       "atomic_requests": [
         {
           "request_id": "r1",

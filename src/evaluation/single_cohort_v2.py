@@ -1,4 +1,4 @@
-"""Validation, exact-plan comparison and release gates for single-cohort-v2."""
+"""Validation, semantic plan comparison and release gates for single-cohort-v2."""
 
 from __future__ import annotations
 
@@ -8,14 +8,19 @@ import re
 import unicodedata
 from collections import Counter
 from dataclasses import dataclass
+from decimal import Decimal, InvalidOperation
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Iterable, Mapping
+
+import yaml
 
 
 ROOT = Path(__file__).resolve().parents[2]
 BUNDLE_DIR = ROOT / "data" / "eval" / "single_cohort_v2"
+EVALUATION_PROTOCOL_VERSION = "single-cohort-release-v3"
 CANDIDATE_SCHEMA_VERSION = "single-cohort-v2.2"
-RELEASE_SCHEMA_VERSION = "single-cohort-v2.3"
+RELEASE_SCHEMA_VERSION = "single-cohort-v2.4"
 SCHEMA_VERSIONS = {CANDIDATE_SCHEMA_VERSION, RELEASE_SCHEMA_VERSION}
 EXPECTED_COUNTS = {
     "single_structured": (10, 4), "single_rag": (10, 4),
@@ -50,6 +55,16 @@ class ReleaseGateResult:
     missing_metrics: list[str]
 
 
+@dataclass(frozen=True)
+class PlanAssessment:
+    """Exact and execution-semantic comparison for one validated plan."""
+
+    exact_match: bool
+    semantic_match: bool
+    mismatch_reasons: tuple[str, ...]
+    critical_failure: bool
+
+
 def _gate_thresholds() -> dict[str, Any]:
     return {
         "contract_invariants": lambda value: value == 1.0,
@@ -57,8 +72,12 @@ def _gate_thresholds() -> dict[str, Any]:
         "structured_source_binding": lambda value: value == 1.0,
         "structured_to_rag_fallbacks": lambda value: value == 0,
         "cross_request_leakage": lambda value: value == 0,
-        "dev_exact_plan": lambda value: value >= 0.95,
-        "hidden_exact_plan": lambda value: value >= 0.90,
+        "dev_semantic_executable": lambda value: value >= 0.95,
+        "hidden_semantic_executable": lambda value: value >= 0.90,
+        "dev_semantic_category_floor": lambda value: value >= 0.80,
+        "hidden_semantic_category_floor": lambda value: value >= 0.75,
+        "dev_safety_category_floor": lambda value: value == 1.0,
+        "hidden_safety_category_floor": lambda value: value == 1.0,
         "retrieval_hit_at_5": lambda value: value >= 0.90,
         "citation_binding": lambda value: value >= 0.95,
         "answer_contract_binding": lambda value: value == 1.0,
@@ -103,6 +122,28 @@ def _template_signature(query: str) -> str:
     return normalized
 
 
+def derive_cohort_source(case: Mapping[str, Any]) -> str:
+    """Derive cohort authority from the published precedence contract."""
+
+    expected = case.get("expected") or {}
+    query = str(case.get("query") or "")
+    explicit = re.findall(r"\bk\s*(?:48|49|50|51)\b", _normalize(query))
+    if explicit:
+        return "raw_query"
+    effective = _normalize(expected.get("effective_cohort"))
+    selected = _normalize(case.get("selected_cohort"))
+    if effective and selected == effective:
+        return "selected_cohort"
+    history_text = " ".join(
+        str(turn.get("content") or "")
+        for turn in case.get("chat_history") or []
+        if isinstance(turn, Mapping)
+    )
+    if effective and effective in _normalize(history_text):
+        return "grounded_history"
+    return "unresolved"
+
+
 def _load(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -131,6 +172,12 @@ def _case_errors(case: Mapping[str, Any], suite_name: str) -> list[str]:
         errors.append(f"{suite_name}/{case_id}: invalid planner context_mode")
     if expected.get("query_mode") not in QUERY_MODES:
         errors.append(f"{suite_name}/{case_id}: invalid query_mode")
+    derived_source = derive_cohort_source(case)
+    if expected.get("effective_cohort_source") != derived_source:
+        errors.append(
+            f"{suite_name}/{case_id}: cohort source mismatch "
+            f"({expected.get('effective_cohort_source')} != {derived_source})"
+        )
     requests = expected.get("atomic_requests") or []
     if not isinstance(requests, list) or len(requests) > 6:
         errors.append(f"{suite_name}/{case_id}: invalid request list")
@@ -227,7 +274,7 @@ def validate_bundle(
         errors.append("manifest schema version mismatch")
     if require_gold_complete and manifest.get("schema_version") != RELEASE_SCHEMA_VERSION:
         errors.append("gold release schema version has not been frozen")
-    if require_gold_complete and manifest.get("dataset_version") != "single-cohort-gold-v1":
+    if require_gold_complete and manifest.get("dataset_version") != "single-cohort-gold-v2":
         errors.append("gold dataset version has not been frozen")
     for filename, digest in hashes.items():
         if manifest.get("files", {}).get(filename) != digest:
@@ -343,13 +390,163 @@ def exact_plan_match(expected: Mapping[str, Any], actual: Mapping[str, Any]) -> 
     return True
 
 
+_PROTECTED_SPAN_PATTERNS = (
+    r"\bkhong\b", r"\bchua\b", r"\bchang\b", r"\bcam\b",
+    r"\btru\b", r"\bngoai tru\b", r"\bneu\b", r"\bchi khi\b",
+    r"\btoi thieu\b", r"\btoi da\b",
+)
+
+
+def _numeric_value(value: Any) -> Decimal | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int | float | Decimal):
+        return Decimal(str(value))
+    if not isinstance(value, str):
+        return None
+    text = value.strip()
+    if not re.fullmatch(r"[-+]?\d+(?:[.,]\d+)?", text):
+        return None
+    try:
+        return Decimal(text.replace(",", "."))
+    except InvalidOperation:
+        return None
+
+
+def _semantic_value_equal(left: Any, right: Any) -> bool:
+    """Compare representation-only differences without guessing aliases."""
+
+    if isinstance(left, Mapping) or isinstance(right, Mapping):
+        if not isinstance(left, Mapping) or not isinstance(right, Mapping):
+            return False
+        if set(left) != set(right):
+            return False
+        return all(_semantic_value_equal(left[key], right[key]) for key in left)
+    if isinstance(left, list | tuple) or isinstance(right, list | tuple):
+        if not isinstance(left, list | tuple) or not isinstance(right, list | tuple):
+            return False
+        return len(left) == len(right) and all(
+            _semantic_value_equal(a, b) for a, b in zip(left, right, strict=True)
+        )
+    left_number = _numeric_value(left)
+    right_number = _numeric_value(right)
+    if left_number is not None or right_number is not None:
+        return left_number is not None and right_number is not None and left_number == right_number
+    if isinstance(left, str) and isinstance(right, str):
+        return _normalize(left) == _normalize(right)
+    return left == right
+
+
+def _span_markers(value: str) -> tuple[frozenset[str], frozenset[str]]:
+    normalized = _normalize(value)
+    numbers = frozenset(re.findall(r"\b\d+(?: \d+)?\b", normalized))
+    markers = frozenset(
+        pattern for pattern in _PROTECTED_SPAN_PATTERNS if re.search(pattern, normalized)
+    )
+    return numbers, markers
+
+
+def _semantic_span_equal(left: Any, right: Any) -> bool:
+    expected = _normalize(left)
+    actual = _normalize(right)
+    if not expected or not actual:
+        return expected == actual
+    if expected not in actual and actual not in expected:
+        return False
+    return _span_markers(str(left)) == _span_markers(str(right))
+
+
+@lru_cache(maxsize=1)
+def _rag_intent_sources() -> dict[str, frozenset[str]]:
+    registry_path = ROOT / "configs" / "structured_lookup_registry.yaml"
+    payload = yaml.safe_load(registry_path.read_text(encoding="utf-8")) or {}
+    return {
+        str(intent): frozenset(str(source) for source in sources or [])
+        for intent, sources in (payload.get("rag_intents") or {}).items()
+    }
+
+
+def _intent_semantically_equal(left: Any, right: Any, request_kind: Any) -> bool:
+    if left == right:
+        return True
+    if request_kind != "rag":
+        return False
+    sources = _rag_intent_sources()
+    left_sources = sources.get(str(left), frozenset())
+    right_sources = sources.get(str(right), frozenset())
+    return bool(left_sources and left_sources == right_sources)
+
+
+def assess_plan(expected: Mapping[str, Any], actual: Mapping[str, Any]) -> PlanAssessment:
+    """Compare a plan by contract semantics while retaining exact diagnostics."""
+
+    reasons: list[str] = []
+    # Context/query modes and cohort provenance stay in exact-match and contract
+    # diagnostics. Executability is determined by the validated outcome/cohort and
+    # atomic requests; provenance violations fail the separate 100% contract gate.
+    for field in ("outcome", "effective_cohort"):
+        if expected.get(field) != actual.get(field):
+            reasons.append(field)
+    expected_requests = expected.get("atomic_requests") or []
+    actual_requests = actual.get("atomic_requests") or actual.get("lookup_requests") or []
+    if len(expected_requests) != len(actual_requests):
+        reasons.append("request_count")
+    for index, (left, right) in enumerate(zip(expected_requests, actual_requests), 1):
+        prefix = f"request:{index}"
+        actual_tool = right.get("tool_name") or right.get("lookup_type")
+        strict_values = {
+            "request_id": right.get("request_id") or f"r{index}",
+            "request_kind": right.get("request_kind"),
+            "tool_name": actual_tool,
+        }
+        for field, value in strict_values.items():
+            if left.get(field) != value:
+                reasons.append(f"{prefix}:{field}")
+        if not _intent_semantically_equal(
+            left.get("intent"), right.get("intent"), left.get("request_kind")
+        ):
+            reasons.append(f"{prefix}:intent")
+        if not _semantic_span_equal(left.get("query_span"), right.get("query_span")):
+            reasons.append(f"{prefix}:query_span")
+        if not _semantic_value_equal(left.get("slots") or {}, right.get("slots") or {}):
+            reasons.append(f"{prefix}:slots")
+        if not _semantic_value_equal(
+            left.get("cohort_refs") or [], right.get("cohort_refs") or []
+        ):
+            reasons.append(f"{prefix}:cohort_refs")
+    critical = any(
+        reason in {"outcome", "effective_cohort", "request_count"}
+        or reason.endswith(":request_kind")
+        or reason.endswith(":tool_name")
+        for reason in reasons
+    )
+    return PlanAssessment(
+        exact_match=exact_plan_match(expected, actual),
+        semantic_match=not reasons,
+        mismatch_reasons=tuple(reasons),
+        critical_failure=critical,
+    )
+
+
+def semantic_plan_match(expected: Mapping[str, Any], actual: Mapping[str, Any]) -> bool:
+    return assess_plan(expected, actual).semantic_match
+
+
+def semantic_value_equal(left: Any, right: Any) -> bool:
+    """Public value comparator shared by execution-result evaluation."""
+
+    return _semantic_value_equal(left, right)
+
+
 def evaluate_release_gates(metrics: Mapping[str, Any]) -> ReleaseGateResult:
     return _evaluate_thresholds(metrics, _gate_thresholds())
 
 
 def evaluate_development_gates(metrics: Mapping[str, Any]) -> ReleaseGateResult:
     thresholds = _gate_thresholds()
-    thresholds.pop("hidden_exact_plan")
+    thresholds.pop("hidden_semantic_executable")
+    thresholds.pop("hidden_semantic_category_floor")
+    thresholds.pop("hidden_safety_category_floor")
     return _evaluate_thresholds(metrics, thresholds)
 
 

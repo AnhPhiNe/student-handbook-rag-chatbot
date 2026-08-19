@@ -39,9 +39,9 @@ LEGACY_DIR = ROOT / "data" / "eval" / "final_holdout"
 BM25_INDEX = ROOT / "data" / "processed" / "retrieval" / "bm25_index.json"
 ANNOTATION_STATES = {"auto_verified", "review_required", "human_approved"}
 GOLD_SCHEMA_VERSION = "single-cohort-v2.2"
-FROZEN_GOLD_SCHEMA_VERSION = "single-cohort-v2.3"
+FROZEN_GOLD_SCHEMA_VERSION = "single-cohort-v2.4"
 CANDIDATE_DATASET_VERSION = "single-cohort-gold-candidate-1"
-FROZEN_DATASET_VERSION = "single-cohort-gold-v1"
+FROZEN_DATASET_VERSION = "single-cohort-gold-v2"
 
 _STOPWORDS = {
     "cho", "cua", "dieu", "dinh", "duoc", "gi", "hay", "hop", "khi", "kien",

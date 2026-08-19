@@ -31,6 +31,7 @@ frontend/.vite/
 /data/cache/
 /data/vectorstore/
 /data/eval/reports/
+/data/eval/single_cohort_v2/latest_evaluation_report.json
 /data/eval/v7_new/
 /data/eval/v9_final_holdout/
 /crawl_data/

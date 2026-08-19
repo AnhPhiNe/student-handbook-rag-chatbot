@@ -14,7 +14,9 @@ from typing import Any, Iterable, Mapping
 
 ROOT = Path(__file__).resolve().parents[2]
 BUNDLE_DIR = ROOT / "data" / "eval" / "single_cohort_v2"
-SCHEMA_VERSION = "single-cohort-v2.1"
+CANDIDATE_SCHEMA_VERSION = "single-cohort-v2.2"
+RELEASE_SCHEMA_VERSION = "single-cohort-v2.3"
+SCHEMA_VERSIONS = {CANDIDATE_SCHEMA_VERSION, RELEASE_SCHEMA_VERSION}
 EXPECTED_COUNTS = {
     "single_structured": (10, 4), "single_rag": (10, 4),
     "multi_entity": (15, 6), "two_structured": (18, 7),
@@ -46,6 +48,42 @@ class ReleaseGateResult:
     passed: bool
     checks: dict[str, bool]
     missing_metrics: list[str]
+
+
+def _gate_thresholds() -> dict[str, Any]:
+    return {
+        "contract_invariants": lambda value: value == 1.0,
+        "multi_cohort_rejection": lambda value: value == 1.0,
+        "structured_source_binding": lambda value: value == 1.0,
+        "structured_to_rag_fallbacks": lambda value: value == 0,
+        "cross_request_leakage": lambda value: value == 0,
+        "dev_exact_plan": lambda value: value >= 0.95,
+        "hidden_exact_plan": lambda value: value >= 0.90,
+        "retrieval_hit_at_5": lambda value: value >= 0.90,
+        "citation_binding": lambda value: value >= 0.95,
+        "answer_contract_binding": lambda value: value == 1.0,
+        "faithfulness": lambda value: value >= 0.90,
+        "answer_correctness": lambda value: value >= 0.85,
+        "hallucination_rate": lambda value: value <= 0.05,
+        "critical_false_pass": lambda value: value == 0,
+        "provider_failures": lambda value: value == 0,
+        "quality_checks_passed": lambda value: value is True,
+        "parity_passed": lambda value: value is True,
+        "conformance_passed": lambda value: value is True,
+        "legacy_compatibility_passed": lambda value: value is True,
+    }
+
+
+def _evaluate_thresholds(
+    metrics: Mapping[str, Any], thresholds: Mapping[str, Any]
+) -> ReleaseGateResult:
+    missing = [name for name in thresholds if name not in metrics]
+    checks = {
+        name: bool(predicate(metrics[name]))
+        for name, predicate in thresholds.items()
+        if name in metrics
+    }
+    return ReleaseGateResult(not missing and all(checks.values()), checks, missing)
 
 
 def _sha(path: Path) -> str:
@@ -82,6 +120,11 @@ def _case_errors(case: Mapping[str, Any], suite_name: str) -> list[str]:
     expected = case.get("expected")
     if not isinstance(expected, Mapping):
         return [f"{suite_name}/{case_id}: expected must be object"]
+    annotation = case.get("annotation")
+    if not isinstance(annotation, Mapping) or annotation.get("state") not in {
+        "auto_verified", "review_required", "human_approved"
+    }:
+        errors.append(f"{suite_name}/{case_id}: invalid case annotation state")
     if expected.get("outcome") not in {"execute", "clarify", "out_of_domain"}:
         errors.append(f"{suite_name}/{case_id}: invalid outcome")
     if expected.get("context_mode") not in PLANNER_CONTEXT_MODES:
@@ -112,15 +155,66 @@ def _case_errors(case: Mapping[str, Any], suite_name: str) -> list[str]:
             errors.append(f"{suite_name}/{case_id}: RAG request declares tool_name")
         if request.get("expected_status") not in REQUEST_STATUSES:
             errors.append(f"{suite_name}/{case_id}: invalid expected status")
+        audit = request.get("gold_audit")
+        audit_state = audit.get("annotation_state") if isinstance(audit, Mapping) else None
+        if audit_state not in {"auto_verified", "review_required", "human_approved"}:
+            errors.append(f"{suite_name}/{case_id}: invalid gold audit r{index}")
         span = str(request.get("query_span") or "")
         if not span or (_normalize(span) not in _normalize(query) and _normalize(span) not in _normalize(history_text)):
             errors.append(f"{suite_name}/{case_id}: ungrounded query_span r{index}")
         if not request.get("expected_source_contract") or request.get("citation_scope") != f"r{index}":
             errors.append(f"{suite_name}/{case_id}: missing request source binding")
+        if (
+            audit_state in {"auto_verified", "human_approved"}
+            and not case.get("fault_injection")
+        ):
+            if kind == "structured" and request.get("expected_status") == "ok":
+                records = request.get("expected_source_records")
+                if request.get("expected_result") is None:
+                    errors.append(f"{suite_name}/{case_id}: missing structured gold result r{index}")
+                if not isinstance(records, list) or not records:
+                    errors.append(f"{suite_name}/{case_id}: missing structured gold source r{index}")
+                else:
+                    required_source_fields = {
+                        "record_id", "document_id", "parent_section_id",
+                        "source_pages", "cohort", "source_type",
+                    }
+                    if any(required_source_fields - set(record) for record in records):
+                        errors.append(f"{suite_name}/{case_id}: incomplete structured source r{index}")
+                    if any(not record.get("record_id") or not record.get("document_id") for record in records):
+                        errors.append(f"{suite_name}/{case_id}: unbound structured source identity r{index}")
+                    if request.get("expected_source_contract") == "regulation_table" and any(
+                        not record.get("parent_section_id") for record in records
+                    ):
+                        errors.append(f"{suite_name}/{case_id}: missing regulation parent binding r{index}")
+            if kind == "rag" and request.get("expected_status") == "ok":
+                evidence = request.get("expected_evidence")
+                required_evidence = {
+                    "document_ids", "parent_section_ids", "chunk_ids",
+                    "source_pages", "relevance_grade", "source_bindings",
+                }
+                if not isinstance(evidence, Mapping) or required_evidence - set(evidence):
+                    errors.append(f"{suite_name}/{case_id}: incomplete RAG gold evidence r{index}")
+                elif (
+                    not evidence.get("document_ids")
+                    or not evidence.get("parent_section_ids")
+                    or not evidence.get("chunk_ids")
+                    or not evidence.get("source_bindings")
+                ):
+                    errors.append(f"{suite_name}/{case_id}: empty RAG gold evidence r{index}")
+                elif any(
+                    not binding.get("document_id")
+                    or not binding.get("parent_section_id")
+                    or not binding.get("chunk_ids")
+                    for binding in evidence.get("source_bindings") or []
+                ):
+                    errors.append(f"{suite_name}/{case_id}: invalid RAG source binding r{index}")
     return errors
 
 
-def validate_bundle(bundle_dir: Path = BUNDLE_DIR) -> BundleValidation:
+def validate_bundle(
+    bundle_dir: Path = BUNDLE_DIR, *, require_gold_complete: bool = False
+) -> BundleValidation:
     errors: list[str] = []
     paths = {name: bundle_dir / name for name in ("dev.json", "hidden.json", "manifest.json")}
     if not all(path.exists() for path in paths.values()):
@@ -129,8 +223,12 @@ def validate_bundle(bundle_dir: Path = BUNDLE_DIR) -> BundleValidation:
     manifest = _load(paths["manifest.json"])
     suites = {"dev": _load(paths["dev.json"]), "hidden": _load(paths["hidden.json"])}
     hashes = {f"{name}.json": _sha(paths[f"{name}.json"]) for name in suites}
-    if manifest.get("schema_version") != SCHEMA_VERSION:
+    if manifest.get("schema_version") not in SCHEMA_VERSIONS:
         errors.append("manifest schema version mismatch")
+    if require_gold_complete and manifest.get("schema_version") != RELEASE_SCHEMA_VERSION:
+        errors.append("gold release schema version has not been frozen")
+    if require_gold_complete and manifest.get("dataset_version") != "single-cohort-gold-v1":
+        errors.append("gold dataset version has not been frozen")
     for filename, digest in hashes.items():
         if manifest.get("files", {}).get(filename) != digest:
             errors.append(f"frozen hash mismatch: {filename}")
@@ -177,7 +275,31 @@ def validate_bundle(bundle_dir: Path = BUNDLE_DIR) -> BundleValidation:
         "same_tool_pair": same_tool,
         "different_tool_pair": different_tool,
         "tampering_cases": sum(bool(case.get("fault_injection", {}).get("type") == "plan_tampering") for case in all_cases if isinstance(case.get("fault_injection"), Mapping)),
+        "case_annotation_states": dict(Counter(
+            str((case.get("annotation") or {}).get("state") or "missing")
+            for case in all_cases
+        )),
+        "request_annotation_states": dict(Counter(
+            str((request.get("gold_audit") or {}).get("annotation_state") or "missing")
+            for request in requests
+        )),
     }
+    coverage["hidden_human_review_complete"] = bool(
+        manifest.get("hidden_frozen")
+        and manifest.get("hidden_human_review_complete")
+        and all(
+            (case.get("annotation") or {}).get("state") == "human_approved"
+            for case in hidden
+        )
+    )
+    coverage["gold_ready"] = bool(
+        all(
+            (case.get("annotation") or {}).get("state")
+            in {"auto_verified", "human_approved"}
+            for case in all_cases
+        )
+        and coverage["hidden_human_review_complete"]
+    )
     if not REQUIRED_TOOLS.issubset(tools):
         errors.append(f"missing tool coverage: {sorted(REQUIRED_TOOLS - tools)}")
     if not REQUEST_STATUSES.issubset(statuses):
@@ -188,12 +310,17 @@ def validate_bundle(bundle_dir: Path = BUNDLE_DIR) -> BundleValidation:
         errors.append("missing same/different tool pair coverage")
     if coverage["tampering_cases"] < 2:
         errors.append("missing plan tampering coverage")
+    if require_gold_complete and not coverage["gold_ready"]:
+        errors.append("gold audit is incomplete or hidden is not human-approved")
     counts = {name: len(cases) for name, cases in suites.items() if isinstance(cases, list)}
     return BundleValidation(not errors, errors, counts, hashes, coverage)
 
 
 def exact_plan_match(expected: Mapping[str, Any], actual: Mapping[str, Any]) -> bool:
-    top_fields = ("outcome", "context_mode", "effective_cohort", "effective_cohort_source")
+    top_fields = (
+        "outcome", "context_mode", "query_mode",
+        "effective_cohort", "effective_cohort_source",
+    )
     if any(expected.get(field) != actual.get(field) for field in top_fields):
         return False
     expected_requests = expected.get("atomic_requests") or []
@@ -217,31 +344,13 @@ def exact_plan_match(expected: Mapping[str, Any], actual: Mapping[str, Any]) -> 
 
 
 def evaluate_release_gates(metrics: Mapping[str, Any]) -> ReleaseGateResult:
-    thresholds = {
-        "contract_invariants": lambda value: value == 1.0,
-        "multi_cohort_rejection": lambda value: value == 1.0,
-        "structured_source_binding": lambda value: value == 1.0,
-        "structured_to_rag_fallbacks": lambda value: value == 0,
-        "cross_request_leakage": lambda value: value == 0,
-        "dev_exact_plan": lambda value: value >= 0.95,
-        "hidden_exact_plan": lambda value: value >= 0.90,
-        "retrieval_hit_at_5": lambda value: value >= 0.90,
-        "citation_binding": lambda value: value >= 0.95,
-        "faithfulness": lambda value: value >= 0.90,
-        "answer_correctness": lambda value: value >= 0.85,
-        "hallucination_rate": lambda value: value <= 0.05,
-        "critical_false_pass": lambda value: value == 0,
-        "provider_failures": lambda value: value == 0,
-        "quality_checks_passed": lambda value: value is True,
-        "parity_passed": lambda value: value is True,
-    }
-    missing = [name for name in thresholds if name not in metrics]
-    checks = {
-        name: bool(predicate(metrics[name]))
-        for name, predicate in thresholds.items()
-        if name in metrics
-    }
-    return ReleaseGateResult(not missing and all(checks.values()), checks, missing)
+    return _evaluate_thresholds(metrics, _gate_thresholds())
+
+
+def evaluate_development_gates(metrics: Mapping[str, Any]) -> ReleaseGateResult:
+    thresholds = _gate_thresholds()
+    thresholds.pop("hidden_exact_plan")
+    return _evaluate_thresholds(metrics, thresholds)
 
 
 def failure_taxonomy(rows: Iterable[Mapping[str, Any]]) -> dict[str, int]:

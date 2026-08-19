@@ -183,8 +183,18 @@ class DirectoryAdapter:
 
     def execute(self, payload: ToolExecutionInput) -> ToolExecutionResult:
         slot = {"student_service": "service", "office": "office", "faculty": "faculty"}[self.lookup_type]
-        candidate_text = payload.query or _slot_text(payload.request, slot, "faculty", "office", "program_or_faculty")
-        directory = (payload.resources.student_service_directory + payload.resources.office_directory if self.lookup_type == "student_service" else payload.resources.office_directory + (payload.resources.student_faculty_profiles or []))
+        candidate_text = _slot_text(
+            payload.request, slot, "faculty", "office", "program_or_faculty"
+        ) or payload.query
+        if self.lookup_type == "student_service":
+            directory = (
+                payload.resources.student_service_directory
+                + payload.resources.office_directory
+            )
+        elif self.lookup_type == "faculty":
+            directory = payload.resources.student_faculty_profiles or []
+        else:
+            directory = payload.resources.office_directory
         result = office_lookup(payload.query, directory, cohort=payload.effective_cohort, detected_entities=payload.resources.detected_entities, routing={"intent": "office_query", "content_type": "office_directory", "target_chunk_types": ["office_directory"]}, candidate_text=candidate_text, require_confident_match=True, model=payload.resources.model if self.lookup_type == "student_service" else None)
         if result is not None and result.get("resolution_status") == "ambiguous":
             options = result.get("clarification_options") or []

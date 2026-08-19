@@ -368,6 +368,13 @@ def main() -> None:
     parser.add_argument("--replace-hidden", action="store_true", help="Explicit one-time hidden-suite replacement.")
     args = parser.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
+    existing_manifest_path = OUT / "manifest.json"
+    if existing_manifest_path.exists() and not args.replace_hidden:
+        existing_manifest = json.loads(existing_manifest_path.read_text(encoding="utf-8"))
+        if existing_manifest.get("hidden_human_review_complete"):
+            raise SystemExit(
+                "Hidden is human-approved and frozen; use --replace-hidden for an explicit replacement."
+            )
     dev = build_suite(False)
     dev_hash = _write_json(OUT / "dev.json", dev)
     hidden_path = OUT / "hidden.json"
@@ -378,21 +385,45 @@ def main() -> None:
         hidden = build_suite(True)
         hidden_hash = _write_json(hidden_path, hidden)
     manifest = {
-        "schema_version": "single-cohort-v2.1",
+        "schema_version": "single-cohort-v2.2",
+        "dataset_version": "single-cohort-gold-candidate-1",
         "frozen_at": datetime.now(UTC).isoformat(),
-        "baseline_commit": "5d5447cc",
+        "baseline_commit": "15f971d5",
         "prompt_version": "single-cohort-planner-v2.1",
         "registry_version": 2,
         "counts": {key: {"dev": value[0], "hidden": value[1]} for key, value in COUNTS.items()},
         "files": {"dev.json": dev_hash, "hidden.json": hidden_hash},
-        "hidden_frozen": True,
+        "hidden_frozen": False,
+        "hidden_human_review_required": True,
+        "hidden_human_review_complete": False,
         "hidden_replacement_requires_flag": True,
         "legacy_final_holdout": {"commit": "e38bfef", "preserved": True},
     }
     _write_json(OUT / "manifest.json", manifest)
     if str(ROOT) not in sys.path:
         sys.path.insert(0, str(ROOT))
+    from src.evaluation.single_cohort_gold import (
+        audit_bundle,
+        legacy_compatibility_report,
+    )
     from src.evaluation.single_cohort_v2 import validate_bundle
+
+    audited = audit_bundle(OUT, root=ROOT)
+    dev_hash = _write_json(OUT / "dev.json", audited.dev)
+    hidden_hash = _write_json(OUT / "hidden.json", audited.hidden)
+    manifest["files"] = {"dev.json": dev_hash, "hidden.json": hidden_hash}
+    manifest["frozen_at"] = None
+    manifest["gold_audit"] = {
+        "commit": audited.report["commit"],
+        "generated_at": audited.report["generated_at"],
+        "data_versions": audited.report["data_versions"],
+        "gold_ready": False,
+    }
+    _write_json(OUT / "manifest.json", manifest)
+    _write_json(OUT / "gold_audit_report.json", audited.report)
+    _write_json(OUT / "dev_review_queue.json", audited.dev_review_queue)
+    _write_json(OUT / "hidden_review_queue.json", audited.review_queue)
+    _write_json(OUT / "legacy_compatibility.json", legacy_compatibility_report(ROOT))
 
     validation = validate_bundle(OUT)
     report = {

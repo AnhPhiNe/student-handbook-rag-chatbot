@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from src.retrieval.core.tool_registry import (
     AtomicToolRequest,
+    DirectoryAdapter,
     ToolExecutionInput,
     ToolExecutionResult,
     ToolRegistry,
@@ -24,6 +25,18 @@ class _Adapter:
 class _FailingAdapter:
     def execute(self, payload: ToolExecutionInput) -> ToolExecutionResult:
         raise RuntimeError("adapter failed")
+
+
+@dataclass
+class _StatusAdapter:
+    status: str
+
+    def execute(self, payload: ToolExecutionInput) -> ToolExecutionResult:
+        return ToolExecutionResult(
+            status=self.status,
+            result=None,
+            strategy="status_adapter",
+        )
 
 
 def _payload(cohort: str | None = "K51") -> ToolExecutionInput:
@@ -92,6 +105,30 @@ def test_registry_enforces_declared_source_contract() -> None:
     assert result.provenance["reason"] == "source_contract_unbound"
 
 
+def test_registry_status_matrix_is_fail_closed() -> None:
+    spec = {
+        "adapter_id": "registered",
+        "cohort_sensitive": False,
+        "intents": ["direct_value"],
+    }
+    for status in ("no_match", "unresolved"):
+        registry = ToolRegistry(
+            {"example": spec}, {"registered": _StatusAdapter(status)}
+        )
+        assert registry.execute("example", _payload()).status == status
+
+    invalid = ToolRegistry(
+        {"example": {**spec, "intents": ["contact"]}},
+        {"registered": _StatusAdapter("ok")},
+    )
+    assert invalid.execute("example", _payload()).status == "invalid"
+
+    failed = ToolRegistry(
+        {"example": spec}, {"registered": _FailingAdapter()}
+    )
+    assert failed.execute("example", _payload()).status == "error"
+
+
 def test_dispatcher_preserves_invalid_adapter_status() -> None:
     resolution = resolve_structured_decision(
         {
@@ -121,3 +158,50 @@ def test_dispatcher_preserves_invalid_adapter_status() -> None:
     assert resolution is not None
     assert resolution.status == "invalid"
     assert resolution.provenance["reason"] == "unregistered_tool"
+
+
+def test_directory_adapter_uses_only_selected_catalog(monkeypatch) -> None:
+    captured: dict = {}
+
+    def fake_lookup(_query, directory, **_kwargs):
+        captured["directory"] = directory
+        return {
+            "result": [{"websites": ["https://example.edu"]}],
+            "source_records": [{"record_id": "faculty-1"}],
+        }
+
+    monkeypatch.setattr(
+        "src.retrieval.core.tool_registry.office_lookup", fake_lookup
+    )
+    resources = ToolResources(
+        scoring_tables=[],
+        formula_rules=[],
+        office_directory=[{"record_id": "office-1"}],
+        student_service_directory=[{"record_id": "service-1"}],
+        student_faculty_profiles=[{"record_id": "faculty-1"}],
+        foreign_language_tables=[],
+        structured_tables_registry=[],
+        program_directory=[],
+    )
+    request = AtomicToolRequest(
+        tool_name="faculty",
+        intent="contact",
+        query_span="website khoa CNTT",
+        slots={
+            "faculty": "Khoa Công nghệ Thông tin",
+            "requested_field": "website",
+        },
+    )
+    result = DirectoryAdapter("faculty").execute(
+        ToolExecutionInput(
+            request=request,
+            decision={},
+            context=None,
+            query=request.query_span,
+            effective_cohort="K51",
+            resources=resources,
+        )
+    )
+
+    assert result.status == "ok"
+    assert captured["directory"] == [{"record_id": "faculty-1"}]

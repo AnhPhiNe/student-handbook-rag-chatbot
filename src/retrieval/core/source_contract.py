@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Any, Literal, TypedDict
 
 
@@ -17,6 +18,7 @@ class StructuredSourceRef(TypedDict, total=False):
     source_pages: list[int]
     source_url: str | None
     applicability: str | None
+    applicable_cohorts: list[str]
 
 
 _GENERIC_SOURCE_SECTIONS = {
@@ -44,6 +46,16 @@ def parse_source_pages(value: Any) -> list[int]:
         if str(item).strip().isdigit()
     }
     return sorted(pages)
+
+
+def parse_applicable_cohorts(value: Any) -> list[str]:
+    if isinstance(value, str):
+        value = [value]
+    if not isinstance(value, list | tuple | set):
+        return []
+    return sorted(
+        {str(cohort).strip() for cohort in value if str(cohort).strip()}
+    )
 
 
 def source_ref_from_record(
@@ -97,6 +109,11 @@ def source_ref_from_record(
         or record.get("url")
         or record.get("document_url"),
         "applicability": record.get("applicability"),
+        "applicable_cohorts": parse_applicable_cohorts(
+            record.get("applicable_cohorts")
+            or provenance.get("applicable_cohorts")
+            or []
+        ),
     }
     return normalize_source_ref(ref)
 
@@ -129,6 +146,9 @@ def normalize_source_ref(
         "source_pages": parse_source_pages(value.get("source_pages")),
         "source_url": source_url,
         "applicability": str(value.get("applicability") or "").strip() or None,
+        "applicable_cohorts": parse_applicable_cohorts(
+            value.get("applicable_cohorts")
+        ),
     }
 
 
@@ -164,6 +184,10 @@ def deduplicate_source_records(
             ):
                 if not existing.get(field) and normalized.get(field):
                     existing[field] = normalized[field]
+            existing["applicable_cohorts"] = sorted(
+                set(existing.get("applicable_cohorts") or [])
+                | set(normalized.get("applicable_cohorts") or [])
+            )
             continue
         deduplicated[key] = normalized
     return list(deduplicated.values())
@@ -358,10 +382,16 @@ def _registry_candidates(
     if exact:
         return exact
 
+    normalized_identifiers = {
+        re.sub(r"[^a-z0-9]+", "", value.casefold()) for value in exact_identifiers
+    }
     subtype_candidates = [
         table
         for table in candidates
-        if table.get("table_subtype") in exact_identifiers
+        if re.sub(
+            r"[^a-z0-9]+", "", str(table.get("table_subtype") or "").casefold()
+        )
+        in normalized_identifiers
     ]
     if len(subtype_candidates) <= 1:
         return subtype_candidates

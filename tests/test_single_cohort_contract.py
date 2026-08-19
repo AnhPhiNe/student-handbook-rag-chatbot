@@ -227,6 +227,47 @@ def test_router_provider_failure_is_not_reported_as_clarification() -> None:
     assert result["retrieval_executed"] is False
     assert result["error_type"] == "timeout"
 
+
+def test_clarify_and_out_of_domain_never_call_retriever(monkeypatch) -> None:
+    def fail_if_called(**_kwargs):
+        raise AssertionError("retriever must not run")
+
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.run_hybrid_retrieval_pipeline",
+        fail_if_called,
+    )
+    for route in ("clarify", "out_of_domain"):
+        pipeline = _pipeline()
+
+        class Router:
+            @staticmethod
+            def route(query, chat_history=None, cohort=None):
+                return {
+                    "outcome": route,
+                    "route": route,
+                    "execution_mode": "regulation",
+                    "intent": route,
+                    "normalized_query": None,
+                    "context_mode": "standalone",
+                    "context_confidence": "none",
+                    "normalization_confidence": "none",
+                    "referenced_turn_ids": [],
+                    "referenced_evidence": [],
+                    "lookup_requests": [],
+                    "clarification_question": (
+                        "Bạn muốn hỏi nội dung nào?" if route == "clarify" else None
+                    ),
+                    "retrieval_query": None,
+                    "retrieval_executed": False,
+                }
+
+        pipeline.router = Router()
+        result = pipeline._run_retrieval("câu hỏi", cohort="K51")
+
+        assert result["retrieval_query"] is None
+        assert result["retrieval_executed"] is False
+        assert result["retrieved_items"] == []
+
 def test_structured_no_match_never_falls_back_to_rag(monkeypatch) -> None:
     pipeline = _pipeline()
     hybrid_calls: list[dict] = []

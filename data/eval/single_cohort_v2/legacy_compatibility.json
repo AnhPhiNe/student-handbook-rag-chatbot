@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-08-19T06:06:36.836440+00:00",
+  "commit": "15f971d58e85e2d8c70fba002befdc5583b474ac",
+  "legacy_bundle_commit": "e38bfef3774f7330f4f5d8a55ddec412f2c933b9",
+  "legacy_bundle_preserved": true,
+  "legacy_hashes": {
+    "declared": {
+      "deterministic": "92034956d1915fcf292f2a019b0c902570f58756a979c9f4096b914d95ed1d75",
+      "retrieval": "79d7e14f2aa178d5c8849b96405d0ca1ae806c1637a414eecffe3b61d18e33ab",
+      "answers": "5e4579062b77126f64092a255e4bd48946294be41f8d49f893339b29b63079b0",
+      "production": "64d6fde03a6d48b35df98115fec1170ac5f9ce5f534736673018249caede2343"
+    },
+    "actual": {
+      "deterministic": "92034956d1915fcf292f2a019b0c902570f58756a979c9f4096b914d95ed1d75",
+      "retrieval": "79d7e14f2aa178d5c8849b96405d0ca1ae806c1637a414eecffe3b61d18e33ab",
+      "answers": "5e4579062b77126f64092a255e4bd48946294be41f8d49f893339b29b63079b0",
+      "production": "64d6fde03a6d48b35df98115fec1170ac5f9ce5f534736673018249caede2343"
+    },
+    "match": true
+  },
+  "metric_policy": "report_separately_do_not_merge_with_single_cohort_v2",
+  "suites": {
+    "deterministic": {
+      "regression": 120,
+      "deferred_multi_cohort": 0
+    },
+    "retrieval": {
+      "regression": 136,
+      "deferred_multi_cohort": 44
+    },
+    "answers": {
+      "regression": 85,
+      "deferred_multi_cohort": 15
+    },
+    "production": {
+      "regression": 60,
+      "deferred_multi_cohort": 0
+    }
+  }
+}

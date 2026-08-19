@@ -139,6 +139,50 @@ def test_registry_subtype_fallback_accepts_unique_table_with_page_subset():
     assert enriched[0]["source_pages"] == [21, 22, 23]
 
 
+def test_registry_subtype_binding_normalizes_separator_only_differences():
+    records = [
+        _table_source(
+            document_id="handbook-k50",
+            cohort="K50",
+            table_id="letter_to_grade_4",
+            source_pages=[22],
+        )
+    ]
+    registry = [
+        {
+            "table_id": "K50_Dieu11_letter_to_grade4",
+            "table_subtype": "letter_to_grade4",
+            "document_id": "handbook-k50",
+            "cohort": "K50",
+            "source_parent_id": "K50_Dieu11",
+            "source_pages": [19, 20, 21, 22],
+        }
+    ]
+
+    enriched = enrich_source_records_from_registry(records, registry)
+
+    assert enriched[0]["table_id"] == "K50_Dieu11_letter_to_grade4"
+    assert enriched[0]["parent_section_id"] == "K50_Dieu11"
+
+
+def test_source_reference_preserves_explicit_cohort_applicability():
+    from src.retrieval.core.source_contract import source_ref_from_record
+
+    source = source_ref_from_record(
+        {
+            "table_id": "foreign-language-policy",
+            "document_id": "handbook-k50",
+            "cohort": "K50",
+            "applicable_cohorts": ["K48-K49", "K50", "K51"],
+        },
+        source_kind="table",
+    )
+
+    assert source is not None
+    assert source["cohort"] == "K50"
+    assert source["applicable_cohorts"] == ["K48-K49", "K50", "K51"]
+
+
 def test_registry_binding_keeps_cohort_sources_isolated():
     records = [
         _table_source(

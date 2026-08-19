@@ -26,7 +26,18 @@
     "cohort": "K48-K49",
     "source_section": "formula_rule",
     "content_mode": "structured_only",
-    "record_id": "K48-K49_K48-K49_formula_rules_1"
+    "record_id": "K48-K49_K48-K49_formula_rules_1",
+    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+    "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+    "source_provenance": {
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "source_pages": [
+        21,
+        22,
+        23
+      ]
+    }
   },
   {
     "rule_id": "scholarship_score",
@@ -53,7 +64,17 @@
     "cohort": "K48-K49",
     "source_section": "formula_rule",
     "content_mode": "structured_only",
-    "record_id": "K48-K49_K48-K49_formula_rules_2"
+    "record_id": "K48-K49_K48-K49_formula_rules_2",
+    "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "source_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "source_provenance": {
+      "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "source_pages": [
+        52,
+        53
+      ]
+    }
   },
   {
     "rule_id": "gpa_weighted_average",
@@ -82,7 +103,18 @@
     "cohort": "K50",
     "source_section": "formula_rule",
     "content_mode": "structured_only",
-    "record_id": "K50_K50_formula_rules_1"
+    "record_id": "K50_K50_formula_rules_1",
+    "source_parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+    "source_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+    "source_provenance": {
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "source_pages": [
+        19,
+        20,
+        21
+      ]
+    }
   },
   {
     "rule_id": "scholarship_score",
@@ -109,7 +141,17 @@
     "cohort": "K50",
     "source_section": "formula_rule",
     "content_mode": "structured_only",
-    "record_id": "K50_K50_formula_rules_2"
+    "record_id": "K50_K50_formula_rules_2",
+    "source_parent_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "source_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "source_provenance": {
+      "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "source_pages": [
+        73,
+        74
+      ]
+    }
   },
   {
     "rule_id": "gpa_weighted_average",
@@ -138,7 +180,18 @@
     "cohort": "K51",
     "source_section": "formula_rule",
     "content_mode": "structured_only",
-    "record_id": "K51_K51_formula_rules_1"
+    "record_id": "K51_K51_formula_rules_1",
+    "source_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+    "source_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+    "source_provenance": {
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "source_pages": [
+        19,
+        20,
+        21
+      ]
+    }
   },
   {
     "rule_id": "scholarship_score",
@@ -165,6 +218,16 @@
     "cohort": "K51",
     "source_section": "formula_rule",
     "content_mode": "structured_only",
-    "record_id": "K51_K51_formula_rules_2"
+    "record_id": "K51_K51_formula_rules_2",
+    "source_parent_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "source_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "source_provenance": {
+      "parent_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "source_pages": [
+        72,
+        73
+      ]
+    }
   }
 ]

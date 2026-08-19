@@ -1,13 +1,47 @@
 {
   "valid": true,
-  "generated_at": "2026-08-19T04:20:46.477402+00:00",
-  "schema_version": "single-cohort-v2.0",
+  "errors": [],
+  "generated_at": "2026-08-19T04:47:07.977757+00:00",
+  "schema_version": "single-cohort-v2.1",
   "counts": {
     "dev": 150,
     "hidden": 60
   },
   "hashes": {
-    "dev.json": "de211c6249c0f2305b53ece4cc367c427bff575d1d336f4eeb08b5edf7efa20d",
-    "hidden.json": "176fa7e1f3470ee019f79068b9b974ea46060f6007cba3919a089ec4301d6748"
-  }
+    "dev.json": "77dcf6929c217fecb6a0c36898b51036deb1367bcdb035187273f64026314407",
+    "hidden.json": "df8fd7da3b1dfd33a3bda4f385a0284cf2b0d4dc68298f83c7ca40c29cbe164e"
+  },
+  "coverage": {
+    "tools": [
+      "faculty",
+      "foreign_language",
+      "formula",
+      "office",
+      "program",
+      "scholarship_classification",
+      "scoring",
+      "student_service",
+      "study_duration"
+    ],
+    "statuses": [
+      "error",
+      "invalid",
+      "no_match",
+      "ok",
+      "unresolved"
+    ],
+    "request_counts": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "same_tool_pair": true,
+    "different_tool_pair": true,
+    "tampering_cases": 2
+  },
+  "hidden_replaced": true
 }

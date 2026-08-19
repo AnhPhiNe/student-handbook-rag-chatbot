@@ -283,7 +283,7 @@ def test_structured_no_match_never_falls_back_to_rag(monkeypatch) -> None:
 
     assert len(hybrid_calls) == 1
     assert hybrid_calls[0]["query"] == "quy định bảo lưu thế nào"
-    assert result["request_results"][0]["status"] == "unresolved"
+    assert result["request_results"][0]["status"] == "no_match"
     assert result["request_results"][1]["status"] == "ok"
     assert result["request_execution_contexts"][0]["retrieval_query"] == "search::ngành X có không"
     assert "retrieval_query" not in decision["lookup_requests"][0]

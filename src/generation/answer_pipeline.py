@@ -1396,7 +1396,12 @@ class AnswerPipeline:
                     request_results.append(unresolved_requests[-1])
                     continue
 
-                if self._has_structured_value(resolution.result if resolution else None):
+                if (
+                    resolution
+                    and resolution.status == "ok"
+                    and resolution.result_kind != "clarification"
+                    and self._has_structured_value(resolution.result)
+                ):
                     resolved_result = {
                         **resolution.result,
                         "request_id": execution_context.request_id,
@@ -1414,7 +1419,11 @@ class AnswerPipeline:
                     )
                     request_results.append(
                         self._request_result_metadata(
-                            request, execution_context, status="ok"
+                            request,
+                            execution_context,
+                            status="ok",
+                            confidence=resolution.confidence,
+                            provenance=resolution.provenance,
                         )
                     )
                     continue
@@ -1422,13 +1431,18 @@ class AnswerPipeline:
                 reason = (
                     "structured_clarification"
                     if resolution and resolution.result_kind == "clarification"
+                    else str((resolution.provenance or {}).get("reason") or f"structured_{resolution.status}")
+                    if resolution
                     else "structured_no_match"
                 )
+                failure_status = resolution.status if resolution else "no_match"
                 unresolved = self._request_result_metadata(
                     request,
                     execution_context,
-                    status="unresolved",
+                    status=failure_status,
                     reason=reason,
+                    confidence=resolution.confidence if resolution else None,
+                    provenance=resolution.provenance if resolution else None,
                 )
                 unresolved_requests.append(unresolved)
                 request_results.append(unresolved)
@@ -1656,6 +1670,8 @@ class AnswerPipeline:
         *,
         status: str,
         reason: str | None = None,
+        confidence: float | str | None = None,
+        provenance: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         return {
             "request_id": execution_context.request_id,
@@ -1667,6 +1683,8 @@ class AnswerPipeline:
             "cohort": execution_context.effective_cohort,
             "status": status,
             "reason": reason,
+            "confidence": confidence,
+            "provenance": provenance or {},
         }
 
     def _run_semantic_request_rag(

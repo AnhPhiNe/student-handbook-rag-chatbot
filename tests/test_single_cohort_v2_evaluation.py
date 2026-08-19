@@ -44,10 +44,9 @@ def test_frozen_bundle_has_required_counts_and_contract() -> None:
     assert result.coverage["case_annotation_states"]
 
 
-def test_release_validation_fails_closed_until_human_gold_review() -> None:
+def test_release_validation_accepts_frozen_human_gold_review() -> None:
     result = validate_bundle(require_gold_complete=True)
-    assert not result.valid
-    assert "gold audit is incomplete or hidden is not human-approved" in result.errors
+    assert result.valid, result.errors
 
 
 def test_exact_plan_requires_request_order_and_slots() -> None:

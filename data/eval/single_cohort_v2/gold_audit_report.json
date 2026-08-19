@@ -1,7 +1,7 @@
 {
   "schema_version": "single-cohort-v2.2",
-  "generated_at": "2026-08-19T06:46:02.015903+00:00",
-  "commit": "e4201bb5c2e01f5863d7ee78a89e0d937a74cb56",
+  "generated_at": "2026-08-19T06:59:31.108388+00:00",
+  "commit": "878df68e7811577c0572d787abea7aef1e4823de",
   "provider": "deterministic",
   "data_versions": {
     "structured_registry": "b739720cc8d476d011ababb288ff40812bb004ef04dd73e9f955a398fcc6e575",
@@ -20,7 +20,7 @@
     "ai_router_prompt_source": "d022da06fc24d8ea9c38976fca796904770f081d6b325ffd9d53c717477b7003",
     "answer_config": "0a03853b6f0ed0f4585cb8712326e930275396d939ca65a7a1d2dc4fc44f5aab",
     "answer_prompt_source": "72d43ed9ee5741940b9c95751dabcb54c41566f87c800b2a42e867536d2792e8",
-    "implementation_tree": "b5ca9e9ea927973171111bddde0906e35cbbe0755640c6ace034da84d0456dc4"
+    "implementation_tree": "d21ab2468f55878c1525d2dfa4f7e3f275e1cd79d30aac3e4547a1d3d05bf85b"
   },
   "counts": {
     "dev": 150,
@@ -42,13 +42,13 @@
   },
   "case_annotation_states": {
     "auto_verified": 75,
-    "review_required": 135
+    "human_approved": 135
   },
   "request_annotation_states": {
-    "auto_verified": 205,
-    "review_required": 154
+    "auto_verified": 101,
+    "human_approved": 258
   },
-  "hidden_review_required": 60,
-  "gold_ready": false,
-  "dev_review_required": 75
+  "hidden_review_required": 0,
+  "gold_ready": true,
+  "dev_review_required": 0
 }

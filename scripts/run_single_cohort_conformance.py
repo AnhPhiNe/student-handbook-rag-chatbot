@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import subprocess
 import sys
 from datetime import UTC, datetime
@@ -13,6 +14,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON = Path(sys.executable)
+NPM = shutil.which("npm") or shutil.which("npm.cmd") or "npm"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -30,14 +32,22 @@ def _fingerprint() -> dict[str, str | None]:
 
 
 def _run(command: list[str], *, cwd: Path = ROOT) -> dict[str, Any]:
-    completed = subprocess.run(
-        command,
-        cwd=cwd,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        check=False,
-    )
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=cwd,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            check=False,
+        )
+    except OSError as exc:
+        return {
+            "passed": False,
+            "returncode": None,
+            "command": command,
+            "output_tail": f"{type(exc).__name__}: {exc}",
+        }
     output = completed.stdout or ""
     return {
         "passed": completed.returncode == 0,
@@ -111,8 +121,8 @@ def main() -> None:
     frontend_lint = {"passed": False, "reason": "skipped"}
     frontend_build = {"passed": False, "reason": "skipped"}
     if not args.skip_frontend:
-        frontend_lint = _run(["npm", "run", "lint"], cwd=ROOT / "frontend")
-        frontend_build = _run(["npm", "run", "build"], cwd=ROOT / "frontend")
+        frontend_lint = _run([NPM, "run", "lint"], cwd=ROOT / "frontend")
+        frontend_build = _run([NPM, "run", "build"], cwd=ROOT / "frontend")
 
     common = {
         "generated_at": datetime.now(UTC).isoformat(),

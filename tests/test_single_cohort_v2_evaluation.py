@@ -128,6 +128,27 @@ def test_gold_audit_uses_real_sources_and_requires_human_hidden_review(gold_audi
     )
 
 
+def test_rag_candidate_discovery_uses_grounded_follow_up_context(gold_audit) -> None:
+    by_id = {case["id"]: case for case in gold_audit.dev}
+    follow_up = by_id["dev-follow_up-03"]["expected"]["atomic_requests"][0]
+    learning_again = next(
+        request
+        for case in gold_audit.dev
+        for request in case["expected"]["atomic_requests"]
+        if request["request_kind"] == "rag" and request["query_span"] == "học lại"
+    )
+
+    expected_parent = "K51_QuyCheDaoTao_Chuong3_Dieu10"
+    assert expected_parent in {
+        candidate["parent_section_id"]
+        for candidate in follow_up["evidence_candidates"]
+    }
+    assert expected_parent in {
+        candidate["parent_section_id"]
+        for candidate in learning_again["evidence_candidates"]
+    }
+
+
 def test_pending_hidden_review_cannot_be_applied(gold_audit) -> None:
     result = gold_audit
     with pytest.raises(ValueError, match="not human-approved"):

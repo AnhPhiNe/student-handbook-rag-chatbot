@@ -37,33 +37,15 @@ def calculate_scholarship_score(
     academic_score_4: float,
     conduct_score_100: float,
 ) -> float:
-    """Tính điểm học bổng dựa trên điểm học tập và điểm rèn luyện.
-
-    Hàm này áp dụng một công thức cụ thể để kết hợp điểm học tập (thang 4)
-    và điểm rèn luyện (thang 100) để ra điểm học bổng.
-
-    Args:
-        academic_score_4: Điểm học tập của sinh viên theo thang điểm 4.
-            Giá trị phải nằm trong khoảng từ 0 đến 4.
-        conduct_score_100: Điểm rèn luyện của sinh viên theo thang điểm 100.
-            Giá trị phải nằm trong khoảng từ 0 đến 100.
-
-    Returns:
-        Điểm học bổng đã được làm tròn đến 3 chữ số thập phân.
-
-    Raises:
-        ValueError: Nếu `academic_score_4` không nằm trong khoảng [0, 4]
-            hoặc `conduct_score_100` không nằm trong khoảng [0, 100].
-    """
+    """Calculate the scholarship score for cohorts whose source defines it."""
     if not 0 <= academic_score_4 <= 4:
         raise ValueError("academic_score_4 must be between 0 and 4")
-
     if not 0 <= conduct_score_100 <= 100:
         raise ValueError("conduct_score_100 must be between 0 and 100")
-
-    score = (academic_score_4 * 80 + (conduct_score_100 / 25) * 20) / 100
-
-    return round(score, 3)
+    return round(
+        (academic_score_4 * 80 + (conduct_score_100 / 25) * 20) / 100,
+        3,
+    )
 
 
 def extract_formula_rules(sections: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -72,7 +54,7 @@ def extract_formula_rules(sections: list[dict[str, Any]]) -> list[dict[str, Any]
     Hàm này duyệt qua một danh sách các phần (sections) của một tài liệu
     (ví dụ: các điều khoản trong một quy chế). Nó tìm kiếm các từ khóa và
     số điều cụ thể để xác định và trích xuất thông tin về các công thức
-    tính điểm trung bình chung (GPA) và điểm học bổng.
+    tính điểm trung bình chung (GPA) có công thức được nêu trong nguồn.
 
     Args:
         sections: Một danh sách các dictionary, mỗi dictionary đại diện cho
@@ -126,7 +108,11 @@ def extract_formula_rules(sections: list[dict[str, Any]]) -> list[dict[str, Any]
                 }
             )
 
-        if article == "Điều 28." and "điểm học bổng" in lower_content:
+        has_scholarship_formula = (
+            "điểm học tập x 80" in lower_content
+            and "điểm rèn luyện /25" in lower_content
+        )
+        if article == "Điều 28." and has_scholarship_formula:
             formulas.append(
                 {
                     "rule_id": "scholarship_score",
@@ -147,5 +133,4 @@ def extract_formula_rules(sections: list[dict[str, Any]]) -> list[dict[str, Any]
                     "raw_excerpt": content[:1800],
                 }
             )
-
     return formulas

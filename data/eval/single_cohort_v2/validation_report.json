@@ -1,15 +1,15 @@
 {
   "valid": true,
   "errors": [],
-  "generated_at": "2026-08-19T06:13:23.018086+00:00",
+  "generated_at": null,
   "schema_version": "single-cohort-v2.2",
   "counts": {
     "dev": 150,
     "hidden": 60
   },
   "hashes": {
-    "dev.json": "0915dd283998be82650276a6a3ce7c501133822ccf0c4fc8c9e0e2e5be876f61",
-    "hidden.json": "c41d654988bf4569298887713e5c468e4a4344c6fce85db5d4f2abc7a7ed9d58"
+    "dev.json": "85d9a0a1355479de8cfa7fc6050f0b5d6d84d09aa8994455db8b7423ff2afee2",
+    "hidden.json": "703fa803c7290ae86c8d2ce06a51133b96aeb09cd6df5c14f2bf9a37bd44d213"
   },
   "coverage": {
     "tools": [
@@ -43,15 +43,15 @@
     "different_tool_pair": true,
     "tampering_cases": 2,
     "case_annotation_states": {
-      "auto_verified": 78,
-      "review_required": 132
+      "auto_verified": 75,
+      "review_required": 135
     },
     "request_annotation_states": {
-      "auto_verified": 211,
-      "review_required": 148
+      "auto_verified": 205,
+      "review_required": 154
     },
     "hidden_human_review_complete": false,
     "gold_ready": false
   },
-  "hidden_frozen": false
+  "hidden_replaced": false
 }

@@ -1,5 +1,6 @@
 {
   "schema_version": "single-cohort-v2.2",
+  "dataset_version": "single-cohort-gold-candidate-1",
   "frozen_at": null,
   "baseline_commit": "15f971d5",
   "prompt_version": "single-cohort-planner-v2.1",
@@ -51,24 +52,24 @@
     }
   },
   "files": {
-    "dev.json": "0915dd283998be82650276a6a3ce7c501133822ccf0c4fc8c9e0e2e5be876f61",
-    "hidden.json": "c41d654988bf4569298887713e5c468e4a4344c6fce85db5d4f2abc7a7ed9d58"
+    "dev.json": "85d9a0a1355479de8cfa7fc6050f0b5d6d84d09aa8994455db8b7423ff2afee2",
+    "hidden.json": "703fa803c7290ae86c8d2ce06a51133b96aeb09cd6df5c14f2bf9a37bd44d213"
   },
   "hidden_frozen": false,
+  "hidden_human_review_required": true,
+  "hidden_human_review_complete": false,
   "hidden_replacement_requires_flag": true,
   "legacy_final_holdout": {
     "commit": "e38bfef",
     "preserved": true
   },
-  "hidden_human_review_required": true,
-  "hidden_human_review_complete": false,
   "gold_audit": {
-    "commit": "f69d077a2ef9995892b6a320fce807062213cb01",
-    "generated_at": "2026-08-19T06:13:22.655052+00:00",
+    "commit": "e4201bb5c2e01f5863d7ee78a89e0d937a74cb56",
+    "generated_at": "2026-08-19T06:46:02.015903+00:00",
     "data_versions": {
       "structured_registry": "b739720cc8d476d011ababb288ff40812bb004ef04dd73e9f955a398fcc6e575",
       "structured_manifest": "d9a10e874b4b8631bf5dc9e2c076878f32cb4d1461937ed4bfa1e066c4e0bf61",
-      "formula_rules": "2a3efe81e26c49019b842de93f75e706e5976f1202ce70dc101011fbee910a06",
+      "formula_rules": "f5e1d5e634b6293331b557bd4f026f3c636c47e54cbaf266230b4ddf9bcec49c",
       "scoring_tables": "c1e74b9b171b402aaa86712624deff98a0157bb966c96c6ffb54089acc79039c",
       "structured_tables_registry": "7b9707e4cd184f57443f27686619ed9dc9cd30dcd3bffec3bc3e11ab45ddc4dc",
       "foreign_language_equivalency": "df74ae0c66d4c14c839a771c670ede7ee429e1e149ca64f32aeb43e2dc552c18",
@@ -82,9 +83,8 @@
       "ai_router_prompt_source": "d022da06fc24d8ea9c38976fca796904770f081d6b325ffd9d53c717477b7003",
       "answer_config": "0a03853b6f0ed0f4585cb8712326e930275396d939ca65a7a1d2dc4fc44f5aab",
       "answer_prompt_source": "72d43ed9ee5741940b9c95751dabcb54c41566f87c800b2a42e867536d2792e8",
-      "implementation_tree": "29db27736adc4c29518e7cfb1fad41f9641c1b91eec7cdcfb350241405cef376"
+      "implementation_tree": "b5ca9e9ea927973171111bddde0906e35cbbe0755640c6ace034da84d0456dc4"
     },
     "gold_ready": false
-  },
-  "dataset_version": "single-cohort-gold-candidate-1"
+  }
 }

@@ -7,9 +7,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -18,7 +18,7 @@
         "intent": "direct_value",
         "query_span": "TOEFL iBT 72",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -60,10 +60,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-single_structured-02",
@@ -73,9 +73,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -84,7 +84,7 @@
         "intent": "direct_value",
         "query_span": "thời gian tối đa hệ vừa làm vừa học",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -120,10 +120,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-single_structured-03",
@@ -133,9 +133,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -144,7 +144,7 @@
         "intent": "direct_value",
         "query_span": "điểm học bổng loại Khá",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -180,10 +180,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-single_structured-04",
@@ -193,9 +193,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -204,7 +204,7 @@
         "intent": "direct_value",
         "query_span": "điểm chữ B+ đổi sang thang 4",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -240,10 +240,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-single_rag-01",
@@ -253,9 +253,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -264,8 +264,10 @@
         "intent": "policy",
         "query_span": "điều kiện được xét tốt nghiệp",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu15"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -489,10 +491,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-single_rag-02",
@@ -502,9 +504,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -513,8 +515,10 @@
         "intent": "policy",
         "query_span": "quy trình xin học lại",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu10"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -753,10 +757,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-single_rag-03",
@@ -766,9 +770,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -777,8 +781,10 @@
         "intent": "policy",
         "query_span": "trường hợp bị cảnh báo học vụ",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu12"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -1013,10 +1019,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-single_rag-04",
@@ -1026,9 +1032,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -1037,8 +1043,10 @@
         "intent": "policy",
         "query_span": "thủ tục chuyển chương trình",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong4_Dieu17"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -1273,10 +1281,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-multi_entity-01",
@@ -1286,9 +1294,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -1297,7 +1305,7 @@
         "intent": "direct_value",
         "query_span": "IELTS 5.5",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -1339,7 +1347,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -1348,7 +1356,7 @@
         "intent": "direct_value",
         "query_span": "TOEFL iBT 60",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -1390,10 +1398,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-multi_entity-02",
@@ -1403,9 +1411,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -1414,7 +1422,7 @@
         "intent": "direct_value",
         "query_span": "IELTS 6.0",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -1456,7 +1464,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -1465,7 +1473,7 @@
         "intent": "direct_value",
         "query_span": "JLPT N3",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -1507,10 +1515,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-multi_entity-03",
@@ -1520,9 +1528,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -1531,7 +1539,7 @@
         "intent": "direct_value",
         "query_span": "IELTS 6.5",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -1573,7 +1581,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -1582,7 +1590,7 @@
         "intent": "direct_value",
         "query_span": "HSK 4",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -1624,10 +1632,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-multi_entity-04",
@@ -1637,9 +1645,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -1648,7 +1656,7 @@
         "intent": "direct_value",
         "query_span": "TOEFL iBT 60",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -1690,7 +1698,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -1699,7 +1707,7 @@
         "intent": "direct_value",
         "query_span": "TOPIK 3",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -1741,10 +1749,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-multi_entity-05",
@@ -1754,9 +1762,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -1765,7 +1773,7 @@
         "intent": "direct_value",
         "query_span": "JLPT N3",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -1807,7 +1815,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -1816,7 +1824,7 @@
         "intent": "direct_value",
         "query_span": "Cambridge B2",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -1858,10 +1866,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-multi_entity-06",
@@ -1871,9 +1879,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -1882,7 +1890,7 @@
         "intent": "direct_value",
         "query_span": "HSK 4",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -1924,7 +1932,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -1933,7 +1941,7 @@
         "intent": "direct_value",
         "query_span": "IELTS 5.5",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -1975,10 +1983,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-two_structured-01",
@@ -1988,9 +1996,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -1999,7 +2007,7 @@
         "intent": "direct_value",
         "query_span": "điểm chữ B+ đổi sang thang 4",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2035,7 +2043,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -2044,7 +2052,7 @@
         "intent": "direct_value",
         "query_span": "GPA 2.8 xếp loại học lực",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2080,10 +2088,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-two_structured-02",
@@ -2093,9 +2101,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -2104,7 +2112,7 @@
         "intent": "direct_value",
         "query_span": "thời gian tối đa hệ vừa làm vừa học",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2140,7 +2148,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -2149,7 +2157,7 @@
         "intent": "direct_value",
         "query_span": "điểm chữ B+ đổi sang thang 4",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2185,10 +2193,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-two_structured-03",
@@ -2198,9 +2206,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -2209,7 +2217,7 @@
         "intent": "direct_value",
         "query_span": "điểm học bổng loại Khá",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2245,7 +2253,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -2254,7 +2262,7 @@
         "intent": "contact",
         "query_span": "đơn vị hỗ trợ xác nhận sinh viên",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2289,10 +2297,10 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-two_structured-04",
@@ -2302,9 +2310,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -2313,7 +2321,7 @@
         "intent": "direct_value",
         "query_span": "điểm chữ B+ đổi sang thang 4",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2349,7 +2357,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -2358,7 +2366,7 @@
         "intent": "direct_value",
         "query_span": "GPA 2.8 xếp loại học lực",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2394,10 +2402,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-two_structured-05",
@@ -2407,9 +2415,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -2418,7 +2426,7 @@
         "intent": "contact",
         "query_span": "đơn vị hỗ trợ xác nhận sinh viên",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2453,7 +2461,7 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -2462,7 +2470,7 @@
         "intent": "contact",
         "query_span": "điện thoại Khoa Tiếng Anh",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2497,10 +2505,10 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-two_structured-06",
@@ -2510,9 +2518,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -2521,7 +2529,7 @@
         "intent": "contact",
         "query_span": "website Phòng Sau đại học",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2555,7 +2563,7 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -2564,7 +2572,7 @@
         "intent": "direct_value",
         "query_span": "ngành Tâm lý học thuộc khoa nào",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2599,10 +2607,10 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-two_structured-07",
@@ -2612,9 +2620,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -2623,7 +2631,7 @@
         "intent": "direct_value",
         "query_span": "điểm chữ B+ đổi sang thang 4",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2659,7 +2667,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -2668,7 +2676,7 @@
         "intent": "direct_value",
         "query_span": "GPA 2.8 xếp loại học lực",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2704,10 +2712,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-mixed-01",
@@ -2717,9 +2725,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -2728,7 +2736,7 @@
         "intent": "direct_value",
         "query_span": "TOEFL iBT 72",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -2770,7 +2778,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -2779,8 +2787,10 @@
         "intent": "procedure",
         "query_span": "quy định học lại",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu10"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -3017,10 +3027,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-mixed-02",
@@ -3030,9 +3040,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -3041,7 +3051,7 @@
         "intent": "direct_value",
         "query_span": "thời gian tối đa hệ vừa làm vừa học",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -3077,7 +3087,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -3086,8 +3096,10 @@
         "intent": "procedure",
         "query_span": "hậu quả cảnh báo học vụ",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu12"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -3322,10 +3334,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-mixed-03",
@@ -3335,9 +3347,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -3346,7 +3358,7 @@
         "intent": "direct_value",
         "query_span": "điểm học bổng loại Khá",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -3382,7 +3394,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -3391,8 +3403,10 @@
         "intent": "procedure",
         "query_span": "rút học phần",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong2_Dieu9"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -3629,10 +3643,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-mixed-04",
@@ -3642,9 +3656,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -3653,7 +3667,7 @@
         "intent": "direct_value",
         "query_span": "điểm chữ B+ đổi sang thang 4",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -3689,7 +3703,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -3698,8 +3712,11 @@
         "intent": "procedure",
         "query_span": "tạm dừng học",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong4_Dieu16",
+          "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30"
+        ],
         "candidate_evidence": [
           {
             "origin": "frozen_legacy_gold",
@@ -3936,10 +3953,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-mixed-05",
@@ -3949,9 +3966,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.592270+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -3960,7 +3977,7 @@
         "intent": "contact",
         "query_span": "đơn vị hỗ trợ xác nhận sinh viên",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -3995,7 +4012,7 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -4004,8 +4021,10 @@
         "intent": "procedure",
         "query_span": "khiếu nại điểm",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu10"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -4241,10 +4260,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-mixed-06",
@@ -4254,9 +4273,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.598767+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -4265,7 +4284,7 @@
         "intent": "contact",
         "query_span": "website Phòng Sau đại học",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -4299,7 +4318,7 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -4308,8 +4327,10 @@
         "intent": "procedure",
         "query_span": "miễn học phần",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu14"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -4542,10 +4563,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-mixed-07",
@@ -4555,9 +4576,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.598767+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -4566,7 +4587,7 @@
         "intent": "contact",
         "query_span": "điện thoại Khoa Tiếng Anh",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -4601,7 +4622,7 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -4610,8 +4631,11 @@
         "intent": "procedure",
         "query_span": "thủ tục bảo lưu",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong4_Dieu16",
+          "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -4849,10 +4873,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-mixed-08",
@@ -4862,9 +4886,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.598767+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -4873,7 +4897,7 @@
         "intent": "direct_value",
         "query_span": "ngành Tâm lý học thuộc khoa nào",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -4908,7 +4932,7 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -4917,8 +4941,10 @@
         "intent": "procedure",
         "query_span": "điều kiện tốt nghiệp",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu15"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -5140,10 +5166,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-two_regulations-01",
@@ -5153,9 +5179,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -5164,8 +5190,10 @@
         "intent": "policy",
         "query_span": "điều kiện tốt nghiệp",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu15"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -5387,7 +5415,7 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       },
       {
         "request_id": "r2",
@@ -5396,8 +5424,10 @@
         "intent": "policy",
         "query_span": "học cải thiện",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu10"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -5634,10 +5664,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-two_regulations-02",
@@ -5647,9 +5677,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -5658,8 +5688,11 @@
         "intent": "policy",
         "query_span": "nghỉ học tạm thời",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong4_Dieu16",
+          "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30"
+        ],
         "candidate_evidence": [
           {
             "origin": "frozen_legacy_gold",
@@ -5898,7 +5931,7 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       },
       {
         "request_id": "r2",
@@ -5907,8 +5940,10 @@
         "intent": "policy",
         "query_span": "cảnh báo học vụ",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu12"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -6143,10 +6178,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-two_regulations-03",
@@ -6156,9 +6191,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -6167,8 +6202,10 @@
         "intent": "policy",
         "query_span": "xét thôi học",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong4_Dieu16"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -6406,7 +6443,7 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       },
       {
         "request_id": "r2",
@@ -6415,8 +6452,10 @@
         "intent": "policy",
         "query_span": "rút học phần",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong2_Dieu9"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -6653,10 +6692,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-two_regulations-04",
@@ -6666,9 +6705,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -6677,8 +6716,10 @@
         "intent": "policy",
         "query_span": "đăng ký học phần",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong2_Dieu9"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -6915,7 +6956,7 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       },
       {
         "request_id": "r2",
@@ -6924,8 +6965,10 @@
         "intent": "policy",
         "query_span": "chuyển ngành",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong4_Dieu17"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -7160,10 +7203,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-two_regulations-05",
@@ -7173,9 +7216,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -7184,8 +7227,10 @@
         "intent": "policy",
         "query_span": "học cải thiện",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu10"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -7422,7 +7467,7 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       },
       {
         "request_id": "r2",
@@ -7431,8 +7476,10 @@
         "intent": "policy",
         "query_span": "khiếu nại điểm",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu10"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -7668,10 +7715,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-two_regulations-06",
@@ -7681,9 +7728,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -7692,8 +7739,10 @@
         "intent": "policy",
         "query_span": "cảnh báo học vụ",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu12"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -7928,7 +7977,7 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       },
       {
         "request_id": "r2",
@@ -7937,8 +7986,10 @@
         "intent": "policy",
         "query_span": "miễn giảm học phí",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheCongTacSinhVien_Chuong5_Dieu29"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -8173,10 +8224,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-three_to_six_requests-01",
@@ -8186,9 +8237,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -8197,7 +8248,7 @@
         "intent": "direct_value",
         "query_span": "TOEFL iBT 72",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -8239,7 +8290,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -8248,8 +8299,10 @@
         "intent": "policy",
         "query_span": "tốt nghiệp",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu15"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -8471,7 +8524,7 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       },
       {
         "request_id": "r3",
@@ -8480,7 +8533,7 @@
         "intent": "direct_value",
         "query_span": "điểm học bổng loại Khá",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -8516,10 +8569,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-three_to_six_requests-02",
@@ -8529,9 +8582,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -8540,7 +8593,7 @@
         "intent": "direct_value",
         "query_span": "thời gian tối đa hệ vừa làm vừa học",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -8576,7 +8629,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -8585,8 +8638,10 @@
         "intent": "policy",
         "query_span": "học lại",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu10"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -8823,7 +8878,7 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       },
       {
         "request_id": "r3",
@@ -8832,7 +8887,7 @@
         "intent": "direct_value",
         "query_span": "điểm chữ B+ đổi sang thang 4",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -8868,7 +8923,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r4",
@@ -8877,8 +8932,10 @@
         "intent": "policy",
         "query_span": "cảnh báo học vụ",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu12"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -9113,10 +9170,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-three_to_six_requests-03",
@@ -9126,9 +9183,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -9137,7 +9194,7 @@
         "intent": "direct_value",
         "query_span": "điểm học bổng loại Khá",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -9173,7 +9230,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -9182,8 +9239,10 @@
         "intent": "policy",
         "query_span": "rút học phần",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong2_Dieu9"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -9420,7 +9479,7 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       },
       {
         "request_id": "r3",
@@ -9429,7 +9488,7 @@
         "intent": "contact",
         "query_span": "đơn vị hỗ trợ xác nhận sinh viên",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -9464,7 +9523,7 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r4",
@@ -9473,8 +9532,10 @@
         "intent": "policy",
         "query_span": "khiếu nại điểm",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu10"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -9710,7 +9771,7 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       },
       {
         "request_id": "r5",
@@ -9719,7 +9780,7 @@
         "intent": "contact",
         "query_span": "điện thoại Khoa Tiếng Anh",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -9754,10 +9815,10 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-three_to_six_requests-04",
@@ -9767,9 +9828,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -9778,7 +9839,7 @@
         "intent": "direct_value",
         "query_span": "điểm chữ B+ đổi sang thang 4",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -9814,7 +9875,7 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -9823,8 +9884,10 @@
         "intent": "policy",
         "query_span": "cảnh báo học vụ",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu12"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -10059,7 +10122,7 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       },
       {
         "request_id": "r3",
@@ -10068,7 +10131,7 @@
         "intent": "contact",
         "query_span": "website Phòng Sau đại học",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -10102,7 +10165,7 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r4",
@@ -10111,8 +10174,11 @@
         "intent": "policy",
         "query_span": "bảo lưu",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong4_Dieu16",
+          "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -10350,7 +10416,7 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       },
       {
         "request_id": "r5",
@@ -10359,7 +10425,7 @@
         "intent": "direct_value",
         "query_span": "ngành Tâm lý học thuộc khoa nào",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -10394,7 +10460,7 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r6",
@@ -10403,8 +10469,10 @@
         "intent": "policy",
         "query_span": "học lại",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu10"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -10641,10 +10709,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-three_to_six_requests-05",
@@ -10654,9 +10722,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -10665,7 +10733,7 @@
         "intent": "contact",
         "query_span": "đơn vị hỗ trợ xác nhận sinh viên",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -10700,7 +10768,7 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r2",
@@ -10709,8 +10777,10 @@
         "intent": "policy",
         "query_span": "khiếu nại điểm",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu10"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -10946,7 +11016,7 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       },
       {
         "request_id": "r3",
@@ -10955,7 +11025,7 @@
         "intent": "contact",
         "query_span": "điện thoại Khoa Tiếng Anh",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -10990,7 +11060,7 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       },
       {
         "request_id": "r4",
@@ -10999,8 +11069,10 @@
         "intent": "policy",
         "query_span": "tốt nghiệp",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu15"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -11222,10 +11294,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-robustness-01",
@@ -11235,9 +11307,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -11246,7 +11318,7 @@
         "intent": "direct_value",
         "query_span": "k50 toefl ibt 72 doi ra bac nao",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -11288,10 +11360,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-robustness-02",
@@ -11301,9 +11373,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -11312,7 +11384,7 @@
         "intent": "direct_value",
         "query_span": "thoi gian hoc toi da he vlvh",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -11348,10 +11420,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-robustness-03",
@@ -11361,9 +11433,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -11372,7 +11444,7 @@
         "intent": "contact",
         "query_span": "web phong sau dh",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -11406,10 +11478,10 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-robustness-04",
@@ -11419,9 +11491,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -11430,7 +11502,7 @@
         "intent": "direct_value",
         "query_span": "nganh tam ly thuoc khoa nao",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -11465,10 +11537,10 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-robustness-05",
@@ -11478,9 +11550,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -11489,7 +11561,7 @@
         "intent": "direct_value",
         "query_span": "diem B+ ra he 4",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -11525,10 +11597,10 @@
             "source_type": "table"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-robustness-06",
@@ -11538,9 +11610,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -11549,7 +11621,7 @@
         "intent": "formula",
         "query_span": "ct gpa co trong so",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -11585,10 +11657,10 @@
             "source_type": "formula"
           }
         ],
-        "notes": ""
+        "notes": "formula and variables verified against the cited parent section"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-follow_up-01",
@@ -11607,9 +11679,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -11618,8 +11690,11 @@
         "intent": "consequence_or_exception",
         "query_span": "Trường hợp ngoại lệ của mục vừa nêu là gì?",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong4_Dieu16",
+          "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -11857,10 +11932,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-follow_up-02",
@@ -11879,9 +11954,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -11890,8 +11965,10 @@
         "intent": "consequence_or_exception",
         "query_span": "Trường hợp ngoại lệ của mục vừa nêu là gì?",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu15"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -12118,10 +12195,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-follow_up-03",
@@ -12140,9 +12217,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -12151,8 +12228,10 @@
         "intent": "consequence_or_exception",
         "query_span": "Trường hợp ngoại lệ của mục vừa nêu là gì?",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu10"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -12394,10 +12473,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-follow_up-04",
@@ -12416,9 +12495,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -12427,8 +12506,10 @@
         "intent": "consequence_or_exception",
         "query_span": "Trường hợp ngoại lệ của mục vừa nêu là gì?",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K50_QuyCheDaoTao_Chuong3_Dieu12"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -12663,10 +12744,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-follow_up-05",
@@ -12681,11 +12762,11 @@
     "fault_injection": null,
     "expected_outcome": "clarify",
     "expected_effective_cohort": null,
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-follow_up-06",
@@ -12700,11 +12781,11 @@
     "fault_injection": null,
     "expected_outcome": "clarify",
     "expected_effective_cohort": null,
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-cohort_resolution-01",
@@ -12714,11 +12795,11 @@
     "fault_injection": null,
     "expected_outcome": "clarify",
     "expected_effective_cohort": null,
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-cohort_resolution-02",
@@ -12728,11 +12809,11 @@
     "fault_injection": null,
     "expected_outcome": "clarify",
     "expected_effective_cohort": null,
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-cohort_resolution-03",
@@ -12742,9 +12823,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": "K48-K49",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -12753,8 +12834,10 @@
         "intent": "policy",
         "query_span": "điều kiện tốt nghiệp K48-K49",
         "expected_status": "ok",
-        "decision": "pending",
-        "selected_parent_section_ids": [],
+        "decision": "ai_recommended_approved",
+        "selected_parent_section_ids": [
+          "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15"
+        ],
         "candidate_evidence": [
           {
             "origin": "versioned_corpus",
@@ -12975,10 +13058,10 @@
         ],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "gold parents verified against versioned corpus"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-cohort_resolution-04",
@@ -12988,9 +13071,9 @@
     "fault_injection": null,
     "expected_outcome": "execute",
     "expected_effective_cohort": null,
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -12999,7 +13082,7 @@
         "intent": "contact",
         "query_span": "email Phòng Sau đại học",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -13034,10 +13117,10 @@
             "source_type": "catalog"
           }
         ],
-        "notes": ""
+        "notes": "adapter result and source contract verified"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-failure_isolation-01",
@@ -13053,9 +13136,9 @@
     },
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -13064,7 +13147,7 @@
         "intent": "contact",
         "query_span": "email Phòng Đào tạo",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -13073,7 +13156,7 @@
           "fault_type": "request_status"
         },
         "expected_source_records": [],
-        "notes": ""
+        "notes": "deterministic fault contract; no real-data gold claimed"
       },
       {
         "request_id": "r2",
@@ -13082,15 +13165,15 @@
         "intent": "procedure",
         "query_span": "thủ tục bảo lưu",
         "expected_status": "no_match",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "deterministic fault contract; no real-data gold claimed"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-failure_isolation-02",
@@ -13106,9 +13189,9 @@
     },
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -13117,7 +13200,7 @@
         "intent": "contact",
         "query_span": "email Phòng Đào tạo",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -13126,7 +13209,7 @@
           "fault_type": "request_status"
         },
         "expected_source_records": [],
-        "notes": ""
+        "notes": "deterministic fault contract; no real-data gold claimed"
       },
       {
         "request_id": "r2",
@@ -13135,15 +13218,15 @@
         "intent": "procedure",
         "query_span": "thủ tục bảo lưu",
         "expected_status": "error",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "deterministic fault contract; no real-data gold claimed"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-failure_isolation-03",
@@ -13159,9 +13242,9 @@
     },
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -13170,7 +13253,7 @@
         "intent": "contact",
         "query_span": "email Phòng Đào tạo",
         "expected_status": "invalid",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -13179,7 +13262,7 @@
           "fault_type": "request_status"
         },
         "expected_source_records": [],
-        "notes": ""
+        "notes": "deterministic fault contract; no real-data gold claimed"
       },
       {
         "request_id": "r2",
@@ -13188,15 +13271,15 @@
         "intent": "procedure",
         "query_span": "thủ tục bảo lưu",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "deterministic fault contract; no real-data gold claimed"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   },
   {
     "case_id": "hidden-failure_isolation-04",
@@ -13212,9 +13295,9 @@
     },
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
-    "decision": "pending",
-    "reviewer": null,
-    "reviewed_at": null,
+    "decision": "ai_recommended_approved",
+    "reviewer": "codex_ai_evidence_audit",
+    "reviewed_at": "2026-08-19T06:46:02.599177+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -13223,7 +13306,7 @@
         "intent": "contact",
         "query_span": "email Phòng Đào tạo",
         "expected_status": "ok",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": {
@@ -13232,7 +13315,7 @@
           "fault_type": "request_status"
         },
         "expected_source_records": [],
-        "notes": ""
+        "notes": "deterministic fault contract; no real-data gold claimed"
       },
       {
         "request_id": "r2",
@@ -13241,14 +13324,14 @@
         "intent": "procedure",
         "query_span": "thủ tục bảo lưu",
         "expected_status": "unresolved",
-        "decision": "pending",
+        "decision": "ai_recommended_approved",
         "selected_parent_section_ids": [],
         "candidate_evidence": [],
         "structured_audit": null,
         "expected_source_records": [],
-        "notes": ""
+        "notes": "deterministic fault contract; no real-data gold claimed"
       }
     ],
-    "notes": ""
+    "notes": "AI-assisted source review complete; human signature still required."
   }
 ]

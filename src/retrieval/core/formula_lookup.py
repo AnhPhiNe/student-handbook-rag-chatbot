@@ -16,6 +16,7 @@ def formula_lookup(
     slots: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     cohort = normalize_cohort(cohort)
+    formula_rules = [rule for rule in formula_rules if not rule.get("disabled")]
     if cohort:
         formula_rules = [r for r in formula_rules if is_cohort_applicable(r, cohort)]
 

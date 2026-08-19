@@ -46,16 +46,21 @@ FROZEN_DATASET_VERSION = "single-cohort-gold-v1"
 _STOPWORDS = {
     "cho", "cua", "dieu", "dinh", "duoc", "gi", "hay", "hop", "khi", "kien",
     "la", "lam", "nao", "noi", "qua", "quy", "ra", "sao", "the", "thi",
-    "thu", "toi", "trong", "truong", "tuc", "va", "ve", "voi", "xin", "xu",
+    "sinh", "thu", "toi", "tra", "trong", "truong", "tuc", "va", "ve", "vien",
+    "voi", "xem", "xin", "xu",
 }
 _ALIASES = {
     "bao luu": "nghi hoc tam thoi",
     "tam dung hoc": "nghi hoc tam thoi",
     "rut hoc phan": "rut bot hoc phan da dang ky",
     "hoc cai thien": "hoc lai hoc cai thien diem",
+    "hoc lai": "hoc lai hoc cai thien diem",
     "khieu nai diem": "phuc khao khieu nai ket qua hoc tap",
     "mien giam hoc phi": "mien giam hoc phi",
     "cap bang diem": "cap bang diem ket qua hoc tap",
+    "mien hoc phan": "mien hoc mien thi cong nhan ket qua hoc tap chuyen doi tin chi",
+    "tot nghiep": "cong nhan tot nghiep cap bang tot nghiep",
+    "giay to khi tot nghiep": "bang tot nghiep bang diem hoc tap ren luyen giay to",
     "chuyen chuong trinh": "chuyen nganh chuyen chuong trinh dao tao",
     "chuyen nganh": "chuyen nganh chuyen chuong trinh dao tao",
     "canh bao hoc vu": "canh bao ket qua hoc tap",
@@ -98,6 +103,40 @@ def _expanded_tokens(value: Any) -> set[str]:
         if source in text:
             text = f"{text} {replacement}"
     return {token for token in text.split() if len(token) > 2 and token not in _STOPWORDS}
+
+
+def _alias_phrases(value: Any) -> set[str]:
+    text = _normalize(value)
+    phrases: set[str] = set()
+    for source, replacement in _ALIASES.items():
+        if source not in text:
+            continue
+        phrases.add(source)
+        tokens = [token for token in replacement.split() if token not in _STOPWORDS]
+        if len(tokens) >= 2:
+            phrases.add(" ".join(tokens[:2]))
+    return {phrase for phrase in phrases if " " in phrase}
+
+
+def _annotation_query(case: Mapping[str, Any], request: Mapping[str, Any]) -> str:
+    """Build evidence-search text from user-visible, provenance-bearing inputs.
+
+    A follow-up span such as ``Nội dung đó ...`` is not independently meaningful.
+    Candidate discovery may therefore use the grounded user turn, but never an
+    expected answer, tool output, or hidden gold label.
+    """
+    parts = [str(request.get("query_span") or "")]
+    expected = case.get("expected") if isinstance(case.get("expected"), Mapping) else {}
+    if expected.get("context_mode") == "follow_up":
+        grounded_parts: list[str] = []
+        for turn in case.get("chat_history") or []:
+            if isinstance(turn, Mapping) and turn.get("role") == "user":
+                content = str(turn.get("content") or "").strip()
+                if content:
+                    grounded_parts.append(content)
+        if grounded_parts:
+            parts = grounded_parts
+    return " ".join(parts)
 
 
 def _file_versions(root: Path = ROOT) -> dict[str, str | None]:
@@ -326,13 +365,16 @@ def _candidate_from_group(
 
 
 def _rag_candidates(
+    case: Mapping[str, Any],
     request: Mapping[str, Any],
     cohort: str,
     *,
     legacy: list[dict[str, Any]],
     groups: Mapping[tuple[str, str], list[dict[str, Any]]],
 ) -> list[dict[str, Any]]:
-    query_tokens = _expanded_tokens(request.get("query_span"))
+    annotation_query = _annotation_query(case, request)
+    query_tokens = _expanded_tokens(annotation_query)
+    alias_phrases = _alias_phrases(annotation_query)
     ranked_legacy: list[tuple[float, dict[str, Any]]] = []
     for row in legacy:
         if row["cohort"] != cohort:
@@ -388,7 +430,12 @@ def _rag_candidates(
         )
         title_coverage = len(query_tokens & title_tokens) / max(1, len(query_tokens))
         content_coverage = len(query_tokens & _expanded_tokens(text)) / max(1, len(query_tokens))
-        coverage = 0.8 * title_coverage + 0.2 * content_coverage
+        normalized_text = _normalize(text)
+        phrase_match = 1.0 if any(phrase in normalized_text for phrase in alias_phrases) else 0.0
+        coverage = min(
+            1.0,
+            0.8 * title_coverage + 0.2 * content_coverage + 0.35 * phrase_match,
+        )
         direct.append((coverage, parent_id, chunks))
     direct.sort(key=lambda item: item[0], reverse=True)
     for coverage, parent_id, chunks in direct:
@@ -405,7 +452,7 @@ def _rag_candidates(
         candidates_by_parent.values(),
         key=lambda item: float(item.get("annotation_match_score") or 0),
         reverse=True,
-    )[:5]
+    )[:10]
 
 
 def _promoted_evidence(candidates: list[dict[str, Any]]) -> dict[str, Any] | None:
@@ -477,7 +524,9 @@ def _audit_suite(
                 )
             else:
                 cohort = str(expected.get("effective_cohort") or "")
-                candidates = _rag_candidates(request, cohort, legacy=legacy, groups=groups)
+                candidates = _rag_candidates(
+                    case, request, cohort, legacy=legacy, groups=groups
+                )
                 promoted = _promoted_evidence(candidates) if split == "dev" else None
                 request["evidence_candidates"] = candidates
                 request["expected_evidence"] = promoted or {}
@@ -540,6 +589,8 @@ def _review_queue(
                 "case_id": case["id"],
                 "query": case["query"],
                 "selected_cohort": case.get("selected_cohort"),
+                "chat_history": case.get("chat_history") or [],
+                "fault_injection": case.get("fault_injection"),
                 "expected_outcome": case.get("expected", {}).get("outcome"),
                 "expected_effective_cohort": case.get("expected", {}).get("effective_cohort"),
                 "decision": "pending",

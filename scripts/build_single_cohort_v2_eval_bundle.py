@@ -168,7 +168,7 @@ def _structured_specs(hidden: bool) -> list[tuple[str, str, str, dict[str, Any]]
         ("email Phòng Đào tạo", "office", "contact", {"office": "Phòng Đào tạo", "requested_field": "email"}),
         ("website Khoa Công nghệ Thông tin", "faculty", "contact", {"faculty": "Khoa Công nghệ Thông tin", "requested_field": "website"}),
         ("ngành Công nghệ Thông tin thuộc khoa nào", "program", "direct_value", {"program_or_faculty": "Công nghệ Thông tin", "requested_field": "faculty"}),
-        ("công thức tính điểm xét học bổng", "formula", "formula", {"formula_type": "scholarship_score"}),
+        ("công thức điểm trung bình chung theo tín chỉ", "formula", "formula", {"formula_type": "gpa_weighted_average"}),
         ("điểm rèn luyện 82 xếp loại gì", "scoring", "direct_value", {"operation": "conduct_classification", "score_or_grade": 82}),
     ]
 
@@ -188,7 +188,7 @@ def _single_rag(split: str, hidden: bool, count: int) -> list[dict[str, Any]]:
     topics = (
         ["điều kiện được xét tốt nghiệp", "quy trình xin học lại", "trường hợp bị cảnh báo học vụ", "thủ tục chuyển chương trình"]
         if hidden
-        else ["thủ tục bảo lưu", "điều kiện tốt nghiệp", "quy định học cải thiện", "xử lý nghỉ học quá hạn", "đăng ký học phần", "rút học phần", "miễn giảm học phí", "khiếu nại điểm", "xét thôi học", "cấp bảng điểm"]
+        else ["thủ tục bảo lưu", "điều kiện tốt nghiệp", "quy định học cải thiện", "xử lý nghỉ học quá hạn", "đăng ký học phần", "rút học phần", "miễn giảm học phí", "khiếu nại điểm", "xét thôi học", "quyền nhận bằng và bảng điểm sau tốt nghiệp"]
     )
     phrase = "Sổ tay K50 quy định thế nào về" if hidden else "K51 cần tra cứu"
     return [_case(split, "single_rag", i + 1, f"{phrase} {topic}?", [_request(1, "rag", topic, intent="policy", cohort=cohort)], selected_cohort=cohort, effective_cohort=cohort) for i, topic in enumerate(topics[:count])]
@@ -273,7 +273,7 @@ def _three_to_six(split: str, hidden: bool, count: int) -> list[dict[str, Any]]:
 
 def _robustness(split: str, hidden: bool, count: int) -> list[dict[str, Any]]:
     cohort = "K50" if hidden else "K51"
-    queries = (["k50 toefl ibt 72 doi ra bac nao", "thoi gian hoc toi da he vlvh", "web phong sau dh", "nganh tam ly thuoc khoa nao", "diem B+ ra he 4", "ct gpa co trong so"] if hidden else ["k51 ielts 6.0 tuong duong bac may", "thoi gian hoc toi da he chinh quy", "mail pdt", "web khoa cntt", "nganh cntt thuoc khoa nao", "diem hb loai gioi", "gpa 3.4 loai gi", "don vi lo bhyt", "cong thuc diem hoc bong", "điểm rèn luyên 82 loại gì", "IELST 6.0 đổi bậc", "phong dao tao email", "khoa cong nghe tt website", "ct tinh diem hb"])
+    queries = (["k50 toefl ibt 72 doi ra bac nao", "thoi gian hoc toi da he vlvh", "web phong sau dh", "nganh tam ly thuoc khoa nao", "diem B+ ra he 4", "ct gpa co trong so"] if hidden else ["k51 ielts 6.0 tuong duong bac may", "thoi gian hoc toi da he chinh quy", "mail pdt", "web khoa cntt", "nganh cntt thuoc khoa nao", "diem hb loai gioi", "gpa 3.4 loai gi", "don vi lo bhyt", "cong thuc gpa co trong so", "điểm rèn luyên 82 loại gì", "IELST 6.0 đổi bậc", "phong dao tao email", "khoa cong nghe tt website", "ct tinh diem tbc"])
     specs = _structured_specs(hidden)
     spec_indexes = (
         [0, 1, 5, 7, 3, 8]

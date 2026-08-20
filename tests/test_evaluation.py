@@ -405,6 +405,95 @@ def test_compact_packet_keeps_required_fact() -> None:
     assert packet["required_facts_present_in_packet"] == ["Tối đa 8 năm học."]
 
 
+def test_compact_packet_balances_multi_request_evidence() -> None:
+    case = {
+        "id": "multi-request",
+        "query": "Sáu yêu cầu độc lập",
+        "cohort": "K51",
+        "answerability": "answerable",
+        "ground_truth": ("gold " * 180) + "GROUND_TRUTH_TAIL",
+        "required_facts": [],
+        "forbidden_claims": [],
+        "expected_citations": [
+            {
+                "request_id": f"r{request_index}",
+                "parent_section_id": f"expected-{request_index}",
+            }
+            for request_index in range(1, 7)
+        ],
+    }
+    citations = [
+        {
+            "request_id": f"r{request_index}",
+            "request_index": request_index - 1,
+            "chunk_id": f"chunk-{request_index}-{candidate_index}",
+            "content": f"EVIDENCE_R{request_index}_{candidate_index}.",
+        }
+        for request_index in range(1, 7)
+        for candidate_index in range(2)
+    ]
+    answer = {
+        "answer": ("answer " * 300) + "ANSWER_TAIL",
+        "citations": citations,
+    }
+
+    packet = compact_judge_packet(case, answer)
+
+    assert {citation["request_id"] for citation in packet["citations"]} == {
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5",
+        "r6",
+    }
+    assert {citation["request_id"] for citation in packet["expected_citations"]} == {
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5",
+        "r6",
+    }
+    assert all(
+        f"EVIDENCE_R{request_index}_0" in packet["retrieved_context"]
+        for request_index in range(1, 7)
+    )
+    assert "GROUND_TRUTH_TAIL" in packet["ground_truth"]
+    assert "ANSWER_TAIL" in packet["answer"]
+
+
+def test_compact_packet_prioritizes_source_lines_supporting_answer_claims() -> None:
+    case = {
+        "id": "claim-coverage",
+        "query": "Điều kiện áp dụng là gì?",
+        "cohort": "K51",
+        "answerability": "answerable",
+        "ground_truth": "Điều kiện trực tiếp.",
+        "required_facts": [],
+        "forbidden_claims": [],
+        "expected_citations": [],
+    }
+    answer = {
+        "answer": "Khối lượng tối thiểu là 2/3 và quá hạn được xem như tự ý bỏ học.",
+        "citations": [
+            {
+                "request_id": "r1",
+                "chunk_id": "relevant",
+                "content": (
+                    ("Mốc phụ 01, 02, 03 không liên quan. " * 50)
+                    + "Khối lượng tối thiểu là 2/3; quá hạn được xem như tự ý bỏ học."
+                ),
+            }
+        ],
+    }
+
+    packet = compact_judge_packet(case, answer, max_input_tokens=300)
+
+    assert "Khối lượng tối thiểu là 2/3" in packet["retrieved_context"]
+    assert "tự ý bỏ học" in packet["retrieved_context"]
+
+
 def test_judge_parser_rejects_out_of_range_score() -> None:
     payload = json.loads(_valid_judge_payload())
     payload["faithfulness"] = 1.1

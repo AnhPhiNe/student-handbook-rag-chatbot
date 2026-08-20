@@ -179,15 +179,20 @@ def compact_judge_packet(
     case: dict[str, Any],
     answer_record: dict[str, Any],
     *,
-    max_input_tokens: int = 2_800,
+    max_input_tokens: int = 5_000,
 ) -> dict[str, Any]:
     """Build a bounded packet while preserving required facts when available."""
-    actual_citations = (
+    actual_citations = list(
         answer_record.get("citations_used") or answer_record.get("citations") or []
     )
+    selected_citations = _balanced_citation_sample(actual_citations, max_items=8)
     citation_context = "\n".join(
-        str(citation.get("content") or "")
-        for citation in actual_citations[:5]
+        (
+            f"[{citation.get('request_id')}] {citation.get('content')}"
+            if citation.get("request_id")
+            else str(citation.get("content") or "")
+        )
+        for citation in selected_citations
         if isinstance(citation, dict)
     )
     structured_context = _build_structured_judge_context(answer_record)
@@ -201,6 +206,11 @@ def compact_judge_packet(
         if part.strip()
     )
     required = [str(item) for item in case.get("required_facts") or []]
+    answer_text = str(answer_record.get("answer") or "")
+    answer_tokens = re.findall(r"\w+", answer_text.lower())
+    answer_terms = set(answer_tokens)
+    answer_bigrams = set(zip(answer_tokens, answer_tokens[1:]))
+    answer_numbers = set(re.findall(r"\d+(?:[.,]\d+)?", answer_text.lower()))
     query_terms = set(re.findall(r"\w+", str(case.get("query") or "").lower()))
     sentences = [
         part.strip()
@@ -222,11 +232,38 @@ def compact_judge_packet(
         if match and match not in selected:
             selected.append(match)
 
+    for citation in selected_citations:
+        citation_sentences = [
+            part.strip()
+            for part in re.split(
+                r"(?<=[.!?;])\s+|\n+",
+                str(citation.get("content") or ""),
+            )
+            if part.strip()
+        ]
+        if not citation_sentences:
+            continue
+        best = max(
+            citation_sentences,
+            key=lambda line: _judge_sentence_score(
+                line,
+                answer_bigrams=answer_bigrams,
+                answer_terms=answer_terms,
+                answer_numbers=answer_numbers,
+                query_terms=query_terms,
+            ),
+        )
+        if best not in selected:
+            selected.append(best)
+
     ranked = sorted(
         sentences,
-        key=lambda line: (
-            bool(re.search(r"\d", line)),
-            len(query_terms & set(re.findall(r"\w+", line.lower()))),
+        key=lambda line: _judge_sentence_score(
+            line,
+            answer_bigrams=answer_bigrams,
+            answer_terms=answer_terms,
+            answer_numbers=answer_numbers,
+            query_terms=query_terms,
         ),
         reverse=True,
     )
@@ -235,6 +272,8 @@ def compact_judge_packet(
         {
             key: citation.get(key)
             for key in (
+                "request_id",
+                "request_index",
                 "parent_section_id",
                 "chunk_id",
                 "title",
@@ -245,9 +284,13 @@ def compact_judge_packet(
             )
             if citation.get(key) is not None
         }
-        for citation in actual_citations[:5]
+        for citation in selected_citations
         if isinstance(citation, dict)
     ]
+    expected_citations = _balanced_citation_sample(
+        list(case.get("expected_citations") or []),
+        max_items=8,
+    )
     packet = {
         "case_id": case["id"],
         "query": case["query"],
@@ -256,13 +299,14 @@ def compact_judge_packet(
         "question_style": case.get("question_style"),
         "question_specificity": case.get("question_specificity"),
         "expected_answer_behavior": case.get("expected_answer_behavior"),
-        "ground_truth": str(case.get("ground_truth") or "")[:650],
+        "ground_truth": str(case.get("ground_truth") or "")[:1_600],
         "required_facts": required,
         "forbidden_claims": case.get("forbidden_claims") or [],
         "expected_citations": [
             {
                 key: citation.get(key)
                 for key in (
+                    "request_id",
                     "parent_section_id",
                     "cohort",
                     "document_id",
@@ -270,15 +314,15 @@ def compact_judge_packet(
                 )
                 if citation.get(key) is not None
             }
-            for citation in (case.get("expected_citations") or [])[:5]
+            for citation in expected_citations
         ],
-        "answer": str(answer_record.get("answer") or "")[:1_800],
+        "answer": answer_text[:2_800],
         "citations": compact_citations,
         "retrieved_context": "",
     }
     max_packet_chars = max_input_tokens * 3 - 700
     fixed_chars = len(json.dumps(packet, ensure_ascii=False, separators=(",", ":")))
-    budget_chars = max(900, max_packet_chars - fixed_chars)
+    budget_chars = max(300, max_packet_chars - fixed_chars - 400)
     compact: list[str] = []
     used = 0
     for line in selected:
@@ -303,6 +347,62 @@ def compact_judge_packet(
     return packet
 
 
+def _balanced_citation_sample(
+    citations: list[Any],
+    *,
+    max_items: int,
+) -> list[dict[str, Any]]:
+    """Round-robin citations so every atomic request keeps judge evidence."""
+    groups: dict[str, list[dict[str, Any]]] = {}
+    order: list[str] = []
+    for citation in citations:
+        if not isinstance(citation, dict):
+            continue
+        scope = str(citation.get("request_id") or "__unscoped__")
+        if scope not in groups:
+            groups[scope] = []
+            order.append(scope)
+        groups[scope].append(citation)
+
+    selected: list[dict[str, Any]] = []
+    offset = 0
+    while len(selected) < max_items:
+        added = False
+        for scope in order:
+            scoped = groups[scope]
+            if offset >= len(scoped):
+                continue
+            selected.append(scoped[offset])
+            added = True
+            if len(selected) == max_items:
+                break
+        if not added:
+            break
+        offset += 1
+    return selected
+
+
+def _judge_sentence_score(
+    line: str,
+    *,
+    answer_bigrams: set[tuple[str, str]],
+    answer_terms: set[str],
+    answer_numbers: set[str],
+    query_terms: set[str],
+) -> tuple[int, int, int, int]:
+    normalized = line.lower()
+    line_tokens = re.findall(r"\w+", normalized)
+    line_terms = set(line_tokens)
+    line_bigrams = set(zip(line_tokens, line_tokens[1:]))
+    line_numbers = set(re.findall(r"\d+(?:[.,]\d+)?", normalized))
+    return (
+        len(answer_bigrams & line_bigrams),
+        len(answer_terms & line_terms),
+        len(answer_numbers & line_numbers),
+        len(query_terms & line_terms),
+    )
+
+
 def _build_structured_judge_context(answer_record: dict[str, Any]) -> str:
     parts: list[str] = []
     for key, label in (
@@ -314,9 +414,12 @@ def _build_structured_judge_context(answer_record: dict[str, Any]) -> str:
         if not value:
             continue
         parts.append(f"{label}:\n{_bounded_json(value, max_chars=5_000)}")
-    citations = answer_record.get("citations_used") or answer_record.get("citations") or []
+    citations = list(
+        answer_record.get("citations_used") or answer_record.get("citations") or []
+    )
     if citations:
-        parts.append(f"CITATION_METADATA:\n{_bounded_json(citations[:5], max_chars=2_500)}")
+        selected = _balanced_citation_sample(citations, max_items=8)
+        parts.append(f"CITATION_METADATA:\n{_bounded_json(selected, max_chars=2_500)}")
     return "\n\n".join(parts)
 
 

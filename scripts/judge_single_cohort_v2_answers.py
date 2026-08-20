@@ -35,14 +35,21 @@ def _load(path: Path) -> Any:
 
 def _judge_case(case: Mapping[str, Any]) -> dict[str, Any]:
     expected = case.get("expected") or {}
-    evidence = [
-        request.get("expected_evidence") or {}
-        for request in expected.get("atomic_requests") or []
-        if request.get("request_kind") == "rag"
-    ]
+    atomic_requests = expected.get("atomic_requests") or []
+    evidence = []
+    for index, request in enumerate(atomic_requests):
+        if request.get("request_kind") != "rag":
+            continue
+        evidence.append(
+            {
+                "request_id": request.get("request_id") or f"r{index + 1}",
+                "query_span": request.get("query_span"),
+                "evidence": request.get("expected_evidence") or {},
+            }
+        )
     structured_results = [
         request.get("expected_result")
-        for request in expected.get("atomic_requests") or []
+        for request in atomic_requests
         if request.get("request_kind") == "structured"
         and request.get("expected_status") == "ok"
         and request.get("expected_result") is not None
@@ -52,9 +59,9 @@ def _judge_case(case: Mapping[str, Any]) -> dict[str, Any]:
         for value in structured_results
     ]
     ground_truth_parts.extend(
-        excerpt
+        f"[{item['request_id']} | {item.get('query_span') or ''}] {excerpt}"
         for item in evidence
-        for excerpt in item.get("evidence_excerpts") or []
+        for excerpt in item["evidence"].get("evidence_excerpts") or []
         if excerpt
     )
     return {
@@ -71,12 +78,13 @@ def _judge_case(case: Mapping[str, Any]) -> dict[str, Any]:
         "forbidden_claims": [],
         "expected_citations": [
             {
+                "request_id": item["request_id"],
                 "parent_section_id": binding.get("parent_section_id"),
                 "document_id": binding.get("document_id"),
                 "cohort": expected.get("effective_cohort"),
             }
             for item in evidence
-            for binding in item.get("source_bindings") or []
+            for binding in item["evidence"].get("source_bindings") or []
         ],
     }
 

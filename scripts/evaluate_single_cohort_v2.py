@@ -61,7 +61,7 @@ from src.retrieval.core.structured_routing import (  # noqa: E402
 PLANNER_MODEL = "qwen/qwen3.6-27b"
 ANSWER_MODEL = "gemini-3.1-flash-lite"
 JUDGE_MODEL = "openai/gpt-oss-120b"
-JUDGE_PROMPT_VERSION = "single-cohort-answer-judge-v1"
+JUDGE_PROMPT_VERSION = "single-cohort-answer-judge-v2"
 ANSWER_CONFIG_PATH = ROOT / "configs" / "answer_generation.yaml"
 HIDDEN_ATTEMPT_PATH = (
     ROOT / "data/eval/reports/single_cohort_v2/hidden_release_attempt.json"

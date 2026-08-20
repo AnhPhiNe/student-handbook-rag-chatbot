@@ -76,6 +76,118 @@ def _artifact_fingerprint() -> dict[str, str | None]:
     return release_artifact_fingerprint(ROOT)
 
 
+def _planner_section(rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
+    """Build the auditable Planner section used by checkpoints and final reports."""
+
+    materialized = [dict(row) for row in rows]
+    evaluable = [row for row in materialized if not row.get("planner_skipped")]
+    return {
+        "passed": sum(bool(row.get("passed", False)) for row in evaluable),
+        "exact_passed": sum(
+            bool(row.get("exact_passed", row.get("passed", False)))
+            for row in evaluable
+        ),
+        "semantic_passed": sum(
+            bool(row.get("semantic_passed", row.get("passed", False)))
+            for row in evaluable
+        ),
+        "execution_eligible": sum(
+            bool(
+                row.get(
+                    "execution_eligible",
+                    row.get("semantic_passed", row.get("passed", False)),
+                )
+            )
+            for row in evaluable
+        ),
+        "provider_failures": sum(
+            bool(row.get("provider_failure")) for row in evaluable
+        ),
+        "case_total": len(materialized),
+        "planner_evaluable_total": len(evaluable),
+        "deterministic_skipped": len(materialized) - len(evaluable),
+        "failure_taxonomy": failure_taxonomy(materialized),
+        "rows": materialized,
+    }
+
+
+def _planner_checkpoint_report(
+    planner_rows: Mapping[str, Iterable[Mapping[str, Any]]],
+    *,
+    manifest: Mapping[str, Any],
+    validation: Any,
+) -> dict[str, Any]:
+    """Bind Planner-only output to the exact frozen runtime and dataset."""
+
+    return {
+        "report_type": "single_cohort_v2_planner_checkpoint",
+        "timestamp": datetime.now(UTC).isoformat(),
+        "commit": _commit(),
+        "schema_version": manifest.get("schema_version"),
+        "evaluation_protocol_version": EVALUATION_PROTOCOL_VERSION,
+        "models": {"planner": PLANNER_MODEL},
+        "prompt_version": ROUTER_PROMPT_VERSION,
+        "dataset_prompt_version": manifest.get("prompt_version"),
+        "registry_version": manifest.get("registry_version"),
+        "dataset_hashes": validation.hashes,
+        "artifact_fingerprint": _artifact_fingerprint(),
+        "contract": {
+            "passed": validation.valid,
+            "errors": validation.errors,
+            "coverage": validation.coverage,
+        },
+        "planner": {
+            suite: _planner_section(rows) for suite, rows in planner_rows.items()
+        },
+    }
+
+
+def _write_json_atomic(path: Path, payload: Mapping[str, Any]) -> None:
+    """Write a report without exposing a partially serialized checkpoint."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f".{path.name}.{uuid.uuid4().hex}.tmp")
+    temporary.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    temporary.replace(path)
+
+
+def _load_bound_planner_report(
+    path: Path,
+    *,
+    manifest: Mapping[str, Any],
+    validation: Any,
+) -> dict[str, list[dict[str, Any]]]:
+    """Reject stale Planner rows before they can authorize executor/model calls."""
+
+    report = json.loads(path.read_text(encoding="utf-8"))
+    expected = {
+        "commit": _commit(),
+        "dataset_hashes": validation.hashes,
+        "artifact_fingerprint": _artifact_fingerprint(),
+        "prompt_version": ROUTER_PROMPT_VERSION,
+        "dataset_prompt_version": manifest.get("prompt_version"),
+        "registry_version": manifest.get("registry_version"),
+    }
+    for field, value in expected.items():
+        if report.get(field) != value:
+            raise ValueError(f"Planner report {field} does not match current freeze")
+    if (report.get("models") or {}).get("planner") != PLANNER_MODEL:
+        raise ValueError("Planner report does not use the pinned Planner model")
+    if not (report.get("contract") or {}).get("passed"):
+        raise ValueError("Planner report was not produced from a valid frozen bundle")
+
+    suites: dict[str, list[dict[str, Any]]] = {}
+    for suite, info in (report.get("planner") or {}).items():
+        if isinstance(info, Mapping) and isinstance(info.get("rows"), list):
+            suites[str(suite)] = list(info["rows"])
+    if not suites:
+        raise ValueError("Planner report contains no Planner rows")
+    return suites
+
+
 def _hidden_attempt_binding(
     dataset_hashes: Mapping[str, str], manifest: Mapping[str, Any]
 ) -> dict[str, Any]:
@@ -1242,6 +1354,28 @@ def _working_tree_is_clean() -> bool:
     ).strip()
 
 
+def _development_stage_error(
+    *,
+    hidden_requested: bool,
+    planner: str,
+    run_executor: str,
+    run_answers: str,
+    planner_output: Path | None,
+) -> str | None:
+    """Keep costly development stages separated by an inspectable checkpoint."""
+
+    if hidden_requested or planner == "none":
+        return None
+    if planner_output is None:
+        return "Development Planner evaluation requires --planner-output."
+    if run_executor != "none" or run_answers != "none":
+        return (
+            "Development Planner must run alone. Inspect its checkpoint, then run "
+            "executor/answers separately with --planner-report."
+        )
+    return None
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--planner", choices=("none", "dev", "hidden", "both"), default="none")
@@ -1252,6 +1386,7 @@ def main() -> None:
     parser.add_argument("--confirm-hidden-frozen", action="store_true")
     parser.add_argument("--retry-provider-outage", action="store_true")
     parser.add_argument("--planner-report", type=Path)
+    parser.add_argument("--planner-output", type=Path)
     parser.add_argument("--dev-report", type=Path)
     parser.add_argument("--quality-report", type=Path)
     parser.add_argument("--parity-report", type=Path)
@@ -1266,6 +1401,19 @@ def main() -> None:
     )
     if hidden_requested and not args.confirm_hidden_frozen:
         parser.error("Hidden evaluation requires --confirm-hidden-frozen after code/prompt/config freeze.")
+    if hidden_requested and args.planner_output is not None:
+        parser.error(
+            "Planner checkpoints are development-only; hidden must remain one sealed attempt."
+        )
+    stage_error = _development_stage_error(
+        hidden_requested=hidden_requested,
+        planner=args.planner,
+        run_executor=args.run_executor,
+        run_answers=args.run_answers,
+        planner_output=args.planner_output,
+    )
+    if stage_error:
+        parser.error(stage_error)
     if hidden_requested and not (
         args.planner == "hidden"
         and args.run_executor == "hidden"
@@ -1359,14 +1507,29 @@ def main() -> None:
             parser.error(str(exc))
     planner_rows: dict[str, list[dict[str, Any]]] = {}
     if args.planner_report:
-        report_data = json.loads(args.planner_report.read_text(encoding="utf-8"))
-        for suite, info in (report_data.get("planner") or {}).items():
-            if isinstance(info, dict) and "rows" in info:
-                planner_rows[suite] = info["rows"]
+        try:
+            planner_rows.update(
+                _load_bound_planner_report(
+                    args.planner_report,
+                    manifest=manifest,
+                    validation=validation,
+                )
+            )
+        except ValueError as exc:
+            parser.error(str(exc))
     if validation.valid and args.planner != "none":
         suites = ("dev", "hidden") if args.planner == "both" else (args.planner,)
         for suite in suites:
             planner_rows[suite] = run_live_planner(_load_cases(suite))
+        if args.planner_output is not None:
+            _write_json_atomic(
+                args.planner_output,
+                _planner_checkpoint_report(
+                    planner_rows,
+                    manifest=manifest,
+                    validation=validation,
+                ),
+            )
 
     pipeline: AnswerPipeline | None = None
     execution_rows: list[dict[str, Any]] = []
@@ -1482,32 +1645,7 @@ def main() -> None:
         "artifact_fingerprint": _artifact_fingerprint(),
         "contract": {"passed": validation.valid, "errors": validation.errors, "coverage": validation.coverage},
         "planner": {
-            suite: {
-                "passed": sum(
-                    row.get("passed", False)
-                    for row in rows
-                    if not row.get("planner_skipped")
-                ),
-                "exact_passed": sum(
-                    row.get("exact_passed", row.get("passed", False))
-                    for row in rows
-                    if not row.get("planner_skipped")
-                ),
-                "semantic_passed": sum(
-                    row.get("semantic_passed", row.get("passed", False))
-                    for row in rows
-                    if not row.get("planner_skipped")
-                ),
-                "case_total": len(rows),
-                "planner_evaluable_total": sum(
-                    not row.get("planner_skipped") for row in rows
-                ),
-                "deterministic_skipped": sum(
-                    bool(row.get("planner_skipped")) for row in rows
-                ),
-                "failure_taxonomy": failure_taxonomy(rows),
-                "rows": rows,
-            }
+            suite: _planner_section(rows)
             for suite, rows in planner_rows.items()
         },
         "executor_retrieval": {"failure_taxonomy": failure_taxonomy(execution_rows), "rows": execution_rows},
@@ -1530,7 +1668,7 @@ def main() -> None:
         "release_ready": gates.passed,
     }
     output = args.output or BUNDLE_DIR / "latest_evaluation_report.json"
-    output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    _write_json_atomic(output, report)
     print(
         json.dumps(
             {

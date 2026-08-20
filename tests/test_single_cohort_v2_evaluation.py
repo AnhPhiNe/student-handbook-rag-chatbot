@@ -3,6 +3,8 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -584,6 +586,153 @@ def test_live_planner_rejects_router_cache_hits_from_live_metrics() -> None:
 
     assert rows[0]["failure_type"] == "evaluation_integrity"
     assert rows[0]["provider_failure"] is True
+
+
+def test_planner_checkpoint_exposes_execution_and_provider_counts(
+    monkeypatch,
+) -> None:
+    monkeypatch.setattr(evaluator, "_commit", lambda: "commit-current")
+    monkeypatch.setattr(
+        evaluator,
+        "_artifact_fingerprint",
+        lambda: {"code": "fingerprint-current"},
+    )
+    validation = SimpleNamespace(
+        valid=True,
+        errors=[],
+        coverage={"cases": 3},
+        hashes={"dev.json": "dev-hash"},
+    )
+    rows = [
+        {
+            "id": "dev-ok",
+            "passed": True,
+            "exact_passed": False,
+            "semantic_passed": True,
+            "execution_eligible": True,
+            "provider_failure": False,
+        },
+        {
+            "id": "dev-provider",
+            "passed": False,
+            "semantic_passed": False,
+            "execution_eligible": False,
+            "provider_failure": True,
+            "failure_type": "provider",
+        },
+        {
+            "id": "dev-tampering",
+            "planner_skipped": True,
+            "passed": False,
+            "provider_failure": False,
+            "failure_type": "deterministic_fault_suite",
+        },
+    ]
+
+    report = evaluator._planner_checkpoint_report(
+        {"dev": rows},
+        manifest={
+            "schema_version": "schema-v1",
+            "prompt_version": "dataset-prompt",
+            "registry_version": "registry-v2",
+        },
+        validation=validation,
+    )
+
+    assert report["report_type"] == "single_cohort_v2_planner_checkpoint"
+    assert report["commit"] == "commit-current"
+    assert report["dataset_hashes"] == {"dev.json": "dev-hash"}
+    assert report["artifact_fingerprint"] == {"code": "fingerprint-current"}
+    assert report["planner"]["dev"]["case_total"] == 3
+    assert report["planner"]["dev"]["planner_evaluable_total"] == 2
+    assert report["planner"]["dev"]["semantic_passed"] == 1
+    assert report["planner"]["dev"]["execution_eligible"] == 1
+    assert report["planner"]["dev"]["provider_failures"] == 1
+    assert report["planner"]["dev"]["rows"] == rows
+
+
+def test_bound_planner_report_rejects_stale_freeze(tmp_path, monkeypatch) -> None:
+    monkeypatch.setattr(evaluator, "_commit", lambda: "commit-current")
+    monkeypatch.setattr(
+        evaluator,
+        "_artifact_fingerprint",
+        lambda: {"code": "fingerprint-current"},
+    )
+    validation = SimpleNamespace(
+        valid=True,
+        errors=[],
+        coverage={},
+        hashes={"dev.json": "dev-hash"},
+    )
+    manifest = {
+        "prompt_version": "dataset-prompt",
+        "registry_version": "registry-v2",
+    }
+    report = evaluator._planner_checkpoint_report(
+        {"dev": [{"id": "dev-ok", "execution_eligible": True}]},
+        manifest=manifest,
+        validation=validation,
+    )
+    path = tmp_path / "planner.json"
+    evaluator._write_json_atomic(path, report)
+
+    loaded = evaluator._load_bound_planner_report(
+        path,
+        manifest=manifest,
+        validation=validation,
+    )
+    assert loaded["dev"][0]["id"] == "dev-ok"
+    assert not list(tmp_path.glob(".*.tmp"))
+
+    report["commit"] = "stale-commit"
+    path.write_text(json.dumps(report), encoding="utf-8")
+    with pytest.raises(ValueError, match="commit"):
+        evaluator._load_bound_planner_report(
+            path,
+            manifest=manifest,
+            validation=validation,
+        )
+
+
+def test_development_planner_requires_checkpoint_and_separate_downstream() -> None:
+    assert evaluator._development_stage_error(
+        hidden_requested=False,
+        planner="dev",
+        run_executor="none",
+        run_answers="none",
+        planner_output=None,
+    ) == "Development Planner evaluation requires --planner-output."
+
+    assert "must run alone" in str(
+        evaluator._development_stage_error(
+            hidden_requested=False,
+            planner="dev",
+            run_executor="dev",
+            run_answers="dev",
+            planner_output=Path("planner.json"),
+        )
+    )
+
+    assert (
+        evaluator._development_stage_error(
+            hidden_requested=False,
+            planner="dev",
+            run_executor="none",
+            run_answers="none",
+            planner_output=Path("planner.json"),
+        )
+        is None
+    )
+    assert (
+        evaluator._development_stage_error(
+            hidden_requested=True,
+            planner="hidden",
+            run_executor="hidden",
+            run_answers="hidden",
+            planner_output=None,
+        )
+        is None
+    )
 
 
 def test_hidden_freeze_requires_a_current_passing_development_report(

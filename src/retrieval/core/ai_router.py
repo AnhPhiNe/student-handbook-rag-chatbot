@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from email.utils import parsedate_to_datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from groq import Groq
 import yaml
@@ -32,9 +32,9 @@ from .query_context import select_effective_query, validated_correction_provenan
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.2"
-ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.4"
-ROUTER_VALIDATOR_VERSION = "single-cohort-validator-v2.4"
+ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.3"
+ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.5"
+ROUTER_VALIDATOR_VERSION = "single-cohort-validator-v2.5"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -43,15 +43,14 @@ _RETRY_TEXT_RE = re.compile(
 )
 
 ROUTER_SYSTEM_PROMPT = """
-Bạn là Retrieval Planner v2 cho Sổ tay Sinh viên HCMUE. Chỉ lập kế hoạch tra cứu;
-không trả lời, tạo citation/retrieval_query. Chỉ xuất JSON theo OUTPUT CONTRACT.
+Retrieval Planner v2 Sổ tay HCMUE. Chỉ lập plan tra cứu;
+Không trả lời/citation/retrieval_query; chỉ xuất JSON theo OUTPUT CONTRACT.
 
 QUERY CONTEXT
-- standalone chỉ dùng QUERY. follow_up: standalone_query chỉ ghép QUERY với các
-  evidence_span liên tục, nguyên văn từ turn trong referenced_turn_ids; không thêm nhãn,
-  diễn giải hay suy luận. Giữ nguyên số, phủ định, điều kiện. Mỗi fact history
-  (topic/cohort) cần evidence_span nguyên văn và turn_id tuyệt đối; giữ mọi ràng buộc QUERY.
-  query_span của request follow_up luôn là span trong QUERY, không lấy topic từ history.
+- standalone chỉ dùng QUERY. follow_up giữ toàn bộ QUERY, thay tham chiếu mơ hồ bằng
+  topic nguyên văn từ history. Mọi topic/cohort chèn vào cần evidence_span nguyên văn và
+  turn_id tuyệt đối, không suy luận. standalone_query hết mơ hồ; request.query_span
+  vẫn là span trong QUERY hiện tại. Giữ nguyên số, phủ định, điều kiện và ràng buộc.
   Cụm phụ thuộc phải resolve đủ topic+cohort; thiếu thì ambiguous, clarify, requests=[].
 - normalized_query chỉ sửa Unicode/dấu hoặc typo cục bộ. Mỗi sửa khai báo correction
   chứa original_span nguyên văn và normalized_span. Cấm đổi cohort, số, phủ định,
@@ -64,9 +63,12 @@ SINGLE-COHORT
 
 ATOMIC REQUESTS
 - execute: mỗi mục tiêu cần kết quả/evidence riêng là một request theo thứ tự, tối đa 6.
-  Cách trình bày, trích nguồn, hoàn thiện biểu mẫu, xác nhận với người khác, thời hạn,
-  định dạng hay cách dùng đáp án không phải request.
-  Cách thức/điều kiện/hậu quả/ngoại lệ chỉ sửa intent của topic gần nhất, không tự tách.
+  Cách trình bày, citation, biểu mẫu, xác nhận, định dạng/cách dùng không phải request.
+  Cách thức/điều kiện/hậu quả/ngoại lệ chỉ sửa intent gần nhất, không tự tách.
+- Liệt kê target trước plan: mỗi target đúng một request; 3-6 target phải
+  đủ count. CATALOG_HINT chỉ áp dụng span chứa entity_text, không che/gộp/đổi target khác.
+- Chỉ tách nếu bỏ cụm làm mất fact/evidence. Hỏi thời hạn là fact; mục đích,
+  khẩn cấp, trình bày, xác nhận, citation hay cách dùng đáp án chỉ là metadata.
 - structured: đúng tool/intent/slots trong TOOLS. rag: lookup_type=null, slots={},
   slot_spans={}, intent thuộc RAG_INTENTS. Structured không rõ intent dùng default_intent.
 - query_span: đoạn nguyên văn liên tục, nhỏ nhất đủ định danh một operand/topic; không
@@ -924,8 +926,22 @@ class AIRouter:
         return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
     @staticmethod
-    def _extract_json_object(text: str) -> dict[str, Any]:
-        stripped = text.strip()
+    def _extract_json_object(value: Any) -> dict[str, Any]:
+        """Decode provider JSON without assuming message content is always text."""
+
+        if isinstance(value, Mapping):
+            return dict(value)
+        if isinstance(value, list):
+            text_parts = []
+            for part in value:
+                if isinstance(part, str):
+                    text_parts.append(part)
+                elif isinstance(part, Mapping) and isinstance(part.get("text"), str):
+                    text_parts.append(str(part["text"]))
+            value = "".join(text_parts)
+        if not isinstance(value, str):
+            raise ValueError("AI router response must be a JSON object or JSON text.")
+        stripped = value.strip()
         start = stripped.find("{")
         end = stripped.rfind("}")
         if start < 0 or end < start:

@@ -70,6 +70,56 @@ def _with_candidate_origin(chunk: dict[str, Any], origin: str) -> dict[str, Any]
     return enriched
 
 
+def _parent_channel_ranking(
+    scored_chunks: list[tuple[float, dict[str, Any]]],
+    *,
+    evidence_cap: int = 2,
+) -> dict[str, int]:
+    """Rank parents by bounded child evidence within one retrieval channel."""
+
+    parent_scores: dict[str, list[float]] = defaultdict(list)
+    for score, chunk in scored_chunks:
+        parent_id = str(
+            (chunk.get("metadata") or {}).get("parent_section_id") or ""
+        )
+        if parent_id:
+            parent_scores[parent_id].append(float(score))
+
+    ranked = sorted(
+        (
+            (sum(sorted(scores, reverse=True)[:evidence_cap]), parent_id)
+            for parent_id, scores in parent_scores.items()
+        ),
+        key=lambda item: (item[0], item[1]),
+        reverse=True,
+    )
+    return {parent_id: rank for rank, (_, parent_id) in enumerate(ranked, start=1)}
+
+
+def _parent_rrf_scores(
+    dense_scored: list[tuple[float, dict[str, Any]]],
+    sparse_scored: list[tuple[float, dict[str, Any]]],
+    *,
+    rrf_k: int = 60,
+) -> dict[str, float]:
+    """Fuse channels after grouping duplicate child hits by parent section."""
+
+    dense_ranks = _parent_channel_ranking(dense_scored)
+    sparse_ranks = _parent_channel_ranking(sparse_scored)
+    parent_ids = set(dense_ranks) | set(sparse_ranks)
+    return {
+        parent_id: (
+            (1 / (dense_ranks[parent_id] + rrf_k) if parent_id in dense_ranks else 0.0)
+            + (
+                1 / (sparse_ranks[parent_id] + rrf_k)
+                if parent_id in sparse_ranks
+                else 0.0
+            )
+        )
+        for parent_id in parent_ids
+    }
+
+
 def _merge_candidate_origins(
     primary: dict[str, Any], secondary: dict[str, Any]
 ) -> dict[str, Any]:
@@ -507,6 +557,15 @@ class ChildParentHybridRetriever:
         else:
             phoranker_latency_ms = 0.0
 
+        parent_scores = None
+        max_parents_per_source = None
+        if not phoranker_used:
+            parent_scores = _parent_rrf_scores(
+                vector_scored,
+                bm25_results if sparse_enabled else [],
+            )
+            max_parents_per_source = 2
+
         retrieval_telemetry = {
             "retrieval_mode": eval_mode,
             "qdrant_search_limit": search_limit,
@@ -521,8 +580,10 @@ class ChildParentHybridRetriever:
             "ranking_method": (
                 "vector"
                 if eval_mode == "vector_only"
-                else "phoranker" if phoranker_used else "rrf"
+                else "phoranker" if phoranker_used else "parent_rrf"
             ),
+            "parent_evidence_cap": 2 if parent_scores is not None else None,
+            "max_parents_per_source": max_parents_per_source,
             "phoranker_used": phoranker_used,
             "phoranker_candidate_chunks": (
                 len(primary_scored) if phoranker_used else 0
@@ -537,6 +598,8 @@ class ChildParentHybridRetriever:
             scored_chunks=primary_scored,
             top_k_final=top_k_final,
             retrieval_telemetry=retrieval_telemetry,
+            parent_scores=parent_scores,
+            max_parents_per_source=max_parents_per_source,
         )
         if eval_mode in {"vector_only", "no_graph"}:
             retrieval_telemetry["retrieval_latency_ms"] = (
@@ -696,6 +759,8 @@ class ChildParentHybridRetriever:
         scored_chunks: list[tuple[float, dict[str, Any]]],
         top_k_final: int,
         retrieval_telemetry: dict[str, Any] | None = None,
+        parent_scores: dict[str, float] | None = None,
+        max_parents_per_source: int | None = None,
     ) -> list[dict[str, Any]]:
         """Group top child/table matches back into parent-section result objects."""
         parent_groups: dict[str, list[tuple[float, dict[str, Any]]]] = defaultdict(list)
@@ -713,11 +778,15 @@ class ChildParentHybridRetriever:
 
         ranked_parent_ids = sorted(
             parent_groups.keys(),
-            key=lambda parent_id: parent_best_score[parent_id],
+            key=lambda parent_id: (
+                (parent_scores or {}).get(parent_id, parent_best_score[parent_id]),
+                parent_id,
+            ),
             reverse=True,
         )
 
         results: list[dict[str, Any]] = []
+        source_counts: dict[str, int] = defaultdict(int)
         for parent_id in ranked_parent_ids:
             if len(results) >= top_k_final:
                 break
@@ -732,6 +801,17 @@ class ChildParentHybridRetriever:
                 continue
     
             parent_metadata = dict(parent.get("metadata") or {})
+            source_key = str(
+                parent_metadata.get("document_title")
+                or parent_metadata.get("source_path")
+                or parent_id
+            )
+            if (
+                max_parents_per_source is not None
+                and source_counts[source_key] >= max_parents_per_source
+            ):
+                continue
+            source_counts[source_key] += 1
             focused_chunks = self._focused_chunks_for_parent(
                 scored_group=parent_groups[parent_id],
             )
@@ -749,7 +829,9 @@ class ChildParentHybridRetriever:
             )
             doc = dict(parent)
             doc["chunk_id"] = parent_id
-            doc["rerank_score"] = float(parent_best_score[parent_id])
+            doc["rerank_score"] = float(
+                (parent_scores or {}).get(parent_id, parent_best_score[parent_id])
+            )
             # PHỤC HỒI TOÀN BỘ NỘI DUNG TỪ MONGODB THAY VÌ FOCUSED CHUNKS
             doc["content"] = parent.get("content") or ""
             doc["document"] = parent.get("content") or ""

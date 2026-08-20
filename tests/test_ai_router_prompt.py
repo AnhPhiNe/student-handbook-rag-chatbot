@@ -113,12 +113,11 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     )
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.4"
+    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.5"
     assert "không dùng dấu \"...\"" in ROUTER_SYSTEM_PROMPT
     assert "không phải request" in ROUTER_SYSTEM_PROMPT
-    assert "query_span của request follow_up luôn là span trong QUERY" in (
-        ROUTER_SYSTEM_PROMPT
-    )
+    assert "request.query_span" in ROUTER_SYSTEM_PROMPT
+    assert "span trong QUERY hiện tại" in ROUTER_SYSTEM_PROMPT
     assert "Chọn theo fact" in ROUTER_SYSTEM_PROMPT
     assert "cả hai độc lập=tạo hai request" in ROUTER_SYSTEM_PROMPT
 
@@ -235,6 +234,18 @@ def test_router_does_not_rotate_keys_for_internal_code_error(
     assert decision["attempts"] == 1
     assert decision["router_error_type"] == "internal_code_error"
     assert decision["router_fallback"] == "router_error_to_clarify"
+
+
+def test_router_accepts_provider_json_object_content() -> None:
+    payload = {"outcome": "clarify", "lookup_requests": []}
+
+    assert AIRouter._extract_json_object(payload) == payload
+
+
+def test_router_accepts_provider_text_content_blocks() -> None:
+    payload = [{"type": "text", "text": '{"outcome":"clarify"}'}]
+
+    assert AIRouter._extract_json_object(payload) == {"outcome": "clarify"}
 
 
 def test_from_config_accepts_model_environment_override(

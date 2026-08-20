@@ -280,7 +280,15 @@ def find_grounded_catalog_hint(
         for item in matches
         if item["specificity"] == top["specificity"]
     }
-    if len(tied_entities) > 1:
+    tied_lookup_types = {
+        item["lookup_type"]
+        for item in matches
+        if item["specificity"] == top["specificity"]
+    }
+    # The same grounded phrase may appear both as an office responsibility and
+    # as a student service.  A hint is metadata, not a router: fail closed when
+    # the catalog cannot identify one source contract unambiguously.
+    if len(tied_entities) > 1 or len(tied_lookup_types) > 1:
         return None
     return {
         key: value

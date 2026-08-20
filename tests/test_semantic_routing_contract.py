@@ -89,6 +89,30 @@ def _errors(
     )
 
 
+def test_follow_up_query_span_must_stay_in_current_user_query() -> None:
+    query = "Nội dung đó có ngoại lệ nào?"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="rag",
+                intent="consequence_or_exception",
+                query_span="quy định học lại",
+                cohort_refs=["K50"],
+            )
+        ],
+    )
+
+    errors = validate_router_decision(
+        decision,
+        query=query,
+        selected_cohort="K50",
+        grounding_context="K50 quy định học lại có ngoại lệ nào?",
+    )
+
+    assert "request:0:ungrounded_query_span" in errors
+
+
 def test_legacy_top_level_decision_becomes_one_request() -> None:
     query = "K50 IELTS 6.0 tương đương bậc mấy?"
     decision = normalize_router_decision(

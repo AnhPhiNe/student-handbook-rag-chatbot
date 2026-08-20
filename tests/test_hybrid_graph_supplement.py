@@ -9,6 +9,8 @@ from src.retrieval.core.hybrid_pipeline import (
     ChildParentHybridRetriever,
     DEFAULT_RETRIEVAL_MODE,
     _build_related_references,
+    _parent_channel_ranking,
+    _parent_rrf_scores,
     select_graph_related_parent_candidates,
 )
 
@@ -95,6 +97,46 @@ def test_related_references_are_ui_metadata_not_answer_evidence() -> None:
     assert reference["content"] == ("Nội dung đầy đủ của Điều 3. " * 40).strip()
 
 
+def _scored_parent(score: float, chunk_id: str, parent_id: str):
+    return (
+        score,
+        {
+            "chunk_id": chunk_id,
+            "metadata": {"parent_section_id": parent_id},
+        },
+    )
+
+
+def test_parent_channel_ranking_aggregates_bounded_child_evidence() -> None:
+    ranking = _parent_channel_ranking(
+        [
+            _scored_parent(0.90, "a1", "A"),
+            _scored_parent(0.89, "b1", "B"),
+            _scored_parent(0.88, "b2", "B"),
+            _scored_parent(0.87, "b3", "B"),
+        ]
+    )
+
+    assert ranking == {"B": 1, "A": 2}
+
+
+def test_parent_rrf_fuses_channel_rankings_not_duplicate_chunk_ranks() -> None:
+    scores = _parent_rrf_scores(
+        [
+            _scored_parent(0.90, "a1", "A"),
+            _scored_parent(0.80, "b1", "B"),
+            _scored_parent(0.79, "b2", "B"),
+        ],
+        [
+            _scored_parent(7.0, "a2", "A"),
+            _scored_parent(6.0, "c1", "C"),
+        ],
+    )
+
+    assert scores["A"] > scores["B"]
+    assert scores["A"] > scores["C"]
+
+
 def _vector_hits(count: int = 24) -> list[SimpleNamespace]:
     return [
         SimpleNamespace(
@@ -167,7 +209,7 @@ def test_default_retrieval_groups_twenty_four_vector_chunks_before_graph() -> No
     telemetry = retriever._group_parent_results.call_args.kwargs[
         "retrieval_telemetry"
     ]
-    assert telemetry["ranking_method"] == "rrf"
+    assert telemetry["ranking_method"] == "parent_rrf"
     assert telemetry["phoranker_used"] is False
     assert telemetry["sparse_candidate_chunks"] == 0
     retriever._graph_related_parent_results.assert_called_once()
@@ -324,3 +366,41 @@ def test_parent_grouping_keeps_phoranker_order_and_top_k() -> None:
 
     assert [item["chunk_id"] for item in results] == ["P2", "P1"]
     assert all(item["metadata"]["retrieval_role"] == "primary" for item in results)
+
+
+def test_parent_grouping_caps_one_source_and_backfills_diverse_evidence() -> None:
+    retriever = ChildParentHybridRetriever.__new__(ChildParentHybridRetriever)
+    retriever.collection_name = "test"
+    retriever.parent_cache = {}
+    retriever.mongo_store = Mock()
+    source_by_parent = {
+        "P1": "regulation-a",
+        "P2": "regulation-a",
+        "P3": "regulation-a",
+        "P4": "regulation-b",
+    }
+    retriever.mongo_store.get_document_by_id.side_effect = lambda parent_id: {
+        "_id": parent_id,
+        "content": f"full {parent_id}",
+        "metadata": {
+            "cohort": "K51",
+            "title": parent_id,
+            "document_title": source_by_parent[parent_id],
+        },
+    }
+    scored = [
+        _scored_parent(0.9 - index / 10, f"c{index}", parent_id)
+        for index, parent_id in enumerate(("P1", "P2", "P3", "P4"))
+    ]
+
+    results = ChildParentHybridRetriever._group_parent_results(
+        retriever,
+        query="query",
+        scored_chunks=scored,
+        top_k_final=3,
+        retrieval_telemetry={},
+        parent_scores={"P1": 4.0, "P2": 3.0, "P3": 2.0, "P4": 1.0},
+        max_parents_per_source=2,
+    )
+
+    assert [item["chunk_id"] for item in results] == ["P1", "P2", "P4"]

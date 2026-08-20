@@ -739,7 +739,7 @@ def test_history_grounded_cohort_reaches_retrieval_context(monkeypatch) -> None:
     request = _request(
         request_kind="rag",
         intent="policy",
-        query_span=effective_query,
+        query_span=raw_query,
         cohort_refs=[],
     )
     decision = _decision(effective_query, [request])
@@ -757,10 +757,10 @@ def test_history_grounded_cohort_reaches_retrieval_context(monkeypatch) -> None:
         }
     )
     pipeline.router = Router(decision)
-    observed_cohorts = []
+    observed_calls = []
 
     def fake_hybrid(**kwargs):
-        observed_cohorts.append(kwargs["cohort"])
+        observed_calls.append(kwargs)
         return {
             "retrieved_items": [],
             "citations": [],
@@ -778,7 +778,8 @@ def test_history_grounded_cohort_reaches_retrieval_context(monkeypatch) -> None:
         chat_history=[{"role": "user", "content": effective_query}],
     )
 
-    assert observed_cohorts == ["K51"]
+    assert [call["cohort"] for call in observed_calls] == ["K51"]
+    assert observed_calls[0]["retrieval_query"] == f"slang::{raw_query}\n{effective_query}"
     assert result["selected_cohort"] == "K51"
     assert result["request_execution_contexts"][0]["effective_cohort"] == "K51"
 

@@ -28,6 +28,7 @@ from src.evaluation.single_cohort_v2 import (  # noqa: E402
     assess_plan,
     evaluate_development_gates,
     evaluate_release_gates,
+    execution_plan_match,
     exact_plan_match,
     failure_taxonomy,
     semantic_plan_match,
@@ -411,6 +412,7 @@ def run_live_planner(
             bound = _validated_planner_decision(case, decision)
             actual = _plan_from_decision(bound)
             assessment = assess_plan(case["expected"], actual)
+            execution_eligible = execution_plan_match(case["expected"], actual)
             rows.append(
                 {
                     "id": case["id"],
@@ -418,6 +420,7 @@ def run_live_planner(
                     "passed": assessment.semantic_match,
                     "exact_passed": assessment.exact_match,
                     "semantic_passed": assessment.semantic_match,
+                    "execution_eligible": execution_eligible,
                     "mismatch_reasons": list(assessment.mismatch_reasons),
                     "critical_failure": assessment.critical_failure,
                     "failure_type": (
@@ -699,9 +702,9 @@ def run_executor_retrieval(
             )
             continue
         planner_row = planner_rows.get(case["id"])
-        if not planner_row or not planner_row.get("passed"):
+        if not planner_row or not planner_row.get("execution_eligible"):
             raise ValueError(
-                f"Executor received a case without a correct validated plan: {case['id']}"
+                f"Executor received a case without an executable validated plan: {case['id']}"
             )
         decision = planner_row.get("validated_decision") or {}
         if expected.get("outcome") != "execute":
@@ -753,7 +756,7 @@ def run_executor_retrieval(
             )
             if result_sink is not None:
                 result_sink[case["id"]] = copy.deepcopy(result)
-            plan_correct = semantic_plan_match(
+            plan_correct = execution_plan_match(
                 expected, _plan_from_decision(result.get("router_decision") or {})
             )
             expected_requests = expected.get("atomic_requests") or []
@@ -843,9 +846,9 @@ def run_answers(
         if case.get("fault_injection"):
             continue
         planner_row = planner_rows.get(case["id"])
-        if not planner_row or not planner_row.get("passed"):
+        if not planner_row or not planner_row.get("execution_eligible"):
             raise ValueError(
-                f"Answer composer received an incorrect plan: {case['id']}"
+                f"Answer composer received a non-executable plan: {case['id']}"
             )
         execution_result = execution_results.get(case["id"])
         if execution_result is None:
@@ -904,6 +907,10 @@ def run_answers(
                 expected,
                 _plan_from_decision(result.get("router_decision") or {}),
             )
+            execution_plan_bound = execution_plan_match(
+                expected,
+                _plan_from_decision(result.get("router_decision") or {}),
+            )
             exact_plan_bound = exact_plan_match(
                 expected,
                 _plan_from_decision(result.get("router_decision") or {}),
@@ -925,8 +932,9 @@ def run_answers(
                     "partial_status": (result.get("debug") or {}).get("partial_status"),
                     "exact_plan_bound": exact_plan_bound,
                     "semantic_plan_bound": plan_bound,
+                    "execution_plan_bound": execution_plan_bound,
                     "answer_contract_bound": bool(
-                        plan_bound
+                        execution_plan_bound
                         and statuses_bound
                         and citations_bound
                         and _citation_isolated(result, request_ids)
@@ -994,26 +1002,35 @@ def _metrics(
         execution_by_id = {str(row.get("id")): row for row in execution_rows}
         for suite, rows in planner_rows.items():
             applicable_rows = [row for row in rows if not row.get("planner_skipped")]
-            semantic_ids = {
+            execution_eligible_ids = {
                 str(row.get("id"))
                 for row in applicable_rows
-                if row.get("semantic_passed", row.get("passed", False))
+                if row.get(
+                    "execution_eligible",
+                    row.get("semantic_passed", row.get("passed", False)),
+                )
             }
-            if not semantic_ids or not semantic_ids <= set(execution_by_id):
+            if (
+                not execution_eligible_ids
+                or not execution_eligible_ids <= set(execution_by_id)
+            ):
                 continue
             case_scores: list[float] = []
             category_scores: dict[str, list[float]] = {}
             for row in applicable_rows:
-                semantic = bool(
-                    row.get("semantic_passed", row.get("passed", False))
+                eligible = bool(
+                    row.get(
+                        "execution_eligible",
+                        row.get("semantic_passed", row.get("passed", False)),
+                    )
                 )
-                execution = execution_by_id.get(str(row.get("id"))) if semantic else None
+                execution = execution_by_id.get(str(row.get("id"))) if eligible else None
                 executable = (
                     conformance_passed is True
                     if execution and execution.get("semantic_executable") is None
                     else bool(execution and execution.get("semantic_executable"))
                 )
-                score = float(semantic and executable)
+                score = float(eligible and executable)
                 case_scores.append(score)
                 category = str(row.get("category") or "unknown")
                 category_scores.setdefault(category, []).append(score)
@@ -1137,11 +1154,14 @@ def _reuse_answer_report_evaluation(
         raise ValueError("Answer report is missing answer rows")
     execution_rows = list(prior_execution["rows"])
     answers = list(answer_rows)
-    passed_planner_ids = {
+    executable_planner_ids = {
         str(row.get("id") or "")
         for rows in planner_rows.values()
         for row in rows
-        if row.get("passed")
+        if row.get(
+            "execution_eligible",
+            row.get("semantic_passed", row.get("passed", False)),
+        )
     }
     execution_ids = {str(row.get("id") or "") for row in execution_rows}
     answer_ids = [str(row.get("id") or "") for row in answers]
@@ -1149,8 +1169,8 @@ def _reuse_answer_report_evaluation(
         raise ValueError("Answer report contains an answer row without an id")
     if len(answer_ids) != len(set(answer_ids)):
         raise ValueError("Answer report contains duplicate answer ids")
-    if not set(answer_ids) <= passed_planner_ids:
-        raise ValueError("Answer rows are not bound to passed Planner rows")
+    if not set(answer_ids) <= executable_planner_ids:
+        raise ValueError("Answer rows are not bound to executable Planner rows")
     if not set(answer_ids) <= execution_ids:
         raise ValueError("Answer rows are not bound to executor/retrieval rows")
     return planner_rows, execution_rows, answers
@@ -1358,7 +1378,10 @@ def main() -> None:
         passed_ids = {
             row["id"]
             for row in planner_rows.get(args.run_executor, [])
-            if row.get("passed")
+            if row.get(
+                "execution_eligible",
+                row.get("semantic_passed", row.get("passed", False)),
+            )
         }
         execution_rows = run_executor_retrieval(
             [case for case in _load_cases(args.run_executor) if case["id"] in passed_ids],
@@ -1372,7 +1395,10 @@ def main() -> None:
         passed_ids = {
             row["id"]
             for row in planner_rows.get(args.run_answers, [])
-            if row.get("passed")
+            if row.get(
+                "execution_eligible",
+                row.get("semantic_passed", row.get("passed", False)),
+            )
         }
         answer_rows = run_answers(
             [case for case in _load_cases(args.run_answers) if case["id"] in passed_ids],

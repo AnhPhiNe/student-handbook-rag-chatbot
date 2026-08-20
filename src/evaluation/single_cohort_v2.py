@@ -18,7 +18,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 BUNDLE_DIR = ROOT / "data" / "eval" / "single_cohort_v2"
-EVALUATION_PROTOCOL_VERSION = "single-cohort-release-v3"
+EVALUATION_PROTOCOL_VERSION = "single-cohort-release-v4"
 CANDIDATE_SCHEMA_VERSION = "single-cohort-v2.2"
 RELEASE_SCHEMA_VERSION = "single-cohort-v2.4"
 SCHEMA_VERSIONS = {CANDIDATE_SCHEMA_VERSION, RELEASE_SCHEMA_VERSION}
@@ -592,6 +592,52 @@ def assess_plan(expected: Mapping[str, Any], actual: Mapping[str, Any]) -> PlanA
 
 def semantic_plan_match(expected: Mapping[str, Any], actual: Mapping[str, Any]) -> bool:
     return assess_plan(expected, actual).semantic_match
+
+
+def execution_plan_match(expected: Mapping[str, Any], actual: Mapping[str, Any]) -> bool:
+    """Return whether a validated plan is safe to assess through real adapters.
+
+    Structured entity spellings are intentionally not compared here.  Their
+    selected tool, request order, source-bound adapter result and citation are
+    checked downstream, where registry aliases and adapter-local fuzzy matching
+    have provenance.  RAG intent/slots remain plan-level retrieval semantics.
+    """
+
+    if any(
+        expected.get(field) != actual.get(field)
+        for field in ("outcome", "effective_cohort")
+    ):
+        return False
+    expected_requests = expected.get("atomic_requests") or []
+    actual_requests = actual.get("atomic_requests") or actual.get("lookup_requests") or []
+    if len(expected_requests) != len(actual_requests):
+        return False
+    for index, (left, right) in enumerate(
+        zip(expected_requests, actual_requests, strict=True), 1
+    ):
+        actual_tool = right.get("tool_name") or right.get("lookup_type")
+        if left.get("request_id") != (right.get("request_id") or f"r{index}"):
+            return False
+        if left.get("request_kind") != right.get("request_kind"):
+            return False
+        if left.get("tool_name") != actual_tool:
+            return False
+        if not _semantic_span_equal(left.get("query_span"), right.get("query_span")):
+            return False
+        if not _semantic_value_equal(
+            left.get("cohort_refs") or [], right.get("cohort_refs") or []
+        ):
+            return False
+        if left.get("request_kind") == "rag":
+            if not _intent_semantically_equal(
+                left.get("intent"), right.get("intent"), "rag"
+            ):
+                return False
+            if not _semantic_value_equal(
+                left.get("slots") or {}, right.get("slots") or {}
+            ):
+                return False
+    return True
 
 
 def semantic_value_equal(left: Any, right: Any) -> bool:

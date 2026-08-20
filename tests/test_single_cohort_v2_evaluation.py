@@ -15,6 +15,7 @@ from src.evaluation.single_cohort_v2 import (
     BUNDLE_DIR,
     evaluate_development_gates,
     evaluate_release_gates,
+    execution_plan_match,
     exact_plan_match,
     semantic_plan_match,
     validate_bundle,
@@ -51,7 +52,7 @@ def test_answer_report_reuses_planner_and_executor_rows() -> None:
 
 
 def test_answer_report_rejects_unbound_answer_rows() -> None:
-    with pytest.raises(ValueError, match="passed Planner"):
+    with pytest.raises(ValueError, match="executable Planner"):
         _reuse_answer_report_evaluation(
             {
                 "planner": {"dev": {"rows": [{"id": "dev-1", "passed": False}]}},
@@ -222,6 +223,48 @@ def test_semantic_plan_rejects_wrong_tool_entity_request_count_and_unregistered_
     assert not semantic_plan_match(expected, wrong_entity)
     assert not semantic_plan_match(expected, unknown_alias)
     assert not semantic_plan_match(expected, extra_request)
+
+
+def test_execution_plan_defers_structured_slot_representation_to_adapter() -> None:
+    request = {
+        "request_id": "r1",
+        "request_kind": "structured",
+        "tool_name": "program",
+        "intent": "direct_value",
+        "query_span": "ngành Công nghệ Thông tin thuộc khoa nào",
+        "slots": {
+            "program_or_faculty": "Công nghệ Thông tin",
+            "requested_field": "faculty",
+        },
+        "cohort_refs": ["K51"],
+    }
+    expected = {
+        "outcome": "execute",
+        "effective_cohort": "K51",
+        "atomic_requests": [request],
+    }
+    alias_representation = {
+        **expected,
+        "atomic_requests": [
+            {
+                **request,
+                "slots": {
+                    "program_or_faculty": "ngành Công nghệ Thông tin",
+                    "requested_field": "faculty",
+                },
+            }
+        ],
+    }
+    wrong_tool = {
+        **alias_representation,
+        "atomic_requests": [
+            {**alias_representation["atomic_requests"][0], "tool_name": "faculty"}
+        ],
+    }
+
+    assert not semantic_plan_match(expected, alias_representation)
+    assert execution_plan_match(expected, alias_representation)
+    assert not execution_plan_match(expected, wrong_tool)
 
 
 def test_semantic_plan_rejects_changed_negation_number_and_condition() -> None:
@@ -891,11 +934,12 @@ def test_executor_uses_the_already_validated_planner_decision() -> None:
         [{"id": "case-1", "query": "quy chế", "expected": expected}],
         pipeline,
         planner_rows={
-            "case-1": {
-                "id": "case-1",
-                "passed": True,
-                "validated_decision": decision,
-            }
+                "case-1": {
+                    "id": "case-1",
+                    "passed": True,
+                    "execution_eligible": True,
+                    "validated_decision": decision,
+                }
         },
         result_sink=result_sink,
     )
@@ -986,7 +1030,13 @@ def test_answer_composer_reuses_validated_execution_without_router_call() -> Non
             }
         ],
         _Pipeline(),
-        planner_rows={"case-1": {"id": "case-1", "passed": True}},
+        planner_rows={
+            "case-1": {
+                "id": "case-1",
+                "passed": True,
+                "execution_eligible": True,
+            }
+        },
         execution_results={"case-1": execution},
     )
 

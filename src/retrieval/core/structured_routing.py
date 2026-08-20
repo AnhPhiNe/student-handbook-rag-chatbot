@@ -1067,6 +1067,7 @@ def _validate_lookup_request(
     request: dict[str, Any],
     *,
     index: int,
+    query_source_text: str,
     source_text: str,
     selected_cohort: str | None,
     registry: dict[str, Any],
@@ -1086,7 +1087,7 @@ def _validate_lookup_request(
         errors.append(f"{prefix}missing_query_span")
     elif len(query_span) > 600:
         errors.append(f"{prefix}query_span_too_long")
-    elif not _span_is_grounded(query_span, source_text):
+    elif not _span_is_grounded(query_span, query_source_text):
         errors.append(f"{prefix}ungrounded_query_span")
 
     cohort_refs = request.get("cohort_refs") or []
@@ -1253,6 +1254,7 @@ def validate_router_decision(
             _validate_lookup_request(
                 request,
                 index=index,
+                query_source_text=query,
                 source_text=source_text,
                 selected_cohort=selected,
                 registry=registry,

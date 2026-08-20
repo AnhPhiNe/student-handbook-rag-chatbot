@@ -10,6 +10,32 @@ class _FailingStreamClient:
         raise RuntimeError("provider unavailable")
 
 
+class _PartiallyFailingStreamClient:
+    def generate_stream(self, _prompt: str):
+        yield "Nội dung chưa được xác minh. " * 12
+        raise RuntimeError("provider interrupted")
+
+
+class _SuccessfulStreamClient:
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def generate_stream(self, _prompt: str):
+        self.calls += 1
+        yield "Câu trả lời đã kiểm chứng.\n\nNguồn: nguồn do model tự ghi"
+
+
+class _MemoryCache:
+    def __init__(self) -> None:
+        self.values: dict[str, dict[str, Any]] = {}
+
+    def get(self, key: str) -> dict[str, Any] | None:
+        return self.values.get(key)
+
+    def set(self, key: str, value: dict[str, Any]) -> None:
+        self.values[key] = value
+
+
 def _stream_pipeline() -> AnswerPipeline:
     pipeline = AnswerPipeline.__new__(AnswerPipeline)
     pipeline.config = {
@@ -112,4 +138,118 @@ def test_stream_provider_failure_emits_final_api_error_metadata_with_scoped_cita
     assert [
         citation["request_id"] for citation in metadata_events[-1]["citations_used"]
     ] == ["r1", "r2"]
+    error_events = [event for event in events if event.get("type") == "error"]
+    assert len(error_events) == 1
+    assert error_events[0]["replace"] is True
     assert events[-1]["type"] == "done"
+
+
+def test_stream_interruption_retracts_already_emitted_model_text(monkeypatch) -> None:
+    pipeline = _stream_pipeline()
+    query = "K51 quy định bảo lưu thế nào?"
+    retrieval_result: dict[str, Any] = {
+        "effective_query": query,
+        "cohort": "K51",
+        "selected_cohort": "K51",
+        "intent": "regulation_query",
+        "strategy": "semantic_request_executor",
+        "retrieval_executed": True,
+        "needs_clarification": False,
+        "out_of_domain": False,
+        "citations": [],
+        "related_references": [],
+        "request_results": [{"request_id": "r1", "status": "ok"}],
+        "request_execution_contexts": [],
+        "router_decision": {"plan_version": "single_cohort_v2"},
+    }
+    monkeypatch.setattr(pipeline, "_run_retrieval", lambda *_a, **_k: retrieval_result)
+    monkeypatch.setattr(
+        pipeline, "_get_llm_client", lambda: _PartiallyFailingStreamClient()
+    )
+    monkeypatch.setattr(pipeline, "_throttle_llm_call", lambda: None)
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.detect_ambiguous_query",
+        lambda *_a, **_k: False,
+    )
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.is_out_of_domain_query",
+        lambda *_a, **_k: False,
+    )
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.build_answer_prompt",
+        lambda **_kwargs: "deterministic prompt",
+    )
+
+    events = list(pipeline.answer_stream(query, cohort="K51"))
+
+    assert any(event.get("type") == "token" for event in events)
+    assert not any(event.get("type") == "replace" for event in events)
+    error_event = next(event for event in events if event.get("type") == "error")
+    assert error_event["replace"] is True
+    final_metadata = [
+        event for event in events if event.get("type") == "metadata"
+    ][-1]
+    assert final_metadata["status"] == "api_error"
+    assert final_metadata["fallback_reason"] == "stream_interrupted"
+
+
+def test_successful_stream_caches_only_authoritative_replacement(monkeypatch) -> None:
+    pipeline = _stream_pipeline()
+    pipeline.context_allocation = object()
+    pipeline.response_cache = _MemoryCache()
+    llm_client = _SuccessfulStreamClient()
+    query = "K51 quy định bảo lưu thế nào?"
+    retrieval_result: dict[str, Any] = {
+        "effective_query": query,
+        "cohort": "K51",
+        "selected_cohort": "K51",
+        "intent": "regulation_query",
+        "strategy": "semantic_request_executor",
+        "retrieval_executed": True,
+        "needs_clarification": False,
+        "out_of_domain": False,
+        "citations": [],
+        "related_references": [],
+        "request_results": [{"request_id": "r1", "status": "ok"}],
+        "request_execution_contexts": [],
+        "router_decision": {"plan_version": "single_cohort_v2"},
+    }
+    monkeypatch.setattr(pipeline, "_run_retrieval", lambda *_a, **_k: retrieval_result)
+    monkeypatch.setattr(pipeline, "_get_llm_client", lambda: llm_client)
+    monkeypatch.setattr(pipeline, "_throttle_llm_call", lambda: None)
+    monkeypatch.setattr(pipeline, "_make_response_cache_key", lambda **_k: "cache-key")
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.detect_ambiguous_query",
+        lambda *_a, **_k: False,
+    )
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.is_out_of_domain_query",
+        lambda *_a, **_k: False,
+    )
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.build_answer_prompt",
+        lambda **_kwargs: "deterministic prompt",
+    )
+
+    events = list(pipeline.answer_stream(query, cohort="K51"))
+
+    replacement = next(event for event in events if event.get("type") == "replace")
+    assert "nguồn do model tự ghi" not in replacement["text"]
+    assert pipeline.response_cache.values["cache-key"]["answer"] == replacement["text"]
+    final_metadata = [
+        event for event in events if event.get("type") == "metadata"
+    ][-1]
+    assert final_metadata["status"] == "answered"
+    assert final_metadata["used_cache"] is False
+
+    cached_events = list(pipeline.answer_stream(query, cohort="K51"))
+    cached_metadata = [
+        event for event in cached_events if event.get("type") == "metadata"
+    ][-1]
+    cached_token = next(
+        event for event in cached_events if event.get("type") == "token"
+    )
+    assert llm_client.calls == 1
+    assert cached_metadata["status"] == "answered"
+    assert cached_metadata["used_cache"] is True
+    assert cached_token["text"] == replacement["text"]

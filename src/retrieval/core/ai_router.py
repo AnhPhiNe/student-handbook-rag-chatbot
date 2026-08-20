@@ -946,6 +946,8 @@ class AIRouter:
 
     @staticmethod
     def _classify_error(exc: Exception) -> str:
+        if isinstance(exc, (TypeError, AttributeError, NameError)):
+            return "internal_code_error"
         if isinstance(exc, TimeoutError):
             return "timeout"
         text = f"{type(exc).__name__}: {exc}".lower()

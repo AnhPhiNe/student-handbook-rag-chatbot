@@ -241,6 +241,11 @@ export function useChat(cohort: string = 'K48-K49') {
                   ttftMs = Date.now() - startTime;
                 }
                 targetBotContent += (data.text || "");
+              } else if (eventType === 'replace') {
+                if (ttftMs === null) {
+                  ttftMs = Date.now() - startTime;
+                }
+                targetBotContent = data.text || "";
               } else if (eventType === 'done' || eventType === 'error') {
                 const responseTimeMs = Date.now() - startTime;
                 

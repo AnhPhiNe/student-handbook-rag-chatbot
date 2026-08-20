@@ -153,6 +153,22 @@ def chat_stream(
                             first_token_at = time.perf_counter()
                         full_text += chunk.get("text", "")
                         yield _sse_event("token", {"text": chunk.get("text", "")})
+                    elif chunk_type == "replace":
+                        if first_token_at is None:
+                            first_token_at = time.perf_counter()
+                        full_text = str(chunk.get("text") or "")
+                        yield _sse_event("replace", {"text": full_text})
+                    elif chunk_type == "error":
+                        final_status = str(chunk.get("error_type") or "api_error")
+                        full_text = str(chunk.get("error_message") or "")
+                        yield _sse_event(
+                            "error",
+                            {
+                                "error_type": final_status,
+                                "error_message": full_text,
+                                "replace": True,
+                            },
+                        )
                     elif chunk_type == "progress":
                         yield _sse_event(
                             "progress",

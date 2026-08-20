@@ -433,6 +433,56 @@ def test_rag_evidence_requires_matching_child_chunk_within_parent_source() -> No
     assert qualified["citations"] == []
 
 
+def test_rag_evidence_rejects_disjoint_pages_for_same_chunk() -> None:
+    """A citation cannot bind a chunk when its page provenance is different."""
+    execution_context = RequestExecutionContext(
+        request_id="r1",
+        request_index=0,
+        request_kind="rag",
+        query_span="Quy định bảo lưu thế nào?",
+        effective_query="K51 quy định bảo lưu thế nào?",
+        effective_cohort="K51",
+        retrieval_query="K51 quy định bảo lưu thế nào",
+    )
+
+    qualified = AnswerPipeline._qualify_rag_evidence(
+        {
+            "retrieved_items": [
+                {
+                    "request_id": "r1",
+                    "chunk_id": "child-a",
+                    "content": "Nội dung từ trang 18.",
+                    "metadata": {
+                        "document_id": "handbook-k51",
+                        "parent_section_id": "K51_Dieu12",
+                        "source_pages": [18],
+                        "cohort": "K51",
+                    },
+                }
+            ],
+            "citations": [
+                {
+                    "request_id": "r1",
+                    "chunk_id": "child-a",
+                    "content": "Trích dẫn bị gắn sang trang khác.",
+                    "document_id": "handbook-k51",
+                    "parent_section_id": "K51_Dieu12",
+                    "source_pages": [99],
+                    "cohort": "K51",
+                }
+            ],
+        },
+        execution_context=execution_context,
+    )
+
+    assert qualified["evidence_contract"]["qualified"] is False
+    assert qualified["evidence_contract"]["reason"] == (
+        "rag_item_citation_page_mismatch"
+    )
+    assert qualified["retrieved_items"] == []
+    assert qualified["citations"] == []
+
+
 def test_rag_evidence_does_not_fallback_from_child_to_parent_only_citation() -> None:
     """Parent identity is insufficient when only one side identifies a child chunk."""
     execution_context = RequestExecutionContext(

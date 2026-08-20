@@ -678,7 +678,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "student_service",
-            "input_value": "đơn vị hỗ trợ bảo hiểm y tế",
+            "input_value": "bảo hiểm y tế",
             "result": [
               {
                 "record_id": "K51_K51_tram_y_te_service_4",
@@ -1081,7 +1081,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "office",
-            "input_value": "email Phòng Đào tạo",
+            "input_value": "Phòng Đào tạo",
             "result": [
               {
                 "record_id": null,
@@ -1317,7 +1317,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "faculty",
-            "input_value": "website Khoa Công nghệ Thông tin",
+            "input_value": "Khoa Công nghệ Thông tin",
             "result": [
               {
                 "record_id": "K51_K51_faculty_1_khoa_cong_nghe_thong_tin",
@@ -10013,7 +10013,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "student_service",
-            "input_value": "đơn vị hỗ trợ bảo hiểm y tế",
+            "input_value": "bảo hiểm y tế",
             "result": [
               {
                 "record_id": "K51_K51_tram_y_te_service_4",
@@ -10639,7 +10639,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "student_service",
-            "input_value": "đơn vị hỗ trợ bảo hiểm y tế",
+            "input_value": "bảo hiểm y tế",
             "result": [
               {
                 "record_id": "K51_K51_tram_y_te_service_4",
@@ -11012,7 +11012,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "faculty",
-            "input_value": "website Khoa Công nghệ Thông tin",
+            "input_value": "Khoa Công nghệ Thông tin",
             "result": [
               {
                 "record_id": "K51_K51_faculty_1_khoa_cong_nghe_thong_tin",
@@ -11215,7 +11215,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "office",
-            "input_value": "email Phòng Đào tạo",
+            "input_value": "Phòng Đào tạo",
             "result": [
               {
                 "record_id": null,
@@ -13241,7 +13241,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "office",
-            "input_value": "email Phòng Đào tạo",
+            "input_value": "Phòng Đào tạo",
             "result": [
               {
                 "record_id": null,
@@ -13500,7 +13500,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "student_service",
-            "input_value": "đơn vị hỗ trợ bảo hiểm y tế",
+            "input_value": "bảo hiểm y tế",
             "result": [
               {
                 "record_id": "K51_K51_tram_y_te_service_4",
@@ -13873,7 +13873,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "faculty",
-            "input_value": "website Khoa Công nghệ Thông tin",
+            "input_value": "Khoa Công nghệ Thông tin",
             "result": [
               {
                 "record_id": "K51_K51_faculty_1_khoa_cong_nghe_thong_tin",
@@ -14278,7 +14278,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "faculty",
-            "input_value": "website Khoa Công nghệ Thông tin",
+            "input_value": "Khoa Công nghệ Thông tin",
             "result": [
               {
                 "record_id": "K51_K51_faculty_1_khoa_cong_nghe_thong_tin",
@@ -16611,7 +16611,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "student_service",
-            "input_value": "đơn vị hỗ trợ bảo hiểm y tế",
+            "input_value": "bảo hiểm y tế",
             "result": [
               {
                 "record_id": "K51_K51_tram_y_te_service_4",
@@ -17311,7 +17311,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "office",
-            "input_value": "email Phòng Đào tạo",
+            "input_value": "Phòng Đào tạo",
             "result": [
               {
                 "record_id": null,
@@ -17871,7 +17871,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "faculty",
-            "input_value": "website Khoa Công nghệ Thông tin",
+            "input_value": "Khoa Công nghệ Thông tin",
             "result": [
               {
                 "record_id": "K51_K51_faculty_1_khoa_cong_nghe_thong_tin",
@@ -21467,7 +21467,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "student_service",
-            "input_value": "đơn vị hỗ trợ bảo hiểm y tế",
+            "input_value": "bảo hiểm y tế",
             "result": [
               {
                 "record_id": "K51_K51_tram_y_te_service_4",
@@ -22171,7 +22171,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "office",
-            "input_value": "email Phòng Đào tạo",
+            "input_value": "Phòng Đào tạo",
             "result": [
               {
                 "record_id": null,
@@ -22694,7 +22694,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "faculty",
-            "input_value": "website Khoa Công nghệ Thông tin",
+            "input_value": "Khoa Công nghệ Thông tin",
             "result": [
               {
                 "record_id": "K51_K51_faculty_1_khoa_cong_nghe_thong_tin",
@@ -35652,7 +35652,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "student_service",
-            "input_value": "đơn vị hỗ trợ bảo hiểm y tế",
+            "input_value": "bảo hiểm y tế",
             "result": [
               {
                 "record_id": "K51_K51_tram_y_te_service_4",
@@ -36326,7 +36326,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "faculty",
-            "input_value": "website Khoa Công nghệ Thông tin",
+            "input_value": "Khoa Công nghệ Thông tin",
             "result": [
               {
                 "record_id": "K51_K51_faculty_1_khoa_cong_nghe_thong_tin",
@@ -36915,7 +36915,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "office",
-            "input_value": "email Phòng Đào tạo",
+            "input_value": "Phòng Đào tạo",
             "result": [
               {
                 "record_id": null,
@@ -37904,7 +37904,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "student_service",
-            "input_value": "đơn vị hỗ trợ bảo hiểm y tế",
+            "input_value": "bảo hiểm y tế",
             "result": [
               {
                 "record_id": "K51_K51_tram_y_te_service_4",
@@ -38578,7 +38578,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "faculty",
-            "input_value": "website Khoa Công nghệ Thông tin",
+            "input_value": "Khoa Công nghệ Thông tin",
             "result": [
               {
                 "record_id": "K51_K51_faculty_1_khoa_cong_nghe_thong_tin",
@@ -38783,7 +38783,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "office",
-            "input_value": "email Phòng Đào tạo",
+            "input_value": "Phòng Đào tạo",
             "result": [
               {
                 "record_id": null,
@@ -39749,7 +39749,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "faculty",
-            "input_value": "website Khoa Công nghệ Thông tin",
+            "input_value": "Khoa Công nghệ Thông tin",
             "result": [
               {
                 "record_id": "K51_K51_faculty_1_khoa_cong_nghe_thong_tin",
@@ -44333,7 +44333,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "student_service",
-            "input_value": "đơn vị hỗ trợ bảo hiểm y tế",
+            "input_value": "bảo hiểm y tế",
             "result": [
               {
                 "record_id": "K51_K51_tram_y_te_service_4",
@@ -45612,7 +45612,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "office",
-            "input_value": "email Phòng Đào tạo",
+            "input_value": "Phòng Đào tạo",
             "result": [
               {
                 "record_id": null,
@@ -46492,7 +46492,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "office",
-            "input_value": "mail pdt",
+            "input_value": "Phòng Đào tạo",
             "result": [
               {
                 "record_id": null,
@@ -46728,7 +46728,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "faculty",
-            "input_value": "web khoa cntt",
+            "input_value": "Khoa Công nghệ Thông tin",
             "result": [
               {
                 "record_id": "K51_K51_faculty_1_khoa_cong_nghe_thong_tin",
@@ -47326,7 +47326,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "student_service",
-            "input_value": "don vi lo bhyt",
+            "input_value": "bảo hiểm y tế",
             "result": [
               {
                 "record_id": "K51_K51_tram_y_te_service_4",
@@ -48120,7 +48120,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "office",
-            "input_value": "phong dao tao email",
+            "input_value": "Phòng Đào tạo",
             "result": [
               {
                 "record_id": null,
@@ -48351,34 +48351,12 @@
               "cohort": "K51",
               "applicable_cohorts": [],
               "source_type": "catalog"
-            },
-            {
-              "record_id": "K51_faculty_14",
-              "document_id": "so_tay_sinh_vien_khoa_51",
-              "parent_section_id": null,
-              "source_pages": [
-                210
-              ],
-              "cohort": "K51",
-              "applicable_cohorts": [],
-              "source_type": "catalog"
-            },
-            {
-              "record_id": "K51_faculty_12",
-              "document_id": "so_tay_sinh_vien_khoa_51",
-              "parent_section_id": null,
-              "source_pages": [
-                210
-              ],
-              "cohort": "K51",
-              "applicable_cohorts": [],
-              "source_type": "catalog"
             }
           ],
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "faculty",
-            "input_value": "khoa cong nghe tt website",
+            "input_value": "Khoa Công nghệ Thông tin",
             "result": [
               {
                 "record_id": "K51_K51_faculty_1_khoa_cong_nghe_thong_tin",
@@ -48421,86 +48399,6 @@
                 "lexical_score": 1.0,
                 "semantic_score": 0.0,
                 "selection_method": "catalog_exact"
-              },
-              {
-                "record_id": "K51_K51_faculty_14_khoa_tieng_nhat",
-                "service_id": null,
-                "service": null,
-                "aliases": [
-                  "Khoa Tiếng Nhật",
-                  "KTN",
-                  "tieng nhat",
-                  "TN",
-                  "Khoa TN"
-                ],
-                "unit_name": "Khoa Tiếng Nhật",
-                "content_type": "student_faculty_profile",
-                "source_pages": [
-                  210
-                ],
-                "source_section": "student_faculty_profiles",
-                "cohort": "K51",
-                "document_id": "so_tay_sinh_vien_khoa_51",
-                "emails": [
-                  "khoatiengnhat@hcmue.edu.vn"
-                ],
-                "phones": [
-                  "(028) 38352020"
-                ],
-                "internal_numbers": [
-                  "174"
-                ],
-                "websites": [
-                  "khoatiengnhat.hcmue.edu.vn"
-                ],
-                "office": "Nhà C, tầng 6, P.607, P.609, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
-                "responsibilities": [],
-                "summary": "Thông tin liên hệ Khoa Tiếng Nhật",
-                "score": 0.5641,
-                "lexical_score": 0.5641,
-                "semantic_score": 0.0,
-                "selection_method": "catalog_fuzzy"
-              },
-              {
-                "record_id": "K51_K51_faculty_12_khoa_tieng_trung",
-                "service_id": null,
-                "service": null,
-                "aliases": [
-                  "Khoa Tiếng Trung",
-                  "KTT",
-                  "tieng trung",
-                  "TT",
-                  "Khoa TT"
-                ],
-                "unit_name": "Khoa Tiếng Trung",
-                "content_type": "student_faculty_profile",
-                "source_pages": [
-                  210
-                ],
-                "source_section": "student_faculty_profiles",
-                "cohort": "K51",
-                "document_id": "so_tay_sinh_vien_khoa_51",
-                "emails": [
-                  "khoatiengtrung@hcmue.edu.vn"
-                ],
-                "phones": [
-                  "(028) 38352020"
-                ],
-                "internal_numbers": [
-                  "131",
-                  "150",
-                  "153"
-                ],
-                "websites": [
-                  "khoatrung.hcmue.edu.vn"
-                ],
-                "office": "Nhà A, tầng 4, P.408, P.410, P.411, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
-                "responsibilities": [],
-                "summary": "Thông tin liên hệ Khoa Tiếng Trung",
-                "score": 0.55,
-                "lexical_score": 0.55,
-                "semantic_score": 0.0,
-                "selection_method": "catalog_fuzzy"
               }
             ],
             "items": [
@@ -48545,92 +48443,11 @@
                 "lexical_score": 1.0,
                 "semantic_score": 0.0,
                 "selection_method": "catalog_exact"
-              },
-              {
-                "record_id": "K51_K51_faculty_14_khoa_tieng_nhat",
-                "service_id": null,
-                "service": null,
-                "aliases": [
-                  "Khoa Tiếng Nhật",
-                  "KTN",
-                  "tieng nhat",
-                  "TN",
-                  "Khoa TN"
-                ],
-                "unit_name": "Khoa Tiếng Nhật",
-                "content_type": "student_faculty_profile",
-                "source_pages": [
-                  210
-                ],
-                "source_section": "student_faculty_profiles",
-                "cohort": "K51",
-                "document_id": "so_tay_sinh_vien_khoa_51",
-                "emails": [
-                  "khoatiengnhat@hcmue.edu.vn"
-                ],
-                "phones": [
-                  "(028) 38352020"
-                ],
-                "internal_numbers": [
-                  "174"
-                ],
-                "websites": [
-                  "khoatiengnhat.hcmue.edu.vn"
-                ],
-                "office": "Nhà C, tầng 6, P.607, P.609, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
-                "responsibilities": [],
-                "summary": "Thông tin liên hệ Khoa Tiếng Nhật",
-                "score": 0.5641,
-                "lexical_score": 0.5641,
-                "semantic_score": 0.0,
-                "selection_method": "catalog_fuzzy"
-              },
-              {
-                "record_id": "K51_K51_faculty_12_khoa_tieng_trung",
-                "service_id": null,
-                "service": null,
-                "aliases": [
-                  "Khoa Tiếng Trung",
-                  "KTT",
-                  "tieng trung",
-                  "TT",
-                  "Khoa TT"
-                ],
-                "unit_name": "Khoa Tiếng Trung",
-                "content_type": "student_faculty_profile",
-                "source_pages": [
-                  210
-                ],
-                "source_section": "student_faculty_profiles",
-                "cohort": "K51",
-                "document_id": "so_tay_sinh_vien_khoa_51",
-                "emails": [
-                  "khoatiengtrung@hcmue.edu.vn"
-                ],
-                "phones": [
-                  "(028) 38352020"
-                ],
-                "internal_numbers": [
-                  "131",
-                  "150",
-                  "153"
-                ],
-                "websites": [
-                  "khoatrung.hcmue.edu.vn"
-                ],
-                "office": "Nhà A, tầng 4, P.408, P.410, P.411, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
-                "responsibilities": [],
-                "summary": "Thông tin liên hệ Khoa Tiếng Trung",
-                "score": 0.55,
-                "lexical_score": 0.55,
-                "semantic_score": 0.0,
-                "selection_method": "catalog_fuzzy"
               }
             ],
-            "office_count": 3,
+            "office_count": 1,
             "source_pages": [
-              207,
-              210
+              207
             ],
             "table_name": "Danh sach Khoa lien he",
             "source_label": "Danh muc Khoa/lien he trong So tay sinh vien HCMUE",
@@ -48648,36 +48465,6 @@
                 "parent_section_id": null,
                 "source_pages": [
                   207
-                ],
-                "source_url": null,
-                "applicability": null,
-                "applicable_cohorts": []
-              },
-              {
-                "source_kind": "catalog",
-                "document_id": "so_tay_sinh_vien_khoa_51",
-                "cohort": "K51",
-                "table_id": "student_faculty_profiles",
-                "source_record_id": "K51_faculty_14",
-                "table_name": "Danh sach Khoa lien he",
-                "parent_section_id": null,
-                "source_pages": [
-                  210
-                ],
-                "source_url": null,
-                "applicability": null,
-                "applicable_cohorts": []
-              },
-              {
-                "source_kind": "catalog",
-                "document_id": "so_tay_sinh_vien_khoa_51",
-                "cohort": "K51",
-                "table_id": "student_faculty_profiles",
-                "source_record_id": "K51_faculty_12",
-                "table_name": "Danh sach Khoa lien he",
-                "parent_section_id": null,
-                "source_pages": [
-                  210
                 ],
                 "source_url": null,
                 "applicability": null,
@@ -52827,7 +52614,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "office",
-            "input_value": "email Phòng Đào tạo",
+            "input_value": "Phòng Đào tạo",
             "result": [
               {
                 "record_id": null,
@@ -53434,7 +53221,7 @@
           "expected_result": {
             "lookup_type": "office_directory",
             "lookup_scope": "office",
-            "input_value": "email Phòng Đào tạo",
+            "input_value": "Phòng Đào tạo",
             "result": [
               {
                 "record_id": null,

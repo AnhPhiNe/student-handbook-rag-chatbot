@@ -87,6 +87,9 @@ def main() -> None:
     parity_run = targeted(
         "parity",
         "tests/test_single_cohort_debug_parity.py::test_sync_stream_and_cached_debug_metadata_have_contract_parity",
+        "tests/test_answer_pipeline_stream_contract.py::test_stream_provider_failure_emits_final_api_error_metadata_with_scoped_citations",
+        "tests/test_answer_pipeline_stream_contract.py::test_stream_interruption_retracts_already_emitted_model_text",
+        "tests/test_answer_pipeline_stream_contract.py::test_successful_stream_caches_only_authoritative_replacement",
     )
     status_run = targeted(
         "status-matrix",

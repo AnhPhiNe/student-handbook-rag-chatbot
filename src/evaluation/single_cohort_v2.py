@@ -122,6 +122,32 @@ def _template_signature(query: str) -> str:
     return normalized
 
 
+def _user_visible_input_signature(case: Mapping[str, Any]) -> str:
+    """Fingerprint only inputs visible to the Planner, never gold metadata."""
+
+    history = [
+        {
+            "role": _normalize(turn.get("role")),
+            "content": _normalize(turn.get("content")),
+        }
+        for turn in case.get("chat_history") or []
+        if isinstance(turn, Mapping)
+    ]
+    payload = {
+        "query": _normalize(case.get("query")),
+        "selected_cohort": _normalize(case.get("selected_cohort")),
+        "chat_history": history,
+    }
+    return hashlib.sha256(
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+
+
 def derive_cohort_source(case: Mapping[str, Any]) -> str:
     """Derive cohort authority from the published precedence contract."""
 
@@ -206,6 +232,15 @@ def _case_errors(case: Mapping[str, Any], suite_name: str) -> list[str]:
         audit_state = audit.get("annotation_state") if isinstance(audit, Mapping) else None
         if audit_state not in {"auto_verified", "review_required", "human_approved"}:
             errors.append(f"{suite_name}/{case_id}: invalid gold audit r{index}")
+        audit_method = (
+            str(audit.get("audit_method") or "").strip()
+            if isinstance(audit, Mapping)
+            else ""
+        )
+        if kind == "rag" and audit_method == "direct_tool_adapter":
+            errors.append(
+                f"{suite_name}/{case_id}: RAG gold cannot use structured adapter audit r{index}"
+            )
         span = str(request.get("query_span") or "")
         if not span or (_normalize(span) not in _normalize(query) and _normalize(span) not in _normalize(history_text)):
             errors.append(f"{suite_name}/{case_id}: ungrounded query_span r{index}")
@@ -307,6 +342,26 @@ def validate_bundle(
     if dev_templates & hidden_templates:
         errors.append("dev/hidden normalized template overlap")
 
+    legacy_hidden_path = bundle_dir / "legacy_hidden_rc1.json"
+    if legacy_hidden_path.exists():
+        legacy_hidden = _load(legacy_hidden_path)
+        legacy_signatures = {
+            _user_visible_input_signature(case)
+            for case in legacy_hidden
+            if isinstance(case, Mapping)
+        }
+        hidden_signatures = {
+            _user_visible_input_signature(case)
+            for case in hidden
+            if isinstance(case, Mapping)
+        }
+        legacy_overlap = legacy_signatures & hidden_signatures
+        if legacy_overlap:
+            errors.append(
+                "hidden/legacy user-visible input overlap: "
+                f"{len(legacy_overlap)} cases"
+            )
+
     all_cases = dev + hidden
     requests = [request for case in all_cases for request in case.get("expected", {}).get("atomic_requests") or []]
     tools = {request.get("tool_name") for request in requests if request.get("tool_name")}
@@ -322,6 +377,9 @@ def validate_bundle(
         "same_tool_pair": same_tool,
         "different_tool_pair": different_tool,
         "tampering_cases": sum(bool(case.get("fault_injection", {}).get("type") == "plan_tampering") for case in all_cases if isinstance(case.get("fault_injection"), Mapping)),
+        "hidden_legacy_input_overlap": len(legacy_overlap)
+        if legacy_hidden_path.exists()
+        else 0,
         "case_annotation_states": dict(Counter(
             str((case.get("annotation") or {}).get("state") or "missing")
             for case in all_cases

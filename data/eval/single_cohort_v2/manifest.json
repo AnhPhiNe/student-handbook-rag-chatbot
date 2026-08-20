@@ -1,10 +1,10 @@
 {
-  "schema_version": "single-cohort-v2.4",
-  "dataset_version": "single-cohort-gold-v2",
-  "frozen_at": "2026-08-19T09:09:15.3578203Z",
-  "baseline_commit": "15f971d5",
-  "prompt_version": "single-cohort-planner-v2.3",
-  "registry_version": 4,
+  "schema_version": "single-cohort-v2.2",
+  "dataset_version": "single-cohort-gold-candidate-1",
+  "frozen_at": null,
+  "baseline_commit": "839c27ba",
+  "prompt_version": "single-cohort-planner-v2.4",
+  "registry_version": 3,
   "counts": {
     "single_structured": {
       "dev": 10,
@@ -52,20 +52,20 @@
     }
   },
   "files": {
-    "dev.json": "42a3efadf7251acf2d5b8cba8c64b88ee51039240fddbe896b6837668b0f030d",
-    "hidden.json": "68618ac0100ba4b41ace8f1e27aa1bec8f75e35f1c694dcc9970fa7fa7fbde85"
+    "dev.json": "7b6e9b0df251f7757960fef2f12cf956eee9417b4482e4cff34a155fcc4c8d74",
+    "hidden.json": "f5c58042b2a68f92a229e5c81f9dc366ab05f3564c3b220acedc29d8cea26c50"
   },
-  "hidden_frozen": true,
+  "hidden_frozen": false,
   "hidden_human_review_required": true,
-  "hidden_human_review_complete": true,
+  "hidden_human_review_complete": false,
   "hidden_replacement_requires_flag": true,
   "legacy_final_holdout": {
     "commit": "e38bfef",
     "preserved": true
   },
   "gold_audit": {
-    "commit": "11b63805cf6b27694adb3e21db0eb89b00de2d92",
-    "generated_at": "2026-08-19T09:14:56.036650+00:00",
+    "commit": "839c27ba364fdf6225395bdf6efd0bbf78da5be5",
+    "generated_at": "2026-08-20T08:39:38.714812+00:00",
     "data_versions": {
       "structured_registry": "fc75ad5ec89527017ac77e9bb85a12d5e58769a6426e7d1685bfe8c548871a64",
       "structured_manifest": "d9a10e874b4b8631bf5dc9e2c076878f32cb4d1461937ed4bfa1e066c4e0bf61",
@@ -80,23 +80,11 @@
       "chunk_index_manifest": "004f645e1e2562716f41b9bb82c90d67f6d73cb1ad8158fbcc78613ce1c792e8",
       "bm25_index": "55cedc0663448f7e69d748307eaa2eef31a4b4690d16525f26adc321425eab92",
       "ai_router_config": "169a553e6257051ac3344bc1ce26a02b324a5c724fb70c67d9d3b4c0b4724da1",
-      "ai_router_prompt_source": "60062fb2dffa2b945678ae7061f24f0822e1427228af538616b466f9136bd633",
+      "ai_router_prompt_source": "26a0aa94494c1e1652bd54bb9849b637eba6e3971dcce4e80145d50a3c9c455e",
       "answer_config": "0a03853b6f0ed0f4585cb8712326e930275396d939ca65a7a1d2dc4fc44f5aab",
-      "answer_prompt_source": "72d43ed9ee5741940b9c95751dabcb54c41566f87c800b2a42e867536d2792e8",
-      "implementation_tree": "695b91b13c5100a47997651ae90b5073d5c7424222e56b6d9c33baa4e1305070"
+      "answer_prompt_source": "8f099f31be603e336a25ecc5f05eb4f226104ccdf497bf9a6b02cb8059de99cc",
+      "implementation_tree": "e2212dc2f04ae24475e9eabe3c69c6e05a7b37070e305ffae330418ebfa9bd34"
     },
-    "gold_ready": true
-  },
-  "gold_contract_correction": {
-    "proposal_version": "single-cohort-gold-contract-correction-v1",
-    "approval_sha256": "44c24f8097c9a862a975e9ca6f82816f09a5acce5eafb2abffc5b205df0953e8",
-    "approved_counts": {
-      "dev": 13,
-      "hidden": 5,
-      "total": 18
-    },
-    "field": "effective_cohort_source",
-    "from": "raw_query",
-    "to": "selected_cohort"
+    "gold_ready": false
   }
 }

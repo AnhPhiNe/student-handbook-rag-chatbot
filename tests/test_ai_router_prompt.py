@@ -209,6 +209,34 @@ def test_router_clarifies_after_provider_error(
     assert decision["router_fallback"] == "router_error_to_clarify"
 
 
+def test_router_does_not_rotate_keys_for_internal_code_error(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    calls = 0
+
+    class _Completions:
+        @staticmethod
+        def create(**_kwargs):
+            nonlocal calls
+            calls += 1
+            raise TypeError("malformed internal payload")
+
+    class _FakeGroq:
+        def __init__(self, **_kwargs) -> None:
+            self.chat = SimpleNamespace(completions=_Completions())
+
+    monkeypatch.setattr(ai_router_module, "Groq", _FakeGroq)
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+
+    decision = router.route("K51 quy định bảo lưu thế nào?", cohort="K51")
+
+    assert calls == 1
+    assert decision["attempts"] == 1
+    assert decision["router_error_type"] == "internal_code_error"
+    assert decision["router_fallback"] == "router_error_to_clarify"
+
+
 def test_from_config_accepts_model_environment_override(
     monkeypatch,
     tmp_path: Path,

@@ -80,16 +80,26 @@ def _case(
 ) -> dict[str, Any]:
     notes = (
         [
-            "Dùng để đối chiếu hồ sơ cá nhân.", "Cần câu trả lời tách từng ý.",
-            "Vui lòng giữ nguyên thứ tự câu hỏi.", "Tôi cần kiểm tra trước khi nộp đơn.",
-            "Hãy nêu rõ nguồn cho từng phần.", "Cần xác nhận theo đúng sổ tay.",
-            "Tôi đang chuẩn bị giấy tờ liên quan.", "Xin trả lời từng nội dung độc lập.",
-            "Mỗi kết luận cần nguồn riêng.", "Tôi cần biết trước hạn đăng ký.",
-            "Hãy phân biệt các nội dung giúp tôi.", "Tôi cần kiểm tra quyền lợi của mình.",
-            "Xin giữ đúng phạm vi câu hỏi.", "Cần dùng cho buổi tư vấn học vụ.",
-            "Hãy cho biết nếu phần nào không tìm thấy.", "Tôi muốn xác minh thông tin này.",
-            "Cần kết quả để trao đổi với cố vấn.", "Xin không gộp bằng chứng giữa các ý.",
-            "Tôi cần chuẩn bị trước kỳ học tới.", "Hãy ghi nhận phần chưa giải quyết được.",
+            "Tôi đang lập danh sách việc cần làm cho học kỳ mới.",
+            "Nếu có nhiều ý, hãy giữ từng kết quả ở đúng mục của nó.",
+            "Thông tin này sẽ được dùng để kiểm tra lại với đơn vị phụ trách.",
+            "Tôi cần biết phần nào có dữ liệu và phần nào chưa xác định được.",
+            "Đừng dùng nguồn của yêu cầu trước để kết luận cho yêu cầu sau.",
+            "Tôi muốn đối chiếu từng kết luận với đúng văn bản áp dụng.",
+            "Hãy giữ nguyên các con số và điều kiện tôi đã nêu.",
+            "Tôi cần câu trả lời theo cùng thứ tự với câu hỏi.",
+            "Nếu một mục lỗi thì vẫn trả các mục còn kiểm chứng được.",
+            "Xin tách thông tin liên hệ khỏi nội dung quy định.",
+            "Tôi muốn kiểm tra nguồn trước khi trao đổi với cố vấn.",
+            "Chỉ kết luận những phần có bằng chứng phù hợp.",
+            "Hãy nêu rõ mục nào cần tôi bổ sung thông tin.",
+            "Tôi đang chuẩn bị cho buổi tư vấn học tập sắp tới.",
+            "Mỗi nội dung quy định cần citation của chính nội dung đó.",
+            "Tôi cần xác minh độc lập từng yêu cầu trong câu này.",
+            "Xin đừng suy ra thêm yêu cầu chỉ từ câu dặn cách trình bày.",
+            "Nếu không có kết quả phù hợp thì hãy nói rõ là không tìm thấy.",
+            "Tôi sẽ dùng kết quả để lập kế hoạch học vụ cá nhân.",
+            "Hãy ưu tiên độ chính xác hơn việc trả lời đủ bằng mọi giá.",
         ]
         if split == "hidden"
         else [
@@ -196,11 +206,16 @@ def _single_structured(split: str, hidden: bool, count: int) -> list[dict[str, A
 def _single_rag(split: str, hidden: bool, count: int) -> list[dict[str, Any]]:
     cohort = "K50" if hidden else "K51"
     topics = (
-        ["điều kiện được xét tốt nghiệp", "quy trình xin học lại", "trường hợp bị cảnh báo học vụ", "thủ tục chuyển chương trình"]
+        [
+            "điều kiện để được công nhận tốt nghiệp",
+            "điều kiện được nghỉ học tạm thời",
+            "đăng ký học lại khi điểm học phần không đạt",
+            "quy định công nhận kết quả học tập đã tích lũy",
+        ]
         if hidden
         else ["thủ tục bảo lưu", "điều kiện tốt nghiệp", "quy định học cải thiện", "xử lý nghỉ học quá hạn", "đăng ký học phần", "rút học phần", "miễn giảm học phí", "khiếu nại điểm", "xét thôi học", "quyền nhận bằng và bảng điểm sau tốt nghiệp"]
     )
-    phrase = "Sổ tay K50 quy định thế nào về" if hidden else "K51 cần tra cứu"
+    phrase = "Trong phạm vi sổ tay K50, hãy xác minh" if hidden else "K51 cần tra cứu"
     return [_case(split, "single_rag", i + 1, f"{phrase} {topic}?", [_request(1, "rag", topic, intent="policy", cohort=cohort)], selected_cohort=cohort, effective_cohort=cohort) for i, topic in enumerate(topics[:count])]
 
 
@@ -209,8 +224,9 @@ def _multi_entity(split: str, hidden: bool, count: int) -> list[dict[str, Any]]:
     entities = ["IELTS 5.5", "IELTS 6.0", "IELTS 6.5", "TOEFL iBT 60", "JLPT N3", "HSK 4", "TOPIK 3", "Cambridge B2"]
     cases = []
     for i in range(count):
-        left, right = entities[i % len(entities)], entities[(i + 3) % len(entities)]
-        query = (f"Đối chiếu chuẩn K50 cho {left}; đồng thời cho {right}." if hidden else f"K51: {left} và {right} lần lượt tương đương bậc nào?")
+        right_offset = 5 if hidden else 3
+        left, right = entities[i % len(entities)], entities[(i + right_offset) % len(entities)]
+        query = (f"Tách riêng hai chứng chỉ theo chuẩn K50: {left}, sau đó {right}." if hidden else f"K51: {left} và {right} lần lượt tương đương bậc nào?")
         requests = [_request(1, "structured", left, tool_name="foreign_language", intent="direct_value", slots={"certificate_or_language": left.rsplit(" ", 1)[0], "score_or_level": left.rsplit(" ", 1)[1]}, cohort=cohort), _request(2, "structured", right, tool_name="foreign_language", intent="direct_value", slots={"certificate_or_language": right.rsplit(" ", 1)[0], "score_or_level": right.rsplit(" ", 1)[1]}, cohort=cohort)]
         cases.append(_case(split, "multi_entity", i + 1, query, requests, selected_cohort=cohort, effective_cohort=cohort))
     return cases
@@ -222,11 +238,11 @@ def _two_structured(split: str, hidden: bool, count: int) -> list[dict[str, Any]
     cases = []
     for i in range(count):
         first = specs[i % len(specs)]
-        second = specs[(i + 2) % len(specs)]
+        second = specs[(i + (4 if hidden else 2)) % len(specs)]
         if i % 3 == 0:
             first = specs[3]
             second = ("GPA 2.8 xếp loại học lực", "scoring", "direct_value", {"operation": "academic_classification", "score_or_grade": 2.8})
-        query = (f"Theo K50, tra riêng {first[0]}; kế đó tra {second[0]}." if hidden else f"K51 cho biết {first[0]} và {second[0]}?")
+        query = (f"K50 có hai dữ kiện cần tra độc lập: {first[0]}; tiếp theo là {second[0]}." if hidden else f"K51 cho biết {first[0]} và {second[0]}?")
         requests = [_request(1, "structured", first[0], tool_name=first[1], intent=first[2], slots=first[3], cohort=cohort), _request(2, "structured", second[0], tool_name=second[1], intent=second[2], slots=second[3], cohort=cohort)]
         cases.append(_case(split, "two_structured", i + 1, query, requests, selected_cohort=cohort, effective_cohort=cohort))
     return cases
@@ -235,12 +251,25 @@ def _two_structured(split: str, hidden: bool, count: int) -> list[dict[str, Any]
 def _mixed(split: str, hidden: bool, count: int) -> list[dict[str, Any]]:
     cohort = "K50" if hidden else "K51"
     specs = _structured_specs(hidden)
-    topics = ["thủ tục bảo lưu", "điều kiện tốt nghiệp", "quy định học lại", "hậu quả cảnh báo học vụ", "rút học phần", "tạm dừng học", "khiếu nại điểm", "miễn học phần"]
+    topics = (
+        [
+            "điều kiện nghỉ học tạm thời",
+            "điều kiện công nhận tốt nghiệp",
+            "công nhận kết quả học tập đã tích lũy",
+            "phúc khảo điểm thi kết thúc học phần",
+            "đăng ký học phần bổ sung",
+            "điều kiện tiếp tục học sau cảnh báo",
+            "chuyển ngành học",
+            "chuyển đổi tín chỉ",
+        ]
+        if hidden
+        else ["thủ tục bảo lưu", "điều kiện tốt nghiệp", "quy định học lại", "hậu quả cảnh báo học vụ", "rút học phần", "tạm dừng học", "khiếu nại điểm", "miễn học phần"]
+    )
     cases = []
     for i in range(count):
         structured = specs[i % len(specs)]
         topic = topics[(i + (2 if hidden else 0)) % len(topics)]
-        query = (f"Hồ sơ K50 cần hai ý: {structured[0]}; quy định về {topic}." if hidden else f"K51: {structured[0]}, còn {topic} thực hiện thế nào?")
+        query = (f"Với K50, tra một dữ kiện là {structured[0]}; đồng thời xác minh nội dung {topic}." if hidden else f"K51: {structured[0]}, còn {topic} thực hiện thế nào?")
         requests = [_request(1, "structured", structured[0], tool_name=structured[1], intent=structured[2], slots=structured[3], cohort=cohort), _request(2, "rag", topic, intent="procedure", cohort=cohort)]
         cases.append(_case(split, "mixed", i + 1, query, requests, selected_cohort=cohort, effective_cohort=cohort))
     return cases
@@ -248,11 +277,26 @@ def _mixed(split: str, hidden: bool, count: int) -> list[dict[str, Any]]:
 
 def _two_regulations(split: str, hidden: bool, count: int) -> list[dict[str, Any]]:
     cohort = "K50" if hidden else "K51"
-    topics = ["điều kiện tốt nghiệp", "nghỉ học tạm thời", "xét thôi học", "đăng ký học phần", "học cải thiện", "cảnh báo học vụ", "rút học phần", "chuyển ngành", "khiếu nại điểm", "miễn giảm học phí"]
+    topics = (
+        [
+            "công nhận tốt nghiệp",
+            "bảo lưu kết quả đã tích lũy",
+            "đăng ký học lại học phần không đạt",
+            "đăng ký học phần bổ sung",
+            "điều kiện xét tốt nghiệp",
+            "tiếp tục học sau cảnh báo",
+            "chuyển đổi tín chỉ",
+            "nghỉ học tạm thời",
+            "công nhận kết quả học tập",
+            "chuyển ngành học",
+        ]
+        if hidden
+        else ["điều kiện tốt nghiệp", "nghỉ học tạm thời", "xét thôi học", "đăng ký học phần", "học cải thiện", "cảnh báo học vụ", "rút học phần", "chuyển ngành", "khiếu nại điểm", "miễn giảm học phí"]
+    )
     cases = []
     for i in range(count):
         left, right = topics[i % len(topics)], topics[(i + 4) % len(topics)]
-        query = (f"Tách hai quy định K50: {left}; {right}." if hidden else f"K51 quy định {left} ra sao, và {right} ra sao?")
+        query = (f"Đọc sổ tay K50 cho hai vấn đề không gộp nguồn: {left}; và {right}." if hidden else f"K51 quy định {left} ra sao, và {right} ra sao?")
         requests = [_request(1, "rag", left, intent="policy", cohort=cohort), _request(2, "rag", right, intent="policy", cohort=cohort)]
         cases.append(_case(split, "two_regulations", i + 1, query, requests, selected_cohort=cohort, effective_cohort=cohort))
     return cases
@@ -262,7 +306,18 @@ def _three_to_six(split: str, hidden: bool, count: int) -> list[dict[str, Any]]:
     cohort = "K50" if hidden else "K51"
     sizes = ([3, 4, 5, 6, 4] if hidden else [3, 4, 5, 6] * 3)[:count]
     specs = _structured_specs(hidden)
-    topics = ["bảo lưu", "tốt nghiệp", "học lại", "rút học phần", "cảnh báo học vụ", "khiếu nại điểm"]
+    topics = (
+        [
+            "nghỉ học tạm thời",
+            "đăng ký học phần",
+            "học lại học phần không đạt",
+            "chuyển đổi tín chỉ",
+            "tiếp tục học sau cảnh báo",
+            "công nhận tốt nghiệp",
+        ]
+        if hidden
+        else ["bảo lưu", "tốt nghiệp", "học lại", "rút học phần", "cảnh báo học vụ", "khiếu nại điểm"]
+    )
     cases = []
     for i, size in enumerate(sizes):
         requests: list[dict[str, Any]] = []
@@ -276,14 +331,14 @@ def _three_to_six(split: str, hidden: bool, count: int) -> list[dict[str, Any]]:
                 topic = topics[(i + position) % len(topics)]
                 spans.append(topic)
                 requests.append(_request(position + 1, "rag", topic, intent="policy", cohort=cohort))
-        query = (f"Phiếu K50 gồm {size} ý: " if hidden else f"K51 hỏi {size} ý: ") + "; ".join(spans) + "."
+        query = (f"Danh sách tra cứu K50 có {size} mục độc lập: " if hidden else f"K51 hỏi {size} ý: ") + "; ".join(spans) + "."
         cases.append(_case(split, "three_to_six_requests", i + 1, query, requests, selected_cohort=cohort, effective_cohort=cohort))
     return cases
 
 
 def _robustness(split: str, hidden: bool, count: int) -> list[dict[str, Any]]:
     cohort = "K50" if hidden else "K51"
-    queries = (["k50 toefl ibt 72 doi ra bac nao", "thoi gian hoc toi da he vlvh", "web phong sau dh", "nganh tam ly thuoc khoa nao", "diem B+ ra he 4", "ct gpa co trong so"] if hidden else ["k51 ielts 6.0 tuong duong bac may", "thoi gian hoc toi da he chinh quy", "mail pdt", "web khoa cntt", "nganh cntt thuoc khoa nao", "diem hb loai gioi", "gpa 3.4 loai gi", "don vi lo bhyt", "cong thuc gpa co trong so", "điểm rèn luyên 82 loại gì", "IELST 6.0 đổi bậc", "phong dao tao email", "khoa cong nghe tt website", "ct tinh diem tbc"])
+    queries = (["toefl 72 theo k50 thuoc muc nao", "he vua hoc vua lam duoc hoc toi da bao lau", "dia chi web cua p.sdh", "tam ly hoc do khoa nao quan ly", "B cong doi sang diem bon", "cong thuc tinh gpa theo trong so"] if hidden else ["k51 ielts 6.0 tuong duong bac may", "thoi gian hoc toi da he chinh quy", "mail pdt", "web khoa cntt", "nganh cntt thuoc khoa nao", "diem hb loai gioi", "gpa 3.4 loai gi", "don vi lo bhyt", "cong thuc gpa co trong so", "điểm rèn luyên 82 loại gì", "IELST 6.0 đổi bậc", "phong dao tao email", "khoa cong nghe tt website", "ct tinh diem tbc"])
     specs = _structured_specs(hidden)
     spec_indexes = (
         [0, 1, 5, 7, 3, 8]
@@ -304,15 +359,15 @@ def _follow_up(split: str, hidden: bool, count: int) -> list[dict[str, Any]]:
     grounded_count = count - max(2, count // 3)
     for i in range(count):
         if i < grounded_count:
-            topic = ["bảo lưu", "tốt nghiệp", "học lại", "cảnh báo học vụ"][i % 4]
-            history_text = (f"Theo sổ tay {cohort}, tôi cần xem quy định {topic}." if hidden else f"Tôi là sinh viên {cohort}, hãy tra quy định {topic}.")
+            topic = (["nghỉ học tạm thời", "đăng ký học phần", "học lại học phần không đạt", "cảnh báo học vụ và ngưỡng áp dụng"] if hidden else ["bảo lưu", "tốt nghiệp", "học lại", "cảnh báo học vụ"])[i % 4]
+            history_text = (f"Tôi thuộc {cohort}; chủ đề đã xác định là {topic} trong sổ tay." if hidden else f"Tôi là sinh viên {cohort}, hãy tra quy định {topic}.")
             history = [{"role": "user", "content": history_text}, {"role": "assistant", "content": f"Đã xác định mục {topic}."}]
-            query = "Trường hợp ngoại lệ của mục vừa nêu là gì?" if hidden else "Nội dung đó có ngoại lệ nào?"
+            query = "Với chính chủ đề ở lượt trước, có điều kiện loại trừ nào không?" if hidden else "Nội dung đó có ngoại lệ nào?"
             requests = [_request(1, "rag", query, intent="consequence_or_exception", cohort=cohort)]
             cases.append(_case(split, "follow_up", i + 1, query, requests, selected_cohort=None, history=history, context_mode="follow_up", effective_cohort=cohort, cohort_source="grounded_history"))
         else:
-            query = "Còn trường hợp đó thì xử lý sao?" if hidden else "Cái đó có ngoại lệ không?"
-            history = [{"role": "assistant", "content": "Bạn muốn hỏi thêm nội dung nào?"}]
+            query = "Phần vừa nói có áp dụng cho tôi không?" if hidden else "Cái đó có ngoại lệ không?"
+            history = [{"role": "assistant", "content": "Chưa có chủ đề hay khóa nào được xác định."}]
             cases.append(_case(split, "follow_up", i + 1, query, [], selected_cohort=None, history=history, outcome="clarify", context_mode="ambiguous", effective_cohort=None, cohort_source="unresolved"))
     return cases
 
@@ -323,19 +378,19 @@ def _cohort_resolution(split: str, hidden: bool, count: int) -> list[dict[str, A
     for i in range(count):
         kind = patterns[i % len(patterns)]
         if kind == "missing":
-            query = "Khóa của tôi cần điều kiện nào để tốt nghiệp?" if hidden else "Điều kiện tốt nghiệp của khóa tôi là gì?"
+            query = "Quy định công nhận tốt nghiệp áp dụng cho khóa của tôi ra sao?" if hidden else "Điều kiện tốt nghiệp của khóa tôi là gì?"
             cases.append(_case(split, "cohort_resolution", i + 1, query, [], selected_cohort=None, outcome="clarify", context_mode="ambiguous", effective_cohort=None, cohort_source="unresolved"))
         elif kind == "multi":
-            query = "Đối chiếu K48-K49 với K50 về điều kiện tốt nghiệp." if hidden else "So sánh K50 và K51 về điều kiện tốt nghiệp."
+            query = "Trong cùng câu hỏi, hãy đối chiếu điều kiện nghỉ học của K48-K49 và K50." if hidden else "So sánh K50 và K51 về điều kiện tốt nghiệp."
             cases.append(_case(split, "cohort_resolution", i + 1, query, [], selected_cohort="K50" if hidden else "K51", outcome="clarify", context_mode="standalone", effective_cohort=None, cohort_source="raw_query"))
         elif kind == "raw_wins":
             raw_cohort = "K48-K49" if hidden else "K50"
-            span = f"điều kiện tốt nghiệp {raw_cohort}"
-            cases.append(_case(split, "cohort_resolution", i + 1, f"Hãy tra {span}.", [_request(1, "rag", span, intent="policy", cohort=raw_cohort)], selected_cohort="K50" if hidden else "K51", effective_cohort=raw_cohort, cohort_source="raw_query"))
+            span = f"quy định nghỉ học tạm thời {raw_cohort}"
+            cases.append(_case(split, "cohort_resolution", i + 1, f"Bỏ lựa chọn giao diện và dùng đúng khóa trong câu: {span}.", [_request(1, "rag", span, intent="policy", cohort=raw_cohort)], selected_cohort="K50" if hidden else "K51", effective_cohort=raw_cohort, cohort_source="raw_query"))
         else:
             office = "Phòng Sau đại học" if hidden else "Phòng Đào tạo"
             span = f"email {office}"
-            cases.append(_case(split, "cohort_resolution", i + 1, f"Cho tôi {span}.", [_request(1, "structured", span, tool_name="office", intent="contact", slots={"office": office, "requested_field": "email"}, cohort=None)], selected_cohort=None, effective_cohort=None, cohort_source="unresolved"))
+            cases.append(_case(split, "cohort_resolution", i + 1, f"Không chọn khóa, tôi chỉ cần dữ kiện danh bạ: {span}.", [_request(1, "structured", span, tool_name="office", intent="contact", slots={"office": office, "requested_field": "email"}, cohort=None)], selected_cohort=None, effective_cohort=None, cohort_source="unresolved"))
     return cases
 
 
@@ -346,11 +401,16 @@ def _failure_isolation(split: str, hidden: bool, count: int) -> list[dict[str, A
     for i in range(count):
         left_status, right_status = statuses[i % len(statuses)]
         if i % 5 == 4:
-            cases.append(_case(split, "failure_isolation", i + 1, f"{cohort}: kế hoạch đã bị sửa tool_name sau validation.", [], selected_cohort=cohort, outcome="clarify", effective_cohort=cohort, fault_injection={"type": "plan_tampering", "request_id": "r1"}))
+            cases.append(_case(split, "failure_isolation", i + 1, f"{cohort}: sau validation, một atomic request bị thay đổi source contract.", [], selected_cohort=cohort, outcome="clarify", effective_cohort=cohort, fault_injection={"type": "plan_tampering", "request_id": "r1"}))
             continue
         left, right = "email Phòng Đào tạo", "thủ tục bảo lưu"
         requests = [_request(1, "structured", left, tool_name="office", intent="contact", slots={"office": "Phòng Đào tạo", "requested_field": "email"}, cohort=cohort, expected_status=left_status), _request(2, "rag", right, intent="procedure", cohort=cohort, expected_status=right_status)]
-        cases.append(_case(split, "failure_isolation", i + 1, f"{cohort}: {left}; đồng thời {right}.", requests, selected_cohort=cohort, effective_cohort=cohort, fault_injection={"type": "request_status", "statuses": [left_status, right_status]}))
+        query = (
+            f"Hai yêu cầu K50 phải độc lập khi một dependency lỗi: {left}; và {right}."
+            if hidden
+            else f"{cohort}: {left}; đồng thời {right}."
+        )
+        cases.append(_case(split, "failure_isolation", i + 1, query, requests, selected_cohort=cohort, effective_cohort=cohort, fault_injection={"type": "request_status", "statuses": [left_status, right_status]}))
     return cases
 
 
@@ -385,8 +445,13 @@ def main() -> None:
             raise SystemExit(
                 "Hidden is human-approved and frozen; use --replace-hidden for an explicit replacement."
             )
-    dev = build_suite(False)
-    dev_hash = _write_json(OUT / "dev.json", dev)
+    dev_path = OUT / "dev.json"
+    if args.replace_hidden and dev_path.exists():
+        dev = json.loads(dev_path.read_text(encoding="utf-8"))
+        dev_hash = hashlib.sha256(dev_path.read_bytes()).hexdigest()
+    else:
+        dev = build_suite(False)
+        dev_hash = _write_json(dev_path, dev)
     hidden_path = OUT / "hidden.json"
     if hidden_path.exists() and not args.replace_hidden:
         hidden = json.loads(hidden_path.read_text(encoding="utf-8"))
@@ -398,8 +463,8 @@ def main() -> None:
         "schema_version": "single-cohort-v2.2",
         "dataset_version": "single-cohort-gold-candidate-1",
         "frozen_at": datetime.now(UTC).isoformat(),
-        "baseline_commit": "15f971d5",
-        "prompt_version": "single-cohort-planner-v2.3",
+        "baseline_commit": "839c27ba",
+        "prompt_version": "single-cohort-planner-v2.4",
         "registry_version": 3,
         "counts": {key: {"dev": value[0], "hidden": value[1]} for key, value in COUNTS.items()},
         "files": {"dev.json": dev_hash, "hidden.json": hidden_hash},

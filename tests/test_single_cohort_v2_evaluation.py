@@ -79,9 +79,20 @@ def test_frozen_bundle_has_required_counts_and_contract() -> None:
     assert result.coverage["case_annotation_states"]
 
 
-def test_release_validation_accepts_frozen_human_gold_review() -> None:
+def test_release_validation_follows_fail_closed_hidden_freeze_state() -> None:
     result = validate_bundle(require_gold_complete=True)
-    assert result.valid, result.errors
+    manifest = json.loads(
+        (BUNDLE_DIR / "manifest.json").read_text(encoding="utf-8")
+    )
+    frozen = bool(
+        manifest.get("hidden_frozen")
+        and manifest.get("hidden_human_review_complete")
+    )
+    assert result.valid is frozen
+    if not frozen:
+        assert "gold audit is incomplete or hidden is not human-approved" in (
+            result.errors
+        )
 
 
 def test_exact_plan_requires_request_order_and_slots() -> None:
@@ -606,6 +617,56 @@ def test_bundle_validation_rejects_incorrect_cohort_authority(tmp_path) -> None:
 
     assert not result.valid
     assert any("cohort source mismatch" in error for error in result.errors)
+
+
+def test_bundle_validation_rejects_hidden_reuse_of_legacy_user_inputs(
+    tmp_path,
+) -> None:
+    bundle = tmp_path / "single_cohort_v2"
+    shutil.copytree(BUNDLE_DIR, bundle)
+    shutil.copyfile(bundle / "hidden.json", bundle / "legacy_hidden_rc1.json")
+
+    result = validate_bundle(bundle)
+
+    assert not result.valid
+    assert "hidden/legacy user-visible input overlap: 60 cases" in result.errors
+
+
+def test_bundle_validation_rejects_structured_adapter_claim_for_rag_gold(
+    tmp_path,
+) -> None:
+    bundle = tmp_path / "single_cohort_v2"
+    shutil.copytree(BUNDLE_DIR, bundle)
+    hidden_path = bundle / "hidden.json"
+    hidden = json.loads(hidden_path.read_text(encoding="utf-8"))
+    request = next(
+        request
+        for case in hidden
+        for request in case["expected"]["atomic_requests"]
+        if request["request_kind"] == "rag"
+    )
+    request["gold_audit"]["audit_method"] = "direct_tool_adapter"
+    hidden_path.write_text(
+        json.dumps(hidden, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    manifest_path = bundle / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["files"]["hidden.json"] = hashlib.sha256(
+        hidden_path.read_bytes()
+    ).hexdigest()
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    result = validate_bundle(bundle)
+
+    assert not result.valid
+    assert any(
+        "RAG gold cannot use structured adapter audit" in error
+        for error in result.errors
+    )
 
 
 def test_release_gates_fail_closed_when_metrics_are_missing() -> None:

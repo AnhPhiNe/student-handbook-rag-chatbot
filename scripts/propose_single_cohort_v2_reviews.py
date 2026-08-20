@@ -74,6 +74,8 @@ def _rag_gold_parents(row: dict[str, Any], request: dict[str, Any]) -> list[str]
         return [_parent(cohort, "cong_tac", 29)]
     if "mien hoc phan" in topic:
         return [_parent(cohort, "dao_tao", 14)]
+    if "chuyen doi tin chi" in topic or "cong nhan ket qua hoc tap" in topic:
+        return [_parent(cohort, "dao_tao", 14)]
     if "hoc lai" in topic or "hoc cai thien" in topic:
         return [_parent(cohort, "dao_tao", 10)]
     if "canh bao" in topic:

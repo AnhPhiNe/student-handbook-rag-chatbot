@@ -2,7 +2,7 @@ import hashlib
 import os
 import time
 from contextvars import ContextVar
-from collections.abc import Iterator, Mapping
+from collections.abc import Generator, Mapping
 from pathlib import Path
 from typing import Any
 
@@ -56,7 +56,7 @@ from .response_cache import get_response_cache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v35-single-cohort-request-evidence-cache-parity"
+PIPELINE_VERSION = "v36-single-cohort-stream-replace-evidence-pages"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -568,13 +568,11 @@ class AnswerPipeline:
                 used_cache=False,
             )
 
-        cache_key = self.response_cache.make_cache_key(
-            query=effective_query,
+        cache_key = self._make_response_cache_key(
+            effective_query=effective_query,
             retrieval_result=retrieval_result,
             selected_citations=selected_citations,
             cohort=cohort,
-            context_fingerprint=self.context_allocation.cache_fingerprint(),
-            pipeline_version=PIPELINE_VERSION,
         )
         cached = self.response_cache.get(cache_key)
         if cached:
@@ -715,6 +713,7 @@ class AnswerPipeline:
         citations_used: list[dict[str, Any]] | None = None,
         related_references: list[dict[str, Any]] | None = None,
         llm_called: bool = False,
+        used_cache: bool = False,
         run_id: str | None = None,
         query_type_override: str | None = None,
     ) -> dict[str, Any]:
@@ -757,6 +756,7 @@ class AnswerPipeline:
             "detected_entities": res.get("detected_entities") or [],
             "target_chunk_types": res.get("target_chunk_types") or [],
             "llm_called": llm_called,
+            "used_cache": used_cache,
             "debug": {
                 "plan_version": router_decision.get("plan_version"),
                 "effective_cohort": res.get("selected_cohort") or router_decision.get("cohort"),
@@ -772,15 +772,15 @@ class AnswerPipeline:
         query: str,
         chat_history: list[dict[str, str]] | None = None,
         cohort: str | None = None,
-        **kwargs,
-    ) -> Iterator[dict[str, Any]]:
-        """Stream progress events and answer tokens for one user query.
+        trace_id: str | None = None,
+    ) -> Generator[dict[str, Any], None, None]:
+        """Stream answer tokens while preserving exact synchronous parity.
 
-        This mirrors ``answer`` but yields progress, metadata, token, and done
+        Retrieval and routing execute synchronously first, yielding progress
         events so the frontend can show retrieval progress and stream LLM output
         without changing the underlying routing, guardrail, or citation logic.
         """
-        run_id = None
+        run_id = trace_id
 
         from src.api.usage_tracker import UsageTracker
         from datetime import datetime, timezone
@@ -952,6 +952,32 @@ class AnswerPipeline:
             yield {"type": "done", "tracker": tracker}
             return
 
+        cache = getattr(self, "response_cache", None)
+        cache_key = None
+        if cache is not None and getattr(self, "context_allocation", None) is not None:
+            cache_key = self._make_response_cache_key(
+                effective_query=effective_query,
+                retrieval_result=retrieval_result,
+                selected_citations=selected_citations,
+                cohort=cohort,
+            )
+            cached = cache.get(cache_key)
+            if cached:
+                cached_answer = str(cached.get("answer") or "")
+                yield self._build_stream_metadata(
+                    retrieval_result,
+                    status=str(cached.get("status") or "answered"),
+                    effective_query=effective_query,
+                    citations_used=selected_citations,
+                    related_references=retrieval_result.get("related_references") or [],
+                    llm_called=False,
+                    used_cache=True,
+                    run_id=run_id,
+                )
+                yield {"type": "token", "text": cached_answer}
+                yield {"type": "done", "tracker": tracker}
+                return
+
         related_references = retrieval_result.get("related_references") or []
 
         prompt = build_answer_prompt(
@@ -974,11 +1000,11 @@ class AnswerPipeline:
             run_id=run_id,
         )
 
+        streamed_answer_parts: list[str] = []
         try:
             llm_client = self._get_llm_client()
             start_time_llm = datetime.now(timezone.utc).isoformat()
             self._throttle_llm_call()
-            streamed_answer_parts: list[str] = []
             pending_stream_text = ""
             for chunk in llm_client.generate_stream(prompt):
                 chunk_text = str(chunk)
@@ -1019,6 +1045,28 @@ class AnswerPipeline:
                     start_time=start_time_llm,
                     end_time=end_time_llm,
                 )
+
+            raw_streamed_answer = "".join(streamed_answer_parts)
+            final_streamed_answer = format_final_response(
+                raw_streamed_answer,
+                primary_citations=selected_citations,
+            )
+            # Streaming clients apply this event as an authoritative replacement.
+            # It removes any model-authored source section and guarantees that the
+            # final visible text is identical to the synchronous answer contract.
+            yield {"type": "replace", "text": final_streamed_answer}
+            if cache is not None and cache_key is not None:
+                cache.set(
+                    cache_key,
+                    {
+                        "answer": final_streamed_answer,
+                        "status": "answered",
+                        "error_type": None,
+                        "error_message": None,
+                        "citations": selected_citations,
+                    },
+                )
+
             yield self._build_stream_metadata(
                 retrieval_result,
                 status="answered",
@@ -1029,6 +1077,7 @@ class AnswerPipeline:
                 run_id=run_id,
             )
         except Exception:
+            interrupted = bool(streamed_answer_parts)
             fallback = build_fallback_answer(
                 effective_query, retrieval_result, reason="api_error"
             )
@@ -1036,18 +1085,22 @@ class AnswerPipeline:
                 retrieval_result,
                 status="api_error",
                 effective_query=effective_query,
-                fallback_reason="api_error",
+                fallback_reason=(
+                    "stream_interrupted" if interrupted else "api_error"
+                ),
                 citations_used=selected_citations,
                 related_references=related_references,
                 llm_called=True,
                 run_id=run_id,
             )
-            yield {"type": "token", "text": fallback}
-
-        # Chặn việc yield sources text dưới dạng văn bản thô
-        # sources_text = format_sources_text(selected_citations)
-        # if sources_text:
-        #     yield {"type": "token", "text": f"\n\n{sources_text}"}
+            # An error event is a replacement instruction, not an appended token.
+            # This retracts partial model output in every supported SSE client.
+            yield {
+                "type": "error",
+                "error_type": "api_error",
+                "error_message": fallback,
+                "replace": True,
+            }
 
         yield {"type": "done", "tracker": tracker}
 
@@ -1897,7 +1950,7 @@ class AnswerPipeline:
         expected_cohort: str | None,
         request_id: str,
         require_content: bool,
-    ) -> tuple[str, str, str | None, bool] | None:
+    ) -> tuple[str, str, str | None, bool, frozenset[int]] | None:
         """Return a source identity only for request-scoped, usable RAG evidence."""
 
         metadata = value.get("metadata")
@@ -1974,12 +2027,18 @@ class AnswerPipeline:
             return None
         if require_content and not content:
             return None
-        return (document_id, parent_section_id, chunk_id, is_explicit_parent_level)
+        return (
+            document_id,
+            parent_section_id,
+            chunk_id,
+            is_explicit_parent_level,
+            frozenset(source_pages),
+        )
 
     @staticmethod
     def _rag_source_identities_match(
-        item_identity: tuple[str, str, str | None, bool],
-        citation_identity: tuple[str, str, str | None, bool],
+        item_identity: tuple[str, str, str | None, bool, frozenset[int]],
+        citation_identity: tuple[str, str, str | None, bool, frozenset[int]],
     ) -> bool:
         """Match a concrete chunk exactly, with parent binding as fallback.
 
@@ -1992,8 +2051,12 @@ class AnswerPipeline:
 
         if item_identity[:2] != citation_identity[:2]:
             return False
-        item_chunk_id, item_is_parent_level = item_identity[2:]
-        citation_chunk_id, citation_is_parent_level = citation_identity[2:]
+        item_chunk_id, item_is_parent_level, item_pages = item_identity[2:]
+        citation_chunk_id, citation_is_parent_level, citation_pages = (
+            citation_identity[2:]
+        )
+        if item_pages.isdisjoint(citation_pages):
+            return False
         if item_chunk_id and citation_chunk_id:
             return item_chunk_id == citation_chunk_id
         return item_is_parent_level or citation_is_parent_level
@@ -2030,7 +2093,10 @@ class AnswerPipeline:
         )
 
         valid_items: list[
-            tuple[tuple[str, str, str | None, bool], dict[str, Any]]
+            tuple[
+                tuple[str, str, str | None, bool, frozenset[int]],
+                dict[str, Any],
+            ]
         ] = []
         for item in candidate_items:
             identity = cls._rag_source_identity(
@@ -2043,7 +2109,10 @@ class AnswerPipeline:
                 valid_items.append((identity, item))
 
         valid_citations: list[
-            tuple[tuple[str, str, str | None, bool], dict[str, Any]]
+            tuple[
+                tuple[str, str, str | None, bool, frozenset[int]],
+                dict[str, Any],
+            ]
         ] = []
         for citation in candidate_citations:
             identity = cls._rag_source_identity(
@@ -2058,10 +2127,10 @@ class AnswerPipeline:
         matched_item_indexes: set[int] = set()
         matched_citation_indexes: set[int] = set()
         matched_source_pairs: set[
-            tuple[
-                tuple[str, str, str | None, bool],
-                tuple[str, str, str | None, bool],
-            ]
+                tuple[
+                    tuple[str, str, str | None, bool, frozenset[int]],
+                    tuple[str, str, str | None, bool, frozenset[int]],
+                ]
         ] = set()
         for item_index, (item_identity, _) in enumerate(valid_items):
             for citation_index, (citation_identity, _) in enumerate(valid_citations):
@@ -2092,11 +2161,17 @@ class AnswerPipeline:
                 for item_identity, _ in valid_items
                 for citation_identity, _ in valid_citations
             )
-            reason = (
-                "rag_item_citation_chunk_mismatch"
-                if shared_parents
-                else "rag_item_citation_source_mismatch"
+            shared_chunks = any(
+                item_identity[:3] == citation_identity[:3]
+                for item_identity, _ in valid_items
+                for citation_identity, _ in valid_citations
             )
+            if shared_chunks:
+                reason = "rag_item_citation_page_mismatch"
+            elif shared_parents:
+                reason = "rag_item_citation_chunk_mismatch"
+            else:
+                reason = "rag_item_citation_source_mismatch"
         else:
             reason = None
 

@@ -5,7 +5,11 @@ import unittest
 from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier, Lock
 
-from src.generation.gemini_client import GeminiClient, GeminiKeyPool
+from src.generation.gemini_client import (
+    GeminiClient,
+    GeminiKeyPool,
+    StreamInterruptedAfterOutput,
+)
 
 
 class _SlowStreamModels:
@@ -118,6 +122,33 @@ class GeminiClientTest(unittest.TestCase):
         self.assertEqual(chunks, ["chunk"])
         self.assertEqual(fake_pool.rate_limited, [("fp-one", "rate_limit")])
         self.assertEqual(fake_pool.successes, ["fp-two"])
+
+    def test_generate_stream_never_retries_after_emitting_output(self) -> None:
+        client = object.__new__(GeminiClient)
+        fake_pool = _FakePool()
+        client.available_keys = ["secret-one", "secret-two"]
+        client.model_name = "fake-model"
+        client.max_retries = 1
+        client.retry_base_delay_seconds = 0
+        client.retry_max_delay_seconds = 0
+        client.key_pool = fake_pool
+        client._genai = _FakeGenAI()
+        client._config = object()
+        calls = {"count": 0}
+
+        def stream_once(_prompt: str, *, client=None):
+            calls["count"] += 1
+            yield "unsafe-prefix"
+            raise RuntimeError("connection reset")
+
+        client._generate_stream_once = stream_once
+        stream = client.generate_stream("prompt")
+
+        self.assertEqual(next(stream), "unsafe-prefix")
+        with self.assertRaises(StreamInterruptedAfterOutput):
+            next(stream)
+        self.assertEqual(calls["count"], 1)
+        self.assertEqual(fake_pool.failures, [("fp-one", "transient_error")])
 
     def test_disconnect_is_classified_as_transient(self) -> None:
         error_type = GeminiClient._classify_error(

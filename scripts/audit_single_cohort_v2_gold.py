@@ -60,7 +60,7 @@ def _manifest(
             if hidden_frozen
             else CANDIDATE_DATASET_VERSION
         ),
-        "baseline_commit": "15f971d5",
+        "baseline_commit": "839c27ba",
         "files": {"dev.json": dev_hash, "hidden.json": hidden_hash},
         "hidden_frozen": hidden_frozen,
         "hidden_human_review_required": True,

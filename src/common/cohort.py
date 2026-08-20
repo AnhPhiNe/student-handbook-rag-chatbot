@@ -24,8 +24,10 @@ LEGACY_COHORTS = {
 }
 
 
-def normalize_cohort(cohort: str | None) -> str | None:
-    if not cohort:
+def normalize_cohort(cohort: Any) -> str | None:
+    """Normalize a cohort label and fail closed for non-scalar input."""
+
+    if not isinstance(cohort, str) or not cohort:
         return None
 
     value = cohort.strip().upper().replace("_", "-")

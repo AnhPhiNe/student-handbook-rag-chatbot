@@ -33,7 +33,7 @@ from .query_context import select_effective_query, validated_correction_provenan
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
 ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.3"
-ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.5"
+ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.6"
 ROUTER_VALIDATOR_VERSION = "single-cohort-validator-v2.5"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
@@ -43,8 +43,7 @@ _RETRY_TEXT_RE = re.compile(
 )
 
 ROUTER_SYSTEM_PROMPT = """
-Retrieval Planner v2 Sổ tay HCMUE. Chỉ lập plan tra cứu;
-Không trả lời/citation/retrieval_query; chỉ xuất JSON theo OUTPUT CONTRACT.
+Planner HCMUE: chỉ xuất JSON OUTPUT CONTRACT; không trả lời/citation/retrieval_query.
 
 QUERY CONTEXT
 - standalone chỉ dùng QUERY. follow_up giữ toàn bộ QUERY, thay tham chiếu mơ hồ bằng
@@ -62,11 +61,11 @@ SINGLE-COHORT
   lịch sử đã grounding; không có nguồn hợp lệ thì clarify.
 
 ATOMIC REQUESTS
-- execute: mỗi mục tiêu cần kết quả/evidence riêng là một request theo thứ tự, tối đa 6.
+- Mỗi mục tiêu cần kết quả/evidence riêng là một request theo thứ tự, tối đa 6.
   Cách trình bày, citation, biểu mẫu, xác nhận, định dạng/cách dùng không phải request.
   Cách thức/điều kiện/hậu quả/ngoại lệ chỉ sửa intent gần nhất, không tự tách.
-- Liệt kê target trước plan: mỗi target đúng một request; 3-6 target phải
-  đủ count. CATALOG_HINT chỉ áp dụng span chứa entity_text, không che/gộp/đổi target khác.
+- Liệt kê target; mỗi target đúng 1 request, đủ count. CATALOG_HINT chỉ áp dụng span
+  chứa entity_text, không che/gộp/đổi target khác.
 - Chỉ tách nếu bỏ cụm làm mất fact/evidence. Hỏi thời hạn là fact; mục đích,
   khẩn cấp, trình bày, xác nhận, citation hay cách dùng đáp án chỉ là metadata.
 - structured: đúng tool/intent/slots trong TOOLS. rag: lookup_type=null, slots={},
@@ -74,6 +73,7 @@ ATOMIC REQUESTS
 - query_span: đoạn nguyên văn liên tục, nhỏ nhất đủ định danh một operand/topic; không
   thêm/diễn giải, không dùng dấu "...". slot_spans nằm đúng trong query_span. Cấm tự tạo
   tool, intent, entity, cohort, slot. Hai topic/entity/thao tác độc lập là hai request.
+- cohort_refs=["K51"] labels only; history provenance only in referenced_evidence.
 - RAG: procedure=bước/cách làm; policy=nội dung/điều kiện/quy định;
   consequence_or_exception=hậu quả/ngoại lệ; tên thủ tục không hỏi bước là policy;
   formula= công thức. Chọn theo fact: quy định/thủ tục=RAG; đơn vị/email/danh bạ=

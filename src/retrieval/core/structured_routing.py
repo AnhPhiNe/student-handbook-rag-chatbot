@@ -165,8 +165,10 @@ def _normalize_request_cohorts(
     raw_values = value if isinstance(value, list) else []
     cohorts: list[str] = []
     for item in raw_values:
+        if not isinstance(item, str):
+            continue
         normalized = normalize_cohort(item)
-        raw_value = str(item or "").strip()
+        raw_value = item.strip()
         if normalized:
             cohorts.append(normalized)
         elif raw_value:
@@ -241,7 +243,11 @@ def _normalize_lookup_request(
             default_cohorts=default_cohorts,
         ),
     }
-    if "cohort_refs" in value and not isinstance(value.get("cohort_refs"), list):
+    raw_cohort_refs = value.get("cohort_refs")
+    if "cohort_refs" in value and (
+        not isinstance(raw_cohort_refs, list)
+        or any(not isinstance(item, str) for item in raw_cohort_refs)
+    ):
         normalized_request["invalid_cohort_refs_payload"] = True
     return normalized_request
 

@@ -233,6 +233,30 @@ def test_null_like_cohort_sentinels_are_not_real_cohorts(value: str) -> None:
     assert normalize_cohort(value) is None
 
 
+def test_non_scalar_cohort_fails_closed() -> None:
+    assert normalize_cohort({"evidence_span": "K51"}) is None
+
+
+def test_object_cohort_ref_is_invalid_instead_of_crashing() -> None:
+    query = "Quy định đăng ký học phần thế nào?"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="rag",
+                intent="procedure",
+                query_span=query,
+                cohort_refs=[{"turn_id": 0, "evidence_span": "K50"}],
+            )
+        ],
+    )
+
+    request = decision["lookup_requests"][0]
+    assert request["cohort_refs"] == ["K50"]
+    assert request["invalid_cohort_refs_payload"] is True
+    assert "request:0:invalid_cohort_refs" in _errors(decision, query)
+
+
 def test_validated_local_correction_can_ground_canonical_slot_value() -> None:
     query = "IELST 6.0 đổi bậc"
     decision = _normalize(

@@ -5,12 +5,13 @@ load_dotenv()
 os.environ["TRANSFORMERS_VERBOSITY"] = "error"
 import logging
 import re
+import threading
 import time
 from collections import defaultdict
 from typing import Any
 from src.retrieval.core.cross_encoder_reranker import get_local_reranker
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
-from src.common.cohort import normalize_cohort
+from src.common.cohort import VALID_COHORTS, normalize_cohort
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
     FieldCondition,
@@ -29,6 +30,54 @@ SUPPORTED_RETRIEVAL_MODES = {
 }
 GRAPH_SUPPLEMENT_PARENT_LIMIT = 5
 PHORANKER_EVAL_MODES = {"full", "no_graph"}
+_CANDIDATE_ORIGINS_FIELD = "_retrieval_candidate_origins"
+
+
+class CohortRequiredError(ValueError):
+    """Raised when a cohort-sensitive regulation retrieval lacks a cohort."""
+
+
+def _require_effective_cohort(cohort: str | None) -> str:
+    """Normalize and require the cohort at the RAG execution boundary.
+
+    Planner validation should make this unreachable in normal traffic, but the
+    retriever is also a public runtime entry point.  It must never turn a
+    missed validator check into a mixed-cohort search.
+    """
+
+    normalized = normalize_cohort(str(cohort or ""))
+    if normalized not in VALID_COHORTS:
+        raise CohortRequiredError(
+            "Regulation retrieval requires one resolved effective cohort"
+        )
+    return normalized
+
+
+def _candidate_origins(chunk: dict[str, Any]) -> set[str]:
+    raw_origins = chunk.get(_CANDIDATE_ORIGINS_FIELD)
+    if isinstance(raw_origins, (list, tuple, set)):
+        return {str(origin) for origin in raw_origins if str(origin).strip()}
+    if isinstance(raw_origins, str) and raw_origins.strip():
+        return {raw_origins.strip()}
+    return set()
+
+
+def _with_candidate_origin(chunk: dict[str, Any], origin: str) -> dict[str, Any]:
+    enriched = dict(chunk)
+    enriched[_CANDIDATE_ORIGINS_FIELD] = sorted(
+        _candidate_origins(chunk) | {origin}
+    )
+    return enriched
+
+
+def _merge_candidate_origins(
+    primary: dict[str, Any], secondary: dict[str, Any]
+) -> dict[str, Any]:
+    merged = dict(primary)
+    merged[_CANDIDATE_ORIGINS_FIELD] = sorted(
+        _candidate_origins(primary) | _candidate_origins(secondary)
+    )
+    return merged
 
 
 def _chunk_matches_regulation_scope(
@@ -186,49 +235,70 @@ class ChildParentHybridRetriever:
 
         # Parent đầy đủ lấy từ MongoDB.
         self.mongo_store = get_mongo_store()
+        self._runtime_dependencies_ready = False
+        self.runtime_readiness_error: str | None = None
 
         # Cache runtime, không phải dữ liệu local.
         self.parent_cache: dict[str, dict[str, Any]] = {}
 
-        # BM25 Retriever
+        # Sparse retrieval is a release-bound dependency.  It is loaded before
+        # this retriever is exposed so the first query cannot silently run
+        # dense-only while an asynchronous build is still in progress.
         from src.retrieval.core.bm25_retriever import BM25Retriever
-        self.bm25 = BM25Retriever()
-        self._initialize_bm25_async()
 
-    def _initialize_bm25_async(self):
-        # Fire-and-forget background initialization for BM25 to not block startup
-        import threading
-        def _build():
-            try:
-                # Fetch child chunks from Qdrant to build the BM25 index.
-                # Assuming collection name matches the semantic collection logic
-                # For this implementation, we query the chunk collection or use parent chunks
-                logger.info("Starting BM25 index build...")
-                # Note: This is a placeholder for fetching chunks. 
-                # Since we don't have direct access to chunk db here, we'll fetch them from Qdrant scroll 
-                # or a pre-built JSON file if available. We will fetch from qdrant scroll API for correctness.
-                chunks = []
-                scroll_offset = None
-                while True:
-                    response = self.qdrant_client.scroll(
-                        collection_name=self.collection_name,
-                        scroll_filter=_v7_query_filter(None),
-                        limit=1000,
-                        offset=scroll_offset,
-                        with_payload=True,
-                        with_vectors=False
-                    )
-                    records, scroll_offset = response
-                    chunks.extend([self._qdrant_point_to_chunk(p) for p in records])
-                    if scroll_offset is None:
-                        break
-                
-                self.bm25.build_bm25_index(chunks)
-                logger.info(f"BM25 index built successfully with {len(chunks)} chunks.")
-            except Exception as e:
-                logger.error(f"Failed to build BM25 index: {e}")
-                
-        threading.Thread(target=_build, daemon=True).start()
+        self.bm25 = BM25Retriever()
+        self._initialize_bm25()
+        self._verify_runtime_dependencies()
+        self._runtime_dependencies_ready = True
+
+    def _initialize_bm25(self) -> None:
+        """Load the version-pinned sparse artifact synchronously and fail closed."""
+
+        expected_version = (
+            os.getenv("STUDENT_RAG_BM25_CORPUS_VERSION") or self.collection_name
+        )
+        artifact_path = os.getenv("STUDENT_RAG_BM25_ARTIFACT_PATH")
+        if artifact_path:
+            self.bm25.load_artifact(path=artifact_path, expected_corpus_version=expected_version)
+        else:
+            self.bm25.load_artifact(expected_corpus_version=expected_version)
+        if not self.bm25.is_ready():
+            raise RuntimeError("BM25 artifact loaded without a ready sparse index")
+
+    def _verify_runtime_dependencies(self) -> None:
+        """Probe source stores before publishing the singleton to traffic."""
+
+        try:
+            collection = self.qdrant_client.get_collection(self.collection_name)
+            if collection is None:
+                raise RuntimeError("collection metadata was empty")
+        except Exception as exc:
+            self.runtime_readiness_error = f"qdrant_unready:{type(exc).__name__}"
+            raise RuntimeError(
+                "Qdrant regulation collection is not ready: "
+                f"{self.collection_name}"
+            ) from exc
+
+        mongo_client = getattr(self.mongo_store, "client", None)
+        if mongo_client is None:
+            self.runtime_readiness_error = "mongo_parent_store_unavailable"
+            raise RuntimeError("MongoDB parent document store is not ready")
+        try:
+            mongo_client.admin.command("ping")
+        except Exception as exc:
+            self.runtime_readiness_error = f"mongo_unready:{type(exc).__name__}"
+            raise RuntimeError("MongoDB parent document store is not ready") from exc
+
+    def is_ready(self) -> bool:
+        return bool(self._runtime_dependencies_ready and self.bm25.is_ready())
+
+    def readiness(self) -> dict[str, Any]:
+        return {
+            "ready": self.is_ready(),
+            "collection_name": self.collection_name,
+            "bm25": self.bm25.readiness(),
+            "error": self.runtime_readiness_error,
+        }
 
     def _get_parent(self, parent_id: str) -> dict[str, Any] | None:
         if not parent_id:
@@ -271,8 +341,9 @@ class ChildParentHybridRetriever:
 
         Production ranks parents using hybrid retrieval (BM25 + dense) combined with RRF, then attaches
         outbound graph neighbors as context-only related sources. PhoRanker is
-        reserved for controlled evaluation modes over the same vector pool.
+        reserved for controlled evaluation modes over the configured candidate pool.
         """
+        cohort = _require_effective_cohort(cohort)
         eval_mode = (
             os.environ.get(
                 "STUDENT_RAG_EVAL_RETRIEVAL_MODE",
@@ -315,9 +386,6 @@ class ChildParentHybridRetriever:
         ]
         qdrant_seed_chunk_count = len(seed_chunks)
 
-        if not seed_chunks:
-            return []
-
         vector_scores = {
             str(hit.payload.get("chunk_id")): float(
                 getattr(hit, "score", 0.0) or 0.0
@@ -331,71 +399,105 @@ class ChildParentHybridRetriever:
                     str(chunk.get("_id") or chunk.get("chunk_id") or ""),
                     0.0,
                 ),
-                chunk,
+                _with_candidate_origin(chunk, "dense"),
             )
             for chunk in seed_chunks
         ]
-        
-        # --- BM25 RETRIEVAL & RECIPROCAL RANK FUSION (RRF) ---
+
+        # Sparse retrieval is independently cohort-filtered before its result
+        # limit. It still runs when dense produces no candidates, so a dense
+        # miss cannot silently turn a lexical/source match into no retrieval.
+        sparse_enabled = eval_mode != "vector_only"
+        bm25_documents = (
+            self.bm25.sparse_search(
+                query,
+                top_k=search_limit,
+                content_types=["regulation_text"],
+                cohort=cohort,
+            )
+            if sparse_enabled
+            else []
+        )
         bm25_results = [
-            (score, chunk)
-            for score, chunk in self.bm25.search_bm25(query, top_k=search_limit)
+            (
+                float(chunk.get("bm25_score") or 0.0),
+                _with_candidate_origin(chunk, "sparse"),
+            )
+            for chunk in bm25_documents
             if _chunk_matches_regulation_scope(chunk, cohort)
         ]
-        
-        # Union of chunk IDs
-        dense_chunk_ids = [str(c.get("_id") or c.get("chunk_id") or "") for _, c in vector_scored]
-        bm25_chunk_ids = [str(c.get("_id") or c.get("chunk_id") or "") for _, c in bm25_results]
-        
-        # Extract unique IDs sequentially to ensure deterministic base order
-        union_ids = []
-        seen = set()
+
+        dense_parent_ids = {
+            str((chunk.get("metadata") or {}).get("parent_section_id") or "")
+            for _, chunk in vector_scored
+            if (chunk.get("metadata") or {}).get("parent_section_id")
+        }
+        sparse_parent_ids = {
+            str((chunk.get("metadata") or {}).get("parent_section_id") or "")
+            for _, chunk in bm25_results
+            if (chunk.get("metadata") or {}).get("parent_section_id")
+        }
+
+        # Union of dense and sparse candidates, retaining source-local ranks
+        # for reciprocal-rank fusion rather than comparing unrelated score
+        # scales.
+        dense_chunk_ids = [
+            str(chunk.get("_id") or chunk.get("chunk_id") or "")
+            for _, chunk in vector_scored
+        ]
+        bm25_chunk_ids = [
+            str(chunk.get("_id") or chunk.get("chunk_id") or "")
+            for _, chunk in bm25_results
+        ]
+
+        union_ids: list[str] = []
+        seen: set[str] = set()
         for cid in dense_chunk_ids + bm25_chunk_ids:
-            if cid not in seen:
+            if cid and cid not in seen:
                 seen.add(cid)
                 union_ids.append(cid)
-        
-        # Maps to store ranks
+
         dense_rank_map = {cid: rank + 1 for rank, cid in enumerate(dense_chunk_ids)}
         bm25_rank_map = {cid: rank + 1 for rank, cid in enumerate(bm25_chunk_ids)}
-        
-        # Map to original chunks
-        chunk_map = {}
+
+        chunk_map: dict[str, dict[str, Any]] = {}
         for _, c in vector_scored:
             cid = str(c.get("_id") or c.get("chunk_id") or "")
-            chunk_map[cid] = c
+            if cid:
+                chunk_map[cid] = c
         for _, c in bm25_results:
             cid = str(c.get("_id") or c.get("chunk_id") or "")
-            if cid not in chunk_map:
+            if not cid:
+                continue
+            if cid in chunk_map:
+                chunk_map[cid] = _merge_candidate_origins(chunk_map[cid], c)
+            else:
                 chunk_map[cid] = c
 
-        fusion_scored = []
+        fusion_scored: list[tuple[float, dict[str, Any]]] = []
         for cid in union_ids:
             dense_rank = dense_rank_map.get(cid)
             bm25_rank = bm25_rank_map.get(cid)
             
-            # RRF Formula (k=60)
             score_dense = 1 / (dense_rank + 60) if dense_rank else 0.0
             score_bm25 = 1 / (bm25_rank + 60) if bm25_rank else 0.0
             rrf_score = score_dense + score_bm25
-            
             fusion_scored.append((rrf_score, chunk_map[cid]))
-            
-        # Sort strictly by RRF score (descending).
-        # Tie-break neutrally using chunk ID to ensure determinism without favoring Dense or BM25
-        fusion_scored.sort(key=lambda x: (x[0], str(x[1].get("_id", ""))), reverse=True)
-        
-        # Cut top K
+
+        # Tie-break only by stable chunk id; neither dense nor sparse gets an
+        # implicit positional advantage.
+        fusion_scored.sort(
+            key=lambda pair: (pair[0], str(pair[1].get("_id") or pair[1].get("chunk_id") or "")),
+            reverse=True,
+        )
         primary_scored = fusion_scored[:search_limit]
-        
-        # Reconstruct seed_chunks and seeds_parent_ids from the new fused top K
+
         seed_chunks = [chunk for _, chunk in primary_scored]
         seed_parent_ids = {
             str((chunk.get("metadata") or {}).get("parent_section_id") or "")
             for chunk in seed_chunks
             if (chunk.get("metadata") or {}).get("parent_section_id")
         }
-        # -----------------------------------------------------
 
         phoranker_used = eval_mode in PHORANKER_EVAL_MODES
         if phoranker_used:
@@ -409,11 +511,21 @@ class ChildParentHybridRetriever:
             "retrieval_mode": eval_mode,
             "qdrant_search_limit": search_limit,
             "qdrant_seed_chunks": qdrant_seed_chunk_count,
-            "qdrant_seed_parents": len(seed_parent_ids),
-            "ranking_method": "phoranker" if phoranker_used else "rrf",
+            "qdrant_seed_parents": len(dense_parent_ids),
+            "dense_candidate_chunks": len(vector_scored),
+            "sparse_candidate_chunks": len(bm25_results),
+            "sparse_candidate_parents": len(sparse_parent_ids),
+            "fused_candidate_chunks": len(primary_scored),
+            "fused_candidate_parents": len(seed_parent_ids),
+            "bm25_readiness": self.bm25.readiness(),
+            "ranking_method": (
+                "vector"
+                if eval_mode == "vector_only"
+                else "phoranker" if phoranker_used else "rrf"
+            ),
             "phoranker_used": phoranker_used,
             "phoranker_candidate_chunks": (
-                qdrant_seed_chunk_count if phoranker_used else 0
+                len(primary_scored) if phoranker_used else 0
             ),
             "phoranker_candidate_parents": (
                 len(seed_parent_ids) if phoranker_used else 0
@@ -623,6 +735,18 @@ class ChildParentHybridRetriever:
             focused_chunks = self._focused_chunks_for_parent(
                 scored_group=parent_groups[parent_id],
             )
+            focused_origins = {
+                origin
+                for _, chunk in focused_chunks
+                for origin in (_candidate_origins(chunk) or {"dense"})
+            }
+            child_source = (
+                "bm25_artifact"
+                if focused_origins == {"sparse"}
+                else "hybrid"
+                if focused_origins == {"dense", "sparse"}
+                else "qdrant"
+            )
             doc = dict(parent)
             doc["chunk_id"] = parent_id
             doc["rerank_score"] = float(parent_best_score[parent_id])
@@ -639,7 +763,7 @@ class ChildParentHybridRetriever:
                 "retrieval_role": "primary",
                 "collection": self.collection_name,
                 "parent_source": "mongodb",
-                "child_source": "qdrant",
+                "child_source": child_source,
                 "retrieval_telemetry": retrieval_telemetry or {},
                 "v7_matched_chunks": [
                     {
@@ -651,6 +775,9 @@ class ChildParentHybridRetriever:
                             "clause_marker"
                         ),
                         "score": float(score),
+                        "retrieval_origins": sorted(
+                            _candidate_origins(chunk) or {"dense"}
+                        ),
                         "_graph_depth": chunk.get("_graph_depth"),
                         "_source_seed_id": chunk.get("_source_seed_id"),
                     }
@@ -678,7 +805,8 @@ def _v7_query_filter(cohort: str | None) -> Filter:
     return Filter(must=conditions)
 
 
-_GLOBAL_RETRIEVER = None
+_GLOBAL_RETRIEVER: ChildParentHybridRetriever | None = None
+_GLOBAL_RETRIEVER_LOCK = threading.Lock()
 _ARTICLE_LABEL_PATTERN = re.compile(
     r"(?<![A-Za-zÀ-ỹ])(?:Điều|Dieu)[\s_-]*(\d+[a-z]?)\b", re.IGNORECASE
 )
@@ -750,6 +878,54 @@ def _build_related_references(
     return references
 
 
+def ensure_hybrid_retriever_ready() -> ChildParentHybridRetriever:
+    """Return the singleton only after dense and sparse retrieval are ready.
+
+    Startup calls this before accepting requests.  Construction is serialized so
+    concurrent first requests cannot observe an instance whose BM25 corpus is
+    still loading or mismatched to the active Qdrant collection.
+    """
+
+    global _GLOBAL_RETRIEVER
+    if _GLOBAL_RETRIEVER is not None:
+        if not _GLOBAL_RETRIEVER.is_ready():
+            raise RuntimeError("Hybrid retriever exists but runtime dependencies are not ready")
+        return _GLOBAL_RETRIEVER
+
+    with _GLOBAL_RETRIEVER_LOCK:
+        if _GLOBAL_RETRIEVER is not None:
+            if not _GLOBAL_RETRIEVER.is_ready():
+                raise RuntimeError(
+                    "Hybrid retriever exists but runtime dependencies are not ready"
+                )
+            return _GLOBAL_RETRIEVER
+
+        from src.common.env_loader import load_project_env
+
+        load_project_env()
+        qdrant_url = os.getenv("QDRANT_URL")
+        qdrant_key = os.getenv("QDRANT_API_KEY")
+        if not qdrant_url or not qdrant_key:
+            raise RuntimeError("QDRANT_URL and QDRANT_API_KEY are required")
+        collection_name = (
+            os.getenv("STUDENT_RAG_HYBRID_COLLECTION")
+            or os.getenv("QDRANT_COLLECTION_NAME")
+            or "student_handbook_semantic_v9_candidate"
+        )
+        logger.info("Initializing ready child-parent regulation retriever...")
+        candidate = ChildParentHybridRetriever(
+            qdrant_url,
+            qdrant_key,
+            collection_name=collection_name,
+        )
+        if not candidate.is_ready():
+            raise RuntimeError(
+                "Hybrid retriever runtime dependency initialization did not complete"
+            )
+        _GLOBAL_RETRIEVER = candidate
+        return candidate
+
+
 def run_hybrid_retrieval_pipeline(
     query: str, top_k: int = 5, **kwargs
 ) -> dict[str, Any]:
@@ -759,36 +935,16 @@ def run_hybrid_retrieval_pipeline(
     output contract as the broader retrieval pipeline so the answer layer and
     UI do not need separate code paths.
     """
-    global _GLOBAL_RETRIEVER
+    cohort = _require_effective_cohort(kwargs.get("cohort"))
+    retriever = ensure_hybrid_retriever_ready()
 
-    if _GLOBAL_RETRIEVER is None:
-        import os
-        from src.common.env_loader import load_project_env
-
-        load_project_env()
-
-        qdrant_url = os.getenv("QDRANT_URL")
-        qdrant_key = os.getenv("QDRANT_API_KEY")
-        collection_name = (
-            os.getenv("STUDENT_RAG_HYBRID_COLLECTION")
-            or os.getenv("QDRANT_COLLECTION_NAME")
-            or "student_handbook_semantic_v9_candidate"
-        )
-        logger.info("Initializing child-parent regulation retriever...")
-        _GLOBAL_RETRIEVER = ChildParentHybridRetriever(
-            qdrant_url,
-            qdrant_key,
-            collection_name=collection_name,
-        )
-
-    cohort = kwargs.get("cohort")
     retrieval_query = kwargs.get("retrieval_query") or query
     detected_entities = kwargs.get("detected_entities") or []
     intent = kwargs.get("intent") or "regulation_query"
     strategy = kwargs.get("strategy") or "hybrid_graph_retrieval"
     target_chunk_types = kwargs.get("target_chunk_types") or ["regulation"]
 
-    docs = _GLOBAL_RETRIEVER.retrieve(
+    docs = retriever.retrieve(
         retrieval_query,
         top_k_final=top_k,
         cohort=cohort,

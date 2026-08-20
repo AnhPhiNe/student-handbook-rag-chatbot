@@ -94,7 +94,7 @@ def main() -> None:
     )
     tampering_run = targeted(
         "tampering",
-        "tests/test_single_cohort_contract.py::test_invalid_plan_clarifies_without_creating_rag_request",
+        "tests/test_single_cohort_contract.py::test_post_validation_plan_tampering_clarifies_without_retrieval_or_cache",
     )
     fallback_run = targeted(
         "fallback",

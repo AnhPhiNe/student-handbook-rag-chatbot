@@ -4,6 +4,7 @@ from typing import Any
 
 from src.generation.answer_pipeline import AnswerPipeline
 from src.generation.context_allocation import build_context_for_prompt
+from src.retrieval.core.request_execution import RequestExecutionContext
 
 
 def _pipeline() -> AnswerPipeline:
@@ -242,20 +243,25 @@ def test_structured_and_rag_requests_execute_independently(monkeypatch) -> None:
                 {
                     "chunk_id": "graduation-rule",
                     "content": "Điều kiện tốt nghiệp.",
-                    "metadata": {
-                        "title": "Điều kiện tốt nghiệp",
-                        "chunk_type": "regulation",
-                        "document_id": "handbook-k51",
-                        "cohort": kwargs["cohort"],
+                        "metadata": {
+                            "title": "Điều kiện tốt nghiệp",
+                            "chunk_type": "regulation",
+                            "document_id": "handbook-k51",
+                            "parent_section_id": "K51_Dieu15",
+                            "source_pages": [20],
+                            "cohort": kwargs["cohort"],
                     },
                 }
             ],
             "citations": [
                 {
                     "chunk_id": "graduation-rule",
-                    "title": "Điều kiện tốt nghiệp",
-                    "document_id": "handbook-k51",
-                    "cohort": kwargs["cohort"],
+                        "title": "Điều kiện tốt nghiệp",
+                        "document_id": "handbook-k51",
+                        "parent_section_id": "K51_Dieu15",
+                        "source_pages": [20],
+                        "cohort": kwargs["cohort"],
+                        "content": "Điều kiện tốt nghiệp.",
                 }
             ],
             "related_items": [],
@@ -274,6 +280,227 @@ def test_structured_and_rag_requests_execute_independently(monkeypatch) -> None:
     assert result["structured_result"]["lookup_type"] == "program_directory"
     assert result["retrieved_items"][0]["request_index"] == 1
     assert {citation["request_index"] for citation in result["citations"]} == {0, 1}
+
+
+def test_follow_up_rag_request_keeps_validated_grounding_in_retrieval_query(
+    monkeypatch,
+) -> None:
+    pipeline = _pipeline()
+    request_span = "Nội dung đó có ngoại lệ nào?"
+    grounded_query = "Quy định cảnh báo học vụ K51 có ngoại lệ nào?"
+    requests = [
+        _request(
+            request_kind="rag",
+            intent="consequence_or_exception",
+            query_span=request_span,
+            cohort_refs=["K51"],
+        )
+    ]
+    calls: list[dict[str, Any]] = []
+
+    def fake_hybrid(**kwargs):
+        calls.append(kwargs)
+        return {
+            "retrieved_items": [
+                {
+                    "chunk_id": "warning-policy",
+                    "content": "Ngoại lệ cảnh báo học vụ.",
+                    "metadata": {
+                        "title": "Cảnh báo học vụ",
+                        "chunk_type": "regulation",
+                        "document_id": "handbook-k51",
+                        "cohort": "K51",
+                    },
+                }
+            ],
+            "citations": [{"chunk_id": "warning-policy", "title": "Cảnh báo học vụ"}],
+            "related_items": [],
+            "related_references": [],
+        }
+
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.run_hybrid_retrieval_pipeline",
+        fake_hybrid,
+    )
+
+    result = pipeline._execute_semantic_requests(
+        query=request_span,
+        effective_query=grounded_query,
+        retrieval_query="unused-top-level-debug",
+        cohort="K51",
+        router_decision=_decision(request_span, requests),
+        query_handling={
+            "context_mode": "follow_up",
+            "effective_query_source": "grounded_follow_up",
+        },
+    )
+
+    expected = f"slang::{request_span}\n{grounded_query}"
+    assert calls[0]["query"] == request_span
+    assert calls[0]["retrieval_query"] == expected
+    assert result["request_execution_contexts"][0]["retrieval_query"] == expected
+
+
+def test_rag_without_source_bound_evidence_is_no_match_and_not_composed(
+    monkeypatch,
+) -> None:
+    pipeline = _pipeline()
+    query = "K51 quy định bảo lưu thế nào?"
+    requests = [
+        _request(
+            request_kind="rag",
+            intent="policy",
+            query_span=query,
+            cohort_refs=["K51"],
+        )
+    ]
+
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.run_hybrid_retrieval_pipeline",
+        lambda **_kwargs: {
+            "retrieved_items": [
+                {
+                    "chunk_id": "unbound-result",
+                    "content": "Một đoạn văn không có source contract.",
+                    "metadata": {"cohort": "K51"},
+                }
+            ],
+            "citations": [{"chunk_id": "unbound-result", "cohort": "K51"}],
+            "related_items": [],
+            "related_references": [],
+        },
+    )
+
+    result = pipeline._execute_semantic_requests(
+        query=query,
+        effective_query=query,
+        retrieval_query="unused",
+        cohort="K51",
+        router_decision=_decision(query, requests),
+        query_handling={},
+    )
+
+    assert result["request_results"][0]["status"] == "no_match"
+    assert result["request_results"][0]["reason"] == "rag_missing_source_bound_item"
+    assert result["retrieved_items"] == []
+    assert result["citations"] == []
+    assert result["needs_llm_answer"] is False
+
+
+def test_rag_evidence_requires_matching_child_chunk_within_parent_source() -> None:
+    """A matching parent section cannot bind two different child chunks."""
+    execution_context = RequestExecutionContext(
+        request_id="r1",
+        request_index=0,
+        request_kind="rag",
+        query_span="Quy định bảo lưu thế nào?",
+        effective_query="K51 quy định bảo lưu thế nào?",
+        effective_cohort="K51",
+        retrieval_query="K51 quy định bảo lưu thế nào",
+    )
+    source_metadata = {
+        "document_id": "handbook-k51",
+        "parent_section_id": "K51_Dieu12",
+        "source_pages": [18],
+        "cohort": "K51",
+    }
+
+    qualified = AnswerPipeline._qualify_rag_evidence(
+        {
+            "retrieved_items": [
+                {
+                    "request_id": "r1",
+                    "chunk_id": "child-a",
+                    "content": "Nội dung từ child A.",
+                    "metadata": source_metadata,
+                }
+            ],
+            "citations": [
+                {
+                    "request_id": "r1",
+                    "chunk_id": "child-b",
+                    "content": "Nội dung từ child B.",
+                    **source_metadata,
+                }
+            ],
+        },
+        execution_context=execution_context,
+    )
+
+    assert qualified["evidence_contract"]["qualified"] is False
+    assert qualified["evidence_contract"]["reason"] == "rag_item_citation_chunk_mismatch"
+    assert qualified["retrieved_items"] == []
+    assert qualified["citations"] == []
+
+
+def test_rag_evidence_does_not_fallback_from_child_to_parent_only_citation() -> None:
+    """Parent identity is insufficient when only one side identifies a child chunk."""
+    execution_context = RequestExecutionContext(
+        request_id="r1",
+        request_index=0,
+        request_kind="rag",
+        query_span="Quy định bảo lưu thế nào?",
+        effective_query="K51 quy định bảo lưu thế nào?",
+        effective_cohort="K51",
+        retrieval_query="K51 quy định bảo lưu thế nào",
+    )
+    source_metadata = {
+        "document_id": "handbook-k51",
+        "parent_section_id": "K51_Dieu12",
+        "source_pages": [18],
+        "cohort": "K51",
+    }
+
+    qualified = AnswerPipeline._qualify_rag_evidence(
+        {
+            "retrieved_items": [
+                {
+                    "request_id": "r1",
+                    "chunk_id": "child-a",
+                    "content": "Nội dung từ child A.",
+                    "metadata": source_metadata,
+                }
+            ],
+            "citations": [
+                {
+                    "request_id": "r1",
+                    "content": "Trích dẫn chỉ ở cấp section.",
+                    **source_metadata,
+                }
+            ],
+        },
+        execution_context=execution_context,
+    )
+
+    assert qualified["evidence_contract"]["qualified"] is False
+    assert qualified["evidence_contract"]["reason"] == "rag_item_citation_chunk_mismatch"
+
+
+def test_request_citation_deduplication_preserves_distinct_rag_children() -> None:
+    citations = [
+        {
+            "request_index": 0,
+            "request_cohort": "K51",
+            "request_kind": "rag",
+            "chunk_id": "child-a",
+            "document_id": "handbook-k51",
+            "source_parent_id": "K51_Dieu12",
+            "title": "Bảo lưu kết quả học tập",
+        },
+        {
+            "request_index": 0,
+            "request_cohort": "K51",
+            "request_kind": "rag",
+            "chunk_id": "child-b",
+            "document_id": "handbook-k51",
+            "source_parent_id": "K51_Dieu12",
+            "title": "Bảo lưu kết quả học tập",
+        },
+    ]
+
+    deduped = AnswerPipeline._deduplicate_request_citations(citations)
+
+    assert [citation["chunk_id"] for citation in deduped] == ["child-a", "child-b"]
 
 
 def test_unresolved_structured_request_never_falls_back_to_rag(monkeypatch) -> None:
@@ -593,15 +820,27 @@ def test_partial_success_preserves_error_for_composer(monkeypatch) -> None:
                 {
                     "chunk_id": "graduation-rule",
                     "content": "Điều kiện tốt nghiệp.",
-                    "metadata": {
-                        "title": "Điều kiện tốt nghiệp",
-                        "chunk_type": "regulation",
-                        "document_id": "handbook-k51",
-                        "cohort": "K51",
+                        "metadata": {
+                            "title": "Điều kiện tốt nghiệp",
+                            "chunk_type": "regulation",
+                            "document_id": "handbook-k51",
+                            "parent_section_id": "K51_Dieu15",
+                            "source_pages": [20],
+                            "cohort": "K51",
                     },
                 }
             ],
-            "citations": [],
+                "citations": [
+                    {
+                        "chunk_id": "graduation-rule",
+                        "title": "Điều kiện tốt nghiệp",
+                        "document_id": "handbook-k51",
+                        "parent_section_id": "K51_Dieu15",
+                        "source_pages": [20],
+                        "cohort": "K51",
+                        "content": "Điều kiện tốt nghiệp.",
+                    }
+                ],
             "related_items": [],
             "related_references": [],
         }

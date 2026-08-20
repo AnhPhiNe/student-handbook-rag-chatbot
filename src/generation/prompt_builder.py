@@ -48,6 +48,10 @@ def build_answer_prompt(
 {source_usage_instruction}
 
 ANSWER_SCOPE_RULES
+- Trả lời trực tiếp và bám sát đúng 100% phạm vi câu hỏi dựa trên tài liệu được cấp. Tuyệt đối KHÔNG suy đoán, không bổ sung quy định từ trí nhớ ngoài nguồn, và không tự ý đưa thêm lời khuyên mở rộng ngoài Sổ tay sinh viên.
+- Bắt buộc nêu rõ tên **Điều X** (kèm tên văn bản quy chế) trực tiếp từ nguồn chính trong câu trả lời để làm anchor cốt lõi cho liên kết Đồ thị Tri thức (Knowledge Graph).
+- Chỉ trích xuất và trình bày các điều kiện/thủ tục thực tế có trong văn bản của từng Điều trong CONTEXT; tuyệt đối KHÔNG tự thêm các con số, tỷ lệ phần trăm hoặc quy định ngoài CONTEXT.
+- Khi câu hỏi hỏi về điểm học phần/học tập, chỉ trả lời phần quy định cho học phần/học tập; tuyệt đối không tự mở rộng sang điểm rèn luyện, khen thưởng hay kỷ luật nếu người dùng không hỏi.
 - Chỉ trả lời đúng đối tượng, chính sách hoặc giá trị mà câu hỏi đang hỏi. Không tự mở rộng sang địa chỉ, email, thủ tục, hậu quả hoặc ngoại lệ nếu người dùng không hỏi và nguồn không nói trực tiếp.
 - Dùng tiêu đề nguồn, source_section và loại nguồn làm anchor chủ đề. Không diễn giải một thuật ngữ trong quy định thành tên phòng/khoa/đơn vị chỉ vì gần chữ.
 - Với câu hỏi về liên hệ/đơn vị, chỉ trả lời các trường có trong STRUCTURED_RESULT hoặc CONTEXT. Không suy ra phòng, email, số điện thoại, địa điểm hoặc đơn vị phụ trách từ tên gần giống.

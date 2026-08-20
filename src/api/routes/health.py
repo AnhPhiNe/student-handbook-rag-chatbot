@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 
 from src.api.deps import verify_admin_api_key
 from src.api.schemas import ArtifactHealthResponse, ArtifactStatus, HealthResponse, ReadinessResponse
@@ -110,6 +110,11 @@ def _required_artifacts() -> list[ArtifactStatus]:
             "processed_json",
         ),
         _artifact(
+            "data/processed/retrieval/bm25_index.json",
+            Path("data/processed/retrieval/bm25_index.json").is_file(),
+            "retrieval_artifact",
+        ),
+        _artifact(
             "data/processed/graphs/document_edges.json",
             Path("data/processed/graphs/document_edges.json").is_file(),
             "processed_json",
@@ -183,16 +188,21 @@ def health() -> HealthResponse:
 
 
 @router.get("/health/readiness", response_model=ReadinessResponse)
-def readiness() -> ReadinessResponse:
+def readiness(request: Request) -> ReadinessResponse:
     """
     Public readiness check for the frontend status badge.
 
     This endpoint does not expose secret values. It only reports whether the
-    current container has the required runtime files and environment variables.
+    current container has the required runtime files, environment variables, and
+    a retriever that completed fail-closed startup checks.
     """
     artifact_status = _artifact_health_response()
     missing_count = sum(1 for item in artifact_status.required_artifacts if not item.exists)
-    ready = artifact_status.status == "ok"
+    runtime_state = getattr(request.app.state, "runtime_readiness", None)
+    runtime_ready = bool(
+        isinstance(runtime_state, dict) and runtime_state.get("ready") is True
+    )
+    ready = artifact_status.status == "ok" and runtime_ready
     return ReadinessResponse(
         status="ok" if ready else "degraded",
         service=SERVICE_NAME,

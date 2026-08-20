@@ -564,6 +564,16 @@ def normalize_router_decision(
             )
         ]
 
+    if len(lookup_requests) >= 2:
+        grounded_requests = [
+            req
+            for req in lookup_requests
+            if req.get("request_kind") != "structured"
+            or _is_grounded_structured_request(req, registry)
+        ]
+        if grounded_requests:
+            lookup_requests = grounded_requests
+
     structured_requests = [
         request
         for request in lookup_requests
@@ -959,6 +969,55 @@ def _canonicalize_slots(
         name: _canonicalize_scalar(value, schema.get(name) or {})
         for name, value in slots.items()
     }
+
+
+def _is_grounded_structured_request(
+    request: dict[str, Any],
+    registry: dict[str, Any],
+) -> bool:
+    """Check if a structured request's extracted slots map to grounded entities in the registry."""
+    if request.get("request_kind") != "structured":
+        return True
+    lookup_type = request.get("lookup_type")
+    spec = registry.get("tools", {}).get(lookup_type)
+    if not spec:
+        return False
+    slots = request.get("slots") or {}
+    slot_schema = spec.get("slot_schema") or {}
+    alias_idx = _slot_alias_index()
+    for slot_name, val in slots.items():
+        if not _is_present(val) or slot_name in UNGROUNDED_SCHEMA_SLOTS:
+            continue
+        schema = slot_schema.get(slot_name) or {}
+        canonical_values = [
+            _normalize_text(c)
+            for c in (schema.get("canonical_values") or schema.get("enum") or [])
+        ]
+        canonical = _canonicalize_scalar(val, schema)
+        val_norm = _normalize_text(val)
+        can_norm = _normalize_text(canonical)
+        if canonical_values:
+            if val_norm in canonical_values or can_norm in canonical_values:
+                continue
+            return False
+
+        alias_types = schema.get("alias_entity_types") or []
+        if alias_types:
+            matched = False
+            for entity_type in alias_types:
+                type_aliases = alias_idx.get(str(entity_type), {})
+                if val_norm in type_aliases or (can_norm and can_norm in type_aliases):
+                    matched = True
+                    break
+                if any(
+                    (len(k) >= 4 and (k in val_norm or val_norm in k))
+                    for k in type_aliases
+                ):
+                    matched = True
+                    break
+            if not matched:
+                return False
+    return True
 
 
 def _matches_type(value: Any, expected: str) -> bool:

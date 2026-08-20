@@ -38,15 +38,43 @@ async def lifespan(app: FastAPI):
         Không có giá trị cụ thể nào được trả về, nhưng nó cho phép ứng dụng chạy
         trong khi các tài nguyên đã được chuẩn bị.
     """
+    app.state.runtime_readiness = {
+        "ready": False,
+        "reason": "startup_initializing",
+        "retriever": None,
+    }
     print("🚀 [FastAPI] Preloading heavy models to prevent Cold Start...")
     from src.api.deps import get_answer_service
-    from src.retrieval.core.bm25_retriever import get_bm25_retriever
+    from src.retrieval.core.hybrid_pipeline import ensure_hybrid_retriever_ready
 
-    # Kích hoạt Singleton ngay từ lúc server khởi động
-    get_answer_service()
-    get_bm25_retriever()
+    try:
+        # Kích hoạt Singleton ngay từ lúc server khởi động.
+        get_answer_service()
+        retriever = ensure_hybrid_retriever_ready()
+    except Exception as exc:
+        app.state.runtime_readiness = {
+            "ready": False,
+            "reason": f"startup_failed:{type(exc).__name__}",
+            "retriever": None,
+        }
+        raise
+
+    app.state.runtime_readiness = {
+        "ready": retriever.is_ready(),
+        "reason": None if retriever.is_ready() else "retriever_not_ready",
+        "retriever": retriever.readiness(),
+    }
+    if not app.state.runtime_readiness["ready"]:
+        raise RuntimeError("Hybrid retriever did not reach ready state during startup")
     print("✅ [FastAPI] All models preloaded successfully!")
-    yield
+    try:
+        yield
+    finally:
+        app.state.runtime_readiness = {
+            "ready": False,
+            "reason": "shutdown",
+            "retriever": None,
+        }
 
 
 app = FastAPI(

@@ -33,7 +33,7 @@ from .query_context import select_effective_query, validated_correction_provenan
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
 ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.2"
-ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.3"
+ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.4"
 ROUTER_VALIDATOR_VERSION = "single-cohort-validator-v2.4"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
@@ -48,8 +48,10 @@ không trả lời, tạo citation/retrieval_query. Chỉ xuất JSON theo OUTPU
 
 QUERY CONTEXT
 - standalone chỉ dùng QUERY. follow_up: standalone_query chỉ ghép QUERY với các
-  evidence_span liên tục, nguyên văn từ turn trong referenced_turn_ids. Giữ nguyên số,
-  phủ định, điều kiện; mọi topic/cohort thêm vào phải được evidence chứng minh trực tiếp.
+  evidence_span liên tục, nguyên văn từ turn trong referenced_turn_ids; không thêm nhãn,
+  diễn giải hay suy luận. Giữ nguyên số, phủ định, điều kiện. Mỗi fact history
+  (topic/cohort) cần evidence_span nguyên văn và turn_id tuyệt đối; giữ mọi ràng buộc QUERY.
+  query_span của request follow_up luôn là span trong QUERY, không lấy topic từ history.
   Cụm phụ thuộc phải resolve đủ topic+cohort; thiếu thì ambiguous, clarify, requests=[].
 - normalized_query chỉ sửa Unicode/dấu hoặc typo cục bộ. Mỗi sửa khai báo correction
   chứa original_span nguyên văn và normalized_span. Cấm đổi cohort, số, phủ định,
@@ -62,16 +64,19 @@ SINGLE-COHORT
 
 ATOMIC REQUESTS
 - execute: mỗi mục tiêu cần kết quả/evidence riêng là một request theo thứ tự, tối đa 6.
-  Cách trình bày, trích nguồn, xác nhận, định dạng hay cách dùng đáp án không phải request.
+  Cách trình bày, trích nguồn, hoàn thiện biểu mẫu, xác nhận với người khác, thời hạn,
+  định dạng hay cách dùng đáp án không phải request.
   Cách thức/điều kiện/hậu quả/ngoại lệ chỉ sửa intent của topic gần nhất, không tự tách.
 - structured: đúng tool/intent/slots trong TOOLS. rag: lookup_type=null, slots={},
   slot_spans={}, intent thuộc RAG_INTENTS. Structured không rõ intent dùng default_intent.
 - query_span: đoạn nguyên văn liên tục, nhỏ nhất đủ định danh một operand/topic; không
   thêm/diễn giải, không dùng dấu "...". slot_spans nằm đúng trong query_span. Cấm tự tạo
   tool, intent, entity, cohort, slot. Hai topic/entity/thao tác độc lập là hai request.
-- RAG: procedure chỉ cho bước/cách làm; policy cho nội dung/điều kiện/quy định;
-  consequence_or_exception cho hậu quả/ngoại lệ; tên thủ tục không hỏi bước là policy;
-  formula chỉ tra công thức.
+- RAG: procedure=bước/cách làm; policy=nội dung/điều kiện/quy định;
+  consequence_or_exception=hậu quả/ngoại lệ; tên thủ tục không hỏi bước là policy;
+  formula= công thức. Chọn theo fact: quy định/thủ tục=RAG; đơn vị/email/danh bạ=
+  directory structured; cả hai độc lập=tạo hai request. Topic RAG rộng có cohort hợp lệ:
+  execute; chỉ clarify khi thiếu cohort/context/operand bắt buộc.
 - Ngoài sổ tay: out_of_domain. clarify/out_of_domain luôn requests=[] và no retrieval.
 """
 
@@ -535,7 +540,13 @@ class AIRouter:
         self.cache = RouterDecisionCache(cache_path) if cache_enabled else None
 
     @classmethod
-    def from_config(cls, path: str | Path = "configs/ai_router.yaml") -> "AIRouter":
+    def from_config(
+        cls,
+        path: str | Path = "configs/ai_router.yaml",
+        *,
+        cache_enabled: bool | None = None,
+        wait_when_limited: bool | None = None,
+    ) -> "AIRouter":
         try:
             config = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
         except OSError:
@@ -544,14 +555,17 @@ class AIRouter:
             os.environ.get("STUDENT_RAG_DISABLE_ROUTER_CACHE") or ""
         ).strip().lower() in {"1", "true", "yes", "on"}
         key_pool_config = dict(config.get("key_pool") or {})
-        wait_override = os.environ.get("STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED")
-        if wait_override is not None:
-            key_pool_config["wait_when_limited"] = wait_override.strip().lower() in {
-                "1",
-                "true",
-                "yes",
-                "on",
-            }
+        if wait_when_limited is not None:
+            key_pool_config["wait_when_limited"] = bool(wait_when_limited)
+        else:
+            wait_override = os.environ.get("STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED")
+            if wait_override is not None:
+                key_pool_config["wait_when_limited"] = wait_override.strip().lower() in {
+                    "1",
+                    "true",
+                    "yes",
+                    "on",
+                }
         model_name = str(
             os.environ.get("STUDENT_RAG_ROUTER_MODEL")
             or config.get("model_name")
@@ -562,6 +576,7 @@ class AIRouter:
             or config.get("max_output_tokens")
             or 256
         )
+        configured_cache_enabled = bool(config.get("cache_enabled", True)) and not cache_disabled
         return cls(
             model_name=model_name,
             temperature=float(config.get("temperature", 0.0)),
@@ -582,8 +597,11 @@ class AIRouter:
             cache_path=str(
                 config.get("cache_path", "data/cache/qwen_router_cache.json")
             ),
-            cache_enabled=bool(config.get("cache_enabled", True))
-            and not cache_disabled,
+            cache_enabled=(
+                configured_cache_enabled
+                if cache_enabled is None
+                else bool(cache_enabled)
+            ),
         )
 
     def route(
@@ -723,7 +741,12 @@ class AIRouter:
                     )
                     continue
                 self.key_pool.record_failure(key_id, error_type)
-                if error_type not in {"timeout", "api_error", "transient_error"}:
+                if error_type not in {
+                    "timeout",
+                    "api_error",
+                    "transient_error",
+                    "invalid_response",
+                }:
                     break
                 transient_failures += 1
                 if transient_failures > self.max_retries:

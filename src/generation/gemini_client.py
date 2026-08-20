@@ -16,6 +16,15 @@ from typing import Any
 from src.common.env_loader import load_project_env
 
 
+class StreamInterruptedAfterOutput(RuntimeError):
+    """A streaming attempt failed after text was already made observable.
+
+    Retrying a generative stream after it has yielded text would concatenate two
+    independently sampled completions.  Callers must instead replace the
+    partial response with a safe fallback (or surface a terminal error).
+    """
+
+
 @dataclass(frozen=True)
 class GeminiKeyPoolConfig:
     rpm_limit_per_key: int = 12
@@ -438,13 +447,24 @@ class GeminiClient:
         while attempts < max_attempts:
             current_key, key_id, key_index = self.key_pool.acquire_key()
             attempts += 1
+            emitted_this_attempt = False
             try:
                 request_client = self._genai.Client(api_key=current_key)
-                yield from self._generate_stream_once(prompt, client=request_client)
+                for chunk in self._generate_stream_once(prompt, client=request_client):
+                    emitted_this_attempt = True
+                    yield chunk
                 self.key_pool.record_success(key_id)
                 return
             except Exception as exc:
                 error_type = self._classify_error(exc)
+                # A retry can only be transparent before this attempt yielded a
+                # token. Once text crossed the generator boundary, a second
+                # completion would be unsafe to append to it.
+                if emitted_this_attempt:
+                    self.key_pool.record_failure(key_id, error_type)
+                    raise StreamInterruptedAfterOutput(
+                        "Gemini streaming interrupted after output was emitted."
+                    ) from exc
                 if error_type == "rate_limit":
                     print(
                         "[GeminiClient] Streaming key "

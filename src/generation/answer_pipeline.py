@@ -1,7 +1,8 @@
+import hashlib
 import os
 import time
 from contextvars import ContextVar
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +13,7 @@ from src.retrieval.core.citation_builder import (
     enrich_citations_with_parent_details,
 )
 from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline
+from src.retrieval.core.office_lookup import find_grounded_catalog_hint
 from src.retrieval.core.query_context import (
     select_effective_query,
     validated_correction_provenance,
@@ -21,6 +23,7 @@ from src.retrieval.core.structured_routing import (
     bind_effective_cohort,
     reject_invalid_plan,
     load_lookup_registry,
+    registry_digest,
     validate_router_decision,
 )
 from src.retrieval.core.vector_retriever import (
@@ -40,7 +43,7 @@ from .answer_guardrails import (
     is_low_confidence,
     is_out_of_domain_query,
 )
-from .citation_formatter import select_relevant_citations
+from .citation_formatter import parse_source_pages, select_relevant_citations
 from .context_allocation import ContextAllocationConfig, build_context_for_prompt
 from .gemini_client import GeminiClient
 from .io_utils import load_json, load_yaml
@@ -53,7 +56,7 @@ from .response_cache import get_response_cache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v33-single-cohort-contract-hardening"
+PIPELINE_VERSION = "v35-single-cohort-request-evidence-cache-parity"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -74,6 +77,24 @@ def _normalize_retrieval_cohort(cohort: str | None) -> str | None:
     if normalized.lower() in {"", "general", "all"}:
         return None
     return normalized
+
+
+def _file_sha256(path_value: Any) -> str | None:
+    """Return a stable content fingerprint for a configured local source file."""
+
+    if not path_value:
+        return None
+    try:
+        path = Path(str(path_value))
+        if not path.is_file():
+            return None
+        digest = hashlib.sha256()
+        with path.open("rb") as source_file:
+            for block in iter(lambda: source_file.read(1024 * 1024), b""):
+                digest.update(block)
+        return digest.hexdigest()
+    except OSError:
+        return None
 
 
 class AnswerPipeline:
@@ -210,6 +231,125 @@ class AnswerPipeline:
             ttl_seconds=cache_config.get("ttl_seconds", 86400),
         )
 
+    def _cache_artifact_fingerprint(self) -> dict[str, Any]:
+        """Bind answer-cache entries to the active retrieval and source artifacts.
+
+        Response caching happens after planning and retrieval, so it can safely
+        include the validated plan and actual evidence.  It must also include
+        the index/data/registry/prompt configuration that produced that evidence
+        so an operational artifact replacement cannot reuse an old answer.
+        """
+
+        cached = getattr(self, "_response_cache_artifact_fingerprint", None)
+        if isinstance(cached, dict):
+            return cached
+
+        config = getattr(self, "config", {})
+        config = config if isinstance(config, Mapping) else {}
+        input_config = config.get("input")
+        input_config = input_config if isinstance(input_config, Mapping) else {}
+        vectorstore_config = config.get("vectorstore")
+        vectorstore_config = (
+            vectorstore_config if isinstance(vectorstore_config, Mapping) else {}
+        )
+        embedding_config = config.get("embedding")
+        embedding_config = (
+            embedding_config if isinstance(embedding_config, Mapping) else {}
+        )
+        retrieval_config = config.get("retrieval")
+        retrieval_config = (
+            retrieval_config if isinstance(retrieval_config, Mapping) else {}
+        )
+        llm_config = getattr(self, "llm_config", None) or config.get("llm") or {}
+        llm_config = llm_config if isinstance(llm_config, Mapping) else {}
+        citations_config = config.get("citations")
+        citations_config = (
+            citations_config if isinstance(citations_config, Mapping) else {}
+        )
+
+        collection_name = (
+            os.getenv("QDRANT_COLLECTION_NAME")
+            or os.getenv("STUDENT_RAG_HYBRID_COLLECTION")
+            or vectorstore_config.get("collection_name")
+            or ""
+        )
+        try:
+            registry_text = registry_digest(load_lookup_registry())
+            registry_sha256 = hashlib.sha256(
+                registry_text.encode("utf-8")
+            ).hexdigest()
+        except Exception:
+            # A cache fingerprint must not turn a recoverable registry-read
+            # failure into a response path failure. The normal validation path
+            # remains responsible for surfacing that infrastructure error.
+            registry_sha256 = None
+
+        try:
+            from src.retrieval.core.ai_router import (
+                ROUTER_CONTRACT_VERSION,
+                ROUTER_PROMPT_VERSION,
+                ROUTER_VALIDATOR_VERSION,
+            )
+
+            planner_versions = {
+                "contract": ROUTER_CONTRACT_VERSION,
+                "prompt": ROUTER_PROMPT_VERSION,
+                "validator": ROUTER_VALIDATOR_VERSION,
+            }
+        except Exception:
+            planner_versions = {}
+
+        fingerprint = {
+            "index": {
+                "collection_name": collection_name,
+                "index_version": (
+                    os.getenv("STUDENT_RAG_INDEX_VERSION")
+                    or vectorstore_config.get("index_version")
+                    or collection_name
+                ),
+                "embedding_model": embedding_config.get("model_name"),
+            },
+            "retrieval": {
+                "top_k": retrieval_config.get("default_top_k"),
+                "candidate_multiplier": retrieval_config.get("candidate_multiplier"),
+                "min_candidates": retrieval_config.get("min_candidates"),
+            },
+            "planner": planner_versions,
+            "registry_sha256": registry_sha256,
+            "source_data_sha256": {
+                str(name): _file_sha256(path)
+                for name, path in input_config.items()
+                if isinstance(path, (str, Path))
+            },
+            "answer_config": {
+                "model": llm_config.get("model_name"),
+                "temperature": llm_config.get("temperature"),
+                "max_output_tokens": llm_config.get("max_output_tokens"),
+                "citation_max_sources": citations_config.get("max_sources"),
+                "context": self.context_allocation.cache_fingerprint(),
+            },
+        }
+        self._response_cache_artifact_fingerprint = fingerprint
+        return fingerprint
+
+    def _make_response_cache_key(
+        self,
+        *,
+        effective_query: str,
+        retrieval_result: dict[str, Any],
+        selected_citations: list[dict[str, Any]],
+        cohort: str | None,
+    ) -> str:
+        return self.response_cache.make_cache_key(
+            query=effective_query,
+            retrieval_result=retrieval_result,
+            selected_citations=selected_citations,
+            cohort=cohort,
+            context_fingerprint=self.context_allocation.cache_fingerprint(),
+            pipeline_version=PIPELINE_VERSION,
+            artifact_fingerprint=self._cache_artifact_fingerprint(),
+        )
+
     def answer(
         self,
         query: str,
@@ -308,10 +448,18 @@ class AnswerPipeline:
                 used_cache=False,
             )
 
+        citations_config = self.config.get("citations", {})
+        selected_citations = select_relevant_citations(
+            retrieval_result.get("citations"),
+            intent=retrieval_result.get("intent"),
+            retrieval_result=retrieval_result,
+            max_sources=int(citations_config.get("max_sources", 2)),
+        )
         context_started = time.monotonic()
         context_used = build_context_for_prompt(
             retrieval_result,
             query=effective_query,
+            selected_citations=selected_citations,
             max_context_chars=self.max_context_chars,
             allocation_config=self.context_allocation,
         )
@@ -396,15 +544,7 @@ class AnswerPipeline:
                 llm_called=False,
                 used_cache=False,
             )
-        citations_config = self.config.get("citations", {})
         guardrails_config = self.config.get("guardrails", {})
-
-        selected_citations = select_relevant_citations(
-            retrieval_result.get("citations"),
-            intent=retrieval_result.get("intent"),
-            retrieval_result=retrieval_result,
-            max_sources=int(citations_config.get("max_sources", 2)),
-        )
 
         if guardrails_config.get(
             "skip_llm_on_low_confidence", True
@@ -451,13 +591,11 @@ class AnswerPipeline:
                 used_cache=True,
             )
 
-        all_citations = retrieval_result.get("citations") or []
-
         prompt_started = time.monotonic()
         prompt = build_answer_prompt(
             query=effective_query,
             retrieval_result=retrieval_result,
-            selected_citations=None,
+            selected_citations=selected_citations,
             max_context_chars=self.max_context_chars,
             cohort=cohort,
             context_allocation=self.context_allocation,
@@ -480,7 +618,7 @@ class AnswerPipeline:
                 retrieval_result=retrieval_result,
                 final_answer=final_answer,
                 context_used=context_used,
-                selected_citations=all_citations,
+                selected_citations=selected_citations,
                 status="api_error",
                 error_type="api_init_error",
                 error_message=str(exc),
@@ -524,7 +662,7 @@ class AnswerPipeline:
                 retrieval_result=retrieval_result,
                 final_answer=final_answer,
                 context_used=context_used,
-                selected_citations=all_citations,
+                selected_citations=selected_citations,
                 status="api_error",
                 error_type=error_type,
                 error_message=llm_result.get("error_message"),
@@ -545,7 +683,7 @@ class AnswerPipeline:
             retrieval_result=retrieval_result,
             final_answer=final_answer,
             context_used=context_used,
-            selected_citations=all_citations,
+            selected_citations=selected_citations,
             status="answered",
             error_type=None,
             error_message=None,
@@ -561,7 +699,7 @@ class AnswerPipeline:
                 "status": "answered",
                 "error_type": None,
                 "error_message": None,
-                "citations": all_citations,
+                "citations": selected_citations,
             },
         )
 
@@ -814,13 +952,12 @@ class AnswerPipeline:
             yield {"type": "done", "tracker": tracker}
             return
 
-        all_citations = retrieval_result.get("citations") or []
         related_references = retrieval_result.get("related_references") or []
 
         prompt = build_answer_prompt(
             query=effective_query,
             retrieval_result=retrieval_result,
-            selected_citations=None,
+            selected_citations=selected_citations,
             max_context_chars=self.max_context_chars,
             cohort=cohort,
             context_allocation=self.context_allocation,
@@ -829,9 +966,9 @@ class AnswerPipeline:
         yield {"type": "progress", "message": "Đang tổng hợp câu trả lời..."}
         yield self._build_stream_metadata(
             retrieval_result,
-            status="answered",
+            status="generating",
             effective_query=effective_query,
-            citations_used=all_citations,
+            citations_used=selected_citations,
             related_references=related_references,
             llm_called=True,
             run_id=run_id,
@@ -882,9 +1019,28 @@ class AnswerPipeline:
                     start_time=start_time_llm,
                     end_time=end_time_llm,
                 )
+            yield self._build_stream_metadata(
+                retrieval_result,
+                status="answered",
+                effective_query=effective_query,
+                citations_used=selected_citations,
+                related_references=related_references,
+                llm_called=True,
+                run_id=run_id,
+            )
         except Exception:
             fallback = build_fallback_answer(
                 effective_query, retrieval_result, reason="api_error"
+            )
+            yield self._build_stream_metadata(
+                retrieval_result,
+                status="api_error",
+                effective_query=effective_query,
+                fallback_reason="api_error",
+                citations_used=selected_citations,
+                related_references=related_references,
+                llm_called=True,
+                run_id=run_id,
             )
             yield {"type": "token", "text": fallback}
 
@@ -975,17 +1131,35 @@ class AnswerPipeline:
         # The planner sees the immutable user query. Alias/slang expansion is a
         # code-derived retrieval concern and must not alter planner grounding.
         router_input_query = query
+        # This is exact, catalog-backed metadata only. It does not choose a
+        # route or execute a lookup; the validated atomic plan remains the
+        # sole authority for execution.
+        routing_hint = find_grounded_catalog_hint(
+            query,
+            self.student_office_profiles,
+            self.student_service_directory,
+            self.student_faculty_profiles,
+            cohort=cohort,
+        )
         try:
             router_decision = self.router.route(
                 router_input_query,
                 chat_history=chat_history,
                 cohort=cohort,
+                routing_hint=routing_hint,
             )
         except TypeError:
-            router_decision = self.router.route(
-                router_input_query,
-                chat_history=chat_history,
-            )
+            try:
+                router_decision = self.router.route(
+                    router_input_query,
+                    chat_history=chat_history,
+                    cohort=cohort,
+                )
+            except TypeError:
+                router_decision = self.router.route(
+                    router_input_query,
+                    chat_history=chat_history,
+                )
         handling = select_effective_query(
             query,
             router_decision,
@@ -1007,6 +1181,7 @@ class AnswerPipeline:
             "query_handling": query_handling,
             "effective_query": effective_query,
             "router_input_query": router_input_query,
+            "routing_hint": routing_hint,
         }
         if router_decision.get("router_error_type"):
             return {
@@ -1352,6 +1527,7 @@ class AnswerPipeline:
             requests,
             effective_query=effective_query,
             cohort=cohort,
+            query_handling=query_handling,
         )
         structured_results: list[dict[str, Any]] = []
         structured_citations: list[dict[str, Any]] = []
@@ -1471,10 +1647,25 @@ class AnswerPipeline:
                 unresolved_requests.append(unresolved)
                 request_results.append(unresolved)
                 continue
+            rag_result = self._qualify_rag_evidence(
+                rag_result,
+                execution_context=execution_context,
+            )
             rag_results.append(rag_result)
             status = "ok" if self._has_rag_evidence(rag_result) else "no_match"
             metadata = self._request_result_metadata(
-                request, execution_context, status=status
+                request,
+                execution_context,
+                status=status,
+                reason=(
+                    None
+                    if status == "ok"
+                    else str(
+                        (rag_result.get("evidence_contract") or {}).get("reason")
+                        or "rag_evidence_insufficient"
+                    )
+                ),
+                provenance=dict(rag_result.get("evidence_contract") or {}),
             )
             request_results.append(metadata)
             if status != "ok":
@@ -1614,7 +1805,9 @@ class AnswerPipeline:
         *,
         effective_query: str,
         cohort: str | None,
+        query_handling: Mapping[str, Any] | None = None,
     ) -> dict[int, RequestExecutionContext]:
+        query_handling = query_handling or {}
         return {
             request_index: RequestExecutionContext(
                 request_id=f"r{request_index + 1}",
@@ -1624,17 +1817,60 @@ class AnswerPipeline:
                 effective_query=effective_query,
                 effective_cohort=cohort,
                 retrieval_query=self.slang_normalizer.normalize_for_retrieval(
-                    str(request.get("query_span") or effective_query).strip()
+                    self._request_retrieval_text(
+                        request,
+                        effective_query=effective_query,
+                        query_handling=query_handling,
+                    )
                 ),
                 retrieval_config={
                     "top_k": self.config["retrieval"]["default_top_k"],
                     "index_version": (self.config.get("input") or {}).get(
                         "structured_tables_registry"
                     ),
+                    "query_context_mode": query_handling.get("context_mode"),
                 },
             )
             for request_index, request in requests
         }
+
+    @staticmethod
+    def _request_retrieval_text(
+        request: Mapping[str, Any],
+        *,
+        effective_query: str,
+        query_handling: Mapping[str, Any],
+    ) -> str:
+        """Build a request-local retrieval query from already validated context.
+
+        Atomic request spans intentionally remain grounded in the current user
+        turn.  For a validated follow-up, that span can be anaphoric (for
+        example, ``"nội dung đó"``), so retrieval additionally needs the
+        independently validated standalone query.  The runtime derives this
+        composition; the planner never supplies a retrieval query.
+        """
+
+        query_span = str(request.get("query_span") or effective_query).strip()
+        grounded_query = str(effective_query or "").strip()
+        context_mode = str(query_handling.get("context_mode") or "").strip().lower()
+        effective_source = str(
+            query_handling.get("effective_query_source")
+            or query_handling.get("source")
+            or ""
+        ).strip()
+
+        if (
+            context_mode != "follow_up"
+            or effective_source != "grounded_follow_up"
+            or not query_span
+            or not grounded_query
+            or query_span == grounded_query
+        ):
+            return query_span or grounded_query
+
+        # The request span remains first so sibling requests stay distinguishable;
+        # the second line is provenance-validated grounding, not a second request.
+        return f"{query_span}\n{grounded_query}"
 
     @staticmethod
     def _has_structured_value(result: dict[str, Any] | None) -> bool:
@@ -1652,7 +1888,235 @@ class AnswerPipeline:
 
     @staticmethod
     def _has_rag_evidence(result: dict[str, Any]) -> bool:
-        return bool(result.get("retrieved_items") or result.get("citations"))
+        return bool((result.get("evidence_contract") or {}).get("qualified"))
+
+    @staticmethod
+    def _rag_source_identity(
+        value: Mapping[str, Any],
+        *,
+        expected_cohort: str | None,
+        request_id: str,
+        require_content: bool,
+    ) -> tuple[str, str, str | None, bool] | None:
+        """Return a source identity only for request-scoped, usable RAG evidence."""
+
+        metadata = value.get("metadata")
+        metadata = metadata if isinstance(metadata, Mapping) else {}
+        if str(value.get("request_id") or "").strip() != request_id:
+            return None
+
+        source_cohort = _normalize_retrieval_cohort(
+            str(
+                value.get("cohort")
+                or metadata.get("cohort")
+                or value.get("request_cohort")
+                or metadata.get("request_cohort")
+                or resolve_cohort_from_query(
+                    str(
+                        value.get("parent_section_id")
+                        or metadata.get("parent_section_id")
+                        or value.get("source_file")
+                        or metadata.get("source_file")
+                        or ""
+                    )
+                )
+                or ""
+            )
+        )
+        if expected_cohort and source_cohort and source_cohort != expected_cohort:
+            return None
+
+        document_id = str(
+            value.get("document_id")
+            or metadata.get("document_id")
+            or value.get("source_file")
+            or metadata.get("source_file")
+            or ""
+        ).strip()
+        parent_section_id = str(
+            value.get("parent_section_id")
+            or value.get("source_parent_id")
+            or metadata.get("parent_section_id")
+            or metadata.get("source_parent_id")
+            or ""
+        ).strip()
+        chunk_id = str(
+            value.get("chunk_id")
+            or metadata.get("chunk_id")
+            or value.get("id")
+            or ""
+        ).strip() or None
+        chunk_granularity = str(
+            value.get("chunk_granularity")
+            or metadata.get("chunk_granularity")
+            or ""
+        ).strip().lower()
+        is_explicit_parent_level = chunk_granularity in {
+            "parent",
+            "parent_bound_context",
+            "parent_section",
+        }
+        source_pages = parse_source_pages(
+            value.get("source_pages")
+            or metadata.get("source_pages")
+            or value.get("source_page")
+            or metadata.get("source_page")
+        )
+        content = str(
+            value.get("content")
+            or value.get("text")
+            or value.get("page_content")
+            or value.get("document")
+            or value.get("source")
+            or ""
+        ).strip()
+        if not document_id or not parent_section_id or not source_pages:
+            return None
+        if require_content and not content:
+            return None
+        return (document_id, parent_section_id, chunk_id, is_explicit_parent_level)
+
+    @staticmethod
+    def _rag_source_identities_match(
+        item_identity: tuple[str, str, str | None, bool],
+        citation_identity: tuple[str, str, str | None, bool],
+    ) -> bool:
+        """Match a concrete chunk exactly, with parent binding as fallback.
+
+        Retrieval can represent a parent section directly, but absence of a
+        chunk id alone is not proof that a source is parent-level. If both sides
+        do have an id, siblings under one article are different evidence and
+        must never satisfy one another. A parent fallback is permitted only
+        when at least one side explicitly declares parent-level granularity.
+        """
+
+        if item_identity[:2] != citation_identity[:2]:
+            return False
+        item_chunk_id, item_is_parent_level = item_identity[2:]
+        citation_chunk_id, citation_is_parent_level = citation_identity[2:]
+        if item_chunk_id and citation_chunk_id:
+            return item_chunk_id == citation_chunk_id
+        return item_is_parent_level or citation_is_parent_level
+
+    @classmethod
+    def _qualify_rag_evidence(
+        cls,
+        result: Mapping[str, Any],
+        *,
+        execution_context: RequestExecutionContext,
+    ) -> dict[str, Any]:
+        """Retain only evidence that is source-bound to this atomic RAG request.
+
+        A non-empty retrieval list is merely a candidate set.  It becomes answer
+        evidence only when a retrieved item and citation identify the same
+        document/parent section (and the same concrete child when both expose
+        one), carry pages and the effective cohort, and are owned by the current
+        request. This prevents unrelated-but-nonempty RAG results from being
+        composed as verified answers.
+        """
+
+        candidate_items = [
+            dict(item)
+            for item in result.get("retrieved_items") or []
+            if isinstance(item, Mapping)
+        ]
+        candidate_citations = [
+            dict(citation)
+            for citation in result.get("citations") or []
+            if isinstance(citation, Mapping)
+        ]
+        expected_cohort = _normalize_retrieval_cohort(
+            execution_context.effective_cohort
+        )
+
+        valid_items: list[
+            tuple[tuple[str, str, str | None, bool], dict[str, Any]]
+        ] = []
+        for item in candidate_items:
+            identity = cls._rag_source_identity(
+                item,
+                expected_cohort=expected_cohort,
+                request_id=execution_context.request_id,
+                require_content=True,
+            )
+            if identity is not None:
+                valid_items.append((identity, item))
+
+        valid_citations: list[
+            tuple[tuple[str, str, str | None, bool], dict[str, Any]]
+        ] = []
+        for citation in candidate_citations:
+            identity = cls._rag_source_identity(
+                citation,
+                expected_cohort=expected_cohort,
+                request_id=execution_context.request_id,
+                require_content=True,
+            )
+            if identity is not None:
+                valid_citations.append((identity, citation))
+
+        matched_item_indexes: set[int] = set()
+        matched_citation_indexes: set[int] = set()
+        matched_source_pairs: set[
+            tuple[
+                tuple[str, str, str | None, bool],
+                tuple[str, str, str | None, bool],
+            ]
+        ] = set()
+        for item_index, (item_identity, _) in enumerate(valid_items):
+            for citation_index, (citation_identity, _) in enumerate(valid_citations):
+                if not cls._rag_source_identities_match(
+                    item_identity, citation_identity
+                ):
+                    continue
+                matched_item_indexes.add(item_index)
+                matched_citation_indexes.add(citation_index)
+                matched_source_pairs.add((item_identity, citation_identity))
+        qualified_items = [
+            item
+            for item_index, (_, item) in enumerate(valid_items)
+            if item_index in matched_item_indexes
+        ]
+        qualified_citations = [
+            citation
+            for citation_index, (_, citation) in enumerate(valid_citations)
+            if citation_index in matched_citation_indexes
+        ]
+        if not valid_items:
+            reason = "rag_missing_source_bound_item"
+        elif not valid_citations:
+            reason = "rag_missing_source_bound_citation"
+        elif not matched_source_pairs:
+            shared_parents = any(
+                item_identity[:2] == citation_identity[:2]
+                for item_identity, _ in valid_items
+                for citation_identity, _ in valid_citations
+            )
+            reason = (
+                "rag_item_citation_chunk_mismatch"
+                if shared_parents
+                else "rag_item_citation_source_mismatch"
+            )
+        else:
+            reason = None
+
+        qualified = bool(matched_source_pairs)
+        sanitized = dict(result)
+        sanitized["retrieved_items"] = qualified_items
+        sanitized["citations"] = qualified_citations
+        if not qualified:
+            sanitized["related_items"] = []
+            sanitized["related_references"] = []
+            sanitized["context_for_llm"] = ""
+        sanitized["evidence_contract"] = {
+            "qualified": qualified,
+            "reason": reason,
+            "candidate_item_count": len(candidate_items),
+            "candidate_citation_count": len(candidate_citations),
+            "qualified_source_count": len(matched_source_pairs),
+            "cohort": expected_cohort,
+        }
+        return sanitized
 
     @staticmethod
     def _annotate_structured_citations(
@@ -1730,15 +2194,23 @@ class AnswerPipeline:
             strategy="semantic_request_rag",
             retrieval_query=execution_context.retrieval_query,
         )
-        return self._annotate_request_result(result, execution_context=execution_context)
+        return self._annotate_request_result(
+            result,
+            execution_context=execution_context,
+            request=request,
+        )
 
     @staticmethod
     def _annotate_request_result(
         result: dict[str, Any],
         *,
         execution_context: RequestExecutionContext,
+        request: Mapping[str, Any],
     ) -> dict[str, Any]:
         annotated = dict(result)
+        request_intent = request.get("intent")
+        request_kind = request.get("request_kind")
+        request_target_chunk_types = result.get("target_chunk_types") or []
         items = []
         for item in result.get("retrieved_items") or []:
             enriched = dict(item)
@@ -1756,9 +2228,12 @@ class AnswerPipeline:
             enriched["request_index"] = execution_context.request_index
             enriched["query_span"] = execution_context.query_span
             enriched["request_cohort"] = execution_context.effective_cohort
+            enriched["request_intent"] = request_intent
+            enriched["request_kind"] = request_kind
+            enriched["request_target_chunk_types"] = request_target_chunk_types
             items.append(enriched)
         citations = []
-        for citation in result.get("citations") or []:
+        for retrieval_rank, citation in enumerate(result.get("citations") or [], start=1):
             enriched = dict(citation)
             enriched.update(
                 {
@@ -1766,6 +2241,10 @@ class AnswerPipeline:
                     "request_index": execution_context.request_index,
                     "query_span": execution_context.query_span,
                     "request_cohort": execution_context.effective_cohort,
+                    "request_intent": request_intent,
+                    "request_kind": request_kind,
+                    "request_target_chunk_types": request_target_chunk_types,
+                    "request_retrieval_rank": retrieval_rank,
                 }
             )
             citations.append(enriched)
@@ -1807,6 +2286,10 @@ class AnswerPipeline:
                 citation.get("document_id"),
                 citation.get("table_id") or citation.get("source_parent_id"),
                 citation.get("title"),
+                # RAG siblings can share an article/title/pages but remain
+                # distinct evidence.  Empty keeps legacy parent/table cards
+                # de-duplicated as before.
+                citation.get("chunk_id") or "",
             )
             if key in seen:
                 continue

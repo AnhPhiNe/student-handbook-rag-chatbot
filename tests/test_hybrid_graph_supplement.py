@@ -4,6 +4,7 @@ import os
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
+import src.retrieval.core.hybrid_pipeline as hybrid_pipeline
 from src.retrieval.core.hybrid_pipeline import (
     ChildParentHybridRetriever,
     DEFAULT_RETRIEVAL_MODE,
@@ -129,7 +130,8 @@ def _retriever_stub() -> ChildParentHybridRetriever:
         return_value=([], {"graph_related_parents_selected": 0})
     )
     retriever.bm25 = Mock()
-    retriever.bm25.search_bm25.return_value = []
+    retriever.bm25.sparse_search.return_value = []
+    retriever.bm25.readiness.return_value = {"ready": True, "chunk_count": 24}
     return retriever
 
 
@@ -167,6 +169,7 @@ def test_default_retrieval_groups_twenty_four_vector_chunks_before_graph() -> No
     ]
     assert telemetry["ranking_method"] == "rrf"
     assert telemetry["phoranker_used"] is False
+    assert telemetry["sparse_candidate_chunks"] == 0
     retriever._graph_related_parent_results.assert_called_once()
     assert result == retriever._group_parent_results.return_value
 
@@ -204,6 +207,65 @@ def test_full_ablation_reranks_the_same_twenty_four_vector_chunks() -> None:
     ]
     assert telemetry["ranking_method"] == "phoranker"
     assert telemetry["phoranker_used"] is True
+
+
+def test_sparse_candidates_rescue_a_dense_empty_query() -> None:
+    retriever = _retriever_stub()
+    sparse_chunk = {
+        "chunk_id": "sparse-only",
+        "content": "Điểm thi có thể được phúc khảo.",
+        "bm25_score": 3.5,
+        "metadata": {
+            "parent_section_id": "K51_Dieu10",
+            "content_type": "regulation_text",
+            "cohort": "K51",
+        },
+    }
+    retriever.bm25.sparse_search.return_value = [sparse_chunk]
+
+    with (
+        patch.dict(
+            os.environ,
+            {"STUDENT_RAG_EVAL_RETRIEVAL_MODE": DEFAULT_RETRIEVAL_MODE},
+        ),
+        patch(
+            "src.retrieval.core.hybrid_pipeline._query_points_with_retry",
+            return_value=[],
+        ),
+    ):
+        result = ChildParentHybridRetriever.retrieve(
+            retriever,
+            "khiếu nại điểm",
+            top_k_vector=12,
+            top_k_final=5,
+            cohort="K51",
+        )
+
+    scored_chunks = retriever._group_parent_results.call_args.kwargs["scored_chunks"]
+    assert [chunk["chunk_id"] for _, chunk in scored_chunks] == ["sparse-only"]
+    telemetry = retriever._group_parent_results.call_args.kwargs[
+        "retrieval_telemetry"
+    ]
+    assert telemetry["dense_candidate_chunks"] == 0
+    assert telemetry["sparse_candidate_chunks"] == 1
+    assert result == retriever._group_parent_results.return_value
+
+
+def test_ready_singleton_rejects_an_unready_sparse_dependency(monkeypatch) -> None:
+    candidate = Mock()
+    candidate.bm25.is_ready.return_value = False
+    candidate.is_ready.return_value = False
+    monkeypatch.setattr(hybrid_pipeline, "_GLOBAL_RETRIEVER", None)
+    monkeypatch.setattr(hybrid_pipeline, "ChildParentHybridRetriever", lambda *_args, **_kwargs: candidate)
+    monkeypatch.setenv("QDRANT_URL", "https://qdrant.example")
+    monkeypatch.setenv("QDRANT_API_KEY", "test-key")
+
+    try:
+        hybrid_pipeline.ensure_hybrid_retriever_ready()
+    except RuntimeError as exc:
+        assert "dependency initialization did not complete" in str(exc)
+    else:  # pragma: no cover - documents the fail-closed startup contract.
+        raise AssertionError("unready BM25 must prevent retriever publication")
 
 
 def test_parent_grouping_keeps_phoranker_order_and_top_k() -> None:

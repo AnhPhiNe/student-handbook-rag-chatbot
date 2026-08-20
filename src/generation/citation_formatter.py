@@ -1,4 +1,5 @@
 import re
+from collections import defaultdict
 from typing import Any
 
 
@@ -58,13 +59,18 @@ def deduplicate_citations(
     if not citations:
         return []
 
-    seen: set[tuple[tuple[str, str] | None, str, tuple[int, ...]]] = set()
+    seen: set[tuple[tuple[str, str] | None, str, tuple[int, ...], str]] = set()
     deduped: list[dict[str, Any]] = []
 
     for citation in citations:
         title = _citation_title(citation).strip().lower()
         pages = tuple(parse_source_pages(citation.get("source_pages")))
-        key = (_request_scope(citation), title, pages)
+        # A child chunk is a distinct source even when siblings share their
+        # parent article, title, and pages.  Retaining it is necessary for
+        # request-scoped evidence binding; legacy citations without a chunk id
+        # retain the former title/page de-duplication behavior.
+        chunk_id = str(citation.get("chunk_id") or "").strip()
+        key = (_request_scope(citation), title, pages, chunk_id)
         if key in seen:
             continue
         seen.add(key)
@@ -85,12 +91,20 @@ def select_relevant_citations(
 
     retrieval_result = retrieval_result or {}
 
-    # Multi-request evidence is request-scoped. A top-level structured result must
-    # not suppress RAG evidence (or another structured source) owned by a sibling
-    # request. Rank all candidates, then keep at least one citation per scope.
-    if len(_request_scopes(deduped)) > 1:
-        ranked = _rank_citations(deduped, intent, retrieval_result)
-        return _select_with_request_coverage(ranked, max_sources)
+    scopes = _request_scopes(deduped)
+    # Atomic-plan evidence is fail-closed: once any citation has a request
+    # owner, unscoped candidates cannot be allowed into its answer context.
+    # Legacy flows remain compatible because they have no request scopes.
+    if scopes:
+        deduped = [
+            citation for citation in deduped if _request_scope(citation) is not None
+        ]
+        return _select_request_scoped_citations(
+            deduped,
+            intent=intent,
+            retrieval_result=retrieval_result,
+            max_sources=max_sources,
+        )
 
     if _has_result(retrieval_result.get("tool_result")):
         return []
@@ -138,11 +152,75 @@ def _rank_citations(
         key=lambda item: (
             _priority_index(item[1], priorities),
             -_metadata_match_score(item[1], retrieval_result),
+            _request_retrieval_rank(item[1]),
             _distance_score(item[1]),
             item[0],
         ),
     )
     return [citation for _, citation in ranked]
+
+
+def _select_request_scoped_citations(
+    citations: list[dict[str, Any]],
+    *,
+    intent: str | None,
+    retrieval_result: dict[str, Any],
+    max_sources: int,
+) -> list[dict[str, Any]]:
+    """Preserve independently retrieved evidence for every atomic request.
+
+    ``max_sources`` is a display budget for one semantic retrieval request.
+    Structured lookups remain one source per request; a RAG request retains up
+    to the configured budget so a valid source is not dropped merely because a
+    sibling request consumed the shared global budget.  This is source coverage,
+    not a fallback or re-routing mechanism.
+    """
+
+    grouped: dict[tuple[str, str] | None, list[dict[str, Any]]] = defaultdict(list)
+    for citation in citations:
+        grouped[_request_scope(citation)].append(citation)
+
+    selected: list[dict[str, Any]] = []
+    for candidates in grouped.values():
+        scoped_context = _request_citation_context(candidates, retrieval_result)
+        scoped_intent = _request_intent(candidates, intent)
+        ranked = _rank_citations(candidates, scoped_intent, scoped_context)
+        per_scope_limit = (
+            max_sources
+            if any(str(item.get("request_kind") or "").strip() == "rag" for item in candidates)
+            else 1
+        )
+        selected.extend(ranked[: max(1, per_scope_limit)])
+    return selected
+
+
+def _request_citation_context(
+    citations: list[dict[str, Any]],
+    fallback: dict[str, Any],
+) -> dict[str, Any]:
+    context = dict(fallback)
+    for citation in citations:
+        cohort = str(citation.get("request_cohort") or "").strip()
+        if cohort:
+            context["selected_cohort"] = cohort
+            break
+    for citation in citations:
+        target_chunk_types = citation.get("request_target_chunk_types")
+        if isinstance(target_chunk_types, list) and target_chunk_types:
+            context["target_chunk_types"] = target_chunk_types
+            break
+    return context
+
+
+def _request_intent(
+    citations: list[dict[str, Any]],
+    fallback: str | None,
+) -> str | None:
+    for citation in citations:
+        value = citation.get("request_intent")
+        if value is not None and str(value).strip():
+            return str(value).strip()
+    return fallback
 
 
 def _select_with_request_coverage(
@@ -314,6 +392,13 @@ def _distance_score(citation: dict[str, Any]) -> float:
     if isinstance(distance, int | float):
         return float(distance)
     return 999.0
+
+
+def _request_retrieval_rank(citation: dict[str, Any]) -> int:
+    value = citation.get("request_retrieval_rank")
+    if isinstance(value, int) and value > 0:
+        return value
+    return 999
 
 
 def _metadata_match_score(

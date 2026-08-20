@@ -400,6 +400,14 @@ def test_metrics_keep_exact_diagnostic_separate_from_semantic_execution() -> Non
                 "exact_passed": False,
                 "semantic_passed": False,
             },
+            {
+                "id": "dev-tampering",
+                "category": "failure_isolation",
+                "planner_skipped": True,
+                "passed": False,
+                "exact_passed": False,
+                "semantic_passed": False,
+            },
         ]
     }
     metrics = evaluator._metrics(
@@ -416,6 +424,151 @@ def test_metrics_keep_exact_diagnostic_separate_from_semantic_execution() -> Non
     assert metrics["dev_semantic_plan"] == 0.5
     assert metrics["dev_semantic_executable"] == 0.5
     assert metrics["dev_semantic_category_floor"] == 0.5
+
+
+def test_live_planner_skips_plan_tampering_without_constructing_router(
+    monkeypatch,
+) -> None:
+    cases = [
+        {
+            "id": "dev-tampering",
+            "category": "failure_isolation",
+            "fault_injection": {"type": "plan_tampering"},
+        }
+    ]
+
+    def _unexpected_router_construction():
+        raise AssertionError("deterministic tampering must not call the live planner")
+
+    monkeypatch.setattr(evaluator.AIRouter, "from_config", _unexpected_router_construction)
+
+    rows = evaluator.run_live_planner(cases)
+
+    assert rows == [
+        {
+            "id": "dev-tampering",
+            "category": "failure_isolation",
+            "planner_skipped": True,
+            "passed": False,
+            "exact_passed": False,
+            "semantic_passed": False,
+            "failure_type": "deterministic_fault_suite",
+            "reason": "Plan tampering is exercised after a valid plan by deterministic conformance.",
+            "provider_failure": False,
+        }
+    ]
+
+
+def test_live_planner_uses_production_catalog_hint_and_fails_router_fallback() -> None:
+    captured: dict[str, object] = {}
+
+    class FallbackRouter:
+        model_name = evaluator.PLANNER_MODEL
+
+        def route(self, query, *, chat_history, cohort, routing_hint):
+            captured.update(
+                {
+                    "query": query,
+                    "chat_history": chat_history,
+                    "cohort": cohort,
+                    "routing_hint": routing_hint,
+                }
+            )
+            return {
+                "router_error_type": "timeout",
+                "router_error": "provider timed out",
+                "outcome": "clarify",
+            }
+
+    rows = evaluator.run_live_planner(
+        [
+            {
+                "id": "dev-directory",
+                "category": "single_structured",
+                "query": "Email PĐT là gì?",
+                "selected_cohort": "K51",
+                "chat_history": [],
+            }
+        ],
+        router=FallbackRouter(),
+        catalogs={
+            "office": [
+                {
+                    "record_id": "office-pdt",
+                    "unit_name": "Phòng Đào tạo",
+                    "aliases": ["PĐT"],
+                }
+            ],
+            "student_service": [],
+            "faculty": [],
+        },
+    )
+
+    assert captured["routing_hint"] == {
+        "lookup_type": "office",
+        "entity_text": "PĐT",
+        "unit_name": "Phòng Đào tạo",
+        "match_type": "exact_catalog_span",
+    }
+    assert rows[0]["failure_type"] == "provider"
+    assert rows[0]["provider_failure"] is True
+    assert not rows[0]["semantic_passed"]
+
+
+def test_live_planner_rejects_router_cache_hits_from_live_metrics() -> None:
+    class CachedRouter:
+        model_name = evaluator.PLANNER_MODEL
+
+        def route(self, *_args, **_kwargs):
+            return {"router_cache_hit": True, "outcome": "execute"}
+
+    rows = evaluator.run_live_planner(
+        [{"id": "dev-cached", "category": "single_rag", "query": "K51 học phí?"}],
+        router=CachedRouter(),
+        catalogs={"office": [], "student_service": [], "faculty": []},
+    )
+
+    assert rows[0]["failure_type"] == "evaluation_integrity"
+    assert rows[0]["provider_failure"] is True
+
+
+def test_hidden_freeze_requires_a_current_passing_development_report(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    monkeypatch.setattr(evaluator, "_commit", lambda: "commit-current")
+    monkeypatch.setattr(
+        evaluator,
+        "_artifact_fingerprint",
+        lambda: {"code": "fingerprint-current"},
+    )
+    manifest = {"prompt_version": "dataset-prompt", "registry_version": "registry-v2"}
+    report = {
+        "commit": "commit-current",
+        "dataset_hashes": {"dev.json": "hash"},
+        "artifact_fingerprint": {"code": "fingerprint-current"},
+        "prompt_version": evaluator.ROUTER_PROMPT_VERSION,
+        "dataset_prompt_version": "dataset-prompt",
+        "registry_version": "registry-v2",
+        "development_gates": {"passed": True},
+    }
+    path = tmp_path / "dev-report.json"
+    path.write_text(json.dumps(report), encoding="utf-8")
+
+    assert evaluator._verify_hidden_development_freeze(
+        path,
+        dataset_hashes={"dev.json": "hash"},
+        manifest=manifest,
+    ) == report
+
+    report["development_gates"]["passed"] = False
+    path.write_text(json.dumps(report), encoding="utf-8")
+    with pytest.raises(ValueError, match="did not pass"):
+        evaluator._verify_hidden_development_freeze(
+            path,
+            dataset_hashes={"dev.json": "hash"},
+            manifest=manifest,
+        )
 
 
 def test_manifest_hash_detects_hidden_or_dev_tampering(tmp_path) -> None:

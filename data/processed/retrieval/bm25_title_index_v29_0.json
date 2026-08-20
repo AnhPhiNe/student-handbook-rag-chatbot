@@ -4,7 +4,7 @@
     "corpus_version": "student_handbook_semantic_v29_0",
     "tokenizer_version": "hcmue-bm25-tokenizer-v2",
     "title_tokenizer_version": "hcmue-title-tokenizer-v1-accent-folded",
-    "checksum": "1c6ddf84f59b1dfb197eff8a2c651e32b9122fa91a90be13bf6e87f65693f2fc",
+    "checksum": "1bc0ddd25dbf6defbefb3628d3d65e9120c20233574daea1bef56a462ee70b87",
     "title_field_checksum": "0ad96d810be570cb99f15da213d523d47b55b1c9227703c335229d7d3ee1a23b",
     "total_chunks": 3228,
     "cohort_counts": {

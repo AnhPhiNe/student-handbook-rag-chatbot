@@ -20,6 +20,41 @@ LOCK_TIMEOUT_SECONDS = 5.0
 DEFAULT_CACHE_TTL_SECONDS = 86400
 
 
+def _citation_source_identity(citation: dict[str, Any]) -> dict[str, Any]:
+    """Return the source-bound fields that make an answer cacheable.
+
+    A chunk id alone is not a stable source contract: two index/data revisions
+    can retain an id while changing its parent, page binding, or content.  The
+    retrieval pipeline has already produced the citation before this function
+    runs, so a compact content digest is inexpensive and prevents stale answer
+    reuse without treating a top-level retrieval query as the cache authority.
+    """
+
+    metadata = citation.get("metadata")
+    metadata = metadata if isinstance(metadata, dict) else {}
+    content = str(citation.get("content") or metadata.get("content") or "")
+    return {
+        "chunk_id": citation.get("chunk_id") or metadata.get("chunk_id"),
+        "document_id": citation.get("document_id") or metadata.get("document_id"),
+        "parent_section_id": (
+            citation.get("parent_section_id")
+            or citation.get("source_parent_id")
+            or metadata.get("parent_section_id")
+            or metadata.get("source_parent_id")
+        ),
+        "cohort": citation.get("cohort") or metadata.get("cohort"),
+        "source_pages": citation.get("source_pages") or metadata.get("source_pages"),
+        "source_url": (
+            citation.get("source_url")
+            or metadata.get("source_url")
+            or metadata.get("url")
+            or metadata.get("document_url")
+        ),
+        "content_sha256": hashlib.sha256(content.encode("utf-8")).hexdigest(),
+        "request_id": citation.get("request_id") or metadata.get("request_id"),
+    }
+
+
 class ResponseCache:
     def __init__(
         self,
@@ -89,6 +124,7 @@ class ResponseCache:
         cohort: str | None = None,
         context_fingerprint: dict[str, Any] | None = None,
         pipeline_version: str | None = None,
+        artifact_fingerprint: dict[str, Any] | None = None,
     ) -> str:
         router_decision = retrieval_result.get("router_decision") or {}
         request_plan = router_decision.get("lookup_requests") or []
@@ -100,6 +136,7 @@ class ResponseCache:
             ),
             "pipeline_version": pipeline_version,
             "context_fingerprint": context_fingerprint or {},
+            "artifact_fingerprint": artifact_fingerprint or {},
             "plan_version": router_decision.get("plan_version"),
             "effective_cohort": retrieval_result.get("selected_cohort"),
             "request_plan": [
@@ -115,14 +152,9 @@ class ResponseCache:
                 if isinstance(request, dict)
             ],
             "citations": [
-                {
-                    "chunk_id": citation.get("chunk_id"),
-                    "title": citation.get("title"),
-                    "chunk_type": citation.get("chunk_type"),
-                    "source_pages": citation.get("source_pages"),
-                    "request_id": citation.get("request_id"),
-                }
+                _citation_source_identity(citation)
                 for citation in (selected_citations or [])
+                if isinstance(citation, dict)
             ],
             "structured_result": retrieval_result.get("structured_result"),
             "tool_result": retrieval_result.get("tool_result"),

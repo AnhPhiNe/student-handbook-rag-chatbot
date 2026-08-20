@@ -1,4 +1,12 @@
-from src.retrieval.core.bm25_retriever import BM25Retriever
+import json
+
+import pytest
+
+from src.retrieval.core.bm25_retriever import (
+    BM25ArtifactError,
+    BM25Retriever,
+    bm25_artifact_checksum,
+)
 
 
 def _chunk(
@@ -8,6 +16,8 @@ def _chunk(
     cohort: str,
     content_type: str = "regulation_text",
     chunk_type: str = "regulation",
+    parent_section_id: str = "parent-1",
+    document_id: str = "doc-1",
 ) -> dict:
     return {
         "chunk_id": chunk_id,
@@ -16,6 +26,8 @@ def _chunk(
             "cohort": cohort,
             "content_type": content_type,
             "chunk_type": chunk_type,
+            "parent_section_id": parent_section_id,
+            "document_id": document_id,
         },
     }
 
@@ -58,6 +70,79 @@ def test_sparse_search_returns_empty_for_unbuilt_index() -> None:
     retriever = BM25Retriever()
 
     assert retriever.sparse_search("hoc bong", top_k=5) == []
+
+
+def test_bm25_artifact_load_is_version_bound_and_reports_ready(tmp_path) -> None:
+    artifact_path = tmp_path / "bm25_index.json"
+    chunks = [
+        _chunk(
+            "k51-phuc-khao",
+            "Điểm thi có thể được phúc khảo.",
+            cohort="K51",
+        )
+    ]
+    artifact_path.write_text(
+        json.dumps(
+            {
+                "chunks": chunks,
+                "metadata": {
+                    "artifact_version": "bm25-artifact-v1",
+                    "checksum": bm25_artifact_checksum(chunks),
+                    "corpus_version": "student_handbook_semantic_v9_candidate",
+                    "tokenizer_version": "hcmue-bm25-tokenizer-v2",
+                    "total_chunks": 1,
+                },
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    retriever = BM25Retriever(
+        vocabulary_path=tmp_path / "missing.yaml",
+        program_directory_path=tmp_path / "missing.json",
+    )
+
+    metadata = retriever.load_artifact(
+        artifact_path,
+        expected_corpus_version="student_handbook_semantic_v9_candidate",
+    )
+
+    assert metadata["corpus_version"] == "student_handbook_semantic_v9_candidate"
+    assert retriever.is_ready() is True
+    assert retriever.readiness()["chunk_count"] == 1
+    assert retriever.chunks[0]["chunk_id"] == "k51-phuc-khao"
+
+
+def test_bm25_artifact_rejects_collection_version_mismatch(tmp_path) -> None:
+    artifact_path = tmp_path / "bm25_index.json"
+    artifact_path.write_text(
+        json.dumps(
+            {
+                "chunks": [_chunk("k51", "nội dung", cohort="K51")],
+                "metadata": {
+                    "artifact_version": "bm25-artifact-v1",
+                    "checksum": "fixture-checksum",
+                    "corpus_version": "collection-a",
+                    "tokenizer_version": "hcmue-bm25-tokenizer-v2",
+                    "total_chunks": 1,
+                },
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    retriever = BM25Retriever(
+        vocabulary_path=tmp_path / "missing.yaml",
+        program_directory_path=tmp_path / "missing.json",
+    )
+
+    with pytest.raises(BM25ArtifactError, match="does not match"):
+        retriever.load_artifact(
+            artifact_path,
+            expected_corpus_version="collection-b",
+        )
+
+    assert retriever.is_ready() is False
 
 
 def test_acronym_registry_merges_config_and_directory(tmp_path) -> None:

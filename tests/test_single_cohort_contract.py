@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import copy
 from types import SimpleNamespace
 
+from src.generation.context_allocation import ContextAllocationConfig
 from src.generation.answer_pipeline import AnswerPipeline
 from src.retrieval.core.structured_routing import (
     bind_effective_cohort,
@@ -53,6 +55,106 @@ def test_invalid_plan_clarifies_without_creating_rag_request() -> None:
     assert decision["lookup_requests"] == []
     assert decision["retrieval_query"] is None
     assert decision["retrieval_executed"] is False
+
+
+def test_post_validation_plan_tampering_clarifies_without_retrieval_or_cache(
+    monkeypatch,
+) -> None:
+    """Runtime validation must catch mutations that occur after plan approval."""
+
+    query = "K51 thủ tục bảo lưu thế nào?"
+    registry = load_lookup_registry()
+    valid_plan = normalize_router_decision(
+        {
+            "outcome": "execute",
+            "context_mode": "standalone",
+            "context_confidence": "high",
+            "normalized_query": query,
+            "normalization_confidence": "none",
+            "corrections": [],
+            "standalone_query": None,
+            "referenced_turn_ids": [],
+            "referenced_evidence": [],
+            "route": "rag",
+            "execution_mode": "regulation",
+            "cohort": "K51",
+            "lookup_requests": [
+                {
+                    "request_kind": "rag",
+                    "lookup_type": None,
+                    "intent": "procedure",
+                    "query_span": "thủ tục bảo lưu",
+                    "slots": {},
+                    "slot_spans": {},
+                    "cohort_refs": ["K51"],
+                }
+            ],
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+    valid_plan = bind_effective_cohort(
+        valid_plan,
+        raw_query=query,
+        effective_query=query,
+        selected_cohort="K51",
+        registry=registry,
+    )
+    assert (
+        validate_router_decision(
+            valid_plan,
+            query=query,
+            selected_cohort="K51",
+            grounding_context=query,
+            registry=registry,
+        )
+        == []
+    )
+
+    # Simulate an untrusted mutation after the valid plan has been approved.
+    tampered_plan = copy.deepcopy(valid_plan)
+    tampered_plan["lookup_requests"][0]["lookup_type"] = "student_service"
+
+    class _TamperedRouter:
+        @staticmethod
+        def route(*_args, **_kwargs):
+            return copy.deepcopy(tampered_plan)
+
+    class _NoCache:
+        @staticmethod
+        def make_cache_key(*_args, **_kwargs):
+            raise AssertionError("clarification must not construct an answer cache key")
+
+        @staticmethod
+        def get(*_args, **_kwargs):
+            raise AssertionError("clarification must not read the answer cache")
+
+        @staticmethod
+        def set(*_args, **_kwargs):
+            raise AssertionError("clarification must not write the answer cache")
+
+    def _retriever_called(**_kwargs):
+        raise AssertionError("tampered plan must not invoke the retriever")
+
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.run_hybrid_retrieval_pipeline",
+        _retriever_called,
+    )
+    pipeline = _pipeline()
+    pipeline.router = _TamperedRouter()
+    pipeline.response_cache = _NoCache()
+    pipeline.max_context_chars = 1_000
+    pipeline.context_allocation = ContextAllocationConfig()
+
+    result = pipeline.answer(query, cohort="K51")
+
+    assert result["status"] == "needs_clarification"
+    assert result["retrieval_query"] is None
+    assert result["debug"]["retrieval_executed"] is False
+    assert result["router_decision"]["lookup_requests"] == []
+    assert "request:0:rag_request_has_lookup_type" in result["router_decision"][
+        "runtime_validation_errors"
+    ]
 
 
 def test_multi_cohort_is_rejected_before_execution() -> None:
@@ -280,8 +382,29 @@ def test_structured_no_match_never_falls_back_to_rag(monkeypatch) -> None:
     def fake_hybrid(**kwargs):
         hybrid_calls.append(kwargs)
         return {
-            "retrieved_items": [{"chunk_id": "regulation-1", "metadata": {}}],
-            "citations": [{"chunk_id": "regulation-1", "title": "Điều 1"}],
+            "retrieved_items": [
+                {
+                    "chunk_id": "regulation-1",
+                    "content": "Quy định bảo lưu.",
+                    "metadata": {
+                        "document_id": "handbook-k50",
+                        "parent_section_id": "K50_Dieu1",
+                        "source_pages": [1],
+                        "cohort": "K50",
+                    },
+                }
+            ],
+            "citations": [
+                {
+                    "chunk_id": "regulation-1",
+                    "title": "Điều 1",
+                    "document_id": "handbook-k50",
+                    "parent_section_id": "K50_Dieu1",
+                    "source_pages": [1],
+                    "cohort": "K50",
+                    "content": "Quy định bảo lưu.",
+                }
+            ],
             "related_items": [],
             "related_references": [],
         }

@@ -565,13 +565,16 @@ def _filter_retrieved_items(
     *,
     selected_citations: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
-    selected_chunk_ids = {
-        str(citation.get("chunk_id"))
+    selected_source_keys = {
+        (scope, *source_key)
         for citation in selected_citations
-        if citation.get("chunk_id")
+        for scope in [_request_scope(citation)]
+        for source_key in _selected_source_keys(
+            citation, citation.get("metadata") or {}
+        )
     }
-    selected_titles = {
-        str(citation.get("title") or "").strip().lower()
+    selected_title_keys = {
+        (_request_scope(citation), str(citation.get("title") or "").strip().lower())
         for citation in selected_citations
         if citation.get("title")
     }
@@ -581,14 +584,93 @@ def _filter_retrieved_items(
         if not isinstance(item, dict):
             continue
         metadata = item.get("metadata", {}) or {}
-        chunk_id = str(item.get("chunk_id") or "")
-        title = _item_title(item, metadata).lower()
-        if selected_chunk_ids and chunk_id not in selected_chunk_ids:
+        scope = _request_scope(item)
+        source_keys = {
+            (scope, *source_key)
+            for source_key in _candidate_source_keys(item, metadata)
+        }
+        title_key = (scope, _item_title(item, metadata).lower())
+        if selected_source_keys and not (source_keys & selected_source_keys):
             continue
-        if not selected_chunk_ids and selected_titles and title not in selected_titles:
+        if not selected_source_keys and selected_title_keys and title_key not in selected_title_keys:
             continue
         filtered.append(item)
     return filtered
+
+
+def _request_scope(value: dict[str, Any]) -> tuple[str, str] | None:
+    metadata = value.get("metadata", {}) or {}
+    request_id = value.get("request_id") or metadata.get("request_id")
+    if request_id is not None and str(request_id).strip():
+        return ("request_id", str(request_id).strip())
+    request_index = value.get("request_index")
+    if request_index is None:
+        request_index = metadata.get("request_index")
+    if request_index is not None:
+        return ("request_index", str(request_index))
+    return None
+
+
+def _selected_source_keys(
+    value: dict[str, Any], metadata: dict[str, Any]
+) -> set[tuple[str, str, str]]:
+    """Return a concrete chunk identity, or a parent-level fallback identity.
+
+    A citation naming a child chunk must not authorize a sibling under the same
+    parent article. Parent binding is only a fallback when the citation itself
+    names no concrete child/chunk.
+    """
+
+    document_id = str(
+        value.get("document_id") or metadata.get("document_id") or ""
+    ).strip()
+    chunk_ids = {
+        str(candidate).strip()
+        for candidate in (value.get("chunk_id"), metadata.get("chunk_id"))
+        if candidate is not None and str(candidate).strip()
+    }
+    if chunk_ids:
+        return {("chunk", document_id, chunk_id) for chunk_id in chunk_ids}
+
+    parent_ids = {
+        str(candidate).strip()
+        for candidate in (
+            value.get("parent_section_id"),
+            value.get("source_parent_id"),
+            metadata.get("parent_section_id"),
+            metadata.get("source_parent_id"),
+        )
+        if candidate is not None and str(candidate).strip()
+    }
+    return {("parent", document_id, parent_id) for parent_id in parent_ids}
+
+
+def _candidate_source_keys(
+    value: dict[str, Any], metadata: dict[str, Any]
+) -> set[tuple[str, str, str]]:
+    """Return all identities an item can satisfy for a selected source.
+
+    A parent-level citation may legitimately select a parent-bound item that
+    also carries a child id. A concrete citation remains safe because its
+    selected key contains only that exact child id.
+    """
+
+    document_id = str(
+        value.get("document_id") or metadata.get("document_id") or ""
+    ).strip()
+    keys: set[tuple[str, str, str]] = set()
+    for candidate in (value.get("chunk_id"), metadata.get("chunk_id")):
+        if candidate is not None and str(candidate).strip():
+            keys.add(("chunk", document_id, str(candidate).strip()))
+    for candidate in (
+        value.get("parent_section_id"),
+        value.get("source_parent_id"),
+        metadata.get("parent_section_id"),
+        metadata.get("source_parent_id"),
+    ):
+        if candidate is not None and str(candidate).strip():
+            keys.add(("parent", document_id, str(candidate).strip()))
+    return keys
 
 
 def _source_header(index: int, item: dict[str, Any]) -> str:

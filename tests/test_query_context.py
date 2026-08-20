@@ -427,6 +427,60 @@ def test_answer_pipeline_uses_validated_query_before_slang(monkeypatch) -> None:
     assert result["query_handling"]["source"] == "validated_normalization"
 
 
+def test_answer_pipeline_passes_exact_catalog_hint_to_planner(monkeypatch) -> None:
+    pipeline = _minimal_pipeline()
+    pipeline.student_service_directory = [
+        {
+            "record_id": "student-service-pdt",
+            "unit_name": "Phòng Đào tạo",
+            "aliases": ["PĐT"],
+        }
+    ]
+    routed = {}
+
+    class DummyRouter:
+        def route(self, query, **kwargs):
+            routed["query"] = query
+            routed.update(kwargs)
+            return _decision(
+                route="rag",
+                execution_mode="regulation",
+                intent="open_question",
+                lookup_type=None,
+                normalized_query=query,
+                cohort="K51",
+                cohorts=["K51"],
+                is_multi_cohort=False,
+            )
+
+    def fake_hybrid_pipeline(**kwargs):
+        return {
+            "query": kwargs["query"],
+            "retrieval_query": kwargs["retrieval_query"],
+            "retrieved_items": [],
+            "related_items": [],
+            "citations": [],
+            "needs_llm_answer": True,
+        }
+
+    pipeline.router = DummyRouter()
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.run_hybrid_retrieval_pipeline",
+        fake_hybrid_pipeline,
+    )
+
+    result = pipeline._run_retrieval("Email PĐT là gì?", cohort="K51")
+
+    assert routed["query"] == "Email PĐT là gì?"
+    assert routed["routing_hint"] == {
+        "lookup_type": "student_service",
+        "entity_text": "PĐT",
+        "unit_name": "Phòng Đào tạo",
+        "match_type": "exact_catalog_span",
+    }
+    assert result["router_decision"]["routing_hint"] == routed["routing_hint"]
+
+
 def test_answer_pipeline_uses_slang_normalization_for_structured_lookup(
     monkeypatch,
 ) -> None:

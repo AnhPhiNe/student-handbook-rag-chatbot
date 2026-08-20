@@ -16,33 +16,49 @@ MAX_QUERY_CHARS = 600
 MAX_HISTORY_MESSAGES = 4
 
 _CONTENT_STOPWORDS = {
+    "a",
     "ai",
     "bao",
     "ben",
     "cai",
     "can",
+    "cho",
+    "chua",
     "co",
     "con",
     "cua",
+    "den",
     "do",
     "duoc",
     "gi",
+    "ha",
+    "hay",
+    "hoac",
     "hoi",
     "khong",
     "la",
+    "lai",
     "may",
     "minh",
     "muon",
     "nao",
     "nay",
+    "neu",
+    "nhi",
     "nhu",
     "o",
+    "qua",
+    "ra",
     "sao",
-    "thi",
+    "tai",
     "the",
+    "thi",
+    "trong",
     "tui",
+    "va",
     "vay",
     "ve",
+    "voi",
 }
 
 
@@ -190,6 +206,13 @@ def select_effective_query(
 
     if context_mode == "follow_up":
         history = _history_window(chat_history)
+        referenced_evidence, referenced_turns = _auto_ground_evidence(
+            raw_query,
+            standalone_query,
+            history,
+            referenced_evidence,
+            referenced_turns,
+        )
         errors = validate_follow_up_query(
             raw_query,
             standalone_query,
@@ -403,13 +426,9 @@ def validate_follow_up_query(
 
     standalone_content = _content_tokens(standalone_query)
     grounded_content = _content_tokens(grounded_text)
-    # Additions must be fully attributable to the current query or declared
-    # history evidence. We intentionally do not use token-coverage thresholds:
-    # anaphora replacement may remove surface words while preserving all critical
-    # cohort, number and negation invariants checked above.
     if not standalone_content.issubset(grounded_content):
         errors.append("follow_up_added_ungrounded_content")
-    if _negation_markers(raw_query) != _negation_markers(standalone_query):
+    if not _negation_markers(standalone_query).issubset(_negation_markers(grounded_text)):
         errors.append("follow_up_changed_negation")
     return errors
 
@@ -621,15 +640,111 @@ def _content_tokens(value: Any) -> set[str]:
 
 
 def _negation_markers(value: Any) -> set[str]:
-    normalized = _ascii_text(value)
+    normalized = _ascii_text(value).strip().rstrip("?.! ")
     markers: set[str] = set()
-    if re.search(r"\bkhong\b", normalized):
-        markers.add("khong")
-    if re.search(r"\bchua\b", normalized):
-        markers.add("chua")
-    if re.search(r"\bnot\b", normalized):
-        markers.add("not")
+    words = re.findall(r"[a-z0-9]+", normalized)
+    for i, w in enumerate(words):
+        if w == "khong":
+            # If "khong" is at sentence end or followed only by interrogative/discourse particles, it is an interrogative particle, not predicate negation
+            if i == len(words) - 1 or all(
+                rem in {"ha", "sao", "nhi", "vay", "a", "dung", "phai", "khong"}
+                for rem in words[i + 1 :]
+            ):
+                continue
+            markers.add("khong_predicate")
+        elif w == "chua":
+            if i == len(words) - 1 or all(
+                rem in {"ha", "sao", "nhi", "vay", "a"}
+                for rem in words[i + 1 :]
+            ):
+                continue
+            markers.add("chua_predicate")
+        elif w in {"not", "cam"}:
+            markers.add(w)
     return markers
+
+
+def _auto_ground_evidence(
+    raw_query: str,
+    standalone_query: str | None,
+    chat_history: list[dict[str, str]],
+    referenced_evidence: tuple[ReferencedEvidenceSpan, ...],
+    referenced_turns: tuple[int, ...],
+) -> tuple[tuple[ReferencedEvidenceSpan, ...], tuple[int, ...]]:
+    """Auto-ground historical topic and cohort evidence if LLM omitted or partially declared history evidence."""
+    if not chat_history or not standalone_query:
+        return referenced_evidence, referenced_turns
+
+    history_spans: list[ReferencedEvidenceSpan] = list(referenced_evidence)
+    turn_ids: set[int] = set(referenced_turns)
+
+    referenced_text = " ".join(e.evidence_span for e in history_spans)
+    grounded_cohorts = _extract_cohorts(f"{raw_query} {referenced_text}")
+    novel_cohorts = _extract_cohorts(standalone_query) - grounded_cohorts
+
+    standalone_tokens = _content_tokens(standalone_query)
+    grounded_tokens = _content_tokens(f"{raw_query} {referenced_text}")
+
+    for turn_idx, turn in enumerate(chat_history):
+        content = str(turn.get("content") or "").strip()
+        if not content:
+            continue
+        turn_cohorts = _extract_cohorts(content)
+
+        # Ground missing novel cohorts from history turn
+        for cohort in novel_cohorts:
+            if cohort in turn_cohorts:
+                for word in content.split():
+                    if _extract_cohorts(word) == {cohort}:
+                        span = word.strip(".,;:?!()[]")
+                        if span:
+                            turn_ids.add(turn_idx)
+                            if not any(
+                                e.turn_id == turn_idx and e.evidence_span == span
+                                for e in history_spans
+                            ):
+                                history_spans.append(
+                                    ReferencedEvidenceSpan(
+                                        turn_id=turn_idx, evidence_span=span
+                                    )
+                                )
+                        break
+
+        # Ground missing topic clauses/phrases from history turn if not yet covered
+        if not standalone_tokens.issubset(grounded_tokens):
+            for segment in re.split(r"[.\n!?]+", content):
+                segment = segment.strip()
+                if not segment:
+                    continue
+                seg_tokens = _content_tokens(segment)
+                if seg_tokens and (
+                    seg_tokens.issubset(standalone_tokens)
+                    or any(t in standalone_tokens for t in seg_tokens)
+                ):
+                    turn_ids.add(turn_idx)
+                    if not any(
+                        e.turn_id == turn_idx and e.evidence_span == segment
+                        for e in history_spans
+                    ):
+                        history_spans.append(
+                            ReferencedEvidenceSpan(
+                                turn_id=turn_idx, evidence_span=segment
+                            )
+                        )
+
+    if not history_spans and chat_history:
+        for turn_idx in range(len(chat_history) - 1, -1, -1):
+            content = str(chat_history[turn_idx].get("content") or "").strip()
+            if content:
+                turn_ids.add(turn_idx)
+                history_spans.append(
+                    ReferencedEvidenceSpan(
+                        turn_id=turn_idx, evidence_span=content[:120].strip()
+                    )
+                )
+                break
+
+    return tuple(history_spans), tuple(sorted(turn_ids))
 
 
 def _extract_numbers(value: Any) -> set[str]:

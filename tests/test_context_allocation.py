@@ -294,3 +294,49 @@ def test_prepare_content_for_prompt_keeps_table_like_context() -> None:
 
     assert "THONG TIN TRONG TAM" not in prepared
     assert "8 years" in prepared
+
+
+def test_selected_citation_does_not_cross_request_scope_for_same_source_id() -> None:
+    first = _item("shared", "Evidence for request one.")
+    first["request_id"] = "r1"
+    second = _item("shared", "Evidence for request two.")
+    second["request_id"] = "r2"
+    retrieval_result = {"retrieved_items": [first, second]}
+
+    context = build_context_for_prompt(
+        retrieval_result,
+        selected_citations=[{"request_id": "r1", "chunk_id": "shared"}],
+        max_context_chars=1000,
+    )
+
+    assert "Evidence for request one." in context
+    assert "Evidence for request two." not in context
+
+
+def test_selected_child_chunk_does_not_include_sibling_from_the_same_parent() -> None:
+    """A child citation must not authorize a different child under its parent."""
+    selected_item = _item("child-a", "Evidence for the selected child chunk.")
+    selected_item["request_id"] = "r1"
+    selected_item["document_id"] = "handbook-k51"
+    selected_item["parent_section_id"] = "K51_Dieu15"
+
+    sibling_item = _item("child-b", "Evidence from an unselected sibling chunk.")
+    sibling_item["request_id"] = "r1"
+    sibling_item["document_id"] = "handbook-k51"
+    sibling_item["parent_section_id"] = "K51_Dieu15"
+
+    context = build_context_for_prompt(
+        {"retrieved_items": [selected_item, sibling_item]},
+        selected_citations=[
+            {
+                "request_id": "r1",
+                "chunk_id": "child-a",
+                "document_id": "handbook-k51",
+                "parent_section_id": "K51_Dieu15",
+            }
+        ],
+        max_context_chars=1000,
+    )
+
+    assert "Evidence for the selected child chunk." in context
+    assert "Evidence from an unselected sibling chunk." not in context

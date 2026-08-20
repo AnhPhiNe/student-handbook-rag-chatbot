@@ -113,9 +113,14 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     )
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.3"
+    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.4"
     assert "không dùng dấu \"...\"" in ROUTER_SYSTEM_PROMPT
     assert "không phải request" in ROUTER_SYSTEM_PROMPT
+    assert "query_span của request follow_up luôn là span trong QUERY" in (
+        ROUTER_SYSTEM_PROMPT
+    )
+    assert "Chọn theo fact" in ROUTER_SYSTEM_PROMPT
+    assert "cả hai độc lập=tạo hai request" in ROUTER_SYSTEM_PROMPT
 
 
 def test_history_window_uses_absolute_turn_ids(monkeypatch, tmp_path: Path) -> None:
@@ -232,6 +237,19 @@ def test_from_config_accepts_model_environment_override(
     assert router.model_name == "openai/gpt-oss-20b"
     assert router._resolved_reasoning_effort() == "none"
     assert router.max_output_tokens == 1024
+
+
+def test_from_config_cache_override_is_explicit_for_evaluators(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setenv("GROQ_API_KEYS", "test-router-key")
+    config_path = tmp_path / "router.yaml"
+    config_path.write_text("cache_enabled: true\n", encoding="utf-8")
+
+    router = AIRouter.from_config(config_path, cache_enabled=False)
+
+    assert router.cache is None
 
 
 def test_invalid_structured_decision_clarifies_without_retrieval(

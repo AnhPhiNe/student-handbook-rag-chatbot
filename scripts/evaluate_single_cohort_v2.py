@@ -18,6 +18,10 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from src.common.env_loader import load_project_env  # noqa: E402
+
+load_project_env()
+
 from src.evaluation.single_cohort_v2 import (  # noqa: E402
     BUNDLE_DIR,
     EVALUATION_PROTOCOL_VERSION,
@@ -35,7 +39,12 @@ from src.evaluation.artifact_fingerprint import (  # noqa: E402
     release_artifact_fingerprint,
 )
 from src.generation.answer_pipeline import AnswerPipeline  # noqa: E402
-from src.retrieval.core.ai_router import AIRouter  # noqa: E402
+from src.generation.io_utils import load_json, load_yaml  # noqa: E402
+from src.retrieval.core.ai_router import (  # noqa: E402
+    AIRouter,
+    ROUTER_PROMPT_VERSION,
+)
+from src.retrieval.core.office_lookup import find_grounded_catalog_hint  # noqa: E402
 from src.retrieval.core.query_context import (  # noqa: E402
     select_effective_query,
     validated_correction_provenance,
@@ -52,6 +61,7 @@ PLANNER_MODEL = "qwen/qwen3.6-27b"
 ANSWER_MODEL = "gemini-3.1-flash-lite"
 JUDGE_MODEL = "openai/gpt-oss-120b"
 JUDGE_PROMPT_VERSION = "single-cohort-answer-judge-v1"
+ANSWER_CONFIG_PATH = ROOT / "configs" / "answer_generation.yaml"
 HIDDEN_ATTEMPT_PATH = (
     ROOT / "data/eval/reports/single_cohort_v2/hidden_release_attempt.json"
 )
@@ -77,7 +87,11 @@ def _hidden_attempt_binding(
             "answer": ANSWER_MODEL,
             "judge": JUDGE_MODEL,
         },
-        "prompt_version": manifest.get("prompt_version"),
+        # The bundle is frozen independently from the runtime prompt.  Bind the
+        # release attempt to both, so a prompt change cannot be misreported as
+        # the version used when the gold labels were frozen.
+        "prompt_version": ROUTER_PROMPT_VERSION,
+        "dataset_prompt_version": manifest.get("prompt_version"),
         "registry_version": manifest.get("registry_version"),
     }
 
@@ -243,15 +257,124 @@ def _plan_from_decision(decision: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def _is_deterministic_plan_tampering(case: Mapping[str, Any]) -> bool:
+    fault = case.get("fault_injection")
+    return isinstance(fault, Mapping) and fault.get("type") == "plan_tampering"
+
+
+def _planner_skip_row(case: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "id": case["id"],
+        "category": case.get("category"),
+        "planner_skipped": True,
+        "passed": False,
+        "exact_passed": False,
+        "semantic_passed": False,
+        "failure_type": "deterministic_fault_suite",
+        "reason": "Plan tampering is exercised after a valid plan by deterministic conformance.",
+        "provider_failure": False,
+    }
+
+
+def _planner_catalogs() -> dict[str, list[dict[str, Any]]]:
+    """Load precisely the exact-match catalogs supplied to the production planner.
+
+    This prepares metadata only: it does not select a route or execute a tool.
+    Keeping it here avoids constructing the full retrieval pipeline just to make
+    a planner-only evaluation match the production prompt.
+    """
+
+    config = load_yaml(ANSWER_CONFIG_PATH)
+    inputs = config.get("input") if isinstance(config, Mapping) else {}
+    inputs = inputs if isinstance(inputs, Mapping) else {}
+
+    def _catalog(key: str) -> list[dict[str, Any]]:
+        location = inputs.get(key)
+        if not location:
+            return []
+        path = Path(str(location))
+        if not path.is_absolute():
+            path = ROOT / path
+        value = load_json(path)
+        return [item for item in value if isinstance(item, dict)] if isinstance(value, list) else []
+
+    return {
+        "office": _catalog("student_office_profiles"),
+        "student_service": _catalog("student_service_directory"),
+        "faculty": _catalog("student_faculty_profiles"),
+    }
+
+
+def _planner_routing_hint(
+    case: Mapping[str, Any],
+    catalogs: Mapping[str, list[dict[str, Any]]],
+) -> dict[str, Any] | None:
+    return find_grounded_catalog_hint(
+        str(case.get("query") or ""),
+        list(catalogs.get("office") or []),
+        list(catalogs.get("student_service") or []),
+        list(catalogs.get("faculty") or []),
+        cohort=case.get("selected_cohort"),
+    )
+
+
+def _router_error_row(case: Mapping[str, Any], decision: Mapping[str, Any]) -> dict[str, Any]:
+    """Represent a router fallback as a provider failure, never as clarify."""
+
+    return {
+        "id": case["id"],
+        "category": case.get("category"),
+        "passed": False,
+        "exact_passed": False,
+        "semantic_passed": False,
+        "failure_type": "provider",
+        "provider_failure": True,
+        "error_type": str(decision.get("router_error_type") or "router_error"),
+        "error_message": str(decision.get("router_error") or "router fallback"),
+    }
+
+
+def _router_cache_row(case: Mapping[str, Any]) -> dict[str, Any]:
+    """Fail a live-evaluation row that did not make a model request."""
+
+    return {
+        "id": case["id"],
+        "category": case.get("category"),
+        "passed": False,
+        "exact_passed": False,
+        "semantic_passed": False,
+        "failure_type": "evaluation_integrity",
+        # A cache hit is not a transport outage, but treating it as a failed
+        # provider row ensures it cannot satisfy the provider-failure release
+        # gate or be mistaken for a fresh live-planner outcome.
+        "provider_failure": True,
+        "error_type": "router_cache_hit",
+        "error_message": "Live planner evaluation must not use a router cache.",
+    }
+
+
 def run_live_planner(
-    cases: Iterable[dict[str, Any]], router: AIRouter | None = None
+    cases: Iterable[dict[str, Any]],
+    router: AIRouter | None = None,
+    *,
+    catalogs: Mapping[str, list[dict[str, Any]]] | None = None,
 ) -> list[dict[str, Any]]:
     case_rows = list(cases)
+    active_cases = [
+        case for case in case_rows if not _is_deterministic_plan_tampering(case)
+    ]
+    if not active_cases:
+        return [_planner_skip_row(case) for case in case_rows]
     try:
-        active_router = router or AIRouter.from_config()
+        active_router = router or AIRouter.from_config(
+            cache_enabled=False, wait_when_limited=True
+        )
+        active_catalogs = dict(catalogs) if catalogs is not None else _planner_catalogs()
     except Exception as exc:
         return [
-            {
+            _planner_skip_row(case)
+            if _is_deterministic_plan_tampering(case)
+            else {
                 "id": case["id"],
                 "category": case.get("category"),
                 "passed": False,
@@ -269,12 +392,22 @@ def run_live_planner(
         )
     rows: list[dict[str, Any]] = []
     for case in tqdm(case_rows, desc="Planner", unit="case", dynamic_ncols=True):
+        if _is_deterministic_plan_tampering(case):
+            rows.append(_planner_skip_row(case))
+            continue
         try:
             decision = active_router.route(
                 case["query"],
                 chat_history=case.get("chat_history") or [],
                 cohort=case.get("selected_cohort"),
+                routing_hint=_planner_routing_hint(case, active_catalogs),
             )
+            if decision.get("router_error_type") or decision.get("router_error"):
+                rows.append(_router_error_row(case, decision))
+                continue
+            if decision.get("router_cache_hit"):
+                rows.append(_router_cache_row(case))
+                continue
             bound = _validated_planner_decision(case, decision)
             actual = _plan_from_decision(bound)
             assessment = assess_plan(case["expected"], actual)
@@ -834,14 +967,15 @@ def _metrics(
 ) -> dict[str, Any]:
     metrics: dict[str, Any] = {"contract_invariants": 1.0 if validation_passed else 0.0}
     for suite, rows in planner_rows.items():
-        if rows:
+        applicable_rows = [row for row in rows if not row.get("planner_skipped")]
+        if applicable_rows:
             metrics[f"{suite}_exact_plan"] = _mean(
                 float(row.get("exact_passed", row.get("passed", False)))
-                for row in rows
+                for row in applicable_rows
             )
             metrics[f"{suite}_semantic_plan"] = _mean(
                 float(row.get("semantic_passed", row.get("passed", False)))
-                for row in rows
+                for row in applicable_rows
             )
     if execution_rows:
         evaluated = [row for row in execution_rows if not row.get("skipped")]
@@ -859,16 +993,17 @@ def _metrics(
         )
         execution_by_id = {str(row.get("id")): row for row in execution_rows}
         for suite, rows in planner_rows.items():
+            applicable_rows = [row for row in rows if not row.get("planner_skipped")]
             semantic_ids = {
                 str(row.get("id"))
-                for row in rows
+                for row in applicable_rows
                 if row.get("semantic_passed", row.get("passed", False))
             }
             if not semantic_ids or not semantic_ids <= set(execution_by_id):
                 continue
             case_scores: list[float] = []
             category_scores: dict[str, list[float]] = {}
-            for row in rows:
+            for row in applicable_rows:
                 semantic = bool(
                     row.get("semantic_passed", row.get("passed", False))
                 )
@@ -1037,6 +1172,56 @@ def _verified_check_report(
     return all(checks.get(name) is True for name in required_checks), report
 
 
+def _legacy_report_is_current_and_passing(report: Mapping[str, Any] | None) -> bool:
+    return bool(
+        isinstance(report, Mapping)
+        and report.get("commit") == _commit()
+        and report.get("artifact_fingerprint") == _artifact_fingerprint()
+        and report.get("provider") == "live"
+        and report.get("passed") is True
+    )
+
+
+def _verify_hidden_development_freeze(
+    path: Path | None,
+    *,
+    dataset_hashes: Mapping[str, str],
+    manifest: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Fail closed unless a current, passing development freeze precedes hidden."""
+
+    if path is None:
+        raise ValueError("Hidden evaluation requires --dev-report from a passing frozen development run.")
+    report = json.loads(path.read_text(encoding="utf-8"))
+    expected = {
+        "commit": _commit(),
+        "dataset_hashes": dict(dataset_hashes),
+        "artifact_fingerprint": _artifact_fingerprint(),
+        "prompt_version": ROUTER_PROMPT_VERSION,
+        "dataset_prompt_version": manifest.get("prompt_version"),
+        "registry_version": manifest.get("registry_version"),
+    }
+    mismatches = [
+        key
+        for key, value in expected.items()
+        if report.get(key) != value
+    ]
+    if mismatches:
+        raise ValueError(
+            "Development report is not bound to the current frozen release inputs: "
+            + ", ".join(mismatches)
+        )
+    if not bool((report.get("development_gates") or {}).get("passed")):
+        raise ValueError("Development report did not pass the single-cohort development gates.")
+    return report
+
+
+def _working_tree_is_clean() -> bool:
+    return not subprocess.check_output(
+        ["git", "status", "--porcelain"], cwd=ROOT, text=True
+    ).strip()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--planner", choices=("none", "dev", "hidden", "both"), default="none")
@@ -1046,6 +1231,8 @@ def main() -> None:
     parser.add_argument("--answers-report", type=Path)
     parser.add_argument("--confirm-hidden-frozen", action="store_true")
     parser.add_argument("--retry-provider-outage", action="store_true")
+    parser.add_argument("--planner-report", type=Path)
+    parser.add_argument("--dev-report", type=Path)
     parser.add_argument("--quality-report", type=Path)
     parser.add_argument("--parity-report", type=Path)
     parser.add_argument("--conformance-report", type=Path)
@@ -1068,8 +1255,12 @@ def main() -> None:
             "Hidden release evaluation must run Planner, executor/retrieval and "
             "answers together in one attempt."
         )
-    if args.run_executor != "none" and args.planner not in {args.run_executor, "both"}:
-        parser.error("Executor/retrieval evaluation requires Planner evaluation for the same split.")
+    if (
+        args.run_executor != "none"
+        and not args.planner_report
+        and args.planner not in {args.run_executor, "both"}
+    ):
+        parser.error("Executor/retrieval evaluation requires Planner evaluation or --planner-report for the same split.")
     if args.run_answers != "none" and args.run_executor != args.run_answers:
         parser.error(
             "Answer evaluation requires executor/retrieval evaluation for the same split."
@@ -1086,11 +1277,57 @@ def main() -> None:
     )
     validation = validate_bundle(require_gold_complete=live_requested)
     manifest = json.loads((BUNDLE_DIR / "manifest.json").read_text(encoding="utf-8"))
+    quality_passed, quality_report = _verified_check_report(
+        args.quality_report,
+        required_checks=("pytest", "ruff", "frontend_lint", "frontend_build"),
+    )
+    parity_passed, parity_report = _verified_check_report(
+        args.parity_report,
+        required_checks=("sync_stream", "sync_cache", "stream_cache", "debug_metadata"),
+        deterministic=True,
+    )
+    conformance_passed, conformance_report = _verified_check_report(
+        args.conformance_report,
+        required_checks=(
+            "no_match", "invalid", "unresolved", "adapter_exception",
+            "plan_tampering", "structured_to_rag_fallback_zero",
+            "citation_isolation", "no_retrieval_on_non_execute",
+        ),
+        deterministic=True,
+    )
+    legacy_passed: bool | None = None
+    legacy_report: dict[str, Any] | None = None
+    if args.legacy_compatibility_report is not None:
+        legacy_report = json.loads(
+            args.legacy_compatibility_report.read_text(encoding="utf-8")
+        )
+        legacy_passed = _legacy_report_is_current_and_passing(legacy_report)
     if hidden_requested and not (
         manifest.get("hidden_frozen")
         and manifest.get("hidden_human_review_complete")
     ):
         parser.error("Hidden is not human-approved and frozen.")
+    if hidden_requested and not validation.valid:
+        parser.error("Hidden evaluation requires a valid frozen single-cohort bundle.")
+    if hidden_requested:
+        try:
+            _verify_hidden_development_freeze(
+                args.dev_report,
+                dataset_hashes=validation.hashes,
+                manifest=manifest,
+            )
+            if quality_passed is not True:
+                raise ValueError("Hidden evaluation requires a current passing quality report.")
+            if parity_passed is not True:
+                raise ValueError("Hidden evaluation requires a current passing deterministic parity report.")
+            if conformance_passed is not True:
+                raise ValueError("Hidden evaluation requires a current passing deterministic conformance report.")
+            if legacy_passed is not True:
+                raise ValueError("Hidden evaluation requires a current passing legacy compatibility report.")
+            if not _working_tree_is_clean():
+                raise ValueError("Hidden evaluation requires a clean worktree after code/prompt/config/index freeze.")
+        except ValueError as exc:
+            parser.error(str(exc))
     hidden_attempt: dict[str, Any] | None = None
     if hidden_requested and validation.valid:
         try:
@@ -1101,6 +1338,11 @@ def main() -> None:
         except ValueError as exc:
             parser.error(str(exc))
     planner_rows: dict[str, list[dict[str, Any]]] = {}
+    if args.planner_report:
+        report_data = json.loads(args.planner_report.read_text(encoding="utf-8"))
+        for suite, info in (report_data.get("planner") or {}).items():
+            if isinstance(info, dict) and "rows" in info:
+                planner_rows[suite] = info["rows"]
     if validation.valid and args.planner != "none":
         suites = ("dev", "hidden") if args.planner == "both" else (args.planner,)
         for suite in suites:
@@ -1186,37 +1428,6 @@ def main() -> None:
             planner_rows=planner_rows.get("hidden", []),
             answer_rows=answer_rows,
         )
-    quality_passed, quality_report = _verified_check_report(
-        args.quality_report,
-        required_checks=("pytest", "ruff", "frontend_lint", "frontend_build"),
-    )
-    parity_passed, parity_report = _verified_check_report(
-        args.parity_report,
-        required_checks=("sync_stream", "sync_cache", "stream_cache", "debug_metadata"),
-        deterministic=True,
-    )
-    conformance_passed, conformance_report = _verified_check_report(
-        args.conformance_report,
-        required_checks=(
-            "no_match", "invalid", "unresolved", "adapter_exception",
-            "plan_tampering", "structured_to_rag_fallback_zero",
-            "citation_isolation", "no_retrieval_on_non_execute",
-        ),
-        deterministic=True,
-    )
-    legacy_passed: bool | None = None
-    legacy_report: dict[str, Any] | None = None
-    if args.legacy_compatibility_report is not None:
-        legacy_report = json.loads(
-            args.legacy_compatibility_report.read_text(encoding="utf-8")
-        )
-        legacy_passed = bool(
-            legacy_report.get("commit") == _commit()
-            and legacy_report.get("artifact_fingerprint")
-            == _artifact_fingerprint()
-            and legacy_report.get("provider") == "live"
-            and legacy_report.get("passed") is True
-        )
     metrics = _metrics(
         validation.valid,
         planner_rows,
@@ -1238,21 +1449,36 @@ def main() -> None:
         "evaluation_protocol_version": EVALUATION_PROTOCOL_VERSION,
         "models": {"planner": PLANNER_MODEL, "answer": ANSWER_MODEL, "judge": JUDGE_MODEL},
         "judge_prompt_version": JUDGE_PROMPT_VERSION,
-        "prompt_version": manifest.get("prompt_version"),
+        "prompt_version": ROUTER_PROMPT_VERSION,
+        "dataset_prompt_version": manifest.get("prompt_version"),
         "registry_version": manifest.get("registry_version"),
         "dataset_hashes": validation.hashes,
         "artifact_fingerprint": _artifact_fingerprint(),
         "contract": {"passed": validation.valid, "errors": validation.errors, "coverage": validation.coverage},
         "planner": {
             suite: {
-                "passed": sum(row.get("passed", False) for row in rows),
+                "passed": sum(
+                    row.get("passed", False)
+                    for row in rows
+                    if not row.get("planner_skipped")
+                ),
                 "exact_passed": sum(
-                    row.get("exact_passed", row.get("passed", False)) for row in rows
+                    row.get("exact_passed", row.get("passed", False))
+                    for row in rows
+                    if not row.get("planner_skipped")
                 ),
                 "semantic_passed": sum(
-                    row.get("semantic_passed", row.get("passed", False)) for row in rows
+                    row.get("semantic_passed", row.get("passed", False))
+                    for row in rows
+                    if not row.get("planner_skipped")
                 ),
-                "total": len(rows),
+                "case_total": len(rows),
+                "planner_evaluable_total": sum(
+                    not row.get("planner_skipped") for row in rows
+                ),
+                "deterministic_skipped": sum(
+                    bool(row.get("planner_skipped")) for row in rows
+                ),
                 "failure_taxonomy": failure_taxonomy(rows),
                 "rows": rows,
             }

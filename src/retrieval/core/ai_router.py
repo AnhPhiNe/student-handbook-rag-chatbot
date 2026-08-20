@@ -33,7 +33,7 @@ from .query_context import select_effective_query, validated_correction_provenan
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
 ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.3"
-ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.6"
+ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.7"
 ROUTER_VALIDATOR_VERSION = "single-cohort-validator-v2.5"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
@@ -43,9 +43,9 @@ _RETRY_TEXT_RE = re.compile(
 )
 
 ROUTER_SYSTEM_PROMPT = """
-Planner HCMUE: chỉ xuất JSON OUTPUT CONTRACT; không trả lời/citation/retrieval_query.
+HCMUE: chỉ xuất JSON theo schema; không trả lời/citation/retrieval_query.
 
-QUERY CONTEXT
+CONTEXT
 - standalone chỉ dùng QUERY. follow_up giữ toàn bộ QUERY, thay tham chiếu mơ hồ bằng
   topic nguyên văn từ history. Mọi topic/cohort chèn vào cần evidence_span nguyên văn và
   turn_id tuyệt đối, không suy luận. standalone_query hết mơ hồ; request.query_span
@@ -60,7 +60,7 @@ SINGLE-COHORT
   tách/so sánh multi-cohort. Nguồn cohort theo thứ tự QUERY, SELECTED COHORT, evidence
   lịch sử đã grounding; không có nguồn hợp lệ thì clarify.
 
-ATOMIC REQUESTS
+REQUESTS
 - Mỗi mục tiêu cần kết quả/evidence riêng là một request theo thứ tự, tối đa 6.
   Cách trình bày, citation, biểu mẫu, xác nhận, định dạng/cách dùng không phải request.
   Cách thức/điều kiện/hậu quả/ngoại lệ chỉ sửa intent gần nhất, không tự tách.
@@ -73,7 +73,8 @@ ATOMIC REQUESTS
 - query_span: đoạn nguyên văn liên tục, nhỏ nhất đủ định danh một operand/topic; không
   thêm/diễn giải, không dùng dấu "...". slot_spans nằm đúng trong query_span. Cấm tự tạo
   tool, intent, entity, cohort, slot. Hai topic/entity/thao tác độc lập là hai request.
-- cohort_refs=["K51"] labels only; history provenance only in referenced_evidence.
+- cohort_refs chỉ chứa chuỗi cohort đã grounding; nguồn lịch sử chỉ ở
+  referenced_evidence, không ở cohort_refs.
 - RAG: procedure=bước/cách làm; policy=nội dung/điều kiện/quy định;
   consequence_or_exception=hậu quả/ngoại lệ; tên thủ tục không hỏi bước là policy;
   formula= công thức. Chọn theo fact: quy định/thủ tục=RAG; đơn vị/email/danh bạ=

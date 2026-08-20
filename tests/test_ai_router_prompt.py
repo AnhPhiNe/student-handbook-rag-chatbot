@@ -113,13 +113,14 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     )
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.6"
+    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.7"
     assert "không dùng dấu \"...\"" in ROUTER_SYSTEM_PROMPT
     assert "không phải request" in ROUTER_SYSTEM_PROMPT
     assert "request.query_span" in ROUTER_SYSTEM_PROMPT
     assert "span trong QUERY hiện tại" in ROUTER_SYSTEM_PROMPT
-    assert 'cohort_refs=["K51"] labels only' in ROUTER_SYSTEM_PROMPT
-    assert "history provenance only in referenced_evidence" in ROUTER_SYSTEM_PROMPT
+    assert "cohort_refs chỉ chứa chuỗi cohort đã grounding" in ROUTER_SYSTEM_PROMPT
+    assert "nguồn lịch sử chỉ ở" in ROUTER_SYSTEM_PROMPT
+    assert 'cohort_refs=["K51"]' not in ROUTER_SYSTEM_PROMPT
     assert "Chọn theo fact" in ROUTER_SYSTEM_PROMPT
     assert "cả hai độc lập=tạo hai request" in ROUTER_SYSTEM_PROMPT
 

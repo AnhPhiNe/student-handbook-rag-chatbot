@@ -1,7 +1,7 @@
 {
   "schema_version": "single-cohort-v2.2",
-  "generated_at": "2026-08-20T08:47:54.068200+00:00",
-  "commit": "368c570eb8e74ad8f9df1d46853df61da073d15b",
+  "generated_at": "2026-08-20T08:51:18.006769+00:00",
+  "commit": "90e98f18080015e2355e78aae89e86741776d785",
   "provider": "deterministic",
   "data_versions": {
     "structured_registry": "fc75ad5ec89527017ac77e9bb85a12d5e58769a6426e7d1685bfe8c548871a64",
@@ -42,15 +42,13 @@
   },
   "case_annotation_states": {
     "auto_verified": 75,
-    "human_approved": 75,
-    "review_required": 60
+    "human_approved": 135
   },
   "request_annotation_states": {
-    "auto_verified": 156,
-    "human_approved": 154,
-    "review_required": 49
+    "auto_verified": 101,
+    "human_approved": 258
   },
-  "hidden_review_required": 60,
-  "gold_ready": false,
+  "hidden_review_required": 0,
+  "gold_ready": true,
   "dev_review_required": 0
 }

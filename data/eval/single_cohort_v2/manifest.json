@@ -1,7 +1,7 @@
 {
-  "schema_version": "single-cohort-v2.2",
-  "dataset_version": "single-cohort-gold-candidate-1",
-  "frozen_at": null,
+  "schema_version": "single-cohort-v2.4",
+  "dataset_version": "single-cohort-gold-v2",
+  "frozen_at": "2026-08-20T08:51:18.224397+00:00",
   "baseline_commit": "839c27ba",
   "prompt_version": "single-cohort-planner-v2.4",
   "registry_version": 3,
@@ -53,19 +53,19 @@
   },
   "files": {
     "dev.json": "7b6e9b0df251f7757960fef2f12cf956eee9417b4482e4cff34a155fcc4c8d74",
-    "hidden.json": "f5c58042b2a68f92a229e5c81f9dc366ab05f3564c3b220acedc29d8cea26c50"
+    "hidden.json": "0273778c82d8c08bb621d9bb57a9a12324f6e67ced0b2e901f6ddadd3b15431d"
   },
-  "hidden_frozen": false,
+  "hidden_frozen": true,
   "hidden_human_review_required": true,
-  "hidden_human_review_complete": false,
+  "hidden_human_review_complete": true,
   "hidden_replacement_requires_flag": true,
   "legacy_final_holdout": {
     "commit": "e38bfef",
     "preserved": true
   },
   "gold_audit": {
-    "commit": "368c570eb8e74ad8f9df1d46853df61da073d15b",
-    "generated_at": "2026-08-20T08:47:54.068200+00:00",
+    "commit": "90e98f18080015e2355e78aae89e86741776d785",
+    "generated_at": "2026-08-20T08:51:18.006769+00:00",
     "data_versions": {
       "structured_registry": "fc75ad5ec89527017ac77e9bb85a12d5e58769a6426e7d1685bfe8c548871a64",
       "structured_manifest": "d9a10e874b4b8631bf5dc9e2c076878f32cb4d1461937ed4bfa1e066c4e0bf61",
@@ -85,6 +85,6 @@
       "answer_prompt_source": "8f099f31be603e336a25ecc5f05eb4f226104ccdf497bf9a6b02cb8059de99cc",
       "implementation_tree": "3406d3d0cb00e37482370f49bc9989753e036c841b5579f36b7b31a128c0e75d"
     },
-    "gold_ready": false
+    "gold_ready": true
   }
 }

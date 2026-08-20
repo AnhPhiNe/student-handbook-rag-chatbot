@@ -34,7 +34,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -49,7 +49,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -151,9 +153,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -190,7 +192,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -205,7 +207,9 @@
               "adapter_id": "study_duration",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -341,9 +345,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -380,7 +384,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -395,7 +399,9 @@
               "adapter_id": "scholarship_classification",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -467,9 +473,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -507,7 +513,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -522,7 +528,9 @@
               "adapter_id": "scoring",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -582,9 +590,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -616,7 +624,49 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu15"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_section_heading"
+            ],
+            "source_pages": [
+              23,
+              24,
+              25
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Công nhận tốt nghiệp và cấp bằng tốt nghiệp\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp 1. Sinh viên được xét và công nhận tốt nghiệp khi có đủ các điều"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu15",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0004_00"
+                ],
+                "source_pages": [
+                  23,
+                  24,
+                  25
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -838,9 +888,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -850,9 +902,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -884,7 +936,74 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+              "K50_QuyCheDaoTao_Chuong4_Dieu16"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0001_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0002_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0003_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0004_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_section_heading",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_section_heading"
+            ],
+            "source_pages": [
+              25,
+              26,
+              75,
+              76,
+              77
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học\nChapter: Chương IV - NHỮNG QUY ĐỊNH KHÁC ĐỐI VỚI SINH VIÊN\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học 1. Sinh viên được xin nghỉ học tạm thời trong các trường hợp sau:",
+              "Section heading: Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học\nChapter: Chương V - HỌC BỔNG, MIỄN, GIẢM HỌC PHÍ VÀ BẢO LƯU KẾT QUẢ\nDocument: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 30. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong4_Dieu16",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0004_00"
+                ],
+                "source_pages": [
+                  25,
+                  26
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+                "chunk_ids": [
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_section_heading",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0001_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0002_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0003_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0004_00"
+                ],
+                "source_pages": [
+                  75,
+                  76,
+                  77
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -1123,9 +1242,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -1135,9 +1256,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -1169,7 +1290,51 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu10"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0005_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0006_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0014_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0015_00"
+            ],
+            "source_pages": [
+              16,
+              17,
+              18,
+              19
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: a\nContent: a) Sinh viên có điểm học phần không đạt phải đăng ký học lại theo quy định tại Điều 4 của Quy chế này, trừ trường hợp quy định tại điểm c khoản này; điểm lần học cuối là điểm chính thức của học phần;"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0014_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0015_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0005_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0006_00"
+                ],
+                "source_pages": [
+                  16,
+                  17,
+                  18,
+                  19
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -1405,9 +1570,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -1417,9 +1584,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -1451,7 +1618,45 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu14"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_section_heading"
+            ],
+            "source_pages": [
+              23
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Công nhận kết quả học tập và chuyển đổi tín chỉ\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 14. Công nhận kết quả học tập và chuyển đổi tín chỉ 1. Kết quả học tập của người học đã tích lũy từ một trình độ đào tạo"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu14",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0004_00"
+                ],
+                "source_pages": [
+                  23
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -1688,9 +1893,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -1700,9 +1907,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -1740,7 +1947,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -1755,7 +1962,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -1868,7 +2077,7 @@
           "expected_evidence": null,
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -1883,7 +2092,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -1985,9 +2196,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -2025,7 +2236,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -2040,7 +2251,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -2153,7 +2366,7 @@
           "expected_evidence": null,
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -2168,7 +2381,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -2268,9 +2483,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -2308,7 +2523,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -2323,7 +2538,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -2436,7 +2653,7 @@
           "expected_evidence": null,
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -2451,7 +2668,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -2551,9 +2770,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -2591,7 +2810,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -2606,7 +2825,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -2719,7 +2940,7 @@
           "expected_evidence": null,
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -2734,7 +2955,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -2836,9 +3059,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -2876,7 +3099,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -2891,7 +3114,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -3002,7 +3227,7 @@
           "expected_evidence": null,
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -3017,7 +3242,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -3119,9 +3346,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -3159,7 +3386,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -3174,7 +3401,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -3287,7 +3516,7 @@
           "expected_evidence": null,
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -3302,7 +3531,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -3404,9 +3635,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -3444,7 +3675,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -3459,7 +3690,9 @@
               "adapter_id": "scoring",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -3530,7 +3763,7 @@
           "expected_evidence": null,
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -3545,7 +3778,9 @@
               "adapter_id": "scoring",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -3605,9 +3840,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -3644,7 +3879,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -3659,7 +3894,9 @@
               "adapter_id": "study_duration",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -3806,7 +4043,7 @@
           "expected_evidence": null,
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -3821,7 +4058,9 @@
               "adapter_id": "office",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -3982,9 +4221,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -4021,7 +4260,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -4036,7 +4275,9 @@
               "adapter_id": "scholarship_classification",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -4119,7 +4360,7 @@
           "expected_evidence": null,
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -4134,7 +4375,9 @@
               "adapter_id": "faculty",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -4290,9 +4533,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -4330,7 +4573,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -4345,7 +4588,9 @@
               "adapter_id": "scoring",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -4416,7 +4661,7 @@
           "expected_evidence": null,
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -4431,7 +4676,9 @@
               "adapter_id": "scoring",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -4491,9 +4738,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -4531,7 +4778,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -4546,7 +4793,9 @@
               "adapter_id": "student_service",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -4752,7 +5001,7 @@
           "expected_evidence": null,
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -4767,7 +5016,9 @@
               "adapter_id": "formula",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -4834,9 +5085,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -4874,7 +5125,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -4889,7 +5140,9 @@
               "adapter_id": "office",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -5061,7 +5314,7 @@
           "expected_evidence": null,
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -5076,7 +5329,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -5178,9 +5433,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -5218,7 +5473,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -5233,7 +5488,9 @@
               "adapter_id": "scoring",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -5304,7 +5561,7 @@
           "expected_evidence": null,
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -5319,7 +5576,9 @@
               "adapter_id": "scoring",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -5379,9 +5638,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -5419,7 +5678,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -5434,7 +5693,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -5541,7 +5802,45 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu14"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_section_heading"
+            ],
+            "source_pages": [
+              23
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Công nhận kết quả học tập và chuyển đổi tín chỉ\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 14. Công nhận kết quả học tập và chuyển đổi tín chỉ 1. Kết quả học tập của người học đã tích lũy từ một trình độ đào tạo"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu14",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0004_00"
+                ],
+                "source_pages": [
+                  23
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -5778,9 +6077,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -5790,9 +6091,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -5829,7 +6130,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -5844,7 +6145,9 @@
               "adapter_id": "study_duration",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -5985,7 +6288,51 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu10"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0005_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0008_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_section_heading"
+            ],
+            "source_pages": [
+              16,
+              17,
+              18,
+              19
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: c\nContent: c) Thi kết thúc học phần – Cuối mỗi học kỳ, Trường tổ chức một kỳ thi chính. Căn cứ điều kiện cụ thể từng năm học, Hiệu trưởng quyết định tổ chức các kỳ thi phụ; – Việc chấm thi kết thúc học phần phải do tối thiểu hai giảng viên đảm nhiệm, trừ trường hợp chấm thi theo hình thức trắc nghiệm; – Điểm thi kết thúc học phần có thể được phúc khảo; – Sinh viên là tác giả chính của đề tài sinh viên NCKH được đánh giá đạt loại khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử dụng điểm đánh giá đề tài NCKH thay thế cho điểm thi kết thúc học phần (không quá 3 tín chỉ) liên quan gần với đề tài."
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0005_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0004_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0008_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_section_heading"
+                ],
+                "source_pages": [
+                  16,
+                  17,
+                  18,
+                  19
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -6220,9 +6567,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -6232,9 +6581,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -6271,7 +6620,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -6286,7 +6635,9 @@
               "adapter_id": "scholarship_classification",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -6363,7 +6714,47 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong2_Dieu9"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0005_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0009_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0010_00"
+            ],
+            "source_pages": [
+              15,
+              16
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Tổ chức đăng ký học tập\nGranularity: child\nClause marker: b\nContent: b) Từ học kỳ thứ hai của khóa học, sinh viên phải tự đăng ký các học phần trên hệ thống đăng ký học tập của Trường theo kế hoạch được ban hành. Các học phần được đăng ký bao gồm: học phần mới, học phần chưa đạt (để học lại), học phần đã đạt để cải thiện điểm (nếu có) đáp ứng điều kiện đăng ký của mỗi học phần trong danh sách học phần được mở;"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong2_Dieu9",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0004_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0005_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0009_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0010_00"
+                ],
+                "source_pages": [
+                  15,
+                  16
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -6599,9 +6990,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -6611,9 +7004,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -6651,7 +7044,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -6666,7 +7059,9 @@
               "adapter_id": "scoring",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -6731,7 +7126,47 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu12"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0006_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0007_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0010_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_section_heading"
+            ],
+            "source_pages": [
+              21,
+              22
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Xử lý kết quả học tập đối với hình thức đào tạo chính quy\nGranularity: child\nClause marker: 1\nContent: 1. Cuối mỗi học kỳ chính, sinh viên bị cảnh báo học tập nếu vi phạm một trong các điều kiện sau:"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu12",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0006_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0007_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0010_00"
+                ],
+                "source_pages": [
+                  21,
+                  22
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -6971,9 +7406,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -6983,9 +7420,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -7023,7 +7460,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -7038,7 +7475,9 @@
               "adapter_id": "student_service",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -7239,7 +7678,47 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong4_Dieu17"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_section_heading"
+            ],
+            "source_pages": [
+              26,
+              27
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo, chuyển hình thức học\nChapter: Chương IV - NHỮNG QUY ĐỊNH KHÁC ĐỐI VỚI SINH VIÊN\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 17. Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo, chuyển hình thức học"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong4_Dieu17",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0004_00"
+                ],
+                "source_pages": [
+                  26,
+                  27
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -7476,9 +7955,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -7488,9 +7969,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -7528,7 +8009,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -7543,7 +8024,9 @@
               "adapter_id": "office",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -7709,7 +8192,45 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu14"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_section_heading"
+            ],
+            "source_pages": [
+              23
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Công nhận kết quả học tập và chuyển đổi tín chỉ\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 14. Công nhận kết quả học tập và chuyển đổi tín chỉ 1. Kết quả học tập của người học đã tích lũy từ một trình độ đào tạo"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu14",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0004_00"
+                ],
+                "source_pages": [
+                  23
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -7933,9 +8454,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -7945,9 +8468,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -7985,7 +8508,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -8000,7 +8523,9 @@
               "adapter_id": "faculty",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -8161,7 +8686,74 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+              "K50_QuyCheDaoTao_Chuong4_Dieu16"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0001_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0002_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0003_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0004_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_section_heading",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_section_heading"
+            ],
+            "source_pages": [
+              25,
+              26,
+              75,
+              76,
+              77
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học\nChapter: Chương IV - NHỮNG QUY ĐỊNH KHÁC ĐỐI VỚI SINH VIÊN\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học 1. Sinh viên được xin nghỉ học tạm thời trong các trường hợp sau:",
+              "Section heading: Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học\nChapter: Chương V - HỌC BỔNG, MIỄN, GIẢM HỌC PHÍ VÀ BẢO LƯU KẾT QUẢ\nDocument: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 30. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong4_Dieu16",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0004_00"
+                ],
+                "source_pages": [
+                  25,
+                  26
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+                "chunk_ids": [
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_section_heading",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0001_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0002_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0003_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0004_00"
+                ],
+                "source_pages": [
+                  75,
+                  76,
+                  77
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -8400,9 +8992,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -8412,9 +9006,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -8452,7 +9046,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -8467,7 +9061,9 @@
               "adapter_id": "program",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -8549,7 +9145,49 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu15"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_section_heading"
+            ],
+            "source_pages": [
+              23,
+              24,
+              25
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Công nhận tốt nghiệp và cấp bằng tốt nghiệp\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp 1. Sinh viên được xét và công nhận tốt nghiệp khi có đủ các điều"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu15",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0004_00"
+                ],
+                "source_pages": [
+                  23,
+                  24,
+                  25
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -8771,9 +9409,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -8783,9 +9423,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -8817,7 +9457,49 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu15"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_section_heading"
+            ],
+            "source_pages": [
+              23,
+              24,
+              25
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Công nhận tốt nghiệp và cấp bằng tốt nghiệp\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp 1. Sinh viên được xét và công nhận tốt nghiệp khi có đủ các điều"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu15",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0004_00"
+                ],
+                "source_pages": [
+                  23,
+                  24,
+                  25
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -9039,9 +9721,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -9056,7 +9740,49 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu15"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0009_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0011_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_section_heading"
+            ],
+            "source_pages": [
+              23,
+              24,
+              25
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Công nhận tốt nghiệp và cấp bằng tốt nghiệp\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp 1. Sinh viên được xét và công nhận tốt nghiệp khi có đủ các điều"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu15",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0004_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0009_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0011_00"
+                ],
+                "source_pages": [
+                  23,
+                  24,
+                  25
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -9280,9 +10006,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -9292,9 +10020,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -9326,7 +10054,74 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+              "K50_QuyCheDaoTao_Chuong4_Dieu16"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0004_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0007_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0010_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0017_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_section_heading",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0014_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_section_heading"
+            ],
+            "source_pages": [
+              25,
+              26,
+              75,
+              76,
+              77
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học\nGranularity: child\nClause marker: 4\nContent: 4. Sinh viên được thôi học vì lý do cá nhân, nếu muốn quay trở lại học phải dự tuyển đầu vào như những thí sinh khác. Sinh viên thôi học được bảo lưu và công nhận kết quả học tập đã tích lũy tại Trường theo quy định.",
+              "Section heading: Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học\nChapter: Chương V - HỌC BỔNG, MIỄN, GIẢM HỌC PHÍ VÀ BẢO LƯU KẾT QUẢ\nDocument: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 30. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong4_Dieu16",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0014_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0003_00"
+                ],
+                "source_pages": [
+                  25,
+                  26
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+                "chunk_ids": [
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_section_heading",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0004_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0010_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0007_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0017_00"
+                ],
+                "source_pages": [
+                  75,
+                  76,
+                  77
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -9564,9 +10359,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -9581,7 +10378,47 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu12"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0006_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0007_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0010_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_section_heading"
+            ],
+            "source_pages": [
+              21,
+              22
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Xử lý kết quả học tập đối với hình thức đào tạo chính quy\nGranularity: child\nClause marker: 1\nContent: 1. Cuối mỗi học kỳ chính, sinh viên bị cảnh báo học tập nếu vi phạm một trong các điều kiện sau:"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu12",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0006_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0007_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0010_00"
+                ],
+                "source_pages": [
+                  21,
+                  22
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -9821,9 +10658,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -9833,9 +10672,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -9867,7 +10706,51 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu10"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0005_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0006_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0014_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0015_00"
+            ],
+            "source_pages": [
+              16,
+              17,
+              18,
+              19
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: a\nContent: a) Sinh viên có điểm học phần không đạt phải đăng ký học lại theo quy định tại Điều 4 của Quy chế này, trừ trường hợp quy định tại điểm c khoản này; điểm lần học cuối là điểm chính thức của học phần;"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0014_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0015_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0005_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0006_00"
+                ],
+                "source_pages": [
+                  16,
+                  17,
+                  18,
+                  19
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -10103,9 +10986,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -10120,7 +11005,45 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu14"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_section_heading"
+            ],
+            "source_pages": [
+              23
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Công nhận kết quả học tập và chuyển đổi tín chỉ\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 14. Công nhận kết quả học tập và chuyển đổi tín chỉ 1. Kết quả học tập của người học đã tích lũy từ một trình độ đào tạo"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu14",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0004_00"
+                ],
+                "source_pages": [
+                  23
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -10344,9 +11267,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -10356,9 +11281,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -10390,7 +11315,47 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong2_Dieu9"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0005_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0009_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0010_00"
+            ],
+            "source_pages": [
+              15,
+              16
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Tổ chức đăng ký học tập\nGranularity: child\nClause marker: b\nContent: b) Từ học kỳ thứ hai của khóa học, sinh viên phải tự đăng ký các học phần trên hệ thống đăng ký học tập của Trường theo kế hoạch được ban hành. Các học phần được đăng ký bao gồm: học phần mới, học phần chưa đạt (để học lại), học phần đã đạt để cải thiện điểm (nếu có) đáp ứng điều kiện đăng ký của mỗi học phần trong danh sách học phần được mở;"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong2_Dieu9",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0004_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0005_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0009_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0010_00"
+                ],
+                "source_pages": [
+                  15,
+                  16
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -10626,9 +11591,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -10643,7 +11610,74 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+              "K50_QuyCheDaoTao_Chuong4_Dieu16"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0001_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0002_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0003_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0004_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_section_heading",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_section_heading"
+            ],
+            "source_pages": [
+              25,
+              26,
+              75,
+              76,
+              77
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học\nChapter: Chương IV - NHỮNG QUY ĐỊNH KHÁC ĐỐI VỚI SINH VIÊN\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học 1. Sinh viên được xin nghỉ học tạm thời trong các trường hợp sau:",
+              "Section heading: Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học\nChapter: Chương V - HỌC BỔNG, MIỄN, GIẢM HỌC PHÍ VÀ BẢO LƯU KẾT QUẢ\nDocument: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 30. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong4_Dieu16",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0004_00"
+                ],
+                "source_pages": [
+                  25,
+                  26
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+                "chunk_ids": [
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_section_heading",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0001_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0002_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0003_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0004_00"
+                ],
+                "source_pages": [
+                  75,
+                  76,
+                  77
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -10882,9 +11916,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -10894,9 +11930,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -10928,7 +11964,49 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu15"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0009_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0011_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_section_heading"
+            ],
+            "source_pages": [
+              23,
+              24,
+              25
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Công nhận tốt nghiệp và cấp bằng tốt nghiệp\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp 1. Sinh viên được xét và công nhận tốt nghiệp khi có đủ các điều"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu15",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0004_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0009_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0011_00"
+                ],
+                "source_pages": [
+                  23,
+                  24,
+                  25
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -11152,9 +12230,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -11169,7 +12249,45 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu14"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_section_heading"
+            ],
+            "source_pages": [
+              23
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Công nhận kết quả học tập và chuyển đổi tín chỉ\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 14. Công nhận kết quả học tập và chuyển đổi tín chỉ 1. Kết quả học tập của người học đã tích lũy từ một trình độ đào tạo"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu14",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0004_00"
+                ],
+                "source_pages": [
+                  23
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -11403,9 +12521,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -11415,9 +12535,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -11449,7 +12569,47 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu12"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0006_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0007_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0010_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_section_heading"
+            ],
+            "source_pages": [
+              21,
+              22
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Xử lý kết quả học tập đối với hình thức đào tạo chính quy\nGranularity: child\nClause marker: 1\nContent: 1. Cuối mỗi học kỳ chính, sinh viên bị cảnh báo học tập nếu vi phạm một trong các điều kiện sau:"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu12",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0006_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0007_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0010_00"
+                ],
+                "source_pages": [
+                  21,
+                  22
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -11689,9 +12849,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -11706,7 +12868,47 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong4_Dieu17"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_section_heading"
+            ],
+            "source_pages": [
+              26,
+              27
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo, chuyển hình thức học\nChapter: Chương IV - NHỮNG QUY ĐỊNH KHÁC ĐỐI VỚI SINH VIÊN\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 17. Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo, chuyển hình thức học"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong4_Dieu17",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu17_child_0004_00"
+                ],
+                "source_pages": [
+                  26,
+                  27
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -11943,9 +13145,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -11955,9 +13159,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -11995,7 +13199,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -12010,7 +13214,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -12117,7 +13323,47 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong2_Dieu9"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0005_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0009_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0010_00"
+            ],
+            "source_pages": [
+              15,
+              16
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Tổ chức đăng ký học tập\nGranularity: child\nClause marker: b\nContent: b) Từ học kỳ thứ hai của khóa học, sinh viên phải tự đăng ký các học phần trên hệ thống đăng ký học tập của Trường theo kế hoạch được ban hành. Các học phần được đăng ký bao gồm: học phần mới, học phần chưa đạt (để học lại), học phần đã đạt để cải thiện điểm (nếu có) đáp ứng điều kiện đăng ký của mỗi học phần trong danh sách học phần được mở;"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong2_Dieu9",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0004_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0005_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0009_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0010_00"
+                ],
+                "source_pages": [
+                  15,
+                  16
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -12354,9 +13600,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -12376,7 +13624,7 @@
           "expected_evidence": null,
           "citation_scope": "r3",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -12391,7 +13639,9 @@
               "adapter_id": "scholarship_classification",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -12463,9 +13713,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -12502,7 +13752,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -12517,7 +13767,9 @@
               "adapter_id": "study_duration",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -12658,7 +13910,51 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu10"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0005_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0010_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0014_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0015_00"
+            ],
+            "source_pages": [
+              16,
+              17,
+              18,
+              19
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: a\nContent: a) Sinh viên có điểm học phần không đạt phải đăng ký học lại theo quy định tại Điều 4 của Quy chế này, trừ trường hợp quy định tại điểm c khoản này; điểm lần học cuối là điểm chính thức của học phần;"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0014_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0015_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0005_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0010_00"
+                ],
+                "source_pages": [
+                  16,
+                  17,
+                  18,
+                  19
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -12894,9 +14190,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -12917,7 +14215,7 @@
           "expected_evidence": null,
           "citation_scope": "r3",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -12932,7 +14230,9 @@
               "adapter_id": "scoring",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -12997,7 +14297,47 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu12"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0006_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0007_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0010_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_section_heading"
+            ],
+            "source_pages": [
+              21,
+              22
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Xử lý kết quả học tập đối với hình thức đào tạo chính quy\nGranularity: child\nClause marker: 1\nContent: 1. Cuối mỗi học kỳ chính, sinh viên bị cảnh báo học tập nếu vi phạm một trong các điều kiện sau:"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu12",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0006_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0007_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0010_00"
+                ],
+                "source_pages": [
+                  21,
+                  22
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r4",
           "evidence_candidates": [
             {
@@ -13237,9 +14577,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -13249,9 +14591,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -13288,7 +14630,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -13303,7 +14645,9 @@
               "adapter_id": "scholarship_classification",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -13380,7 +14724,45 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu14"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_section_heading"
+            ],
+            "source_pages": [
+              23
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Công nhận kết quả học tập và chuyển đổi tín chỉ\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 14. Công nhận kết quả học tập và chuyển đổi tín chỉ 1. Kết quả học tập của người học đã tích lũy từ một trình độ đào tạo"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu14",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu14_child_0004_00"
+                ],
+                "source_pages": [
+                  23
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -13604,9 +14986,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -13627,7 +15011,7 @@
           "expected_evidence": null,
           "citation_scope": "r3",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -13642,7 +15026,9 @@
               "adapter_id": "student_service",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -13843,7 +15229,49 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu15"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_section_heading"
+            ],
+            "source_pages": [
+              23,
+              24,
+              25
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Công nhận tốt nghiệp và cấp bằng tốt nghiệp\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp 1. Sinh viên được xét và công nhận tốt nghiệp khi có đủ các điều"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu15",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0004_00"
+                ],
+                "source_pages": [
+                  23,
+                  24,
+                  25
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r4",
           "evidence_candidates": [
             {
@@ -14065,9 +15493,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -14088,7 +15518,7 @@
           "expected_evidence": null,
           "citation_scope": "r5",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -14103,7 +15533,9 @@
               "adapter_id": "faculty",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -14259,9 +15691,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -14299,7 +15731,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -14314,7 +15746,9 @@
               "adapter_id": "scoring",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -14379,7 +15813,47 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu12"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0006_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0007_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0010_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_section_heading"
+            ],
+            "source_pages": [
+              21,
+              22
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Xử lý kết quả học tập đối với hình thức đào tạo chính quy\nGranularity: child\nClause marker: 1\nContent: 1. Cuối mỗi học kỳ chính, sinh viên bị cảnh báo học tập nếu vi phạm một trong các điều kiện sau:"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu12",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0006_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0007_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0010_00"
+                ],
+                "source_pages": [
+                  21,
+                  22
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -14619,9 +16093,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -14642,7 +16118,7 @@
           "expected_evidence": null,
           "citation_scope": "r3",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -14657,7 +16133,9 @@
               "adapter_id": "office",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -14823,7 +16301,74 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+              "K50_QuyCheDaoTao_Chuong4_Dieu16"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0001_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0002_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0003_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0004_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_section_heading",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_section_heading"
+            ],
+            "source_pages": [
+              25,
+              26,
+              75,
+              76,
+              77
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học\nChapter: Chương IV - NHỮNG QUY ĐỊNH KHÁC ĐỐI VỚI SINH VIÊN\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học 1. Sinh viên được xin nghỉ học tạm thời trong các trường hợp sau:",
+              "Section heading: Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học\nChapter: Chương V - HỌC BỔNG, MIỄN, GIẢM HỌC PHÍ VÀ BẢO LƯU KẾT QUẢ\nDocument: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 30. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong4_Dieu16",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0004_00"
+                ],
+                "source_pages": [
+                  25,
+                  26
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+                "chunk_ids": [
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_section_heading",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0001_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0002_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0003_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0004_00"
+                ],
+                "source_pages": [
+                  75,
+                  76,
+                  77
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r4",
           "evidence_candidates": [
             {
@@ -15062,9 +16607,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -15085,7 +16632,7 @@
           "expected_evidence": null,
           "citation_scope": "r5",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -15100,7 +16647,9 @@
               "adapter_id": "program",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -15182,7 +16731,51 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu10"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0005_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0010_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0014_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0015_00"
+            ],
+            "source_pages": [
+              16,
+              17,
+              18,
+              19
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: a\nContent: a) Sinh viên có điểm học phần không đạt phải đăng ký học lại theo quy định tại Điều 4 của Quy chế này, trừ trường hợp quy định tại điểm c khoản này; điểm lần học cuối là điểm chính thức của học phần;"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0014_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0015_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0005_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0010_00"
+                ],
+                "source_pages": [
+                  16,
+                  17,
+                  18,
+                  19
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r6",
           "evidence_candidates": [
             {
@@ -15418,9 +17011,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -15430,9 +17025,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -15470,7 +17065,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -15485,7 +17080,9 @@
               "adapter_id": "student_service",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -15686,7 +17283,49 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu15"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_section_heading"
+            ],
+            "source_pages": [
+              23,
+              24,
+              25
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Công nhận tốt nghiệp và cấp bằng tốt nghiệp\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp 1. Sinh viên được xét và công nhận tốt nghiệp khi có đủ các điều"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu15",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0002_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu15_child_0004_00"
+                ],
+                "source_pages": [
+                  23,
+                  24,
+                  25
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r2",
           "evidence_candidates": [
             {
@@ -15908,9 +17547,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -15931,7 +17572,7 @@
           "expected_evidence": null,
           "citation_scope": "r3",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -15946,7 +17587,9 @@
               "adapter_id": "faculty",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -16107,7 +17750,47 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong2_Dieu9"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0005_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0009_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0010_00"
+            ],
+            "source_pages": [
+              15,
+              16
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Tổ chức đăng ký học tập\nGranularity: child\nClause marker: b\nContent: b) Từ học kỳ thứ hai của khóa học, sinh viên phải tự đăng ký các học phần trên hệ thống đăng ký học tập của Trường theo kế hoạch được ban hành. Các học phần được đăng ký bao gồm: học phần mới, học phần chưa đạt (để học lại), học phần đã đạt để cải thiện điểm (nếu có) đáp ứng điều kiện đăng ký của mỗi học phần trong danh sách học phần được mở;"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong2_Dieu9",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0004_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0005_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0009_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0010_00"
+                ],
+                "source_pages": [
+                  15,
+                  16
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r4",
           "evidence_candidates": [
             {
@@ -16344,9 +18027,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -16356,9 +18041,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -16396,7 +18081,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -16411,7 +18096,9 @@
               "adapter_id": "foreign_language",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -16513,9 +18200,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -16552,7 +18239,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -16567,7 +18254,9 @@
               "adapter_id": "study_duration",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -16703,9 +18392,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -16743,7 +18432,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -16758,7 +18447,9 @@
               "adapter_id": "office",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -16919,9 +18610,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -16959,7 +18650,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -16974,7 +18665,9 @@
               "adapter_id": "program",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -17051,9 +18744,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -17091,7 +18784,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -17106,7 +18799,9 @@
               "adapter_id": "scoring",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -17166,9 +18861,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -17205,7 +18900,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -17220,7 +18915,9 @@
               "adapter_id": "formula",
               "source_contract": "regulation_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -17287,9 +18984,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -17330,7 +19027,74 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+              "K50_QuyCheDaoTao_Chuong4_Dieu16"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0001_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0006_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0008_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0017_00",
+              "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_section_heading",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0002_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0005_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0010_00",
+              "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_section_heading"
+            ],
+            "source_pages": [
+              25,
+              26,
+              75,
+              76,
+              77
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học\nGranularity: child\nClause marker: d\nContent: d) Vì lý do cá nhân khác nhưng đã phải học tối thiểu 01 học kỳ và không thuộc các trường hợp bị xem xét buộc thôi học hoặc xem xét kỷ luật.",
+              "Parent section: Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học\nGranularity: child\nClause marker: d\nContent: d) Về học phí: Sinh viên không nợ học phí và được Phòng Kế hoạch – Tài chính xác nhận tại thời điểm làm hồ sơ nghỉ học tạm thời."
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong4_Dieu16",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0005_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0010_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong4_Dieu16_child_0002_00"
+                ],
+                "source_pages": [
+                  25,
+                  26
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+                "chunk_ids": [
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0006_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0008_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0017_00",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_section_heading",
+                  "cp_K50_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0001_00"
+                ],
+                "source_pages": [
+                  75,
+                  76,
+                  77
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -17570,9 +19334,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -17582,9 +19348,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -17625,7 +19391,47 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong2_Dieu9"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0003_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0004_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0005_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0009_00",
+              "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0010_00"
+            ],
+            "source_pages": [
+              15,
+              16
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Tổ chức đăng ký học tập\nGranularity: child\nClause marker: b\nContent: b) Từ học kỳ thứ hai của khóa học, sinh viên phải tự đăng ký các học phần trên hệ thống đăng ký học tập của Trường theo kế hoạch được ban hành. Các học phần được đăng ký bao gồm: học phần mới, học phần chưa đạt (để học lại), học phần đã đạt để cải thiện điểm (nếu có) đáp ứng điều kiện đăng ký của mỗi học phần trong danh sách học phần được mở;"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong2_Dieu9",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0003_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0004_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0005_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0009_00",
+                  "cp_K50_QuyCheDaoTao_Chuong2_Dieu9_child_0010_00"
+                ],
+                "source_pages": [
+                  15,
+                  16
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -17861,9 +19667,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -17873,9 +19681,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -17916,7 +19724,51 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu10"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0010_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0011_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0012_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0014_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0015_00"
+            ],
+            "source_pages": [
+              16,
+              17,
+              18,
+              19
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: a\nContent: a) Sinh viên có điểm học phần không đạt phải đăng ký học lại theo quy định tại Điều 4 của Quy chế này, trừ trường hợp quy định tại điểm c khoản này; điểm lần học cuối là điểm chính thức của học phần;"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0014_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0015_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0011_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0010_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu10_child_0012_00"
+                ],
+                "source_pages": [
+                  16,
+                  17,
+                  18,
+                  19
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -18154,9 +20006,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -18166,9 +20020,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -18209,7 +20063,47 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_50"
+            ],
+            "parent_section_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu12"
+            ],
+            "chunk_ids": [
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0001_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0006_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0007_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0010_00",
+              "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_section_heading"
+            ],
+            "source_pages": [
+              21,
+              22
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Parent section: Xử lý kết quả học tập đối với hình thức đào tạo chính quy\nGranularity: child\nClause marker: 4\nContent: 4. Quy trình, thủ tục cảnh báo học tập, buộc thôi học; việc thông báo hình thức áp dụng tới sinh viên được thực hiện theo các quy định hiện hành của Trường."
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_50",
+                "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu12",
+                "chunk_ids": [
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0010_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_section_heading",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0001_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0006_00",
+                  "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_child_0007_00"
+                ],
+                "source_pages": [
+                  21,
+                  22
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -18445,9 +20339,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -18457,9 +20353,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -18490,9 +20386,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -18523,9 +20419,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -18551,9 +20447,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -18579,9 +20475,9 @@
       "multi_cohort_rejection": true
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -18613,7 +20509,72 @@
           ],
           "expected_status": "ok",
           "expected_source_contract": "request_scoped_rag",
-          "expected_evidence": {},
+          "expected_evidence": {
+            "document_ids": [
+              "so_tay_sinh_vien_khoa_48_49"
+            ],
+            "parent_section_ids": [
+              "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+              "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16"
+            ],
+            "chunk_ids": [
+              "cp_K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0001_00",
+              "cp_K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0002_00",
+              "cp_K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0003_00",
+              "cp_K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0005_00",
+              "cp_K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30_section_heading",
+              "cp_K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
+              "cp_K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16_child_0002_00",
+              "cp_K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16_child_0003_00",
+              "cp_K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16_child_0004_00",
+              "cp_K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16_section_heading"
+            ],
+            "source_pages": [
+              27,
+              28,
+              54,
+              55
+            ],
+            "relevance_grade": 2,
+            "evidence_excerpts": [
+              "Section heading: Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học\nChapter: Chương IV - NHỮNG QUY ĐỊNH KHÁC ĐỐI VỚI SINH VIÊN\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học 1. Sinh viên được xin nghỉ học tạm thời trong các trường hợp sau:",
+              "Section heading: Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương tiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh viên người dân tộc thiểu số\nChapter: Chương V - HỌC BỔNG, MIỄN, GIẢM HỌC PHÍ VÀ BẢO LƯU KẾT QUẢ\nDocument: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 30. Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương tiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh"
+            ],
+            "source_bindings": [
+              {
+                "document_id": "so_tay_sinh_vien_khoa_48_49",
+                "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16",
+                "chunk_ids": [
+                  "cp_K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16_section_heading",
+                  "cp_K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
+                  "cp_K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16_child_0002_00",
+                  "cp_K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16_child_0003_00",
+                  "cp_K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16_child_0004_00"
+                ],
+                "source_pages": [
+                  27,
+                  28
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_48_49",
+                "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+                "chunk_ids": [
+                  "cp_K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30_section_heading",
+                  "cp_K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0002_00",
+                  "cp_K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0003_00",
+                  "cp_K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0005_00",
+                  "cp_K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30_child_0001_00"
+                ],
+                "source_pages": [
+                  54,
+                  55
+                ],
+                "relevance_grade": 2
+              }
+            ]
+          },
           "citation_scope": "r1",
           "evidence_candidates": [
             {
@@ -18844,9 +20805,11 @@
             }
           ],
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "candidate_only_not_gold",
-            "candidate_count": 10
+            "candidate_count": 10,
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -18856,9 +20819,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -18894,7 +20857,7 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
+            "annotation_state": "human_approved",
             "audit_method": "direct_tool_adapter",
             "expected_status": "ok",
             "actual_status": "ok",
@@ -18909,7 +20872,9 @@
               "adapter_id": "office",
               "source_contract": "directory_table",
               "source_bound": true
-            }
+            },
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           },
           "expected_source_records": [
             {
@@ -19071,9 +21036,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -19117,9 +21082,11 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "deterministic_fault_harness",
-            "fault_type": "request_status"
+            "fault_type": "request_status",
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -19139,9 +21106,11 @@
           },
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "deterministic_fault_harness",
-            "fault_type": "request_status"
+            "fault_type": "request_status",
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -19151,9 +21120,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -19197,9 +21166,11 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "deterministic_fault_harness",
-            "fault_type": "request_status"
+            "fault_type": "request_status",
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -19219,9 +21190,11 @@
           },
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "deterministic_fault_harness",
-            "fault_type": "request_status"
+            "fault_type": "request_status",
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -19231,9 +21204,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -19277,9 +21250,11 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "deterministic_fault_harness",
-            "fault_type": "request_status"
+            "fault_type": "request_status",
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -19299,9 +21274,11 @@
           },
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "deterministic_fault_harness",
-            "fault_type": "request_status"
+            "fault_type": "request_status",
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -19311,9 +21288,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   },
   {
@@ -19357,9 +21334,11 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "deterministic_fault_harness",
-            "fault_type": "request_status"
+            "fault_type": "request_status",
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         },
         {
@@ -19379,9 +21358,11 @@
           },
           "citation_scope": "r2",
           "gold_audit": {
-            "annotation_state": "review_required",
+            "annotation_state": "human_approved",
             "audit_method": "deterministic_fault_harness",
-            "fault_type": "request_status"
+            "fault_type": "request_status",
+            "reviewer": "project_owner",
+            "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
           }
         }
       ],
@@ -19391,9 +21372,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "review_required",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "project_owner",
+      "reviewed_at": "2026-08-20T08:50:25.680730+00:00"
     }
   }
 ]

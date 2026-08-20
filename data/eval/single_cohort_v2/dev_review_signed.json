@@ -8,8 +8,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -58,7 +58,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -70,8 +70,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -326,7 +326,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -338,8 +338,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -577,7 +577,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -589,8 +589,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -842,7 +842,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -854,8 +854,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -1111,7 +1111,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -1123,8 +1123,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -1373,7 +1373,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -1385,8 +1385,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -1638,7 +1638,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -1650,8 +1650,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -1899,7 +1899,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -1911,8 +1911,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -2164,7 +2164,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -2176,8 +2176,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -2431,7 +2431,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -2443,8 +2443,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -2686,7 +2686,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -2698,8 +2698,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -2799,7 +2799,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -2811,8 +2811,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -2904,7 +2904,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -2916,8 +2916,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -3223,7 +3223,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -3235,8 +3235,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -3519,7 +3519,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -3531,8 +3531,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -3829,7 +3829,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -3841,8 +3841,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -4140,7 +4140,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -4152,8 +4152,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -4471,7 +4471,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -4483,8 +4483,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -4781,7 +4781,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -4793,8 +4793,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -5089,7 +5089,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -5101,8 +5101,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -5390,7 +5390,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -5402,8 +5402,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -5703,7 +5703,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -5715,8 +5715,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -5997,7 +5997,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -6009,8 +6009,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -6313,7 +6313,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -6325,8 +6325,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -6624,7 +6624,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -6636,8 +6636,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -6934,7 +6934,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -6946,8 +6946,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -7245,7 +7245,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -7257,8 +7257,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -7576,7 +7576,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -7588,8 +7588,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -7877,7 +7877,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -7889,8 +7889,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -8188,7 +8188,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -8200,8 +8200,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -8483,7 +8483,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -8495,8 +8495,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -8793,7 +8793,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -8805,8 +8805,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -9102,7 +9102,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -9114,8 +9114,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -9601,7 +9601,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -9613,8 +9613,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -10120,7 +10120,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -10132,8 +10132,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -10635,7 +10635,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -10647,8 +10647,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -11142,7 +11142,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -11154,8 +11154,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -11655,7 +11655,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -11667,8 +11667,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -12165,7 +12165,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -12177,8 +12177,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -12664,7 +12664,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -12676,8 +12676,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -13179,7 +13179,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -13191,8 +13191,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -13694,7 +13694,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -13706,8 +13706,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -14200,7 +14200,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -14212,8 +14212,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -14699,7 +14699,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -14711,8 +14711,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -15218,7 +15218,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -15230,8 +15230,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -15733,7 +15733,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -15745,8 +15745,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -16240,7 +16240,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -16252,8 +16252,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -16753,7 +16753,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -16765,8 +16765,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -17100,7 +17100,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -17112,8 +17112,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -17704,7 +17704,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -17716,8 +17716,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -18371,7 +18371,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -18383,8 +18383,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -19269,7 +19269,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -19281,8 +19281,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -19643,7 +19643,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -19655,8 +19655,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -20247,7 +20247,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -20259,8 +20259,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -20885,7 +20885,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -20897,8 +20897,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -21782,7 +21782,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -21794,8 +21794,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -22143,7 +22143,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -22155,8 +22155,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -22748,7 +22748,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -22760,8 +22760,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -23409,7 +23409,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -23421,8 +23421,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -24308,7 +24308,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -24320,8 +24320,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -24370,7 +24370,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -24382,8 +24382,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -24432,7 +24432,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -24453,8 +24453,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -24709,7 +24709,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -24730,8 +24730,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -24969,7 +24969,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -24990,8 +24990,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -25248,7 +25248,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -25269,8 +25269,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -25523,7 +25523,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -25544,8 +25544,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -25800,7 +25800,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -25821,8 +25821,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -26060,7 +26060,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -26081,8 +26081,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -26339,7 +26339,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -26360,8 +26360,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -26614,7 +26614,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -26635,8 +26635,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -26891,7 +26891,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -26912,8 +26912,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K51",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -27151,7 +27151,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -27163,8 +27163,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -27402,7 +27402,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -27414,8 +27414,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -27653,7 +27653,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   },
   {
@@ -27665,8 +27665,8 @@
     "expected_outcome": "execute",
     "expected_effective_cohort": "K50",
     "decision": "approved",
-    "reviewer": "project_owner_confirmed",
-    "reviewed_at": "2026-08-19T06:57:42.873401+00:00",
+    "reviewer": "project_owner",
+    "reviewed_at": "2026-08-20T08:50:25.680730+00:00",
     "request_reviews": [
       {
         "request_id": "r1",
@@ -27904,7 +27904,7 @@
       }
     ],
     "notes": "AI-assisted source review complete; human signature still required.",
-    "approval_commit": "878df68e7811577c0572d787abea7aef1e4823de",
+    "approval_commit": "90e98f18080015e2355e78aae89e86741776d785",
     "approval_basis": "project owner confirmed both review proposals"
   }
 ]

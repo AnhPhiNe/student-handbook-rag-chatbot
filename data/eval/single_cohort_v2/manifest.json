@@ -52,7 +52,7 @@
     }
   },
   "files": {
-    "dev.json": "7b6e9b0df251f7757960fef2f12cf956eee9417b4482e4cff34a155fcc4c8d74",
+    "dev.json": "7ab8822dc16765fb33c622b0904887bf29dca771953883e40cdd3eea7d80d5ad",
     "hidden.json": "0273778c82d8c08bb621d9bb57a9a12324f6e67ced0b2e901f6ddadd3b15431d"
   },
   "hidden_frozen": true,
@@ -85,6 +85,25 @@
       "answer_prompt_source": "8f099f31be603e336a25ecc5f05eb4f226104ccdf497bf9a6b02cb8059de99cc",
       "implementation_tree": "3406d3d0cb00e37482370f49bc9989753e036c841b5579f36b7b31a128c0e75d"
     },
-    "gold_ready": true
+    "gold_ready": true,
+    "approved_corrections": [
+      {
+        "case_id": "dev-single_structured-05",
+        "request_id": "r1",
+        "approved_by": "user",
+        "approved_at": "2026-08-20T14:40:58.550277+00:00",
+        "approval_base_commit": "9f51fbff322108c46c2b1e4b1d59735730dba336",
+        "reason": "stale_multi_candidate_fuzzy_gold",
+        "old_record_ids": [
+          "K51_tram_y_te",
+          "K51_phong_khao_thi_va_dam_bao_chat_luong",
+          "K51_phong_dao_tao"
+        ],
+        "new_record_ids": [
+          "K51_tram_y_te"
+        ],
+        "hidden_changed": false
+      }
+    ]
   }
 }

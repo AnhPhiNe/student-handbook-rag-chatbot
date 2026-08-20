@@ -50,5 +50,25 @@
   },
   "hidden_review_required": 0,
   "gold_ready": true,
-  "dev_review_required": 0
+  "dev_review_required": 0,
+  "approved_corrections": [
+    {
+      "case_id": "dev-single_structured-05",
+      "request_id": "r1",
+      "approved_by": "user",
+      "approved_at": "2026-08-20T14:40:58.550277+00:00",
+      "approval_base_commit": "9f51fbff322108c46c2b1e4b1d59735730dba336",
+      "reason": "stale_multi_candidate_fuzzy_gold",
+      "old_record_ids": [
+        "K51_tram_y_te",
+        "K51_phong_khao_thi_va_dam_bao_chat_luong",
+        "K51_phong_dao_tao"
+      ],
+      "new_record_ids": [
+        "K51_tram_y_te"
+      ],
+      "hidden_changed": false
+    }
+  ],
+  "last_correction_at": "2026-08-20T14:40:58.550277+00:00"
 }

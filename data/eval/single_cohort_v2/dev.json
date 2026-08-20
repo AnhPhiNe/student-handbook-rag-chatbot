@@ -622,8 +622,8 @@
           "expected_evidence": null,
           "citation_scope": "r1",
           "gold_audit": {
-            "annotation_state": "auto_verified",
-            "audit_method": "direct_tool_adapter",
+            "annotation_state": "human_approved",
+            "audit_method": "direct_runtime_reverification",
             "expected_status": "ok",
             "actual_status": "ok",
             "status_matches": true,
@@ -631,6 +631,10 @@
             "cohort_applicable": true,
             "source_data_verified": true,
             "confidence": null,
+            "reviewer": "user",
+            "reviewed_at": "2026-08-20T14:40:58.550277+00:00",
+            "approval_base_commit": "9f51fbff322108c46c2b1e4b1d59735730dba336",
+            "correction_reason": "stale_multi_candidate_fuzzy_gold",
             "provenance": {
               "tool_name": "student_service",
               "cohort": "K51",
@@ -650,49 +654,33 @@
               "cohort": "K51",
               "applicable_cohorts": [],
               "source_type": "catalog"
-            },
-            {
-              "record_id": "K51_phong_khao_thi_va_dam_bao_chat_luong",
-              "document_id": "so_tay_sinh_vien_khoa_51",
-              "parent_section_id": null,
-              "source_pages": [
-                200
-              ],
-              "cohort": "K51",
-              "applicable_cohorts": [],
-              "source_type": "catalog"
-            },
-            {
-              "record_id": "K51_phong_dao_tao",
-              "document_id": "so_tay_sinh_vien_khoa_51",
-              "parent_section_id": null,
-              "source_pages": [
-                196,
-                197
-              ],
-              "cohort": "K51",
-              "applicable_cohorts": [],
-              "source_type": "catalog"
             }
           ],
           "expected_result": {
             "lookup_type": "office_directory",
-            "lookup_scope": "student_service",
-            "input_value": "bảo hiểm y tế",
+            "lookup_scope": "office",
             "result": [
               {
-                "record_id": "K51_K51_tram_y_te_service_4",
-                "service_id": "K51_K51_tram_y_te_service_4",
-                "service": "Làm thẻ và phát thẻ bảo hiểm y tế",
-                "aliases": [],
+                "record_id": null,
+                "service_id": null,
+                "service": null,
+                "aliases": [
+                  "Trạm Y tế",
+                  "TYT",
+                  "y te",
+                  "YT",
+                  "Tram YT",
+                  "phòng y tế",
+                  "y tế trường"
+                ],
                 "unit_name": "Trạm Y tế",
-                "content_type": "student_service_directory",
+                "content_type": "student_office_profile",
                 "source_pages": [
                   201
                 ],
-                "source_section": "office_directory",
+                "source_section": "student_office_profiles",
                 "cohort": "K51",
-                "document_id": "so_tay_sinh_vien_khoa_51",
+                "document_id": null,
                 "emails": [
                   "tramyte@hcmue.edu.vn"
                 ],
@@ -705,121 +693,36 @@
                 "websites": [],
                 "office": "Nhà A, tầng trệt, P.011, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
                 "responsibilities": [
-                  "Làm thẻ và phát thẻ bảo hiểm y tế",
-                  "Phối hợp tổ chức khám sức khỏe đầu khóa học cho tân sinh viên;",
-                  "Khám bệnh, cấp phát thuốc thông thường;"
+                  "Phối hợp tổ chức khám sức khỏe đầu khóa học cho tân sinh viên",
+                  "Khám cấp cứu",
+                  "Khám bệnh, cấp phát thuốc thông thường",
+                  "Làm thẻ và phát thẻ bảo hiểm y tế"
                 ],
-                "summary": "Làm thẻ và phát thẻ bảo hiểm y tế - đơn vị phụ trách: Trạm Y tế",
-                "score": 0.8873,
-                "lexical_score": 0.8873,
-                "semantic_score": 0.0,
-                "selection_method": "catalog_fuzzy"
-              },
-              {
-                "record_id": "K51_K51_phong_khao_thi_va_dam_bao_chat_luong_service_3",
-                "service_id": "K51_K51_phong_khao_thi_va_dam_bao_chat_luong_service_3",
-                "service": "Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu của sinh viên",
-                "aliases": [
-                  "phúc khảo",
-                  "phúc khảo điểm",
-                  "điểm thi",
-                  "kết quả thi",
-                  "bảng điểm",
-                  "in bảng điểm"
-                ],
-                "unit_name": "Phòng Khảo thí và Đảm bảo chất lượng",
-                "content_type": "student_service_directory",
-                "source_pages": [
-                  200
-                ],
-                "source_section": "office_directory",
-                "cohort": "K51",
-                "document_id": "so_tay_sinh_vien_khoa_51",
-                "emails": [
-                  "phongkhaothi@hcmue.edu.vn"
-                ],
-                "phones": [
-                  "(028) 38352020"
-                ],
-                "internal_numbers": [
-                  "146",
-                  "147",
-                  "218",
-                  "219"
-                ],
-                "websites": [
-                  "phongkhaothi.hcmue.edu.vn"
-                ],
-                "office": "Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
-                "responsibilities": [
-                  "Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu của sinh viên",
-                  "Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của",
-                  "Cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc"
-                ],
-                "summary": "Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu của sinh viên - đơn vị phụ trách: Phòng Khảo thí và Đảm bảo chất lượng",
-                "score": 0.5455,
-                "lexical_score": 0.5455,
-                "semantic_score": 0.0,
-                "selection_method": "catalog_fuzzy"
-              },
-              {
-                "record_id": "K51_K51_phong_dao_tao_service_5",
-                "service_id": "K51_K51_phong_dao_tao_service_5",
-                "service": "Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học",
-                "aliases": [
-                  "xét tốt nghiệp",
-                  "công nhận tốt nghiệp",
-                  "bằng tốt nghiệp"
-                ],
-                "unit_name": "Phòng Đào tạo",
-                "content_type": "student_service_directory",
-                "source_pages": [
-                  196,
-                  197
-                ],
-                "source_section": "office_directory",
-                "cohort": "K51",
-                "document_id": "so_tay_sinh_vien_khoa_51",
-                "emails": [
-                  "phongdt@hcmue.edu.vn"
-                ],
-                "phones": [
-                  "(028) 38352020"
-                ],
-                "internal_numbers": [
-                  "141",
-                  "142"
-                ],
-                "websites": [],
-                "office": "Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
-                "responsibilities": [
-                  "Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học",
-                  "Tổ chức tuyển sinh các hệ;",
-                  "xây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo",
-                  "Tổ chức xét tuyển đào tạo theo hình thức học cùng lúc hai chương",
-                  "Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận"
-                ],
-                "summary": "Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học - đơn vị phụ trách: Phòng Đào tạo",
-                "score": 0.5,
-                "lexical_score": 0.5,
-                "semantic_score": 0.0,
-                "selection_method": "catalog_fuzzy"
+                "summary": "Trạm Y tế phu trach: Phối hợp tổ chức khám sức khỏe đầu khóa học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ bảo hiểm y tế"
               }
             ],
             "items": [
               {
-                "record_id": "K51_K51_tram_y_te_service_4",
-                "service_id": "K51_K51_tram_y_te_service_4",
-                "service": "Làm thẻ và phát thẻ bảo hiểm y tế",
-                "aliases": [],
+                "record_id": null,
+                "service_id": null,
+                "service": null,
+                "aliases": [
+                  "Trạm Y tế",
+                  "TYT",
+                  "y te",
+                  "YT",
+                  "Tram YT",
+                  "phòng y tế",
+                  "y tế trường"
+                ],
                 "unit_name": "Trạm Y tế",
-                "content_type": "student_service_directory",
+                "content_type": "student_office_profile",
                 "source_pages": [
                   201
                 ],
-                "source_section": "office_directory",
+                "source_section": "student_office_profiles",
                 "cohort": "K51",
-                "document_id": "so_tay_sinh_vien_khoa_51",
+                "document_id": null,
                 "emails": [
                   "tramyte@hcmue.edu.vn"
                 ],
@@ -832,127 +735,31 @@
                 "websites": [],
                 "office": "Nhà A, tầng trệt, P.011, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
                 "responsibilities": [
-                  "Làm thẻ và phát thẻ bảo hiểm y tế",
-                  "Phối hợp tổ chức khám sức khỏe đầu khóa học cho tân sinh viên;",
-                  "Khám bệnh, cấp phát thuốc thông thường;"
+                  "Phối hợp tổ chức khám sức khỏe đầu khóa học cho tân sinh viên",
+                  "Khám cấp cứu",
+                  "Khám bệnh, cấp phát thuốc thông thường",
+                  "Làm thẻ và phát thẻ bảo hiểm y tế"
                 ],
-                "summary": "Làm thẻ và phát thẻ bảo hiểm y tế - đơn vị phụ trách: Trạm Y tế",
-                "score": 0.8873,
-                "lexical_score": 0.8873,
-                "semantic_score": 0.0,
-                "selection_method": "catalog_fuzzy"
-              },
-              {
-                "record_id": "K51_K51_phong_khao_thi_va_dam_bao_chat_luong_service_3",
-                "service_id": "K51_K51_phong_khao_thi_va_dam_bao_chat_luong_service_3",
-                "service": "Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu của sinh viên",
-                "aliases": [
-                  "phúc khảo",
-                  "phúc khảo điểm",
-                  "điểm thi",
-                  "kết quả thi",
-                  "bảng điểm",
-                  "in bảng điểm"
-                ],
-                "unit_name": "Phòng Khảo thí và Đảm bảo chất lượng",
-                "content_type": "student_service_directory",
-                "source_pages": [
-                  200
-                ],
-                "source_section": "office_directory",
-                "cohort": "K51",
-                "document_id": "so_tay_sinh_vien_khoa_51",
-                "emails": [
-                  "phongkhaothi@hcmue.edu.vn"
-                ],
-                "phones": [
-                  "(028) 38352020"
-                ],
-                "internal_numbers": [
-                  "146",
-                  "147",
-                  "218",
-                  "219"
-                ],
-                "websites": [
-                  "phongkhaothi.hcmue.edu.vn"
-                ],
-                "office": "Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
-                "responsibilities": [
-                  "Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu của sinh viên",
-                  "Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của",
-                  "Cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc"
-                ],
-                "summary": "Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu của sinh viên - đơn vị phụ trách: Phòng Khảo thí và Đảm bảo chất lượng",
-                "score": 0.5455,
-                "lexical_score": 0.5455,
-                "semantic_score": 0.0,
-                "selection_method": "catalog_fuzzy"
-              },
-              {
-                "record_id": "K51_K51_phong_dao_tao_service_5",
-                "service_id": "K51_K51_phong_dao_tao_service_5",
-                "service": "Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học",
-                "aliases": [
-                  "xét tốt nghiệp",
-                  "công nhận tốt nghiệp",
-                  "bằng tốt nghiệp"
-                ],
-                "unit_name": "Phòng Đào tạo",
-                "content_type": "student_service_directory",
-                "source_pages": [
-                  196,
-                  197
-                ],
-                "source_section": "office_directory",
-                "cohort": "K51",
-                "document_id": "so_tay_sinh_vien_khoa_51",
-                "emails": [
-                  "phongdt@hcmue.edu.vn"
-                ],
-                "phones": [
-                  "(028) 38352020"
-                ],
-                "internal_numbers": [
-                  "141",
-                  "142"
-                ],
-                "websites": [],
-                "office": "Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
-                "responsibilities": [
-                  "Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học",
-                  "Tổ chức tuyển sinh các hệ;",
-                  "xây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo",
-                  "Tổ chức xét tuyển đào tạo theo hình thức học cùng lúc hai chương",
-                  "Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận"
-                ],
-                "summary": "Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học - đơn vị phụ trách: Phòng Đào tạo",
-                "score": 0.5,
-                "lexical_score": 0.5,
-                "semantic_score": 0.0,
-                "selection_method": "catalog_fuzzy"
+                "summary": "Trạm Y tế phu trach: Phối hợp tổ chức khám sức khỏe đầu khóa học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ bảo hiểm y tế"
               }
             ],
-            "office_count": 3,
+            "office_count": 1,
             "source_pages": [
-              196,
-              197,
-              200,
               201
             ],
-            "table_name": "Danh sach dich vu sinh vien",
-            "source_label": "Danh muc dich vu sinh vien trong So tay sinh vien HCMUE",
+            "table_name": "Danh sach phong ban lien he",
+            "source_label": "Danh muc phong ban/lien he trong So tay sinh vien HCMUE",
             "cohort": "K51",
-            "document_id": "so_tay_sinh_vien_khoa_51",
-            "source_section": "student_service_directory",
+            "document_id": null,
+            "source_section": "student_office_profiles",
             "source_records": [
               {
                 "source_kind": "catalog",
                 "document_id": "so_tay_sinh_vien_khoa_51",
                 "cohort": "K51",
-                "table_id": "student_service_directory",
+                "table_id": "student_office_profiles",
                 "source_record_id": "K51_tram_y_te",
-                "table_name": "Danh sach dich vu sinh vien",
+                "table_name": "Danh sach phong ban lien he",
                 "parent_section_id": null,
                 "source_pages": [
                   201
@@ -960,43 +767,9 @@
                 "source_url": null,
                 "applicability": null,
                 "applicable_cohorts": []
-              },
-              {
-                "source_kind": "catalog",
-                "document_id": "so_tay_sinh_vien_khoa_51",
-                "cohort": "K51",
-                "table_id": "student_service_directory",
-                "source_record_id": "K51_phong_khao_thi_va_dam_bao_chat_luong",
-                "table_name": "Danh sach dich vu sinh vien",
-                "parent_section_id": null,
-                "source_pages": [
-                  200
-                ],
-                "source_url": null,
-                "applicability": null,
-                "applicable_cohorts": []
-              },
-              {
-                "source_kind": "catalog",
-                "document_id": "so_tay_sinh_vien_khoa_51",
-                "cohort": "K51",
-                "table_id": "student_service_directory",
-                "source_record_id": "K51_phong_dao_tao",
-                "table_name": "Danh sach dich vu sinh vien",
-                "parent_section_id": null,
-                "source_pages": [
-                  196,
-                  197
-                ],
-                "source_url": null,
-                "applicability": null,
-                "applicable_cohorts": []
               }
             ],
-            "content_type": "student_service_directory",
-            "match_score": 0.8873,
-            "score_margin": 0.3418,
-            "selection_method": "catalog_fuzzy",
+            "content_type": "student_office_profile",
             "requested_field": "unit"
           }
         }
@@ -1007,9 +780,9 @@
       "multi_cohort_rejection": false
     },
     "annotation": {
-      "state": "auto_verified",
-      "reviewer": null,
-      "reviewed_at": null
+      "state": "human_approved",
+      "reviewer": "user",
+      "reviewed_at": "2026-08-20T14:40:58.550277+00:00"
     }
   },
   {

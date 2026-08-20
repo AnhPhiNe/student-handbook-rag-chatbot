@@ -200,6 +200,73 @@ def test_standalone_query_does_not_inherit_old_history() -> None:
     assert result.source == "validated_normalization"
 
 
+def test_no_history_follow_up_label_becomes_standalone_when_plan_is_grounded() -> None:
+    query = "K51 quy định học lại và cảnh báo học vụ ra sao?"
+    result = select_effective_query(
+        query,
+        _decision(
+            context_mode="follow_up",
+            normalized_query=query,
+            standalone_query=query,
+            lookup_requests=[
+                {
+                    "request_kind": "rag",
+                    "lookup_type": None,
+                    "intent": "policy",
+                    "query_span": "quy định học lại",
+                    "slots": {},
+                    "slot_spans": {},
+                    "cohort_refs": ["K51"],
+                },
+                {
+                    "request_kind": "rag",
+                    "lookup_type": None,
+                    "intent": "policy",
+                    "query_span": "cảnh báo học vụ",
+                    "slots": {},
+                    "slot_spans": {},
+                    "cohort_refs": ["K51"],
+                },
+            ],
+        ),
+        chat_history=[],
+        selected_cohort="K51",
+    )
+
+    assert result.context_mode == "standalone"
+    assert result.effective_query == query
+    assert not result.needs_clarification
+
+
+def test_no_history_unresolved_follow_up_still_clarifies() -> None:
+    query = "Nội dung đó có ngoại lệ nào?"
+    result = select_effective_query(
+        query,
+        _decision(
+            context_mode="follow_up",
+            normalized_query=query,
+            standalone_query="K51 quy định học lại có ngoại lệ nào?",
+            lookup_requests=[
+                {
+                    "request_kind": "rag",
+                    "lookup_type": None,
+                    "intent": "consequence_or_exception",
+                    "query_span": "quy định học lại",
+                    "slots": {},
+                    "slot_spans": {},
+                    "cohort_refs": ["K51"],
+                }
+            ],
+        ),
+        chat_history=[],
+        selected_cohort="K51",
+    )
+
+    assert result.context_mode == "follow_up"
+    assert result.needs_clarification
+    assert "follow_up_missing_referenced_history" in result.validation_errors
+
+
 def test_ambiguous_context_requires_clarification() -> None:
     result = select_effective_query(
         "Còn trường hợp đó thì sao?",

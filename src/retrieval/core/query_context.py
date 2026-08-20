@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from typing import Any
 import warnings
 
+from src.common.cohort import normalize_cohort
+
 
 QUERY_HANDLING_MODES = {"raw", "validated"}
 LEGACY_QUERY_HANDLING_MODES = {"router_generated", "context_only"}
@@ -173,6 +175,22 @@ def select_effective_query(
         router_decision.get("referenced_evidence")
     )
     clarification = _clean_query(router_decision.get("clarification_question"))
+    history = _history_window(chat_history)
+    if (
+        context_mode == "follow_up"
+        and not history
+        and not referenced_turns
+        and not referenced_evidence
+        and _request_plan_is_grounded_in_raw_query(
+            raw_query,
+            router_decision,
+            selected_cohort=selected_cohort,
+        )
+    ):
+        # With no history, a fully raw-grounded plan is standalone regardless
+        # of the model's context label. Unresolved references still clarify.
+        context_mode = "standalone"
+        standalone_query = None
 
     if selected_mode == "raw":
         return QueryContextResult(
@@ -205,7 +223,6 @@ def select_effective_query(
         )
 
     if context_mode == "follow_up":
-        history = _history_window(chat_history)
         referenced_evidence, referenced_turns = _auto_ground_evidence(
             raw_query,
             standalone_query,
@@ -484,6 +501,36 @@ def _history_window(
                 }
             )
     return output
+
+
+def _request_plan_is_grounded_in_raw_query(
+    raw_query: str,
+    router_decision: dict[str, Any],
+    *,
+    selected_cohort: str | None,
+) -> bool:
+    requests = router_decision.get("lookup_requests")
+    if not isinstance(requests, list) or not requests:
+        return False
+    raw_text = _ascii_text(raw_query)
+    selected = normalize_cohort(selected_cohort)
+    grounded_cohorts = _extract_cohorts(raw_query) | (
+        {selected} if selected else set()
+    )
+    for request in requests:
+        if not isinstance(request, dict):
+            return False
+        query_span = _ascii_text(request.get("query_span"))
+        if not query_span or query_span not in raw_text:
+            return False
+        cohort_refs = request.get("cohort_refs")
+        if not isinstance(cohort_refs, list):
+            return False
+        for cohort in cohort_refs:
+            normalized = normalize_cohort(cohort)
+            if not normalized or normalized not in grounded_cohorts:
+                return False
+    return True
 
 
 def _clean_query(value: Any) -> str | None:

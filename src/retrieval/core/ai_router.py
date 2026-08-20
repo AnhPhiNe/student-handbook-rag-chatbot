@@ -33,8 +33,8 @@ from .query_context import select_effective_query, validated_correction_provenan
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
 ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.3"
-ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.7"
-ROUTER_VALIDATOR_VERSION = "single-cohort-validator-v2.5"
+ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.8"
+ROUTER_VALIDATOR_VERSION = "single-cohort-validator-v2.6"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -43,32 +43,32 @@ _RETRY_TEXT_RE = re.compile(
 )
 
 ROUTER_SYSTEM_PROMPT = """
-HCMUE: chỉ xuất JSON theo schema; không trả lời/citation/retrieval_query.
+Retrieval Planner HCMUE: chỉ lập kế hoạch; không trả lời/citation/retrieval_query;
+chỉ xuất JSON theo OUTPUT CONTRACT.
 
-CONTEXT
-- standalone chỉ dùng QUERY. follow_up giữ toàn bộ QUERY, thay tham chiếu mơ hồ bằng
-  topic nguyên văn từ history. Mọi topic/cohort chèn vào cần evidence_span nguyên văn và
-  turn_id tuyệt đối, không suy luận. standalone_query hết mơ hồ; request.query_span
-  vẫn là span trong QUERY hiện tại. Giữ nguyên số, phủ định, điều kiện và ràng buộc.
+QUERY CONTEXT
+- standalone chỉ dùng QUERY. follow_up: standalone_query ghép QUERY với evidence_span
+  nguyên văn từ referenced_turn_ids; không diễn giải/suy luận. Mỗi fact history
+  (topic/cohort) cần evidence_span và turn_id tuyệt đối. Giữ số, phủ định, điều kiện.
+  request.query_span luôn là span trong QUERY hiện tại trước normalization, không lấy topic từ
+  history. Không có CHAT HISTORY thì không chọn follow_up.
   Cụm phụ thuộc phải resolve đủ topic+cohort; thiếu thì ambiguous, clarify, requests=[].
-- normalized_query chỉ sửa Unicode/dấu hoặc typo cục bộ. Mỗi sửa khai báo correction
-  chứa original_span nguyên văn và normalized_span. Cấm đổi cohort, số, phủ định,
-  thực thể, điều kiện, chủ đề; không chắc thì giữ QUERY.
+- normalized_query chỉ sửa Unicode/dấu/typo cục bộ và khai báo correction
+  original_span→normalized_span. Cấm đổi cohort, số, phủ định, thực thể, điều kiện,
+  chủ đề; không chắc thì giữ QUERY.
 
 SINGLE-COHORT
 - Clarify nếu QUERY có >=2 cohort hoặc request cần cohort nhưng chưa xác định; không
   tách/so sánh multi-cohort. Nguồn cohort theo thứ tự QUERY, SELECTED COHORT, evidence
   lịch sử đã grounding; không có nguồn hợp lệ thì clarify.
 
-REQUESTS
-- Mỗi mục tiêu cần kết quả/evidence riêng là một request theo thứ tự, tối đa 6.
-  Cách trình bày, citation, biểu mẫu, xác nhận, định dạng/cách dùng không phải request.
-  Cách thức/điều kiện/hậu quả/ngoại lệ chỉ sửa intent gần nhất, không tự tách.
-- Liệt kê target; mỗi target đúng 1 request, đủ count. CATALOG_HINT chỉ áp dụng span
-  chứa entity_text, không che/gộp/đổi target khác.
-- Chỉ tách nếu bỏ cụm làm mất fact/evidence. Hỏi thời hạn là fact; mục đích,
-  khẩn cấp, trình bày, xác nhận, citation hay cách dùng đáp án chỉ là metadata.
-- structured: đúng tool/intent/slots trong TOOLS. rag: lookup_type=null, slots={},
+ATOMIC REQUESTS
+- execute: mỗi mục tiêu kết quả/evidence riêng là một request theo thứ tự, tối đa 6.
+  Liệt kê đủ target. Trình bày, citation, biểu mẫu, xác nhận, mục đích, khẩn cấp,
+  định dạng/cách dùng không phải request. Thời hạn chỉ tách khi được hỏi giá trị.
+  Cách thức/điều kiện/hậu quả/ngoại lệ chỉ sửa intent của topic gần nhất, không tự tách.
+- structured: đúng tool/intent/slots trong TOOLS. RAG phải dùng JSON null thật cho
+  lookup_type (không dùng chuỗi "null", không chép intent vào lookup_type), slots={},
   slot_spans={}, intent thuộc RAG_INTENTS. Structured không rõ intent dùng default_intent.
 - query_span: đoạn nguyên văn liên tục, nhỏ nhất đủ định danh một operand/topic; không
   thêm/diễn giải, không dùng dấu "...". slot_spans nằm đúng trong query_span. Cấm tự tạo
@@ -77,9 +77,9 @@ REQUESTS
   referenced_evidence, không ở cohort_refs.
 - RAG: procedure=bước/cách làm; policy=nội dung/điều kiện/quy định;
   consequence_or_exception=hậu quả/ngoại lệ; tên thủ tục không hỏi bước là policy;
-  formula= công thức. Chọn theo fact: quy định/thủ tục=RAG; đơn vị/email/danh bạ=
-  directory structured; cả hai độc lập=tạo hai request. Topic RAG rộng có cohort hợp lệ:
-  execute; chỉ clarify khi thiếu cohort/context/operand bắt buộc.
+  formula=công thức. Chọn theo fact: nội dung quy định/thủ tục=RAG; thông tin liên hệ,
+  đơn vị hoặc danh bạ=structured; cả hai fact độc lập=tạo hai request. Topic RAG rộng có
+  cohort hợp lệ: execute; chỉ clarify khi thiếu cohort/context/operand bắt buộc.
 - Ngoài sổ tay: out_of_domain. clarify/out_of_domain luôn requests=[] và no retrieval.
 """
 
@@ -843,8 +843,10 @@ class AIRouter:
         )
         hint = json.dumps(routing_hint, ensure_ascii=False, separators=(",", ":"))
         hint_instruction = (
-            "CATALOG_HINT is grounded production metadata. Use its lookup_type and "
-            "entity_text; infer only intent/requested_field from QUERY.\n"
+            "CATALOG_HINT is a registry-backed candidate, not a routing command. "
+            "Use it only when the requested fact and source contract match; choose "
+            "the tool from QUERY. Never copy unit_name into a slot unless QUERY "
+            "explicitly names that unit.\n"
             if routing_hint
             else ""
         )

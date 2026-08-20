@@ -113,7 +113,7 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     )
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.7"
+    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.8"
     assert "không dùng dấu \"...\"" in ROUTER_SYSTEM_PROMPT
     assert "không phải request" in ROUTER_SYSTEM_PROMPT
     assert "request.query_span" in ROUTER_SYSTEM_PROMPT
@@ -122,7 +122,29 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     assert "nguồn lịch sử chỉ ở" in ROUTER_SYSTEM_PROMPT
     assert 'cohort_refs=["K51"]' not in ROUTER_SYSTEM_PROMPT
     assert "Chọn theo fact" in ROUTER_SYSTEM_PROMPT
-    assert "cả hai độc lập=tạo hai request" in ROUTER_SYSTEM_PROMPT
+    assert "cả hai fact độc lập=tạo hai request" in ROUTER_SYSTEM_PROMPT
+    assert "JSON null thật" in ROUTER_SYSTEM_PROMPT
+    assert "trước normalization" in ROUTER_SYSTEM_PROMPT
+
+
+def test_catalog_hint_is_candidate_not_tool_override(monkeypatch, tmp_path: Path) -> None:
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+
+    prompt = router._build_prompt(
+        "đơn vị hỗ trợ bảo hiểm y tế",
+        cohort="K51",
+        chat_history=[],
+        routing_hint={
+            "lookup_type": "office",
+            "entity_text": "y tế",
+            "unit_name": "Trạm Y tế",
+            "match_type": "exact_catalog_span",
+        },
+    )
+
+    assert "not a routing command" in prompt
+    assert "choose the tool from QUERY" in prompt
+    assert "Never copy unit_name" in prompt
 
 
 def test_history_window_uses_absolute_turn_ids(monkeypatch, tmp_path: Path) -> None:

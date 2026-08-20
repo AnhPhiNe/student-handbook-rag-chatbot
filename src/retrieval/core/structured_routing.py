@@ -200,6 +200,21 @@ def _normalize_lookup_request(
     if not request_kind:
         request_kind = "structured" if lookup_type else "rag"
     intent = str(value.get("intent") or "").strip().lower()
+    schema_corrections: list[str] = []
+    if request_kind == "rag":
+        if lookup_type == "null":
+            lookup_type = None
+            schema_corrections.append("rag_lookup_type_literal_null")
+        elif (
+            lookup_type
+            and lookup_type == intent
+            and lookup_type in registry.get("rag_intents", {})
+        ):
+            # A JSON-only provider can duplicate a RAG intent into the nullable
+            # tool field. This is representation-only when both discriminators
+            # agree; a registered structured tool remains invalid below.
+            lookup_type = None
+            schema_corrections.append("rag_lookup_type_repeated_intent")
     spec = registry.get("tools", {}).get(lookup_type) if lookup_type else None
     allowed_intents = list((spec or {}).get("intents") or [])
     if request_kind == "structured" and not intent:
@@ -249,6 +264,8 @@ def _normalize_lookup_request(
         or any(not isinstance(item, str) for item in raw_cohort_refs)
     ):
         normalized_request["invalid_cohort_refs_payload"] = True
+    if schema_corrections:
+        normalized_request["schema_corrections"] = schema_corrections
     return normalized_request
 
 

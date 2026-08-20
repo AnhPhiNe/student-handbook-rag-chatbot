@@ -113,6 +113,50 @@ def test_follow_up_query_span_must_stay_in_current_user_query() -> None:
     assert "request:0:ungrounded_query_span" in errors
 
 
+@pytest.mark.parametrize("lookup_type", ["null", "policy", "procedure"])
+def test_rag_lookup_type_representation_is_canonicalized_when_unambiguous(
+    lookup_type: str,
+) -> None:
+    query = "K50 quy định học lại thực hiện thế nào?"
+    intent = "policy" if lookup_type in {"null", "policy"} else "procedure"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="rag",
+                lookup_type=lookup_type,
+                intent=intent,
+                query_span="quy định học lại thực hiện thế nào",
+                cohort_refs=["K50"],
+            )
+        ],
+    )
+
+    request = decision["lookup_requests"][0]
+    assert request["lookup_type"] is None
+    assert request["schema_corrections"]
+    assert _errors(decision, query) == []
+
+
+def test_rag_request_with_structured_tool_remains_invalid() -> None:
+    query = "K50 quy định IELTS thế nào?"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="rag",
+                lookup_type="foreign_language",
+                intent="policy",
+                query_span="quy định IELTS",
+                cohort_refs=["K50"],
+            )
+        ],
+    )
+
+    assert decision["lookup_requests"][0]["lookup_type"] == "foreign_language"
+    assert "request:0:rag_request_has_lookup_type" in _errors(decision, query)
+
+
 def test_legacy_top_level_decision_becomes_one_request() -> None:
     query = "K50 IELTS 6.0 tương đương bậc mấy?"
     decision = normalize_router_decision(

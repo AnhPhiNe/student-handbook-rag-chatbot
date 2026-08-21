@@ -3,7 +3,7 @@ from __future__ import annotations
 import time
 import unittest
 from concurrent.futures import ThreadPoolExecutor
-from threading import Barrier, Lock
+from threading import Barrier, Lock, local
 
 from src.generation.gemini_client import (
     GeminiClient,
@@ -197,6 +197,47 @@ class GeminiClientTest(unittest.TestCase):
             self.assertTrue(
                 result["text"].endswith(key_by_fingerprint[result["key_fingerprint"]])
             )
+
+    def test_concurrent_generate_keeps_usage_request_local(self) -> None:
+        client = object.__new__(GeminiClient)
+        fake_pool = _FakePool()
+        fake_pool_lock = Lock()
+        original_acquire_key = fake_pool.acquire_key
+
+        def acquire_key():
+            with fake_pool_lock:
+                return original_acquire_key()
+
+        fake_pool.acquire_key = acquire_key
+        client.available_keys = ["secret-one", "secret-two"]
+        client.model_name = "fake-model"
+        client.max_retries = 0
+        client.retry_base_delay_seconds = 0
+        client.retry_max_delay_seconds = 0
+        client.key_pool = fake_pool
+        client._genai = _FakeGenAI()
+        client._config = object()
+        client._usage_local = local()
+        barrier = Barrier(2)
+
+        def generate_once(prompt: str, *, client=None) -> str:
+            token_count = 11 if prompt == "first" else 22
+            GeminiClient._set_request_usage(
+                client_under_test,
+                {"input": token_count, "output": 1, "total": token_count + 1},
+            )
+            barrier.wait(timeout=1)
+            return prompt
+
+        client_under_test = client
+        client._generate_once = generate_once
+
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            results = list(executor.map(client.generate, ["first", "second"]))
+
+        usage_by_text = {result["text"]: result["usage"] for result in results}
+        self.assertEqual(usage_by_text["first"]["input"], 11)
+        self.assertEqual(usage_by_text["second"]["input"], 22)
 
 
 class GeminiKeyPoolTest(unittest.TestCase):

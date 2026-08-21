@@ -290,6 +290,23 @@ class GeminiClient:
         self._last_stream_usage: dict[str, int] | None = None
         self._last_stream_model: str = model_name
         self._last_usage: dict[str, int] | None = None
+        self._usage_local = threading.local()
+
+    def _set_request_usage(self, usage: dict[str, int] | None) -> None:
+        """Keep non-streaming usage request-local for concurrent composers."""
+
+        usage_local = getattr(self, "_usage_local", None)
+        if usage_local is None:
+            usage_local = threading.local()
+            self._usage_local = usage_local
+        usage_local.value = usage
+
+    def _get_request_usage(self) -> dict[str, int] | None:
+        usage_local = getattr(self, "_usage_local", None)
+        if usage_local is None:
+            return None
+        usage = getattr(usage_local, "value", None)
+        return dict(usage) if isinstance(usage, dict) else None
 
     def generate(
         self,
@@ -298,6 +315,7 @@ class GeminiClient:
         temperature: float | None = None,
         max_output_tokens: int | None = None,
     ) -> dict[str, Any]:
+        self._set_request_usage(None)
         attempts = 0
         max_attempts = max(1, (self.max_retries + 1) * len(self.available_keys))
         last_error_type = None
@@ -333,7 +351,7 @@ class GeminiClient:
                     raise RuntimeError("Gemini API returned an empty response.")
 
                 self.key_pool.record_success(key_id)
-                usage_dict = getattr(self, "_last_usage", None) or {
+                usage_dict = self._get_request_usage() or {
                     "input": max(1, len(prompt) // 4),
                     "output": max(1, len(str(text)) // 4),
                     "total": max(1, len(prompt) // 4) + max(1, len(str(text)) // 4),
@@ -415,11 +433,16 @@ class GeminiClient:
             inp = int(getattr(usage_obj, "prompt_token_count", 0) or 0)
             out = int(getattr(usage_obj, "candidates_token_count", 0) or 0)
             tot = int(getattr(usage_obj, "total_token_count", 0) or (inp + out))
-            self._last_usage = {"input": inp, "output": out, "total": tot}
+            usage = {"input": inp, "output": out, "total": tot}
         else:
             inp = max(1, len(prompt) // 4)
             out = max(1, len(text) // 4)
-            self._last_usage = {"input": inp, "output": out, "total": inp + out}
+            usage = {"input": inp, "output": out, "total": inp + out}
+
+        # Retain the legacy attribute for serial callers while making the value
+        # returned by generate() local to the current concurrent request.
+        self._last_usage = usage
+        self._set_request_usage(usage)
 
         return text
 

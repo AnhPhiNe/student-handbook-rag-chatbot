@@ -337,6 +337,7 @@ class RequestAnswerOrchestrator:
         composer_call_count = 0
         model_used: str | None = None
         request_composition_ms: dict[str, float] = {}
+        request_provider_telemetry: dict[str, dict[str, Any]] = {}
         composition_started = time.monotonic()
         llm_client: Any | None = None
         if jobs:
@@ -361,7 +362,7 @@ class RequestAnswerOrchestrator:
             grounded_query: str,
             evidence: list[dict[str, Any]],
             facts: list[dict[str, Any]],
-        ) -> tuple[Mapping[str, Any], float]:
+        ) -> tuple[Mapping[str, Any], float, int]:
             prompt = build_request_claim_prompt(
                 request_id=str(request.get("request_id")),
                 request_kind=str(request.get("request_kind")),
@@ -374,7 +375,7 @@ class RequestAnswerOrchestrator:
             assert llm_client is not None
             started = time.monotonic()
             result = llm_client.generate(prompt)
-            return result, (time.monotonic() - started) * 1000
+            return result, (time.monotonic() - started) * 1000, len(prompt)
 
         if jobs:
             configured_workers = int(
@@ -399,7 +400,7 @@ class RequestAnswerOrchestrator:
                 for future in as_completed(future_metadata):
                     request, grounded_query, evidence, facts = future_metadata[future]
                     try:
-                        result, request_ms = future.result()
+                        result, request_ms, prompt_chars = future.result()
                     except Exception:
                         provider_failures += 1
                         drafts.append(
@@ -413,6 +414,13 @@ class RequestAnswerOrchestrator:
                         )
                         continue
                     request_composition_ms[str(request.get("request_id"))] = request_ms
+                    request_provider_telemetry[str(request.get("request_id"))] = {
+                        "attempts": int(result.get("attempts") or 0),
+                        "key_fingerprint": result.get("key_fingerprint"),
+                        "model_used": result.get("model_used"),
+                        "prompt_chars": prompt_chars,
+                        "usage": dict(result.get("usage") or {}),
+                    }
                     llm_results.append(result)
                     if not result.get("ok"):
                         provider_failures += 1
@@ -459,9 +467,9 @@ class RequestAnswerOrchestrator:
         drafts.sort(key=lambda draft: draft.request_index)
         answer, request_debug = render_request_answers(drafts)
         for row in request_debug:
-            row["composition_ms"] = request_composition_ms.get(
-                str(row.get("request_id")), 0.0
-            )
+            request_id = str(row.get("request_id"))
+            row["composition_ms"] = request_composition_ms.get(request_id, 0.0)
+            row["provider"] = request_provider_telemetry.get(request_id)
         supported_parts = sum(bool(draft.claims) for draft in drafts)
         contract_passed = all(not draft.error_type for draft in drafts)
         generation_failure = provider_failures > 0 or not contract_passed

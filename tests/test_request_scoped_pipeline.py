@@ -41,6 +41,8 @@ class _ComposerClient:
             "ok": True,
             "text": json.dumps(payload),
             "model_used": "deterministic-gemini",
+            "attempts": 1,
+            "key_fingerprint": "test-key-fingerprint",
             "usage": {"input": 1, "output": 1, "total": 2},
         }
 
@@ -159,6 +161,11 @@ def test_sync_then_stream_cache_have_composition_debug_parity(monkeypatch) -> No
     assert sync["debug"]["answer_composition"]["contract_passed"] is True
     assert stream_metadata["debug"]["answer_composition"]["contract_passed"] is True
     assert stream_metadata["used_cache"] is True
+    provider = sync["debug"]["answer_composition"]["request_results"][0]["provider"]
+    assert provider["attempts"] == 1
+    assert provider["key_fingerprint"] == "test-key-fingerprint"
+    assert provider["prompt_chars"] > 0
+    assert provider["usage"] == {"input": 1, "output": 1, "total": 2}
 
 
 def test_uncached_stream_buffers_until_contract_validated_replacement(monkeypatch) -> None:

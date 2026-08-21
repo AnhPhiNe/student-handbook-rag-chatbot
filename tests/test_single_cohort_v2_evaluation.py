@@ -26,6 +26,7 @@ from src.evaluation.single_cohort_v2 import (
 )
 from scripts import evaluate_single_cohort_v2 as evaluator
 from scripts import replay_single_cohort_v2_dev as replay
+from scripts import rebind_single_cohort_v2_planner as planner_rebind
 from scripts.evaluate_single_cohort_v2 import (
     _actual_ok_requests,
     _expected_rag_gold_requests,
@@ -64,6 +65,19 @@ def test_contract_checks_only_requests_with_actual_verified_output() -> None:
         requests[1]
     ]
     assert _expected_rag_gold_requests(requests) == [requests[1]]
+
+
+def test_planner_rebind_allows_only_declared_retrieval_and_eval_paths() -> None:
+    assert planner_rebind._path_is_allowed(
+        "src/retrieval/core/bm25_retriever.py"
+    )
+    assert planner_rebind._path_is_allowed(
+        "data/processed/retrieval/bm25_index.json"
+    )
+    assert planner_rebind._path_is_allowed("scripts/evaluate_single_cohort_v2.py")
+    assert planner_rebind._path_is_allowed("tests/test_bm25_retriever.py")
+    assert not planner_rebind._path_is_allowed("src/retrieval/core/ai_router.py")
+    assert not planner_rebind._path_is_allowed("configs/structured_lookup_registry.yaml")
 
 
 def test_offline_replay_keeps_safe_no_match_as_semantic_failure_only() -> None:

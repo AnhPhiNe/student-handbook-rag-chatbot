@@ -1456,6 +1456,26 @@ def _legacy_report_is_current_and_passing(report: Mapping[str, Any] | None) -> b
     )
 
 
+def _regression_v3_report_is_current_and_passing(
+    report: Mapping[str, Any] | None,
+) -> bool:
+    """Accept only a complete runtime report, never a migration/readiness audit."""
+
+    suite_checks = (report or {}).get("suite_checks") or {}
+    return bool(
+        isinstance(report, Mapping)
+        and report.get("commit") == _commit()
+        and report.get("artifact_fingerprint") == _artifact_fingerprint()
+        and report.get("mode") == "full_runtime"
+        and report.get("provider") == "live"
+        and report.get("passed") is True
+        and all(
+            (suite_checks.get(name) or {}).get("passed") is True
+            for name in ("deterministic", "retrieval", "answers", "production")
+        )
+    )
+
+
 def _verify_hidden_development_freeze(
     path: Path | None,
     *,
@@ -1534,6 +1554,7 @@ def main() -> None:
     parser.add_argument("--parity-report", type=Path)
     parser.add_argument("--conformance-report", type=Path)
     parser.add_argument("--legacy-compatibility-report", type=Path)
+    parser.add_argument("--regression-v3-report", type=Path)
     parser.add_argument("--case-ids-file", type=Path)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
@@ -1624,13 +1645,24 @@ def main() -> None:
         ),
         deterministic=True,
     )
-    legacy_passed: bool | None = None
+    legacy_diagnostic_passed: bool | None = None
     legacy_report: dict[str, Any] | None = None
     if args.legacy_compatibility_report is not None:
         legacy_report = json.loads(
             args.legacy_compatibility_report.read_text(encoding="utf-8")
         )
-        legacy_passed = _legacy_report_is_current_and_passing(legacy_report)
+        legacy_diagnostic_passed = _legacy_report_is_current_and_passing(
+            legacy_report
+        )
+    regression_v3_passed: bool | None = None
+    regression_v3_report: dict[str, Any] | None = None
+    if args.regression_v3_report is not None:
+        regression_v3_report = json.loads(
+            args.regression_v3_report.read_text(encoding="utf-8")
+        )
+        regression_v3_passed = _regression_v3_report_is_current_and_passing(
+            regression_v3_report
+        )
     if hidden_requested and not (
         manifest.get("hidden_frozen")
         and manifest.get("hidden_human_review_complete")
@@ -1651,8 +1683,11 @@ def main() -> None:
                 raise ValueError("Hidden evaluation requires a current passing deterministic parity report.")
             if conformance_passed is not True:
                 raise ValueError("Hidden evaluation requires a current passing deterministic conformance report.")
-            if legacy_passed is not True:
-                raise ValueError("Hidden evaluation requires a current passing legacy compatibility report.")
+            if regression_v3_passed is not True:
+                raise ValueError(
+                    "Hidden evaluation requires a current passing single-cohort "
+                    "regression-v3 runtime report."
+                )
             if not _working_tree_is_clean():
                 raise ValueError("Hidden evaluation requires a clean worktree after code/prompt/config/index freeze.")
         except ValueError as exc:
@@ -1790,8 +1825,8 @@ def main() -> None:
         parity_passed=parity_passed,
         conformance_passed=conformance_passed,
     )
-    if legacy_passed is not None:
-        metrics["legacy_compatibility_passed"] = legacy_passed
+    if regression_v3_passed is not None:
+        metrics["single_cohort_regression_v3_passed"] = regression_v3_passed
     gates = evaluate_release_gates(metrics)
     development_gates = evaluate_development_gates(metrics)
     report = {
@@ -1826,6 +1861,8 @@ def main() -> None:
         "parity_report": parity_report,
         "conformance_report": conformance_report,
         "legacy_compatibility_report": legacy_report,
+        "legacy_compatibility_diagnostic_passed": legacy_diagnostic_passed,
+        "single_cohort_regression_v3_report": regression_v3_report,
         "metrics": metrics,
         "gates": {"passed": gates.passed, "checks": gates.checks, "missing_metrics": gates.missing_metrics},
         "development_gates": {

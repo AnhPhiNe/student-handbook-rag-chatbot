@@ -472,6 +472,15 @@ class RequestAnswerOrchestrator:
             row["provider"] = request_provider_telemetry.get(request_id)
         supported_parts = sum(bool(draft.claims) for draft in drafts)
         contract_passed = all(not draft.error_type for draft in drafts)
+        final_contract_passed = all(
+            not draft.error_type
+            or (
+                draft.request_kind == "structured"
+                and draft.used_fallback
+                and bool(draft.claims)
+            )
+            for draft in drafts
+        )
         generation_failure = provider_failures > 0 or not contract_passed
         if generation_failure and supported_parts == 0:
             status = "api_error"
@@ -492,6 +501,7 @@ class RequestAnswerOrchestrator:
             composer_call_count=composer_call_count,
             provider_failures=provider_failures,
             contract_passed=contract_passed,
+            final_contract_passed=final_contract_passed,
             model_used=model_used,
             usage=merge_usage(llm_results),
             request_debug=request_debug,

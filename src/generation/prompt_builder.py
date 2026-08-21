@@ -45,6 +45,11 @@ RÀNG BUỘC
 - Chỉ dùng FACT_CATALOG và EVIDENCE_CATALOG bên dưới. Không dùng kiến thức ngoài nguồn.
 - Mỗi claim phải là một khẳng định độc lập, ngắn gọn, giữ nguyên điều kiện, số liệu,
   đối tượng, phủ định, ngoại lệ và phạm vi áp dụng trong nguồn.
+- Mọi giới hạn phạm vi trong nguồn (hệ/hình thức đào tạo, đối tượng, cohort, thời kỳ
+  áp dụng) đều là điều kiện bắt buộc của claim. Khi các nguồn được cấp thuộc những
+  phạm vi khác nhau mà câu hỏi đã grounding chưa chọn một phạm vi, phải nêu tách
+  biệt từng phạm vi được nguồn trực tiếp hỗ trợ; không được trình bày một phạm vi
+  như quy tắc chung.
 - Trả tối đa 6 claims cho request này; gộp câu chữ chỉ khi không làm thay đổi phạm vi.
 - Không tự thêm lời khuyên, đơn vị liên hệ, thủ tục, thời hạn hoặc kết luận vắng mặt.
 - citation_ids chỉ được lấy từ danh sách cho phép: {json.dumps(allowed_ids, ensure_ascii=False)}.

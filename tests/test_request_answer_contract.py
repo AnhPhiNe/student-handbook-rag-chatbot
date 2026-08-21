@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 from src.generation.request_answer_contract import (
+    REQUEST_COMPOSER_PROMPT_VERSION,
     RequestContractError,
     build_fact_catalog,
     build_structured_fallback,
@@ -11,6 +12,37 @@ from src.generation.request_answer_contract import (
     render_request_answers,
 )
 from src.generation.request_answer_orchestrator import RequestAnswerOrchestrator
+from src.generation.prompt_builder import build_request_claim_prompt
+
+
+def test_request_composer_prompt_preserves_source_applicability() -> None:
+    prompt = build_request_claim_prompt(
+        request_id="r1",
+        request_kind="rag",
+        query_span="Nội dung đó có ngoại lệ nào?",
+        grounded_request_query="quy định cảnh báo học vụ có ngoại lệ nào",
+        cohort="K51",
+        evidence_catalog=[
+            {
+                "evidence_id": "source-a",
+                "title": "Nguồn A",
+                "content": "Quy định áp dụng cho phạm vi A.",
+            },
+            {
+                "evidence_id": "source-b",
+                "title": "Nguồn B",
+                "content": "Quy định áp dụng cho phạm vi B.",
+            },
+        ],
+        fact_catalog=[],
+    )
+
+    assert REQUEST_COMPOSER_PROMPT_VERSION in prompt
+    assert "phải nêu tách" in prompt
+    assert "không được trình bày một phạm vi" in prompt
+    assert "dev-follow_up-04" not in prompt
+    assert "Điều 12" not in prompt
+    assert "Điều 13" not in prompt
 
 
 def test_parse_json_object_accepts_direct_provider_object() -> None:
@@ -112,6 +144,8 @@ def test_structured_fallback_is_generic_and_source_bound() -> None:
     assert "Điều 11" in answer
     assert draft.claims[0].citation_ids == ("formula-r1",)
     assert debug[0]["used_fallback"] is True
+    assert debug[0]["contract_passed"] is False
+    assert debug[0]["final_contract_passed"] is True
 
 
 def test_shared_structured_catalog_accepts_record_identity_without_pages() -> None:

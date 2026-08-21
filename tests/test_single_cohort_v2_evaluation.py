@@ -28,6 +28,7 @@ from scripts import evaluate_single_cohort_v2 as evaluator
 from scripts.evaluate_single_cohort_v2 import (
     _citation_isolated,
     _finish_hidden_attempt,
+    _final_composition_contract_passed,
     _reuse_answer_report_evaluation,
     _start_hidden_attempt,
     _structured_result_matches,
@@ -35,6 +36,58 @@ from scripts.evaluate_single_cohort_v2 import (
     run_answers,
     run_executor_retrieval,
 )
+
+
+def test_final_composition_contract_accepts_source_bound_structured_fallback() -> None:
+    composition = {
+        "contract_passed": False,
+        "request_results": [
+            {
+                "request_id": "r1",
+                "request_kind": "structured",
+                "claim_count": 1,
+                "contract_passed": False,
+                "used_fallback": True,
+            }
+        ],
+    }
+
+    assert _final_composition_contract_passed(composition)
+
+
+def test_final_composition_contract_rejects_empty_or_rag_fallback() -> None:
+    assert not _final_composition_contract_passed(
+        {
+            "contract_passed": False,
+            "request_results": [
+                {
+                    "request_kind": "structured",
+                    "claim_count": 0,
+                    "contract_passed": False,
+                    "used_fallback": True,
+                }
+            ],
+        }
+    )
+    assert not _final_composition_contract_passed(
+        {
+            "final_contract_passed": True,
+            "request_results": ["malformed"],
+        }
+    )
+    assert not _final_composition_contract_passed(
+        {
+            "contract_passed": False,
+            "request_results": [
+                {
+                    "request_kind": "rag",
+                    "claim_count": 1,
+                    "contract_passed": False,
+                    "used_fallback": True,
+                }
+            ],
+        }
+    )
 
 
 def test_approved_rag_source_expansion_is_additive_and_source_bound() -> None:
@@ -536,6 +589,82 @@ def test_semantic_execution_does_not_ignore_business_score() -> None:
     }
 
     assert not _structured_result_matches(result, request)
+
+
+def test_requested_field_result_ignores_candidate_representation() -> None:
+    request = {
+        "request_id": "r1",
+        "expected_status": "ok",
+        "slots": {"requested_field": "website"},
+        "expected_result": {
+            "lookup_scope": "faculty",
+            "result": [
+                {
+                    "record_id": "legacy-record",
+                    "unit_name": "Khoa Công nghệ Thông tin",
+                    "websites": ["khoacntt.hcmue.edu.vn"],
+                }
+            ],
+        },
+    }
+    result = {
+        "structured_result": {
+            "request_id": "r1",
+            "lookup_scope": "faculty",
+            "result": [
+                {
+                    "record_id": "canonical-record",
+                    "unit_name": "Khoa Công nghệ Thông tin",
+                    "websites": ["khoacntt.hcmue.edu.vn"],
+                },
+                {
+                    "record_id": "lower-ranked-record",
+                    "unit_name": "Khoa Tiếng Nhật",
+                    "websites": ["khoatiengnhat.hcmue.edu.vn"],
+                },
+            ],
+        }
+    }
+
+    assert _structured_result_matches(result, request)
+
+
+def test_requested_field_result_rejects_wrong_business_value() -> None:
+    request = {
+        "request_id": "r1",
+        "expected_status": "ok",
+        "slots": {"requested_field": "unit"},
+        "expected_result": {"result": [{"unit_name": "Trạm Y tế"}]},
+    }
+    result = {
+        "structured_result": {
+            "request_id": "r1",
+            "result": [{"unit_name": "Phòng Đào tạo"}],
+        }
+    }
+
+    assert not _structured_result_matches(result, request)
+
+
+def test_requested_field_source_binding_accepts_approved_alternative() -> None:
+    request = {
+        "request_id": "r1",
+        "slots": {"requested_field": "unit"},
+        "expected_source_records": [
+            {"record_id": "source-a", "document_id": "handbook", "parent_section_id": ""},
+            {"record_id": "source-b", "document_id": "handbook", "parent_section_id": ""},
+        ],
+    }
+    result = {
+        "structured_result": {
+            "request_id": "r1",
+            "source_records": [
+                {"source_record_id": "source-a", "document_id": "handbook", "parent_section_id": ""}
+            ],
+        }
+    }
+
+    assert _structured_source_bound(result, request)
 
 
 def test_metrics_keep_exact_diagnostic_separate_from_semantic_execution() -> None:

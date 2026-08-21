@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from typing import Any, Mapping
 
 
-REQUEST_COMPOSER_PROMPT_VERSION = "single-cohort-request-composer-v2"
+REQUEST_COMPOSER_PROMPT_VERSION = "single-cohort-request-composer-v3"
 
 
 class RequestContractError(ValueError):
@@ -42,6 +42,7 @@ class RequestAnswerBatch:
     composer_call_count: int
     provider_failures: int = 0
     contract_passed: bool = True
+    final_contract_passed: bool = True
     model_used: str | None = None
     usage: dict[str, int] = field(default_factory=dict)
     request_debug: list[dict[str, Any]] = field(default_factory=list)
@@ -275,6 +276,14 @@ def render_request_answers(
                 "request_kind": draft.request_kind,
                 "claim_count": len(draft.claims),
                 "contract_passed": not bool(draft.error_type),
+                "final_contract_passed": bool(
+                    not draft.error_type
+                    or (
+                        draft.request_kind == "structured"
+                        and draft.used_fallback
+                        and draft.claims
+                    )
+                ),
                 "used_fallback": draft.used_fallback,
                 "abstention_reason": abstention_reason,
             }

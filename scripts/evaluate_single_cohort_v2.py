@@ -57,6 +57,9 @@ from src.retrieval.core.structured_routing import (  # noqa: E402
     reject_invalid_plan,
     validate_router_decision,
 )
+from src.retrieval.core.tool_registry import (  # noqa: E402
+    REQUESTED_FIELD_RESULT_KEYS,
+)
 
 
 PLANNER_MODEL = "qwen/qwen3.6-27b"
@@ -652,6 +655,9 @@ def _structured_source_bound(
         _source_identity(record)
         for record in request.get("expected_source_records") or []
     }
+    requested_field = str((request.get("slots") or {}).get("requested_field") or "")
+    if requested_field:
+        return bool(expected and expected.intersection(actual))
     return bool(expected and expected <= actual)
 
 
@@ -753,6 +759,22 @@ def _structured_result_matches(
     actual = _structured_request_result(result, request)
     if actual is None:
         return False
+    requested_field = str((request.get("slots") or {}).get("requested_field") or "")
+    record_field = REQUESTED_FIELD_RESULT_KEYS.get(requested_field)
+    expected_records = expected.get("result")
+    actual_records = actual.get("result")
+    if (
+        record_field
+        and isinstance(expected_records, list)
+        and expected_records
+        and isinstance(actual_records, list)
+        and actual_records
+    ):
+        expected_value = expected_records[0].get(record_field)
+        actual_value = actual_records[0].get(record_field)
+        return expected_value is not None and _semantic_subset(
+            expected_value, actual_value
+        )
     # ``input_value`` is an adapter echo of the execution query, not the
     # business result.  A validated standalone/retrieval query may expand the
     # user's wording while resolving to the exact same record.  Comparing this
@@ -811,6 +833,33 @@ def _citation_bound(citations: Iterable[Mapping[str, Any]], request: Mapping[str
         if expected_sources and _source_identity(citation) in expected_sources:
             return True
     return False
+
+
+def _final_composition_contract_passed(
+    composition: Mapping[str, Any],
+) -> bool:
+    """Evaluate the rendered answer, while retaining composer degradation telemetry."""
+
+    explicit = composition.get("final_contract_passed")
+    request_rows = composition.get("request_results")
+    if not isinstance(request_rows, list) or not request_rows:
+        return bool(
+            explicit
+            if isinstance(explicit, bool)
+            else composition.get("contract_passed", False)
+        )
+    if not all(isinstance(row, Mapping) for row in request_rows):
+        return False
+    computed = all(
+        bool(row.get("contract_passed"))
+        or bool(
+            row.get("request_kind") == "structured"
+            and row.get("used_fallback")
+            and int(row.get("claim_count") or 0) > 0
+        )
+        for row in request_rows
+    )
+    return bool(explicit and computed) if isinstance(explicit, bool) else computed
 
 
 def run_executor_retrieval(
@@ -1053,7 +1102,7 @@ def run_answers(
             ]
             composition_contract_bound = bool(
                 not successful_requests
-                or composition.get("contract_passed", False)
+                or _final_composition_contract_passed(composition)
             )
             citations_bound = all(
                 _citation_bound(citations, request)

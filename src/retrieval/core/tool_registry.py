@@ -24,6 +24,16 @@ from .structured_lookup import structured_lookup_from_slots
 from .study_duration_lookup import study_duration_lookup
 
 
+REQUESTED_FIELD_RESULT_KEYS = {
+    "unit": "unit_name",
+    "phone": "phones",
+    "email": "emails",
+    "office": "office",
+    "website": "websites",
+    "services": "responsibilities",
+}
+
+
 @dataclass(frozen=True)
 class ToolResources:
     scoring_tables: list[dict[str, Any]]
@@ -127,10 +137,7 @@ def _bind_regulation_source(
 def _requested_field_present(result: dict[str, Any] | None, field: str) -> bool:
     if result is None or field in {"", "all"}:
         return result is not None
-    record_field = {
-        "unit": "unit_name", "phone": "phones", "email": "emails",
-        "office": "office", "website": "websites", "services": "responsibilities",
-    }.get(field)
+    record_field = REQUESTED_FIELD_RESULT_KEYS.get(field)
     records = result.get("result") if result else None
     return bool(record_field and records and all(record.get(record_field) for record in records))
 

@@ -2691,6 +2691,7 @@ class AnswerPipeline:
             "composer_prompt_version": REQUEST_COMPOSER_PROMPT_VERSION,
             "composer_call_count": batch.composer_call_count,
             "contract_passed": batch.contract_passed,
+            "final_contract_passed": batch.final_contract_passed,
             "provider_failures": batch.provider_failures,
             "usage": batch.usage,
             "request_results": batch.request_debug,
@@ -2703,6 +2704,9 @@ class AnswerPipeline:
             )
             telemetry["composer_call_count"] = batch.composer_call_count
             telemetry["composition_contract_passed"] = batch.contract_passed
+            telemetry["final_answer_contract_passed"] = (
+                batch.final_contract_passed
+            )
 
     @staticmethod
     def _supporting_citations(

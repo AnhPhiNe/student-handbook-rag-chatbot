@@ -6,6 +6,7 @@ import argparse
 import json
 import subprocess
 import sys
+import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -59,6 +60,7 @@ def apply_reviews(
     unresolved: list[str] = []
     applied = 0
     now = datetime.now(UTC).isoformat()
+    updated_suites: dict[str, list[dict[str, Any]]] = {}
     for suite, filename in SUITE_FILES.items():
         path = bundle_dir / filename
         cases = load_json(path)
@@ -108,7 +110,7 @@ def apply_reviews(
                 "review_notes": row.get("review_notes"),
             }
             applied += 1
-        write_json(path, cases)
+        updated_suites[suite] = cases
 
     if freeze and unresolved:
         raise ValueError(
@@ -117,10 +119,6 @@ def apply_reviews(
         )
     manifest_path = bundle_dir / "manifest.json"
     manifest = load_json(manifest_path)
-    manifest["dataset_hashes"] = {
-        suite: file_sha256(bundle_dir / filename)
-        for suite, filename in SUITE_FILES.items()
-    }
     manifest["review_application"] = {
         "applied_at": now,
         "applied_commit": _commit(root),
@@ -133,11 +131,29 @@ def apply_reviews(
         manifest["dataset_version"] = FROZEN_DATASET_VERSION
         manifest["frozen_at"] = now
         manifest["frozen_commit"] = _commit(root)
-    write_json(manifest_path, manifest)
+    bundle_dir.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(
+        prefix="single-cohort-regression-v3-apply-",
+        dir=bundle_dir.parent,
+    ) as temp_value:
+        temp_dir = Path(temp_value)
+        for suite, filename in SUITE_FILES.items():
+            write_json(temp_dir / filename, updated_suites[suite])
+        manifest["dataset_hashes"] = {
+            suite: file_sha256(temp_dir / filename)
+            for suite, filename in SUITE_FILES.items()
+        }
+        write_json(temp_dir / "manifest.json", manifest)
+        validation = validate_bundle(temp_dir, root=root, require_frozen=freeze)
+        if not validation.valid:
+            raise ValueError(
+                "Applied bundle is invalid:\n" + "\n".join(validation.errors)
+            )
 
-    validation = validate_bundle(bundle_dir, root=root, require_frozen=freeze)
-    if not validation.valid:
-        raise ValueError("Applied bundle is invalid:\n" + "\n".join(validation.errors))
+    # The real bundle is only updated after the complete candidate validates.
+    for suite, filename in SUITE_FILES.items():
+        write_json(bundle_dir / filename, updated_suites[suite])
+    write_json(manifest_path, manifest)
     return {
         "applied": applied,
         "unresolved": len(unresolved),

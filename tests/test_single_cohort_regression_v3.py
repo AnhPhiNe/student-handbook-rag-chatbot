@@ -151,6 +151,8 @@ def test_approval_without_structured_source_audit_cannot_freeze(
             freeze=True,
             root=ROOT,
         )
+    unchanged = load_json(target / SUITE_FILES["deterministic"])
+    assert all(case["annotation"]["state"] == "review_required" for case in unchanged)
 
 
 def test_disabled_formula_is_proposed_as_no_match(review_bundle: Path) -> None:

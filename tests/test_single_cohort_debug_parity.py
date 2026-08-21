@@ -69,11 +69,8 @@ def test_sync_stream_and_cached_debug_metadata_have_contract_parity() -> None:
         "partial_status": "partial",
         "request_results": retrieval["request_results"],
         "request_execution_contexts": retrieval["request_execution_contexts"],
-        "answer_verification": None,
-        "verification_executed": False,
-        "verification_status": None,
+        "answer_composition": None,
         "composer_call_count": 0,
-        "verifier_call_count": 0,
     }
     assert sync["debug"] == expected_debug
     assert cached["debug"] == expected_debug

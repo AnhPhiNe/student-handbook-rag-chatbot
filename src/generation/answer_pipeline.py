@@ -44,10 +44,9 @@ from .answer_guardrails import (
     is_low_confidence,
     is_out_of_domain_query,
 )
-from .claim_verification import (
-    CLAIM_VERIFIER_PROMPT_VERSION,
+from .request_answer_contract import (
     REQUEST_COMPOSER_PROMPT_VERSION,
-    VerifiedAnswerBatch,
+    RequestAnswerBatch,
 )
 from .citation_formatter import parse_source_pages, select_relevant_citations
 from .context_allocation import ContextAllocationConfig, build_context_for_prompt
@@ -64,7 +63,7 @@ from .response_cache import get_response_cache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v40-single-cohort-request-isolated-verified"
+PIPELINE_VERSION = "v41-single-cohort-request-scoped-composer"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -333,13 +332,11 @@ class AnswerPipeline:
                 "model": llm_config.get("model_name"),
                 "prompt_version": ANSWER_PROMPT_VERSION,
                 "request_composer_prompt_version": REQUEST_COMPOSER_PROMPT_VERSION,
-                "claim_verifier_prompt_version": CLAIM_VERIFIER_PROMPT_VERSION,
                 "temperature": llm_config.get("temperature"),
                 "max_output_tokens": llm_config.get("max_output_tokens"),
                 "citation_max_sources": citations_config.get("max_sources"),
                 "context": self.context_allocation.cache_fingerprint(),
                 "request_composition": config.get("request_composition") or {},
-                "claim_verifier": config.get("claim_verifier") or {},
             },
         }
         self._response_cache_artifact_fingerprint = fingerprint
@@ -415,9 +412,11 @@ class AnswerPipeline:
                     end_time=datetime.now(timezone.utc).isoformat(),
                 )
             if telemetry is not None:
-                telemetry["routing_retrieval_parent_lookup_ms"] = (
+                retrieval_ms = (
                     time.monotonic() - retrieval_started
                 ) * 1000
+                telemetry["retrieval_ms"] = retrieval_ms
+                telemetry["routing_retrieval_parent_lookup_ms"] = retrieval_ms
             effective_query = str(
                 retrieval_result.get("effective_query") or query
             ).strip()
@@ -589,9 +588,13 @@ class AnswerPipeline:
         )
         cached = self.response_cache.get(cache_key)
         if cached:
-            cached_verification = cached.get("answer_verification")
-            if isinstance(cached_verification, Mapping):
-                retrieval_result["answer_verification"] = dict(cached_verification)
+            if telemetry is not None:
+                telemetry["safe_ttft_ms"] = (
+                    time.monotonic() - telemetry["started_at_monotonic"]
+                ) * 1000
+            cached_composition = cached.get("answer_composition")
+            if isinstance(cached_composition, Mapping):
+                retrieval_result["answer_composition"] = dict(cached_composition)
             cached_citations = cached.get("citations")
             cached_citations = (
                 cached_citations
@@ -617,23 +620,25 @@ class AnswerPipeline:
             cohort=cohort,
         )
         if atomic_batch is not None:
-            self._attach_answer_verification(retrieval_result, atomic_batch)
-            verified_citations = self._supporting_citations(
-                selected_citations, atomic_batch
+            self._attach_answer_composition(retrieval_result, atomic_batch)
+            supporting_citations = self._supporting_citations(
+                list(retrieval_result.get("citations") or []), atomic_batch
             )
             final_answer = format_final_response(
                 atomic_batch.answer,
-                primary_citations=verified_citations,
+                primary_citations=supporting_citations,
             )
-            llm_called = bool(
-                atomic_batch.composer_call_count or atomic_batch.verifier_call_count
-            )
+            if telemetry is not None:
+                telemetry["safe_ttft_ms"] = (
+                    time.monotonic() - telemetry["started_at_monotonic"]
+                ) * 1000
+            llm_called = bool(atomic_batch.composer_call_count)
             output = self._build_output(
                 query=query,
                 retrieval_result=retrieval_result,
                 final_answer=final_answer,
                 context_used=context_used,
-                selected_citations=verified_citations,
+                selected_citations=supporting_citations,
                 status=atomic_batch.status,
                 error_type=atomic_batch.error_type,
                 error_message=atomic_batch.error_message,
@@ -642,16 +647,10 @@ class AnswerPipeline:
                 model_used=atomic_batch.model_used,
                 tracker=tracker,
             )
-            has_rag = any(
-                draft.request_kind == "rag" for draft in atomic_batch.drafts
-            )
             cache_safe = (
                 atomic_batch.status == "answered"
                 and atomic_batch.provider_failures == 0
-                and (
-                    not has_rag
-                    or atomic_batch.verification_status == "passed"
-                )
+                and atomic_batch.contract_passed
             )
             if cache_safe:
                 self.response_cache.set(
@@ -661,9 +660,9 @@ class AnswerPipeline:
                         "status": atomic_batch.status,
                         "error_type": atomic_batch.error_type,
                         "error_message": atomic_batch.error_message,
-                        "citations": verified_citations,
-                        "answer_verification": retrieval_result.get(
-                            "answer_verification"
+                        "citations": supporting_citations,
+                        "answer_composition": retrieval_result.get(
+                            "answer_composition"
                         ),
                     },
                 )
@@ -844,23 +843,10 @@ class AnswerPipeline:
                 "partial_status": self._partial_status(res),
                 "request_results": res.get("request_results") or [],
                 "request_execution_contexts": res.get("request_execution_contexts") or [],
-                "answer_verification": res.get("answer_verification"),
-                "verification_executed": bool(
-                    (res.get("answer_verification") or {}).get(
-                        "verification_executed"
-                    )
-                ),
-                "verification_status": (res.get("answer_verification") or {}).get(
-                    "verification_status"
-                ),
+                "answer_composition": res.get("answer_composition"),
                 "composer_call_count": int(
-                    (res.get("answer_verification") or {}).get(
+                    (res.get("answer_composition") or {}).get(
                         "composer_call_count", 0
-                    )
-                ),
-                "verifier_call_count": int(
-                    (res.get("answer_verification") or {}).get(
-                        "verifier_call_count", 0
                     )
                 ),
             },
@@ -905,11 +891,16 @@ class AnswerPipeline:
         yield {"type": "progress", "message": "Đang tìm kiếm thông tin trong Sổ tay..."}
         try:
             # Retrieval chạy đồng bộ trước, sau đó mới stream token LLM về frontend.
+            retrieval_started = time.monotonic()
             retrieval_result = self._run_retrieval(
                 query,
                 cohort=cohort,
                 chat_history=chat_history,
             )
+            if telemetry is not None:
+                retrieval_ms = (time.monotonic() - retrieval_started) * 1000
+                telemetry["retrieval_ms"] = retrieval_ms
+                telemetry["routing_retrieval_parent_lookup_ms"] = retrieval_ms
 
             if retrieval_result.get("router_usage"):
                 tracker.record(
@@ -1072,10 +1063,10 @@ class AnswerPipeline:
             )
             cached = cache.get(cache_key)
             if cached:
-                cached_verification = cached.get("answer_verification")
-                if isinstance(cached_verification, Mapping):
-                    retrieval_result["answer_verification"] = dict(
-                        cached_verification
+                cached_composition = cached.get("answer_composition")
+                if isinstance(cached_composition, Mapping):
+                    retrieval_result["answer_composition"] = dict(
+                        cached_composition
                     )
                 cached_answer = str(cached.get("answer") or "")
                 cached_citations = cached.get("citations")
@@ -1117,40 +1108,27 @@ class AnswerPipeline:
             cohort=cohort,
         )
         if atomic_batch is not None:
-            self._attach_answer_verification(retrieval_result, atomic_batch)
-            verified_citations = self._supporting_citations(
-                selected_citations, atomic_batch
+            self._attach_answer_composition(retrieval_result, atomic_batch)
+            supporting_citations = self._supporting_citations(
+                list(retrieval_result.get("citations") or []), atomic_batch
             )
             final_answer = format_final_response(
                 atomic_batch.answer,
-                primary_citations=verified_citations,
+                primary_citations=supporting_citations,
             )
-            llm_called = bool(
-                atomic_batch.composer_call_count or atomic_batch.verifier_call_count
-            )
-            if atomic_batch.verification_executed:
-                yield {
-                    "type": "progress",
-                    "message": "Đang kiểm chứng câu trả lời với nguồn...",
-                }
-            # No unverified draft is emitted. This replacement is the first
-            # user-visible answer text for atomic RAG/mixed execution.
+            llm_called = bool(atomic_batch.composer_call_count)
+            # Request drafts remain buffered; the first answer text is the
+            # contract-validated deterministic merge.
             if telemetry is not None:
                 telemetry["safe_ttft_ms"] = (
                     time.monotonic() - telemetry["started_at_monotonic"]
                 ) * 1000
             yield {"type": "replace", "text": final_answer}
 
-            has_rag = any(
-                draft.request_kind == "rag" for draft in atomic_batch.drafts
-            )
             cache_safe = (
                 atomic_batch.status == "answered"
                 and atomic_batch.provider_failures == 0
-                and (
-                    not has_rag
-                    or atomic_batch.verification_status == "passed"
-                )
+                and atomic_batch.contract_passed
             )
             if cache is not None and cache_key is not None and cache_safe:
                 cache.set(
@@ -1160,9 +1138,9 @@ class AnswerPipeline:
                         "status": atomic_batch.status,
                         "error_type": atomic_batch.error_type,
                         "error_message": atomic_batch.error_message,
-                        "citations": verified_citations,
-                        "answer_verification": retrieval_result.get(
-                            "answer_verification"
+                        "citations": supporting_citations,
+                        "answer_composition": retrieval_result.get(
+                            "answer_composition"
                         ),
                     },
                 )
@@ -1171,7 +1149,7 @@ class AnswerPipeline:
                 status=atomic_batch.status,
                 effective_query=effective_query,
                 fallback_reason=atomic_batch.error_type,
-                citations_used=verified_citations,
+                citations_used=supporting_citations,
                 related_references=related_references,
                 llm_called=llm_called,
                 used_cache=False,
@@ -2695,7 +2673,7 @@ class AnswerPipeline:
         retrieval_result: dict[str, Any],
         selected_citations: list[dict[str, Any]],
         cohort: str | None,
-    ) -> VerifiedAnswerBatch | None:
+    ) -> RequestAnswerBatch | None:
         orchestrator = RequestAnswerOrchestrator(
             config=getattr(self, "config", {}) or {},
             client_provider=self._get_llm_client,
@@ -2706,16 +2684,13 @@ class AnswerPipeline:
             cohort=cohort,
         )
     @staticmethod
-    def _attach_answer_verification(
-        retrieval_result: dict[str, Any], batch: VerifiedAnswerBatch
+    def _attach_answer_composition(
+        retrieval_result: dict[str, Any], batch: RequestAnswerBatch
     ) -> None:
-        retrieval_result["answer_verification"] = {
+        retrieval_result["answer_composition"] = {
             "composer_prompt_version": REQUEST_COMPOSER_PROMPT_VERSION,
-            "verifier_prompt_version": CLAIM_VERIFIER_PROMPT_VERSION,
-            "verification_executed": batch.verification_executed,
-            "verification_status": batch.verification_status,
             "composer_call_count": batch.composer_call_count,
-            "verifier_call_count": batch.verifier_call_count,
+            "contract_passed": batch.contract_passed,
             "provider_failures": batch.provider_failures,
             "usage": batch.usage,
             "request_results": batch.request_debug,
@@ -2723,15 +2698,16 @@ class AnswerPipeline:
         telemetry = _evaluation_telemetry.get()
         if telemetry is not None:
             telemetry["composer_ms"] = batch.composition_ms
-            telemetry["verifier_ms"] = batch.verification_ms
+            telemetry["request_composition_ms"] = dict(
+                batch.request_composition_ms
+            )
             telemetry["composer_call_count"] = batch.composer_call_count
-            telemetry["verifier_call_count"] = batch.verifier_call_count
-            telemetry["verification_status"] = batch.verification_status
+            telemetry["composition_contract_passed"] = batch.contract_passed
 
     @staticmethod
     def _supporting_citations(
         citations: list[dict[str, Any]],
-        batch: VerifiedAnswerBatch,
+        batch: RequestAnswerBatch,
     ) -> list[dict[str, Any]]:
         allowed = set(batch.supporting_evidence_ids)
         if not allowed:
@@ -2859,25 +2835,10 @@ class AnswerPipeline:
                     "request_execution_contexts"
                 )
                 or [],
-                "answer_verification": retrieval_result.get(
-                    "answer_verification"
-                ),
-                "verification_executed": bool(
-                    (retrieval_result.get("answer_verification") or {}).get(
-                        "verification_executed"
-                    )
-                ),
-                "verification_status": (
-                    retrieval_result.get("answer_verification") or {}
-                ).get("verification_status"),
+                "answer_composition": retrieval_result.get("answer_composition"),
                 "composer_call_count": int(
-                    (retrieval_result.get("answer_verification") or {}).get(
+                    (retrieval_result.get("answer_composition") or {}).get(
                         "composer_call_count", 0
-                    )
-                ),
-                "verifier_call_count": int(
-                    (retrieval_result.get("answer_verification") or {}).get(
-                        "verifier_call_count", 0
                     )
                 ),
             },

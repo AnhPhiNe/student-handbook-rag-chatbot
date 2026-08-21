@@ -8,10 +8,8 @@ from .amendment_precedence import (
     format_applicable_amendments,
 )
 from .context_allocation import ContextAllocationConfig, build_context_for_prompt
-from .claim_verification import (
-    CLAIM_VERIFIER_PROMPT_VERSION,
+from .request_answer_contract import (
     REQUEST_COMPOSER_PROMPT_VERSION,
-    RequestAnswerDraft,
 )
 
 
@@ -22,106 +20,58 @@ ANSWER_PROMPT_VERSION = "single-cohort-answer-v3-request-focused"
 def build_request_claim_prompt(
     *,
     request_id: str,
+    request_kind: str,
     query_span: str,
+    grounded_request_query: str,
     cohort: str | None,
     evidence_catalog: list[dict[str, Any]],
+    fact_catalog: list[dict[str, Any]],
 ) -> str:
     """Build a request-isolated composer prompt with a typed claim contract."""
 
     evidence_json = _to_pretty_json(evidence_catalog)
+    facts_json = _to_pretty_json(fact_catalog)
     allowed_ids = [str(item.get("evidence_id")) for item in evidence_catalog]
+    allowed_fact_refs = [str(item.get("fact_ref")) for item in fact_catalog]
     return f"""Bạn là bộ soạn câu trả lời cho đúng một yêu cầu tra cứu Sổ tay sinh viên.
 Phiên bản prompt: {REQUEST_COMPOSER_PROMPT_VERSION}
 
 RÀNG BUỘC
 - Chỉ xử lý request_id={request_id}; không suy đoán về yêu cầu khác.
-- Câu hỏi con: {query_span}
+- Loại request đã kiểm chứng: {request_kind}
+- Câu chữ gốc của yêu cầu con: {query_span}
+- Câu hỏi con đã được grounding bằng code: {grounded_request_query}
 - Cohort đã được kiểm chứng: {cohort or "không xác định"}
-- Chỉ dùng EVIDENCE_CATALOG bên dưới. Không dùng kiến thức ngoài nguồn.
+- Chỉ dùng FACT_CATALOG và EVIDENCE_CATALOG bên dưới. Không dùng kiến thức ngoài nguồn.
 - Mỗi claim phải là một khẳng định độc lập, ngắn gọn, giữ nguyên điều kiện, số liệu,
   đối tượng, phủ định, ngoại lệ và phạm vi áp dụng trong nguồn.
 - Trả tối đa 6 claims cho request này; gộp câu chữ chỉ khi không làm thay đổi phạm vi.
 - Không tự thêm lời khuyên, đơn vị liên hệ, thủ tục, thời hạn hoặc kết luận vắng mặt.
 - citation_ids chỉ được lấy từ danh sách cho phép: {json.dumps(allowed_ids, ensure_ascii=False)}.
-- Nếu evidence không trực tiếp trả lời câu hỏi con, trả claims=[] và nêu abstention_reason.
+- Với structured, mỗi claim phải có fact_refs lấy từ: {json.dumps(allowed_fact_refs, ensure_ascii=False)}.
+- Với RAG, fact_refs bắt buộc là []; mỗi claim phải được evidence hỗ trợ trực tiếp.
+- Ưu tiên câu hỏi đã grounding khi câu chữ gốc là follow-up phụ thuộc lịch sử.
+- Nếu dữ liệu không trực tiếp trả lời câu hỏi con đã grounding, trả claims=[] và nêu abstention_reason.
 - Không xuất Markdown fence, giải thích hoặc văn bản ngoài JSON.
 
 SCHEMA ĐẦU RA
 {{
   "request_id": {json.dumps(request_id, ensure_ascii=False)},
   "claims": [
-    {{"text": "khẳng định được nguồn hỗ trợ", "citation_ids": ["evidence_id"]}}
+    {{
+      "text": "khẳng định được nguồn hỗ trợ",
+      "citation_ids": ["evidence_id"],
+      "fact_refs": ["result.field"]
+    }}
   ],
   "abstention_reason": null
 }}
 
+FACT_CATALOG
+{facts_json or "(không áp dụng cho RAG)"}
+
 EVIDENCE_CATALOG
 {evidence_json}
-"""
-
-
-def build_claim_verifier_prompt(
-    *,
-    drafts: list[RequestAnswerDraft],
-    evidence_by_request: dict[str, list[dict[str, Any]]],
-) -> str:
-    """Build one batch prompt that may judge but never rewrite proposed claims."""
-
-    draft_payload = [
-        {
-            "request_id": draft.request_id,
-            "query_span": draft.query_span,
-            "claims": [
-                {
-                    "claim_id": claim.claim_id,
-                    "text": claim.text,
-                    "citation_ids": list(claim.citation_ids),
-                }
-                for claim in draft.claims
-            ],
-        }
-        for draft in drafts
-        if draft.request_kind == "rag" and draft.claims
-    ]
-    evidence_payload = [
-        {
-            "request_id": request_id,
-            "evidence": evidence,
-        }
-        for request_id, evidence in evidence_by_request.items()
-    ]
-    return f"""Bạn là bộ kiểm chứng claim dựa trên nguồn của Sổ tay sinh viên.
-Phiên bản prompt: {CLAIM_VERIFIER_PROMPT_VERSION}
-
-NHIỆM VỤ DUY NHẤT
-- Kiểm tra từng claim có được evidence thuộc cùng request_id hỗ trợ trực tiếp hay không.
-- `supported`: evidence trực tiếp hỗ trợ toàn bộ claim, gồm đối tượng, điều kiện, số liệu,
-  phủ định và phạm vi.
-- `unsupported`: evidence mâu thuẫn hoặc claim thêm nội dung không có trong nguồn.
-- `insufficient`: evidence có liên quan nhưng chưa đủ để xác nhận toàn bộ claim.
-- supporting_evidence_ids phải là tập con của citation_ids trong chính claim đó.
-- Không dùng evidence của request khác, không tạo claim mới và không viết lại claim.
-- Phải trả đúng một verdict cho mọi claim; không được bỏ sót hoặc thêm ID.
-- Không xuất Markdown fence, giải thích hoặc văn bản ngoài JSON.
-
-SCHEMA ĐẦU RA
-{{
-  "results": [
-    {{
-      "request_id": "r1",
-      "claim_id": "r1.c1",
-      "verdict": "supported|unsupported|insufficient",
-      "supporting_evidence_ids": ["evidence_id"],
-      "reason_code": "direct_support|scope_mismatch|missing_support|contradiction"
-    }}
-  ]
-}}
-
-CLAIMS
-{_to_pretty_json(draft_payload)}
-
-REQUEST_SCOPED_EVIDENCE
-{_to_pretty_json(evidence_payload)}
 """
 
 

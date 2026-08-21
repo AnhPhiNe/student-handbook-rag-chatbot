@@ -1019,9 +1019,14 @@ def run_answers(
             )
             model_used = result.get("model_used")
             wrong_model = bool(result.get("llm_called") and model_used != ANSWER_MODEL)
+            debug = result.get("debug") or {}
+            composition = debug.get("answer_composition") or {}
+            composition_provider_failure = bool(
+                int(composition.get("provider_failures") or 0)
+            )
             expected = case["expected"]
             expected_requests = expected.get("atomic_requests") or []
-            request_results = (result.get("debug") or {}).get("request_results") or []
+            request_results = debug.get("request_results") or []
             actual_statuses = {
                 item.get("request_id"): item.get("status")
                 for item in request_results
@@ -1037,6 +1042,10 @@ def run_answers(
                 for request in expected_requests
                 if request.get("expected_status") == "ok"
             ]
+            composition_contract_bound = bool(
+                not successful_requests
+                or composition.get("contract_passed", False)
+            )
             citations_bound = all(
                 _citation_bound(citations, request)
                 for request in successful_requests
@@ -1068,7 +1077,9 @@ def run_answers(
                     "router_decision": result.get("router_decision") or {},
                     "effective_query": result.get("effective_query"),
                     "request_results": request_results,
-                    "partial_status": (result.get("debug") or {}).get("partial_status"),
+                    "partial_status": debug.get("partial_status"),
+                    "answer_composition": composition,
+                    "evaluation_telemetry": result.get("evaluation_telemetry") or {},
                     "exact_plan_bound": exact_plan_bound,
                     "semantic_plan_bound": plan_bound,
                     "execution_plan_bound": execution_plan_bound,
@@ -1077,9 +1088,24 @@ def run_answers(
                         and statuses_bound
                         and citations_bound
                         and _citation_isolated(result, request_ids)
+                        and composition_contract_bound
                     ),
-                    "provider_failure": wrong_model,
-                    "failure_type": "wrong_answer_model" if wrong_model else "pass",
+                    "provider_failure": bool(
+                        wrong_model or composition_provider_failure
+                    ),
+                    "failure_type": (
+                        "wrong_answer_model"
+                        if wrong_model
+                        else (
+                            "answer_provider"
+                            if composition_provider_failure
+                            else (
+                                "answer_contract"
+                                if not composition_contract_bound
+                                else "pass"
+                            )
+                        )
+                    ),
                 }
             )
         except Exception as exc:
@@ -1187,9 +1213,8 @@ def _metrics(
                 for name in ("cohort_resolution", "failure_isolation")
                 if name in per_category
             ]
-            metrics[f"{suite}_safety_category_floor"] = min(
-                safety_values, default=0.0
-            )
+            if safety_values:
+                metrics[f"{suite}_safety_category_floor"] = min(safety_values)
     if judgments:
         valid = [row for row in judgments if not row.get("provider_failure")]
         metrics.update(
@@ -1420,11 +1445,6 @@ def main() -> None:
     parser.add_argument("--conformance-report", type=Path)
     parser.add_argument("--legacy-compatibility-report", type=Path)
     parser.add_argument("--case-ids-file", type=Path)
-    parser.add_argument(
-        "--claim-verifier",
-        choices=("config", "on", "off"),
-        default="config",
-    )
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     try:
@@ -1590,10 +1610,6 @@ def main() -> None:
         pipeline = AnswerPipeline()
         if args.run_answers != "none":
             pipeline.response_cache.enabled = False
-        if args.claim_verifier != "config":
-            pipeline.config.setdefault("claim_verifier", {})["enabled"] = (
-                args.claim_verifier == "on"
-            )
     if pipeline and args.run_executor != "none":
         passed_ids = {
             row["id"]
@@ -1698,7 +1714,7 @@ def main() -> None:
             "filtered": selected_case_ids is not None,
             "case_ids": sorted(selected_case_ids or []),
             "case_count": len(selected_case_ids or []),
-            "claim_verifier_mode": args.claim_verifier,
+            "answer_architecture": "request_scoped_composer_no_verifier",
         },
         "judge_prompt_version": JUDGE_PROMPT_VERSION,
         "prompt_version": ROUTER_PROMPT_VERSION,

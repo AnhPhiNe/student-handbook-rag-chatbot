@@ -49,16 +49,10 @@ context_allocation:
   min_chars_per_doc: 0
   max_chars_per_doc: 5000
   sentence_boundary: true
-  cache_version: context_alloc_v16_request_isolated_verified_gemini
+  cache_version: context_alloc_v17_request_scoped_composer
 
 request_composition:
   max_concurrency: 3
-
-claim_verifier:
-  enabled: true
-  model_name: gemini-3.1-flash-lite
-  temperature: 0.0
-  max_output_tokens: 2048
   max_chars_per_evidence: 5000
 
 cache:

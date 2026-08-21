@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from typing import Any
 
 from src.generation.answer_pipeline import AnswerPipeline
@@ -14,7 +15,21 @@ class _FormulaClient:
         self.sync_calls += 1
         return {
             "ok": True,
-            "text": "Điểm trung bình chung được tính theo công thức đã dẫn nguồn.",
+            "text": json.dumps(
+                {
+                    "request_id": "r1",
+                    "claims": [
+                        {
+                            "text": "Điểm trung bình chung được tính theo công thức A = Σ(ai × ni) / Σ(ni).",
+                            "citation_ids": [
+                                "structured:formula:so_tay_sinh_vien_khoa_51:K51_QuyCheDaoTao_Chuong3_Dieu11"
+                            ],
+                            "fact_refs": ["result.formula_text"],
+                        }
+                    ],
+                    "abstention_reason": None,
+                }
+            ),
             "model_used": "deterministic-formula",
             "usage": {},
             "attempts": 1,
@@ -105,6 +120,7 @@ def _pipeline(client: _FormulaClient) -> AnswerPipeline:
     pipeline.config = {
         "citations": {"max_sources": 2},
         "guardrails": {"skip_llm_on_low_confidence": True},
+        "request_composition": {"max_concurrency": 3},
     }
     pipeline.llm_config = {"model_name": "deterministic-formula"}
     pipeline.max_context_chars = 2000
@@ -161,14 +177,13 @@ def test_source_bound_formula_bypasses_rag_low_confidence_in_sync_and_cache(
     )
 
     assert first["status"] == "answered"
-    assert first["llm_called"] is False
+    assert first["llm_called"] is True
     assert first["used_cache"] is False
     assert cached["status"] == "answered"
     assert cached["used_cache"] is True
     assert cached["answer"] == first["answer"]
-    assert client.sync_calls == 0
-    assert first["debug"]["verification_executed"] is False
-    assert first["debug"]["verification_status"] == "not_applicable"
+    assert client.sync_calls == 1
+    assert first["debug"]["answer_composition"]["contract_passed"] is True
 
 
 def test_source_bound_formula_bypasses_rag_low_confidence_in_stream_and_cache(
@@ -198,10 +213,11 @@ def test_source_bound_formula_bypasses_rag_low_confidence_in_stream_and_cache(
         event for event in cached_events if event.get("type") == "metadata"
     ][-1]
     assert first_metadata["status"] == "answered"
-    assert first_metadata["llm_called"] is False
+    assert first_metadata["llm_called"] is True
     assert first_metadata["used_cache"] is False
     assert cached_metadata["status"] == "answered"
     assert cached_metadata["used_cache"] is True
+    assert client.sync_calls == 1
     assert client.stream_calls == 0
     assert not any(
         event.get("status") == "low_confidence" for event in first_events

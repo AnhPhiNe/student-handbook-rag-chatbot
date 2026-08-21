@@ -395,6 +395,32 @@ def test_correction_is_ignored_when_normalization_falls_back_to_raw() -> None:
     )
 
 
+def test_versioned_program_alias_grounds_canonical_study_duration_slot() -> None:
+    query = "K50 chương trình đại học cấp bằng thứ nhất học tối đa bao lâu?"
+    decision = _normalize(
+        query,
+        [
+            _request(
+                request_kind="structured",
+                lookup_type="study_duration",
+                intent="direct_value",
+                query_span="chương trình đại học cấp bằng thứ nhất học tối đa bao lâu",
+                slots={
+                    "training_mode": "chinh_quy",
+                    "program_type": "first_degree",
+                },
+                slot_spans={
+                    "training_mode": "chương trình đại học",
+                    "program_type": "cấp bằng thứ nhất",
+                },
+                cohort_refs=["K50"],
+            )
+        ],
+    )
+
+    assert _errors(decision, query) == []
+
+
 def test_unused_correction_cannot_ground_slot_when_normalized_query_is_unchanged() -> None:
     query = "TOEFL 60 đổi bậc"
     decision = _normalize(

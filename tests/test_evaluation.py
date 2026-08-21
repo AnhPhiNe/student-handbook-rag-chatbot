@@ -26,6 +26,8 @@ from src.evaluation.reporting import write_report_bundle
 from src.evaluation.suites import (
     _answer_checks,
     _expected_response_status,
+    _citation_cohort_matches,
+    _is_structured_path,
     _response_status_matches_expected,
     _retrieval_summary,
     _summarize_production_rows,
@@ -222,6 +224,36 @@ def test_deterministic_summary_counts_nested_router_validation_errors() -> None:
     summary = summarize_deterministic_rows(rows)
 
     assert summary["router_validation_failure_rate"] == 0.5
+
+
+def test_request_scoped_typed_result_is_a_structured_path() -> None:
+    assert _is_structured_path(
+        "semantic_request_executor",
+        {"lookup_type": "study_duration", "result": {"value": "8 năm"}},
+        needs_llm_answer=False,
+    )
+    assert not _is_structured_path(
+        "semantic_request_executor",
+        {},
+        needs_llm_answer=True,
+    )
+
+
+def test_structured_source_can_bind_through_versioned_cohort_applicability() -> None:
+    structured = {
+        "request_cohort": "K51",
+        "applicable_cohorts": ["K48-K49", "K50", "K51"],
+        "source_records": [
+            {
+                "cohort": "K50",
+                "applicable_cohorts": ["K48-K49", "K50", "K51"],
+            }
+        ],
+    }
+    citation = {"cohort": "K50", "request_cohort": "K51"}
+
+    assert _citation_cohort_matches(citation, "K51", structured)
+    assert not _citation_cohort_matches(citation, "K51", {})
 
 
 def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:

@@ -41,6 +41,11 @@ tools:
       program_type:
         type: string
         canonical_values: [first_degree, college_bridge, secondary_bridge, second_degree]
+        aliases:
+          first_degree: [cap bang thu nhat, dai hoc cap bang thu nhat, dao tao dai hoc cap bang thu nhat]
+          college_bridge: [lien thong tu cao dang, lien thong tu trinh do cao dang]
+          secondary_bridge: [lien thong tu trung cap, lien thong tu trinh do trung cap]
+          second_degree: [nguoi da co bang dai hoc, nguoi da co mot bang dai hoc, bang dai hoc thu hai]
     strategy: study_duration_lookup
     response_intent: study_duration_lookup_query
     target_chunk_types: [structured_lookup]

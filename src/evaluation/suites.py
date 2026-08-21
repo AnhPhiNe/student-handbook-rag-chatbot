@@ -71,11 +71,10 @@ def _is_structured_path(
     *,
     needs_llm_answer: bool,
 ) -> bool:
-    if not structured:
-        return False
-    if strategy in STRUCTURED_STRATEGIES:
-        return True
-    return bool(needs_llm_answer) and strategy in DETERMINISTIC_STRATEGIES
+    # The request-scoped executor has a generic strategy name shared by RAG and
+    # structured plans. A typed adapter payload is the authoritative signal;
+    # strategy names and the later answer-composition decision are not.
+    return bool(structured)
 
 
 def _router_validation_errors(result: dict[str, Any]) -> list[str]:
@@ -123,6 +122,31 @@ def _cohort_matches(actual: Any, expected: str | None) -> bool:
         str(actual or "") in {expected, "K48", "K49"}
         if expected == "K48-K49"
         else str(actual or "") == expected
+    )
+
+
+def _citation_cohort_matches(
+    citation: dict[str, Any],
+    expected: str | None,
+    structured: dict[str, Any],
+) -> bool:
+    source_cohort = citation.get("cohort") or (citation.get("metadata") or {}).get(
+        "cohort"
+    )
+    if _cohort_matches(source_cohort, expected):
+        return True
+    if not structured:
+        return False
+    request_cohort = citation.get("request_cohort") or structured.get(
+        "request_cohort"
+    )
+    applicable = list(structured.get("applicable_cohorts") or [])
+    for record in structured.get("source_records") or []:
+        if isinstance(record, dict):
+            applicable.extend(record.get("applicable_cohorts") or [])
+    return _cohort_matches(request_cohort, expected) and _cohort_matches(
+        applicable,
+        expected,
     )
 
 
@@ -387,16 +411,18 @@ def evaluate_deterministic(
                 expected_citation_type = case.get("expected_citation_content_type")
                 citation_required = expected_citation_type is not None
                 citation_cohort_ok = (bool(citations) or not citation_required) and all(
-                    _cohort_matches(
-                        c.get("cohort") or (c.get("metadata") or {}).get("cohort"),
+                    _citation_cohort_matches(
+                        c,
                         case.get("expected_citation_cohort"),
+                        structured,
                     )
                     for c in citations
                 )
                 cross_cohort_leak = any(
-                    not _cohort_matches(
-                        c.get("cohort") or (c.get("metadata") or {}).get("cohort"),
+                    not _citation_cohort_matches(
+                        c,
                         case.get("expected_citation_cohort"),
+                        structured,
                     )
                     for c in citations
                     if case.get("expected_citation_cohort")
@@ -498,7 +524,7 @@ def evaluate_deterministic(
                 actual_llm_called = bool(result.get("needs_llm_answer"))
                 direct_lookup_ok = (
                     expected_group in {"structured", "deterministic"}
-                    and actual_group == "deterministic"
+                    and actual_group in {"structured", "deterministic"}
                     and actual_llm_called is False
                 )
                 llm_call_ok = (

@@ -11,6 +11,7 @@ from .context_allocation import ContextAllocationConfig, build_context_for_promp
 
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
+ANSWER_PROMPT_VERSION = "single-cohort-answer-v2-request-bound"
 
 
 def build_answer_prompt(
@@ -30,6 +31,7 @@ def build_answer_prompt(
     )
     structured_result = _to_pretty_json(retrieval_result.get("structured_result"))
     request_results = _to_pretty_json(retrieval_result.get("request_results"))
+    request_evidence_scope = _request_evidence_scope(retrieval_result)
     unresolved_requests = _to_pretty_json(
         retrieval_result.get("unresolved_lookup_requests")
     )
@@ -56,6 +58,8 @@ ANSWER_SCOPE_RULES
 - Dùng tiêu đề nguồn, source_section và loại nguồn làm anchor chủ đề. Không diễn giải một thuật ngữ trong quy định thành tên phòng/khoa/đơn vị chỉ vì gần chữ.
 - Với câu hỏi về liên hệ/đơn vị, chỉ trả lời các trường có trong STRUCTURED_RESULT hoặc CONTEXT. Không suy ra phòng, email, số điện thoại, địa điểm hoặc đơn vị phụ trách từ tên gần giống.
 - Với câu hỏi có/không, quyền, ngoại lệ, hậu quả, thay thế, miễn hoặc thời hạn, chỉ kết luận có hoặc không khi nguồn trực tiếp xác lập đúng quyền, nghĩa vụ hoặc điều cấm được hỏi. Thông tin về lịch/thời điểm không tự chứng minh người dùng có quyền lựa chọn. Nếu không, nêu dữ kiện chắc chắn có liên quan và nói rõ nguồn chưa xác định phần được hỏi.
+- Không được biến việc nguồn đang chọn không nhắc đến một nội dung thành kết luận tuyệt đối như “không có”, “không quy định” hoặc “không có ngoại lệ”. Nếu nguồn không trực tiếp xác lập sự vắng mặt đó, chỉ nói rằng nguồn hiện có chưa xác định được phần được hỏi.
+- Giữ nguyên phạm vi của từng điều kiện, trường hợp, đối tượng và nhánh liệt kê trong nguồn. Quyền hoặc thủ tục chỉ áp dụng cho một số trường hợp không được diễn đạt thành quy tắc chung cho mọi trường hợp.
 - Khi câu hỏi hỏi một hành vi X có gây hậu quả Y hay không, dùng nguồn quy định trực tiếp các điều kiện của Y làm căn cứ kết luận; nguồn chỉ mô tả X là thông tin giải thích phụ, không đủ để tự suy ra Y.
 - Trả lời ngắn gọn theo mặc định, nhưng phải giữ đủ điều kiện, số liệu, sửa đổi hiệu lực và khác biệt cohort trực tiếp cần thiết để tránh gây hiểu nhầm.
 
@@ -68,6 +72,12 @@ NHIỆM VỤ
   `error` theo query_span. Không biến phần chưa xác minh thành câu trả lời.
 - Evidence, source record và citation có request_id chỉ được dùng cho đúng request_id
   đó. Không dùng nguồn của request này để hoàn tất request khác.
+- Với câu hỏi nhiều request, xử lý lần lượt theo REQUEST_EVIDENCE_SCOPE. Mỗi phần trả
+  lời chỉ được dùng PRIMARY SOURCE có cùng `Request ID`; không chuyển điều kiện,
+  thủ tục, con số hoặc kết luận từ request khác sang phần đang trả lời.
+- Trước mỗi khẳng định thực tế, kiểm tra câu chữ nguồn có trực tiếp hỗ trợ toàn bộ
+  khẳng định đó hay không. Không ghép các mảnh đúng từ nhiều nguồn thành một quyền,
+  thủ tục hoặc kết luận mới mà không nguồn nào phát biểu trực tiếp.
 - Nếu STRUCTURED_RESULT và CONTEXT không đủ căn cứ cho câu hỏi, nói rằng chưa tìm thấy trong Sổ tay thay vì tự suy diễn.
 - STRUCTURED_RESULT là nguồn chuẩn cho bảng và danh mục. CONTEXT là nguồn chuẩn cho quy định, điều kiện và thủ tục.
 - PRIMARY SOURCES là căn cứ duy nhất để trả lời. Các điều khoản liên quan được giao diện liên kết riêng, không nằm trong CONTEXT.
@@ -93,6 +103,9 @@ STRUCTURED_RESULT:
 
 REQUEST_RESULTS:
 {request_results if request_results else "(không có)"}
+
+REQUEST_EVIDENCE_SCOPE:
+{request_evidence_scope if request_evidence_scope else "(không có request đã định danh)"}
 
 UNRESOLVED_REQUESTS:
 {unresolved_requests if unresolved_requests else "(không có)"}
@@ -147,11 +160,47 @@ def _source_usage_instruction(context: str) -> str:
         return ""
     return """
 SOURCE_USAGE_RULES
-- PRIMARY SOURCES are the main evidence for the final answer.
-- Only use facts contained in PRIMARY SOURCES. Do not infer facts from references to other articles.
-- When a PRIMARY SOURCE header identifies an applicable Điều, retain the exact “Điều X” in the final answer; do not replace it with a generic reference.
-- Do not output bracketed source markers; the client renders source and related-reference affordances separately.
+- PRIMARY SOURCES là căn cứ trực tiếp cho câu trả lời cuối cùng.
+- Chỉ dùng sự kiện có trong PRIMARY SOURCES; không suy ra nội dung từ việc nguồn nhắc tới điều khoản khác.
+- Header của mỗi nguồn ghi `Request ID`; nguồn đó chỉ được dùng cho đúng request tương ứng.
+- Khi header của PRIMARY SOURCE xác định một Điều áp dụng, giữ nguyên “Điều X” trong câu trả lời, không thay bằng dẫn chiếu chung chung.
+- Không xuất ký hiệu nguồn trong ngoặc vuông; giao diện sẽ hiển thị nguồn và điều khoản liên quan riêng.
 """
+
+
+def _request_evidence_scope(retrieval_result: dict[str, Any]) -> str:
+    """Render the validated atomic requests as an explicit composer boundary."""
+
+    rows: list[str] = []
+    request_results = retrieval_result.get("request_results") or []
+    if not isinstance(request_results, list):
+        return ""
+
+    for fallback_index, request in enumerate(request_results):
+        if not isinstance(request, dict):
+            continue
+        request_id = str(request.get("request_id") or "").strip()
+        if not request_id:
+            continue
+        request_index = request.get("request_index")
+        if request_index is None:
+            request_index = fallback_index
+        order = (
+            request_index + 1
+            if isinstance(request_index, int) and not isinstance(request_index, bool)
+            else fallback_index + 1
+        )
+        query_span = str(request.get("query_span") or "").strip()
+        request_kind = str(request.get("request_kind") or "").strip()
+        status = str(request.get("status") or "").strip()
+        cohort = str(request.get("cohort") or "").strip()
+        rows.append(
+            "- "
+            f"request_id={request_id}; order={order}; "
+            f"kind={request_kind or 'unknown'}; status={status or 'unknown'}; "
+            f"cohort={cohort or 'unspecified'}; query_span={json.dumps(query_span, ensure_ascii=False)}"
+        )
+    return "\n".join(rows)
 
 
 def _cohort_instruction(cohort: str | list[str] | None) -> str:

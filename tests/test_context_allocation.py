@@ -160,6 +160,43 @@ def test_full_sources_keeps_top_five_content_when_under_budget() -> None:
     assert len(context) <= 20000
 
 
+def test_context_header_uses_runtime_request_id_as_evidence_boundary() -> None:
+    item = _item("article-1", "Nội dung nguồn.")
+    item.update(
+        {
+            "request_id": "r2",
+            "request_index": 1,
+            "query_span": "đăng ký học phần",
+        }
+    )
+
+    context = build_context_for_prompt(
+        {"retrieved_items": [item]},
+        max_context_chars=5000,
+        allocation_config=ContextAllocationConfig(strategy="full_sources"),
+    )
+
+    assert "Request ID: r2" in context
+    assert "Evidence boundary: use this source only for request_id r2" in context
+    assert "Request index: 1" in context
+    assert "Query span: đăng ký học phần" in context
+    assert "\nRequest: 1\n" not in context
+
+
+def test_context_header_preserves_legacy_request_index_without_request_id() -> None:
+    item = _item("legacy-article", "Nội dung nguồn legacy.")
+    item.update({"request_index": 2, "query_span": "thủ tục bảo lưu"})
+
+    context = build_context_for_prompt(
+        {"retrieved_items": [item]},
+        max_context_chars=5000,
+    )
+
+    assert "Request: 2" in context
+    assert "Request ID:" not in context
+    assert "Evidence boundary:" not in context
+
+
 def test_full_sources_excludes_related_sources_from_llm_context() -> None:
     retrieval_result = {
         "retrieved_items": [

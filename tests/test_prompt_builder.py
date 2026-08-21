@@ -34,7 +34,7 @@ class PromptBuilderTest(unittest.TestCase):
         self.assertIn("K51", prompt)
         self.assertIn("Chỉ sử dụng STRUCTURED_RESULT và CONTEXT", prompt)
         self.assertIn("nói rằng chưa tìm thấy trong Sổ tay", prompt)
-        self.assertIn("retain the exact “Điều X”", prompt)
+        self.assertIn("giữ nguyên “Điều X”", prompt)
         self.assertIn("danh sách Markdown đánh số", prompt)
 
     def test_structured_result_no_longer_forces_1500_char_context_cap(self) -> None:
@@ -289,6 +289,80 @@ class PromptBuilderTest(unittest.TestCase):
         self.assertIn('"request_id": "r2"', prompt)
         self.assertIn('"status": "error"', prompt)
         self.assertIn("Không dùng nguồn của request này", prompt)
+
+    def test_multi_request_prompt_exposes_matching_request_evidence_boundaries(self) -> None:
+        retrieval_result = {
+            "request_results": [
+                {
+                    "request_id": "r1",
+                    "request_index": 0,
+                    "request_kind": "rag",
+                    "query_span": "miễn giảm học phí",
+                    "cohort": "K51",
+                    "status": "ok",
+                },
+                {
+                    "request_id": "r2",
+                    "request_index": 1,
+                    "request_kind": "rag",
+                    "query_span": "đăng ký học phần",
+                    "cohort": "K51",
+                    "status": "ok",
+                },
+            ],
+            "retrieved_items": [
+                {
+                    "chunk_id": "fee-policy",
+                    "request_id": "r1",
+                    "request_index": 0,
+                    "query_span": "miễn giảm học phí",
+                    "content": "Điều 1. Chính sách miễn giảm học phí.",
+                    "metadata": {"title": "Điều 1", "chunk_type": "regulation"},
+                },
+                {
+                    "chunk_id": "course-registration",
+                    "request_id": "r2",
+                    "request_index": 1,
+                    "query_span": "đăng ký học phần",
+                    "content": "Điều 9. Tổ chức đăng ký học tập.",
+                    "metadata": {"title": "Điều 9", "chunk_type": "regulation"},
+                },
+            ],
+        }
+
+        prompt = build_answer_prompt(
+            query="K51 miễn giảm học phí và đăng ký học phần ra sao?",
+            retrieval_result=retrieval_result,
+            max_context_chars=10000,
+            cohort="K51",
+            context_allocation=ContextAllocationConfig(strategy="full_sources"),
+        )
+
+        self.assertIn("REQUEST_EVIDENCE_SCOPE", prompt)
+        self.assertIn(
+            'request_id=r1; order=1; kind=rag; status=ok; cohort=K51; '
+            'query_span="miễn giảm học phí"',
+            prompt,
+        )
+        self.assertIn(
+            'request_id=r2; order=2; kind=rag; status=ok; cohort=K51; '
+            'query_span="đăng ký học phần"',
+            prompt,
+        )
+        self.assertIn("Request ID: r1", prompt)
+        self.assertIn("Request ID: r2", prompt)
+        self.assertIn("không chuyển điều kiện", prompt)
+
+    def test_prompt_forbids_negative_completeness_and_condition_overgeneralization(self) -> None:
+        prompt = build_answer_prompt(
+            query="Có ngoại lệ nào không?",
+            retrieval_result={"request_results": []},
+            cohort="K51",
+        )
+
+        self.assertIn("không có ngoại lệ", prompt)
+        self.assertIn("nguồn hiện có chưa xác định", prompt)
+        self.assertIn("không được diễn đạt thành quy tắc chung", prompt)
 
 
 if __name__ == "__main__":

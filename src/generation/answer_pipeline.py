@@ -19,6 +19,7 @@ from src.retrieval.core.query_context import (
     validated_correction_provenance,
 )
 from src.retrieval.core.request_execution import RequestExecutionContext
+from src.retrieval.core.source_contract import source_records_from_result
 from src.retrieval.core.structured_routing import (
     bind_effective_cohort,
     reject_invalid_plan,
@@ -48,6 +49,7 @@ from .context_allocation import ContextAllocationConfig, build_context_for_promp
 from .gemini_client import GeminiClient
 from .io_utils import load_json, load_yaml
 from .prompt_builder import (
+    ANSWER_PROMPT_VERSION,
     DEFAULT_MAX_CONTEXT_CHARS,
     build_answer_prompt,
 )
@@ -56,7 +58,7 @@ from .response_cache import get_response_cache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v36-single-cohort-stream-replace-evidence-pages"
+PIPELINE_VERSION = "v38-single-cohort-request-bound-composer"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -323,6 +325,7 @@ class AnswerPipeline:
             },
             "answer_config": {
                 "model": llm_config.get("model_name"),
+                "prompt_version": ANSWER_PROMPT_VERSION,
                 "temperature": llm_config.get("temperature"),
                 "max_output_tokens": llm_config.get("max_output_tokens"),
                 "citation_max_sources": citations_config.get("max_sources"),
@@ -548,7 +551,7 @@ class AnswerPipeline:
 
         if guardrails_config.get(
             "skip_llm_on_low_confidence", True
-        ) and is_low_confidence(retrieval_result):
+        ) and self._should_apply_low_confidence_guardrail(retrieval_result):
             final_answer = format_final_answer(
                 build_fallback_answer(
                     effective_query, retrieval_result, reason="low_confidence"
@@ -933,7 +936,7 @@ class AnswerPipeline:
         # Low confidence: yield fallback as single chunk
         if guardrails_config.get(
             "skip_llm_on_low_confidence", True
-        ) and is_low_confidence(retrieval_result):
+        ) and self._should_apply_low_confidence_guardrail(retrieval_result):
             final_answer = format_final_answer(
                 build_fallback_answer(
                     effective_query, retrieval_result, reason="low_confidence"
@@ -1942,6 +1945,117 @@ class AnswerPipeline:
     @staticmethod
     def _has_rag_evidence(result: dict[str, Any]) -> bool:
         return bool((result.get("evidence_contract") or {}).get("qualified"))
+
+    @staticmethod
+    def _has_source_bound_structured_success(
+        retrieval_result: Mapping[str, Any],
+    ) -> bool:
+        """Return true only for a successful structured result with real provenance.
+
+        Retrieval confidence scores describe RAG candidates. They must not
+        invalidate a typed adapter result that already passed the registry's
+        source contract. The check deliberately requires both an ``ok`` request
+        result and at least one normalized source record; a merely non-empty
+        structured payload is not enough to bypass safety guardrails.
+        """
+
+        request_results = [
+            item
+            for item in retrieval_result.get("request_results") or []
+            if isinstance(item, Mapping)
+        ]
+        successful_request_ids = {
+            str(item.get("request_id") or "").strip()
+            for item in request_results
+            if item.get("request_kind") == "structured"
+            and item.get("status") == "ok"
+            and bool((item.get("provenance") or {}).get("source_bound"))
+            and str(item.get("request_id") or "").strip()
+        }
+        if request_results and not successful_request_ids:
+            return False
+
+        structured_result = retrieval_result.get("structured_result")
+        if not isinstance(structured_result, dict):
+            return False
+
+        candidates = structured_result.get("sub_results")
+        if not isinstance(candidates, list):
+            candidates = [structured_result]
+
+        for candidate in candidates:
+            if not isinstance(candidate, dict):
+                continue
+            candidate_result = candidate.get("result")
+            if not isinstance(candidate_result, dict):
+                candidate_result = candidate
+            request_id = str(
+                candidate_result.get("request_id")
+                or candidate.get("request_id")
+                or ""
+            ).strip()
+            if successful_request_ids and request_id not in successful_request_ids:
+                continue
+            if not request_results and not retrieval_result.get(
+                "deterministic_validated"
+            ):
+                continue
+            if source_records_from_result(candidate_result):
+                return True
+        return False
+
+    @classmethod
+    def _should_apply_low_confidence_guardrail(
+        cls,
+        retrieval_result: Mapping[str, Any],
+    ) -> bool:
+        """Apply retrieval confidence only to an unqualified RAG-only outcome.
+
+        Request execution status and source binding are the authority for typed
+        tools. For RAG, the evidence contract is the authority: an ``ok`` RAG
+        request must carry ``qualified=true`` provenance. Mixed/partial plans
+        with a verified structured part remain composable and disclose the
+        unresolved RAG part instead of being replaced by a global fallback.
+        """
+
+        if cls._has_source_bound_structured_success(retrieval_result):
+            return False
+
+        request_results = [
+            item
+            for item in retrieval_result.get("request_results") or []
+            if isinstance(item, Mapping)
+        ]
+        rag_requests = [
+            item for item in request_results if item.get("request_kind") == "rag"
+        ]
+        if rag_requests:
+            if any(
+                item.get("status") == "ok"
+                and bool((item.get("provenance") or {}).get("qualified"))
+                for item in rag_requests
+            ):
+                return False
+            return is_low_confidence(dict(retrieval_result))
+
+        evidence_contract = retrieval_result.get("evidence_contract")
+        if isinstance(evidence_contract, Mapping):
+            if bool(evidence_contract.get("qualified")):
+                return False
+            return is_low_confidence(dict(retrieval_result))
+
+        # Backward-compatible, pre-atomic RAG results have no request metadata.
+        # They remain subject to the old score guardrail only when there is no
+        # structured result at all. Legacy structured results are handled by
+        # their source contract above, never by retrieval scores.
+        if not isinstance(retrieval_result.get("structured_result"), Mapping) and (
+            "retrieved_items" in retrieval_result
+            or "citations" in retrieval_result
+        ):
+            return is_low_confidence(dict(retrieval_result))
+
+        # A plan without a RAG request is not governed by RAG confidence.
+        return False
 
     @staticmethod
     def _rag_source_identity(

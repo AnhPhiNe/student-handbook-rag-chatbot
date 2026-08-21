@@ -677,6 +677,7 @@ def _source_header(index: int, item: dict[str, Any]) -> str:
     metadata = item.get("metadata", {}) or {}
     title = _item_title(item, metadata)
     cohort_val = metadata.get("cohort") or item.get("cohort")
+    request_id = item.get("request_id") or metadata.get("request_id")
     lines = [
         f"[{index}]",
         "Role: PRIMARY - direct vector match for answer and citation",
@@ -689,8 +690,20 @@ def _source_header(index: int, item: dict[str, Any]) -> str:
     if request_index is None:
         request_index = metadata.get("request_index")
     query_span = item.get("query_span") or metadata.get("query_span")
+    if request_id is not None and str(request_id).strip():
+        normalized_request_id = str(request_id).strip()
+        lines.append(f"Request ID: {normalized_request_id}")
+        lines.append(
+            "Evidence boundary: use this source only for "
+            f"request_id {normalized_request_id}"
+        )
     if request_index is not None:
-        lines.append(f"Request: {request_index}")
+        if request_id is not None and str(request_id).strip():
+            lines.append(f"Request index: {request_index}")
+        else:
+            # Preserve the pre-atomic header for legacy retrieval callers that
+            # have no stable request_id to bind against.
+            lines.append(f"Request: {request_index}")
     if query_span:
         lines.append(f"Query span: {query_span}")
     lines.extend([

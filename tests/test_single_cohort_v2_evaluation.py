@@ -75,6 +75,9 @@ def test_planner_rebind_allows_only_declared_retrieval_and_eval_paths() -> None:
         "data/processed/retrieval/bm25_index.json"
     )
     assert planner_rebind._path_is_allowed("scripts/evaluate_single_cohort_v2.py")
+    assert planner_rebind._path_is_allowed(
+        "scripts/selective_single_cohort_answer_reuse.py"
+    )
     assert planner_rebind._path_is_allowed("tests/test_bm25_retriever.py")
     assert not planner_rebind._path_is_allowed("src/retrieval/core/ai_router.py")
     assert not planner_rebind._path_is_allowed("configs/structured_lookup_registry.yaml")

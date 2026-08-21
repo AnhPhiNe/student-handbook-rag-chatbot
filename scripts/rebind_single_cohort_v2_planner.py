@@ -37,6 +37,7 @@ EVALUATION_ONLY_PATHS = {
     "scripts/evaluate_single_cohort_v2.py",
     "scripts/replay_single_cohort_v2_dev.py",
     "scripts/rebind_single_cohort_v2_planner.py",
+    "scripts/selective_single_cohort_answer_reuse.py",
     "src/evaluation/single_cohort_v2.py",
 }
 

@@ -25,8 +25,10 @@ from src.evaluation.single_cohort_v2 import (
     validate_bundle,
 )
 from scripts import evaluate_single_cohort_v2 as evaluator
+from scripts import replay_single_cohort_v2_dev as replay
 from scripts.evaluate_single_cohort_v2 import (
     _actual_ok_requests,
+    _expected_rag_gold_requests,
     _citation_isolated,
     _finish_hidden_attempt,
     _final_composition_contract_passed,
@@ -51,11 +53,129 @@ def test_contract_checks_only_requests_with_actual_verified_output() -> None:
             "request_kind": "rag",
             "expected_status": "ok",
         },
+        {
+            "request_id": "r3",
+            "request_kind": "rag",
+            "expected_status": "no_match",
+        },
     ]
 
     assert _actual_ok_requests(requests, {"r1": "no_match", "r2": "ok"}) == [
         requests[1]
     ]
+    assert _expected_rag_gold_requests(requests) == [requests[1]]
+
+
+def test_offline_replay_keeps_safe_no_match_as_semantic_failure_only() -> None:
+    expected = {
+        "outcome": "execute",
+        "effective_cohort": "K51",
+        "atomic_requests": [
+            {
+                "request_id": "r1",
+                "request_kind": "structured",
+                "tool_name": "student_service",
+                "intent": "contact",
+                "query_span": "đơn vị hỗ trợ dịch vụ",
+                "slots": {"service": "dịch vụ", "requested_field": "unit"},
+                "cohort_refs": ["K51"],
+                "expected_status": "ok",
+                "expected_source_records": [{"record_id": "unit-a"}],
+                "expected_result": {"result": [{"unit_name": "Đơn vị A"}]},
+            }
+        ],
+    }
+    row = {
+        "id": "dev-safe-no-match",
+        "router_decision": {
+            "outcome": "execute",
+            "cohort": "K51",
+            "lookup_requests": [
+                {
+                    "request_kind": "structured",
+                    "lookup_type": "student_service",
+                    "intent": "contact",
+                    "query_span": "đơn vị hỗ trợ dịch vụ",
+                    "slots": {"service": "dịch vụ", "requested_field": "all"},
+                    "cohort_refs": ["K51"],
+                }
+            ],
+        },
+        "request_results": [{"request_id": "r1", "status": "no_match"}],
+        "citations": [],
+        "answer_composition": {},
+        "provider_failure": False,
+    }
+    case = {"id": row["id"], "category": "robustness", "expected": expected}
+
+    execution = replay._reevaluate_execution(case, row)
+    answer = replay._reevaluate_answer(case, row)
+
+    assert execution["semantic_executable"] is False
+    assert execution["structured_bindings"] == []
+    assert answer["answer_contract_bound"] is True
+
+
+def test_offline_replay_rebinds_answer_to_additive_rag_gold() -> None:
+    parent_id = "K51_regulation_scope_b"
+    expected = {
+        "outcome": "execute",
+        "effective_cohort": "K51",
+        "atomic_requests": [
+            {
+                "request_id": "r1",
+                "request_kind": "rag",
+                "tool_name": None,
+                "intent": "policy",
+                "query_span": "quy định đó",
+                "slots": {},
+                "cohort_refs": ["K51"],
+                "expected_status": "ok",
+                "expected_evidence": {"parent_section_ids": [parent_id]},
+            }
+        ],
+    }
+    row = {
+        "id": "dev-additive-gold",
+        "router_decision": {
+            "outcome": "execute",
+            "cohort": "K51",
+            "lookup_requests": [
+                {
+                    "request_kind": "rag",
+                    "lookup_type": None,
+                    "intent": "policy",
+                    "query_span": "quy định đó",
+                    "slots": {},
+                    "cohort_refs": ["K51"],
+                }
+            ],
+        },
+        "request_results": [{"request_id": "r1", "status": "ok"}],
+        "citations": [{"request_id": "r1", "parent_section_id": parent_id}],
+        "answer_composition": {
+            "final_contract_passed": True,
+            "request_results": [
+                {
+                    "request_id": "r1",
+                    "request_kind": "rag",
+                    "claim_count": 1,
+                    "contract_passed": True,
+                }
+            ],
+        },
+        "provider_failure": False,
+    }
+    case = {"id": row["id"], "category": "follow_up", "expected": expected}
+
+    assert replay._reevaluate_answer(case, row)["answer_contract_bound"] is True
+
+
+def test_offline_replay_change_allowlist_excludes_runtime_code() -> None:
+    assert replay._allowed_replay_change("scripts/evaluate_single_cohort_v2.py")
+    assert replay._allowed_replay_change("data/eval/single_cohort_v2/dev.json")
+    assert replay._allowed_replay_change("tests/test_single_cohort_v2_evaluation.py")
+    assert not replay._allowed_replay_change("src/generation/prompt_builder.py")
 
 
 def test_final_composition_contract_accepts_source_bound_structured_fallback() -> None:

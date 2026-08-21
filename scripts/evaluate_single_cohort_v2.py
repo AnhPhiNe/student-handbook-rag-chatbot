@@ -854,6 +854,19 @@ def _actual_ok_requests(
     ]
 
 
+def _expected_rag_gold_requests(
+    expected_requests: Iterable[Mapping[str, Any]],
+) -> list[Mapping[str, Any]]:
+    """Keep retrieval recall denominator independent from runtime status."""
+
+    return [
+        request
+        for request in expected_requests
+        if request.get("request_kind") == "rag"
+        and request.get("expected_status") == "ok"
+    ]
+
+
 def _final_composition_contract_passed(
     composition: Mapping[str, Any],
 ) -> bool:
@@ -988,11 +1001,12 @@ def run_executor_retrieval(
                 for request in actual_ok
                 if request["request_kind"] == "structured"
             ]
+            rag_gold = _expected_rag_gold_requests(expected_requests)
             rag_ok = [
                 request for request in actual_ok if request["request_kind"] == "rag"
             ]
             citations = result.get("citations") or []
-            rag_hits = [_rag_hit_at_5(result, request) for request in rag_ok]
+            rag_hits = [_rag_hit_at_5(result, request) for request in rag_gold]
             structured_bindings = [
                 _structured_source_bound(result, request) for request in structured_ok
             ]

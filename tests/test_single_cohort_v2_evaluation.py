@@ -80,6 +80,19 @@ def test_planner_rebind_allows_only_declared_retrieval_and_eval_paths() -> None:
     assert not planner_rebind._path_is_allowed("configs/structured_lookup_registry.yaml")
 
 
+def test_execution_results_output_requires_executor(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "evaluate_single_cohort_v2.py",
+            "--execution-results-output",
+            "execution.json",
+        ],
+    )
+    with pytest.raises(SystemExit):
+        evaluator.main()
+
+
 def test_offline_replay_keeps_safe_no_match_as_semantic_failure_only() -> None:
     expected = {
         "outcome": "execute",

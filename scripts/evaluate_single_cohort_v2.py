@@ -1519,6 +1519,7 @@ def main() -> None:
     parser.add_argument("--retry-provider-outage", action="store_true")
     parser.add_argument("--planner-report", type=Path)
     parser.add_argument("--planner-output", type=Path)
+    parser.add_argument("--execution-results-output", type=Path)
     parser.add_argument("--dev-report", type=Path)
     parser.add_argument("--quality-report", type=Path)
     parser.add_argument("--parity-report", type=Path)
@@ -1585,6 +1586,8 @@ def main() -> None:
         )
     if args.answers_report and args.run_answers != "none":
         parser.error("Use either --run-answers or --answers-report, not both.")
+    if args.execution_results_output and args.run_executor == "none":
+        parser.error("--execution-results-output requires --run-executor.")
 
     live_requested = bool(
         args.planner != "none"
@@ -1697,6 +1700,25 @@ def main() -> None:
             },
             result_sink=execution_results,
         )
+        if args.execution_results_output is not None:
+            _write_json_atomic(
+                args.execution_results_output,
+                {
+                    "report_type": "single_cohort_v2_execution_results",
+                    "timestamp": datetime.now(UTC).isoformat(),
+                    "commit": _commit(),
+                    "dataset_hashes": validation.hashes,
+                    "artifact_fingerprint": _artifact_fingerprint(),
+                    "planner_report_sha256": (
+                        file_hash(args.planner_report)
+                        if args.planner_report is not None
+                        else None
+                    ),
+                    "suite": args.run_executor,
+                    "rows": execution_rows,
+                    "results": execution_results,
+                },
+            )
     if pipeline and args.run_answers != "none":
         passed_ids = {
             row["id"]

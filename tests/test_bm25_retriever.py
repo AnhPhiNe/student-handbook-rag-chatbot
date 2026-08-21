@@ -89,7 +89,7 @@ def test_bm25_artifact_load_is_version_bound_and_reports_ready(tmp_path) -> None
                     "artifact_version": "bm25-artifact-v1",
                     "checksum": bm25_artifact_checksum(chunks),
                     "corpus_version": "student_handbook_semantic_v9_candidate",
-                    "tokenizer_version": "hcmue-bm25-tokenizer-v2",
+                    "tokenizer_version": "hcmue-bm25-tokenizer-v3-accent-folded",
                     "total_chunks": 1,
                 },
             },
@@ -123,7 +123,7 @@ def test_bm25_artifact_rejects_collection_version_mismatch(tmp_path) -> None:
                     "artifact_version": "bm25-artifact-v1",
                     "checksum": "fixture-checksum",
                     "corpus_version": "collection-a",
-                    "tokenizer_version": "hcmue-bm25-tokenizer-v2",
+                    "tokenizer_version": "hcmue-bm25-tokenizer-v3-accent-folded",
                     "total_chunks": 1,
                 },
             },
@@ -259,6 +259,38 @@ def test_bm25_matches_full_name_from_safe_generated_acronym(tmp_path) -> None:
     )
 
     results = retriever.search_bm25("gdmn", top_k=3)
+
+    assert results
+    assert results[0][1]["chunk_id"] == "expected"
+
+
+def test_bm25_matches_unaccented_query_against_accented_source(tmp_path) -> None:
+    retriever = BM25Retriever(
+        vocabulary_path=tmp_path / "missing.yaml",
+        program_directory_path=tmp_path / "missing.json",
+    )
+    expected = _chunk(
+        "expected",
+        "Điều 5. Hình thức đào tạo chính quy.",
+        cohort="K48-K49",
+    )
+    retriever.build_bm25_index(
+        [
+            expected,
+            _chunk(
+                "other-1",
+                "Quy định về công tác sinh viên.",
+                cohort="K48-K49",
+            ),
+            _chunk(
+                "other-2",
+                "Khen thưởng và kỷ luật người học.",
+                cohort="K48-K49",
+            ),
+        ]
+    )
+
+    results = retriever.search_bm25("hinh thuc dao tao", top_k=3)
 
     assert results
     assert results[0][1]["chunk_id"] == "expected"

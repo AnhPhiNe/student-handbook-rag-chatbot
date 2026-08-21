@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import re
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -33,7 +34,17 @@ SUPPORTED_BM25_ARTIFACT_VERSIONS = {
     "bm25-artifact-v2-title-index",
 }
 SUPPORTED_BM25_ARTIFACT_VERSION = "bm25-artifact-v1"
-SUPPORTED_BM25_TOKENIZER_VERSION = "hcmue-bm25-tokenizer-v2"
+SUPPORTED_BM25_TOKENIZER_VERSION = "hcmue-bm25-tokenizer-v3-accent-folded"
+
+
+def _accent_fold(text: str) -> str:
+    """Return a stable accent-insensitive Vietnamese search representation."""
+
+    decomposed = unicodedata.normalize("NFD", text)
+    without_marks = "".join(
+        char for char in decomposed if unicodedata.category(char) != "Mn"
+    )
+    return without_marks.replace("đ", "d").replace("Đ", "D")
 
 
 def bm25_artifact_checksum(chunks: list[dict[str, Any]]) -> str:
@@ -136,20 +147,34 @@ class BM25Retriever:
         # Layer 2: Word Segmentation (underthesea)
         try:
             if underthesea is not None:
-                segmented_words = underthesea.word_tokenize(text_for_segmentation.lower())
-                tokens.extend([w.replace(" ", "_") for w in segmented_words])
+                segmented_words = underthesea.word_tokenize(
+                    text_for_segmentation.lower()
+                )
+                tokens.extend(
+                    _accent_fold(word.replace(" ", "_"))
+                    for word in segmented_words
+                )
             else:
-                tokens.extend(text_for_segmentation.lower().split())
+                tokens.extend(
+                    _accent_fold(word)
+                    for word in text_for_segmentation.lower().split()
+                )
             
             # Bigrams of adjacent segmented syllables (fallback for bad segmentation)
             syllables = text_for_segmentation.lower().split()
-            bigrams = [f"{syllables[i]}_{syllables[i+1]}" for i in range(len(syllables)-1)]
+            bigrams = [
+                _accent_fold(f"{syllables[i]}_{syllables[i + 1]}")
+                for i in range(len(syllables) - 1)
+            ]
             tokens.extend(bigrams)
             
-        except Exception as e:
-             logger.warning(f"Underthesea tokenization failed: {e}")
-             # Absolute fallback
-             tokens.extend(text_for_segmentation.lower().split())
+        except Exception as exc:
+            logger.warning("Underthesea tokenization failed: %s", exc)
+            # Absolute fallback
+            tokens.extend(
+                _accent_fold(word)
+                for word in text_for_segmentation.lower().split()
+            )
 
         return [t for t in tokens if t.strip()]
 

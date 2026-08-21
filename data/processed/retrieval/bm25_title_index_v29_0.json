@@ -2,7 +2,7 @@
   "metadata": {
     "artifact_version": "bm25-artifact-v2-title-index",
     "corpus_version": "student_handbook_semantic_v29_0",
-    "tokenizer_version": "hcmue-bm25-tokenizer-v2",
+    "tokenizer_version": "hcmue-bm25-tokenizer-v3-accent-folded",
     "title_tokenizer_version": "hcmue-title-tokenizer-v1-accent-folded",
     "checksum": "1bc0ddd25dbf6defbefb3628d3d65e9120c20233574daea1bef56a462ee70b87",
     "title_field_checksum": "0ad96d810be570cb99f15da213d523d47b55b1c9227703c335229d7d3ee1a23b",

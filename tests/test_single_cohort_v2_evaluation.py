@@ -26,6 +26,7 @@ from src.evaluation.single_cohort_v2 import (
 )
 from scripts import evaluate_single_cohort_v2 as evaluator
 from scripts.evaluate_single_cohort_v2 import (
+    _actual_ok_requests,
     _citation_isolated,
     _finish_hidden_attempt,
     _final_composition_contract_passed,
@@ -36,6 +37,25 @@ from scripts.evaluate_single_cohort_v2 import (
     run_answers,
     run_executor_retrieval,
 )
+
+
+def test_contract_checks_only_requests_with_actual_verified_output() -> None:
+    requests = [
+        {
+            "request_id": "r1",
+            "request_kind": "structured",
+            "expected_status": "ok",
+        },
+        {
+            "request_id": "r2",
+            "request_kind": "rag",
+            "expected_status": "ok",
+        },
+    ]
+
+    assert _actual_ok_requests(requests, {"r1": "no_match", "r2": "ok"}) == [
+        requests[1]
+    ]
 
 
 def test_final_composition_contract_accepts_source_bound_structured_fallback() -> None:

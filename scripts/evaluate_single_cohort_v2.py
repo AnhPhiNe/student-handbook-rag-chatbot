@@ -835,6 +835,25 @@ def _citation_bound(citations: Iterable[Mapping[str, Any]], request: Mapping[str
     return False
 
 
+def _actual_ok_requests(
+    expected_requests: Iterable[Mapping[str, Any]],
+    actual_statuses: Mapping[str, Any],
+) -> list[Mapping[str, Any]]:
+    """Return requests that produced claims/sources requiring contract checks.
+
+    Status correctness belongs to semantic execution.  Source and answer
+    contracts only assess material the runtime actually returned as verified.
+    This prevents a safe no-match from being counted again as a fabricated or
+    unbound answer while preserving the semantic-executable failure.
+    """
+
+    return [
+        request
+        for request in expected_requests
+        if actual_statuses.get(str(request.get("request_id"))) == "ok"
+    ]
+
+
 def _final_composition_contract_passed(
     composition: Mapping[str, Any],
 ) -> bool:
@@ -963,8 +982,15 @@ def run_executor_retrieval(
                 for request in expected_requests
                 if request["request_kind"] == "structured"
             ]
-            structured_ok = [request for request in expected_requests if request["request_kind"] == "structured" and request["expected_status"] == "ok"]
-            rag_ok = [request for request in expected_requests if request["request_kind"] == "rag" and request["expected_status"] == "ok"]
+            actual_ok = _actual_ok_requests(expected_requests, actual_statuses)
+            structured_ok = [
+                request
+                for request in actual_ok
+                if request["request_kind"] == "structured"
+            ]
+            rag_ok = [
+                request for request in actual_ok if request["request_kind"] == "rag"
+            ]
             citations = result.get("citations") or []
             rag_hits = [_rag_hit_at_5(result, request) for request in rag_ok]
             structured_bindings = [
@@ -1089,17 +1115,10 @@ def run_answers(
                 item.get("request_id"): item.get("status")
                 for item in request_results
             }
-            statuses_bound = all(
-                actual_statuses.get(request["request_id"])
-                == request["expected_status"]
-                for request in expected_requests
-            )
             citations = result.get("citations_used") or result.get("citations") or []
-            successful_requests = [
-                request
-                for request in expected_requests
-                if request.get("expected_status") == "ok"
-            ]
+            successful_requests = _actual_ok_requests(
+                expected_requests, actual_statuses
+            )
             composition_contract_bound = bool(
                 not successful_requests
                 or _final_composition_contract_passed(composition)
@@ -1143,7 +1162,6 @@ def run_answers(
                     "execution_plan_bound": execution_plan_bound,
                     "answer_contract_bound": bool(
                         execution_plan_bound
-                        and statuses_bound
                         and citations_bound
                         and _citation_isolated(result, request_ids)
                         and composition_contract_bound

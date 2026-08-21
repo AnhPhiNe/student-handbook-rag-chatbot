@@ -11,7 +11,7 @@ from .context_allocation import ContextAllocationConfig, build_context_for_promp
 
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "single-cohort-answer-v2-request-bound"
+ANSWER_PROMPT_VERSION = "single-cohort-answer-v3-request-focused"
 
 
 def build_answer_prompt(

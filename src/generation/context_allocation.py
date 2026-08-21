@@ -18,7 +18,12 @@ class ContextAllocationConfig:
     def from_config(cls, config: dict[str, Any] | None) -> "ContextAllocationConfig":
         config = config or {}
         strategy = str(config.get("strategy") or "equal_split").strip().lower()
-        if strategy not in {"equal_split", "score_weighted", "full_sources"}:
+        if strategy not in {
+            "equal_split",
+            "score_weighted",
+            "full_sources",
+            "request_focused_sources",
+        }:
             strategy = "equal_split"
 
         max_chars = max(1, int(config.get("max_chars_per_doc", 1800)))
@@ -36,6 +41,9 @@ class ContextAllocationConfig:
     def cache_fingerprint(self) -> dict[str, Any]:
         return {
             "strategy": self.strategy,
+            "min_chars_per_doc": self.min_chars_per_doc,
+            "max_chars_per_doc": self.max_chars_per_doc,
+            "sentence_boundary": self.sentence_boundary,
             "cache_version": self.cache_version,
         }
 
@@ -85,23 +93,37 @@ def build_context_for_prompt(
     header_budget = sum(len(header) for header in headers) + separator_budget
     content_budget = max(0, max_context_chars - header_budget)
 
+    allocation_strategy = (
+        "score_weighted"
+        if config.strategy == "request_focused_sources"
+        else config.strategy
+    )
     budgets = allocate_context_budget(
         items,
         total_budget=content_budget,
         min_chars_per_doc=config.min_chars_per_doc,
         max_chars_per_doc=config.max_chars_per_doc,
-        strategy=config.strategy,
+        strategy=allocation_strategy,
     )
 
     blocks: list[str] = []
     for header, item, budget in zip(headers, items, budgets, strict=False):
         content = str(item.get("content") or "").strip()
+        metadata = item.get("metadata", {}) or {}
+        item_query = (
+            item.get("query_span")
+            or metadata.get("query_span")
+            or query
+            or retrieval_result.get("query")
+            or ""
+        )
         content = prepare_content_for_prompt(
             content,
             item=item,
-            query=query or str(retrieval_result.get("query") or ""),
+            query=str(item_query),
             budget=budget,
             sentence_boundary=config.sentence_boundary,
+            include_raw_context=config.strategy != "request_focused_sources",
         )
         truncated_content = truncate_text(
             content,
@@ -184,6 +206,7 @@ def prepare_content_for_prompt(
     query: str | None = None,
     budget: int = 1800,
     sentence_boundary: bool = True,
+    include_raw_context: bool = True,
 ) -> str:
     """Prepare one retrieved source before prompt-level truncation.
 
@@ -241,7 +264,7 @@ def prepare_content_for_prompt(
             max(800, min(max(1200, budget), 2600)),
             sentence_boundary=sentence_boundary,
         )
-        if raw_context:
+        if include_raw_context and raw_context:
             blocks.append("SOURCE TEXT:\n" + raw_context)
         return "\n\n".join(blocks)
 

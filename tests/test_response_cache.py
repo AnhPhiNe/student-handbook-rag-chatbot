@@ -10,6 +10,25 @@ from src.generation.response_cache import ResponseCache
 
 
 class ResponseCacheTest(unittest.TestCase):
+    def test_context_fingerprint_covers_every_context_policy_field(self) -> None:
+        from src.generation.context_allocation import ContextAllocationConfig
+
+        baseline = ContextAllocationConfig(
+            strategy="request_focused_sources",
+            min_chars_per_doc=0,
+            max_chars_per_doc=5000,
+            sentence_boundary=True,
+            cache_version="v1",
+        ).cache_fingerprint()
+
+        variants = [
+            {**baseline, "min_chars_per_doc": 10},
+            {**baseline, "max_chars_per_doc": 4000},
+            {**baseline, "sentence_boundary": False},
+        ]
+        for variant in variants:
+            self.assertNotEqual(baseline, variant)
+
     def test_set_writes_valid_json_and_get_reads_dict_values(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             cache_path = Path(tmpdir) / "cache.json"

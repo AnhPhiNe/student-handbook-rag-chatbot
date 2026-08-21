@@ -197,6 +197,63 @@ def test_context_header_preserves_legacy_request_index_without_request_id() -> N
     assert "Evidence boundary:" not in context
 
 
+def test_request_focused_context_uses_each_atomic_request_query_span() -> None:
+    first = _item(
+        "first",
+        ("Nội dung không liên quan. " * 300)
+        + "Sinh viên nộp hồ sơ miễn giảm học phí đúng thời hạn.",
+    )
+    first.update({"request_id": "r1", "query_span": "miễn giảm học phí"})
+    second = _item(
+        "second",
+        ("Thông tin nền. " * 300)
+        + "Sinh viên đăng ký học phần trên hệ thống của Trường.",
+    )
+    second.update({"request_id": "r2", "query_span": "đăng ký học phần"})
+
+    context = build_context_for_prompt(
+        {"query": "câu hỏi tổng hợp", "retrieved_items": [first, second]},
+        query="câu hỏi tổng hợp",
+        max_context_chars=12000,
+        allocation_config=ContextAllocationConfig(
+            strategy="request_focused_sources",
+            min_chars_per_doc=0,
+            max_chars_per_doc=5000,
+        ),
+    )
+
+    assert "Request ID: r1" in context
+    assert "Request ID: r2" in context
+    assert "miễn giảm học phí đúng thời hạn" in context
+    assert "đăng ký học phần trên hệ thống" in context
+    assert "SOURCE TEXT:" not in context
+
+
+def test_request_focused_context_preserves_all_five_selected_sources() -> None:
+    items = []
+    for index in range(5):
+        item = _item(
+            f"source-{index}",
+            ("Nội dung nền. " * 100) + f"Quy định mục tiêu {index}.",
+        )
+        item.update({"request_id": "r1", "query_span": f"mục tiêu {index}"})
+        items.append(item)
+
+    context = build_context_for_prompt(
+        {"retrieved_items": items},
+        max_context_chars=30000,
+        allocation_config=ContextAllocationConfig(
+            strategy="request_focused_sources",
+            min_chars_per_doc=0,
+            max_chars_per_doc=5000,
+        ),
+    )
+
+    for index in range(5):
+        assert f"Section source-{index}" in context
+        assert f"Quy định mục tiêu {index}" in context
+
+
 def test_full_sources_excludes_related_sources_from_llm_context() -> None:
     retrieval_result = {
         "retrieved_items": [

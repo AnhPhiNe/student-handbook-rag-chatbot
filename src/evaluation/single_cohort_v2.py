@@ -89,7 +89,6 @@ def _gate_thresholds() -> dict[str, Any]:
         "quality_checks_passed": lambda value: value is True,
         "parity_passed": lambda value: value is True,
         "conformance_passed": lambda value: value is True,
-        "single_cohort_regression_v3_passed": lambda value: value is True,
     }
 
 

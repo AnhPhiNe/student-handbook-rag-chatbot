@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
 from pathlib import Path
 from types import SimpleNamespace
@@ -1116,7 +1117,10 @@ def test_executor_uses_the_already_validated_planner_decision() -> None:
     assert rows[0]["status_match"] is True
 
 
-def test_answer_composer_reuses_validated_execution_without_router_call() -> None:
+def test_answer_composer_reuses_validated_execution_without_router_call(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("STUDENT_RAG_EVAL_TELEMETRY", "0")
     expected = {
         "outcome": "execute",
         "context_mode": "standalone",
@@ -1167,6 +1171,7 @@ def test_answer_composer_reuses_validated_execution_without_router_call() -> Non
             raise AssertionError("router/retrieval must not run again")
 
         def answer(self, query, *, chat_history, cohort):
+            assert os.environ["STUDENT_RAG_EVAL_TELEMETRY"] == "1"
             result = self._run_retrieval(
                 query, cohort, chat_history=chat_history
             )
@@ -1183,6 +1188,7 @@ def test_answer_composer_reuses_validated_execution_without_router_call() -> Non
                     "request_results": result["request_results"],
                     "partial_status": "failed",
                 },
+                "evaluation_telemetry": {"safe_ttft_ms": 12.0, "total_ms": 15.0},
             }
 
     rows = run_answers(
@@ -1208,6 +1214,8 @@ def test_answer_composer_reuses_validated_execution_without_router_call() -> Non
 
     assert rows[0]["provider_failure"] is False
     assert rows[0]["answer_contract_bound"] is True
+    assert rows[0]["evaluation_telemetry"]["safe_ttft_ms"] == 12.0
+    assert os.environ["STUDENT_RAG_EVAL_TELEMETRY"] == "0"
 
 
 def test_hidden_attempt_retry_requires_zero_output_and_same_binding(

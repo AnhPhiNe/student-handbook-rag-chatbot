@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import os
 import subprocess
 import sys
 import uuid
@@ -1012,11 +1013,19 @@ def run_answers(
 
         try:
             pipeline._run_retrieval = use_validated_execution  # type: ignore[method-assign]
-            result = pipeline.answer(
-                case["query"],
-                chat_history=case.get("chat_history") or [],
-                cohort=case.get("selected_cohort"),
-            )
+            previous_telemetry = os.environ.get("STUDENT_RAG_EVAL_TELEMETRY")
+            os.environ["STUDENT_RAG_EVAL_TELEMETRY"] = "1"
+            try:
+                result = pipeline.answer(
+                    case["query"],
+                    chat_history=case.get("chat_history") or [],
+                    cohort=case.get("selected_cohort"),
+                )
+            finally:
+                if previous_telemetry is None:
+                    os.environ.pop("STUDENT_RAG_EVAL_TELEMETRY", None)
+                else:
+                    os.environ["STUDENT_RAG_EVAL_TELEMETRY"] = previous_telemetry
             model_used = result.get("model_used")
             wrong_model = bool(result.get("llm_called") and model_used != ANSWER_MODEL)
             debug = result.get("debug") or {}

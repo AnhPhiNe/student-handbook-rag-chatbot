@@ -171,6 +171,130 @@ def test_offline_replay_rebinds_answer_to_additive_rag_gold() -> None:
     assert replay._reevaluate_answer(case, row)["answer_contract_bound"] is True
 
 
+def test_offline_replay_preserves_bound_hit_when_answer_omits_retrieval_pool() -> None:
+    expected = {
+        "outcome": "execute",
+        "effective_cohort": "K51",
+        "atomic_requests": [
+            {
+                "request_id": "r1",
+                "request_kind": "rag",
+                "tool_name": None,
+                "intent": "policy",
+                "query_span": "quy định đó",
+                "slots": {},
+                "cohort_refs": ["K51"],
+                "expected_status": "ok",
+                "expected_evidence": {"parent_section_ids": ["source-a"]},
+            }
+        ],
+    }
+    row = {
+        "id": "dev-replay-hit",
+        "router_decision": {
+            "outcome": "execute",
+            "cohort": "K51",
+            "lookup_requests": [
+                {
+                    "request_kind": "rag",
+                    "lookup_type": None,
+                    "intent": "policy",
+                    "query_span": "quy định đó",
+                    "slots": {},
+                    "cohort_refs": ["K51"],
+                }
+            ],
+        },
+        "request_results": [{"request_id": "r1", "status": "ok"}],
+        "citations": [{"request_id": "r1", "parent_section_id": "source-a"}],
+    }
+    case = {"id": row["id"], "category": "single_rag", "expected": expected}
+
+    execution = replay._reevaluate_execution(case, row, {"rag_hits": [True]})
+
+    assert execution["rag_hits"] == [True]
+    assert execution["semantic_executable"] is True
+
+
+def test_offline_replay_fails_closed_without_bound_hit_data() -> None:
+    case = {
+        "id": "dev-missing-replay-hit",
+        "category": "single_rag",
+        "expected": {
+            "outcome": "execute",
+            "effective_cohort": "K51",
+            "atomic_requests": [
+                {
+                    "request_id": "r1",
+                    "request_kind": "rag",
+                    "tool_name": None,
+                    "intent": "policy",
+                    "query_span": "quy định đó",
+                    "slots": {},
+                    "cohort_refs": ["K51"],
+                    "expected_status": "ok",
+                    "expected_evidence": {"parent_section_ids": ["source-a"]},
+                }
+            ],
+        },
+    }
+    row = {
+        "id": case["id"],
+        "router_decision": {
+            "outcome": "execute",
+            "cohort": "K51",
+            "lookup_requests": [
+                {
+                    "request_kind": "rag",
+                    "lookup_type": None,
+                    "intent": "policy",
+                    "query_span": "quy định đó",
+                    "slots": {},
+                    "cohort_refs": ["K51"],
+                }
+            ],
+        },
+        "request_results": [{"request_id": "r1", "status": "ok"}],
+        "citations": [{"request_id": "r1", "parent_section_id": "source-a"}],
+    }
+
+    with pytest.raises(ValueError, match="lacks bound RAG Hit@5"):
+        replay._reevaluate_execution(case, row, {"rag_hits": []})
+
+
+def test_offline_replay_retains_only_deterministic_fault_rows_without_answers() -> None:
+    fault_row = {
+        "id": "dev-fault",
+        "skipped": True,
+        "semantic_executable": None,
+        "failure_type": "deterministic_fault_suite",
+    }
+
+    rows = replay._replay_execution_rows(
+        {"dev-fault": {"id": "dev-fault", "expected": {}}},
+        [],
+        [fault_row],
+    )
+
+    assert rows == [fault_row]
+    assert rows[0] is not fault_row
+
+
+def test_offline_replay_rejects_regular_execution_row_without_answer() -> None:
+    source_row = {
+        "id": "dev-unbound",
+        "semantic_executable": True,
+        "failure_type": "pass",
+    }
+
+    with pytest.raises(ValueError, match="has no answer"):
+        replay._replay_execution_rows(
+            {"dev-unbound": {"id": "dev-unbound", "expected": {}}},
+            [],
+            [source_row],
+        )
+
+
 def test_offline_replay_change_allowlist_excludes_runtime_code() -> None:
     assert replay._allowed_replay_change("scripts/evaluate_single_cohort_v2.py")
     assert replay._allowed_replay_change("data/eval/single_cohort_v2/dev.json")

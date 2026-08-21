@@ -141,7 +141,9 @@ def _result_from_answer(row: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _reevaluate_execution(
-    case: Mapping[str, Any], answer_row: Mapping[str, Any]
+    case: Mapping[str, Any],
+    answer_row: Mapping[str, Any],
+    source_execution_row: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     expected = case["expected"]
     result = _result_from_answer(answer_row)
@@ -163,7 +165,22 @@ def _reevaluate_execution(
     rag_ok = [request for request in actual_ok if request["request_kind"] == "rag"]
     rag_gold = evaluator._expected_rag_gold_requests(expected_requests)
     citations = result.get("citations") or []
-    rag_hits = [evaluator._rag_hit_at_5(result, request) for request in rag_gold]
+    retrieved_items = result.get("retrieved_items") or []
+    if rag_gold and not retrieved_items:
+        # Answer artifacts intentionally omit the full retrieval candidate pool.
+        # Preserve Hit@5 from the source execution artifact rather than treating
+        # missing replay inputs as retrieval misses. Runtime inputs/artifact
+        # fingerprints are validated before this path is reachable.
+        source_rag_hits = list((source_execution_row or {}).get("rag_hits") or [])
+        if len(source_rag_hits) != len(rag_gold) or any(
+            not isinstance(value, bool) for value in source_rag_hits
+        ):
+            raise ValueError(
+                f"Replay source lacks bound RAG Hit@5 data for {case['id']}"
+            )
+        rag_hits = source_rag_hits
+    else:
+        rag_hits = [evaluator._rag_hit_at_5(result, request) for request in rag_gold]
     structured_bindings = [
         evaluator._structured_source_bound(result, request)
         for request in structured_ok
@@ -304,6 +321,44 @@ def _refresh_planner_rows(
     return refreshed
 
 
+def _replay_execution_rows(
+    cases: Mapping[str, Mapping[str, Any]],
+    answer_rows: list[dict[str, Any]],
+    source_execution_rows: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Rebind answer-backed rows and retain only deterministic fault rows."""
+
+    answer_by_id = {str(row["id"]): row for row in answer_rows}
+    source_execution_by_id = {
+        str(row["id"]): row for row in source_execution_rows
+    }
+    unknown_answers = sorted(set(answer_by_id) - set(source_execution_by_id))
+    if unknown_answers:
+        raise ValueError(f"Replay answers lack source execution rows: {unknown_answers}")
+
+    output: list[dict[str, Any]] = []
+    for source_row in source_execution_rows:
+        case_id = str(source_row["id"])
+        answer_row = answer_by_id.get(case_id)
+        if answer_row is not None:
+            output.append(
+                _reevaluate_execution(
+                    cases[case_id],
+                    answer_row,
+                    source_row,
+                )
+            )
+            continue
+        if not (
+            source_row.get("skipped")
+            and source_row.get("failure_type") == "deterministic_fault_suite"
+            and source_row.get("semantic_executable") is None
+        ):
+            raise ValueError(f"Replay source execution row has no answer: {case_id}")
+        output.append(copy.deepcopy(source_row))
+    return output
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-report", type=Path, required=True)
@@ -353,16 +408,18 @@ def main() -> None:
         parser.error("Replay requires current passing preflight reports")
 
     planner_rows = _refresh_planner_rows(source, case_by_id)
-    _, _, source_answers = evaluator._reuse_answer_report_evaluation(source)
+    _, source_execution_rows, source_answers = evaluator._reuse_answer_report_evaluation(
+        source
+    )
     answer_rows = [
         _reevaluate_answer(case_by_id[str(row["id"])], row)
         for row in source_answers
     ]
-    answer_by_id = {str(row["id"]): row for row in answer_rows}
-    execution_rows = [
-        _reevaluate_execution(case_by_id[case_id], row)
-        for case_id, row in answer_by_id.items()
-    ]
+    execution_rows = _replay_execution_rows(
+        case_by_id,
+        answer_rows,
+        source_execution_rows,
+    )
     metrics = evaluator._metrics(
         validation.valid,
         planner_rows,

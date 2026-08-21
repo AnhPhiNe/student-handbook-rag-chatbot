@@ -1,0 +1,29 @@
+{
+  "approval_version": "single-cohort-rag-source-expansion-approval-v1",
+  "approved_at": "2026-08-21T06:28:57.2803248Z",
+  "approved_by": "project_owner",
+  "approval_statement": "Tôi phê duyệt mở rộng gold source alternatives cho dev-single_rag-09/r1 với Điều 31, Điều 34 và dev-two_regulations-01/r2 với Điều 9; giữ nguyên các gold hiện có.",
+  "approval_base_commit": "7dcc5a1ebea279db5f1f2c6ade2ba9426f4391b2",
+  "source_hashes": {
+    "dev.json": "7ab8822dc16765fb33c622b0904887bf29dca771953883e40cdd3eea7d80d5ad",
+    "hidden.json": "0273778c82d8c08bb621d9bb57a9a12324f6e67ced0b2e901f6ddadd3b15431d"
+  },
+  "expansions": [
+    {
+      "case_id": "dev-single_rag-09",
+      "request_id": "r1",
+      "add_parent_section_ids": [
+        "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+        "K51_QuyCheCongTacSinhVien_Chuong6_Dieu34"
+      ]
+    },
+    {
+      "case_id": "dev-two_regulations-01",
+      "request_id": "r2",
+      "add_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong2_Dieu9"
+      ]
+    }
+  ],
+  "hidden_changed": false
+}

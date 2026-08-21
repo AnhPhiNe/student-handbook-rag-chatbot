@@ -771,6 +771,213 @@ def apply_hidden_review(
     return apply_review(hidden, review_rows, require_every_case=True)
 
 
+def apply_approved_rag_source_expansions(
+    cases: list[dict[str, Any]],
+    approval: Mapping[str, Any],
+    corpus_chunks: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Expand approved dev RAG gold sources without changing hidden or old gold."""
+
+    reviewer = str(approval.get("approved_by") or "").strip()
+    reviewed_at = str(approval.get("approved_at") or "").strip()
+    if not reviewer or not reviewed_at or not approval.get("approval_statement"):
+        raise ValueError("Source expansion requires explicit reviewer provenance")
+
+    expansions = approval.get("expansions")
+    if not isinstance(expansions, list) or not expansions:
+        raise ValueError("Source expansion approval is empty")
+
+    source_index: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for chunk in corpus_chunks:
+        metadata = chunk.get("metadata")
+        metadata = metadata if isinstance(metadata, Mapping) else {}
+        parent_id = str(metadata.get("parent_section_id") or "").strip()
+        if parent_id:
+            source_index[parent_id].append(chunk)
+
+    expanded = json.loads(json.dumps(cases, ensure_ascii=False))
+    case_index = {str(case.get("id")): case for case in expanded}
+    seen_targets: set[tuple[str, str]] = set()
+    for row in expansions:
+        case_id = str(row.get("case_id") or "").strip()
+        request_id = str(row.get("request_id") or "").strip()
+        target = (case_id, request_id)
+        if not case_id or not request_id or target in seen_targets:
+            raise ValueError("Source expansion targets must be unique and complete")
+        seen_targets.add(target)
+        case = case_index.get(case_id)
+        if case is None:
+            raise ValueError(f"Unknown source expansion case: {case_id}")
+        request = next(
+            (
+                item
+                for item in case.get("expected", {}).get("atomic_requests") or []
+                if item.get("request_id") == request_id
+            ),
+            None,
+        )
+        if request is None or request.get("request_kind") != "rag":
+            raise ValueError(f"Source expansion target is not RAG: {case_id}/{request_id}")
+
+        additions = {
+            str(value).strip()
+            for value in row.get("add_parent_section_ids") or []
+            if str(value or "").strip()
+        }
+        evidence = request.get("expected_evidence")
+        if not additions or not isinstance(evidence, dict):
+            raise ValueError(f"Invalid source expansion: {case_id}/{request_id}")
+        old_parents = {
+            str(value) for value in evidence.get("parent_section_ids") or []
+        }
+        if additions & old_parents:
+            raise ValueError(f"Source expansion repeats existing gold: {case_id}/{request_id}")
+
+        candidates = list(request.get("evidence_candidates") or [])
+        candidate_by_parent = {
+            str(value.get("parent_section_id")): value for value in candidates
+        }
+        cohort_refs = [
+            str(value).strip()
+            for value in request.get("cohort_refs") or []
+            if str(value or "").strip()
+        ]
+        if len(cohort_refs) != 1:
+            raise ValueError(
+                f"Source expansion requires one request cohort: {case_id}/{request_id}"
+            )
+        expected_cohort = cohort_refs[0]
+        new_sources: list[dict[str, Any]] = []
+        for parent_id in sorted(additions):
+            candidate = candidate_by_parent.get(parent_id)
+            if candidate is None:
+                chunks = source_index.get(parent_id) or []
+                if not chunks:
+                    raise ValueError(f"Approved source is absent from corpus: {parent_id}")
+                metadata_rows = [
+                    item.get("metadata")
+                    for item in chunks
+                    if isinstance(item.get("metadata"), Mapping)
+                ]
+                document_ids = {
+                    str(metadata.get("document_id") or "").strip()
+                    for metadata in metadata_rows
+                    if str(metadata.get("document_id") or "").strip()
+                }
+                cohorts = {
+                    str(metadata.get("cohort") or "").strip()
+                    for metadata in metadata_rows
+                    if str(metadata.get("cohort") or "").strip()
+                }
+                if len(document_ids) != 1 or len(cohorts) != 1:
+                    raise ValueError(f"Approved source identity is ambiguous: {parent_id}")
+                heading = next(
+                    (
+                        item
+                        for item in chunks
+                        if str((item.get("metadata") or {}).get("chunk_granularity"))
+                        == "section_heading"
+                    ),
+                    chunks[0],
+                )
+                heading_metadata = heading.get("metadata") or {}
+                candidate = {
+                    "origin": "human_approved_source_expansion",
+                    "legacy_case_id": None,
+                    "cohort": next(iter(cohorts)),
+                    "document_id": next(iter(document_ids)),
+                    "parent_section_id": parent_id,
+                    "chunk_ids": sorted(
+                        {
+                            str(item.get("chunk_id") or item.get("_id") or "")
+                            for item in chunks
+                            if str(item.get("chunk_id") or item.get("_id") or "")
+                        }
+                    ),
+                    "source_pages": sorted(
+                        {
+                            int(page)
+                            for metadata in metadata_rows
+                            for page in metadata.get("source_pages") or []
+                        }
+                    ),
+                    "source_section": heading_metadata.get("source_section"),
+                    "evidence_excerpt": str(heading.get("content") or "").strip(),
+                    "relevance_grade": 2,
+                }
+                candidates.append(candidate)
+            if str(candidate.get("cohort") or "").strip() != expected_cohort:
+                raise ValueError(f"Approved source cohort mismatch: {parent_id}")
+            new_sources.append(candidate)
+
+        existing_bindings = list(evidence.get("source_bindings") or [])
+        new_bindings = [
+            {
+                "document_id": source.get("document_id"),
+                "parent_section_id": source.get("parent_section_id"),
+                "chunk_ids": list(source.get("chunk_ids") or []),
+                "source_pages": list(source.get("source_pages") or []),
+                "relevance_grade": int(source.get("relevance_grade") or 1),
+            }
+            for source in new_sources
+        ]
+        bindings = existing_bindings + new_bindings
+        request["expected_evidence"] = {
+            **evidence,
+            "document_ids": sorted(
+                {
+                    str(value.get("document_id")).strip()
+                    for value in bindings
+                    if str(value.get("document_id") or "").strip()
+                }
+            ),
+            "parent_section_ids": sorted(
+                {
+                    str(value.get("parent_section_id")).strip()
+                    for value in bindings
+                    if str(value.get("parent_section_id") or "").strip()
+                }
+            ),
+            "chunk_ids": sorted(
+                {
+                    str(chunk_id)
+                    for value in bindings
+                    for chunk_id in value.get("chunk_ids") or []
+                }
+            ),
+            "source_pages": sorted(
+                {
+                    int(page)
+                    for value in bindings
+                    for page in value.get("source_pages") or []
+                }
+            ),
+            "relevance_grade": max(
+                int(value.get("relevance_grade") or 1) for value in bindings
+            ),
+            "evidence_excerpts": list(evidence.get("evidence_excerpts") or [])
+            + [str(value.get("evidence_excerpt") or "") for value in new_sources],
+            "source_bindings": bindings,
+        }
+        request["evidence_candidates"] = candidates
+        request["gold_audit"] = {
+            **request.get("gold_audit", {}),
+            "annotation_state": "human_approved",
+            "audit_method": "human_approved_source_expansion",
+            "candidate_count": len(candidates),
+            "reviewer": reviewer,
+            "reviewed_at": reviewed_at,
+            "approval_base_commit": approval.get("approval_base_commit"),
+        }
+        case["annotation"] = {
+            **case.get("annotation", {}),
+            "state": "human_approved",
+            "reviewer": reviewer,
+            "reviewed_at": reviewed_at,
+        }
+    return expanded
+
+
 def legacy_compatibility_report(root: Path = ROOT) -> dict[str, Any]:
     manifest = _load(root / "data/eval/final_holdout/manifest.json")
     deterministic = _load(root / "data/eval/final_holdout/deterministic_tool_cases.json")

@@ -52,7 +52,7 @@
     }
   },
   "files": {
-    "dev.json": "7ab8822dc16765fb33c622b0904887bf29dca771953883e40cdd3eea7d80d5ad",
+    "dev.json": "22d6e586ae72d0a8657bd3ff9ad9a25906ad04436b31581c06800e0c317f7928",
     "hidden.json": "0273778c82d8c08bb621d9bb57a9a12324f6e67ced0b2e901f6ddadd3b15431d"
   },
   "hidden_frozen": true,
@@ -103,7 +103,50 @@
           "K51_tram_y_te"
         ],
         "hidden_changed": false
+      },
+      {
+        "case_id": "dev-single_rag-09",
+        "request_id": "r1",
+        "approved_by": "project_owner",
+        "approved_at": "2026-08-21T06:28:57.2803248Z",
+        "approval_base_commit": "7dcc5a1ebea279db5f1f2c6ade2ba9426f4391b2",
+        "approval_sha256": "9b6c8bdad7dd4f1696f9e08000cb6818b1643a2f3145c0dda94813df45550be9",
+        "reason": "human_approved_alternative_rag_source_expansion",
+        "old_parent_section_ids": [
+          "K51_QuyCheDaoTao_Chuong4_Dieu16"
+        ],
+        "added_parent_section_ids": [
+          "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+          "K51_QuyCheCongTacSinhVien_Chuong6_Dieu34"
+        ],
+        "new_parent_section_ids": [
+          "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+          "K51_QuyCheCongTacSinhVien_Chuong6_Dieu34",
+          "K51_QuyCheDaoTao_Chuong4_Dieu16"
+        ],
+        "hidden_changed": false
+      },
+      {
+        "case_id": "dev-two_regulations-01",
+        "request_id": "r2",
+        "approved_by": "project_owner",
+        "approved_at": "2026-08-21T06:28:57.2803248Z",
+        "approval_base_commit": "7dcc5a1ebea279db5f1f2c6ade2ba9426f4391b2",
+        "approval_sha256": "9b6c8bdad7dd4f1696f9e08000cb6818b1643a2f3145c0dda94813df45550be9",
+        "reason": "human_approved_alternative_rag_source_expansion",
+        "old_parent_section_ids": [
+          "K51_QuyCheDaoTao_Chuong3_Dieu10"
+        ],
+        "added_parent_section_ids": [
+          "K51_QuyCheDaoTao_Chuong2_Dieu9"
+        ],
+        "new_parent_section_ids": [
+          "K51_QuyCheDaoTao_Chuong2_Dieu9",
+          "K51_QuyCheDaoTao_Chuong3_Dieu10"
+        ],
+        "hidden_changed": false
       }
-    ]
+    ],
+    "last_correction_at": "2026-08-21T06:28:57.2803248Z"
   }
 }

@@ -10,6 +10,7 @@ from types import SimpleNamespace
 import pytest
 
 from src.evaluation.single_cohort_gold import (
+    apply_approved_rag_source_expansions,
     apply_hidden_review,
     audit_bundle,
     legacy_compatibility_report,
@@ -34,6 +35,86 @@ from scripts.evaluate_single_cohort_v2 import (
     run_answers,
     run_executor_retrieval,
 )
+
+
+def test_approved_rag_source_expansion_is_additive_and_source_bound() -> None:
+    cases = [
+        {
+            "id": "dev-case",
+            "annotation": {"state": "human_approved"},
+            "expected": {
+                "atomic_requests": [
+                    {
+                        "request_id": "r1",
+                        "request_kind": "rag",
+                        "cohort_refs": ["K51"],
+                        "expected_evidence": {
+                            "document_ids": ["handbook-k51"],
+                            "parent_section_ids": ["K51_Old"],
+                            "chunk_ids": ["old-chunk"],
+                            "source_pages": [1],
+                            "relevance_grade": 2,
+                            "evidence_excerpts": ["old evidence"],
+                            "source_bindings": [
+                                {
+                                    "document_id": "handbook-k51",
+                                    "parent_section_id": "K51_Old",
+                                    "chunk_ids": ["old-chunk"],
+                                    "source_pages": [1],
+                                    "relevance_grade": 2,
+                                }
+                            ],
+                        },
+                        "evidence_candidates": [],
+                        "gold_audit": {"annotation_state": "human_approved"},
+                    }
+                ]
+            },
+        }
+    ]
+    approval = {
+        "approved_by": "project_owner",
+        "approved_at": "2026-08-21T00:00:00Z",
+        "approval_statement": "approve additive source",
+        "approval_base_commit": "abc",
+        "expansions": [
+            {
+                "case_id": "dev-case",
+                "request_id": "r1",
+                "add_parent_section_ids": ["K51_New"],
+            }
+        ],
+    }
+    chunks = [
+        {
+            "chunk_id": "new-heading",
+            "content": "direct source heading",
+            "metadata": {
+                "parent_section_id": "K51_New",
+                "chunk_granularity": "section_heading",
+                "document_id": "handbook-k51",
+                "cohort": "K51",
+                "source_pages": [2],
+                "source_section": "New source",
+            },
+        }
+    ]
+
+    expanded = apply_approved_rag_source_expansions(cases, approval, chunks)
+    request = expanded[0]["expected"]["atomic_requests"][0]
+
+    assert cases[0]["expected"]["atomic_requests"][0]["expected_evidence"][
+        "parent_section_ids"
+    ] == ["K51_Old"]
+    assert request["expected_evidence"]["parent_section_ids"] == [
+        "K51_New",
+        "K51_Old",
+    ]
+    assert len(request["expected_evidence"]["source_bindings"]) == 2
+    assert request["evidence_candidates"][0]["origin"] == (
+        "human_approved_source_expansion"
+    )
+    assert request["gold_audit"]["approval_base_commit"] == "abc"
 
 
 def test_answer_report_reuses_planner_and_executor_rows() -> None:

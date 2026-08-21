@@ -110,7 +110,247 @@
         "K51_QuyCheDaoTao_Chuong3_Dieu10"
       ],
       "hidden_changed": false
+    },
+    {
+      "case_id": "dev-single_rag-03",
+      "request_id": "r1",
+      "approved_by": "repository_owner",
+      "approved_at": "2026-08-21T07:40:22.6061858Z",
+      "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376",
+      "approval_sha256": "da4efbeb4cc02d04aef01739346fc606ab347803e5ec1ca3289f726f29d96286",
+      "reason": "human_approved_alternative_rag_source_expansion",
+      "old_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "added_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong2_Dieu9"
+      ],
+      "new_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong2_Dieu9",
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "hidden_changed": false
+    },
+    {
+      "case_id": "dev-two_regulations-11",
+      "request_id": "r2",
+      "approved_by": "repository_owner",
+      "approved_at": "2026-08-21T07:40:22.6061858Z",
+      "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376",
+      "approval_sha256": "da4efbeb4cc02d04aef01739346fc606ab347803e5ec1ca3289f726f29d96286",
+      "reason": "human_approved_alternative_rag_source_expansion",
+      "old_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "added_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong2_Dieu9"
+      ],
+      "new_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong2_Dieu9",
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "hidden_changed": false
+    },
+    {
+      "case_id": "dev-mixed-03",
+      "request_id": "r2",
+      "approved_by": "repository_owner",
+      "approved_at": "2026-08-21T07:40:22.6061858Z",
+      "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376",
+      "approval_sha256": "da4efbeb4cc02d04aef01739346fc606ab347803e5ec1ca3289f726f29d96286",
+      "reason": "human_approved_alternative_rag_source_expansion",
+      "old_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "added_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4"
+      ],
+      "new_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4",
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "hidden_changed": false
+    },
+    {
+      "case_id": "dev-mixed-11",
+      "request_id": "r2",
+      "approved_by": "repository_owner",
+      "approved_at": "2026-08-21T07:40:22.6061858Z",
+      "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376",
+      "approval_sha256": "da4efbeb4cc02d04aef01739346fc606ab347803e5ec1ca3289f726f29d96286",
+      "reason": "human_approved_alternative_rag_source_expansion",
+      "old_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "added_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4"
+      ],
+      "new_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4",
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "hidden_changed": false
+    },
+    {
+      "case_id": "dev-mixed-19",
+      "request_id": "r2",
+      "approved_by": "repository_owner",
+      "approved_at": "2026-08-21T07:40:22.6061858Z",
+      "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376",
+      "approval_sha256": "da4efbeb4cc02d04aef01739346fc606ab347803e5ec1ca3289f726f29d96286",
+      "reason": "human_approved_alternative_rag_source_expansion",
+      "old_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "added_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4"
+      ],
+      "new_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4",
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "hidden_changed": false
+    },
+    {
+      "case_id": "dev-three_to_six_requests-02",
+      "request_id": "r2",
+      "approved_by": "repository_owner",
+      "approved_at": "2026-08-21T07:40:22.6061858Z",
+      "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376",
+      "approval_sha256": "da4efbeb4cc02d04aef01739346fc606ab347803e5ec1ca3289f726f29d96286",
+      "reason": "human_approved_alternative_rag_source_expansion",
+      "old_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "added_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4"
+      ],
+      "new_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4",
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "hidden_changed": false
+    },
+    {
+      "case_id": "dev-three_to_six_requests-04",
+      "request_id": "r6",
+      "approved_by": "repository_owner",
+      "approved_at": "2026-08-21T07:40:22.6061858Z",
+      "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376",
+      "approval_sha256": "da4efbeb4cc02d04aef01739346fc606ab347803e5ec1ca3289f726f29d96286",
+      "reason": "human_approved_alternative_rag_source_expansion",
+      "old_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "added_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4"
+      ],
+      "new_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4",
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "hidden_changed": false
+    },
+    {
+      "case_id": "dev-three_to_six_requests-06",
+      "request_id": "r4",
+      "approved_by": "repository_owner",
+      "approved_at": "2026-08-21T07:40:22.6061858Z",
+      "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376",
+      "approval_sha256": "da4efbeb4cc02d04aef01739346fc606ab347803e5ec1ca3289f726f29d96286",
+      "reason": "human_approved_alternative_rag_source_expansion",
+      "old_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "added_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4"
+      ],
+      "new_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4",
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "hidden_changed": false
+    },
+    {
+      "case_id": "dev-three_to_six_requests-08",
+      "request_id": "r2",
+      "approved_by": "repository_owner",
+      "approved_at": "2026-08-21T07:40:22.6061858Z",
+      "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376",
+      "approval_sha256": "da4efbeb4cc02d04aef01739346fc606ab347803e5ec1ca3289f726f29d96286",
+      "reason": "human_approved_alternative_rag_source_expansion",
+      "old_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "added_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4"
+      ],
+      "new_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4",
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "hidden_changed": false
+    },
+    {
+      "case_id": "dev-three_to_six_requests-12",
+      "request_id": "r4",
+      "approved_by": "repository_owner",
+      "approved_at": "2026-08-21T07:40:22.6061858Z",
+      "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376",
+      "approval_sha256": "da4efbeb4cc02d04aef01739346fc606ab347803e5ec1ca3289f726f29d96286",
+      "reason": "human_approved_alternative_rag_source_expansion",
+      "old_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "added_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4"
+      ],
+      "new_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong1_Dieu4",
+        "K51_QuyCheDaoTao_Chuong3_Dieu10"
+      ],
+      "hidden_changed": false
+    },
+    {
+      "case_id": "dev-two_regulations-03",
+      "request_id": "r1",
+      "approved_by": "repository_owner",
+      "approved_at": "2026-08-21T07:40:22.6061858Z",
+      "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376",
+      "approval_sha256": "da4efbeb4cc02d04aef01739346fc606ab347803e5ec1ca3289f726f29d96286",
+      "reason": "human_approved_alternative_rag_source_expansion",
+      "old_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong4_Dieu16"
+      ],
+      "added_parent_section_ids": [
+        "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31"
+      ],
+      "new_parent_section_ids": [
+        "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+        "K51_QuyCheDaoTao_Chuong4_Dieu16"
+      ],
+      "hidden_changed": false
+    },
+    {
+      "case_id": "dev-two_regulations-09",
+      "request_id": "r2",
+      "approved_by": "repository_owner",
+      "approved_at": "2026-08-21T07:40:22.6061858Z",
+      "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376",
+      "approval_sha256": "da4efbeb4cc02d04aef01739346fc606ab347803e5ec1ca3289f726f29d96286",
+      "reason": "human_approved_alternative_rag_source_expansion",
+      "old_parent_section_ids": [
+        "K51_QuyCheDaoTao_Chuong4_Dieu16"
+      ],
+      "added_parent_section_ids": [
+        "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31"
+      ],
+      "new_parent_section_ids": [
+        "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+        "K51_QuyCheDaoTao_Chuong4_Dieu16"
+      ],
+      "hidden_changed": false
     }
   ],
-  "last_correction_at": "2026-08-21T06:28:57.2803248Z"
+  "last_correction_at": "2026-08-21T07:40:22.6061858Z"
 }

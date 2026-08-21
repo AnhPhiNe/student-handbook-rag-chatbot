@@ -2289,9 +2289,15 @@
               "so_tay_sinh_vien_khoa_51"
             ],
             "parent_section_ids": [
+              "K51_QuyCheDaoTao_Chuong2_Dieu9",
               "K51_QuyCheDaoTao_Chuong3_Dieu10"
             ],
             "chunk_ids": [
+              "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0001_00",
+              "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0003_00",
+              "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0005_00",
+              "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0009_00",
+              "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_section_heading",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0008_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0016_00",
@@ -2299,6 +2305,7 @@
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0018_00"
             ],
             "source_pages": [
+              15,
               16,
               17,
               18,
@@ -2306,7 +2313,8 @@
             ],
             "relevance_grade": 2,
             "evidence_excerpts": [
-              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm"
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm",
+              "Parent section: Tổ chức đăng ký học tập\nGranularity: child\nClause marker: b\nContent: b) Từ học kỳ thứ hai của khóa học, sinh viên phải tự đăng ký các học phần trên hệ thống đăng ký học tập của Trường theo kế hoạch được ban hành. Các học phần được đăng ký bao gồm: học phần mới, học phần chưa đạt (để học lại), học phần đã đạt để cải thiện điểm (nếu có) đáp ứng điều kiện đăng ký của mỗi học phần trong danh sách học phần được mở;"
             ],
             "source_bindings": [
               {
@@ -2324,6 +2332,22 @@
                   17,
                   18,
                   19
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_51",
+                "parent_section_id": "K51_QuyCheDaoTao_Chuong2_Dieu9",
+                "chunk_ids": [
+                  "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0003_00",
+                  "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0009_00",
+                  "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0005_00",
+                  "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_section_heading",
+                  "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0001_00"
+                ],
+                "source_pages": [
+                  15,
+                  16
                 ],
                 "relevance_grade": 2
               }
@@ -2565,10 +2589,11 @@
           ],
           "gold_audit": {
             "annotation_state": "human_approved",
-            "audit_method": "candidate_only_not_gold",
+            "audit_method": "human_approved_source_expansion",
             "candidate_count": 10,
-            "reviewer": "project_owner_confirmed",
-            "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+            "reviewer": "repository_owner",
+            "reviewed_at": "2026-08-21T07:40:22.6061858Z",
+            "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376"
           }
         }
       ],
@@ -2579,8 +2604,8 @@
     },
     "annotation": {
       "state": "human_approved",
-      "reviewer": "project_owner_confirmed",
-      "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+      "reviewer": "repository_owner",
+      "reviewed_at": "2026-08-21T07:40:22.6061858Z"
     }
   },
   {
@@ -15662,9 +15687,15 @@
               "so_tay_sinh_vien_khoa_51"
             ],
             "parent_section_ids": [
+              "K51_QuyCheDaoTao_Chuong1_Dieu4",
               "K51_QuyCheDaoTao_Chuong3_Dieu10"
             ],
             "chunk_ids": [
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0008_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0016_00",
@@ -15672,6 +15703,7 @@
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0018_00"
             ],
             "source_pages": [
+              11,
               16,
               17,
               18,
@@ -15679,7 +15711,8 @@
             ],
             "relevance_grade": 2,
             "evidence_excerpts": [
-              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm"
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm",
+              "Parent section: Phương thức tổ chức đào tạo\nGranularity: child\nClause marker: b\nContent: b) Sinh viên không đạt một học phần bắt buộc sẽ phải đăng ký học lại học phần đó hoặc một học phần tương đương theo quy định trong CTĐT, hoặc một học phần thay thế nếu học phần đó không còn được giảng dạy;"
             ],
             "source_bindings": [
               {
@@ -15697,6 +15730,21 @@
                   17,
                   18,
                   19
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_51",
+                "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu4",
+                "chunk_ids": [
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00"
+                ],
+                "source_pages": [
+                  11
                 ],
                 "relevance_grade": 2
               }
@@ -15938,10 +15986,11 @@
           ],
           "gold_audit": {
             "annotation_state": "human_approved",
-            "audit_method": "candidate_only_not_gold",
+            "audit_method": "human_approved_source_expansion",
             "candidate_count": 10,
-            "reviewer": "project_owner_confirmed",
-            "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+            "reviewer": "repository_owner",
+            "reviewed_at": "2026-08-21T07:40:22.6061858Z",
+            "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376"
           }
         }
       ],
@@ -15952,8 +16001,8 @@
     },
     "annotation": {
       "state": "human_approved",
-      "reviewer": "project_owner_confirmed",
-      "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+      "reviewer": "repository_owner",
+      "reviewed_at": "2026-08-21T07:40:22.6061858Z"
     }
   },
   {
@@ -19581,9 +19630,15 @@
               "so_tay_sinh_vien_khoa_51"
             ],
             "parent_section_ids": [
+              "K51_QuyCheDaoTao_Chuong1_Dieu4",
               "K51_QuyCheDaoTao_Chuong3_Dieu10"
             ],
             "chunk_ids": [
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0008_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0016_00",
@@ -19591,6 +19646,7 @@
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0018_00"
             ],
             "source_pages": [
+              11,
               16,
               17,
               18,
@@ -19598,7 +19654,8 @@
             ],
             "relevance_grade": 2,
             "evidence_excerpts": [
-              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm"
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm",
+              "Parent section: Phương thức tổ chức đào tạo\nGranularity: child\nClause marker: b\nContent: b) Sinh viên không đạt một học phần bắt buộc sẽ phải đăng ký học lại học phần đó hoặc một học phần tương đương theo quy định trong CTĐT, hoặc một học phần thay thế nếu học phần đó không còn được giảng dạy;"
             ],
             "source_bindings": [
               {
@@ -19616,6 +19673,21 @@
                   17,
                   18,
                   19
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_51",
+                "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu4",
+                "chunk_ids": [
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00"
+                ],
+                "source_pages": [
+                  11
                 ],
                 "relevance_grade": 2
               }
@@ -19857,10 +19929,11 @@
           ],
           "gold_audit": {
             "annotation_state": "human_approved",
-            "audit_method": "candidate_only_not_gold",
+            "audit_method": "human_approved_source_expansion",
             "candidate_count": 10,
-            "reviewer": "project_owner_confirmed",
-            "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+            "reviewer": "repository_owner",
+            "reviewed_at": "2026-08-21T07:40:22.6061858Z",
+            "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376"
           }
         }
       ],
@@ -19871,8 +19944,8 @@
     },
     "annotation": {
       "state": "human_approved",
-      "reviewer": "project_owner_confirmed",
-      "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+      "reviewer": "repository_owner",
+      "reviewed_at": "2026-08-21T07:40:22.6061858Z"
     }
   },
   {
@@ -23548,9 +23621,15 @@
               "so_tay_sinh_vien_khoa_51"
             ],
             "parent_section_ids": [
+              "K51_QuyCheDaoTao_Chuong1_Dieu4",
               "K51_QuyCheDaoTao_Chuong3_Dieu10"
             ],
             "chunk_ids": [
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0008_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0016_00",
@@ -23558,6 +23637,7 @@
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0018_00"
             ],
             "source_pages": [
+              11,
               16,
               17,
               18,
@@ -23565,7 +23645,8 @@
             ],
             "relevance_grade": 2,
             "evidence_excerpts": [
-              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm"
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm",
+              "Parent section: Phương thức tổ chức đào tạo\nGranularity: child\nClause marker: b\nContent: b) Sinh viên không đạt một học phần bắt buộc sẽ phải đăng ký học lại học phần đó hoặc một học phần tương đương theo quy định trong CTĐT, hoặc một học phần thay thế nếu học phần đó không còn được giảng dạy;"
             ],
             "source_bindings": [
               {
@@ -23583,6 +23664,21 @@
                   17,
                   18,
                   19
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_51",
+                "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu4",
+                "chunk_ids": [
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00"
+                ],
+                "source_pages": [
+                  11
                 ],
                 "relevance_grade": 2
               }
@@ -23824,10 +23920,11 @@
           ],
           "gold_audit": {
             "annotation_state": "human_approved",
-            "audit_method": "candidate_only_not_gold",
+            "audit_method": "human_approved_source_expansion",
             "candidate_count": 10,
-            "reviewer": "project_owner_confirmed",
-            "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+            "reviewer": "repository_owner",
+            "reviewed_at": "2026-08-21T07:40:22.6061858Z",
+            "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376"
           }
         }
       ],
@@ -23838,8 +23935,8 @@
     },
     "annotation": {
       "state": "human_approved",
-      "reviewer": "project_owner_confirmed",
-      "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+      "reviewer": "repository_owner",
+      "reviewed_at": "2026-08-21T07:40:22.6061858Z"
     }
   },
   {
@@ -25572,9 +25669,15 @@
               "so_tay_sinh_vien_khoa_51"
             ],
             "parent_section_ids": [
+              "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
               "K51_QuyCheDaoTao_Chuong4_Dieu16"
             ],
             "chunk_ids": [
+              "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0001_00",
+              "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0003_00",
+              "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0004_00",
+              "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0005_00",
+              "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_section_heading",
               "cp_K51_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
               "cp_K51_QuyCheDaoTao_Chuong4_Dieu16_child_0005_00",
               "cp_K51_QuyCheDaoTao_Chuong4_Dieu16_child_0009_00",
@@ -25583,11 +25686,14 @@
             ],
             "source_pages": [
               25,
-              26
+              26,
+              75,
+              76
             ],
             "relevance_grade": 2,
             "evidence_excerpts": [
-              "Parent section: Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học\nGranularity: child\nClause marker: d\nContent: d) Vì lý do cá nhân khác nhưng đã phải học tối thiểu 01 học kỳ và không thuộc các trường hợp bị xem xét buộc thôi học hoặc xem xét kỷ luật."
+              "Parent section: Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học\nGranularity: child\nClause marker: d\nContent: d) Vì lý do cá nhân khác nhưng đã phải học tối thiểu 01 học kỳ và không thuộc các trường hợp bị xem xét buộc thôi học hoặc xem xét kỷ luật.",
+              "Section heading: Quy định về việc thôi học, chuyển trường, chuyển ngành, buộc thôi học\nChapter: Chương V - HỌC BỔNG, MIỄN, GIẢM HỌC PHÍ VÀ BẢO LƯU KẾT QUẢ\nDocument: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 31. Quy định về việc thôi học, chuyển trường, chuyển ngành, buộc thôi học"
             ],
             "source_bindings": [
               {
@@ -25603,6 +25709,22 @@
                 "source_pages": [
                   25,
                   26
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_51",
+                "parent_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+                "chunk_ids": [
+                  "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_section_heading",
+                  "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0001_00",
+                  "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0003_00",
+                  "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0004_00",
+                  "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0005_00"
+                ],
+                "source_pages": [
+                  75,
+                  76
                 ],
                 "relevance_grade": 2
               }
@@ -25846,10 +25968,11 @@
           ],
           "gold_audit": {
             "annotation_state": "human_approved",
-            "audit_method": "candidate_only_not_gold",
+            "audit_method": "human_approved_source_expansion",
             "candidate_count": 10,
-            "reviewer": "project_owner_confirmed",
-            "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+            "reviewer": "repository_owner",
+            "reviewed_at": "2026-08-21T07:40:22.6061858Z",
+            "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376"
           }
         },
         {
@@ -26155,8 +26278,8 @@
     },
     "annotation": {
       "state": "human_approved",
-      "reviewer": "project_owner_confirmed",
-      "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+      "reviewer": "repository_owner",
+      "reviewed_at": "2026-08-21T07:40:22.6061858Z"
     }
   },
   {
@@ -29600,9 +29723,15 @@
               "so_tay_sinh_vien_khoa_51"
             ],
             "parent_section_ids": [
+              "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
               "K51_QuyCheDaoTao_Chuong4_Dieu16"
             ],
             "chunk_ids": [
+              "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0001_00",
+              "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0003_00",
+              "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0004_00",
+              "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0005_00",
+              "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_section_heading",
               "cp_K51_QuyCheDaoTao_Chuong4_Dieu16_child_0001_00",
               "cp_K51_QuyCheDaoTao_Chuong4_Dieu16_child_0005_00",
               "cp_K51_QuyCheDaoTao_Chuong4_Dieu16_child_0009_00",
@@ -29611,11 +29740,14 @@
             ],
             "source_pages": [
               25,
-              26
+              26,
+              75,
+              76
             ],
             "relevance_grade": 2,
             "evidence_excerpts": [
-              "Parent section: Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học\nGranularity: child\nClause marker: d\nContent: d) Vì lý do cá nhân khác nhưng đã phải học tối thiểu 01 học kỳ và không thuộc các trường hợp bị xem xét buộc thôi học hoặc xem xét kỷ luật."
+              "Parent section: Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học\nGranularity: child\nClause marker: d\nContent: d) Vì lý do cá nhân khác nhưng đã phải học tối thiểu 01 học kỳ và không thuộc các trường hợp bị xem xét buộc thôi học hoặc xem xét kỷ luật.",
+              "Section heading: Quy định về việc thôi học, chuyển trường, chuyển ngành, buộc thôi học\nChapter: Chương V - HỌC BỔNG, MIỄN, GIẢM HỌC PHÍ VÀ BẢO LƯU KẾT QUẢ\nDocument: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 31. Quy định về việc thôi học, chuyển trường, chuyển ngành, buộc thôi học"
             ],
             "source_bindings": [
               {
@@ -29631,6 +29763,22 @@
                 "source_pages": [
                   25,
                   26
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_51",
+                "parent_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+                "chunk_ids": [
+                  "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_section_heading",
+                  "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0001_00",
+                  "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0003_00",
+                  "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0004_00",
+                  "cp_K51_QuyCheCongTacSinhVien_Chuong5_Dieu31_child_0005_00"
+                ],
+                "source_pages": [
+                  75,
+                  76
                 ],
                 "relevance_grade": 2
               }
@@ -29874,10 +30022,11 @@
           ],
           "gold_audit": {
             "annotation_state": "human_approved",
-            "audit_method": "candidate_only_not_gold",
+            "audit_method": "human_approved_source_expansion",
             "candidate_count": 10,
-            "reviewer": "project_owner_confirmed",
-            "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+            "reviewer": "repository_owner",
+            "reviewed_at": "2026-08-21T07:40:22.6061858Z",
+            "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376"
           }
         }
       ],
@@ -29888,8 +30037,8 @@
     },
     "annotation": {
       "state": "human_approved",
-      "reviewer": "project_owner_confirmed",
-      "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+      "reviewer": "repository_owner",
+      "reviewed_at": "2026-08-21T07:40:22.6061858Z"
     }
   },
   {
@@ -30819,9 +30968,15 @@
               "so_tay_sinh_vien_khoa_51"
             ],
             "parent_section_ids": [
+              "K51_QuyCheDaoTao_Chuong2_Dieu9",
               "K51_QuyCheDaoTao_Chuong3_Dieu10"
             ],
             "chunk_ids": [
+              "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0001_00",
+              "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0003_00",
+              "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0005_00",
+              "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0009_00",
+              "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_section_heading",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0008_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0016_00",
@@ -30829,6 +30984,7 @@
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0018_00"
             ],
             "source_pages": [
+              15,
               16,
               17,
               18,
@@ -30836,7 +30992,8 @@
             ],
             "relevance_grade": 2,
             "evidence_excerpts": [
-              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm"
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm",
+              "Parent section: Tổ chức đăng ký học tập\nGranularity: child\nClause marker: b\nContent: b) Từ học kỳ thứ hai của khóa học, sinh viên phải tự đăng ký các học phần trên hệ thống đăng ký học tập của Trường theo kế hoạch được ban hành. Các học phần được đăng ký bao gồm: học phần mới, học phần chưa đạt (để học lại), học phần đã đạt để cải thiện điểm (nếu có) đáp ứng điều kiện đăng ký của mỗi học phần trong danh sách học phần được mở;"
             ],
             "source_bindings": [
               {
@@ -30854,6 +31011,22 @@
                   17,
                   18,
                   19
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_51",
+                "parent_section_id": "K51_QuyCheDaoTao_Chuong2_Dieu9",
+                "chunk_ids": [
+                  "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0003_00",
+                  "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0009_00",
+                  "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0005_00",
+                  "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_section_heading",
+                  "cp_K51_QuyCheDaoTao_Chuong2_Dieu9_child_0001_00"
+                ],
+                "source_pages": [
+                  15,
+                  16
                 ],
                 "relevance_grade": 2
               }
@@ -31095,10 +31268,11 @@
           ],
           "gold_audit": {
             "annotation_state": "human_approved",
-            "audit_method": "candidate_only_not_gold",
+            "audit_method": "human_approved_source_expansion",
             "candidate_count": 10,
-            "reviewer": "project_owner_confirmed",
-            "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+            "reviewer": "repository_owner",
+            "reviewed_at": "2026-08-21T07:40:22.6061858Z",
+            "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376"
           }
         }
       ],
@@ -31109,8 +31283,8 @@
     },
     "annotation": {
       "state": "human_approved",
-      "reviewer": "project_owner_confirmed",
-      "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+      "reviewer": "repository_owner",
+      "reviewed_at": "2026-08-21T07:40:22.6061858Z"
     }
   },
   {
@@ -34363,9 +34537,15 @@
               "so_tay_sinh_vien_khoa_51"
             ],
             "parent_section_ids": [
+              "K51_QuyCheDaoTao_Chuong1_Dieu4",
               "K51_QuyCheDaoTao_Chuong3_Dieu10"
             ],
             "chunk_ids": [
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0008_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0016_00",
@@ -34373,6 +34553,7 @@
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0018_00"
             ],
             "source_pages": [
+              11,
               16,
               17,
               18,
@@ -34380,7 +34561,8 @@
             ],
             "relevance_grade": 2,
             "evidence_excerpts": [
-              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm"
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm",
+              "Parent section: Phương thức tổ chức đào tạo\nGranularity: child\nClause marker: b\nContent: b) Sinh viên không đạt một học phần bắt buộc sẽ phải đăng ký học lại học phần đó hoặc một học phần tương đương theo quy định trong CTĐT, hoặc một học phần thay thế nếu học phần đó không còn được giảng dạy;"
             ],
             "source_bindings": [
               {
@@ -34398,6 +34580,21 @@
                   17,
                   18,
                   19
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_51",
+                "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu4",
+                "chunk_ids": [
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00"
+                ],
+                "source_pages": [
+                  11
                 ],
                 "relevance_grade": 2
               }
@@ -34639,10 +34836,11 @@
           ],
           "gold_audit": {
             "annotation_state": "human_approved",
-            "audit_method": "candidate_only_not_gold",
+            "audit_method": "human_approved_source_expansion",
             "candidate_count": 10,
-            "reviewer": "project_owner_confirmed",
-            "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+            "reviewer": "repository_owner",
+            "reviewed_at": "2026-08-21T07:40:22.6061858Z",
+            "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376"
           }
         },
         {
@@ -35037,8 +35235,8 @@
     },
     "annotation": {
       "state": "human_approved",
-      "reviewer": "project_owner_confirmed",
-      "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+      "reviewer": "repository_owner",
+      "reviewed_at": "2026-08-21T07:40:22.6061858Z"
     }
   },
   {
@@ -37393,9 +37591,15 @@
               "so_tay_sinh_vien_khoa_51"
             ],
             "parent_section_ids": [
+              "K51_QuyCheDaoTao_Chuong1_Dieu4",
               "K51_QuyCheDaoTao_Chuong3_Dieu10"
             ],
             "chunk_ids": [
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0008_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0016_00",
@@ -37403,6 +37607,7 @@
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0018_00"
             ],
             "source_pages": [
+              11,
               16,
               17,
               18,
@@ -37410,7 +37615,8 @@
             ],
             "relevance_grade": 2,
             "evidence_excerpts": [
-              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm"
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm",
+              "Parent section: Phương thức tổ chức đào tạo\nGranularity: child\nClause marker: b\nContent: b) Sinh viên không đạt một học phần bắt buộc sẽ phải đăng ký học lại học phần đó hoặc một học phần tương đương theo quy định trong CTĐT, hoặc một học phần thay thế nếu học phần đó không còn được giảng dạy;"
             ],
             "source_bindings": [
               {
@@ -37428,6 +37634,21 @@
                   17,
                   18,
                   19
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_51",
+                "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu4",
+                "chunk_ids": [
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00"
+                ],
+                "source_pages": [
+                  11
                 ],
                 "relevance_grade": 2
               }
@@ -37669,10 +37890,11 @@
           ],
           "gold_audit": {
             "annotation_state": "human_approved",
-            "audit_method": "candidate_only_not_gold",
+            "audit_method": "human_approved_source_expansion",
             "candidate_count": 10,
-            "reviewer": "project_owner_confirmed",
-            "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+            "reviewer": "repository_owner",
+            "reviewed_at": "2026-08-21T07:40:22.6061858Z",
+            "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376"
           }
         }
       ],
@@ -37683,8 +37905,8 @@
     },
     "annotation": {
       "state": "human_approved",
-      "reviewer": "project_owner_confirmed",
-      "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+      "reviewer": "repository_owner",
+      "reviewed_at": "2026-08-21T07:40:22.6061858Z"
     }
   },
   {
@@ -39261,9 +39483,15 @@
               "so_tay_sinh_vien_khoa_51"
             ],
             "parent_section_ids": [
+              "K51_QuyCheDaoTao_Chuong1_Dieu4",
               "K51_QuyCheDaoTao_Chuong3_Dieu10"
             ],
             "chunk_ids": [
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0008_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0016_00",
@@ -39271,6 +39499,7 @@
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0018_00"
             ],
             "source_pages": [
+              11,
               16,
               17,
               18,
@@ -39278,7 +39507,8 @@
             ],
             "relevance_grade": 2,
             "evidence_excerpts": [
-              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm"
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm",
+              "Parent section: Phương thức tổ chức đào tạo\nGranularity: child\nClause marker: b\nContent: b) Sinh viên không đạt một học phần bắt buộc sẽ phải đăng ký học lại học phần đó hoặc một học phần tương đương theo quy định trong CTĐT, hoặc một học phần thay thế nếu học phần đó không còn được giảng dạy;"
             ],
             "source_bindings": [
               {
@@ -39296,6 +39526,21 @@
                   17,
                   18,
                   19
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_51",
+                "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu4",
+                "chunk_ids": [
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00"
+                ],
+                "source_pages": [
+                  11
                 ],
                 "relevance_grade": 2
               }
@@ -39537,10 +39782,11 @@
           ],
           "gold_audit": {
             "annotation_state": "human_approved",
-            "audit_method": "candidate_only_not_gold",
+            "audit_method": "human_approved_source_expansion",
             "candidate_count": 10,
-            "reviewer": "project_owner_confirmed",
-            "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+            "reviewer": "repository_owner",
+            "reviewed_at": "2026-08-21T07:40:22.6061858Z",
+            "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376"
           }
         }
       ],
@@ -39551,8 +39797,8 @@
     },
     "annotation": {
       "state": "human_approved",
-      "reviewer": "project_owner_confirmed",
-      "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+      "reviewer": "repository_owner",
+      "reviewed_at": "2026-08-21T07:40:22.6061858Z"
     }
   },
   {
@@ -40700,9 +40946,15 @@
               "so_tay_sinh_vien_khoa_51"
             ],
             "parent_section_ids": [
+              "K51_QuyCheDaoTao_Chuong1_Dieu4",
               "K51_QuyCheDaoTao_Chuong3_Dieu10"
             ],
             "chunk_ids": [
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0008_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0016_00",
@@ -40710,6 +40962,7 @@
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0018_00"
             ],
             "source_pages": [
+              11,
               16,
               17,
               18,
@@ -40717,7 +40970,8 @@
             ],
             "relevance_grade": 2,
             "evidence_excerpts": [
-              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm"
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm",
+              "Parent section: Phương thức tổ chức đào tạo\nGranularity: child\nClause marker: b\nContent: b) Sinh viên không đạt một học phần bắt buộc sẽ phải đăng ký học lại học phần đó hoặc một học phần tương đương theo quy định trong CTĐT, hoặc một học phần thay thế nếu học phần đó không còn được giảng dạy;"
             ],
             "source_bindings": [
               {
@@ -40735,6 +40989,21 @@
                   17,
                   18,
                   19
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_51",
+                "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu4",
+                "chunk_ids": [
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00"
+                ],
+                "source_pages": [
+                  11
                 ],
                 "relevance_grade": 2
               }
@@ -40976,10 +41245,11 @@
           ],
           "gold_audit": {
             "annotation_state": "human_approved",
-            "audit_method": "candidate_only_not_gold",
+            "audit_method": "human_approved_source_expansion",
             "candidate_count": 10,
-            "reviewer": "project_owner_confirmed",
-            "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+            "reviewer": "repository_owner",
+            "reviewed_at": "2026-08-21T07:40:22.6061858Z",
+            "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376"
           }
         },
         {
@@ -41857,8 +42127,8 @@
     },
     "annotation": {
       "state": "human_approved",
-      "reviewer": "project_owner_confirmed",
-      "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+      "reviewer": "repository_owner",
+      "reviewed_at": "2026-08-21T07:40:22.6061858Z"
     }
   },
   {
@@ -45152,9 +45422,15 @@
               "so_tay_sinh_vien_khoa_51"
             ],
             "parent_section_ids": [
+              "K51_QuyCheDaoTao_Chuong1_Dieu4",
               "K51_QuyCheDaoTao_Chuong3_Dieu10"
             ],
             "chunk_ids": [
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+              "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0008_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0013_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0016_00",
@@ -45162,6 +45438,7 @@
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu10_child_0018_00"
             ],
             "source_pages": [
+              11,
               16,
               17,
               18,
@@ -45169,7 +45446,8 @@
             ],
             "relevance_grade": 2,
             "evidence_excerpts": [
-              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm"
+              "Parent section: Đánh giá và tính điểm học phần\nGranularity: child\nClause marker: 3\nContent: 3. Học lại và học cải thiện điểm",
+              "Parent section: Phương thức tổ chức đào tạo\nGranularity: child\nClause marker: b\nContent: b) Sinh viên không đạt một học phần bắt buộc sẽ phải đăng ký học lại học phần đó hoặc một học phần tương đương theo quy định trong CTĐT, hoặc một học phần thay thế nếu học phần đó không còn được giảng dạy;"
             ],
             "source_bindings": [
               {
@@ -45187,6 +45465,21 @@
                   17,
                   18,
                   19
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_51",
+                "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu4",
+                "chunk_ids": [
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0003_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0004_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0005_00",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_section_heading",
+                  "cp_K51_QuyCheDaoTao_Chuong1_Dieu4_child_0002_00"
+                ],
+                "source_pages": [
+                  11
                 ],
                 "relevance_grade": 2
               }
@@ -45428,10 +45721,11 @@
           ],
           "gold_audit": {
             "annotation_state": "human_approved",
-            "audit_method": "candidate_only_not_gold",
+            "audit_method": "human_approved_source_expansion",
             "candidate_count": 10,
-            "reviewer": "project_owner_confirmed",
-            "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+            "reviewer": "repository_owner",
+            "reviewed_at": "2026-08-21T07:40:22.6061858Z",
+            "approval_base_commit": "5fdc0ece3af059da7099564dbe722e6c5d388376"
           }
         },
         {
@@ -45948,8 +46242,8 @@
     },
     "annotation": {
       "state": "human_approved",
-      "reviewer": "project_owner_confirmed",
-      "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+      "reviewer": "repository_owner",
+      "reviewed_at": "2026-08-21T07:40:22.6061858Z"
     }
   },
   {

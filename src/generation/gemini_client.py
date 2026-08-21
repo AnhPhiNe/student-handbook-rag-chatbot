@@ -291,7 +291,13 @@ class GeminiClient:
         self._last_stream_model: str = model_name
         self._last_usage: dict[str, int] | None = None
 
-    def generate(self, prompt: str) -> dict[str, Any]:
+    def generate(
+        self,
+        prompt: str,
+        *,
+        temperature: float | None = None,
+        max_output_tokens: int | None = None,
+    ) -> dict[str, Any]:
         attempts = 0
         max_attempts = max(1, (self.max_retries + 1) * len(self.available_keys))
         last_error_type = None
@@ -302,7 +308,27 @@ class GeminiClient:
             attempts += 1
             try:
                 request_client = self._genai.Client(api_key=current_key)
-                text = self._generate_once(prompt, client=request_client)
+                if temperature is not None or max_output_tokens is not None:
+                    request_config = self._types.GenerateContentConfig(
+                        temperature=(
+                            temperature
+                            if temperature is not None
+                            else getattr(self._config, "temperature", None)
+                        ),
+                        max_output_tokens=(
+                            max_output_tokens
+                            if max_output_tokens is not None
+                            else getattr(self._config, "max_output_tokens", None)
+                        ),
+                    )
+                if temperature is None and max_output_tokens is None:
+                    text = self._generate_once(prompt, client=request_client)
+                else:
+                    text = self._generate_once(
+                        prompt,
+                        client=request_client,
+                        generation_config=request_config,
+                    )
                 if not text:
                     raise RuntimeError("Gemini API returned an empty response.")
 
@@ -354,14 +380,20 @@ class GeminiClient:
             "model_used": self.model_name,
         }
 
-    def _generate_once(self, prompt: str, *, client: Any | None = None) -> str:
+    def _generate_once(
+        self,
+        prompt: str,
+        *,
+        client: Any | None = None,
+        generation_config: Any | None = None,
+    ) -> str:
         request_client = client or self._client
         executor = ThreadPoolExecutor(max_workers=1)
         future = executor.submit(
             request_client.models.generate_content,
             model=self.model_name,
             contents=prompt,
-            config=self._config,
+            config=generation_config or self._config,
         )
         try:
             response = future.result(timeout=self.request_timeout_seconds)

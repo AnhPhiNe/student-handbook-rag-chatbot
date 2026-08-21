@@ -53,6 +53,23 @@ def test_answer_report_reuses_planner_and_executor_rows() -> None:
     assert answers == [answer_row]
 
 
+def test_case_id_filter_accepts_human_attention_review_file(tmp_path: Path) -> None:
+    path = tmp_path / "audit.json"
+    path.write_text(
+        json.dumps(
+            {
+                "reviews": [
+                    {"id": "dev-a", "requires_human_attention": True},
+                    {"id": "dev-b", "requires_human_attention": False},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    assert evaluator._load_case_ids(path) == {"dev-a"}
+
+
 def test_answer_report_rejects_unbound_answer_rows() -> None:
     with pytest.raises(ValueError, match="executable Planner"):
         _reuse_answer_report_evaluation(

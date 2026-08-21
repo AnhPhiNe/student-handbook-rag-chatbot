@@ -161,12 +161,14 @@ def test_source_bound_formula_bypasses_rag_low_confidence_in_sync_and_cache(
     )
 
     assert first["status"] == "answered"
-    assert first["llm_called"] is True
+    assert first["llm_called"] is False
     assert first["used_cache"] is False
     assert cached["status"] == "answered"
     assert cached["used_cache"] is True
     assert cached["answer"] == first["answer"]
-    assert client.sync_calls == 1
+    assert client.sync_calls == 0
+    assert first["debug"]["verification_executed"] is False
+    assert first["debug"]["verification_status"] == "not_applicable"
 
 
 def test_source_bound_formula_bypasses_rag_low_confidence_in_stream_and_cache(
@@ -196,11 +198,11 @@ def test_source_bound_formula_bypasses_rag_low_confidence_in_stream_and_cache(
         event for event in cached_events if event.get("type") == "metadata"
     ][-1]
     assert first_metadata["status"] == "answered"
-    assert first_metadata["llm_called"] is True
+    assert first_metadata["llm_called"] is False
     assert first_metadata["used_cache"] is False
     assert cached_metadata["status"] == "answered"
     assert cached_metadata["used_cache"] is True
-    assert client.stream_calls == 1
+    assert client.stream_calls == 0
     assert not any(
         event.get("status") == "low_confidence" for event in first_events
     )

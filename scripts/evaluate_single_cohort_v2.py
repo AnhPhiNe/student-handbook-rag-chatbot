@@ -289,6 +289,33 @@ def _load_cases(suite: str) -> list[dict[str, Any]]:
     return json.loads((BUNDLE_DIR / f"{suite}.json").read_text(encoding="utf-8"))
 
 
+def _load_case_ids(path: Path | None) -> set[str] | None:
+    if path is None:
+        return None
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if isinstance(payload, list):
+        values = payload
+    elif isinstance(payload, dict) and isinstance(payload.get("case_ids"), list):
+        values = payload["case_ids"]
+    elif isinstance(payload, dict) and isinstance(payload.get("reviews"), list):
+        values = [
+            review.get("id")
+            for review in payload["reviews"]
+            if isinstance(review, dict) and review.get("requires_human_attention")
+        ]
+    else:
+        raise ValueError(
+            "Case ID file must be a JSON list, contain case_ids, or contain "
+            "human-audit reviews with requires_human_attention=true."
+        )
+    case_ids = {
+        str(value).strip() for value in values if str(value or "").strip()
+    }
+    if not case_ids:
+        raise ValueError("Case ID selection is empty.")
+    return case_ids
+
+
 def _validated_planner_decision(
     case: Mapping[str, Any], decision: dict[str, Any]
 ) -> dict[str, Any]:
@@ -1392,8 +1419,18 @@ def main() -> None:
     parser.add_argument("--parity-report", type=Path)
     parser.add_argument("--conformance-report", type=Path)
     parser.add_argument("--legacy-compatibility-report", type=Path)
+    parser.add_argument("--case-ids-file", type=Path)
+    parser.add_argument(
+        "--claim-verifier",
+        choices=("config", "on", "off"),
+        default="config",
+    )
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
+    try:
+        selected_case_ids = _load_case_ids(args.case_ids_file)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        parser.error(str(exc))
     hidden_requested = (
         args.planner in {"hidden", "both"}
         or args.run_executor == "hidden"
@@ -1401,6 +1438,20 @@ def main() -> None:
     )
     if hidden_requested and not args.confirm_hidden_frozen:
         parser.error("Hidden evaluation requires --confirm-hidden-frozen after code/prompt/config freeze.")
+    if hidden_requested and selected_case_ids is not None:
+        parser.error("Hidden evaluation cannot be filtered by case IDs.")
+
+    def selected_cases(suite: str) -> list[dict[str, Any]]:
+        cases = _load_cases(suite)
+        if selected_case_ids is None:
+            return cases
+        available = {str(case.get("id")) for case in cases}
+        missing = selected_case_ids - available
+        if missing:
+            parser.error(
+                "Unknown case IDs for " + suite + ": " + ", ".join(sorted(missing))
+            )
+        return [case for case in cases if str(case.get("id")) in selected_case_ids]
     if hidden_requested and args.planner_output is not None:
         parser.error(
             "Planner checkpoints are development-only; hidden must remain one sealed attempt."
@@ -1520,7 +1571,7 @@ def main() -> None:
     if validation.valid and args.planner != "none":
         suites = ("dev", "hidden") if args.planner == "both" else (args.planner,)
         for suite in suites:
-            planner_rows[suite] = run_live_planner(_load_cases(suite))
+            planner_rows[suite] = run_live_planner(selected_cases(suite))
         if args.planner_output is not None:
             _write_json_atomic(
                 args.planner_output,
@@ -1537,6 +1588,12 @@ def main() -> None:
     answer_rows: list[dict[str, Any]] = []
     if validation.valid and (args.run_executor != "none" or args.run_answers != "none"):
         pipeline = AnswerPipeline()
+        if args.run_answers != "none":
+            pipeline.response_cache.enabled = False
+        if args.claim_verifier != "config":
+            pipeline.config.setdefault("claim_verifier", {})["enabled"] = (
+                args.claim_verifier == "on"
+            )
     if pipeline and args.run_executor != "none":
         passed_ids = {
             row["id"]
@@ -1547,7 +1604,7 @@ def main() -> None:
             )
         }
         execution_rows = run_executor_retrieval(
-            [case for case in _load_cases(args.run_executor) if case["id"] in passed_ids],
+            [case for case in selected_cases(args.run_executor) if case["id"] in passed_ids],
             pipeline,
             planner_rows={
                 row["id"]: row for row in planner_rows.get(args.run_executor, [])
@@ -1564,7 +1621,7 @@ def main() -> None:
             )
         }
         answer_rows = run_answers(
-            [case for case in _load_cases(args.run_answers) if case["id"] in passed_ids],
+            [case for case in selected_cases(args.run_answers) if case["id"] in passed_ids],
             pipeline,
             planner_rows={
                 row["id"]: row for row in planner_rows.get(args.run_answers, [])
@@ -1637,6 +1694,12 @@ def main() -> None:
         "schema_version": manifest.get("schema_version"),
         "evaluation_protocol_version": EVALUATION_PROTOCOL_VERSION,
         "models": {"planner": PLANNER_MODEL, "answer": ANSWER_MODEL, "judge": JUDGE_MODEL},
+        "evaluation_scope": {
+            "filtered": selected_case_ids is not None,
+            "case_ids": sorted(selected_case_ids or []),
+            "case_count": len(selected_case_ids or []),
+            "claim_verifier_mode": args.claim_verifier,
+        },
         "judge_prompt_version": JUDGE_PROMPT_VERSION,
         "prompt_version": ROUTER_PROMPT_VERSION,
         "dataset_prompt_version": manifest.get("prompt_version"),

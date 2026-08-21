@@ -52,7 +52,7 @@
     }
   },
   "files": {
-    "dev.json": "afa6d8377c27274f84a0beb613f82eef30152bf248a6fd81293e212a456bca0b",
+    "dev.json": "9a70fafc5faaa76140290db2935a5d785176a90b781a563f5fe2cbb1ff663520",
     "hidden.json": "0273778c82d8c08bb621d9bb57a9a12324f6e67ced0b2e901f6ddadd3b15431d"
   },
   "hidden_frozen": true,
@@ -385,8 +385,28 @@
           "K51_QuyCheDaoTao_Chuong4_Dieu16"
         ],
         "hidden_changed": false
+      },
+      {
+        "case_id": "dev-follow_up-04",
+        "request_id": "r1",
+        "approved_by": "repository_owner",
+        "approved_at": "2026-08-21T08:12:30.6677307Z",
+        "approval_base_commit": "019ead32f6fc98f058a98a26796a1197ba2cd69f",
+        "approval_sha256": "f8f6348c05df9f6706e2cfc418f8c1f166c1e3b309ba530299a2ce21530572ff",
+        "reason": "human_approved_alternative_rag_source_expansion",
+        "old_parent_section_ids": [
+          "K51_QuyCheDaoTao_Chuong3_Dieu12"
+        ],
+        "added_parent_section_ids": [
+          "K51_QuyCheDaoTao_Chuong3_Dieu13"
+        ],
+        "new_parent_section_ids": [
+          "K51_QuyCheDaoTao_Chuong3_Dieu12",
+          "K51_QuyCheDaoTao_Chuong3_Dieu13"
+        ],
+        "hidden_changed": false
       }
     ],
-    "last_correction_at": "2026-08-21T07:40:22.6061858Z"
+    "last_correction_at": "2026-08-21T08:12:30.6677307Z"
   }
 }

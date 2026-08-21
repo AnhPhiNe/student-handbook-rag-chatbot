@@ -49851,22 +49851,30 @@
               "so_tay_sinh_vien_khoa_51"
             ],
             "parent_section_ids": [
-              "K51_QuyCheDaoTao_Chuong3_Dieu12"
+              "K51_QuyCheDaoTao_Chuong3_Dieu12",
+              "K51_QuyCheDaoTao_Chuong3_Dieu13"
             ],
             "chunk_ids": [
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu12_child_0001_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu12_child_0006_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu12_child_0007_00",
               "cp_K51_QuyCheDaoTao_Chuong3_Dieu12_child_0010_00",
-              "cp_K51_QuyCheDaoTao_Chuong3_Dieu12_section_heading"
+              "cp_K51_QuyCheDaoTao_Chuong3_Dieu12_section_heading",
+              "cp_K51_QuyCheDaoTao_Chuong3_Dieu13_child_0001_00",
+              "cp_K51_QuyCheDaoTao_Chuong3_Dieu13_child_0004_00",
+              "cp_K51_QuyCheDaoTao_Chuong3_Dieu13_child_0006_00",
+              "cp_K51_QuyCheDaoTao_Chuong3_Dieu13_child_0007_00",
+              "cp_K51_QuyCheDaoTao_Chuong3_Dieu13_child_0010_00"
             ],
             "source_pages": [
               21,
-              22
+              22,
+              23
             ],
             "relevance_grade": 2,
             "evidence_excerpts": [
-              "Section heading: Xử lý kết quả học tập đối với hình thức đào tạo chính quy\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy 1. Cuối mỗi học kỳ chính, sinh viên bị cảnh báo học tập nếu vi"
+              "Section heading: Xử lý kết quả học tập đối với hình thức đào tạo chính quy\nChapter: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP\nDocument: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nSummary anchor: Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy 1. Cuối mỗi học kỳ chính, sinh viên bị cảnh báo học tập nếu vi",
+              "Parent section: Xử lý kết quả học tập đối với hình thức đào tạo vừa làm vừa học\nGranularity: child\nClause marker: 1\nContent: 1. Cuối mỗi năm học, sinh viên bị cảnh báo học tập nếu vi phạm một trong các điều kiện sau:"
             ],
             "source_bindings": [
               {
@@ -49882,6 +49890,22 @@
                 "source_pages": [
                   21,
                   22
+                ],
+                "relevance_grade": 2
+              },
+              {
+                "document_id": "so_tay_sinh_vien_khoa_51",
+                "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu13",
+                "chunk_ids": [
+                  "cp_K51_QuyCheDaoTao_Chuong3_Dieu13_child_0001_00",
+                  "cp_K51_QuyCheDaoTao_Chuong3_Dieu13_child_0004_00",
+                  "cp_K51_QuyCheDaoTao_Chuong3_Dieu13_child_0006_00",
+                  "cp_K51_QuyCheDaoTao_Chuong3_Dieu13_child_0007_00",
+                  "cp_K51_QuyCheDaoTao_Chuong3_Dieu13_child_0010_00"
+                ],
+                "source_pages": [
+                  22,
+                  23
                 ],
                 "relevance_grade": 2
               }
@@ -50124,10 +50148,11 @@
           ],
           "gold_audit": {
             "annotation_state": "human_approved",
-            "audit_method": "candidate_only_not_gold",
+            "audit_method": "human_approved_source_expansion",
             "candidate_count": 10,
-            "reviewer": "project_owner_confirmed",
-            "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+            "reviewer": "repository_owner",
+            "reviewed_at": "2026-08-21T08:12:30.6677307Z",
+            "approval_base_commit": "019ead32f6fc98f058a98a26796a1197ba2cd69f"
           }
         }
       ],
@@ -50138,8 +50163,8 @@
     },
     "annotation": {
       "state": "human_approved",
-      "reviewer": "project_owner_confirmed",
-      "reviewed_at": "2026-08-19T06:57:42.873401+00:00"
+      "reviewer": "repository_owner",
+      "reviewed_at": "2026-08-21T08:12:30.6677307Z"
     }
   },
   {

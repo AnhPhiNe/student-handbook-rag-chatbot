@@ -5,11 +5,13 @@ import re
 import unicodedata
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 import yaml
 
-from src.common.cohort import normalize_cohort
+from src.common.cohort import extract_cohort_mentions, normalize_cohort
+
+from .query_context import CohortEvidence
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -22,7 +24,7 @@ ALLOWED_CONTEXT_MODES = {"standalone", "follow_up", "ambiguous"}
 ALLOWED_CONFIDENCE_LEVELS = {"high", "medium", "low", "none"}
 ALLOWED_REQUEST_KINDS = {"structured", "rag"}
 MAX_LOOKUP_REQUESTS = 6
-PLANNER_CONTRACT_VERSION = "single-cohort-v2"
+PLANNER_CONTRACT_VERSION = "single-cohort-v2.4-rc3"
 LEGACY_STRUCTURED_ROUTES = {"deterministic"}
 LEGACY_STRUCTURED_MODES = {"direct_lookup", "structured_reasoning"}
 UNGROUNDED_SCHEMA_SLOTS = {
@@ -88,25 +90,21 @@ def _recover_grounded_span(span: Any, source_text: str) -> str | None:
 
 
 def _query_mentions_cohort(query: str) -> bool:
-    normalized = _normalize_text(query)
-    return bool(re.search(r"\bk\s*(?:48|49|50|51)\b", normalized))
+    return bool(extract_cohort_mentions(query))
 
 
 def _explicit_cohorts(query: str) -> list[str]:
     """Extract cohort references from user-grounded text in appearance order."""
-    normalized = _normalize_text(query)
-    values: list[str] = []
-    for match in re.finditer(r"\bk\s*(48|49|50|51)\b", normalized):
-        value = "K48-K49" if match.group(1) in {"48", "49"} else f"K{match.group(1)}"
-        if value not in values:
-            values.append(value)
-    return values
+    return list(dict.fromkeys(item.cohort for item in extract_cohort_mentions(query)))
 
 
 def _cohort_is_grounded(cohort: str, source_text: str) -> bool:
-    normalized_cohort = _normalize_text(cohort)
-    normalized_source = _normalize_text(source_text)
-    return bool(normalized_cohort and normalized_cohort in normalized_source)
+    normalized_cohort = normalize_cohort(cohort)
+    return bool(
+        normalized_cohort
+        and normalized_cohort
+        in {mention.cohort for mention in extract_cohort_mentions(source_text)}
+    )
 
 
 @lru_cache(maxsize=4)
@@ -122,33 +120,41 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
     registry = registry or load_lookup_registry()
     lines: list[str] = []
     for name, spec in registry["tools"].items():
-        intents = ",".join(spec.get("intents") or [])
-        default_intent = spec.get("default_intent") or ""
+        capabilities = spec.get("planner_capabilities") or {}
         required = spec.get("required_slots") or {}
-        slot_contract: dict[str, Any] = {}
+        slot_values: dict[str, list[Any]] = {}
         for slot_name, slot_spec in (spec.get("slot_schema") or {}).items():
-            compact_spec: dict[str, Any] = {}
             allowed_values = (
                 slot_spec.get("enum") or slot_spec.get("canonical_values") or []
             )
             if allowed_values:
-                compact_spec["values"] = allowed_values
-            slot_contract[slot_name] = compact_spec
+                slot_values[slot_name] = allowed_values
         fields = [
             name,
-            f"use={spec.get('description') or ''}",
-            f"intents={intents}",
+            "e=" + ",".join(capabilities.get("input_entity_types") or []),
+            "a="
+            + json.dumps(
+                capabilities.get("entity_aliases") or {},
+                ensure_ascii=False,
+                separators=(",", ":"),
+            ),
+            "r=" + ",".join(capabilities.get("relations") or []),
+            "o=" + ",".join(capabilities.get("output_fields") or []),
+            "i=" + ",".join(spec.get("intents") or []),
         ]
+        default_intent = str(spec.get("default_intent") or "").strip()
         if default_intent:
-            fields.append(f"default={default_intent}")
+            fields.append(f"d={default_intent}")
         fields.extend(
             [
-                "required="
+                "req="
                 + json.dumps(required, ensure_ascii=True, separators=(",", ":")),
-                "slots="
+                "v="
                 + json.dumps(
-                    slot_contract, ensure_ascii=True, separators=(",", ":")
+                    slot_values, ensure_ascii=True, separators=(",", ":")
                 ),
+                f"c={int(bool(spec.get('cohort_sensitive')))}",
+                f"s={spec.get('source_contract') or ''}",
             ]
         )
         lines.append("|".join(fields))
@@ -756,13 +762,41 @@ def bind_effective_cohort(
     raw_query: str,
     effective_query: str,
     selected_cohort: str | None,
+    cohort_evidence: Iterable[CohortEvidence] = (),
     registry: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Bind one cohort from grounded sources using the declared priority order."""
     registry = registry or load_lookup_registry()
     raw_cohorts = _explicit_cohorts(raw_query)
     selected = normalize_cohort(selected_cohort)
-    history_cohorts = _explicit_cohorts(effective_query)
+    # History cohort authority is code-derived from validated turn evidence.
+    # Do not infer it from the planner's standalone/effective query: the model
+    # may preserve the topic while omitting a valid cohort literal.
+    del effective_query
+    validated_evidence: list[dict[str, Any]] = []
+    for item in cohort_evidence:
+        if not isinstance(item, CohortEvidence):
+            continue
+        evidence_cohort = normalize_cohort(item.cohort)
+        turn_id = item.turn_id
+        evidence_span = item.evidence_span
+        if (
+            not evidence_cohort
+            or not isinstance(turn_id, int)
+            or not isinstance(evidence_span, str)
+            or not evidence_span.strip()
+        ):
+            continue
+        validated_evidence.append(
+            {
+                "cohort": evidence_cohort,
+                "turn_id": turn_id,
+                "evidence_span": evidence_span,
+            }
+        )
+    history_cohorts = list(
+        dict.fromkeys(item["cohort"] for item in validated_evidence)
+    )
 
     if raw_cohorts:
         grounded_cohorts = raw_cohorts
@@ -782,7 +816,6 @@ def bind_effective_cohort(
             bound_requests.append(request)
             continue
         bound_request = dict(request)
-        refs = list(bound_request.get("cohort_refs") or [])
         lookup_type = bound_request.get("lookup_type")
         spec = registry.get("tools", {}).get(lookup_type) if lookup_type else None
         requires_cohort = (
@@ -790,8 +823,13 @@ def bind_effective_cohort(
             if bound_request.get("request_kind") == "rag"
             else bool((spec or {}).get("cohort_sensitive"))
         )
-        if requires_cohort and not refs and effective_cohort:
-            bound_request["cohort_refs"] = [effective_cohort]
+        # Model cohort refs are proposals only. Once code selects one cohort
+        # from raw > selected > grounded history, every sensitive request must
+        # use that authoritative value.
+        if requires_cohort:
+            bound_request["cohort_refs"] = (
+                [effective_cohort] if effective_cohort else []
+            )
         bound_requests.append(bound_request)
 
     bound_decision = {
@@ -800,6 +838,8 @@ def bind_effective_cohort(
         "cohorts": grounded_cohorts,
         "is_multi_cohort": is_multi,
         "effective_cohort_source": source,
+        "grounded_history_cohorts": history_cohorts,
+        "cohort_evidence": validated_evidence,
     }
     if "lookup_requests" in decision:
         bound_decision["lookup_requests"] = bound_requests
@@ -1093,6 +1133,7 @@ def _validate_lookup_request(
     query_source_text: str,
     source_text: str,
     selected_cohort: str | None,
+    grounded_history_cohorts: set[str],
     registry: dict[str, Any],
     corrections: list[dict[str, Any]] | None = None,
 ) -> list[str]:
@@ -1124,9 +1165,10 @@ def _validate_lookup_request(
         normalized_cohort = normalize_cohort(cohort)
         if not normalized_cohort:
             errors.append(f"{prefix}invalid_cohort")
-        elif normalized_cohort != normalized_selected and not _cohort_is_grounded(
-            normalized_cohort,
-            source_text,
+        elif (
+            normalized_cohort != normalized_selected
+            and normalized_cohort not in grounded_history_cohorts
+            and not _cohort_is_grounded(normalized_cohort, source_text)
         ):
             errors.append(f"{prefix}ungrounded_cohort:{normalized_cohort}")
 
@@ -1214,6 +1256,7 @@ def validate_router_decision(
     query: str,
     selected_cohort: str | None = None,
     grounding_context: str = "",
+    grounded_history_cohorts: Iterable[str] | None = None,
     registry: dict[str, Any] | None = None,
     validated_corrections: list[dict[str, str]] | None = None,
 ) -> list[str]:
@@ -1225,9 +1268,9 @@ def validate_router_decision(
         return errors
 
     selected = normalize_cohort(decision.get("cohort") or selected_cohort)
-    router_cohort = normalize_cohort(decision.get("router_cohort"))
-    if selected and router_cohort and selected != router_cohort:
-        errors.append("cohort_conflict")
+    # router_cohort remains diagnostic model output. The authoritative cohort
+    # was already selected by bind_effective_cohort(), so model output cannot
+    # become a second source of truth here.
     if decision.get("is_multi_cohort") or len(decision.get("cohorts") or []) > 1:
         errors.append("multi_cohort_not_supported")
 
@@ -1269,6 +1312,15 @@ def validate_router_decision(
     source_text = " ".join(
         part.strip() for part in (query, grounding_context) if part and part.strip()
     )
+    history_cohorts = {
+        normalized
+        for value in (
+            grounded_history_cohorts
+            if grounded_history_cohorts is not None
+            else decision.get("grounded_history_cohorts") or []
+        )
+        if (normalized := normalize_cohort(value))
+    }
     for index, request in enumerate(lookup_requests):
         if not isinstance(request, dict):
             errors.append(f"request:{index}:invalid_payload")
@@ -1280,6 +1332,7 @@ def validate_router_decision(
                 query_source_text=query,
                 source_text=source_text,
                 selected_cohort=selected,
+                grounded_history_cohorts=history_cohorts,
                 registry=registry,
                 corrections=validated_corrections or [],
             )

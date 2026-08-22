@@ -12,6 +12,7 @@ from src.retrieval.core.structured_routing import (
     normalize_router_decision,
     validate_router_decision,
 )
+from src.retrieval.core.query_context import CohortEvidence
 
 
 def _pipeline() -> AnswerPipeline:
@@ -245,6 +246,9 @@ def test_history_grounded_cohort_is_bound_to_rag_request() -> None:
         raw_query=raw_query,
         effective_query=effective_query,
         selected_cohort=None,
+        cohort_evidence=(
+            CohortEvidence(cohort="K51", turn_id=0, evidence_span="K51"),
+        ),
         registry=load_lookup_registry(),
     )
 
@@ -252,6 +256,22 @@ def test_history_grounded_cohort_is_bound_to_rag_request() -> None:
     assert bound["effective_cohort_source"] == "grounded_history"
     assert bound["lookup_requests"][0]["cohort_refs"] == ["K51"]
     assert validate_router_decision(bound, query=effective_query) == []
+
+
+def test_bind_effective_cohort_rejects_untyped_cohort_evidence() -> None:
+    bound = bind_effective_cohort(
+        {"lookup_requests": []},
+        raw_query="Còn khóa đó thì sao?",
+        effective_query="K50 thủ tục bảo lưu thế nào?",
+        selected_cohort=None,
+        cohort_evidence=(
+            {"cohort": "K50", "turn_id": 1, "evidence_span": "K50"},
+            {"cohort": "K51", "turn_id": 1, "evidence_span": "K51"},
+        ),  # type: ignore[arg-type]
+    )
+
+    assert bound["cohort"] is None
+    assert bound["cohort_evidence"] == []
 
 
 def test_selected_cohort_has_priority_over_history_cohort() -> None:
@@ -264,6 +284,44 @@ def test_selected_cohort_has_priority_over_history_cohort() -> None:
 
     assert bound["cohort"] == "K50"
     assert bound["effective_cohort_source"] == "selected_cohort"
+
+
+def test_selected_cohort_replaces_conflicting_model_request_refs() -> None:
+    decision = {
+        "route": "rag",
+        "execution_mode": "regulation",
+        "router_cohort": "K51",
+        "lookup_requests": [
+            {
+                "request_kind": "rag",
+                "lookup_type": None,
+                "intent": "policy",
+                "query_span": "điều kiện đó",
+                "slots": {},
+                "slot_spans": {},
+                "cohort_refs": ["K51"],
+            }
+        ],
+    }
+
+    bound = bind_effective_cohort(
+        decision,
+        raw_query="Còn điều kiện đó?",
+        effective_query="K51 có điều kiện xét tốt nghiệp nào?",
+        selected_cohort="K50",
+    )
+
+    assert bound["cohort"] == "K50"
+    assert bound["effective_cohort_source"] == "selected_cohort"
+    assert bound["lookup_requests"][0]["cohort_refs"] == ["K50"]
+    errors = validate_router_decision(
+        bound,
+        query="Còn điều kiện đó?",
+        selected_cohort="K50",
+        grounding_context="K51 có điều kiện xét tốt nghiệp nào?",
+    )
+    assert "cohort_conflict" not in errors
+    assert "request_cohort_conflict" not in errors
 
 
 def test_multiple_history_cohorts_are_rejected() -> None:
@@ -287,6 +345,10 @@ def test_multiple_history_cohorts_are_rejected() -> None:
         raw_query="Còn hai khóa đó?",
         effective_query=effective_query,
         selected_cohort=None,
+        cohort_evidence=(
+            CohortEvidence(cohort="K50", turn_id=0, evidence_span="K50"),
+            CohortEvidence(cohort="K51", turn_id=0, evidence_span="K51"),
+        ),
     )
 
     assert bound["is_multi_cohort"] is True

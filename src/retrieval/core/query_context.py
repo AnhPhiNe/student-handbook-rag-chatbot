@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Any
 import warnings
 
-from src.common.cohort import normalize_cohort
+from src.common.cohort import extract_cohort_mentions, normalize_cohort
 
 
 QUERY_HANDLING_MODES = {"raw", "validated"}
@@ -74,6 +74,27 @@ class ReferencedEvidenceSpan:
 
 
 @dataclass(frozen=True)
+class CohortEvidence:
+    """Code-derived cohort provenance from a validated history turn.
+
+    The planner may identify a historical turn and a topic span, but cohort
+    authority is never accepted from model output.  Once that turn is proven
+    relevant, code extracts the literal cohort span from the turn itself.
+    """
+
+    cohort: str
+    turn_id: int
+    evidence_span: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "cohort": self.cohort,
+            "turn_id": self.turn_id,
+            "evidence_span": self.evidence_span,
+        }
+
+
+@dataclass(frozen=True)
 class QueryContextResult:
     raw_query: str
     effective_query: str
@@ -84,6 +105,8 @@ class QueryContextResult:
     standalone_query: str | None = None
     referenced_turn_ids: tuple[int, ...] = ()
     referenced_evidence: tuple[ReferencedEvidenceSpan, ...] = ()
+    grounded_history_cohorts: tuple[str, ...] = ()
+    cohort_evidence: tuple[CohortEvidence, ...] = ()
     normalization_confidence: str = "none"
     context_confidence: str = "none"
     validation_errors: tuple[str, ...] = ()
@@ -115,6 +138,8 @@ class QueryContextResult:
             "referenced_evidence": [
                 item.to_dict() for item in self.referenced_evidence
             ],
+            "grounded_history_cohorts": list(self.grounded_history_cohorts),
+            "cohort_evidence": [item.to_dict() for item in self.cohort_evidence],
             "normalization_confidence": self.normalization_confidence,
             "context_confidence": self.context_confidence,
             "validation_errors": list(self.validation_errors),
@@ -253,6 +278,10 @@ def select_effective_query(
                 tuple(errors),
                 clarification,
             )
+        cohort_evidence = _grounded_history_cohort_evidence(
+            history,
+            referenced_evidence,
+        )
         return QueryContextResult(
             raw_query=raw_query,
             effective_query=standalone_query or raw_query,
@@ -263,6 +292,10 @@ def select_effective_query(
             standalone_query=standalone_query,
             referenced_turn_ids=referenced_turns,
             referenced_evidence=referenced_evidence,
+            grounded_history_cohorts=tuple(
+                dict.fromkeys(item.cohort for item in cohort_evidence)
+            ),
+            cohort_evidence=cohort_evidence,
             normalization_confidence=normalization_confidence,
             context_confidence=context_confidence,
         )
@@ -800,12 +833,27 @@ def _extract_numbers(value: Any) -> set[str]:
 
 
 def _extract_cohorts(value: Any) -> set[str]:
-    normalized = _ascii_text(value).replace(" ", "")
-    output: set[str] = set()
-    if re.search(r"k48(?:-k?49)?", normalized) or "k49" in normalized:
-        output.add("K48-K49")
-    if "k50" in normalized:
-        output.add("K50")
-    if "k51" in normalized:
-        output.add("K51")
-    return output
+    return {mention.cohort for mention in extract_cohort_mentions(value)}
+
+
+def _grounded_history_cohort_evidence(
+    chat_history: list[dict[str, str]],
+    referenced_evidence: tuple[ReferencedEvidenceSpan, ...],
+) -> tuple[CohortEvidence, ...]:
+    """Extract literal cohorts only from history turns with valid topic evidence."""
+
+    evidence_turns = {item.turn_id for item in referenced_evidence}
+    output: list[CohortEvidence] = []
+    for turn_id in sorted(evidence_turns):
+        if turn_id < 0 or turn_id >= len(chat_history):
+            continue
+        content = str(chat_history[turn_id].get("content") or "")
+        for mention in extract_cohort_mentions(content):
+            item = CohortEvidence(
+                cohort=mention.cohort,
+                turn_id=turn_id,
+                evidence_span=mention.span,
+            )
+            if item not in output:
+                output.append(item)
+    return tuple(output)

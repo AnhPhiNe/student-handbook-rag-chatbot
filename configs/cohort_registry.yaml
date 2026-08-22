@@ -1,0 +1,17 @@
+version: 1
+
+cohorts:
+  K48-K49:
+    aliases: [K48-K49, K48–K49, K48, K49]
+    admission_years: [2022, 2023]
+  K50:
+    aliases: [K50]
+    admission_years: [2024]
+  K51:
+    aliases: [K51]
+    admission_years: [2025]
+
+legacy_aliases:
+  K50-K51: K51
+  50-51: K51
+  K50K51: K51

@@ -260,10 +260,12 @@ def find_grounded_catalog_hint(
                     continue
                 matches.append(
                     {
-                        "lookup_type": lookup_type,
-                        "entity_text": grounded_span,
-                        "unit_name": _strip_order_prefix(
-                            record.get("unit_name") or record.get("unit")
+                        "candidate_entity_type": lookup_type,
+                        "matched_span": grounded_span,
+                        "catalog_record_id": str(
+                            record.get("record_id")
+                            or record.get("service_id")
+                            or _entity_key(record)
                         ),
                         "entity_key": _entity_key(record),
                         "specificity": (len(value_norm.split()), len(value_norm)),
@@ -281,7 +283,7 @@ def find_grounded_catalog_hint(
         if item["specificity"] == top["specificity"]
     }
     tied_lookup_types = {
-        item["lookup_type"]
+        item["candidate_entity_type"]
         for item in matches
         if item["specificity"] == top["specificity"]
     }

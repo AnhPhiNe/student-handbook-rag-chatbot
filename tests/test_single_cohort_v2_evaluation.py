@@ -31,6 +31,7 @@ from scripts.evaluate_single_cohort_v2 import (
     _actual_ok_requests,
     _expected_rag_gold_requests,
     _citation_isolated,
+    _composer_schema_contract_passed,
     _finish_hidden_attempt,
     _final_composition_contract_passed,
     _reuse_answer_report_evaluation,
@@ -350,6 +351,23 @@ def test_final_composition_contract_accepts_source_bound_structured_fallback() -
     }
 
     assert _final_composition_contract_passed(composition)
+    assert not _composer_schema_contract_passed(composition)
+
+
+def test_composer_schema_contract_requires_all_request_schemas() -> None:
+    assert _composer_schema_contract_passed(
+        {
+            "contract_passed": True,
+            "request_results": [
+                {
+                    "request_id": "r1",
+                    "request_kind": "rag",
+                    "contract_passed": True,
+                    "used_fallback": False,
+                }
+            ],
+        }
+    )
 
 
 def test_final_composition_contract_rejects_empty_or_rag_fallback() -> None:
@@ -1086,9 +1104,9 @@ def test_live_planner_uses_production_catalog_hint_and_fails_router_fallback() -
     )
 
     assert captured["routing_hint"] == {
-        "lookup_type": "office",
-        "entity_text": "PĐT",
-        "unit_name": "Phòng Đào tạo",
+        "candidate_entity_type": "office",
+        "matched_span": "PĐT",
+        "catalog_record_id": "office-pdt",
         "match_type": "exact_catalog_span",
     }
     assert rows[0]["failure_type"] == "provider"

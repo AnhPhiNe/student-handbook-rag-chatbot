@@ -40,6 +40,9 @@ from src.evaluation.artifact_fingerprint import (  # noqa: E402
     file_hash,
     release_artifact_fingerprint,
 )
+from src.evaluation.material_hallucination import (  # noqa: E402
+    summarize_material_audit,
+)
 from src.generation.answer_pipeline import AnswerPipeline  # noqa: E402
 from src.generation.io_utils import load_json, load_yaml  # noqa: E402
 from src.retrieval.core.ai_router import (  # noqa: E402
@@ -365,6 +368,7 @@ def _validated_planner_decision(
         raw_query=str(case["query"]),
         effective_query=effective_query,
         selected_cohort=case.get("selected_cohort"),
+        cohort_evidence=handling.cohort_evidence,
     )
     bound = {
         **bound,
@@ -923,6 +927,22 @@ def _final_composition_contract_passed(
     return bool(explicit and computed) if isinstance(explicit, bool) else computed
 
 
+def _composer_schema_contract_passed(
+    composition: Mapping[str, Any],
+) -> bool:
+    """Check only whether every requested composer output passed its schema."""
+
+    request_rows = composition.get("request_results")
+    if not isinstance(request_rows, list) or not request_rows:
+        return bool(composition.get("contract_passed", False))
+    if not all(isinstance(row, Mapping) for row in request_rows):
+        return False
+    return all(
+        bool(row.get("contract_passed")) and not bool(row.get("used_fallback"))
+        for row in request_rows
+    )
+
+
 def run_executor_retrieval(
     cases: Iterable[dict[str, Any]],
     pipeline: AnswerPipeline,
@@ -1162,15 +1182,21 @@ def run_answers(
             successful_requests = _actual_ok_requests(
                 expected_requests, actual_statuses
             )
+            execution_citations = execution_result.get("citations") or []
             composition_contract_bound = bool(
                 not successful_requests
-                or _final_composition_contract_passed(composition)
+                or _composer_schema_contract_passed(composition)
             )
-            citations_bound = all(
+            source_contract_bound = all(
+                _citation_bound(execution_citations, request)
+                for request in successful_requests
+            )
+            citation_bound = all(
                 _citation_bound(citations, request)
                 for request in successful_requests
             )
             request_ids = {request["request_id"] for request in expected_requests}
+            citation_isolation = _citation_isolated(result, request_ids)
             plan_bound = semantic_plan_match(
                 expected,
                 _plan_from_decision(result.get("router_decision") or {}),
@@ -1203,10 +1229,16 @@ def run_answers(
                     "exact_plan_bound": exact_plan_bound,
                     "semantic_plan_bound": plan_bound,
                     "execution_plan_bound": execution_plan_bound,
+                    "plan_binding": execution_plan_bound,
+                    "composition_contract_binding": composition_contract_bound,
+                    "source_contract_binding": source_contract_bound,
+                    "citation_binding": citation_bound,
+                    "citation_isolation": citation_isolation,
                     "answer_contract_bound": bool(
                         execution_plan_bound
-                        and citations_bound
-                        and _citation_isolated(result, request_ids)
+                        and source_contract_bound
+                        and citation_bound
+                        and citation_isolation
                         and composition_contract_bound
                     ),
                     "provider_failure": bool(
@@ -1252,6 +1284,7 @@ def _metrics(
     execution_rows: list[dict[str, Any]],
     answer_rows: list[dict[str, Any]],
     judgments: list[dict[str, Any]],
+    material_audit: Mapping[str, Any] | None = None,
     *,
     quality_checks_passed: bool | None,
     parity_passed: bool | None,
@@ -1327,6 +1360,11 @@ def _metrics(
             metrics[f"{suite}_semantic_category_floor"] = min(
                 per_category.values(), default=0.0
             )
+            for category in ("follow_up", "robustness"):
+                if category in per_category:
+                    metrics[f"{suite}_{category}_semantic_executable"] = (
+                        per_category[category]
+                    )
             safety_values = [
                 per_category[name]
                 for name in ("cohort_resolution", "failure_isolation")
@@ -1344,7 +1382,44 @@ def _metrics(
                 "critical_false_pass": sum(bool(row.get("critical_false_pass")) for row in valid),
             }
         )
+    if material_audit is not None:
+        metrics.update(
+            {
+                "material_audit_complete": bool(material_audit.get("complete")),
+                "raw_judge_hallucination_rate": float(
+                    material_audit.get("raw_judge_hallucination_rate") or 0.0
+                ),
+                "material_unsupported_answer_rate": float(
+                    material_audit.get("material_unsupported_answer_rate") or 0.0
+                ),
+                "material_critical_unsupported_claims": int(
+                    material_audit.get("material_critical_unsupported_claims") or 0
+                ),
+                "judge_false_positive_rate": float(
+                    material_audit.get("judge_false_positive_rate") or 0.0
+                ),
+            }
+        )
     if answer_rows:
+        metrics["plan_binding"] = _mean(
+            float(row.get("plan_binding", row.get("execution_plan_bound", False)))
+            for row in answer_rows
+        )
+        metrics["composition_contract_binding"] = _mean(
+            float(row.get("composition_contract_binding", False))
+            for row in answer_rows
+        )
+        metrics["source_contract_binding"] = _mean(
+            float(row.get("source_contract_binding", False))
+            for row in answer_rows
+        )
+        # Final citations are independently evaluated from execution sources.
+        metrics["citation_binding"] = _mean(
+            float(row.get("citation_binding", False)) for row in answer_rows
+        )
+        metrics["citation_isolation"] = _mean(
+            float(row.get("citation_isolation", False)) for row in answer_rows
+        )
         metrics["answer_contract_binding"] = _mean(
             float(row.get("answer_contract_bound", False))
             for row in answer_rows
@@ -1410,6 +1485,29 @@ def _read_answer_judgments(
     if len(ids) != len(set(ids)):
         raise ValueError("Answer judgments contain duplicate case ids")
     return rows
+
+
+def _read_material_audit(
+    path: Path | None,
+    *,
+    answers_report_hash: str | None,
+    answer_rows: Iterable[Mapping[str, Any]],
+    judgments: Iterable[Mapping[str, Any]],
+) -> dict[str, Any] | None:
+    if path is None:
+        return None
+    if not answers_report_hash:
+        raise ValueError("Material audit requires --answers-report for immutable provenance.")
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("commit") != _commit():
+        raise ValueError("Material audit commit does not match the current commit.")
+    if payload.get("answers_report_hash") != answers_report_hash:
+        raise ValueError("Material audit is not bound to the supplied answer report.")
+    return summarize_material_audit(
+        payload,
+        judgments,
+        answer_ids=(str(row.get("id") or "") for row in answer_rows),
+    )
 
 
 def _reuse_answer_report_evaluation(
@@ -1544,6 +1642,7 @@ def main() -> None:
     parser.add_argument("--run-answers", choices=("none", "dev", "hidden"), default="none")
     parser.add_argument("--answer-judgments", type=Path)
     parser.add_argument("--answers-report", type=Path)
+    parser.add_argument("--material-audit", type=Path)
     parser.add_argument("--confirm-hidden-frozen", action="store_true")
     parser.add_argument("--retry-provider-outage", action="store_true")
     parser.add_argument("--planner-report", type=Path)
@@ -1615,6 +1714,8 @@ def main() -> None:
         )
     if args.answers_report and args.run_answers != "none":
         parser.error("Use either --run-answers or --answers-report, not both.")
+    if args.material_audit and not args.answers_report:
+        parser.error("--material-audit requires --answers-report.")
     if args.execution_results_output and args.run_executor == "none":
         parser.error("--execution-results-output requires --run-executor.")
 
@@ -1805,6 +1906,15 @@ def main() -> None:
         row["id"] for row in answer_rows
     }:
         parser.error("Answer judgments must cover every generated answer exactly once.")
+    try:
+        material_audit = _read_material_audit(
+            args.material_audit,
+            answers_report_hash=answers_report_hash,
+            answer_rows=answer_rows,
+            judgments=judgments,
+        )
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        parser.error(str(exc))
     if hidden_attempt is not None:
         hidden_attempt = _finish_hidden_attempt(
             hidden_attempt,
@@ -1817,6 +1927,7 @@ def main() -> None:
         execution_rows,
         answer_rows,
         judgments,
+        material_audit,
         quality_checks_passed=quality_passed,
         parity_passed=parity_passed,
         conformance_passed=conformance_passed,
@@ -1850,6 +1961,7 @@ def main() -> None:
         "answers": answer_rows,
         "answers_report_hash": answers_report_hash,
         "answer_judgments": judgments,
+        "material_audit": material_audit,
         "hidden_release_attempt": hidden_attempt,
         "quality_report": quality_report,
         "parity_report": parity_report,

@@ -25,8 +25,8 @@ def test_catalog_hint_keeps_unambiguous_exact_alias() -> None:
     office = [{"unit_name": "Phòng Đào tạo", "aliases": ["PĐT"]}]
 
     assert find_grounded_catalog_hint("email PĐT", office, []) == {
-        "lookup_type": "office",
-        "entity_text": "PĐT",
-        "unit_name": "Phòng Đào tạo",
+        "candidate_entity_type": "office",
+        "matched_span": "PĐT",
+        "catalog_record_id": "phong dao tao",
         "match_type": "exact_catalog_span",
     }

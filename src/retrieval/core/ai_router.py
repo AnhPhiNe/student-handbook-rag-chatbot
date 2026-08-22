@@ -16,6 +16,7 @@ from groq import Groq
 import yaml
 
 from src.common.env_loader import load_project_env
+from src.common.cohort import cohort_registry_digest, cohort_registry_version
 
 from .structured_routing import (
     bind_effective_cohort,
@@ -32,9 +33,9 @@ from .query_context import select_effective_query, validated_correction_provenan
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.3"
-ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.8"
-ROUTER_VALIDATOR_VERSION = "single-cohort-validator-v2.6"
+ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.4"
+ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.10"
+ROUTER_VALIDATOR_VERSION = "single-cohort-validator-v2.7"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -53,6 +54,8 @@ QUERY CONTEXT
   request.query_span luôn là span trong QUERY hiện tại trước normalization, không lấy topic từ
   history. Không có CHAT HISTORY thì không chọn follow_up.
   Cụm phụ thuộc phải resolve đủ topic+cohort; thiếu thì ambiguous, clarify, requests=[].
+  Khi follow_up đã grounding đủ topic+cohort, chọn route/request theo standalone topic;
+  query_span vẫn giữ cụm phụ thuộc nguyên văn trong QUERY hiện tại.
 - normalized_query chỉ sửa Unicode/dấu/typo cục bộ và khai báo correction
   original_span→normalized_span. Cấm đổi cohort, số, phủ định, thực thể, điều kiện,
   chủ đề; không chắc thì giữ QUERY.
@@ -80,8 +83,29 @@ ATOMIC REQUESTS
   formula=công thức. Chọn theo fact: nội dung quy định/thủ tục=RAG; thông tin liên hệ,
   đơn vị hoặc danh bạ=structured; cả hai fact độc lập=tạo hai request. Topic RAG rộng có
   cohort hợp lệ: execute; chỉ clarify khi thiếu cohort/context/operand bắt buộc.
+- TOOLS là contract sinh từ registry: chọn tool từ input_entity_type + relation cần
+  trả lời + output_field/capability, không chỉ dựa vào tên gần giống. CATALOG_HINT
+  chỉ là candidate entity có provenance, không phải lệnh route hay canonical slot.
 - Ngoài sổ tay: out_of_domain. clarify/out_of_domain luôn requests=[] và no retrieval.
 """
+
+
+def _planner_catalog_hint(routing_hint: Mapping[str, Any] | None) -> dict[str, str]:
+    """Expose only non-authoritative catalog provenance to the Planner."""
+
+    if not isinstance(routing_hint, Mapping):
+        return {}
+    allowed = (
+        "candidate_entity_type",
+        "matched_span",
+        "catalog_record_id",
+        "match_type",
+    )
+    return {
+        key: value.strip()
+        for key in allowed
+        if isinstance((value := routing_hint.get(key)), str) and value.strip()
+    }
 
 
 def _parse_duration_seconds(value: str | None) -> float | None:
@@ -698,6 +722,7 @@ class AIRouter:
                     raw_query=query,
                     effective_query=validation_query,
                     selected_cohort=cohort,
+                    cohort_evidence=query_context.cohort_evidence,
                     registry=self.registry,
                 )
                 validation_errors = validate_router_decision(
@@ -705,6 +730,7 @@ class AIRouter:
                     query=query,
                     selected_cohort=decision.get("cohort"),
                     grounding_context=validation_query,
+                    grounded_history_cohorts=query_context.grounded_history_cohorts,
                     registry=self.registry,
                     validated_corrections=validated_correction_provenance(
                         decision, query_context
@@ -841,22 +867,24 @@ class AIRouter:
         schema = json.dumps(
             router_json_schema(), ensure_ascii=False, separators=(",", ":")
         )
-        hint = json.dumps(routing_hint, ensure_ascii=False, separators=(",", ":"))
+        planner_hint = _planner_catalog_hint(routing_hint)
+        hint = json.dumps(planner_hint, ensure_ascii=False, separators=(",", ":"))
         hint_instruction = (
-            "CATALOG_HINT is a registry-backed candidate, not a routing command. "
-            "Use it only when the requested fact and source contract match; choose "
-            "the tool from QUERY. Never copy unit_name into a slot unless QUERY "
-            "explicitly names that unit.\n"
-            if routing_hint
+            "CATALOG_HINT chỉ là candidate từ registry, không phải lệnh route. "
+            "Chỉ dùng khi fact cần hỏi và source contract phù hợp; chọn tool từ QUERY. "
+            "Không suy ra hay điền canonical slot từ hint.\n"
+            if planner_hint
             else ""
         )
         return (
             f"{hint_instruction}"
+            "TOOLS LEGEND: e=entity, a=aliases, r=relation, o=output, i=intent, d=default, "
+            "req=required, v=values, c=cohort, s=source.\n"
             "TOOLS:\n"
             f"{compact_registry_for_prompt(self.registry)}\n\n"
             f"OUTPUT CONTRACT:\n"
             f"{schema}\n\n"
-            f"CATALOG_HINT: {hint if routing_hint else 'none'}\n"
+            f"CATALOG_HINT: {hint if planner_hint else 'none'}\n"
             f"COHORT: {cohort or 'unknown'}\n"
             f"CHAT HISTORY:\n{history}\n"
             f"QUERY: {query}"
@@ -916,12 +944,14 @@ class AIRouter:
             "cohort": cohort,
             "history": (chat_history or [])[-4:],
             "history_length": len(chat_history or []),
-            "routing_hint": routing_hint,
+            "routing_hint": _planner_catalog_hint(routing_hint),
             "model": self.model_name,
             "prompt_version": ROUTER_PROMPT_VERSION,
             "contract_version": ROUTER_CONTRACT_VERSION,
             "validator_version": ROUTER_VALIDATOR_VERSION,
             "registry": registry_digest(self.registry),
+            "cohort_registry_version": cohort_registry_version(),
+            "cohort_registry": cohort_registry_digest(),
         }
         raw = json.dumps(
             payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")

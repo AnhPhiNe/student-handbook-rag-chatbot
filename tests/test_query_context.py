@@ -168,6 +168,62 @@ def test_builds_valid_follow_up_from_referenced_history() -> None:
     assert not result.needs_clarification
 
 
+def test_follow_up_cohort_provenance_is_extracted_by_code_from_history() -> None:
+    history = [
+        {
+            "role": "user",
+            "content": "Tôi thuộc K50, thủ tục bảo lưu được quy định thế nào?",
+        }
+    ]
+    result = select_effective_query(
+        "Còn trường hợp đó thì sao?",
+        _decision(
+            context_mode="follow_up",
+            standalone_query="K50 thủ tục bảo lưu được quy định thế nào?",
+            referenced_turns=[0],
+            referenced_evidence=[
+                {"turn_id": 0, "evidence_span": "K50"},
+                {"turn_id": 0, "evidence_span": "thủ tục bảo lưu"},
+            ],
+            # This untrusted model field must not become provenance.
+            cohort_evidence=[
+                {"cohort": "K51", "turn_id": 0, "evidence_span": "K51"}
+            ],
+        ),
+        chat_history=history,
+    )
+
+    assert result.grounded_history_cohorts == ("K50",)
+    assert [item.to_dict() for item in result.cohort_evidence] == [
+        {"cohort": "K50", "turn_id": 0, "evidence_span": "K50"}
+    ]
+
+
+def test_follow_up_preserves_multiple_code_grounded_cohorts_for_rejection() -> None:
+    history = [
+        {
+            "role": "user",
+            "content": "So sánh K50 và K51 về thủ tục bảo lưu.",
+        }
+    ]
+    result = select_effective_query(
+        "Hai khóa đó thì sao?",
+        _decision(
+            context_mode="follow_up",
+            standalone_query="So sánh K50 và K51 về thủ tục bảo lưu.",
+            referenced_turns=[0],
+            referenced_evidence=[
+                {"turn_id": 0, "evidence_span": "K50"},
+                {"turn_id": 0, "evidence_span": "K51"},
+                {"turn_id": 0, "evidence_span": "thủ tục bảo lưu"},
+            ],
+        ),
+        chat_history=history,
+    )
+
+    assert result.grounded_history_cohorts == ("K50", "K51")
+
+
 def test_invalid_history_reference_requires_clarification() -> None:
     result = select_effective_query(
         "Còn K51 thì sao?",
@@ -540,9 +596,9 @@ def test_answer_pipeline_passes_exact_catalog_hint_to_planner(monkeypatch) -> No
 
     assert routed["query"] == "Email PĐT là gì?"
     assert routed["routing_hint"] == {
-        "lookup_type": "student_service",
-        "entity_text": "PĐT",
-        "unit_name": "Phòng Đào tạo",
+        "candidate_entity_type": "student_service",
+        "matched_span": "PĐT",
+        "catalog_record_id": "student-service-pdt",
         "match_type": "exact_catalog_span",
     }
     assert result["router_decision"]["routing_hint"] == routed["routing_hint"]

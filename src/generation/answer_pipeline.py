@@ -63,7 +63,7 @@ from .response_cache import get_response_cache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v41-single-cohort-request-scoped-composer"
+PIPELINE_VERSION = "v42-single-cohort-request-scoped-composer-rc3"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -292,6 +292,19 @@ class AnswerPipeline:
             registry_sha256 = None
 
         try:
+            from src.common.cohort import (
+                cohort_registry_digest,
+                cohort_registry_version,
+            )
+
+            cohort_registry = {
+                "version": cohort_registry_version(),
+                "sha256": cohort_registry_digest(),
+            }
+        except Exception:
+            cohort_registry = {}
+
+        try:
             from src.retrieval.core.ai_router import (
                 ROUTER_CONTRACT_VERSION,
                 ROUTER_PROMPT_VERSION,
@@ -323,6 +336,7 @@ class AnswerPipeline:
             },
             "planner": planner_versions,
             "registry_sha256": registry_sha256,
+            "cohort_registry": cohort_registry,
             "source_data_sha256": {
                 str(name): _file_sha256(path)
                 for name, path in input_config.items()
@@ -1411,6 +1425,7 @@ class AnswerPipeline:
             raw_query=query,
             effective_query=effective_query,
             selected_cohort=cohort,
+            cohort_evidence=handling.cohort_evidence,
             registry=registry,
         )
         router_decision = {

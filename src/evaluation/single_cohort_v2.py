@@ -18,7 +18,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 BUNDLE_DIR = ROOT / "data" / "eval" / "single_cohort_v2"
-EVALUATION_PROTOCOL_VERSION = "single-cohort-release-v4"
+EVALUATION_PROTOCOL_VERSION = "single-cohort-release-v5-rc3"
 CANDIDATE_SCHEMA_VERSION = "single-cohort-v2.2"
 RELEASE_SCHEMA_VERSION = "single-cohort-v2.4"
 SCHEMA_VERSIONS = {CANDIDATE_SCHEMA_VERSION, RELEASE_SCHEMA_VERSION}
@@ -76,15 +76,21 @@ def _gate_thresholds() -> dict[str, Any]:
         "hidden_semantic_executable": lambda value: value >= 0.90,
         "dev_semantic_category_floor": lambda value: value >= 0.80,
         "hidden_semantic_category_floor": lambda value: value >= 0.75,
+        "dev_follow_up_semantic_executable": lambda value: value >= 0.90,
+        "dev_robustness_semantic_executable": lambda value: value >= 0.90,
+        "hidden_follow_up_semantic_executable": lambda value: value >= 0.80,
+        "hidden_robustness_semantic_executable": lambda value: value >= 0.80,
         "dev_safety_category_floor": lambda value: value == 1.0,
         "hidden_safety_category_floor": lambda value: value == 1.0,
         "retrieval_hit_at_5": lambda value: value >= 0.90,
         "citation_binding": lambda value: value >= 0.95,
-        "answer_contract_binding": lambda value: value == 1.0,
+        "composition_contract_binding": lambda value: value == 1.0,
+        "source_contract_binding": lambda value: value >= 0.95,
         "faithfulness": lambda value: value >= 0.90,
         "answer_correctness": lambda value: value >= 0.85,
-        "hallucination_rate": lambda value: value <= 0.05,
-        "critical_false_pass": lambda value: value == 0,
+        "material_audit_complete": lambda value: value is True,
+        "material_unsupported_answer_rate": lambda value: value <= 0.05,
+        "material_critical_unsupported_claims": lambda value: value == 0,
         "provider_failures": lambda value: value == 0,
         "quality_checks_passed": lambda value: value is True,
         "parity_passed": lambda value: value is True,
@@ -653,7 +659,12 @@ def evaluate_development_gates(metrics: Mapping[str, Any]) -> ReleaseGateResult:
     thresholds = _gate_thresholds()
     thresholds.pop("hidden_semantic_executable")
     thresholds.pop("hidden_semantic_category_floor")
+    thresholds.pop("hidden_follow_up_semantic_executable")
+    thresholds.pop("hidden_robustness_semantic_executable")
     thresholds.pop("hidden_safety_category_floor")
+    thresholds.pop("material_audit_complete")
+    thresholds.pop("material_unsupported_answer_rate")
+    thresholds.pop("material_critical_unsupported_claims")
     return _evaluate_thresholds(metrics, thresholds)
 
 

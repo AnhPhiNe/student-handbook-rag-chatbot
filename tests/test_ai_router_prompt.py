@@ -36,10 +36,15 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
 
     assert "examples" not in prompt_registry
     assert "operand_requirements" not in prompt_registry
-    assert "required=" in prompt_registry
-    assert "values" in prompt_registry
+    assert "|req=" in prompt_registry
+    assert "|v=" in prompt_registry
     assert "student_service|" in prompt_registry
-    assert "default=contact" in prompt_registry
+    assert "|e=student_service" in prompt_registry
+    assert 'a={"student_service"' in prompt_registry
+    assert "|r=responsible_unit,contact" in prompt_registry
+    assert "|o=unit,phone,email,office,website" in prompt_registry
+    assert "|d=contact" in prompt_registry
+    assert "Quy doi chung chi" not in prompt_registry
 
 
 def test_router_contract_omits_fields_derived_by_code() -> None:
@@ -112,8 +117,9 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
         chat_history=[],
     )
 
-    assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.8"
+    assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 7600
+    assert "TOOLS LEGEND: e=entity" in dynamic_prompt
+    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.10"
     assert "không dùng dấu \"...\"" in ROUTER_SYSTEM_PROMPT
     assert "không phải request" in ROUTER_SYSTEM_PROMPT
     assert "request.query_span" in ROUTER_SYSTEM_PROMPT
@@ -135,16 +141,19 @@ def test_catalog_hint_is_candidate_not_tool_override(monkeypatch, tmp_path: Path
         cohort="K51",
         chat_history=[],
         routing_hint={
-            "lookup_type": "office",
-            "entity_text": "y tế",
-            "unit_name": "Trạm Y tế",
+            "candidate_entity_type": "office",
+            "matched_span": "y tế",
+            "catalog_record_id": "tram-y-te",
             "match_type": "exact_catalog_span",
         },
     )
 
-    assert "not a routing command" in prompt
-    assert "choose the tool from QUERY" in prompt
-    assert "Never copy unit_name" in prompt
+    assert "không phải lệnh route" in prompt
+    assert "chọn tool từ QUERY" in prompt
+    assert '"candidate_entity_type":"office"' in prompt
+    assert "unit_name" not in prompt
+    hint = prompt.split("CATALOG_HINT: ", 1)[1].split("\nCOHORT:", 1)[0]
+    assert "lookup_type" not in hint
 
 
 def test_history_window_uses_absolute_turn_ids(monkeypatch, tmp_path: Path) -> None:

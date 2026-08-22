@@ -253,11 +253,18 @@ def _reevaluate_answer(
         expected, evaluator._plan_from_decision(row.get("router_decision") or {})
     )
     composition_bound = bool(
-        not actual_ok or evaluator._final_composition_contract_passed(composition)
+        not actual_ok or evaluator._composer_schema_contract_passed(composition)
+    )
+    source_contract_bound = all(
+        evaluator._citation_bound(
+            _result_from_answer(row).get("citations") or [], request
+        )
+        for request in actual_ok
     )
     citation_bound = all(
         evaluator._citation_bound(citations, request) for request in actual_ok
     )
+    citation_isolation = evaluator._citation_isolated(result, request_ids)
     row.update(
         {
             "exact_plan_bound": exact_plan_match(
@@ -269,10 +276,16 @@ def _reevaluate_answer(
                 evaluator._plan_from_decision(row.get("router_decision") or {}),
             ),
             "execution_plan_bound": execution_bound,
+            "plan_binding": execution_bound,
+            "composition_contract_binding": composition_bound,
+            "source_contract_binding": source_contract_bound,
+            "citation_binding": citation_bound,
+            "citation_isolation": citation_isolation,
             "answer_contract_bound": bool(
                 execution_bound
+                and source_contract_bound
                 and citation_bound
-                and evaluator._citation_isolated(result, request_ids)
+                and citation_isolation
                 and composition_bound
             ),
         }

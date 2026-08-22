@@ -49,7 +49,7 @@ context_allocation:
   min_chars_per_doc: 0
   max_chars_per_doc: 5000
   sentence_boundary: true
-  cache_version: context_alloc_v17_request_scoped_composer
+  cache_version: context_alloc_v18_request_scoped_composer_rc3
 
 request_composition:
   max_concurrency: 3

@@ -1,4 +1,4 @@
-version: 4
+version: 5
 rag_cohort_sensitive: true
 
 tools:
@@ -8,6 +8,14 @@ tools:
     data_category: regulation_table
     cohort_sensitive: true
     description: Quy doi chung chi/diem ngoai ngu sang bac chuan dau ra.
+    planner_capabilities:
+      input_entity_types: [foreign_language_certificate, language, score_or_level]
+      entity_aliases:
+        foreign_language_certificate: [chứng chỉ ngoại ngữ]
+        language: [ngoại ngữ]
+        score_or_level: [điểm hoặc cấp độ]
+      relations: [equivalence, language_requirement]
+      output_fields: [equivalent_level_3, equivalent_level_4, matched_level]
     intents: [direct_value, list_items]
     required_slots:
       direct_value: [certificate_or_language, score_or_level]
@@ -30,6 +38,13 @@ tools:
     data_category: regulation_table
     cohort_sensitive: true
     description: Tra thoi gian hoc chuan/toi da theo he va loai chuong trinh.
+    planner_capabilities:
+      input_entity_types: [training_mode, program_type]
+      entity_aliases:
+        training_mode: [hệ đào tạo, hình thức đào tạo]
+        program_type: [loại chương trình]
+      relations: [standard_duration, maximum_duration]
+      output_fields: [standard_duration, maximum_duration]
     intents: [direct_value, list_items]
     required_slots:
       direct_value: [training_mode]
@@ -56,6 +71,13 @@ tools:
     data_category: regulation_table
     cohort_sensitive: true
     description: Xep loai hoc bong tu diem, hoac tra khoang diem cua mot nhan xep loai cu the.
+    planner_capabilities:
+      input_entity_types: [score, scholarship_label]
+      entity_aliases:
+        score: [điểm học bổng]
+        scholarship_label: [xếp loại học bổng]
+      relations: [classify, score_range]
+      output_fields: [classification, score_range]
     intents: [direct_value]
     required_slots:
       direct_value: [score_or_label]
@@ -77,6 +99,14 @@ tools:
     data_category: regulation_table
     cohort_sensitive: true
     description: Tra cuu va quy doi thang diem hoc phan (thang 10, diem chu, thang 4, dat/khong dat), xep loai hoc luc hoac diem ren luyen.
+    planner_capabilities:
+      input_entity_types: [course_score, letter_grade, conduct_score]
+      entity_aliases:
+        course_score: [điểm học phần]
+        letter_grade: [điểm chữ]
+        conduct_score: [điểm rèn luyện]
+      relations: [convert, classify, threshold, compare]
+      output_fields: [converted_score, classification, threshold]
     intents: [direct_value, list_items, compare]
     required_slots:
       direct_value: [operation]
@@ -97,6 +127,12 @@ tools:
     source_contract: directory_table
     data_category: directory_table
     description: Tim don vi phu trach khi nguoi dung mo ta mot cong viec/dich vu can lam; khong dung cho quy dinh hay thu tuc.
+    planner_capabilities:
+      input_entity_types: [student_service]
+      entity_aliases:
+        student_service: [dịch vụ sinh viên, việc cần hỗ trợ]
+      relations: [responsible_unit, contact]
+      output_fields: [unit, phone, email, office, website]
     intents: [direct_value, contact]
     default_intent: contact
     required_slots:
@@ -119,6 +155,12 @@ tools:
     source_contract: directory_table
     data_category: directory_table
     description: Tra email, phone, website, dia chi, hoac nhiem vu, trach nhiem, cac mang cong viec ho tro sinh vien cua mot don vi cu the. Quy dinh, thu tuc va bieu mau thi phai RAG.
+    planner_capabilities:
+      input_entity_types: [office]
+      entity_aliases:
+        office: [đơn vị, phòng ban]
+      relations: [contact, responsibility, services]
+      output_fields: [phone, email, office, website, services]
     intents: [contact]
     default_intent: contact
     required_slots:
@@ -140,6 +182,12 @@ tools:
     source_contract: directory_table
     data_category: directory_table
     description: Tra email, phone, website hoac dia chi cua mot Khoa cu the; khong dung cho cau hoi danh sach nganh.
+    planner_capabilities:
+      input_entity_types: [faculty]
+      entity_aliases:
+        faculty: [khoa]
+      relations: [contact]
+      output_fields: [phone, email, office, website]
     intents: [contact]
     default_intent: contact
     required_slots:
@@ -161,6 +209,13 @@ tools:
     source_contract: directory_table
     data_category: directory_table
     description: Tra nganh dao tao, khoa phu trach, danh sach nganh, mo ta chuong trinh va dau ra/co hoi nghe nghiep.
+    planner_capabilities:
+      input_entity_types: [program, faculty]
+      entity_aliases:
+        program: [ngành, chương trình đào tạo]
+        faculty: [khoa]
+      relations: [managed_by, contains_program, exists, description, learning_outcome]
+      output_fields: [faculty, programs, exists, description, learning_outcome]
     intents: [direct_value, list_items, exists]
     required_slots:
       direct_value: [program_or_faculty, requested_field]
@@ -184,6 +239,12 @@ tools:
     adapter_id: formula
     source_contract: regulation_table
     description: Tra cong thuc da duoc dinh nghia, khong thuc hien phep tinh.
+    planner_capabilities:
+      input_entity_types: [formula_type]
+      entity_aliases:
+        formula_type: [công thức]
+      relations: [formula]
+      output_fields: [formula]
     cohort_sensitive: true
     intents: [formula]
     required_slots:

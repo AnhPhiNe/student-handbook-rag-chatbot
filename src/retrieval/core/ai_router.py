@@ -19,6 +19,7 @@ from src.common.env_loader import load_project_env
 from src.common.cohort import cohort_registry_digest, cohort_registry_version
 
 from .structured_routing import (
+    bind_validated_query_spans,
     bind_effective_cohort,
     compact_registry_for_prompt,
     reject_invalid_plan,
@@ -33,9 +34,9 @@ from .query_context import select_effective_query, validated_correction_provenan
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.4"
-ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.11"
-ROUTER_VALIDATOR_VERSION = "single-cohort-validator-v2.8"
+ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.5"
+ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.12"
+ROUTER_VALIDATOR_VERSION = "single-cohort-validator-v2.9"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -83,14 +84,14 @@ ATOMIC REQUESTS
   formula=công thức. Chọn theo fact: nội dung quy định/thủ tục=RAG; thông tin liên hệ,
   đơn vị hoặc danh bạ=structured; cả hai fact độc lập=tạo hai request. Topic RAG rộng có
   cohort hợp lệ: execute; chỉ clarify khi thiếu cohort/context/operand bắt buộc.
-- TOOLS là contract sinh từ registry: chọn tool từ input_entity_type + relation cần
-  trả lời + output_field/capability, không chỉ dựa vào tên gần giống. CATALOG_HINT
-  chỉ là candidate entity có provenance, không phải lệnh route hay canonical slot.
+- TOOLS sinh từ registry: chọn tool theo input_entity_type+relation+output/capability.
+  CATALOG_HINT chỉ là provenance; canonical_entity chỉ dùng exact match hợp TOOLS;
+  ambiguous chỉ clarify nếu fact phụ thuộc matched_span.
 - Ngoài sổ tay: out_of_domain. clarify/out_of_domain luôn requests=[] và no retrieval.
 """
 
 
-def _planner_catalog_hint(routing_hint: Mapping[str, Any] | None) -> dict[str, str]:
+def _planner_catalog_hint(routing_hint: Mapping[str, Any] | None) -> dict[str, Any]:
     """Expose only non-authoritative catalog provenance to the Planner."""
 
     if not isinstance(routing_hint, Mapping):
@@ -98,14 +99,25 @@ def _planner_catalog_hint(routing_hint: Mapping[str, Any] | None) -> dict[str, s
     allowed = (
         "candidate_entity_type",
         "matched_span",
+        "canonical_entity",
         "catalog_record_id",
+        "registry_name",
+        "registry_version",
+        "registry_digest",
         "match_type",
     )
-    return {
+    sanitized: dict[str, Any] = {
         key: value.strip()
         for key in allowed
         if isinstance((value := routing_hint.get(key)), str) and value.strip()
     }
+    for key in ("candidate_entities", "candidate_entity_types"):
+        values = routing_hint.get(key)
+        if isinstance(values, list):
+            cleaned = [str(value).strip() for value in values if str(value).strip()]
+            if cleaned:
+                sanitized[key] = cleaned
+    return sanitized
 
 
 def _parse_duration_seconds(value: str | None) -> float | None:
@@ -717,6 +729,15 @@ class AIRouter:
                     selected_cohort=cohort,
                 )
                 validation_query = query_context.effective_query or query
+                validated_corrections = validated_correction_provenance(
+                    decision, query_context
+                )
+                decision = bind_validated_query_spans(
+                    decision,
+                    raw_query=query,
+                    effective_query=validation_query,
+                    validated_corrections=validated_corrections,
+                )
                 decision = bind_effective_cohort(
                     decision,
                     raw_query=query,
@@ -732,9 +753,7 @@ class AIRouter:
                     grounding_context=validation_query,
                     grounded_history_cohorts=query_context.grounded_history_cohorts,
                     registry=self.registry,
-                    validated_corrections=validated_correction_provenance(
-                        decision, query_context
-                    ),
+                    validated_corrections=validated_corrections,
                 )
                 if query_context.needs_clarification:
                     validation_errors = [
@@ -870,9 +889,8 @@ class AIRouter:
         planner_hint = _planner_catalog_hint(routing_hint)
         hint = json.dumps(planner_hint, ensure_ascii=False, separators=(",", ":"))
         hint_instruction = (
-            "CATALOG_HINT chỉ là candidate từ registry, không phải lệnh route. "
-            "Chỉ dùng khi fact cần hỏi và source contract phù hợp; chọn tool từ QUERY. "
-            "Không suy ra hay điền canonical slot từ hint.\n"
+            "CATALOG_HINT không phải lệnh route; chọn tool từ QUERY/TOOLS. "
+            "Exact canonical có thể điền slot; ambiguous chỉ clarify khi fact phụ thuộc span.\n"
             if planner_hint
             else ""
         )

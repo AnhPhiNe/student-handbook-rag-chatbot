@@ -10,6 +10,10 @@ import numpy as np
 from src.common.cohort import is_cohort_applicable, normalize_cohort
 
 from .source_contract import source_records_from_records
+from .structured_routing import (
+    find_grounded_registry_alias_hint,
+    registry_fingerprint,
+)
 
 
 STOPWORDS = {
@@ -235,6 +239,7 @@ def find_grounded_catalog_hint(
     query_norm = normalize_text(query)
     if not query_norm:
         return None
+    registry_alias_hint = find_grounded_registry_alias_hint(query)
     normalized_cohort = normalize_cohort(cohort)
     matches: list[dict[str, Any]] = []
     catalogs = (
@@ -262,6 +267,11 @@ def find_grounded_catalog_hint(
                     {
                         "candidate_entity_type": lookup_type,
                         "matched_span": grounded_span,
+                        "canonical_entity": str(
+                            (record.get("service") or value)
+                            if lookup_type == "student_service"
+                            else record.get("unit_name") or record.get("unit") or value
+                        ).strip(),
                         "catalog_record_id": str(
                             record.get("record_id")
                             or record.get("service_id")
@@ -274,7 +284,7 @@ def find_grounded_catalog_hint(
                 )
 
     if not matches:
-        return None
+        return registry_alias_hint
     matches.sort(key=lambda item: item["specificity"], reverse=True)
     top = matches[0]
     tied_entities = {
@@ -291,11 +301,18 @@ def find_grounded_catalog_hint(
     # as a student service.  A hint is metadata, not a router: fail closed when
     # the catalog cannot identify one source contract unambiguously.
     if len(tied_entities) > 1 or len(tied_lookup_types) > 1:
-        return None
-    return {
+        return registry_alias_hint
+    fingerprint = registry_fingerprint()
+    catalog_hint = {
         key: value
         for key, value in top.items()
         if key not in {"entity_key", "specificity"}
+    }
+    return {
+        **catalog_hint,
+        "registry_name": "planner_registry",
+        "registry_version": str(fingerprint["version"]),
+        "registry_digest": str(fingerprint["digest"]),
     }
 
 

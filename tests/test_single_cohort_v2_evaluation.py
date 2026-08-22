@@ -991,6 +991,8 @@ def test_metrics_keep_exact_diagnostic_separate_from_semantic_execution() -> Non
                 "passed": True,
                 "exact_passed": False,
                 "semantic_passed": True,
+                "execution_eligible": True,
+                "expected": {"outcome": "execute"},
             },
             {
                 "id": "dev-2",
@@ -998,6 +1000,8 @@ def test_metrics_keep_exact_diagnostic_separate_from_semantic_execution() -> Non
                 "passed": False,
                 "exact_passed": False,
                 "semantic_passed": False,
+                "execution_eligible": False,
+                "expected": {"outcome": "execute"},
             },
             {
                 "id": "dev-tampering",
@@ -1021,8 +1025,36 @@ def test_metrics_keep_exact_diagnostic_separate_from_semantic_execution() -> Non
     )
     assert metrics["dev_exact_plan"] == 0.0
     assert metrics["dev_semantic_plan"] == 0.5
+    assert metrics["dev_semantic_plan_accuracy"] == 0.5
+    assert metrics["dev_execution_eligible_rate"] == 0.5
+    assert metrics["dev_planner_live_denominator"] == 2
     assert metrics["dev_semantic_executable"] == 0.5
+    assert metrics["dev_expected_execute_denominator"] == 2
     assert metrics["dev_semantic_category_floor"] == 0.5
+
+
+def test_material_release_metric_is_withheld_until_audit_is_complete() -> None:
+    metrics = evaluator._metrics(
+        True,
+        {},
+        [],
+        [],
+        [],
+        {
+            "complete": False,
+            "raw_judge_hallucination_rate": 0.25,
+            "material_unsupported_answer_rate": 0.0,
+            "material_critical_unsupported_claims": 0,
+        },
+        quality_checks_passed=True,
+        parity_passed=True,
+        conformance_passed=True,
+    )
+
+    assert metrics["material_audit_complete"] is False
+    assert metrics["raw_judge_hallucination_rate"] == 0.25
+    assert "material_unsupported_answer_rate" not in metrics
+    assert "material_critical_unsupported_claims" not in metrics
 
 
 def test_live_planner_skips_plan_tampering_without_constructing_router(
@@ -1047,6 +1079,7 @@ def test_live_planner_skips_plan_tampering_without_constructing_router(
         {
             "id": "dev-tampering",
             "category": "failure_isolation",
+            "expected": {},
             "planner_skipped": True,
             "passed": False,
             "exact_passed": False,
@@ -1103,12 +1136,25 @@ def test_live_planner_uses_production_catalog_hint_and_fails_router_fallback() -
         },
     )
 
-    assert captured["routing_hint"] == {
+    routing_hint = captured["routing_hint"]
+    assert isinstance(routing_hint, dict)
+    assert {
+        "candidate_entity_type": routing_hint["candidate_entity_type"],
+        "matched_span": routing_hint["matched_span"],
+        "canonical_entity": routing_hint["canonical_entity"],
+        "catalog_record_id": routing_hint["catalog_record_id"],
+        "match_type": routing_hint["match_type"],
+    } == {
         "candidate_entity_type": "office",
         "matched_span": "PĐT",
+        "canonical_entity": "Phòng Đào tạo",
         "catalog_record_id": "office-pdt",
         "match_type": "exact_catalog_span",
     }
+    assert routing_hint["registry_name"] == "planner_registry"
+    assert routing_hint["registry_version"]
+    assert routing_hint["registry_digest"]
+    assert "tool_name" not in routing_hint
     assert rows[0]["failure_type"] == "provider"
     assert rows[0]["provider_failure"] is True
     assert not rows[0]["semantic_passed"]

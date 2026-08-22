@@ -28,7 +28,7 @@ from src.retrieval.core.ai_router import (  # noqa: E402
 )
 from src.retrieval.core.structured_routing import (  # noqa: E402
     load_lookup_registry,
-    registry_digest,
+    registry_fingerprint,
 )
 
 
@@ -229,9 +229,9 @@ def main() -> int:
             "prompt": ROUTER_PROMPT_VERSION,
             "validator": ROUTER_VALIDATOR_VERSION,
         },
-        "tool_registry_sha256": hashlib.sha256(
-            registry_digest(load_lookup_registry()).encode("utf-8")
-        ).hexdigest(),
+        "planner_registry_fingerprint": registry_fingerprint(
+            load_lookup_registry()
+        ),
         "cohort_registry_version": cohort_registry_version(),
         "cohort_registry_digest": cohort_registry_digest(),
         "passed": True,

@@ -595,12 +595,25 @@ def test_answer_pipeline_passes_exact_catalog_hint_to_planner(monkeypatch) -> No
     result = pipeline._run_retrieval("Email PĐT là gì?", cohort="K51")
 
     assert routed["query"] == "Email PĐT là gì?"
-    assert routed["routing_hint"] == {
+    routing_hint = routed["routing_hint"]
+    assert {
+        key: routing_hint[key]
+        for key in (
+            "candidate_entity_type",
+            "matched_span",
+            "canonical_entity",
+            "catalog_record_id",
+            "match_type",
+        )
+    } == {
         "candidate_entity_type": "student_service",
         "matched_span": "PĐT",
+        "canonical_entity": "PĐT",
         "catalog_record_id": "student-service-pdt",
         "match_type": "exact_catalog_span",
     }
+    assert routing_hint["registry_digest"]
+    assert "tool_name" not in routing_hint
     assert result["router_decision"]["routing_hint"] == routed["routing_hint"]
 
 

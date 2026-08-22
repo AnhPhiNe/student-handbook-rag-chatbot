@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import json
+from types import SimpleNamespace
 from typing import Any
 
+import src.generation.answer_pipeline as answer_pipeline_module
 from src.generation.answer_pipeline import AnswerPipeline
 
 
@@ -16,6 +18,25 @@ class _MemoryCache:
 
     def set(self, key: str, value: dict[str, Any]) -> None:
         self.values[key] = dict(value)
+
+
+def test_answer_cache_fingerprint_changes_with_composite_registry(monkeypatch) -> None:
+    pipeline = AnswerPipeline.__new__(AnswerPipeline)
+    pipeline.config = {"input": {}}
+    pipeline.llm_config = {}
+    pipeline.context_allocation = SimpleNamespace(cache_fingerprint=lambda: {})
+    digests = iter(("a" * 64, "b" * 64))
+    monkeypatch.setattr(
+        answer_pipeline_module,
+        "registry_fingerprint",
+        lambda _registry: {"version": "registry-v1", "digest": next(digests)},
+    )
+
+    first = pipeline._cache_artifact_fingerprint()
+    del pipeline._response_cache_artifact_fingerprint
+    second = pipeline._cache_artifact_fingerprint()
+
+    assert first["planner_registry"] != second["planner_registry"]
 
 
 class _ComposerClient:

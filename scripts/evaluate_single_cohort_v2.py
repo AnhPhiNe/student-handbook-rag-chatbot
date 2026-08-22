@@ -56,6 +56,7 @@ from src.retrieval.core.query_context import (  # noqa: E402
 )
 from src.retrieval.core.structured_routing import (  # noqa: E402
     bind_effective_cohort,
+    bind_validated_query_spans,
     load_lookup_registry,
     reject_invalid_plan,
     validate_router_decision,
@@ -88,25 +89,30 @@ def _planner_section(rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
 
     materialized = [dict(row) for row in rows]
     evaluable = [row for row in materialized if not row.get("planner_skipped")]
+    semantic_passed = sum(
+        bool(row.get("semantic_passed", row.get("passed", False)))
+        for row in evaluable
+    )
+    execution_eligible = sum(
+        bool(
+            row.get(
+                "execution_eligible",
+                row.get("semantic_passed", row.get("passed", False)),
+            )
+        )
+        for row in evaluable
+    )
+    denominator = len(evaluable)
     return {
         "passed": sum(bool(row.get("passed", False)) for row in evaluable),
         "exact_passed": sum(
             bool(row.get("exact_passed", row.get("passed", False)))
             for row in evaluable
         ),
-        "semantic_passed": sum(
-            bool(row.get("semantic_passed", row.get("passed", False)))
-            for row in evaluable
-        ),
-        "execution_eligible": sum(
-            bool(
-                row.get(
-                    "execution_eligible",
-                    row.get("semantic_passed", row.get("passed", False)),
-                )
-            )
-            for row in evaluable
-        ),
+        "semantic_passed": semantic_passed,
+        "semantic_plan_accuracy": semantic_passed / denominator if denominator else 0.0,
+        "execution_eligible": execution_eligible,
+        "execution_eligible_rate": execution_eligible / denominator if denominator else 0.0,
         "provider_failures": sum(
             bool(row.get("provider_failure")) for row in evaluable
         ),
@@ -363,6 +369,13 @@ def _validated_planner_decision(
         selected_cohort=case.get("selected_cohort"),
     )
     effective_query = handling.effective_query or str(case["query"])
+    corrections = validated_correction_provenance(decision, handling)
+    decision = bind_validated_query_spans(
+        decision,
+        raw_query=str(case["query"]),
+        effective_query=effective_query,
+        validated_corrections=corrections,
+    )
     bound = bind_effective_cohort(
         decision,
         raw_query=str(case["query"]),
@@ -396,9 +409,7 @@ def _validated_planner_decision(
             selected_cohort=bound.get("cohort"),
             grounding_context=effective_query,
             registry=registry,
-            validated_corrections=validated_correction_provenance(
-                decision, handling
-            ),
+            validated_corrections=corrections,
         )
         if errors:
             bound = reject_invalid_plan(bound, errors, query=effective_query)
@@ -443,6 +454,7 @@ def _planner_skip_row(case: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "id": case["id"],
         "category": case.get("category"),
+        "expected": case.get("expected") or {},
         "planner_skipped": True,
         "passed": False,
         "exact_passed": False,
@@ -501,6 +513,7 @@ def _router_error_row(case: Mapping[str, Any], decision: Mapping[str, Any]) -> d
     return {
         "id": case["id"],
         "category": case.get("category"),
+        "expected": case.get("expected") or {},
         "passed": False,
         "exact_passed": False,
         "semantic_passed": False,
@@ -517,6 +530,7 @@ def _router_cache_row(case: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "id": case["id"],
         "category": case.get("category"),
+        "expected": case.get("expected") or {},
         "passed": False,
         "exact_passed": False,
         "semantic_passed": False,
@@ -554,6 +568,7 @@ def run_live_planner(
             else {
                 "id": case["id"],
                 "category": case.get("category"),
+                "expected": case.get("expected") or {},
                 "passed": False,
                 "exact_passed": False,
                 "semantic_passed": False,
@@ -593,6 +608,7 @@ def run_live_planner(
                 {
                     "id": case["id"],
                     "category": case.get("category"),
+                    "expected": case.get("expected") or {},
                     "passed": assessment.semantic_match,
                     "exact_passed": assessment.exact_match,
                     "semantic_passed": assessment.semantic_match,
@@ -606,7 +622,6 @@ def run_live_planner(
                         if assessment.semantic_match
                         else "planner"
                     ),
-                    "expected": case["expected"],
                     "actual": actual,
                     "validated_decision": bound,
                     "provider_failure": False,
@@ -617,6 +632,7 @@ def run_live_planner(
                 {
                     "id": case["id"],
                     "category": case.get("category"),
+                    "expected": case.get("expected") or {},
                     "passed": False,
                     "exact_passed": False,
                     "semantic_passed": False,
@@ -1294,14 +1310,53 @@ def _metrics(
     for suite, rows in planner_rows.items():
         applicable_rows = [row for row in rows if not row.get("planner_skipped")]
         if applicable_rows:
+            planner_denominator = len(applicable_rows)
+            metrics[f"{suite}_planner_live_denominator"] = planner_denominator
+            if suite == "dev":
+                metrics["dev_planner_denominator_valid"] = planner_denominator == 148
             metrics[f"{suite}_exact_plan"] = _mean(
                 float(row.get("exact_passed", row.get("passed", False)))
                 for row in applicable_rows
             )
-            metrics[f"{suite}_semantic_plan"] = _mean(
+            semantic_plan_accuracy = _mean(
                 float(row.get("semantic_passed", row.get("passed", False)))
                 for row in applicable_rows
             )
+            execution_eligible_rate = _mean(
+                float(
+                    row.get(
+                        "execution_eligible",
+                        row.get("semantic_passed", row.get("passed", False)),
+                    )
+                )
+                for row in applicable_rows
+            )
+            metrics[f"{suite}_semantic_plan"] = semantic_plan_accuracy
+            metrics[f"{suite}_semantic_plan_accuracy"] = semantic_plan_accuracy
+            metrics[f"{suite}_execution_eligible_rate"] = execution_eligible_rate
+            plan_category_scores = {
+                category: _mean(
+                    float(row.get("semantic_passed", row.get("passed", False)))
+                    for row in applicable_rows
+                    if str(row.get("category") or "unknown") == category
+                )
+                for category in {
+                    str(row.get("category") or "unknown") for row in applicable_rows
+                }
+            }
+            metrics[f"{suite}_semantic_plan_categories"] = plan_category_scores
+            for category in ("follow_up", "robustness"):
+                if category in plan_category_scores:
+                    metrics[f"{suite}_{category}_semantic_plan_accuracy"] = (
+                        plan_category_scores[category]
+                    )
+            safety_values = [
+                plan_category_scores[name]
+                for name in ("cohort_resolution", "failure_isolation")
+                if name in plan_category_scores
+            ]
+            if safety_values:
+                metrics[f"{suite}_safety_plan_floor"] = min(safety_values)
     if execution_rows:
         evaluated = [row for row in execution_rows if not row.get("skipped")]
         rag_hits = [hit for row in evaluated if row.get("plan_correct") for hit in row.get("rag_hits") or []]
@@ -1319,22 +1374,25 @@ def _metrics(
         execution_by_id = {str(row.get("id")): row for row in execution_rows}
         for suite, rows in planner_rows.items():
             applicable_rows = [row for row in rows if not row.get("planner_skipped")]
-            execution_eligible_ids = {
-                str(row.get("id"))
+            expected_execute_rows = [
+                row
                 for row in applicable_rows
-                if row.get(
-                    "execution_eligible",
-                    row.get("semantic_passed", row.get("passed", False)),
-                )
-            }
-            if (
-                not execution_eligible_ids
-                or not execution_eligible_ids <= set(execution_by_id)
-            ):
+                if str((row.get("expected") or {}).get("outcome") or "")
+                == "execute"
+            ]
+            if not expected_execute_rows:
                 continue
+            expected_execute_denominator = len(expected_execute_rows)
+            metrics[f"{suite}_expected_execute_denominator"] = (
+                expected_execute_denominator
+            )
+            if suite == "dev":
+                metrics["dev_expected_execute_denominator_valid"] = (
+                    expected_execute_denominator == 146
+                )
             case_scores: list[float] = []
             category_scores: dict[str, list[float]] = {}
-            for row in applicable_rows:
+            for row in expected_execute_rows:
                 eligible = bool(
                     row.get(
                         "execution_eligible",
@@ -1365,13 +1423,6 @@ def _metrics(
                     metrics[f"{suite}_{category}_semantic_executable"] = (
                         per_category[category]
                     )
-            safety_values = [
-                per_category[name]
-                for name in ("cohort_resolution", "failure_isolation")
-                if name in per_category
-            ]
-            if safety_values:
-                metrics[f"{suite}_safety_category_floor"] = min(safety_values)
     if judgments:
         valid = [row for row in judgments if not row.get("provider_failure")]
         metrics.update(
@@ -1383,23 +1434,30 @@ def _metrics(
             }
         )
     if material_audit is not None:
+        audit_complete = bool(material_audit.get("complete"))
         metrics.update(
             {
-                "material_audit_complete": bool(material_audit.get("complete")),
+                "material_audit_complete": audit_complete,
                 "raw_judge_hallucination_rate": float(
                     material_audit.get("raw_judge_hallucination_rate") or 0.0
                 ),
-                "material_unsupported_answer_rate": float(
-                    material_audit.get("material_unsupported_answer_rate") or 0.0
-                ),
-                "material_critical_unsupported_claims": int(
-                    material_audit.get("material_critical_unsupported_claims") or 0
-                ),
-                "judge_false_positive_rate": float(
-                    material_audit.get("judge_false_positive_rate") or 0.0
-                ),
             }
         )
+        if audit_complete:
+            metrics.update(
+                {
+                    "material_unsupported_answer_rate": float(
+                        material_audit.get("material_unsupported_answer_rate") or 0.0
+                    ),
+                    "material_critical_unsupported_claims": int(
+                        material_audit.get("material_critical_unsupported_claims")
+                        or 0
+                    ),
+                    "judge_false_positive_rate": float(
+                        material_audit.get("judge_false_positive_rate") or 0.0
+                    ),
+                }
+            )
     if answer_rows:
         metrics["plan_binding"] = _mean(
             float(row.get("plan_binding", row.get("execution_plan_bound", False)))
@@ -1817,6 +1875,7 @@ def main() -> None:
         passed_ids = {
             row["id"]
             for row in planner_rows.get(args.run_executor, [])
+            if str((row.get("expected") or {}).get("outcome") or "") == "execute"
             if row.get(
                 "execution_eligible",
                 row.get("semantic_passed", row.get("passed", False)),
@@ -1853,6 +1912,7 @@ def main() -> None:
         passed_ids = {
             row["id"]
             for row in planner_rows.get(args.run_answers, [])
+            if str((row.get("expected") or {}).get("outcome") or "") == "execute"
             if row.get(
                 "execution_eligible",
                 row.get("semantic_passed", row.get("passed", False)),

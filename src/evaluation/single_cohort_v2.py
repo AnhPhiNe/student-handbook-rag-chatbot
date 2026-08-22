@@ -18,7 +18,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 BUNDLE_DIR = ROOT / "data" / "eval" / "single_cohort_v2"
-EVALUATION_PROTOCOL_VERSION = "single-cohort-release-v5-rc3"
+EVALUATION_PROTOCOL_VERSION = "single-cohort-release-v6-rc4"
 CANDIDATE_SCHEMA_VERSION = "single-cohort-v2.2"
 RELEASE_SCHEMA_VERSION = "single-cohort-v2.4"
 SCHEMA_VERSIONS = {CANDIDATE_SCHEMA_VERSION, RELEASE_SCHEMA_VERSION}
@@ -72,18 +72,25 @@ def _gate_thresholds() -> dict[str, Any]:
         "structured_source_binding": lambda value: value == 1.0,
         "structured_to_rag_fallbacks": lambda value: value == 0,
         "cross_request_leakage": lambda value: value == 0,
+        "dev_planner_denominator_valid": lambda value: value is True,
+        "dev_expected_execute_denominator_valid": lambda value: value is True,
+        "dev_semantic_plan_accuracy": lambda value: value >= 0.95,
+        "hidden_semantic_plan_accuracy": lambda value: value >= 0.90,
+        "dev_execution_eligible_rate": lambda value: value >= 0.95,
+        "hidden_execution_eligible_rate": lambda value: value >= 0.90,
         "dev_semantic_executable": lambda value: value >= 0.95,
         "hidden_semantic_executable": lambda value: value >= 0.90,
         "dev_semantic_category_floor": lambda value: value >= 0.80,
         "hidden_semantic_category_floor": lambda value: value >= 0.75,
-        "dev_follow_up_semantic_executable": lambda value: value >= 0.90,
-        "dev_robustness_semantic_executable": lambda value: value >= 0.90,
-        "hidden_follow_up_semantic_executable": lambda value: value >= 0.80,
-        "hidden_robustness_semantic_executable": lambda value: value >= 0.80,
-        "dev_safety_category_floor": lambda value: value == 1.0,
-        "hidden_safety_category_floor": lambda value: value == 1.0,
+        "dev_follow_up_semantic_plan_accuracy": lambda value: value >= 0.90,
+        "dev_robustness_semantic_plan_accuracy": lambda value: value >= 0.90,
+        "hidden_follow_up_semantic_plan_accuracy": lambda value: value >= 0.80,
+        "hidden_robustness_semantic_plan_accuracy": lambda value: value >= 0.80,
+        "dev_safety_plan_floor": lambda value: value == 1.0,
+        "hidden_safety_plan_floor": lambda value: value == 1.0,
         "retrieval_hit_at_5": lambda value: value >= 0.90,
         "citation_binding": lambda value: value >= 0.95,
+        "citation_isolation": lambda value: value == 1.0,
         "composition_contract_binding": lambda value: value == 1.0,
         "source_contract_binding": lambda value: value >= 0.95,
         "faithfulness": lambda value: value >= 0.90,
@@ -657,14 +664,13 @@ def evaluate_release_gates(metrics: Mapping[str, Any]) -> ReleaseGateResult:
 
 def evaluate_development_gates(metrics: Mapping[str, Any]) -> ReleaseGateResult:
     thresholds = _gate_thresholds()
+    thresholds.pop("hidden_semantic_plan_accuracy")
+    thresholds.pop("hidden_execution_eligible_rate")
     thresholds.pop("hidden_semantic_executable")
     thresholds.pop("hidden_semantic_category_floor")
-    thresholds.pop("hidden_follow_up_semantic_executable")
-    thresholds.pop("hidden_robustness_semantic_executable")
-    thresholds.pop("hidden_safety_category_floor")
-    thresholds.pop("material_audit_complete")
-    thresholds.pop("material_unsupported_answer_rate")
-    thresholds.pop("material_critical_unsupported_claims")
+    thresholds.pop("hidden_follow_up_semantic_plan_accuracy")
+    thresholds.pop("hidden_robustness_semantic_plan_accuracy")
+    thresholds.pop("hidden_safety_plan_floor")
     return _evaluate_thresholds(metrics, thresholds)
 
 

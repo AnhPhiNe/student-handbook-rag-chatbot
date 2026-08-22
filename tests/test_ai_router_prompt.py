@@ -5,6 +5,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import src.retrieval.core.ai_router as ai_router_module
+import src.retrieval.core.structured_routing as structured_routing_module
 from src.retrieval.core.ai_router import (
     AIRouter,
     ROUTER_PROMPT_VERSION,
@@ -14,6 +15,7 @@ from src.retrieval.core.ai_router import (
 from src.retrieval.core.structured_routing import (
     compact_registry_for_prompt,
     normalize_router_decision,
+    registry_fingerprint,
     router_json_schema,
     router_response_schema,
     validate_router_decision,
@@ -110,6 +112,35 @@ def test_router_cache_key_is_bound_to_validator_version(
     assert changed != original
 
 
+def test_router_cache_key_changes_with_alias_registry(
+    monkeypatch, tmp_path: Path
+) -> None:
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+    aliases = tmp_path / "office_aliases.yaml"
+    aliases.write_text("version: 1\nservice_aliases: []\n", encoding="utf-8")
+    monkeypatch.setattr(structured_routing_module, "OFFICE_ALIASES_PATH", aliases)
+    original = router._cache_key("đơn vị hỗ trợ", cohort="K51", chat_history=[])
+
+    aliases.write_text(
+        "version: 2\nservice_aliases:\n  - match: dịch vụ\n    aliases: [DV]\n",
+        encoding="utf-8",
+    )
+    changed = router._cache_key("đơn vị hỗ trợ", cohort="K51", chat_history=[])
+
+    assert changed != original
+
+
+def test_registry_fingerprint_declares_each_runtime_artifact() -> None:
+    fingerprint = registry_fingerprint()
+
+    assert len(fingerprint["digest"]) == 64
+    assert fingerprint["tool_registry"]["version"]
+    for name, artifact in fingerprint["artifacts"].items():
+        assert artifact["name"] == name
+        assert artifact["version"] not in {None, ""}
+        assert len(artifact["sha256"]) == 64
+
+
 def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None:
     router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
     dynamic_prompt = router._build_prompt(
@@ -120,7 +151,7 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 7600
     assert "TOOLS LEGEND: e=entity" in dynamic_prompt
-    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.11"
+    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.12"
     assert "không dùng dấu \"...\"" in ROUTER_SYSTEM_PROMPT
     assert "không phải request" in ROUTER_SYSTEM_PROMPT
     assert "request.query_span" in ROUTER_SYSTEM_PROMPT
@@ -144,6 +175,10 @@ def test_catalog_hint_is_candidate_not_tool_override(monkeypatch, tmp_path: Path
         routing_hint={
             "candidate_entity_type": "office",
             "matched_span": "y tế",
+            "canonical_entity": "Trạm Y tế",
+            "registry_name": "planner_registry",
+            "registry_version": "single-cohort-registry-v1",
+            "registry_digest": "a" * 64,
             "catalog_record_id": "tram-y-te",
             "match_type": "exact_catalog_span",
         },
@@ -152,6 +187,7 @@ def test_catalog_hint_is_candidate_not_tool_override(monkeypatch, tmp_path: Path
     assert "không phải lệnh route" in prompt
     assert "chọn tool từ QUERY" in prompt
     assert '"candidate_entity_type":"office"' in prompt
+    assert '"canonical_entity":"Trạm Y tế"' in prompt
     assert "unit_name" not in prompt
     hint = prompt.split("CATALOG_HINT: ", 1)[1].split("\nCOHORT:", 1)[0]
     assert "lookup_type" not in hint

@@ -6,9 +6,14 @@ import hashlib
 from pathlib import Path
 from typing import Iterable
 
+from src.retrieval.core.structured_routing import registry_digest
+
 
 ARTIFACT_PATHS = {
     "structured_registry": "configs/structured_lookup_registry.yaml",
+    "entity_registry": "data/processed/entities/entity_registry.json",
+    "office_aliases": "configs/office_aliases.yaml",
+    "acronym_vocabulary": "configs/hcmue_slang_dictionary.yaml",
     "structured_manifest": "data/processed/metadata/structured_data_manifest.json",
     "formula_rules": "data/processed/tables/formula_rules.json",
     "scoring_tables": "data/processed/tables/scoring_tables.json",
@@ -66,4 +71,5 @@ def release_artifact_fingerprint(root: Path) -> dict[str, str | None]:
         for name, relative in ARTIFACT_PATHS.items()
     }
     values["implementation_tree"] = tree_hash(root)
+    values["planner_registry_digest"] = registry_digest()
     return values

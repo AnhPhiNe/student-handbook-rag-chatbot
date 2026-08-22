@@ -11,6 +11,7 @@ from src.retrieval.core.query_context import (
 )
 from src.retrieval.core.structured_routing import (
     MAX_LOOKUP_REQUESTS,
+    bind_validated_query_spans,
     reject_invalid_plan,
     normalize_router_decision,
     validate_router_decision,
@@ -452,45 +453,95 @@ def test_unused_correction_cannot_ground_slot_when_normalized_query_is_unchanged
     )
 
 
+def test_validated_correction_binds_normalized_query_span_to_raw_literal() -> None:
+    decision = {
+        "lookup_requests": [
+            {
+                "request_kind": "structured",
+                "lookup_type": "foreign_language",
+                "intent": "direct_value",
+                "query_span": "IELTS 6.0 đổi bậc",
+                "slots": {
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": 6.0,
+                },
+                "slot_spans": {
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "6.0",
+                },
+                "cohort_refs": ["K51"],
+            }
+        ]
+    }
+
+    bound = bind_validated_query_spans(
+        decision,
+        raw_query="IELST 6.0 đổi bậc",
+        effective_query="IELTS 6.0 đổi bậc",
+        validated_corrections=[
+            {"original_span": "IELST", "normalized_span": "IELTS"}
+        ],
+    )
+
+    request = bound["lookup_requests"][0]
+    assert request["query_span"] == "IELST 6.0 đổi bậc"
+    assert request["grounded_query_span"] == "IELTS 6.0 đổi bậc"
+    assert request["query_span_provenance"]["source"] == "validated_correction"
+
+
+def test_span_binding_preserves_exact_raw_punctuation() -> None:
+    raw_query = "Còn thì sao?"
+    decision = {
+        "lookup_requests": [
+            {
+                "request_kind": "rag",
+                "query_span": raw_query,
+                "slots": {},
+            }
+        ]
+    }
+
+    bound = bind_validated_query_spans(
+        decision,
+        raw_query=raw_query,
+        effective_query=raw_query,
+        validated_corrections=[],
+    )
+
+    assert bound["lookup_requests"][0]["query_span"] == raw_query
+
+
+def test_query_span_binding_fails_closed_for_ambiguous_corrected_span() -> None:
+    decision = {
+        "lookup_requests": [
+            {
+                "request_kind": "structured",
+                "query_span": "IELTS",
+            }
+        ]
+    }
+
+    bound = bind_validated_query_spans(
+        decision,
+        raw_query="IELST và IELST",
+        effective_query="IELTS và IELTS",
+        validated_corrections=[
+            {"original_span": "IELST", "normalized_span": "IELTS"},
+            {"original_span": "IELST", "normalized_span": "IELTS"},
+        ],
+    )
+
+    assert bound["lookup_requests"][0]["query_span"] == "IELTS"
+    assert "grounded_query_span" not in bound["lookup_requests"][0]
+
+
 @pytest.mark.parametrize(
     ("query", "lookup_type", "intent", "slot_name", "value", "span", "expected"),
     [
-        (
-            "mail pdt",
-            "office",
-            "contact",
-            "office",
-            "Phòng Đào tạo",
-            "pdt",
-            "Phòng Đào tạo",
-        ),
-        (
-            "web khoa cntt",
-            "faculty",
-            "contact",
-            "faculty",
-            "khoa cntt",
-            "khoa cntt",
-            "Khoa Công nghệ Thông tin",
-        ),
-        (
-            "đơn vị hỗ trợ bhyt",
-            "student_service",
-            "contact",
-            "service",
-            "bhyt",
-            "bhyt",
-            "bảo hiểm y tế",
-        ),
-        (
-            "nganh cntt thuộc khoa nào",
-            "program",
-            "direct_value",
-            "program_or_faculty",
-            "nganh cntt",
-            "nganh cntt",
-            "Công nghệ Thông tin",
-        ),
+        ("mail pdt", "office", "contact", "office", "Phòng Đào tạo", "pdt", "Phòng Đào tạo"),
+        ("web khoa cntt", "faculty", "contact", "faculty", "khoa cntt", "khoa cntt", "Khoa Công nghệ Thông tin"),
+        ("đơn vị hỗ trợ bhyt", "student_service", "contact", "service", "bhyt", "bhyt", "bảo hiểm y tế"),
+        ("nganh cntt thuộc khoa nào", "program", "direct_value", "program_or_faculty", "nganh cntt", "nganh cntt", "Công nghệ Thông tin"),
     ],
 )
 def test_registry_canonicalizes_exact_declared_aliases(

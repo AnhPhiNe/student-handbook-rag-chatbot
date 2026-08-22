@@ -20,6 +20,7 @@ class RequestExecutionContext:
     effective_query: str
     effective_cohort: str | None
     retrieval_query: str
+    grounded_request_query: str | None = None
     retrieval_config: Mapping[str, Any] = field(default_factory=dict)
 
     def debug_dict(self) -> dict[str, Any]:
@@ -29,7 +30,7 @@ class RequestExecutionContext:
             "request_index": self.request_index,
             "request_kind": self.request_kind,
             "query_span": self.query_span,
+            "grounded_request_query": self.grounded_request_query,
             "effective_cohort": self.effective_cohort,
             "retrieval_query": self.retrieval_query,
         }
-

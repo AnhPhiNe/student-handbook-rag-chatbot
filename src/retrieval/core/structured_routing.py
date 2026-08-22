@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import unicodedata
@@ -11,6 +12,10 @@ import yaml
 
 from src.common.cohort import extract_cohort_mentions, normalize_cohort
 
+from .acronym_registry import (
+    DEFAULT_PROGRAM_DIRECTORY_PATH,
+    DEFAULT_VOCABULARY_PATH,
+)
 from .query_context import CohortEvidence
 
 
@@ -24,7 +29,8 @@ ALLOWED_CONTEXT_MODES = {"standalone", "follow_up", "ambiguous"}
 ALLOWED_CONFIDENCE_LEVELS = {"high", "medium", "low", "none"}
 ALLOWED_REQUEST_KINDS = {"structured", "rag"}
 MAX_LOOKUP_REQUESTS = 6
-PLANNER_CONTRACT_VERSION = "single-cohort-v2.4-rc3"
+PLANNER_CONTRACT_VERSION = "single-cohort-v2.5-rc4"
+REGISTRY_FINGERPRINT_VERSION = "single-cohort-registry-v1"
 LEGACY_STRUCTURED_ROUTES = {"deterministic"}
 LEGACY_STRUCTURED_MODES = {"direct_lookup", "structured_reasoning"}
 UNGROUNDED_SCHEMA_SLOTS = {
@@ -89,6 +95,32 @@ def _recover_grounded_span(span: Any, source_text: str) -> str | None:
     return source_text[starts[position] : ends[end_position]].strip()
 
 
+def _unique_grounded_span_bounds(
+    span: Any, source_text: str
+) -> tuple[int, int] | None:
+    """Return one literal source range for a normalized span, or fail closed."""
+
+    requested = _normalize_text(span)
+    if not requested:
+        return None
+    normalized, starts, ends = _normalized_with_offsets(source_text)
+    positions: list[int] = []
+    offset = 0
+    while True:
+        position = normalized.find(requested, offset)
+        if position < 0:
+            break
+        positions.append(position)
+        offset = position + 1
+    if len(positions) != 1:
+        return None
+    position = positions[0]
+    end_position = position + len(requested) - 1
+    if end_position >= len(starts):
+        return None
+    return starts[position], ends[end_position]
+
+
 def _query_mentions_cohort(query: str) -> bool:
     return bool(extract_cohort_mentions(query))
 
@@ -114,6 +146,78 @@ def load_lookup_registry(path: str | Path = DEFAULT_REGISTRY_PATH) -> dict[str, 
     if not isinstance(tools, dict) or not tools:
         raise ValueError("Structured lookup registry must define at least one tool.")
     return data
+
+
+def _sha256_file(path: Path) -> str | None:
+    return hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+
+
+def _declared_artifact_version(path: Path) -> str:
+    """Read a declared artifact version, or mark an immutable unversioned file."""
+
+    if not path.is_file():
+        return "missing"
+    try:
+        if path.suffix.lower() == ".json":
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        elif path.suffix.lower() in {".yaml", ".yml"}:
+            payload = yaml.safe_load(path.read_text(encoding="utf-8"))
+        else:
+            payload = None
+    except (OSError, json.JSONDecodeError, yaml.YAMLError):
+        return "unreadable"
+    if isinstance(payload, dict):
+        declared = payload.get("version") or payload.get("schema_version")
+        if declared is not None:
+            return str(declared)
+    return "unversioned"
+
+
+def registry_fingerprint(
+    registry: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Fingerprint every versioned registry that changes planning or execution.
+
+    The list is explicit so unrelated files cannot invalidate caches and a newly
+    loaded alias source cannot silently escape release provenance.
+    """
+
+    registry = registry or load_lookup_registry()
+    tool_registry_payload = json.dumps(
+        registry, ensure_ascii=True, sort_keys=True, separators=(",", ":")
+    )
+    artifact_paths = {
+        "entity_registry": ENTITY_REGISTRY_PATH,
+        "office_aliases": OFFICE_ALIASES_PATH,
+        "acronym_vocabulary": Path(DEFAULT_VOCABULARY_PATH),
+        "program_directory": Path(DEFAULT_PROGRAM_DIRECTORY_PATH),
+    }
+    artifacts = {
+        name: {
+            "name": name,
+            "version": _declared_artifact_version(path),
+            "path": path.relative_to(ROOT).as_posix()
+            if path.is_relative_to(ROOT)
+            else path.as_posix(),
+            "sha256": _sha256_file(path),
+        }
+        for name, path in artifact_paths.items()
+    }
+    payload: dict[str, Any] = {
+        "version": REGISTRY_FINGERPRINT_VERSION,
+        "tool_registry": {
+            "version": registry.get("version"),
+            "sha256": hashlib.sha256(
+                tool_registry_payload.encode("utf-8")
+            ).hexdigest(),
+        },
+        "artifacts": artifacts,
+    }
+    canonical = json.dumps(
+        payload, ensure_ascii=True, sort_keys=True, separators=(",", ":")
+    )
+    payload["digest"] = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    return payload
 
 
 def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
@@ -910,6 +1014,135 @@ def bind_effective_cohort(
     return bound_decision
 
 
+def _reconstruct_query_with_source_ranges(
+    raw_query: str,
+    corrections: Iterable[dict[str, str]],
+) -> tuple[str, list[tuple[int, int]]] | None:
+    """Apply validated corrections while retaining their literal raw ranges."""
+
+    reconstructed = raw_query
+    source_ranges = [(index, index + 1) for index in range(len(raw_query))]
+    for correction in corrections:
+        original = str(correction.get("original_span") or "")
+        normalized = str(correction.get("normalized_span") or "")
+        if not original or not normalized:
+            return None
+        position = reconstructed.find(original)
+        if position < 0:
+            return None
+        end = position + len(original)
+        replaced_ranges = source_ranges[position:end]
+        if not replaced_ranges:
+            return None
+        source_range = (replaced_ranges[0][0], replaced_ranges[-1][1])
+        reconstructed = reconstructed[:position] + normalized + reconstructed[end:]
+        source_ranges = [
+            *source_ranges[:position],
+            *([source_range] * len(normalized)),
+            *source_ranges[end:],
+        ]
+    return reconstructed, source_ranges
+
+
+def bind_validated_query_spans(
+    decision: dict[str, Any],
+    *,
+    raw_query: str,
+    effective_query: str,
+    validated_corrections: list[dict[str, str]] | None = None,
+) -> dict[str, Any]:
+    """Bind normalized Planner spans back to raw text using trusted corrections."""
+
+    requests = decision.get("lookup_requests")
+    corrections = list(validated_corrections or [])
+    if not isinstance(requests, list):
+        return decision
+
+    reconstructed: str | None = None
+    source_ranges: list[tuple[int, int]] = []
+    if corrections:
+        reconstructed_result = _reconstruct_query_with_source_ranges(
+            raw_query, corrections
+        )
+        if reconstructed_result is not None:
+            candidate, candidate_ranges = reconstructed_result
+            if unicodedata.normalize("NFC", candidate).strip() == unicodedata.normalize(
+                "NFC", effective_query
+            ).strip():
+                reconstructed = candidate
+                source_ranges = candidate_ranges
+
+    bound_requests: list[Any] = []
+    for request in requests:
+        if not isinstance(request, dict):
+            bound_requests.append(request)
+            continue
+        bound = dict(request)
+        proposed_span = str(request.get("query_span") or "").strip()
+        exact_position = raw_query.find(proposed_span) if proposed_span else -1
+        exact_is_unique = (
+            exact_position >= 0
+            and raw_query.find(proposed_span, exact_position + 1) < 0
+        )
+        if exact_is_unique:
+            raw_literal = raw_query[
+                exact_position : exact_position + len(proposed_span)
+            ]
+        else:
+            raw_bounds = _unique_grounded_span_bounds(proposed_span, raw_query)
+            raw_literal = (
+                raw_query[raw_bounds[0] : raw_bounds[1]].strip()
+                if raw_bounds is not None
+                else None
+            )
+        normalized_literal: str | None = None
+
+        if raw_literal:
+            bound["query_span"] = raw_literal
+            if reconstructed is not None:
+                raw_bounds = _unique_grounded_span_bounds(raw_literal, raw_query)
+                if raw_bounds is not None:
+                    overlapping = [
+                        index
+                        for index, (start, end) in enumerate(source_ranges)
+                        if start < raw_bounds[1] and end > raw_bounds[0]
+                    ]
+                    if overlapping:
+                        normalized_literal = reconstructed[
+                            overlapping[0] : overlapping[-1] + 1
+                        ].strip()
+        elif reconstructed is not None:
+            normalized_bounds = _unique_grounded_span_bounds(
+                proposed_span, reconstructed
+            )
+            if normalized_bounds is not None:
+                covered_ranges = source_ranges[
+                    normalized_bounds[0] : normalized_bounds[1]
+                ]
+                if covered_ranges:
+                    raw_start = min(item[0] for item in covered_ranges)
+                    raw_end = max(item[1] for item in covered_ranges)
+                    raw_literal = raw_query[raw_start:raw_end].strip()
+                    normalized_literal = reconstructed[
+                        normalized_bounds[0] : normalized_bounds[1]
+                    ].strip()
+                    if raw_literal:
+                        bound["query_span"] = raw_literal
+
+        if raw_literal and normalized_literal and (
+            _normalize_text(raw_literal) != _normalize_text(normalized_literal)
+        ):
+            bound["grounded_query_span"] = normalized_literal
+            bound["query_span_provenance"] = {
+                "source": "validated_correction",
+                "raw_span": raw_literal,
+                "normalized_span": normalized_literal,
+            }
+        bound_requests.append(bound)
+
+    return {**decision, "lookup_requests": bound_requests}
+
+
 def _is_present(value: Any) -> bool:
     if value is None:
         return False
@@ -1052,6 +1285,108 @@ def _slot_alias_index() -> dict[str, dict[str, frozenset[str]]]:
             for alias, canonical_values in aliases.items()
         }
         for entity_type, aliases in index.items()
+    }
+
+
+def _planner_entity_types_for_alias_namespace(
+    namespace: str,
+    registry: dict[str, Any],
+) -> set[str]:
+    """Resolve an alias namespace through registry capabilities, not tool names."""
+
+    candidates: set[str] = set()
+    for spec in (registry.get("tools") or {}).values():
+        slot_schemas = spec.get("slot_schema") or {}
+        if not any(
+            namespace in set(slot_schema.get("alias_entity_types") or [])
+            for slot_schema in slot_schemas.values()
+        ):
+            continue
+        input_types = set(
+            (spec.get("planner_capabilities") or {}).get("input_entity_types") or []
+        )
+        if namespace in input_types:
+            candidates.add(namespace)
+        elif len(input_types) == 1:
+            candidates.update(input_types)
+    return candidates
+
+
+def find_grounded_registry_alias_hint(
+    query: str,
+    *,
+    registry: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
+    """Return exact, provenance-bound alias metadata without choosing a tool."""
+
+    registry = registry or load_lookup_registry()
+    query_normalized = _normalize_text(query)
+    if not query_normalized:
+        return None
+
+    matches: list[dict[str, Any]] = []
+    for namespace, aliases in _slot_alias_index().items():
+        candidate_types = _planner_entity_types_for_alias_namespace(
+            namespace, registry
+        )
+        if not candidate_types:
+            continue
+        for alias, canonical_values in aliases.items():
+            if len(alias) < 2 or not re.search(
+                rf"(?<![a-z0-9]){re.escape(alias)}(?![a-z0-9])",
+                query_normalized,
+            ):
+                continue
+            matched_span = _recover_grounded_span(alias, query)
+            if not matched_span:
+                continue
+            matches.append(
+                {
+                    "matched_span": matched_span,
+                    "canonical_values": set(canonical_values),
+                    "candidate_entity_types": set(candidate_types),
+                    "specificity": (len(alias.split()), len(alias)),
+                }
+            )
+
+    if not matches:
+        return None
+    matches.sort(key=lambda item: item["specificity"], reverse=True)
+    top_specificity = matches[0]["specificity"]
+    top = [item for item in matches if item["specificity"] == top_specificity]
+    spans = {str(item["matched_span"]) for item in top}
+    if len(spans) != 1:
+        return None
+
+    canonical_values = {
+        canonical
+        for item in top
+        for canonical in item["canonical_values"]
+    }
+    candidate_types = {
+        entity_type
+        for item in top
+        for entity_type in item["candidate_entity_types"]
+    }
+    fingerprint = registry_fingerprint(registry)
+    provenance: dict[str, Any] = {
+        "matched_span": next(iter(spans)),
+        "registry_name": "planner_registry",
+        "registry_version": str(fingerprint["version"]),
+        "registry_digest": str(fingerprint["digest"]),
+    }
+    if len(canonical_values) == 1 and len(candidate_types) == 1:
+        return {
+            **provenance,
+            "canonical_entity": next(iter(canonical_values)),
+            "candidate_entity_type": next(iter(candidate_types)),
+            "match_type": "exact_registry_alias",
+        }
+    return {
+        **provenance,
+        "candidate_entities": sorted(canonical_values),
+        "candidate_entity_types": sorted(candidate_types),
+        "match_type": "ambiguous_registry_alias",
     }
 
 
@@ -1446,7 +1781,6 @@ def reject_invalid_plan(
 
 
 def registry_digest(registry: dict[str, Any] | None = None) -> str:
-    registry = registry or load_lookup_registry()
-    return json.dumps(
-        registry, ensure_ascii=True, sort_keys=True, separators=(",", ":")
-    )
+    """Return the composite digest used by Planner and answer caches."""
+
+    return str(registry_fingerprint(registry)["digest"])

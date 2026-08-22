@@ -22,9 +22,10 @@ from src.retrieval.core.request_execution import RequestExecutionContext
 from src.retrieval.core.source_contract import source_records_from_result
 from src.retrieval.core.structured_routing import (
     bind_effective_cohort,
-    reject_invalid_plan,
+    bind_validated_query_spans,
     load_lookup_registry,
-    registry_digest,
+    registry_fingerprint,
+    reject_invalid_plan,
     validate_router_decision,
 )
 from src.retrieval.core.vector_retriever import (
@@ -63,7 +64,7 @@ from .response_cache import get_response_cache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v42-single-cohort-request-scoped-composer-rc3"
+PIPELINE_VERSION = "v43-single-cohort-request-scoped-composer-rc4"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -280,16 +281,9 @@ class AnswerPipeline:
             or vectorstore_config.get("collection_name")
             or ""
         )
-        try:
-            registry_text = registry_digest(load_lookup_registry())
-            registry_sha256 = hashlib.sha256(
-                registry_text.encode("utf-8")
-            ).hexdigest()
-        except Exception:
-            # A cache fingerprint must not turn a recoverable registry-read
-            # failure into a response path failure. The normal validation path
-            # remains responsible for surfacing that infrastructure error.
-            registry_sha256 = None
+        # Fail closed before cache lookup: a missing registry fingerprint must
+        # never allow an answer created under unknown alias/tool artifacts to hit.
+        planner_registry = registry_fingerprint(load_lookup_registry())
 
         try:
             from src.common.cohort import (
@@ -335,7 +329,7 @@ class AnswerPipeline:
                 "min_candidates": retrieval_config.get("min_candidates"),
             },
             "planner": planner_versions,
-            "registry_sha256": registry_sha256,
+            "planner_registry": planner_registry,
             "cohort_registry": cohort_registry,
             "source_data_sha256": {
                 str(name): _file_sha256(path)
@@ -1420,6 +1414,15 @@ class AnswerPipeline:
         query_handling = handling.to_dict()
         effective_query = handling.effective_query or query
         registry = load_lookup_registry()
+        validated_corrections = validated_correction_provenance(
+            router_decision, handling
+        )
+        router_decision = bind_validated_query_spans(
+            router_decision,
+            raw_query=query,
+            effective_query=effective_query,
+            validated_corrections=validated_corrections,
+        )
         router_decision = bind_effective_cohort(
             router_decision,
             raw_query=query,
@@ -1469,9 +1472,7 @@ class AnswerPipeline:
                 selected_cohort=router_decision.get("cohort"),
                 grounding_context=effective_query,
                 registry=registry,
-                validated_corrections=validated_correction_provenance(
-                    router_decision, handling
-                ),
+                validated_corrections=validated_corrections,
             )
             if runtime_validation_errors:
                 router_decision = reject_invalid_plan(
@@ -1814,6 +1815,9 @@ class AnswerPipeline:
                                 effective_query=execution_context.effective_query,
                                 effective_cohort=execution_context.effective_cohort,
                                 retrieval_query=execution_context.retrieval_query,
+                                grounded_request_query=(
+                                    execution_context.grounded_request_query
+                                ),
                                 retrieval_config=execution_context.retrieval_config,
                             )
                         },
@@ -2068,6 +2072,11 @@ class AnswerPipeline:
                 query_span=str(request.get("query_span") or effective_query).strip(),
                 effective_query=effective_query,
                 effective_cohort=cohort,
+                grounded_request_query=self._request_retrieval_text(
+                    request,
+                    effective_query=effective_query,
+                    query_handling=query_handling,
+                ),
                 retrieval_query=self.slang_normalizer.normalize_for_retrieval(
                     self._request_retrieval_text(
                         request,
@@ -2103,6 +2112,9 @@ class AnswerPipeline:
         """
 
         query_span = str(request.get("query_span") or effective_query).strip()
+        grounded_request_span = str(
+            request.get("grounded_query_span") or query_span
+        ).strip()
         grounded_query = str(effective_query or "").strip()
         context_mode = str(query_handling.get("context_mode") or "").strip().lower()
         effective_source = str(
@@ -2118,7 +2130,7 @@ class AnswerPipeline:
             or not grounded_query
             or query_span == grounded_query
         ):
-            return query_span or grounded_query
+            return grounded_request_span or grounded_query
 
         # The request span remains first so sibling requests stay distinguishable;
         # the second line is provenance-validated grounding, not a second request.

@@ -267,12 +267,12 @@ def _start_hidden_attempt(
                 "recorded_at": datetime.now(UTC).isoformat(),
             }
         )
-        else:
-            if retry_provider_outage:
-                raise ValueError(
-                    "No provider-outage hidden attempt exists to retry; artifacts "
-                    "must remain unchanged"
-                )
+    else:
+        if retry_provider_outage:
+            raise ValueError(
+                "No provider-outage hidden attempt exists to retry; artifacts "
+                "must remain unchanged"
+            )
         incidents = []
     attempt = {
         "attempt_id": str(uuid.uuid4()),

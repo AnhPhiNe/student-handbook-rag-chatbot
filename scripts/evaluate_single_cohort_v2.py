@@ -270,8 +270,8 @@ def _start_hidden_attempt(
     else:
         if retry_provider_outage:
             raise ValueError(
-                "No provider-outage hidden attempt exists to retry; artifacts "
-                "must remain unchanged"
+                "No provider-outage hidden attempt exists to retry; unchanged "
+                "artifacts are required"
             )
         incidents = []
     attempt = {

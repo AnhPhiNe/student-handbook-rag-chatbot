@@ -34,8 +34,8 @@ from .query_context import select_effective_query, validated_correction_provenan
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
 ROUTER_CONTRACT_VERSION = "single-cohort-planner-v2.4"
-ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.10"
-ROUTER_VALIDATOR_VERSION = "single-cohort-validator-v2.7"
+ROUTER_PROMPT_VERSION = "single-cohort-planner-v2.11"
+ROUTER_VALIDATOR_VERSION = "single-cohort-validator-v2.8"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -879,7 +879,7 @@ class AIRouter:
         return (
             f"{hint_instruction}"
             "TOOLS LEGEND: e=entity, a=aliases, r=relation, o=output, i=intent, d=default, "
-            "req=required, v=values, c=cohort, s=source.\n"
+            "req=required, v=values, c=coh, s=src.\n"
             "TOOLS:\n"
             f"{compact_registry_for_prompt(self.registry)}\n\n"
             f"OUTPUT CONTRACT:\n"

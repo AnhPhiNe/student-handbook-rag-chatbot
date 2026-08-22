@@ -122,12 +122,19 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
     for name, spec in registry["tools"].items():
         capabilities = spec.get("planner_capabilities") or {}
         required = spec.get("required_slots") or {}
+        required_slot_names = {
+            str(slot_name)
+            for required_slots in required.values()
+            for slot_name in (required_slots or [])
+        }
         slot_values: dict[str, list[Any]] = {}
         for slot_name, slot_spec in (spec.get("slot_schema") or {}).items():
             allowed_values = (
                 slot_spec.get("enum") or slot_spec.get("canonical_values") or []
             )
-            if allowed_values:
+            # Required slot names are already serialized in ``req``. Include
+            # enum/canonical values and otherwise-hidden optional slot names.
+            if allowed_values or slot_name not in required_slot_names:
                 slot_values[slot_name] = allowed_values
         fields = [
             name,
@@ -180,6 +187,57 @@ def _normalize_request_cohorts(
         elif raw_value:
             cohorts.append(raw_value)
     return list(dict.fromkeys(cohorts or default_cohorts))
+
+
+def _normalize_slot_names(
+    slots: dict[str, Any],
+    spans: dict[str, Any],
+    spec: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, Any], list[str]]:
+    """Canonicalize registry-declared slot names and remove output projection.
+
+    Unknown input remains untouched so validation fails closed. The only
+    removable unknown field is one whose value names an output capability;
+    that field selects presentation/output, not adapter input.
+    """
+
+    schema = spec.get("slot_schema") or {}
+    aliases = {
+        str(alias): str(canonical)
+        for canonical, slot_spec in schema.items()
+        for alias in (slot_spec.get("name_aliases") or [])
+    }
+    output_fields = {
+        _normalize_text(field)
+        for field in (spec.get("planner_capabilities") or {}).get(
+            "output_fields", []
+        )
+    }
+    normalized_slots: dict[str, Any] = {}
+    normalized_spans: dict[str, Any] = {}
+    corrections: list[str] = []
+    for raw_name, slot_value in slots.items():
+        canonical = aliases.get(str(raw_name), str(raw_name))
+        if canonical not in schema and _normalize_text(slot_value) in output_fields:
+            corrections.append(f"output_projection_removed:{raw_name}")
+            continue
+        if canonical in normalized_slots and normalized_slots[canonical] != slot_value:
+            # Conflicting duplicate values remain invalid instead of silently
+            # choosing one. Preserve the raw name for validator diagnostics.
+            normalized_slots[str(raw_name)] = slot_value
+            if raw_name in spans:
+                normalized_spans[str(raw_name)] = spans[raw_name]
+            continue
+        normalized_slots[canonical] = slot_value
+        if raw_name in spans:
+            normalized_spans[canonical] = spans[raw_name]
+        if canonical != raw_name:
+            corrections.append(f"slot_name_alias:{raw_name}->{canonical}")
+    for raw_name, span in spans.items():
+        canonical = aliases.get(str(raw_name), str(raw_name))
+        if canonical not in normalized_spans and canonical in normalized_slots:
+            normalized_spans[canonical] = span
+    return normalized_slots, normalized_spans, corrections
 
 
 def _normalize_lookup_request(
@@ -235,12 +293,18 @@ def _normalize_lookup_request(
     raw_span = str(value.get("query_span") or "").strip()
     query_span = _recover_grounded_span(raw_span, query) or raw_span
     slots = dict(value.get("slots")) if isinstance(value.get("slots"), dict) else {}
-    slots = _canonicalize_slots(slots, spec or {})
     spans = (
         dict(value.get("slot_spans"))
         if isinstance(value.get("slot_spans"), dict)
         else {}
     )
+    slots, spans, slot_corrections = _normalize_slot_names(
+        slots,
+        spans,
+        spec or {},
+    )
+    schema_corrections.extend(slot_corrections)
+    slots = _canonicalize_slots(slots, spec or {})
     for slot_name, slot_value in slots.items():
         if not isinstance(slot_value, dict) or isinstance(spans.get(slot_name), dict):
             continue

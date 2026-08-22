@@ -324,6 +324,83 @@ def test_selected_cohort_replaces_conflicting_model_request_refs() -> None:
     assert "request_cohort_conflict" not in errors
 
 
+def test_registry_slot_name_alias_is_canonicalized_before_validation() -> None:
+    query = "K51 GPA 3.4 xếp loại học lực?"
+    decision = normalize_router_decision(
+        {
+            "outcome": "execute",
+            "context_mode": "standalone",
+            "route": "structured",
+            "cohort": "K51",
+            "lookup_requests": [
+                {
+                    "request_kind": "structured",
+                    "lookup_type": "scoring",
+                    "intent": "direct_value",
+                    "query_span": "GPA 3.4 xếp loại học lực",
+                    "slots": {
+                        "operation": "academic_classification",
+                        "course_score": "3.4",
+                    },
+                    "slot_spans": {
+                        "operation": "xếp loại học lực",
+                        "course_score": "3.4",
+                    },
+                    "cohort_refs": ["K51"],
+                }
+            ],
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+
+    request = decision["lookup_requests"][0]
+    assert request["slots"]["score_or_grade"] == 3.4
+    assert request["slot_spans"]["score_or_grade"] == "3.4"
+    assert "course_score" not in request["slots"]
+    assert "slot_name_alias:course_score->score_or_grade" in request[
+        "schema_corrections"
+    ]
+
+
+def test_registry_output_projection_is_not_treated_as_adapter_input() -> None:
+    query = "K51 hệ chính quy học tối đa bao lâu?"
+    decision = normalize_router_decision(
+        {
+            "outcome": "execute",
+            "context_mode": "standalone",
+            "route": "structured",
+            "cohort": "K51",
+            "lookup_requests": [
+                {
+                    "request_kind": "structured",
+                    "lookup_type": "study_duration",
+                    "intent": "direct_value",
+                    "query_span": "hệ chính quy học tối đa bao lâu",
+                    "slots": {
+                        "training_mode": "chinh_quy",
+                        "requested_field": "maximum_duration",
+                    },
+                    "slot_spans": {
+                        "training_mode": "hệ chính quy",
+                        "requested_field": "tối đa",
+                    },
+                    "cohort_refs": ["K51"],
+                }
+            ],
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+
+    request = decision["lookup_requests"][0]
+    assert request["slots"] == {"training_mode": "chinh_quy"}
+    assert request["slot_spans"] == {"training_mode": "hệ chính quy"}
+    assert "output_projection_removed:requested_field" in request[
+        "schema_corrections"
+    ]
+
+
 def test_multiple_history_cohorts_are_rejected() -> None:
     effective_query = "K50 và K51 có quy định bảo lưu thế nào?"
     bound = bind_effective_cohort(

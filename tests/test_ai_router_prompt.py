@@ -38,6 +38,7 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
     assert "operand_requirements" not in prompt_registry
     assert "|req=" in prompt_registry
     assert "|v=" in prompt_registry
+    assert '"score_or_grade":[]' in prompt_registry
     assert "student_service|" in prompt_registry
     assert "|e=student_service" in prompt_registry
     assert 'a={"student_service"' in prompt_registry
@@ -119,7 +120,7 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 7600
     assert "TOOLS LEGEND: e=entity" in dynamic_prompt
-    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.10"
+    assert ROUTER_PROMPT_VERSION == "single-cohort-planner-v2.11"
     assert "không dùng dấu \"...\"" in ROUTER_SYSTEM_PROMPT
     assert "không phải request" in ROUTER_SYSTEM_PROMPT
     assert "request.query_span" in ROUTER_SYSTEM_PROMPT

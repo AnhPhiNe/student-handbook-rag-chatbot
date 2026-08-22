@@ -222,6 +222,32 @@ def _start_hidden_attempt(
         else None
     )
     if existing is not None:
+        # A prior release attempt from another frozen candidate is an archive,
+        # not a retry target for this candidate.  Keep it immutable and archive
+        # it beside the active marker before starting the new binding.  This is
+        # important when a repository uses one shared report directory across
+        # RC1/RC2 candidates.
+        if existing.get("binding") != binding:
+            old_commit = str(
+                (existing.get("binding") or {}).get("commit") or "unknown"
+            )
+            safe_commit = "".join(
+                character if character.isalnum() or character in {"-", "_"} else "_"
+                for character in old_commit
+            )
+            archive_path = HIDDEN_ATTEMPT_PATH.with_name(
+                f"{HIDDEN_ATTEMPT_PATH.stem}.archive.{safe_commit}.json"
+            )
+            if archive_path.exists():
+                raise ValueError(
+                    "A hidden attempt archive already exists for the previous binding"
+                )
+            archive_path.write_text(
+                json.dumps(existing, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            existing = None
+    if existing is not None:
         retry_allowed = bool(
             retry_provider_outage
             and existing.get("status") == "provider_outage"
@@ -241,9 +267,12 @@ def _start_hidden_attempt(
                 "recorded_at": datetime.now(UTC).isoformat(),
             }
         )
-    else:
-        if retry_provider_outage:
-            raise ValueError("No provider-outage hidden attempt exists to retry")
+        else:
+            if retry_provider_outage:
+                raise ValueError(
+                    "No provider-outage hidden attempt exists to retry; artifacts "
+                    "must remain unchanged"
+                )
         incidents = []
     attempt = {
         "attempt_id": str(uuid.uuid4()),

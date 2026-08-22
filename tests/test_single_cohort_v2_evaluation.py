@@ -1747,3 +1747,26 @@ def test_hidden_attempt_retry_requires_zero_output_and_same_binding(
         _start_hidden_attempt(
             {"commit": "changed"}, retry_provider_outage=True
         )
+
+
+def test_hidden_attempt_from_another_candidate_is_archived(
+    tmp_path, monkeypatch
+) -> None:
+    attempt_path = tmp_path / "hidden_release_attempt.json"
+    monkeypatch.setattr(evaluator, "HIDDEN_ATTEMPT_PATH", attempt_path)
+    old = _start_hidden_attempt(
+        {"commit": "old-candidate", "dataset_hashes": {"hidden.json": "old"}},
+        retry_provider_outage=False,
+    )
+    _finish_hidden_attempt(old, planner_rows=[], answer_rows=[])
+
+    current = _start_hidden_attempt(
+        {"commit": "new-candidate", "dataset_hashes": {"hidden.json": "new"}},
+        retry_provider_outage=False,
+    )
+    assert current["binding"]["commit"] == "new-candidate"
+    archive = tmp_path / "hidden_release_attempt.archive.old-candidate.json"
+    assert archive.exists()
+    assert json.loads(archive.read_text(encoding="utf-8"))["binding"]["commit"] == (
+        "old-candidate"
+    )

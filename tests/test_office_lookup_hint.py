@@ -96,3 +96,57 @@ def test_alias_hint_requires_registry_capability(monkeypatch) -> None:
         )
         is None
     )
+
+
+def test_alias_hint_ignores_identity_only_purpose_phrase(monkeypatch) -> None:
+    monkeypatch.setattr(
+        structured_routing_module,
+        "_slot_alias_index",
+        lambda: {"service": {"xac nhan": frozenset({"xác nhận"})}},
+    )
+    registry = {
+        "version": 1,
+        "tools": {
+            "directory": {
+                "planner_capabilities": {
+                    "input_entity_types": ["student_service"]
+                },
+                "slot_schema": {
+                    "service": {"alias_entity_types": ["service"]}
+                },
+            }
+        },
+    }
+
+    assert (
+        find_grounded_registry_alias_hint(
+            "Tôi muốn xác nhận với cố vấn", registry=registry
+        )
+        is None
+    )
+
+
+def test_alias_hint_ignores_short_lexical_collision(monkeypatch) -> None:
+    monkeypatch.setattr(
+        structured_routing_module,
+        "_slot_alias_index",
+        lambda: {"faculty": {"ly": frozenset({"Khoa Vật lý"})}},
+    )
+    registry = {
+        "version": 1,
+        "tools": {
+            "faculty": {
+                "planner_capabilities": {"input_entity_types": ["faculty"]},
+                "slot_schema": {
+                    "faculty": {"alias_entity_types": ["faculty"]}
+                },
+            }
+        },
+    }
+
+    assert (
+        find_grounded_registry_alias_hint(
+            "Cần thông tin trước thời hạn xử lý", registry=registry
+        )
+        is None
+    )

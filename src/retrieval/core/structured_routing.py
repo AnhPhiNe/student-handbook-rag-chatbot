@@ -15,6 +15,8 @@ from src.common.cohort import extract_cohort_mentions, normalize_cohort
 from .acronym_registry import (
     DEFAULT_PROGRAM_DIRECTORY_PATH,
     DEFAULT_VOCABULARY_PATH,
+    build_acronym_registry,
+    canonical_acronym,
 )
 from .query_context import CohortEvidence
 
@@ -1288,6 +1290,29 @@ def _slot_alias_index() -> dict[str, dict[str, frozenset[str]]]:
     }
 
 
+@lru_cache(maxsize=1)
+def _registered_acronym_literals() -> frozenset[str]:
+    literals = set(build_acronym_registry().literal_acronyms)
+
+    def visit(value: Any) -> None:
+        if isinstance(value, dict):
+            for item in value.values():
+                visit(item)
+        elif isinstance(value, list):
+            for item in value:
+                visit(item)
+        elif isinstance(value, str):
+            letters = [char for char in value if char.isalpha()]
+            if len(letters) >= 2 and all(char.isupper() for char in letters):
+                literal = canonical_acronym(value)
+                if len(literal) >= 2:
+                    literals.add(literal)
+
+    if OFFICE_ALIASES_PATH.is_file():
+        visit(yaml.safe_load(OFFICE_ALIASES_PATH.read_text(encoding="utf-8")) or {})
+    return frozenset(literals)
+
+
 def _planner_entity_types_for_alias_namespace(
     namespace: str,
     registry: dict[str, Any],
@@ -1332,6 +1357,15 @@ def find_grounded_registry_alias_hint(
         if not candidate_types:
             continue
         for alias, canonical_values in aliases.items():
+            # A hint must add registry-backed identity information.  Echoing a
+            # generic canonical phrase (for example a purpose clause) only
+            # biases the Planner, while two-character lexical aliases are too
+            # collision-prone after accent folding to be authoritative hints.
+            canonicalizes_alias = any(
+                _normalize_text(canonical) != alias for canonical in canonical_values
+            )
+            if not canonicalizes_alias:
+                continue
             if len(alias) < 2 or not re.search(
                 rf"(?<![a-z0-9]){re.escape(alias)}(?![a-z0-9])",
                 query_normalized,
@@ -1339,6 +1373,18 @@ def find_grounded_registry_alias_hint(
                 continue
             matched_span = _recover_grounded_span(alias, query)
             if not matched_span:
+                continue
+            matched_letters = [char for char in matched_span if char.isalpha()]
+            if (
+                len(alias.split()) == 1
+                and not (
+                    (
+                        len(matched_letters) >= 2
+                        and all(char.isupper() for char in matched_letters)
+                    )
+                    or canonical_acronym(alias) in _registered_acronym_literals()
+                )
+            ):
                 continue
             matches.append(
                 {

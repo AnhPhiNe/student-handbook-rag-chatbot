@@ -1,3 +1,4 @@
+import json
 import re
 from typing import Any
 
@@ -207,11 +208,73 @@ def build_citations_from_vector_results(
     return citations
 
 
-def build_citation_from_lookup(_lookup_result: dict[str, Any]) -> list[dict[str, Any]]:
-    """Structured lookups provide self-contained answers without synthetic citation cards."""
-    return []
+def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, Any]]:
+    """Build source-bound citations for deterministic structured evidence."""
+    if not isinstance(lookup_result, dict) or not lookup_result:
+        return []
+
+    sub_lookups = lookup_result.get("sub_lookups")
+    if isinstance(sub_lookups, list) and sub_lookups:
+        citations: list[dict[str, Any]] = []
+        for item in sub_lookups:
+            if isinstance(item, dict):
+                citations.extend(build_citation_from_lookup(item))
+        return citations
+
+    lookup_type = str(lookup_result.get("lookup_type") or "structured_lookup")
+    chunk_type = str(
+        lookup_result.get("content_type")
+        or (lookup_type if lookup_type in {"program_directory", "office_directory", "faculty_directory"} else "structured_lookup")
+    )
+    source_pages = parse_source_pages(lookup_result.get("source_pages"))
+    source_section = _first_value(
+        lookup_result,
+        ("source_parent_id", "parent_section_id", "source_section", "section_id"),
+    )
+    source_label = _first_value(
+        lookup_result,
+        ("source_label", "document_title", "source_name", "file_name"),
+    )
+    document_id = _first_value(
+        lookup_result,
+        ("document_id", "source_document_id", "handbook_id"),
+    )
+    # A structured record is citable only when it is anchored to the handbook
+    # by a page, section, document, or explicit source label.
+    if not (source_pages or source_section or document_id or source_label):
+        return []
+
+    content_value = lookup_result.get("result")
+    if content_value is None:
+        content_value = lookup_result.get("items")
+    if content_value is None:
+        content_value = lookup_result
+    try:
+        content = json.dumps(content_value, ensure_ascii=False, indent=2, default=str)
+    except (TypeError, ValueError):
+        content = str(content_value)
+
+    return [
+        {
+            "chunk_id": source_section or document_id or f"structured:{lookup_type}",
+            "chunk_type": chunk_type,
+            "title": lookup_result.get("table_name")
+            or lookup_result.get("title")
+            or lookup_type,
+            "source_pages": source_pages,
+            "source_label": str(source_label) if source_label else None,
+            "source_url": _first_value(lookup_result, ("source_url", "url", "document_url")),
+            "cohort": lookup_result.get("cohort"),
+            "document_id": document_id,
+            "source_section": source_section,
+            "source_parent_id": source_section,
+            "parent_section_id": source_section,
+            "applicability": lookup_result.get("applicability"),
+            "content": sanitize_citation_content(content),
+        }
+    ]
 
 
-def build_citation_from_formula(_formula_result: dict[str, Any]) -> list[dict[str, Any]]:
-    """Formula lookups provide self-contained answers without synthetic citation cards."""
-    return []
+def build_citation_from_formula(formula_result: dict[str, Any]) -> list[dict[str, Any]]:
+    """Formula results use the same source-binding rules as other lookups."""
+    return build_citation_from_lookup(formula_result)

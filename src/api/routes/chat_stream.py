@@ -28,6 +28,7 @@ from src.api.chat_controls import (
     _chat_capacity_limiter,
     chat_capacity_settings,
     enforce_chat_rate_limit,
+    should_include_debug,
     validate_chat_query,
 )
 from src.api.deps import get_answer_service
@@ -88,6 +89,7 @@ def chat_stream(
     enforce_chat_rate_limit(http_request)
 
     request_id = uuid4().hex
+    include_debug = should_include_debug(request.include_debug)
 
     def event_generator():
         """Một hàm generator tạo ra các sự kiện Server-Sent Events (SSE) dựa trên luồng dữ liệu.
@@ -145,6 +147,26 @@ def chat_stream(
                     if chunk_type == "metadata":
                         chunk["request_id"] = request_id
                         chunk["run_id"] = request_id
+                        if not include_debug:
+                            for debug_key in (
+                                "query_plan",
+                                "task_results",
+                                "coverage_by_task",
+                                "planner_fallback",
+                                "supports_task_ids",
+                            ):
+                                chunk.pop(debug_key, None)
+                            citations = chunk.get("citations_used") or []
+                            chunk["citations_used"] = [
+                                {
+                                    key: value
+                                    for key, value in citation.items()
+                                    if key not in {"task_id", "supports_task_ids"}
+                                }
+                                if isinstance(citation, dict)
+                                else citation
+                                for citation in citations
+                            ]
                         final_metadata = dict(chunk)
                         final_status = str(chunk.get("status") or final_status)
                         yield _sse_event("metadata", chunk)

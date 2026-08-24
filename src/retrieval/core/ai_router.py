@@ -27,10 +27,16 @@ from .structured_routing import (
     router_response_schema,
     validate_router_decision,
 )
+from .query_plan import (
+    legacy_rag_plan,
+    normalize_query_plan,
+    query_plan_json_schema,
+    query_plan_response_schema,
+)
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v20-compact"
+ROUTER_PROMPT_VERSION = "structured-regulation-v26-query-plan-contract"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -81,6 +87,58 @@ RÀNG BUỘC
 - Không tự tạo dữ liệu, tool, intent hoặc chủ đề mới.
 
 Tự kiểm tra route/mode, tool/intent, slot/span và cohort trước khi xuất JSON.
+"""
+
+PLANNER_SYSTEM_PROMPT = """
+Bạn là Query Planner của hệ thống Sổ tay Sinh viên HCMUE. Không trả lời câu hỏi.
+Chỉ xuất đúng một JSON theo OUTPUT CONTRACT, không Markdown hay giải thích.
+
+1. NGỮ CẢNH
+- standalone: QUERY tự đủ nghĩa; không lấy dữ liệu từ CHAT HISTORY.
+- follow_up: QUERY cần lịch sử; standalone_query chỉ ghép dữ liệu có thật trong
+  QUERY và referenced_turns đã dùng.
+- Chỉ đặt context_mode=ambiguous khi toàn bộ QUERY không thể được lập kế hoạch
+  chắc chắn. Nếu chỉ một yêu cầu mơ hồ, giữ context phù hợp và tạo clarify cho
+  riêng task đó.
+- normalized_query chỉ sửa dấu, chính tả nhẹ hoặc viết tắt phổ biến; không đổi
+  entity, cohort, số liệu, phủ định, chủ đề hoặc ý định.
+
+2. LOGICAL TASKS
+- Một task là một yêu cầu thực thi độc lập bằng một mode/tool/intent. Chỉ gộp
+  nhiều entity của cùng một phép tra structured với cùng lookup_type và intent.
+- Với RAG, mỗi mệnh đề hỏi có answer target riêng là một task, dù cùng domain
+  hoặc nguồn; không ghép chúng thành một retrieval query tổng hợp.
+- TASK IDENTITY không phụ thuộc cohort: M yêu cầu áp dụng N cohort tạo M logical
+  tasks, không tạo M×N tasks. Mỗi task giữ toàn bộ phạm vi trong `cohorts`.
+- Plan có 1-3 tasks. Nếu có hơn 3 yêu cầu độc lập, tạo đúng một clarify task yêu
+  cầu chọn tối đa 3; không bỏ hoặc nhét chung yêu cầu.
+
+3. COHORT
+- Ưu tiên cohort trong QUERY của task, rồi referenced history. COHORT từ UI chỉ
+  điền cho task vẫn chưa có cohort; không ghi đè và không nhân bản task theo cohort.
+
+4. MODE
+- structured: tra giá trị trực tiếp từ đúng một bảng trong TOOLS. Entity/value
+  slots phải được grounding trong QUERY/HISTORY. Control slots như operation,
+  requested_field, scope, formula_type được phép chuẩn hóa từ yêu cầu rõ ràng;
+  không được tạo entity, giá trị hay yêu cầu mới.
+- rag: cần đọc quy định, thủ tục, điều kiện, ngoại lệ, hậu quả hoặc một chuẩn/
+  chính sách áp dụng nói chung. Không chọn structured chỉ vì trùng từ chủ đề.
+- clarify: yêu cầu tra giá trị trực tiếp thiếu required slot làm đổi kết quả,
+  hoặc tham chiếu thật sự mơ hồ. Không clarify chính sách chung để đủ slot cho
+  tool. Chỉ clarify task bị thiếu thông tin.
+- Mọi RAG task dùng intent=open_question và lookup_type=null. Clarify task cũng
+  có lookup_type=null. Nếu toàn bộ QUERY ngoài sổ tay, đặt out_of_domain=true.
+
+5. TỰ KIỂM TRA
+- Giữ mọi task độc lập còn lại khi một task cần clarify, thiếu slot hoặc ngữ cảnh.
+- task.question tự đủ nghĩa; không thêm entity, số liệu, phủ định, cohort, chủ đề.
+- slot_spans là chuỗi nguyên văn hoặc danh sách chuỗi; không xuất `{start,end}`.
+- Chỉ dùng lookup_type, intent, slots và required slots khai báo trong TOOLS.
+
+- TOOLS và OUTPUT CONTRACT là contract bắt buộc.
+- CATALOG_HINT là metadata đã được grounding; chỉ dùng lookup_type/entity_text
+  cho task liên quan; không dùng hint để tạo yêu cầu, intent hay slot mới.
 """
 
 
@@ -590,6 +648,157 @@ class AIRouter:
             and not cache_disabled,
         )
 
+    def plan(
+        self,
+        query: str,
+        *,
+        cohort: str | None = None,
+        chat_history: list[dict[str, str]] | None = None,
+        routing_hint: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Create a bounded, validated QueryPlan for one user message."""
+        dynamic_prompt = self._build_plan_prompt(
+            query,
+            cohort=cohort,
+            chat_history=chat_history,
+            routing_hint=routing_hint,
+        )
+        response_format = self._plan_response_format_payload()
+        prompt_stats = self._prompt_stats_for_system(
+            PLANNER_SYSTEM_PROMPT, dynamic_prompt, response_format
+        )
+        cache_key = "plan:" + self._cache_key(
+            query,
+            cohort=cohort,
+            chat_history=chat_history,
+            routing_hint=routing_hint,
+        )
+        if self.cache and (cached := self.cache.get(cache_key)):
+            return {
+                **cached,
+                "model_used": self.model_name,
+                "usage": None,
+                "router_cache_hit": True,
+                "prompt_stats": prompt_stats,
+            }
+
+        max_output_tokens = max(
+            self.max_output_tokens,
+            int(os.environ.get("STUDENT_RAG_PLANNER_MAX_OUTPUT_TOKENS", "768")),
+        )
+        estimated_tokens = max(
+            128,
+            int(prompt_stats["estimated_input_tokens"]) + max_output_tokens,
+        )
+        attempts = 0
+        transient_failures = 0
+        max_attempts = len(self.available_keys)
+        last_error: Exception | None = None
+        while attempts < max_attempts:
+            key, key_id, key_index = self.key_pool.acquire_key(estimated_tokens)
+            attempts += 1
+            try:
+                client = Groq(
+                    api_key=key,
+                    timeout=self.request_timeout_seconds,
+                    max_retries=0,
+                )
+                response = client.chat.completions.create(
+                    model=self.model_name,
+                    messages=[
+                        {"role": "system", "content": PLANNER_SYSTEM_PROMPT.strip()},
+                        {"role": "user", "content": dynamic_prompt},
+                    ],
+                    temperature=self.temperature,
+                    max_tokens=max_output_tokens,
+                    reasoning_effort=self._resolved_reasoning_effort(),
+                    response_format=response_format,
+                )
+                raw = response.choices[0].message.content or ""
+                parsed = self._extract_json_object(raw)
+                usage = self._usage(response)
+                actual_tokens = int(usage.get("total", estimated_tokens))
+                self.key_pool.record_success(
+                    key_id,
+                    actual_tokens=actual_tokens,
+                    reserved_tokens=estimated_tokens,
+                )
+                grounding_context = "\n".join(
+                    str(item.get("content") or "")
+                    for item in (chat_history or [])[-4:]
+                    if isinstance(item, dict)
+                )
+                plan, validation_errors = normalize_query_plan(
+                    parsed,
+                    query=query,
+                    selected_cohort=cohort,
+                    grounding_context=grounding_context,
+                    registry=self.registry,
+                )
+                fatal_validation = any(
+                    any(
+                        marker in error
+                        for marker in (
+                            "invalid_object",
+                            "invalid_mode",
+                            "rag_must_not_select_lookup",
+                            "unknown_lookup_type",
+                        )
+                    )
+                    for error in validation_errors
+                ) or any(
+                    task.get("mode") == "structured" and task.get("validation_errors")
+                    for task in (plan.get("tasks") or [])
+                )
+                if fatal_validation:
+                    plan = legacy_rag_plan(query, cohort, reason="legacy_rag")
+                    plan["planner_validation_errors"] = validation_errors
+                if self.cache:
+                    self.cache.set(cache_key, plan)
+                return {
+                    **plan,
+                    "model_used": self.model_name,
+                    "usage": usage,
+                    "key_fingerprint": key_id,
+                    "router_cache_hit": False,
+                    "attempts": attempts,
+                    "prompt_stats": prompt_stats,
+                }
+            except Exception as exc:
+                last_error = exc
+                error_type = self._classify_error(exc)
+                if error_type == "rate_limit":
+                    self.key_pool.record_rate_limit(
+                        key_id,
+                        retry_after_seconds=_retry_after_seconds(exc),
+                    )
+                    continue
+                self.key_pool.record_failure(key_id, error_type)
+                if error_type not in {"timeout", "api_error", "transient_error"}:
+                    break
+                transient_failures += 1
+                if transient_failures > self.max_retries:
+                    break
+                print(
+                    f"[AIRouter] Retrying planner {self.model_name} after {error_type} "
+                    f"on key {key_index}:{key_id}."
+                )
+
+        if last_error is not None:
+            fallback = legacy_rag_plan(query, cohort, reason="legacy_rag")
+            return {
+                **fallback,
+                "model_used": self.model_name,
+                "usage": None,
+                "key_fingerprint": None,
+                "router_cache_hit": False,
+                "attempts": attempts,
+                "prompt_stats": prompt_stats,
+                "planner_error_type": self._classify_error(last_error),
+                "planner_error": str(last_error),
+            }
+        raise RuntimeError("ai_planner_failed: no_attempts")
+
     def route(
         self,
         query: str,
@@ -814,6 +1023,35 @@ class AIRouter:
             f"QUERY: {query}"
         )
 
+    def _build_plan_prompt(
+        self,
+        query: str,
+        *,
+        cohort: str | None,
+        chat_history: list[dict[str, str]] | None,
+        routing_hint: dict[str, Any] | None = None,
+    ) -> str:
+        history_lines = []
+        for local_index, item in enumerate((chat_history or [])[-4:]):
+            role = str(item.get("role") or "user")
+            content = str(item.get("content") or "")[:300]
+            if content:
+                history_lines.append(f"[{local_index}] {role}:{content}")
+        history = "\n".join(history_lines) or "none"
+        schema = json.dumps(
+            query_plan_json_schema(), ensure_ascii=False, separators=(",", ":")
+        )
+        hint = json.dumps(routing_hint, ensure_ascii=False, separators=(",", ":"))
+        return (
+            "TOOLS:\n"
+            f"{compact_registry_for_prompt(self.registry)}\n\n"
+            f"OUTPUT CONTRACT:\n{schema}\n\n"
+            f"CATALOG_HINT: {hint if routing_hint else 'none'}\n"
+            f"COHORT: {cohort or 'unknown'}\n"
+            f"CHAT HISTORY:\n{history}\n"
+            f"QUERY: {query}"
+        )
+
     def _resolved_reasoning_effort(self) -> str:
         if self.reasoning_effort != "auto":
             return self.reasoning_effort
@@ -836,12 +1074,34 @@ class AIRouter:
             }
         return {"type": "json_object"}
 
+    def _plan_response_format_payload(self) -> dict[str, Any]:
+        if self._resolved_response_format() == "json_schema":
+            return {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "query_plan",
+                    "strict": False,
+                    "schema": query_plan_response_schema(),
+                },
+            }
+        return {"type": "json_object"}
+
     @staticmethod
     def _prompt_stats(
         dynamic_prompt: str,
         response_format: dict[str, Any],
     ) -> dict[str, int]:
-        system_chars = len(ROUTER_SYSTEM_PROMPT.strip())
+        return AIRouter._prompt_stats_for_system(
+            ROUTER_SYSTEM_PROMPT, dynamic_prompt, response_format
+        )
+
+    @staticmethod
+    def _prompt_stats_for_system(
+        system_prompt: str,
+        dynamic_prompt: str,
+        response_format: dict[str, Any],
+    ) -> dict[str, int]:
+        system_chars = len(system_prompt.strip())
         dynamic_chars = len(dynamic_prompt)
         schema_chars = len(
             json.dumps(response_format, ensure_ascii=False, separators=(",", ":"))

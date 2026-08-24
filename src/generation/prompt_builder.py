@@ -29,6 +29,8 @@ def build_answer_prompt(
         allocation_config=context_allocation,
     )
     structured_result = _to_pretty_json(retrieval_result.get("structured_result"))
+    query_plan = _to_pretty_json(retrieval_result.get("query_plan"))
+    task_results = _to_pretty_json(retrieval_result.get("task_results"))
     cohort_instruction = _cohort_instruction(cohort)
     source_usage_instruction = _source_usage_instruction(context)
     applicable_amendments = format_applicable_amendments(
@@ -69,11 +71,21 @@ NHIỆM VỤ
 - Không tự suy diễn quyền lợi, ngoại lệ hoặc điều cấm từ quy định chỉ nói về thời gian/quy trình/thủ tục.
 - Không trấn an hoặc khuyên bảo vượt nguồn. Chỉ nêu nghĩa vụ, kết luận hoặc dữ kiện dựa trên câu chữ.
 - Không hiển thị quá trình suy luận, nhãn kỹ thuật hoặc tự thêm mục nguồn.
+- Khi có QUERY_PLAN, trả lời lần lượt mọi task theo thứ tự. Chỉ dùng STRUCTURED_RESULT hoặc PRIMARY SOURCE có `Supports tasks` chứa đúng task id tương ứng.
+- Giữ nguyên số liệu, cohort và `applicability` trong structured JSON. Không dùng evidence của task này để lấp phần thiếu của task khác.
+- Với task có coverage `uncovered`, nói rõ chưa tìm thấy nguồn cho riêng ý đó. Với task `needs_clarification`, nêu câu hỏi làm rõ; vẫn trả lời đầy đủ các task khác đã `covered`.
+- Task `needs_clarification` tuyệt đối chỉ được xuất câu hỏi làm rõ tương ứng; không trả lời, suy đoán hoặc mượn evidence của task khác cho task đó, kể cả khi CONTEXT có đoạn nhìn có vẻ liên quan.
 
 CÂU HỎI CỦA SINH VIÊN
 {query}
 
 DỮ LIỆU
+
+QUERY_PLAN:
+{query_plan if query_plan else "(không có; xử lý legacy một yêu cầu)"}
+
+TASK_RESULTS:
+{task_results if task_results else "(không có)"}
 
 STRUCTURED_RESULT:
 {structured_result if structured_result else "(không có)"}

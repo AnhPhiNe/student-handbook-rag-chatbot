@@ -25,6 +25,12 @@ retrieval:
   candidate_multiplier: 5
   min_candidates: 25
 
+planning:
+  enabled: true
+  max_tasks: 3
+  rag_top_k: 5
+  max_citations: 10
+
 llm:
   provider: gemini
   model_name: gemini-3.1-flash-lite

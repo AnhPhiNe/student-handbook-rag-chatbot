@@ -7,6 +7,8 @@ from typing import Any, Optional
 import pandas as pd
 import yaml
 
+from src.common.cohort import valid_cohorts
+
 
 CONFIG_PATH = Path("configs/structure_parser.yaml")
 
@@ -594,7 +596,7 @@ def main() -> None:
 
     cohort = os.environ.get("COHORT", "UNKNOWN")
     lookup_dict = {}
-    if cohort in ["K48-K49", "K50", "K51"]:
+    if cohort in valid_cohorts():
         file_prefix = "K48_49" if cohort == "K48-K49" else cohort
         excel_file = f"data/raw/gpt_extracted/{file_prefix}_extracted.xlsx"
         if os.path.exists(excel_file):

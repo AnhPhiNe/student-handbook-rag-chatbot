@@ -9,6 +9,8 @@ from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Any
 
+from src.common.cohort import valid_cohorts
+
 
 EXPECTED_CASE_COUNTS = {
     "deterministic": 120,
@@ -227,7 +229,7 @@ def _legacy_structured_record_ids(
         profile_id = str(record.get("faculty_profile_id") or "").strip()
         slug = _slug_tail(profile_id, "all_")
         if source_record_id and slug:
-            for cohort_alias in ("K48-K49", "K50", "K51"):
+            for cohort_alias in valid_cohorts():
                 ids.add(f"{cohort_alias}_{slug}")
                 ids.add(f"{cohort_alias}_{cohort_alias}_{slug}")
 

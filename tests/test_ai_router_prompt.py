@@ -7,6 +7,7 @@ from types import SimpleNamespace
 import src.retrieval.core.ai_router as ai_router_module
 from src.retrieval.core.ai_router import (
     AIRouter,
+    PLANNER_SYSTEM_PROMPT,
     ROUTER_PROMPT_VERSION,
     ROUTER_SYSTEM_PROMPT,
 )
@@ -16,6 +17,8 @@ from src.retrieval.core.structured_routing import (
     router_json_schema,
     validate_router_decision,
 )
+
+PLANNER_PROMPT_TEXT = " ".join(PLANNER_SYSTEM_PROMPT.split())
 
 
 def _router(monkeypatch, tmp_path: Path, *, model_name: str) -> AIRouter:
@@ -55,7 +58,66 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     )
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION.endswith("compact")
+    assert ROUTER_PROMPT_VERSION.endswith("contract")
+
+
+def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None:
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+    dynamic_prompt = router._build_plan_prompt(
+        "So sánh hai khóa về thời gian học và một quy định học vụ.",
+        cohort="K51",
+        chat_history=[],
+    )
+    stats = AIRouter._prompt_stats_for_system(
+        PLANNER_SYSTEM_PROMPT,
+        dynamic_prompt,
+        {"type": "json_object"},
+    )
+
+    assert stats["total_chars"] <= 6800
+    assert stats["estimated_input_tokens"] <= 1700
+
+
+def test_planner_prompt_defines_cohort_independent_task_identity() -> None:
+    assert "TASK IDENTITY không phụ thuộc cohort" in PLANNER_PROMPT_TEXT
+    assert "không tạo M×N tasks" in PLANNER_PROMPT_TEXT
+    assert "COHORT từ UI chỉ điền cho task vẫn chưa có cohort" in PLANNER_PROMPT_TEXT
+    assert "không ghi đè" in PLANNER_PROMPT_TEXT
+    assert "So sánh K50 và K51 về thời gian học tối đa" not in PLANNER_PROMPT_TEXT
+
+
+def test_planner_prompt_splits_independent_rag_answer_targets() -> None:
+    assert "mỗi mệnh đề hỏi có answer target riêng là một task" in PLANNER_PROMPT_TEXT
+    assert "cùng domain" in PLANNER_PROMPT_TEXT
+    assert "retrieval query tổng hợp" in PLANNER_PROMPT_TEXT
+
+
+def test_planner_prompt_requires_grounded_slots_for_structured_mode() -> None:
+    assert "Entity/value slots phải được grounding" in PLANNER_PROMPT_TEXT
+    assert "Control" in PLANNER_PROMPT_TEXT
+    assert "được phép chuẩn" in PLANNER_PROMPT_TEXT
+    assert "Không chọn structured chỉ vì trùng từ chủ đề" in PLANNER_PROMPT_TEXT
+    assert "Chỉ clarify task bị thiếu thông tin" in PLANNER_PROMPT_TEXT
+
+
+def test_planner_prompt_defines_context_and_hint_precedence_once() -> None:
+    assert "standalone_query" in PLANNER_PROMPT_TEXT
+    assert "referenced_turns" in PLANNER_PROMPT_TEXT
+    assert "CATALOG_HINT là metadata đã được grounding" in PLANNER_PROMPT_TEXT
+    assert PLANNER_PROMPT_TEXT.count("hơn 3 yêu cầu độc lập") == 1
+
+
+def test_planner_prompt_matches_global_context_and_rag_contract() -> None:
+    assert "Chỉ đặt context_mode=ambiguous khi toàn bộ QUERY" in PLANNER_PROMPT_TEXT
+    assert "clarify cho riêng task đó" in PLANNER_PROMPT_TEXT
+    assert "Mọi RAG task dùng intent=open_question" in PLANNER_PROMPT_TEXT
+    assert "thiếu evidence" not in PLANNER_PROMPT_TEXT
+
+
+def test_planner_prompt_protects_normalized_query_semantics() -> None:
+    assert "normalized_query chỉ sửa dấu, chính tả nhẹ" in PLANNER_PROMPT_TEXT
+    for protected_value in ("entity", "cohort", "số liệu", "phủ định", "chủ đề", "ý định"):
+        assert protected_value in PLANNER_PROMPT_TEXT
 
 
 def test_model_defaults_select_supported_reasoning_and_format(

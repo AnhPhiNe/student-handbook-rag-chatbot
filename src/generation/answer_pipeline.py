@@ -21,7 +21,6 @@ from src.retrieval.core.slang_normalizer import SlangNormalizer
 from .answer_formatter import (
     format_final_answer,
     format_final_response,
-    missing_primary_article_anchors,
     normalize_unlabeled_enumeration_references,
 )
 from .answer_guardrails import (
@@ -44,7 +43,7 @@ from .response_cache import get_response_cache
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v30-parent-aware-table-citations"
+PIPELINE_VERSION = "v31-query-plan-multitask"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -226,7 +225,6 @@ class AnswerPipeline:
         )
         _evaluation_telemetry.set(telemetry)
         effective_query = query
-        run_id = None
         from src.api.usage_tracker import UsageTracker
         from datetime import datetime, timezone
 
@@ -311,7 +309,7 @@ class AnswerPipeline:
             )
 
         # Cau hoi van thuoc domain nhung thieu scope thi hoi lai, khong dua vao LLM tra loi doan.
-        if detect_ambiguous_query(effective_query, retrieval_result):
+        if not retrieval_result.get("query_plan") and detect_ambiguous_query(effective_query, retrieval_result):
             return self._build_output(
                 query=query,
                 retrieval_result=retrieval_result,
@@ -349,7 +347,7 @@ class AnswerPipeline:
             )
 
         # Lop OOD thu 2: kiem tra chat luong retrieval de bat cac cau ngoai pham vi bi route nham.
-        if is_out_of_domain_query(effective_query, retrieval_result):
+        if not retrieval_result.get("query_plan") and is_out_of_domain_query(effective_query, retrieval_result):
             final_answer = build_fallback_answer(
                 effective_query,
                 retrieval_result,
@@ -370,12 +368,15 @@ class AnswerPipeline:
         citations_config = self.config.get("citations", {})
         guardrails_config = self.config.get("guardrails", {})
 
-        selected_citations = select_relevant_citations(
-            retrieval_result.get("citations"),
-            intent=retrieval_result.get("intent"),
-            retrieval_result=retrieval_result,
-            max_sources=int(citations_config.get("max_sources", 2)),
-        )
+        if retrieval_result.get("query_plan"):
+            selected_citations = list(retrieval_result.get("citations") or [])[:10]
+        else:
+            selected_citations = select_relevant_citations(
+                retrieval_result.get("citations"),
+                intent=retrieval_result.get("intent"),
+                retrieval_result=retrieval_result,
+                max_sources=int(citations_config.get("max_sources", 2)),
+            )
 
         if guardrails_config.get(
             "skip_llm_on_low_confidence", True
@@ -589,6 +590,11 @@ class AnswerPipeline:
             "related_references": resolved_related,
             "detected_entities": res.get("detected_entities") or [],
             "target_chunk_types": res.get("target_chunk_types") or [],
+            "query_plan": res.get("query_plan"),
+            "task_results": res.get("task_results") or [],
+            "coverage_by_task": res.get("coverage_by_task") or {},
+            "planner_fallback": res.get("planner_fallback"),
+            "supports_task_ids": res.get("supports_task_ids") or {},
             "llm_called": llm_called,
         }
 
@@ -672,7 +678,7 @@ class AnswerPipeline:
             return
 
         # Neu cau hoi mo ho, stream cau hoi lam ro nhu mot token block thay vi goi LLM.
-        if detect_ambiguous_query(effective_query, retrieval_result):
+        if not retrieval_result.get("query_plan") and detect_ambiguous_query(effective_query, retrieval_result):
             clarification_msg = build_clarification_question(
                 effective_query, retrieval_result
             )
@@ -707,7 +713,7 @@ class AnswerPipeline:
             yield {"type": "done", "tracker": tracker}
             return
 
-        if is_out_of_domain_query(effective_query, retrieval_result):
+        if not retrieval_result.get("query_plan") and is_out_of_domain_query(effective_query, retrieval_result):
             out_of_domain_msg = build_fallback_answer(
                 effective_query,
                 retrieval_result,
@@ -729,12 +735,15 @@ class AnswerPipeline:
         citations_config = self.config.get("citations", {})
         guardrails_config = self.config.get("guardrails", {})
 
-        selected_citations = select_relevant_citations(
-            retrieval_result.get("citations"),
-            intent=retrieval_result.get("intent"),
-            retrieval_result=retrieval_result,
-            max_sources=int(citations_config.get("max_sources", 2)),
-        )
+        if retrieval_result.get("query_plan"):
+            selected_citations = list(retrieval_result.get("citations") or [])[:10]
+        else:
+            selected_citations = select_relevant_citations(
+                retrieval_result.get("citations"),
+                intent=retrieval_result.get("intent"),
+                retrieval_result=retrieval_result,
+                max_sources=int(citations_config.get("max_sources", 2)),
+            )
 
         # Low confidence: yield fallback as single chunk
         if guardrails_config.get(
@@ -916,6 +925,18 @@ class AnswerPipeline:
             from src.retrieval.core.ai_router import AIRouter
             self.router = AIRouter.from_config()
 
+        planning_config = self.config.get("planning", {})
+        planning_enabled = _env_bool(
+            "STUDENT_RAG_QUERY_PLAN_ENABLED",
+            bool(planning_config.get("enabled", True)),
+        )
+        if planning_enabled and hasattr(self.router, "plan"):
+            return self._run_query_plan(
+                query=query,
+                cohort=cohort,
+                chat_history=chat_history,
+            )
+
         router_input_query = self.slang_normalizer.replace_for_router(query)
         try:
             router_decision = self.router.route(
@@ -1089,6 +1110,399 @@ class AnswerPipeline:
             "deterministic_validated": False,
         }
 
+    def _run_query_plan(
+        self,
+        *,
+        query: str,
+        cohort: str | None,
+        chat_history: list[dict[str, str]] | None,
+    ) -> dict[str, Any]:
+        """Plan and execute at most three independent, non-recursive tasks."""
+        router_input_query = self.slang_normalizer.replace_for_router(query)
+        try:
+            raw_plan = self.router.plan(
+                router_input_query,
+                chat_history=chat_history,
+                cohort=cohort,
+            )
+        except TypeError:
+            raw_plan = self.router.plan(
+                router_input_query,
+                chat_history=chat_history,
+            )
+
+        plan_keys = (
+            "schema_version",
+            "context_mode",
+            "normalized_query",
+            "standalone_query",
+            "referenced_turns",
+            "out_of_domain",
+            "tasks",
+        )
+        plan = {key: raw_plan.get(key) for key in plan_keys}
+        planner_fallback = raw_plan.get("planner_fallback")
+        effective_query = str(
+            plan.get("standalone_query")
+            if plan.get("context_mode") == "follow_up"
+            else plan.get("normalized_query")
+            or query
+        ).strip() or query
+        query_handling = {
+            "raw_query": query,
+            "effective_query": effective_query,
+            "mode": "standalone_rewrite" if plan.get("context_mode") == "follow_up" else "normalized",
+            "context_mode": plan.get("context_mode") or "standalone",
+            "source": "query_plan",
+            "normalized_query": plan.get("normalized_query"),
+            "standalone_query": plan.get("standalone_query"),
+            "referenced_turns": plan.get("referenced_turns") or [],
+            "validation_errors": raw_plan.get("planner_validation_errors") or [],
+            "needs_clarification": False,
+            "clarification_question": None,
+        }
+        base_result = {
+            "query": query,
+            "retrieval_query": self.slang_normalizer.normalize_for_retrieval(effective_query),
+            "effective_query": effective_query,
+            "raw_query": query,
+            "selected_cohort": cohort,
+            "query_handling": query_handling,
+            "query_plan": plan,
+            "planner_fallback": planner_fallback,
+            "router_usage": raw_plan.get("usage"),
+            "router_model": raw_plan.get("model_used"),
+        }
+        if plan.get("out_of_domain"):
+            return {
+                **base_result,
+                "intent": "out_of_domain",
+                "strategy": "query_plan",
+                "execution_mode": "none",
+                "structured_result": None,
+                "retrieved_items": [],
+                "citations": [],
+                "task_results": [],
+                "coverage_by_task": {},
+                "supports_task_ids": {},
+                "needs_llm_answer": False,
+                "needs_clarification": False,
+                "clarification_question": None,
+                "out_of_domain": True,
+            }
+
+        task_results: list[dict[str, Any]] = []
+        structured_results: list[dict[str, Any]] = []
+        all_items: list[dict[str, Any]] = []
+        all_citations: list[dict[str, Any]] = []
+        coverage_by_task: dict[str, str] = {}
+        clarification_questions: list[str] = []
+
+        for task in plan.get("tasks") or []:
+            task_id = str(task.get("id") or f"t{len(task_results) + 1}")
+            mode = task.get("mode")
+            task_cohorts = task.get("cohorts") or ([cohort] if cohort else [None])
+            task_cohorts = list(dict.fromkeys(task_cohorts))
+            task_evidence: list[dict[str, Any]] = []
+            cohort_coverage: dict[str, str] = {}
+            task_citations: list[dict[str, Any]] = []
+            task_items: list[dict[str, Any]] = []
+
+            if mode == "clarify":
+                question = str(task.get("clarification_question") or "Bạn có thể làm rõ yêu cầu này không?")
+                clarification_questions.append(question)
+                coverage_by_task[task_id] = "needs_clarification"
+                task_results.append({
+                    "task_id": task_id,
+                    "question": task.get("question"),
+                    "mode": mode,
+                    "coverage": "needs_clarification",
+                    "clarification_question": question,
+                    "cohorts": task_cohorts,
+                    "evidence": [],
+                })
+                continue
+
+            for task_cohort in task_cohorts:
+                if mode == "structured":
+                    sub_result = self._execute_planned_structured_task(
+                        task=task,
+                        task_id=task_id,
+                        cohort=task_cohort,
+                    )
+                else:
+                    sub_result = self._execute_planned_rag_task(
+                        task=task,
+                        task_id=task_id,
+                        cohort=task_cohort,
+                        chat_history=chat_history,
+                    )
+                cohort_key = str(task_cohort or "default")
+                cohort_coverage[cohort_key] = sub_result["coverage"]
+                task_evidence.extend(sub_result.get("evidence") or [])
+                task_citations.extend(sub_result.get("citations") or [])
+                task_items.extend(sub_result.get("retrieved_items") or [])
+                structured = sub_result.get("structured_result")
+                if structured:
+                    structured_results.append(structured)
+                clarification = sub_result.get("clarification_question")
+                if clarification:
+                    clarification_questions.append(str(clarification))
+
+            statuses = list(cohort_coverage.values())
+            if statuses and all(status == "covered" for status in statuses):
+                coverage = "covered"
+            elif any(status == "needs_clarification" for status in statuses):
+                coverage = "needs_clarification"
+            else:
+                coverage = "uncovered"
+            coverage_by_task[task_id] = coverage
+            all_items.extend(task_items)
+            all_citations.extend(task_citations)
+            task_results.append({
+                "task_id": task_id,
+                "question": task.get("question"),
+                "mode": mode,
+                "lookup_type": task.get("lookup_type"),
+                "intent": task.get("intent"),
+                "cohorts": task_cohorts,
+                "coverage": coverage,
+                "coverage_by_cohort": cohort_coverage,
+                "evidence": task_evidence,
+                "citation_count": len(task_citations),
+            })
+
+        merged_items = self._merge_task_items(all_items)
+        merged_citations = self._merge_task_citations(all_citations)
+        selected_citations = self._select_task_primary_citations(
+            merged_citations,
+            coverage_by_task,
+            max_sources=int(self.config.get("planning", {}).get("max_citations", 10)),
+        )
+        covered_any = any(value == "covered" for value in coverage_by_task.values())
+        clarify_any = any(value == "needs_clarification" for value in coverage_by_task.values())
+        if len(structured_results) == 1:
+            structured_result: dict[str, Any] | None = structured_results[0]
+        elif structured_results:
+            structured_result = {
+                "lookup_type": "multi_task_structured",
+                "sub_lookups": structured_results,
+                "result": structured_results,
+                "table_name": "Dữ liệu tra cứu có cấu trúc theo từng yêu cầu",
+                "source_label": "Sổ tay sinh viên HCMUE",
+            }
+        else:
+            structured_result = None
+        task_modes = {str(task.get("mode")) for task in (plan.get("tasks") or [])}
+        return {
+            **base_result,
+            "intent": "multi_task" if len(task_results) > 1 else (task_results[0].get("intent") if task_results else "open_question"),
+            "strategy": "query_plan_execution",
+            "execution_mode": "mixed" if len(task_modes - {"clarify"}) > 1 else next(iter(task_modes), "regulation"),
+            "lookup_type": None,
+            "structured_result": structured_result,
+            "retrieved_items": merged_items,
+            "citations": selected_citations,
+            "task_results": task_results,
+            "coverage_by_task": coverage_by_task,
+            "supports_task_ids": {
+                str(citation.get("chunk_id") or index): citation.get("supports_task_ids") or []
+                for index, citation in enumerate(selected_citations)
+            },
+            "needs_llm_answer": covered_any,
+            "needs_clarification": bool(clarify_any and not covered_any),
+            "clarification_question": clarification_questions[0] if clarification_questions else None,
+            "out_of_domain": False,
+            "deterministic_validated": bool(structured_results),
+        }
+
+    def _execute_planned_structured_task(
+        self,
+        *,
+        task: dict[str, Any],
+        task_id: str,
+        cohort: str | None,
+    ) -> dict[str, Any]:
+        from src.retrieval.core.structured_dispatcher import resolve_structured_decision
+
+        decision = {
+            "route": "structured",
+            "execution_mode": "structured",
+            "intent": task.get("intent"),
+            "lookup_type": task.get("lookup_type"),
+            "slots": task.get("slots") or {},
+            "slot_spans": task.get("slot_spans") or {},
+            "cohort": cohort,
+            "cohorts": [cohort] if cohort else [],
+            "retrieval_query": task.get("question"),
+        }
+        resolution = resolve_structured_decision(
+            decision,
+            query=self.slang_normalizer.normalize_for_retrieval(str(task.get("question") or "")),
+            cohort=cohort,
+            scoring_tables=self.scoring_tables,
+            formula_rules=self.formula_rules,
+            office_directory=self.student_office_profiles,
+            student_service_directory=self.student_service_directory,
+            student_faculty_profiles=self.student_faculty_profiles,
+            foreign_language_tables=self.foreign_language_tables,
+            structured_tables_registry=self.structured_tables_registry,
+            program_directory=self.program_directory,
+            model=self.model,
+            probe_other_domains=False,
+        )
+        if not resolution or not resolution.result:
+            return {"coverage": "uncovered", "evidence": [], "citations": [], "retrieved_items": []}
+        if resolution.result_kind == "clarification":
+            return {
+                "coverage": "needs_clarification",
+                "clarification_question": resolution.result.get("clarification_question"),
+                "evidence": [],
+                "citations": [],
+                "retrieved_items": [],
+            }
+        evidence = {**resolution.result, "task_id": task_id, "cohort": resolution.result.get("cohort") or cohort}
+        citations = enrich_citations_with_parent_details(
+            build_citation_from_lookup(evidence),
+            getattr(self, "parent_sources_by_id", {}),
+        )
+        citations = [
+            {**citation, "task_id": task_id, "supports_task_ids": [task_id], "cohort": citation.get("cohort") or cohort}
+            for citation in citations
+        ]
+        coverage = "covered" if citations else "uncovered"
+        return {
+            "coverage": coverage,
+            "evidence": [evidence],
+            "structured_result": evidence,
+            "citations": citations,
+            "retrieved_items": [],
+        }
+
+    def _execute_planned_rag_task(
+        self,
+        *,
+        task: dict[str, Any],
+        task_id: str,
+        cohort: str | None,
+        chat_history: list[dict[str, str]] | None,
+    ) -> dict[str, Any]:
+        task_query = str(task.get("question") or "").strip()
+        retrieval_query = self.slang_normalizer.normalize_for_retrieval(task_query)
+        result = run_hybrid_retrieval_pipeline(
+            query=task_query,
+            model=self.model,
+            collection=self.collection,
+            scoring_tables=self.scoring_tables,
+            formula_rules=self.formula_rules,
+            entity_registry=self.entity_registry,
+            expansion_rules=self.expansion_rules,
+            office_directory=self.student_office_profiles,
+            student_service_directory=self.student_service_directory,
+            student_faculty_profiles=self.student_faculty_profiles,
+            foreign_language_tables=self.foreign_language_tables,
+            structured_tables_registry=self.structured_tables_registry,
+            program_directory=self.program_directory,
+            top_k=int(self.config.get("planning", {}).get("rag_top_k", 5)),
+            batch_size=self.config["retrieval"].get("batch_size", 8),
+            normalize_embeddings=self.config["embedding"].get("normalize_embeddings", True),
+            cohort=cohort,
+            candidate_multiplier=int(self.config["retrieval"].get("candidate_multiplier", 5)),
+            min_candidates=int(self.config["retrieval"].get("min_candidates", 25)),
+            chat_history=chat_history,
+            intent=task.get("intent") or "open_question",
+            strategy="regulation",
+            retrieval_query=retrieval_query,
+        )
+        items = []
+        for item in (result.get("retrieved_items") or [])[:5]:
+            copied = dict(item)
+            metadata = dict(copied.get("metadata") or {})
+            metadata.update({"task_id": task_id, "supports_task_ids": [task_id], "cohort": metadata.get("cohort") or cohort})
+            copied["metadata"] = metadata
+            copied["task_id"] = task_id
+            copied["supports_task_ids"] = [task_id]
+            items.append(copied)
+        citations = [
+            {**citation, "task_id": task_id, "supports_task_ids": [task_id], "cohort": citation.get("cohort") or cohort}
+            for citation in (result.get("citations") or [])[:5]
+        ]
+        coverage = "covered" if items and citations else "uncovered"
+        evidence = [{
+            "task_id": task_id,
+            "cohort": cohort,
+            "retrieval_query": retrieval_query,
+            "source_ids": [str(item.get("chunk_id") or item.get("_id") or "") for item in items],
+        }]
+        return {"coverage": coverage, "evidence": evidence, "citations": citations, "retrieved_items": items}
+
+    @staticmethod
+    def _merge_task_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        merged: dict[tuple[str, str], dict[str, Any]] = {}
+        for item in items:
+            metadata = item.get("metadata") or {}
+            key = (
+                str(metadata.get("cohort") or "default"),
+                str(item.get("chunk_id") or item.get("_id") or metadata.get("source_parent_id") or ""),
+            )
+            if key not in merged:
+                merged[key] = dict(item)
+                merged[key]["supports_task_ids"] = list(item.get("supports_task_ids") or [])
+            else:
+                supports = merged[key].setdefault("supports_task_ids", [])
+                for task_id in item.get("supports_task_ids") or []:
+                    if task_id not in supports:
+                        supports.append(task_id)
+        return list(merged.values())
+
+    @staticmethod
+    def _merge_task_citations(citations: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        merged: dict[tuple[Any, ...], dict[str, Any]] = {}
+        for citation in citations:
+            canonical_source_id = (
+                citation.get("source_parent_id")
+                or citation.get("parent_section_id")
+                or citation.get("chunk_id")
+                or citation.get("document_id")
+                or citation.get("source_section")
+                or citation.get("title")
+            )
+            key = (str(citation.get("cohort") or "default"), str(canonical_source_id or ""))
+            if key not in merged:
+                merged[key] = dict(citation)
+                merged[key]["supports_task_ids"] = list(citation.get("supports_task_ids") or [])
+            else:
+                supports = merged[key].setdefault("supports_task_ids", [])
+                for task_id in citation.get("supports_task_ids") or []:
+                    if task_id not in supports:
+                        supports.append(task_id)
+        return list(merged.values())
+
+    @staticmethod
+    def _select_task_primary_citations(
+        citations: list[dict[str, Any]],
+        coverage_by_task: dict[str, str],
+        *,
+        max_sources: int,
+    ) -> list[dict[str, Any]]:
+        selected: list[dict[str, Any]] = []
+        selected_ids: set[int] = set()
+        for task_id, coverage in coverage_by_task.items():
+            if coverage != "covered":
+                continue
+            for index, citation in enumerate(citations):
+                if task_id in (citation.get("supports_task_ids") or []):
+                    if index not in selected_ids:
+                        selected.append(citation)
+                        selected_ids.add(index)
+                    break
+        for index, citation in enumerate(citations):
+            if len(selected) >= max_sources:
+                break
+            if index not in selected_ids:
+                selected.append(citation)
+        return selected[:max_sources]
+
     def _execute_single_cohort_retrieval(
         self,
         *,
@@ -1118,7 +1532,10 @@ class AnswerPipeline:
             )
             if resolution and resolution.result:
                 is_clarification = resolution.result_kind == "clarification"
-                structured_citations = []
+                structured_citations = enrich_citations_with_parent_details(
+                    build_citation_from_lookup(resolution.result),
+                    getattr(self, "parent_sources_by_id", {}),
+                )
                 return {
                     "query": query,
                     "retrieval_query": normalized_retrieval_query,
@@ -1291,6 +1708,11 @@ class AnswerPipeline:
             "structured_result": retrieval_result.get("structured_result"),
             "formula_result": retrieval_result.get("formula_result"),
             "tool_result": retrieval_result.get("tool_result"),
+            "query_plan": retrieval_result.get("query_plan"),
+            "task_results": retrieval_result.get("task_results") or [],
+            "coverage_by_task": retrieval_result.get("coverage_by_task") or {},
+            "planner_fallback": retrieval_result.get("planner_fallback"),
+            "supports_task_ids": retrieval_result.get("supports_task_ids") or {},
             "llm_called": llm_called,
             "model_used": model_used,
             "model": model_used,

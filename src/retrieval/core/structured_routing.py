@@ -9,7 +9,7 @@ from typing import Any
 
 import yaml
 
-from src.common.cohort import normalize_cohort
+from src.common.cohort import build_cohort_token_regex, normalize_cohort, valid_cohorts
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -47,8 +47,7 @@ def _normalize_text(value: Any) -> str:
 
 
 def _query_mentions_cohort(query: str) -> bool:
-    normalized = _normalize_text(query)
-    return bool(re.search(r"\bk\s*(?:48|49|50|51)\b", normalized))
+    return bool(build_cohort_token_regex().search(query))
 
 
 def _infer_explicit_structured_slots(
@@ -155,6 +154,7 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
 def router_json_schema() -> dict[str, Any]:
     registry = load_lookup_registry()
     tools = list(registry.get("tools", {}).keys())
+    cohorts = list(valid_cohorts())
     lookup_type_enum = "|".join(tools) + "|null" if tools else "tool name or null"
     
     return {
@@ -174,8 +174,8 @@ def router_json_schema() -> dict[str, Any]:
         "execution_mode": "structured|regulation|mixed",
         "intent": "intent name",
         "lookup_type": lookup_type_enum,
-        "cohort": "K48-K49|K50|K51|null",
-        "cohorts": ["K48-K49", "K50", "K51"],
+        "cohort": "|".join(cohorts) + "|null",
+        "cohorts": cohorts,
         "is_multi_cohort": False,
         "slots": {},
         "slot_spans": {},
@@ -187,6 +187,7 @@ def router_response_schema() -> dict[str, Any]:
     """JSON Schema used by providers that support structured output."""
 
     tools = list(load_lookup_registry().get("tools", {}).keys())
+    cohorts = list(valid_cohorts())
     return {
         "type": "object",
         "additionalProperties": False,
@@ -238,7 +239,7 @@ def router_response_schema() -> dict[str, Any]:
             },
             "cohort": {
                 "anyOf": [
-                    {"type": "string", "enum": ["K48-K49", "K50", "K51"]},
+                    {"type": "string", "enum": cohorts},
                     {"type": "null"},
                 ]
             },
@@ -246,7 +247,7 @@ def router_response_schema() -> dict[str, Any]:
                 "type": "array",
                 "items": {
                     "type": "string",
-                    "enum": ["K48-K49", "K50", "K51"],
+                    "enum": cohorts,
                 },
             },
             "is_multi_cohort": {"type": ["boolean", "null"]},

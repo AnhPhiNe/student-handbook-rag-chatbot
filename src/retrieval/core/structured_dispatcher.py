@@ -385,6 +385,7 @@ def resolve_structured_decision(
     program_directory: list[dict[str, Any]],
     detected_entities: list[dict[str, Any]] | None = None,
     model: Any | None = None,
+    probe_other_domains: bool = True,
 ) -> StructuredResolution | None:
     lookup_type = str(decision.get("lookup_type") or "").strip()
     effective_cohort = normalize_cohort(cohort or decision.get("cohort"))
@@ -407,6 +408,11 @@ def resolve_structured_decision(
 
     primary_res = _resolve_single_lookup(lookup_type, **lookup_kwargs) if lookup_type else None
 
+    # QueryPlan assigns exactly one structured tool to each task.  Keep the
+    # historical cross-domain probing only for the legacy route path.
+    if not probe_other_domains:
+        return primary_res
+
     # When Router explicitly determines single pure regulation without lookup_type, skip structured probing
     if decision.get("execution_mode") == "regulation" and not lookup_type:
         return None
@@ -421,10 +427,6 @@ def resolve_structured_decision(
         "office",
         "student_service",
     ]
-
-    # Nếu Router đã chỉ định đích danh lookup_type và đã tìm thấy kết quả hợp lệ, trả về ngay lập tức
-    if lookup_type and primary_res and _is_valid_probe_result(primary_res):
-        return primary_res
 
     collected: list[StructuredResolution] = []
     seen_lookups: set[str] = set()

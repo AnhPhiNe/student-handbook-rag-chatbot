@@ -68,6 +68,11 @@ def _build_debug_payload(result: dict[str, Any]) -> dict[str, Any]:
         "request_id": result.get("request_id"),
         "latency_ms": result.get("latency_ms"),
         "evaluation_telemetry": result.get("evaluation_telemetry"),
+        "query_plan": result.get("query_plan"),
+        "task_results": result.get("task_results") or [],
+        "coverage_by_task": result.get("coverage_by_task") or {},
+        "planner_fallback": result.get("planner_fallback"),
+        "supports_task_ids": result.get("supports_task_ids") or {},
     }
 
 
@@ -95,6 +100,17 @@ def _to_chat_response(
             ID yêu cầu, và các thông tin khác.
     """
     citations_used = result.get("citations_used") or []
+    if isinstance(citations_used, list) and not include_debug:
+        citations_used = [
+            {
+                key: value
+                for key, value in citation.items()
+                if key not in {"task_id", "supports_task_ids"}
+            }
+            if isinstance(citation, dict)
+            else citation
+            for citation in citations_used
+        ]
 
     return ChatResponse(
         answer=str(result.get("answer") or ""),

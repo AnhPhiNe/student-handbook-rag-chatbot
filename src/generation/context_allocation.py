@@ -601,6 +601,9 @@ def _source_header(index: int, item: dict[str, Any]) -> str:
         f"Title: {title}",
         f"Type: {metadata.get('chunk_type')}",
     ]
+    task_ids = item.get("supports_task_ids") or metadata.get("supports_task_ids") or []
+    if task_ids:
+        lines.append(f"Supports tasks: {', '.join(str(value) for value in task_ids)}")
     if cohort_val:
         lines.append(f"Cohort: {cohort_val}")
     lines.extend([

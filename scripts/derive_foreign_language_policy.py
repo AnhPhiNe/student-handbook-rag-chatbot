@@ -61,6 +61,35 @@ def _is_derived_from_source(item: dict[str, Any]) -> bool:
         metadata.get("derived_from_cohort") == SOURCE_COHORT
         and metadata.get("derivation_method") == "foreign_language_policy_from_k50"
     )
+
+
+def foreign_language_applicability_metadata() -> dict[str, Any]:
+    """Return the canonical applicability metadata for the source policy."""
+
+    years_by_cohort = cohort_admission_years()
+    applicable_cohorts = [
+        cohort
+        for cohort in valid_cohorts()
+        if any(
+            year >= APPLICABILITY_MIN_ADMISSION_YEAR
+            for year in years_by_cohort.get(cohort, ())
+        )
+    ]
+    return {
+        "source_cohort": SOURCE_COHORT,
+        "applicable_cohorts": applicable_cohorts,
+        "applicability": (
+            "Điều 1 quy định áp dụng cho sinh viên đại học thuộc phạm vi "
+            f"quy định từ khóa tuyển sinh năm {APPLICABILITY_MIN_ADMISSION_YEAR} "
+            "trở về sau."
+        ),
+        "applicability_basis_parent_id": (
+            "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1"
+        ),
+        "applicability_validated": True,
+    }
+
+
 def derive_foreign_language_policy(
     docstore_path: Path = DEFAULT_DOCSTORE_PATH,
     report_path: Path | None = DEFAULT_REPORT_PATH,
@@ -74,15 +103,8 @@ def derive_foreign_language_policy(
         raise RuntimeError("No K50 foreign-language policy sections found to annotate.")
 
     source_items.sort(key=lambda item: str(item.get("_id") or ""))
-    years_by_cohort = cohort_admission_years()
-    applicable_cohorts = [
-        cohort
-        for cohort in valid_cohorts()
-        if any(
-            year >= APPLICABILITY_MIN_ADMISSION_YEAR
-            for year in years_by_cohort.get(cohort, ())
-        )
-    ]
+    applicability_metadata = foreign_language_applicability_metadata()
+    applicable_cohorts = applicability_metadata["applicable_cohorts"]
 
     # Older builds cloned the same policy into target handbooks.  Remove only
     # those generated copies and retain any real source section untouched.
@@ -98,21 +120,7 @@ def derive_foreign_language_policy(
     ]
     for source_item in source_items:
         metadata = dict(source_item.get("metadata") or {})
-        metadata.update(
-            {
-                "source_cohort": SOURCE_COHORT,
-                "applicable_cohorts": applicable_cohorts,
-                "applicability": (
-                    "Điều 1 quy định áp dụng cho sinh viên đại học thuộc phạm vi "
-                    f"quy định từ khóa tuyển sinh năm {APPLICABILITY_MIN_ADMISSION_YEAR} "
-                    "trở về sau."
-                ),
-                "applicability_basis_parent_id": (
-                    "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1"
-                ),
-                "applicability_validated": True,
-            }
-        )
+        metadata.update(applicability_metadata)
         source_item["metadata"] = metadata
 
     output_ids = [str(item.get("_id") or "") for item in output_items if isinstance(item, dict)]

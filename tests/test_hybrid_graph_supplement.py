@@ -9,9 +9,22 @@ from src.retrieval.core.hybrid_pipeline import (
     DEFAULT_RETRIEVAL_MODE,
     _build_related_references,
     _chunk_matches_regulation_scope,
+    _is_supplemental_regulation_metadata,
     _v7_query_filter,
     select_graph_related_parent_candidates,
 )
+
+
+def test_retired_migration_parent_is_excluded_from_graph_context() -> None:
+    assert (
+        _is_supplemental_regulation_metadata(
+            {
+                "content_type": "regulation_text",
+                "migration_status": "retired",
+            }
+        )
+        is True
+    )
 
 
 def test_regulation_scope_accepts_source_declared_for_target_cohort() -> None:

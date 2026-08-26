@@ -80,8 +80,13 @@ def _query_points_with_retry(
 
 def _is_supplemental_regulation_metadata(metadata: dict[str, Any]) -> bool:
     source_type = str(metadata.get("source_type") or "").strip().lower()
+    migration_status = str(metadata.get("migration_status") or "").strip().lower()
     parent_id = str(metadata.get("parent_section_id") or metadata.get("chunk_id") or "")
-    return source_type == "supplemental_regulation" or "_Supplement_" in parent_id
+    return (
+        source_type == "supplemental_regulation"
+        or migration_status == "retired"
+        or "_Supplement_" in parent_id
+    )
 
 
 def select_graph_related_parent_candidates(

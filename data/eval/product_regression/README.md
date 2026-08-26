@@ -18,6 +18,9 @@ Chạy toàn bộ pipeline thật (mặc định tắt response cache):
 .\.venv\Scripts\python.exe scripts\run_product_regression.py
 ```
 
+Runner hiển thị progress bar theo số case đã hoàn tất và vẫn ghi report sau khi
+chạy xong toàn bộ tập.
+
 Chạy một vài case khi phát triển:
 
 ```powershell
@@ -44,4 +47,3 @@ trích dẫn/bảng hiển thị, sau đó điền:
 
 Mục tiêu sản phẩm: ít nhất 90% pass và không có critical failure. Với 30 case,
 ngưỡng 90% tương ứng tối thiểu 27/30.
-

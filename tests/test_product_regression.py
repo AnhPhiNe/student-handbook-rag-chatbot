@@ -5,7 +5,12 @@ from pathlib import Path
 
 import pytest
 
-from scripts.run_product_regression import _automatic_checks, load_cases, validate_cases
+from scripts.run_product_regression import (
+    _automatic_checks,
+    _print_progress,
+    load_cases,
+    validate_cases,
+)
 
 
 DATASET = Path("data/eval/product_regression/cases.json")
@@ -70,3 +75,17 @@ def test_automatic_checks_accept_out_of_domain_without_llm() -> None:
 
     assert all(_automatic_checks(case, result).values())
 
+
+def test_progress_bar_reports_completed_cases(capsys: pytest.CaptureFixture[str]) -> None:
+    _print_progress(
+        completed=3,
+        total=10,
+        case_id="product_003",
+        label="READY",
+        elapsed_seconds=1.25,
+    )
+
+    output = capsys.readouterr().out
+    assert "03/10" in output
+    assert "30%" in output
+    assert "product_003: READY" in output

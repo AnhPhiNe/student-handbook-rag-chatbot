@@ -37,6 +37,29 @@ REVIEW_TEMPLATE = {
 }
 
 
+def _print_progress(
+    *,
+    completed: int,
+    total: int,
+    case_id: str,
+    label: str,
+    elapsed_seconds: float,
+) -> None:
+    """Render a dependency-free terminal progress bar after each completed case."""
+    width = 30
+    filled = width if total == 0 else round(width * completed / total)
+    bar = "=" * filled + "-" * (width - filled)
+    percent = 100 if total == 0 else round(100 * completed / total)
+    line = (
+        f"\r[{bar}] {completed:02d}/{total:02d} {percent:3d}% "
+        f"{case_id}: {label} ({elapsed_seconds:.2f}s)"
+    )
+    # Padding clears remnants when the next case id/status is shorter.
+    sys.stdout.write(line.ljust(110))
+    sys.stdout.write("\n" if completed == total else "")
+    sys.stdout.flush()
+
+
 def load_cases(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
@@ -143,6 +166,8 @@ def _parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     args = _parse_args()
     dataset, cases = load_cases(args.dataset)
     selected_ids = set(args.case_ids or [])
@@ -218,7 +243,13 @@ def main() -> int:
         }
         rows.append(row)
         label = "READY" if row["automatic_checks_passed"] else "CHECK"
-        print(f"[{index:02d}/{len(cases)}] {case['id']}: {label} ({elapsed:.2f}s)", flush=True)
+        _print_progress(
+            completed=index,
+            total=len(cases),
+            case_id=str(case["id"]),
+            label=label,
+            elapsed_seconds=elapsed,
+        )
 
     report = {
         "schema_version": "product-regression-report-v1",
@@ -250,4 +281,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

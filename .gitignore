@@ -38,6 +38,7 @@ frontend/.vite/
 # Runtime and deployment artifacts
 /logs/
 /scratch/
+/tmp/
 /.hf_deploy_temp/
 *.log
 *.lock

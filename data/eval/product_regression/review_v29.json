@@ -1,0 +1,121 @@
+{
+  "schema_version": "product-regression-review-v1",
+  "reviewed_report": "tmp/product_regression_v29_core.json",
+  "reviewed_report_sha256": "21fd97657ef0c1245bb1d3d1789e689af8d83ceebcfafbd6f0474bb01d314575",
+  "evaluated_commit": "3ab7a68802940a569f4d6e255979cb8c2b3d8566",
+  "reviewer_type": "codex_assisted",
+  "review_scope": "User-delegated review of all final answers, source audit of every failure, and source-anchor spot-check of five passing cases.",
+  "review_status": "completed",
+  "reviewed_at": "2026-08-26T17:43:00+07:00",
+  "quality_gates": {
+    "pytest": "271 passed",
+    "ruff": "passed",
+    "frontend_lint": "passed",
+    "frontend_build": "passed",
+    "p0_live_smoke": "8/8 passed"
+  },
+  "run_integrity": {
+    "total_cases": 30,
+    "completed_cases": 30,
+    "runtime_errors": 0,
+    "missing_or_duplicate_cases": 0,
+    "automatic_checks_passed": 29,
+    "notes": "Several Gemini keys entered rate-limit cooldown, but key rotation completed every request. No case was excluded for latency."
+  },
+  "pass_case_ids": [
+    "product_001",
+    "product_002",
+    "product_003",
+    "product_004",
+    "product_005",
+    "product_006",
+    "product_007",
+    "product_008",
+    "product_009",
+    "product_010",
+    "product_011",
+    "product_012",
+    "product_013",
+    "product_014",
+    "product_015",
+    "product_017",
+    "product_018",
+    "product_019",
+    "product_021",
+    "product_022",
+    "product_023",
+    "product_024",
+    "product_025",
+    "product_026",
+    "product_027",
+    "product_028",
+    "product_030"
+  ],
+  "failures": [
+    {
+      "case_id": "product_016",
+      "decision": "fail",
+      "severity": "critical",
+      "root_cause": "data_extraction_and_composer_fidelity",
+      "source_anchors": [
+        "K51_QuyCheDaoTao_Chuong3_Dieu12",
+        "K51_QuyCheDaoTao_Chuong3_Dieu13"
+      ],
+      "finding": "The answer presents the amendment formula M1 + M2 + M3 <= N <= M1 + M2 + M3 + M4 as a warning condition. In the PDF it belongs to the definition of fourth-year standing, while the extracted article text attaches the footnote to the warning paragraph. This creates an unsupported high-risk policy claim."
+    },
+    {
+      "case_id": "product_020",
+      "decision": "fail",
+      "severity": "major",
+      "root_cause": "composer_completeness",
+      "source_anchors": [
+        "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27"
+      ],
+      "finding": "The source contains the main HBKKHT eligibility requirements, including discipline status, credit minimums, all registered credits passing, and final-semester rules. The answer only points to classification levels and omits these principal conditions despite having the evidence."
+    },
+    {
+      "case_id": "product_029",
+      "decision": "fail",
+      "severity": "major",
+      "root_cause": "planner_follow_up_validation",
+      "source_anchors": [],
+      "finding": "History resolution correctly reconstructs 'Thời gian đào tạo tối đa hệ chính quy của K51 là bao lâu?', but the task is converted to clarification because program_type is treated as an ungrounded required slot. This contradicts the table-first contract and drops an answerable follow-up."
+    }
+  ],
+  "source_spotchecks": [
+    {
+      "case_id": "product_001",
+      "coverage": "structured_single",
+      "decision": "pass"
+    },
+    {
+      "case_id": "product_013",
+      "coverage": "regulation_single",
+      "decision": "pass"
+    },
+    {
+      "case_id": "product_018",
+      "coverage": "two_regulation_tasks",
+      "decision": "pass"
+    },
+    {
+      "case_id": "product_023",
+      "coverage": "multi_cohort_structured",
+      "decision": "pass"
+    },
+    {
+      "case_id": "product_027",
+      "coverage": "partial_answer_and_clarification",
+      "decision": "pass"
+    }
+  ],
+  "summary": {
+    "passed": 27,
+    "failed": 3,
+    "pass_rate": 0.9,
+    "critical_failures": 1,
+    "major_failures": 2,
+    "product_gate": "failed",
+    "release_decision": "Do not start public beta or student pilot until the critical product_016 data/source-fidelity failure is fixed and regression-tested."
+  }
+}

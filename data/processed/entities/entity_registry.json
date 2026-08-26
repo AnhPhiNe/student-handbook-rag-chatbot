@@ -129,8 +129,7 @@
     ],
     "source_record_id": null,
     "source_pages": [
-      131,
-      132
+      131
     ],
     "cohort": "K48-K49"
   },
@@ -239,8 +238,7 @@
     ],
     "source_record_id": null,
     "source_pages": [
-      133,
-      134
+      133
     ],
     "cohort": "K48-K49"
   },
@@ -400,8 +398,7 @@
     ],
     "source_record_id": null,
     "source_pages": [
-      135,
-      136
+      135
     ],
     "cohort": "K48-K49"
   },
@@ -437,8 +434,7 @@
     ],
     "source_record_id": null,
     "source_pages": [
-      136,
-      137
+      136
     ],
     "cohort": "K48-K49"
   },
@@ -675,8 +671,7 @@
     ],
     "source_record_id": null,
     "source_pages": [
-      176,
-      177
+      176
     ],
     "cohort": "K50"
   },
@@ -720,8 +715,7 @@
     ],
     "source_record_id": null,
     "source_pages": [
-      177,
-      178
+      177
     ],
     "cohort": "K50"
   },
@@ -1114,8 +1108,7 @@
     ],
     "source_record_id": null,
     "source_pages": [
-      198,
-      199
+      198
     ],
     "cohort": "K51"
   },
@@ -1159,8 +1152,7 @@
     ],
     "source_record_id": null,
     "source_pages": [
-      199,
-      200
+      199
     ],
     "cohort": "K51"
   },
@@ -1241,8 +1233,7 @@
     ],
     "source_record_id": null,
     "source_pages": [
-      204,
-      205
+      204
     ],
     "cohort": "K51"
   },
@@ -2334,8 +2325,7 @@
     "source_record_id": "K50_faculty_6",
     "source_pages": [
       189,
-      190,
-      191
+      190
     ],
     "cohort": "K50"
   },
@@ -2593,8 +2583,7 @@
     ],
     "source_record_id": "K50_faculty_13",
     "source_pages": [
-      198,
-      199
+      198
     ],
     "cohort": "K50"
   },
@@ -2757,8 +2746,7 @@
     ],
     "source_record_id": "K50_faculty_19",
     "source_pages": [
-      203,
-      204
+      203
     ],
     "cohort": "K50"
   },
@@ -2800,8 +2788,7 @@
     ],
     "source_record_id": "K50_faculty_21",
     "source_pages": [
-      204,
-      205
+      204
     ],
     "cohort": "K50"
   },
@@ -2997,8 +2984,7 @@
     ],
     "source_record_id": "K51_faculty_7",
     "source_pages": [
-      208,
-      209
+      208
     ],
     "cohort": "K51"
   },
@@ -3231,8 +3217,7 @@
     ],
     "source_record_id": "K51_faculty_18",
     "source_pages": [
-      211,
-      212
+      211
     ],
     "cohort": "K51"
   },
@@ -3385,8 +3370,7 @@
     "source_record_id": "K51_faculty_25",
     "source_pages": [
       215,
-      216,
-      217
+      216
     ],
     "cohort": "K51"
   },
@@ -3565,8 +3549,119 @@
     ],
     "source_record_id": "k48_derived_program_1",
     "source_pages": [
-      178,
+      178
+    ],
+    "cohort": "K48-K49"
+  },
+  {
+    "entity_id": "program_k48-k49_cong_tac_xa_hoi",
+    "canonical_name": "Công tác xã hội",
+    "entity_type": "program",
+    "aliases": [
+      "cong tac xa hoi",
+      "công tác xã hội",
+      "khoa cong tac xa hoi",
+      "khoa công tác xã hội",
+      "nganh cong tac xa hoi",
+      "ngành công tác xã hội"
+    ],
+    "faculty_name": "Khoa Tâm lý học",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "k48_derived_program_2",
+    "source_pages": [
       179
+    ],
+    "cohort": "K48-K49"
+  },
+  {
+    "entity_id": "program_k48-k49_du_lich",
+    "canonical_name": "Du lịch",
+    "entity_type": "program",
+    "aliases": [
+      "du lich",
+      "du lịch",
+      "khoa du lich",
+      "khoa du lịch",
+      "nganh du lich",
+      "ngành du lịch"
+    ],
+    "faculty_name": "Khoa Địa lý",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "k48_derived_program_3",
+    "source_pages": [
+      179
+    ],
+    "cohort": "K48-K49"
+  },
+  {
+    "entity_id": "program_k48-k49_giao_duc_chinh_tri",
+    "canonical_name": "Giáo dục Chính trị",
+    "entity_type": "program",
+    "aliases": [
+      "giao duc chinh tri",
+      "giáo dục chính trị",
+      "khoa giao duc chinh tri",
+      "khoa giáo dục chính trị",
+      "nganh giao duc chinh tri",
+      "ngành giáo dục chính trị"
+    ],
+    "faculty_name": "Khoa Giáo dục Chính trị",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "k48_derived_program_5",
+    "source_pages": [
+      180
+    ],
+    "cohort": "K48-K49"
+  },
+  {
+    "entity_id": "program_k48-k49_giao_duc_cong_dan",
+    "canonical_name": "Giáo dục Công dân",
+    "entity_type": "program",
+    "aliases": [
+      "giao duc cong dan",
+      "giáo dục công dân",
+      "khoa giao duc cong dan",
+      "khoa giáo dục công dân",
+      "nganh giao duc cong dan",
+      "ngành giáo dục công dân"
+    ],
+    "faculty_name": "Khoa Giáo dục Chính trị",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "k48_derived_program_6",
+    "source_pages": [
+      180
+    ],
+    "cohort": "K48-K49"
+  },
+  {
+    "entity_id": "program_k48-k49_giao_duc_mam_non_trinh_do_cao_dang_va_dai_hoc",
+    "canonical_name": "Giáo dục Mầm non (trình độ cao đẳng và đại học)",
+    "entity_type": "program",
+    "aliases": [
+      "giao duc mam non",
+      "giao duc mam non trinh do cao dang va dai hoc",
+      "giáo dục mầm non",
+      "giáo dục mầm non (trình độ cao đẳng và đại học)",
+      "khoa giao duc mam non",
+      "khoa giáo dục mầm non",
+      "nganh giao duc mam non",
+      "ngành giáo dục mầm non"
+    ],
+    "faculty_name": "Khoa Giáo dục Mầm non",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "k48_derived_program_9",
+    "source_pages": [
+      181
     ],
     "cohort": "K48-K49"
   },
@@ -3642,6 +3737,51 @@
     "cohort": "K48-K49"
   },
   {
+    "entity_id": "program_k48-k49_giao_duc_hoc",
+    "canonical_name": "Giáo dục học",
+    "entity_type": "program",
+    "aliases": [
+      "giao duc hoc",
+      "giáo dục học",
+      "khoa giao duc hoc",
+      "khoa giáo dục học",
+      "nganh giao duc hoc",
+      "ngành giáo dục học"
+    ],
+    "faculty_name": "Khoa Khoa học Giáo dục",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "k48_derived_program_8",
+    "source_pages": [
+      181
+    ],
+    "cohort": "K48-K49"
+  },
+  {
+    "entity_id": "program_k48-k49_giao_duc_dac_biet",
+    "canonical_name": "Giáo dục Đặc biệt",
+    "entity_type": "program",
+    "aliases": [
+      "giao duc dac biet",
+      "giáo dục đặc biệt",
+      "khoa giao duc dac biet",
+      "khoa giáo dục đặc biệt",
+      "nganh giao duc dac biet",
+      "ngành giáo dục đặc biệt"
+    ],
+    "faculty_name": "Khoa Giáo dục Đặc biệt",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "k48_derived_program_7",
+    "source_pages": [
+      180,
+      181
+    ],
+    "cohort": "K48-K49"
+  },
+  {
     "entity_id": "program_k48-k49_hoa_hoc",
     "canonical_name": "Hoá học",
     "entity_type": "program",
@@ -3659,8 +3799,7 @@
     ],
     "source_record_id": "k48_derived_program_13",
     "source_pages": [
-      182,
-      183
+      182
     ],
     "cohort": "K48-K49"
   },
@@ -3800,28 +3939,6 @@
     "cohort": "K48-K49"
   },
   {
-    "entity_id": "program_k48-k49_cong_tac_xa_hoi",
-    "canonical_name": "Công tác xã hội",
-    "entity_type": "program",
-    "aliases": [
-      "cong tac xa hoi",
-      "công tác xã hội",
-      "khoa cong tac xa hoi",
-      "khoa công tác xã hội",
-      "nganh cong tac xa hoi",
-      "ngành công tác xã hội"
-    ],
-    "faculty_name": "Khoa Tâm lý học",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "k48_derived_program_2",
-    "source_pages": [
-      179
-    ],
-    "cohort": "K48-K49"
-  },
-  {
     "entity_id": "program_k48-k49_quan_ly_giao_duc",
     "canonical_name": "Quản lý giáo dục",
     "entity_type": "program",
@@ -3861,8 +3978,7 @@
     ],
     "source_record_id": "k48_derived_program_21",
     "source_pages": [
-      186,
-      187
+      186
     ],
     "cohort": "K48-K49"
   },
@@ -3905,28 +4021,6 @@
       "program_directory"
     ],
     "source_record_id": "k48_derived_program_23",
-    "source_pages": [
-      187
-    ],
-    "cohort": "K48-K49"
-  },
-  {
-    "entity_id": "program_k48-k49_su_pham_dia_ly",
-    "canonical_name": "Sư phạm Địa lý",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham dia ly",
-      "khoa sư phạm địa lý",
-      "nganh su pham dia ly",
-      "ngành sư phạm địa lý",
-      "su pham dia ly",
-      "sư phạm địa lý"
-    ],
-    "faculty_name": "Khoa Địa lý",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "k48_derived_program_24",
     "source_pages": [
       187
     ],
@@ -4047,30 +4141,7 @@
     ],
     "source_record_id": "k48_derived_program_29",
     "source_pages": [
-      188,
-      189
-    ],
-    "cohort": "K48-K49"
-  },
-  {
-    "entity_id": "program_k48-k49_du_lich",
-    "canonical_name": "Du lịch",
-    "entity_type": "program",
-    "aliases": [
-      "du lich",
-      "du lịch",
-      "khoa du lich",
-      "khoa du lịch",
-      "nganh du lich",
-      "ngành du lịch"
-    ],
-    "faculty_name": "Khoa Địa lý",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "k48_derived_program_3",
-    "source_pages": [
-      179
+      188
     ],
     "cohort": "K48-K49"
   },
@@ -4093,95 +4164,6 @@
     "source_record_id": "k48_derived_program_30",
     "source_pages": [
       189
-    ],
-    "cohort": "K48-K49"
-  },
-  {
-    "entity_id": "program_k48-k49_su_pham_tieng_anh",
-    "canonical_name": "Sư phạm tiếng Anh",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham tieng anh",
-      "khoa sư phạm tiếng anh",
-      "nganh su pham tieng anh",
-      "ngành sư phạm tiếng anh",
-      "su pham tieng anh",
-      "sư phạm tiếng anh"
-    ],
-    "faculty_name": "Khoa Tiếng Anh",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "k48_derived_program_31",
-    "source_pages": [
-      189
-    ],
-    "cohort": "K48-K49"
-  },
-  {
-    "entity_id": "program_k48-k49_su_pham_tieng_nga",
-    "canonical_name": "Sư phạm tiếng Nga",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham tieng nga",
-      "khoa sư phạm tiếng nga",
-      "nganh su pham tieng nga",
-      "ngành sư phạm tiếng nga",
-      "su pham tieng nga",
-      "sư phạm tiếng nga"
-    ],
-    "faculty_name": "Khoa Tiếng Nga",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "k48_derived_program_32",
-    "source_pages": [
-      189,
-      190
-    ],
-    "cohort": "K48-K49"
-  },
-  {
-    "entity_id": "program_k48-k49_su_pham_tieng_phap",
-    "canonical_name": "Sư phạm tiếng Pháp",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham tieng phap",
-      "khoa sư phạm tiếng pháp",
-      "nganh su pham tieng phap",
-      "ngành sư phạm tiếng pháp",
-      "su pham tieng phap",
-      "sư phạm tiếng pháp"
-    ],
-    "faculty_name": "Khoa Tiếng Pháp",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "k48_derived_program_33",
-    "source_pages": [
-      190
-    ],
-    "cohort": "K48-K49"
-  },
-  {
-    "entity_id": "program_k48-k49_su_pham_tieng_trung_quoc",
-    "canonical_name": "Sư phạm tiếng Trung Quốc",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham tieng trung quoc",
-      "khoa sư phạm tiếng trung quốc",
-      "nganh su pham tieng trung quoc",
-      "ngành sư phạm tiếng trung quốc",
-      "su pham tieng trung quoc",
-      "sư phạm tiếng trung quốc"
-    ],
-    "faculty_name": "Khoa Tiếng Trung Quốc",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "k48_derived_program_34",
-    "source_pages": [
-      190
     ],
     "cohort": "K48-K49"
   },
@@ -4257,6 +4239,116 @@
     "cohort": "K48-K49"
   },
   {
+    "entity_id": "program_k48-k49_su_pham_tieng_anh",
+    "canonical_name": "Sư phạm tiếng Anh",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham tieng anh",
+      "khoa sư phạm tiếng anh",
+      "nganh su pham tieng anh",
+      "ngành sư phạm tiếng anh",
+      "su pham tieng anh",
+      "sư phạm tiếng anh"
+    ],
+    "faculty_name": "Khoa Tiếng Anh",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "k48_derived_program_31",
+    "source_pages": [
+      189
+    ],
+    "cohort": "K48-K49"
+  },
+  {
+    "entity_id": "program_k48-k49_su_pham_tieng_nga",
+    "canonical_name": "Sư phạm tiếng Nga",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham tieng nga",
+      "khoa sư phạm tiếng nga",
+      "nganh su pham tieng nga",
+      "ngành sư phạm tiếng nga",
+      "su pham tieng nga",
+      "sư phạm tiếng nga"
+    ],
+    "faculty_name": "Khoa Tiếng Nga",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "k48_derived_program_32",
+    "source_pages": [
+      189
+    ],
+    "cohort": "K48-K49"
+  },
+  {
+    "entity_id": "program_k48-k49_su_pham_tieng_phap",
+    "canonical_name": "Sư phạm tiếng Pháp",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham tieng phap",
+      "khoa sư phạm tiếng pháp",
+      "nganh su pham tieng phap",
+      "ngành sư phạm tiếng pháp",
+      "su pham tieng phap",
+      "sư phạm tiếng pháp"
+    ],
+    "faculty_name": "Khoa Tiếng Pháp",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "k48_derived_program_33",
+    "source_pages": [
+      190
+    ],
+    "cohort": "K48-K49"
+  },
+  {
+    "entity_id": "program_k48-k49_su_pham_tieng_trung_quoc",
+    "canonical_name": "Sư phạm tiếng Trung Quốc",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham tieng trung quoc",
+      "khoa sư phạm tiếng trung quốc",
+      "nganh su pham tieng trung quoc",
+      "ngành sư phạm tiếng trung quốc",
+      "su pham tieng trung quoc",
+      "sư phạm tiếng trung quốc"
+    ],
+    "faculty_name": "Khoa Tiếng Trung Quốc",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "k48_derived_program_34",
+    "source_pages": [
+      190
+    ],
+    "cohort": "K48-K49"
+  },
+  {
+    "entity_id": "program_k48-k49_su_pham_dia_ly",
+    "canonical_name": "Sư phạm Địa lý",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham dia ly",
+      "khoa sư phạm địa lý",
+      "nganh su pham dia ly",
+      "ngành sư phạm địa lý",
+      "su pham dia ly",
+      "sư phạm địa lý"
+    ],
+    "faculty_name": "Khoa Địa lý",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "k48_derived_program_24",
+    "source_pages": [
+      187
+    ],
+    "cohort": "K48-K49"
+  },
+  {
     "entity_id": "program_k48-k49_tam_ly_hoc",
     "canonical_name": "Tâm lý học",
     "entity_type": "program",
@@ -4274,8 +4366,7 @@
     ],
     "source_record_id": "k48_derived_program_38",
     "source_pages": [
-      191,
-      192
+      191
     ],
     "cohort": "K48-K49"
   },
@@ -4302,25 +4393,25 @@
     "cohort": "K48-K49"
   },
   {
-    "entity_id": "program_k48-k49_dia_ly_hoc",
-    "canonical_name": "Địa lý học",
+    "entity_id": "program_k48-k49_viet_nam_hoc",
+    "canonical_name": "Việt Nam học",
     "entity_type": "program",
     "aliases": [
-      "dia ly hoc",
-      "khoa dia ly hoc",
-      "khoa địa lý học",
-      "nganh dia ly hoc",
-      "ngành địa lý học",
-      "địa lý học"
+      "khoa viet nam hoc",
+      "khoa việt nam học",
+      "nganh viet nam hoc",
+      "ngành việt nam học",
+      "viet nam hoc",
+      "việt nam học"
     ],
-    "faculty_name": "Khoa Địa lý",
+    "faculty_name": "Khoa Ngữ văn",
     "target_chunk_types": [
       "program_directory"
     ],
-    "source_record_id": "k48_derived_program_4",
+    "source_record_id": "k48_derived_program_42",
     "source_pages": [
-      179,
-      180
+      193,
+      207
     ],
     "cohort": "K48-K49"
   },
@@ -4369,348 +4460,7 @@
     "cohort": "K48-K49"
   },
   {
-    "entity_id": "program_k48-k49_viet_nam_hoc",
-    "canonical_name": "Việt Nam học",
-    "entity_type": "program",
-    "aliases": [
-      "khoa viet nam hoc",
-      "khoa việt nam học",
-      "nganh viet nam hoc",
-      "ngành việt nam học",
-      "viet nam hoc",
-      "việt nam học"
-    ],
-    "faculty_name": "Khoa Ngữ văn",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "k48_derived_program_42",
-    "source_pages": [
-      193,
-      207
-    ],
-    "cohort": "K48-K49"
-  },
-  {
-    "entity_id": "program_k48-k49_giao_duc_chinh_tri",
-    "canonical_name": "Giáo dục Chính trị",
-    "entity_type": "program",
-    "aliases": [
-      "giao duc chinh tri",
-      "giáo dục chính trị",
-      "khoa giao duc chinh tri",
-      "khoa giáo dục chính trị",
-      "nganh giao duc chinh tri",
-      "ngành giáo dục chính trị"
-    ],
-    "faculty_name": "Khoa Giáo dục Chính trị",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "k48_derived_program_5",
-    "source_pages": [
-      180
-    ],
-    "cohort": "K48-K49"
-  },
-  {
-    "entity_id": "program_k48-k49_giao_duc_cong_dan",
-    "canonical_name": "Giáo dục Công dân",
-    "entity_type": "program",
-    "aliases": [
-      "giao duc cong dan",
-      "giáo dục công dân",
-      "khoa giao duc cong dan",
-      "khoa giáo dục công dân",
-      "nganh giao duc cong dan",
-      "ngành giáo dục công dân"
-    ],
-    "faculty_name": "Khoa Giáo dục Chính trị",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "k48_derived_program_6",
-    "source_pages": [
-      180
-    ],
-    "cohort": "K48-K49"
-  },
-  {
-    "entity_id": "program_k48-k49_giao_duc_dac_biet",
-    "canonical_name": "Giáo dục Đặc biệt",
-    "entity_type": "program",
-    "aliases": [
-      "giao duc dac biet",
-      "giáo dục đặc biệt",
-      "khoa giao duc dac biet",
-      "khoa giáo dục đặc biệt",
-      "nganh giao duc dac biet",
-      "ngành giáo dục đặc biệt"
-    ],
-    "faculty_name": "Khoa Giáo dục Đặc biệt",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "k48_derived_program_7",
-    "source_pages": [
-      180,
-      181
-    ],
-    "cohort": "K48-K49"
-  },
-  {
-    "entity_id": "program_k48-k49_giao_duc_hoc",
-    "canonical_name": "Giáo dục học",
-    "entity_type": "program",
-    "aliases": [
-      "giao duc hoc",
-      "giáo dục học",
-      "khoa giao duc hoc",
-      "khoa giáo dục học",
-      "nganh giao duc hoc",
-      "ngành giáo dục học"
-    ],
-    "faculty_name": "Khoa Khoa học Giáo dục",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "k48_derived_program_8",
-    "source_pages": [
-      181
-    ],
-    "cohort": "K48-K49"
-  },
-  {
-    "entity_id": "program_k48-k49_giao_duc_mam_non_trinh_do_cao_dang_va_dai_hoc",
-    "canonical_name": "Giáo dục Mầm non (trình độ cao đẳng và đại học)",
-    "entity_type": "program",
-    "aliases": [
-      "giao duc mam non",
-      "giao duc mam non trinh do cao dang va dai hoc",
-      "giáo dục mầm non",
-      "giáo dục mầm non (trình độ cao đẳng và đại học)",
-      "khoa giao duc mam non",
-      "khoa giáo dục mầm non",
-      "nganh giao duc mam non",
-      "ngành giáo dục mầm non"
-    ],
-    "faculty_name": "Khoa Giáo dục Mầm non",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "k48_derived_program_9",
-    "source_pages": [
-      181
-    ],
-    "cohort": "K48-K49"
-  },
-  {
-    "entity_id": "program_k50_su_pham_tin_hoc",
-    "canonical_name": "Sư phạm Tin học",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham tin hoc",
-      "khoa sư phạm tin học",
-      "nganh su pham tin hoc",
-      "ngành sư phạm tin học",
-      "su pham tin hoc",
-      "sư phạm tin học"
-    ],
-    "faculty_name": "Khoa Công nghệ Thông tin",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_1",
-    "source_pages": [
-      185
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_su_pham_sinh_hoc",
-    "canonical_name": "Sư phạm Sinh học",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham sinh hoc",
-      "khoa sư phạm sinh học",
-      "nganh su pham sinh hoc",
-      "ngành sư phạm sinh học",
-      "su pham sinh hoc",
-      "sư phạm sinh học"
-    ],
-    "faculty_name": "Khoa Sinh học",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_10",
-    "source_pages": [
-      188,
-      189
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_sinh_hoc_ung_dung",
-    "canonical_name": "Sinh học ứng dụng",
-    "entity_type": "program",
-    "aliases": [
-      "khoa sinh hoc ung dung",
-      "khoa sinh học ứng dụng",
-      "nganh sinh hoc ung dung",
-      "ngành sinh học ứng dụng",
-      "sinh hoc ung dung",
-      "sinh học ứng dụng"
-    ],
-    "faculty_name": "Khoa Sinh học",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_11",
-    "source_pages": [
-      189
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_su_pham_ngu_van",
-    "canonical_name": "Sư phạm Ngữ văn",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham ngu van",
-      "khoa sư phạm ngữ văn",
-      "nganh su pham ngu van",
-      "nganh van hoc",
-      "ngành sư phạm ngữ văn",
-      "ngành văn học",
-      "su pham ngu van",
-      "sư phạm ngữ văn",
-      "van hoc",
-      "văn học"
-    ],
-    "faculty_name": "Khoa Ngữ văn",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_12",
-    "source_pages": [
-      189,
-      190
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_viet_nam_hoc",
-    "canonical_name": "Việt Nam học",
-    "entity_type": "program",
-    "aliases": [
-      "khoa viet nam hoc",
-      "khoa việt nam học",
-      "nganh viet nam hoc",
-      "ngành việt nam học",
-      "viet nam hoc",
-      "việt nam học"
-    ],
-    "faculty_name": "Khoa Ngữ văn",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_13",
-    "source_pages": [
-      190
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_van_hoc",
-    "canonical_name": "Văn học",
-    "entity_type": "program",
-    "aliases": [
-      "khoa van hoc",
-      "khoa văn học",
-      "nganh van hoc",
-      "ngành văn học",
-      "van hoc",
-      "văn học"
-    ],
-    "faculty_name": "Khoa Ngữ văn",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_14",
-    "source_pages": [
-      190,
-      191
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_su_pham_lich_su",
-    "canonical_name": "Sư phạm Lịch sử",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham lich su",
-      "khoa sư phạm lịch sử",
-      "nganh su pham lich su",
-      "ngành sư phạm lịch sử",
-      "su pham lich su",
-      "sư phạm lịch sử"
-    ],
-    "faculty_name": "Khoa Lịch sử",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_15",
-    "source_pages": [
-      191
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_quoc_te_hoc",
-    "canonical_name": "Quốc tế học",
-    "entity_type": "program",
-    "aliases": [
-      "khoa quoc te hoc",
-      "khoa quốc tế học",
-      "nganh quoc te hoc",
-      "ngành quốc tế học",
-      "quoc te hoc",
-      "quốc tế học"
-    ],
-    "faculty_name": "Khoa Lịch sử",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_16",
-    "source_pages": [
-      191
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_su_pham_dia_ly",
-    "canonical_name": "Sư phạm Địa lý",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham dia ly",
-      "khoa sư phạm địa lý",
-      "nganh su pham dia ly",
-      "ngành sư phạm địa lý",
-      "su pham dia ly",
-      "sư phạm địa lý"
-    ],
-    "faculty_name": "Khoa Địa lý",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_17",
-    "source_pages": [
-      192
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_dia_ly_hoc",
+    "entity_id": "program_k48-k49_dia_ly_hoc",
     "canonical_name": "Địa lý học",
     "entity_type": "program",
     "aliases": [
@@ -4725,35 +4475,12 @@
     "target_chunk_types": [
       "program_directory"
     ],
-    "source_record_id": "K50_program_18",
+    "source_record_id": "k48_derived_program_4",
     "source_pages": [
-      192
+      179,
+      180
     ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_su_pham_lich_su_-_dia_ly",
-    "canonical_name": "Sư phạm Lịch sử - Địa lý",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham lich su - dia ly",
-      "khoa sư phạm lịch sử - địa lý",
-      "nganh su pham lich su - dia ly",
-      "ngành sư phạm lịch sử - địa lý",
-      "su pham lich su - dia ly",
-      "su pham lich su dia ly",
-      "sư phạm lịch sử   địa lý",
-      "sư phạm lịch sử - địa lý"
-    ],
-    "faculty_name": "Khoa Địa lý",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_19",
-    "source_pages": [
-      192
-    ],
-    "cohort": "K50"
+    "cohort": "K48-K49"
   },
   {
     "entity_id": "program_k50_cong_nghe_thong_tin",
@@ -4782,371 +4509,6 @@
     "cohort": "K50"
   },
   {
-    "entity_id": "program_k50_du_lich",
-    "canonical_name": "Du lịch",
-    "entity_type": "program",
-    "aliases": [
-      "du lich",
-      "du lịch",
-      "khoa du lich",
-      "khoa du lịch",
-      "nganh du lich",
-      "ngành du lịch"
-    ],
-    "faculty_name": "Khoa Địa lý",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_20",
-    "source_pages": [
-      192,
-      193
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_su_pham_tieng_anh",
-    "canonical_name": "Sư phạm tiếng Anh",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham tieng anh",
-      "khoa sư phạm tiếng anh",
-      "nganh su pham tieng anh",
-      "ngành sư phạm tiếng anh",
-      "su pham tieng anh",
-      "sư phạm tiếng anh"
-    ],
-    "faculty_name": "Khoa Tiếng Anh",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_21",
-    "source_pages": [
-      193,
-      194
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_ngon_ngu_anh",
-    "canonical_name": "Ngôn ngữ Anh",
-    "entity_type": "program",
-    "aliases": [
-      "khoa ngon ngu anh",
-      "khoa ngôn ngữ anh",
-      "nganh ngon ngu anh",
-      "ngon ngu anh",
-      "ngành ngôn ngữ anh",
-      "ngôn ngữ anh"
-    ],
-    "faculty_name": "Khoa Tiếng Anh",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_22",
-    "source_pages": [
-      194
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_su_pham_tieng_phap",
-    "canonical_name": "Sư phạm tiếng Pháp",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham tieng phap",
-      "khoa sư phạm tiếng pháp",
-      "nganh su pham tieng phap",
-      "ngành sư phạm tiếng pháp",
-      "su pham tieng phap",
-      "sư phạm tiếng pháp"
-    ],
-    "faculty_name": "Khoa Tiếng Pháp",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_23",
-    "source_pages": [
-      194,
-      195
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_ngon_ngu_phap",
-    "canonical_name": "Ngôn ngữ Pháp",
-    "entity_type": "program",
-    "aliases": [
-      "khoa ngon ngu phap",
-      "khoa ngôn ngữ pháp",
-      "nganh ngon ngu phap",
-      "ngon ngu phap",
-      "ngành ngôn ngữ pháp",
-      "ngôn ngữ pháp"
-    ],
-    "faculty_name": "Khoa Tiếng Pháp",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_24",
-    "source_pages": [
-      195,
-      196
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_su_pham_tieng_nga",
-    "canonical_name": "Sư phạm tiếng Nga",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham tieng nga",
-      "khoa sư phạm tiếng nga",
-      "nganh su pham tieng nga",
-      "ngành sư phạm tiếng nga",
-      "su pham tieng nga",
-      "sư phạm tiếng nga"
-    ],
-    "faculty_name": "Khoa Tiếng Nga",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_25",
-    "source_pages": [
-      196
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_ngon_ngu_nga",
-    "canonical_name": "Ngôn ngữ Nga",
-    "entity_type": "program",
-    "aliases": [
-      "khoa ngon ngu nga",
-      "khoa ngôn ngữ nga",
-      "nganh ngon ngu nga",
-      "ngon ngu nga",
-      "ngành ngôn ngữ nga",
-      "ngôn ngữ nga"
-    ],
-    "faculty_name": "Khoa Tiếng Nga",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_26",
-    "source_pages": [
-      196,
-      197
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_su_pham_tieng_trung_quoc",
-    "canonical_name": "Sư phạm tiếng Trung Quốc",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham tieng trung quoc",
-      "khoa sư phạm tiếng trung quốc",
-      "nganh su pham tieng trung quoc",
-      "ngành sư phạm tiếng trung quốc",
-      "su pham tieng trung quoc",
-      "sư phạm tiếng trung quốc"
-    ],
-    "faculty_name": "Khoa Tiếng Trung",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_27",
-    "source_pages": [
-      197
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_ngon_ngu_trung_quoc",
-    "canonical_name": "Ngôn ngữ Trung Quốc",
-    "entity_type": "program",
-    "aliases": [
-      "khoa ngon ngu trung quoc",
-      "khoa ngôn ngữ trung quốc",
-      "nganh ngon ngu trung quoc",
-      "ngon ngu trung quoc",
-      "ngành ngôn ngữ trung quốc",
-      "ngôn ngữ trung quốc"
-    ],
-    "faculty_name": "Khoa Tiếng Trung",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_28",
-    "source_pages": [
-      197,
-      198
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_ngon_ngu_han_quoc",
-    "canonical_name": "Ngôn ngữ Hàn Quốc",
-    "entity_type": "program",
-    "aliases": [
-      "khoa ngon ngu han quoc",
-      "khoa ngôn ngữ hàn quốc",
-      "nganh ngon ngu han quoc",
-      "ngon ngu han quoc",
-      "ngành ngôn ngữ hàn quốc",
-      "ngôn ngữ hàn quốc"
-    ],
-    "faculty_name": "Khoa Tiếng Hàn Quốc",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_29",
-    "source_pages": [
-      198,
-      199
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_su_pham_toan_hoc_tieng_viet_va_song_ngu_viet_-_anh",
-    "canonical_name": "Sư phạm Toán học (Tiếng Việt và Song ngữ Việt - Anh)",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham toan hoc",
-      "khoa sư phạm toán học",
-      "nganh su pham toan hoc",
-      "ngành sư phạm toán học",
-      "su pham toan hoc",
-      "su pham toan hoc tieng viet va song ngu viet - anh",
-      "su pham toan hoc tieng viet va song ngu viet anh",
-      "sư phạm toán học",
-      "sư phạm toán học (tiếng việt và song ngữ việt   anh)",
-      "sư phạm toán học (tiếng việt và song ngữ việt - anh)"
-    ],
-    "faculty_name": "Khoa Toán – Tin học",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_3",
-    "source_pages": [
-      186
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_ngon_ngu_nhat",
-    "canonical_name": "Ngôn ngữ Nhật",
-    "entity_type": "program",
-    "aliases": [
-      "khoa ngon ngu nhat",
-      "khoa ngôn ngữ nhật",
-      "nganh ngon ngu nhat",
-      "ngon ngu nhat",
-      "ngành ngôn ngữ nhật",
-      "ngôn ngữ nhật"
-    ],
-    "faculty_name": "Khoa Tiếng Nhật",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_30",
-    "source_pages": [
-      199
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_quan_ly_giao_duc",
-    "canonical_name": "Quản lý giáo dục",
-    "entity_type": "program",
-    "aliases": [
-      "khoa quan ly giao duc",
-      "khoa quản lý giáo dục",
-      "nganh quan ly giao duc",
-      "ngành quản lý giáo dục",
-      "quan ly giao duc",
-      "quản lý giáo dục"
-    ],
-    "faculty_name": "Khoa Khoa học Giáo dục",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_31",
-    "source_pages": [
-      199,
-      200
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_giao_duc_hoc",
-    "canonical_name": "Giáo dục học",
-    "entity_type": "program",
-    "aliases": [
-      "giao duc hoc",
-      "giáo dục học",
-      "khoa giao duc hoc",
-      "khoa giáo dục học",
-      "nganh giao duc hoc",
-      "ngành giáo dục học"
-    ],
-    "faculty_name": "Khoa Khoa học Giáo dục",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_32",
-    "source_pages": [
-      200
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_tam_ly_hoc",
-    "canonical_name": "Tâm lý học",
-    "entity_type": "program",
-    "aliases": [
-      "khoa tam ly hoc",
-      "khoa tâm lý học",
-      "nganh tam ly hoc",
-      "ngành tâm lý học",
-      "tam ly hoc",
-      "tâm lý học"
-    ],
-    "faculty_name": "Khoa Tâm lý học",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_33",
-    "source_pages": [
-      200,
-      201
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_tam_ly_hoc_giao_duc",
-    "canonical_name": "Tâm lý học giáo dục",
-    "entity_type": "program",
-    "aliases": [
-      "khoa tam ly hoc giao duc",
-      "khoa tâm lý học giáo dục",
-      "nganh tam ly hoc giao duc",
-      "ngành tâm lý học giáo dục",
-      "tam ly hoc giao duc",
-      "tâm lý học giáo dục"
-    ],
-    "faculty_name": "Khoa Tâm lý học",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_34",
-    "source_pages": [
-      201
-    ],
-    "cohort": "K50"
-  },
-  {
     "entity_id": "program_k50_cong_tac_xa_hoi",
     "canonical_name": "Công tác xã hội",
     "entity_type": "program",
@@ -5166,6 +4528,29 @@
     "source_pages": [
       201,
       202
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_du_lich",
+    "canonical_name": "Du lịch",
+    "entity_type": "program",
+    "aliases": [
+      "du lich",
+      "du lịch",
+      "khoa du lich",
+      "khoa du lịch",
+      "nganh du lich",
+      "ngành du lịch"
+    ],
+    "faculty_name": "Khoa Địa lý",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_20",
+    "source_pages": [
+      192,
+      193
     ],
     "cohort": "K50"
   },
@@ -5210,74 +4595,6 @@
     "source_record_id": "K50_program_37",
     "source_pages": [
       202
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_giao_duc_dac_biet",
-    "canonical_name": "Giáo dục Đặc biệt",
-    "entity_type": "program",
-    "aliases": [
-      "giao duc dac biet",
-      "giáo dục đặc biệt",
-      "khoa giao duc dac biet",
-      "khoa giáo dục đặc biệt",
-      "nganh giao duc dac biet",
-      "ngành giáo dục đặc biệt"
-    ],
-    "faculty_name": "Khoa Giáo dục Đặc biệt",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_38",
-    "source_pages": [
-      202,
-      203
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_giao_duc_tieu_hoc",
-    "canonical_name": "Giáo dục Tiểu học",
-    "entity_type": "program",
-    "aliases": [
-      "giao duc tieu hoc",
-      "giáo dục tiểu học",
-      "khoa giao duc tieu hoc",
-      "khoa giáo dục tiểu học",
-      "nganh giao duc tieu hoc",
-      "ngành giáo dục tiểu học"
-    ],
-    "faculty_name": "Khoa Giáo dục Tiểu học",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_39",
-    "source_pages": [
-      203,
-      204
-    ],
-    "cohort": "K50"
-  },
-  {
-    "entity_id": "program_k50_su_pham_vat_ly",
-    "canonical_name": "Sư phạm Vật lý",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham vat ly",
-      "khoa sư phạm vật lý",
-      "nganh su pham vat ly",
-      "ngành sư phạm vật lý",
-      "su pham vat ly",
-      "sư phạm vật lý"
-    ],
-    "faculty_name": "Khoa Vật lý",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_4",
-    "source_pages": [
-      187
     ],
     "cohort": "K50"
   },
@@ -5327,8 +4644,7 @@
     ],
     "source_record_id": "K50_program_41",
     "source_pages": [
-      204,
-      205
+      204
     ],
     "cohort": "K50"
   },
@@ -5355,24 +4671,293 @@
     "cohort": "K50"
   },
   {
-    "entity_id": "program_k50_vat_ly_hoc",
-    "canonical_name": "Vật lý học",
+    "entity_id": "program_k50_giao_duc_tieu_hoc",
+    "canonical_name": "Giáo dục Tiểu học",
     "entity_type": "program",
     "aliases": [
-      "khoa vat ly hoc",
-      "khoa vật lý học",
-      "nganh vat ly hoc",
-      "ngành vật lý học",
-      "vat ly hoc",
-      "vật lý học"
+      "giao duc tieu hoc",
+      "giáo dục tiểu học",
+      "khoa giao duc tieu hoc",
+      "khoa giáo dục tiểu học",
+      "nganh giao duc tieu hoc",
+      "ngành giáo dục tiểu học"
     ],
-    "faculty_name": "Khoa Vật lý",
+    "faculty_name": "Khoa Giáo dục Tiểu học",
     "target_chunk_types": [
       "program_directory"
     ],
-    "source_record_id": "K50_program_5",
+    "source_record_id": "K50_program_39",
     "source_pages": [
-      187
+      203
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_giao_duc_hoc",
+    "canonical_name": "Giáo dục học",
+    "entity_type": "program",
+    "aliases": [
+      "giao duc hoc",
+      "giáo dục học",
+      "khoa giao duc hoc",
+      "khoa giáo dục học",
+      "nganh giao duc hoc",
+      "ngành giáo dục học"
+    ],
+    "faculty_name": "Khoa Khoa học Giáo dục",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_32",
+    "source_pages": [
+      200
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_giao_duc_dac_biet",
+    "canonical_name": "Giáo dục Đặc biệt",
+    "entity_type": "program",
+    "aliases": [
+      "giao duc dac biet",
+      "giáo dục đặc biệt",
+      "khoa giao duc dac biet",
+      "khoa giáo dục đặc biệt",
+      "nganh giao duc dac biet",
+      "ngành giáo dục đặc biệt"
+    ],
+    "faculty_name": "Khoa Giáo dục Đặc biệt",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_38",
+    "source_pages": [
+      202,
+      203
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_hoa_hoc",
+    "canonical_name": "Hoá học",
+    "entity_type": "program",
+    "aliases": [
+      "hoa hoc",
+      "hoá học",
+      "khoa hoa hoc",
+      "khoa hoá học",
+      "nganh hoa hoc",
+      "ngành hoá học"
+    ],
+    "faculty_name": "Khoa Hóa học",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_8",
+    "source_pages": [
+      188
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_ngon_ngu_anh",
+    "canonical_name": "Ngôn ngữ Anh",
+    "entity_type": "program",
+    "aliases": [
+      "khoa ngon ngu anh",
+      "khoa ngôn ngữ anh",
+      "nganh ngon ngu anh",
+      "ngon ngu anh",
+      "ngành ngôn ngữ anh",
+      "ngôn ngữ anh"
+    ],
+    "faculty_name": "Khoa Tiếng Anh",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_22",
+    "source_pages": [
+      194
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_ngon_ngu_han_quoc",
+    "canonical_name": "Ngôn ngữ Hàn Quốc",
+    "entity_type": "program",
+    "aliases": [
+      "khoa ngon ngu han quoc",
+      "khoa ngôn ngữ hàn quốc",
+      "nganh ngon ngu han quoc",
+      "ngon ngu han quoc",
+      "ngành ngôn ngữ hàn quốc",
+      "ngôn ngữ hàn quốc"
+    ],
+    "faculty_name": "Khoa Tiếng Hàn Quốc",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_29",
+    "source_pages": [
+      198
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_ngon_ngu_nga",
+    "canonical_name": "Ngôn ngữ Nga",
+    "entity_type": "program",
+    "aliases": [
+      "khoa ngon ngu nga",
+      "khoa ngôn ngữ nga",
+      "nganh ngon ngu nga",
+      "ngon ngu nga",
+      "ngành ngôn ngữ nga",
+      "ngôn ngữ nga"
+    ],
+    "faculty_name": "Khoa Tiếng Nga",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_26",
+    "source_pages": [
+      196,
+      197
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_ngon_ngu_nhat",
+    "canonical_name": "Ngôn ngữ Nhật",
+    "entity_type": "program",
+    "aliases": [
+      "khoa ngon ngu nhat",
+      "khoa ngôn ngữ nhật",
+      "nganh ngon ngu nhat",
+      "ngon ngu nhat",
+      "ngành ngôn ngữ nhật",
+      "ngôn ngữ nhật"
+    ],
+    "faculty_name": "Khoa Tiếng Nhật",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_30",
+    "source_pages": [
+      199
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_ngon_ngu_phap",
+    "canonical_name": "Ngôn ngữ Pháp",
+    "entity_type": "program",
+    "aliases": [
+      "khoa ngon ngu phap",
+      "khoa ngôn ngữ pháp",
+      "nganh ngon ngu phap",
+      "ngon ngu phap",
+      "ngành ngôn ngữ pháp",
+      "ngôn ngữ pháp"
+    ],
+    "faculty_name": "Khoa Tiếng Pháp",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_24",
+    "source_pages": [
+      195,
+      196
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_ngon_ngu_trung_quoc",
+    "canonical_name": "Ngôn ngữ Trung Quốc",
+    "entity_type": "program",
+    "aliases": [
+      "khoa ngon ngu trung quoc",
+      "khoa ngôn ngữ trung quốc",
+      "nganh ngon ngu trung quoc",
+      "ngon ngu trung quoc",
+      "ngành ngôn ngữ trung quốc",
+      "ngôn ngữ trung quốc"
+    ],
+    "faculty_name": "Khoa Tiếng Trung",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_28",
+    "source_pages": [
+      197,
+      198
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_quan_ly_giao_duc",
+    "canonical_name": "Quản lý giáo dục",
+    "entity_type": "program",
+    "aliases": [
+      "khoa quan ly giao duc",
+      "khoa quản lý giáo dục",
+      "nganh quan ly giao duc",
+      "ngành quản lý giáo dục",
+      "quan ly giao duc",
+      "quản lý giáo dục"
+    ],
+    "faculty_name": "Khoa Khoa học Giáo dục",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_31",
+    "source_pages": [
+      199,
+      200
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_quoc_te_hoc",
+    "canonical_name": "Quốc tế học",
+    "entity_type": "program",
+    "aliases": [
+      "khoa quoc te hoc",
+      "khoa quốc tế học",
+      "nganh quoc te hoc",
+      "ngành quốc tế học",
+      "quoc te hoc",
+      "quốc tế học"
+    ],
+    "faculty_name": "Khoa Lịch sử",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_16",
+    "source_pages": [
+      191
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_sinh_hoc_ung_dung",
+    "canonical_name": "Sinh học ứng dụng",
+    "entity_type": "program",
+    "aliases": [
+      "khoa sinh hoc ung dung",
+      "khoa sinh học ứng dụng",
+      "nganh sinh hoc ung dung",
+      "ngành sinh học ứng dụng",
+      "sinh hoc ung dung",
+      "sinh học ứng dụng"
+    ],
+    "faculty_name": "Khoa Sinh học",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_11",
+    "source_pages": [
+      189
     ],
     "cohort": "K50"
   },
@@ -5422,28 +5007,6 @@
     "cohort": "K50"
   },
   {
-    "entity_id": "program_k50_hoa_hoc",
-    "canonical_name": "Hoá học",
-    "entity_type": "program",
-    "aliases": [
-      "hoa hoc",
-      "hoá học",
-      "khoa hoa hoc",
-      "khoa hoá học",
-      "nganh hoa hoc",
-      "ngành hoá học"
-    ],
-    "faculty_name": "Khoa Hóa học",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K50_program_8",
-    "source_pages": [
-      188
-    ],
-    "cohort": "K50"
-  },
-  {
     "entity_id": "program_k50_su_pham_khoa_hoc_tu_nhien",
     "canonical_name": "Sư phạm Khoa học tự nhiên",
     "entity_type": "program",
@@ -5468,6 +5031,416 @@
     "cohort": "K50"
   },
   {
+    "entity_id": "program_k50_su_pham_lich_su",
+    "canonical_name": "Sư phạm Lịch sử",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham lich su",
+      "khoa sư phạm lịch sử",
+      "nganh su pham lich su",
+      "ngành sư phạm lịch sử",
+      "su pham lich su",
+      "sư phạm lịch sử"
+    ],
+    "faculty_name": "Khoa Lịch sử",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_15",
+    "source_pages": [
+      191
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_su_pham_lich_su_-_dia_ly",
+    "canonical_name": "Sư phạm Lịch sử - Địa lý",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham lich su - dia ly",
+      "khoa sư phạm lịch sử - địa lý",
+      "nganh su pham lich su - dia ly",
+      "ngành sư phạm lịch sử - địa lý",
+      "su pham lich su - dia ly",
+      "su pham lich su dia ly",
+      "sư phạm lịch sử   địa lý",
+      "sư phạm lịch sử - địa lý"
+    ],
+    "faculty_name": "Khoa Địa lý",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_19",
+    "source_pages": [
+      192
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_su_pham_ngu_van",
+    "canonical_name": "Sư phạm Ngữ văn",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham ngu van",
+      "khoa sư phạm ngữ văn",
+      "nganh su pham ngu van",
+      "nganh van hoc",
+      "ngành sư phạm ngữ văn",
+      "ngành văn học",
+      "su pham ngu van",
+      "sư phạm ngữ văn",
+      "van hoc",
+      "văn học"
+    ],
+    "faculty_name": "Khoa Ngữ văn",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_12",
+    "source_pages": [
+      189,
+      190
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_su_pham_sinh_hoc",
+    "canonical_name": "Sư phạm Sinh học",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham sinh hoc",
+      "khoa sư phạm sinh học",
+      "nganh su pham sinh hoc",
+      "ngành sư phạm sinh học",
+      "su pham sinh hoc",
+      "sư phạm sinh học"
+    ],
+    "faculty_name": "Khoa Sinh học",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_10",
+    "source_pages": [
+      188,
+      189
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_su_pham_tin_hoc",
+    "canonical_name": "Sư phạm Tin học",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham tin hoc",
+      "khoa sư phạm tin học",
+      "nganh su pham tin hoc",
+      "ngành sư phạm tin học",
+      "su pham tin hoc",
+      "sư phạm tin học"
+    ],
+    "faculty_name": "Khoa Công nghệ Thông tin",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_1",
+    "source_pages": [
+      185
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_su_pham_toan_hoc_tieng_viet_va_song_ngu_viet_-_anh",
+    "canonical_name": "Sư phạm Toán học (Tiếng Việt và Song ngữ Việt - Anh)",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham toan hoc",
+      "khoa sư phạm toán học",
+      "nganh su pham toan hoc",
+      "ngành sư phạm toán học",
+      "su pham toan hoc",
+      "su pham toan hoc tieng viet va song ngu viet - anh",
+      "su pham toan hoc tieng viet va song ngu viet anh",
+      "sư phạm toán học",
+      "sư phạm toán học (tiếng việt và song ngữ việt   anh)",
+      "sư phạm toán học (tiếng việt và song ngữ việt - anh)"
+    ],
+    "faculty_name": "Khoa Toán – Tin học",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_3",
+    "source_pages": [
+      186
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_su_pham_vat_ly",
+    "canonical_name": "Sư phạm Vật lý",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham vat ly",
+      "khoa sư phạm vật lý",
+      "nganh su pham vat ly",
+      "ngành sư phạm vật lý",
+      "su pham vat ly",
+      "sư phạm vật lý"
+    ],
+    "faculty_name": "Khoa Vật lý",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_4",
+    "source_pages": [
+      187
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_su_pham_tieng_anh",
+    "canonical_name": "Sư phạm tiếng Anh",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham tieng anh",
+      "khoa sư phạm tiếng anh",
+      "nganh su pham tieng anh",
+      "ngành sư phạm tiếng anh",
+      "su pham tieng anh",
+      "sư phạm tiếng anh"
+    ],
+    "faculty_name": "Khoa Tiếng Anh",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_21",
+    "source_pages": [
+      193,
+      194
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_su_pham_tieng_nga",
+    "canonical_name": "Sư phạm tiếng Nga",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham tieng nga",
+      "khoa sư phạm tiếng nga",
+      "nganh su pham tieng nga",
+      "ngành sư phạm tiếng nga",
+      "su pham tieng nga",
+      "sư phạm tiếng nga"
+    ],
+    "faculty_name": "Khoa Tiếng Nga",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_25",
+    "source_pages": [
+      196
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_su_pham_tieng_phap",
+    "canonical_name": "Sư phạm tiếng Pháp",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham tieng phap",
+      "khoa sư phạm tiếng pháp",
+      "nganh su pham tieng phap",
+      "ngành sư phạm tiếng pháp",
+      "su pham tieng phap",
+      "sư phạm tiếng pháp"
+    ],
+    "faculty_name": "Khoa Tiếng Pháp",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_23",
+    "source_pages": [
+      194
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_su_pham_tieng_trung_quoc",
+    "canonical_name": "Sư phạm tiếng Trung Quốc",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham tieng trung quoc",
+      "khoa sư phạm tiếng trung quốc",
+      "nganh su pham tieng trung quoc",
+      "ngành sư phạm tiếng trung quốc",
+      "su pham tieng trung quoc",
+      "sư phạm tiếng trung quốc"
+    ],
+    "faculty_name": "Khoa Tiếng Trung",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_27",
+    "source_pages": [
+      197
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_su_pham_dia_ly",
+    "canonical_name": "Sư phạm Địa lý",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham dia ly",
+      "khoa sư phạm địa lý",
+      "nganh su pham dia ly",
+      "ngành sư phạm địa lý",
+      "su pham dia ly",
+      "sư phạm địa lý"
+    ],
+    "faculty_name": "Khoa Địa lý",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_17",
+    "source_pages": [
+      192
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_tam_ly_hoc",
+    "canonical_name": "Tâm lý học",
+    "entity_type": "program",
+    "aliases": [
+      "khoa tam ly hoc",
+      "khoa tâm lý học",
+      "nganh tam ly hoc",
+      "ngành tâm lý học",
+      "tam ly hoc",
+      "tâm lý học"
+    ],
+    "faculty_name": "Khoa Tâm lý học",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_33",
+    "source_pages": [
+      200,
+      201
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_tam_ly_hoc_giao_duc",
+    "canonical_name": "Tâm lý học giáo dục",
+    "entity_type": "program",
+    "aliases": [
+      "khoa tam ly hoc giao duc",
+      "khoa tâm lý học giáo dục",
+      "nganh tam ly hoc giao duc",
+      "ngành tâm lý học giáo dục",
+      "tam ly hoc giao duc",
+      "tâm lý học giáo dục"
+    ],
+    "faculty_name": "Khoa Tâm lý học",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_34",
+    "source_pages": [
+      201
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_viet_nam_hoc",
+    "canonical_name": "Việt Nam học",
+    "entity_type": "program",
+    "aliases": [
+      "khoa viet nam hoc",
+      "khoa việt nam học",
+      "nganh viet nam hoc",
+      "ngành việt nam học",
+      "viet nam hoc",
+      "việt nam học"
+    ],
+    "faculty_name": "Khoa Ngữ văn",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_13",
+    "source_pages": [
+      190
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_van_hoc",
+    "canonical_name": "Văn học",
+    "entity_type": "program",
+    "aliases": [
+      "khoa van hoc",
+      "khoa văn học",
+      "nganh van hoc",
+      "ngành văn học",
+      "van hoc",
+      "văn học"
+    ],
+    "faculty_name": "Khoa Ngữ văn",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_14",
+    "source_pages": [
+      190
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_vat_ly_hoc",
+    "canonical_name": "Vật lý học",
+    "entity_type": "program",
+    "aliases": [
+      "khoa vat ly hoc",
+      "khoa vật lý học",
+      "nganh vat ly hoc",
+      "ngành vật lý học",
+      "vat ly hoc",
+      "vật lý học"
+    ],
+    "faculty_name": "Khoa Vật lý",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_5",
+    "source_pages": [
+      187
+    ],
+    "cohort": "K50"
+  },
+  {
+    "entity_id": "program_k50_dia_ly_hoc",
+    "canonical_name": "Địa lý học",
+    "entity_type": "program",
+    "aliases": [
+      "dia ly hoc",
+      "khoa dia ly hoc",
+      "khoa địa lý học",
+      "nganh dia ly hoc",
+      "ngành địa lý học",
+      "địa lý học"
+    ],
+    "faculty_name": "Khoa Địa lý",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K50_program_18",
+    "source_pages": [
+      192
+    ],
+    "cohort": "K50"
+  },
+  {
     "entity_id": "program_k51_cong_nghe_giao_duc",
     "canonical_name": "Công nghệ Giáo dục",
     "entity_type": "program",
@@ -5486,6 +5459,119 @@
     "source_record_id": "K51_program_1",
     "source_pages": [
       178
+    ],
+    "cohort": "K51"
+  },
+  {
+    "entity_id": "program_k51_cong_nghe_thong_tin",
+    "canonical_name": "Công nghệ Thông tin",
+    "entity_type": "program",
+    "aliases": [
+      "cntt",
+      "cong nghe thong tin",
+      "công nghệ thông tin",
+      "khoa cong nghe thong tin",
+      "khoa công nghệ thông tin",
+      "nganh cntt",
+      "nganh cong nghe thong tin",
+      "ngành cntt",
+      "ngành công nghệ thông tin"
+    ],
+    "faculty_name": "Khoa Công nghệ Thông tin",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K51_program_2",
+    "source_pages": [
+      178
+    ],
+    "cohort": "K51"
+  },
+  {
+    "entity_id": "program_k51_cong_tac_xa_hoi",
+    "canonical_name": "Công tác xã hội",
+    "entity_type": "program",
+    "aliases": [
+      "cong tac xa hoi",
+      "công tác xã hội",
+      "khoa cong tac xa hoi",
+      "khoa công tác xã hội",
+      "nganh cong tac xa hoi",
+      "ngành công tác xã hội"
+    ],
+    "faculty_name": "Khoa Tâm lý học",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K51_program_3",
+    "source_pages": [
+      179
+    ],
+    "cohort": "K51"
+  },
+  {
+    "entity_id": "program_k51_du_lich",
+    "canonical_name": "Du lịch",
+    "entity_type": "program",
+    "aliases": [
+      "du lich",
+      "du lịch",
+      "khoa du lich",
+      "khoa du lịch",
+      "nganh du lich",
+      "ngành du lịch"
+    ],
+    "faculty_name": "Khoa Địa lý",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K51_program_4",
+    "source_pages": [
+      179
+    ],
+    "cohort": "K51"
+  },
+  {
+    "entity_id": "program_k51_giao_duc_chinh_tri",
+    "canonical_name": "Giáo dục Chính trị",
+    "entity_type": "program",
+    "aliases": [
+      "giao duc chinh tri",
+      "giáo dục chính trị",
+      "khoa giao duc chinh tri",
+      "khoa giáo dục chính trị",
+      "nganh giao duc chinh tri",
+      "ngành giáo dục chính trị"
+    ],
+    "faculty_name": "Khoa Giáo dục Chính trị",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K51_program_6",
+    "source_pages": [
+      180
+    ],
+    "cohort": "K51"
+  },
+  {
+    "entity_id": "program_k51_giao_duc_cong_dan",
+    "canonical_name": "Giáo dục Công dân",
+    "entity_type": "program",
+    "aliases": [
+      "giao duc cong dan",
+      "giáo dục công dân",
+      "khoa giao duc cong dan",
+      "khoa giáo dục công dân",
+      "nganh giao duc cong dan",
+      "ngành giáo dục công dân"
+    ],
+    "faculty_name": "Khoa Giáo dục Chính trị",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K51_program_7",
+    "source_pages": [
+      180
     ],
     "cohort": "K51"
   },
@@ -5585,6 +5671,51 @@
     "cohort": "K51"
   },
   {
+    "entity_id": "program_k51_giao_duc_hoc",
+    "canonical_name": "Giáo dục học",
+    "entity_type": "program",
+    "aliases": [
+      "giao duc hoc",
+      "giáo dục học",
+      "khoa giao duc hoc",
+      "khoa giáo dục học",
+      "nganh giao duc hoc",
+      "ngành giáo dục học"
+    ],
+    "faculty_name": "Khoa Khoa học Giáo dục",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K51_program_9",
+    "source_pages": [
+      181
+    ],
+    "cohort": "K51"
+  },
+  {
+    "entity_id": "program_k51_giao_duc_dac_biet",
+    "canonical_name": "Giáo dục Đặc biệt",
+    "entity_type": "program",
+    "aliases": [
+      "giao duc dac biet",
+      "giáo dục đặc biệt",
+      "khoa giao duc dac biet",
+      "khoa giáo dục đặc biệt",
+      "nganh giao duc dac biet",
+      "ngành giáo dục đặc biệt"
+    ],
+    "faculty_name": "Khoa Giáo dục Đặc biệt",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K51_program_8",
+    "source_pages": [
+      180,
+      181
+    ],
+    "cohort": "K51"
+  },
+  {
     "entity_id": "program_k51_hoa_hoc",
     "canonical_name": "Hoá học",
     "entity_type": "program",
@@ -5602,8 +5733,7 @@
     ],
     "source_record_id": "K51_program_14",
     "source_pages": [
-      182,
-      183
+      182
     ],
     "cohort": "K51"
   },
@@ -5720,32 +5850,6 @@
     "cohort": "K51"
   },
   {
-    "entity_id": "program_k51_cong_nghe_thong_tin",
-    "canonical_name": "Công nghệ Thông tin",
-    "entity_type": "program",
-    "aliases": [
-      "cntt",
-      "cong nghe thong tin",
-      "công nghệ thông tin",
-      "khoa cong nghe thong tin",
-      "khoa công nghệ thông tin",
-      "nganh cntt",
-      "nganh cong nghe thong tin",
-      "ngành cntt",
-      "ngành công nghệ thông tin"
-    ],
-    "faculty_name": "Khoa Công nghệ Thông tin",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K51_program_2",
-    "source_pages": [
-      178,
-      179
-    ],
-    "cohort": "K51"
-  },
-  {
     "entity_id": "program_k51_ngon_ngu_trung_quoc",
     "canonical_name": "Ngôn ngữ Trung Quốc",
     "entity_type": "program",
@@ -5808,8 +5912,7 @@
     ],
     "source_record_id": "K51_program_22",
     "source_pages": [
-      186,
-      187
+      186
     ],
     "cohort": "K51"
   },
@@ -5852,28 +5955,6 @@
       "program_directory"
     ],
     "source_record_id": "K51_program_24",
-    "source_pages": [
-      187
-    ],
-    "cohort": "K51"
-  },
-  {
-    "entity_id": "program_k51_su_pham_dia_ly",
-    "canonical_name": "Sư phạm Địa lý",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham dia ly",
-      "khoa sư phạm địa lý",
-      "nganh su pham dia ly",
-      "ngành sư phạm địa lý",
-      "su pham dia ly",
-      "sư phạm địa lý"
-    ],
-    "faculty_name": "Khoa Địa lý",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K51_program_25",
     "source_pages": [
       187
     ],
@@ -5973,28 +6054,6 @@
     "cohort": "K51"
   },
   {
-    "entity_id": "program_k51_cong_tac_xa_hoi",
-    "canonical_name": "Công tác xã hội",
-    "entity_type": "program",
-    "aliases": [
-      "cong tac xa hoi",
-      "công tác xã hội",
-      "khoa cong tac xa hoi",
-      "khoa công tác xã hội",
-      "nganh cong tac xa hoi",
-      "ngành công tác xã hội"
-    ],
-    "faculty_name": "Khoa Tâm lý học",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K51_program_3",
-    "source_pages": [
-      179
-    ],
-    "cohort": "K51"
-  },
-  {
     "entity_id": "program_k51_su_pham_ngu_van",
     "canonical_name": "Sư phạm Ngữ văn",
     "entity_type": "program",
@@ -6016,8 +6075,7 @@
     ],
     "source_record_id": "K51_program_30",
     "source_pages": [
-      188,
-      189
+      188
     ],
     "cohort": "K51"
   },
@@ -6040,95 +6098,6 @@
     "source_record_id": "K51_program_31",
     "source_pages": [
       189
-    ],
-    "cohort": "K51"
-  },
-  {
-    "entity_id": "program_k51_su_pham_tieng_anh",
-    "canonical_name": "Sư phạm tiếng Anh",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham tieng anh",
-      "khoa sư phạm tiếng anh",
-      "nganh su pham tieng anh",
-      "ngành sư phạm tiếng anh",
-      "su pham tieng anh",
-      "sư phạm tiếng anh"
-    ],
-    "faculty_name": "Khoa Tiếng Anh",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K51_program_32",
-    "source_pages": [
-      189
-    ],
-    "cohort": "K51"
-  },
-  {
-    "entity_id": "program_k51_su_pham_tieng_nga",
-    "canonical_name": "Sư phạm tiếng Nga",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham tieng nga",
-      "khoa sư phạm tiếng nga",
-      "nganh su pham tieng nga",
-      "ngành sư phạm tiếng nga",
-      "su pham tieng nga",
-      "sư phạm tiếng nga"
-    ],
-    "faculty_name": "Khoa Tiếng Nga",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K51_program_33",
-    "source_pages": [
-      189,
-      190
-    ],
-    "cohort": "K51"
-  },
-  {
-    "entity_id": "program_k51_su_pham_tieng_phap",
-    "canonical_name": "Sư phạm tiếng Pháp",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham tieng phap",
-      "khoa sư phạm tiếng pháp",
-      "nganh su pham tieng phap",
-      "ngành sư phạm tiếng pháp",
-      "su pham tieng phap",
-      "sư phạm tiếng pháp"
-    ],
-    "faculty_name": "Khoa Tiếng Pháp",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K51_program_34",
-    "source_pages": [
-      190
-    ],
-    "cohort": "K51"
-  },
-  {
-    "entity_id": "program_k51_su_pham_tieng_trung_quoc",
-    "canonical_name": "Sư phạm tiếng Trung Quốc",
-    "entity_type": "program",
-    "aliases": [
-      "khoa su pham tieng trung quoc",
-      "khoa sư phạm tiếng trung quốc",
-      "nganh su pham tieng trung quoc",
-      "ngành sư phạm tiếng trung quốc",
-      "su pham tieng trung quoc",
-      "sư phạm tiếng trung quốc"
-    ],
-    "faculty_name": "Khoa Tiếng Trung Quốc",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K51_program_35",
-    "source_pages": [
-      190
     ],
     "cohort": "K51"
   },
@@ -6204,6 +6173,139 @@
     "cohort": "K51"
   },
   {
+    "entity_id": "program_k51_su_pham_tieng_anh",
+    "canonical_name": "Sư phạm tiếng Anh",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham tieng anh",
+      "khoa sư phạm tiếng anh",
+      "nganh su pham tieng anh",
+      "ngành sư phạm tiếng anh",
+      "su pham tieng anh",
+      "sư phạm tiếng anh"
+    ],
+    "faculty_name": "Khoa Tiếng Anh",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K51_program_32",
+    "source_pages": [
+      189
+    ],
+    "cohort": "K51"
+  },
+  {
+    "entity_id": "program_k51_su_pham_tieng_nga",
+    "canonical_name": "Sư phạm tiếng Nga",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham tieng nga",
+      "khoa sư phạm tiếng nga",
+      "nganh su pham tieng nga",
+      "ngành sư phạm tiếng nga",
+      "su pham tieng nga",
+      "sư phạm tiếng nga"
+    ],
+    "faculty_name": "Khoa Tiếng Nga",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K51_program_33",
+    "source_pages": [
+      189
+    ],
+    "cohort": "K51"
+  },
+  {
+    "entity_id": "program_k51_su_pham_tieng_phap",
+    "canonical_name": "Sư phạm tiếng Pháp",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham tieng phap",
+      "khoa sư phạm tiếng pháp",
+      "nganh su pham tieng phap",
+      "ngành sư phạm tiếng pháp",
+      "su pham tieng phap",
+      "sư phạm tiếng pháp"
+    ],
+    "faculty_name": "Khoa Tiếng Pháp",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K51_program_34",
+    "source_pages": [
+      190
+    ],
+    "cohort": "K51"
+  },
+  {
+    "entity_id": "program_k51_su_pham_tieng_trung_quoc",
+    "canonical_name": "Sư phạm tiếng Trung Quốc",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham tieng trung quoc",
+      "khoa sư phạm tiếng trung quốc",
+      "nganh su pham tieng trung quoc",
+      "ngành sư phạm tiếng trung quốc",
+      "su pham tieng trung quoc",
+      "sư phạm tiếng trung quốc"
+    ],
+    "faculty_name": "Khoa Tiếng Trung Quốc",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K51_program_35",
+    "source_pages": [
+      190
+    ],
+    "cohort": "K51"
+  },
+  {
+    "entity_id": "program_k51_su_pham_dia_ly",
+    "canonical_name": "Sư phạm Địa lý",
+    "entity_type": "program",
+    "aliases": [
+      "khoa su pham dia ly",
+      "khoa sư phạm địa lý",
+      "nganh su pham dia ly",
+      "ngành sư phạm địa lý",
+      "su pham dia ly",
+      "sư phạm địa lý"
+    ],
+    "faculty_name": "Khoa Địa lý",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K51_program_25",
+    "source_pages": [
+      187
+    ],
+    "cohort": "K51"
+  },
+  {
+    "entity_id": "program_k51_toan_ung_dung",
+    "canonical_name": "Toán ứng dụng",
+    "entity_type": "program",
+    "aliases": [
+      "khoa toan ung dung",
+      "khoa toán ứng dụng",
+      "nganh toan ung dung",
+      "ngành toán ứng dụng",
+      "toan ung dung",
+      "toán ứng dụng"
+    ],
+    "faculty_name": "Khoa Toán – Tin học",
+    "target_chunk_types": [
+      "program_directory"
+    ],
+    "source_record_id": "K51_program_41",
+    "source_pages": [
+      192,
+      193
+    ],
+    "cohort": "K51"
+  },
+  {
     "entity_id": "program_k51_tam_ly_hoc",
     "canonical_name": "Tâm lý học",
     "entity_type": "program",
@@ -6221,30 +6323,7 @@
     ],
     "source_record_id": "K51_program_39",
     "source_pages": [
-      191,
-      192
-    ],
-    "cohort": "K51"
-  },
-  {
-    "entity_id": "program_k51_du_lich",
-    "canonical_name": "Du lịch",
-    "entity_type": "program",
-    "aliases": [
-      "du lich",
-      "du lịch",
-      "khoa du lich",
-      "khoa du lịch",
-      "nganh du lich",
-      "ngành du lịch"
-    ],
-    "faculty_name": "Khoa Địa lý",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K51_program_4",
-    "source_pages": [
-      179
+      191
     ],
     "cohort": "K51"
   },
@@ -6271,25 +6350,25 @@
     "cohort": "K51"
   },
   {
-    "entity_id": "program_k51_toan_ung_dung",
-    "canonical_name": "Toán ứng dụng",
+    "entity_id": "program_k51_viet_nam_hoc",
+    "canonical_name": "Việt Nam học",
     "entity_type": "program",
     "aliases": [
-      "khoa toan ung dung",
-      "khoa toán ứng dụng",
-      "nganh toan ung dung",
-      "ngành toán ứng dụng",
-      "toan ung dung",
-      "toán ứng dụng"
+      "khoa viet nam hoc",
+      "khoa việt nam học",
+      "nganh viet nam hoc",
+      "ngành việt nam học",
+      "viet nam hoc",
+      "việt nam học"
     ],
-    "faculty_name": "Khoa Toán – Tin học",
+    "faculty_name": "Khoa Ngữ văn",
     "target_chunk_types": [
       "program_directory"
     ],
-    "source_record_id": "K51_program_41",
+    "source_record_id": "K51_program_44",
     "source_pages": [
-      192,
-      193
+      193,
+      207
     ],
     "cohort": "K51"
   },
@@ -6338,29 +6417,6 @@
     "cohort": "K51"
   },
   {
-    "entity_id": "program_k51_viet_nam_hoc",
-    "canonical_name": "Việt Nam học",
-    "entity_type": "program",
-    "aliases": [
-      "khoa viet nam hoc",
-      "khoa việt nam học",
-      "nganh viet nam hoc",
-      "ngành việt nam học",
-      "viet nam hoc",
-      "việt nam học"
-    ],
-    "faculty_name": "Khoa Ngữ văn",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K51_program_44",
-    "source_pages": [
-      193,
-      207
-    ],
-    "cohort": "K51"
-  },
-  {
     "entity_id": "program_k51_dia_ly_hoc",
     "canonical_name": "Địa lý học",
     "entity_type": "program",
@@ -6380,95 +6436,6 @@
     "source_pages": [
       179,
       180
-    ],
-    "cohort": "K51"
-  },
-  {
-    "entity_id": "program_k51_giao_duc_chinh_tri",
-    "canonical_name": "Giáo dục Chính trị",
-    "entity_type": "program",
-    "aliases": [
-      "giao duc chinh tri",
-      "giáo dục chính trị",
-      "khoa giao duc chinh tri",
-      "khoa giáo dục chính trị",
-      "nganh giao duc chinh tri",
-      "ngành giáo dục chính trị"
-    ],
-    "faculty_name": "Khoa Giáo dục Chính trị",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K51_program_6",
-    "source_pages": [
-      180
-    ],
-    "cohort": "K51"
-  },
-  {
-    "entity_id": "program_k51_giao_duc_cong_dan",
-    "canonical_name": "Giáo dục Công dân",
-    "entity_type": "program",
-    "aliases": [
-      "giao duc cong dan",
-      "giáo dục công dân",
-      "khoa giao duc cong dan",
-      "khoa giáo dục công dân",
-      "nganh giao duc cong dan",
-      "ngành giáo dục công dân"
-    ],
-    "faculty_name": "Khoa Giáo dục Chính trị",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K51_program_7",
-    "source_pages": [
-      180
-    ],
-    "cohort": "K51"
-  },
-  {
-    "entity_id": "program_k51_giao_duc_dac_biet",
-    "canonical_name": "Giáo dục Đặc biệt",
-    "entity_type": "program",
-    "aliases": [
-      "giao duc dac biet",
-      "giáo dục đặc biệt",
-      "khoa giao duc dac biet",
-      "khoa giáo dục đặc biệt",
-      "nganh giao duc dac biet",
-      "ngành giáo dục đặc biệt"
-    ],
-    "faculty_name": "Khoa Giáo dục Đặc biệt",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K51_program_8",
-    "source_pages": [
-      180,
-      181
-    ],
-    "cohort": "K51"
-  },
-  {
-    "entity_id": "program_k51_giao_duc_hoc",
-    "canonical_name": "Giáo dục học",
-    "entity_type": "program",
-    "aliases": [
-      "giao duc hoc",
-      "giáo dục học",
-      "khoa giao duc hoc",
-      "khoa giáo dục học",
-      "nganh giao duc hoc",
-      "ngành giáo dục học"
-    ],
-    "faculty_name": "Khoa Khoa học Giáo dục",
-    "target_chunk_types": [
-      "program_directory"
-    ],
-    "source_record_id": "K51_program_9",
-    "source_pages": [
-      181
     ],
     "cohort": "K51"
   }

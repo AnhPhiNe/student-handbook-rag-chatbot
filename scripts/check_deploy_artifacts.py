@@ -12,6 +12,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from src.common.console import configure_utf8_stdio
+from src.ingestion.pdf_loader import HANDBOOK_HEADER_PATTERN
 
 
 REQUIRED_ARTIFACTS = [
@@ -38,6 +39,26 @@ REQUIRED_ARTIFACTS = [
     ("data/processed/metadata/build_manifest.json", "file"),
 ]
 
+CONTENT_FIELDS = {"content", "document", "raw_text", "text"}
+
+
+def find_repeated_handbook_header(value: object) -> str | None:
+    """Return a leaked PDF header found inside a content-bearing JSON field."""
+
+    stack: list[tuple[str | None, object]] = [(None, value)]
+    while stack:
+        field, current = stack.pop()
+        if isinstance(current, dict):
+            stack.extend((str(key), item) for key, item in current.items())
+        elif isinstance(current, list):
+            stack.extend((field, item) for item in current)
+        elif isinstance(current, str) and field in CONTENT_FIELDS:
+            for line in current.splitlines():
+                candidate = line.strip()
+                if HANDBOOK_HEADER_PATTERN.fullmatch(candidate):
+                    return candidate
+    return None
+
 
 def validate_artifact(path: Path, kind: str) -> str | None:
     if kind == "dir":
@@ -58,6 +79,9 @@ def validate_artifact(path: Path, kind: str) -> str | None:
             return f"invalid JSON: {exc}"
         if parsed == [] or parsed == {}:
             return "JSON artifact must not be [] or {}"
+        leaked_header = find_repeated_handbook_header(parsed)
+        if leaked_header:
+            return f"repeated PDF header leaked into content: {leaked_header}"
     return None
 
 

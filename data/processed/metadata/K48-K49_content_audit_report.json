@@ -386,7 +386,7 @@
       "page_number": 1,
       "content_type": "cover_page",
       "content_mode": "archive_only",
-      "cleaned_char_count": 104,
+      "cleaned_char_count": 87,
       "section_description": "Trang bìa"
     },
     {
@@ -498,14 +498,14 @@
       "page_number": 187,
       "content_type": "toc_or_index",
       "content_mode": "archive_only",
-      "cleaned_char_count": 728,
+      "cleaned_char_count": 711,
       "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
     },
     {
       "page_number": 188,
       "content_type": "toc_or_index",
       "content_mode": "archive_only",
-      "cleaned_char_count": 869,
+      "cleaned_char_count": 852,
       "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
     }
   ],

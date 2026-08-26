@@ -390,133 +390,133 @@
       "page_number": 1,
       "content_type": "cover_page",
       "content_mode": "archive_only",
-      "cleaned_char_count": 117,
+      "cleaned_char_count": 75,
       "section_description": "Trang bìa"
     },
     {
       "page_number": 2,
       "content_type": "abbreviation",
       "content_mode": "archive_only",
-      "cleaned_char_count": 316,
+      "cleaned_char_count": 289,
       "section_description": "Quy ước viết tắt"
     },
     {
       "page_number": 3,
       "content_type": "general_info",
       "content_mode": "archive_only",
-      "cleaned_char_count": 86,
+      "cleaned_char_count": 61,
       "section_description": "Tổng quan Trường Đại học Sư phạm TP.HCM"
     },
     {
       "page_number": 4,
       "content_type": "general_info",
       "content_mode": "archive_only",
-      "cleaned_char_count": 1994,
+      "cleaned_char_count": 1967,
       "section_description": "Tổng quan Trường Đại học Sư phạm TP.HCM"
     },
     {
       "page_number": 5,
       "content_type": "general_info",
       "content_mode": "archive_only",
-      "cleaned_char_count": 2151,
+      "cleaned_char_count": 2126,
       "section_description": "Tổng quan Trường Đại học Sư phạm TP.HCM"
     },
     {
       "page_number": 6,
       "content_type": "general_info",
       "content_mode": "archive_only",
-      "cleaned_char_count": 1689,
+      "cleaned_char_count": 1662,
       "section_description": "Tổng quan Trường Đại học Sư phạm TP.HCM"
     },
     {
       "page_number": 171,
       "content_type": "unknown",
       "content_mode": "archive_only",
-      "cleaned_char_count": 88,
+      "cleaned_char_count": 63,
       "section_description": ""
     },
     {
       "page_number": 172,
       "content_type": "unknown",
       "content_mode": "archive_only",
-      "cleaned_char_count": 809,
+      "cleaned_char_count": 780,
       "section_description": ""
     },
     {
       "page_number": 173,
       "content_type": "ktx_procedure_archive",
       "content_mode": "archive_only",
-      "cleaned_char_count": 666,
+      "cleaned_char_count": 641,
       "section_description": "Quy trình xét sinh viên vào ở ký túc xá"
     },
     {
       "page_number": 174,
       "content_type": "ktx_procedure_archive",
       "content_mode": "archive_only",
-      "cleaned_char_count": 1153,
+      "cleaned_char_count": 1124,
       "section_description": "Quy trình xét sinh viên vào ở ký túc xá"
     },
     {
       "page_number": 175,
       "content_type": "ktx_procedure_archive",
       "content_mode": "archive_only",
-      "cleaned_char_count": 753,
+      "cleaned_char_count": 728,
       "section_description": "Quy trình xét sinh viên vào ở ký túc xá"
     },
     {
       "page_number": 176,
       "content_type": "ktx_procedure_archive",
       "content_mode": "archive_only",
-      "cleaned_char_count": 802,
+      "cleaned_char_count": 773,
       "section_description": "Quy trình xét sinh viên vào ở ký túc xá"
     },
     {
       "page_number": 226,
       "content_type": "toc_or_index",
       "content_mode": "archive_only",
-      "cleaned_char_count": 2188,
+      "cleaned_char_count": 2159,
       "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
     },
     {
       "page_number": 227,
       "content_type": "toc_or_index",
       "content_mode": "archive_only",
-      "cleaned_char_count": 1871,
+      "cleaned_char_count": 1846,
       "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
     },
     {
       "page_number": 228,
       "content_type": "toc_or_index",
       "content_mode": "archive_only",
-      "cleaned_char_count": 2620,
+      "cleaned_char_count": 2591,
       "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
     },
     {
       "page_number": 229,
       "content_type": "toc_or_index",
       "content_mode": "archive_only",
-      "cleaned_char_count": 2616,
+      "cleaned_char_count": 2591,
       "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
     },
     {
       "page_number": 230,
       "content_type": "toc_or_index",
       "content_mode": "archive_only",
-      "cleaned_char_count": 2620,
+      "cleaned_char_count": 2591,
       "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
     },
     {
       "page_number": 231,
       "content_type": "toc_or_index",
       "content_mode": "archive_only",
-      "cleaned_char_count": 1151,
+      "cleaned_char_count": 1109,
       "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
     },
     {
       "page_number": 232,
       "content_type": "toc_or_index",
       "content_mode": "archive_only",
-      "cleaned_char_count": 976,
+      "cleaned_char_count": 930,
       "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
     }
   ],

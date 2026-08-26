@@ -1,15 +1,11 @@
 {
-  "schema_version": "child-parent-index-v1",
-  "embedding_input": "data/processed/chunks/child_parent_chunks.json",
-  "parent_input": "data/processed/chunks/all_docstore_items.json",
-  "build_manifest": "data/processed/metadata/build_manifest.json",
-  "structured_lookup_storage": "data/processed/tables/structured_tables_registry.json",
+  "embedding_input": "data/processed/chunks/semantic_chunks.json",
+  "structured_lookup_input": "data/processed/chunks/structured_lookup_chunks.json",
+  "tool_rule_input": "data/processed/chunks/tool_rule_chunks.json",
   "do_not_embed": [
-    "data/processed/chunks/semantic_chunks.json",
-    "data/processed/chunks/regulation_chunks.json",
     "data/processed/chunks/all_chunks.json",
     "data/processed/chunks/structured_lookup_chunks.json",
     "data/processed/chunks/tool_rule_chunks.json"
   ],
-  "note": "Production embeds only child_parent_chunks.json. Structured catalogs remain deterministic JSON and parent articles remain in MongoDB."
+  "note": "Embedding must embed only semantic_chunks.json. Structured lookup chunks and tool rule chunks are handled separately."
 }

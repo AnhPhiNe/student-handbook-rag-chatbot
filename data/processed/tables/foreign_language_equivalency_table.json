@@ -10,7 +10,6 @@
     "source_parent_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8",
     "source_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8",
     "title": "Tổ chức thực hiện",
-    "applicability": "Điều 1 quy định áp dụng cho sinh viên đại học từ khóa tuyển sinh năm 2022 trở đi; nguồn trích dẫn vẫn là Sổ tay K50.",
     "columns": [
       "language",
       "certificate",
@@ -55,12 +54,29 @@
         "equivalent_level_4": "Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179",
         "input_requirements": {
           "score_mode": "per_component",
-          "required_components": ["listening", "reading", "speaking", "writing"],
+          "required_components": [
+            "listening",
+            "reading",
+            "speaking",
+            "writing"
+          ],
           "component_slots": {
-            "listening": {"slot": "listening_score", "label": "Nghe"},
-            "reading": {"slot": "reading_score", "label": "Đọc"},
-            "speaking": {"slot": "speaking_score", "label": "Nói"},
-            "writing": {"slot": "writing_score", "label": "Viết"}
+            "listening": {
+              "slot": "listening_score",
+              "label": "Nghe"
+            },
+            "reading": {
+              "slot": "reading_score",
+              "label": "Đọc"
+            },
+            "speaking": {
+              "slot": "speaking_score",
+              "label": "Nói"
+            },
+            "writing": {
+              "slot": "writing_score",
+              "label": "Viết"
+            }
           }
         }
       },
@@ -111,13 +127,12 @@
     "derived_from": null,
     "used_by_runtime": true,
     "source_cohort": "K50",
-    "source_document_id": "so_tay_sinh_vien_khoa_50",
-    "source_content_sha256": "2c38946d2c4ca515cd3e98fee953c771c71030bdcd8d4651d8d153aba91d8bb3",
     "applicable_cohorts": [
       "K48-K49",
       "K50",
       "K51"
     ],
+    "applicability": "Điều 1 quy định áp dụng cho sinh viên đại học thuộc phạm vi quy định từ khóa tuyển sinh năm 2022 trở về sau.",
     "applicability_basis_parent_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1",
     "applicability_validated": true
   }

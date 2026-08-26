@@ -10,7 +10,6 @@
     "source_parent_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
     "source_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
     "title": "Phân loại kết quả rèn luyện",
-    "applicability": null,
     "columns": [
       "Khung điểm",
       "Xếp loại"
@@ -59,7 +58,6 @@
     "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
     "source_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
     "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
-    "applicability": null,
     "columns": [],
     "rows": [
       {
@@ -100,7 +98,6 @@
     "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
     "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
     "title": "Đánh giá và tính điểm học phần",
-    "applicability": null,
     "columns": [
       "Loại",
       "Thang điểm 10",
@@ -174,7 +171,6 @@
     "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
     "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
     "title": "Đánh giá và tính điểm học phần",
-    "applicability": "Áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập.",
     "columns": [
       "Kết quả",
       "Thang điểm 10",
@@ -203,7 +199,8 @@
     ],
     "quality_status": "approved",
     "derived_from": null,
-    "used_by_runtime": true
+    "used_by_runtime": true,
+    "applicability": "Áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập."
   },
   {
     "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
@@ -216,7 +213,6 @@
     "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
     "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
     "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
-    "applicability": null,
     "columns": [
       "Xếp loại",
       "Thang điểm 4"
@@ -267,7 +263,6 @@
     "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
     "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
     "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
-    "applicability": null,
     "columns": [
       "Thang điểm chữ",
       "Thang điểm 4"
@@ -330,7 +325,6 @@
     "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
     "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
     "title": "Chương trình đào tạo và thời gian học tập",
-    "applicability": "Áp dụng cho hình thức đào tạo chính quy.",
     "columns": [
       "Chương trình đào tạo",
       "Thời gian học tập chuẩn",
@@ -365,7 +359,8 @@
     ],
     "quality_status": "approved",
     "derived_from": null,
-    "used_by_runtime": true
+    "used_by_runtime": true,
+    "applicability": "Áp dụng cho hình thức đào tạo chính quy."
   },
   {
     "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
@@ -378,7 +373,6 @@
     "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
     "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
     "title": "Chương trình đào tạo và thời gian học tập",
-    "applicability": "Áp dụng cho hình thức đào tạo vừa làm vừa học.",
     "columns": [
       "Chương trình đào tạo",
       "Thời gian học tập chuẩn",
@@ -413,7 +407,8 @@
     ],
     "quality_status": "approved",
     "derived_from": null,
-    "used_by_runtime": true
+    "used_by_runtime": true,
+    "applicability": "Áp dụng cho hình thức đào tạo vừa làm vừa học."
   },
   {
     "table_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
@@ -426,7 +421,6 @@
     "source_parent_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
     "source_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
     "title": "Phân loại kết quả rèn luyện",
-    "applicability": null,
     "columns": [
       "Khung điểm",
       "Xếp loại"
@@ -475,7 +469,6 @@
     "source_parent_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8",
     "source_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8",
     "title": "Tổ chức thực hiện",
-    "applicability": "Điều 1 quy định áp dụng cho sinh viên đại học từ khóa tuyển sinh năm 2022 trở đi; nguồn trích dẫn vẫn là Sổ tay K50.",
     "columns": [
       "language",
       "certificate",
@@ -520,12 +513,29 @@
         "equivalent_level_4": "Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179",
         "input_requirements": {
           "score_mode": "per_component",
-          "required_components": ["listening", "reading", "speaking", "writing"],
+          "required_components": [
+            "listening",
+            "reading",
+            "speaking",
+            "writing"
+          ],
           "component_slots": {
-            "listening": {"slot": "listening_score", "label": "Nghe"},
-            "reading": {"slot": "reading_score", "label": "Đọc"},
-            "speaking": {"slot": "speaking_score", "label": "Nói"},
-            "writing": {"slot": "writing_score", "label": "Viết"}
+            "listening": {
+              "slot": "listening_score",
+              "label": "Nghe"
+            },
+            "reading": {
+              "slot": "reading_score",
+              "label": "Đọc"
+            },
+            "speaking": {
+              "slot": "speaking_score",
+              "label": "Nói"
+            },
+            "writing": {
+              "slot": "writing_score",
+              "label": "Viết"
+            }
           }
         }
       },
@@ -576,13 +586,12 @@
     "derived_from": null,
     "used_by_runtime": true,
     "source_cohort": "K50",
-    "source_document_id": "so_tay_sinh_vien_khoa_50",
-    "source_content_sha256": "2c38946d2c4ca515cd3e98fee953c771c71030bdcd8d4651d8d153aba91d8bb3",
     "applicable_cohorts": [
       "K48-K49",
       "K50",
       "K51"
     ],
+    "applicability": "Điều 1 quy định áp dụng cho sinh viên đại học thuộc phạm vi quy định từ khóa tuyển sinh năm 2022 trở về sau.",
     "applicability_basis_parent_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1",
     "applicability_validated": true
   },
@@ -597,7 +606,6 @@
     "source_parent_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
     "source_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
     "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
-    "applicability": null,
     "columns": [],
     "rows": [
       {
@@ -639,7 +647,6 @@
     "source_parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
     "source_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
     "title": "Đánh giá và tính điểm học phần",
-    "applicability": null,
     "columns": [
       "Loại",
       "Thang điểm 10",
@@ -713,7 +720,6 @@
     "source_parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
     "source_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
     "title": "Đánh giá và tính điểm học phần",
-    "applicability": "Áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập.",
     "columns": [
       "Kết quả",
       "Thang điểm 10",
@@ -742,7 +748,8 @@
     ],
     "quality_status": "approved",
     "derived_from": null,
-    "used_by_runtime": true
+    "used_by_runtime": true,
+    "applicability": "Áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập."
   },
   {
     "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
@@ -755,7 +762,6 @@
     "source_parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
     "source_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
     "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
-    "applicability": null,
     "columns": [
       "Xếp loại",
       "Thang điểm 4"
@@ -806,7 +812,6 @@
     "source_parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
     "source_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
     "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
-    "applicability": null,
     "columns": [
       "Thang điểm chữ",
       "Thang điểm 4"
@@ -869,7 +874,6 @@
     "source_parent_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
     "source_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
     "title": "Chương trình đào tạo và thời gian học tập",
-    "applicability": "Áp dụng cho hình thức đào tạo chính quy.",
     "columns": [
       "Chương trình đào tạo",
       "Thời gian học tập chuẩn",
@@ -904,7 +908,8 @@
     ],
     "quality_status": "approved",
     "derived_from": null,
-    "used_by_runtime": true
+    "used_by_runtime": true,
+    "applicability": "Áp dụng cho hình thức đào tạo chính quy."
   },
   {
     "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
@@ -917,7 +922,6 @@
     "source_parent_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
     "source_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
     "title": "Chương trình đào tạo và thời gian học tập",
-    "applicability": "Áp dụng cho hình thức đào tạo vừa làm vừa học.",
     "columns": [
       "Chương trình đào tạo",
       "Thời gian học tập chuẩn",
@@ -952,7 +956,8 @@
     ],
     "quality_status": "approved",
     "derived_from": null,
-    "used_by_runtime": true
+    "used_by_runtime": true,
+    "applicability": "Áp dụng cho hình thức đào tạo vừa làm vừa học."
   },
   {
     "table_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification",
@@ -965,7 +970,6 @@
     "source_parent_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
     "source_section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
     "title": "Phân loại kết quả rèn luyện",
-    "applicability": null,
     "columns": [
       "Khung điểm",
       "Xếp loại"
@@ -1014,7 +1018,6 @@
     "source_parent_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
     "source_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
     "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
-    "applicability": null,
     "columns": [],
     "rows": [
       {
@@ -1068,7 +1071,6 @@
     "source_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
     "source_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
     "title": "Đánh giá và tính điểm học phần",
-    "applicability": "Áp dụng cho học phần giáo dục đại cương/học phần chung thuộc nhóm nền tảng.",
     "columns": [
       "Loại",
       "Thang điểm 10",
@@ -1129,7 +1131,8 @@
     ],
     "quality_status": "approved",
     "derived_from": null,
-    "used_by_runtime": true
+    "used_by_runtime": true,
+    "applicability": "Áp dụng cho học phần giáo dục đại cương/học phần chung thuộc nhóm nền tảng."
   },
   {
     "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
@@ -1142,7 +1145,6 @@
     "source_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
     "source_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
     "title": "Đánh giá và tính điểm học phần",
-    "applicability": "Áp dụng cho các học phần còn lại.",
     "columns": [
       "Loại",
       "Thang điểm 10",
@@ -1203,7 +1205,8 @@
     ],
     "quality_status": "approved",
     "derived_from": null,
-    "used_by_runtime": true
+    "used_by_runtime": true,
+    "applicability": "Áp dụng cho các học phần còn lại."
   },
   {
     "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
@@ -1216,7 +1219,6 @@
     "source_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
     "source_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
     "title": "Đánh giá và tính điểm học phần",
-    "applicability": "Áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập.",
     "columns": [
       "Kết quả",
       "Thang điểm 10",
@@ -1245,7 +1247,8 @@
     ],
     "quality_status": "approved",
     "derived_from": null,
-    "used_by_runtime": true
+    "used_by_runtime": true,
+    "applicability": "Áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập."
   },
   {
     "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
@@ -1258,7 +1261,6 @@
     "source_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
     "source_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
     "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
-    "applicability": null,
     "columns": [
       "Xếp loại",
       "Thang điểm 4"
@@ -1309,7 +1311,6 @@
     "source_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
     "source_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
     "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
-    "applicability": null,
     "columns": [
       "Thang điểm chữ",
       "Thang điểm 4"
@@ -1372,7 +1373,6 @@
     "source_parent_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
     "source_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
     "title": "Chương trình đào tạo và thời gian học tập",
-    "applicability": "Áp dụng cho hình thức đào tạo chính quy (theo sửa đổi bổ sung tại QĐ 4743/QĐ-ĐHSP áp dụng từ khóa 2025 trở đi).",
     "columns": [
       "Hình thức đào tạo",
       "Thời gian học tập chuẩn",
@@ -1384,7 +1384,7 @@
         "Hình thức đào tạo": "Chính quy",
         "Thời gian học tập chuẩn": "04 năm học",
         "Thời gian học tập tối đa": "06 năm học",
-        "Quy tắc đối với sinh viên liên thông": "Thời gian tối đa được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khóa giảm tương ứng với khối lượng tín chỉ tích lũy được miễn trừ."
+        "Quy tắc đối với sinh viên liên thông": "Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ."
       }
     ],
     "source_pages": [
@@ -1394,7 +1394,8 @@
     ],
     "quality_status": "approved",
     "derived_from": null,
-    "used_by_runtime": true
+    "used_by_runtime": true,
+    "applicability": "Áp dụng cho hình thức đào tạo chính quy theo nội dung sửa đổi, bổ sung có hiệu lực được nêu trong điều khoản nguồn."
   },
   {
     "table_id": "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
@@ -1407,7 +1408,6 @@
     "source_parent_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
     "source_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
     "title": "Chương trình đào tạo và thời gian học tập",
-    "applicability": "Áp dụng cho hình thức đào tạo vừa làm vừa học (theo sửa đổi bổ sung tại QĐ 4743/QĐ-ĐHSP áp dụng từ khóa 2025 trở đi).",
     "columns": [
       "Hình thức đào tạo",
       "Thời gian học tập chuẩn",
@@ -1419,7 +1419,7 @@
         "Hình thức đào tạo": "Vừa làm vừa học",
         "Thời gian học tập chuẩn": "05 năm học",
         "Thời gian học tập tối đa": "7,5 năm học",
-        "Quy tắc đối với sinh viên liên thông": "Thời gian tối đa được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khóa giảm tương ứng với khối lượng tín chỉ tích lũy được miễn trừ."
+        "Quy tắc đối với sinh viên liên thông": "Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ."
       }
     ],
     "source_pages": [
@@ -1429,6 +1429,7 @@
     ],
     "quality_status": "approved",
     "derived_from": null,
-    "used_by_runtime": true
+    "used_by_runtime": true,
+    "applicability": "Áp dụng cho hình thức đào tạo vừa làm vừa học theo nội dung sửa đổi, bổ sung có hiệu lực được nêu trong điều khoản nguồn."
   }
 ]

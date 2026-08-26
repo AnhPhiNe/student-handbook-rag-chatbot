@@ -60,16 +60,10 @@
       "page_end": 21
     },
     {
-      "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu12",
-      "title": "Xử lý kết quả học tập đối với hình thức đào tạo chính quy",
-      "page_start": 21,
-      "page_end": 22
-    },
-    {
-      "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu17",
-      "title": "Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo, chuyển hình thức học",
-      "page_start": 26,
-      "page_end": 27
+      "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu16",
+      "title": "Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học",
+      "page_start": 25,
+      "page_end": 26
     },
     {
       "section_id": "K51_QuyCheDaoTao_Chuong5_Dieu24",
@@ -105,7 +99,7 @@
       "section_id": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu37",
       "title": "Hội đồng Khen thưởng và Kỷ luật sinh viên",
       "page_start": 80,
-      "page_end": 81
+      "page_end": 80
     },
     {
       "section_id": "K51_QuyCheCongTacSinhVien_Chuong7_Dieu40",
@@ -135,7 +129,7 @@
       "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
       "title": "Điều khoản thi hành",
       "page_start": 122,
-      "page_end": 123
+      "page_end": 122
     },
     {
       "section_id": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu5",
@@ -159,7 +153,7 @@
       "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
       "title": "Xác định nhu cầu đào tạo giáo viên và phương thức thực hiện hỗ trợ sinh viên sư phạm",
       "page_start": 132,
-      "page_end": 134
+      "page_end": 133
     },
     {
       "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
@@ -227,13 +221,13 @@
       "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu13",
       "title": "Xử lý kết quả học tập đối với hình thức đào tạo vừa làm vừa học",
       "page_start": 22,
-      "page_end": 23
+      "page_end": 22
     },
     {
       "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu15",
       "title": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
       "page_start": 23,
-      "page_end": 25
+      "page_end": 24
     },
     {
       "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu16",
@@ -317,7 +311,7 @@
       "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu5",
       "title": "Đánh giá về ý thức và kết quả chấp hành quy chế, nội quy, quy định trong Trường",
       "page_start": 89,
-      "page_end": 90
+      "page_end": 89
     },
     {
       "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu6",
@@ -335,7 +329,7 @@
       "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu8",
       "title": "Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các đoàn thể, tổ chức trong Nhà trường hoặc sinh viên đạt được thành tích đặc biệt trong học tập, rèn luyện",
       "page_start": 90,
-      "page_end": 91
+      "page_end": 90
     },
     {
       "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
@@ -383,7 +377,7 @@
       "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
       "title": "Quy trình tổ chức và tiến độ triển khai hoạt động nghiên cứu khoa học của sinh viên",
       "page_start": 114,
-      "page_end": 117
+      "page_end": 116
     },
     {
       "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu8",
@@ -451,7 +445,7 @@
       "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu13",
       "title": "Xử lý kết quả học tập đối với hình thức đào tạo vừa làm vừa học",
       "page_start": 22,
-      "page_end": 23
+      "page_end": 22
     },
     {
       "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu14",
@@ -463,7 +457,7 @@
       "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu15",
       "title": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
       "page_start": 23,
-      "page_end": 25
+      "page_end": 24
     },
     {
       "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu16",
@@ -517,7 +511,7 @@
       "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu5",
       "title": "Đánh giá về ý thức và kết quả chấp hành quy chế, nội quy, quy định trong Trường",
       "page_start": 89,
-      "page_end": 90
+      "page_end": 89
     },
     {
       "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu6",
@@ -535,7 +529,7 @@
       "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu8",
       "title": "Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các đoàn thể, tổ chức trong Nhà trường hoặc sinh viên đạt được thành tích đặc biệt trong học tập, rèn luyện",
       "page_start": 90,
-      "page_end": 91
+      "page_end": 90
     },
     {
       "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
@@ -553,13 +547,13 @@
       "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
       "title": "Quy trình tổ chức và tiến độ triển khai hoạt động nghiên cứu khoa học của sinh viên",
       "page_start": 114,
-      "page_end": 117
+      "page_end": 116
     },
     {
       "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
       "title": "Chuyển đổi điểm nghiên cứu khoa học của sinh viên",
       "page_start": 121,
-      "page_end": 122
+      "page_end": 121
     },
     {
       "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
@@ -659,7 +653,7 @@
       "title": "Xử lý kết quả học tập đối với hình thức đào tạo vừa làm vừa học",
       "content_type": "regulation_text",
       "page_start": 22,
-      "page_end": 23
+      "page_end": 22
     },
     {
       "section_id": "K51_QuyCheDaoTao_Chuong3_Dieu14",
@@ -673,7 +667,7 @@
       "title": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
       "content_type": "regulation_text",
       "page_start": 23,
-      "page_end": 25
+      "page_end": 24
     },
     {
       "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu16",
@@ -681,13 +675,6 @@
       "content_type": "regulation_text",
       "page_start": 25,
       "page_end": 26
-    },
-    {
-      "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu17",
-      "title": "Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo, chuyển hình thức học",
-      "content_type": "regulation_text",
-      "page_start": 26,
-      "page_end": 27
     },
     {
       "section_id": "K51_QuyCheDaoTao_Chuong4_Dieu18",
@@ -757,7 +744,7 @@
       "title": "Hội đồng Khen thưởng và Kỷ luật sinh viên",
       "content_type": "regulation_text",
       "page_start": 80,
-      "page_end": 81
+      "page_end": 80
     },
     {
       "section_id": "K51_QuyCheCongTacSinhVien_Chuong7_Dieu40",
@@ -785,7 +772,7 @@
       "title": "Đánh giá về ý thức và kết quả chấp hành quy chế, nội quy, quy định trong Trường",
       "content_type": "regulation_text",
       "page_start": 89,
-      "page_end": 90
+      "page_end": 89
     },
     {
       "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu6",
@@ -806,7 +793,7 @@
       "title": "Đánh giá về ý thức và kết quả tham gia phụ trách lớp, các đoàn thể, tổ chức trong Nhà trường hoặc sinh viên đạt được thành tích đặc biệt trong học tập, rèn luyện",
       "content_type": "regulation_text",
       "page_start": 90,
-      "page_end": 91
+      "page_end": 90
     },
     {
       "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
@@ -841,21 +828,21 @@
       "title": "Quy trình tổ chức và tiến độ triển khai hoạt động nghiên cứu khoa học của sinh viên",
       "content_type": "regulation_text",
       "page_start": 114,
-      "page_end": 117
+      "page_end": 116
     },
     {
       "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
       "title": "Chuyển đổi điểm nghiên cứu khoa học của sinh viên",
       "content_type": "regulation_text",
       "page_start": 121,
-      "page_end": 122
+      "page_end": 121
     },
     {
       "section_id": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
       "title": "Điều khoản thi hành",
       "content_type": "regulation_text",
       "page_start": 122,
-      "page_end": 123
+      "page_end": 122
     },
     {
       "section_id": "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu5",
@@ -890,7 +877,7 @@
       "title": "Xác định nhu cầu đào tạo giáo viên và phương thức thực hiện hỗ trợ sinh viên sư phạm",
       "content_type": "regulation_text",
       "page_start": 132,
-      "page_end": 134
+      "page_end": 133
     },
     {
       "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",

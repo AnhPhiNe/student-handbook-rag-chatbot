@@ -1,6 +1,8 @@
 import re
 from typing import Any, Optional
 
+from src.ingestion.pdf_loader import clean_text
+
 from .text_utils import get_pages_by_type, normalize_text
 
 
@@ -70,7 +72,7 @@ def split_page_to_lines(text: str) -> list[str]:
     """
     Chuẩn hóa text page thành lines.
     """
-    text = normalize_text(text)
+    text = normalize_text(clean_text(text))
     return [line.strip() for line in text.splitlines() if line.strip()]
 
 

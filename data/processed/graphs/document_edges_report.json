@@ -1,11 +1,11 @@
 {
   "status": "ok",
   "total_docstore_items": 462,
-  "total_edges": 95,
-  "total_skipped": 961,
+  "total_edges": 94,
+  "total_skipped": 962,
   "skip_counts": {
     "self_reference": 926,
-    "duplicate_edge": 35
+    "duplicate_edge": 36
   },
   "coverage": {
     "K48-K49": {
@@ -148,7 +148,7 @@
       "issue": "self_reference",
       "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
       "reference_article": 10,
-      "reference_text": "Điều 10"
+      "reference_text": "điểm học phần Nội dung: Điều 10"
     },
     {
       "issue": "self_reference",
@@ -970,25 +970,25 @@
       "issue": "self_reference",
       "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu3",
       "reference_article": 3,
-      "reference_text": "Điều 3"
+      "reference_text": "điểm Nội dung: Điều 3"
     },
     {
       "issue": "self_reference",
       "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu4",
       "reference_article": 4,
-      "reference_text": "Điều 4"
+      "reference_text": "ĐIỂM Điều: Điều 4"
     },
     {
       "issue": "self_reference",
       "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu4",
       "reference_article": 4,
-      "reference_text": "Điều 4"
+      "reference_text": "ĐIỂM Điều: Điều 4. Tiêu đề: Đánh giá về ý thức học tập Nội dung: Điều 4"
     },
     {
       "issue": "self_reference",
       "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu5",
       "reference_article": 5,
-      "reference_text": "Điều 5"
+      "reference_text": "ĐIỂM Điều: Điều 5"
     },
     {
       "issue": "self_reference",
@@ -1000,7 +1000,7 @@
       "issue": "self_reference",
       "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu6",
       "reference_article": 6,
-      "reference_text": "Điều 6"
+      "reference_text": "ĐIỂM Điều: Điều 6"
     },
     {
       "issue": "self_reference",
@@ -1012,7 +1012,7 @@
       "issue": "self_reference",
       "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu7",
       "reference_article": 7,
-      "reference_text": "Điều 7"
+      "reference_text": "ĐIỂM Điều: Điều 7"
     },
     {
       "issue": "self_reference",
@@ -1024,7 +1024,7 @@
       "issue": "self_reference",
       "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu8",
       "reference_article": 8,
-      "reference_text": "Điều 8"
+      "reference_text": "ĐIỂM Điều: Điều 8"
     },
     {
       "issue": "self_reference",
@@ -1318,7 +1318,7 @@
       "issue": "self_reference",
       "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
       "reference_article": 14,
-      "reference_text": "Điều 14"
+      "reference_text": "điểm NCKH của sinh viên Nội dung: Điều 14"
     },
     {
       "issue": "self_reference",
@@ -1672,7 +1672,7 @@
       "issue": "self_reference",
       "source": "K50_QuyCheDaoTao_Chuong3_Dieu10",
       "reference_article": 10,
-      "reference_text": "Điều 10"
+      "reference_text": "điểm học phần Nội dung: Điều 10"
     },
     {
       "issue": "self_reference",
@@ -2524,25 +2524,25 @@
       "issue": "self_reference",
       "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu3",
       "reference_article": 3,
-      "reference_text": "Điều 3"
+      "reference_text": "điểm Nội dung: Điều 3"
     },
     {
       "issue": "self_reference",
       "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu4",
       "reference_article": 4,
-      "reference_text": "Điều 4"
+      "reference_text": "ĐIỂM Điều: Điều 4"
     },
     {
       "issue": "self_reference",
       "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu4",
       "reference_article": 4,
-      "reference_text": "Điều 4"
+      "reference_text": "ĐIỂM Điều: Điều 4. Tiêu đề: Đánh giá về ý thức học tập Nội dung: Điều 4"
     },
     {
       "issue": "self_reference",
       "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu5",
       "reference_article": 5,
-      "reference_text": "Điều 5"
+      "reference_text": "ĐIỂM Điều: Điều 5"
     },
     {
       "issue": "self_reference",
@@ -2554,7 +2554,7 @@
       "issue": "self_reference",
       "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu6",
       "reference_article": 6,
-      "reference_text": "Điều 6"
+      "reference_text": "ĐIỂM Điều: Điều 6"
     },
     {
       "issue": "self_reference",
@@ -2566,7 +2566,7 @@
       "issue": "self_reference",
       "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu7",
       "reference_article": 7,
-      "reference_text": "Điều 7"
+      "reference_text": "ĐIỂM Điều: Điều 7"
     },
     {
       "issue": "self_reference",
@@ -2578,7 +2578,7 @@
       "issue": "self_reference",
       "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu8",
       "reference_article": 8,
-      "reference_text": "Điều 8"
+      "reference_text": "ĐIỂM Điều: Điều 8"
     },
     {
       "issue": "self_reference",
@@ -2608,7 +2608,7 @@
       "issue": "self_reference",
       "source": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10",
       "reference_article": 10,
-      "reference_text": "Điều 10"
+      "reference_text": "điểm rèn luyện Nội dung: Điều 10"
     },
     {
       "issue": "self_reference",
@@ -3172,7 +3172,7 @@
       "issue": "self_reference",
       "source": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
       "reference_article": 14,
-      "reference_text": "Điều 14"
+      "reference_text": "điểm nghiên cứu khoa học của sinh viên Nội dung: Điều 14"
     },
     {
       "issue": "self_reference",
@@ -3742,19 +3742,25 @@
       "issue": "self_reference",
       "source": "K51_QuyCheDaoTao_Chuong3_Dieu10",
       "reference_article": 10,
-      "reference_text": "Điều 10"
+      "reference_text": "điểm học phần Nội dung: Điều 10"
     },
     {
       "issue": "duplicate_edge",
       "source": "K51_QuyCheDaoTao_Chuong3_Dieu10",
       "target": "K51_QuyCheDaoTao_Chuong1_Dieu1",
-      "reference_text": "khoản 2, Điều 1"
+      "reference_text": "Điểm này được bổ sung thêm nội dung tại khoản 2, Điều 1"
     },
     {
       "issue": "duplicate_edge",
       "source": "K51_QuyCheDaoTao_Chuong3_Dieu10",
       "target": "K51_QuyCheDaoTao_Chuong1_Dieu1",
-      "reference_text": "khoản 3, Điều 1"
+      "reference_text": "Điểm này đã được sửa đổi tại khoản 3, Điều 1"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "target": "K51_QuyCheDaoTao_Chuong1_Dieu1",
+      "reference_text": "Điểm này đã được sửa đổi tại khoản 4, Điều 1"
     },
     {
       "issue": "self_reference",
@@ -4594,25 +4600,25 @@
       "issue": "self_reference",
       "source": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu3",
       "reference_article": 3,
-      "reference_text": "Điều 3"
+      "reference_text": "điểm Nội dung: Điều 3"
     },
     {
       "issue": "self_reference",
       "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu4",
       "reference_article": 4,
-      "reference_text": "Điều 4"
+      "reference_text": "ĐIỂM Điều: Điều 4"
     },
     {
       "issue": "self_reference",
       "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu4",
       "reference_article": 4,
-      "reference_text": "Điều 4"
+      "reference_text": "ĐIỂM Điều: Điều 4. Tiêu đề: Đánh giá về ý thức học tập Nội dung: Điều 4"
     },
     {
       "issue": "self_reference",
       "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu5",
       "reference_article": 5,
-      "reference_text": "Điều 5"
+      "reference_text": "ĐIỂM Điều: Điều 5"
     },
     {
       "issue": "self_reference",
@@ -4624,7 +4630,7 @@
       "issue": "self_reference",
       "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu6",
       "reference_article": 6,
-      "reference_text": "Điều 6"
+      "reference_text": "ĐIỂM Điều: Điều 6"
     },
     {
       "issue": "self_reference",
@@ -4636,7 +4642,7 @@
       "issue": "self_reference",
       "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu7",
       "reference_article": 7,
-      "reference_text": "Điều 7"
+      "reference_text": "ĐIỂM Điều: Điều 7"
     },
     {
       "issue": "self_reference",
@@ -4648,7 +4654,7 @@
       "issue": "self_reference",
       "source": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu8",
       "reference_article": 8,
-      "reference_text": "Điều 8"
+      "reference_text": "ĐIỂM Điều: Điều 8"
     },
     {
       "issue": "self_reference",
@@ -4678,7 +4684,7 @@
       "issue": "self_reference",
       "source": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu10",
       "reference_article": 10,
-      "reference_text": "Điều 10"
+      "reference_text": "điểm rèn luyện Nội dung: Điều 10"
     },
     {
       "issue": "self_reference",
@@ -5146,7 +5152,7 @@
       "issue": "self_reference",
       "source": "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
       "reference_article": 14,
-      "reference_text": "Điều 14"
+      "reference_text": "điểm nghiên cứu khoa học của sinh viên Nội dung: Điều 14"
     },
     {
       "issue": "self_reference",

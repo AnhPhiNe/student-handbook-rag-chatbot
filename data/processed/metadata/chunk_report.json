@@ -1,18 +1,18 @@
 {
-  "total_chunks": 242,
-  "regulation_chunks": 242,
+  "total_chunks": 245,
+  "regulation_chunks": 245,
   "table_chunks": 0,
   "formula_chunks": 0,
   "directory_chunks": 0,
   "chunk_type_count": {
-    "regulation": 232,
+    "regulation": 235,
     "regulation_table": 8,
     "regulation_highlight": 2
   },
   "index_mode_count": {
-    "semantic": 242
+    "semantic": 245
   },
-  "avg_token_count_approx": 274.79,
+  "avg_token_count_approx": 272.42,
   "max_token_count_approx": 849,
   "overlong_chunks_count": 0,
   "overlong_chunks": [],

@@ -206,6 +206,7 @@
       53
     ],
     "review_status": "needs_human_verified",
+    "schema_variant": "score_ranges",
     "rows": [
       {
         "label": "Khá",

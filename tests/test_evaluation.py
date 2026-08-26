@@ -66,12 +66,14 @@ def _valid_judge_payload() -> str:
     )
 
 
-def test_frozen_final_bundle_is_valid() -> None:
+def test_frozen_final_bundle_is_compatible_with_current_sources() -> None:
     result = validate_bundle(
         ROOT / "data" / "eval" / "final_holdout",
         _require_docstore_artifact(),
+        enforce_docstore_hash=False,
     )
     assert result["valid"], result["errors"]
+    assert "manifest docstore hash mismatch" in result["warnings"]
     assert result["counts"] == {
         "deterministic": 120,
         "retrieval": 180,

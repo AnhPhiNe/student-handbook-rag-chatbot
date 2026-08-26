@@ -11,6 +11,11 @@ import yaml
 PDF_PATH = Path(os.environ.get("PDF_PATH", "data/raw/so-tay-sinh-vien-khoa-48.pdf"))
 CONFIG_PATH = Path(os.environ.get("CONFIG_PATH", "configs/document_sections.yaml"))
 OUTPUT_DIR = Path("data/processed/metadata")
+HANDBOOK_HEADER_PATTERN = re.compile(
+    r"^(?:\d{1,3}\s+)?SỔ TAY SINH VIÊN(?:\s+NĂM HỌC\s+\d{4}\s*[–—-]\s*\d{4}"
+    r"|\s+KHÓA\s+\d+(?:\s*[–—-]\s*\d+)?)?(?:\s+\d{1,3})?$",
+    re.IGNORECASE,
+)
 
 
 def load_yaml_config(config_path: Path) -> dict[str, Any]:
@@ -36,8 +41,9 @@ def clean_text(text: str) -> str:
         if not line:
             continue
 
-        # Bỏ header/footer lặp lại
-        if "Sổ tay Sinh viên năm học 2022" in line:
+        # Bỏ header/footer lặp lại của mọi cohort, nhưng chỉ khi toàn bộ dòng
+        # đúng mẫu header để không xóa nội dung có nhắc tên Sổ tay.
+        if HANDBOOK_HEADER_PATTERN.fullmatch(line):
             continue
 
         # Bỏ dòng chỉ có số trang

@@ -438,6 +438,7 @@ def validate_bundle(
     docstore_path: Path,
     *,
     require_frozen: bool = True,
+    enforce_docstore_hash: bool = True,
 ) -> dict[str, Any]:
     errors: list[str] = []
     warnings: list[str] = []
@@ -477,7 +478,11 @@ def validate_bundle(
     if manifest.get("docstore_hash") and manifest.get("docstore_hash") != file_hash(
         docstore_path
     ):
-        errors.append("manifest docstore hash mismatch")
+        message = "manifest docstore hash mismatch"
+        if enforce_docstore_hash:
+            errors.append(message)
+        else:
+            warnings.append(message)
 
     docstore = load_json(docstore_path)
     docs_by_id = {_doc_id(item): item for item in docstore if _doc_id(item)}

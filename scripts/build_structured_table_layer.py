@@ -206,6 +206,29 @@ def metadata(item: dict[str, Any]) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
 
 
+SOURCE_SCOPE_FIELDS = (
+    "source_cohort",
+    "applicable_cohorts",
+    "applicability",
+    "applicability_basis_parent_id",
+    "applicability_validated",
+)
+
+
+def inherit_source_scope(
+    table: dict[str, Any], source_metadata: dict[str, Any]
+) -> dict[str, Any]:
+    """Copy validated source scope without replacing table-specific values."""
+
+    for field in SOURCE_SCOPE_FIELDS:
+        source_value = source_metadata.get(field)
+        if source_value in (None, "", []):
+            continue
+        if table.get(field) in (None, "", []):
+            table[field] = source_value
+    return table
+
+
 def cohort_of(item: dict[str, Any]) -> str:
     meta = metadata(item)
     return str(item.get("cohort") or meta.get("cohort") or "")
@@ -588,6 +611,7 @@ def build_registry(
                     "quality_status": "approved",
                 }
             )
+            inherit_source_scope(table, meta)
             record = {
                 "table_id": table_id,
                 "data_category": "regulation_table",
@@ -599,7 +623,6 @@ def build_registry(
                 "source_parent_id": source_parent_id,
                 "source_section_id": source_parent_id,
                 "title": meta.get("title"),
-                "applicability": table.get("applicability"),
                 "columns": table.get("columns") or [],
                 "rows": table.get("rows") or [],
                 "source_pages": table.get("source_pages")
@@ -609,6 +632,9 @@ def build_registry(
                 "derived_from": table.get("derived_from"),
                 "used_by_runtime": bool(table.get("lookup_preferred", True)),
             }
+            for field in SOURCE_SCOPE_FIELDS:
+                if table.get(field) not in (None, "", []):
+                    record[field] = table[field]
             registry_by_fingerprint.setdefault(_table_fingerprint(record), record)
 
     for record in _build_scholarship_records(items, scoring_tables_path):

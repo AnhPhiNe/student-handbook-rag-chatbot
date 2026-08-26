@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import json
 import re
 import unicodedata
 from dataclasses import dataclass
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
 from src.common.cohort import admission_years_for_cohort, normalize_cohort
@@ -71,6 +74,44 @@ class ApplicableAmendment:
     relevance_score: int
 
 
+@lru_cache(maxsize=1)
+def load_amendment_registry() -> tuple[dict[str, Any], ...]:
+    path = Path(__file__).resolve().parents[2] / "data/processed/amendments/amendments.json"
+    if not path.exists():
+        return ()
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, list):
+        return ()
+    return tuple(dict(item) for item in payload if isinstance(item, dict))
+
+
+def strip_misattached_amendment_notes(
+    content: str,
+    *,
+    source_parent_id: str,
+    registry: tuple[dict[str, Any], ...] | None = None,
+) -> str:
+    """Remove footnotes whose authoritative target is another parent section."""
+
+    records = registry if registry is not None else load_amendment_registry()
+    targets_by_replacement = {
+        _fold(str(record.get("replacement_text") or "")): str(
+            record.get("target_parent_id") or ""
+        )
+        for record in records
+        if record.get("replacement_text") and record.get("target_parent_id")
+    }
+
+    def replace(match: re.Match[str]) -> str:
+        replacement = _fold(_clean_text(match.group("replacement")))
+        target_parent_id = targets_by_replacement.get(replacement)
+        if target_parent_id and target_parent_id != source_parent_id:
+            return "\n"
+        return match.group(0)
+
+    return _AMENDMENT_NOTE_RE.sub(replace, content).strip()
+
+
 def collect_applicable_amendments(
     retrieval_result: dict[str, Any],
     *,
@@ -91,6 +132,20 @@ def collect_applicable_amendments(
     requested_years = admission_years_for_cohort(requested_cohort)
     candidates: list[ApplicableAmendment] = []
     seen_replacements: set[str] = set()
+    registry_by_replacement = {
+        _fold(str(record.get("replacement_text") or "")): record
+        for record in load_amendment_registry()
+        if record.get("replacement_text")
+    }
+    primary_parent_ids = {
+        str(
+            (item.get("metadata") or {}).get("parent_section_id")
+            or item.get("parent_section_id")
+            or item.get("chunk_id")
+            or ""
+        )
+        for item in retrieval_result.get("retrieved_items") or []
+    }
 
     for source_role, items in (
         ("primary", retrieval_result.get("retrieved_items") or []),
@@ -122,14 +177,24 @@ def collect_applicable_amendments(
                 replacement_key = _fold(replacement)
                 if replacement_key in seen_replacements:
                     continue
+                registry_record = registry_by_replacement.get(replacement_key)
+                target_parent_id = str(
+                    (registry_record or {}).get("target_parent_id") or ""
+                )
+                if target_parent_id:
+                    # A graph-adjacent footnote can amend only its authoritative
+                    # directly retrieved parent, never the section carrying it.
+                    if target_parent_id not in primary_parent_ids:
+                        continue
                 seen_replacements.add(replacement_key)
 
-                source_parent_id = str(
+                physical_parent_id = str(
                     metadata.get("parent_section_id")
                     or item.get("parent_section_id")
                     or item.get("chunk_id")
                     or ""
                 )
+                source_parent_id = target_parent_id or physical_parent_id
                 source_title = str(
                     metadata.get("title")
                     or metadata.get("section_title")

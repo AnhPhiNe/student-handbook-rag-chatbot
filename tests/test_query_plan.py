@@ -85,6 +85,27 @@ def test_query_plan_turns_more_than_three_requests_into_clarification() -> None:
     assert "tối đa ba" in plan["tasks"][0]["clarification_question"]
 
 
+def test_terminal_out_of_domain_does_not_require_executable_tasks() -> None:
+    plan, errors = normalize_query_plan(
+        {
+            "schema_version": "v1",
+            "context_mode": "standalone",
+            "normalized_query": "Một câu ngoài phạm vi",
+            "standalone_query": None,
+            "referenced_turns": [],
+            "out_of_domain": True,
+            "tasks": [],
+        },
+        query="Một câu ngoài phạm vi",
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert plan["out_of_domain"] is True
+    assert plan["tasks"] == []
+    assert plan["planner_fallback"] is None
+
+
 def test_invalid_lookup_is_clarified_but_reference_table_slots_are_optional() -> None:
     invalid = {
         **_rag_task(1),
@@ -201,6 +222,36 @@ def test_single_cohort_compare_is_also_presentation_only() -> None:
     assert plan["tasks"][0]["intent"] == "direct_value"
     assert plan["tasks"][0]["question"] == query
     assert plan["tasks"][0]["cohorts"] == ["K51"]
+
+
+def test_table_first_follow_up_drops_ungrounded_optional_row_hint() -> None:
+    task = {
+        **_rag_task(1, "Thời gian đào tạo tối đa hệ chính quy của K51 là bao lâu?"),
+        "mode": "structured",
+        "intent": "direct_value",
+        "lookup_type": "study_duration",
+        "slots": {
+            "training_mode": "chinh_quy",
+            "program_type": "first_degree",
+        },
+        "slot_spans": {
+            "training_mode": "hệ chính quy",
+            "program_type": "chương trình cấp bằng thứ nhất",
+        },
+        "cohorts": ["K51"],
+    }
+
+    plan, errors = normalize_query_plan(
+        _plan([task]),
+        query="Còn K51 thì sao?",
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert plan["tasks"][0]["mode"] == "structured"
+    assert plan["tasks"][0]["lookup_type"] == "study_duration"
+    assert plan["tasks"][0]["slots"] == {}
+    assert plan["tasks"][0]["slot_spans"] == {}
 
 
 def test_two_regulation_topics_keep_two_tasks_with_the_same_cohorts() -> None:

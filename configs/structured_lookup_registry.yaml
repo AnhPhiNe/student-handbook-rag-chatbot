@@ -3,6 +3,7 @@ version: 3
 tools:
   foreign_language:
     data_category: regulation_table
+    selection_mode: table_first
     description: "Quy doi diem/chung chi sang bac; lookup tu clarify diem thanh phan bat buoc. Yeu cau chuan/pham vi/thu tuc: RAG."
     intents: [direct_value, list_items]
     default_intent: direct_value
@@ -26,6 +27,7 @@ tools:
 
   study_duration:
     data_category: regulation_table
+    selection_mode: table_first
     description: Tra thoi gian hoc chuan/toi da theo he va loai chuong trinh.
     intents: [direct_value, list_items]
     default_intent: direct_value
@@ -45,6 +47,7 @@ tools:
 
   scholarship_classification:
     data_category: regulation_table
+    selection_mode: table_first
     description: Tra tieu chuan/diem hoc bong khuyen khich hoc tap. GPA va hoc luc dung scoring.
     intents: [direct_value]
     default_intent: direct_value
@@ -58,6 +61,7 @@ tools:
 
   scoring:
     data_category: regulation_table
+    selection_mode: table_first
     description: Tra cuu va quy doi thang diem hoc phan (thang 10, diem chu, thang 4, dat/khong dat), xep loai hoc luc hoac diem ren luyen.
     intents: [direct_value, list_items]
     default_intent: direct_value

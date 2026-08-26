@@ -21,6 +21,13 @@ CHAPTER_PATTERN = re.compile(r"^(?:CHƯƠNG|Chương)\s+[IVXLCDM]+\b")
 ARTICLE_PATTERN = re.compile(r"^Điều\s+(\d+)\.\s*(.*)", re.IGNORECASE)
 CLAUSE_PATTERN = re.compile(r"^\d+\.\s+")
 POINT_PATTERN = re.compile(r"^[a-zđ]\)\s+", re.IGNORECASE)
+AMENDMENT_FOOTNOTE_PATTERN = re.compile(
+    r"(?:^|\n)(?P<block>\s*(?P<number>\d+)\s+"
+    r"(?:Điểm|Khoản|Điều|Nội dung)\s+này\b"
+    r".{0,2600}?Cụ thể\s+như\s+sau\s*:\s*"
+    r"[\u201c\"](?P<replacement>.{1,6000}?)[\u201d\"])",
+    flags=re.IGNORECASE | re.DOTALL,
+)
 
 
 DOCUMENT_TITLE_PATTERNS = [
@@ -334,6 +341,62 @@ def close_section(
     sections.append(current_section)
 
 
+def reassociate_trailing_amendment_footnotes(
+    sections: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Move a page footnote back to the article carrying its numbered marker.
+
+    PDF reading order may place a bottom-of-page amendment after the heading
+    of the next article. Reassociation is structural: the immediately previous
+    article must contain the matching superscript marker (for example ``d)6``)
+    while the current article prefix must not.
+    """
+
+    for index in range(1, len(sections)):
+        previous = sections[index - 1]
+        current = sections[index]
+        if previous.get("section_level") != "article" or current.get("section_level") != "article":
+            continue
+
+        content = str(current.get("content") or "")
+        moved_blocks: list[str] = []
+
+        def move_if_misattached(match: re.Match[str]) -> str:
+            number = re.escape(match.group("number"))
+            marker = re.compile(
+                rf"(?:^|\n)\s*[a-zđ]\)\s*{number}(?=\s|[A-ZÀ-Ỹ])",
+                flags=re.IGNORECASE,
+            )
+            prefix = content[: match.start()]
+            if marker.search(str(previous.get("content") or "")) and not marker.search(prefix):
+                moved_blocks.append(match.group("block").strip())
+                return "\n"
+            return match.group(0)
+
+        updated = AMENDMENT_FOOTNOTE_PATTERN.sub(move_if_misattached, content).strip()
+        if not moved_blocks:
+            continue
+
+        previous["content"] = (
+            str(previous.get("content") or "").rstrip()
+            + "\n"
+            + "\n".join(moved_blocks)
+        ).strip()
+        current["content"] = updated
+        for section in (previous, current):
+            section_content = str(section.get("content") or "")
+            section["has_table"] = detect_has_table(section_content)
+            section["has_formula"] = detect_has_formula(section_content)
+            section["has_scoring_rule"] = detect_has_scoring_rule(section_content)
+            section["has_thresholds"] = detect_has_thresholds(section_content)
+            section["needs_structured_extraction"] = detect_needs_structured_extraction(
+                content=section_content,
+                content_type=section["content_type"],
+            )
+
+    return sections
+
+
 def should_close_on_content_type_change(
     current_section: Optional[dict[str, Any]],
     new_content_type: str,
@@ -452,7 +515,7 @@ def build_structured_sections(
 
     close_section(current_section, sections)
 
-    return sections
+    return reassociate_trailing_amendment_footnotes(sections)
 
 
 def validate_sections(sections: list[dict[str, Any]]) -> list[dict[str, Any]]:

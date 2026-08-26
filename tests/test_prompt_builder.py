@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from src.generation.amendment_precedence import collect_applicable_amendments
+from src.generation.amendment_precedence import (
+    collect_applicable_amendments,
+    strip_misattached_amendment_notes,
+)
 from src.generation.prompt_builder import (
     ANSWER_PROMPT_VERSION,
     build_answer_prompt,
@@ -93,6 +96,71 @@ def test_packet_binds_sources_to_their_tasks() -> None:
     assert [source["content"] for source in first["primary_evidence"]] == ["Nguồn học bổng"]
     assert second["allowed_source_refs"] == ["S2"]
     assert [source["content"] for source in second["primary_evidence"]] == ["Nguồn bảo lưu"]
+
+
+def test_shared_source_uses_table_for_structured_and_parent_text_for_rag() -> None:
+    structured_task = {
+        **_task("t1", "Điểm học bổng loại Giỏi?", ["K51"]),
+        "mode": "structured",
+        "lookup_type": "scholarship_classification",
+    }
+    packet = build_authorized_evidence_packet(
+        query="Điểm loại Giỏi và điều kiện xét học bổng?",
+        retrieval_result={
+            "query_plan": {
+                "tasks": [
+                    structured_task,
+                    _task("t2", "Điều kiện xét học bổng?", ["K51"]),
+                ]
+            },
+            "task_results": [
+                {"task_id": "t1", "coverage": "covered"},
+                {"task_id": "t2", "coverage": "covered"},
+            ],
+        },
+        selected_citations=[
+            {
+                "source_parent_id": "K51_Dieu27",
+                "content": '{"scholarship_level":"Giỏi"}',
+                "parent_content": "Điều kiện gồm đủ tín chỉ và không bị kỷ luật.",
+                "supports_task_ids": ["t1", "t2"],
+                "cohort": "K51",
+            }
+        ],
+        fallback_cohort="K51",
+        max_context_chars=10000,
+    )
+
+    assert packet["units"][0]["primary_evidence"][0]["content"] == (
+        '{"scholarship_level":"Giỏi"}'
+    )
+    assert packet["units"][1]["primary_evidence"][0]["content"] == (
+        "Điều kiện gồm đủ tín chỉ và không bị kỷ luật."
+    )
+
+
+def test_misattached_amendment_is_removed_using_authoritative_target() -> None:
+    note = (
+        "Điểm này đã được sửa đổi, bổ sung. Cụ thể như sau: "
+        "“d) Quy tắc thuộc điều trước.”"
+    )
+    registry = (
+        {
+            "target_parent_id": "Dieu11",
+            "replacement_text": "d) Quy tắc thuộc điều trước.",
+        },
+    )
+
+    assert strip_misattached_amendment_notes(
+        f"Điều 12. Nội dung hiện tại\n{note}\n2. Nội dung tiếp theo",
+        source_parent_id="Dieu12",
+        registry=registry,
+    ) == "Điều 12. Nội dung hiện tại\n\n2. Nội dung tiếp theo"
+    assert note in strip_misattached_amendment_notes(
+        f"Điều 11. Nội dung\n{note}",
+        source_parent_id="Dieu11",
+        registry=registry,
+    )
 
 
 def test_packet_binds_explicit_applicability_per_cohort() -> None:

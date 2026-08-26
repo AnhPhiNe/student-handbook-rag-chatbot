@@ -3,12 +3,15 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from .amendment_precedence import collect_applicable_amendments
+from .amendment_precedence import (
+    collect_applicable_amendments,
+    strip_misattached_amendment_notes,
+)
 from .context_allocation import ContextAllocationConfig
 
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.0-compact-authorized-evidence"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.1-mode-bound-evidence"
 
 
 def build_answer_prompt(
@@ -94,7 +97,7 @@ def build_authorized_evidence_packet(
     packet_units: list[dict[str, Any]] = []
     for unit in units:
         authorized_sources = [
-            _limit_source(source, per_source_chars)
+            _source_for_unit(source, unit, per_source_chars)
             for source in sources
             if _source_supports_unit(source, unit)
         ]
@@ -221,6 +224,7 @@ def _composition_units(
                 {
                     "task_id": task_id,
                     "question": str(task.get("question") or result.get("question") or "").strip(),
+                    "mode": str(task.get("mode") or result.get("mode") or "rag"),
                     "cohort": cohort_key,
                     "coverage": coverage,
                     "clarification_question": task.get("clarification_question")
@@ -239,6 +243,7 @@ def _composition_units(
                 or retrieval_result.get("query")
                 or fallback_question
             ).strip(),
+            "mode": "rag",
             "cohort": str(fallback_cohort or retrieval_result.get("selected_cohort") or "default"),
             "coverage": "covered" if _has_primary_evidence(retrieval_result) else "uncovered",
             "clarification_question": retrieval_result.get("clarification_question"),
@@ -252,22 +257,32 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
     applicable_cohorts = citation.get("applicable_cohorts") or metadata.get("applicable_cohorts") or []
     if isinstance(applicable_cohorts, str):
         applicable_cohorts = [applicable_cohorts]
+    source_id = str(
+        citation.get("source_parent_id")
+        or citation.get("parent_section_id")
+        or citation.get("chunk_id")
+        or citation.get("document_id")
+        or f"source-{index}"
+    )
+    content = str(citation.get("content") or citation.get("document") or "").strip()
+    parent_content = str(citation.get("parent_content") or "").strip()
     return {
         "source_ref": f"S{index}",
-        "source_id": str(
-            citation.get("source_parent_id")
-            or citation.get("parent_section_id")
-            or citation.get("chunk_id")
-            or citation.get("document_id")
-            or f"source-{index}"
-        ),
+        "source_id": source_id,
         "title": citation.get("title") or metadata.get("title"),
         "source_cohort": citation.get("cohort") or metadata.get("cohort"),
         "applicable_cohorts": [str(value) for value in applicable_cohorts],
         "applicability": citation.get("applicability") or metadata.get("applicability"),
         "source_pages": citation.get("source_pages") or metadata.get("source_pages") or [],
         "supports_task_ids": [str(task_id) for task_id in supports_task_ids],
-        "content": str(citation.get("content") or citation.get("document") or "").strip(),
+        "content": strip_misattached_amendment_notes(
+            content,
+            source_parent_id=source_id,
+        ),
+        "parent_content": strip_misattached_amendment_notes(
+            parent_content,
+            source_parent_id=source_id,
+        ),
     }
 
 
@@ -284,8 +299,30 @@ def _source_supports_unit(source: dict[str, Any], unit: dict[str, Any]) -> bool:
     return not applicable_cohorts or unit["cohort"] in applicable_cohorts
 
 
-def _limit_source(source: dict[str, Any], max_chars: int) -> dict[str, Any]:
-    return {**source, "content": limit_context(source["content"], max_chars)}
+def _source_for_unit(
+    source: dict[str, Any],
+    unit: dict[str, Any],
+    max_chars: int,
+) -> dict[str, Any]:
+    """Select the evidence representation appropriate for this task mode.
+
+    A canonical source may support both a structured lookup and a regulation
+    task. Evidence fusion keeps one citation identity, so RAG units must use
+    the full parent regulation text while structured units keep the curated
+    JSON/table representation.
+    """
+
+    content = source["content"]
+    if unit.get("mode") == "rag" and source.get("parent_content"):
+        content = source["parent_content"]
+    return {
+        key: value
+        for key, value in {
+            **source,
+            "content": limit_context(content, max_chars),
+        }.items()
+        if key != "parent_content"
+    }
 
 
 def _source_content_budget(*, max_context_chars: int, source_count: int) -> int:

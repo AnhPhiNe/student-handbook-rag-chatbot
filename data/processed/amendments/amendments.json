@@ -15,7 +15,7 @@
   },
   {
     "amendment_id": "amd-1eb5b0ba5c07e1927322",
-    "target_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+    "target_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
     "target_kind": "diem",
     "target_anchor": "b",
     "source_document_id": "4743/QĐ-ĐHSP",
@@ -29,7 +29,7 @@
   },
   {
     "amendment_id": "amd-206d789ba469f43906af",
-    "target_parent_id": "K51_QuyCheDaoTao_Chuong4_Dieu17",
+    "target_parent_id": "K51_QuyCheDaoTao_Chuong4_Dieu16",
     "target_kind": "diem",
     "target_anchor": "c",
     "source_document_id": "4743/QĐ-ĐHSP",
@@ -71,7 +71,7 @@
   },
   {
     "amendment_id": "amd-c0fc14ecdcb288156d2d",
-    "target_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu12",
+    "target_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
     "target_kind": "diem",
     "target_anchor": "d",
     "source_document_id": "4743/QĐ-ĐHSP",

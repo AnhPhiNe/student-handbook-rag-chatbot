@@ -17,7 +17,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v3-table-first-structured"
+QUERY_PLAN_NORMALIZER_VERSION = "v5-terminal-ood-before-tasks"
 MAX_QUERY_TASKS = 3
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
 
@@ -177,6 +177,29 @@ def normalize_query_plan(
     registry = registry or load_lookup_registry()
     query_cohorts = extract_cohorts_from_query(query)
     default_cohort = query_cohorts[0] if len(query_cohorts) == 1 else selected_cohort
+    if bool(payload.get("out_of_domain")):
+        context_mode = str(payload.get("context_mode") or "standalone").strip().lower()
+        if context_mode not in {"standalone", "follow_up", "ambiguous"}:
+            context_mode = "standalone"
+        return {
+            "schema_version": QUERY_PLAN_SCHEMA_VERSION,
+            "context_mode": context_mode,
+            "normalized_query": str(payload.get("normalized_query") or query).strip()
+            or query,
+            "standalone_query": str(payload.get("standalone_query") or "").strip()
+            or None,
+            "referenced_turns": [
+                value
+                for value in (payload.get("referenced_turns") or [])
+                if isinstance(value, int)
+                and not isinstance(value, bool)
+                and value >= 0
+            ],
+            "out_of_domain": True,
+            "tasks": [],
+            "planner_fallback": payload.get("planner_fallback"),
+            "planner_validation_errors": [],
+        }, []
     raw_tasks = payload.get("tasks")
     if not isinstance(raw_tasks, list) or not raw_tasks:
         return legacy_rag_plan(query, default_cohort, reason="invalid_plan_to_legacy_rag"), [
@@ -356,6 +379,38 @@ def _normalize_task(
         grounding_context=grounding_context,
         registry=registry,
     )
+    spec = registry.get("tools", {}).get(lookup_type, {})
+    if spec.get("selection_mode") == "table_first":
+        required_slots = set(
+            (spec.get("required_slots") or {}).get(decision.get("intent"), [])
+        )
+        optional_ungrounded = {
+            error.partition(":")[2]
+            for error in validation_errors
+            if error.startswith("ungrounded_slot:")
+            and error.partition(":")[2] not in required_slots
+        }
+        if optional_ungrounded:
+            # Optional row hints must never discard an otherwise valid small
+            # reference table. Drop only ungrounded hints and let the composer
+            # select from the complete applicable table.
+            decision["slots"] = {
+                key: value
+                for key, value in (decision.get("slots") or {}).items()
+                if key not in optional_ungrounded
+            }
+            decision["slot_spans"] = {
+                key: value
+                for key, value in (decision.get("slot_spans") or {}).items()
+                if key not in optional_ungrounded
+            }
+            validation_errors = validate_router_decision(
+                decision,
+                query=original_query,
+                selected_cohort=cohorts[0] if cohorts else selected_cohort,
+                grounding_context=grounding_context,
+                registry=registry,
+            )
     if validation_errors:
         errors.extend(validation_errors)
         if all(

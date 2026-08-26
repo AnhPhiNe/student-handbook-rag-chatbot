@@ -23,6 +23,7 @@ def test_build_manifest_identity_matches_both_runtime_collections(
         encoding="utf-8",
     )
     monkeypatch.setattr(health, "BUILD_MANIFEST_PATH", manifest_path)
+    monkeypatch.delenv("STUDENT_RAG_HYBRID_COLLECTION", raising=False)
     monkeypatch.setenv("QDRANT_COLLECTION_NAME", "qdrant-v30")
     monkeypatch.setenv("MONGODB_PARENT_COLLECTION", "parents-v30")
 

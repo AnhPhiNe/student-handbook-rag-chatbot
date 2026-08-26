@@ -40,6 +40,7 @@ frontend/.vite/
 /logs/
 /scratch/
 /tmp/
+/work/
 /.hf_deploy_temp/
 *.log
 *.lock

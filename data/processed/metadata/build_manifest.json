@@ -1,7 +1,7 @@
 {
   "schema_version": "student-handbook-build-v1",
-  "build_id": "build-7501cd5c03bcfb7f3bc9",
-  "created_at": "2026-08-26T15:33:38.513326+00:00",
+  "build_id": "build-2254b92ccb60f7984bfa",
+  "created_at": "2026-08-26T16:34:54.498031+00:00",
   "source_pdfs": {
     "so-tay-sinh-vien-khoa-48-49.pdf": "4bf7b510b66e6ed8ce60008d48efd05723f06899171cbf89e4494f4b277739db",
     "so-tay-sinh-vien-khoa-50.pdf": "bbae270b9821c71eeede660e3168c868bde07f458f07b648645c14584bdeb8b0",
@@ -10,7 +10,7 @@
   "artifacts": {
     "parent_docstore": {
       "path": "data\\processed\\chunks\\all_docstore_items.json",
-      "sha256": "d1912b74e59a7203a9c734578080f7f4210bae860afa1b417a9adb461f249f6b",
+      "sha256": "e62561025a807f1802598aa0b7e9ebfd4d5c564dc502bf3245cb26bc59748829",
       "count": 462,
       "cohort_counts": {
         "K48-K49": 123,
@@ -20,12 +20,12 @@
     },
     "child_chunks": {
       "path": "data\\processed\\chunks\\child_parent_chunks.json",
-      "sha256": "90f1ecaa5396a51a8f303b0d63b7396faa4c6b88032117df2914ae924e6fc3bf",
-      "count": 3222,
+      "sha256": "4e75584720a87b99342569a911e95e955bf926bffaae28f6da5b074806d6874f",
+      "count": 3125,
       "cohort_counts": {
-        "K48-K49": 910,
-        "K50": 1117,
-        "K51": 1195
+        "K48-K49": 877,
+        "K50": 1084,
+        "K51": 1164
       }
     },
     "structured_tables": {
@@ -47,6 +47,14 @@
         "K50": 34,
         "K51": 30
       }
+    },
+    "table_embedding_audit": {
+      "path": "data\\processed\\metadata\\structured_table_embedding_audit.json",
+      "sha256": "b9232ff1b349fd24dd00631c76ddf3dd809c112c07ff32cd5a82432b6a8d2e78",
+      "total_table_like_rows": 167,
+      "excluded_as_structured": 145,
+      "retained_unmatched": 0,
+      "ignored_non_content": 22
     }
   },
   "embedding": {
@@ -55,12 +63,13 @@
     "normalize_embeddings": true
   },
   "storage_targets": {
-    "qdrant_collection": "student_handbook_semantic_v30",
-    "mongo_parent_collection": "parent_docs_v30"
+    "qdrant_collection": "student_handbook_semantic_v31",
+    "mongo_parent_collection": "parent_docs_v31"
   },
   "index_contract": {
     "embedding_input": "data\\processed\\chunks\\child_parent_chunks.json",
     "parent_input": "data\\processed\\chunks\\all_docstore_items.json",
-    "structured_json_indexed_in_qdrant": false
+    "structured_json_indexed_in_qdrant": false,
+    "covered_table_rows_indexed_in_qdrant": false
   }
 }

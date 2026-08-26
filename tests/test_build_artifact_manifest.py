@@ -117,3 +117,59 @@ def test_manifest_requires_all_three_cohorts(tmp_path: Path) -> None:
 
     with pytest.raises(RuntimeError, match="must both contain exactly"):
         build_artifact_manifest(**inputs)
+
+
+def test_manifest_binds_table_embedding_audit_to_registry_and_build(
+    tmp_path: Path,
+) -> None:
+    inputs = _inputs(tmp_path)
+    table_path = Path(inputs["table_path"])
+    child_path = Path(inputs["child_path"])
+    audit_path = tmp_path / "table_embedding_audit.json"
+    from scripts.build_artifact_manifest import sha256_file
+
+    _write_json(
+        audit_path,
+        {
+            "schema_version": "structured-table-embedding-audit-v1",
+            "structured_registry_sha256": sha256_file(table_path),
+            "child_count": len(json.loads(child_path.read_text(encoding="utf-8"))),
+            "total_table_like_rows": 3,
+            "excluded_as_structured": 2,
+            "retained_unmatched": 1,
+            "ignored_non_content": 0,
+            "rows": [],
+        },
+    )
+    inputs["table_embedding_audit_path"] = audit_path
+
+    manifest = build_artifact_manifest(**inputs)
+    persisted_audit = json.loads(audit_path.read_text(encoding="utf-8"))
+
+    assert persisted_audit["build_id"] == manifest["build_id"]
+    assert manifest["index_contract"]["covered_table_rows_indexed_in_qdrant"] is False
+    assert manifest["artifacts"]["table_embedding_audit"][
+        "retained_unmatched"
+    ] == 1
+
+
+def test_manifest_rejects_table_embedding_audit_for_other_registry(
+    tmp_path: Path,
+) -> None:
+    inputs = _inputs(tmp_path)
+    audit_path = tmp_path / "table_embedding_audit.json"
+    _write_json(
+        audit_path,
+        {
+            "structured_registry_sha256": "wrong",
+            "child_count": 3,
+            "total_table_like_rows": 0,
+            "excluded_as_structured": 0,
+            "retained_unmatched": 0,
+            "ignored_non_content": 0,
+        },
+    )
+    inputs["table_embedding_audit_path"] = audit_path
+
+    with pytest.raises(RuntimeError, match="structured registry hash"):
+        build_artifact_manifest(**inputs)

@@ -16,6 +16,9 @@ DEFAULT_PARENT_PATH = Path("data/processed/chunks/all_docstore_items.json")
 DEFAULT_CHILD_PATH = Path("data/processed/chunks/child_parent_chunks.json")
 DEFAULT_TABLE_PATH = Path("data/processed/tables/structured_tables_registry.json")
 DEFAULT_GRAPH_PATH = Path("data/processed/graphs/document_edges.json")
+DEFAULT_TABLE_EMBEDDING_AUDIT_PATH = Path(
+    "data/processed/metadata/structured_table_embedding_audit.json"
+)
 DEFAULT_OUTPUT_PATH = Path("data/processed/metadata/build_manifest.json")
 
 
@@ -102,6 +105,7 @@ def build_artifact_manifest(
     child_path: Path = DEFAULT_CHILD_PATH,
     table_path: Path = DEFAULT_TABLE_PATH,
     graph_path: Path = DEFAULT_GRAPH_PATH,
+    table_embedding_audit_path: Path | None = None,
     output_path: Path = DEFAULT_OUTPUT_PATH,
     qdrant_collection: str,
     mongo_collection: str,
@@ -128,6 +132,36 @@ def build_artifact_manifest(
     children = _load_json_array(child_path)
     tables = _load_json_array(table_path)
     graph_edges = _load_json_array(graph_path)
+    table_embedding_audit: dict[str, Any] | None = None
+    if table_embedding_audit_path is not None:
+        if not table_embedding_audit_path.is_file():
+            raise FileNotFoundError(
+                f"Missing table embedding audit: {table_embedding_audit_path}"
+            )
+        loaded_audit = json.loads(
+            table_embedding_audit_path.read_text(encoding="utf-8")
+        )
+        if not isinstance(loaded_audit, dict):
+            raise RuntimeError("Table embedding audit must be a JSON object.")
+        if loaded_audit.get("structured_registry_sha256") != sha256_file(table_path):
+            raise RuntimeError(
+                "Table embedding audit does not match the structured registry hash."
+            )
+        if int(loaded_audit.get("child_count") or -1) != len(children):
+            raise RuntimeError(
+                "Table embedding audit child count does not match child artifact."
+            )
+        status_total = sum(
+            int(loaded_audit.get(field) or 0)
+            for field in (
+                "excluded_as_structured",
+                "retained_unmatched",
+                "ignored_non_content",
+            )
+        )
+        if status_total != int(loaded_audit.get("total_table_like_rows") or -1):
+            raise RuntimeError("Table embedding audit status counts are incomplete.")
+        table_embedding_audit = loaded_audit
 
     parent_id_list = [str(parent.get("_id") or "") for parent in parents]
     child_id_list = [
@@ -180,6 +214,11 @@ def build_artifact_manifest(
     _attach_build_id(parents, children, build_id)
     _write_json_atomic(parent_path, parents)
     _write_json_atomic(child_path, children)
+    if table_embedding_audit is not None and table_embedding_audit_path is not None:
+        table_embedding_audit["build_id"] = build_id
+        table_embedding_audit["docstore_sha256"] = sha256_file(parent_path)
+        table_embedding_audit["child_output_sha256"] = sha256_file(child_path)
+        _write_json_atomic(table_embedding_audit_path, table_embedding_audit)
 
     manifest = {
         "schema_version": SCHEMA_VERSION,
@@ -221,8 +260,22 @@ def build_artifact_manifest(
             "embedding_input": str(child_path),
             "parent_input": str(parent_path),
             "structured_json_indexed_in_qdrant": False,
+            "covered_table_rows_indexed_in_qdrant": False,
         },
     }
+    if table_embedding_audit is not None and table_embedding_audit_path is not None:
+        manifest["artifacts"]["table_embedding_audit"] = {
+            "path": str(table_embedding_audit_path),
+            "sha256": sha256_file(table_embedding_audit_path),
+            "total_table_like_rows": table_embedding_audit[
+                "total_table_like_rows"
+            ],
+            "excluded_as_structured": table_embedding_audit[
+                "excluded_as_structured"
+            ],
+            "retained_unmatched": table_embedding_audit["retained_unmatched"],
+            "ignored_non_content": table_embedding_audit["ignored_non_content"],
+        }
     _write_json_atomic(output_path, manifest)
     return manifest
 
@@ -236,6 +289,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--child-path", type=Path, default=DEFAULT_CHILD_PATH)
     parser.add_argument("--table-path", type=Path, default=DEFAULT_TABLE_PATH)
     parser.add_argument("--graph-path", type=Path, default=DEFAULT_GRAPH_PATH)
+    parser.add_argument(
+        "--table-embedding-audit-path",
+        type=Path,
+        default=DEFAULT_TABLE_EMBEDDING_AUDIT_PATH,
+    )
     parser.add_argument("--output-path", type=Path, default=DEFAULT_OUTPUT_PATH)
     parser.add_argument(
         "--qdrant-collection",
@@ -274,6 +332,7 @@ def main() -> None:
         child_path=args.child_path,
         table_path=args.table_path,
         graph_path=args.graph_path,
+        table_embedding_audit_path=args.table_embedding_audit_path,
         output_path=args.output_path,
         qdrant_collection=args.qdrant_collection,
         mongo_collection=args.mongo_collection,

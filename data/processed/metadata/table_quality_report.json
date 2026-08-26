@@ -13,7 +13,7 @@
       "K50::regulation_table": 10,
       "K51::regulation_table": 10
     },
-    "table_like_chunk_count": 97,
+    "table_like_chunk_count": 0,
     "regulation_table_registry_count": 26,
     "directory_table_record_count": 510,
     "boundary_error_count": 0,

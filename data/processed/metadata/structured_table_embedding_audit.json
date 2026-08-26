@@ -1,0 +1,3791 @@
+{
+  "schema_version": "structured-table-embedding-audit-v1",
+  "docstore_path": "data\\processed\\chunks\\all_docstore_items.json",
+  "docstore_sha256": "e62561025a807f1802598aa0b7e9ebfd4d5c564dc502bf3245cb26bc59748829",
+  "structured_registry_path": "data\\processed\\tables\\structured_tables_registry.json",
+  "structured_registry_sha256": "a22beae884d310704ebabed1d127560863bd178f60e7df1379c199b7e209e8f3",
+  "child_output_path": "data\\processed\\chunks\\child_parent_chunks.json",
+  "child_count": 3125,
+  "total_table_like_rows": 167,
+  "excluded_as_structured": 145,
+  "retained_unmatched": 0,
+  "ignored_non_content": 22,
+  "rows": [
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 9,
+      "source_pages": [
+        11,
+        12,
+        13
+      ],
+      "normalized_cells": [
+        "chương trình đào tạo",
+        "thời gian học tập chuẩn",
+        "thời gian học tập tối đa"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "header"
+        },
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 10,
+      "source_pages": [
+        11,
+        12,
+        13
+      ],
+      "normalized_cells": [
+        "---",
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 11,
+      "source_pages": [
+        11,
+        12,
+        13
+      ],
+      "normalized_cells": [
+        "đào tạo đại học cấp bằng thứ nhất",
+        "4 năm học",
+        "8 năm học"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 12,
+      "source_pages": [
+        11,
+        12,
+        13
+      ],
+      "normalized_cells": [
+        "đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
+        "1,5 năm học",
+        "3 năm học"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 13,
+      "source_pages": [
+        11,
+        12,
+        13
+      ],
+      "normalized_cells": [
+        "đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
+        "2,5 năm học",
+        "5 năm học"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 14,
+      "source_pages": [
+        11,
+        12,
+        13
+      ],
+      "normalized_cells": [
+        "đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
+        "2 năm học",
+        "4 năm học",
+        "bảng: thời gian học tập chuẩn và tối đa phạm vi áp dụng: áp dụng cho hình thức đào tạo vừa làm vừa học."
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 15,
+      "source_pages": [
+        11,
+        12,
+        13
+      ],
+      "normalized_cells": [
+        "chương trình đào tạo",
+        "thời gian học tập chuẩn",
+        "thời gian học tập tối đa"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "header"
+        },
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 16,
+      "source_pages": [
+        11,
+        12,
+        13
+      ],
+      "normalized_cells": [
+        "---",
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 17,
+      "source_pages": [
+        11,
+        12,
+        13
+      ],
+      "normalized_cells": [
+        "đào tạo đại học cấp bằng thứ nhất",
+        "5 năm học",
+        "9 năm học"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 18,
+      "source_pages": [
+        11,
+        12,
+        13
+      ],
+      "normalized_cells": [
+        "đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
+        "2 năm học",
+        "4 năm học"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 19,
+      "source_pages": [
+        11,
+        12,
+        13
+      ],
+      "normalized_cells": [
+        "đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
+        "3 năm học",
+        "6 năm học"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 20,
+      "source_pages": [
+        11,
+        12,
+        13
+      ],
+      "normalized_cells": [
+        "đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
+        "2,5 năm học",
+        "5 năm học"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 17,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "loại",
+        "thang điểm 10",
+        "thang điểm chữ"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 18,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "---",
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 19,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "đạt",
+        "8,5 - 10",
+        "a"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 20,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "đạt",
+        "7,8 - 8,4",
+        "b+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 21,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "đạt",
+        "7,0 - 7,7",
+        "b"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 22,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "đạt",
+        "6,3 - 6,9",
+        "c+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 23,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "đạt",
+        "5,5 - 6,2",
+        "c"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 24,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "đạt",
+        "4,8 - 5,4",
+        "d+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 25,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "đạt",
+        "4,0 - 4,7",
+        "d"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 26,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "không đạt",
+        "3,0 - 3,9",
+        "f+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 27,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "không đạt",
+        "0,0 - 2,9",
+        "f",
+        "bảng: bảng đánh giá học phần đạt/không đạt không phân mức phạm vi áp dụng: áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập."
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 28,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "kết quả",
+        "thang điểm 10",
+        "điểm chữ",
+        "tính vào điểm trung bình học tập"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 29,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "---",
+        "---",
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 30,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "đạt",
+        "từ 5,0 trở lên",
+        "p",
+        "không"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 31,
+      "source_pages": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "chưa đạt",
+        "dưới 5,0",
+        "không quy đổi thành p",
+        "không"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 17,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "thang điểm chữ",
+        "thang điểm 4"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 18,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 19,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "a",
+        "4,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 20,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "b+",
+        "3,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 21,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "b",
+        "3,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 22,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "c+",
+        "2,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 23,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "c",
+        "2,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 24,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "d+",
+        "1,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 25,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "d",
+        "1,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 26,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "f+",
+        "0,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 27,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "f",
+        "0,0",
+        "bảng: bảng xếp loại học lực theo thang điểm 4"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 28,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "xếp loại",
+        "thang điểm 4"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 29,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 30,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "xuất sắc",
+        "từ 3,6 đến 4,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 31,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "giỏi",
+        "từ 3,2 đến dưới 3,6"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 32,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "khá",
+        "từ 2,5 đến dưới 3,2"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 33,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "trung bình",
+        "từ 2,0 đến dưới 2,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 34,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "yếu",
+        "từ 1,0 đến dưới 2,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 35,
+      "source_pages": [
+        21,
+        22,
+        23
+      ],
+      "normalized_cells": [
+        "kém",
+        "dưới 1,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 5,
+      "source_pages": [
+        74
+      ],
+      "normalized_cells": [
+        "khung điểm",
+        "xếp loại"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 6,
+      "source_pages": [
+        74
+      ],
+      "normalized_cells": [
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 7,
+      "source_pages": [
+        74
+      ],
+      "normalized_cells": [
+        "từ 90 đến 100 điểm",
+        "xuất sắc"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 8,
+      "source_pages": [
+        74
+      ],
+      "normalized_cells": [
+        "từ 80 đến dưới 90 điểm",
+        "tốt"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 9,
+      "source_pages": [
+        74
+      ],
+      "normalized_cells": [
+        "từ 65 đến dưới 80 điểm",
+        "khá"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 10,
+      "source_pages": [
+        74
+      ],
+      "normalized_cells": [
+        "từ 50 đến dưới 65 điểm",
+        "trung bình"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 11,
+      "source_pages": [
+        74
+      ],
+      "normalized_cells": [
+        "từ 35 đến dưới 50 điểm",
+        "yếu"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K48-K49",
+      "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 12,
+      "source_pages": [
+        74
+      ],
+      "normalized_cells": [
+        "dưới 35 điểm",
+        "kém"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 9,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "chương trình đào tạo",
+        "thời gian học tập chuẩn",
+        "thời gian học tập tối đa"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "header"
+        },
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 10,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "---",
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 11,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "đào tạo đại học cấp bằng thứ nhất",
+        "4 năm học",
+        "8 năm học"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 12,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
+        "1,5 năm học",
+        "3 năm học"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 13,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
+        "2,5 năm học",
+        "5 năm học"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 14,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
+        "2 năm học",
+        "4 năm học",
+        "bảng: thời gian học tập chuẩn và tối đa phạm vi áp dụng: áp dụng cho hình thức đào tạo vừa làm vừa học."
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 15,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "chương trình đào tạo",
+        "thời gian học tập chuẩn",
+        "thời gian học tập tối đa"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "header"
+        },
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 16,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "---",
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 17,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "đào tạo đại học cấp bằng thứ nhất",
+        "5 năm học",
+        "9 năm học"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 18,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
+        "2 năm học",
+        "4 năm học"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 19,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
+        "3 năm học",
+        "6 năm học"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 20,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
+        "2,5 năm học",
+        "5 năm học"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 16,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "loại",
+        "thang điểm 10",
+        "thang điểm chữ"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 17,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "---",
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 18,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "8,5 - 10",
+        "a"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 19,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "7,8 - 8,4",
+        "b+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 20,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "7,0 - 7,7",
+        "b"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 21,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "6,3 - 6,9",
+        "c+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 22,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "5,5 - 6,2",
+        "c"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 23,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "4,8 - 5,4",
+        "d+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 24,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "4,0 - 4,7",
+        "d"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 25,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "không đạt",
+        "3,0 - 3,9",
+        "f+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 26,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "không đạt",
+        "0,0 - 2,9",
+        "f",
+        "bảng: bảng đánh giá học phần đạt/không đạt không phân mức phạm vi áp dụng: áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập."
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 27,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "kết quả",
+        "thang điểm 10",
+        "điểm chữ",
+        "tính vào điểm trung bình học tập"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 28,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "---",
+        "---",
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 29,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "từ 5,0 trở lên",
+        "p",
+        "không"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 30,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "chưa đạt",
+        "dưới 5,0",
+        "không quy đổi thành p",
+        "không"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 17,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "thang điểm chữ",
+        "thang điểm 4"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 18,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 19,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "a",
+        "4,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 20,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "b+",
+        "3,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 21,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "b",
+        "3,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 22,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "c+",
+        "2,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 23,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "c",
+        "2,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 24,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "d+",
+        "1,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 25,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "d",
+        "1,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 26,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "f+",
+        "0,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 27,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "f",
+        "0,0",
+        "bảng: bảng xếp loại học lực theo thang điểm 4"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 28,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "xếp loại",
+        "thang điểm 4"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 29,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 30,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "xuất sắc",
+        "từ 3,6 đến 4,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 31,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "giỏi",
+        "từ 3,2 đến dưới 3,6"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 32,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "khá",
+        "từ 2,5 đến dưới 3,2"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 33,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "trung bình",
+        "từ 2,0 đến dưới 2,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 34,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "yếu",
+        "từ 1,0 đến dưới 2,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 35,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "kém",
+        "dưới 1,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 4,
+      "source_pages": [
+        94
+      ],
+      "normalized_cells": [
+        "khung điểm",
+        "xếp loại"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 5,
+      "source_pages": [
+        94
+      ],
+      "normalized_cells": [
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 6,
+      "source_pages": [
+        94
+      ],
+      "normalized_cells": [
+        "từ 90 đến 100 điểm",
+        "xuất sắc"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 7,
+      "source_pages": [
+        94
+      ],
+      "normalized_cells": [
+        "từ 80 đến dưới 90 điểm",
+        "tốt"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 8,
+      "source_pages": [
+        94
+      ],
+      "normalized_cells": [
+        "từ 65 đến dưới 80 điểm",
+        "khá"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 9,
+      "source_pages": [
+        94
+      ],
+      "normalized_cells": [
+        "từ 50 đến dưới 65 điểm",
+        "trung bình"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 10,
+      "source_pages": [
+        94
+      ],
+      "normalized_cells": [
+        "từ 35 đến dưới 50 điểm",
+        "yếu"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K50",
+      "parent_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "block_index": 11,
+      "source_pages": [
+        94
+      ],
+      "normalized_cells": [
+        "dưới 35 điểm",
+        "kém"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 11,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "hình thức đào tạo",
+        "thời gian học tập chuẩn",
+        "thời gian học tập tối đa",
+        "quy tắc đối với sinh viên liên thông"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "header"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 12,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "---",
+        "---",
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 13,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "chính quy",
+        "04 năm học",
+        "06 năm học",
+        "đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ.",
+        "bảng: thời gian học tập chuẩn và tối đa phạm vi áp dụng: áp dụng cho hình thức đào tạo vừa làm vừa học theo nội dung sửa đổi, bổ sung có hiệu lực được nêu trong điều khoản nguồn."
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 14,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "hình thức đào tạo",
+        "thời gian học tập chuẩn",
+        "thời gian học tập tối đa",
+        "quy tắc đối với sinh viên liên thông"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "match_type": "header"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 15,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "---",
+        "---",
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+      "block_index": 16,
+      "source_pages": [
+        9,
+        10,
+        11
+      ],
+      "normalized_cells": [
+        "vừa làm vừa học",
+        "05 năm học",
+        "7,5 năm học",
+        "đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ."
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 19,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "loại",
+        "thang điểm 10",
+        "thang điểm chữ"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "header"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 20,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "---",
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 21,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "8,5 - 10",
+        "a"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 22,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "7,8 - 8,4",
+        "b+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 23,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "7,0 - 7,7",
+        "b"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 24,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "6,3 - 6,9",
+        "c+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 25,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "5,5 - 6,2",
+        "c"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 26,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "4,8 - 5,4",
+        "d+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 27,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "4,0 - 4,7",
+        "d"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 28,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "không đạt",
+        "3,0 - 3,9",
+        "f+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 29,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "không đạt",
+        "0,0 - 2,9",
+        "f",
+        "bảng: bảng quy đổi điểm học phần còn lại phạm vi áp dụng: áp dụng cho các học phần còn lại."
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 30,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "loại",
+        "thang điểm 10",
+        "thang điểm chữ"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "header"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 31,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "---",
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 32,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "8,5 - 10",
+        "a"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 33,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "7,8 - 8,4",
+        "b+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 34,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "7,0 - 7,7",
+        "b"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 35,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "6,3 - 6,9",
+        "c+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 36,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "5,5 - 6,2",
+        "c"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 37,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "không đạt",
+        "4,8 - 5,4",
+        "d+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 38,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "không đạt",
+        "4,0 - 4,7",
+        "d"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 39,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "không đạt",
+        "3,0 - 3,9",
+        "f+"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 40,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "không đạt",
+        "0,0 - 2,9",
+        "f",
+        "bảng: bảng đánh giá học phần đạt/không đạt không phân mức phạm vi áp dụng: áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập."
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation",
+          "match_type": "row"
+        },
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 41,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "kết quả",
+        "thang điểm 10",
+        "điểm chữ",
+        "tính vào điểm trung bình học tập"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 42,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "---",
+        "---",
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 43,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "đạt",
+        "từ 5,0 trở lên",
+        "p",
+        "không"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "block_index": 44,
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "normalized_cells": [
+        "chưa đạt",
+        "dưới 5,0",
+        "không quy đổi thành p",
+        "không"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 17,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "thang điểm chữ",
+        "thang điểm 4"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 18,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 19,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "a",
+        "4,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 20,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "b+",
+        "3,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 21,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "b",
+        "3,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 22,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "c+",
+        "2,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 23,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "c",
+        "2,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 24,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "d+",
+        "1,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 25,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "d",
+        "1,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 26,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "f+",
+        "0,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 27,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "f",
+        "0,0",
+        "bảng: bảng xếp loại học lực theo thang điểm 4"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 28,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "xếp loại",
+        "thang điểm 4"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 29,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 30,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "xuất sắc",
+        "từ 3,6 đến 4,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 31,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "giỏi",
+        "từ 3,2 đến dưới 3,6"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 32,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "khá",
+        "từ 2,5 đến dưới 3,2"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 33,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "trung bình",
+        "từ 2,0 đến dưới 2,5"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 34,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "yếu",
+        "từ 1,0 đến dưới 2,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "block_index": 35,
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "normalized_cells": [
+        "kém",
+        "dưới 1,0"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "block_index": 4,
+      "source_pages": [
+        91
+      ],
+      "normalized_cells": [
+        "khung điểm",
+        "xếp loại"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "header"
+        }
+      ]
+    },
+    {
+      "status": "ignored_non_content",
+      "reason": "markdown_table_separator",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "block_index": 5,
+      "source_pages": [
+        91
+      ],
+      "normalized_cells": [
+        "---",
+        "---"
+      ],
+      "matched_tables": []
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "block_index": 6,
+      "source_pages": [
+        91
+      ],
+      "normalized_cells": [
+        "từ 90 đến 100 điểm",
+        "xuất sắc"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "block_index": 7,
+      "source_pages": [
+        91
+      ],
+      "normalized_cells": [
+        "từ 80 đến dưới 90 điểm",
+        "tốt"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "block_index": 8,
+      "source_pages": [
+        91
+      ],
+      "normalized_cells": [
+        "từ 65 đến dưới 80 điểm",
+        "khá"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "block_index": 9,
+      "source_pages": [
+        91
+      ],
+      "normalized_cells": [
+        "từ 50 đến dưới 65 điểm",
+        "trung bình"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "block_index": 10,
+      "source_pages": [
+        91
+      ],
+      "normalized_cells": [
+        "từ 35 đến dưới 50 điểm",
+        "yếu"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    },
+    {
+      "status": "excluded_as_structured",
+      "reason": "exact_registry_row_or_header_match",
+      "cohort": "K51",
+      "parent_section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "block_index": 11,
+      "source_pages": [
+        91
+      ],
+      "normalized_cells": [
+        "dưới 35 điểm",
+        "kém"
+      ],
+      "matched_tables": [
+        {
+          "table_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "match_type": "row"
+        }
+      ]
+    }
+  ],
+  "build_id": "build-2254b92ccb60f7984bfa",
+  "child_output_sha256": "4e75584720a87b99342569a911e95e955bf926bffaae28f6da5b074806d6874f"
+}

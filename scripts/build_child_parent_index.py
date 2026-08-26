@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
+import unicodedata
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
@@ -18,6 +20,12 @@ GRANULARITIES = {"section_heading", "child"}
 REGULATION_CONTENT_TYPES = {"regulation_text", "regulation_sections", "regulation"}
 INDEXABLE_CONTENT_TYPES = REGULATION_CONTENT_TYPES
 CHUNK_TYPE_BY_CONTENT_TYPE = {}
+DEFAULT_STRUCTURED_TABLE_REGISTRY = Path(
+    "data/processed/tables/structured_tables_registry.json"
+)
+DEFAULT_TABLE_EMBEDDING_AUDIT = Path(
+    "data/processed/metadata/structured_table_embedding_audit.json"
+)
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -39,24 +47,234 @@ def parse_args() -> argparse.Namespace:
         default=1600,
         help="Hard cap for child/table text length. Parent articles are never indexed.",
     )
+    parser.add_argument(
+        "--structured-table-registry",
+        type=Path,
+        default=DEFAULT_STRUCTURED_TABLE_REGISTRY,
+        help="Authoritative structured tables used to suppress covered table rows.",
+    )
+    parser.add_argument(
+        "--table-embedding-audit",
+        type=Path,
+        default=DEFAULT_TABLE_EMBEDDING_AUDIT,
+        help="Audit report for excluded and retained table-like rows.",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     parents = json.loads(Path(args.docstore).read_text(encoding="utf-8"))
-    chunks = build_child_parent_chunks(parents, max_child_chars=args.max_child_chars)
+    structured_tables = json.loads(
+        args.structured_table_registry.read_text(encoding="utf-8")
+    )
+    audit_rows: list[dict[str, Any]] = []
+    chunks = build_child_parent_chunks(
+        parents,
+        max_child_chars=args.max_child_chars,
+        structured_tables=structured_tables,
+        table_embedding_audit=audit_rows,
+    )
     validate_child_parent_chunks(chunks, parents)
 
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(chunks, ensure_ascii=False, indent=2), encoding="utf-8")
 
+    audit_report = build_table_embedding_audit_report(
+        audit_rows,
+        docstore_path=Path(args.docstore),
+        registry_path=args.structured_table_registry,
+        child_output_path=output,
+        child_count=len(chunks),
+    )
+    args.table_embedding_audit.parent.mkdir(parents=True, exist_ok=True)
+    args.table_embedding_audit.write_text(
+        json.dumps(audit_report, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
     by_granularity = Counter(chunk["metadata"]["chunk_granularity"] for chunk in chunks)
     by_cohort = Counter(chunk["metadata"]["cohort"] for chunk in chunks)
     print(f"Built {len(chunks)} child-parent chunks -> {output}")
     print("By granularity:", dict(sorted(by_granularity.items())))
     print("By cohort:", dict(sorted(by_cohort.items())))
+    print(
+        "Table-like rows:",
+        {
+            "total": audit_report["total_table_like_rows"],
+            "excluded_as_structured": audit_report["excluded_as_structured"],
+            "retained_unmatched": audit_report["retained_unmatched"],
+            "ignored_non_content": audit_report["ignored_non_content"],
+        },
+    )
+    print(f"Table embedding audit -> {args.table_embedding_audit}")
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _normalize_table_cell(value: Any) -> str:
+    text = unicodedata.normalize("NFKC", str(value or ""))
+    text = text.replace("–", "-").replace("—", "-")
+    text = re.sub(r"\s+", " ", text).strip().casefold()
+    return text.strip(" |")
+
+
+def _parse_table_like_cells(text: str) -> tuple[str, ...]:
+    if "|" not in text:
+        return ()
+    first_pipe = text.find("|")
+    cells = [
+        _normalize_table_cell(cell)
+        for cell in text[first_pipe:].split("|")[1:]
+    ]
+    return tuple(cell for cell in cells if cell)
+
+
+def _ordered_registry_row(
+    row: dict[str, Any], columns: list[Any]
+) -> tuple[str, ...]:
+    if columns and all(str(column) in row for column in columns):
+        values = [row.get(str(column)) for column in columns]
+    else:
+        values = list(row.values())
+    return tuple(_normalize_table_cell(value) for value in values if value is not None)
+
+
+def _table_cells_match(actual: tuple[str, ...], expected: tuple[str, ...]) -> bool:
+    if not expected or len(actual) < len(expected):
+        return False
+    if actual[: len(expected)] == expected:
+        return True
+    if len(expected) == 1 or actual[: len(expected) - 1] != expected[:-1]:
+        return False
+    # PDF extraction can append a following caption after the final table delimiter.
+    # Matching remains deterministic because all preceding cells, cohort and parent
+    # must already agree, and the final cell must preserve the complete registry value.
+    return actual[len(expected) - 1].startswith(expected[-1] + " ")
+
+
+def _is_markdown_separator_row(cells: tuple[str, ...]) -> bool:
+    return bool(cells) and all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells)
+
+
+def match_structured_table_block(
+    block: dict[str, Any],
+    structured_tables: list[dict[str, Any]],
+) -> dict[str, Any]:
+    cohort = str(block.get("cohort") or "")
+    parent_id = str(block.get("parent_section_id") or "")
+    source_pages = {int(page) for page in block.get("source_pages") or []}
+    cells = _parse_table_like_cells(str(block.get("text") or ""))
+
+    parent_tables = [
+        table
+        for table in structured_tables
+        if str(table.get("source_parent_id") or "") == parent_id
+    ]
+    cohort_tables = [
+        table
+        for table in parent_tables
+        if str(table.get("cohort") or "") == cohort
+        and str(table.get("quality_status") or "").casefold() == "approved"
+        and table.get("used_by_runtime") is not False
+    ]
+    page_tables = [
+        table
+        for table in cohort_tables
+        if not source_pages
+        or not table.get("source_pages")
+        or source_pages.intersection(int(page) for page in table.get("source_pages") or [])
+    ]
+
+    matches: list[dict[str, str]] = []
+    for table in page_tables:
+        columns = list(table.get("columns") or [])
+        header = tuple(_normalize_table_cell(column) for column in columns)
+        if _table_cells_match(cells, header):
+            matches.append(
+                {"table_id": str(table.get("table_id") or ""), "match_type": "header"}
+            )
+        for row in table.get("rows") or []:
+            if not isinstance(row, dict):
+                continue
+            signature = _ordered_registry_row(row, columns)
+            if _table_cells_match(cells, signature):
+                matches.append(
+                    {"table_id": str(table.get("table_id") or ""), "match_type": "row"}
+                )
+
+    unique_matches = sorted(
+        {(item["table_id"], item["match_type"]) for item in matches}
+    )
+    if _is_markdown_separator_row(cells):
+        status = "ignored_non_content"
+        reason = "markdown_table_separator"
+    elif unique_matches:
+        status = "excluded_as_structured"
+        reason = "exact_registry_row_or_header_match"
+    elif not parent_tables:
+        status = "retained_unmatched"
+        reason = "no_registry_table_for_parent"
+    elif not cohort_tables:
+        status = "retained_unmatched"
+        reason = "cohort_or_quality_mismatch"
+    elif not page_tables:
+        status = "retained_unmatched"
+        reason = "source_page_mismatch"
+    elif not cells:
+        status = "retained_unmatched"
+        reason = "unparseable_table_row"
+    else:
+        status = "retained_unmatched"
+        reason = "row_not_present_in_registry"
+
+    return {
+        "status": status,
+        "reason": reason,
+        "cohort": cohort,
+        "parent_section_id": parent_id,
+        "block_index": int(block.get("block_index") or 0),
+        "source_pages": sorted(source_pages),
+        "normalized_cells": list(cells),
+        "matched_tables": [
+            {"table_id": table_id, "match_type": match_type}
+            for table_id, match_type in unique_matches
+        ],
+    }
+
+
+def build_table_embedding_audit_report(
+    rows: list[dict[str, Any]],
+    *,
+    docstore_path: Path,
+    registry_path: Path,
+    child_output_path: Path,
+    child_count: int,
+) -> dict[str, Any]:
+    excluded = sum(row.get("status") == "excluded_as_structured" for row in rows)
+    retained = sum(row.get("status") == "retained_unmatched" for row in rows)
+    ignored = sum(row.get("status") == "ignored_non_content" for row in rows)
+    return {
+        "schema_version": "structured-table-embedding-audit-v1",
+        "docstore_path": str(docstore_path),
+        "docstore_sha256": _sha256_file(docstore_path),
+        "structured_registry_path": str(registry_path),
+        "structured_registry_sha256": _sha256_file(registry_path),
+        "child_output_path": str(child_output_path),
+        "child_count": child_count,
+        "total_table_like_rows": len(rows),
+        "excluded_as_structured": excluded,
+        "retained_unmatched": retained,
+        "ignored_non_content": ignored,
+        "rows": rows,
+    }
 
 
 def _extract_blocks_from_docstore_item(item: dict[str, Any]) -> list[dict[str, Any]]:
@@ -73,8 +291,8 @@ def _extract_blocks_from_docstore_item(item: dict[str, Any]) -> list[dict[str, A
     blocks: list[dict[str, Any]] = []
     block_index = 0
 
-    # Không sinh vector chunk từ từng row trong item["tables"]. Phần bảng xuất hiện
-    # tự nhiên trong content vẫn được giữ như regulation text để RAG có đường fallback.
+    # Không sinh vector chunk từ item["tables"]. Các dòng bảng còn xuất hiện trong
+    # content sẽ được audit với structured registry trước khi quyết định index.
     content = _strip_docstore_preamble(str(item.get("content") or ""))
     for raw_block in _split_text_blocks(content):
         text = raw_block.strip()
@@ -213,6 +431,8 @@ def build_child_parent_chunks(
     parents: list[dict[str, Any]],
     *,
     max_child_chars: int = 1600,
+    structured_tables: list[dict[str, Any]] | None = None,
+    table_embedding_audit: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     chunks: list[dict[str, Any]] = []
 
@@ -231,6 +451,15 @@ def build_child_parent_chunks(
 
         seen_texts: set[str] = set()
         for block in _extract_blocks_from_docstore_item(parent):
+            if block.get("block_type") == "table_like_row" and structured_tables is not None:
+                audit_row = match_structured_table_block(block, structured_tables)
+                if table_embedding_audit is not None:
+                    table_embedding_audit.append(audit_row)
+                if audit_row["status"] in {
+                    "excluded_as_structured",
+                    "ignored_non_content",
+                }:
+                    continue
             text = _clean_block_text(str(block.get("text") or ""))
             if not text:
                 continue

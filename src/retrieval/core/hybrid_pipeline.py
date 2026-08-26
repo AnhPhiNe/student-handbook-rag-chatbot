@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
+from src.common.storage_config import require_qdrant_collection_name
 load_dotenv()
 os.environ["TRANSFORMERS_VERBOSITY"] = "error"
 import logging
@@ -169,7 +170,7 @@ class ChildParentHybridRetriever:
         self,
         qdrant_url: str,
         qdrant_key: str,
-        collection_name: str = "student_handbook_semantic_v9_candidate",
+        collection_name: str,
     ):
         self.qdrant_client = QdrantClient(
             url=qdrant_url,
@@ -785,11 +786,7 @@ def run_hybrid_retrieval_pipeline(
 
         qdrant_url = os.getenv("QDRANT_URL")
         qdrant_key = os.getenv("QDRANT_API_KEY")
-        collection_name = (
-            os.getenv("STUDENT_RAG_HYBRID_COLLECTION")
-            or os.getenv("QDRANT_COLLECTION_NAME")
-            or "student_handbook_semantic_v9_candidate"
-        )
+        collection_name = require_qdrant_collection_name()
         logger.info("Initializing child-parent regulation retriever...")
         _GLOBAL_RETRIEVER = ChildParentHybridRetriever(
             qdrant_url,
@@ -864,7 +861,11 @@ if __name__ == "__main__":
     qdrant_url = os.getenv("QDRANT_URL")
     qdrant_key = os.getenv("QDRANT_API_KEY")
 
-    retriever = ChildParentHybridRetriever(qdrant_url, qdrant_key)
+    retriever = ChildParentHybridRetriever(
+        qdrant_url,
+        qdrant_key,
+        collection_name=require_qdrant_collection_name(),
+    )
     res = retriever.retrieve("Dieu kien xet hoc bong la gi?")
     for r in res:
         print(f"[{r['rerank_score']:.4f}] {r['metadata']['title']}")

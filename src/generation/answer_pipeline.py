@@ -8,6 +8,7 @@ from typing import Any
 
 
 from src.common.cohort import resolve_cohort_from_query
+from src.common.storage_config import require_qdrant_collection_name
 from src.retrieval.core.citation_builder import (
     build_citation_from_lookup,
     enrich_citations_with_parent_details,
@@ -192,13 +193,7 @@ class AnswerPipeline:
 
         self.model = load_embedding_model(self.config["embedding"]["model_name"])
         try:
-            collection_name = (
-                os.getenv("QDRANT_COLLECTION_NAME")
-                or os.getenv("STUDENT_RAG_HYBRID_COLLECTION")
-                or self.config["vectorstore"].get(
-                    "collection_name", "student_handbook_semantic_v4"
-                )
-            )
+            collection_name = require_qdrant_collection_name()
             self.collection = get_chroma_collection(
                 persist_dir=self.config["vectorstore"].get(
                     "persist_dir", "data/vectorstore/chroma"

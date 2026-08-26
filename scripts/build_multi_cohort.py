@@ -1,3 +1,4 @@
+import argparse
 import os
 import subprocess
 import sys
@@ -754,7 +755,31 @@ def cleanup_legacy_cohort_artifacts() -> None:
             print(f"  - {path}")
 
 
-def main():
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Rebuild all three handbook cohorts into one coherent snapshot."
+    )
+    parser.add_argument(
+        "--qdrant-collection",
+        default=os.environ.get("QDRANT_COLLECTION_NAME"),
+        help="Explicit versioned Qdrant target recorded in the build manifest.",
+    )
+    parser.add_argument(
+        "--mongo-collection",
+        default=os.environ.get("MONGODB_PARENT_COLLECTION"),
+        help="Explicit versioned MongoDB target recorded in the build manifest.",
+    )
+    args = parser.parse_args(argv)
+    if not args.qdrant_collection or not args.mongo_collection:
+        parser.error(
+            "--qdrant-collection and --mongo-collection are required "
+            "(or configure matching environment variables)."
+        )
+    return args
+
+
+def main(argv: list[str] | None = None):
+    args = parse_args(argv)
     overrides = load_program_overrides()
     cleanup_legacy_cohort_artifacts()
 
@@ -977,8 +1002,38 @@ def main():
     )
     validate_program_directory(directory_dir / "program_directory.json", overrides)
 
+    print(f"\n{'='*50}\n--- BUILDING STRUCTURED TABLE LAYER ---\n{'='*50}")
+    subprocess.run(
+        [sys.executable, "-m", "scripts.build_structured_table_layer"],
+        check=True,
+    )
+
     print(f"\n{'='*50}\n--- BUILDING ENTITY REGISTRY ---\n{'='*50}")
     subprocess.run([sys.executable, "-m", "src.retrieval.core.build_entity_registry"], check=True)
+
+    print(f"\n{'='*50}\n--- BUILDING CROSS-REFERENCE GRAPH ---\n{'='*50}")
+    subprocess.run([sys.executable, "-m", "src.ingestion.graph_extractor"], check=True)
+
+    print(f"\n{'='*50}\n--- BUILDING CHILD-PARENT INDEX ---\n{'='*50}")
+    subprocess.run([sys.executable, "-m", "scripts.build_child_parent_index"], check=True)
+
+    print(f"\n{'='*50}\n--- WRITING BUILD MANIFEST ---\n{'='*50}")
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "scripts.build_artifact_manifest",
+            "--qdrant-collection",
+            args.qdrant_collection,
+            "--mongo-collection",
+            args.mongo_collection,
+        ],
+        check=True,
+    )
+
+    print(f"\n{'='*50}\n--- RUNNING ARTIFACT INTEGRITY AUDITS ---\n{'='*50}")
+    subprocess.run([sys.executable, "-m", "scripts.audit_table_quality"], check=True)
+    subprocess.run([sys.executable, "-m", "scripts.check_deploy_artifacts"], check=True)
 
     enable_legacy_vectorstore = (
         os.environ.get("ENABLE_LEGACY_VECTORSTORE", "")
@@ -1005,10 +1060,30 @@ def main():
 
     if os.environ.get("PUSH_REMOTE", "").strip().lower() in {"1", "true", "yes", "on"}:
         print(f"\n{'='*50}\n--- PUSHING TO MONGODB & QDRANT CLOUD ---\n{'='*50}")
-        subprocess.run([sys.executable, "-m", "scripts.push_to_mongo"], check=True)
-        print("Building child-parent index before pushing to Qdrant...")
-        subprocess.run([sys.executable, "-m", "scripts.build_child_parent_index"], check=True)
-        subprocess.run([sys.executable, "-m", "scripts.push_to_qdrant"], check=True)
+        publish_env = os.environ.copy()
+        publish_env["QDRANT_COLLECTION_NAME"] = args.qdrant_collection
+        publish_env["STUDENT_RAG_HYBRID_COLLECTION"] = args.qdrant_collection
+        publish_env["MONGODB_PARENT_COLLECTION"] = args.mongo_collection
+        subprocess.run(
+            [sys.executable, "-m", "scripts.verify_remote_build", "--preflight"],
+            check=True,
+            env=publish_env,
+        )
+        subprocess.run(
+            [sys.executable, "-m", "scripts.push_to_qdrant"],
+            check=True,
+            env=publish_env,
+        )
+        subprocess.run(
+            [sys.executable, "-m", "scripts.push_to_mongo"],
+            check=True,
+            env=publish_env,
+        )
+        subprocess.run(
+            [sys.executable, "-m", "scripts.verify_remote_build"],
+            check=True,
+            env=publish_env,
+        )
     else:
         print("\nRemote push skipped. Set PUSH_REMOTE=1 to upload MongoDB/Qdrant.")
 

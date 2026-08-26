@@ -106,7 +106,7 @@ flowchart TD
     
     PathC --> GraphEdges["Directed Knowledge Graph Edges<br/>95 Edges across 120 Nodes (LIEN_QUAN_TOI)"]
     
-    ParentDocs --> Mongo[("MongoDB Atlas<br/>parent_docs_v9_candidate")]
+    ParentDocs --> Mongo[("MongoDB Atlas<br/>versioned parent collection")]
     ChildChunks --> Embed["Embedding Model: BAAI/bge-m3 (1024-dim)"] --> Qdrant[("Qdrant Cloud<br/>student_handbook_semantic_v29_candidate")]
     Tables --> RuntimeJSON["Runtime JSON Storage (data/processed/tables/ & directories/)"]
     GraphEdges --> GraphJSON["NetworkX In-Memory MultiDiGraph"]
@@ -264,7 +264,7 @@ The release candidate knowledge base is built from the official handbooks of thr
 | **Directed Knowledge Graph Edges** | **95 directed `LIEN_QUAN_TOI` edges** |
 | **Cross-Cohort Edge Leak Rate** | **0.00%** (zero cross-cohort contamination) |
 | **Qdrant Collection** | `student_handbook_semantic_v29_candidate` |
-| **MongoDB Collection** | `parent_docs_v9_candidate` |
+| **MongoDB Collection** | Explicitly configured versioned collection |
 
 ### Parent Section Distribution
 
@@ -527,11 +527,11 @@ GROQ_API_KEYS=gsk_key_1,gsk_key_2
 VECTORDB_PROVIDER=qdrant
 QDRANT_URL=https://your-cluster.qdrant.io
 QDRANT_API_KEY=your_qdrant_key
-QDRANT_COLLECTION_NAME=student_handbook_semantic_v29_candidate
+QDRANT_COLLECTION_NAME=student_handbook_semantic_v30
 
 # Document Store (MongoDB Atlas)
 MONGODB_URL=mongodb+srv://user:password@cluster.mongodb.net/
-MONGODB_PARENT_COLLECTION=parent_docs_v9_candidate
+MONGODB_PARENT_COLLECTION=parent_docs_v30
 
 # Two-Tier Response Caching (Optional Redis)
 REDIS_URL=rediss://default:password@your-redis-host:6379
@@ -546,6 +546,24 @@ STUDENT_RAG_RATE_LIMIT_PER_MINUTE=20
 STUDENT_RAG_IP_RATE_LIMIT_PER_MINUTE=120
 STUDENT_RAG_MAX_CONCURRENT_CHAT=5
 ```
+
+### Reproducible data build and safe publish
+
+Build every local artifact with one command and lock the intended versioned
+MongoDB/Qdrant pair in `data/processed/metadata/build_manifest.json`:
+
+```bash
+python -m scripts.build_multi_cohort \
+  --qdrant-collection student_handbook_semantic_v30 \
+  --mongo-collection parent_docs_v30
+```
+
+The command rebuilds structured tables, graph data, parent documents and
+child chunks, then runs integrity checks. It does not publish remotely unless
+`PUSH_REMOTE=1` is explicitly set. Remote publishing refuses existing targets,
+checks the manifest and `build_id`, and verifies MongoDB/Qdrant linkage before
+the application environment is switched. Keep the previous collection pair
+available for rollback until the new build has passed smoke testing.
 
 ---
 

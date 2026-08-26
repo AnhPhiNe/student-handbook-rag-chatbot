@@ -55,13 +55,9 @@ def _git_commit() -> str:
 def _provenance(dataset_dir: Path, backend: str) -> dict[str, Any]:
     manifest = load_json(dataset_dir / "manifest.json")
     router_config = yaml.safe_load(AI_ROUTER_CONFIG.read_text(encoding="utf-8")) or {}
-    retrieval_config = (
-        yaml.safe_load(RETRIEVAL_CONFIG.read_text(encoding="utf-8")) or {}
-    )
     answer_config = (
         yaml.safe_load(ANSWER_GENERATION_CONFIG.read_text(encoding="utf-8")) or {}
     )
-    vectorstore_config = retrieval_config.get("vectorstore") or {}
     llm_config = answer_config.get("llm") or {}
     cache_config = answer_config.get("cache") or {}
     config_hashes = dict(manifest.get("config_hashes") or {})
@@ -102,11 +98,9 @@ def _provenance(dataset_dir: Path, backend: str) -> dict[str, Any]:
         or router_config.get("response_format", "auto"),
         "judge_model": manifest.get("judge_model"),
         "backend": backend,
-        "qdrant_collection": os.environ.get("QDRANT_COLLECTION_NAME")
-        or vectorstore_config.get("collection_name"),
-        "mongodb_parent_collection": os.environ.get(
-            "MONGODB_PARENT_COLLECTION", "parent_docs_v9_candidate"
-        ),
+        "qdrant_collection": os.environ.get("STUDENT_RAG_HYBRID_COLLECTION")
+        or os.environ.get("QDRANT_COLLECTION_NAME"),
+        "mongodb_parent_collection": os.environ.get("MONGODB_PARENT_COLLECTION"),
         "python": platform.python_version(),
         "platform": platform.platform(),
     }

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 
@@ -12,6 +13,7 @@ from src.api.schemas import ArtifactHealthResponse, ArtifactStatus, HealthRespon
 router = APIRouter(tags=["health"])
 SERVICE_NAME = "student_handbook_rag"
 SERVICE_VERSION = "0.1.0"
+BUILD_MANIFEST_PATH = Path("data/processed/metadata/build_manifest.json")
 
 
 def _artifact(path: str, exists: bool, kind: str) -> ArtifactStatus:
@@ -20,6 +22,28 @@ def _artifact(path: str, exists: bool, kind: str) -> ArtifactStatus:
 
 def _uses_qdrant_provider(provider: str) -> bool:
     return provider.strip().lower() in {"qdrant", "qdrant_cloud"}
+
+
+def _build_manifest_matches_environment() -> bool:
+    if not BUILD_MANIFEST_PATH.is_file():
+        return False
+    try:
+        manifest = json.loads(BUILD_MANIFEST_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    targets = manifest.get("storage_targets") or {}
+    qdrant_collection = (
+        os.environ.get("STUDENT_RAG_HYBRID_COLLECTION")
+        or os.environ.get("QDRANT_COLLECTION_NAME")
+    )
+    mongo_collection = os.environ.get("MONGODB_PARENT_COLLECTION")
+    return bool(
+        manifest.get("build_id")
+        and qdrant_collection
+        and mongo_collection
+        and targets.get("qdrant_collection") == qdrant_collection
+        and targets.get("mongo_parent_collection") == mongo_collection
+    )
 
 
 def _required_artifacts() -> list[ArtifactStatus]:
@@ -110,6 +134,16 @@ def _required_artifacts() -> list[ArtifactStatus]:
             "processed_json",
         ),
         _artifact(
+            "data/processed/metadata/build_manifest.json",
+            BUILD_MANIFEST_PATH.is_file(),
+            "processed_json",
+        ),
+        _artifact(
+            "build_manifest:storage_targets",
+            _build_manifest_matches_environment(),
+            "build_identity",
+        ),
+        _artifact(
             "data/processed/graphs/document_edges.json",
             Path("data/processed/graphs/document_edges.json").is_file(),
             "processed_json",
@@ -124,7 +158,10 @@ def _required_artifacts() -> list[ArtifactStatus]:
                 _artifact("QDRANT_API_KEY", bool(os.environ.get("QDRANT_API_KEY")), "env"),
                 _artifact(
                     "QDRANT_COLLECTION_NAME",
-                    bool(os.environ.get("QDRANT_COLLECTION_NAME")),
+                    bool(
+                        os.environ.get("STUDENT_RAG_HYBRID_COLLECTION")
+                        or os.environ.get("QDRANT_COLLECTION_NAME")
+                    ),
                     "env",
                 ),
             ]

@@ -20,8 +20,8 @@ embedding:
 
 vectorstore:
   provider: qdrant_cloud
-  collection_name: student_handbook_semantic_v9_candidate
   persist_directory: data/processed/chroma
+  collection_name: student_handbook_legacy_chroma
 
 retrieval:
   default_top_k: 5

@@ -35,6 +35,7 @@ REQUIRED_ARTIFACTS = [
     ("data/processed/graphs/document_edges.json", "file"),
     ("data/processed/chunks/all_docstore_items.json", "file"),
     ("data/processed/chunks/child_parent_chunks.json", "file"),
+    ("data/processed/metadata/build_manifest.json", "file"),
 ]
 
 

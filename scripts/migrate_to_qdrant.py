@@ -14,6 +14,8 @@ def string_to_uuid(s: str) -> str:
 # Thêm thư mục gốc vào PYTHONPATH để có thể import src
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from src.common.storage_config import require_qdrant_collection_name
+
 
 def get_chroma_client(persist_dir: str):
     import chromadb
@@ -36,7 +38,7 @@ def main():
         "--target-collection",
         type=str,
         default=None,
-        help="Tên collection Qdrant đích. Nếu bỏ trống thì dùng collection_name trong config.",
+        help="Tên collection Qdrant đích; mặc định đọc environment rõ ràng.",
     )
     args = parser.parse_args()
 
@@ -46,7 +48,13 @@ def main():
         config = yaml.safe_load(f)
     
     chroma_dir = config.get("vectorstore", {}).get("persist_dir", "data/vectorstore/chroma")
-    collection_name = config.get("vectorstore", {}).get("collection_name", "student_handbook_semantic")
+    collection_name = str(
+        config.get("vectorstore", {}).get("collection_name") or ""
+    ).strip()
+    if not collection_name:
+        raise RuntimeError(
+            "Legacy Chroma source collection must be explicit in the config."
+        )
     
     print(f"   Thư mục ChromaDB: {chroma_dir}")
     print(f"   Tên Collection nguồn: {collection_name}")
@@ -92,12 +100,13 @@ def main():
     from qdrant_client.models import Distance, VectorParams, PointStruct
     
     vector_size = len(embeddings[0])
-    qdrant_collection = args.target_collection or collection_name
+    qdrant_collection = args.target_collection or require_qdrant_collection_name()
     print(f"   Tên Collection đích trên Qdrant: {qdrant_collection}")
     
     if qdrant_client.collection_exists(qdrant_collection):
-        print(f"   Collection '{qdrant_collection}' đã tồn tại trên Qdrant. Đang xóa để nạp lại...")
-        qdrant_client.delete_collection(qdrant_collection)
+        raise RuntimeError(
+            f"Từ chối ghi đè Qdrant collection đã tồn tại: {qdrant_collection!r}."
+        )
         
     qdrant_client.create_collection(
         collection_name=qdrant_collection,

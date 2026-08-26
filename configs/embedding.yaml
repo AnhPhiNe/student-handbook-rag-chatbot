@@ -1,16 +1,17 @@
 input:
-  semantic_chunks: data/processed/chunks/semantic_chunks.json
+  semantic_chunks: data/processed/chunks/child_parent_chunks.json
   index_manifest: data/processed/chunks/index_manifest.json
 
 embedding:
   model_name: BAAI/bge-m3
+  dimension: 1024
   batch_size: 8
   normalize_embeddings: true
 
 vectorstore:
   provider: qdrant_cloud
   persist_dir: data/vectorstore/chroma
-  collection_name: student_handbook_semantic_v9_candidate
+  collection_name: student_handbook_legacy_chroma
   reset_collection: true
 
 output:

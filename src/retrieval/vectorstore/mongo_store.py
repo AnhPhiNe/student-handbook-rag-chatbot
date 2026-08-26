@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional
 from pymongo import MongoClient, UpdateOne
 
 from src.common.env_loader import load_project_env
+from src.common.storage_config import require_mongo_parent_collection_name
 
 logger = logging.getLogger(__name__)
 
@@ -43,10 +44,12 @@ class MongoDocStore:
         self,
         uri: str,
         db_name: str = "chatbotHCMUE",
-        collection_name: str = "parent_docs_v9_candidate",
+        collection_name: str | None = None,
         timeout_ms: int = 30000,
         failure_backoff_seconds: int = 300,
     ):
+        if not collection_name or not collection_name.strip():
+            raise ValueError("MongoDB parent collection name must be explicit.")
         self.client = MongoClient(
             uri,
             serverSelectionTimeoutMS=timeout_ms,
@@ -54,7 +57,7 @@ class MongoDocStore:
             socketTimeoutMS=timeout_ms,
         )
         self.db = self.client[db_name]
-        self.collection = self.db[collection_name]
+        self.collection = self.db[collection_name.strip()]
         self.failure_backoff_seconds = max(0, failure_backoff_seconds)
         self._disabled_until = 0.0
 
@@ -115,9 +118,7 @@ def get_mongo_store() -> MongoDocStore | DisabledMongoDocStore:
 
     timeout_ms = _env_int("MONGODB_TIMEOUT_MS", 30000)
     failure_backoff_seconds = _env_int("MONGODB_FAILURE_BACKOFF_SECONDS", 300)
-    collection_name = os.environ.get(
-        "MONGODB_PARENT_COLLECTION", "parent_docs_v9_candidate"
-    )
+    collection_name = require_mongo_parent_collection_name()
     return MongoDocStore(
         uri=uri,
         collection_name=collection_name,

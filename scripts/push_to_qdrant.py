@@ -13,8 +13,11 @@ from qdrant_client.models import Distance, PayloadSchemaType, PointStruct, Vecto
 from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
 
-DEFAULT_COLLECTION_NAME = "student_handbook_semantic_v9_candidate"
+from src.common.storage_config import require_qdrant_collection_name
+
+
 DATA_PATH = Path("data/processed/chunks/child_parent_chunks.json")
+BUILD_MANIFEST_PATH = Path("data/processed/metadata/build_manifest.json")
 
 
 def string_to_uuid(value: str) -> str:
@@ -22,11 +25,69 @@ def string_to_uuid(value: str) -> str:
     return str(uuid.UUID(digest))
 
 
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def validate_build_contract(
+    chunks: list[dict],
+    *,
+    collection_name: str,
+) -> str:
+    if not BUILD_MANIFEST_PATH.is_file():
+        raise RuntimeError(f"Missing build manifest: {BUILD_MANIFEST_PATH}")
+    manifest = json.loads(BUILD_MANIFEST_PATH.read_text(encoding="utf-8"))
+    build_id = str(manifest.get("build_id") or "")
+    if not build_id:
+        raise RuntimeError("Build manifest does not contain build_id.")
+    targets = manifest.get("storage_targets") or {}
+    if targets.get("qdrant_collection") != collection_name:
+        raise RuntimeError(
+            "Qdrant target does not match the collection locked in the build manifest."
+        )
+    child_artifact = (manifest.get("artifacts") or {}).get("child_chunks") or {}
+    if child_artifact.get("sha256") != sha256_file(DATA_PATH):
+        raise RuntimeError("Child chunk file hash does not match the build manifest.")
+    if int(child_artifact.get("count") or 0) != len(chunks):
+        raise RuntimeError("Child chunk count does not match the build manifest.")
+    build_ids = {
+        str((chunk.get("metadata") or {}).get("build_id") or "")
+        for chunk in chunks
+    }
+    if build_ids != {build_id}:
+        raise RuntimeError(
+            "Child chunks are not uniformly tagged with the manifest build_id."
+        )
+    return build_id
+
+
+def validate_embedding_contract(model_name: str, vector_size: int) -> None:
+    manifest = json.loads(BUILD_MANIFEST_PATH.read_text(encoding="utf-8"))
+    embedding = manifest.get("embedding") or {}
+    if embedding.get("model") != model_name:
+        raise RuntimeError("Embedding model does not match the build manifest.")
+    if int(embedding.get("dimension") or 0) != vector_size:
+        raise RuntimeError("Embedding dimension does not match the build manifest.")
+
+
+def ensure_new_collection(client: QdrantClient, collection_name: str) -> None:
+    if client.collection_exists(collection_name):
+        raise RuntimeError(
+            f"Refusing to overwrite existing Qdrant collection {collection_name!r}. "
+            "Publish to a new versioned collection and switch the environment "
+            "only after verification."
+        )
+
+
 def main() -> None:
     load_dotenv()
     qdrant_url = os.getenv("QDRANT_URL")
     qdrant_api_key = os.getenv("QDRANT_API_KEY")
-    collection_name = os.getenv("QDRANT_COLLECTION_NAME", DEFAULT_COLLECTION_NAME)
+    collection_name = require_qdrant_collection_name()
     if not qdrant_url or not qdrant_api_key:
         print("Missing QDRANT_URL or QDRANT_API_KEY.")
         sys.exit(1)
@@ -80,23 +141,18 @@ def main() -> None:
             + ", ".join(invalid_content_types)
         )
 
+    build_id = validate_build_contract(
+        chunks,
+        collection_name=collection_name,
+    )
+    print(f"Validated build contract: {build_id}")
+
     model_name = os.getenv("STUDENT_RAG_EMBEDDING_MODEL", "BAAI/bge-m3")
     encode_batch_size = int(os.getenv("STUDENT_RAG_EMBEDDING_BATCH_SIZE", "32"))
     print(f"Loading embedding model: {model_name}")
     model = SentenceTransformer(model_name)
     vector_size = model.get_sentence_embedding_dimension()
-
-    client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key, timeout=90.0)
-    if client.collection_exists(collection_name):
-        print(f"Collection {collection_name} exists. Deleting before reload.")
-        client.delete_collection(collection_name)
-
-    client.create_collection(
-        collection_name=collection_name,
-        vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
-    )
-    print(f"Created {collection_name} with vector size {vector_size}")
-    create_payload_indexes(client, collection_name)
+    validate_embedding_contract(model_name, vector_size)
 
     texts = [str(chunk.get("content") or "") for chunk in chunks]
     embeddings = model.encode(
@@ -119,6 +175,15 @@ def main() -> None:
                 payload=metadata,
             )
         )
+
+    client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key, timeout=90.0)
+    ensure_new_collection(client, collection_name)
+    client.create_collection(
+        collection_name=collection_name,
+        vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
+    )
+    print(f"Created {collection_name} with vector size {vector_size}")
+    create_payload_indexes(client, collection_name)
 
     batch_size = 64
     for start in tqdm(range(0, len(points), batch_size), desc="Upserting chunks"):

@@ -10,7 +10,7 @@ from collections import defaultdict
 from typing import Any
 from src.retrieval.core.cross_encoder_reranker import get_local_reranker
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
-from src.common.cohort import normalize_cohort
+from src.common.cohort import is_cohort_applicable, normalize_cohort
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
     FieldCondition,
@@ -39,10 +39,7 @@ def _chunk_matches_regulation_scope(
         return False
     if _is_supplemental_regulation_metadata(metadata):
         return False
-    expected_cohort = normalize_cohort(cohort)
-    if expected_cohort:
-        return normalize_cohort(metadata.get("cohort")) == expected_cohort
-    return True
+    return is_cohort_applicable(chunk, cohort)
 
 def _query_points_with_retry(
     client: QdrantClient,
@@ -511,7 +508,7 @@ class ChildParentHybridRetriever:
                 }
             ):
                 continue
-            if cohort and parent_metadata.get("cohort") != cohort:
+            if cohort and not is_cohort_applicable(parent, cohort):
                 continue
 
             doc = dict(parent)
@@ -625,8 +622,16 @@ class ChildParentHybridRetriever:
             doc = dict(parent)
             doc["chunk_id"] = parent_id
             doc["rerank_score"] = float(parent_best_score[parent_id])
-            # PHỤC HỒI TOÀN BỘ NỘI DUNG TỪ MONGODB THAY VÌ FOCUSED CHUNKS
-            doc["content"] = parent.get("content") or ""
+            focused_content = "\n\n".join(
+                str(chunk.get("content") or "").strip()
+                for _, chunk in focused_chunks
+                if str(chunk.get("content") or "").strip()
+            )
+            # The composer receives only directly matched child evidence.  The
+            # complete parent remains available in ``document`` for citation
+            # display and source inspection, so adjacent clauses cannot become
+            # answer evidence merely because they share an article parent.
+            doc["content"] = focused_content or parent.get("content") or ""
             doc["document"] = parent.get("content") or ""
             doc["metadata"] = {
                 **parent_metadata,
@@ -671,9 +676,17 @@ def _v7_query_filter(cohort: str | None) -> Filter:
     conditions = [
         FieldCondition(key="content_type", match=MatchValue(value="regulation_text")),
     ]
-    if cohort:
-        conditions.append(FieldCondition(key="cohort", match=MatchValue(value=cohort)))
-    return Filter(must=conditions)
+    scope_conditions = []
+    normalized = normalize_cohort(cohort)
+    if normalized:
+        scope_conditions = [
+            FieldCondition(key="cohort", match=MatchValue(value=normalized)),
+            FieldCondition(
+                key="applicable_cohorts",
+                match=MatchValue(value=normalized),
+            ),
+        ]
+    return Filter(must=conditions, should=scope_conditions or None)
 
 
 _GLOBAL_RETRIEVER = None

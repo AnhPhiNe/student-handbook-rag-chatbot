@@ -8,8 +8,32 @@ from src.retrieval.core.hybrid_pipeline import (
     ChildParentHybridRetriever,
     DEFAULT_RETRIEVAL_MODE,
     _build_related_references,
+    _chunk_matches_regulation_scope,
+    _v7_query_filter,
     select_graph_related_parent_candidates,
 )
+
+
+def test_regulation_scope_accepts_source_declared_for_target_cohort() -> None:
+    chunk = {
+        "metadata": {
+            "content_type": "regulation_text",
+            "cohort": "K50",
+            "source_cohort": "K50",
+            "applicable_cohorts": ["K48-K49", "K50", "K51"],
+        }
+    }
+
+    assert _chunk_matches_regulation_scope(chunk, "K51") is True
+    assert _chunk_matches_regulation_scope(chunk, "K47") is False
+
+
+def test_qdrant_scope_filter_matches_direct_or_applicable_cohort() -> None:
+    query_filter = _v7_query_filter("K51")
+
+    assert query_filter.should is not None
+    keys = {condition.key for condition in query_filter.should}
+    assert keys == {"cohort", "applicable_cohorts"}
 
 
 def test_graph_supplement_skips_primary_dedupes_and_caps() -> None:
@@ -262,3 +286,5 @@ def test_parent_grouping_keeps_phoranker_order_and_top_k() -> None:
 
     assert [item["chunk_id"] for item in results] == ["P2", "P1"]
     assert all(item["metadata"]["retrieval_role"] == "primary" for item in results)
+    assert [item["content"] for item in results] == ["a", "b"]
+    assert [item["document"] for item in results] == ["full P2", "full P1"]

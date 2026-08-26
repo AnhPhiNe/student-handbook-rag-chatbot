@@ -362,7 +362,7 @@ def _base_metadata(parent: dict[str, Any], parent_id: str) -> dict[str, Any]:
     metadata = parent.get("metadata") or {}
     title = str(metadata.get("title") or metadata.get("article") or parent_id)
     chapter = str(metadata.get("chapter") or "")
-    return {
+    base = {
         "parent_section_id": parent_id,
         "parent_chunk_id": parent_id,
         "cohort": metadata.get("cohort"),
@@ -377,6 +377,17 @@ def _base_metadata(parent: dict[str, Any], parent_id: str) -> dict[str, Any]:
         "source_type": metadata.get("source_type") or "structured_section",
         "content_type": metadata.get("content_type") or metadata.get("chunk_type") or "regulation_text",
     }
+    for field in (
+        "source_cohort",
+        "applicable_cohorts",
+        "applicability",
+        "applicability_basis_parent_id",
+        "applicability_validated",
+    ):
+        value = metadata.get(field)
+        if value not in (None, "", []):
+            base[field] = value
+    return base
 
 
 def _make_heading_chunk(parent: dict[str, Any], base_metadata: dict[str, Any]) -> dict[str, Any]:

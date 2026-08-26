@@ -174,13 +174,22 @@ def build_context_from_scholarship_lookup(lookup_result: dict[str, Any]) -> str:
         f"Input: {lookup_result.get('input_value')}",
     ]
     for row in rows:
-        lines.append(
-            "- "
-            f"label={row.get('label')}; "
-            f"scholarship_score={row.get('scholarship_score_range')}; "
-            f"academic_score={row.get('academic_score_range')}; "
-            f"conduct={row.get('conduct_score_condition')}"
-        )
+        if row.get("scholarship_level"):
+            lines.append(
+                "- "
+                f"scholarship_level={row.get('scholarship_level')}; "
+                f"academic_classification={row.get('academic_classification')}; "
+                "conduct_classification="
+                f"{row.get('conduct_classification_condition')}"
+            )
+        else:
+            lines.append(
+                "- "
+                f"label={row.get('label')}; "
+                f"scholarship_score={row.get('scholarship_score_range')}; "
+                f"academic_score={row.get('academic_score_range')}; "
+                f"conduct={row.get('conduct_score_condition')}"
+            )
     return "\n".join(lines)
 
 

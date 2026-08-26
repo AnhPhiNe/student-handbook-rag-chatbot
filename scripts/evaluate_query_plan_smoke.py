@@ -42,14 +42,14 @@ CASES: list[dict[str, Any]] = [
         "id": "multi_cohort_multi_intent",
         "query": "So sánh K48-K49 và K51 về thời gian học tối đa và chuẩn đầu ra ngoại ngữ.",
         "min_tasks": 2,
-        "required_modes": {"rag"},
+        "required_modes": {"structured", "rag"},
         "expected_task_cohorts": {"K48-K49", "K51"},
     },
     {
         "id": "two_sentences_one_message",
         "query": "K51 thời gian học tối đa là bao lâu? Điểm học bổng loại xuất sắc là bao nhiêu?",
         "min_tasks": 2,
-        "required_modes": {"structured", "clarify"},
+        "required_modes": {"structured"},
         "expected_task_cohorts": {"K51"},
     },
     {

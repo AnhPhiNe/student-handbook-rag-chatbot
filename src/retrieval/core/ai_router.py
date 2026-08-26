@@ -37,7 +37,7 @@ from .query_plan import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v27-table-first-contract"
+ROUTER_PROMPT_VERSION = "structured-regulation-v28-target-first-contract"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -105,10 +105,9 @@ Chỉ xuất đúng một JSON theo OUTPUT CONTRACT, không Markdown hay giải 
   entity, cohort, số liệu, phủ định, chủ đề hoặc ý định.
 
 2. LOGICAL TASKS
-- Một task là một yêu cầu thực thi độc lập bằng một mode/tool. Chỉ gộp nhiều
-  entity cùng thuộc một nguồn structured với cùng lookup_type.
-- Với RAG, mỗi mệnh đề hỏi có answer target riêng là một task, dù cùng domain
-  hoặc nguồn; không ghép chúng thành một retrieval query tổng hợp.
+- Tách QUERY thành answer target theo kết luận/nguồn trước khi chọn mode/tool.
+  Mỗi target cần mode/tool khác nhau phải là task riêng. Chỉ gộp entity cùng
+  nguồn structured và lookup_type.
 - TASK IDENTITY không phụ thuộc cohort: M yêu cầu áp dụng N cohort tạo M logical
   tasks, không tạo M×N tasks. Mỗi task giữ toàn bộ phạm vi trong `cohorts`.
 - Plan có 1-3 tasks. Nếu có hơn 3 yêu cầu độc lập, tạo đúng một clarify task yêu
@@ -138,7 +137,7 @@ Chỉ xuất đúng một JSON theo OUTPUT CONTRACT, không Markdown hay giải 
   có lookup_type=null. Nếu toàn bộ QUERY ngoài sổ tay, đặt out_of_domain=true.
 
 5. TỰ KIỂM TRA
-- Giữ mọi task độc lập còn lại khi một task cần clarify, thiếu slot hoặc ngữ cảnh.
+- Task cần cả structured và RAG chưa atomic: phải tách theo mode/tool.
 - task.question tự đủ nghĩa; không thêm entity, số liệu, phủ định, cohort, chủ đề.
 - slot_spans là chuỗi nguyên văn hoặc danh sách chuỗi; không xuất `{start,end}`.
 - Chỉ dùng lookup_type, intent, slots và required slots khai báo trong TOOLS.

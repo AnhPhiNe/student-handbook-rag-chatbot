@@ -125,6 +125,12 @@ FOREIGN_LANGUAGE_ROWS = [
                 "speaking",
                 "writing",
             ],
+            "component_slots": {
+                "listening": {"slot": "listening_score", "label": "Nghe"},
+                "reading": {"slot": "reading_score", "label": "Đọc"},
+                "speaking": {"slot": "speaking_score", "label": "Nói"},
+                "writing": {"slot": "writing_score", "label": "Viết"},
+            },
         },
     },
     {

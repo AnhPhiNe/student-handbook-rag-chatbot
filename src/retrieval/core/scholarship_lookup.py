@@ -115,7 +115,12 @@ def _rows_for_query(
     if labels:
         norm_labels = {normalize_text(lbl) for lbl in labels}
         return [
-            row for row in rows if normalize_text(row.get("label")) in norm_labels
+            row
+            for row in rows
+            if normalize_text(
+                row.get("label") or row.get("scholarship_level")
+            )
+            in norm_labels
         ], None
 
     numbers = _extract_numbers(_strip_cohort_numbers(query_norm))

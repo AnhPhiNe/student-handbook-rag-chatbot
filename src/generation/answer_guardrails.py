@@ -21,6 +21,18 @@ def is_low_confidence(retrieval_result: dict[str, Any]) -> bool:
     if can_answer_deterministically(retrieval_result):
         return False
 
+    # QueryPlan coverage is computed after task-level source binding.  A
+    # covered task with citations is therefore usable evidence even when the
+    # legacy top-level context fields are intentionally empty (for example a
+    # formula task executed inside a multi-task plan).
+    coverage = retrieval_result.get("coverage_by_task") or {}
+    if (
+        isinstance(coverage, dict)
+        and "covered" in coverage.values()
+        and bool(retrieval_result.get("citations"))
+    ):
+        return False
+
     # Khong co context nao thi LLM khong co nguon de dua vao.
     if is_context_empty(retrieval_result):
         return True
@@ -349,13 +361,22 @@ def _format_scholarship_classification_result(
         lines[0] = f"{prefix}, điểm học bổng {matched_score:g} thuộc mốc:"
 
     for row in rows:
-        lines.append(
-            "- "
-            f"{row.get('label')}: "
-            f"điểm học bổng {row.get('scholarship_score_range')}; "
-            f"điểm học tập {row.get('academic_score_range')}; "
-            f"điểm rèn luyện {row.get('conduct_score_condition')}."
-        )
+        if row.get("scholarship_level"):
+            lines.append(
+                "- "
+                f"Học bổng {row.get('scholarship_level')}: "
+                f"học tập {row.get('academic_classification')}; "
+                "rèn luyện "
+                f"{row.get('conduct_classification_condition')}."
+            )
+        else:
+            lines.append(
+                "- "
+                f"{row.get('label')}: "
+                f"điểm học bổng {row.get('scholarship_score_range')}; "
+                f"điểm học tập {row.get('academic_score_range')}; "
+                f"điểm rèn luyện {row.get('conduct_score_condition')}."
+            )
     return "\n".join(lines)
 
 

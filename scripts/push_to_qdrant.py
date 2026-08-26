@@ -135,6 +135,7 @@ def create_payload_indexes(client: QdrantClient, collection_name: str) -> None:
         "chunk_type",
         "content_type",
         "cohort",
+        "applicable_cohorts",
         "chunk_granularity",
         "parent_section_id",
     ):

@@ -59,7 +59,7 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     )
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v27-table-first-contract"
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v28-target-first-contract"
 
 
 def test_plan_cache_key_includes_normalizer_version(monkeypatch, tmp_path: Path) -> None:
@@ -117,10 +117,10 @@ def test_planner_prompt_treats_compare_as_presentation_and_slots_as_optional() -
     assert "không dùng để lọc hàng bên trong bảng đã chọn" in PLANNER_PROMPT_TEXT
 
 
-def test_planner_prompt_splits_independent_rag_answer_targets() -> None:
-    assert "mỗi mệnh đề hỏi có answer target riêng là một task" in PLANNER_PROMPT_TEXT
-    assert "cùng domain" in PLANNER_PROMPT_TEXT
-    assert "retrieval query tổng hợp" in PLANNER_PROMPT_TEXT
+def test_planner_prompt_splits_independent_answer_targets() -> None:
+    assert "Tách QUERY thành answer target theo kết luận/nguồn" in PLANNER_PROMPT_TEXT
+    assert "Mỗi target cần mode/tool khác nhau phải là task riêng" in PLANNER_PROMPT_TEXT
+    assert "Task cần cả structured và RAG chưa atomic" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_requires_grounded_slots_for_structured_mode() -> None:

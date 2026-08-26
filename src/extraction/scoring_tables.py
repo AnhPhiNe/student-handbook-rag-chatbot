@@ -2,14 +2,14 @@ import os
 from typing import Any
 
 
-def build_scoring_tables() -> list[dict[str, Any]]:
-    cohort = os.environ.get("COHORT", "").upper()
+def build_scoring_tables(cohort: str | None = None) -> list[dict[str, Any]]:
+    cohort = (cohort or os.environ.get("COHORT", "")).upper()
     grade_tables = (
         _new_cohort_grade_10_tables(cohort)
         if cohort in {"K51", "K50-K51"}
         else [_legacy_grade_10_table()]
     )
-    return grade_tables + _shared_scoring_tables()
+    return grade_tables + _shared_scoring_tables(cohort)
 
 
 def _legacy_grade_10_table() -> dict[str, Any]:
@@ -106,7 +106,78 @@ def _grade_rows_with_d_as_fail() -> list[dict[str, str]]:
     ]
 
 
-def _shared_scoring_tables() -> list[dict[str, Any]]:
+def _scholarship_classification_table(cohort: str) -> dict[str, Any]:
+    if cohort in {"K51", "K50-K51"}:
+        return {
+            "table_id": "scholarship_classification",
+            "table_name": "Xếp loại học bổng khuyến khích học tập",
+            "source_pages": [70, 71, 72],
+            "review_status": "source_verified",
+            "schema_variant": "classification_matrix",
+            "rows": [
+                {
+                    "scholarship_level": "Xuất sắc",
+                    "academic_classification": "Xuất sắc",
+                    "conduct_classification_condition": "Xuất sắc",
+                },
+                {
+                    "scholarship_level": "Giỏi",
+                    "academic_classification": "Xuất sắc",
+                    "conduct_classification_condition": "Tốt",
+                },
+                {
+                    "scholarship_level": "Giỏi",
+                    "academic_classification": "Giỏi",
+                    "conduct_classification_condition": "Tốt trở lên",
+                },
+                {
+                    "scholarship_level": "Khá",
+                    "academic_classification": "Xuất sắc",
+                    "conduct_classification_condition": "Khá",
+                },
+                {
+                    "scholarship_level": "Khá",
+                    "academic_classification": "Giỏi",
+                    "conduct_classification_condition": "Khá",
+                },
+                {
+                    "scholarship_level": "Khá",
+                    "academic_classification": "Khá",
+                    "conduct_classification_condition": "Khá trở lên",
+                },
+            ],
+        }
+
+    return {
+        "table_id": "scholarship_classification",
+        "table_name": "Xếp loại học bổng khuyến khích học tập",
+        "source_pages": [53],
+        "review_status": "needs_human_verified",
+        "schema_variant": "score_ranges",
+        "rows": [
+            {
+                "label": "Khá",
+                "scholarship_score_range": "2.56-3.352",
+                "academic_score_range": "2.50-3.19",
+                "conduct_score_condition": ">=70",
+            },
+            {
+                "label": "Giỏi",
+                "scholarship_score_range": "3.20-3.672",
+                "academic_score_range": "3.20-3.59",
+                "conduct_score_condition": ">=80",
+            },
+            {
+                "label": "Xuất sắc",
+                "scholarship_score_range": "3.60-4.0",
+                "academic_score_range": "3.60-4.0",
+                "conduct_score_condition": ">=90",
+            },
+        ],
+    }
+
+
+def _shared_scoring_tables(cohort: str) -> list[dict[str, Any]]:
     return [
         {
             "table_id": "letter_to_grade_4",
@@ -153,30 +224,5 @@ def _shared_scoring_tables() -> list[dict[str, Any]]:
                 {"range": "dưới 35", "label": "Kém"},
             ],
         },
-        {
-            "table_id": "scholarship_classification",
-            "table_name": "Xếp loại học bổng khuyến khích học tập",
-            "source_pages": [53],
-            "review_status": "needs_human_verified",
-            "rows": [
-                {
-                    "label": "Khá",
-                    "scholarship_score_range": "2.56-3.352",
-                    "academic_score_range": "2.50-3.19",
-                    "conduct_score_condition": ">=70",
-                },
-                {
-                    "label": "Giỏi",
-                    "scholarship_score_range": "3.20-3.672",
-                    "academic_score_range": "3.20-3.59",
-                    "conduct_score_condition": ">=80",
-                },
-                {
-                    "label": "Xuất sắc",
-                    "scholarship_score_range": "3.60-4.0",
-                    "academic_score_range": "3.60-4.0",
-                    "conduct_score_condition": ">=90",
-                },
-            ],
-        },
+        _scholarship_classification_table(cohort),
     ]

@@ -318,6 +318,110 @@ class StructuredLookupTest(unittest.TestCase):
             ["listening", "reading", "speaking", "writing"],
         )
 
+    def test_foreign_language_scalar_score_requires_declared_components(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        table = {
+            "table_id": "component_certificate",
+            "table_name": "Bảng chứng chỉ nhiều kỹ năng",
+            "table_type": "foreign_language",
+            "data_category": "regulation_table",
+            "cohort": "K50",
+            "applicable_cohorts": ["K50", "K51"],
+            "source_parent_id": "K50_foreign_language_rule",
+            "source_pages": [112],
+            "rows": [
+                {
+                    "certificate": "Chứng chỉ ABC (4 kỹ năng)",
+                    "input_requirements": {
+                        "score_mode": "per_component",
+                        "required_components": ["listening", "reading"],
+                        "component_slots": {
+                            "listening": {
+                                "slot": "listening_score",
+                                "label": "Nghe",
+                            },
+                            "reading": {
+                                "slot": "reading_score",
+                                "label": "Đọc",
+                            },
+                        },
+                    },
+                }
+            ],
+        }
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "foreign_language",
+                "intent": "direct_value",
+                "slots": {
+                    "certificate_or_language": "Chứng chỉ ABC",
+                    "score_or_level": 650,
+                },
+            },
+            query="Chứng chỉ ABC tổng 650 tương đương bậc nào?",
+            cohort="K51",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=[],
+            structured_tables_registry=[table],
+            program_directory=[],
+            probe_other_domains=False,
+        )
+
+        self.assertIsNotNone(resolution)
+        self.assertEqual(resolution.result_kind, "clarification")
+        self.assertEqual(
+            resolution.result["missing_slots"],
+            ["listening_score", "reading_score"],
+        )
+        self.assertIn("Nghe, Đọc", resolution.result["clarification_question"])
+
+    def test_scholarship_policy_schema_is_versioned_by_cohort(self) -> None:
+        legacy = next(
+            table
+            for table in build_scoring_tables("K50")
+            if table.get("table_id") == "scholarship_classification"
+        )
+        amended = next(
+            table
+            for table in build_scoring_tables("K51")
+            if table.get("table_id") == "scholarship_classification"
+        )
+
+        self.assertEqual(legacy["schema_variant"], "score_ranges")
+        self.assertIn("scholarship_score_range", legacy["rows"][0])
+        self.assertEqual(amended["schema_variant"], "classification_matrix")
+        self.assertEqual(len(amended["rows"]), 6)
+        self.assertEqual(amended["source_pages"], [70, 71, 72])
+        self.assertTrue(
+            all("scholarship_score_range" not in row for row in amended["rows"])
+        )
+
+        registry = json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        registry_tables = {
+            table["cohort"]: table
+            for table in registry
+            if table.get("table_id") == "scholarship_classification"
+        }
+        self.assertIn("scholarship_score_range", registry_tables["K50"]["rows"][0])
+        self.assertEqual(len(registry_tables["K51"]["rows"]), 6)
+        self.assertTrue(
+            all(
+                "academic_classification" in row
+                for row in registry_tables["K51"]["rows"]
+            )
+        )
+
     def test_scoring_selector_returns_every_row_of_the_selected_table(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
             resolve_structured_decision,

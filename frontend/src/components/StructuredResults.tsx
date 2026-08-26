@@ -8,6 +8,7 @@ const FIELD_LABELS: Record<string, string> = {
   category: 'Nhóm',
   certificate: 'Chứng chỉ',
   cohort: 'Khóa',
+  conduct_classification_condition: 'Xếp loại rèn luyện yêu cầu',
   conduct_score_condition: 'Điều kiện điểm rèn luyện',
   email: 'Email',
   equivalent_level_3: 'Tương đương bậc 3',

@@ -301,27 +301,42 @@
     "table_id": "scholarship_classification",
     "table_name": "Xếp loại học bổng khuyến khích học tập",
     "source_pages": [
-      53
+      70,
+      71,
+      72
     ],
-    "review_status": "needs_human_verified",
+    "review_status": "source_verified",
+    "schema_variant": "classification_matrix",
     "rows": [
       {
-        "label": "Khá",
-        "scholarship_score_range": "2.56-3.352",
-        "academic_score_range": "2.50-3.19",
-        "conduct_score_condition": ">=70"
+        "scholarship_level": "Xuất sắc",
+        "academic_classification": "Xuất sắc",
+        "conduct_classification_condition": "Xuất sắc"
       },
       {
-        "label": "Giỏi",
-        "scholarship_score_range": "3.20-3.672",
-        "academic_score_range": "3.20-3.59",
-        "conduct_score_condition": ">=80"
+        "scholarship_level": "Giỏi",
+        "academic_classification": "Xuất sắc",
+        "conduct_classification_condition": "Tốt"
       },
       {
-        "label": "Xuất sắc",
-        "scholarship_score_range": "3.60-4.0",
-        "academic_score_range": "3.60-4.0",
-        "conduct_score_condition": ">=90"
+        "scholarship_level": "Giỏi",
+        "academic_classification": "Giỏi",
+        "conduct_classification_condition": "Tốt trở lên"
+      },
+      {
+        "scholarship_level": "Khá",
+        "academic_classification": "Xuất sắc",
+        "conduct_classification_condition": "Khá"
+      },
+      {
+        "scholarship_level": "Khá",
+        "academic_classification": "Giỏi",
+        "conduct_classification_condition": "Khá"
+      },
+      {
+        "scholarship_level": "Khá",
+        "academic_classification": "Khá",
+        "conduct_classification_condition": "Khá trở lên"
       }
     ],
     "content_type": "scoring_table",

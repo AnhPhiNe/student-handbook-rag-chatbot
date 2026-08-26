@@ -115,6 +115,94 @@ def _bind_regulation_source(
     return bound
 
 
+def _reference_input_clarification(
+    lookup_type: str,
+    *,
+    query: str,
+    candidates: list[dict[str, Any]],
+    cohort: str | None,
+    slots: dict[str, Any],
+) -> dict[str, Any] | None:
+    """Validate conditional table inputs declared by the selected data row.
+
+    Small reference tables remain table-first.  This check only prevents a
+    scalar value from being treated as sufficient when the table itself says
+    that a result requires several independent components.
+    """
+
+    if lookup_type != "foreign_language":
+        return None
+
+    entity_text = str(slots.get("certificate_or_language") or query or "")
+    entity_norm = normalize_text(entity_text)
+    input_rows: list[dict[str, Any]] = []
+    for table in candidates:
+        for row in table.get("rows") or []:
+            if not isinstance(row, dict):
+                continue
+            requirements = row.get("input_requirements") or {}
+            if requirements.get("score_mode") != "per_component":
+                continue
+            row_names = " ".join(
+                str(row.get(field) or "")
+                for field in ("certificate", "language", "level_or_scale")
+            )
+            row_norm = normalize_text(row_names)
+            if row_norm and (row_norm in entity_norm or entity_norm in row_norm):
+                input_rows.append(row)
+                continue
+            certificate_norm = normalize_text(str(row.get("certificate") or ""))
+            if certificate_norm and certificate_norm in entity_norm:
+                input_rows.append(row)
+
+    if not input_rows:
+        return None
+
+    scalar_supplied = slots.get("score_or_level") not in (None, "", [])
+    component_supplied = any(
+        slots.get(name) not in (None, "", [])
+        for name in (
+            "listening_score",
+            "reading_score",
+            "speaking_score",
+            "writing_score",
+        )
+    )
+    if not scalar_supplied and not component_supplied:
+        return None
+
+    requirements = input_rows[0].get("input_requirements") or {}
+    component_slots = requirements.get("component_slots") or {}
+    missing: list[dict[str, str]] = []
+    for component in requirements.get("required_components") or []:
+        spec = component_slots.get(component) or {}
+        slot_name = str(spec.get("slot") or f"{component}_score")
+        if slots.get(slot_name) in (None, "", []):
+            missing.append(
+                {
+                    "component": str(component),
+                    "slot": slot_name,
+                    "label": str(spec.get("label") or component),
+                }
+            )
+    if not missing:
+        return None
+
+    labels = ", ".join(item["label"] for item in missing)
+    return {
+        "lookup_type": lookup_type,
+        "cohort": cohort,
+        "needs_clarification": True,
+        "missing_slots": [item["slot"] for item in missing],
+        "input_requirements": requirements,
+        "clarification_question": (
+            "Bạn vui lòng cung cấp điểm riêng cho các kỹ năng còn thiếu: "
+            f"{labels}."
+        ),
+        "content_type": "structured_lookup_clarification",
+    }
+
+
 def _reference_table_lookup(
     lookup_type: str,
     *,
@@ -148,6 +236,16 @@ def _reference_table_lookup(
     ]
     if not candidates:
         return None
+
+    clarification = _reference_input_clarification(
+        lookup_type,
+        query=query,
+        candidates=candidates,
+        cohort=effective_cohort,
+        slots=slots,
+    )
+    if clarification is not None:
+        return clarification
 
     selector = (_LOOKUP_TOOL_SPECS.get(lookup_type, {}).get("table_selector") or {})
     selector_slot = str(selector.get("slot") or "")
@@ -276,6 +374,11 @@ def _resolve_single_lookup(
             lookup_type,
             "reference_table_lookup",
             result,
+            result_kind=(
+                "clarification"
+                if result and result.get("needs_clarification")
+                else "structured"
+            ),
             target_chunk_types=["structured_lookup"],
         )
 

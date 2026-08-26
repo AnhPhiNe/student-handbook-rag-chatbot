@@ -1,9 +1,9 @@
-version: 1
+version: 3
 
 tools:
   foreign_language:
     data_category: regulation_table
-    description: Quy doi chung chi/diem ngoai ngu sang bac chuan dau ra.
+    description: "Quy doi diem/chung chi sang bac; lookup tu clarify diem thanh phan bat buoc. Yeu cau chuan/pham vi/thu tuc: RAG."
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
@@ -16,6 +16,10 @@ tools:
       score_or_level:
         type: [string, number]
         examples: [5.5, N3, HSK4, TOPIK3]
+      listening_score: {type: [string, number]}
+      reading_score: {type: [string, number]}
+      speaking_score: {type: [string, number]}
+      writing_score: {type: [string, number]}
     strategy: foreign_language_lookup
     response_intent: foreign_language_lookup_query
     target_chunk_types: [structured_lookup]
@@ -41,7 +45,7 @@ tools:
 
   scholarship_classification:
     data_category: regulation_table
-    description: Xep loai hoc bong tu diem, hoac tra khoang diem cua mot nhan xep loai cu the.
+    description: Tra tieu chuan/diem hoc bong khuyen khich hoc tap. GPA va hoc luc dung scoring.
     intents: [direct_value]
     default_intent: direct_value
     required_slots:
@@ -109,7 +113,7 @@ tools:
 
   office:
     data_category: directory_table
-    description: Tra email, phone, website, dia chi, hoac nhiem vu, trach nhiem, cac mang cong viec ho tro sinh vien cua mot don vi cu the. Quy dinh, thu tuc va bieu mau thi phai RAG.
+    description: "Tra danh ba va dich vu tong quat. Trach nhiem theo quy che, quy dinh, thu tuc hoac bieu mau dung RAG."
     intents: [contact]
     default_intent: contact
     required_slots:

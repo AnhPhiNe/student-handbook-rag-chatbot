@@ -888,8 +888,8 @@ def main():
         metadata_dir / "derived_foreign_language_policy_report.json",
     )
     print(
-        "Derived foreign-language policy sections: "
-        f"{derived_policy_report['derived_section_count']}"
+        "Annotated foreign-language policy sections: "
+        f"{derived_policy_report['annotated_section_count']}"
     )
     
     print(f"\n{'='*50}\n--- MERGING STRUCTURED DATA ---\n{'='*50}")

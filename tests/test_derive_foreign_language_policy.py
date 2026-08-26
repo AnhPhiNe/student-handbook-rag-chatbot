@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 
 from scripts.derive_foreign_language_policy import derive_foreign_language_policy
+from scripts.build_child_parent_index import build_child_parent_chunks
 
 
 def _source_item(article: int) -> dict:
@@ -33,25 +34,34 @@ def _source_item(article: int) -> dict:
 
 
 class DeriveForeignLanguagePolicyTest(unittest.TestCase):
-    def test_derives_distinct_target_cohort_ids_and_metadata(self) -> None:
+    def test_annotates_source_policy_with_registry_derived_applicability(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "docstore.json"
             path.write_text(json.dumps([_source_item(1)], ensure_ascii=False), encoding="utf-8")
 
             report = derive_foreign_language_policy(path, None)
             items = json.loads(path.read_text(encoding="utf-8"))
-            ids = {item["_id"] for item in items}
+            self.assertEqual(report["derived_section_count"], 0)
+            self.assertEqual(report["annotated_section_count"], 1)
+            self.assertEqual(len(items), 1)
+            source = items[0]
+            self.assertEqual(source["metadata"]["source_cohort"], "K50")
+            self.assertEqual(
+                source["metadata"]["applicable_cohorts"],
+                ["K48-K49", "K50", "K51"],
+            )
+            self.assertTrue(source["metadata"]["applicability_validated"])
+            self.assertIn("SỔ TAY SINH VIÊN KHÓA 50", source["content"])
 
-            self.assertEqual(report["derived_section_count"], 2)
-            self.assertIn("K48-K49_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1", ids)
-            self.assertIn("K51_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu1", ids)
-
-            k48 = next(item for item in items if item["_id"].startswith("K48-K49_"))
-            self.assertEqual(k48["metadata"]["cohort"], "K48-K49")
-            self.assertEqual(k48["metadata"]["document_id"], "so_tay_sinh_vien_khoa_48_49")
-            self.assertEqual(k48["metadata"]["derived_from_cohort"], "K50")
-            self.assertIn("SỔ TAY SINH VIÊN KHÓA 48-49", k48["content"])
-            self.assertNotIn("SỔ TAY SINH VIÊN KHÓA 50", k48["content"])
+            chunks = build_child_parent_chunks(items)
+            self.assertTrue(chunks)
+            self.assertTrue(
+                all(
+                    chunk["metadata"]["applicable_cohorts"]
+                    == ["K48-K49", "K50", "K51"]
+                    for chunk in chunks
+                )
+            )
 
     def test_idempotent_for_existing_derived_items(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -62,10 +72,10 @@ class DeriveForeignLanguagePolicyTest(unittest.TestCase):
             derive_foreign_language_policy(path, None)
             items = json.loads(path.read_text(encoding="utf-8"))
 
-            self.assertEqual(len(items), 3)
-            self.assertEqual(len({item["_id"] for item in items}), 3)
+            self.assertEqual(len(items), 1)
+            self.assertEqual(len({item["_id"] for item in items}), 1)
 
-    def test_refuses_to_overwrite_non_derived_target_policy(self) -> None:
+    def test_real_target_policy_is_preserved(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "docstore.json"
             real_k51 = _source_item(1)
@@ -79,8 +89,13 @@ class DeriveForeignLanguagePolicyTest(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            with self.assertRaisesRegex(RuntimeError, "Refusing to overwrite"):
-                derive_foreign_language_policy(path, None)
+            report = derive_foreign_language_policy(path, None)
+            items = json.loads(path.read_text(encoding="utf-8"))
+
+            self.assertEqual(len(items), 2)
+            self.assertEqual(report["annotated_section_count"], 1)
+            real_target = next(item for item in items if item["cohort"] == "K51")
+            self.assertNotIn("applicable_cohorts", real_target["metadata"])
 
 
 if __name__ == "__main__":

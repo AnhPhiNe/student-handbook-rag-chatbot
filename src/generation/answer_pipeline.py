@@ -1,3 +1,4 @@
+import json
 import os
 import time
 from contextvars import ContextVar
@@ -45,7 +46,7 @@ from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v36-terminal-ood-canonicalization"
+PIPELINE_VERSION = "v37-structured-source-content-fusion"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -66,6 +67,46 @@ def _normalize_retrieval_cohort(cohort: str | None) -> str | None:
     if normalized.lower() in {"", "general", "all"}:
         return None
     return normalized
+
+
+def _merge_structured_citation_content(
+    existing: dict[str, Any],
+    incoming: dict[str, Any],
+) -> str:
+    """Preserve every distinct table when one handbook section backs several.
+
+    Citation identity remains the canonical parent section, while the evidence
+    payload retains each table and its applicability. This prevents source
+    deduplication from silently discarding a sibling structured table.
+    """
+
+    tables: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for citation in (existing, incoming):
+        try:
+            payload = json.loads(str(citation.get("content") or ""))
+        except (TypeError, ValueError, json.JSONDecodeError):
+            continue
+        candidates = (
+            payload.get("tables")
+            if isinstance(payload, dict) and isinstance(payload.get("tables"), list)
+            else [payload]
+        )
+        for candidate in candidates:
+            if not isinstance(candidate, dict):
+                continue
+            table = dict(candidate)
+            table.setdefault("table_name", citation.get("title"))
+            table.setdefault("applicability", citation.get("applicability"))
+            identity = json.dumps(table, ensure_ascii=False, sort_keys=True, default=str)
+            if identity in seen:
+                continue
+            seen.add(identity)
+            tables.append(table)
+
+    if not tables:
+        return str(existing.get("content") or "")
+    return json.dumps({"tables": tables}, ensure_ascii=False, indent=2, default=str)
 
 
 class AnswerPipeline:
@@ -1481,6 +1522,20 @@ class AnswerPipeline:
                 for task_id in citation.get("supports_task_ids") or []:
                     if task_id not in supports:
                         supports.append(task_id)
+                if (
+                    merged[key].get("evidence_kind") == "structured_result"
+                    and citation.get("evidence_kind") == "structured_result"
+                ):
+                    merged[key]["content"] = _merge_structured_citation_content(
+                        merged[key],
+                        citation,
+                    )
+                    merged[key]["source_pages"] = sorted(
+                        {
+                            *list(merged[key].get("source_pages") or []),
+                            *list(citation.get("source_pages") or []),
+                        }
+                    )
         return list(merged.values())
 
     @staticmethod

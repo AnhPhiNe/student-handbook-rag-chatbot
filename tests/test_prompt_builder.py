@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from src.generation.amendment_precedence import (
+    ApplicableAmendment,
     collect_applicable_amendments,
     strip_misattached_amendment_notes,
 )
 from src.generation.prompt_builder import (
     ANSWER_PROMPT_VERSION,
+    _amendment_evidence,
     build_answer_prompt,
     build_authorized_evidence_packet,
 )
@@ -293,6 +295,100 @@ def test_newer_amendment_is_not_applied_to_k50() -> None:
         result,
         query="Học cải thiện lấy điểm nào?",
         cohort="K50",
+    ) == []
+
+
+def test_curated_registry_applies_without_parseable_pdf_footnote() -> None:
+    registry = (
+        {
+            "target_parent_id": "K51_Dieu10",
+            "replacement_text": (
+                "Thang điểm học phần đại cương: D+ từ 4,8 đến 5,4 là đạt."
+            ),
+            "applicability": {"kind": "min_admission_year", "year": 2025},
+            "cohort": "K51",
+            "importance": "substantive",
+            "source_document_id": "4743/QĐ-ĐHSP",
+            "source_locator": "khoản 3, Điều 1",
+            "source_handbook_id": "so_tay_sinh_vien_khoa_51",
+            "source_handbook_title": "Sổ tay sinh viên khóa 51",
+            "source_pages": [18],
+        },
+    )
+    result = {
+        "retrieved_items": [
+            {
+                "chunk_id": "K51_Dieu10",
+                "content": "Nội dung PDF bị mất dấu ngoặc kép đóng.",
+                "metadata": {"cohort": "K51", "title": "Điều 10"},
+            }
+        ]
+    }
+
+    amendments = collect_applicable_amendments(
+        result,
+        query="Thang điểm D+ của học phần đại cương?",
+        cohort="K51",
+        registry=registry,
+    )
+
+    assert len(amendments) == 1
+    assert amendments[0].source_parent_id == "K51_Dieu10"
+    assert "D+ từ 4,8 đến 5,4" in amendments[0].replacement_text
+    assert amendments[0].source_document_id == "4743/QĐ-ĐHSP"
+    assert amendments[0].source_locator == "khoản 3, Điều 1"
+    assert amendments[0].source_handbook_title == "Sổ tay sinh viên khóa 51"
+    assert amendments[0].source_pages == (18,)
+
+
+def test_amendment_evidence_exposes_only_simple_provenance_fields() -> None:
+    amendment = ApplicableAmendment(
+        source_parent_id="K51_Dieu10",
+        source_role="primary",
+        source_title="Điều 10",
+        effective_rule="khóa tuyển sinh từ năm 2025 trở về sau",
+        replacement_text="Nội dung thay thế.",
+        relevance_score=2,
+        source_document_id="4743/QĐ-ĐHSP",
+        source_locator="khoản 3, Điều 1, Quyết định số 4743/QĐ-ĐHSP",
+        source_handbook_id="so_tay_sinh_vien_khoa_51",
+        source_handbook_title="Sổ tay sinh viên khóa 51",
+        source_pages=(18,),
+    )
+
+    assert _amendment_evidence(amendment) == {
+        "amendment_source": "khoản 3, Điều 1, Quyết định số 4743/QĐ-ĐHSP",
+        "citation_source": "Sổ tay sinh viên khóa 51",
+        "citation_pages": [18],
+        "effective_rule": "khóa tuyển sinh từ năm 2025 trở về sau",
+        "replacement_text": "Nội dung thay thế.",
+    }
+
+
+def test_non_substantive_registry_note_is_not_promoted() -> None:
+    registry = (
+        {
+            "target_parent_id": "K51_Dieu10",
+            "replacement_text": "Ghi chú trình bày thang điểm.",
+            "cohort": "K51",
+            "importance": "non_substantive",
+        },
+    )
+    result = {
+        "retrieved_items": [
+            {
+                "chunk_id": "K51_Dieu10",
+                "content": "Điều 10",
+                "metadata": {"cohort": "K51"},
+            }
+        ]
+    }
+
+    assert collect_applicable_amendments(
+        result,
+        query="Ghi chú thang điểm",
+        cohort="K51",
+        registry=registry,
     ) == []
 
 

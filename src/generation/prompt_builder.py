@@ -4,6 +4,7 @@ import json
 from typing import Any
 
 from .amendment_precedence import (
+    ApplicableAmendment,
     collect_applicable_amendments,
     strip_misattached_amendment_notes,
 )
@@ -112,17 +113,39 @@ def build_authorized_evidence_packet(
                 "allowed_source_refs": [source["source_ref"] for source in authorized_sources],
                 "primary_evidence": authorized_sources,
                 "applicable_amendments": [
-                    {
-                        "source_title": amendment.source_title,
-                        "effective_rule": amendment.effective_rule,
-                        "replacement_text": amendment.replacement_text,
-                    }
+                    _amendment_evidence(amendment)
                     for amendment in amendments
                 ],
             }
         )
 
     return {"answer_prompt_version": ANSWER_PROMPT_VERSION, "units": packet_units}
+
+
+def _amendment_evidence(amendment: ApplicableAmendment) -> dict[str, Any]:
+    amendment_source = amendment.source_document_id
+    if amendment.source_locator:
+        locator_contains_document = bool(
+            amendment_source
+            and amendment.source_document_id.casefold()
+            in amendment.source_locator.casefold()
+        )
+        if locator_contains_document or not amendment_source:
+            amendment_source = amendment.source_locator
+        else:
+            amendment_source = f"{amendment_source} — {amendment.source_locator}"
+    citation_source = (
+        amendment.source_handbook_title
+        or amendment.source_handbook_id
+        or amendment.source_title
+    )
+    return {
+        "amendment_source": amendment_source,
+        "citation_source": citation_source,
+        "citation_pages": list(amendment.source_pages),
+        "effective_rule": amendment.effective_rule,
+        "replacement_text": amendment.replacement_text,
+    }
 
 
 def build_prompt(

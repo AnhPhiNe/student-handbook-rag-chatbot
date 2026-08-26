@@ -760,3 +760,44 @@ def test_query_plan_telemetry_is_hidden_without_api_debug() -> None:
     assert debug.debug["query_plan"]["schema_version"] == "v1"
     assert debug.debug["coverage_by_task"] == {"t1": "covered"}
     assert debug.citations_used[0]["supports_task_ids"] == ["t1"]
+
+
+def test_structured_citation_dedup_preserves_sibling_tables_and_applicability() -> None:
+    common = {
+        "chunk_id": "K51_Dieu10",
+        "source_parent_id": "K51_Dieu10",
+        "cohort": "K51",
+        "evidence_kind": "structured_result",
+        "supports_task_ids": ["t1"],
+        "source_pages": [18],
+    }
+    citations = [
+        {
+            **common,
+            "title": "Thang điểm học phần nền tảng",
+            "applicability": "Học phần giáo dục đại cương",
+            "content": json.dumps(
+                {"table_id": "foundation", "rows": [{"Điểm": "5,0", "Loại": "Đạt"}]},
+                ensure_ascii=False,
+            ),
+        },
+        {
+            **common,
+            "title": "Thang điểm các học phần còn lại",
+            "applicability": "Các học phần còn lại",
+            "content": json.dumps(
+                {"table_id": "remaining", "rows": [{"Điểm": "5,0", "Loại": "Không đạt"}]},
+                ensure_ascii=False,
+            ),
+        },
+    ]
+
+    merged = AnswerPipeline._merge_task_citations(citations)
+
+    assert len(merged) == 1
+    tables = json.loads(merged[0]["content"])["tables"]
+    assert [table["table_id"] for table in tables] == ["foundation", "remaining"]
+    assert [table["applicability"] for table in tables] == [
+        "Học phần giáo dục đại cương",
+        "Các học phần còn lại",
+    ]

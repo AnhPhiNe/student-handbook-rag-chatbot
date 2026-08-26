@@ -72,6 +72,11 @@ class ApplicableAmendment:
     effective_rule: str
     replacement_text: str
     relevance_score: int
+    source_document_id: str = ""
+    source_locator: str = ""
+    source_handbook_id: str = ""
+    source_handbook_title: str = ""
+    source_pages: tuple[int, ...] = ()
 
 
 @lru_cache(maxsize=1)
@@ -119,6 +124,7 @@ def collect_applicable_amendments(
     cohort: str | None,
     max_items: int = 4,
     max_replacement_chars: int = 5000,
+    registry: tuple[dict[str, Any], ...] | None = None,
 ) -> list[ApplicableAmendment]:
     """Extract query-relevant amendments that apply to the requested cohort.
 
@@ -132,20 +138,72 @@ def collect_applicable_amendments(
     requested_years = admission_years_for_cohort(requested_cohort)
     candidates: list[ApplicableAmendment] = []
     seen_replacements: set[str] = set()
+    records = registry if registry is not None else load_amendment_registry()
     registry_by_replacement = {
         _fold(str(record.get("replacement_text") or "")): record
-        for record in load_amendment_registry()
+        for record in records
         if record.get("replacement_text")
     }
-    primary_parent_ids = {
+    primary_items_by_parent_id = {
         str(
             (item.get("metadata") or {}).get("parent_section_id")
             or item.get("parent_section_id")
             or item.get("chunk_id")
             or ""
-        )
+        ): item
         for item in retrieval_result.get("retrieved_items") or []
     }
+    primary_parent_ids = set(primary_items_by_parent_id)
+
+    # Curated registry records are authoritative. PDF extraction can omit a
+    # closing quote at a page boundary, so requiring the footnote regex to
+    # match would silently drop otherwise valid substantive amendments.
+    for record in records:
+        if str(record.get("importance") or "substantive") != "substantive":
+            continue
+        target_parent_id = str(record.get("target_parent_id") or "")
+        if not target_parent_id or target_parent_id not in primary_parent_ids:
+            continue
+        record_cohort = normalize_cohort(str(record.get("cohort") or "") or None)
+        if requested_cohort and record_cohort and record_cohort != requested_cohort:
+            continue
+        applies, effective_rule = _registry_applies_to_years(
+            record.get("applicability"),
+            requested_years,
+        )
+        if not applies:
+            continue
+        replacement = _clean_text(str(record.get("replacement_text") or ""))
+        if not replacement:
+            continue
+        relevance_score = len(query_terms & _terms(replacement))
+        if query_terms and relevance_score <= 0:
+            continue
+        replacement_key = _fold(replacement)
+        seen_replacements.add(replacement_key)
+        primary_item = primary_items_by_parent_id[target_parent_id]
+        metadata = primary_item.get("metadata") or {}
+        candidates.append(
+            ApplicableAmendment(
+                source_parent_id=target_parent_id,
+                source_role="primary",
+                source_title=str(
+                    metadata.get("title")
+                    or metadata.get("section_title")
+                    or target_parent_id
+                ),
+                effective_rule=effective_rule,
+                replacement_text=replacement[:max_replacement_chars].rstrip(),
+                relevance_score=relevance_score,
+                source_document_id=str(record.get("source_document_id") or ""),
+                source_locator=str(record.get("source_locator") or ""),
+                source_handbook_id=str(record.get("source_handbook_id") or ""),
+                source_handbook_title=str(
+                    record.get("source_handbook_title") or ""
+                ),
+                source_pages=_source_pages(record.get("source_pages")),
+            )
+        )
 
     for source_role, items in (
         ("primary", retrieval_result.get("retrieved_items") or []),
@@ -208,6 +266,21 @@ def collect_applicable_amendments(
                         effective_rule=effective_rule,
                         replacement_text=replacement[:max_replacement_chars].rstrip(),
                         relevance_score=relevance_score,
+                        source_document_id=str(
+                            (registry_record or {}).get("source_document_id") or ""
+                        ),
+                        source_locator=str(
+                            (registry_record or {}).get("source_locator") or ""
+                        ),
+                        source_handbook_id=str(
+                            (registry_record or {}).get("source_handbook_id") or ""
+                        ),
+                        source_handbook_title=str(
+                            (registry_record or {}).get("source_handbook_title") or ""
+                        ),
+                        source_pages=_source_pages(
+                            (registry_record or {}).get("source_pages")
+                        ),
                     )
                 )
 
@@ -219,6 +292,51 @@ def collect_applicable_amendments(
         )
     )
     return candidates[: max(0, max_items)]
+
+
+def _registry_applies_to_years(
+    applicability: Any,
+    years: tuple[int, ...],
+) -> tuple[bool, str]:
+    if not isinstance(applicability, dict):
+        return True, "không nêu giới hạn khóa tuyển sinh"
+
+    kind = str(applicability.get("kind") or "")
+    try:
+        year = int(applicability.get("year"))
+    except (TypeError, ValueError):
+        return False, "phạm vi hiệu lực không hợp lệ"
+
+    if kind == "min_admission_year":
+        return (
+            bool(years) and all(item >= year for item in years),
+            f"khóa tuyển sinh từ năm {year} trở về sau",
+        )
+    if kind == "max_admission_year":
+        return (
+            bool(years) and all(item <= year for item in years),
+            f"khóa tuyển sinh đến năm {year}",
+        )
+    if kind == "exact_admission_year":
+        return (
+            bool(years) and all(item == year for item in years),
+            f"khóa tuyển sinh năm {year}",
+        )
+    return False, "phạm vi hiệu lực không được hỗ trợ"
+
+
+def _source_pages(value: Any) -> tuple[int, ...]:
+    if not isinstance(value, (list, tuple)):
+        return ()
+    pages: list[int] = []
+    for item in value:
+        try:
+            page = int(item)
+        except (TypeError, ValueError):
+            continue
+        if page not in pages:
+            pages.append(page)
+    return tuple(pages)
 
 
 def format_applicable_amendments(amendments: list[ApplicableAmendment]) -> str:

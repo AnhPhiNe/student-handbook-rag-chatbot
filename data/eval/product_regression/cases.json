@@ -1,0 +1,274 @@
+{
+  "schema_version": "product-regression-v1",
+  "description": "Development set phục vụ kiểm tra sản phẩm. Có thể chạy lại sau khi sửa lỗi; không phải benchmark hoặc holdout.",
+  "review_policy": {
+    "target_pass_rate": 0.9,
+    "critical_failures_allowed": 0,
+    "criteria": [
+      "tasks_complete",
+      "grounded",
+      "citations_correct",
+      "cohort_correct",
+      "abstention_correct",
+      "runtime_stable"
+    ],
+    "severity_values": [
+      "none",
+      "minor",
+      "major",
+      "critical"
+    ]
+  },
+  "cases": [
+    {
+      "id": "product_001",
+      "category": "structured_single",
+      "query": "85 điểm rèn luyện được xếp loại gì?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Trả đúng loại rèn luyện và hiển thị đầy đủ bảng áp dụng cho K51."
+    },
+    {
+      "id": "product_002",
+      "category": "structured_single",
+      "query": "GPA 3.4 được xếp loại học lực gì?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Giữ đúng thang điểm 4, khoảng điểm và cohort."
+    },
+    {
+      "id": "product_003",
+      "category": "structured_single",
+      "query": "IELTS 6.0 tương đương bậc mấy?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Tra đúng hàng IELTS và không suy diễn sang điều kiện tốt nghiệp."
+    },
+    {
+      "id": "product_004",
+      "category": "structured_single",
+      "query": "Khoa CNTT có mấy ngành đào tạo và gồm những ngành nào?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Danh sách ngành đầy đủ; provenance danh mục không giả làm trích dẫn PDF."
+    },
+    {
+      "id": "product_005",
+      "category": "structured_single",
+      "query": "Điểm học bổng loại Giỏi được tính như thế nào?",
+      "cohort": "K50",
+      "expected_outcome": "answered",
+      "review_focus": "Không làm mất quan hệ giữa mức học bổng, học lực và rèn luyện."
+    },
+    {
+      "id": "product_006",
+      "category": "multi_entity_same_table",
+      "query": "IELTS 6.0 và JLPT N3 lần lượt tương đương bậc mấy?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Trả đủ hai chứng chỉ từ cùng bảng và không ghép nhầm giá trị."
+    },
+    {
+      "id": "product_007",
+      "category": "multi_entity_same_table",
+      "query": "GPA 3.4 và 2.7 lần lượt được xếp loại học lực gì?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Trả đủ hai mức điểm từ cùng bảng."
+    },
+    {
+      "id": "product_008",
+      "category": "multi_entity_same_table",
+      "query": "85 và 65 điểm rèn luyện lần lượt được xếp loại gì?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Trả đủ hai giá trị và xử lý đúng biên khoảng điểm."
+    },
+    {
+      "id": "product_009",
+      "category": "structured_structured",
+      "query": "Điểm học bổng loại Giỏi là bao nhiêu và ngành Công nghệ Thông tin thuộc khoa nào?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Hai structured domain đều được trả lời; mỗi bảng có provenance phù hợp."
+    },
+    {
+      "id": "product_010",
+      "category": "structured_structured",
+      "query": "IELTS 6.0 tương đương bậc mấy và 85 điểm rèn luyện xếp loại gì?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Không bỏ một trong hai yêu cầu và không dùng chéo bảng."
+    },
+    {
+      "id": "product_011",
+      "category": "structured_structured",
+      "query": "Thời gian đào tạo tối đa hệ chính quy là bao lâu và GPA 3.4 xếp loại gì?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Dùng đúng dữ liệu QĐ 4743 cho thời gian K51 và đúng bảng học lực."
+    },
+    {
+      "id": "product_012",
+      "category": "regulation_single",
+      "query": "K51 bị cảnh báo học tập trong những trường hợp nào?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Các điều kiện phải được nguồn quy định trực tiếp hỗ trợ."
+    },
+    {
+      "id": "product_013",
+      "category": "regulation_single",
+      "query": "Muốn xin nghỉ học tạm thời thì sinh viên K51 cần đáp ứng điều kiện và làm thủ tục gì?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Không đồng nhất nghỉ học tạm thời với bảo lưu hoặc thôi học."
+    },
+    {
+      "id": "product_014",
+      "category": "regulation_single",
+      "query": "Sinh viên K50 cần đáp ứng những điều kiện nào để được xét tốt nghiệp?",
+      "cohort": "K50",
+      "expected_outcome": "answered",
+      "review_focus": "Không suy ra điều kiện tốt nghiệp từ bảng quy đổi ngoại ngữ nếu nguồn không xác lập."
+    },
+    {
+      "id": "product_015",
+      "category": "regulation_single",
+      "query": "K48-K49 được công nhận kết quả học tập và chuyển đổi tín chỉ theo nguyên tắc nào?",
+      "cohort": "K48-K49",
+      "expected_outcome": "answered",
+      "review_focus": "Câu trả lời bám đúng điều khoản và applicability của khóa."
+    },
+    {
+      "id": "product_016",
+      "category": "regulation_regulation",
+      "query": "K51 khi nào bị cảnh báo học tập và khi nào bị buộc thôi học?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Trả đủ hai predicate riêng và không lấy điều kiện của ý này bù ý kia."
+    },
+    {
+      "id": "product_017",
+      "category": "regulation_regulation",
+      "query": "Quy định về nghỉ học tạm thời và thủ tục tiếp nhận trở lại học của K50 như thế nào?",
+      "cohort": "K50",
+      "expected_outcome": "answered",
+      "review_focus": "Trả đủ cả nghỉ học và trở lại học, giữ đúng trình tự/điều kiện."
+    },
+    {
+      "id": "product_018",
+      "category": "regulation_regulation",
+      "query": "K51 có những hình thức khen thưởng nào và các hành vi vi phạm bị xử lý kỷ luật ra sao?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Hai chủ đề regulation đều có nguồn riêng và không bỏ ý chính."
+    },
+    {
+      "id": "product_019",
+      "category": "structured_regulation",
+      "query": "IELTS 6.0 tương đương bậc mấy và thủ tục công nhận chứng chỉ ngoại ngữ thực hiện như thế nào?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Tách giá trị tra bảng khỏi quy định thủ tục; không suy ra chuẩn đầu ra."
+    },
+    {
+      "id": "product_020",
+      "category": "structured_regulation",
+      "query": "Điểm học bổng loại Giỏi là bao nhiêu và điều kiện để được xét học bổng gồm những gì?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Structured value và điều kiện regulation đều phải có căn cứ."
+    },
+    {
+      "id": "product_021",
+      "category": "structured_regulation",
+      "query": "Ngành Công nghệ Thông tin thuộc khoa nào và Phòng Công tác sinh viên có trách nhiệm gì?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Alias phòng ban được hiểu đúng; provenance ngành–khoa tách khỏi nguồn quy định."
+    },
+    {
+      "id": "product_022",
+      "category": "structured_regulation",
+      "query": "85 điểm rèn luyện xếp loại gì và sinh viên có được đề nghị xem xét lại kết quả rèn luyện không?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Không dùng bảng phân loại để tự suy ra thủ tục xem xét lại."
+    },
+    {
+      "id": "product_023",
+      "category": "multi_cohort",
+      "query": "So sánh thời gian đào tạo tối đa chương trình cấp bằng thứ nhất hệ chính quy giữa K50 và K51.",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Một logical task, lookup riêng từng cohort và dùng đúng applicability."
+    },
+    {
+      "id": "product_024",
+      "category": "multi_cohort",
+      "query": "IELTS 6.0 được quy đổi thế nào ở K50 và K51?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Giữ đủ hai cohort trong cùng yêu cầu và không trộn bảng."
+    },
+    {
+      "id": "product_025",
+      "category": "multi_cohort",
+      "query": "Mức học bổng loại Giỏi của K50 và K51 có gì khác nhau?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Lookup deterministic từng cohort; không dùng dữ liệu khóa này cho khóa kia."
+    },
+    {
+      "id": "product_026",
+      "category": "clarification",
+      "query": "TOEIC 650 tương đương bậc mấy?",
+      "cohort": "K51",
+      "expected_outcome": "needs_clarification",
+      "review_focus": "Yêu cầu đủ điểm bốn kỹ năng theo metadata, không hard-code riêng số 650."
+    },
+    {
+      "id": "product_027",
+      "category": "partial_answer",
+      "query": "K51 điều kiện nhận học bổng là gì và quy định về dịch chuyển tức thời giữa các cơ sở như thế nào?",
+      "cohort": "K51",
+      "expected_outcome": "partial",
+      "review_focus": "Trả phần có nguồn và nói rõ phần không có căn cứ; không suy phủ định từ absence."
+    },
+    {
+      "id": "product_028",
+      "category": "out_of_domain",
+      "query": "Thời tiết Thành phố Hồ Chí Minh hôm nay thế nào?",
+      "cohort": "K51",
+      "expected_outcome": "out_of_domain",
+      "review_focus": "Từ chối đúng phạm vi và không gọi answer LLM."
+    },
+    {
+      "id": "product_029",
+      "category": "follow_up",
+      "query": "Còn K51 thì sao?",
+      "cohort": "K51",
+      "history": [
+        {
+          "role": "user",
+          "content": "Thời gian đào tạo tối đa hệ chính quy của K50 là bao lâu?"
+        },
+        {
+          "role": "assistant",
+          "content": "K50 có thời gian đào tạo tối đa theo bảng trong Sổ tay sinh viên."
+        }
+      ],
+      "expected_outcome": "answered",
+      "review_focus": "Khôi phục đúng chủ đề từ history và đổi cohort sang K51."
+    },
+    {
+      "id": "product_030",
+      "category": "two_questions_one_message",
+      "query": "K51 thời gian đào tạo tối đa hệ chính quy là bao lâu? Điểm học bổng loại Xuất sắc là bao nhiêu?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Nhận đủ hai câu hỏi và trả lời cả hai bằng đúng bảng tương ứng."
+    }
+  ]
+}

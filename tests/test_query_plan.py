@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any
+
+import pytest
 
 import src.common.cohort as cohort_module
 from src.generation.answer_pipeline import AnswerPipeline
@@ -60,6 +64,15 @@ def test_query_plan_accepts_one_and_three_tasks() -> None:
     assert [task["id"] for task in three["tasks"]] == ["t1", "t2", "t3"]
 
 
+def test_native_plan_schema_keeps_structured_slots_as_optional_compatibility() -> None:
+    task_schema = query_plan_response_schema()["properties"]["tasks"]["items"]
+
+    assert "lookup_type" in task_schema["required"]
+    assert "intent" not in task_schema["required"]
+    assert "slots" not in task_schema["required"]
+    assert "slot_spans" not in task_schema["required"]
+
+
 def test_query_plan_turns_more_than_three_requests_into_clarification() -> None:
     plan, errors = normalize_query_plan(
         _plan([_rag_task(1), _rag_task(2), _rag_task(3), _rag_task(4)]),
@@ -72,7 +85,7 @@ def test_query_plan_turns_more_than_three_requests_into_clarification() -> None:
     assert "tối đa ba" in plan["tasks"][0]["clarification_question"]
 
 
-def test_invalid_lookup_and_missing_slot_are_task_level_clarifications() -> None:
+def test_invalid_lookup_is_clarified_but_reference_table_slots_are_optional() -> None:
     invalid = {
         **_rag_task(1),
         "mode": "structured",
@@ -89,15 +102,123 @@ def test_invalid_lookup_and_missing_slot_are_task_level_clarifications() -> None
         "lookup_type": "foreign_language",
         "intent": "direct_value",
     }
-    plan, errors = normalize_query_plan(_plan([missing]), query=missing["question"])
-    assert plan["tasks"][0]["mode"] == "clarify"
-    assert any("missing_slot" in error for error in errors)
+    plan, errors = normalize_query_plan(
+        _plan([missing]),
+        query=missing["question"],
+        selected_cohort="K51",
+    )
+    assert errors == []
+    assert plan["tasks"][0]["mode"] == "structured"
+    assert plan["tasks"][0]["lookup_type"] == "foreign_language"
+    assert plan["tasks"][0]["slots"] == {"certificate_or_language": "IELTS"}
 
 
 def test_explicit_multi_cohort_is_preserved_over_ui_cohort() -> None:
     task = {**_rag_task(1), "cohorts": ["K50", "K51"]}
     plan, _ = normalize_query_plan(_plan([task]), query="so sánh K50 K51", selected_cohort="K48-K49")
     assert plan["tasks"][0]["cohorts"] == ["K50", "K51"]
+
+
+@pytest.mark.parametrize(
+    ("lookup_type", "query", "slots", "slot_spans", "expected_intent"),
+    [
+        (
+            "study_duration",
+            "So sánh thời gian đào tạo hệ chính quy giữa K50 và K51.",
+            {"training_mode": "chinh_quy", "program_type": "first_degree"},
+            {
+                "training_mode": "hệ chính quy",
+                "program_type": "thời gian đào tạo",
+            },
+            "direct_value",
+        ),
+        (
+            "foreign_language",
+            "So sánh IELTS 6.0 giữa K50 và K51.",
+            {"certificate_or_language": "IELTS", "score_or_level": "6.0"},
+            {"certificate_or_language": "IELTS", "score_or_level": "6.0"},
+            "direct_value",
+        ),
+        (
+            "scholarship_classification",
+            "So sánh học bổng loại Giỏi giữa K50 và K51.",
+            {"score_or_label": "Giỏi"},
+            {"score_or_label": "Giỏi"},
+            "direct_value",
+        ),
+        (
+            "scoring",
+            "So sánh xếp loại điểm rèn luyện 85 giữa K50 và K51.",
+            {"operation": "conduct_classification", "score_or_grade": 85},
+            {"score_or_grade": "85"},
+            "direct_value",
+        ),
+    ],
+)
+def test_structured_compare_uses_each_lookup_base_intent(
+    lookup_type: str,
+    query: str,
+    slots: dict[str, Any],
+    slot_spans: dict[str, Any],
+    expected_intent: str,
+) -> None:
+    task = {
+        **_rag_task(1, query),
+        "mode": "structured",
+        "intent": "compare",
+        "lookup_type": lookup_type,
+        "slots": slots,
+        "slot_spans": slot_spans,
+        "cohorts": ["K50", "K51"],
+    }
+
+    plan, errors = normalize_query_plan(
+        _plan([task]),
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert len(plan["tasks"]) == 1
+    assert plan["tasks"][0]["mode"] == "structured"
+    assert plan["tasks"][0]["intent"] == expected_intent
+    assert plan["tasks"][0]["cohorts"] == ["K50", "K51"]
+
+
+def test_single_cohort_compare_is_also_presentation_only() -> None:
+    query = "So sánh IELTS và TOEFL ở K51."
+    task = {
+        **_rag_task(1, query),
+        "mode": "structured",
+        "intent": "compare",
+        "lookup_type": "foreign_language",
+        "cohorts": ["K51"],
+    }
+
+    plan, errors = normalize_query_plan(_plan([task]), query=query)
+
+    assert errors == []
+    assert plan["tasks"][0]["intent"] == "direct_value"
+    assert plan["tasks"][0]["question"] == query
+    assert plan["tasks"][0]["cohorts"] == ["K51"]
+
+
+def test_two_regulation_topics_keep_two_tasks_with_the_same_cohorts() -> None:
+    first = {**_rag_task(1, "Quy định đăng ký học phần là gì?"), "cohorts": ["K50", "K51"]}
+    second = {**_rag_task(2, "Quy định hoãn thi là gì?"), "cohorts": ["K50", "K51"]}
+
+    plan, errors = normalize_query_plan(
+        _plan([first, second]),
+        query="So sánh K50 và K51 về đăng ký học phần và hoãn thi.",
+    )
+
+    assert errors == []
+    assert len(plan["tasks"]) == 2
+    assert [task["cohorts"] for task in plan["tasks"]] == [
+        ["K50", "K51"],
+        ["K50", "K51"],
+    ]
+    assert all(task["intent"] == "open_question" for task in plan["tasks"])
 
 
 def test_single_query_cohort_fills_every_task_without_scope() -> None:
@@ -282,6 +403,42 @@ def test_two_structured_domains_execute_without_cross_domain_probing(monkeypatch
     assert calls == [("foreign_language", False), ("scholarship_classification", False)]
     assert result["coverage_by_task"] == {"t1": "covered", "t2": "covered"}
     assert len(result["citations"]) == 2
+
+
+def test_one_study_duration_task_executes_each_cohort_from_full_tables() -> None:
+    task = {
+        **_rag_task(
+            1,
+            "So sánh thời gian đào tạo tối đa hệ chính quy giữa K50 và K51.",
+        ),
+        "mode": "structured",
+        "lookup_type": "study_duration",
+        "intent": "direct_value",
+        "cohorts": ["K50", "K51"],
+    }
+    pipeline = _pipeline(_plan([task]))
+    pipeline.structured_tables_registry = json.loads(
+        Path("data/processed/tables/structured_tables_registry.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    result = pipeline._run_query_plan(
+        query=task["question"],
+        cohort="K51",
+        chat_history=[],
+    )
+
+    assert result["coverage_by_task"] == {"t1": "covered"}
+    assert result["task_results"][0]["coverage_by_cohort"] == {
+        "K50": "covered",
+        "K51": "covered",
+    }
+    assert len(result["structured_result"]["sub_lookups"]) == 2
+    assert {citation["cohort"] for citation in result["citations"]} == {
+        "K50",
+        "K51",
+    }
 
 
 def test_rag_tasks_keep_top_five_and_deduplicate_shared_source(monkeypatch) -> None:

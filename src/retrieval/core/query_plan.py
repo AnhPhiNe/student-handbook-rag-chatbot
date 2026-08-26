@@ -17,6 +17,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
+QUERY_PLAN_NORMALIZER_VERSION = "v3-table-first-structured"
 MAX_QUERY_TASKS = 3
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
 
@@ -113,10 +114,7 @@ def query_plan_response_schema() -> dict[str, Any]:
                         "id",
                         "question",
                         "mode",
-                        "intent",
                         "lookup_type",
-                        "slots",
-                        "slot_spans",
                         "cohorts",
                         "clarification_question",
                     ],
@@ -288,6 +286,12 @@ def _normalize_task(
         if (value := _normalize_span_value(raw_value, original_query)) not in (None, "", [])
     }
 
+    if mode == "structured" and intent == "compare":
+        intent = _structured_lookup_intent(
+            registry.get("tools", {}).get(lookup_type, {}),
+            slots,
+        )
+
     if mode == "clarify":
         return {
             "id": task_id,
@@ -386,6 +390,42 @@ def _normalize_task(
         "clarification_question": clarification,
         "validation_errors": errors.copy(),
     }, errors
+
+
+def _structured_lookup_intent(
+    spec: dict[str, Any],
+    slots: dict[str, Any],
+) -> str:
+    """Map presentation wording to the underlying structured fetch operation.
+
+    Comparison changes answer composition, not which reference table is fetched.
+    Pick a supported base intent for compatibility with the existing QueryPlan
+    schema.  The original task question retains the presentation request for the
+    answer composer, for both single- and multi-cohort comparisons.
+    """
+
+    allowed = [
+        str(intent)
+        for intent in spec.get("intents") or []
+        if str(intent) != "compare"
+    ]
+    preferred = ["direct_value", "list_items"]
+    default_intent = spec.get("default_intent")
+    if default_intent:
+        preferred.append(str(default_intent))
+    preferred.extend(allowed)
+
+    for candidate in dict.fromkeys(preferred):
+        if candidate not in allowed:
+            continue
+        required = (spec.get("required_slots") or {}).get(candidate, [])
+        if all(_task_slot_is_present(slots.get(name)) for name in required):
+            return candidate
+    return "compare"
+
+
+def _task_slot_is_present(value: Any) -> bool:
+    return value is not None and value not in ("", [], {})
 
 
 def _clarify_task(

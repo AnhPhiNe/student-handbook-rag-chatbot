@@ -258,6 +258,7 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
         {
             "chunk_id": source_section or document_id or f"structured:{lookup_type}",
             "chunk_type": chunk_type,
+            "evidence_kind": "structured_result",
             "title": lookup_result.get("table_name")
             or lookup_result.get("title")
             or lookup_type,

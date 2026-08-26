@@ -5,8 +5,9 @@ tools:
     data_category: regulation_table
     description: Quy doi chung chi/diem ngoai ngu sang bac chuan dau ra.
     intents: [direct_value, list_items]
+    default_intent: direct_value
     required_slots:
-      direct_value: [certificate_or_language, score_or_level]
+      direct_value: []
       list_items: []
     slot_schema:
       certificate_or_language:
@@ -23,9 +24,10 @@ tools:
     data_category: regulation_table
     description: Tra thoi gian hoc chuan/toi da theo he va loai chuong trinh.
     intents: [direct_value, list_items]
+    default_intent: direct_value
     required_slots:
-      direct_value: [training_mode]
-      list_items: [training_mode]
+      direct_value: []
+      list_items: []
     slot_schema:
       training_mode:
         type: string
@@ -41,8 +43,9 @@ tools:
     data_category: regulation_table
     description: Xep loai hoc bong tu diem, hoac tra khoang diem cua mot nhan xep loai cu the.
     intents: [direct_value]
+    default_intent: direct_value
     required_slots:
-      direct_value: [score_or_label]
+      direct_value: []
     slot_schema:
       score_or_label: {type: [string, number]}
     strategy: scholarship_classification_lookup
@@ -52,16 +55,37 @@ tools:
   scoring:
     data_category: regulation_table
     description: Tra cuu va quy doi thang diem hoc phan (thang 10, diem chu, thang 4, dat/khong dat), xep loai hoc luc hoac diem ren luyen.
-    intents: [direct_value, list_items, compare]
+    intents: [direct_value, list_items]
+    default_intent: direct_value
     required_slots:
-      direct_value: [operation]
-      list_items: [operation]
-      compare: [operation]
+      direct_value: []
+      list_items: []
     slot_schema:
       operation:
         type: string
         enum: [grade_10_to_letter, pass_fail_ungraded, letter_to_grade_4, academic_classification, conduct_classification, pass_threshold]
       score_or_grade: {type: [string, number]}
+    table_selector:
+      slot: operation
+      values:
+        grade_10_to_letter:
+          table_types: [scoring]
+          table_subtypes: [grade_scale]
+        pass_fail_ungraded:
+          table_types: [scoring]
+          table_subtypes: [pass_fail_ungraded]
+        pass_threshold:
+          table_types: [scoring]
+          table_subtypes: [grade_scale, pass_fail_ungraded]
+        letter_to_grade_4:
+          table_types: [scoring]
+          table_subtypes: [letter_to_grade4]
+        academic_classification:
+          table_types: [scoring]
+          table_subtypes: [academic_classification]
+        conduct_classification:
+          table_types: [conduct]
+          table_subtypes: [conduct_classification]
     strategy: structured_lookup
     response_intent: score_lookup_query
     target_chunk_types: [structured_lookup]

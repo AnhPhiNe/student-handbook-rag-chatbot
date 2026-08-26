@@ -169,6 +169,7 @@ def scholarship_classification_lookup(
         "input_value": query,
         "result": result,
         "items": rows,
+        "display_rows": list(table.get("rows") or []),
         "source_pages": table.get("source_pages") or [],
         "table_name": table.get("table_name")
         or "Xếp loại học bổng khuyến khích học tập",

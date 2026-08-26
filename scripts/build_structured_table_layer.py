@@ -117,6 +117,15 @@ FOREIGN_LANGUAGE_ROWS = [
         "level_or_scale": "Nghe, Đọc, Nói, Viết",
         "equivalent_level_3": "Nghe 275 - 399; Đọc 275 - 384; Nói 120 - 159; Viết 120 - 149",
         "equivalent_level_4": "Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179",
+        "input_requirements": {
+            "score_mode": "per_component",
+            "required_components": [
+                "listening",
+                "reading",
+                "speaking",
+                "writing",
+            ],
+        },
     },
     {
         "language": "Tiếng Pháp",

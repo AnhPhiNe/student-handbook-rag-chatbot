@@ -11,6 +11,7 @@ from src.retrieval.core.ai_router import (
     ROUTER_PROMPT_VERSION,
     ROUTER_SYSTEM_PROMPT,
 )
+from src.retrieval.core.query_plan import QUERY_PLAN_NORMALIZER_VERSION
 from src.retrieval.core.structured_routing import (
     compact_registry_for_prompt,
     normalize_router_decision,
@@ -58,7 +59,29 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     )
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION.endswith("contract")
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v27-table-first-contract"
+
+
+def test_plan_cache_key_includes_normalizer_version(monkeypatch, tmp_path: Path) -> None:
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+    key = router._cache_key(
+        "So sánh K50 và K51",
+        cohort="K51",
+        chat_history=[],
+    )
+
+    monkeypatch.setattr(
+        ai_router_module,
+        "QUERY_PLAN_NORMALIZER_VERSION",
+        QUERY_PLAN_NORMALIZER_VERSION + "-changed",
+    )
+    changed_key = router._cache_key(
+        "So sánh K50 và K51",
+        cohort="K51",
+        chat_history=[],
+    )
+
+    assert changed_key != key
 
 
 def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None:
@@ -86,6 +109,14 @@ def test_planner_prompt_defines_cohort_independent_task_identity() -> None:
     assert "So sánh K50 và K51 về thời gian học tối đa" not in PLANNER_PROMPT_TEXT
 
 
+def test_planner_prompt_treats_compare_as_presentation_and_slots_as_optional() -> None:
+    assert "So sánh là yêu cầu trình bày" in PLANNER_PROMPT_TEXT
+    assert "Không dùng intent=compare" in PLANNER_PROMPT_TEXT
+    assert "intent/slots là metadata tương thích tùy chọn" in PLANNER_PROMPT_TEXT
+    assert "chọn một bảng con" in PLANNER_PROMPT_TEXT
+    assert "không dùng để lọc hàng bên trong bảng đã chọn" in PLANNER_PROMPT_TEXT
+
+
 def test_planner_prompt_splits_independent_rag_answer_targets() -> None:
     assert "mỗi mệnh đề hỏi có answer target riêng là một task" in PLANNER_PROMPT_TEXT
     assert "cùng domain" in PLANNER_PROMPT_TEXT
@@ -93,8 +124,8 @@ def test_planner_prompt_splits_independent_rag_answer_targets() -> None:
 
 
 def test_planner_prompt_requires_grounded_slots_for_structured_mode() -> None:
-    assert "Entity/value slots phải được grounding" in PLANNER_PROMPT_TEXT
-    assert "Control" in PLANNER_PROMPT_TEXT
+    assert "Nếu xuất entity/value slots, chúng phải được grounding" in PLANNER_PROMPT_TEXT
+    assert "Control slots" in PLANNER_PROMPT_TEXT
     assert "được phép chuẩn" in PLANNER_PROMPT_TEXT
     assert "Không chọn structured chỉ vì trùng từ chủ đề" in PLANNER_PROMPT_TEXT
     assert "Chỉ clarify task bị thiếu thông tin" in PLANNER_PROMPT_TEXT

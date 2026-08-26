@@ -17,6 +17,7 @@ from src.api.chat_controls import (
 )
 from src.api.deps import get_answer_service
 from src.api.schemas import ChatRequest, ChatResponse, ChatFeedbackRequest
+from src.generation.structured_result_presenter import public_regulation_citations
 from src.api.langsmith_helper import (
     push_trace_to_langsmith,
     push_feedback_to_langsmith,
@@ -99,7 +100,7 @@ def _to_chat_response(
             để gửi về cho người dùng. Đối tượng này chứa câu trả lời, trạng thái,
             ID yêu cầu, và các thông tin khác.
     """
-    citations_used = result.get("citations_used") or []
+    citations_used = public_regulation_citations(result.get("citations_used") or [])
     if isinstance(citations_used, list) and not include_debug:
         citations_used = [
             {
@@ -121,6 +122,7 @@ def _to_chat_response(
         run_id=result.get("run_id"),
         latency_ms=result.get("latency_ms"),
         citations_used=citations_used if isinstance(citations_used, list) else [],
+        structured_results=result.get("structured_results") or [],
         related_references=result.get("related_references") or [],
         clarification_needed=bool(result.get("clarification_needed", False)),
         intent=result.get("intent"),

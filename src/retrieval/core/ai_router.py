@@ -28,6 +28,7 @@ from .structured_routing import (
     validate_router_decision,
 )
 from .query_plan import (
+    QUERY_PLAN_NORMALIZER_VERSION,
     legacy_rag_plan,
     normalize_query_plan,
     query_plan_json_schema,
@@ -36,7 +37,7 @@ from .query_plan import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v26-query-plan-contract"
+ROUTER_PROMPT_VERSION = "structured-regulation-v27-table-first-contract"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -104,8 +105,8 @@ Chỉ xuất đúng một JSON theo OUTPUT CONTRACT, không Markdown hay giải 
   entity, cohort, số liệu, phủ định, chủ đề hoặc ý định.
 
 2. LOGICAL TASKS
-- Một task là một yêu cầu thực thi độc lập bằng một mode/tool/intent. Chỉ gộp
-  nhiều entity của cùng một phép tra structured với cùng lookup_type và intent.
+- Một task là một yêu cầu thực thi độc lập bằng một mode/tool. Chỉ gộp nhiều
+  entity cùng thuộc một nguồn structured với cùng lookup_type.
 - Với RAG, mỗi mệnh đề hỏi có answer target riêng là một task, dù cùng domain
   hoặc nguồn; không ghép chúng thành một retrieval query tổng hợp.
 - TASK IDENTITY không phụ thuộc cohort: M yêu cầu áp dụng N cohort tạo M logical
@@ -118,15 +119,21 @@ Chỉ xuất đúng một JSON theo OUTPUT CONTRACT, không Markdown hay giải 
   điền cho task vẫn chưa có cohort; không ghi đè và không nhân bản task theo cohort.
 
 4. MODE
-- structured: tra giá trị trực tiếp từ đúng một bảng trong TOOLS. Entity/value
-  slots phải được grounding trong QUERY/HISTORY. Control slots như operation,
-  requested_field, scope, formula_type được phép chuẩn hóa từ yêu cầu rõ ràng;
-  không được tạo entity, giá trị hay yêu cầu mới.
+- structured: tra dữ liệu từ đúng một nguồn trong TOOLS. Với bảng tham chiếu
+  nhỏ, backend gửi toàn bộ hàng của bảng áp dụng cho composer. intent/slots là
+  metadata tương thích tùy chọn; chỉ dùng slot khi TOOLS cần chọn một bảng con,
+  tuyệt đối không dùng để lọc hàng bên trong bảng đã chọn.
+- So sánh là yêu cầu trình bày, không phải phép lookup structured. Không dùng
+  intent=compare; giữ đầy đủ ý so sánh trong task.question, chọn intent tra cứu
+  cơ sở được TOOLS hỗ trợ và giữ tất cả cohort trong cùng logical task.
+- Nếu xuất entity/value slots, chúng phải được grounding trong QUERY/HISTORY.
+  Control slots được phép chuẩn hóa từ yêu cầu rõ ràng; không được tạo entity,
+  giá trị hay yêu cầu mới.
 - rag: cần đọc quy định, thủ tục, điều kiện, ngoại lệ, hậu quả hoặc một chuẩn/
   chính sách áp dụng nói chung. Không chọn structured chỉ vì trùng từ chủ đề.
-- clarify: yêu cầu tra giá trị trực tiếp thiếu required slot làm đổi kết quả,
-  hoặc tham chiếu thật sự mơ hồ. Không clarify chính sách chung để đủ slot cho
-  tool. Chỉ clarify task bị thiếu thông tin.
+- clarify: thiếu thông tin mà TOOLS thực sự đánh dấu required, hoặc tham chiếu
+  thật sự mơ hồ. Không clarify bảng tham chiếu nhỏ chỉ vì thiếu slots tùy chọn;
+  composer sẽ đọc toàn bảng áp dụng. Chỉ clarify task bị thiếu thông tin.
 - Mọi RAG task dùng intent=open_question và lookup_type=null. Clarify task cũng
   có lookup_type=null. Nếu toàn bộ QUERY ngoài sổ tay, đặt out_of_domain=true.
 
@@ -1130,6 +1137,7 @@ class AIRouter:
             "routing_hint": routing_hint,
             "model": self.model_name,
             "prompt_version": ROUTER_PROMPT_VERSION,
+            "plan_normalizer_version": QUERY_PLAN_NORMALIZER_VERSION,
             "registry": registry_digest(self.registry),
         }
         raw = json.dumps(

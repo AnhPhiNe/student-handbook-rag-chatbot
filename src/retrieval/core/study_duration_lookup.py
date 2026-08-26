@@ -190,6 +190,15 @@ def study_duration_lookup(
         for table in table_results
         if table.get("source_section")
     }
+    display_rows = [
+        {
+            "training_mode": _table_mode(table),
+            **row,
+        }
+        for table in candidates
+        for row in table.get("rows") or []
+        if isinstance(row, dict)
+    ]
 
     return {
         "lookup_type": "study_duration",
@@ -199,6 +208,7 @@ def study_duration_lookup(
             "table_count": len(table_results),
         },
         "items": table_results,
+        "display_rows": display_rows,
         "source_pages": source_pages,
         "table_name": "Thời gian học tập chuẩn và tối đa",
         "source_label": "Bảng thời gian học tập trong Sổ tay sinh viên HCMUE",

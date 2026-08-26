@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 import unittest
+from pathlib import Path
 
 from src.generation.answer_guardrails import build_deterministic_answer
 from src.extraction.scoring_tables import build_scoring_tables
@@ -185,6 +187,177 @@ class StructuredLookupTest(unittest.TestCase):
             self.assertEqual(res["cohort"], cohort)
             self.assertEqual(res["source_cohort"], "K50")
 
+    def test_reference_table_lookup_keeps_all_rows_despite_slots(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        table = {
+            "table_id": "K50_foreign_language_equivalency",
+            "table_name": "Bảng quy đổi ngoại ngữ",
+            "table_type": "foreign_language",
+            "data_category": "regulation_table",
+            "cohort": "K50",
+            "applicable_cohorts": ["K50", "K51"],
+            "rows": [
+                {"certificate": "IELTS", "equivalent_level_4": "5.5 - 6.5"},
+                {"certificate": "TOEFL iBT", "equivalent_level_4": "46 - 93"},
+            ],
+            "source_pages": [112],
+            "source_parent_id": "K50_Dieu8",
+        }
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "foreign_language",
+                "intent": "direct_value",
+                "slots": {"certificate_or_language": "Không có trong bảng"},
+            },
+            query="IELTS và TOEFL ở K51",
+            cohort="K51",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=[],
+            structured_tables_registry=[table],
+            program_directory=[],
+            probe_other_domains=False,
+        )
+
+        self.assertIsNotNone(resolution)
+        self.assertEqual(resolution.strategy, "reference_table_lookup")
+        self.assertEqual(len(resolution.result["display_rows"]), 2)
+        self.assertEqual(resolution.result["cohort"], "K51")
+        self.assertEqual(resolution.result["source_cohort"], "K50")
+
+    def test_k51_study_duration_reference_tables_use_amended_values(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        registry = json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        resolution = resolve_structured_decision(
+            {"lookup_type": "study_duration", "intent": "direct_value"},
+            query="Thời gian đào tạo K51",
+            cohort="K51",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=[],
+            structured_tables_registry=registry,
+            program_directory=[],
+            probe_other_domains=False,
+        )
+
+        self.assertIsNotNone(resolution)
+        leaves = resolution.result["sub_lookups"]
+        self.assertEqual(len(leaves), 2)
+        rows = [row for leaf in leaves for row in leaf["display_rows"]]
+        self.assertEqual(
+            {row["Hình thức đào tạo"] for row in rows},
+            {"Chính quy", "Vừa làm vừa học"},
+        )
+        self.assertEqual(
+            {row["Thời gian học tập tối đa"] for row in rows},
+            {"06 năm học", "7,5 năm học"},
+        )
+        self.assertTrue(
+            all("Quy tắc đối với sinh viên liên thông" in row for row in rows)
+        )
+
+        legacy_first_degree_maxima = {}
+        for cohort in ("K48-K49", "K50"):
+            cohort_rows = [
+                row
+                for table in registry
+                if table.get("table_type") == "study_duration"
+                and table.get("cohort") == cohort
+                and "chính quy" in str(table.get("applicability") or "").lower()
+                for row in table.get("rows") or []
+            ]
+            first_degree = next(
+                row
+                for row in cohort_rows
+                if row.get("Chương trình đào tạo")
+                == "Đào tạo đại học cấp bằng thứ nhất"
+            )
+            legacy_first_degree_maxima[cohort] = first_degree[
+                "Thời gian học tập tối đa"
+            ]
+
+        self.assertEqual(
+            legacy_first_degree_maxima,
+            {"K48-K49": "8 năm học", "K50": "8 năm học"},
+        )
+
+    def test_foreign_language_component_requirements_are_data_driven(self) -> None:
+        registry = json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        foreign_table = next(
+            table for table in registry if table.get("table_type") == "foreign_language"
+        )
+        four_component_row = next(
+            row
+            for row in foreign_table["rows"]
+            if (row.get("input_requirements") or {}).get("score_mode")
+            == "per_component"
+        )
+
+        self.assertEqual(
+            four_component_row["input_requirements"]["required_components"],
+            ["listening", "reading", "speaking", "writing"],
+        )
+
+    def test_scoring_selector_returns_every_row_of_the_selected_table(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        registry = json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "scoring",
+                "intent": "direct_value",
+                "slots": {
+                    "operation": "conduct_classification",
+                    "score_or_grade": 85,
+                },
+            },
+            query="85 điểm rèn luyện được xếp loại gì?",
+            cohort="K51",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=[],
+            structured_tables_registry=registry,
+            program_directory=[],
+            probe_other_domains=False,
+        )
+
+        self.assertIsNotNone(resolution)
+        self.assertEqual(resolution.result["table_subtype"], "conduct_classification")
+        self.assertEqual(len(resolution.result["display_rows"]), 6)
+        self.assertEqual(
+            {row["Xếp loại"] for row in resolution.result["display_rows"]},
+            {"Xuất sắc", "Tốt", "Khá", "Trung bình", "Yếu", "Kém"},
+        )
+
     def test_program_lookup_faculty_programs_per_cohort_counts(self) -> None:
         programs = [
             {
@@ -358,6 +531,8 @@ class StructuredLookupTest(unittest.TestCase):
             {
                 "table_id": "foreign_language_equivalency_table",
                 "table_name": "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ",
+                "table_type": "foreign_language",
+                "data_category": "regulation_table",
                 "cohort": "K51",
                 "applicable_cohorts": ["K51"],
                 "rows": [
@@ -375,6 +550,8 @@ class StructuredLookupTest(unittest.TestCase):
             {
                 "table_id": "scholarship_classification",
                 "table_name": "Xếp loại học bổng khuyến khích học tập",
+                "table_type": "scholarship",
+                "data_category": "regulation_table",
                 "cohort": "K51",
                 "rows": [
                     {"label": "Giỏi", "scholarship_score_range": "3.36-3.832"},
@@ -391,7 +568,7 @@ class StructuredLookupTest(unittest.TestCase):
             student_service_directory=[],
             student_faculty_profiles=[],
             foreign_language_tables=fl_tables,
-            structured_tables_registry=[],
+            structured_tables_registry=fl_tables + scoring_tables,
             program_directory=[],
         )
         self.assertIsNotNone(res)

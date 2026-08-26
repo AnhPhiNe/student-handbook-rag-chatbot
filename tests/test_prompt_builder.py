@@ -121,6 +121,33 @@ class PromptBuilderTest(unittest.TestCase):
         self.assertIn("record có `applicability` phù hợp", prompt)
         self.assertIn("hãy hỏi lại", prompt)
 
+    def test_prompt_requires_all_declared_input_components(self) -> None:
+        prompt = build_answer_prompt(
+            query="Chứng chỉ bốn kỹ năng tổng 650 tương đương bậc mấy?",
+            retrieval_result={
+                "structured_result": {
+                    "items": [
+                        {
+                            "certificate": "Chứng chỉ bốn kỹ năng",
+                            "input_requirements": {
+                                "score_mode": "per_component",
+                                "required_components": [
+                                    "listening",
+                                    "reading",
+                                    "speaking",
+                                    "writing",
+                                ],
+                            },
+                        }
+                    ]
+                }
+            },
+            cohort="K51",
+        )
+
+        self.assertIn("input_requirements.required_components", prompt)
+        self.assertIn("không suy ra từ tổng điểm", prompt)
+
     def test_prompt_ignores_deprecated_answer_scope_contract(self) -> None:
         prompt = build_answer_prompt(
             query="K50 co duoc dong phi thay IELTS khong?",

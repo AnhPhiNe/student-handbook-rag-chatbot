@@ -61,7 +61,7 @@ def _normalize_faculty_name(value: Any) -> str:
 
 
 def _program_summary(record: dict[str, Any]) -> dict[str, Any]:
-    return {
+    summary = {
         "program_name": record.get("program_name"),
         "faculty_name": record.get("faculty_name"),
         "source_pages": record.get("source_pages") or [],
@@ -71,6 +71,11 @@ def _program_summary(record: dict[str, Any]) -> dict[str, Any]:
         "summary": record.get("summary"),
         "raw_text": record.get("raw_text"),
     }
+    if record.get("faculty_name_source"):
+        summary["faculty_name_source"] = record["faculty_name_source"]
+    if record.get("quality_status"):
+        summary["quality_status"] = record["quality_status"]
+    return summary
 
 
 def _sort_programs(records: list[dict[str, Any]]) -> list[dict[str, Any]]:

@@ -8,6 +8,7 @@ import { getApiClientHeaders } from '../utils/clientIdentity';
 import { useToast } from './Toast';
 import { RelatedReferenceLink } from './RelatedReference';
 import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
+import { StructuredResults } from './StructuredResults';
 const userAvatarImg = '/user_avatar.png';
 const botAvatarImg = '/bot_avatar.png';
 
@@ -664,6 +665,10 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
 
           {message.isStreaming && displayContent && (
             <span style={{ display: 'inline-block', width: '8px', height: '16px', background: 'var(--accent-color)', animation: 'blink 1s step-end infinite', marginLeft: '4px', verticalAlign: 'middle' }}></span>
+          )}
+
+          {!message.isStreaming && message.structuredResults && message.structuredResults.length > 0 && (
+            <StructuredResults results={message.structuredResults} />
           )}
 
           {!message.isStreaming && message.citations && message.citations.length > 0 && (

@@ -39,11 +39,12 @@ from .prompt_builder import (
     build_answer_prompt,
 )
 from .response_cache import get_response_cache
+from .structured_result_presenter import build_structured_results
 
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v31-query-plan-multitask"
+PIPELINE_VERSION = "v32-table-first-structured"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -571,6 +572,7 @@ class AnswerPipeline:
         resolved_fallback = fallback_reason or ("none" if status == "answered" else status)
         resolved_citations = citations_used if citations_used is not None else (res.get("citations_used") or res.get("citations") or [])
         resolved_related = related_references if related_references is not None else (res.get("related_references") or [])
+        structured_results = build_structured_results(res.get("structured_result"))
 
         return {
             "type": "metadata",
@@ -588,6 +590,7 @@ class AnswerPipeline:
             "fallback_reason": resolved_fallback,
             "citations_used": resolved_citations,
             "related_references": resolved_related,
+            "structured_results": structured_results,
             "detected_entities": res.get("detected_entities") or [],
             "target_chunk_types": res.get("target_chunk_types") or [],
             "query_plan": res.get("query_plan"),
@@ -1706,6 +1709,9 @@ class AnswerPipeline:
             "citations_used": selected_citations,
             "related_references": retrieval_result.get("related_references", []),
             "structured_result": retrieval_result.get("structured_result"),
+            "structured_results": build_structured_results(
+                retrieval_result.get("structured_result")
+            ),
             "formula_result": retrieval_result.get("formula_result"),
             "tool_result": retrieval_result.get("tool_result"),
             "query_plan": retrieval_result.get("query_plan"),

@@ -143,6 +143,7 @@ def _extract_study_duration_tables(
     ]
     
     amendment_rows = {}
+    amendment_text = ""
     for marker in ("sửa đổi, bổ sung", "sửa đổi bổ sung"):
         idx_m = lowered.find(marker)
         if idx_m != -1:
@@ -159,6 +160,48 @@ def _extract_study_duration_tables(
                 }
             break
 
+    # When an amendment replaces the duration clause with a new table by
+    # training mode, the original fixed bridge rows are no longer current
+    # values.  Emit only the replacement rows and preserve the general bridge
+    # rule stated by the amendment.  This is based on document structure, not a
+    # cohort, decision number, or individual query.
+    if {"chính quy", "vừa làm vừa học"}.issubset(amendment_rows):
+        bridge_match = re.search(
+            r"(Đối với sinh viên học liên thông.*?khối lượng được miễn trừ\.)",
+            amendment_text,
+            flags=re.IGNORECASE,
+        )
+        bridge_rule = bridge_match.group(1).strip() if bridge_match else None
+        replacement_tables = []
+        for suffix, label in (
+            ("chinh_quy", "Chính quy"),
+            ("vua_lam_vua_hoc", "Vừa làm vừa học"),
+        ):
+            amended = amendment_rows[label.lower()]
+            row = {
+                "Hình thức đào tạo": label,
+                "Thời gian học tập chuẩn": amended["Thời gian học tập chuẩn"],
+                "Thời gian học tập tối đa": amended["Thời gian học tập tối đa"],
+            }
+            if bridge_rule:
+                row["Quy tắc đối với sinh viên liên thông"] = bridge_rule
+            replacement_tables.append(
+                _make_table(
+                    section,
+                    suffix=f"study_duration_{suffix}",
+                    table_name="Thời gian học tập chuẩn và tối đa",
+                    table_kind="study_duration",
+                    columns=list(row),
+                    rows=[row],
+                    source_pages=source_pages,
+                    applicability=(
+                        f"Áp dụng cho hình thức đào tạo {label.lower()} theo nội dung "
+                        "sửa đổi, bổ sung có hiệu lực được nêu trong điều khoản nguồn."
+                    ),
+                )
+            )
+        return replacement_tables
+
     tables = []
     for suffix, block_text, applicability in blocks:
         rows = []
@@ -172,18 +215,6 @@ def _extract_study_duration_tables(
                     }
                 )
         if rows:
-            if amendment_rows:
-                mode_key = (
-                    "chính quy"
-                    if suffix == "chinh_quy"
-                    else ("vừa làm vừa học" if suffix == "vua_lam_vua_hoc" else "")
-                )
-                if mode_key and mode_key in amendment_rows:
-                    amended_data = amendment_rows[mode_key]
-                    for r in rows:
-                        if r.get("Chương trình đào tạo") == "Đào tạo đại học cấp bằng thứ nhất":
-                            r["Thời gian học tập chuẩn"] = amended_data["Thời gian học tập chuẩn"]
-                            r["Thời gian học tập tối đa"] = amended_data["Thời gian học tập tối đa"]
             tables.append(
                 _make_table(
                     section,

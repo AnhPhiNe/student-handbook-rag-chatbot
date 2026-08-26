@@ -39,6 +39,30 @@ export interface RelatedReference {
   detail_kind?: 'article' | 'table';
 }
 
+export type StructuredCellValue = string | number | boolean | null;
+
+export interface StructuredResult {
+  id: string;
+  lookup_type: string;
+  title: string;
+  cohort?: string;
+  applicability?: string;
+  columns: string[];
+  rows: Array<Record<string, StructuredCellValue>>;
+  provenance: {
+    source_type: 'structured_dataset' | 'curated_registry';
+    source_label?: string;
+    document_id?: string;
+    source_pages?: number[];
+  };
+  field_provenance?: Record<string, {
+    source_type: 'curated_registry';
+    source_label: string;
+    registry?: string;
+    mapping_methods?: string[];
+  }>;
+}
+
 export interface Message {
   id: string;
   role: 'user' | 'bot';
@@ -50,6 +74,7 @@ export interface Message {
   ttftMs?: number;
   confidence?: 'high' | 'medium' | 'low';
   citations?: Citation[];
+  structuredResults?: StructuredResult[];
   relatedReferences?: RelatedReference[];
   runId?: string;
   usedCache?: boolean;
@@ -102,6 +127,7 @@ export function useChat(cohort: string = 'K48-K49') {
     const startTime = Date.now();
     let ttftMs: number | null = null;
     let capturedCitations: Citation[] = [];
+    let capturedStructuredResults: StructuredResult[] = [];
     let capturedRelatedReferences: RelatedReference[] = [];
     let capturedRunId: string | null = null;
     let capturedUsedCache = false;
@@ -123,6 +149,7 @@ export function useChat(cohort: string = 'K48-K49') {
       responseTimeMs: number;
       confidence: 'high' | 'medium' | 'low';
       citations: Citation[];
+      structuredResults: StructuredResult[];
       relatedReferences: RelatedReference[];
       runId?: string;
       usedCache: boolean;
@@ -155,6 +182,7 @@ export function useChat(cohort: string = 'K48-K49') {
               ttftMs: ttftMs || undefined,
               confidence: donePayload!.confidence,
               citations: donePayload!.citations,
+              structuredResults: donePayload!.structuredResults,
               relatedReferences: donePayload!.relatedReferences,
               runId: donePayload!.runId,
               usedCache: donePayload!.usedCache
@@ -218,6 +246,9 @@ export function useChat(cohort: string = 'K48-K49') {
                 if (data.citations_used) {
                   capturedCitations = data.citations_used;
                 }
+                if (data.structured_results) {
+                  capturedStructuredResults = data.structured_results;
+                }
                 if (data.related_references) {
                   capturedRelatedReferences = data.related_references;
                 }
@@ -250,7 +281,7 @@ export function useChat(cohort: string = 'K48-K49') {
                 }
                 
                 let confidence: 'high' | 'medium' | 'low' = 'low';
-                if (capturedCitations.length > 0) confidence = 'high';
+                if (capturedCitations.length > 0 || capturedStructuredResults.length > 0) confidence = 'high';
 
                 if (targetBotContent.includes("Hiện tại mình chưa gọi được mô hình AI")) {
                   setSystemStatus('error');
@@ -262,6 +293,7 @@ export function useChat(cohort: string = 'K48-K49') {
                   responseTimeMs,
                   confidence,
                   citations: capturedCitations,
+                  structuredResults: capturedStructuredResults,
                   relatedReferences: capturedRelatedReferences,
                   runId: capturedRunId || undefined,
                   usedCache: capturedUsedCache

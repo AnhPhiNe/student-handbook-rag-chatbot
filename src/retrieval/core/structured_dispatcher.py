@@ -12,6 +12,16 @@ from .program_lookup import program_lookup
 from .scholarship_lookup import scholarship_classification_lookup
 from .study_duration_lookup import study_duration_lookup
 from .structured_lookup import structured_lookup_from_slots
+from .structured_routing import load_lookup_registry
+
+
+_REFERENCE_TABLE_TYPES: dict[str, set[str]] = {
+    "foreign_language": {"foreign_language"},
+    "scholarship_classification": {"scholarship"},
+    "study_duration": {"study_duration"},
+    "scoring": {"scoring", "conduct"},
+}
+_LOOKUP_TOOL_SPECS = load_lookup_registry().get("tools", {})
 
 
 @dataclass(frozen=True)
@@ -105,6 +115,136 @@ def _bind_regulation_source(
     return bound
 
 
+def _reference_table_lookup(
+    lookup_type: str,
+    *,
+    query: str,
+    registry: list[dict[str, Any]],
+    cohort: str | None,
+    slots: dict[str, Any],
+) -> dict[str, Any] | None:
+    """Fetch complete small reference tables without irreversible row filtering.
+
+    QueryPlan classifies the structured domain and cohort.  The answer composer
+    receives every applicable row and performs the semantic selection requested
+    in the original task question.  Directory lookups are intentionally not
+    handled here because their catalogs are larger and still need an entity
+    shortlist.
+    """
+
+    table_types = _REFERENCE_TABLE_TYPES.get(lookup_type)
+    if not table_types:
+        return None
+
+    effective_cohort = normalize_cohort(cohort)
+    candidates = [
+        table
+        for table in registry
+        if table.get("data_category") == "regulation_table"
+        and str(table.get("table_type") or "") in table_types
+        and is_cohort_applicable(table, effective_cohort)
+        and isinstance(table.get("rows"), list)
+        and bool(table.get("rows"))
+    ]
+    if not candidates:
+        return None
+
+    selector = (_LOOKUP_TOOL_SPECS.get(lookup_type, {}).get("table_selector") or {})
+    selector_slot = str(selector.get("slot") or "")
+    selector_value = str(slots.get(selector_slot) or "") if selector_slot else ""
+    selector_spec = (selector.get("values") or {}).get(selector_value)
+    if isinstance(selector_spec, dict):
+        selected_types = set(selector_spec.get("table_types") or [])
+        selected_subtypes = set(selector_spec.get("table_subtypes") or [])
+        selected = [
+            table
+            for table in candidates
+            if (not selected_types or table.get("table_type") in selected_types)
+            and (
+                not selected_subtypes
+                or table.get("table_subtype") in selected_subtypes
+            )
+        ]
+        # A stale selector must not turn valid table evidence into uncovered.
+        # Fall back to the complete lookup family when the configured selector
+        # has no matching table in the current dataset.
+        if selected:
+            candidates = selected
+
+    candidates.sort(
+        key=lambda table: (
+            str(table.get("cohort") or ""),
+            str(table.get("table_subtype") or ""),
+            str(table.get("table_id") or ""),
+        )
+    )
+    leaf_lookups: list[dict[str, Any]] = []
+    for table in candidates:
+        rows = [dict(row) for row in table.get("rows") or [] if isinstance(row, dict)]
+        source_section = table.get("source_parent_id") or table.get("source_section_id")
+        leaf_lookups.append(
+            {
+                "lookup_type": lookup_type,
+                "input_value": query,
+                "result": {
+                    "table_id": table.get("table_id"),
+                    "table_subtype": table.get("table_subtype"),
+                    "rows": rows,
+                },
+                "items": rows,
+                "display_rows": rows,
+                "table_id": table.get("table_id"),
+                "table_name": table.get("table_name") or lookup_type,
+                "table_subtype": table.get("table_subtype"),
+                "source_pages": table.get("source_pages") or [],
+                "source_label": table.get("document_title")
+                or "Bảng dữ liệu có cấu trúc trong Sổ tay sinh viên HCMUE",
+                "cohort": effective_cohort or table.get("cohort"),
+                "source_cohort": table.get("cohort"),
+                "applicable_cohorts": table.get("applicable_cohorts"),
+                "applicability": table.get("applicability"),
+                "document_id": table.get("document_id"),
+                "source_section": source_section,
+                "source_parent_id": source_section,
+                "content_type": "structured_lookup",
+            }
+        )
+
+    if len(leaf_lookups) == 1:
+        return leaf_lookups[0]
+
+    return {
+        "lookup_type": lookup_type,
+        "input_value": query,
+        "cohort": effective_cohort,
+        "result": {
+            "tables": [
+                {
+                    "table_id": item.get("table_id"),
+                    "table_name": item.get("table_name"),
+                    "table_subtype": item.get("table_subtype"),
+                    "cohort": item.get("cohort"),
+                    "applicability": item.get("applicability"),
+                    "rows": item.get("items") or [],
+                }
+                for item in leaf_lookups
+            ],
+            "table_count": len(leaf_lookups),
+        },
+        "sub_lookups": leaf_lookups,
+        "source_pages": sorted(
+            {
+                page
+                for item in leaf_lookups
+                for page in item.get("source_pages") or []
+            }
+        ),
+        "table_name": "Các bảng tra cứu áp dụng",
+        "source_label": "Dữ liệu có cấu trúc trong Sổ tay sinh viên HCMUE",
+        "content_type": "multi_structured_lookup",
+    }
+
+
 def _resolve_single_lookup(
     lookup_type: str,
     *,
@@ -123,6 +263,21 @@ def _resolve_single_lookup(
     model: Any | None = None,
 ) -> StructuredResolution | None:
     slots = decision.get("slots") or {}
+
+    if lookup_type in _REFERENCE_TABLE_TYPES:
+        result = _reference_table_lookup(
+            lookup_type,
+            query=query,
+            registry=structured_tables_registry,
+            cohort=effective_cohort,
+            slots=slots,
+        )
+        return _resolution(
+            lookup_type,
+            "reference_table_lookup",
+            result,
+            target_chunk_types=["structured_lookup"],
+        )
 
     if lookup_type == "foreign_language":
         result = foreign_language_lookup(

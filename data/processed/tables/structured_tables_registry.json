@@ -517,7 +517,11 @@
         "certificate": "TOEIC (4 kỹ năng)",
         "level_or_scale": "Nghe, Đọc, Nói, Viết",
         "equivalent_level_3": "Nghe 275 - 399; Đọc 275 - 384; Nói 120 - 159; Viết 120 - 149",
-        "equivalent_level_4": "Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179"
+        "equivalent_level_4": "Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179",
+        "input_requirements": {
+          "score_mode": "per_component",
+          "required_components": ["listening", "reading", "speaking", "writing"]
+        }
       },
       {
         "language": "Tiếng Pháp",
@@ -1352,30 +1356,17 @@
     "title": "Chương trình đào tạo và thời gian học tập",
     "applicability": "Áp dụng cho hình thức đào tạo chính quy (theo sửa đổi bổ sung tại QĐ 4743/QĐ-ĐHSP áp dụng từ khóa 2025 trở đi).",
     "columns": [
-      "Chương trình đào tạo",
+      "Hình thức đào tạo",
       "Thời gian học tập chuẩn",
-      "Thời gian học tập tối đa"
+      "Thời gian học tập tối đa",
+      "Quy tắc đối với sinh viên liên thông"
     ],
     "rows": [
       {
-        "Chương trình đào tạo": "Đào tạo đại học cấp bằng thứ nhất",
+        "Hình thức đào tạo": "Chính quy",
         "Thời gian học tập chuẩn": "04 năm học",
-        "Thời gian học tập tối đa": "06 năm học"
-      },
-      {
-        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
-        "Thời gian học tập chuẩn": "1,5 năm học",
-        "Thời gian học tập tối đa": "03 năm học"
-      },
-      {
-        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
-        "Thời gian học tập chuẩn": "2,5 năm học",
-        "Thời gian học tập tối đa": "05 năm học"
-      },
-      {
-        "Chương trình đào tạo": "Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
-        "Thời gian học tập chuẩn": "02 năm học",
-        "Thời gian học tập tối đa": "04 năm học"
+        "Thời gian học tập tối đa": "06 năm học",
+        "Quy tắc đối với sinh viên liên thông": "Thời gian tối đa được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khóa giảm tương ứng với khối lượng tín chỉ tích lũy được miễn trừ."
       }
     ],
     "source_pages": [
@@ -1400,30 +1391,17 @@
     "title": "Chương trình đào tạo và thời gian học tập",
     "applicability": "Áp dụng cho hình thức đào tạo vừa làm vừa học (theo sửa đổi bổ sung tại QĐ 4743/QĐ-ĐHSP áp dụng từ khóa 2025 trở đi).",
     "columns": [
-      "Chương trình đào tạo",
+      "Hình thức đào tạo",
       "Thời gian học tập chuẩn",
-      "Thời gian học tập tối đa"
+      "Thời gian học tập tối đa",
+      "Quy tắc đối với sinh viên liên thông"
     ],
     "rows": [
       {
-        "Chương trình đào tạo": "Đào tạo đại học cấp bằng thứ nhất",
+        "Hình thức đào tạo": "Vừa làm vừa học",
         "Thời gian học tập chuẩn": "05 năm học",
-        "Thời gian học tập tối đa": "7,5 năm học"
-      },
-      {
-        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
-        "Thời gian học tập chuẩn": "02 năm học",
-        "Thời gian học tập tối đa": "04 năm học"
-      },
-      {
-        "Chương trình đào tạo": "Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
-        "Thời gian học tập chuẩn": "03 năm học",
-        "Thời gian học tập tối đa": "06 năm học"
-      },
-      {
-        "Chương trình đào tạo": "Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
-        "Thời gian học tập chuẩn": "2,5 năm học",
-        "Thời gian học tập tối đa": "05 năm học"
+        "Thời gian học tập tối đa": "7,5 năm học",
+        "Quy tắc đối với sinh viên liên thông": "Thời gian tối đa được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khóa giảm tương ứng với khối lượng tín chỉ tích lũy được miễn trừ."
       }
     ],
     "source_pages": [

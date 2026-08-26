@@ -42,6 +42,37 @@ def test_extract_study_duration_table_from_flattened_text() -> None:
     assert rows[2]["Thời gian học tập chuẩn"] == "3 năm học"
 
 
+def test_study_duration_amendment_replaces_old_fixed_bridge_rows() -> None:
+    content = (
+        "Thời gian học tập chuẩn và thời gian học tập tối đa. "
+        "Đào tạo đại học cấp bằng thứ nhất 4 năm học 8 năm học "
+        "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học "
+        "2 năm học 4 năm học. "
+        "Nội dung sửa đổi, bổ sung có hiệu lực: "
+        "Chính quy 04 năm học 06 năm học "
+        "Vừa làm vừa học 05 năm học 7,5 năm học. "
+        "Đối với sinh viên học liên thông, thời gian tối đa được xác định "
+        "trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khóa giảm "
+        "tương ứng với khối lượng được miễn trừ."
+    )
+
+    tables = extract_regulation_tables(_section(content, "K51_Dieu3"))
+
+    assert len(tables) == 2
+    assert all(len(table["rows"]) == 1 for table in tables)
+    rows = [table["rows"][0] for table in tables]
+    assert {row["Hình thức đào tạo"] for row in rows} == {
+        "Chính quy",
+        "Vừa làm vừa học",
+    }
+    assert {row["Thời gian học tập tối đa"] for row in rows} == {
+        "06 năm học",
+        "7,5 năm học",
+    }
+    assert all("Quy tắc đối với sinh viên liên thông" in row for row in rows)
+    assert all("Chương trình đào tạo" not in row for row in rows)
+
+
 def test_extract_k50_remaining_grade_scale_marks_d_as_not_passed() -> None:
     content = (
         "Thang điểm 10 Thang điểm chữ "

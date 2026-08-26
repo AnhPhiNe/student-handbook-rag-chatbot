@@ -283,6 +283,10 @@ def _build_lookup_result(
         "input_value": query,
         "result": result,
         "items": result_rows,
+        "display_rows": [
+            _build_result_row(row, matched_level=None, matched_value=None)
+            for row in table.get("rows") or []
+        ],
         "result_count": len(result_rows),
         "source_pages": table.get("source_pages") or [],
         "table_name": table.get("table_name")

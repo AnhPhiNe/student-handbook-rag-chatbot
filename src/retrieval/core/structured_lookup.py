@@ -41,6 +41,20 @@ def _metadata_from_tables(tables: list[dict[str, Any]]) -> dict[str, Any]:
     source_sections = {
         table.get("source_section") for table in tables if table.get("source_section")
     }
+    display_rows: list[dict[str, Any]] = []
+    include_table_context = len(tables) > 1
+    for table in tables:
+        for raw_row in table.get("rows") or []:
+            if not isinstance(raw_row, dict):
+                continue
+            row = dict(raw_row)
+            if include_table_context:
+                row = {
+                    "table_name": table.get("table_name"),
+                    "applicability": table.get("applicability"),
+                } | row
+            display_rows.append(row)
+
     return {
         "cohort": next(iter(cohorts)) if len(cohorts) == 1 else None,
         "document_id": next(iter(document_ids)) if len(document_ids) == 1 else None,
@@ -48,6 +62,7 @@ def _metadata_from_tables(tables: list[dict[str, Any]]) -> dict[str, Any]:
         if len(source_sections) == 1
         else "scoring_table",
         "content_type": "structured_lookup",
+        "display_rows": display_rows,
     }
 
 

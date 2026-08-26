@@ -33,6 +33,7 @@ from src.api.chat_controls import (
 )
 from src.api.deps import get_answer_service
 from src.api.schemas import ChatRequest
+from src.generation.structured_result_presenter import public_regulation_citations
 
 router = APIRouter(tags=["chat"])
 logger = logging.getLogger("student_handbook_rag.api.chat_stream")
@@ -147,6 +148,9 @@ def chat_stream(
                     if chunk_type == "metadata":
                         chunk["request_id"] = request_id
                         chunk["run_id"] = request_id
+                        chunk["citations_used"] = public_regulation_citations(
+                            chunk.get("citations_used") or []
+                        )
                         if not include_debug:
                             for debug_key in (
                                 "query_plan",

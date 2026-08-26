@@ -35,6 +35,7 @@ from .context_allocation import ContextAllocationConfig, build_context_for_promp
 from .gemini_client import GeminiClient
 from .io_utils import load_json, load_yaml
 from .prompt_builder import (
+    ANSWER_PROMPT_VERSION,
     DEFAULT_MAX_CONTEXT_CHARS,
     build_answer_prompt,
 )
@@ -44,7 +45,7 @@ from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v33-source-fidelity-structured-contract"
+PIPELINE_VERSION = "v34-compact-authorized-evidence"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -408,6 +409,7 @@ class AnswerPipeline:
             cohort=cohort,
             context_fingerprint=self.context_allocation.cache_fingerprint(),
             pipeline_version=PIPELINE_VERSION,
+            answer_prompt_version=ANSWER_PROMPT_VERSION,
         )
         cached = self.response_cache.get(cache_key)
         if cached:
@@ -430,7 +432,7 @@ class AnswerPipeline:
         prompt = build_answer_prompt(
             query=effective_query,
             retrieval_result=retrieval_result,
-            selected_citations=None,
+            selected_citations=selected_citations,
             max_context_chars=self.max_context_chars,
             cohort=cohort,
             context_allocation=self.context_allocation,
@@ -776,7 +778,7 @@ class AnswerPipeline:
         prompt = build_answer_prompt(
             query=effective_query,
             retrieval_result=retrieval_result,
-            selected_citations=None,
+            selected_citations=selected_citations,
             max_context_chars=self.max_context_chars,
             cohort=cohort,
             context_allocation=self.context_allocation,

@@ -89,6 +89,7 @@ class ResponseCache:
         cohort: str | None = None,
         context_fingerprint: dict[str, Any] | None = None,
         pipeline_version: str | None = None,
+        answer_prompt_version: str | None = None,
     ) -> str:
         payload = {
             "query": query,
@@ -97,6 +98,7 @@ class ResponseCache:
                 "STUDENT_RAG_RESPONSE_CACHE_NAMESPACE", "default"
             ),
             "pipeline_version": pipeline_version,
+            "answer_prompt_version": answer_prompt_version,
             "context_fingerprint": context_fingerprint or {},
             "retrieval_query": retrieval_result.get("retrieval_query"),
             "citations": [

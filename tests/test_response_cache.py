@@ -121,6 +121,28 @@ class ResponseCacheTest(unittest.TestCase):
 
             self.assertNotEqual(key_a, key_b)
 
+    def test_cache_key_changes_with_answer_prompt_version(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cache = ResponseCache(Path(tmpdir) / "cache.json")
+            kwargs = {
+                "query": "điều kiện học bổng",
+                "retrieval_result": {"retrieval_query": "học bổng"},
+                "selected_citations": [{"chunk_id": "p1"}],
+                "cohort": "K51",
+                "pipeline_version": "same-pipeline",
+            }
+
+            key_v1 = cache.make_cache_key(
+                **kwargs,
+                answer_prompt_version="answer-v1",
+            )
+            key_v2 = cache.make_cache_key(
+                **kwargs,
+                answer_prompt_version="answer-v2",
+            )
+
+            self.assertNotEqual(key_v1, key_v2)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -45,6 +45,13 @@ def test_product_regression_rejects_duplicate_case_ids() -> None:
         validate_cases(duplicate)
 
 
+def test_composer_development_dataset_can_be_smaller_than_product_set() -> None:
+    payload, cases = load_cases(Path("data/eval/composer_development/cases.json"))
+
+    assert payload["schema_version"] == "composer-development-v1"
+    assert len(cases) == 12
+
+
 def test_automatic_checks_require_citation_for_each_covered_task() -> None:
     case = {
         "expected_outcome": "answered",

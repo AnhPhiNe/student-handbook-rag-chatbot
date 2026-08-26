@@ -600,6 +600,97 @@ def test_compound_plan_calls_answer_llm_once(monkeypatch) -> None:
     assert llm.calls == 1
 
 
+def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch) -> None:
+    task = _rag_task(1, "Điều kiện cảnh báo học tập?")
+    task["cohorts"] = ["K51"]
+    plan = _plan([task])
+    citation = {
+        "chunk_id": "p1",
+        "source_parent_id": "p1",
+        "cohort": "K51",
+        "content": "Nguồn trực tiếp về cảnh báo học tập.",
+        "supports_task_ids": ["t1"],
+    }
+    retrieval_result = {
+        "query_plan": plan,
+        "task_results": [
+            {
+                "task_id": "t1",
+                "question": task["question"],
+                "coverage": "covered",
+                "coverage_by_cohort": {"K51": "covered"},
+            }
+        ],
+        "coverage_by_task": {"t1": "covered"},
+        "query": task["question"],
+        "effective_query": task["question"],
+        "intent": "open_question",
+        "strategy": "query_plan_execution",
+        "execution_mode": "rag",
+        "selected_cohort": "K51",
+        "retrieved_items": [
+            {
+                "chunk_id": "p1",
+                "content": citation["content"],
+                "supports_task_ids": ["t1"],
+                "metadata": {"cohort": "K51", "supports_task_ids": ["t1"]},
+            }
+        ],
+        "citations": [citation],
+        "needs_clarification": False,
+        "out_of_domain": False,
+    }
+    pipeline = _pipeline(plan)
+    pipeline.max_context_chars = 10000
+    pipeline.context_allocation = ContextAllocationConfig.from_config(
+        {"strategy": "full_sources"}
+    )
+    pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
+    pipeline._throttle_llm_call = lambda: None
+    pipeline.config.update(
+        {
+            "citations": {"max_sources": 5},
+            "guardrails": {"skip_llm_on_low_confidence": True},
+        }
+    )
+
+    class Cache:
+        def make_cache_key(self, **kwargs):
+            return "key"
+
+        def get(self, key):
+            return None
+
+        def set(self, key, value):
+            return None
+
+    class LLM:
+        def generate(self, prompt):
+            return {"text": "Đã trả lời", "model_used": "fake", "usage": {}}
+
+        def generate_stream(self, prompt):
+            yield "Đã trả lời"
+
+    captured: list[list[dict[str, Any]]] = []
+
+    def capture_prompt(**kwargs):
+        captured.append(kwargs["selected_citations"])
+        return "prompt"
+
+    pipeline.response_cache = Cache()
+    pipeline._get_llm_client = lambda: LLM()
+    monkeypatch.setattr("src.generation.answer_pipeline.build_answer_prompt", capture_prompt)
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.resolve_cohort_from_query",
+        lambda query, cohort: cohort,
+    )
+
+    pipeline.answer(task["question"], cohort="K51")
+    list(pipeline.answer_stream(task["question"], cohort="K51"))
+
+    assert captured == [[citation], [citation]]
+
+
 def test_query_plan_telemetry_is_hidden_without_api_debug() -> None:
     result = {
         "answer": "a",

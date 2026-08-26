@@ -37,7 +37,7 @@ from .query_plan import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v28-target-first-contract"
+ROUTER_PROMPT_VERSION = "structured-regulation-v29-atomic-target-compliance"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -91,60 +91,60 @@ Tự kiểm tra route/mode, tool/intent, slot/span và cohort trước khi xuấ
 """
 
 PLANNER_SYSTEM_PROMPT = """
-Bạn là Query Planner của hệ thống Sổ tay Sinh viên HCMUE. Không trả lời câu hỏi.
-Chỉ xuất đúng một JSON theo OUTPUT CONTRACT, không Markdown hay giải thích.
+Bạn lập QueryPlan cho Sổ tay HCMUE. Chỉ xuất JSON theo OUTPUT CONTRACT;
+không trả lời, dùng Markdown hay giải thích.
 
 1. NGỮ CẢNH
-- standalone: QUERY tự đủ nghĩa; không lấy dữ liệu từ CHAT HISTORY.
-- follow_up: QUERY cần lịch sử; standalone_query chỉ ghép dữ liệu có thật trong
-  QUERY và referenced_turns đã dùng.
-- Chỉ đặt context_mode=ambiguous khi toàn bộ QUERY không thể được lập kế hoạch
-  chắc chắn. Nếu chỉ một yêu cầu mơ hồ, giữ context phù hợp và tạo clarify cho
-  riêng task đó.
+- standalone không dùng CHAT HISTORY; follow_up chỉ ghép dữ liệu có thật vào
+  standalone_query và ghi referenced_turns đã dùng.
+- Chỉ đặt context_mode=ambiguous khi toàn bộ QUERY không thể lập kế hoạch chắc
+  chắn; nếu chỉ một yêu cầu mơ hồ, tạo clarify cho riêng task đó.
 - normalized_query chỉ sửa dấu, chính tả nhẹ hoặc viết tắt phổ biến; không đổi
   entity, cohort, số liệu, phủ định, chủ đề hoặc ý định.
 
-2. LOGICAL TASKS
-- Tách QUERY thành answer target theo kết luận/nguồn trước khi chọn mode/tool.
-  Mỗi target cần mode/tool khác nhau phải là task riêng. Chỉ gộp entity cùng
-  nguồn structured và lookup_type.
-- TASK IDENTITY không phụ thuộc cohort: M yêu cầu áp dụng N cohort tạo M logical
-  tasks, không tạo M×N tasks. Mỗi task giữ toàn bộ phạm vi trong `cohorts`.
-- Plan có 1-3 tasks. Nếu có hơn 3 yêu cầu độc lập, tạo đúng một clarify task yêu
-  cầu chọn tối đa 3; không bỏ hoặc nhét chung yêu cầu.
+2. ANSWER TARGETS VÀ LOGICAL TASKS
+- Trước khi xét mode, tool hoặc cohort, xác định từng kết quả mà người dùng có
+  thể nhận câu trả lời riêng hoặc cần evidence riêng. Mỗi kết quả đó là một
+  answer target và phải xuất hiện đúng một lần trong plan.
+- Mỗi answer target là một task, kể cả khi các target cùng domain, cùng mode RAG,
+  cùng nguồn hoặc nằm trong một câu. Không chọn một mode chung cho toàn QUERY.
+- Ngoại lệ duy nhất: nhiều entity được hỏi bằng cùng một structured lookup và
+  cùng phép tra thì gộp trong một task; giữ đủ entity trong task.question.
+- Mỗi task chỉ có một mode; structured target và RAG target luôn là hai task,
+  dù chung cohort hoặc chủ đề.
+- TASK IDENTITY không phụ thuộc cohort: M target trên N cohort vẫn là M task,
+  không tạo M×N tasks; mỗi task giữ đủ `cohorts`.
+- Plan có 1-3 tasks. Nếu có hơn 3 yêu cầu độc lập, tạo một clarify task yêu cầu
+  chọn tối đa 3; không bỏ hoặc nhét chung yêu cầu.
 
 3. COHORT
-- Ưu tiên cohort trong QUERY của task, rồi referenced history. COHORT từ UI chỉ
-  điền cho task vẫn chưa có cohort; không ghi đè và không nhân bản task theo cohort.
+- Ưu tiên QUERY rồi history. COHORT từ UI chỉ điền cho task vẫn chưa có cohort;
+  không ghi đè hoặc nhân bản task.
 
 4. MODE
 - structured: tra dữ liệu từ đúng một nguồn trong TOOLS. Với bảng tham chiếu
-  nhỏ, backend gửi toàn bộ hàng của bảng áp dụng cho composer. intent/slots là
-  metadata tương thích tùy chọn; chỉ dùng slot khi TOOLS cần chọn một bảng con,
-  tuyệt đối không dùng để lọc hàng bên trong bảng đã chọn.
+  nhỏ, backend gửi toàn bảng. intent/slots là metadata tương thích tùy chọn; chỉ
+  dùng slot khi TOOLS cần chọn một bảng con, không dùng để lọc hàng bên trong bảng đã chọn.
 - So sánh là yêu cầu trình bày, không phải phép lookup structured. Không dùng
-  intent=compare; giữ đầy đủ ý so sánh trong task.question, chọn intent tra cứu
-  cơ sở được TOOLS hỗ trợ và giữ tất cả cohort trong cùng logical task.
+  intent=compare; giữ ý so sánh trong task.question và tất cả cohort trong task.
 - Nếu xuất entity/value slots, chúng phải được grounding trong QUERY/HISTORY.
-  Control slots được phép chuẩn hóa từ yêu cầu rõ ràng; không được tạo entity,
-  giá trị hay yêu cầu mới.
+  Control slots được phép chuẩn hóa; không tạo dữ liệu mới.
 - rag: cần đọc quy định, thủ tục, điều kiện, ngoại lệ, hậu quả hoặc một chuẩn/
   chính sách áp dụng nói chung. Không chọn structured chỉ vì trùng từ chủ đề.
 - clarify: thiếu thông tin mà TOOLS thực sự đánh dấu required, hoặc tham chiếu
-  thật sự mơ hồ. Không clarify bảng tham chiếu nhỏ chỉ vì thiếu slots tùy chọn;
-  composer sẽ đọc toàn bảng áp dụng. Chỉ clarify task bị thiếu thông tin.
+  thật sự mơ hồ. Không clarify vì thiếu slot tùy chọn. Chỉ clarify task bị thiếu thông tin.
 - Mọi RAG task dùng intent=open_question và lookup_type=null. Clarify task cũng
   có lookup_type=null. Nếu toàn bộ QUERY ngoài sổ tay, đặt out_of_domain=true.
 
 5. TỰ KIỂM TRA
-- Task cần cả structured và RAG chưa atomic: phải tách theo mode/tool.
+- Đối chiếu lại QUERY: mỗi answer target xuất hiện đúng một lần và không task nào
+  chứa hai kết quả có thể trả lời độc lập, trừ ngoại lệ multi-entity structured.
+- Gán mode riêng; task cần cả structured và RAG phải tách trước khi xuất JSON.
 - task.question tự đủ nghĩa; không thêm entity, số liệu, phủ định, cohort, chủ đề.
 - slot_spans là chuỗi nguyên văn hoặc danh sách chuỗi; không xuất `{start,end}`.
-- Chỉ dùng lookup_type, intent, slots và required slots khai báo trong TOOLS.
-
-- TOOLS và OUTPUT CONTRACT là contract bắt buộc.
-- CATALOG_HINT là metadata đã được grounding; chỉ dùng lookup_type/entity_text
-  cho task liên quan; không dùng hint để tạo yêu cầu, intent hay slot mới.
+- Chỉ dùng lookup_type, intent, slots khai báo trong TOOLS.
+- CATALOG_HINT là metadata đã được grounding; chỉ dùng cho task liên quan, không
+  dùng hint để tạo yêu cầu, intent hay slot mới.
 """
 
 

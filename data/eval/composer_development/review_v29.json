@@ -1,0 +1,52 @@
+{
+  "schema_version": "composer-development-review-v1",
+  "reviewed_report": "tmp/composer_development_v29.json",
+  "reviewed_report_sha256": "2eba025ebeb2204ec72ab0a48c9bc8169069127b7d29bdb10bb7a34c55e8f1a1",
+  "reviewer_type": "codex_assisted",
+  "review_scope": "User-delegated source-grounding review; not an LLM-judge acceptance score.",
+  "review_status": "completed",
+  "reviewed_at": "2026-08-26T17:20:09+07:00",
+  "cases": [
+    {
+      "case_id": "composer_new_006",
+      "decision": "fail",
+      "severity": "critical",
+      "root_cause": "composer_grounding",
+      "source_anchors": [
+        "K51_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+        "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu7"
+      ],
+      "finding": "Nguồn chỉ yêu cầu đóng đủ học phí và quy định thời hạn 30 ngày cho hồ sơ hỗ trợ sinh viên sư phạm; không trực tiếp xác lập việc tự động gia hạn hạn đóng học phí. Câu trả lời đã suy phủ định từ việc không tìm thấy quy định."
+    },
+    {
+      "case_id": "composer_new_007",
+      "decision": "fail",
+      "severity": "critical",
+      "root_cause": "composer_grounding",
+      "source_anchors": [
+        "K50_QuyCheDaoTao_Chuong2_Dieu8",
+        "K50_QuyCheDaoTao_Chuong4_Dieu16"
+      ],
+      "finding": "Nguồn xác lập tối đa 30% toàn chương trình có thể học trực tuyến và ốm dài ngày là căn cứ xin nghỉ tạm thời; không trực tiếp cho phép hoặc cấm học trực tuyến toàn bộ một học kỳ thay cho nghỉ tạm thời."
+    },
+    {
+      "case_id": "composer_new_008",
+      "decision": "fail",
+      "severity": "major",
+      "root_cause": "composer_grounding",
+      "source_anchors": [
+        "K51_QuyCheDaoTao_Chuong3_Dieu12",
+        "K51_QuyCheDaoTao_Chuong3_Dieu13"
+      ],
+      "finding": "Điều kiện cảnh báo được trả lời đúng và nguồn còn bảo lưu kết quả của sinh viên bị buộc thôi học. Tuy nhiên, nguồn không phát biểu trực tiếp predicate rằng cảnh báo không tự động hủy kết quả; kết luận hiện tại vượt direct-support contract nhưng có mức rủi ro thấp hơn hai case còn lại."
+    }
+  ],
+  "summary": {
+    "reviewed_cases": 3,
+    "passed": 0,
+    "failed": 3,
+    "critical": 2,
+    "major": 1,
+    "release_effect": "public_beta_blocked_pending_product_core_regression"
+  }
+}

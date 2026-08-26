@@ -1,16 +1,14 @@
+from __future__ import annotations
+
 import json
 from typing import Any
 
-from src.common.cohort import COHORT_ADMISSION_YEARS
-
-from .amendment_precedence import (
-    collect_applicable_amendments,
-    format_applicable_amendments,
-)
-from .context_allocation import ContextAllocationConfig, build_context_for_prompt
+from .amendment_precedence import collect_applicable_amendments
+from .context_allocation import ContextAllocationConfig
 
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.0-compact-authorized-evidence"
 
 
 def build_answer_prompt(
@@ -21,87 +19,107 @@ def build_answer_prompt(
     cohort: str | None = None,
     context_allocation: ContextAllocationConfig | dict[str, Any] | None = None,
 ) -> str:
-    context = build_context_for_prompt(
-        retrieval_result=retrieval_result,
+    """Build a compact, task-bound answer prompt."""
+    del context_allocation  # Kept in the public signature for compatibility.
+    packet = build_authorized_evidence_packet(
         query=query,
-        selected_citations=selected_citations or [],
+        retrieval_result=retrieval_result,
+        selected_citations=selected_citations,
+        fallback_cohort=cohort,
         max_context_chars=max_context_chars,
-        allocation_config=context_allocation,
     )
-    structured_result = _to_pretty_json(retrieval_result.get("structured_result"))
-    query_plan = _to_pretty_json(retrieval_result.get("query_plan"))
-    task_results = _to_pretty_json(retrieval_result.get("task_results"))
-    cohort_instruction = _cohort_instruction(cohort)
-    source_usage_instruction = _source_usage_instruction(context)
-    applicable_amendments = format_applicable_amendments(
-        collect_applicable_amendments(
-            retrieval_result,
-            query=query,
-            cohort=cohort,
-        )
-    )
+    required_units = [
+        {
+            "task_id": unit["task_id"],
+            "question": unit["question"],
+            "cohort": unit["cohort"],
+            "coverage": unit["coverage"],
+            "clarification_question": unit.get("clarification_question"),
+            "allowed_source_refs": unit["allowed_source_refs"],
+        }
+        for unit in packet["units"]
+    ]
 
-    return f"""Bạn là chatbot tra cứu Sổ tay sinh viên. Trả lời bằng tiếng Việt tự nhiên, chính xác, bám nguồn.
-{cohort_instruction}
-{source_usage_instruction}
+    return f"""Bạn là chatbot tra cứu Sổ tay sinh viên. Trả lời bằng tiếng Việt tự nhiên, ngắn gọn và chính xác.
 
-ANSWER_SCOPE_RULES
-- Chỉ trả lời đúng đối tượng, chính sách hoặc giá trị mà câu hỏi đang hỏi. Không tự mở rộng sang địa chỉ, email, thủ tục, hậu quả hoặc ngoại lệ nếu người dùng không hỏi và nguồn không nói trực tiếp.
-- Dùng tiêu đề nguồn, source_section và loại nguồn làm anchor chủ đề. Không diễn giải một thuật ngữ trong quy định thành tên phòng/khoa/đơn vị chỉ vì gần chữ.
-- Với câu hỏi về liên hệ/đơn vị, chỉ trả lời các trường có trong STRUCTURED_RESULT hoặc CONTEXT. Không suy ra phòng, email, số điện thoại, địa điểm hoặc đơn vị phụ trách từ tên gần giống.
-- Với câu hỏi có/không, quyền, ngoại lệ, hậu quả, thay thế, miễn hoặc thời hạn, chỉ kết luận có hoặc không khi nguồn trực tiếp xác lập đúng quyền, nghĩa vụ hoặc điều cấm được hỏi. Thông tin về lịch/thời điểm không tự chứng minh người dùng có quyền lựa chọn. Nếu không, nêu dữ kiện chắc chắn có liên quan và nói rõ nguồn chưa xác định phần được hỏi.
-- Khi câu hỏi hỏi một hành vi X có gây hậu quả Y hay không, dùng nguồn quy định trực tiếp các điều kiện của Y làm căn cứ kết luận; nguồn chỉ mô tả X là thông tin giải thích phụ, không đủ để tự suy ra Y.
-- Trả lời ngắn gọn theo mặc định, nhưng phải giữ đủ điều kiện, số liệu, sửa đổi hiệu lực và khác biệt cohort trực tiếp cần thiết để tránh gây hiểu nhầm.
+QUY TẮC BẮT BUỘC
+1. Trả lời đủ từng đơn vị yêu cầu và mọi ý độc lập trong câu hỏi của đơn vị đó.
+2. Mỗi đơn vị chỉ được dùng evidence và source_ref đã cấp cho đúng task/cohort; không mượn nguồn của đơn vị khác.
+3. Chỉ kết luận điều mà nguồn trực tiếp xác lập cho đúng đối tượng, hành vi hoặc điều kiện được hỏi. Không dùng điều kiện của một hậu quả, thủ tục hoặc khái niệm gần nghĩa để trả lời cho điều khác.
+4. Nếu nguồn liệt kê nhiều điều kiện hoặc trường hợp, phải giữ đủ danh sách; giữ nguyên số liệu, Điều/khoản/điểm, cohort, applicability và sửa đổi có hiệu lực.
+5. Nếu evidence chỉ gần chủ đề hoặc không đủ cho một phần, hãy nói rõ phần đó chưa tìm thấy căn cứ; trả lời partial hoặc abstain, không đổi câu hỏi sang khái niệm gần nghĩa.
 
-NHIỆM VỤ
-- Định dạng: dùng in đậm (**văn bản**) cho mốc thời gian, tên thủ tục, con số hoặc điều kiện cốt lõi khi hữu ích.
-- Khi liệt kê nhiều trường hợp, dùng danh sách Markdown đánh số `1.`, `2.`, `3.`. Không gọi “mục 1, 2, 3” nếu các mục đó không được đánh số rõ ngay trong câu trả lời.
-- Chỉ sử dụng STRUCTURED_RESULT và CONTEXT; không dùng kiến thức ngoài nguồn.
-- Nếu STRUCTURED_RESULT và CONTEXT không đủ căn cứ cho câu hỏi, nói rằng chưa tìm thấy trong Sổ tay thay vì tự suy diễn.
-- STRUCTURED_RESULT là nguồn chuẩn cho bảng và danh mục. CONTEXT là nguồn chuẩn cho quy định, điều kiện và thủ tục.
-- PRIMARY SOURCES là căn cứ duy nhất để trả lời. Các điều khoản liên quan được giao diện liên kết riêng, không nằm trong CONTEXT.
-- Không chèn mã trích dẫn dạng [1], [R1] hoặc chú thích nguồn vào câu trả lời; giao diện sẽ hiển thị nguồn và liên kết điều khoản liên quan.
-- Nếu có APPLICABLE AMENDMENTS, nội dung thay thế/bổ sung trong đó có thứ tự hiệu lực cao hơn câu chữ cũ, nhưng chỉ trong đúng phạm vi điều/khoản/điểm và cohort được nêu. Hãy áp dụng trực tiếp nội dung mới nhất vào câu trả lời một cách tự nhiên; tuyệt đối KHÔNG ghi các nhãn hay chú thích như "AMENDMENT 1", "được bổ sung bởi AMENDMENT", "theo AMENDMENT", "[AMENDMENT]" vào câu trả lời.
-- Nếu người dùng không nêu rõ khóa và CONTEXT chứa nhiều phiên bản quy định khác nhau theo khóa, phải phân tách câu trả lời theo từng khóa; không gộp chung hoặc tự chọn một khóa đại diện.
-- Khi câu hỏi so sánh hoặc hỏi về từ 2 khóa trở lên (ví dụ K50 và K51), hãy trình bày rõ ràng theo từng khóa: "1. Đối với Khóa X: ..." và "2. Đối với Khóa Y: ...", sử dụng in đậm cho các con số, thang điểm và điều kiện cốt lõi; tuyệt đối không gộp chung hoặc lấy quy định của khóa này áp đặt cho khóa kia.
-- Nếu câu hỏi chỉ định rõ một hình thức/hệ đào tạo (chính quy, vừa làm vừa học, liên thông, văn bằng 2), chỉ trả lời phần quy định cho hệ đó. Nếu câu hỏi không chỉ định rõ hệ đào tạo, hãy nêu rõ thông tin cho từng hệ đào tạo có trong nguồn để người dùng tự đối chiếu.
-- Giữ nguyên số liệu, tỷ lệ, thời hạn, Điều, khoản, điểm và thông tin liên hệ. Không suy rộng quy định cho đối tượng khác.
-- Phân biệt rõ "Phòng" và "Khoa". Nếu nguồn chỉ có đơn vị gần tên nhưng không phải đơn vị được hỏi, phải nói rõ nguồn không xác nhận đơn vị được hỏi.
-- Với bảng, chỉ dùng record có `applicability` phù hợp với hình thức đào tạo, loại học phần hoặc đối tượng được hỏi; nếu chưa đủ thông tin để chọn, hãy hỏi lại.
-- Nếu một record có `input_requirements.required_components`, chỉ kết luận khi câu hỏi cung cấp đủ các thành phần bắt buộc đó. Nếu thiếu, hãy hỏi đúng các thành phần còn thiếu; không suy ra từ tổng điểm hoặc một giá trị thay thế.
-- Không tự suy diễn quyền lợi, ngoại lệ hoặc điều cấm từ quy định chỉ nói về thời gian/quy trình/thủ tục.
-- Không trấn an hoặc khuyên bảo vượt nguồn. Chỉ nêu nghĩa vụ, kết luận hoặc dữ kiện dựa trên câu chữ.
-- Không hiển thị quá trình suy luận, nhãn kỹ thuật hoặc tự thêm mục nguồn.
-- Khi có QUERY_PLAN, trả lời lần lượt mọi task theo thứ tự. Chỉ dùng STRUCTURED_RESULT hoặc PRIMARY SOURCE có `Supports tasks` chứa đúng task id tương ứng.
-- Giữ nguyên số liệu, cohort và `applicability` trong structured JSON. Không dùng evidence của task này để lấp phần thiếu của task khác.
-- Với task có coverage `uncovered`, nói rõ chưa tìm thấy nguồn cho riêng ý đó. Với task `needs_clarification`, nêu câu hỏi làm rõ; vẫn trả lời đầy đủ các task khác đã `covered`.
-- Task `needs_clarification` tuyệt đối chỉ được xuất câu hỏi làm rõ tương ứng; không trả lời, suy đoán hoặc mượn evidence của task khác cho task đó, kể cả khi CONTEXT có đoạn nhìn có vẻ liên quan.
+QUY CÁCH
+- Không dùng kiến thức ngoài AUTHORIZED_EVIDENCE_BY_UNIT.
+- Không chèn mã nguồn như [S1] vào câu trả lời; giao diện hiển thị nguồn riêng.
+- Với coverage=needs_clarification, chỉ nêu clarification_question của đơn vị đó.
+- Với coverage=uncovered hoặc không có source_ref được phép, nói chưa tìm thấy căn cứ cho đúng ý đó.
+- Nếu có applicable_amendments, áp dụng nội dung mới nhất trong đúng phạm vi nhưng không nhắc nhãn kỹ thuật amendment.
+- Không hiển thị quá trình suy luận, metadata kỹ thuật hoặc tự tạo mục nguồn.
 
-CÂU HỎI CỦA SINH VIÊN
-{query}
+AUTHORIZED_EVIDENCE_BY_UNIT
+{_to_pretty_json(packet)}
 
-DỮ LIỆU
+FINAL_INSTRUCTIONS
+Câu hỏi gốc: {query}
 
-QUERY_PLAN:
-{query_plan if query_plan else "(không có; xử lý legacy một yêu cầu)"}
-
-TASK_RESULTS:
-{task_results if task_results else "(không có)"}
-
-STRUCTURED_RESULT:
-{structured_result if structured_result else "(không có)"}
-
-{applicable_amendments if applicable_amendments else "APPLICABLE AMENDMENTS: (không có sửa đổi áp dụng trực tiếp được phát hiện)"}
-
-CONTEXT:
-{context if context else "(không có context)"}
-
-RETRIEVAL_METADATA:
-- intent: {retrieval_result.get("intent")}
-- strategy: {retrieval_result.get("strategy")}
-- execution_mode: {retrieval_result.get("execution_mode")}
+Các đơn vị bắt buộc phải xử lý theo đúng thứ tự:
+{_to_pretty_json(required_units)}
 
 Chỉ xuất câu trả lời cuối cùng cho sinh viên."""
+
+
+def build_authorized_evidence_packet(
+    *,
+    query: str,
+    retrieval_result: dict[str, Any],
+    selected_citations: list[dict[str, Any]] | None,
+    fallback_cohort: str | None,
+    max_context_chars: int,
+) -> dict[str, Any]:
+    """Group already-authorized primary evidence by logical task and cohort."""
+    citations = _resolve_primary_citations(retrieval_result, selected_citations)
+    sources = [_normalize_source(citation, index) for index, citation in enumerate(citations, 1)]
+    sources = [source for source in sources if source["content"]]
+    units = _composition_units(
+        retrieval_result,
+        fallback_cohort=fallback_cohort,
+        fallback_question=query,
+    )
+    per_source_chars = _source_content_budget(
+        max_context_chars=max_context_chars,
+        source_count=max(1, len(sources)),
+    )
+
+    packet_units: list[dict[str, Any]] = []
+    for unit in units:
+        authorized_sources = [
+            _limit_source(source, per_source_chars)
+            for source in sources
+            if _source_supports_unit(source, unit)
+        ]
+        amendments = collect_applicable_amendments(
+            retrieval_result,
+            query=unit["question"],
+            cohort=None if unit["cohort"] == "default" else unit["cohort"],
+        )
+        packet_units.append(
+            {
+                **unit,
+                "allowed_source_refs": [source["source_ref"] for source in authorized_sources],
+                "primary_evidence": authorized_sources,
+                "applicable_amendments": [
+                    {
+                        "source_title": amendment.source_title,
+                        "effective_rule": amendment.effective_rule,
+                        "replacement_text": amendment.replacement_text,
+                    }
+                    for amendment in amendments
+                ],
+            }
+        )
+
+    return {"answer_prompt_version": ANSWER_PROMPT_VERSION, "units": packet_units}
 
 
 def build_prompt(
@@ -125,58 +143,163 @@ def limit_context(context: str, max_context_chars: int = DEFAULT_MAX_CONTEXT_CHA
     context = (context or "").strip()
     if len(context) <= max_context_chars:
         return context
-
-    return (
-        context[:max_context_chars].rstrip()
-        + "\n\n[Context đã được rút gọn để tránh prompt quá dài.]"
-    )
+    return context[:max_context_chars].rstrip() + "\n\n[Evidence đã được rút gọn.]"
 
 
-def _source_usage_instruction(context: str) -> str:
-    normalized_context = str(context or "").upper()
-    if (
-        "PRIMARY SOURCES" not in normalized_context
-        and "ROLE: PRIMARY" not in normalized_context
-    ):
-        return ""
-    return """
-SOURCE_USAGE_RULES
-- PRIMARY SOURCES are the main evidence for the final answer.
-- Only use facts contained in PRIMARY SOURCES. Do not infer facts from references to other articles.
-- When a PRIMARY SOURCE header identifies an applicable Điều, retain the exact “Điều X” in the final answer; do not replace it with a generic reference.
-- Do not output bracketed source markers; the client renders source and related-reference affordances separately.
-"""
+def _resolve_primary_citations(
+    retrieval_result: dict[str, Any],
+    selected_citations: list[dict[str, Any]] | None,
+) -> list[dict[str, Any]]:
+    if selected_citations is not None:
+        return [dict(citation) for citation in selected_citations]
 
+    citations = retrieval_result.get("citations") or []
+    if citations and any(citation.get("content") or citation.get("document") for citation in citations):
+        return [dict(citation) for citation in citations]
 
-def _cohort_instruction(cohort: str | list[str] | None) -> str:
-    if not cohort:
-        return ""
-    if isinstance(cohort, list):
-        cohort_list = [str(c).strip() for c in cohort if str(c).strip()]
-    else:
-        cohort_list = [c.strip() for c in str(cohort).split(",") if c.strip()]
-
-    year_mapping = ", ".join(
-        f"{label}=" + "/".join(str(year) for year in years)
-        for label, years in COHORT_ADMISSION_YEARS.items()
-    )
-    if len(cohort_list) >= 2:
-        cohort_display = ", ".join(cohort_list)
-        return (
-            f"Câu hỏi đang yêu cầu so sánh/truy vấn giữa các nhóm khóa: {cohort_display}. "
-            f"Ánh xạ năm nhập học: {year_mapping}. "
-            "Hãy đối chiếu tài liệu và trả lời rành mạch theo từng khóa."
+    # Compatibility for legacy call sites/tests that only provide retrieved items.
+    result: list[dict[str, Any]] = []
+    for item in retrieval_result.get("retrieved_items") or []:
+        metadata = dict(item.get("metadata") or {})
+        result.append(
+            {
+                **metadata,
+                "chunk_id": item.get("chunk_id") or item.get("_id"),
+                "content": item.get("content") or item.get("document"),
+                "supports_task_ids": item.get("supports_task_ids")
+                or metadata.get("supports_task_ids")
+                or [],
+            }
         )
-    single_cohort = cohort_list[0] if cohort_list else str(cohort).strip()
-    return (
-        f"Sinh viên đang hỏi thuộc nhóm khóa: {single_cohort}. "
-        f"Ánh xạ năm nhập học: {year_mapping}. "
-        "Nếu tài liệu có quy định áp dụng theo năm hoặc khóa, phải đối chiếu để trả lời đúng cohort."
+
+    if result:
+        return result
+
+    structured_result = retrieval_result.get("structured_result")
+    if structured_result:
+        return [
+            {
+                "chunk_id": "structured-result",
+                "title": structured_result.get("table_name") or "Dữ liệu tra cứu có cấu trúc",
+                "cohort": structured_result.get("cohort"),
+                "content": _to_pretty_json(structured_result),
+            }
+        ]
+    return []
+
+
+def _composition_units(
+    retrieval_result: dict[str, Any],
+    *,
+    fallback_cohort: str | None,
+    fallback_question: str,
+) -> list[dict[str, Any]]:
+    plan = retrieval_result.get("query_plan") or {}
+    tasks = plan.get("tasks") or []
+    task_results = {
+        str(result.get("task_id")): result
+        for result in retrieval_result.get("task_results") or []
+        if result.get("task_id")
+    }
+    coverage_by_task = retrieval_result.get("coverage_by_task") or {}
+    units: list[dict[str, Any]] = []
+
+    for index, task in enumerate(tasks, 1):
+        task_id = str(task.get("id") or f"t{index}")
+        result = task_results.get(task_id) or {}
+        cohorts = task.get("cohorts") or result.get("cohorts") or [fallback_cohort or "default"]
+        coverage_by_cohort = result.get("coverage_by_cohort") or {}
+        for task_cohort in cohorts:
+            cohort_key = str(task_cohort or "default")
+            coverage = str(
+                coverage_by_cohort.get(cohort_key)
+                or result.get("coverage")
+                or coverage_by_task.get(task_id)
+                or "uncovered"
+            )
+            units.append(
+                {
+                    "task_id": task_id,
+                    "question": str(task.get("question") or result.get("question") or "").strip(),
+                    "cohort": cohort_key,
+                    "coverage": coverage,
+                    "clarification_question": task.get("clarification_question")
+                    or result.get("clarification_question"),
+                }
+            )
+
+    if units:
+        return units
+
+    return [
+        {
+            "task_id": "legacy",
+            "question": str(
+                retrieval_result.get("effective_query")
+                or retrieval_result.get("query")
+                or fallback_question
+            ).strip(),
+            "cohort": str(fallback_cohort or retrieval_result.get("selected_cohort") or "default"),
+            "coverage": "covered" if _has_primary_evidence(retrieval_result) else "uncovered",
+            "clarification_question": retrieval_result.get("clarification_question"),
+        }
+    ]
+
+
+def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
+    metadata = citation.get("metadata") or {}
+    supports_task_ids = citation.get("supports_task_ids") or metadata.get("supports_task_ids") or []
+    applicable_cohorts = citation.get("applicable_cohorts") or metadata.get("applicable_cohorts") or []
+    if isinstance(applicable_cohorts, str):
+        applicable_cohorts = [applicable_cohorts]
+    return {
+        "source_ref": f"S{index}",
+        "source_id": str(
+            citation.get("source_parent_id")
+            or citation.get("parent_section_id")
+            or citation.get("chunk_id")
+            or citation.get("document_id")
+            or f"source-{index}"
+        ),
+        "title": citation.get("title") or metadata.get("title"),
+        "source_cohort": citation.get("cohort") or metadata.get("cohort"),
+        "applicable_cohorts": [str(value) for value in applicable_cohorts],
+        "applicability": citation.get("applicability") or metadata.get("applicability"),
+        "source_pages": citation.get("source_pages") or metadata.get("source_pages") or [],
+        "supports_task_ids": [str(task_id) for task_id in supports_task_ids],
+        "content": str(citation.get("content") or citation.get("document") or "").strip(),
+    }
+
+
+def _source_supports_unit(source: dict[str, Any], unit: dict[str, Any]) -> bool:
+    task_id = unit["task_id"]
+    supports_task_ids = source["supports_task_ids"]
+    if task_id != "legacy" and task_id not in supports_task_ids:
+        return False
+
+    # Task binding is authoritative. Cohort filtering becomes strict only when
+    # runtime exposes explicit applicability metadata; a K50-authored policy
+    # may legitimately apply to K51.
+    applicable_cohorts = source["applicable_cohorts"]
+    return not applicable_cohorts or unit["cohort"] in applicable_cohorts
+
+
+def _limit_source(source: dict[str, Any], max_chars: int) -> dict[str, Any]:
+    return {**source, "content": limit_context(source["content"], max_chars)}
+
+
+def _source_content_budget(*, max_context_chars: int, source_count: int) -> int:
+    usable = max(1000, int(max_context_chars) * 3 // 4)
+    return max(1000, usable // max(1, source_count))
+
+
+def _has_primary_evidence(retrieval_result: dict[str, Any]) -> bool:
+    return bool(
+        retrieval_result.get("citations")
+        or retrieval_result.get("retrieved_items")
+        or retrieval_result.get("structured_result")
     )
 
 
 def _to_pretty_json(data: Any) -> str:
-    if not data:
-        return ""
-
-    return json.dumps(data, ensure_ascii=False, default=str)
+    return json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True, default=str)

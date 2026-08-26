@@ -1,0 +1,102 @@
+{
+  "schema_version": "composer-development-v1",
+  "description": "Development set mở, được tạo trước vòng refactor Composer. Không phải benchmark hoặc holdout.",
+  "cases": [
+    {
+      "id": "composer_regression_012",
+      "category": "predicate_fidelity",
+      "query": "K51 bị cảnh báo học tập trong những trường hợp nào?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Phải nêu điều kiện cảnh báo; không thay bằng điều kiện buộc thôi học."
+    },
+    {
+      "id": "composer_regression_014",
+      "category": "complete_enumeration",
+      "query": "Sinh viên K50 cần đáp ứng những điều kiện nào để được xét tốt nghiệp?",
+      "cohort": "K50",
+      "expected_outcome": "answered",
+      "review_focus": "Giữ đủ các điều kiện chung được nguồn trực tiếp liệt kê."
+    },
+    {
+      "id": "composer_regression_016",
+      "category": "compound_predicates",
+      "query": "K51 khi nào bị cảnh báo học tập và khi nào bị buộc thôi học?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Phân biệt và trả đủ hai predicate, không dùng điều kiện của phần này thay phần kia."
+    },
+    {
+      "id": "composer_stress_027",
+      "category": "adjacent_unanswerable",
+      "query": "K51 điều kiện nhận học bổng là gì và quy định về dịch chuyển tức thời giữa các cơ sở như thế nào?",
+      "cohort": "K51",
+      "expected_outcome": "partial",
+      "review_focus": "Trả phần học bổng; không đổi khái niệm không có nguồn thành chuyển cơ sở đào tạo."
+    },
+    {
+      "id": "composer_new_001",
+      "category": "complete_enumeration",
+      "query": "Cuối học kỳ chính, những ngưỡng kết quả nào khiến sinh viên K50 bị cảnh báo học tập?",
+      "cohort": "K50",
+      "expected_outcome": "answered",
+      "review_focus": "Liệt kê đủ các ngưỡng cảnh báo trực tiếp trong nguồn, không lẫn buộc thôi học."
+    },
+    {
+      "id": "composer_new_002",
+      "category": "complete_enumeration",
+      "query": "K51 muốn được công nhận tốt nghiệp phải đáp ứng đầy đủ những điều kiện chung nào?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Giữ đủ danh sách điều kiện chung; không thay bằng quy trình hoặc trường hợp đặc biệt."
+    },
+    {
+      "id": "composer_new_003",
+      "category": "predicate_fidelity",
+      "query": "K51 bị buộc thôi học do kết quả học tập trong những trường hợp nào, không tính vi phạm kỷ luật?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Chỉ dùng điều kiện buộc thôi học do học tập và không mở rộng sang kỷ luật."
+    },
+    {
+      "id": "composer_new_004",
+      "category": "multi_condition",
+      "query": "Sinh viên K51 xin nghỉ học tạm thời vì lý do cá nhân cần đáp ứng điều kiện gì và nộp hồ sơ khi nào?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Trả đủ điều kiện và thời hạn; không trộn với thủ tục tiếp nhận trở lại học."
+    },
+    {
+      "id": "composer_new_005",
+      "category": "amendment_fidelity",
+      "query": "Sinh viên K51 học cải thiện thì điểm nào được dùng làm điểm chính thức?",
+      "cohort": "K51",
+      "expected_outcome": "answered",
+      "review_focus": "Áp dụng đúng nội dung sửa đổi có hiệu lực cho K51 và giữ nguyên phạm vi."
+    },
+    {
+      "id": "composer_new_006",
+      "category": "unanswerable_realistic",
+      "query": "Sinh viên K51 có được tự động gia hạn thời hạn đóng học phí thêm 30 ngày không?",
+      "cohort": "K51",
+      "expected_outcome": "partial",
+      "review_focus": "Không suy ra quyền gia hạn từ nguồn chỉ nói về học phí hoặc thời hạn; phải nói rõ phần chưa có căn cứ."
+    },
+    {
+      "id": "composer_new_007",
+      "category": "unanswerable_realistic",
+      "query": "Nếu bị ốm dài ngày, sinh viên K50 có được học trực tuyến toàn bộ học kỳ thay cho nghỉ học tạm thời không?",
+      "cohort": "K50",
+      "expected_outcome": "partial",
+      "review_focus": "Không biến quy định nghỉ học tạm thời thành quyền học trực tuyến khi nguồn không xác lập."
+    },
+    {
+      "id": "composer_new_008",
+      "category": "compound_partial",
+      "query": "K51 bị cảnh báo học tập khi nào và sau cảnh báo có tự động bị hủy toàn bộ kết quả học phần không?",
+      "cohort": "K51",
+      "expected_outcome": "partial",
+      "review_focus": "Trả đúng điều kiện cảnh báo; chỉ kết luận hậu quả hủy kết quả nếu có nguồn trực tiếp."
+    }
+  ]
+}

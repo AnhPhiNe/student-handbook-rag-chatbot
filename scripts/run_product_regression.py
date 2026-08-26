@@ -67,13 +67,15 @@ def load_cases(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     cases = payload.get("cases")
     if not isinstance(cases, list):
         raise ValueError("Dataset must contain a cases list")
-    validate_cases(cases)
+    schema_version = str(payload.get("schema_version") or "")
+    min_cases = 1 if schema_version.startswith("composer-development-") else 20
+    validate_cases(cases, min_cases=min_cases)
     return payload, cases
 
 
-def validate_cases(cases: list[dict[str, Any]]) -> None:
-    if not 20 <= len(cases) <= 30:
-        raise ValueError("Product regression must contain 20-30 cases")
+def validate_cases(cases: list[dict[str, Any]], *, min_cases: int = 20) -> None:
+    if not min_cases <= len(cases) <= 30:
+        raise ValueError(f"Regression dataset must contain {min_cases}-30 cases")
 
     seen_ids: set[str] = set()
     for index, case in enumerate(cases, start=1):

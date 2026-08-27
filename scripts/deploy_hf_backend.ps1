@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 $RootDir = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $TempDir = Join-Path $RootDir ".hf_deploy_temp"
 $HfSpaceUrl = "https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api"
-$CommitMessage = "Deploy release candidate FastAPI RAG backend with complete structured catalogs and graph"
+$CommitMessage = "Deploy v42 source navigation and grounded answer targets"
 
 function Assert-InWorkspace {
     param([string]$Path)
@@ -98,12 +98,20 @@ Write-Host " Hugging Face Backend-Only Deployment"
 Write-Host "=============================================="
 Write-Host ""
 
-Write-Host "[1/5] Preparing clean package directory..."
+Write-Host "[1/5] Preparing history-preserving package directory..."
 Assert-InWorkspace $TempDir
 if (Test-Path -LiteralPath $TempDir) {
     Remove-Item -LiteralPath $TempDir -Recurse -Force
 }
-New-Item -ItemType Directory -Path $TempDir | Out-Null
+if ($DryRun) {
+    New-Item -ItemType Directory -Path $TempDir | Out-Null
+}
+else {
+    Invoke-Git @("clone", "--branch", "main", "--single-branch", $HfSpaceUrl, $TempDir)
+    Get-ChildItem -LiteralPath $TempDir -Force |
+        Where-Object { $_.Name -ne ".git" } |
+        Remove-Item -Recurse -Force
+}
 
 Write-Host "[2/5] Copying backend source and configuration..."
 Copy-RequiredDirectory "src" "src"
@@ -160,17 +168,23 @@ if ($DryRun) {
     exit 0
 }
 
-Write-Host "[5/5] Committing and force-pushing the clean package..."
+Write-Host "[5/5] Committing and pushing the clean package..."
 Push-Location $TempDir
 try {
-    Invoke-Git @("init")
-    Invoke-Git @("checkout", "-B", "main")
     Invoke-Git @("config", "user.name", "HCMUE RAG Deploy")
     Invoke-Git @("config", "user.email", "deploy@example.local")
     Invoke-Git @("add", ".")
-    Invoke-Git @("commit", "-m", $CommitMessage)
-    Invoke-Git @("remote", "add", "hf", $HfSpaceUrl)
-    Invoke-Git @("push", "hf", "main:main", "--force")
+    & git diff --cached --quiet
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "No Hugging Face package changes to deploy."
+    }
+    elseif ($LASTEXITCODE -eq 1) {
+        Invoke-Git @("commit", "-m", $CommitMessage)
+        Invoke-Git @("push", "origin", "main:main")
+    }
+    else {
+        throw "git diff --cached --quiet failed with exit code $LASTEXITCODE"
+    }
 }
 finally {
     Pop-Location

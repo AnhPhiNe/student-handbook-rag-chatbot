@@ -171,28 +171,205 @@ PhoRanker remains available for controlled evaluation modes but is **disabled in
 
 Debug fields such as QueryPlan, task results, and evidence telemetry only appear when `include_debug=true`. The normal production response remains compact and stable.
 
-## Evaluation Results
+## Observability with LangSmith
 
-These results belong to the current release checkpoint. Raw LLM-judge scores are not treated as acceptance gates.
+LangSmith tracing follows the current QueryPlan architecture instead of the legacy single-router decision. Both `/chat` and `/chat/stream` create the same compact trace contract (`hcmue-query-plan-v2`). Public SSE responses still hide debug fields unless `include_debug=true`; the server retains an internal copy for observability before applying that redaction.
 
-| Evaluation | Result | Interpretation |
+```mermaid
+flowchart LR
+    Request["Request"] --> Root["Root chain run<br/>sync or stream"]
+    Root --> Router["AI Router child run<br/>Qwen planner usage"]
+    Root --> Composer["LLM Generation child run<br/>Gemini usage"]
+
+    Root --> PlanMeta["QueryPlan summary<br/>task count · modes · cohorts"]
+    Root --> Coverage["Coverage summary<br/>per task and cohort"]
+    Root --> EvidenceMeta["Compact evidence identity<br/>source IDs · pages · task binding"]
+    Root --> RuntimeMeta["Runtime identity<br/>pipeline · prompts · collections"]
+```
+
+Each root trace records:
+
+- interface (`sync` or `stream`), status, total latency, streaming TTFT, cache hit, and whether the answer LLM was called;
+- QueryPlan context mode, task count, task mode, lookup type, cohorts, per-task coverage, evidence count, citation count, and planner fallback;
+- pipeline, router-prompt, answer-prompt, QueryPlan schema/normalizer, Qdrant collection, and MongoDB parent-collection identity;
+- compact citation and structured-result summaries, including task/cohort binding and source pages;
+- token usage and timed Router/Composer child runs when usage telemetry is available.
+
+The trace deliberately excludes raw chat history, full source text, parent article bodies, retrieval scores, API keys, and database URLs. The student query and final answer remain the LangSmith root input/output because they are required for debugging product behavior.
+
+Enable tracing with:
+
+```dotenv
+LANGSMITH_TRACING=true
+LANGSMITH_API_KEY=lsv2_pt_...
+LANGSMITH_PROJECT=hcmue-student-handbook-rag
+```
+
+Legacy `LANGCHAIN_API_KEY` and `LANGCHAIN_PROJECT` names remain supported for existing deployments.
+
+## Evaluation
+
+The repository uses separate evaluation suites because planning correctness, retrieval quality, answer quality, and production behavior are different questions. A score from one suite is never presented as a substitute for another. The current release evidence is summarized first, followed by the exact composition and metrics of every maintained suite.
+
+### Release Evidence at a Glance
+
+| Suite | Role | Cases | Latest recorded result | Release gate? |
+|---|---|---:|---:|---|
+| Deterministic architecture | QueryPlan, routing, table-first execution, cohort and citation contracts | 144 | **143/144 (99.31%)** | Architecture evidence |
+| End-to-end regulation retrieval | Planner plus production hybrid retrieval | 180 | **Hit@5: 175/180 (97.22%)** | Retrieval evidence |
+| Legacy product regression | Re-runnable development regression | 30 | **30/30 automatic shape checks**; human review pending for that run | No |
+| Product acceptance | Realistic end-to-end product behavior | 50 | **47/50 automatic; 50/50 human pass** | **Yes** |
+| Generated answers + LLM judge | Grounding and citation diagnostics | 100 | No release score claimed for the current checkpoint | No |
+| Production scenarios | Cold/warm cache, streaming, and concurrency exercises | 60 | Dataset maintained; no release score claimed here | No |
+| Automated tests | Unit, integration, API, build, and regression invariants | — | **349 passed** | Engineering gate |
+
+Raw LLM-judge scores are diagnostic only. A suspected critical unsupported claim counts as a product failure only after source-based human review.
+
+### 1. Deterministic Architecture Suite — 144 Cases
+
+Dataset: [`data/eval/architecture_v3/deterministic_tool_cases.json`](./data/eval/architecture_v3/deterministic_tool_cases.json)
+
+This suite calls the planning and retrieval-preparation path without asking the answer LLM to judge its own behavior. A case passes only when all applicable structural invariants pass: task count, task modes, lookup types, cohort extraction, OOD behavior, clarification behavior, expected LLM-call decision, planner fallback absence, structured evidence availability, table-first payload shape, and cohort-correct source binding.
+
+#### Distribution by case type
+
+| Case type | Count | What it tests |
 |---|---:|---|
-| Deterministic architecture | **143/144 (99.31%)** | Planner/schema/structured execution; one structural limitation does not remove final evidence |
-| End-to-end RAG Hit@5 | **175/180 (97.22%)** | The expected source appears among the top five parent documents |
-| Product acceptance | **50/50 human pass** | 50 realistic student questions; 0 critical, 0 major, 4 minor limitations |
-| Automatic product shape checks | **47/50** | Runtime/output invariants; not a replacement for human review |
-| Python tests | **345 passed** | Unit, integration, and regression tests |
-| Ruff | **Passed** | Python static lint |
-| Frontend lint/build | **Passed** | TypeScript, ESLint, and Vite production build |
+| Positive structured lookup | 60 | Ten lookup families, six cases each |
+| Hard negative | 40 | Preventing unsupported structured routing or fabricated lookup evidence |
+| Ambiguous | 12 | Scoped clarification instead of guessing required information |
+| Out of domain | 8 | Terminal OOD behavior without an answer-LLM call |
+| Architecture scenarios | 24 | Multi-task, mixed-mode, multi-cohort, and three-task boundary behavior |
+| **Total** | **144** | 84 realistic and 60 stress cases |
 
-### Fifty-Case Product Acceptance
+The 60 positive cases contain six cases each for conduct, faculty, foreign language, formula, office, program, scholarship, scoring, student service, and study duration. The 24 architecture cases contain 3 multi-structured, 7 structured+regulation, 4 multi-regulation, 4 multi-cohort, 2 clarification, 2 multi-entity same-table, 1 three-task boundary, and 1 mixed-scope case.
 
-- The set contains no exact duplicates from the 144 deterministic cases, 180 retrieval cases, or the earlier 30-case product regression set.
-- It covers structured lookup, regulation RAG, structured + regulation, two requests in one message, multi-cohort queries, partial/unanswerable tasks, clarification, follow-up, and OOD behavior.
-- Every automatic failure was reviewed by a human, and at least ten automatic passes were manually spot-checked against their sources and citations.
-- Four minor limitations were accepted deliberately instead of adding task dependencies or a semantic parser solely to make the automatic score 50/50.
+**Metric:** strict case pass rate, computed as `passed cases / 144`. The current result is **143/144 = 99.31%**. The remaining case is a structural planner merge of closely related regulation requests; the final evidence is still complete, so the project reports it rather than adding a keyword parser to force 100%.
 
-Artifacts: [`data/eval/product_acceptance`](./data/eval/product_acceptance) and [`data/eval/reports/product_acceptance`](./data/eval/reports/product_acceptance).
+### 2. Regulation Retrieval Suite — 180 Cases
+
+Dataset: [`data/eval/architecture_v3/retrieval_cases.json`](./data/eval/architecture_v3/retrieval_cases.json)
+
+All 180 cases are source-anchored regulation questions. Structured-table questions are intentionally excluded because those use the deterministic catalog path rather than Qdrant. The evaluator supports two scopes:
+
+- **pure retrieval:** force the regulation retrieval path to isolate Qdrant/BM25/RRF quality;
+- **end to end:** include QueryPlan routing and then score the parent documents returned by the production path.
+
+The release headline reported in this README is the stricter end-to-end result.
+
+#### Distribution
+
+| Dimension | Distribution |
+|---|---|
+| Evaluation split | 135 realistic, 45 stress |
+| Cohort | 46 K48–K49, 45 K50, 45 K51, 44 general/multi-cohort |
+| Query style | 26 keyword, 25 student style, 20 short natural, 18 paraphrase, 13 typo/no accent, 11 condition/procedure, 7 graph-reference, 6 numeric/fact, 5 cohort-sensitive, 4 typo/no diacritics, 45 stress |
+
+#### Metrics
+
+| Metric | Definition |
+|---|---|
+| Hit@1 / Hit@3 / Hit@5 | `1` when at least one source-anchored relevant parent appears in the first `k` parents, otherwise `0`; reported as the mean over cases |
+| MRR | Mean reciprocal rank of the first relevant parent |
+| nDCG@5 | Rank-sensitive graded relevance over the first five parents |
+| Cohort leak rate | Fraction of cases containing a parent that violates cohort/applicability scope |
+| Empty/error rate | Fraction with no usable retrieval result or a runtime failure |
+| Latency | Mean and percentile retrieval time |
+
+For general multi-cohort queries, Hit@k is computed within each cohort execution unit before request-level aggregation. This avoids incorrectly treating the first K50 result as rank six merely because five K48–K49 parents were emitted first.
+
+**Current end-to-end result:** **Hit@5 = 175/180 = 97.22%**. The five documented misses are stress-style accentless queries or very broad heading-level questions. Production uses dense + BM25 + RRF; PhoRanker fields may exist in historical evaluator telemetry, but PhoRanker is disabled in the production path.
+
+### 3. Generated Answer and Judge Suite — 100 Cases
+
+Dataset: [`data/eval/architecture_v3/generated_answer_cases.json`](./data/eval/architecture_v3/generated_answer_cases.json)
+
+| Case type | Count |
+|---|---:|
+| Regulation RAG answers | 60 |
+| Structured answers | 20 |
+| Mixed structured + regulation answers | 10 |
+| Unanswerable / abstention | 10 |
+| **Total** | **100** |
+
+The split is 75 realistic and 25 stress cases; 90 are answerable and 10 are unanswerable. Each case contains source anchors, ground truth, required facts, forbidden claims, expected citations, and answerability metadata.
+
+Deterministic checks cover required-fact presence, numeric fidelity, citation-anchor match, abstention correctness, answer status, and expected question-handling behavior. The optional judge reports faithfulness, answer relevancy, answer correctness, context precision, context recall, citation correctness, unsupported-claim flags, and critical-false-pass flags.
+
+This suite is **diagnostic, not an acceptance gate**. Judge output can prioritize human review, but it cannot replace direct inspection of the answer and source anchors. No current release score is claimed because the beta decision uses the 50-case human-reviewed product set instead.
+
+### 4. Production Scenario Suite — 60 Cases
+
+Dataset: [`data/eval/architecture_v3/production_cases.json`](./data/eval/architecture_v3/production_cases.json)
+
+| Scenario | Count | Purpose |
+|---|---:|---|
+| Cold regulation RAG | 20 | Uncached end-to-end latency and correctness |
+| Deterministic | 10 | Structured/guardrail response behavior |
+| Warm cache | 10 | Cache-hit behavior and latency |
+| Streaming | 10 | SSE metadata, tokens, done event, and TTFT |
+| Burst | 10 | Five cases at concurrency 3 and five at concurrency 5 |
+| **Total** | **60** | 56 realistic and 4 stress cases |
+
+The suite measures HTTP success, expected response status, completion rate, error rate, latency, TTFT, stream completion, token output, warm-cache behavior, and burst stability. It is a deployment/performance diagnostic and is not combined with retrieval or human answer-quality scores.
+
+### 5. Legacy Product Regression — 30 Cases
+
+Dataset: [`data/eval/product_regression/cases.json`](./data/eval/product_regression/cases.json)
+
+This is an opened development set that may be rerun after general fixes. It contains 5 structured-single, 3 multi-entity same-table, 3 structured+structured, 4 regulation-single, 3 regulation+regulation, 4 structured+regulation, 3 multi-cohort, and one case each for clarification, follow-up, partial answer, OOD, and two questions in one message.
+
+Automatic checks verify no runtime error, expected outcome shape, and citations for covered tasks. The latest report records **30/30 automatic checks passed**, but its human-review status is still `pending_human_review`; therefore it is not advertised as a 30/30 human quality result and is not the release gate.
+
+### 6. Product Acceptance — 50 Cases
+
+Dataset and review: [`data/eval/product_acceptance`](./data/eval/product_acceptance)
+Raw runs: [`data/eval/reports/product_acceptance`](./data/eval/reports/product_acceptance)
+
+This is the final product gate: 50 natural questions selected to resemble real student use, not an adversarial stress benchmark. The overlap audit found zero exact-query overlap with the 144 deterministic cases, 180 retrieval cases, and the earlier 30-case product set.
+
+#### Distribution by scenario
+
+| Scenario | Count |
+|---|---:|
+| Structured single-task | 8 |
+| Multi-entity in one table | 5 |
+| Structured + structured | 4 |
+| Regulation single-task | 8 |
+| Regulation + regulation | 5 |
+| Structured + regulation | 6 |
+| Multi-cohort | 6 |
+| Clarification / follow-up | 4 |
+| Partial / unanswerable | 3 |
+| Out of domain | 1 |
+| **Total** | **50** |
+
+Expected outcomes are 44 answered, 3 partial, 2 clarification, and 1 OOD. Cohort selection contains 35 K51, 8 K50, 1 K48–K49, and 6 cases whose cohort is carried by the query or spans multiple cohorts.
+
+#### Automatic and human metrics
+
+| Layer | Metric | Result |
+|---|---|---:|
+| Automatic | No runtime error | Checked per case |
+| Automatic | Expected outcome/status shape | Checked per case |
+| Automatic | Every covered task has a citation | Checked per case |
+| Automatic aggregate | All automatic checks pass | **47/50 (94.00%)** |
+| Human | Task completeness | Reviewed against the question |
+| Human | Grounding and source correctness | Reviewed against source anchors |
+| Human | Citation and cohort correctness | Reviewed directly |
+| Human | Abstention/clarification correctness | Reviewed for missing evidence |
+| Human aggregate | Product pass | **50/50 (100%)** |
+| Human severity | Critical / major | **0 / 0** |
+| Human severity | Accepted minor limitations | **4** |
+
+All automatic failures were human-reviewed, and at least ten automatic passes were manually spot-checked. Four cases passed with documented minor limitations: aggregate status telemetry for partial answers and a follow-up that asks for a dependent entity rather than automatically forwarding a previous task output. These limitations were retained instead of adding task dependencies or a semantic parser merely to turn the automatic score into 50/50.
+
+### Evaluation Data Governance
+
+- [`data/eval/architecture_v3/manifest.json`](./data/eval/architecture_v3/manifest.json) records dataset hashes, counts, source build ID, model identities, collection names, and evaluation contracts.
+- The 144/180/100/60 architecture bundle is versioned evidence, while the 30-case set is explicitly an opened development regression.
+- The 50-case product set was committed before its first run. Its [`overlap_audit.json`](./data/eval/product_acceptance/overlap_audit.json), [`acceptance_summary.json`](./data/eval/product_acceptance/acceptance_summary.json), and [`human_signoff.json`](./data/eval/product_acceptance/human_signoff.json) keep automatic and human conclusions separate.
+- No metric is silently dropped after seeing an output, and raw judge scores are never presented as human sign-off.
 
 ### Known Limitations
 

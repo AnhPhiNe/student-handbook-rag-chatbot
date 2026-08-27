@@ -42,6 +42,30 @@ class FakeAnswerService:
             "strategy": "structured_lookup",
             "citations_used": [{"source": "directory", "page": 1}],
             "llm_called": False,
+            "query_plan": {
+                "schema_version": "v1",
+                "context_mode": "standalone",
+                "tasks": [
+                    {
+                        "id": "t1",
+                        "question": query,
+                        "mode": "structured",
+                        "lookup_type": "office",
+                        "intent": "direct_value",
+                        "cohorts": [cohort or "K51"],
+                    }
+                ],
+            },
+            "task_results": [
+                {
+                    "task_id": "t1",
+                    "coverage": "covered",
+                    "coverage_by_cohort": {cohort or "K51": "covered"},
+                    "evidence": [{"lookup_type": "office"}],
+                    "citation_count": 1,
+                }
+            ],
+            "coverage_by_task": {"t1": "covered"},
         }
         yield {"type": "token", "text": f"streamed: {query}"}
         yield {"type": "done"}
@@ -374,6 +398,29 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertEqual(first.status_code, 200)
         self.assertEqual(second.status_code, 429)
         self.assertEqual(second.json()["detail"], "Rate limit exceeded")
+
+    def test_stream_traces_internal_plan_while_public_metadata_stays_redacted(self) -> None:
+        captured_source: dict = {}
+
+        def capture_trace_source(source, **kwargs):
+            del kwargs
+            captured_source.update(source)
+            return {"model": "gemini-3.1-flash-lite"}
+
+        with patch(
+            "src.api.routes.chat_stream.build_trace_metadata",
+            side_effect=capture_trace_source,
+        ):
+            response = self.client.post(
+                "/chat/stream",
+                json={"query": "Email Phòng Đào tạo?", "cohort": "K51"},
+            )
+
+        assert response.status_code == 200
+        assert "query_plan" not in response.text
+        assert "task_results" not in response.text
+        assert captured_source["query_plan"]["tasks"][0]["lookup_type"] == "office"
+        assert captured_source["coverage_by_task"] == {"t1": "covered"}
 
 
 if __name__ == "__main__":

@@ -107,6 +107,7 @@ def chat_stream(
         started_at = time.perf_counter()
         final_status = "unknown"
         final_metadata: dict[str, Any] = {}
+        trace_source_metadata: dict[str, Any] = {}
         full_text = ""
         
         try:
@@ -146,6 +147,9 @@ def chat_stream(
                 for chunk in stream:
                     chunk_type = chunk.get("type", "")
                     if chunk_type == "metadata":
+                        # Preserve the internal QueryPlan packet for observability.
+                        # Public SSE redaction below must not erase LangSmith task data.
+                        trace_source_metadata = dict(chunk)
                         chunk["request_id"] = request_id
                         chunk["run_id"] = request_id
                         chunk["citations_used"] = public_regulation_citations(
@@ -189,7 +193,7 @@ def chat_stream(
                         ttft_ms = round((first_token_at - started_at) * 1000, 2) if first_token_at else done_latency
                         tracker = chunk.get("tracker")
                         trace_metadata = build_trace_metadata(
-                            final_metadata,
+                            trace_source_metadata or final_metadata,
                             query=query,
                             cohort=request.cohort,
                             chat_history=request.chat_history,

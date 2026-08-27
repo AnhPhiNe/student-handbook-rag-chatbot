@@ -143,16 +143,23 @@ def _reference_input_clarification(
             requirements = row.get("input_requirements") or {}
             if requirements.get("score_mode") != "per_component":
                 continue
-            row_names = " ".join(
+            declared_names = [
                 str(row.get(field) or "")
                 for field in ("certificate", "language", "level_or_scale")
+            ]
+            declared_names.extend(
+                str(alias)
+                for alias in requirements.get("entity_aliases") or []
+                if str(alias).strip()
             )
-            row_norm = normalize_text(row_names)
-            if row_norm and (row_norm in entity_norm or entity_norm in row_norm):
-                input_rows.append(row)
-                continue
-            certificate_norm = normalize_text(str(row.get("certificate") or ""))
-            if certificate_norm and certificate_norm in entity_norm:
+            if any(
+                candidate_norm
+                and (
+                    candidate_norm in entity_norm
+                    or entity_norm in candidate_norm
+                )
+                for candidate_norm in map(normalize_text, declared_names)
+            ):
                 input_rows.append(row)
 
     if not input_rows:

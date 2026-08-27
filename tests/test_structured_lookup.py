@@ -337,6 +337,7 @@ class StructuredLookupTest(unittest.TestCase):
                     "certificate": "Chứng chỉ ABC (4 kỹ năng)",
                     "input_requirements": {
                         "score_mode": "per_component",
+                        "entity_aliases": ["Chứng chỉ Alpha nhiều kỹ năng"],
                         "required_components": ["listening", "reading"],
                         "component_slots": {
                             "listening": {
@@ -378,6 +379,35 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertEqual(resolution.result_kind, "clarification")
         self.assertEqual(
             resolution.result["missing_slots"],
+            ["listening_score", "reading_score"],
+        )
+
+        alias_resolution = resolve_structured_decision(
+            {
+                "lookup_type": "foreign_language",
+                "intent": "direct_value",
+                "slots": {
+                    "certificate_or_language": "Chứng chỉ Alpha nhiều kỹ năng",
+                    "score_or_level": 700,
+                },
+            },
+            query="Chứng chỉ Alpha nhiều kỹ năng tổng 700 tương đương bậc nào?",
+            cohort="K51",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=[],
+            structured_tables_registry=[table],
+            program_directory=[],
+            probe_other_domains=False,
+        )
+
+        self.assertIsNotNone(alias_resolution)
+        self.assertEqual(alias_resolution.result_kind, "clarification")
+        self.assertEqual(
+            alias_resolution.result["missing_slots"],
             ["listening_score", "reading_score"],
         )
         self.assertIn("Nghe, Đọc", resolution.result["clarification_question"])

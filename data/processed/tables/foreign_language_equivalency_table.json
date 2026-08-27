@@ -54,6 +54,10 @@
         "equivalent_level_4": "Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179",
         "input_requirements": {
           "score_mode": "per_component",
+          "entity_aliases": [
+            "TOEIC 4 kỹ năng",
+            "TOEIC bốn kỹ năng"
+          ],
           "required_components": [
             "listening",
             "reading",

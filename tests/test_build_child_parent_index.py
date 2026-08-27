@@ -124,3 +124,34 @@ def test_current_registry_covers_every_contentful_table_row() -> None:
         for chunk in chunks
         if (chunk.get("metadata") or {}).get("block_type") == "table_like_row"
     ]
+
+
+def test_college_only_training_documents_do_not_reenter_production_artifacts() -> None:
+    parents = json.loads(
+        Path("data/processed/chunks/all_docstore_items.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    children = json.loads(
+        Path("data/processed/chunks/child_parent_chunks.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    def is_college_only_training_document(item: dict) -> bool:
+        metadata = item.get("metadata") or {}
+        identity = " ".join(
+            str(value or "")
+            for value in (
+                item.get("_id"),
+                metadata.get("parent_section_id"),
+                metadata.get("document_title"),
+            )
+        ).casefold()
+        return (
+            "caodang" in identity
+            or "đào tạo trình độ cao đẳng ngành giáo dục mầm non" in identity
+        )
+
+    assert not [item for item in parents if is_college_only_training_document(item)]
+    assert not [item for item in children if is_college_only_training_document(item)]

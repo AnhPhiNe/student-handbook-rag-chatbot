@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from typing import Any, Iterator
 
+from src.retrieval.core.structured_routing import load_lookup_registry
+
 
 _INTERNAL_FIELDS = {
     "applicable_cohorts",
@@ -40,6 +42,15 @@ _CONTEXT_FIELDS = {
     "matched_value",
     "table_name",
     "training_mode",
+}
+
+_PRESENTATION_TYPES = {"table", "contact_card"}
+_CONTACT_CARD_FIELDS: dict[str, tuple[str, ...]] = {
+    "unit_name": ("unit_name", "unit"),
+    "address": ("address", "office", "offices"),
+    "phone": ("phone", "phones"),
+    "email": ("email", "emails"),
+    "website": ("website", "websites"),
 }
 
 
@@ -132,6 +143,43 @@ def _lookup_rows(lookup: dict[str, Any]) -> list[dict[str, Any]]:
     return _flatten_rows(lookup.get("result"))
 
 
+def _presentation_type(lookup: dict[str, Any]) -> str:
+    explicit = str(lookup.get("presentation_type") or "")
+    if explicit in _PRESENTATION_TYPES:
+        return explicit
+
+    lookup_scope = str(lookup.get("lookup_scope") or "")
+    registry = load_lookup_registry()
+    tool = (registry.get("tools") or {}).get(lookup_scope) or {}
+    configured = str(tool.get("presentation_type") or "table")
+    return configured if configured in _PRESENTATION_TYPES else "table"
+
+
+def _first_display_value(record: dict[str, Any], keys: tuple[str, ...]) -> Any:
+    for key in keys:
+        value = _display_value(record.get(key))
+        if value is not None and value != "":
+            return value
+    return None
+
+
+def _contact_card_rows(lookup: dict[str, Any]) -> list[dict[str, Any]]:
+    raw_records = lookup.get("items") or lookup.get("result") or []
+    records = raw_records if isinstance(raw_records, list) else [raw_records]
+    rows: list[dict[str, Any]] = []
+    for record in records:
+        if not isinstance(record, dict):
+            continue
+        row = {
+            field: value
+            for field, aliases in _CONTACT_CARD_FIELDS.items()
+            if (value := _first_display_value(record, aliases)) is not None
+        }
+        if row:
+            rows.append(row)
+    return rows
+
+
 def _field_provenance(lookup: dict[str, Any]) -> dict[str, dict[str, Any]]:
     raw_rows = lookup.get("items") or lookup.get("result") or []
     candidates = raw_rows if isinstance(raw_rows, list) else [raw_rows]
@@ -158,7 +206,12 @@ def build_structured_results(structured_result: Any) -> list[dict[str, Any]]:
     """Return display-safe tables without changing the retrieval evidence packet."""
     results: list[dict[str, Any]] = []
     for index, lookup in enumerate(_iter_leaf_lookups(structured_result)):
-        rows = _lookup_rows(lookup)
+        presentation_type = _presentation_type(lookup)
+        rows = (
+            _contact_card_rows(lookup)
+            if presentation_type == "contact_card"
+            else _lookup_rows(lookup)
+        )
         if not rows:
             continue
 
@@ -172,6 +225,7 @@ def build_structured_results(structured_result: Any) -> list[dict[str, Any]]:
             {
                 "id": f"{lookup.get('lookup_type') or 'structured'}:{lookup.get('cohort') or 'default'}:{index}",
                 "lookup_type": str(lookup.get("lookup_type") or "structured_lookup"),
+                "presentation_type": presentation_type,
                 "title": str(
                     lookup.get("table_name")
                     or lookup.get("source_label")

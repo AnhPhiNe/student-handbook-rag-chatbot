@@ -53,6 +53,79 @@ def test_builds_display_table_without_internal_source_fields() -> None:
     assert "source_pages" not in result[0]["rows"][0]
     assert "raw_text" not in result[0]["rows"][0]
     assert result[0]["provenance"]["source_pages"] == [42]
+    assert result[0]["presentation_type"] == "table"
+
+
+def test_office_directory_uses_contact_card_and_hides_internal_fields() -> None:
+    result = build_structured_results(
+        {
+            "lookup_type": "office_directory",
+            "lookup_scope": "office",
+            "table_name": "Danh sách phòng ban liên hệ",
+            "cohort": "K51",
+            "items": [
+                {
+                    "unit_name": "Phòng Đào tạo",
+                    "aliases": ["PĐT"],
+                    "office": "Nhà A, phòng 101",
+                    "phones": ["(028) 1234 5678"],
+                    "emails": ["pdt@hcmue.edu.vn"],
+                    "websites": ["pdt.hcmue.edu.vn"],
+                    "responsibilities": ["Một mô tả nhiệm vụ rất dài"],
+                    "summary": "Thông tin nội bộ không dành cho contact card",
+                    "cohort": "K51",
+                    "source_pages": [10],
+                }
+            ],
+        }
+    )
+
+    assert result[0]["presentation_type"] == "contact_card"
+    assert result[0]["columns"] == [
+        "unit_name",
+        "address",
+        "phone",
+        "email",
+        "website",
+    ]
+    assert result[0]["rows"] == [
+        {
+            "unit_name": "Phòng Đào tạo",
+            "address": "Nhà A, phòng 101",
+            "phone": "(028) 1234 5678",
+            "email": "pdt@hcmue.edu.vn",
+            "website": "pdt.hcmue.edu.vn",
+        }
+    ]
+    assert not {
+        "aliases",
+        "cohort",
+        "summary",
+        "responsibilities",
+    }.intersection(result[0]["rows"][0])
+
+
+def test_presentation_type_is_data_driven_by_lookup_scope(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "src.generation.structured_result_presenter.load_lookup_registry",
+        lambda: {
+            "tools": {
+                "demo_directory": {"presentation_type": "contact_card"},
+            }
+        },
+    )
+    result = build_structured_results(
+        {
+            "lookup_type": "custom_directory",
+            "lookup_scope": "demo_directory",
+            "items": [{"unit_name": "Đơn vị thử nghiệm", "phone": "123"}],
+        }
+    )
+
+    assert result[0]["presentation_type"] == "contact_card"
+    assert result[0]["rows"] == [
+        {"unit_name": "Đơn vị thử nghiệm", "phone": "123"}
+    ]
 
 
 def test_presenter_prefers_full_display_rows_over_matched_result() -> None:

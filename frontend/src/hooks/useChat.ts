@@ -15,6 +15,7 @@ export interface Citation {
   applicability?: string;
   chunk_type?: string;
   parent_section_id?: string;
+  article_label?: string;
   parent_article?: string;
   parent_title?: string;
   parent_content?: string;
@@ -44,6 +45,7 @@ export type StructuredCellValue = string | number | boolean | null;
 export interface StructuredResult {
   id: string;
   lookup_type: string;
+  presentation_type?: 'table' | 'contact_card';
   title: string;
   cohort?: string;
   applicability?: string;

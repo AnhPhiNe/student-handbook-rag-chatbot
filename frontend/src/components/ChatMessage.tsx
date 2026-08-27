@@ -55,7 +55,10 @@ function referenceArticleLabel(reference: RelatedReference): string | null {
 function buildPrimaryArticleReferences(citations: Citation[]): RelatedReference[] {
   return citations.flatMap((citation, index) => {
     const content = (citation.parent_content || citation.content).trim();
-    const article = articleLabelFromText(citation.parent_article ?? '')
+    // Prefer the backend-normalized source identity. Legacy responses still
+    // fall back to parent/title/content parsing for backward compatibility.
+    const article = articleLabelFromText(citation.article_label ?? '')
+      ?? articleLabelFromText(citation.parent_article ?? '')
       ?? articleLabelFromText(
         `${citation.source_section ?? ''} ${citation.title ?? ''} ${citation.content.slice(0, 600)}`,
       );

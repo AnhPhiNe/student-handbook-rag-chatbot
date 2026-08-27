@@ -3613,6 +3613,78 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   overflow-wrap: anywhere;
 }
 
+.structured-contact-list {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0 0.9rem 0.9rem;
+}
+
+.structured-contact-card {
+  padding: 0.8rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--primary) 4%, var(--bg-secondary));
+}
+
+.structured-contact-card h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.7rem;
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.structured-contact-card h4 svg {
+  flex: 0 0 auto;
+  color: var(--primary);
+}
+
+.structured-contact-card dl {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.structured-contact-field {
+  display: grid;
+  grid-template-columns: minmax(90px, 0.3fr) minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.structured-contact-field dt {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.structured-contact-field dt svg {
+  flex: 0 0 auto;
+  color: var(--primary);
+}
+
+.structured-contact-field dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.structured-contact-field a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.structured-contact-field a:hover {
+  text-decoration: underline;
+}
+
 .structured-result-provenance {
   display: flex;
   align-items: flex-start;
@@ -3642,5 +3714,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .structured-result-table th,
   .structured-result-table td {
     padding: 0.55rem 0.65rem;
+  }
+
+  .structured-contact-list {
+    padding: 0 0.75rem 0.75rem;
+  }
+
+  .structured-contact-field {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
   }
 }

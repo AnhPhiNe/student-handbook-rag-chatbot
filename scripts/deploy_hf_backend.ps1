@@ -122,6 +122,16 @@ Copy-RequiredDirectory "data\processed\entities" "data\processed\entities"
 Copy-RequiredDirectory "data\processed\graphs" "data\processed\graphs"
 Copy-RequiredJsonArtifact "data\processed\chunks\all_docstore_items.json" "data\processed\chunks\all_docstore_items.json"
 Copy-RequiredJsonArtifact "data\processed\chunks\child_parent_chunks.json" "data\processed\chunks\child_parent_chunks.json"
+Copy-RequiredJsonArtifact "data\processed\metadata\build_manifest.json" "data\processed\metadata\build_manifest.json"
+
+$packagedManifestPath = Join-Path $TempDir "data\processed\metadata\build_manifest.json"
+$packagedManifest = Get-Content -Raw -LiteralPath $packagedManifestPath | ConvertFrom-Json
+if ($packagedManifest.storage_targets.qdrant_collection -ne "student_handbook_semantic_v31") {
+    throw "Unexpected Qdrant target in packaged build manifest: $($packagedManifest.storage_targets.qdrant_collection)"
+}
+if ($packagedManifest.storage_targets.mongo_parent_collection -ne "parent_docs_v31") {
+    throw "Unexpected Mongo target in packaged build manifest: $($packagedManifest.storage_targets.mongo_parent_collection)"
+}
 
 Write-Host "[4/5] Writing Hugging Face Space metadata..."
 @"

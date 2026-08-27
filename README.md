@@ -181,7 +181,7 @@ These results belong to the current release checkpoint. Raw LLM-judge scores are
 | End-to-end RAG Hit@5 | **175/180 (97.22%)** | The expected source appears among the top five parent documents |
 | Product acceptance | **50/50 human pass** | 50 realistic student questions; 0 critical, 0 major, 4 minor limitations |
 | Automatic product shape checks | **47/50** | Runtime/output invariants; not a replacement for human review |
-| Python tests | **326 passed** | Unit, integration, and regression tests |
+| Python tests | **345 passed** | Unit, integration, and regression tests |
 | Ruff | **Passed** | Python static lint |
 | Frontend lint/build | **Passed** | TypeScript, ESLint, and Vite production build |
 
@@ -200,6 +200,7 @@ Artifacts: [`data/eval/product_acceptance`](./data/eval/product_acceptance) and 
 - Some accentless stress queries or overly generic headings can miss the expected source in the top five.
 - Aggregate status can remain `answered` when the final text answers one part and abstains on another. Making this fully deterministic would require a more complex task-level answer protocol.
 - A follow-up that depends on a prior task's output, such as “the email of that faculty,” can become a clarification instead of automatically forwarding the entity.
+- The source drawer can still show up to five cohort-valid retrieval candidates even when the answer cites fewer articles inline; inline `Điều` references and their source popovers identify the evidence actually used in the answer.
 - Gemini 3.1 Flash-Lite is retained because its quota and latency fit the deployment target. Important claims should still be checked against their citations.
 
 ## Local Development

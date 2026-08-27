@@ -275,62 +275,6 @@ def fold_text(value: str | None) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
-def derive_k48_programs_from_source(
-    merged_program_path: Path,
-    k48_program_path: Path | None = None,
-    overrides: dict | None = None,
-) -> None:
-    """Dùng danh sách ngành mới nhất cho K48-K49, trừ các ngành không áp dụng."""
-    if not merged_program_path.exists():
-        return
-
-    overrides = overrides or load_program_overrides()
-    policy = (overrides.get("program_policy") or {}).get("K48-K49") or {}
-    source_cohort = str(policy.get("source_cohort") or "K51")
-    exclusions = {fold_text(item) for item in policy.get("exclusions") or []}
-    document_id = str(policy.get("document_id") or "so_tay_sinh_vien_khoa_48_49")
-    derived_rule = str(policy.get("derived_rule") or "")
-    review_status = str(policy.get("review_status") or "derived_from_source_policy")
-
-    with merged_program_path.open("r", encoding="utf-8") as f:
-        programs = json.load(f)
-
-    k50_programs = [
-        item
-        for item in programs
-        if item.get("cohort") == source_cohort
-        and fold_text(item.get("program_name")) not in exclusions
-    ]
-    if not k50_programs:
-        return
-
-    derived_k48_programs = []
-    for index, item in enumerate(k50_programs, start=1):
-        derived = dict(item)
-        derived["record_id"] = f"k48_derived_program_{index}"
-        derived["cohort"] = "K48-K49"
-        derived["document_id"] = document_id
-        derived["derived_from_cohort"] = source_cohort
-        derived["derived_rule"] = (
-            "K48-K49 dùng danh sách ngành mới nhất, trừ Toán ứng dụng và Công nghệ Giáo dục"
-        )
-        derived["review_status"] = review_status
-        derived["derived_rule"] = derived_rule
-        derived_k48_programs.append(derived)
-
-    rewritten = [
-        item for item in programs if item.get("cohort") != "K48-K49"
-    ] + derived_k48_programs
-    rewritten.sort(key=lambda item: (str(item.get("cohort")), str(item.get("record_id"))))
-
-    with merged_program_path.open("w", encoding="utf-8") as f:
-        json.dump(rewritten, f, ensure_ascii=False, indent=2)
-
-    if k48_program_path is not None:
-        with k48_program_path.open("w", encoding="utf-8") as f:
-            json.dump(derived_k48_programs, f, ensure_ascii=False, indent=2)
-
-
 def merge_json_documents(cohort_files, output_path):
     documents = []
     for cohort, path in cohort_files.items():
@@ -513,31 +457,41 @@ def validate_program_directory(program_path: Path, overrides: dict) -> None:
                 }
             )
 
-    k48_policy = (overrides.get("program_policy") or {}).get("K48-K49") or {}
-    k48_exclusions = {fold_text(item) for item in k48_policy.get("exclusions") or []}
-    k48_program_names = {
+    k48_programs = {
         fold_text(program.get("program_name"))
         for program in by_cohort.get("K48-K49", [])
     }
-    k50_program_names = {
+    k50_programs = {
+        fold_text(program.get("program_name"))
+        for program in by_cohort.get("K50", [])
+    }
+    k50_additions = k50_programs - k48_programs
+    if k48_programs - k50_programs:
+        issues.append(
+            {
+                "issue": "unexpected_k48_only_programs",
+                "actual": sorted(k48_programs - k50_programs),
+            }
+        )
+    if k50_additions != {"du lich", "sinh hoc ung dung"}:
+        issues.append(
+            {
+                "issue": "unexpected_k50_program_additions",
+                "actual": sorted(k50_additions),
+            }
+        )
+
+    k51_additions = {
         fold_text(program.get("program_name"))
         for program in by_cohort.get("K51", [])
-    }
-    for program_name in k48_exclusions:
-        if program_name in k48_program_names:
-            issues.append(
-                {
-                    "issue": "excluded_program_present_in_k48",
-                    "program_name": program_name,
-                }
-            )
-        if program_name not in k50_program_names:
-            issues.append(
-                {
-                    "issue": "expected_program_missing_in_k50",
-                    "program_name": program_name,
-                }
-            )
+    } - k50_programs
+    if k51_additions != {"cong nghe giao duc", "toan ung dung"}:
+        issues.append(
+            {
+                "issue": "unexpected_k51_program_additions",
+                "actual": sorted(k51_additions),
+            }
+        )
 
     if issues:
         preview = json.dumps(issues, ensure_ascii=False, indent=2)
@@ -927,11 +881,6 @@ def main(argv: list[str] | None = None):
     enrich_program_faculty_names(
         directory_dir / "program_directory.json",
         directory_dir / "faculty_directory.json",
-        overrides,
-    )
-    derive_k48_programs_from_source(
-        directory_dir / "program_directory.json",
-        program_outputs.get("K48-K49"),
         overrides,
     )
     merge_structured_data(reference_outputs, directory_dir / "reference_directory.json")

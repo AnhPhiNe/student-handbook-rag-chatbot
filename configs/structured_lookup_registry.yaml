@@ -3,6 +3,7 @@ version: 3
 tools:
   foreign_language:
     data_category: regulation_table
+    presentation_type: table
     selection_mode: table_first
     description: "Quy doi diem/chung chi sang bac; lookup tu clarify diem thanh phan bat buoc. Yeu cau chuan/pham vi/thu tuc: RAG."
     intents: [direct_value, list_items]
@@ -27,6 +28,7 @@ tools:
 
   study_duration:
     data_category: regulation_table
+    presentation_type: table
     selection_mode: table_first
     description: Tra thoi gian hoc chuan/toi da theo he va loai chuong trinh.
     intents: [direct_value, list_items]
@@ -47,8 +49,9 @@ tools:
 
   scholarship_classification:
     data_category: regulation_table
+    presentation_type: table
     selection_mode: table_first
-    description: Tra mot muc hoac liet ke/so sanh bang phan loai hoc bong va cac nguong hoc tap/ren luyen. Xep loai GPA, hoc luc hoac tong diem ren luyen khong gan voi hoc bong thi dung scoring.
+    description: Tra chinh sach hoc bong khuyen khich hoc tap gom dieu kien xet, bang phan loai va cong thuc muc hoc bong. Xep loai GPA, hoc luc hoac tong diem ren luyen khong gan voi hoc bong thi dung scoring.
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
@@ -62,6 +65,7 @@ tools:
 
   scoring:
     data_category: regulation_table
+    presentation_type: table
     selection_mode: table_first
     description: Tra cuu va quy doi thang diem hoc phan (thang 10, diem chu, thang 4, dat/khong dat), xep loai hoc luc hoac phan loai tong diem ren luyen; khong tra nguong diem de dat tung loai hoc bong.
     intents: [direct_value, list_items]
@@ -101,6 +105,7 @@ tools:
 
   student_service:
     data_category: directory_table
+    presentation_type: contact_card
     description: Tim don vi phu trach khi nguoi dung mo ta mot cong viec/dich vu can lam; khong dung cho quy dinh hay thu tuc.
     intents: [direct_value, contact]
     default_intent: contact
@@ -118,6 +123,7 @@ tools:
 
   office:
     data_category: directory_table
+    presentation_type: contact_card
     description: "Tra danh ba va dich vu tong quat. Trach nhiem theo quy che, quy dinh, thu tuc hoac bieu mau dung RAG."
     intents: [contact]
     default_intent: contact
@@ -134,6 +140,7 @@ tools:
 
   faculty:
     data_category: directory_table
+    presentation_type: contact_card
     description: Tra email, phone, website hoac dia chi cua mot Khoa cu the; khong dung cho cau hoi danh sach nganh.
     intents: [contact]
     default_intent: contact
@@ -150,6 +157,7 @@ tools:
 
   program:
     data_category: directory_table
+    presentation_type: table
     description: Tra nganh dao tao, khoa phu trach, danh sach nganh, mo ta chuong trinh va dau ra/co hoi nghe nghiep.
     intents: [direct_value, list_items, exists]
     required_slots:
@@ -169,6 +177,7 @@ tools:
     target_chunk_types: [program_directory]
 
   formula:
+    presentation_type: table
     description: Tra cong thuc da duoc dinh nghia, khong thuc hien phep tinh.
     intents: [formula]
     required_slots:

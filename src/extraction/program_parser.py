@@ -56,9 +56,46 @@ def _looks_like_program_name(program_name: str) -> bool:
     lower = program_name.lower()
     if lower.startswith(PROGRAM_FALSE_STARTS):
         return False
-    if len(program_name.split()) > 12:
+    if len(program_name.split()) > 16:
         return False
     return True
+
+
+def _program_heading_at(lines: list[str], index: int) -> tuple[str | None, int]:
+    """Nhận diện tiêu đề ngành, kể cả heading bị ngắt dòng trong PDF.
+
+    Một số sổ tay không đặt tiền tố ``NGÀNH`` cho tiêu đề nhưng giữ bố cục ổn
+    định: heading viết hoa nằm ngay trước ``Cơ hội nghề nghiệp``. Quy tắc này
+    dựa trên cấu trúc tài liệu, không dựa trên tên một ngành cụ thể.
+    """
+    line = lines[index]
+    direct = _program_heading(line)
+    next_line = lines[index + 1] if index + 1 < len(lines) else ""
+    after_next = lines[index + 2] if index + 2 < len(lines) else ""
+
+    if direct:
+        return direct, 1
+
+    if next_line:
+        joined = normalize_text(f"{line} {next_line}")
+        joined_heading = _program_heading(joined)
+        if joined_heading:
+            return joined_heading, 2
+
+        alpha_chars = [char for char in joined if char.isalpha()]
+        is_upper_heading = bool(alpha_chars) and joined.upper() == joined
+        follows_career_label = normalize_text(after_next).lower().startswith(
+            "cơ hội nghề nghiệp"
+        )
+        candidate = _clean_program_name(joined)
+        if (
+            is_upper_heading
+            and follows_career_label
+            and _looks_like_program_name(candidate)
+        ):
+            return candidate, 2
+
+    return None, 1
 
 
 def _lines_from_page(page: dict[str, Any]) -> list[str]:
@@ -154,7 +191,11 @@ def _append_implicit_programs(
 
 def extract_program_directory(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Trích xuất ngành đào tạo từ layout ngành trong từng sổ tay."""
-    target_pages = get_pages_by_type(pages, "faculty_program_directory")
+    target_pages = [
+        page
+        for page in get_pages_by_type(pages, "faculty_program_directory")
+        if page.get("detection_source") != "pattern_only"
+    ]
     implicit_rules = _load_implicit_program_rules(os.environ.get("COHORT"))
     records: list[dict[str, Any]] = []
     current_program: dict[str, Any] | None = None
@@ -167,7 +208,10 @@ def extract_program_directory(pages: list[dict[str, Any]]) -> list[dict[str, Any
     for page in target_pages:
         page_number = page["page_number"]
 
-        for line in _lines_from_page(page):
+        lines = _lines_from_page(page)
+        line_index = 0
+        while line_index < len(lines):
+            line = lines[line_index]
             if is_faculty_heading(line):
                 _close_program(current_program, records)
                 record_counter = _append_implicit_programs(
@@ -183,6 +227,7 @@ def extract_program_directory(pages: list[dict[str, Any]]) -> list[dict[str, Any
                 current_faculty = clean_heading_name(line)
                 current_faculty_lines = [line]
                 current_faculty_pages = [page_number]
+                line_index += 1
                 continue
 
             if current_faculty:
@@ -190,7 +235,7 @@ def extract_program_directory(pages: list[dict[str, Any]]) -> list[dict[str, Any
                 if page_number not in current_faculty_pages:
                     current_faculty_pages.append(page_number)
 
-            program_name = _program_heading(line)
+            program_name, consumed_lines = _program_heading_at(lines, line_index)
             if program_name:
                 _close_program(current_program, records)
                 faculty_key = fold_text(clean_faculty_name(current_faculty))
@@ -204,12 +249,14 @@ def extract_program_directory(pages: list[dict[str, Any]]) -> list[dict[str, Any
                     "_raw_lines": [line],
                 }
                 record_counter += 1
+                line_index += consumed_lines
                 continue
 
             if current_program:
                 current_program["_raw_lines"].append(line)
                 if page_number not in current_program["source_pages"]:
                     current_program["source_pages"].append(page_number)
+            line_index += 1
 
     _close_program(current_program, records)
     record_counter = _append_implicit_programs(

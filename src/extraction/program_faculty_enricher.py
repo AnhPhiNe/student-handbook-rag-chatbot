@@ -33,6 +33,30 @@ def load_program_name_overrides(path: Path = PROGRAM_OVERRIDES_PATH) -> dict[str
     return {fold_text(key): str(value) for key, value in overrides.items()}
 
 
+def load_program_legacy_record_ids(
+    cohort: str | None,
+    path: Path = PROGRAM_OVERRIDES_PATH,
+) -> dict[str, list[str]]:
+    """Load explicit source-record aliases needed across catalog migrations."""
+    if not cohort or not path.exists():
+        return {}
+    with path.open("r", encoding="utf-8") as f:
+        config = yaml.safe_load(f) or {}
+    by_cohort = config.get("legacy_record_ids_by_cohort") or {}
+    cohort_map = by_cohort.get(cohort) or {}
+    if not isinstance(cohort_map, dict):
+        return {}
+    result: dict[str, list[str]] = {}
+    for program_name, aliases in cohort_map.items():
+        if isinstance(aliases, str):
+            aliases = [aliases]
+        if isinstance(aliases, list):
+            result[fold_text(program_name)] = [
+                str(alias).strip() for alias in aliases if str(alias).strip()
+            ]
+    return result
+
+
 MANUAL_PROGRAM_FACULTY = {
     "cong nghe giao duc": "Khoa Công nghệ Thông tin",
     "cong nghe thong tin": "Khoa Công nghệ Thông tin",
@@ -140,4 +164,21 @@ def enrich_program_faculty_names(
             else "manual_program_faculty_rule"
         )
 
+    return program_records
+
+
+def attach_program_legacy_record_ids(
+    program_records: list[dict[str, Any]],
+    cohort: str | None,
+) -> list[dict[str, Any]]:
+    """Attach explicit aliases for IDs used by older frozen catalogs."""
+    aliases_by_name = load_program_legacy_record_ids(cohort)
+    for program in program_records:
+        aliases = aliases_by_name.get(fold_text(program.get("program_name")))
+        if not aliases:
+            continue
+        existing = program.get("legacy_record_ids") or []
+        if isinstance(existing, str):
+            existing = [existing]
+        program["legacy_record_ids"] = list(dict.fromkeys([*existing, *aliases]))
     return program_records

@@ -177,8 +177,118 @@ def _scholarship_classification_table(cohort: str) -> dict[str, Any]:
     }
 
 
+def _scholarship_amount_table(cohort: str) -> dict[str, Any] | None:
+    """Return the source-verified HBKKHT amount formula table for a cohort."""
+
+    if cohort not in {"K48-K49", "K50", "K51", "K50-K51"}:
+        return None
+
+    tuition_basis = (
+        "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu "
+        "học phí của năm học"
+        if cohort in {"K50", "K51", "K50-K51"}
+        else "định mức học phí 01 tín chỉ tự nhiên hoặc xã hội, tùy ngành học"
+    )
+    return {
+        "table_id": "scholarship_amount",
+        "table_name": "Mức học bổng khuyến khích học tập",
+        "review_status": "source_verified",
+        "schema_variant": "amount_formula_by_level",
+        "rows": [
+            {
+                "scholarship_level": "Khá",
+                "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,0",
+                "multiplier": 1.0,
+                "tuition_basis": tuition_basis,
+            },
+            {
+                "scholarship_level": "Giỏi",
+                "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,25",
+                "multiplier": 1.25,
+                "tuition_basis": tuition_basis,
+            },
+            {
+                "scholarship_level": "Xuất sắc",
+                "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,5",
+                "multiplier": 1.5,
+                "tuition_basis": tuition_basis,
+            },
+        ],
+    }
+
+
+def _scholarship_eligibility_table(cohort: str) -> dict[str, Any] | None:
+    """Return cohort-specific HBKKHT eligibility facts from the same policy article."""
+
+    common_rows = [
+        {
+            "criterion": "Đối tượng",
+            "requirement": (
+                "Sinh viên hệ chính quy đang học theo kế hoạch đào tạo của khóa; "
+                "không quá thời gian học tập chuẩn"
+            ),
+        },
+        {
+            "criterion": "Học tập, rèn luyện và kỷ luật",
+            "requirement": (
+                "Kết quả học tập và rèn luyện từ loại Khá trở lên; không bị kỷ luật "
+                "từ mức khiển trách trở lên"
+            ),
+        },
+        {
+            "criterion": "Khối lượng học tập thông thường",
+            "requirement": (
+                "Tích lũy ít nhất 15 tín chỉ theo kế hoạch; các tín chỉ dùng để xét "
+                "phải đạt và không tính tín chỉ trả nợ, cải thiện hoặc tương đương"
+            ),
+        },
+    ]
+    if cohort == "K51":
+        rows = [
+            *common_rows,
+            {
+                "criterion": "Học kỳ cuối theo chương trình chuẩn",
+                "requirement": (
+                    "Khóa tuyển sinh từ năm 2022 trở về sau tích lũy ít nhất 11 tín chỉ; "
+                    "khóa từ năm 2021 trở về trước ít nhất 06 tín chỉ"
+                ),
+            },
+            {
+                "criterion": "Tốt nghiệp sớm",
+                "requirement": (
+                    "Học kỳ cuối được phép có tổng số tín chỉ tích lũy nhỏ hơn 15"
+                ),
+            },
+            {
+                "criterion": "Học cùng lúc hai chương trình",
+                "requirement": (
+                    "Chỉ xét học bổng cho chương trình thứ nhất; các tín chỉ đã đăng ký "
+                    "ở chương trình thứ hai trong học kỳ xét học bổng vẫn phải đạt"
+                ),
+            },
+        ]
+    elif cohort in {"K48-K49", "K50", "K50-K51"}:
+        rows = [
+            *common_rows,
+            {
+                "criterion": "Học kỳ II năm cuối",
+                "requirement": "Đăng ký từ 06 tín chỉ trở lên",
+            },
+        ]
+    else:
+        return None
+
+    return {
+        "table_id": "scholarship_eligibility",
+        "table_name": "Điều kiện xét học bổng khuyến khích học tập",
+        "review_status": "source_verified",
+        "schema_variant": "eligibility_criteria",
+        "rows": rows,
+    }
+
+
 def _shared_scoring_tables(cohort: str) -> list[dict[str, Any]]:
-    return [
+    tables = [
         {
             "table_id": "letter_to_grade_4",
             "table_name": "Quy đổi điểm chữ sang thang điểm 4",
@@ -225,4 +335,11 @@ def _shared_scoring_tables(cohort: str) -> list[dict[str, Any]]:
             ],
         },
         _scholarship_classification_table(cohort),
+    ]
+    scholarship_amount = _scholarship_amount_table(cohort)
+    scholarship_eligibility = _scholarship_eligibility_table(cohort)
+    return tables + [
+        table
+        for table in (scholarship_amount, scholarship_eligibility)
+        if table is not None
     ]

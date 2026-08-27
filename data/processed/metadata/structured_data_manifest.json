@@ -3,18 +3,18 @@
   "categories": {
     "regulation_table": {
       "path": "data\\processed\\tables\\structured_tables_registry.json",
-      "count": 26,
+      "count": 32,
       "table_type_counts": {
         "conduct": 3,
         "foreign_language": 1,
-        "scholarship": 3,
+        "scholarship": 9,
         "scoring": 13,
         "study_duration": 6
       },
       "cohort_counts": {
-        "K48-K49": 8,
-        "K50": 9,
-        "K51": 9
+        "K48-K49": 10,
+        "K50": 11,
+        "K51": 11
       },
       "qdrant_indexed_from_json": false
     },
@@ -49,11 +49,11 @@
         },
         "program_directory": {
           "path": "data\\processed\\directories\\program_directory.json",
-          "count": 128,
+          "count": 129,
           "cohort_counts": {
-            "K48-K49": 42,
-            "K50": 42,
-            "K51": 44
+            "K48-K49": 41,
+            "K50": 43,
+            "K51": 45
           }
         }
       },

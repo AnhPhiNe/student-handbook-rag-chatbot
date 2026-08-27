@@ -1,18 +1,16 @@
-program_policy:
-  K48-K49:
-    source_cohort: K51
-    document_id: so_tay_sinh_vien_khoa_48_49
-    exclusions:
-      - toan ung dung
-      - cong nghe giao duc
-    review_status: derived_from_k51_minus_exclusions
-    derived_rule: K48-K49 dùng danh sách ngành K51, trừ Toán ứng dụng và Công nghệ Giáo dục.
-
 expected_counts:
   program_directory:
-    K48-K49: 42
-    K50: 42
-    K51: 44
+    K48-K49: 41
+    K50: 43
+    K51: 45
+
+# Explicit aliases retained for compatibility with frozen evaluation artifacts.
+# They identify the same source record after the catalog moved from the old
+# derived-ID scheme to IDs generated from each handbook's own extraction.
+legacy_record_ids_by_cohort:
+  K48-K49:
+    cong nghe thong tin:
+      - k48_derived_program_1
 
 implicit_programs_by_cohort:
   K48-K49:
@@ -62,6 +60,8 @@ program_name_overrides:
   cong nghe thong tin: Công nghệ Thông tin
   cong tac xa hoi: Công tác xã hội
   cu nhan hoa hoc: Hoá học
+  cu nhan vat li hoc: Vật lý học
+  dia li hoc: Địa lý học
   dia ly hoc: Địa lý học
   du lich: Du lịch
   giao duc chinh tri: Giáo dục Chính trị
@@ -83,10 +83,12 @@ program_name_overrides:
   sinh hoc ung dung: Sinh học ứng dụng
   su pham cong nghe: Sư phạm Công nghệ
   su pham dia ly: Sư phạm Địa lý
+  su pham dia li: Sư phạm Địa lý
   su pham hoa hoc: Sư phạm Hoá học
   su pham khoa hoc tu nhien: Sư phạm Khoa học tự nhiên
   su pham lich su: Sư phạm Lịch sử
   su pham lich su va dia ly: Sư phạm Lịch sử – Địa lý
+  su pham lich su va dia li: Sư phạm Lịch sử – Địa lý
   su pham ngu van: Sư phạm Ngữ văn
   su pham sinh hoc: Sư phạm Sinh học
   su pham tieng anh: Sư phạm tiếng Anh
@@ -97,8 +99,12 @@ program_name_overrides:
   su pham toan hoc: Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)
   su pham toan hoc tieng viet va song ngu viet anh: Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)
   su pham vat ly: Sư phạm Vật lý
+  su pham vat li: Sư phạm Vật lý
   tam ly hoc: Tâm lý học
+  tam li hoc: Tâm lý học
   tam ly hoc giao duc: Tâm lý học giáo dục
+  tam li hoc giao duc: Tâm lý học giáo dục
+  tieng viet va van hoa viet nam danh cho sinh vien nuoc ngoai: Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài)
   toan ung dung: Toán ứng dụng
   van hoc: Văn học
   vat ly hoc: Vật lý học
@@ -133,5 +139,6 @@ program_faculty_overrides:
   su pham vat ly: Khoa Vật lý
   tam ly hoc: Khoa Tâm lý học
   tam ly hoc giao duc: Khoa Tâm lý học
+  tieng viet va van hoa viet nam danh cho sinh vien nuoc ngoai: Khoa Ngữ văn
   toan ung dung: Khoa Toán - Tin học
   vat ly hoc: Khoa Vật lý

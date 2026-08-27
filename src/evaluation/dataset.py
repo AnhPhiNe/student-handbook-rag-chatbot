@@ -202,6 +202,15 @@ def _legacy_structured_record_ids(
         if value:
             ids.add(value)
 
+    # Preserve explicit aliases when a structured catalog migrates from an
+    # older ID scheme.  Unlike positional heuristics, these aliases are
+    # source-record metadata and remain valid after records are reordered.
+    legacy_ids = record.get("legacy_record_ids") or []
+    if isinstance(legacy_ids, str):
+        legacy_ids = [legacy_ids]
+    if isinstance(legacy_ids, list):
+        ids.update(str(value).strip() for value in legacy_ids if str(value).strip())
+
     table_id = str(record.get("table_id") or "").strip()
     table_subtype = str(record.get("table_subtype") or "").strip()
     source_parent_id = str(record.get("source_parent_id") or "").strip()
@@ -238,8 +247,6 @@ def _legacy_structured_record_ids(
         if record_id:
             for cohort_alias in ("K50", "K51"):
                 ids.add(f"{cohort_alias}_{record_id}")
-            if record_id.startswith("program_"):
-                ids.add(record_id.replace("program_", "k48_derived_program_", 1))
 
     ids.discard("")
     return ids

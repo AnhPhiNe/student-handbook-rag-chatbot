@@ -6,7 +6,7 @@ from typing import Any
 
 
 OFFICE_PATH = Path("data/processed/directories/student_office_profiles.json")
-FACULTY_PATH = Path("data/processed/directories/faculty_directory.json")
+FACULTY_PATH = Path("data/processed/directories/student_faculty_profiles.json")
 PROGRAM_PATH = Path("data/processed/directories/program_directory.json")
 OUTPUT_PATH = Path("data/processed/entities/entity_registry.json")
 
@@ -209,9 +209,16 @@ def build_registry() -> list[dict[str, Any]]:
         entities.append(add_manual_aliases(entity))
 
     for record in faculty_records:
-        name = normalize_name(record["faculty_or_unit_name"])
+        name = normalize_name(
+            record.get("faculty_name")
+            or record.get("unit_name")
+            or record.get("faculty_or_unit_name")
+        )
         program_names = extract_program_names(str(record.get("raw_text") or ""))
+        curated_aliases = {str(alias) for alias in record.get("aliases") or []}
+        curated_aliases.update(fold_vietnamese(alias) for alias in list(curated_aliases))
         aliases = set(make_basic_aliases(name))
+        aliases.update(curated_aliases)
         aliases.update(make_program_aliases(program_names))
         entity = {
             "entity_id": _entity_id("faculty", record, name),
@@ -224,7 +231,9 @@ def build_registry() -> list[dict[str, Any]]:
             "source_pages": record.get("source_pages", []),
             "cohort": record.get("cohort"),
         }
-        entities.append(add_manual_aliases(entity))
+        entity = add_manual_aliases(entity)
+        entity["aliases"] = sorted(set(entity["aliases"]) | curated_aliases)
+        entities.append(entity)
 
     for record in program_records:
         name = normalize_name(record["program_name"])

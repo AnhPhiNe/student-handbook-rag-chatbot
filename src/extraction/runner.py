@@ -11,7 +11,10 @@ from .directory_parser import (
 from .audit_builder import build_content_audit
 from .formula_rules import extract_formula_rules
 from .io_utils import load_json, load_yaml, save_json
-from .program_faculty_enricher import enrich_program_faculty_names
+from .program_faculty_enricher import (
+    attach_program_legacy_record_ids,
+    enrich_program_faculty_names,
+)
 from .program_parser import extract_program_directory
 from .report_builder import build_report
 from .scoring_tables import build_scoring_tables
@@ -49,6 +52,7 @@ def main() -> None:
         program_directory,
         faculty_directory,
     )
+    program_directory = attach_program_legacy_record_ids(program_directory, cohort)
     reference_directory = extract_reference_directory(pages)
     content_audit_report = build_content_audit(pages, sections)
 

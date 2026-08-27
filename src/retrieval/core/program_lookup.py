@@ -159,7 +159,7 @@ def _infer_faculty_names_from_query(
     records: list[dict[str, Any]], query: str
 ) -> set[str]:
     query_text = normalize_text(query)
-    matched: set[str] = set()
+    matched_spans: list[tuple[str, int, int, int]] = []
     for record in records:
         faculty_name = _normalize_faculty_name(record.get("faculty_name"))
         if not faculty_name:
@@ -168,20 +168,49 @@ def _infer_faculty_names_from_query(
         words = [word for word in core_name.split() if word]
         acronym = "".join(word[0] for word in words)
         name_forms = {core_name}
+        for alias in record.get("faculty_aliases") or []:
+            normalized_alias = _normalize_faculty_name(alias)
+            normalized_alias = re.sub(r"^khoa\s+", "", normalized_alias).strip()
+            if normalized_alias:
+                name_forms.add(normalized_alias)
         if words and words[-1] == "hoc":
             name_forms.add(" ".join(words[:-1]))
-        if any(
-            name_form
-            and re.search(
-                rf"(?<![a-z0-9]){re.escape(name_form)}(?![a-z0-9])",
-                query_text,
+        for name_form in name_forms:
+            if not name_form:
+                continue
+            token_count = len(name_form.split())
+            pattern = rf"(?<![a-z0-9]){re.escape(name_form)}(?![a-z0-9])"
+            matched_spans.extend(
+                (faculty_name, match.start(), match.end(), token_count)
+                for match in re.finditer(pattern, query_text)
             )
-            for name_form in name_forms
-        ) or (
-            len(acronym) >= 2
-            and re.search(rf"(?<!\w){re.escape(acronym)}(?!\w)", query_text)
-        ):
-            matched.add(faculty_name)
+        if len(acronym) >= 2:
+            matched_spans.extend(
+                (faculty_name, match.start(), match.end(), 1)
+                for match in re.finditer(
+                    rf"(?<!\w){re.escape(acronym)}(?!\w)", query_text
+                )
+            )
+
+    # A short alias such as ``Lý`` is useful when it is the only signal, but
+    # must not steal a query whose longer phrase is ``Địa lý`` or ``Tâm lý``.
+    # Keep non-overlapping matches and let the longest phrase claim its span.
+    matched: set[str] = set()
+    accepted_spans: list[tuple[int, int, int]] = []
+    for faculty_name, start, end, token_count in sorted(
+        matched_spans,
+        key=lambda item: (-item[3], item[1], item[2] - item[1]),
+    ):
+        contained = any(
+            start >= accepted_start
+            and end <= accepted_end
+            and token_count < accepted_tokens
+            for accepted_start, accepted_end, accepted_tokens in accepted_spans
+        )
+        if contained:
+            continue
+        accepted_spans.append((start, end, token_count))
+        matched.add(faculty_name)
     return matched
 
 

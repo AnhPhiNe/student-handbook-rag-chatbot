@@ -48,6 +48,46 @@
     "used_by_runtime": true
   },
   {
+    "table_id": "scholarship_amount",
+    "data_category": "regulation_table",
+    "table_type": "scholarship",
+    "table_subtype": "scholarship_amount",
+    "table_name": "Mức học bổng khuyến khích học tập",
+    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "source_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+    "columns": [],
+    "rows": [
+      {
+        "scholarship_level": "Khá",
+        "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,0",
+        "multiplier": 1.0,
+        "tuition_basis": "định mức học phí 01 tín chỉ tự nhiên hoặc xã hội, tùy ngành học"
+      },
+      {
+        "scholarship_level": "Giỏi",
+        "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,25",
+        "multiplier": 1.25,
+        "tuition_basis": "định mức học phí 01 tín chỉ tự nhiên hoặc xã hội, tùy ngành học"
+      },
+      {
+        "scholarship_level": "Xuất sắc",
+        "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,5",
+        "multiplier": 1.5,
+        "tuition_basis": "định mức học phí 01 tín chỉ tự nhiên hoặc xã hội, tùy ngành học"
+      }
+    ],
+    "source_pages": [
+      52,
+      53
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
     "table_id": "scholarship_classification",
     "data_category": "regulation_table",
     "table_type": "scholarship",
@@ -77,6 +117,44 @@
         "scholarship_score_range": "3.60-4.0",
         "academic_score_range": "3.60-4.0",
         "conduct_score_condition": ">=90"
+      }
+    ],
+    "source_pages": [
+      52,
+      53
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "scholarship_eligibility",
+    "data_category": "regulation_table",
+    "table_type": "scholarship",
+    "table_subtype": "scholarship_eligibility",
+    "table_name": "Điều kiện xét học bổng khuyến khích học tập",
+    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "source_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+    "columns": [],
+    "rows": [
+      {
+        "criterion": "Đối tượng",
+        "requirement": "Sinh viên hệ chính quy đang học theo kế hoạch đào tạo của khóa; không quá thời gian học tập chuẩn"
+      },
+      {
+        "criterion": "Học tập, rèn luyện và kỷ luật",
+        "requirement": "Kết quả học tập và rèn luyện từ loại Khá trở lên; không bị kỷ luật từ mức khiển trách trở lên"
+      },
+      {
+        "criterion": "Khối lượng học tập thông thường",
+        "requirement": "Tích lũy ít nhất 15 tín chỉ theo kế hoạch; các tín chỉ dùng để xét phải đạt và không tính tín chỉ trả nợ, cải thiện hoặc tương đương"
+      },
+      {
+        "criterion": "Học kỳ II năm cuối",
+        "requirement": "Đăng ký từ 06 tín chỉ trở lên"
       }
     ],
     "source_pages": [
@@ -600,6 +678,47 @@
     "applicability_validated": true
   },
   {
+    "table_id": "scholarship_amount",
+    "data_category": "regulation_table",
+    "table_type": "scholarship",
+    "table_subtype": "scholarship_amount",
+    "table_name": "Mức học bổng khuyến khích học tập",
+    "cohort": "K50",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "source_parent_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "source_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+    "columns": [],
+    "rows": [
+      {
+        "scholarship_level": "Khá",
+        "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,0",
+        "multiplier": 1.0,
+        "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+      },
+      {
+        "scholarship_level": "Giỏi",
+        "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,25",
+        "multiplier": 1.25,
+        "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+      },
+      {
+        "scholarship_level": "Xuất sắc",
+        "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,5",
+        "multiplier": 1.5,
+        "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+      }
+    ],
+    "source_pages": [
+      71,
+      72,
+      73
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
     "table_id": "scholarship_classification",
     "data_category": "regulation_table",
     "table_type": "scholarship",
@@ -629,6 +748,45 @@
         "scholarship_score_range": "3.60-4.0",
         "academic_score_range": "3.60-4.0",
         "conduct_score_condition": ">=90"
+      }
+    ],
+    "source_pages": [
+      71,
+      72,
+      73
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "scholarship_eligibility",
+    "data_category": "regulation_table",
+    "table_type": "scholarship",
+    "table_subtype": "scholarship_eligibility",
+    "table_name": "Điều kiện xét học bổng khuyến khích học tập",
+    "cohort": "K50",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "source_parent_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "source_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+    "columns": [],
+    "rows": [
+      {
+        "criterion": "Đối tượng",
+        "requirement": "Sinh viên hệ chính quy đang học theo kế hoạch đào tạo của khóa; không quá thời gian học tập chuẩn"
+      },
+      {
+        "criterion": "Học tập, rèn luyện và kỷ luật",
+        "requirement": "Kết quả học tập và rèn luyện từ loại Khá trở lên; không bị kỷ luật từ mức khiển trách trở lên"
+      },
+      {
+        "criterion": "Khối lượng học tập thông thường",
+        "requirement": "Tích lũy ít nhất 15 tín chỉ theo kế hoạch; các tín chỉ dùng để xét phải đạt và không tính tín chỉ trả nợ, cải thiện hoặc tương đương"
+      },
+      {
+        "criterion": "Học kỳ II năm cuối",
+        "requirement": "Đăng ký từ 06 tín chỉ trở lên"
       }
     ],
     "source_pages": [
@@ -1012,6 +1170,47 @@
     "used_by_runtime": true
   },
   {
+    "table_id": "scholarship_amount",
+    "data_category": "regulation_table",
+    "table_type": "scholarship",
+    "table_subtype": "scholarship_amount",
+    "table_name": "Mức học bổng khuyến khích học tập",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_parent_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "source_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+    "columns": [],
+    "rows": [
+      {
+        "scholarship_level": "Khá",
+        "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,0",
+        "multiplier": 1.0,
+        "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+      },
+      {
+        "scholarship_level": "Giỏi",
+        "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,25",
+        "multiplier": 1.25,
+        "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+      },
+      {
+        "scholarship_level": "Xuất sắc",
+        "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,5",
+        "multiplier": 1.5,
+        "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+      }
+    ],
+    "source_pages": [
+      70,
+      71,
+      72
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
     "table_id": "scholarship_classification",
     "data_category": "regulation_table",
     "table_type": "scholarship",
@@ -1053,6 +1252,53 @@
         "scholarship_level": "Khá",
         "academic_classification": "Khá",
         "conduct_classification_condition": "Khá trở lên"
+      }
+    ],
+    "source_pages": [
+      70,
+      71,
+      72
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "scholarship_eligibility",
+    "data_category": "regulation_table",
+    "table_type": "scholarship",
+    "table_subtype": "scholarship_eligibility",
+    "table_name": "Điều kiện xét học bổng khuyến khích học tập",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_parent_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "source_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+    "columns": [],
+    "rows": [
+      {
+        "criterion": "Đối tượng",
+        "requirement": "Sinh viên hệ chính quy đang học theo kế hoạch đào tạo của khóa; không quá thời gian học tập chuẩn"
+      },
+      {
+        "criterion": "Học tập, rèn luyện và kỷ luật",
+        "requirement": "Kết quả học tập và rèn luyện từ loại Khá trở lên; không bị kỷ luật từ mức khiển trách trở lên"
+      },
+      {
+        "criterion": "Khối lượng học tập thông thường",
+        "requirement": "Tích lũy ít nhất 15 tín chỉ theo kế hoạch; các tín chỉ dùng để xét phải đạt và không tính tín chỉ trả nợ, cải thiện hoặc tương đương"
+      },
+      {
+        "criterion": "Học kỳ cuối theo chương trình chuẩn",
+        "requirement": "Khóa tuyển sinh từ năm 2022 trở về sau tích lũy ít nhất 11 tín chỉ; khóa từ năm 2021 trở về trước ít nhất 06 tín chỉ"
+      },
+      {
+        "criterion": "Tốt nghiệp sớm",
+        "requirement": "Học kỳ cuối được phép có tổng số tín chỉ tích lũy nhỏ hơn 15"
+      },
+      {
+        "criterion": "Học cùng lúc hai chương trình",
+        "requirement": "Chỉ xét học bổng cho chương trình thứ nhất; các tín chỉ đã đăng ký ở chương trình thứ hai trong học kỳ xét học bổng vẫn phải đạt"
       }
     ],
     "source_pages": [

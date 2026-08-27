@@ -1,4 +1,10 @@
-from scripts.build_structured_table_layer import build_registry
+import json
+
+from scripts.build_structured_table_layer import (
+    attach_scholarship_tables,
+    build_registry,
+)
+from src.extraction.scoring_tables import build_scoring_tables
 
 
 def test_registry_inherits_validated_scope_from_source_parent() -> None:
@@ -61,3 +67,41 @@ def test_table_scope_is_not_overwritten_by_parent_scope() -> None:
     records = build_registry([parent])
 
     assert records[0]["applicable_cohorts"] == ["K50"]
+
+
+def test_scholarship_policy_tables_coexist_on_same_parent(tmp_path) -> None:
+    parent_id = "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27"
+    parent = {
+        "_id": parent_id,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "metadata": {
+            "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+            "cohort": "K51",
+            "document_id": "so_tay_sinh_vien_khoa_51",
+            "source_pages": [70, 71, 72],
+        },
+        "tables": [],
+    }
+    scoring_path = tmp_path / "scoring_tables.json"
+    scoring_tables = [
+        {**table, "cohort": "K51"}
+        for table in build_scoring_tables("K51")
+    ]
+    scoring_path.write_text(
+        json.dumps(scoring_tables, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    attach_scholarship_tables([parent], scoring_path)
+
+    assert {
+        table["table_subtype"] for table in parent["tables"]
+    } == {
+        "scholarship_classification",
+        "scholarship_amount",
+        "scholarship_eligibility",
+    }
+    records = build_registry([parent], scoring_path)
+    assert len(records) == 3
+    assert {record["source_parent_id"] for record in records} == {parent_id}

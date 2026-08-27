@@ -451,6 +451,133 @@ class StructuredLookupTest(unittest.TestCase):
                 for row in registry_tables["K51"]["rows"]
             )
         )
+        policy_tables_by_cohort = {
+            cohort: {
+                table.get("table_subtype")
+                for table in registry
+                if table.get("cohort") == cohort
+                and table.get("table_type") == "scholarship"
+            }
+            for cohort in ("K48-K49", "K50", "K51")
+        }
+        self.assertTrue(
+            all(
+                subtypes
+                == {
+                    "scholarship_classification",
+                    "scholarship_amount",
+                    "scholarship_eligibility",
+                }
+                for subtypes in policy_tables_by_cohort.values()
+            )
+        )
+
+    def test_scholarship_policy_bundle_contains_amount_and_eligibility(self) -> None:
+        for cohort in ("K48-K49", "K50", "K51"):
+            tables = {
+                table["table_id"]: table
+                for table in build_scoring_tables(cohort)
+                if str(table.get("table_id") or "").startswith("scholarship_")
+            }
+
+            self.assertEqual(
+                set(tables),
+                {
+                    "scholarship_classification",
+                    "scholarship_amount",
+                    "scholarship_eligibility",
+                },
+            )
+            excellent = next(
+                row
+                for row in tables["scholarship_amount"]["rows"]
+                if row["scholarship_level"] == "Xuất sắc"
+            )
+            self.assertEqual(excellent["multiplier"], 1.5)
+            self.assertIn("x 1,5", excellent["formula"])
+            self.assertTrue(tables["scholarship_eligibility"]["rows"])
+
+        k51_eligibility = next(
+            table
+            for table in build_scoring_tables("K51")
+            if table.get("table_id") == "scholarship_eligibility"
+        )
+        self.assertTrue(
+            any(
+                "11 tín chỉ" in str(row.get("requirement") or "")
+                for row in k51_eligibility["rows"]
+            )
+        )
+
+    def test_scholarship_lookup_returns_complete_policy_bundle(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        parent_id = "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27"
+        registry = []
+        for table in build_scoring_tables("K51"):
+            table_id = str(table.get("table_id") or "")
+            if not table_id.startswith("scholarship_"):
+                continue
+            registry.append(
+                {
+                    **table,
+                    "data_category": "regulation_table",
+                    "table_type": "scholarship",
+                    "table_subtype": table_id,
+                    "cohort": "K51",
+                    "document_id": "so_tay_sinh_vien_khoa_51",
+                    "source_parent_id": parent_id,
+                    "source_section_id": parent_id,
+                    "source_pages": [70, 71, 72],
+                }
+            )
+
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "scholarship_classification",
+                "slots": {},
+            },
+            query="Mức học bổng Xuất sắc là bao nhiêu?",
+            cohort="K51",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=[],
+            structured_tables_registry=registry,
+            program_directory=[],
+            probe_other_domains=False,
+        )
+
+        self.assertIsNotNone(resolution)
+        self.assertEqual(resolution.strategy, "reference_table_lookup")
+        self.assertEqual(resolution.result["result"]["table_count"], 3)
+        self.assertEqual(
+            {
+                item["table_subtype"]
+                for item in resolution.result["sub_lookups"]
+            },
+            {
+                "scholarship_classification",
+                "scholarship_amount",
+                "scholarship_eligibility",
+            },
+        )
+        amount = next(
+            item
+            for item in resolution.result["sub_lookups"]
+            if item["table_subtype"] == "scholarship_amount"
+        )
+        self.assertTrue(
+            any(
+                row.get("scholarship_level") == "Xuất sắc"
+                and row.get("multiplier") == 1.5
+                for row in amount["items"]
+            )
+        )
 
     def test_scoring_selector_returns_every_row_of_the_selected_table(self) -> None:
         from src.retrieval.core.structured_dispatcher import (

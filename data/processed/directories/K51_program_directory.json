@@ -11,163 +11,10 @@
     "summary": "Công nghệ Giáo dục",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
-    "source_section": "program_directory",
-    "content_mode": "rag_index"
-  },
-  {
-    "record_id": "program_2",
-    "content_type": "program_directory",
-    "program_name": "Công nghệ Thông tin",
-    "faculty_name": "Khoa Công nghệ Thông tin",
-    "source_pages": [
-      178
-    ],
-    "raw_text": "2. Ngành Công nghệ Thông tin\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm việc trong các công ty chuyên về công nghệ thông tin, đặc\nbiệt trong lĩnh vực sản xuất và gia công phần mềm và nội dung số;\n– Làm chuyên viên trong các cơ quan, đơn vị có ứng dụng công\nnghệ thông tin;\n– Làm quản lý doanh nghiệp có ứng dụng hay phát triển sản phẩm\ncó liên quan đến công nghệ thông tin;\n– Làm nghiên cứu viên trong các trường đại học hay viện nghiên\ncứu có liên quan đến công nghệ thông tin;\n– Đảm nhiệm được các vị trí công tác cụ thể: lập trình viên, phân\ntích viên, thiết kế chương trình và dữ liệu, quản trị các hệ cơ sở dữ liệu,\nkiểm thử viên phần mềm, kỹ sư quy trình chất lượng, nghiên cứu viên;\n– Có khả năng tự học để hoàn thiện, bổ sung, nâng cao trình độ\nchuyên môn nghiệp vụ công nghệ thông tin;\n– Có khả năng tiếp tục học tập và nghiên cứu chuyên môn ở trình\nđộ thạc sĩ, tiến sĩ.",
-    "summary": "Công nghệ Thông tin",
-    "needs_manual_review": false,
-    "faculty_name_source": "manual_program_faculty_rule",
-    "embedding_enabled": false,
-    "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
-    "source_section": "program_directory",
-    "content_mode": "rag_index"
-  },
-  {
-    "record_id": "program_3",
-    "content_type": "program_directory",
-    "program_name": "Công tác xã hội",
-    "faculty_name": null,
-    "source_pages": [
-      179
-    ],
-    "raw_text": "3. Ngành Công tác xã hội\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Nhân viên công tác xã hội làm việc trong các lĩnh vực công tác\nxã hội nói chung, đặc biệt trong các lĩnh vực công tác xã hội học đường,\ncông tác xã hội trẻ em và công tác xã hội với các đối tượng dễ bị tổn\nthương khác (tại các cơ sở giáo dục và các trung tâm bảo trợ trẻ em như\ncác trung tâm công tác xã hội, trung tâm tư vấn, tham vấn tâm lý, trung\ntâm bảo trợ xã hội, mái ấm, nhà mở, trường giáo dưỡng, các tổ chức\ncộng đồng, các tổ chức phi chính phủ, các tổ chức Nhà nước), các đoàn\nthể (Đoàn Thanh niên, Hội Liên hiệp Phụ nữ, Hội Chữ thập đỏ,…);\n– Nhân viên công tác xã hội làm việc tại các bệnh viện, các cơ sở\ntôn giáo, Sở Lao động – Thương binh và Xã hội;\n– Giảng dạy và nghiên cứu công tác xã hội tại các trường, các viện\nnghiên cứu.",
-    "summary": "Công tác xã hội",
-    "needs_manual_review": false,
-    "embedding_enabled": false,
-    "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
-    "source_section": "program_directory",
-    "content_mode": "rag_index"
-  },
-  {
-    "record_id": "program_4",
-    "content_type": "program_directory",
-    "program_name": "Du lịch",
-    "faculty_name": "Khoa Địa lý",
-    "source_pages": [
-      179
-    ],
-    "raw_text": "4. Ngành Du lịch\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm việc trong các cơ quan, tổ chức hoạt động du lịch; các viện,\ncác trung tâm nghiên cứu, cơ sở giáo dục du lịch ở trong và ngoài nước;\n– Đảm nhiệm công việc ở bộ phận kinh doanh, cung ứng và phát\ntriển sản phẩm du lịch, làm việc trong các doanh nghiệp du lịch;\n– Có thể tự khởi tạo, quản lý và điều hành các cơ sở kinh doanh\ndịch vụ du lịch – lữ hành, tiếp thị và bán hàng, tổ chức sự kiện,…;\n– Làm hướng dẫn viên du lịch trong các công ty du lịch.",
-    "summary": "Du lịch",
-    "needs_manual_review": false,
-    "faculty_name_source": "manual_program_faculty_rule",
-    "embedding_enabled": false,
-    "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
-    "source_section": "program_directory",
-    "content_mode": "rag_index"
-  },
-  {
-    "record_id": "program_5",
-    "content_type": "program_directory",
-    "program_name": "Địa lý học",
-    "faculty_name": "Khoa Địa lý",
-    "source_pages": [
-      179,
-      180
-    ],
-    "raw_text": "5. Ngành Địa lý học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Hướng ứng dụng địa lý học trong lĩnh vực dân số, xã hội: chuyên\nviên trong các tổ chức chính trị – xã hội, các cơ quan quản lí nhà nước\nphụ trách các vấn đề dân số, phát triển xã hội, các trung tâm, viện\nnghiên cứu về khoa học xã hội;\n– Hướng ứng dụng địa lý học trong lĩnh vực bản đồ, viễn thám –\nGIS: chuyên viên trong các tổ chức chính trị – xã hội, các cơ quan quản\nlí nhà nước phụ trách lĩnh vực đo đạc bản đồ, các trung tâm, viện nghiên\ncứu về kinh tế – xã hội – môi trường.",
-    "summary": "Địa lý học",
-    "needs_manual_review": false,
-    "faculty_name_source": "manual_program_faculty_rule",
-    "embedding_enabled": false,
-    "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
-    "source_section": "program_directory",
-    "content_mode": "rag_index"
-  },
-  {
-    "record_id": "program_6",
-    "content_type": "program_directory",
-    "program_name": "Giáo dục Chính trị",
-    "faculty_name": "Khoa Giáo dục Chính trị",
-    "source_pages": [
-      180
-    ],
-    "raw_text": "6. Ngành Giáo dục Chính trị\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn Giáo dục công dân ở\ncác trường THCS và Giáo dục kinh tế và pháp luật ở các trường THPT;\ncông tác giáo dục chính trị ở các trường trung học nghề và các cơ sở\ngiáo dục tương đương;\n– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn thuộc các chuyên ngành: Triết học, Kinh tế chính trị, Chủ\nnghĩa xã hội khoa học, Tư tưởng Hồ Chí Minh, Lịch sử Đảng Cộng sản\nViệt Nam, Chính trị học, Lý luận và phương pháp dạy học bộ môn Lý\nluận chính trị, Giáo dục học (Giáo dục chính trị), Luật học,…",
-    "summary": "Giáo dục Chính trị",
-    "needs_manual_review": false,
-    "faculty_name_source": "manual_program_faculty_rule",
-    "embedding_enabled": false,
-    "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
-    "source_section": "program_directory",
-    "content_mode": "rag_index"
-  },
-  {
-    "record_id": "program_7",
-    "content_type": "program_directory",
-    "program_name": "Giáo dục Công dân",
-    "faculty_name": "Khoa Giáo dục Chính trị",
-    "source_pages": [
-      180
-    ],
-    "raw_text": "7. Ngành Giáo dục Công dân\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn Giáo dục công dân ở\ncác trường THCS và Giáo dục kinh tế và pháp luật ở các trường THPT;\ncông tác giáo dục chính trị ở các trường trung học nghề và các cơ sở\ngiáo dục tương đương;\n– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn thuộc các chuyên ngành: Triết học, Kinh tế chính trị, Chủ\nnghĩa xã hội khoa học, Tư tưởng Hồ Chí Minh, Lịch sử Đảng Cộng sản\nViệt Nam, Chính trị học, Lý luận và phương pháp dạy học bộ môn Lý\nluận chính trị, Giáo dục học (Giáo dục chính trị), Luật học,…",
-    "summary": "Giáo dục Công dân",
-    "needs_manual_review": false,
-    "faculty_name_source": "manual_program_faculty_rule",
-    "embedding_enabled": false,
-    "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
-    "source_section": "program_directory",
-    "content_mode": "rag_index"
-  },
-  {
-    "record_id": "program_8",
-    "content_type": "program_directory",
-    "program_name": "Giáo dục Đặc biệt",
-    "faculty_name": "Khoa Giáo dục Đặc biệt",
-    "source_pages": [
-      180,
-      181
-    ],
-    "raw_text": "8. Ngành Giáo dục Đặc biệt\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy tại các trường chuyên biệt;\n– Giáo viên hỗ trợ hoà nhập tại các trường mầm non và tiểu học;\n– Giáo dục viên tại các cơ sở y tế;\n– Nhân viên làm việc tại các cơ sở giáo dục trẻ có nhu cầu đặc biệt\nvà các tổ chức phi chính phủ;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành Giáo dục Đặc biệt: Giáo dục trẻ\nkhiếm thính, Giáo dục trẻ khiếm thị, Giáo dục trẻ khuyết tật trí tuệ.",
-    "summary": "Giáo dục Đặc biệt",
-    "needs_manual_review": false,
-    "faculty_name_source": "manual_program_faculty_rule",
-    "embedding_enabled": false,
-    "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
-    "source_section": "program_directory",
-    "content_mode": "rag_index"
-  },
-  {
-    "record_id": "program_9",
-    "content_type": "program_directory",
-    "program_name": "Giáo dục học",
-    "faculty_name": "Khoa Khoa học Giáo dục",
-    "source_pages": [
-      181
-    ],
-    "raw_text": "9. Ngành Giáo dục học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên giáo dục kỹ năng sống tại các cơ sở giáo dục mầm non\nvà phổ thông;\n– Trợ lí công tác học sinh, sinh viên ở các cơ sở giáo dục mầm non,\nphổ thông, trung cấp, cao đẳng và đại học;\n– Chuyên viên hành chính ở các cơ sở giáo dục;\n– Giảng viên Giáo dục học ở các cơ sở giáo dục và đào tạo;\n– Nghiên cứu viên tại các viện nghiên cứu về khoa học giáo dục;\n– Học tập, nghiên cứu chuyên sâu ở bậc học sau đại học tại các cơ\nsở giáo dục trong và ngoài nước về khoa học giáo dục: chuyên ngành\nGiáo dục học, Quản lí giáo dục, Đo lường và đánh giá giáo dục.",
-    "summary": "Giáo dục học",
-    "needs_manual_review": false,
-    "faculty_name_source": "manual_program_faculty_rule",
-    "embedding_enabled": false,
-    "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -183,10 +30,10 @@
     "summary": "Giáo dục Mầm non (trình độ cao đẳng và đại học)",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -203,10 +50,10 @@
     "summary": "Giáo dục Quốc phòng – An ninh",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -222,10 +69,10 @@
     "summary": "Giáo dục Thể chất",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -241,10 +88,10 @@
     "summary": "Giáo dục Tiểu học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -260,10 +107,10 @@
     "summary": "Hoá học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -271,19 +118,20 @@
     "record_id": "program_15",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Anh",
-    "faculty_name": null,
+    "faculty_name": "Khoa Tiếng Anh",
     "source_pages": [
       183
     ],
     "raw_text": "15. Ngành Ngôn ngữ Anh\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Có thể làm công tác biên dịch, lễ tân, thư ký và nhân viên văn phòng\ncho các công ty có yếu tố nước ngoài, các cơ quan văn hoá, giáo dục, kinh tế;\n– Có thể làm công tác giáo dục giảng dạy bộ môn Tiếng Anh ở các\ntrường đại học, cao đẳng, trung cấp chuyên nghiệp, dạy nghề sau khi bổ\ntúc chứng chỉ nghiệp vụ sư phạm;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc học\ncao hơn theo các chuyên ngành Tiếng Anh Thương mại và Quản trị Kinh doanh.",
     "summary": "Ngôn ngữ Anh",
     "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
-    "content_mode": "rag_index"
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
   },
   {
     "record_id": "program_16",
@@ -297,10 +145,10 @@
     "summary": "Ngôn ngữ Hàn Quốc",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -308,7 +156,7 @@
     "record_id": "program_17",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Nga",
-    "faculty_name": null,
+    "faculty_name": "Khoa Tiếng Nga",
     "source_pages": [
       183,
       184
@@ -316,12 +164,13 @@
     "raw_text": "17. Ngành Ngôn ngữ Nga\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n❖ Định hướng thương mại:\n– Nhân viên văn phòng, thư ký, trợ lý sử dụng tiếng Nga trong các\ndoanh nghiệp;\n– Chuyên viên, nghiên cứu viên tại các viện nghiên cứu ngôn ngữ;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\ncao hơn theo các chuyên ngành Ngôn ngữ Nga, Ngôn ngữ học, Thương\nmại, Báo chí, Quan hệ quốc tế ở các cơ sở giáo dục trong và ngoài nước;\n– Có khả năng và trình độ tiếp tục học các khóa bồi dưỡng theo chuyên\nngành gần để đảm nhận các vị trí thích hợp theo nhu cầu của xã hội.\n❖ Định hướng du lịch:\n– Hướng dẫn viên du lịch, nhân viên điều hành tour;\n– Nhân viên các bộ phận lễ tân, điều phối, chăm sóc khách hàng\ntrong các khách sạn, khu nghỉ dưỡng;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\ncao hơn theo các chuyên ngành Ngôn ngữ Nga, Ngôn ngữ học, Du lịch,\nBáo chí, Quan hệ quốc tế ở các cơ sở giáo dục trong và ngoài nước;\n– Có khả năng và trình độ tiếp tục học các khóa bồi dưỡng theo chuyên\nngành gần để đảm nhận các vị trí thích hợp theo nhu cầu của xã hội.",
     "summary": "Ngôn ngữ Nga",
     "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
-    "content_mode": "rag_index"
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
   },
   {
     "record_id": "program_18",
@@ -335,10 +184,10 @@
     "summary": "Ngôn ngữ Nhật",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -346,7 +195,7 @@
     "record_id": "program_19",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Pháp",
-    "faculty_name": null,
+    "faculty_name": "Khoa Tiếng Pháp",
     "source_pages": [
       184,
       185
@@ -354,10 +203,30 @@
     "raw_text": "19. Ngành Ngôn ngữ Pháp\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n❖ Chuyên ngành Dịch thuật:\n– Biên dịch viên chuyên ngành (dịch công chứng, dịch kỹ thuật, dịch\nbáo chí);\n– Phiên dịch viên: hội thảo, tiếp xúc;\n– Nhân viên làm việc trong các cơ quan đối ngoại hoặc các công ty quốc tế;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc học\ncao hơn theo các chuyên ngành ngôn ngữ và văn hóa hoặc lý luận và phương\npháp dạy và học tiếng Pháp, hoặc tại các trường đại học trong và ngoài nước.\n❖ Chuyên ngành Du lịch:\n– Có khả năng công tác ở các cơ quan khác nhau thuộc lĩnh vực du\nlịch (công ty lữ hành, doanh nghiệp du lịch, nhà hàng, khách sạn, trường,\nviện hoặc các cơ quan xúc tiến và phát triển du lịch), đảm nhận nhiều vị\ntrí công việc khác nhau như điều hành tour, thiết kế tour, marketing, kinh\ndoanh, tư vấn du lịch, hướng dẫn viên du lịch quốc tế,… Sinh viên có cơ\nhội làm việc với các công ty và khách nước ngoài;\n– Có thể tiếp tục học tập văn bằng 2 hoặc theo học thạc sĩ ở các\nchuyên ngành Du lịch, Quản trị – Kinh doanh, Ngôn ngữ học hay Lý luận\nvà phương pháp giảng dạy;\n– Ngoài ra, sinh viên có thể học thêm chứng chỉ nghiệp vụ sư phạm\nhoặc các chứng chỉ liên quan đến các ngành nghề du lịch để đáp ứng yêu\ncầu thực tế đa dạng của nghề nghiệp.\n❖ Chuyên ngành Truyền thông:\n– Nhân viên truyền thông sự kiện đa ngôn ngữ;\n– Nhân viên đối ngoại/phụ trách quan hệ công chúng;\n– Nhân viên làm việc trong các cơ quan, tổ chức đối ngoại/hợp tác\nquốc tế hoặc các doanh nghiệp nước ngoài;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành ngôn ngữ và văn hóa hoặc lý luận và\nphương pháp dạy và học tiếng Pháp, hoặc tại các trường đại học trong và\nngoài nước.",
     "summary": "Ngôn ngữ Pháp",
     "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_section": "program_directory",
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
+  },
+  {
+    "record_id": "program_2",
+    "content_type": "program_directory",
+    "program_name": "Công nghệ Thông tin",
+    "faculty_name": "Khoa Công nghệ Thông tin",
+    "source_pages": [
+      178
+    ],
+    "raw_text": "2. Ngành Công nghệ Thông tin\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm việc trong các công ty chuyên về công nghệ thông tin, đặc\nbiệt trong lĩnh vực sản xuất và gia công phần mềm và nội dung số;\n– Làm chuyên viên trong các cơ quan, đơn vị có ứng dụng công\nnghệ thông tin;\n– Làm quản lý doanh nghiệp có ứng dụng hay phát triển sản phẩm\ncó liên quan đến công nghệ thông tin;\n– Làm nghiên cứu viên trong các trường đại học hay viện nghiên\ncứu có liên quan đến công nghệ thông tin;\n– Đảm nhiệm được các vị trí công tác cụ thể: lập trình viên, phân\ntích viên, thiết kế chương trình và dữ liệu, quản trị các hệ cơ sở dữ liệu,\nkiểm thử viên phần mềm, kỹ sư quy trình chất lượng, nghiên cứu viên;\n– Có khả năng tự học để hoàn thiện, bổ sung, nâng cao trình độ\nchuyên môn nghiệp vụ công nghệ thông tin;\n– Có khả năng tiếp tục học tập và nghiên cứu chuyên môn ở trình\nđộ thạc sĩ, tiến sĩ.",
+    "summary": "Công nghệ Thông tin",
+    "needs_manual_review": false,
+    "faculty_name_source": "manual_program_faculty_rule",
     "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -365,7 +234,7 @@
     "record_id": "program_20",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Trung Quốc",
-    "faculty_name": null,
+    "faculty_name": "Khoa Tiếng Trung Quốc",
     "source_pages": [
       185,
       186
@@ -373,12 +242,13 @@
     "raw_text": "20. Ngành Ngôn ngữ Trung Quốc\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Có khả năng làm việc trong các lĩnh vực chuyên môn đòi hỏi kiến\nthức văn hoá, xã hội và khả năng giao tiếp bằng tiếng Trung Quốc;\n– Có thể làm công tác giáo dục và giảng dạy bộ môn tiếng Trung\nQuốc ở các trường đại học, cao đẳng, trung cấp chuyên nghiệp, dạy nghề\nsau khi bổ túc chứng chỉ nghiệp vụ sư phạm;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành tiếng Trung Quốc.\nCHƯƠNG TRÌNH LIÊN KẾT QUỐC TẾ SONG NGÀNH 2+2:\nNGÔN NGỮ TRUNG QUỐC, GIÁO DỤC HÁN NGỮ QUỐC TẾ\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Người học sau khi tốt nghiệp có thể làm biên – phiên dịch, trợ lý,\nthương mại,… tại các cơ quan nhà nước, doanh nghiệp trong nước và\nnước ngoài có sử dụng tiếng Trung Quốc;\n– Dạy học bộ môn Tiếng Trung Quốc ở các trường phổ thông, trung\ntâm ngoại ngữ và những cơ sở giáo dục tương đương sau khi bổ túc\nchứng chỉ nghiệp vụ sư phạm.",
     "summary": "Ngôn ngữ Trung Quốc",
     "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
-    "content_mode": "rag_index"
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
   },
   {
     "record_id": "program_21",
@@ -392,10 +262,10 @@
     "summary": "Quản lý giáo dục",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -403,19 +273,20 @@
     "record_id": "program_22",
     "content_type": "program_directory",
     "program_name": "Quốc tế học",
-    "faculty_name": null,
+    "faculty_name": "Khoa Lịch sử",
     "source_pages": [
       186
     ],
     "raw_text": "22. Ngành Quốc tế học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác đối ngoại trong các cơ quan Nhà nước, các tổ chức\nphi chính phủ, các công ty, tập đoàn đa quốc gia, quốc tế, các tổ chức xã\nhội nghề nghiệp;\n– Làm các công tác khác có yêu cầu sử dụng kiến thức về quốc tế học\n(báo chí – truyền thông, du lịch, quan hệ công chúng, ngoại thương,…).",
     "summary": "Quốc tế học",
     "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
-    "content_mode": "rag_index"
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
   },
   {
     "record_id": "program_23",
@@ -429,10 +300,10 @@
     "summary": "Sinh học ứng dụng",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -448,10 +319,10 @@
     "summary": "Sư phạm Công nghệ",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -467,10 +338,10 @@
     "summary": "Sư phạm Địa lý",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -487,10 +358,10 @@
     "summary": "Sư phạm Hoá học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -498,37 +369,39 @@
     "record_id": "program_27",
     "content_type": "program_directory",
     "program_name": "Sư phạm Khoa học tự nhiên",
-    "faculty_name": null,
+    "faculty_name": "Khoa Hóa học",
     "source_pages": [
       188
     ],
     "raw_text": "27. Ngành Sư phạm Khoa học tự nhiên\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm giáo viên môn Khoa học Tự nhiên cấp THCS, giáo viên phụ\ntrách Hoạt động trải nghiệm cấp THCS;\n– Có khả năng tiếp nhận và vận dụng các tri thức mới về chuyên\nmôn và nghề nghiệp đáp ứng các nhu cầu phát triển của giáo dục để tiếp\ntục học tập, nghiên cứu ở các bậc học cao hơn.",
     "summary": "Sư phạm Khoa học tự nhiên",
     "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
-    "content_mode": "rag_index"
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
   },
   {
     "record_id": "program_28",
     "content_type": "program_directory",
     "program_name": "Sư phạm Lịch sử",
-    "faculty_name": null,
+    "faculty_name": "Khoa Lịch sử",
     "source_pages": [
       188
     ],
     "raw_text": "28. Ngành Sư phạm Lịch sử\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên giảng dạy bộ môn Lịch sử ở các trường THPT, chuyên viên\nphụ trách môn Lịch sử tại các Sở Giáo dục và Đào tạo ở địa phương;\n– Nghiên cứu viên ở các viện nghiên cứu, các cơ quan quản lý giáo\ndục, các cơ sở đào tạo, đặc biệt về lĩnh vực Lịch sử, Lý luận và phương\npháp dạy học bộ môn Lịch sử, Khoa học xã hội.",
     "summary": "Sư phạm Lịch sử",
     "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
-    "content_mode": "rag_index"
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
   },
   {
     "record_id": "program_29",
@@ -542,30 +415,50 @@
     "summary": "Sư phạm Lịch sử – Địa lý",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
+  },
+  {
+    "record_id": "program_3",
+    "content_type": "program_directory",
+    "program_name": "Công tác xã hội",
+    "faculty_name": "Khoa Tâm lý học",
+    "source_pages": [
+      179
+    ],
+    "raw_text": "3. Ngành Công tác xã hội\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Nhân viên công tác xã hội làm việc trong các lĩnh vực công tác\nxã hội nói chung, đặc biệt trong các lĩnh vực công tác xã hội học đường,\ncông tác xã hội trẻ em và công tác xã hội với các đối tượng dễ bị tổn\nthương khác (tại các cơ sở giáo dục và các trung tâm bảo trợ trẻ em như\ncác trung tâm công tác xã hội, trung tâm tư vấn, tham vấn tâm lý, trung\ntâm bảo trợ xã hội, mái ấm, nhà mở, trường giáo dưỡng, các tổ chức\ncộng đồng, các tổ chức phi chính phủ, các tổ chức Nhà nước), các đoàn\nthể (Đoàn Thanh niên, Hội Liên hiệp Phụ nữ, Hội Chữ thập đỏ,…);\n– Nhân viên công tác xã hội làm việc tại các bệnh viện, các cơ sở\ntôn giáo, Sở Lao động – Thương binh và Xã hội;\n– Giảng dạy và nghiên cứu công tác xã hội tại các trường, các viện\nnghiên cứu.",
+    "summary": "Công tác xã hội",
+    "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "source_section": "program_directory",
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
   },
   {
     "record_id": "program_30",
     "content_type": "program_directory",
     "program_name": "Sư phạm Ngữ văn",
-    "faculty_name": null,
+    "faculty_name": "Khoa Ngữ văn",
     "source_pages": [
       188
     ],
     "raw_text": "30. Ngành Sư phạm Ngữ văn\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giảng dạy bộ môn Ngữ văn ở các trường THPT, trung cấp\nchuyên nghiệp, trường dạy nghề;\n– Làm công tác chuyên môn trong các cơ quan, tổ chức đòi hỏi\nkiến thức ngữ văn;\n– Có thể tiếp tục học tập ở các bậc học cao hơn thuộc các chuyên\nngành: Phương pháp giảng dạy, Ngôn ngữ học hoặc Văn học.",
     "summary": "Sư phạm Ngữ văn",
     "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
-    "content_mode": "rag_index"
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
   },
   {
     "record_id": "program_31",
@@ -579,10 +472,10 @@
     "summary": "Sư phạm Sinh học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -590,73 +483,77 @@
     "record_id": "program_32",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Anh",
-    "faculty_name": null,
+    "faculty_name": "Khoa Tiếng Anh",
     "source_pages": [
       189
     ],
     "raw_text": "32. Ngành Sư phạm tiếng Anh\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Có thể làm công tác giáo dục và giảng dạy bộ môn tiếng Anh ở\ncác cấp học từ Tiểu học đến Trung học phổ thông tại các cơ sở công lập và\ncác chương trình học tiếng Anh khác tại các tổ chức giáo dục tư nhân;\n– Có thể làm việc trong lĩnh vực chuyên môn khác có đòi hỏi về\nkiến thức văn hoá, xã hội và khả năng giao tiếp bằng tiếng Anh;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành: Giảng dạy tiếng Anh, Ngôn ngữ\nhọc tiếng Anh và các chuyên ngành liên quan.",
     "summary": "Sư phạm tiếng Anh",
     "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
-    "content_mode": "rag_index"
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
   },
   {
     "record_id": "program_33",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Nga",
-    "faculty_name": null,
+    "faculty_name": "Khoa Tiếng Nga",
     "source_pages": [
       189
     ],
     "raw_text": "33. Ngành Sư phạm tiếng Nga\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên giảng dạy bộ môn Tiếng Nga ở bậc tiểu học, THCS và\nTHPT hoặc các trung tâm ngoại ngữ, các cơ sở giáo dục quốc tế;\n– Nghiên cứu viên trong các trung tâm nghiên cứu giáo dục, văn\nhoá hoặc ngôn ngữ;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\ncao hơn theo các chuyên ngành Ngôn ngữ Nga, Khoa học giáo dục,\nGiáo dục học, Tâm lý học, Quản lý giáo dục tại các cơ sở giáo dục trong\nvà ngoài nước; các khóa bồi dưỡng theo chuyên ngành gần để đảm nhận\ncác vị trí thích hợp theo nhu cầu của xã hội.",
     "summary": "Sư phạm tiếng Nga",
     "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
-    "content_mode": "rag_index"
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
   },
   {
     "record_id": "program_34",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Pháp",
-    "faculty_name": null,
+    "faculty_name": "Khoa Tiếng Pháp",
     "source_pages": [
       190
     ],
     "raw_text": "34. Ngành Sư phạm tiếng Pháp\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên tiếng Pháp bậc tiểu học, THCS và THPT, trung tâm\nngoại ngữ, các cơ sở giáo dục quốc tế;\n– Nghiên cứu viên trong các trung tâm nghiên cứu, văn hóa, ngôn ngữ;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn ở lĩnh vực khoa học ngôn ngữ và khoa học giáo dục.",
     "summary": "Sư phạm tiếng Pháp",
     "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
-    "content_mode": "rag_index"
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
   },
   {
     "record_id": "program_35",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Trung Quốc",
-    "faculty_name": null,
+    "faculty_name": "Khoa Tiếng Trung Quốc",
     "source_pages": [
       190
     ],
     "raw_text": "35. Ngành Sư phạm tiếng Trung Quốc\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn Tiếng Trung Quốc ở\ncác trường THPT, các cơ sở đào tạo;\n– Làm việc trong các lĩnh vực chuyên môn đòi hỏi kiến thức văn\nhoá, xã hội và khả năng giao tiếp bằng tiếng Trung Quốc;\n– Có khả năng và trình độ để tiếp tục học tập và nghiên cứu ở các\nbậc học cao hơn theo các chuyên ngành giảng dạy tiếng Trung Quốc,\nNgôn ngữ học tiếng Trung Quốc; văn hoá, văn học, lịch sử Trung Quốc.",
     "summary": "Sư phạm tiếng Trung Quốc",
     "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
-    "content_mode": "rag_index"
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
   },
   {
     "record_id": "program_36",
@@ -670,10 +567,10 @@
     "summary": "Sư phạm Tin học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -690,10 +587,10 @@
     "summary": "Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -709,10 +606,10 @@
     "summary": "Sư phạm Vật lý",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -728,10 +625,29 @@
     "summary": "Tâm lý học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_section": "program_directory",
+    "content_mode": "rag_index"
+  },
+  {
+    "record_id": "program_4",
+    "content_type": "program_directory",
+    "program_name": "Du lịch",
+    "faculty_name": "Khoa Địa lý",
+    "source_pages": [
+      179
+    ],
+    "raw_text": "4. Ngành Du lịch\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm việc trong các cơ quan, tổ chức hoạt động du lịch; các viện,\ncác trung tâm nghiên cứu, cơ sở giáo dục du lịch ở trong và ngoài nước;\n– Đảm nhiệm công việc ở bộ phận kinh doanh, cung ứng và phát\ntriển sản phẩm du lịch, làm việc trong các doanh nghiệp du lịch;\n– Có thể tự khởi tạo, quản lý và điều hành các cơ sở kinh doanh\ndịch vụ du lịch – lữ hành, tiếp thị và bán hàng, tổ chức sự kiện,…;\n– Làm hướng dẫn viên du lịch trong các công ty du lịch.",
+    "summary": "Du lịch",
+    "needs_manual_review": false,
+    "faculty_name_source": "manual_program_faculty_rule",
     "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
@@ -743,19 +659,38 @@
     "source_pages": [
       192
     ],
-    "raw_text": "40. Ngành Tâm lý học giáo dục\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Chuyên viên tâm lý học đường thực hiện công tác dự phòng tâm lý\n(giảng dạy kỹ năng sống và các chuyên đề Tâm lý học giáo dục có liên\nquan, sàng lọc các vấn đề sức khỏe tâm thần, tư vấn – tham vấn học\nđường) tại các trường phổ thông và cơ sở giáo dục nghề nghiệp;\n– Chuyên viên thực hiện công tác đánh giá và hỗ trợ một số vấn đề\ntâm lý của trẻ em và thanh thiếu niên tại các phòng khám tâm lý, trường\nhọc, cơ sở giáo dục chuyên biệt;\n– Giáo viên dạy kỹ năng sống, giảng dạy các chuyên đề về Tâm lý\nhọc giáo dục tại các trường phổ thông, trung cấp chuyên nghiệp, cao đẳng\n(hoặc trợ giảng tại các trường đại học) và các cơ sở giáo dục khác;\n– Chuyên viên phụ trách các hoạt động liên quan đến dự phòng,\nđánh giá và hỗ trợ tâm lý cho trẻ em và thanh thiếu niên trong các tổ chức\nđoàn thể, tổ chức xã hội – nghề nghiệp, tổ chức phi chính phủ, các cơ sở\ndịch vụ Tâm lý – Giáo dục.\n41. Ngành Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài)\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Có thể đảm nhiệm những công việc khác nhau trong các cơ quan,\ntổ chức về văn hoá, du lịch, kinh tế, hành chính, ngoại giao trong nước\nvà nước ngoài;\n– Nếu có chứng chỉ nghiệp vụ sư phạm, có thể tham gia dạy tiếng\nViệt cho người nước ngoài;\n– Có khả năng tiếp tục học tập và nghiên cứu chuyên môn ở trình\nđộ cao hơn thuộc các lĩnh vực như Ngôn ngữ học, Văn hoá học, Phương\npháp dạy tiếng Việt,...",
+    "raw_text": "40. Ngành Tâm lý học giáo dục\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Chuyên viên tâm lý học đường thực hiện công tác dự phòng tâm lý\n(giảng dạy kỹ năng sống và các chuyên đề Tâm lý học giáo dục có liên\nquan, sàng lọc các vấn đề sức khỏe tâm thần, tư vấn – tham vấn học\nđường) tại các trường phổ thông và cơ sở giáo dục nghề nghiệp;\n– Chuyên viên thực hiện công tác đánh giá và hỗ trợ một số vấn đề\ntâm lý của trẻ em và thanh thiếu niên tại các phòng khám tâm lý, trường\nhọc, cơ sở giáo dục chuyên biệt;\n– Giáo viên dạy kỹ năng sống, giảng dạy các chuyên đề về Tâm lý\nhọc giáo dục tại các trường phổ thông, trung cấp chuyên nghiệp, cao đẳng\n(hoặc trợ giảng tại các trường đại học) và các cơ sở giáo dục khác;\n– Chuyên viên phụ trách các hoạt động liên quan đến dự phòng,\nđánh giá và hỗ trợ tâm lý cho trẻ em và thanh thiếu niên trong các tổ chức\nđoàn thể, tổ chức xã hội – nghề nghiệp, tổ chức phi chính phủ, các cơ sở\ndịch vụ Tâm lý – Giáo dục.",
     "summary": "Tâm lý học giáo dục",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
   {
     "record_id": "program_41",
+    "content_type": "program_directory",
+    "program_name": "Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài)",
+    "faculty_name": "Khoa Ngữ văn",
+    "source_pages": [
+      192
+    ],
+    "raw_text": "41. Ngành Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài)\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Có thể đảm nhiệm những công việc khác nhau trong các cơ quan,\ntổ chức về văn hoá, du lịch, kinh tế, hành chính, ngoại giao trong nước\nvà nước ngoài;\n– Nếu có chứng chỉ nghiệp vụ sư phạm, có thể tham gia dạy tiếng\nViệt cho người nước ngoài;\n– Có khả năng tiếp tục học tập và nghiên cứu chuyên môn ở trình\nđộ cao hơn thuộc các lĩnh vực như Ngôn ngữ học, Văn hoá học, Phương\npháp dạy tiếng Việt,...",
+    "summary": "Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài)",
+    "needs_manual_review": false,
+    "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "source_section": "program_directory",
+    "content_mode": "rag_index"
+  },
+  {
+    "record_id": "program_42",
     "content_type": "program_directory",
     "program_name": "Toán ứng dụng",
     "faculty_name": "Khoa Toán – Tin học",
@@ -767,33 +702,34 @@
     "summary": "Toán ứng dụng",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
   {
-    "record_id": "program_42",
+    "record_id": "program_43",
     "content_type": "program_directory",
     "program_name": "Văn học",
-    "faculty_name": null,
+    "faculty_name": "Khoa Ngữ văn",
     "source_pages": [
       193
     ],
     "raw_text": "43. Ngành Văn học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác nghiên cứu ngôn ngữ học hoặc văn học;\n– Làm công tác chuyên môn trong các lĩnh vực liên quan đến ngữ\nvăn: báo chí, xuất bản, quản lý văn hoá…;\n– Có thể giảng dạy bộ môn Ngữ văn ở các trường đại học, cao\nđẳng, trung cấp chuyên nghiệp, dạy nghề sau khi bổ túc chứng chỉ\nnghiệp vụ sư phạm;\n– Có thể tiếp tục học ở các bậc học cao hơn thuộc các chuyên\nngành: Ngôn ngữ học hoặc Văn học.",
     "summary": "Văn học",
     "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
-    "content_mode": "rag_index"
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
   },
   {
-    "record_id": "program_43",
+    "record_id": "program_44",
     "content_type": "program_directory",
     "program_name": "Vật lý học",
     "faculty_name": "Khoa Vật lý",
@@ -804,18 +740,18 @@
     "summary": "Vật lý học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
-    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   },
   {
-    "record_id": "program_44",
+    "record_id": "program_45",
     "content_type": "program_directory",
     "program_name": "Việt Nam học",
-    "faculty_name": null,
+    "faculty_name": "Khoa Ngữ văn",
     "source_pages": [
       193,
       207
@@ -823,10 +759,108 @@
     "raw_text": "45. Ngành Việt Nam học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm việc tại các công ty du lịch lữ hành với tư cách hướng dẫn\nviên du lịch, người thiết kế và điều hành tour;\n– Giảng dạy một số môn thuộc lĩnh vực Văn hoá hay Du lịch lữ\nhành tại các trường cao đẳng và dạy nghề sau khi bổ túc các chứng chỉ\nnghiệp vụ sư phạm;\n– Có thể học ở bậc Thạc sĩ ngành Việt Nam học sau khi học bổ\nsung một số tín chỉ bậc đại học thuộc các chuyên ngành liên quan.\nCÁC KHOA VÀ TỔ TRỰC THUỘC TẠI CƠ SỞ CHÍNH",
     "summary": "Việt Nam học",
     "needs_manual_review": false,
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_section": "program_directory",
+    "content_mode": "rag_index",
+    "faculty_name_source": "matched_existing_program"
+  },
+  {
+    "record_id": "program_5",
+    "content_type": "program_directory",
+    "program_name": "Địa lý học",
+    "faculty_name": "Khoa Địa lý",
+    "source_pages": [
+      179,
+      180
+    ],
+    "raw_text": "5. Ngành Địa lý học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Hướng ứng dụng địa lý học trong lĩnh vực dân số, xã hội: chuyên\nviên trong các tổ chức chính trị – xã hội, các cơ quan quản lí nhà nước\nphụ trách các vấn đề dân số, phát triển xã hội, các trung tâm, viện\nnghiên cứu về khoa học xã hội;\n– Hướng ứng dụng địa lý học trong lĩnh vực bản đồ, viễn thám –\nGIS: chuyên viên trong các tổ chức chính trị – xã hội, các cơ quan quản\nlí nhà nước phụ trách lĩnh vực đo đạc bản đồ, các trung tâm, viện nghiên\ncứu về kinh tế – xã hội – môi trường.",
+    "summary": "Địa lý học",
+    "needs_manual_review": false,
+    "faculty_name_source": "manual_program_faculty_rule",
     "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "source_section": "program_directory",
+    "content_mode": "rag_index"
+  },
+  {
+    "record_id": "program_6",
+    "content_type": "program_directory",
+    "program_name": "Giáo dục Chính trị",
+    "faculty_name": "Khoa Giáo dục Chính trị",
+    "source_pages": [
+      180
+    ],
+    "raw_text": "6. Ngành Giáo dục Chính trị\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn Giáo dục công dân ở\ncác trường THCS và Giáo dục kinh tế và pháp luật ở các trường THPT;\ncông tác giáo dục chính trị ở các trường trung học nghề và các cơ sở\ngiáo dục tương đương;\n– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn thuộc các chuyên ngành: Triết học, Kinh tế chính trị, Chủ\nnghĩa xã hội khoa học, Tư tưởng Hồ Chí Minh, Lịch sử Đảng Cộng sản\nViệt Nam, Chính trị học, Lý luận và phương pháp dạy học bộ môn Lý\nluận chính trị, Giáo dục học (Giáo dục chính trị), Luật học,…",
+    "summary": "Giáo dục Chính trị",
+    "needs_manual_review": false,
+    "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "source_section": "program_directory",
+    "content_mode": "rag_index"
+  },
+  {
+    "record_id": "program_7",
+    "content_type": "program_directory",
+    "program_name": "Giáo dục Công dân",
+    "faculty_name": "Khoa Giáo dục Chính trị",
+    "source_pages": [
+      180
+    ],
+    "raw_text": "7. Ngành Giáo dục Công dân\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn Giáo dục công dân ở\ncác trường THCS và Giáo dục kinh tế và pháp luật ở các trường THPT;\ncông tác giáo dục chính trị ở các trường trung học nghề và các cơ sở\ngiáo dục tương đương;\n– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn thuộc các chuyên ngành: Triết học, Kinh tế chính trị, Chủ\nnghĩa xã hội khoa học, Tư tưởng Hồ Chí Minh, Lịch sử Đảng Cộng sản\nViệt Nam, Chính trị học, Lý luận và phương pháp dạy học bộ môn Lý\nluận chính trị, Giáo dục học (Giáo dục chính trị), Luật học,…",
+    "summary": "Giáo dục Công dân",
+    "needs_manual_review": false,
+    "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "source_section": "program_directory",
+    "content_mode": "rag_index"
+  },
+  {
+    "record_id": "program_8",
+    "content_type": "program_directory",
+    "program_name": "Giáo dục Đặc biệt",
+    "faculty_name": "Khoa Giáo dục Đặc biệt",
+    "source_pages": [
+      180,
+      181
+    ],
+    "raw_text": "8. Ngành Giáo dục Đặc biệt\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy tại các trường chuyên biệt;\n– Giáo viên hỗ trợ hoà nhập tại các trường mầm non và tiểu học;\n– Giáo dục viên tại các cơ sở y tế;\n– Nhân viên làm việc tại các cơ sở giáo dục trẻ có nhu cầu đặc biệt\nvà các tổ chức phi chính phủ;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành Giáo dục Đặc biệt: Giáo dục trẻ\nkhiếm thính, Giáo dục trẻ khiếm thị, Giáo dục trẻ khuyết tật trí tuệ.",
+    "summary": "Giáo dục Đặc biệt",
+    "needs_manual_review": false,
+    "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "source_section": "program_directory",
+    "content_mode": "rag_index"
+  },
+  {
+    "record_id": "program_9",
+    "content_type": "program_directory",
+    "program_name": "Giáo dục học",
+    "faculty_name": "Khoa Khoa học Giáo dục",
+    "source_pages": [
+      181
+    ],
+    "raw_text": "9. Ngành Giáo dục học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên giáo dục kỹ năng sống tại các cơ sở giáo dục mầm non\nvà phổ thông;\n– Trợ lí công tác học sinh, sinh viên ở các cơ sở giáo dục mầm non,\nphổ thông, trung cấp, cao đẳng và đại học;\n– Chuyên viên hành chính ở các cơ sở giáo dục;\n– Giảng viên Giáo dục học ở các cơ sở giáo dục và đào tạo;\n– Nghiên cứu viên tại các viện nghiên cứu về khoa học giáo dục;\n– Học tập, nghiên cứu chuyên sâu ở bậc học sau đại học tại các cơ\nsở giáo dục trong và ngoài nước về khoa học giáo dục: chuyên ngành\nGiáo dục học, Quản lí giáo dục, Đo lường và đánh giá giáo dục.",
+    "summary": "Giáo dục học",
+    "needs_manual_review": false,
+    "faculty_name_source": "manual_program_faculty_rule",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
     "source_section": "program_directory",
     "content_mode": "rag_index"
   }

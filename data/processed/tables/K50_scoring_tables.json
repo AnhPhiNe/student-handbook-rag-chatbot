@@ -234,5 +234,69 @@
     "cohort": "K50",
     "source_section": "scoring_table",
     "content_mode": "structured_only"
+  },
+  {
+    "table_id": "scholarship_amount",
+    "table_name": "Mức học bổng khuyến khích học tập",
+    "review_status": "source_verified",
+    "schema_variant": "amount_formula_by_level",
+    "rows": [
+      {
+        "scholarship_level": "Khá",
+        "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,0",
+        "multiplier": 1.0,
+        "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+      },
+      {
+        "scholarship_level": "Giỏi",
+        "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,25",
+        "multiplier": 1.25,
+        "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+      },
+      {
+        "scholarship_level": "Xuất sắc",
+        "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,5",
+        "multiplier": 1.5,
+        "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+      }
+    ],
+    "content_type": "scoring_table",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "scoring_table",
+    "content_mode": "structured_only"
+  },
+  {
+    "table_id": "scholarship_eligibility",
+    "table_name": "Điều kiện xét học bổng khuyến khích học tập",
+    "review_status": "source_verified",
+    "schema_variant": "eligibility_criteria",
+    "rows": [
+      {
+        "criterion": "Đối tượng",
+        "requirement": "Sinh viên hệ chính quy đang học theo kế hoạch đào tạo của khóa; không quá thời gian học tập chuẩn"
+      },
+      {
+        "criterion": "Học tập, rèn luyện và kỷ luật",
+        "requirement": "Kết quả học tập và rèn luyện từ loại Khá trở lên; không bị kỷ luật từ mức khiển trách trở lên"
+      },
+      {
+        "criterion": "Khối lượng học tập thông thường",
+        "requirement": "Tích lũy ít nhất 15 tín chỉ theo kế hoạch; các tín chỉ dùng để xét phải đạt và không tính tín chỉ trả nợ, cải thiện hoặc tương đương"
+      },
+      {
+        "criterion": "Học kỳ II năm cuối",
+        "requirement": "Đăng ký từ 06 tín chỉ trở lên"
+      }
+    ],
+    "content_type": "scoring_table",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "scoring_table",
+    "content_mode": "structured_only"
   }
 ]

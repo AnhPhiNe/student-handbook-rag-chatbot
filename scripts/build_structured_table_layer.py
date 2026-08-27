@@ -50,6 +50,8 @@ REGULATION_TABLE_TYPE_MAP = {
     "foreign_language_equivalency": "foreign_language",
     "scholarship": "scholarship",
     "scholarship_classification": "scholarship",
+    "scholarship_amount": "scholarship",
+    "scholarship_eligibility": "scholarship",
     "conduct": "conduct",
     "conduct_classification": "conduct",
     "grade_scale": "scoring",
@@ -119,6 +121,10 @@ FOREIGN_LANGUAGE_ROWS = [
         "equivalent_level_4": "Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179",
         "input_requirements": {
             "score_mode": "per_component",
+            "entity_aliases": [
+                "TOEIC 4 kỹ năng",
+                "TOEIC bốn kỹ năng",
+            ],
             "required_components": [
                 "listening",
                 "reading",
@@ -503,7 +509,8 @@ def _build_scholarship_records(
     scoring_tables = load_json(scoring_tables_path, [])
     records: list[dict[str, Any]] = []
     for table in scoring_tables if isinstance(scoring_tables, list) else []:
-        if not isinstance(table, dict) or table.get("table_id") != "scholarship_classification":
+        table_id = str(table.get("table_id") or "") if isinstance(table, dict) else ""
+        if not isinstance(table, dict) or not table_id.startswith("scholarship_"):
             continue
         cohort = str(table.get("cohort") or "")
         parent = _find_scholarship_parent(items, cohort)
@@ -512,10 +519,10 @@ def _build_scholarship_records(
         parent_meta = metadata(parent)
         records.append(
             {
-                "table_id": "scholarship_classification",
+                "table_id": table_id,
                 "data_category": "regulation_table",
                 "table_type": "scholarship",
-                "table_subtype": "scholarship_classification",
+                "table_subtype": table_id,
                 "table_name": table.get("table_name"),
                 "cohort": cohort,
                 "document_id": document_id_of(parent),
@@ -538,6 +545,7 @@ def attach_scholarship_tables(
 ) -> None:
     for record in _build_scholarship_records(items, scoring_tables_path):
         parent_id = str(record.get("source_parent_id") or "")
+        record_subtype = str(record.get("table_subtype") or "")
         parent = next(
             (
                 item
@@ -554,7 +562,7 @@ def attach_scholarship_tables(
             if not (
                 isinstance(table, dict)
                 and str(table.get("table_subtype") or table.get("table_type") or "")
-                == "scholarship_classification"
+                == record_subtype
             )
         ]
         parent["tables"] = [*tables, dict(record)]
@@ -1085,10 +1093,13 @@ def _generated_unit_aliases(unit: str) -> list[str]:
 
 
 def _curated_unit_aliases(unit: str) -> list[str]:
-    unit_norm = normalize_text(unit)
+    unit_norm = normalize_text(unit).replace("-", " ")
+    unit_norm = re.sub(r"\s+", " ", unit_norm).strip()
     aliases = load_office_alias_config().get("unit_aliases") or {}
     for configured_unit, values in aliases.items():
-        if normalize_text(configured_unit) == unit_norm:
+        configured_norm = normalize_text(configured_unit).replace("-", " ")
+        configured_norm = re.sub(r"\s+", " ", configured_norm).strip()
+        if configured_norm == unit_norm:
             return [str(value) for value in values or []]
     return []
 
@@ -1246,6 +1257,30 @@ def build_student_faculty_profiles(
         profiles,
         key=lambda item: (item.get("cohort") or "", item.get("unit_name") or ""),
     )
+
+
+def attach_program_faculty_aliases(
+    programs: list[dict[str, Any]],
+    faculty_profiles: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Gắn alias khoa đã chuẩn hóa vào từng ngành theo cohort và tên khoa."""
+    aliases_by_faculty = {
+        (
+            compact_text(profile.get("cohort")),
+            normalize_text(profile.get("faculty_name") or profile.get("unit_name")),
+        ): _dedupe(profile.get("aliases") or [])
+        for profile in faculty_profiles
+        if isinstance(profile, dict)
+    }
+    for program in programs:
+        key = (
+            compact_text(program.get("cohort")),
+            normalize_text(program.get("faculty_name")),
+        )
+        aliases = aliases_by_faculty.get(key) or []
+        if aliases:
+            program["faculty_aliases"] = aliases
+    return programs
 
 
 def normalize_directory_catalog(
@@ -1419,7 +1454,11 @@ def build_structured_table_layer(
         build_student_faculty_profiles(directory_dir), "student_faculty_profiles"
     )
     program_directory = normalize_directory_catalog(
-        load_json(directory_dir / PROGRAM_DIRECTORY_PATH.name, []), "program_directory"
+        attach_program_faculty_aliases(
+            load_json(directory_dir / PROGRAM_DIRECTORY_PATH.name, []),
+            faculty_profiles,
+        ),
+        "program_directory",
     )
     docstore_ids = {
         str(item.get("_id")) for item in items if isinstance(item, dict) and item.get("_id")

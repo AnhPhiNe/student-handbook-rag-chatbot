@@ -124,6 +124,11 @@ def _required_artifacts() -> list[ArtifactStatus]:
             "processed_json",
         ),
         _artifact(
+            "data/processed/amendments/amendments.json",
+            Path("data/processed/amendments/amendments.json").is_file(),
+            "processed_json",
+        ),
+        _artifact(
             "data/processed/chunks/all_docstore_items.json",
             Path("data/processed/chunks/all_docstore_items.json").is_file(),
             "processed_json",

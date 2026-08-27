@@ -110,6 +110,7 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertIn(payload["status"], {"ok", "missing_artifacts"})
         paths = {item["path"] for item in payload["required_artifacts"]}
         self.assertIn("configs/answer_generation.yaml", paths)
+        self.assertIn("data/processed/amendments/amendments.json", paths)
         self.assertIn("data/vectorstore/chroma", paths)
 
     def test_artifact_health_requires_admin_key(self) -> None:

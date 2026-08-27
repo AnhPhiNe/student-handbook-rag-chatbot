@@ -341,9 +341,14 @@ class ChildParentHybridRetriever:
         
         # --- BM25 RETRIEVAL & RECIPROCAL RANK FUSION (RRF) ---
         bm25_results = [
-            (score, chunk)
-            for score, chunk in self.bm25.search_bm25(query, top_k=search_limit)
-            if _chunk_matches_regulation_scope(chunk, cohort)
+            (float(chunk.get("bm25_score") or 0.0), chunk)
+            for chunk in self.bm25.sparse_search(
+                query,
+                top_k=search_limit,
+                chunk_types=["regulation"],
+                content_types=["regulation_text"],
+                cohort=cohort,
+            )
         ]
         
         # Union of chunk IDs

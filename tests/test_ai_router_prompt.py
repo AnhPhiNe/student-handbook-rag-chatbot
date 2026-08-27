@@ -59,7 +59,7 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     )
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v29-atomic-target-compliance"
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v31-operational-target-contract"
 
 
 def test_plan_cache_key_includes_normalizer_version(monkeypatch, tmp_path: Path) -> None:
@@ -113,17 +113,20 @@ def test_planner_prompt_treats_compare_as_presentation_and_slots_as_optional() -
     assert "So sánh là yêu cầu trình bày" in PLANNER_PROMPT_TEXT
     assert "Không dùng intent=compare" in PLANNER_PROMPT_TEXT
     assert "intent/slots là metadata tương thích tùy chọn" in PLANNER_PROMPT_TEXT
-    assert "chọn một bảng con" in PLANNER_PROMPT_TEXT
-    assert "không dùng để lọc hàng bên trong bảng đã chọn" in PLANNER_PROMPT_TEXT
+    assert "chỉ chọn bảng con" in PLANNER_PROMPT_TEXT
+    assert "không lọc hàng bên trong bảng đã chọn" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_splits_independent_answer_targets() -> None:
-    assert "Mỗi answer target là một task" in PLANNER_PROMPT_TEXT
-    assert "kể cả khi các target cùng domain, cùng mode RAG" in PLANNER_PROMPT_TEXT
+    assert "RAG HARD CONSTRAINT" in PLANNER_PROMPT_TEXT
+    assert "mỗi task.question chỉ chứa một subject/predicate" in PLANNER_PROMPT_TEXT
+    assert "So sánh/tổng hợp A và B phải xuất hai task" in PLANNER_PROMPT_TEXT
     assert "Không chọn một mode chung cho toàn QUERY" in PLANNER_PROMPT_TEXT
     assert "Ngoại lệ duy nhất: nhiều entity" in PLANNER_PROMPT_TEXT
     assert "Mỗi task chỉ có một mode" in PLANNER_PROMPT_TEXT
     assert "mỗi answer target xuất hiện đúng một lần" in PLANNER_PROMPT_TEXT
+    assert "có kết luận hoặc nguồn riêng" in PLANNER_PROMPT_TEXT
+    assert "composer mới kết hợp" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_requires_grounded_slots_for_structured_mode() -> None:
@@ -142,9 +145,11 @@ def test_planner_prompt_defines_context_and_hint_precedence_once() -> None:
 
 
 def test_planner_prompt_matches_global_context_and_rag_contract() -> None:
-    assert "Chỉ đặt context_mode=ambiguous khi toàn bộ QUERY" in PLANNER_PROMPT_TEXT
+    assert "context_mode=ambiguous chỉ khi toàn QUERY mơ hồ" in PLANNER_PROMPT_TEXT
     assert "clarify cho riêng task đó" in PLANNER_PROMPT_TEXT
     assert "Mọi RAG task dùng intent=open_question" in PLANNER_PROMPT_TEXT
+    assert "Chỉ đặt out_of_domain=true khi toàn bộ QUERY" in PLANNER_PROMPT_TEXT
+    assert "giữ các target trong phạm vi" in PLANNER_PROMPT_TEXT
     assert "thiếu evidence" not in PLANNER_PROMPT_TEXT
 
 

@@ -1,0 +1,133 @@
+{
+  "version": "architecture-v3.1-source-first-evaluation",
+  "frozen": true,
+  "created_at_utc": "2026-08-27T05:02:51.207916+00:00",
+  "description": "Architecture-aligned regression bundle: legacy deterministic coverage plus 24 QueryPlan scenarios, and 180 regulation-only RAG queries rewritten source-first against the v31 build.",
+  "counts": {
+    "deterministic": 144,
+    "retrieval": 180,
+    "answers": 100,
+    "production": 60
+  },
+  "dataset_hashes": {
+    "deterministic": "4a13e82366d0f4bcae2363b4a98f1b8becfa7a7390002229523ffa8341d9574a",
+    "retrieval": "c648623fa743e561bb78695ee05e09e9bb63de3881d845fa2e9b5f36d42770ec",
+    "answers": "ba56b1a1e564fab954ab8252f4cee80670cf62030107ff5737c1ff8c4a65d32e",
+    "production": "64d6fde03a6d48b35df98115fec1170ac5f9ce5f534736673018249caede2343"
+  },
+  "auxiliary_hashes": {
+    "human_audit_template": "a90d6a1c5270c760a1e17626d8aba2c02827fcbaff9932935f0fb6ad6dd74cd1"
+  },
+  "git_commit": "88c15a1f421c6b31cf7ad712a18e33a90333705d",
+  "config_hashes": {
+    "answer_generation": "308cc0ee5a54c384131f2c0a9a7d17795c08902d264c4e2b73dc584bcde99410",
+    "retrieval": "b7663124c3734a29a05193b535488d8b5693a31352be889f58c7b6d5196f30cf",
+    "ai_router": "613dcbf5937b1566b72e405d6e5156bf622235d63ddc8e2292fc71c39052b9f4",
+    "structured_lookup_registry": "0bc313aa5ba70c7f617844b551afa04ea41c41533259173fa2a517a5113ca690"
+  },
+  "docstore_hash": "e62561025a807f1802598aa0b7e9ebfd4d5c564dc502bf3245cb26bc59748829",
+  "generation_provider": "gemini",
+  "generation_model": "gemini-3.1-flash-lite",
+  "router_provider": "groq",
+  "router_model": "qwen/qwen3.6-27b",
+  "judge_provider": "groq",
+  "judge_model": "openai/gpt-oss-120b",
+  "headline_backend": "qdrant_cloud+mongodb",
+  "strict_structured_sources": true,
+  "strict_cohort_conflicts": true,
+  "strict_query_duplicates": true,
+  "structured_catalogs": [
+    "foreign_language",
+    "study_duration",
+    "scholarship",
+    "scoring",
+    "conduct",
+    "service",
+    "office",
+    "faculty",
+    "program",
+    "formula"
+  ],
+  "excluded_catalogs": [
+    "form"
+  ],
+  "answer_case_type_counts": {
+    "regulation_true_rag": 60,
+    "structured_answer": 20,
+    "mixed_answer": 10,
+    "unanswerable": 10
+  },
+  "answer_eval_split_counts": {
+    "realistic": 75,
+    "stress": 25
+  },
+  "human_audit_required_n": 25,
+  "human_audit_repeat_n": 5,
+  "holdout_policy": "versioned_regression_not_unseen_acceptance",
+  "predecessor_bundle": "v9.1.1-final-routing-retrieval-split",
+  "retrieval_evaluation": {
+    "headline_scope": "pure",
+    "secondary_scope": "end_to_end",
+    "scope_policy": "The 180 RAG cases contain only source-anchored regulation questions. Pure retrieval is the headline metric; end-to-end routing is reported separately.",
+    "end_to_end_rank_policy": "General multi-cohort tasks are scored at top-k within each cohort execution unit before request-level aggregation."
+  },
+  "annotation_revision_count": 2,
+  "structured_source_revision_count": 0,
+  "annotation_revision_policy": "The K51 grading item-count expectation was aligned with the approved applicability-specific tables; one broad production query was reclassified from direct regulation RAG to clarify because the backend correctly asks for scope before answering.",
+  "inherited_annotation_revision_count": 12,
+  "deterministic_annotation_revision_count": 4,
+  "inherited_structured_source_revision_count": 2,
+  "evaluation_contract": "query-plan-source-first-v3",
+  "deterministic_contract": "query-plan-architecture-coverage-v3",
+  "retrieval_contract": "regulation-rag-source-first-v3",
+  "deterministic_case_type_counts": {
+    "positive": 60,
+    "hard_negative": 40,
+    "ambiguous": 12,
+    "out_of_domain": 8,
+    "architecture": 24
+  },
+  "deterministic_positive_lookup_counts": {
+    "foreign_language": 6,
+    "study_duration": 6,
+    "scholarship": 6,
+    "scoring": 6,
+    "service": 6,
+    "office": 6,
+    "program": 6,
+    "faculty": 6,
+    "conduct": 6,
+    "formula": 6
+  },
+  "architecture_scenario_counts": {
+    "multi_structured": 3,
+    "structured_regulation": 7,
+    "multi_regulation": 4,
+    "multi_cohort": 4,
+    "clarification": 2,
+    "multi_entity_same_table": 2,
+    "three_task_boundary": 1,
+    "mixed_scope": 1
+  },
+  "retrieval_cohort_counts": {
+    "K48-K49": 46,
+    "K50": 45,
+    "K51": 45,
+    "general": 44
+  },
+  "retrieval_eval_split_counts": {
+    "realistic": 135,
+    "stress": 45
+  },
+  "retrieval_forbidden_query_fragments": [
+    "hệ thống cần tìm đúng điều nào",
+    "la sao va can luu y gi",
+    "nội dung chính trong sổ tay là gì",
+    "hỏi về general"
+  ],
+  "max_parent_query_usage": 4,
+  "deterministic_annotation_revision_policy": "Three architecture annotations were corrected after registry and executor review: office responsibilities and broad student services are regulation RAG, while incomplete TOEIC component scores clarify inside the structured foreign-language executor.",
+  "source_build_id": "build-2254b92ccb60f7984bfa",
+  "source_qdrant_collection": "student_handbook_semantic_v31",
+  "source_mongo_collection": "parent_docs_v31"
+}

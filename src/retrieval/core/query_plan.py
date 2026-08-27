@@ -17,7 +17,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v5-terminal-ood-before-tasks"
+QUERY_PLAN_NORMALIZER_VERSION = "v7-general-rag-multi-cohort"
 MAX_QUERY_TASKS = 3
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
 
@@ -285,11 +285,20 @@ def _normalize_task(
 
     raw_cohorts = raw_task.get("cohorts")
     cohorts = []
+    supported_cohort_order = valid_cohorts()
+    supported_cohorts = set(supported_cohort_order)
     if isinstance(raw_cohorts, list):
         cohorts = [normalize_cohort(value) for value in raw_cohorts]
-        cohorts = [value for value in cohorts if value]
+        invalid_cohorts = [
+            value for value in cohorts if value and value not in supported_cohorts
+        ]
+        if invalid_cohorts:
+            errors.append("invalid_cohort")
+        cohorts = [value for value in cohorts if value in supported_cohorts]
     cohorts = list(dict.fromkeys(cohorts))
     fallback_cohort = normalize_cohort(selected_cohort)
+    if fallback_cohort not in supported_cohorts:
+        fallback_cohort = None
     if not cohorts and fallback_cohort:
         cohorts = [fallback_cohort]
 
@@ -333,6 +342,12 @@ def _normalize_task(
     if mode == "rag":
         if lookup_type:
             errors.append("rag_must_not_select_lookup")
+        # A regulation question without an explicit/UI cohort is applicable to
+        # every supported handbook edition. Keep one logical task and let the
+        # executor retrieve independently per cohort, matching the multi-cohort
+        # execution contract instead of using one biased global top-k pool.
+        if not cohorts:
+            cohorts = list(supported_cohort_order)
         return {
             "id": task_id,
             "question": question,

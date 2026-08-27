@@ -68,14 +68,30 @@ def load_cases(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     if not isinstance(cases, list):
         raise ValueError("Dataset must contain a cases list")
     schema_version = str(payload.get("schema_version") or "")
-    min_cases = 1 if schema_version.startswith("composer-development-") else 20
-    validate_cases(cases, min_cases=min_cases)
+    if schema_version == "product-acceptance-v1":
+        validate_cases(
+            cases,
+            min_cases=50,
+            max_cases=50,
+            require_acceptance_contract=True,
+        )
+    else:
+        min_cases = 1 if schema_version.startswith("composer-development-") else 20
+        validate_cases(cases, min_cases=min_cases)
     return payload, cases
 
 
-def validate_cases(cases: list[dict[str, Any]], *, min_cases: int = 20) -> None:
-    if not min_cases <= len(cases) <= 30:
-        raise ValueError(f"Regression dataset must contain {min_cases}-30 cases")
+def validate_cases(
+    cases: list[dict[str, Any]],
+    *,
+    min_cases: int = 20,
+    max_cases: int = 30,
+    require_acceptance_contract: bool = False,
+) -> None:
+    if not min_cases <= len(cases) <= max_cases:
+        raise ValueError(
+            f"Regression dataset must contain {min_cases}-{max_cases} cases"
+        )
 
     seen_ids: set[str] = set()
     for index, case in enumerate(cases, start=1):
@@ -97,6 +113,17 @@ def validate_cases(cases: list[dict[str, Any]], *, min_cases: int = 20) -> None:
         history = case.get("history", [])
         if not isinstance(history, list):
             raise ValueError(f"{case_id}.history must be a list")
+        if require_acceptance_contract:
+            required_points = case.get("required_points")
+            forbidden_claims = case.get("forbidden_claims")
+            if not isinstance(required_points, list) or not required_points:
+                raise ValueError(f"{case_id}.required_points must be a non-empty list")
+            if not isinstance(forbidden_claims, list):
+                raise ValueError(f"{case_id}.forbidden_claims must be a list")
+            if not all(str(point).strip() for point in required_points):
+                raise ValueError(f"{case_id}.required_points contains an empty item")
+            if not all(str(claim).strip() for claim in forbidden_claims):
+                raise ValueError(f"{case_id}.forbidden_claims contains an empty item")
 
 
 def _automatic_checks(case: dict[str, Any], result: dict[str, Any]) -> dict[str, bool]:
@@ -235,6 +262,8 @@ def main() -> int:
             "cohort": case.get("cohort"),
             "history": case.get("history") or [],
             "expected_outcome": case["expected_outcome"],
+            "required_points": case.get("required_points") or [],
+            "forbidden_claims": case.get("forbidden_claims") or [],
             "review_focus": case["review_focus"],
             "latency_seconds": elapsed,
             "runtime_error": runtime_error,
@@ -253,8 +282,13 @@ def main() -> int:
             elapsed_seconds=elapsed,
         )
 
+    is_acceptance = dataset.get("schema_version") == "product-acceptance-v1"
     report = {
-        "schema_version": "product-regression-report-v1",
+        "schema_version": (
+            "product-acceptance-report-v1"
+            if is_acceptance
+            else "product-regression-report-v1"
+        ),
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "dataset_schema_version": dataset.get("schema_version"),
         "dataset_path": str(args.dataset.as_posix()),

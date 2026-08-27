@@ -9,6 +9,7 @@ from urllib.error import HTTPError
 
 import pytest
 
+from scripts.evaluate_system import _provenance
 from src.evaluation.dataset import validate_bundle
 from src.evaluation.gates import evaluate_gates
 from src.evaluation.judge import (
@@ -80,6 +81,18 @@ def test_frozen_final_bundle_is_compatible_with_current_sources() -> None:
         "answers": 100,
         "production": 60,
     }
+
+
+def test_legacy_compatibility_provenance_records_both_docstore_hashes() -> None:
+    provenance = _provenance(
+        ROOT / "data" / "eval" / "final_holdout",
+        "qdrant",
+        allow_docstore_drift=True,
+    )
+
+    assert provenance["compatibility_diagnostic"] is True
+    assert provenance["docstore_hash"] == provenance["expected_docstore_hash"]
+    assert provenance["actual_docstore_hash"]
 
 def test_validator_rejects_query_reused_from_legacy_eval(tmp_path: Path) -> None:
     eval_root = tmp_path / "eval"
@@ -646,6 +659,48 @@ def test_mongo_parent_miss_cannot_count_as_retrieval_hit() -> None:
     )
     assert report["summary"]["hit_at_5"] == 0
     assert report["cases"][0]["citation_binding"] is False
+
+
+def test_retrieval_cohort_check_uses_applicable_cohorts() -> None:
+    class ApplicablePipeline:
+        def _run_retrieval(self, query: str, cohort: str | None = None):
+            return {
+                "intent": "open_question",
+                "strategy": "query_plan_execution",
+                "retrieved_items": [
+                    {
+                        "parent_section_id": "policy-k50",
+                        "metadata": {
+                            "cohort": "K50",
+                            "applicable_cohorts": ["K50", "K51"],
+                            "content_type": "regulation_text",
+                        },
+                    }
+                ],
+                "citations": [{"parent_section_id": "policy-k50"}],
+            }
+
+    case = {
+        "id": "r-applicability",
+        "suite": "retrieval",
+        "case_type": "regulation_true_rag",
+        "query": "quy định áp dụng cho K51",
+        "cohort": "K51",
+        "tags": [],
+        "topic": "test",
+        "query_style": "natural",
+        "expected_content_types": ["regulation_text"],
+        "relevance_judgments": [
+            {"parent_section_id": "policy-k50", "grade": 2}
+        ],
+    }
+
+    report = evaluate_retrieval(
+        [case], backend="qdrant", pipeline_factory=ApplicablePipeline
+    )
+
+    assert report["cases"][0]["cohort_match"] is True
+    assert report["cases"][0]["cohort_leak"] is False
 
 
 def test_report_bundle_writes_json_csv_and_markdown(tmp_path: Path) -> None:

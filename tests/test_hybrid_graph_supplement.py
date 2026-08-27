@@ -166,7 +166,7 @@ def _retriever_stub() -> ChildParentHybridRetriever:
         return_value=([], {"graph_related_parents_selected": 0})
     )
     retriever.bm25 = Mock()
-    retriever.bm25.search_bm25.return_value = []
+    retriever.bm25.sparse_search.return_value = []
     return retriever
 
 

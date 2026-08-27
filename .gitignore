@@ -30,6 +30,7 @@ frontend/.vite/
 # Generated and private data
 /data/raw/
 /data/cache/
+/.pytest_tmp/
 /data/vectorstore/
 /data/eval/reports/
 /data/eval/v7_new/

@@ -126,6 +126,15 @@ def _cohort_matches(actual: Any, expected: str | None) -> bool:
     )
 
 
+def _item_applicability(item: dict[str, Any]) -> Any:
+    metadata = item.get("metadata") or {}
+    return (
+        metadata.get("applicable_cohorts")
+        or metadata.get("cohorts")
+        or metadata.get("cohort")
+    )
+
+
 def _citation_parent_id(citation: dict[str, Any]) -> str:
     metadata = citation.get("metadata") or {}
     return str(
@@ -606,6 +615,277 @@ def evaluate_deterministic(
     }
 
 
+def evaluate_deterministic_v2(
+    cases: list[dict[str, Any]],
+    *,
+    limit: int | None = None,
+    evaluation_contract: str = "query-plan-table-first-v2",
+) -> dict[str, Any]:
+    """Evaluate QueryPlan/table-first contracts without legacy route aliases."""
+    from src.generation.answer_pipeline import AnswerPipeline
+
+    pipeline = AnswerPipeline()
+    rows: list[dict[str, Any]] = []
+    progress = _progress_cases(cases, limit=limit, desc="Deterministic Eval V2")
+    for case in progress:
+        progress.set_postfix_str(str(case.get("id") or "unknown"))
+        started = time.perf_counter()
+        try:
+            result = pipeline._run_retrieval(case["query"], cohort=case.get("cohort"))
+            plan = result.get("query_plan") or {}
+            tasks = plan.get("tasks") if isinstance(plan, dict) else []
+            tasks = tasks if isinstance(tasks, list) else []
+            expected = case.get("expected_plan") or {}
+            allowed_modes = set(expected.get("allowed_modes") or [])
+            actual_modes = [str(task.get("mode") or "") for task in tasks]
+            expected_task_count = int(expected.get("task_count") or 0)
+            task_count_ok = len(tasks) == expected_task_count
+            task_modes_ok = (
+                not allowed_modes
+                or bool(actual_modes)
+                and all(mode in allowed_modes for mode in actual_modes)
+            )
+
+            expected_lookup_types = set(expected.get("lookup_types") or [])
+            actual_lookup_types = {
+                str(task.get("lookup_type") or "")
+                for task in tasks
+                if task.get("lookup_type")
+            }
+            lookup_type_ok = (
+                not expected_lookup_types
+                or actual_lookup_types == expected_lookup_types
+            )
+
+            expected_cohorts = set(expected.get("cohorts") or [])
+            actual_cohorts = {
+                str(cohort)
+                for task in tasks
+                for cohort in (task.get("cohorts") or [])
+                if cohort
+            }
+            cohort_ok = not expected_cohorts or actual_cohorts == expected_cohorts
+            out_of_domain_ok = bool(plan.get("out_of_domain")) == bool(
+                expected.get("out_of_domain")
+            )
+
+            clarification_expected = bool(expected.get("needs_clarification"))
+            clarification_ok = bool(result.get("needs_clarification")) == (
+                clarification_expected
+            )
+            expected_llm_called = bool(case.get("expected_llm_called"))
+            llm_call_ok = bool(result.get("needs_llm_answer")) == expected_llm_called
+            fallback_ok = not bool(result.get("planner_fallback"))
+
+            structured = (
+                result.get("structured_result")
+                or result.get("formula_result")
+                or result.get("tool_result")
+                or {}
+            )
+            # A table-first task may deterministically end in clarification when
+            # required components are missing (for example, a four-skill score
+            # reported only as a total). Such a task must not fabricate evidence
+            # or citations merely to satisfy the structured-path assertion.
+            expects_structured = (
+                allowed_modes == {"structured"} and not clarification_expected
+            )
+            structured_evidence_ok = True
+            table_first_ok = True
+            if expects_structured:
+                structured_evidence_ok = bool(structured)
+                table_first_ok = _has_structured_payload(structured)
+
+            citations = result.get("citations") or _structured_citations(structured)
+            citation_ok = True
+            cross_cohort_leak = False
+            if expects_structured:
+                citation_ok = bool(citations) and all(
+                    _cohort_matches(
+                        citation.get("cohort")
+                        or (citation.get("metadata") or {}).get("cohort"),
+                        case.get("expected_citation_cohort"),
+                    )
+                    for citation in citations
+                )
+                cross_cohort_leak = any(
+                    not _cohort_matches(
+                        citation.get("cohort")
+                        or (citation.get("metadata") or {}).get("cohort"),
+                        case.get("expected_citation_cohort"),
+                    )
+                    for citation in citations
+                )
+
+            flattened = _flatten_text(structured)
+            expected_any = case.get("expected_contains_any") or []
+            value_exact = not expected_any or any(
+                str(value).casefold() in flattened.casefold() for value in expected_any
+            )
+            numeric_expected = case.get("expected_numeric_value")
+            tolerance = float(case.get("numeric_tolerance", 0.0))
+            numeric_ok = numeric_expected is None or any(
+                abs(number - float(numeric_expected)) <= tolerance
+                for number in _numeric_values(structured)
+            )
+
+            passed = all(
+                (
+                    task_count_ok,
+                    task_modes_ok,
+                    lookup_type_ok,
+                    cohort_ok,
+                    out_of_domain_ok,
+                    clarification_ok,
+                    llm_call_ok,
+                    fallback_ok,
+                    structured_evidence_ok,
+                    table_first_ok,
+                    citation_ok,
+                    value_exact,
+                    numeric_ok,
+                )
+            )
+            row = {
+                **case,
+                "query_plan": plan,
+                "task_results": result.get("task_results") or [],
+                "structured_result": structured,
+                "citations": citations,
+                "actual_task_modes": actual_modes,
+                "actual_lookup_types": sorted(actual_lookup_types),
+                "actual_cohorts": sorted(actual_cohorts),
+                "task_count_correct": task_count_ok,
+                "task_modes_correct": task_modes_ok,
+                "lookup_type_correct": lookup_type_ok,
+                "cohort_correct": cohort_ok,
+                "out_of_domain_correct": out_of_domain_ok,
+                "clarification_correct": clarification_ok,
+                "llm_call_correct": llm_call_ok,
+                "planner_fallback_free": fallback_ok,
+                "structured_evidence_present": structured_evidence_ok,
+                "table_first_evidence_present": table_first_ok,
+                "citation_metadata_correct": citation_ok,
+                "cross_cohort_leak": cross_cohort_leak,
+                "structured_value_exact": value_exact,
+                "numeric_value_correct": numeric_ok,
+                "passed": passed,
+                "latency_ms": (time.perf_counter() - started) * 1000,
+            }
+            rows.append(row)
+            progress.set_postfix(
+                {"case": case.get("id"), "pass": int(passed)}, refresh=False
+            )
+        except Exception as exc:
+            rows.append(
+                {
+                    **case,
+                    "passed": False,
+                    "error": str(exc),
+                    "latency_ms": (time.perf_counter() - started) * 1000,
+                }
+            )
+            progress.set_postfix(
+                {"case": case.get("id"), "pass": 0, "error": type(exc).__name__},
+                refresh=False,
+            )
+
+    positives = [
+        row
+        for row in rows
+        if (row.get("evaluation_case_type") or row.get("case_type")) == "positive"
+    ]
+    negatives = [
+        row
+        for row in rows
+        if (row.get("evaluation_case_type") or row.get("case_type"))
+        == "hard_negative"
+    ]
+    predicted_structured = [
+        row for row in rows if "structured" in (row.get("actual_task_modes") or [])
+    ]
+    true_positive_n = sum(
+        "structured" in (row.get("actual_task_modes") or []) for row in positives
+    )
+    false_positive_n = sum(
+        "structured" in (row.get("actual_task_modes") or []) for row in negatives
+    )
+    passed_n = sum(bool(row.get("passed")) for row in rows)
+    summary = {
+        "n": len(rows),
+        "passed": passed_n,
+        "accuracy": passed_n / len(rows) if rows else 0.0,
+        "precision": (
+            true_positive_n / len(predicted_structured)
+            if predicted_structured
+            else 0.0
+        ),
+        "recall": true_positive_n / len(positives) if positives else 0.0,
+        "false_positive_rate": false_positive_n / len(negatives) if negatives else 0.0,
+        "plan_structure_accuracy": safe_mean(
+            [
+                float(
+                    bool(row.get("task_count_correct"))
+                    and bool(row.get("task_modes_correct"))
+                )
+                for row in rows
+            ]
+        ),
+        "lookup_type_accuracy": safe_mean(
+            [float(bool(row.get("lookup_type_correct"))) for row in rows]
+        ),
+        "citation_metadata_accuracy": safe_mean(
+            [float(bool(row.get("citation_metadata_correct"))) for row in positives]
+        ),
+        "cross_cohort_leak": sum(
+            bool(row.get("cross_cohort_leak")) for row in rows
+        )
+        / len(rows)
+        if rows
+        else 0.0,
+        "table_first_evidence_accuracy": safe_mean(
+            [float(bool(row.get("table_first_evidence_present"))) for row in positives]
+        ),
+        "planner_fallback_rate": 1.0
+        - safe_mean([float(bool(row.get("planner_fallback_free"))) for row in rows]),
+    }
+    return {
+        "suite": "deterministic",
+        "evaluation_contract": evaluation_contract,
+        "summary": summary,
+        "cases": rows,
+    }
+
+
+def _has_structured_payload(value: Any) -> bool:
+    """Recognize current structured evidence shapes without semantic guessing.
+
+    Table-first lookups use several deterministic containers: table collections,
+    display rows, directory records, and formula records. Metadata alone does not
+    count as evidence.
+    """
+    if isinstance(value, list):
+        return bool(value) and any(_has_structured_payload(item) for item in value)
+    if not isinstance(value, dict):
+        return bool(str(value).strip()) if isinstance(value, str) else False
+
+    for key in ("tables", "rows", "display_rows", "items", "records"):
+        items = value.get(key)
+        if isinstance(items, list) and items:
+            return True
+
+    result = value.get("result")
+    if isinstance(result, list) and result:
+        return True
+    if isinstance(result, dict) and _has_structured_payload(result):
+        return True
+
+    # Formula lookup is deterministic structured evidence but is not a table.
+    if value.get("lookup_type") == "formula" and value.get("formula_text"):
+        return True
+    return False
+
+
 def summarize_deterministic_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
     normalized_rows: list[dict[str, Any]] = []
     for row in rows:
@@ -802,8 +1082,11 @@ def evaluate_retrieval(
                     item["parent_section_id"]: int(item["grade"])
                     for item in case["relevance_judgments"]
                 }
-                metrics = retrieval_metrics(
-                    [grade_by_id.get(parent_id, 0) for parent_id in ranked_ids]
+                metrics, metric_scope = _retrieval_metrics_for_execution_units(
+                    case=case,
+                    ranked_ids=ranked_ids,
+                    grade_by_id=grade_by_id,
+                    scope=scope,
                 )
                 metrics["mrr"] = metrics.pop("reciprocal_rank")
                 citations = result.get("citations") or []
@@ -811,16 +1094,21 @@ def evaluate_retrieval(
                 structured = result.get("structured_result") or {}
                 cohort_ok = all(
                     _cohort_matches(
-                        (item.get("metadata") or {}).get("cohort"), case.get("cohort")
+                        _item_applicability(item), case.get("cohort")
                     )
                     for item in items
                 ) and (
                     not structured
-                    or _cohort_matches(structured.get("cohort"), case.get("cohort"))
+                    or _cohort_matches(
+                        structured.get("applicable_cohorts")
+                        or structured.get("cohorts")
+                        or structured.get("cohort"),
+                        case.get("cohort"),
+                    )
                 )
                 related_cohort_ok = all(
                     _cohort_matches(
-                        (item.get("metadata") or {}).get("cohort"), case.get("cohort")
+                        _item_applicability(item), case.get("cohort")
                     )
                     for item in related_items
                 )
@@ -847,6 +1135,7 @@ def evaluate_retrieval(
                     {
                         **case,
                         **metrics,
+                        "metric_scope": metric_scope,
                         "ranked_parent_ids": ranked_ids,
                         "related_parent_ids": related_ids,
                         "actual_intent": result.get("intent"),
@@ -1046,6 +1335,75 @@ def _cohort_from_parent_id(parent_id: str) -> str | None:
     if parent_id.startswith("K51_"):
         return "K51"
     return None
+
+
+def _retrieval_metrics_for_execution_units(
+    *,
+    case: dict[str, Any],
+    ranked_ids: list[str],
+    grade_by_id: dict[str, int],
+    scope: str,
+) -> tuple[dict[str, float], str]:
+    """Score cohort-local E2E retrieval units before combining the request.
+
+    QueryPlan executes a ``general`` regulation task once per applicable cohort
+    and returns up to five primary parents for each unit. A global cutoff over
+    the flattened groups would incorrectly turn the first K50 result into rank
+    six merely because five K48-K49 parents were emitted first.
+    """
+    relevance_by_cohort: dict[str, dict[str, int]] = {}
+    for judgment in case.get("relevance_judgments") or []:
+        cohort = str(judgment.get("cohort") or "").strip()
+        parent_id = str(judgment.get("parent_section_id") or "").strip()
+        if cohort and parent_id:
+            relevance_by_cohort.setdefault(cohort, {})[parent_id] = int(
+                judgment.get("grade") or 0
+            )
+
+    if (
+        scope != "end_to_end"
+        or case.get("cohort") != "general"
+        or len(relevance_by_cohort) <= 1
+    ):
+        return (
+            retrieval_metrics(
+                [grade_by_id.get(parent_id, 0) for parent_id in ranked_ids]
+            ),
+            "request_global",
+        )
+
+    ranked_by_cohort: dict[str, list[str]] = {}
+    for parent_id in ranked_ids:
+        cohort = _cohort_from_parent_id(parent_id)
+        if cohort:
+            ranked_by_cohort.setdefault(cohort, []).append(parent_id)
+
+    unit_metrics = [
+        retrieval_metrics(
+            [
+                cohort_relevance.get(parent_id, 0)
+                for parent_id in ranked_by_cohort.get(cohort, [])
+            ]
+        )
+        for cohort, cohort_relevance in sorted(relevance_by_cohort.items())
+    ]
+    if not unit_metrics:
+        return retrieval_metrics([]), "per_cohort_execution_unit"
+
+    return (
+        {
+            "hit_at_1": min(metric["hit_at_1"] for metric in unit_metrics),
+            "hit_at_3": min(metric["hit_at_3"] for metric in unit_metrics),
+            "hit_at_5": min(metric["hit_at_5"] for metric in unit_metrics),
+            "reciprocal_rank": safe_mean(
+                [metric["reciprocal_rank"] for metric in unit_metrics]
+            ),
+            "ndcg_at_5": safe_mean(
+                [metric["ndcg_at_5"] for metric in unit_metrics]
+            ),
+        },
+        "per_cohort_execution_unit",
+    )
 
 
 def evaluate_graph_supplement(

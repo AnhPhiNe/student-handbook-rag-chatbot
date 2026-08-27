@@ -140,6 +140,32 @@ def test_explicit_multi_cohort_is_preserved_over_ui_cohort() -> None:
     assert plan["tasks"][0]["cohorts"] == ["K50", "K51"]
 
 
+def test_unknown_planner_cohort_uses_all_registered_cohorts_for_general_rag() -> None:
+    task = {**_rag_task(1), "cohorts": ["UNKNOWN"]}
+
+    plan, errors = normalize_query_plan(
+        _plan([task]),
+        query="Quy trình công nhận kết quả được quy định thế nào?",
+        selected_cohort=None,
+    )
+
+    assert plan["tasks"][0]["cohorts"] == list(cohort_module.valid_cohorts())
+    assert "t1:invalid_cohort" in errors
+
+
+def test_unknown_planner_cohort_falls_back_to_selected_ui_cohort() -> None:
+    task = {**_rag_task(1), "cohorts": ["UNKNOWN"]}
+
+    plan, errors = normalize_query_plan(
+        _plan([task]),
+        query="Quy trình công nhận kết quả được quy định thế nào?",
+        selected_cohort="K51",
+    )
+
+    assert plan["tasks"][0]["cohorts"] == ["K51"]
+    assert "t1:invalid_cohort" in errors
+
+
 @pytest.mark.parametrize(
     ("lookup_type", "query", "slots", "slot_spans", "expected_intent"),
     [

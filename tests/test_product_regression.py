@@ -14,6 +14,7 @@ from scripts.run_product_regression import (
 
 
 DATASET = Path("data/eval/product_regression/cases.json")
+ACCEPTANCE_DATASET = Path("data/eval/product_acceptance/cases.json")
 
 
 def test_product_regression_dataset_is_valid_and_balanced() -> None:
@@ -50,6 +51,29 @@ def test_composer_development_dataset_can_be_smaller_than_product_set() -> None:
 
     assert payload["schema_version"] == "composer-development-v1"
     assert len(cases) == 12
+
+
+def test_product_acceptance_dataset_has_exactly_fifty_reviewable_cases() -> None:
+    payload, cases = load_cases(ACCEPTANCE_DATASET)
+
+    assert payload["schema_version"] == "product-acceptance-v1"
+    assert len(cases) == 50
+    assert all(case["required_points"] for case in cases)
+    assert all(isinstance(case["forbidden_claims"], list) for case in cases)
+
+
+def test_product_acceptance_contract_rejects_missing_required_points() -> None:
+    _, cases = load_cases(ACCEPTANCE_DATASET)
+    invalid = json.loads(json.dumps(cases, ensure_ascii=False))
+    invalid[0]["required_points"] = []
+
+    with pytest.raises(ValueError, match="required_points"):
+        validate_cases(
+            invalid,
+            min_cases=50,
+            max_cases=50,
+            require_acceptance_contract=True,
+        )
 
 
 def test_automatic_checks_require_citation_for_each_covered_task() -> None:

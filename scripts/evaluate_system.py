@@ -25,6 +25,7 @@ from src.evaluation.human_audit import summarize_human_audit
 from src.evaluation.reporting import write_report_bundle
 from src.evaluation.suites import (
     evaluate_deterministic,
+    evaluate_deterministic_v2,
     evaluate_graph_supplement,
     evaluate_production,
     evaluate_retrieval,
@@ -34,7 +35,7 @@ from src.evaluation.suites import (
 from src.generation.answer_pipeline import PIPELINE_VERSION
 
 
-DEFAULT_DATASET = ROOT / "data" / "eval" / "final_holdout"
+DEFAULT_DATASET = ROOT / "data" / "eval" / "architecture_v3"
 DEFAULT_OUTPUT = ROOT / "data" / "eval" / "reports" / "release_candidate"
 DEFAULT_DOCSTORE = ROOT / "data" / "processed" / "chunks" / "all_docstore_items.json"
 AI_ROUTER_CONFIG = ROOT / "configs" / "ai_router.yaml"
@@ -52,7 +53,12 @@ def _git_commit() -> str:
         return "unknown"
 
 
-def _provenance(dataset_dir: Path, backend: str) -> dict[str, Any]:
+def _provenance(
+    dataset_dir: Path,
+    backend: str,
+    *,
+    allow_docstore_drift: bool = False,
+) -> dict[str, Any]:
     manifest = load_json(dataset_dir / "manifest.json")
     router_config = yaml.safe_load(AI_ROUTER_CONFIG.read_text(encoding="utf-8")) or {}
     answer_config = (
@@ -73,8 +79,14 @@ def _provenance(dataset_dir: Path, backend: str) -> dict[str, Any]:
         "run_at_utc": datetime.now(timezone.utc).isoformat(),
         "git_commit": _git_commit(),
         "dataset_version": manifest.get("version"),
+        "evaluation_contract": manifest.get("evaluation_contract"),
+        "deterministic_contract": manifest.get("deterministic_contract"),
+        "retrieval_contract": manifest.get("retrieval_contract"),
         "dataset_hashes": manifest.get("dataset_hashes"),
         "docstore_hash": manifest.get("docstore_hash"),
+        "expected_docstore_hash": manifest.get("docstore_hash"),
+        "actual_docstore_hash": _file_hash(DEFAULT_DOCSTORE),
+        "compatibility_diagnostic": allow_docstore_drift,
         "config_hashes": config_hashes,
         "generation_model": llm_config.get("model_name")
         or manifest.get("generation_model"),
@@ -326,12 +338,30 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--lookup-group", default=None)
     parser.add_argument("--case-type", default=None)
+    parser.add_argument(
+        "--allow-docstore-drift",
+        action="store_true",
+        help=(
+            "Run a legacy bundle against the current docstore as a compatibility "
+            "diagnostic. Only the docstore hash mismatch becomes a warning; all "
+            "dataset, source, cohort, count, and schema checks remain strict."
+        ),
+    )
     args = parser.parse_args()
 
     if args.profile == "smoke" and args.limit is None:
         args.limit = 5
-    validation = validate_bundle(args.dataset, DEFAULT_DOCSTORE, require_frozen=True)
-    provenance = _provenance(args.dataset, args.backend)
+    validation = validate_bundle(
+        args.dataset,
+        DEFAULT_DOCSTORE,
+        require_frozen=True,
+        enforce_docstore_hash=not args.allow_docstore_drift,
+    )
+    provenance = _provenance(
+        args.dataset,
+        args.backend,
+        allow_docstore_drift=args.allow_docstore_drift,
+    )
     validation_report = {
         "suite": "validation",
         "summary": validation,
@@ -340,7 +370,7 @@ def main() -> None:
     }
     _write(validation_report, args.output, "validation")
     if not validation["valid"]:
-        raise SystemExit("V8 dataset validation failed; no evaluation was run")
+        raise SystemExit("Evaluation dataset validation failed; no evaluation was run")
     if args.suite == "validate":
         return
 
@@ -387,8 +417,25 @@ def main() -> None:
             ("GROQ_ROUTER_API_KEYS", "GROQ_API_KEYS"),
             "A Groq API key pool is required for the Qwen structured router",
         )
-        report = evaluate_deterministic(deterministic_cases, limit=args.limit)
-        _finalize_report(report, expected_n=120, provenance=provenance)
+        deterministic_contract = str(provenance.get("deterministic_contract") or "")
+        evaluator = (
+            evaluate_deterministic_v2
+            if deterministic_contract.startswith("query-plan-")
+            else evaluate_deterministic
+        )
+        if evaluator is evaluate_deterministic_v2:
+            report = evaluator(
+                deterministic_cases,
+                limit=args.limit,
+                evaluation_contract=deterministic_contract,
+            )
+        else:
+            report = evaluator(deterministic_cases, limit=args.limit)
+        _finalize_report(
+            report,
+            expected_n=len(deterministic_cases),
+            provenance=provenance,
+        )
         _write(report, args.output, f"deterministic_{args.profile}")
 
     if args.suite in {"retrieval", "all"}:

@@ -48,11 +48,12 @@ tools:
   scholarship_classification:
     data_category: regulation_table
     selection_mode: table_first
-    description: Tra tieu chuan/diem hoc bong khuyen khich hoc tap. GPA va hoc luc dung scoring.
-    intents: [direct_value]
+    description: Tra mot muc hoac liet ke/so sanh bang phan loai hoc bong va cac nguong hoc tap/ren luyen. Xep loai GPA, hoc luc hoac tong diem ren luyen khong gan voi hoc bong thi dung scoring.
+    intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
       direct_value: []
+      list_items: []
     slot_schema:
       score_or_label: {type: [string, number]}
     strategy: scholarship_classification_lookup
@@ -62,7 +63,7 @@ tools:
   scoring:
     data_category: regulation_table
     selection_mode: table_first
-    description: Tra cuu va quy doi thang diem hoc phan (thang 10, diem chu, thang 4, dat/khong dat), xep loai hoc luc hoac diem ren luyen.
+    description: Tra cuu va quy doi thang diem hoc phan (thang 10, diem chu, thang 4, dat/khong dat), xep loai hoc luc hoac phan loai tong diem ren luyen; khong tra nguong diem de dat tung loai hoc bong.
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:

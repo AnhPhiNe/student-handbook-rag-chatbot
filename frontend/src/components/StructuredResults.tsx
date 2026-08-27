@@ -1,5 +1,5 @@
-import { Building2, Database, Globe2, Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
-import type { StructuredCellValue, StructuredResult } from '../hooks/useChat';
+import { BookOpen, Building2, Database, Globe2, Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
+import type { Citation, StructuredCellValue, StructuredResult } from '../hooks/useChat';
 
 const FIELD_LABELS: Record<string, string> = {
   academic_classification: 'Xếp loại học tập',
@@ -61,6 +61,7 @@ function displayValue(value: StructuredCellValue | undefined): string {
 
 interface StructuredResultsProps {
   results: StructuredResult[];
+  onOpenSource?: (source: Citation) => void;
 }
 
 const CONTACT_FIELDS = [
@@ -108,7 +109,7 @@ function ContactCards({ result }: { result: StructuredResult }) {
   );
 }
 
-export function StructuredResults({ results }: StructuredResultsProps) {
+export function StructuredResults({ results, onOpenSource }: StructuredResultsProps) {
   if (results.length === 0) return null;
 
   return (
@@ -133,6 +134,17 @@ export function StructuredResults({ results }: StructuredResultsProps) {
 
             {result.applicability && (
               <p className="structured-result-applicability">{result.applicability}</p>
+            )}
+
+            {result.provenance.source_reference && onOpenSource && (
+              <button
+                type="button"
+                className="structured-result-source-button"
+                onClick={() => onOpenSource(result.provenance.source_reference as Citation)}
+              >
+                <BookOpen size={15} aria-hidden="true" />
+                Xem căn cứ {result.provenance.source_reference.article_label}
+              </button>
             )}
 
             {result.presentation_type === 'contact_card' ? (

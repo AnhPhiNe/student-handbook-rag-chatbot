@@ -455,3 +455,14 @@ def test_long_primary_source_uses_request_budget_not_legacy_1500_cap() -> None:
         max_context_chars=5000,
     )
     assert "TAIL_MARKER_CONTEXT_VAN_CON" in prompt
+
+
+def test_prompt_distinguishes_external_referral_from_direct_answer() -> None:
+    prompt = build_answer_prompt(
+        query="Ai thuộc diện miễn giảm học phí?",
+        retrieval_result={"retrieved_items": []},
+    )
+
+    assert "Mở đầu bằng câu trả lời trực tiếp cho đúng từ hỏi" in prompt
+    assert "nguồn chỉ dẫn chiếu sang văn bản khác" in prompt
+    assert "không trình bày câu dẫn chiếu như thể đã trả lời danh sách" in prompt

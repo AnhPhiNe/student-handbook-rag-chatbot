@@ -274,6 +274,38 @@ def test_structured_lookup_citation_is_separated_from_regulation_citation() -> N
     assert public_regulation_citations([structured, regulation]) == [regulation]
 
 
+def test_structured_projection_exposes_source_article_without_public_citation_card() -> None:
+    lookup = {
+        "lookup_type": "scholarship_policy",
+        "cohort": "K50",
+        "table_name": "Mức học bổng",
+        "source_parent_id": "K50_Dieu27",
+        "source_pages": [71, 72, 73],
+        "result": [{"scholarship_level": "Xuất sắc", "multiplier": 1.5}],
+    }
+    citation = {
+        "evidence_kind": "structured_result",
+        "chunk_id": "K50_Dieu27",
+        "source_parent_id": "K50_Dieu27",
+        "cohort": "K50",
+        "title": "Mức học bổng",
+        "content": "{\"multiplier\": 1.5}",
+        "parent_content": "Điều 27. Tiêu chuẩn, mức, quỹ học bổng.",
+        "parent_title": "Tiêu chuẩn, mức, quỹ học bổng",
+        "article_label": "Điều 27",
+        "source_pages": [71, 72, 73],
+        "detail_kind": "table",
+    }
+
+    projection = build_structured_results(lookup, citations=[citation])
+
+    source = projection[0]["provenance"]["source_reference"]
+    assert source["chunk_id"] == "K50_Dieu27"
+    assert source["article_label"] == "Điều 27"
+    assert source["content"].startswith("Điều 27")
+    assert source["relevant_excerpt"] == citation["content"]
+
+
 def test_chat_response_exposes_structured_results_but_not_structured_citation() -> None:
     table = {
         "id": "conduct:K51:0",

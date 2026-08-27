@@ -701,7 +701,7 @@ def _v7_query_filter(cohort: str | None) -> Filter:
 
 
 _GLOBAL_RETRIEVER = None
-def _build_related_references(
+def build_related_references(
     related_items: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     """Build UI-only navigation records for graph-related parent sections.
@@ -756,6 +756,10 @@ def _build_related_references(
             }
         )
     return references
+
+
+# Backward-compatible private alias for existing callers/tests.
+_build_related_references = build_related_references
 
 
 def run_hybrid_retrieval_pipeline(
@@ -820,7 +824,7 @@ def run_hybrid_retrieval_pipeline(
     from .context_builder import build_context_from_vector_results
 
     citations = build_citations_from_vector_results(formatted_results)
-    related_references = _build_related_references(related_items)
+    related_references = build_related_references(related_items)
 
     return {
         "query": query,

@@ -202,7 +202,55 @@ def _field_provenance(lookup: dict[str, Any]) -> dict[str, dict[str, Any]]:
     }
 
 
-def build_structured_results(structured_result: Any) -> list[dict[str, Any]]:
+def _public_source_reference(
+    lookup: dict[str, Any],
+    citations: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    parent_id = str(
+        lookup.get("source_parent_id")
+        or lookup.get("parent_section_id")
+        or lookup.get("source_section")
+        or ""
+    ).strip()
+    cohort = str(lookup.get("cohort") or "").strip()
+    for citation in citations:
+        if not isinstance(citation, dict):
+            continue
+        citation_parent_id = str(
+            citation.get("source_parent_id")
+            or citation.get("parent_section_id")
+            or citation.get("source_section")
+            or citation.get("chunk_id")
+            or ""
+        ).strip()
+        citation_cohort = str(citation.get("cohort") or "").strip()
+        if parent_id and citation_parent_id != parent_id:
+            continue
+        if cohort and citation_cohort and citation_cohort != cohort:
+            continue
+        content = str(citation.get("parent_content") or citation.get("content") or "").strip()
+        article_label = citation.get("article_label") or citation.get("parent_article")
+        if not content or not article_label:
+            continue
+        return {
+            "chunk_id": citation_parent_id,
+            "title": citation.get("parent_title") or citation.get("title"),
+            "content": content,
+            "relevant_excerpt": citation.get("content"),
+            "source_pages": citation.get("source_pages") or [],
+            "source_url": citation.get("source_url"),
+            "cohort": citation.get("cohort"),
+            "article_label": article_label,
+            "detail_kind": citation.get("detail_kind") or "table",
+            "table_name": citation.get("table_name") or citation.get("title"),
+        }
+    return None
+
+
+def build_structured_results(
+    structured_result: Any,
+    citations: list[dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
     """Return display-safe tables without changing the retrieval evidence packet."""
     results: list[dict[str, Any]] = []
     for index, lookup in enumerate(_iter_leaf_lookups(structured_result)):
@@ -221,6 +269,7 @@ def build_structured_results(structured_result: Any) -> list[dict[str, Any]]:
                 if key not in columns:
                     columns.append(key)
 
+        source_reference = _public_source_reference(lookup, citations or [])
         results.append(
             {
                 "id": f"{lookup.get('lookup_type') or 'structured'}:{lookup.get('cohort') or 'default'}:{index}",
@@ -241,6 +290,11 @@ def build_structured_results(structured_result: Any) -> list[dict[str, Any]]:
                     or "Dữ liệu có cấu trúc từ Sổ tay sinh viên",
                     "document_id": lookup.get("document_id"),
                     "source_pages": lookup.get("source_pages") or [],
+                    **(
+                        {"source_reference": source_reference}
+                        if source_reference
+                        else {}
+                    ),
                 },
                 "field_provenance": _field_provenance(lookup),
             }

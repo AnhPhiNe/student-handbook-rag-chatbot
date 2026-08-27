@@ -51,6 +51,22 @@ def test_vector_citation_exposes_canonical_article_label_from_source_heading():
     assert citations[0]["article_label"] == "Điều 16"
 
 
+def test_vector_citation_keeps_focused_child_as_relevant_excerpt():
+    citations = build_citations_from_vector_results(
+        [
+            {
+                "chunk_id": "K50_Dieu27",
+                "content": "Mức học bổng Xuất sắc bằng số tín chỉ nhân 1,5.",
+                "document": "Điều 27. Toàn bộ nội dung dài của quy định học bổng.",
+                "metadata": {"title": "Học bổng", "cohort": "K50"},
+            }
+        ]
+    )
+
+    assert citations[0]["content"].startswith("Điều 27")
+    assert citations[0]["relevant_excerpt"].startswith("Mức học bổng Xuất sắc")
+
+
 def test_vector_citation_preserves_validated_cross_cohort_applicability():
     citations = build_citations_from_vector_results(
         [

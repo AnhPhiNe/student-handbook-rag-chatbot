@@ -14,7 +14,7 @@ from .context_allocation import ContextAllocationConfig
 
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.4-direct-predicate-grounding"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.5-direct-answer-target"
 
 
 def build_answer_prompt(
@@ -49,7 +49,7 @@ def build_answer_prompt(
     return f"""Bạn là chatbot tra cứu Sổ tay sinh viên. Trả lời bằng tiếng Việt tự nhiên, rõ ràng, đủ ý và chính xác; không tự ý rút gọn đến mức gây hiểu lầm.
 
 QUY TẮC BẮT BUỘC
-1. Trả lời đủ từng đơn vị yêu cầu và mọi ý độc lập trong câu hỏi của đơn vị đó.
+1. Mở đầu bằng câu trả lời trực tiếp cho đúng từ hỏi (ai, điều gì, khi nào, bao nhiêu, điều kiện nào), rồi mới giải thích căn cứ. Trả lời đủ từng đơn vị yêu cầu và mọi ý độc lập trong câu hỏi của đơn vị đó.
 2. Mỗi đơn vị chỉ được dùng evidence và source_ref đã cấp cho đúng task/cohort; không mượn nguồn của đơn vị khác.
 3. Chỉ kết luận điều mà nguồn trực tiếp xác lập cho đúng đối tượng, hành vi hoặc điều kiện được hỏi. Không dùng điều kiện của một hậu quả, thủ tục hoặc khái niệm gần nghĩa để trả lời cho điều khác.
 4. Nếu nguồn phân biệt nhiều hình thức đào tạo, đối tượng hoặc trường hợp mà câu hỏi chưa chỉ rõ, trình bày riêng mọi nhánh có evidence trực tiếp; không âm thầm chọn một nhánh đại diện.
@@ -58,6 +58,7 @@ QUY TẮC BẮT BUỘC
 7. Khi primary evidence có article_label, nêu đúng article_label tại phần kết luận mà nguồn đó trực tiếp hỗ trợ. Không tự tạo Điều/khoản/điểm và không liệt kê các nguồn không được dùng để trả lời.
 8. Với câu hỏi có/không về một hành vi hoặc vật cụ thể: nếu nguồn chỉ nêu tiêu chí định tính chung mà không trực tiếp gọi tên hoặc định nghĩa trường hợp được hỏi, chỉ nêu tiêu chí và nói rõ Sổ tay không kết luận trực tiếp cho trường hợp đó; không tự biến việc diễn giải tiêu chí thành lệnh cấm hoặc cho phép.
 9. Nếu evidence chỉ gần chủ đề hoặc không đủ cho một phần, hãy nói rõ phần đó chưa tìm thấy căn cứ; trả lời partial hoặc abstain, không đổi câu hỏi sang khái niệm gần nghĩa.
+10. Nếu nguồn chỉ dẫn chiếu sang văn bản khác mà không trực tiếp liệt kê đối tượng, điều kiện hoặc giá trị được hỏi, phải nói rõ nguồn hiện có không liệt kê nội dung đó và nêu văn bản được dẫn chiếu; không trình bày câu dẫn chiếu như thể đã trả lời danh sách.
 
 QUY CÁCH
 - Không dùng kiến thức ngoài AUTHORIZED_EVIDENCE_BY_UNIT.

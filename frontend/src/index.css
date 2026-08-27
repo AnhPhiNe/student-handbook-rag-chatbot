@@ -1741,6 +1741,48 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   border-top: 1px solid var(--border-color);
 }
 
+.related-reference-dialog-links {
+  padding: 0.85rem 1.2rem;
+  border-top: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--primary) 4%, var(--bg-secondary));
+}
+
+.related-reference-dialog-links > span {
+  display: block;
+  margin-bottom: 0.55rem;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.related-reference-dialog-links > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.related-reference-dialog-links button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--primary) 24%, var(--border-color));
+  border-radius: var(--radius-sm);
+  background: var(--bg-primary);
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.related-reference-dialog-links button:hover,
+.related-reference-dialog-links button:focus-visible {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 7%, var(--bg-primary));
+  outline: none;
+}
+
 @media (max-width: 640px) {
   .related-reference-preview {
     display: none;
@@ -2945,22 +2987,21 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .citation-card-content mark,
 .citation-markdown mark,
 .related-reference-dialog-content mark {
-  background: linear-gradient(120deg, rgba(245, 158, 11, 0.22) 0%, rgba(251, 191, 36, 0.3) 100%);
-  color: #B45309;
-  padding: 0.12rem 0.35rem;
-  margin: 0 0.05rem;
-  border-radius: 4px;
-  font-weight: 600;
-  border-bottom: 1.5px solid rgba(245, 158, 11, 0.5);
+  padding: 0.05rem 0.12rem;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--primary) 11%, transparent);
+  color: inherit;
+  font-weight: inherit;
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--primary) 28%, transparent);
 }
 
 [data-theme='dark'] .message-bubble mark,
 [data-theme='dark'] .citation-card-content mark,
 [data-theme='dark'] .citation-markdown mark,
 [data-theme='dark'] .related-reference-dialog-content mark {
-  background: linear-gradient(120deg, rgba(245, 158, 11, 0.28) 0%, rgba(217, 119, 6, 0.32) 100%);
-  color: #FDE68A;
-  border-bottom: 1.5px solid rgba(251, 191, 36, 0.6);
+  background: color-mix(in srgb, var(--primary-light) 16%, transparent);
+  color: inherit;
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--primary-light) 34%, transparent);
 }
 
 .suggestion-pills-container {
@@ -3700,6 +3741,29 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   flex: 0 0 auto;
   margin-top: 0.08rem;
   color: var(--primary);
+}
+
+.structured-result-source-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.75rem 0.8rem 0;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--primary) 24%, var(--border-color));
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--primary) 5%, var(--bg-primary));
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.structured-result-source-button:hover,
+.structured-result-source-button:focus-visible {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 9%, var(--bg-primary));
+  outline: none;
 }
 
 @media (max-width: 640px) {

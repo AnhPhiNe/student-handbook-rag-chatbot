@@ -16,7 +16,12 @@ from src.retrieval.core.citation_builder import (
     build_citation_from_lookup,
     enrich_citations_with_parent_details,
 )
-from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline
+from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
+from src.retrieval.core.hybrid_pipeline import (
+    build_related_references,
+    run_hybrid_retrieval_pipeline,
+    select_graph_related_parent_candidates,
+)
 from src.retrieval.core.query_context import select_effective_query
 from src.retrieval.core.vector_retriever import (
     get_chroma_collection,
@@ -50,7 +55,7 @@ from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v41-direct-predicate-grounding"
+PIPELINE_VERSION = "v42-source-navigation-and-answer-target"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -613,7 +618,10 @@ class AnswerPipeline:
         resolved_fallback = fallback_reason or ("none" if status == "answered" else status)
         resolved_citations = citations_used if citations_used is not None else (res.get("citations_used") or res.get("citations") or [])
         resolved_related = related_references if related_references is not None else (res.get("related_references") or [])
-        structured_results = build_structured_results(res.get("structured_result"))
+        structured_results = build_structured_results(
+            res.get("structured_result"),
+            citations=list(res.get("citations") or res.get("citations_used") or []),
+        )
 
         return {
             "type": "metadata",
@@ -1239,6 +1247,7 @@ class AnswerPipeline:
         structured_results: list[dict[str, Any]] = []
         all_items: list[dict[str, Any]] = []
         all_citations: list[dict[str, Any]] = []
+        all_related_references: list[dict[str, Any]] = []
         coverage_by_task: dict[str, str] = {}
         clarification_questions: list[str] = []
 
@@ -1286,6 +1295,9 @@ class AnswerPipeline:
                 task_evidence.extend(sub_result.get("evidence") or [])
                 task_citations.extend(sub_result.get("citations") or [])
                 task_items.extend(sub_result.get("retrieved_items") or [])
+                all_related_references.extend(
+                    sub_result.get("related_references") or []
+                )
                 structured = sub_result.get("structured_result")
                 if structured:
                     structured_results.append(structured)
@@ -1347,6 +1359,9 @@ class AnswerPipeline:
             "structured_result": structured_result,
             "retrieved_items": merged_items,
             "citations": selected_citations,
+            "related_references": self._merge_related_references(
+                all_related_references
+            ),
             "task_results": task_results,
             "coverage_by_task": coverage_by_task,
             "supports_task_ids": {
@@ -1414,12 +1429,17 @@ class AnswerPipeline:
             {**citation, "task_id": task_id, "supports_task_ids": [task_id], "cohort": citation.get("cohort") or cohort}
             for citation in citations
         ]
+        related_references = self._structured_related_references(
+            citations,
+            cohort=cohort,
+        )
         coverage = "covered" if citations else "uncovered"
         return {
             "coverage": coverage,
             "evidence": [evidence],
             "structured_result": evidence,
             "citations": citations,
+            "related_references": related_references,
             "retrieved_items": [],
         }
 
@@ -1484,7 +1504,89 @@ class AnswerPipeline:
             "retrieval_query": retrieval_query,
             "source_ids": [str(item.get("chunk_id") or item.get("_id") or "") for item in items],
         }]
-        return {"coverage": coverage, "evidence": evidence, "citations": citations, "retrieved_items": items}
+        return {
+            "coverage": coverage,
+            "evidence": evidence,
+            "citations": citations,
+            "retrieved_items": items,
+            "related_references": result.get("related_references") or [],
+        }
+
+    def _structured_related_references(
+        self,
+        citations: list[dict[str, Any]],
+        *,
+        cohort: str | None,
+    ) -> list[dict[str, Any]]:
+        """Expose direct graph neighbors for structured source articles as UI metadata."""
+        primary_ids = list(
+            dict.fromkeys(
+                str(
+                    citation.get("source_parent_id")
+                    or citation.get("parent_section_id")
+                    or citation.get("chunk_id")
+                    or ""
+                ).strip()
+                for citation in citations
+                if isinstance(citation, dict)
+            )
+        )
+        primary_ids = [parent_id for parent_id in primary_ids if parent_id]
+        if not primary_ids:
+            return []
+
+        graph = getattr(self, "_structured_graph", None)
+        if graph is None:
+            graph = NetworkXGraphTraverser()
+            self._structured_graph = graph
+        expanded = graph.expand_context(primary_ids, max_depth=1)
+        candidates = select_graph_related_parent_candidates(primary_ids, expanded)
+        related_items: list[dict[str, Any]] = []
+        for rank, candidate in enumerate(candidates, start=1):
+            parent_id = str(candidate.get("parent_id") or "").strip()
+            parent = getattr(self, "parent_sources_by_id", {}).get(parent_id)
+            if not isinstance(parent, dict):
+                continue
+            if cohort and not is_validated_source_applicable(parent, cohort):
+                continue
+            metadata = dict(parent.get("metadata") or {})
+            related_items.append(
+                {
+                    **parent,
+                    "chunk_id": parent_id,
+                    "content": parent.get("content") or "",
+                    "metadata": {
+                        **metadata,
+                        "related_source_primary_id": candidate.get(
+                            "source_primary_id"
+                        ),
+                        "related_graph_depth": candidate.get("depth"),
+                        "related_rank": rank,
+                    },
+                }
+            )
+        return build_related_references(related_items)
+
+    @staticmethod
+    def _merge_related_references(
+        references: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        merged: list[dict[str, Any]] = []
+        seen: set[tuple[str, str]] = set()
+        for reference in references:
+            if not isinstance(reference, dict):
+                continue
+            key = (
+                str(reference.get("primary_chunk_id") or ""),
+                str(reference.get("related_chunk_id") or ""),
+            )
+            if not all(key) or key in seen:
+                continue
+            seen.add(key)
+            item = dict(reference)
+            item["id"] = f"R{len(merged) + 1}"
+            merged.append(item)
+        return merged
 
     @staticmethod
     def _merge_task_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -1600,6 +1702,10 @@ class AnswerPipeline:
                     build_citation_from_lookup(resolution.result),
                     getattr(self, "parent_sources_by_id", {}),
                 )
+                related_references = self._structured_related_references(
+                    structured_citations,
+                    cohort=cohort,
+                )
                 return {
                     "query": query,
                     "retrieval_query": normalized_retrieval_query,
@@ -1609,6 +1715,7 @@ class AnswerPipeline:
                     "structured_result": resolution.result,
                     "retrieved_items": [],
                     "citations": structured_citations,
+                    "related_references": related_references,
                     "needs_llm_answer": False,
                     "needs_clarification": is_clarification,
                     "clarification_question": resolution.result.get("clarification_question") if is_clarification else None,
@@ -1771,7 +1878,8 @@ class AnswerPipeline:
             "related_references": retrieval_result.get("related_references", []),
             "structured_result": retrieval_result.get("structured_result"),
             "structured_results": build_structured_results(
-                retrieval_result.get("structured_result")
+                retrieval_result.get("structured_result"),
+                citations=list(retrieval_result.get("citations") or []),
             ),
             "formula_result": retrieval_result.get("formula_result"),
             "tool_result": retrieval_result.get("tool_result"),

@@ -4,6 +4,7 @@ import os
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
+from src.generation.answer_pipeline import AnswerPipeline
 from src.retrieval.core.hybrid_pipeline import (
     ChildParentHybridRetriever,
     DEFAULT_RETRIEVAL_MODE,
@@ -129,6 +130,59 @@ def test_related_references_are_ui_metadata_not_answer_evidence() -> None:
     assert reference["preview"].endswith("…")
     assert len(reference["preview"]) <= 480
     assert reference["content"] == ("Nội dung đầy đủ của Điều 3. " * 40).strip()
+
+
+def test_structured_source_exposes_direct_graph_neighbor_for_ui() -> None:
+    pipeline = AnswerPipeline.__new__(AnswerPipeline)
+    pipeline._structured_graph = SimpleNamespace(
+        expand_context=lambda seed_ids, max_depth: [
+            {
+                "id": "K50_Dieu3",
+                "depth": 1,
+                "seed_source": seed_ids[0],
+            }
+        ]
+    )
+    pipeline.parent_sources_by_id = {
+        "K50_Dieu3": {
+            "_id": "K50_Dieu3",
+            "content": "Điều 3. Giải thích từ ngữ.",
+            "metadata": {
+                "cohort": "K50",
+                "title": "Điều 3 — Giải thích từ ngữ",
+                "source_pages": [10],
+            },
+        }
+    }
+
+    references = pipeline._structured_related_references(
+        [
+            {
+                "chunk_id": "K50_Dieu27",
+                "source_parent_id": "K50_Dieu27",
+                "cohort": "K50",
+            }
+        ],
+        cohort="K50",
+    )
+
+    assert len(references) == 1
+    assert references[0]["primary_chunk_id"] == "K50_Dieu27"
+    assert references[0]["related_chunk_id"] == "K50_Dieu3"
+    assert references[0]["article_label"] == "Điều 3"
+
+
+def test_related_reference_merge_is_deterministic_and_deduplicated() -> None:
+    merged = AnswerPipeline._merge_related_references(
+        [
+            {"id": "R9", "primary_chunk_id": "P1", "related_chunk_id": "R1"},
+            {"id": "R2", "primary_chunk_id": "P1", "related_chunk_id": "R1"},
+            {"id": "R7", "primary_chunk_id": "P1", "related_chunk_id": "R2"},
+        ]
+    )
+
+    assert [item["id"] for item in merged] == ["R1", "R2"]
+    assert [item["related_chunk_id"] for item in merged] == ["R1", "R2"]
 
 
 def _vector_hits(count: int = 24) -> list[SimpleNamespace]:

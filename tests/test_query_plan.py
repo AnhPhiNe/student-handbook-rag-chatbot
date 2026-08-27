@@ -494,6 +494,13 @@ def test_planned_rag_task_rejects_unvalidated_cross_cohort_sources(
         lambda **kwargs: {
             "retrieved_items": retrieved_items,
             "citations": citations,
+            "related_references": [
+                {
+                    "id": "R1",
+                    "primary_chunk_id": "native-k51",
+                    "related_chunk_id": "related-k51",
+                }
+            ],
         },
     )
 
@@ -512,6 +519,7 @@ def test_planned_rag_task_rejects_unvalidated_cross_cohort_sources(
         "validated-k50",
         "native-k51",
     ]
+    assert result["related_references"][0]["related_chunk_id"] == "related-k51"
 
 
 def test_two_structured_domains_execute_without_cross_domain_probing(monkeypatch) -> None:
@@ -619,6 +627,14 @@ def test_rag_tasks_keep_top_five_and_deduplicate_shared_source(monkeypatch) -> N
                     "source_pages": [10],
                 }
             ],
+            "related_references": [
+                {
+                    "id": "R9",
+                    "primary_chunk_id": "shared-parent",
+                    "related_chunk_id": "related-parent",
+                    "title": "Điều liên quan",
+                }
+            ],
         }
 
     monkeypatch.setattr("src.generation.answer_pipeline.run_hybrid_retrieval_pipeline", fake_retrieval)
@@ -630,6 +646,14 @@ def test_rag_tasks_keep_top_five_and_deduplicate_shared_source(monkeypatch) -> N
     assert len(result["citations"]) == 1
     assert result["citations"][0]["supports_task_ids"] == ["t1", "t2"]
     assert result["coverage_by_task"] == {"t1": "covered", "t2": "covered"}
+    assert result["related_references"] == [
+        {
+            "id": "R1",
+            "primary_chunk_id": "shared-parent",
+            "related_chunk_id": "related-parent",
+            "title": "Điều liên quan",
+        }
+    ]
 
 
 def test_covered_and_uncovered_tasks_keep_partial_answer_path(monkeypatch) -> None:

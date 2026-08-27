@@ -4,6 +4,7 @@ import { getApiClientHeaders } from '../utils/clientIdentity';
 export interface Citation {
   chunk_id: string;
   content: string;
+  relevant_excerpt?: string;
   metadata?: Record<string, unknown>;
   score?: number;
   title?: string;
@@ -34,6 +35,7 @@ export interface RelatedReference {
   graph_depth?: number;
   preview?: string;
   content?: string;
+  relevant_excerpt?: string;
   article_label?: string;
   source_kind?: 'primary' | 'related';
   table_name?: string;
@@ -56,6 +58,7 @@ export interface StructuredResult {
     source_label?: string;
     document_id?: string;
     source_pages?: number[];
+    source_reference?: Citation | null;
   };
   field_provenance?: Record<string, {
     source_type: 'curated_registry';

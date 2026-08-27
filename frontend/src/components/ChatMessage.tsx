@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
-import { Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, Brain, ExternalLink, X } from 'lucide-react';
+import { BookOpen, Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, Brain, ExternalLink, X } from 'lucide-react';
 import type { Citation, Message, RelatedReference } from '../hooks/useChat';
 import { getApiClientHeaders } from '../utils/clientIdentity';
 import { useToast } from './Toast';
@@ -71,7 +71,7 @@ function buildPrimaryArticleReferences(citations: Citation[]): RelatedReference[
       ? (parentTitle.includes(article) ? parentTitle : `${article} — ${parentTitle}`)
       : (baseTitle.includes(article) ? baseTitle : `${article} — ${baseTitle}`);
 
-    const previewSource = citation.content.trim() || content;
+    const previewSource = citation.relevant_excerpt?.trim() || citation.content.trim() || content;
     const preview = previewSource.slice(0, 480).trim();
     return [{
       id: `P${index + 1}`,
@@ -83,12 +83,25 @@ function buildPrimaryArticleReferences(citations: Citation[]): RelatedReference[
       cohort: citation.cohort,
       preview: content.length > preview.length ? `${preview}…` : preview,
       content,
+      relevant_excerpt: citation.relevant_excerpt,
       article_label: article,
       source_kind: 'primary',
       table_name: citation.table_name,
       detail_kind: citation.detail_kind,
     }];
   });
+}
+
+function deduplicatePrimaryReferences(references: RelatedReference[]): RelatedReference[] {
+  const unique = new Map<string, RelatedReference>();
+  for (const reference of references) {
+    const key = reference.related_chunk_id || reference.primary_chunk_id;
+    if (!unique.has(key)) unique.set(key, reference);
+  }
+  return [...unique.values()].map((reference, index) => ({
+    ...reference,
+    id: `P${index + 1}`,
+  }));
 }
 
 function addArticleReferenceLinks(
@@ -379,7 +392,7 @@ function getCompactExcerpt(text: string, maxLength = 220): string {
   return `${plain.slice(0, maxLength).trim()}...`;
 }
 
-function highlightKeywords(text: string, query?: string): string {
+function highlightKeywords(text: string, query?: string, relevantExcerpt?: string): string {
   if (!query || !text) return text;
   
   const cleanQuery = query.replace(/[?!.,;:()[\]{}"'`/\\–—]/gu, ' ').trim();
@@ -398,7 +411,7 @@ function highlightKeywords(text: string, query?: string): string {
   const phrases: string[] = [];
 
   // Extract multi-word n-gram phrases (>= 2 words) directly from user question
-  const maxN = Math.min(words.length, 6);
+  const maxN = Math.min(words.length, 5);
   for (let n = maxN; n >= 2; n--) {
     for (let i = 0; i <= words.length - n; i++) {
       const slice = words.slice(i, i + n);
@@ -419,24 +432,54 @@ function highlightKeywords(text: string, query?: string): string {
     }
   });
 
+  words.forEach((word) => {
+    const normalized = word.toLocaleLowerCase('vi');
+    if (normalized.length >= 5 && !STOPWORDS.has(normalized)) phrases.push(word);
+  });
+
+  const relevanceScope = (relevantExcerpt || text).toLocaleLowerCase('vi');
+  const occurrenceCount = (value: string) => {
+    const matches = relevanceScope.match(new RegExp(escapeRegex(value), 'giu'));
+    return matches?.length ?? 0;
+  };
   const validPhrases = [...new Set(phrases.map(p => p.trim()).filter(p => p.length >= 3))]
+    .filter((phrase) => relevanceScope.includes(phrase.toLocaleLowerCase('vi')))
+    .sort((left, right) => {
+      const leftWords = left.split(/\s+/).length;
+      const rightWords = right.split(/\s+/).length;
+      const leftScore = leftWords * 100 + left.length - occurrenceCount(left) * 8;
+      const rightScore = rightWords * 100 + right.length - occurrenceCount(right) * 8;
+      return rightScore - leftScore;
+    })
+    .filter((phrase, index, values) => (
+      !values.slice(0, index).some((selected) => selected.toLocaleLowerCase('vi').includes(phrase.toLocaleLowerCase('vi')))
+    ))
+    .slice(0, 5)
     .sort((a, b) => b.length - a.length);
 
   if (validPhrases.length === 0) return text;
 
-  const escapeRegex = (s: string) => s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
   const pattern = new RegExp(`(?<![<a-zA-Z0-9À-ỹ])(${validPhrases.map(escapeRegex).join('|')})(?![>a-zA-Z0-9À-ỹ])`, 'giu');
   
   // Exclude tables from highlighting
   const tableSectionRegex = /(<section class="citation-normalized-table">[\s\S]*?<\/section>|<table[\s\S]*?<\/table>)/giu;
   const parts = text.split(tableSectionRegex);
 
+  const counts = new Map<string, number>();
+  let totalHighlights = 0;
   return parts
     .map((part) => {
       if (part.startsWith('<section class="citation-normalized-table"') || part.startsWith('<table')) {
         return part;
       }
-      return part.replace(pattern, '<mark>$1</mark>');
+      return part.replace(pattern, (match) => {
+        const key = match.toLocaleLowerCase('vi');
+        const count = counts.get(key) ?? 0;
+        if (count >= 2 || totalHighlights >= 8) return match;
+        counts.set(key, count + 1);
+        totalHighlights += 1;
+        return `<mark>${match}</mark>`;
+      });
     })
     .join('');
 }
@@ -594,9 +637,20 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
     thinkContent = parts[1].trim();
   }
   const relatedReferences = message.relatedReferences ?? [];
-  const primaryReferences = buildPrimaryArticleReferences(message.citations ?? []);
+  const structuredSourceCitations = (message.structuredResults ?? []).flatMap((result) => (
+    result.provenance.source_reference ? [result.provenance.source_reference] : []
+  ));
+  const primaryReferences = deduplicatePrimaryReferences(buildPrimaryArticleReferences([
+    ...(message.citations ?? []),
+    ...structuredSourceCitations,
+  ]));
   const articleReferences = [...primaryReferences, ...relatedReferences];
   const renderedContent = addArticleReferenceLinks(displayContent, articleReferences);
+  const activeRelatedProvisions = activeRelatedReference?.source_kind === 'primary'
+    ? relatedReferences.filter((reference) => (
+      reference.primary_chunk_id === activeRelatedReference.primary_chunk_id
+    ))
+    : [];
 
   return (
     <div className="message-wrapper bot" aria-live="polite">
@@ -671,7 +725,15 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
           )}
 
           {!message.isStreaming && message.structuredResults && message.structuredResults.length > 0 && (
-            <StructuredResults results={message.structuredResults} />
+            <StructuredResults
+              results={message.structuredResults}
+              onOpenSource={(source) => {
+                const reference = primaryReferences.find((item) => (
+                  item.primary_chunk_id === source.chunk_id
+                ));
+                if (reference) setActiveRelatedReference(reference);
+              }}
+            />
           )}
 
           {!message.isStreaming && message.citations && message.citations.length > 0 && (
@@ -711,7 +773,7 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
                                 <p 
                                   className="citation-excerpt"
                                   dangerouslySetInnerHTML={{
-                                    __html: highlightKeywords(excerpt, effectiveQuery)
+                                    __html: highlightKeywords(excerpt, effectiveQuery, cit.relevant_excerpt)
                                   }}
                                 />
                               </div>
@@ -736,7 +798,11 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
                         {isExpanded && cit.content && (
                           <div className="citation-card-content citation-markdown">
                             <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-                              {highlightKeywords(formatCitationContentForDisplay(cit.content), effectiveQuery)}
+                              {highlightKeywords(
+                                formatCitationContentForDisplay(cit.content),
+                                effectiveQuery,
+                                cit.relevant_excerpt,
+                              )}
                             </ReactMarkdown>
                           </div>
                         )}
@@ -890,10 +956,28 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
                 <ReactMarkdown rehypePlugins={[rehypeRaw]}>
                   {highlightKeywords(
                     formatCitationContentForDisplay(activeRelatedReference.content || activeRelatedReference.preview || ''),
-                    effectiveQuery || activeRelatedReference.title
+                    effectiveQuery || activeRelatedReference.title,
+                    activeRelatedReference.relevant_excerpt || activeRelatedReference.preview,
                   )}
                 </ReactMarkdown>
               </div>
+              {activeRelatedProvisions.length > 0 && (
+                <div className="related-reference-dialog-links">
+                  <span>Quy định được Điều này dẫn chiếu</span>
+                  <div>
+                    {activeRelatedProvisions.map((reference) => (
+                      <button
+                        type="button"
+                        key={`${reference.primary_chunk_id}:${reference.related_chunk_id}`}
+                        onClick={() => setActiveRelatedReference(reference)}
+                      >
+                        <BookOpen size={14} aria-hidden="true" />
+                        {reference.title}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               {activeRelatedReference.source_url && (
                 <div className="related-reference-dialog-actions">
                   <a

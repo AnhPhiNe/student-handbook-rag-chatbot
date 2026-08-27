@@ -189,6 +189,7 @@ def build_citations_from_vector_results(
     for item in results:
         metadata = item.get("metadata", {})
         raw_content = item.get("document") or item.get("content") or ""
+        focused_content = item.get("content") or ""
         source_heading = (
             article_label_from_heading(str(raw_content).splitlines()[0])
             if raw_content
@@ -236,6 +237,7 @@ def build_citations_from_vector_results(
                 "content": sanitize_citation_content(
                     raw_content
                 ),
+                "relevant_excerpt": sanitize_citation_content(focused_content),
             }
         )
 

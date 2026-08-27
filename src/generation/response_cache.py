@@ -18,6 +18,7 @@ else:
 LOCK_POLL_SECONDS = 0.05
 LOCK_TIMEOUT_SECONDS = 5.0
 DEFAULT_CACHE_TTL_SECONDS = 86400
+DEFAULT_CACHE_NAMESPACE = "v41-direct-predicate-grounding"
 
 
 class ResponseCache:
@@ -95,7 +96,7 @@ class ResponseCache:
             "query": query,
             "cohort": cohort,
             "cache_namespace": os.getenv(
-                "STUDENT_RAG_RESPONSE_CACHE_NAMESPACE", "default"
+                "STUDENT_RAG_RESPONSE_CACHE_NAMESPACE", DEFAULT_CACHE_NAMESPACE
             ),
             "pipeline_version": pipeline_version,
             "answer_prompt_version": answer_prompt_version,

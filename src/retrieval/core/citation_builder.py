@@ -2,6 +2,8 @@ import json
 import re
 from typing import Any
 
+from src.common.legal_reference import article_label_from_heading, normalize_article_label
+
 
 _FOCUS_MARKERS = (
     "THÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:",
@@ -130,7 +132,16 @@ def enrich_citations_with_parent_details(
 
         item["parent_section_id"] = parent_id
         item["source_parent_id"] = parent_id
-        item["parent_article"] = metadata.get("article")
+        article_label = normalize_article_label(
+            metadata.get("article"),
+            metadata.get("source_section"),
+            metadata.get("title"),
+            article_label_from_heading(parent_content.splitlines()[0])
+            if parent_content
+            else None,
+        )
+        item["article_label"] = article_label
+        item["parent_article"] = article_label
         item["parent_title"] = metadata.get("title")
         item["parent_content"] = parent_content or None
         item["detail_kind"] = "table" if item.get("chunk_type") == "structured_lookup" else "article"
@@ -177,6 +188,12 @@ def build_citations_from_vector_results(
 
     for item in results:
         metadata = item.get("metadata", {})
+        raw_content = item.get("document") or item.get("content") or ""
+        source_heading = (
+            article_label_from_heading(str(raw_content).splitlines()[0])
+            if raw_content
+            else None
+        )
         citations.append(
             {
                 "chunk_id": item.get("chunk_id"),
@@ -193,14 +210,31 @@ def build_citations_from_vector_results(
                 "source_label": _build_source_label(metadata),
                 "source_url": _first_value(metadata, ("source_url", "url", "document_url")),
                 "cohort": metadata.get("cohort"),
+                "source_cohort": metadata.get("source_cohort")
+                or metadata.get("cohort"),
+                "applicable_cohorts": list(
+                    metadata.get("applicable_cohorts") or []
+                ),
+                "applicability_validated": bool(
+                    metadata.get("applicability_validated")
+                ),
+                "applicability_basis_parent_id": metadata.get(
+                    "applicability_basis_parent_id"
+                ),
                 "document_id": metadata.get("document_id"),
                 "source_section": metadata.get("source_section"),
+                "article_label": normalize_article_label(
+                    metadata.get("article"),
+                    metadata.get("source_section"),
+                    metadata.get("title"),
+                    source_heading,
+                ),
                 "applicability": metadata.get("applicability"),
                 "distance": item.get("distance"),
                 "rerank": item.get("rerank"),
                 "retrieval_purpose": item.get("retrieval_purpose"),
                 "content": sanitize_citation_content(
-                    item.get("document") or item.get("content")
+                    raw_content
                 ),
             }
         )

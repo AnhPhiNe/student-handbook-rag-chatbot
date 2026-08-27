@@ -222,3 +222,57 @@ def is_cohort_applicable(
         return True
 
     return record_cohort == norm_target
+
+
+def is_validated_source_applicable(
+    record_or_citation: dict[str, Any] | None,
+    target_cohort: str | None,
+) -> bool:
+    """Validate a source before exposing it as evidence for a cohort.
+
+    Same-cohort and shared sources are accepted directly. A source owned by a
+    different cohort is accepted only when its cross-cohort applicability was
+    explicitly declared and validated during ingestion.
+    """
+
+    if not isinstance(record_or_citation, dict):
+        return False
+    if not is_cohort_applicable(record_or_citation, target_cohort):
+        return False
+
+    norm_target = normalize_cohort(target_cohort)
+    if not norm_target or str(norm_target).lower() in {
+        "",
+        "all",
+        "general",
+        "shared",
+        "*",
+    }:
+        return True
+
+    metadata = (
+        record_or_citation.get("metadata")
+        if isinstance(record_or_citation.get("metadata"), dict)
+        else {}
+    )
+    source_cohort = normalize_cohort(
+        record_or_citation.get("source_cohort")
+        or metadata.get("source_cohort")
+        or record_or_citation.get("cohort")
+        or metadata.get("cohort")
+    )
+    if not source_cohort or str(source_cohort).lower() in {
+        "",
+        "all",
+        "general",
+        "shared",
+        "*",
+    }:
+        return True
+    if source_cohort == norm_target:
+        return True
+
+    return bool(
+        record_or_citation.get("applicability_validated")
+        or metadata.get("applicability_validated")
+    )

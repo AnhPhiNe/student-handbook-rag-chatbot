@@ -7,6 +7,7 @@ from typing import Any
 import pytest
 
 import src.common.cohort as cohort_module
+from src.common.cohort import is_validated_source_applicable
 from src.generation.answer_pipeline import AnswerPipeline
 from src.generation.context_allocation import ContextAllocationConfig
 from src.api.routes.chat import _to_chat_response
@@ -62,6 +63,24 @@ def test_query_plan_accepts_one_and_three_tasks() -> None:
     )
     assert errors == []
     assert [task["id"] for task in three["tasks"]] == ["t1", "t2", "t3"]
+
+
+def test_cross_cohort_source_requires_validated_applicability() -> None:
+    assert not is_validated_source_applicable(
+        {"cohort": "K50", "applicable_cohorts": ["K51"]},
+        "K51",
+    )
+    assert is_validated_source_applicable(
+        {
+            "cohort": "K50",
+            "source_cohort": "K50",
+            "applicable_cohorts": ["K48-K49", "K50", "K51"],
+            "applicability_validated": True,
+        },
+        "K51",
+    )
+    assert is_validated_source_applicable({"cohort": "K51"}, "K51")
+    assert not is_validated_source_applicable({"cohort": "K48-K49"}, "K51")
 
 
 def test_native_plan_schema_keeps_structured_slots_as_optional_compatibility() -> None:
@@ -434,6 +453,67 @@ def _pipeline(plan: dict[str, Any]) -> AnswerPipeline:
     return pipeline
 
 
+def test_planned_rag_task_rejects_unvalidated_cross_cohort_sources(
+    monkeypatch,
+) -> None:
+    task = _rag_task(1, "Điều kiện tốt nghiệp?")
+    task["cohorts"] = ["K51"]
+
+    def source(chunk_id: str, cohort: str, **metadata: Any) -> dict[str, Any]:
+        return {
+            "chunk_id": chunk_id,
+            "content": chunk_id,
+            "metadata": {"cohort": cohort, "chunk_type": "regulation", **metadata},
+        }
+
+    retrieved_items = [
+        source("invalid-k50", "K50"),
+        source(
+            "validated-k50",
+            "K50",
+            source_cohort="K50",
+            applicable_cohorts=["K48-K49", "K50", "K51"],
+            applicability_validated=True,
+        ),
+        source("native-k51", "K51"),
+    ]
+    citations = [
+        {
+            "chunk_id": item["chunk_id"],
+            "cohort": item["metadata"]["cohort"],
+            "source_cohort": item["metadata"].get("source_cohort"),
+            "applicable_cohorts": item["metadata"].get("applicable_cohorts", []),
+            "applicability_validated": item["metadata"].get(
+                "applicability_validated", False
+            ),
+        }
+        for item in retrieved_items
+    ]
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.run_hybrid_retrieval_pipeline",
+        lambda **kwargs: {
+            "retrieved_items": retrieved_items,
+            "citations": citations,
+        },
+    )
+
+    result = _pipeline(_plan([task]))._execute_planned_rag_task(
+        task=task,
+        task_id="t1",
+        cohort="K51",
+        chat_history=[],
+    )
+
+    assert [item["chunk_id"] for item in result["retrieved_items"]] == [
+        "validated-k50",
+        "native-k51",
+    ]
+    assert [citation["chunk_id"] for citation in result["citations"]] == [
+        "validated-k50",
+        "native-k51",
+    ]
+
+
 def test_two_structured_domains_execute_without_cross_domain_probing(monkeypatch) -> None:
     tasks = [
         {
@@ -685,7 +765,8 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
         "chunk_id": "p1",
         "source_parent_id": "p1",
         "cohort": "K51",
-        "content": "Nguồn trực tiếp về cảnh báo học tập.",
+        "article_label": "Điều 16",
+        "content": "Điều 16. Nguồn trực tiếp về cảnh báo học tập.",
         "supports_task_ids": ["t1"],
     }
     retrieval_result = {
@@ -743,10 +824,16 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
 
     class LLM:
         def generate(self, prompt):
-            return {"text": "Đã trả lời", "model_used": "fake", "usage": {}}
+            return {
+                "ok": True,
+                "text": "**Kết luận:** Theo Điều 16, sinh viên cần đối chiếu điều kiện.",
+                "model_used": "fake",
+                "usage": {},
+            }
 
         def generate_stream(self, prompt):
-            yield "Đã trả lời"
+            yield "**Kết luận:** Theo Điều 16, "
+            yield "sinh viên cần đối chiếu điều kiện."
 
     captured: list[list[dict[str, Any]]] = []
 
@@ -762,10 +849,16 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
         lambda query, cohort: cohort,
     )
 
-    pipeline.answer(task["question"], cohort="K51")
-    list(pipeline.answer_stream(task["question"], cohort="K51"))
+    sync_output = pipeline.answer(task["question"], cohort="K51")
+    stream_events = list(pipeline.answer_stream(task["question"], cohort="K51"))
+    stream_answer = "".join(
+        event["text"] for event in stream_events if event.get("type") == "token"
+    )
 
     assert captured == [[citation], [citation]]
+    assert stream_answer == sync_output["answer"]
+    assert "**Kết luận:**" in stream_answer
+    assert "Điều 16" in stream_answer
 
 
 def test_query_plan_telemetry_is_hidden_without_api_debug() -> None:

@@ -5,13 +5,13 @@ from src.common.storage_config import require_qdrant_collection_name
 load_dotenv()
 os.environ["TRANSFORMERS_VERBOSITY"] = "error"
 import logging
-import re
 import time
 from collections import defaultdict
 from typing import Any
 from src.retrieval.core.cross_encoder_reranker import get_local_reranker
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from src.common.cohort import is_cohort_applicable, normalize_cohort
+from src.common.legal_reference import normalize_article_label
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
     FieldCondition,
@@ -701,20 +701,6 @@ def _v7_query_filter(cohort: str | None) -> Filter:
 
 
 _GLOBAL_RETRIEVER = None
-_ARTICLE_LABEL_PATTERN = re.compile(
-    r"(?<![A-Za-zÀ-ỹ])(?:Điều|Dieu)[\s_-]*(\d+[a-z]?)\b", re.IGNORECASE
-)
-
-
-def _article_label(*values: Any) -> str | None:
-    """Extract an article label from the source's own metadata or heading."""
-    for value in values:
-        match = _ARTICLE_LABEL_PATTERN.search(str(value or ""))
-        if match:
-            return f"Điều {match.group(1).lower()}"
-    return None
-
-
 def _build_related_references(
     related_items: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
@@ -743,7 +729,7 @@ def _build_related_references(
             or related_chunk_id
         ).strip()
         content = " ".join(str(item.get("content") or "").split())
-        article_label = _article_label(
+        article_label = normalize_article_label(
             metadata.get("source_section"), metadata.get("title"), content[:600]
         )
         if article_label and article_label.casefold() not in title.casefold():

@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from src.common.legal_reference import article_label_from_heading, normalize_article_label
+
 from .amendment_precedence import (
     ApplicableAmendment,
     collect_applicable_amendments,
@@ -12,7 +14,7 @@ from .context_allocation import ContextAllocationConfig
 
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.1-mode-bound-evidence"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.4-direct-predicate-grounding"
 
 
 def build_answer_prompt(
@@ -44,18 +46,23 @@ def build_answer_prompt(
         for unit in packet["units"]
     ]
 
-    return f"""Bạn là chatbot tra cứu Sổ tay sinh viên. Trả lời bằng tiếng Việt tự nhiên, ngắn gọn và chính xác.
+    return f"""Bạn là chatbot tra cứu Sổ tay sinh viên. Trả lời bằng tiếng Việt tự nhiên, rõ ràng, đủ ý và chính xác; không tự ý rút gọn đến mức gây hiểu lầm.
 
 QUY TẮC BẮT BUỘC
 1. Trả lời đủ từng đơn vị yêu cầu và mọi ý độc lập trong câu hỏi của đơn vị đó.
 2. Mỗi đơn vị chỉ được dùng evidence và source_ref đã cấp cho đúng task/cohort; không mượn nguồn của đơn vị khác.
 3. Chỉ kết luận điều mà nguồn trực tiếp xác lập cho đúng đối tượng, hành vi hoặc điều kiện được hỏi. Không dùng điều kiện của một hậu quả, thủ tục hoặc khái niệm gần nghĩa để trả lời cho điều khác.
-4. Nếu nguồn liệt kê nhiều điều kiện hoặc trường hợp, phải giữ đủ danh sách; giữ nguyên số liệu, Điều/khoản/điểm, cohort, applicability và sửa đổi có hiệu lực.
-5. Nếu evidence chỉ gần chủ đề hoặc không đủ cho một phần, hãy nói rõ phần đó chưa tìm thấy căn cứ; trả lời partial hoặc abstain, không đổi câu hỏi sang khái niệm gần nghĩa.
+4. Nếu nguồn phân biệt nhiều hình thức đào tạo, đối tượng hoặc trường hợp mà câu hỏi chưa chỉ rõ, trình bày riêng mọi nhánh có evidence trực tiếp; không âm thầm chọn một nhánh đại diện.
+5. Giữ đầy đủ điều kiện và ngoại lệ. Không lấy điều kiện của một nhánh để phủ định hoặc khẳng định tuyệt đối cho các nhánh còn lại.
+6. Không suy ra một điều kiện đã hoặc chưa được đáp ứng chỉ từ nhãn chung như năm học, khóa hay hình thức đào tạo. Khi nguồn yêu cầu một mốc hoặc trạng thái cụ thể mà câu hỏi chưa xác lập, hãy nêu kết luận theo điều kiện hoặc yêu cầu làm rõ.
+7. Khi primary evidence có article_label, nêu đúng article_label tại phần kết luận mà nguồn đó trực tiếp hỗ trợ. Không tự tạo Điều/khoản/điểm và không liệt kê các nguồn không được dùng để trả lời.
+8. Với câu hỏi có/không về một hành vi hoặc vật cụ thể: nếu nguồn chỉ nêu tiêu chí định tính chung mà không trực tiếp gọi tên hoặc định nghĩa trường hợp được hỏi, chỉ nêu tiêu chí và nói rõ Sổ tay không kết luận trực tiếp cho trường hợp đó; không tự biến việc diễn giải tiêu chí thành lệnh cấm hoặc cho phép.
+9. Nếu evidence chỉ gần chủ đề hoặc không đủ cho một phần, hãy nói rõ phần đó chưa tìm thấy căn cứ; trả lời partial hoặc abstain, không đổi câu hỏi sang khái niệm gần nghĩa.
 
 QUY CÁCH
 - Không dùng kiến thức ngoài AUTHORIZED_EVIDENCE_BY_UNIT.
 - Không chèn mã nguồn như [S1] vào câu trả lời; giao diện hiển thị nguồn riêng.
+- Dùng Markdown có chọn lọc: in đậm kết luận chính, số liệu, thời hạn và điều kiện quan trọng; dùng danh sách khi có nhiều bước, điều kiện hoặc trường hợp. Không in đậm cả đoạn.
 - Với coverage=needs_clarification, chỉ nêu clarification_question của đơn vị đó.
 - Với coverage=uncovered hoặc không có source_ref được phép, nói chưa tìm thấy căn cứ cho đúng ý đó.
 - Nếu có applicable_amendments, áp dụng nội dung mới nhất trong đúng phạm vi nhưng không nhắc nhãn kỹ thuật amendment.
@@ -289,10 +296,22 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
     )
     content = str(citation.get("content") or citation.get("document") or "").strip()
     parent_content = str(citation.get("parent_content") or "").strip()
+    article_label = normalize_article_label(
+        citation.get("article_label"),
+        citation.get("parent_article"),
+        metadata.get("article"),
+        citation.get("source_section"),
+        citation.get("title"),
+        article_label_from_heading(parent_content.splitlines()[0])
+        if parent_content
+        else None,
+        article_label_from_heading(content.splitlines()[0]) if content else None,
+    )
     return {
         "source_ref": f"S{index}",
         "source_id": source_id,
         "title": citation.get("title") or metadata.get("title"),
+        "article_label": article_label,
         "source_cohort": citation.get("cohort") or metadata.get("cohort"),
         "applicable_cohorts": [str(value) for value in applicable_cohorts],
         "applicability": citation.get("applicability") or metadata.get("applicability"),

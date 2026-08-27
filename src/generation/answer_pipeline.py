@@ -7,7 +7,10 @@ from pathlib import Path
 from typing import Any
 
 
-from src.common.cohort import resolve_cohort_from_query
+from src.common.cohort import (
+    is_validated_source_applicable,
+    resolve_cohort_from_query,
+)
 from src.common.storage_config import require_qdrant_collection_name
 from src.retrieval.core.citation_builder import (
     build_citation_from_lookup,
@@ -47,7 +50,7 @@ from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v39-general-rag-multi-cohort"
+PIPELINE_VERSION = "v41-direct-predicate-grounding"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -1456,7 +1459,9 @@ class AnswerPipeline:
             retrieval_query=retrieval_query,
         )
         items = []
-        for item in (result.get("retrieved_items") or [])[:5]:
+        for item in result.get("retrieved_items") or []:
+            if not is_validated_source_applicable(item, cohort):
+                continue
             copied = dict(item)
             metadata = dict(copied.get("metadata") or {})
             metadata.update({"task_id": task_id, "supports_task_ids": [task_id], "cohort": metadata.get("cohort") or cohort})
@@ -1464,10 +1469,14 @@ class AnswerPipeline:
             copied["task_id"] = task_id
             copied["supports_task_ids"] = [task_id]
             items.append(copied)
+            if len(items) >= 5:
+                break
         citations = [
             {**citation, "task_id": task_id, "supports_task_ids": [task_id], "cohort": citation.get("cohort") or cohort}
-            for citation in (result.get("citations") or [])[:5]
+            for citation in (result.get("citations") or [])
+            if is_validated_source_applicable(citation, cohort)
         ]
+        citations = citations[:5]
         coverage = "covered" if items and citations else "uncovered"
         evidence = [{
             "task_id": task_id,

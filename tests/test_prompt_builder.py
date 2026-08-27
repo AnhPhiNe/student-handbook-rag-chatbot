@@ -58,6 +58,53 @@ def test_prompt_is_compact_and_places_final_task_after_evidence() -> None:
     assert "product_" not in prompt
 
 
+def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
+    prompt = build_answer_prompt(
+        query="Năm nhất có được xin nghỉ học tạm thời?",
+        retrieval_result={
+            "citations": [
+                {
+                    "chunk_id": "K51_Dieu16",
+                    "title": "Nghỉ học tạm thời",
+                    "content": (
+                        "Điều 16. Sinh viên có nhiều trường hợp nghỉ học tạm thời; "
+                        "điều kiện học tối thiểu một học kỳ chỉ áp dụng cho lý do cá nhân."
+                    ),
+                    "cohort": "K51",
+                }
+            ]
+        },
+        cohort="K51",
+    )
+
+    assert "không tự ý rút gọn đến mức gây hiểu lầm" in prompt
+    assert "trình bày riêng mọi nhánh có evidence trực tiếp" in prompt
+    assert "Không lấy điều kiện của một nhánh" in prompt
+    assert "Không suy ra một điều kiện đã hoặc chưa được đáp ứng" in prompt
+    assert "không tự biến việc diễn giải tiêu chí thành lệnh cấm hoặc cho phép" in prompt
+    assert "nêu đúng article_label" in prompt
+    assert "in đậm kết luận chính" in prompt
+    assert '"article_label": "Điều 16"' in prompt
+
+
+def test_packet_does_not_promote_cross_reference_to_source_article() -> None:
+    packet = build_authorized_evidence_packet(
+        query="Quy định hiện hành là gì?",
+        retrieval_result={"citations": []},
+        selected_citations=[
+            {
+                "chunk_id": "source-without-article",
+                "title": "Quy định chung",
+                "content": "Nội dung này dẫn chiếu Điều 99 ở đoạn sau.",
+            }
+        ],
+        fallback_cohort="K51",
+        max_context_chars=10000,
+    )
+
+    assert packet["units"][0]["primary_evidence"][0]["article_label"] is None
+
+
 def test_packet_binds_sources_to_their_tasks() -> None:
     plan = {
         "tasks": [

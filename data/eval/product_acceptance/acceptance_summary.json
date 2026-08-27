@@ -1,0 +1,42 @@
+{
+  "schema_version": "product-acceptance-summary-v1",
+  "dataset_schema_version": "product-acceptance-v1",
+  "dataset_commit": "365b611f4737703e00e663c9ab8f8d86d005523b",
+  "evaluated_code_commit": "4056e187b9df5756eee884a9355d805e8f8835be",
+  "runs": {
+    "first_run": {
+      "path": "data/eval/reports/product_acceptance/first_run.json",
+      "sha256": "9c45e11c604207c51c69c0ed52b0179d888adbf7abbbeba264c18f41284ffe23",
+      "automatic_checks_passed": 46
+    },
+    "after_general_fix": {
+      "path": "data/eval/reports/product_acceptance/after_general_fix.json",
+      "sha256": "c03ecb6d10cc2e02f66da17619275a45abc71c63cdc64c1d3e792211fff3fab5",
+      "automatic_checks_passed": 47
+    }
+  },
+  "human_review": {
+    "path": "data/eval/product_acceptance/human_signoff.json",
+    "decision": "pass",
+    "passed": 50,
+    "total": 50,
+    "pass_rate": 1.0,
+    "critical_failures": 0,
+    "major_failures": 0,
+    "minor_limitations": 4
+  },
+  "architecture_evidence": {
+    "deterministic": "143/144",
+    "end_to_end_rag_hit_at_5": "175/180",
+    "pytest": "326 passed",
+    "ruff": "passed",
+    "frontend_lint": "passed",
+    "frontend_build": "passed"
+  },
+  "release_status": "eligible_for_small_pilot",
+  "notes": [
+    "Automatic checks đo runtime shape và không thay thế human product review.",
+    "Không thêm task dependency hoặc semantic parser chỉ để biến limitation telemetry thành điểm tự động 50/50.",
+    "Chưa deploy hoặc tag v1.0.0-beta trước khi pilot 3-5 sinh viên hoàn tất."
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "schema_version": "product-acceptance-human-signoff-v1",
+  "source_model_advisory": {
+    "path": "data/eval/product_acceptance/model_advisory_review.json",
+    "sha256": "b209b3fa85fb1ec1c7708892ed52a9d3f081f42612cc4fc2fd4a956f61cae93a"
+  },
+  "reviewer_type": "human",
+  "reviewer": "project_owner",
+  "reviewed_at": "2026-08-27T16:35:00+07:00",
+  "case_decisions": [
+    {
+      "case_id": "acceptance_016",
+      "decision": "pass",
+      "severity": "minor",
+      "comment": "Chấp nhận trả đúng khoa và chuyển phần email còn thiếu thành follow-up rõ ràng. Không thêm dependency giữa các task chỉ để tự động nối entity từ output trước."
+    },
+    {
+      "case_id": "acceptance_047",
+      "decision": "pass",
+      "severity": "minor",
+      "comment": "Final answer trả đúng GPA và abstain an toàn phần xe đưa đón; aggregate status answered được ghi nhận là limitation telemetry."
+    },
+    {
+      "case_id": "acceptance_048",
+      "decision": "pass",
+      "severity": "minor",
+      "comment": "Final answer trả thủ tục có nguồn và không tự đặt phí; aggregate status answered được ghi nhận là limitation telemetry."
+    },
+    {
+      "case_id": "acceptance_049",
+      "decision": "pass",
+      "severity": "minor",
+      "comment": "Final answer trả quy trình có nguồn và không suy cam kết 24 giờ; aggregate status answered được ghi nhận là limitation telemetry."
+    }
+  ],
+  "overall_decision": "pass",
+  "final_summary": {
+    "total_cases": 50,
+    "automatic_checks_passed": 47,
+    "human_product_passed": 50,
+    "human_product_pass_rate": 1.0,
+    "critical_failures": 0,
+    "major_failures": 0,
+    "minor_limitations": 4
+  },
+  "known_limitations": [
+    "Free-form composer output không cung cấp task-level answer outcome để aggregate partial một cách deterministic khi retrieval vẫn đánh task là covered.",
+    "Dependent reference như 'khoa đó' có thể được chuyển thành follow-up thay vì tự động dùng output của task trước."
+  ],
+  "release_decision": "Product acceptance đạt; được chuyển sang pilot 3-5 sinh viên. Chưa tag public beta trước khi pilot hoàn tất."
+}

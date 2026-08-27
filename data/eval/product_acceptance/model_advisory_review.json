@@ -1,0 +1,150 @@
+{
+  "schema_version": "product-acceptance-model-advisory-v1",
+  "reviewer_type": "model_advisory",
+  "reviewed_at": "2026-08-27T16:20:00+07:00",
+  "source_reports": {
+    "first_run": {
+      "path": "data/eval/reports/product_acceptance/first_run.json",
+      "sha256": "9c45e11c604207c51c69c0ed52b0179d888adbf7abbbeba264c18f41284ffe23"
+    },
+    "after_general_fix": {
+      "path": "data/eval/reports/product_acceptance/after_general_fix.json",
+      "sha256": "c03ecb6d10cc2e02f66da17619275a45abc71c63cdc64c1d3e792211fff3fab5"
+    }
+  },
+  "review_scope": {
+    "automatic_failures": [
+      "acceptance_047",
+      "acceptance_048",
+      "acceptance_049"
+    ],
+    "changed_case_after_fix": [
+      "acceptance_043"
+    ],
+    "spot_check_seed": 20260827,
+    "spot_checked_automatic_passes": [
+      "acceptance_001",
+      "acceptance_003",
+      "acceptance_010",
+      "acceptance_016",
+      "acceptance_025",
+      "acceptance_027",
+      "acceptance_033",
+      "acceptance_034",
+      "acceptance_037",
+      "acceptance_040"
+    ]
+  },
+  "cases": [
+    {
+      "case_id": "acceptance_043",
+      "decision": "pass",
+      "severity": "none",
+      "root_cause": "resolved_data_alias",
+      "notes": "Sau fix, hệ thống yêu cầu đủ điểm Nghe, Đọc, Nói, Viết, không gọi answer LLM và không suy bậc từ tổng điểm."
+    },
+    {
+      "case_id": "acceptance_047",
+      "decision": "pass",
+      "severity": "minor",
+      "root_cause": "aggregate_status_semantics",
+      "notes": "Final answer trả đúng GPA và abstain phần xe đưa đón. Status tổng thể là answered thay vì partial; citation candidates cho phần abstain hơi dư nhưng không tạo claim sai."
+    },
+    {
+      "case_id": "acceptance_048",
+      "decision": "pass",
+      "severity": "minor",
+      "root_cause": "aggregate_status_semantics",
+      "notes": "Final answer trả phần thủ tục có nguồn và không tự đặt phí. Status tổng thể là answered; một số citation candidates cho phần phí không trực tiếp cần thiết."
+    },
+    {
+      "case_id": "acceptance_049",
+      "decision": "pass",
+      "severity": "minor",
+      "root_cause": "aggregate_status_semantics",
+      "notes": "Final answer nêu quy trình và thời hạn 15/10 ngày có nguồn, không khẳng định cam kết 24 giờ. Status tổng thể là answered thay vì partial."
+    },
+    {
+      "case_id": "acceptance_001",
+      "decision": "pass",
+      "severity": "none",
+      "root_cause": "none",
+      "notes": "72 điểm được xếp loại Khá theo đúng bảng K51."
+    },
+    {
+      "case_id": "acceptance_003",
+      "decision": "pass",
+      "severity": "none",
+      "root_cause": "none",
+      "notes": "JLPT N4 được quy đổi bậc 3; không suy sang điều kiện tốt nghiệp."
+    },
+    {
+      "case_id": "acceptance_010",
+      "decision": "pass",
+      "severity": "none",
+      "root_cause": "none",
+      "notes": "Trả đủ hai giá trị GPA và giữ đúng bảng học lực K51."
+    },
+    {
+      "case_id": "acceptance_016",
+      "decision": "fail",
+      "severity": "major",
+      "root_cause": "dependent_structured_entity_resolution",
+      "notes": "Trả đúng Khoa Tâm lý học nhưng không tra tiếp email của chính khoa; phần hai bị chuyển thành clarification dù entity đã được xác định ở task trước. Đây là bỏ một ý trong compound query."
+    },
+    {
+      "case_id": "acceptance_025",
+      "decision": "pass",
+      "severity": "none",
+      "root_cause": "none",
+      "notes": "Giữ riêng điều kiện cảnh báo học tập và trình bày đủ chính quy/vừa làm vừa học."
+    },
+    {
+      "case_id": "acceptance_027",
+      "decision": "pass",
+      "severity": "none",
+      "root_cause": "none",
+      "notes": "Xếp đúng học lực Yếu và không suy cảnh báo chỉ từ GPA 1.8."
+    },
+    {
+      "case_id": "acceptance_033",
+      "decision": "pass",
+      "severity": "none",
+      "root_cause": "none",
+      "notes": "Trả đủ hai bước nghỉ học tạm thời và tiếp nhận trở lại, có nguồn K50."
+    },
+    {
+      "case_id": "acceptance_034",
+      "decision": "pass",
+      "severity": "none",
+      "root_cause": "none",
+      "notes": "Trả cả khen thưởng và kỷ luật, không dùng điều kiện của phần này thay phần kia."
+    },
+    {
+      "case_id": "acceptance_037",
+      "decision": "pass",
+      "severity": "none",
+      "root_cause": "none",
+      "notes": "So sánh đúng 8 năm K48-K49 và 6 năm K51, không lấy mốc liên thông."
+    },
+    {
+      "case_id": "acceptance_040",
+      "decision": "pass",
+      "severity": "none",
+      "root_cause": "none",
+      "notes": "Có nguồn cohort-local cho cả K50 và K51; nội dung điều kiện cảnh báo tương ứng."
+    }
+  ],
+  "provisional_summary": {
+    "automatic_checks_passed": 47,
+    "model_advisory_passed": 49,
+    "model_advisory_pass_rate": 0.98,
+    "confirmed_critical_failures": 0,
+    "confirmed_major_failures": 1,
+    "gate_status": "pending_human_signoff",
+    "blocking_contract": "Không bỏ task chính trong compound query",
+    "blocking_case_ids": [
+      "acceptance_016"
+    ]
+  }
+}

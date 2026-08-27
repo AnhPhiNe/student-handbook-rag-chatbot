@@ -1,0 +1,26 @@
+{
+  "schema_version": "product-acceptance-overlap-audit-v1",
+  "normalization": "Unicode NFKD, bỏ dấu, lowercase, token alphanumeric; similarity là token-set Jaccard",
+  "acceptance_case_count": 50,
+  "comparisons": {
+    "architecture_v3_deterministic_144": {
+      "exact_query_overlap": 0,
+      "jaccard_at_least_0_80": 0,
+      "jaccard_at_least_0_65": 0,
+      "jaccard_at_least_0_50": 2
+    },
+    "architecture_v3_retrieval_180": {
+      "exact_query_overlap": 0,
+      "jaccard_at_least_0_80": 0,
+      "jaccard_at_least_0_65": 0,
+      "jaccard_at_least_0_50": 0
+    },
+    "legacy_product_regression_30": {
+      "exact_query_overlap": 0,
+      "jaccard_at_least_0_80": 0,
+      "jaccard_at_least_0_65": 0,
+      "jaccard_at_least_0_50": 7
+    }
+  },
+  "interpretation": "Bộ 50 không sao chép câu từ các bộ cũ. Một số chủ đề sản phẩm được phủ lại có chủ đích dưới dạng compound, multi-cohort hoặc end-to-end; đây là product acceptance set được khóa trước lần chạy, không được tuyên bố là blind research benchmark."
+}

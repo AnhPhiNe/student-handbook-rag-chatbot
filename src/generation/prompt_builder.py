@@ -14,7 +14,7 @@ from .context_allocation import ContextAllocationConfig
 
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.6-conditional-answer"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.8-explicit-scope-separation"
 
 
 def build_answer_prompt(
@@ -51,14 +51,13 @@ def build_answer_prompt(
 QUY TẮC BẮT BUỘC
 1. Trả lời đầy đủ mọi ý trong từng đơn vị yêu cầu. Chỉ kết luận dứt khoát đối với từng ý khi evidence trực tiếp xác lập kết luận đó và câu hỏi đã cung cấp đủ các điều kiện cần thiết.
 2. Mỗi đơn vị chỉ được dùng evidence và source_ref đã cấp cho đúng task/cohort; không mượn nguồn của đơn vị khác.
-3. Chỉ kết luận điều mà nguồn trực tiếp xác lập cho đúng đối tượng, hành vi hoặc điều kiện được hỏi. Không dùng điều kiện của một hậu quả, thủ tục hoặc khái niệm gần nghĩa để trả lời cho điều khác.
-4. Nếu nguồn phân biệt nhiều hình thức đào tạo, đối tượng hoặc trường hợp mà câu hỏi chưa chỉ rõ, trình bày riêng mọi nhánh có evidence trực tiếp; không âm thầm chọn một nhánh đại diện.
-5. Giữ đầy đủ điều kiện và ngoại lệ. Không lấy điều kiện của một nhánh để phủ định hoặc khẳng định tuyệt đối cho các nhánh còn lại.
-6. Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp, hãy trình bày rõ từng trường hợp có căn cứ và nêu thông tin còn thiếu để xác định trường hợp của người dùng; không tự đoán hoặc trả lời có/không tuyệt đối.
-7. Khi primary evidence có article_label, nêu đúng article_label tại phần kết luận mà nguồn đó trực tiếp hỗ trợ. Không tự tạo Điều/khoản/điểm và không liệt kê các nguồn không được dùng để trả lời.
-8. Với câu hỏi có/không về một hành vi hoặc vật cụ thể: nếu nguồn chỉ nêu tiêu chí định tính chung mà không trực tiếp gọi tên hoặc định nghĩa trường hợp được hỏi, chỉ nêu tiêu chí và nói rõ Sổ tay không kết luận trực tiếp cho trường hợp đó; không tự biến việc diễn giải tiêu chí thành lệnh cấm hoặc cho phép.
-9. Nếu evidence chỉ gần chủ đề hoặc không đủ cho một phần, hãy nói rõ phần đó chưa tìm thấy căn cứ; trả lời partial hoặc abstain, không đổi câu hỏi sang khái niệm gần nghĩa.
-10. Nếu nguồn chỉ dẫn chiếu sang văn bản khác mà không trực tiếp liệt kê đối tượng, điều kiện hoặc giá trị được hỏi, phải nói rõ nguồn hiện có không liệt kê nội dung đó và nêu văn bản được dẫn chiếu; không trình bày câu dẫn chiếu như thể đã trả lời danh sách.
+3. Với mỗi kết luận, phải giữ đúng phạm vi ngữ nghĩa mà nguồn trực tiếp xác lập: đối tượng, hành vi, kết quả được áp dụng, điều kiện và hệ quả. Không chuyển thông tin giữa các khái niệm gần nghĩa hoặc coi chúng là cùng một cơ chế nếu nguồn không trực tiếp xác lập điều đó.
+4. Không coi hai khái niệm là tương đương hoặc là tên gọi thay thế, kể cả khi đặt trong ngoặc, trừ khi nguồn trực tiếp định nghĩa như vậy. Nếu yêu cầu hoặc evidence có nhiều cơ chế hay phạm vi, hãy gọi tên và trình bày riêng từng phần, giữ đúng điều kiện và ngoại lệ tương ứng.
+5. Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp, hãy trình bày rõ từng trường hợp có căn cứ và nêu thông tin còn thiếu để xác định trường hợp của người dùng; không tự đoán hoặc trả lời có/không tuyệt đối.
+6. Khi primary evidence có article_label, nêu đúng article_label tại phần kết luận mà nguồn đó trực tiếp hỗ trợ. Không tự tạo Điều/khoản/điểm và không liệt kê các nguồn không được dùng để trả lời.
+7. Với câu hỏi có/không về một hành vi hoặc vật cụ thể: nếu nguồn chỉ nêu tiêu chí định tính chung mà không trực tiếp gọi tên hoặc định nghĩa trường hợp được hỏi, chỉ nêu tiêu chí và nói rõ Sổ tay không kết luận trực tiếp cho trường hợp đó; không tự biến việc diễn giải tiêu chí thành lệnh cấm hoặc cho phép.
+8. Nếu evidence chỉ gần chủ đề hoặc không đủ cho một phần, hãy nói rõ phần đó chưa tìm thấy căn cứ; trả lời partial hoặc abstain, không đổi câu hỏi sang khái niệm gần nghĩa.
+9. Nếu nguồn chỉ dẫn chiếu sang văn bản khác mà không trực tiếp liệt kê đối tượng, điều kiện hoặc giá trị được hỏi, phải nói rõ nguồn hiện có không liệt kê nội dung đó và nêu văn bản được dẫn chiếu; không trình bày câu dẫn chiếu như thể đã trả lời danh sách.
 
 QUY CÁCH
 - Không dùng kiến thức ngoài AUTHORIZED_EVIDENCE_BY_UNIT.

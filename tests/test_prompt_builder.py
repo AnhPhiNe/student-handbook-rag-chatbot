@@ -78,8 +78,11 @@ def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
     )
 
     assert "không tự ý rút gọn đến mức gây hiểu lầm" in prompt
-    assert "trình bày riêng mọi nhánh có evidence trực tiếp" in prompt
-    assert "Không lấy điều kiện của một nhánh" in prompt
+    assert "phải giữ đúng phạm vi ngữ nghĩa mà nguồn trực tiếp xác lập" in prompt
+    assert "đối tượng, hành vi, kết quả được áp dụng, điều kiện và hệ quả" in prompt
+    assert "Không coi hai khái niệm là tương đương" in prompt
+    assert "kể cả khi đặt trong ngoặc" in prompt
+    assert "gọi tên và trình bày riêng từng phần" in prompt
     assert "Chỉ kết luận dứt khoát đối với từng ý" in prompt
     assert "Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp" in prompt
     assert "không tự đoán hoặc trả lời có/không tuyệt đối" in prompt
@@ -88,6 +91,32 @@ def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
     assert "nêu đúng article_label" in prompt
     assert "in đậm kết luận chính" in prompt
     assert '"article_label": "Điều 16"' in prompt
+
+
+def test_prompt_separates_distinct_scopes_without_case_specific_rules() -> None:
+    prompt = build_answer_prompt(
+        query="Quy định này áp dụng thế nào?",
+        retrieval_result={
+            "citations": [
+                {
+                    "chunk_id": "K51_Dieu1",
+                    "title": "Phạm vi áp dụng",
+                    "content": (
+                        "Điều 1. Mỗi đối tượng và trường hợp có điều kiện, "
+                        "kết quả áp dụng riêng."
+                    ),
+                    "cohort": "K51",
+                }
+            ]
+        },
+        cohort="K51",
+    )
+
+    assert "khái niệm gần nghĩa" in prompt
+    assert "coi chúng là cùng một cơ chế" in prompt
+    assert "giữ đúng điều kiện và ngoại lệ tương ứng" in prompt
+    assert "bảo lưu kết quả học tập" not in prompt
+    assert "nghỉ học tạm thời" not in prompt
 
 
 def test_packet_does_not_promote_cross_reference_to_source_article() -> None:

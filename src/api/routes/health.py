@@ -7,7 +7,14 @@ from pathlib import Path
 from fastapi import APIRouter, Depends
 
 from src.api.deps import verify_admin_api_key
-from src.api.schemas import ArtifactHealthResponse, ArtifactStatus, HealthResponse, ReadinessResponse
+from src.api.schemas import (
+    ArtifactHealthResponse,
+    ArtifactStatus,
+    HealthResponse,
+    ReadinessResponse,
+    RetrievalComponentStatus,
+)
+from src.retrieval.core.runtime_health import get_bm25_runtime_status
 
 
 router = APIRouter(tags=["health"])
@@ -235,12 +242,14 @@ def readiness() -> ReadinessResponse:
     artifact_status = _artifact_health_response()
     missing_count = sum(1 for item in artifact_status.required_artifacts if not item.exists)
     ready = artifact_status.status == "ok"
+    bm25_status = RetrievalComponentStatus(**get_bm25_runtime_status())
     return ReadinessResponse(
-        status="ok" if ready else "degraded",
+        status="ok" if ready and bm25_status.status != "degraded" else "degraded",
         service=SERVICE_NAME,
         version=SERVICE_VERSION,
         ready=ready,
         missing_count=missing_count,
+        bm25=bm25_status,
     )
 
 

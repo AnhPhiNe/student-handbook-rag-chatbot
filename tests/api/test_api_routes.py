@@ -13,6 +13,7 @@ if TestClient is not None:
     from src.api import chat_controls
     from src.api.deps import get_answer_service
     from src.api.main import app
+    from src.api.schemas import ArtifactHealthResponse
 
 
 class FakeAnswerService:
@@ -125,7 +126,17 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertEqual(response.json()["detail"], "Admin API key required")
 
     def test_readiness_is_public_and_reports_degraded_without_required_env(self) -> None:
-        with patch.dict("os.environ", {}, clear=True):
+        with (
+            patch.dict("os.environ", {}, clear=True),
+            patch(
+                "src.api.routes.health.get_bm25_runtime_status",
+                return_value={
+                    "status": "degraded",
+                    "attempts": 3,
+                    "error_type": "TimeoutError",
+                },
+            ),
+        ):
             response = self.client.get("/health/readiness")
 
         self.assertEqual(response.status_code, 200)
@@ -134,6 +145,38 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertIn(payload["status"], {"ok", "degraded"})
         self.assertIsInstance(payload["ready"], bool)
         self.assertGreaterEqual(payload["missing_count"], 0)
+        self.assertEqual(
+            payload["bm25"],
+            {
+                "status": "degraded",
+                "attempts": 3,
+                "error_type": "TimeoutError",
+            },
+        )
+
+    def test_readiness_stays_ready_when_only_bm25_is_degraded(self) -> None:
+        artifact_status = ArtifactHealthResponse(status="ok", required_artifacts=[])
+        with (
+            patch(
+                "src.api.routes.health._artifact_health_response",
+                return_value=artifact_status,
+            ),
+            patch(
+                "src.api.routes.health.get_bm25_runtime_status",
+                return_value={
+                    "status": "degraded",
+                    "attempts": 3,
+                    "error_type": "TimeoutError",
+                },
+            ),
+        ):
+            response = self.client.get("/health/readiness")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertTrue(payload["ready"])
+        self.assertEqual(payload["status"], "degraded")
+        self.assertEqual(payload["bm25"]["status"], "degraded")
 
     def test_artifact_health_uses_qdrant_env_for_cloud_provider(self) -> None:
         with patch.dict(

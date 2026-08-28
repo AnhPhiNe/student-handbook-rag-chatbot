@@ -5,6 +5,7 @@ from src.common.storage_config import require_qdrant_collection_name
 load_dotenv()
 os.environ["TRANSFORMERS_VERBOSITY"] = "error"
 import logging
+import threading
 import time
 from collections import defaultdict
 from typing import Any
@@ -13,6 +14,7 @@ from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from src.common.cohort import is_cohort_applicable, normalize_cohort
 from src.common.legal_reference import normalize_article_label
 from src.common.source_identity import canonical_article_source_id
+from src.retrieval.core.runtime_health import set_bm25_runtime_status
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
     FieldCondition,
@@ -31,6 +33,8 @@ SUPPORTED_RETRIEVAL_MODES = {
 }
 GRAPH_SUPPLEMENT_PARENT_LIMIT = 5
 PHORANKER_EVAL_MODES = {"full", "no_graph"}
+BM25_INIT_MAX_ATTEMPTS = 3
+BM25_INIT_BACKOFF_SECONDS = 0.5
 
 
 def _chunk_matches_regulation_scope(
@@ -200,39 +204,93 @@ class ChildParentHybridRetriever:
         self._initialize_bm25_async()
 
     def _initialize_bm25_async(self):
-        # Fire-and-forget background initialization for BM25 to not block startup
-        import threading
-        def _build():
+        """Build BM25 in the background without blocking dense retrieval."""
+
+        set_bm25_runtime_status("initializing", attempts=0)
+        threading.Thread(
+            target=self._build_bm25_index_with_retry,
+            name="bm25-index-initializer",
+            daemon=True,
+        ).start()
+
+    def _fetch_bm25_chunks_from_qdrant(self) -> list[dict[str, Any]]:
+        chunks: list[dict[str, Any]] = []
+        scroll_offset = None
+        while True:
+            records, scroll_offset = self.qdrant_client.scroll(
+                collection_name=self.collection_name,
+                scroll_filter=_v7_query_filter(None),
+                limit=1000,
+                offset=scroll_offset,
+                with_payload=True,
+                with_vectors=False,
+            )
+            chunks.extend(self._qdrant_point_to_chunk(point) for point in records)
+            if scroll_offset is None:
+                return chunks
+
+    def _build_bm25_index_with_retry(
+        self,
+        *,
+        max_attempts: int = BM25_INIT_MAX_ATTEMPTS,
+        backoff_seconds: float = BM25_INIT_BACKOFF_SECONDS,
+    ) -> bool:
+        """Fetch Qdrant chunks with bounded retry, then build BM25 once."""
+
+        attempts = max(1, int(max_attempts))
+        chunks: list[dict[str, Any]] | None = None
+        for attempt in range(1, attempts + 1):
             try:
-                # Fetch child chunks from Qdrant to build the BM25 index.
-                # Assuming collection name matches the semantic collection logic
-                # For this implementation, we query the chunk collection or use parent chunks
-                logger.info("Starting BM25 index build...")
-                # Note: This is a placeholder for fetching chunks. 
-                # Since we don't have direct access to chunk db here, we'll fetch them from Qdrant scroll 
-                # or a pre-built JSON file if available. We will fetch from qdrant scroll API for correctness.
-                chunks = []
-                scroll_offset = None
-                while True:
-                    response = self.qdrant_client.scroll(
-                        collection_name=self.collection_name,
-                        scroll_filter=_v7_query_filter(None),
-                        limit=1000,
-                        offset=scroll_offset,
-                        with_payload=True,
-                        with_vectors=False
+                logger.info(
+                    "Fetching BM25 chunks from Qdrant (attempt %s/%s)...",
+                    attempt,
+                    attempts,
+                )
+                chunks = self._fetch_bm25_chunks_from_qdrant()
+                break
+            except Exception as exc:
+                if attempt >= attempts:
+                    set_bm25_runtime_status(
+                        "degraded",
+                        attempts=attempt,
+                        error_type=type(exc).__name__,
                     )
-                    records, scroll_offset = response
-                    chunks.extend([self._qdrant_point_to_chunk(p) for p in records])
-                    if scroll_offset is None:
-                        break
-                
-                self.bm25.build_bm25_index(chunks)
-                logger.info(f"BM25 index built successfully with {len(chunks)} chunks.")
-            except Exception as e:
-                logger.error(f"Failed to build BM25 index: {e}")
-                
-        threading.Thread(target=_build, daemon=True).start()
+                    logger.error(
+                        "Failed to fetch BM25 chunks after %s attempts; "
+                        "dense retrieval remains available: %s",
+                        attempt,
+                        exc,
+                    )
+                    return False
+                delay = max(0.0, float(backoff_seconds)) * attempt
+                logger.warning(
+                    "Qdrant BM25 scroll failed on attempt %s/%s; "
+                    "retrying in %.1fs: %s",
+                    attempt,
+                    attempts,
+                    delay,
+                    exc,
+                )
+                time.sleep(delay)
+
+        try:
+            assert chunks is not None
+            self.bm25.build_bm25_index(chunks)
+        except Exception as exc:
+            set_bm25_runtime_status(
+                "degraded",
+                attempts=attempt,
+                error_type=type(exc).__name__,
+            )
+            logger.error(
+                "Failed to build BM25 index; dense retrieval remains available: %s",
+                exc,
+            )
+            return False
+
+        set_bm25_runtime_status("ready", attempts=attempt)
+        logger.info("BM25 index built successfully with %s chunks.", len(chunks))
+        return True
 
     def _get_parent(self, parent_id: str) -> dict[str, Any] | None:
         if not parent_id:

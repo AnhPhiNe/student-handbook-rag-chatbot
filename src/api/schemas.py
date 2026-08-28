@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -126,12 +126,19 @@ class HealthResponse(BaseModel):
     version: str
 
 
+class RetrievalComponentStatus(BaseModel):
+    status: Literal["initializing", "ready", "degraded"]
+    attempts: int = 0
+    error_type: str | None = None
+
+
 class ReadinessResponse(BaseModel):
     status: str
     service: str
     version: str
     ready: bool
     missing_count: int = 0
+    bm25: RetrievalComponentStatus
 
 
 class ArtifactStatus(BaseModel):

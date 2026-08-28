@@ -20,7 +20,7 @@ ACCEPTANCE_DATASET = Path("data/eval/product_acceptance/cases.json")
 def test_product_regression_dataset_is_valid_and_balanced() -> None:
     payload, cases = load_cases(DATASET)
 
-    assert payload["schema_version"] == "product-regression-v1"
+    assert payload["schema_version"] == "product-regression-v2"
     assert len(cases) == 30
     categories = {case["category"] for case in cases}
     assert {

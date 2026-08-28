@@ -1,6 +1,6 @@
 {
-  "schema_version": "product-regression-v1",
-  "description": "Development set phục vụ kiểm tra sản phẩm. Có thể chạy lại sau khi sửa lỗi; không phải benchmark hoặc holdout.",
+  "schema_version": "product-regression-v2",
+  "description": "Development set phục vụ kiểm tra sản phẩm. Có thể chạy lại sau khi sửa lỗi; không phải benchmark hoặc holdout. Case stress cũ product_027 được giữ tại composer_development/composer_stress_027 và thay bằng một tình huống partial thực tế.",
   "review_policy": {
     "target_pass_rate": 0.9,
     "critical_failures_allowed": 0,
@@ -229,12 +229,12 @@
       "review_focus": "Yêu cầu đủ điểm bốn kỹ năng theo metadata, không hard-code riêng số 650."
     },
     {
-      "id": "product_027",
+      "id": "product_031",
       "category": "partial_answer",
-      "query": "K51 điều kiện nhận học bổng là gì và quy định về dịch chuyển tức thời giữa các cơ sở như thế nào?",
+      "query": "K51 làm mất thẻ sinh viên thì liên hệ Phòng CTCT-HSSV qua số điện thoại nào và lệ phí cấp lại thẻ là bao nhiêu?",
       "cohort": "K51",
-      "expected_outcome": "partial",
-      "review_focus": "Trả phần có nguồn và nói rõ phần không có căn cứ; không suy phủ định từ absence."
+      "expected_outcome": "answered",
+      "review_focus": "Trả thông tin liên hệ có nguồn; nói rõ khi chưa có căn cứ về lệ phí cấp lại thẻ và không tự tạo mức phí."
     },
     {
       "id": "product_028",

@@ -403,7 +403,6 @@ python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000
 Important environment variables:
 
 ```dotenv
-VECTORDB_PROVIDER=qdrant_cloud
 QDRANT_URL=https://your-cluster.qdrant.io
 QDRANT_API_KEY=...
 QDRANT_COLLECTION_NAME=student_handbook_semantic_v31

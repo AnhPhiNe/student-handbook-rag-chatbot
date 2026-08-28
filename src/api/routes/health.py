@@ -27,10 +27,6 @@ def _artifact(path: str, exists: bool, kind: str) -> ArtifactStatus:
     return ArtifactStatus(path=path, exists=exists, kind=kind)
 
 
-def _uses_qdrant_provider(provider: str) -> bool:
-    return provider.strip().lower() in {"qdrant", "qdrant_cloud"}
-
-
 def _build_manifest_matches_environment() -> bool:
     if not BUILD_MANIFEST_PATH.is_file():
         return False
@@ -162,30 +158,20 @@ def _required_artifacts() -> list[ArtifactStatus]:
         ),
     ]
 
-    vectordb_provider = os.environ.get("VECTORDB_PROVIDER", "qdrant").strip().lower()
-    if _uses_qdrant_provider(vectordb_provider):
-        required.extend(
-            [
-                _artifact("QDRANT_URL", bool(os.environ.get("QDRANT_URL")), "env"),
-                _artifact("QDRANT_API_KEY", bool(os.environ.get("QDRANT_API_KEY")), "env"),
-                _artifact(
-                    "QDRANT_COLLECTION_NAME",
-                    bool(
-                        os.environ.get("STUDENT_RAG_HYBRID_COLLECTION")
-                        or os.environ.get("QDRANT_COLLECTION_NAME")
-                    ),
-                    "env",
-                ),
-            ]
-        )
-    else:
-        required.append(
+    required.extend(
+        [
+            _artifact("QDRANT_URL", bool(os.environ.get("QDRANT_URL")), "env"),
+            _artifact("QDRANT_API_KEY", bool(os.environ.get("QDRANT_API_KEY")), "env"),
             _artifact(
-                "data/vectorstore/chroma",
-                Path("data/vectorstore/chroma").is_dir(),
-                "vectorstore",
-            )
-        )
+                "QDRANT_COLLECTION_NAME",
+                bool(
+                    os.environ.get("STUDENT_RAG_HYBRID_COLLECTION")
+                    or os.environ.get("QDRANT_COLLECTION_NAME")
+                ),
+                "env",
+            ),
+        ]
+    )
 
     required.extend(
         [

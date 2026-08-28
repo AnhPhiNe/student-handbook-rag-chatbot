@@ -310,7 +310,7 @@ def main() -> None:
     )
     parser.add_argument("--profile", choices=("smoke", "full"), default="smoke")
     parser.add_argument("--resume", action="store_true")
-    parser.add_argument("--backend", choices=("qdrant", "chroma"), default="qdrant")
+    parser.add_argument("--backend", choices=("qdrant",), default="qdrant")
     parser.add_argument(
         "--ablation",
         choices=(

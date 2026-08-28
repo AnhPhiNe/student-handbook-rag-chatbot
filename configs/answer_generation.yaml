@@ -16,10 +16,6 @@ embedding:
   batch_size: 8
   normalize_embeddings: true
 
-vectorstore:
-  persist_dir: data/vectorstore/chroma
-  collection_name: student_handbook_legacy_chroma
-
 retrieval:
   default_top_k: 5
   candidate_multiplier: 5

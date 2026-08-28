@@ -11,7 +11,6 @@ from src.common.cohort import (
     is_validated_source_applicable,
     resolve_cohort_from_query,
 )
-from src.common.storage_config import require_qdrant_collection_name
 from src.retrieval.core.citation_builder import (
     build_citation_from_lookup,
     enrich_citations_with_parent_details,
@@ -24,7 +23,6 @@ from src.retrieval.core.hybrid_pipeline import (
 )
 from src.retrieval.core.query_context import select_effective_query
 from src.retrieval.core.vector_retriever import (
-    get_chroma_collection,
     load_embedding_model,
 )
 from src.retrieval.core.slang_normalizer import SlangNormalizer
@@ -203,21 +201,6 @@ class AnswerPipeline:
 
 
         self.model = load_embedding_model(self.config["embedding"]["model_name"])
-        try:
-            collection_name = require_qdrant_collection_name()
-            self.collection = get_chroma_collection(
-                persist_dir=self.config["vectorstore"].get(
-                    "persist_dir", "data/vectorstore/chroma"
-                ),
-                collection_name=collection_name,
-            )
-        except Exception as exc:
-            import logging
-
-            logging.getLogger(__name__).warning(
-                f"Skip Chroma initialization because Qdrant hybrid retrieval is configured: {exc}"
-            )
-            self.collection = None
 
         llm_config = self.config.get("llm", {})
         self.llm_config = llm_config
@@ -955,8 +938,6 @@ class AnswerPipeline:
             retrieval_query = self.slang_normalizer.normalize_for_retrieval(query)
             result = run_hybrid_retrieval_pipeline(
                 query=query,
-                model=self.model,
-                collection=self.collection,
                 scoring_tables=self.scoring_tables,
                 formula_rules=self.formula_rules,
                 entity_registry=self.entity_registry,
@@ -1482,8 +1463,6 @@ class AnswerPipeline:
         retrieval_query = self.slang_normalizer.normalize_for_retrieval(task_query)
         result = run_hybrid_retrieval_pipeline(
             query=task_query,
-            model=self.model,
-            collection=self.collection,
             scoring_tables=self.scoring_tables,
             formula_rules=self.formula_rules,
             entity_registry=self.entity_registry,
@@ -1762,8 +1741,6 @@ class AnswerPipeline:
 
         result = run_hybrid_retrieval_pipeline(
             query=effective_query,
-            model=self.model,
-            collection=self.collection,
             scoring_tables=self.scoring_tables,
             formula_rules=self.formula_rules,
             entity_registry=self.entity_registry,

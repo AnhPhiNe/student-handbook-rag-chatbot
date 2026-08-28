@@ -1005,8 +1005,8 @@ def evaluate_retrieval(
     limit: int | None = None,
     pipeline_factory: Callable[[], Any] | None = None,
 ) -> dict[str, Any]:
-    if backend not in {"qdrant", "chroma"}:
-        raise ValueError("backend must be qdrant or chroma")
+    if backend != "qdrant":
+        raise ValueError("backend must be qdrant")
     if mode not in {
         "full",
         "no_graph",
@@ -1017,8 +1017,6 @@ def evaluate_retrieval(
             "mode must be full, no_graph, vector_only, "
             "or vector_primary_graph_supplement"
         )
-    if backend == "chroma" and mode != "full":
-        raise ValueError("Chroma is reproducibility-only; ablations require Qdrant")
     if scope not in {"pure", "end_to_end"}:
         raise ValueError("scope must be pure or end_to_end")
     previous_backend = os.environ.get("STUDENT_RAG_USE_QDRANT")
@@ -1028,11 +1026,8 @@ def evaluate_retrieval(
         "STUDENT_RAG_EVAL_FORCE_REGULATION_RAG"
     )
     previous_router_wait = os.environ.get("STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED")
-    os.environ["STUDENT_RAG_USE_QDRANT"] = "1" if backend == "qdrant" else "0"
-    if backend == "chroma":
-        os.environ["STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL"] = "1"
-    else:
-        os.environ.pop("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL", None)
+    os.environ["STUDENT_RAG_USE_QDRANT"] = "1"
+    os.environ.pop("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL", None)
     os.environ["STUDENT_RAG_EVAL_RETRIEVAL_MODE"] = mode
     if scope == "pure":
         os.environ["STUDENT_RAG_EVAL_FORCE_REGULATION_RAG"] = "1"

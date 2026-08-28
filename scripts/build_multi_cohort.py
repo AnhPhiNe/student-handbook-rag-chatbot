@@ -984,29 +984,6 @@ def main(argv: list[str] | None = None):
     subprocess.run([sys.executable, "-m", "scripts.audit_table_quality"], check=True)
     subprocess.run([sys.executable, "-m", "scripts.check_deploy_artifacts"], check=True)
 
-    enable_legacy_vectorstore = (
-        os.environ.get("ENABLE_LEGACY_VECTORSTORE", "")
-        .strip()
-        .lower()
-        in {"1", "true", "yes", "on"}
-    )
-
-    if enable_legacy_vectorstore:
-        print(
-            f"\n{'='*50}\n"
-            "--- BUILDING LEGACY UNIFIED VECTOR STORE ---\n"
-            f"{'='*50}"
-        )
-        subprocess.run(
-            [sys.executable, "-m", "scripts.build_vectorstore"],
-            check=True,
-        )
-    else:
-        print(
-            "\nLegacy vector store disabled. "
-            "The pipeline only builds the child-parent Qdrant index."
-        )
-
     if os.environ.get("PUSH_REMOTE", "").strip().lower() in {"1", "true", "yes", "on"}:
         print(f"\n{'='*50}\n--- PUSHING TO MONGODB & QDRANT CLOUD ---\n{'='*50}")
         publish_env = os.environ.copy()

@@ -12,6 +12,7 @@ from src.retrieval.core.cross_encoder_reranker import get_local_reranker
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from src.common.cohort import is_cohort_applicable, normalize_cohort
 from src.common.legal_reference import normalize_article_label
+from src.common.source_identity import canonical_article_source_id
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
     FieldCondition,
@@ -732,6 +733,12 @@ def build_related_references(
         article_label = normalize_article_label(
             metadata.get("source_section"), metadata.get("title"), content[:600]
         )
+        document_identity = metadata.get("document_title") or metadata.get("document_id")
+        canonical_source_id = canonical_article_source_id(
+            document_identity=document_identity,
+            cohort=metadata.get("cohort"),
+            article_label=article_label,
+        )
         if article_label and article_label.casefold() not in title.casefold():
             title = f"{article_label} — {title}"
         preview = content[:480].rstrip()
@@ -740,7 +747,10 @@ def build_related_references(
 
         references.append(
             {
-                "id": f"R{index}",
+                "id": canonical_source_id or f"R{index}",
+                "display_label": f"R{index}",
+                "canonical_source_id": canonical_source_id,
+                "document_identity": document_identity,
                 "primary_chunk_id": primary_chunk_id,
                 "related_chunk_id": related_chunk_id,
                 "title": title,

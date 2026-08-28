@@ -74,7 +74,10 @@ function buildPrimaryArticleReferences(citations: Citation[]): RelatedReference[
     const previewSource = citation.relevant_excerpt?.trim() || citation.content.trim() || content;
     const preview = previewSource.slice(0, 480).trim();
     return [{
-      id: `P${index + 1}`,
+      id: citation.canonical_source_id || `legacy-primary-${index + 1}`,
+      display_label: `P${index + 1}`,
+      canonical_source_id: citation.canonical_source_id,
+      document_identity: citation.document_identity,
       primary_chunk_id: citation.chunk_id,
       related_chunk_id: citation.chunk_id,
       title,
@@ -95,12 +98,14 @@ function buildPrimaryArticleReferences(citations: Citation[]): RelatedReference[
 function deduplicatePrimaryReferences(references: RelatedReference[]): RelatedReference[] {
   const unique = new Map<string, RelatedReference>();
   for (const reference of references) {
-    const key = reference.related_chunk_id || reference.primary_chunk_id;
+    const key = reference.canonical_source_id
+      || reference.related_chunk_id
+      || reference.primary_chunk_id;
     if (!unique.has(key)) unique.set(key, reference);
   }
   return [...unique.values()].map((reference, index) => ({
     ...reference,
-    id: `P${index + 1}`,
+    display_label: `P${index + 1}`,
   }));
 }
 
@@ -109,18 +114,37 @@ function addArticleReferenceLinks(
   references: RelatedReference[],
 ): string {
   let linkedContent = content;
-  const referencesByArticle = new Map<string, { reference: RelatedReference; article: string }>();
+  const referencesByArticle = new Map<
+    string,
+    Array<{ reference: RelatedReference; article: string }>
+  >();
   for (const reference of references) {
     const article = referenceArticleLabel(reference);
     if (!article) continue;
     const key = article.toLocaleLowerCase('vi');
-    const current = referencesByArticle.get(key);
-    if (!current || reference.source_kind === 'primary') {
-      referencesByArticle.set(key, { reference, article });
-    }
+    const entries = referencesByArticle.get(key) ?? [];
+    entries.push({ reference, article });
+    referencesByArticle.set(key, entries);
   }
   const sortedReferences = [...referencesByArticle.values()]
-    .filter((entry): entry is { reference: RelatedReference; article: string } => Boolean(entry.article))
+    .flatMap((entries) => {
+      if (entries.some(({ reference }) => (
+        !reference.canonical_source_id
+        || !reference.document_identity
+        || !reference.cohort
+      ))) return [];
+
+      const byCanonicalId = new Map<string, RelatedReference>();
+      for (const { reference } of entries) {
+        const canonicalId = reference.canonical_source_id as string;
+        const current = byCanonicalId.get(canonicalId);
+        if (!current || reference.source_kind === 'primary') {
+          byCanonicalId.set(canonicalId, reference);
+        }
+      }
+      if (byCanonicalId.size !== 1) return [];
+      return [{ reference: [...byCanonicalId.values()][0], article: entries[0].article }];
+    })
     .sort((left, right) => right.article.length - left.article.length);
 
   for (const { reference, article } of sortedReferences) {
@@ -756,7 +780,11 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
                     const citationTitle = cit.title || cit.chunk_id;
                     const applicability = cit.applicability;
                     return (
-                      <div key={idx} className="citation-card">
+                        <div
+                          key={cit.canonical_source_id || cit.chunk_id || idx}
+                          className="citation-card"
+                          data-canonical-source-id={cit.canonical_source_id}
+                        >
                         <div className="citation-card-header" onClick={() => toggleCitation(idx)}>
                           <div className="citation-card-icon"><FileText size={16} /></div>
                           <div className="citation-card-body">

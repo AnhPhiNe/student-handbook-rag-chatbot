@@ -22,6 +22,9 @@ export interface Citation {
   parent_content?: string;
   table_name?: string;
   detail_kind?: 'article' | 'table';
+  canonical_source_id?: string;
+  document_identity?: string;
+  source_parent_id?: string;
 }
 
 export interface RelatedReference {
@@ -40,6 +43,9 @@ export interface RelatedReference {
   source_kind?: 'primary' | 'related';
   table_name?: string;
   detail_kind?: 'article' | 'table';
+  canonical_source_id?: string;
+  document_identity?: string;
+  display_label?: string;
 }
 
 export type StructuredCellValue = string | number | boolean | null;

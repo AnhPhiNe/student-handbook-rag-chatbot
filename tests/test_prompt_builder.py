@@ -90,6 +90,8 @@ def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
     assert "không tự biến việc diễn giải tiêu chí thành lệnh cấm hoặc cho phép" in prompt
     assert "nêu đúng article_label" in prompt
     assert "in đậm kết luận chính" in prompt
+    assert "Với đơn vị mode=structured" in prompt
+    assert "không sao chép toàn bộ bảng" in prompt
     assert '"article_label": "Điều 16"' in prompt
 
 

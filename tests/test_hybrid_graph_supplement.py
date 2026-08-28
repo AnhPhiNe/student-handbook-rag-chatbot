@@ -108,6 +108,8 @@ def test_related_references_are_ui_metadata_not_answer_evidence() -> None:
                     "source_pages": [12],
                     "source_url": "https://example.edu/handbook.pdf",
                     "cohort": "K51",
+                    "document_title": "Quy chế đào tạo",
+                    "document_id": "handbook-k51",
                     "related_graph_depth": 1,
                     "related_source_primary_id": "K51_dieu_15",
                 },
@@ -117,7 +119,9 @@ def test_related_references_are_ui_metadata_not_answer_evidence() -> None:
 
     assert len(references) == 1
     reference = references[0]
-    assert reference["id"] == "R1"
+    assert reference["id"] == reference["canonical_source_id"]
+    assert reference["display_label"] == "R1"
+    assert reference["document_identity"] == "Quy chế đào tạo"
     assert reference["primary_chunk_id"] == "K51_dieu_15"
     assert reference["related_chunk_id"] == "K51_dieu_3"
     assert reference["title"] == "Điều 3 — Thời gian đào tạo"

@@ -3,6 +3,7 @@ import re
 from typing import Any
 
 from src.common.legal_reference import article_label_from_heading, normalize_article_label
+from src.common.source_identity import canonical_article_source_id
 
 
 _FOCUS_MARKERS = (
@@ -132,6 +133,15 @@ def enrich_citations_with_parent_details(
 
         item["parent_section_id"] = parent_id
         item["source_parent_id"] = parent_id
+        document_identity = (
+            metadata.get("document_title")
+            or metadata.get("document_id")
+            or item.get("document_identity")
+            or item.get("source_label")
+        )
+        item["document_id"] = metadata.get("document_id") or item.get("document_id")
+        item["document_identity"] = document_identity
+        item["cohort"] = metadata.get("cohort") or item.get("cohort")
         article_label = normalize_article_label(
             metadata.get("article"),
             metadata.get("source_section"),
@@ -142,6 +152,11 @@ def enrich_citations_with_parent_details(
         )
         item["article_label"] = article_label
         item["parent_article"] = article_label
+        item["canonical_source_id"] = canonical_article_source_id(
+            document_identity=document_identity,
+            cohort=item.get("cohort"),
+            article_label=article_label,
+        )
         item["parent_title"] = metadata.get("title")
         item["parent_content"] = parent_content or None
         item["detail_kind"] = "table" if item.get("chunk_type") == "structured_lookup" else "article"
@@ -195,6 +210,19 @@ def build_citations_from_vector_results(
             if raw_content
             else None
         )
+        article_label = normalize_article_label(
+            metadata.get("article"),
+            metadata.get("source_section"),
+            metadata.get("title"),
+            source_heading,
+        )
+        document_identity = metadata.get("document_title") or metadata.get("document_id")
+        source_parent_id = (
+            metadata.get("source_parent_id")
+            or metadata.get("parent_section_id")
+            or item.get("parent_id")
+            or item.get("chunk_id")
+        )
         citations.append(
             {
                 "chunk_id": item.get("chunk_id"),
@@ -223,12 +251,15 @@ def build_citations_from_vector_results(
                     "applicability_basis_parent_id"
                 ),
                 "document_id": metadata.get("document_id"),
+                "document_identity": document_identity,
                 "source_section": metadata.get("source_section"),
-                "article_label": normalize_article_label(
-                    metadata.get("article"),
-                    metadata.get("source_section"),
-                    metadata.get("title"),
-                    source_heading,
+                "source_parent_id": source_parent_id,
+                "parent_section_id": source_parent_id,
+                "article_label": article_label,
+                "canonical_source_id": canonical_article_source_id(
+                    document_identity=document_identity,
+                    cohort=metadata.get("cohort"),
+                    article_label=article_label,
                 ),
                 "applicability": metadata.get("applicability"),
                 "distance": item.get("distance"),

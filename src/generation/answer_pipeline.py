@@ -58,7 +58,7 @@ from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v46-explicit-scope-separation"
+PIPELINE_VERSION = "v47-canonical-citation-identity"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -1611,7 +1611,13 @@ class AnswerPipeline:
                 continue
             seen.add(key)
             item = dict(reference)
-            item["id"] = f"R{len(merged) + 1}"
+            display_label = f"R{len(merged) + 1}"
+            if item.get("canonical_source_id"):
+                item["display_label"] = display_label
+                item["id"] = item["canonical_source_id"]
+            else:
+                item.pop("display_label", None)
+                item["id"] = display_label
             merged.append(item)
         return merged
 

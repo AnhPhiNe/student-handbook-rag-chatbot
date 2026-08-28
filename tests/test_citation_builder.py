@@ -3,6 +3,7 @@ from src.retrieval.core.citation_builder import (
     enrich_citations_with_parent_details,
     sanitize_citation_content,
 )
+from src.common.source_identity import canonical_article_source_id
 
 
 def test_enriches_structured_table_citation_with_parent_article_details():
@@ -18,6 +19,9 @@ def test_enriches_structured_table_citation_with_parent_article_details():
         "metadata": {
             "article": "Điều 3.",
             "title": "Chương trình đào tạo và thời gian học tập",
+            "document_title": "Quy chế đào tạo",
+            "document_id": "handbook-k48-k49",
+            "cohort": "K48-K49",
         },
     }
 
@@ -32,6 +36,11 @@ def test_enriches_structured_table_citation_with_parent_article_details():
     assert result[0]["parent_content"] == parent["content"]
     assert result[0]["table_name"] == citation["title"]
     assert result[0]["detail_kind"] == "table"
+    assert result[0]["canonical_source_id"] == canonical_article_source_id(
+        document_identity="Quy chế đào tạo",
+        cohort="K48-K49",
+        article_label="Điều 3",
+    )
 
 
 def test_vector_citation_exposes_canonical_article_label_from_source_heading():
@@ -43,12 +52,53 @@ def test_vector_citation_exposes_canonical_article_label_from_source_heading():
                 "metadata": {
                     "title": "Nghỉ học tạm thời",
                     "cohort": "K51",
+                    "document_title": "Quy chế đào tạo",
+                    "document_id": "handbook-k51",
                 },
             }
         ]
     )
 
     assert citations[0]["article_label"] == "Điều 16"
+    assert citations[0]["canonical_source_id"] == canonical_article_source_id(
+        document_identity="Quy chế đào tạo",
+        cohort="K51",
+        article_label="Điều 16",
+    )
+
+
+def test_canonical_article_source_id_requires_full_unambiguous_identity():
+    source_id = canonical_article_source_id(
+        document_identity="Quy chế đào tạo",
+        cohort="K51",
+        article_label="Điều 16",
+    )
+    assert source_id
+    assert source_id != canonical_article_source_id(
+        document_identity="Quy chế công tác sinh viên",
+        cohort="K51",
+        article_label="Điều 16",
+    )
+    assert source_id != canonical_article_source_id(
+        document_identity="Quy chế đào tạo",
+        cohort="K50",
+        article_label="Điều 16",
+    )
+    assert source_id != canonical_article_source_id(
+        document_identity="Quy chế đào tạo",
+        cohort="K51",
+        article_label="Điều 17",
+    )
+    assert canonical_article_source_id(
+        document_identity="",
+        cohort="K51",
+        article_label="Điều 16",
+    ) is None
+    assert canonical_article_source_id(
+        document_identity="Quy chế đào tạo",
+        cohort=None,
+        article_label="Điều 16",
+    ) is None
 
 
 def test_vector_citation_keeps_focused_child_as_relevant_excerpt():

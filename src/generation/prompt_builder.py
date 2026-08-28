@@ -14,7 +14,7 @@ from .context_allocation import ContextAllocationConfig
 
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.8-explicit-scope-separation"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.9-structured-summary"
 
 
 def build_answer_prompt(
@@ -62,6 +62,7 @@ QUY TẮC BẮT BUỘC
 QUY CÁCH
 - Không dùng kiến thức ngoài AUTHORIZED_EVIDENCE_BY_UNIT.
 - Không chèn mã nguồn như [S1] vào câu trả lời; giao diện hiển thị nguồn riêng.
+- Với đơn vị mode=structured, chỉ nêu kết quả trực tiếp và giải thích cần thiết; không sao chép toàn bộ bảng, danh mục hoặc structured JSON vào Markdown vì giao diện đã hiển thị dữ liệu đó riêng.
 - Dùng Markdown có chọn lọc: in đậm kết luận chính, số liệu, thời hạn và điều kiện quan trọng; dùng danh sách khi có nhiều bước, điều kiện hoặc trường hợp. Không in đậm cả đoạn.
 - Với coverage=needs_clarification, chỉ nêu clarification_question của đơn vị đó.
 - Với coverage=uncovered hoặc không có source_ref được phép, nói chưa tìm thấy căn cứ cho đúng ý đó.

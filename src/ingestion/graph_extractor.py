@@ -2,6 +2,7 @@ import argparse
 import json
 import re
 import sys
+import unicodedata
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -17,6 +18,14 @@ ARTICLE_PATTERN = re.compile(r"(?:Điều|Dieu)\s+(\d+)", re.IGNORECASE)
 CLAUSE_PATTERN = re.compile(r"(?:khoản|khoan)\s+(\d+[a-zA-Z]?)", re.IGNORECASE)
 POINT_PATTERN = re.compile(r"(?:điểm|diem)\s+([a-zA-ZđĐ])", re.IGNORECASE)
 WHITESPACE_PATTERN = re.compile(r"\s+")
+DOCUMENT_MARKER_PATTERN = re.compile(
+    r"\b(Quy\s+chế|Quy\s+định|Nghị\s+định|Quyết\s+định|Thông\s+tư|Luật)\b",
+    re.IGNORECASE,
+)
+LEGAL_NUMBER_PATTERN = re.compile(
+    r"\b(Nghị\s+định)(?:\s+số)?\s+(\d+(?:/\d{4}/NĐ-CP)?)",
+    re.IGNORECASE,
+)
 
 
 @dataclass(frozen=True)
@@ -36,6 +45,17 @@ class Reference:
     reason: str
     clause: str | None = None
     point: str | None = None
+    target_document_hint: str | None = None
+
+
+@dataclass
+class SectionIndex:
+    by_document_article: dict[tuple[str, str, int], list[SectionRecord]]
+    by_cohort_article: dict[tuple[str, int], list[SectionRecord]]
+    records_by_id: dict[str, SectionRecord]
+    document_aliases: dict[tuple[str, str], tuple[str, ...]]
+    parent_ids: set[str]
+    skipped: list[dict[str, Any]]
 
 
 def _metadata(item: dict[str, Any]) -> dict[str, Any]:
@@ -88,6 +108,36 @@ def _clean_text(text: str) -> str:
     return WHITESPACE_PATTERN.sub(" ", text or "").strip()
 
 
+def _normalize_document_text(text: str) -> str:
+    normalized = unicodedata.normalize("NFD", text or "")
+    normalized = "".join(char for char in normalized if unicodedata.category(char) != "Mn")
+    normalized = normalized.replace("đ", "d").replace("Đ", "D").lower()
+    return _clean_text(re.sub(r"[^a-z0-9/]+", " ", normalized))
+
+
+def _document_kind(text: str) -> str | None:
+    normalized = _normalize_document_text(text)
+    for kind in ("quy che", "quy dinh", "nghi dinh", "quyet dinh", "thong tu", "luat"):
+        if normalized.startswith(kind):
+            return kind
+    return None
+
+
+def _document_hint_for_match(text: str, match: re.Match[str]) -> str | None:
+    # Use a bounded raw-text window rather than the human-readable reason.
+    # PDF extraction frequently wraps "Quy chế này" or a regulation title
+    # onto the following line, while _reason_for_match intentionally stops at
+    # line boundaries.
+    tail = text[match.end() : match.end() + 320]
+    boundaries = [position for delimiter in (".", ";") if (position := tail.find(delimiter)) >= 0]
+    if boundaries:
+        tail = tail[: min(boundaries)]
+    marker = DOCUMENT_MARKER_PATTERN.search(tail)
+    if not marker:
+        return None
+    return _clean_text(tail[marker.start() :])[:200]
+
+
 def _reason_for_match(text: str, start: int, end: int) -> str:
     left_candidates = [text.rfind(mark, 0, start) for mark in (".", ";", "\n")]
     left = max(left_candidates)
@@ -126,12 +176,14 @@ def _reference_for_article_match(text: str, match: re.Match[str]) -> Reference:
 
     reference_text = _clean_text(text[reference_start : match.end()])
     reason = _reason_for_match(text, match.start(), match.end())
+    article_number = int(match.group(1))
     return Reference(
-        article_number=int(match.group(1)),
+        article_number=article_number,
         reference_text=reference_text,
         reason=reason,
         clause=clause,
         point=point,
+        target_document_hint=_document_hint_for_match(text, match),
     )
 
 
@@ -141,8 +193,11 @@ def extract_references(content: str) -> list[Reference]:
 
 def build_section_index(
     docstore_items: list[dict[str, Any]],
-) -> tuple[dict[tuple[str, str, int], list[SectionRecord]], set[str], list[dict[str, Any]]]:
-    index: dict[tuple[str, str, int], list[SectionRecord]] = defaultdict(list)
+) -> SectionIndex:
+    by_document_article: dict[tuple[str, str, int], list[SectionRecord]] = defaultdict(list)
+    by_cohort_article: dict[tuple[str, int], list[SectionRecord]] = defaultdict(list)
+    records_by_id: dict[str, SectionRecord] = {}
+    document_contents: dict[tuple[str, str], list[str]] = defaultdict(list)
     parent_ids: set[str] = set()
     skipped: list[dict[str, Any]] = []
 
@@ -170,34 +225,125 @@ def build_section_index(
             )
             continue
 
-        index[(cohort, document_key, article_number)].append(
-            SectionRecord(
-                section_id=section_id,
-                cohort=cohort,
-                document_id=document_id,
-                document_key=document_key,
-                document_title=_document_title(item),
-                article_number=article_number,
-            )
+        record = SectionRecord(
+            section_id=section_id,
+            cohort=cohort,
+            document_id=document_id,
+            document_key=document_key,
+            document_title=_document_title(item),
+            article_number=article_number,
         )
+        by_document_article[(cohort, document_key, article_number)].append(record)
+        by_cohort_article[(cohort, article_number)].append(record)
+        records_by_id[section_id] = record
+        document_contents[(cohort, document_key)].append(str(item.get("content") or ""))
 
-    return index, parent_ids, skipped
+    document_aliases: dict[tuple[str, str], tuple[str, ...]] = {}
+    for document_identity, contents in document_contents.items():
+        _, document_key = document_identity
+        aliases = {_normalize_document_text(document_key)}
+        if _document_kind(document_key) == "nghi dinh":
+            counts = Counter(
+                _normalize_document_text(f"{match.group(1)} {match.group(2)}")
+                for match in LEGAL_NUMBER_PATTERN.finditer(" ".join(contents))
+            )
+            aliases.update(alias for alias, count in counts.items() if count >= 2)
+        document_aliases[document_identity] = tuple(sorted(alias for alias in aliases if alias))
+
+    return SectionIndex(
+        by_document_article=dict(by_document_article),
+        by_cohort_article=dict(by_cohort_article),
+        records_by_id=records_by_id,
+        document_aliases=document_aliases,
+        parent_ids=parent_ids,
+        skipped=skipped,
+    )
+
+
+def _prefix_match_score(document_title: str, hint: str) -> int:
+    title_tokens = _normalize_document_text(document_title).split()
+    hint_tokens = _normalize_document_text(hint).split()
+    score = 0
+    for title_token, hint_token in zip(title_tokens, hint_tokens, strict=False):
+        if title_token != hint_token:
+            break
+        score += 1
+    return score
+
+
+def _has_conflicting_study_level(document_title: str, hint: str) -> bool:
+    title = _normalize_document_text(document_title)
+    normalized_hint = _normalize_document_text(hint)
+    for level in ("cao dang", "thac si", "tien si"):
+        if level in normalized_hint and level not in title:
+            return True
+    return False
+
+
+def _hint_matches_same_document(source: SectionRecord, hint: str) -> bool:
+    normalized_hint = _normalize_document_text(hint)
+    source_kind = _document_kind(source.document_title)
+    return bool(source_kind and re.search(rf"\b{re.escape(source_kind)}\s+nay\b", normalized_hint))
+
+
+def _explicit_document_candidates(
+    index: SectionIndex,
+    source: SectionRecord,
+    reference: Reference,
+) -> list[SectionRecord]:
+    hint = reference.target_document_hint or ""
+    candidates = index.by_cohort_article.get((source.cohort, reference.article_number), [])
+    scored: list[tuple[int, SectionRecord]] = []
+
+    for candidate in candidates:
+        if _has_conflicting_study_level(candidate.document_title, hint):
+            continue
+        aliases = index.document_aliases.get((candidate.cohort, candidate.document_key), ())
+        normalized_hint = _normalize_document_text(hint)
+        alias_score = max((len(alias.split()) for alias in aliases if alias in normalized_hint), default=0)
+        prefix_score = _prefix_match_score(candidate.document_title, hint)
+        score = max(alias_score, prefix_score)
+        if score >= 3:
+            scored.append((score, candidate))
+
+    if not scored:
+        return []
+    best_score = max(score for score, _ in scored)
+    return [candidate for score, candidate in scored if score == best_score]
 
 
 def _resolve_target(
-    index: dict[tuple[str, str, int], list[SectionRecord]],
+    index: SectionIndex,
     source: SectionRecord,
     reference: Reference,
-) -> tuple[SectionRecord | None, str | None]:
-    candidates = index.get((source.cohort, source.document_key, reference.article_number), [])
+) -> tuple[SectionRecord | None, str | None, str]:
+    if reference.target_document_hint and not _hint_matches_same_document(source, reference.target_document_hint):
+        candidates = _explicit_document_candidates(index, source, reference)
+        if not candidates:
+            return None, "unresolved_external_document", "unresolved"
+        if len(candidates) > 1:
+            return None, "ambiguous_document_target", "unresolved"
+        target = candidates[0]
+        mode = "same_document" if target.document_key == source.document_key else "explicit_cross_document"
+        return target, None, mode
+
+    candidates = index.by_document_article.get(
+        (source.cohort, source.document_key, reference.article_number),
+        [],
+    )
     if not candidates:
-        return None, "unresolved_target"
+        return None, "unresolved_target", "unresolved"
     if len(candidates) > 1:
-        return None, "ambiguous_target"
-    return candidates[0], None
+        return None, "ambiguous_target", "unresolved"
+    return candidates[0], None, "same_document"
 
 
-def _edge_from_reference(source: SectionRecord, target: SectionRecord, reference: Reference) -> dict[str, Any]:
+def _edge_from_reference(
+    source: SectionRecord,
+    target: SectionRecord,
+    reference: Reference,
+    resolution_mode: str,
+) -> dict[str, Any]:
     return {
         "source": source.section_id,
         "target": target.section_id,
@@ -206,9 +352,17 @@ def _edge_from_reference(source: SectionRecord, target: SectionRecord, reference
         "method": "rule",
         "confidence": 1.0,
         "cohort": source.cohort,
+        "source_cohort": source.cohort,
+        "target_cohort": target.cohort,
         "document_id": source.document_id,
         "document_title": source.document_title,
+        "source_document_title": source.document_title,
+        "target_document_title": target.document_title,
+        "source_article": source.article_number,
+        "target_article": target.article_number,
+        "resolution_mode": resolution_mode,
         "reference_text": reference.reference_text,
+        "target_document_hint": reference.target_document_hint,
         "reference_article": reference.article_number,
         "reference_clause": reference.clause,
         "reference_point": reference.point,
@@ -216,19 +370,18 @@ def _edge_from_reference(source: SectionRecord, target: SectionRecord, reference
 
 
 def extract_rule_edges(docstore_items: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    index, parent_ids, index_skips = build_section_index(docstore_items)
-    source_by_id = {record.section_id: record for records in index.values() for record in records}
+    index = build_section_index(docstore_items)
     edges_by_key: dict[tuple[str, str, str, str, str], dict[str, Any]] = {}
-    skipped: list[dict[str, Any]] = list(index_skips)
+    skipped: list[dict[str, Any]] = list(index.skipped)
 
     for item in docstore_items:
         source_id = str(item.get("_id") or "")
-        source = source_by_id.get(source_id)
+        source = index.records_by_id.get(source_id)
         if not source:
             continue
 
         for reference in extract_references(str(item.get("content") or "")):
-            target, issue = _resolve_target(index, source, reference)
+            target, issue, resolution_mode = _resolve_target(index, source, reference)
             if issue:
                 skipped.append(
                     {
@@ -239,6 +392,8 @@ def extract_rule_edges(docstore_items: list[dict[str, Any]]) -> tuple[list[dict[
                         "document_title": source.document_title,
                         "reference_article": reference.article_number,
                         "reference_text": reference.reference_text,
+                        "target_document_hint": reference.target_document_hint,
+                        "resolution_mode": resolution_mode,
                     }
                 )
                 continue
@@ -264,18 +419,36 @@ def extract_rule_edges(docstore_items: list[dict[str, Any]]) -> tuple[list[dict[
                     }
                 )
                 continue
-            edges_by_key[key] = _edge_from_reference(source, target, reference)
+            edges_by_key[key] = _edge_from_reference(source, target, reference, resolution_mode)
 
     edges = sorted(edges_by_key.values(), key=lambda edge: (edge["cohort"], edge["source"], edge["target"]))
-    validation = validate_edges(edges, parent_ids)
+    validation = validate_edges(edges, index.parent_ids)
     report = {
-        "status": "ok" if not validation["missing_nodes"] else "invalid",
+        "status": "ok" if validation["is_valid"] else "invalid",
         "total_docstore_items": len(docstore_items),
         "total_edges": len(edges),
         "total_skipped": len(skipped),
         "skip_counts": dict(Counter(item["issue"] for item in skipped)),
+        "resolution_counts": dict(Counter(edge["resolution_mode"] for edge in edges)),
         "coverage": _coverage_by_cohort(edges, docstore_items),
         "validation": validation,
+        "edge_audit": [
+            {
+                "source": edge["source"],
+                "target": edge["target"],
+                "source_cohort": edge["source_cohort"],
+                "target_cohort": edge["target_cohort"],
+                "source_document_title": edge["source_document_title"],
+                "target_document_title": edge["target_document_title"],
+                "source_article": edge["source_article"],
+                "target_article": edge["target_article"],
+                "reference_text": edge["reference_text"],
+                "reference_reason": edge["reason"],
+                "target_document_hint": edge["target_document_hint"],
+                "resolution_mode": edge["resolution_mode"],
+            }
+            for edge in edges
+        ],
         "skipped": skipped,
     }
     return edges, report
@@ -318,12 +491,38 @@ def validate_edges(edges: list[dict[str, Any]], parent_ids: set[str]) -> dict[st
     cross_cohort_edges = [
         edge
         for edge in edges
-        if str(edge.get("source", "")).split("_", 1)[0] != str(edge.get("target", "")).split("_", 1)[0]
+        if edge.get("source_cohort") != edge.get("target_cohort")
     ]
+    article_mismatch_edges = [
+        edge
+        for edge in edges
+        if int(edge.get("reference_article") or -1) != int(edge.get("target_article") or -2)
+    ]
+    resolution_mode_mismatch_edges = [
+        edge
+        for edge in edges
+        if (
+            edge.get("resolution_mode") == "same_document"
+            and edge.get("source_document_title") != edge.get("target_document_title")
+        )
+        or (
+            edge.get("resolution_mode") == "explicit_cross_document"
+            and edge.get("source_document_title") == edge.get("target_document_title")
+        )
+    ]
+    is_valid = not (
+        missing_nodes
+        or cross_cohort_edges
+        or article_mismatch_edges
+        or resolution_mode_mismatch_edges
+    )
     return {
+        "is_valid": is_valid,
         "missing_nodes": missing_nodes,
         "graph_nodes_missing_in_docstore": len(missing_nodes),
         "cross_cohort_edges": len(cross_cohort_edges),
+        "article_mismatch_edges": len(article_mismatch_edges),
+        "resolution_mode_mismatch_edges": len(resolution_mode_mismatch_edges),
     }
 
 
@@ -364,9 +563,9 @@ def main(argv: list[str] | None = None) -> None:
 
     docstore_items = load_json(input_path)
     edges, report = extract_rule_edges(docstore_items)
-    if report["validation"]["graph_nodes_missing_in_docstore"]:
+    if report["status"] != "ok":
         write_json(report_path, report)
-        raise RuntimeError("Graph validation failed: some edge nodes are missing from docstore.")
+        raise RuntimeError("Graph validation failed; inspect the generated report.")
 
     write_json(output_path, edges)
     write_json(report_path, report)

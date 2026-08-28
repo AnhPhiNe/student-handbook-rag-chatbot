@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 $RootDir = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $TempDir = Join-Path $RootDir ".hf_deploy_temp"
 $HfSpaceUrl = "https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api"
-$CommitMessage = "Deploy v42 source navigation and grounded answer targets"
+$CommitMessage = "Deploy v43 conditional answer behavior"
 
 function Assert-InWorkspace {
     param([string]$Path)

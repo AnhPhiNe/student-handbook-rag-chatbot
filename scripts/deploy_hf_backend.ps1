@@ -1,5 +1,6 @@
 param(
-    [switch]$DryRun
+    [switch]$DryRun,
+    [string]$CommitMessage = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -7,7 +8,13 @@ $ErrorActionPreference = "Stop"
 $RootDir = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $TempDir = Join-Path $RootDir ".hf_deploy_temp"
 $HfSpaceUrl = "https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api"
-$CommitMessage = "Deploy v43 conditional answer behavior"
+if ([string]::IsNullOrWhiteSpace($CommitMessage)) {
+    $sourceCommit = (& git -C $RootDir rev-parse --short HEAD).Trim()
+    if ($LASTEXITCODE -ne 0) {
+        throw "Unable to resolve source Git commit for deployment metadata."
+    }
+    $CommitMessage = "Deploy backend from source $sourceCommit"
+}
 
 function Assert-InWorkspace {
     param([string]$Path)

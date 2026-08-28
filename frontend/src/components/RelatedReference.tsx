@@ -33,8 +33,6 @@ export function RelatedReferenceLink({
   const sourceLabel = reference.source_kind === 'primary'
     ? 'nguồn chính'
     : 'điều khoản liên quan';
-  const displayLabel = reference.display_label
-    ?? (!reference.canonical_source_id ? reference.id : undefined);
 
   const cancelScheduledClose = () => {
     if (closeTimeoutRef.current !== null) {
@@ -121,9 +119,6 @@ export function RelatedReferenceLink({
         aria-label={`Mở ${sourceLabel}: ${reference.title}`}
       >
         {children}
-        {displayLabel && (
-          <sup aria-hidden="true">{displayLabel}</sup>
-        )}
       </button>
 
       {isPreviewOpen && (

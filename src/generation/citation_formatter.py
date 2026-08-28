@@ -19,6 +19,11 @@ INTENT_CHUNK_PRIORITY = {
     ],
 }
 
+_ARTICLE_REFERENCE_PATTERN = re.compile(
+    r"(?<!\w)điều\s+(\d+[a-zđ]?)(?!\w)",
+    flags=re.IGNORECASE,
+)
+
 
 def parse_source_pages(value: Any) -> list[int]:
     if value is None:
@@ -58,19 +63,55 @@ def deduplicate_citations(
     if not citations:
         return []
 
-    seen: set[tuple[str, tuple[int, ...]]] = set()
+    seen: set[tuple[Any, ...]] = set()
     deduped: list[dict[str, Any]] = []
 
     for citation in citations:
-        title = _citation_title(citation).strip().lower()
-        pages = tuple(parse_source_pages(citation.get("source_pages")))
-        key = (title, pages)
+        key = _canonical_citation_identity(citation)
         if key in seen:
             continue
         seen.add(key)
         deduped.append(citation)
 
     return deduped
+
+
+def prioritize_citations_by_answer_anchors(
+    citations: list[dict[str, Any]] | None,
+    answer_text: str | None,
+    *,
+    max_sources: int = 10,
+) -> list[dict[str, Any]]:
+    """Stably move citations explicitly anchored in the answer to the front.
+
+    Article mentions are a ranking signal only. Unmentioned citations are kept
+    in their original retrieval order so a missing ``Điều X`` mention never
+    removes the user's path back to valid evidence.
+    """
+    if max_sources <= 0:
+        return []
+
+    deduped = deduplicate_citations(citations)
+    answer_articles = _extract_article_references(answer_text)
+    if not answer_articles:
+        return deduped[:max_sources]
+
+    anchored: list[dict[str, Any]] = []
+    unanchored: list[dict[str, Any]] = []
+    for citation in deduped:
+        label = (
+            citation.get("article_label")
+            or citation.get("parent_article")
+            or _citation_title(citation)
+        )
+        target = (
+            anchored
+            if answer_articles.intersection(_extract_article_references(label))
+            else unanchored
+        )
+        target.append(citation)
+
+    return (anchored + unanchored)[:max_sources]
 
 
 def select_relevant_citations(
@@ -295,6 +336,32 @@ def _citation_title(citation: dict[str, Any]) -> str:
         or ""
     )
     return str(title).strip()
+
+
+def _canonical_citation_identity(citation: dict[str, Any]) -> tuple[Any, ...]:
+    for field in (
+        "canonical_source_id",
+        "source_parent_id",
+        "parent_section_id",
+        "source_section",
+        "section_id",
+        "chunk_id",
+    ):
+        value = str(citation.get(field) or "").strip()
+        if value:
+            return (field, value.casefold())
+
+    title = _citation_title(citation).strip().casefold()
+    pages = tuple(parse_source_pages(citation.get("source_pages")))
+    cohort = str(citation.get("cohort") or "").strip().casefold()
+    return ("title_pages", cohort, title, pages)
+
+
+def _extract_article_references(value: Any) -> set[str]:
+    return {
+        match.casefold()
+        for match in _ARTICLE_REFERENCE_PATTERN.findall(str(value or ""))
+    }
 
 
 def _format_page_range(start: int, end: int) -> str:

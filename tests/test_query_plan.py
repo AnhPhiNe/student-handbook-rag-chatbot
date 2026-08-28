@@ -793,6 +793,14 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
         "content": "Điều 16. Nguồn trực tiếp về cảnh báo học tập.",
         "supports_task_ids": ["t1"],
     }
+    unanchored_citation = {
+        "chunk_id": "p2",
+        "source_parent_id": "p2",
+        "cohort": "K51",
+        "article_label": "Điều 8",
+        "content": "Điều 8. Nguồn liên quan được retrieval xếp trước.",
+        "supports_task_ids": ["t1"],
+    }
     retrieval_result = {
         "query_plan": plan,
         "task_results": [
@@ -818,7 +826,7 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
                 "metadata": {"cohort": "K51", "supports_task_ids": ["t1"]},
             }
         ],
-        "citations": [citation],
+        "citations": [unanchored_citation, citation],
         "needs_clarification": False,
         "out_of_domain": False,
     }
@@ -837,14 +845,17 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
     )
 
     class Cache:
+        def __init__(self):
+            self.value = None
+
         def make_cache_key(self, **kwargs):
             return "key"
 
         def get(self, key):
-            return None
+            return self.value
 
         def set(self, key, value):
-            return None
+            self.value = value
 
     class LLM:
         def generate(self, prompt):
@@ -874,13 +885,29 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
     )
 
     sync_output = pipeline.answer(task["question"], cohort="K51")
+    cached_output = pipeline.answer(task["question"], cohort="K51")
     stream_events = list(pipeline.answer_stream(task["question"], cohort="K51"))
     stream_answer = "".join(
         event["text"] for event in stream_events if event.get("type") == "token"
     )
 
-    assert captured == [[citation], [citation]]
+    assert captured == [
+        [unanchored_citation, citation],
+        [unanchored_citation, citation],
+    ]
     assert stream_answer == sync_output["answer"]
+    assert [item["source_parent_id"] for item in sync_output["citations_used"]] == [
+        "p1",
+        "p2",
+    ]
+    assert cached_output["used_cache"] is True
+    assert cached_output["citations_used"] == sync_output["citations_used"]
+    stream_done = next(
+        event for event in stream_events if event.get("type") == "done"
+    )
+    assert [
+        item["source_parent_id"] for item in stream_done["citations_used"]
+    ] == ["p1", "p2"]
     assert "**Kết luận:**" in stream_answer
     assert "Điều 16" in stream_answer
 

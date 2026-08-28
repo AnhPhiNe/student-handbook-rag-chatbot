@@ -18,7 +18,7 @@ else:
 LOCK_POLL_SECONDS = 0.05
 LOCK_TIMEOUT_SECONDS = 5.0
 DEFAULT_CACHE_TTL_SECONDS = 86400
-DEFAULT_CACHE_NAMESPACE = "v41-direct-predicate-grounding"
+DEFAULT_CACHE_NAMESPACE = "v44-answer-anchor-citation-order"
 
 
 class ResponseCache:

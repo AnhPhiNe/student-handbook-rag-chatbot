@@ -189,6 +189,30 @@ def chat_stream(
                             {"message": chunk.get("message", "")},
                         )
                     elif chunk_type == "done":
+                        raw_done_citations = (
+                            chunk.get("citations_used")
+                            if "citations_used" in chunk
+                            else final_metadata.get("citations_used", [])
+                        )
+                        final_citations = public_regulation_citations(
+                            raw_done_citations or []
+                        )
+                        if not include_debug:
+                            final_citations = [
+                                {
+                                    key: value
+                                    for key, value in citation.items()
+                                    if key not in {"task_id", "supports_task_ids"}
+                                }
+                                if isinstance(citation, dict)
+                                else citation
+                                for citation in final_citations
+                            ]
+                        final_metadata["citations_used"] = final_citations
+                        if trace_source_metadata:
+                            trace_source_metadata["citations_used"] = (
+                                raw_done_citations or []
+                            )
                         done_latency = round((time.perf_counter() - started_at) * 1000, 2)
                         ttft_ms = round((first_token_at - started_at) * 1000, 2) if first_token_at else done_latency
                         tracker = chunk.get("tracker")
@@ -234,7 +258,11 @@ def chat_stream(
                         )
                         yield _sse_event(
                             "done",
-                            {"request_id": request_id, "latency_ms": latency_ms},
+                            {
+                                "request_id": request_id,
+                                "latency_ms": latency_ms,
+                                "citations_used": final_citations,
+                            },
                         )
             finally:
                 if ticket:

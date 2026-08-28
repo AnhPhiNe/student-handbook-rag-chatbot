@@ -40,7 +40,10 @@ from .answer_guardrails import (
     is_low_confidence,
     is_out_of_domain_query,
 )
-from .citation_formatter import select_relevant_citations
+from .citation_formatter import (
+    prioritize_citations_by_answer_anchors,
+    select_relevant_citations,
+)
 from .context_allocation import ContextAllocationConfig, build_context_for_prompt
 from .gemini_client import GeminiClient
 from .io_utils import load_json, load_yaml
@@ -55,7 +58,7 @@ from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v43-conditional-answer-target"
+PIPELINE_VERSION = "v44-answer-anchor-citation-order"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -457,12 +460,18 @@ class AnswerPipeline:
         )
         cached = self.response_cache.get(cache_key)
         if cached:
+            cached_answer = str(cached.get("answer") or "")
+            cached_citations = prioritize_citations_by_answer_anchors(
+                cached.get("citations") or retrieval_result.get("citations") or [],
+                cached_answer,
+                max_sources=10,
+            )
             return self._build_output(
                 query=query,
                 retrieval_result=retrieval_result,
-                final_answer=str(cached.get("answer") or ""),
+                final_answer=cached_answer,
                 context_used=context_used,
-                selected_citations=selected_citations,
+                selected_citations=cached_citations,
                 status=str(cached.get("status") or "answered"),
                 error_type=cached.get("error_type"),
                 error_message=cached.get("error_message"),
@@ -559,12 +568,17 @@ class AnswerPipeline:
             llm_text,
             primary_citations=selected_citations,
         )
+        public_citations = prioritize_citations_by_answer_anchors(
+            all_citations,
+            final_answer,
+            max_sources=10,
+        )
         output = self._build_output(
             query=query,
             retrieval_result=retrieval_result,
             final_answer=final_answer,
             context_used=context_used,
-            selected_citations=all_citations,
+            selected_citations=public_citations,
             status="answered",
             error_type=None,
             error_message=None,
@@ -580,7 +594,7 @@ class AnswerPipeline:
                 "status": "answered",
                 "error_type": None,
                 "error_message": None,
-                "citations": all_citations,
+                "citations": public_citations,
             },
         )
 
@@ -842,6 +856,7 @@ class AnswerPipeline:
             run_id=run_id,
         )
 
+        final_answer_for_citations = ""
         try:
             llm_client = self._get_llm_client()
             start_time_llm = datetime.now(timezone.utc).isoformat()
@@ -871,6 +886,9 @@ class AnswerPipeline:
                         pending_stream_text
                     ),
                 }
+            final_answer_for_citations = normalize_unlabeled_enumeration_references(
+                "".join(streamed_answer_parts)
+            )
             end_time_llm = datetime.now(timezone.utc).isoformat()
             self._last_llm_call_at = time.monotonic()
 
@@ -891,6 +909,7 @@ class AnswerPipeline:
             fallback = build_fallback_answer(
                 effective_query, retrieval_result, reason="api_error"
             )
+            final_answer_for_citations = fallback
             yield {"type": "token", "text": fallback}
 
         # Chặn việc yield sources text dưới dạng văn bản thô
@@ -898,7 +917,15 @@ class AnswerPipeline:
         # if sources_text:
         #     yield {"type": "token", "text": f"\n\n{sources_text}"}
 
-        yield {"type": "done", "tracker": tracker}
+        yield {
+            "type": "done",
+            "tracker": tracker,
+            "citations_used": prioritize_citations_by_answer_anchors(
+                all_citations,
+                final_answer_for_citations,
+                max_sources=10,
+            ),
+        }
 
     def _run_retrieval(
         self,

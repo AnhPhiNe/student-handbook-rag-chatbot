@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import unittest
 from unittest.mock import patch
 
@@ -68,7 +69,10 @@ class FakeAnswerService:
             "coverage_by_task": {"t1": "covered"},
         }
         yield {"type": "token", "text": f"streamed: {query}"}
-        yield {"type": "done"}
+        yield {
+            "type": "done",
+            "citations_used": [{"source": "final", "page": 2}],
+        }
 
 
 class ApiRoutesTest(unittest.TestCase):
@@ -422,6 +426,27 @@ class ApiRoutesTest(unittest.TestCase):
         assert "task_results" not in response.text
         assert captured_source["query_plan"]["tasks"][0]["lookup_type"] == "office"
         assert captured_source["coverage_by_task"] == {"t1": "covered"}
+
+    def test_stream_done_exposes_final_citation_order(self) -> None:
+        response = self.client.post(
+            "/chat/stream",
+            json={"query": "Email Phòng Đào tạo?", "cohort": "K51"},
+        )
+
+        assert response.status_code == 200
+        done_block = next(
+            block
+            for block in response.text.split("\n\n")
+            if block.startswith("event: done")
+        )
+        done_payload = json.loads(
+            next(
+                line.removeprefix("data: ")
+                for line in done_block.splitlines()
+                if line.startswith("data: ")
+            )
+        )
+        assert done_payload["citations_used"] == [{"source": "final", "page": 2}]
 
 
 if __name__ == "__main__":

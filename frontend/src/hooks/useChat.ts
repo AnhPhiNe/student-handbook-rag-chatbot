@@ -279,6 +279,10 @@ export function useChat(cohort: string = 'K48-K49') {
                 targetBotContent += (data.text || "");
               } else if (eventType === 'done' || eventType === 'error') {
                 const responseTimeMs = Date.now() - startTime;
+
+                if (eventType === 'done' && Array.isArray(data.citations_used)) {
+                  capturedCitations = data.citations_used;
+                }
                 
                 if (eventType === 'error' && data.error_message) {
                   targetBotContent = data.error_message;

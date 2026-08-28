@@ -80,7 +80,10 @@ def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
     assert "không tự ý rút gọn đến mức gây hiểu lầm" in prompt
     assert "trình bày riêng mọi nhánh có evidence trực tiếp" in prompt
     assert "Không lấy điều kiện của một nhánh" in prompt
-    assert "Không suy ra một điều kiện đã hoặc chưa được đáp ứng" in prompt
+    assert "Chỉ kết luận dứt khoát đối với từng ý" in prompt
+    assert "Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp" in prompt
+    assert "không tự đoán hoặc trả lời có/không tuyệt đối" in prompt
+    assert "Mở đầu bằng câu trả lời trực tiếp" not in prompt
     assert "không tự biến việc diễn giải tiêu chí thành lệnh cấm hoặc cho phép" in prompt
     assert "nêu đúng article_label" in prompt
     assert "in đậm kết luận chính" in prompt
@@ -463,6 +466,7 @@ def test_prompt_distinguishes_external_referral_from_direct_answer() -> None:
         retrieval_result={"retrieved_items": []},
     )
 
-    assert "Mở đầu bằng câu trả lời trực tiếp cho đúng từ hỏi" in prompt
+    assert "Chỉ kết luận dứt khoát đối với từng ý" in prompt
+    assert "Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp" in prompt
     assert "nguồn chỉ dẫn chiếu sang văn bản khác" in prompt
     assert "không trình bày câu dẫn chiếu như thể đã trả lời danh sách" in prompt

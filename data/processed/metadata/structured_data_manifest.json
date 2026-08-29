@@ -3,18 +3,18 @@
   "categories": {
     "regulation_table": {
       "path": "data\\processed\\tables\\structured_tables_registry.json",
-      "count": 32,
+      "count": 35,
       "table_type_counts": {
         "conduct": 3,
         "foreign_language": 1,
-        "scholarship": 9,
+        "scholarship": 12,
         "scoring": 13,
         "study_duration": 6
       },
       "cohort_counts": {
-        "K48-K49": 10,
-        "K50": 11,
-        "K51": 11
+        "K48-K49": 11,
+        "K50": 12,
+        "K51": 12
       },
       "qdrant_indexed_from_json": false
     },

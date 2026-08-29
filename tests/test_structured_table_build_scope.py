@@ -100,8 +100,9 @@ def test_scholarship_policy_tables_coexist_on_same_parent(tmp_path) -> None:
     } == {
         "scholarship_classification",
         "scholarship_amount",
+        "scholarship_score_formula",
         "scholarship_eligibility",
     }
     records = build_registry([parent], scoring_path)
-    assert len(records) == 3
+    assert len(records) == 4
     assert {record["source_parent_id"] for record in records} == {parent_id}

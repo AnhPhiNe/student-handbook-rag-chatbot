@@ -217,6 +217,38 @@ def _scholarship_amount_table(cohort: str) -> dict[str, Any] | None:
     }
 
 
+def _scholarship_score_formula_table(cohort: str) -> dict[str, Any] | None:
+    """Return the ranking-score formula as part of the scholarship policy bundle."""
+
+    source_pages = {
+        "K48-K49": [52, 53],
+        "K50": [71, 72, 73],
+        "K51": [70, 71, 72],
+        "K50-K51": [70, 71, 72],
+    }.get(cohort)
+    if source_pages is None:
+        return None
+
+    return {
+        "table_id": "scholarship_score_formula",
+        "table_name": "Công thức tính điểm xếp hạng học bổng",
+        "source_pages": source_pages,
+        "review_status": "source_verified",
+        "schema_variant": "ranking_score_formula",
+        "rows": [
+            {
+                "output": "Điểm học bổng",
+                "formula": (
+                    "Điểm học bổng = (Điểm học tập x 80 + "
+                    "Điểm rèn luyện / 25 x 20) / 100"
+                ),
+                "academic_score_scale": "Thang điểm 4",
+                "conduct_score_scale": "Thang điểm 100",
+            }
+        ],
+    }
+
+
 def _scholarship_eligibility_table(cohort: str) -> dict[str, Any] | None:
     """Return cohort-specific HBKKHT eligibility facts from the same policy article."""
 
@@ -337,9 +369,14 @@ def _shared_scoring_tables(cohort: str) -> list[dict[str, Any]]:
         _scholarship_classification_table(cohort),
     ]
     scholarship_amount = _scholarship_amount_table(cohort)
+    scholarship_score_formula = _scholarship_score_formula_table(cohort)
     scholarship_eligibility = _scholarship_eligibility_table(cohort)
     return tables + [
         table
-        for table in (scholarship_amount, scholarship_eligibility)
+        for table in (
+            scholarship_amount,
+            scholarship_score_formula,
+            scholarship_eligibility,
+        )
         if table is not None
     ]

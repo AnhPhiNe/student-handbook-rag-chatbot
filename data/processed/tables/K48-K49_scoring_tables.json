@@ -269,6 +269,31 @@
     "content_mode": "structured_only"
   },
   {
+    "table_id": "scholarship_score_formula",
+    "table_name": "Công thức tính điểm xếp hạng học bổng",
+    "source_pages": [
+      52,
+      53
+    ],
+    "review_status": "source_verified",
+    "schema_variant": "ranking_score_formula",
+    "rows": [
+      {
+        "output": "Điểm học bổng",
+        "formula": "Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100",
+        "academic_score_scale": "Thang điểm 4",
+        "conduct_score_scale": "Thang điểm 100"
+      }
+    ],
+    "content_type": "scoring_table",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "scoring_table",
+    "content_mode": "structured_only"
+  },
+  {
     "table_id": "scholarship_eligibility",
     "table_name": "Điều kiện xét học bổng khuyến khích học tập",
     "review_status": "source_verified",

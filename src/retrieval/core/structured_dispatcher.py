@@ -437,6 +437,49 @@ def _reference_table_lookup(
     }
 
 
+def _unique_reference_resolution(
+    lookup_type: str,
+    *,
+    query: str,
+    slots: dict[str, Any],
+    cohort: str | None,
+    scoring_tables: list[dict[str, Any]],
+    foreign_language_tables: list[dict[str, Any]],
+    structured_tables_registry: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Return a fact-lock candidate only when an existing resolver is unique."""
+
+    if lookup_type == "scoring":
+        resolved = structured_lookup_from_slots(
+            slots,
+            scoring_tables,
+            cohort=cohort,
+        ) if slots else None
+        return resolved if resolved and len(resolved.get("items") or []) == 1 else None
+
+    if lookup_type == "foreign_language":
+        resolved = foreign_language_lookup(
+            query,
+            foreign_language_tables,
+            cohort=cohort,
+            slots=slots,
+        )
+        return resolved if resolved and resolved.get("result_count") == 1 else None
+
+    if lookup_type == "study_duration":
+        resolved = study_duration_lookup(
+            query,
+            structured_tables_registry,
+            cohort=cohort,
+            slots=slots,
+        )
+        tables = ((resolved or {}).get("result") or {}).get("tables") or []
+        row_count = sum(len(table.get("rows") or []) for table in tables)
+        return resolved if resolved and row_count == 1 else None
+
+    return None
+
+
 def _resolve_single_lookup(
     lookup_type: str,
     *,
@@ -464,6 +507,22 @@ def _resolve_single_lookup(
             cohort=effective_cohort,
             slots=slots,
         )
+        # Keep the complete reference table for UI rendering, but expose a
+        # deterministic fact lock when an existing domain resolver identifies
+        # exactly one row. Ambiguous/list lookups deliberately stay unlocked.
+        if result is not None and not result.get("needs_clarification"):
+            resolved_result = _unique_reference_resolution(
+                lookup_type,
+                query=query,
+                slots=slots,
+                cohort=effective_cohort,
+                scoring_tables=scoring_tables,
+                foreign_language_tables=foreign_language_tables,
+                structured_tables_registry=structured_tables_registry,
+            )
+            if resolved_result is not None:
+                result = dict(result)
+                result["resolved_result"] = resolved_result
         return _resolution(
             lookup_type,
             "reference_table_lookup",

@@ -108,6 +108,15 @@ def _infer_explicit_structured_slots(
             elif re.search(r"\b(?:cac|nhung)?\s*nganh\b", normalized):
                 slots["scope"] = "school"
 
+    if lookup_type == "student_service":
+        # The directory ranks free-text service descriptions. Keep the user's
+        # complete wording instead of accepting an ungrounded paraphrase from
+        # the planner as the retrieval identity.
+        slots["service"] = raw_query
+        spans["service"] = raw_query
+        if not _is_present(slots.get("requested_field")) and "don vi" in normalized:
+            slots["requested_field"] = "unit"
+
 
 @lru_cache(maxsize=4)
 def load_lookup_registry(path: str | Path = DEFAULT_REGISTRY_PATH) -> dict[str, Any]:

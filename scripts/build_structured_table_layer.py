@@ -51,6 +51,7 @@ REGULATION_TABLE_TYPE_MAP = {
     "scholarship": "scholarship",
     "scholarship_classification": "scholarship",
     "scholarship_amount": "scholarship",
+    "scholarship_score_formula": "scholarship",
     "scholarship_eligibility": "scholarship",
     "conduct": "conduct",
     "conduct_classification": "conduct",

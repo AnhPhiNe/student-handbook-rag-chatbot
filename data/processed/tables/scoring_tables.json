@@ -275,6 +275,32 @@
     "record_id": "K48-K49_K48-K49_scoring_tables_6"
   },
   {
+    "table_id": "scholarship_score_formula",
+    "table_name": "Công thức tính điểm xếp hạng học bổng",
+    "source_pages": [
+      52,
+      53
+    ],
+    "review_status": "source_verified",
+    "schema_variant": "ranking_score_formula",
+    "rows": [
+      {
+        "output": "Điểm học bổng",
+        "formula": "Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100",
+        "academic_score_scale": "Thang điểm 4",
+        "conduct_score_scale": "Thang điểm 100"
+      }
+    ],
+    "content_type": "scoring_table",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
+    "source_section": "scoring_table",
+    "content_mode": "structured_only",
+    "record_id": "K48-K49_K48-K49_scoring_tables_7"
+  },
+  {
     "table_id": "scholarship_eligibility",
     "table_name": "Điều kiện xét học bổng khuyến khích học tập",
     "review_status": "source_verified",
@@ -304,7 +330,7 @@
     "cohort": "K48-K49",
     "source_section": "scoring_table",
     "content_mode": "structured_only",
-    "record_id": "K48-K49_K48-K49_scoring_tables_7"
+    "record_id": "K48-K49_K48-K49_scoring_tables_8"
   },
   {
     "table_id": "grade_10_to_letter",
@@ -582,6 +608,33 @@
     "record_id": "K50_K50_scoring_tables_6"
   },
   {
+    "table_id": "scholarship_score_formula",
+    "table_name": "Công thức tính điểm xếp hạng học bổng",
+    "source_pages": [
+      71,
+      72,
+      73
+    ],
+    "review_status": "source_verified",
+    "schema_variant": "ranking_score_formula",
+    "rows": [
+      {
+        "output": "Điểm học bổng",
+        "formula": "Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100",
+        "academic_score_scale": "Thang điểm 4",
+        "conduct_score_scale": "Thang điểm 100"
+      }
+    ],
+    "content_type": "scoring_table",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
+    "source_section": "scoring_table",
+    "content_mode": "structured_only",
+    "record_id": "K50_K50_scoring_tables_7"
+  },
+  {
     "table_id": "scholarship_eligibility",
     "table_name": "Điều kiện xét học bổng khuyến khích học tập",
     "review_status": "source_verified",
@@ -611,7 +664,7 @@
     "cohort": "K50",
     "source_section": "scoring_table",
     "content_mode": "structured_only",
-    "record_id": "K50_K50_scoring_tables_7"
+    "record_id": "K50_K50_scoring_tables_8"
   },
   {
     "lookup_group": "grade_10_to_letter",
@@ -1003,6 +1056,33 @@
     "record_id": "K51_K51_scoring_tables_8"
   },
   {
+    "table_id": "scholarship_score_formula",
+    "table_name": "Công thức tính điểm xếp hạng học bổng",
+    "source_pages": [
+      70,
+      71,
+      72
+    ],
+    "review_status": "source_verified",
+    "schema_variant": "ranking_score_formula",
+    "rows": [
+      {
+        "output": "Điểm học bổng",
+        "formula": "Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100",
+        "academic_score_scale": "Thang điểm 4",
+        "conduct_score_scale": "Thang điểm 100"
+      }
+    ],
+    "content_type": "scoring_table",
+    "embedding_enabled": false,
+    "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
+    "source_section": "scoring_table",
+    "content_mode": "structured_only",
+    "record_id": "K51_K51_scoring_tables_9"
+  },
+  {
     "table_id": "scholarship_eligibility",
     "table_name": "Điều kiện xét học bổng khuyến khích học tập",
     "review_status": "source_verified",
@@ -1040,6 +1120,6 @@
     "cohort": "K51",
     "source_section": "scoring_table",
     "content_mode": "structured_only",
-    "record_id": "K51_K51_scoring_tables_9"
+    "record_id": "K51_K51_scoring_tables_10"
   }
 ]

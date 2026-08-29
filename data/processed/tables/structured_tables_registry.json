@@ -166,6 +166,34 @@
     "used_by_runtime": true
   },
   {
+    "table_id": "scholarship_score_formula",
+    "data_category": "regulation_table",
+    "table_type": "scholarship",
+    "table_subtype": "scholarship_score_formula",
+    "table_name": "Công thức tính điểm xếp hạng học bổng",
+    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "source_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+    "columns": [],
+    "rows": [
+      {
+        "output": "Điểm học bổng",
+        "formula": "Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100",
+        "academic_score_scale": "Thang điểm 4",
+        "conduct_score_scale": "Thang điểm 100"
+      }
+    ],
+    "source_pages": [
+      52,
+      53
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
     "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
     "data_category": "regulation_table",
     "table_type": "scoring",
@@ -799,6 +827,35 @@
     "used_by_runtime": true
   },
   {
+    "table_id": "scholarship_score_formula",
+    "data_category": "regulation_table",
+    "table_type": "scholarship",
+    "table_subtype": "scholarship_score_formula",
+    "table_name": "Công thức tính điểm xếp hạng học bổng",
+    "cohort": "K50",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "source_parent_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "source_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+    "columns": [],
+    "rows": [
+      {
+        "output": "Điểm học bổng",
+        "formula": "Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100",
+        "academic_score_scale": "Thang điểm 4",
+        "conduct_score_scale": "Thang điểm 100"
+      }
+    ],
+    "source_pages": [
+      71,
+      72,
+      73
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
     "table_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
     "data_category": "regulation_table",
     "table_type": "scoring",
@@ -1299,6 +1356,35 @@
       {
         "criterion": "Học cùng lúc hai chương trình",
         "requirement": "Chỉ xét học bổng cho chương trình thứ nhất; các tín chỉ đã đăng ký ở chương trình thứ hai trong học kỳ xét học bổng vẫn phải đạt"
+      }
+    ],
+    "source_pages": [
+      70,
+      71,
+      72
+    ],
+    "quality_status": "approved",
+    "derived_from": null,
+    "used_by_runtime": true
+  },
+  {
+    "table_id": "scholarship_score_formula",
+    "data_category": "regulation_table",
+    "table_type": "scholarship",
+    "table_subtype": "scholarship_score_formula",
+    "table_name": "Công thức tính điểm xếp hạng học bổng",
+    "cohort": "K51",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "source_parent_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "source_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+    "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+    "columns": [],
+    "rows": [
+      {
+        "output": "Điểm học bổng",
+        "formula": "Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100",
+        "academic_score_scale": "Thang điểm 4",
+        "conduct_score_scale": "Thang điểm 100"
       }
     ],
     "source_pages": [

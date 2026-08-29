@@ -244,9 +244,14 @@ def _legacy_structured_record_ids(
 
     if catalog == "program_directory":
         record_id = str(record.get("record_id") or "").strip()
-        if record_id:
-            for cohort_alias in ("K50", "K51"):
-                ids.add(f"{cohort_alias}_{record_id}")
+        # Program record IDs repeat across handbook editions (for example,
+        # ``program_2`` exists in both K50 and K51).  Prefix aliases must
+        # therefore use the record's actual cohort.  Adding both K50 and K51
+        # for every record made later records overwrite earlier ones in the
+        # evaluation source index and could validate a K50 case against K51
+        # provenance.
+        if record_id and normalized_cohort:
+            ids.add(f"{normalized_cohort}_{record_id}")
 
     ids.discard("")
     return ids
@@ -856,6 +861,61 @@ def validate_bundle(
     }
     if dict(answer_split) != expected_answer_split:
         errors.append(f"answer eval_split mismatch: {dict(answer_split)}")
+
+    if manifest.get("evaluation_contract") == "comprehensive-source-grounded-answer-v4":
+        expected_paths = manifest.get("answer_path_counts") or {}
+        actual_paths = Counter(case.get("expected_path") for case in answers)
+        if dict(actual_paths) != expected_paths:
+            errors.append(f"answer path distribution mismatch: {dict(actual_paths)}")
+
+        expected_rag_cohorts = manifest.get("answer_rag_cohort_counts") or {}
+        actual_rag_cohorts = Counter(
+            case.get("cohort")
+            for case in answers
+            if case.get("case_type") == "regulation_true_rag"
+        )
+        if dict(actual_rag_cohorts) != expected_rag_cohorts:
+            errors.append(
+                f"answer RAG cohort distribution mismatch: {dict(actual_rag_cohorts)}"
+            )
+
+        expected_lookup_counts = manifest.get("answer_structured_lookup_counts") or {}
+        actual_lookup_counts = Counter(
+            case.get("lookup_group")
+            for case in answers
+            if case.get("case_type") == "structured_answer"
+        )
+        if dict(actual_lookup_counts) != expected_lookup_counts:
+            errors.append(
+                f"answer structured lookup coverage mismatch: {dict(actual_lookup_counts)}"
+            )
+
+        path_by_type = {
+            "regulation_true_rag": "regulation_rag",
+            "structured_answer": "structured",
+            "mixed_answer": "mixed",
+            "clarification": "clarify",
+            "unanswerable": "regulation_rag",
+            "out_of_domain": "out_of_domain",
+        }
+        for case in answers:
+            case_id = str(case.get("id") or "")
+            case_type = str(case.get("case_type") or "")
+            if case.get("contract_version") != "answer-quality-source-grounded-v4":
+                errors.append(f"{case_id}: wrong v4 answer contract")
+            if path_by_type.get(case_type) != case.get("expected_path"):
+                errors.append(
+                    f"{case_id}: case_type={case_type} has invalid path={case.get('expected_path')}"
+                )
+            if not str(case.get("ground_truth") or "").strip():
+                errors.append(f"{case_id}: empty v4 ground truth")
+            if not case.get("required_facts"):
+                errors.append(f"{case_id}: empty v4 required facts")
+            if case_type == "mixed_answer" and not (
+                case.get("relevance_judgments")
+                and case.get("expected_structured_sources")
+            ):
+                errors.append(f"{case_id}: mixed answer missing an evidence family")
 
     production = datasets.get("production", [])
     production_scenarios = Counter(case.get("scenario") for case in production)

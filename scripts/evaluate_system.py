@@ -33,6 +33,7 @@ from src.evaluation.suites import (
     judge_answers,
 )
 from src.generation.answer_pipeline import PIPELINE_VERSION
+from src.retrieval.core.hybrid_pipeline import DEFAULT_RETRIEVAL_MODE
 
 
 DEFAULT_DATASET = ROOT / "data" / "eval" / "architecture_v3"
@@ -92,6 +93,8 @@ def _provenance(
         or manifest.get("generation_model"),
         "dataset_generation_model": manifest.get("generation_model"),
         "answer_pipeline_version": PIPELINE_VERSION,
+        "answer_generation_retrieval_mode": DEFAULT_RETRIEVAL_MODE,
+        "phoranker_used_for_answer_generation": False,
         "response_cache_mode": "exact" if cache_config.get("enabled", True) else "off",
         "router_provider": router_config.get("provider", "groq"),
         "router_model": os.environ.get("STUDENT_RAG_ROUTER_MODEL")
@@ -459,6 +462,7 @@ def main() -> None:
         _write(report, args.output, f"graph_supplement_{args.profile}")
 
     answer_cache_path = args.output / f"answer_cache_{args.profile}.json"
+    answer_expected_n = len(answer_cases)
     if args.suite in {"generate", "all"}:
         _require_env(
             ("GEMINI_API_KEYS",),
@@ -477,7 +481,11 @@ def main() -> None:
             resume=args.resume,
             limit=args.limit,
         )
-        _finalize_report(report, expected_n=100, provenance=provenance)
+        _finalize_report(
+            report,
+            expected_n=answer_expected_n,
+            provenance=provenance,
+        )
         _write(report, args.output, f"answer_generation_{args.profile}")
 
     if args.suite in {"judge", "all"}:
@@ -498,14 +506,27 @@ def main() -> None:
         )
         audit_path = args.human_audit or (args.output / "human_audit.json")
         if args.human_audit is None and not audit_path.exists():
-            template = report.get("human_audit_template") or []
+            dataset_template = args.dataset / "human_audit_template.json"
+            template = (
+                load_json(dataset_template)
+                if dataset_template.exists()
+                else report.get("human_audit_template") or []
+            )
             audit_path.write_text(
                 json.dumps(template, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
             )
+        dataset_template_path = args.dataset / "human_audit_template.json"
+        audit_template = (
+            load_json(dataset_template_path)
+            if dataset_template_path.exists()
+            else None
+        )
         if audit_path.exists():
             report["human_audit"] = summarize_human_audit(
-                load_json(audit_path), report.get("cases") or []
+                load_json(audit_path),
+                report.get("cases") or [],
+                template_rows=audit_template,
             )
         else:
             report["human_audit"] = {
@@ -514,7 +535,11 @@ def main() -> None:
                 "complete": False,
                 "template": report.get("human_audit_template") or [],
             }
-        _finalize_report(report, expected_n=100, provenance=provenance)
+        _finalize_report(
+            report,
+            expected_n=answer_expected_n,
+            provenance=provenance,
+        )
         if not report["human_audit"].get("complete"):
             report["completeness"]["complete"] = False
             report["completeness"]["publication_status"] = "human_audit_pending"

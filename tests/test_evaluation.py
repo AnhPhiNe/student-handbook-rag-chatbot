@@ -10,7 +10,9 @@ from urllib.error import HTTPError
 import pytest
 
 from scripts.evaluate_system import _provenance
-from src.evaluation.dataset import validate_bundle
+import src.evaluation.suites as evaluation_suites
+from src.retrieval.core.hybrid_pipeline import DEFAULT_RETRIEVAL_MODE
+from src.evaluation.dataset import _structured_source_index, validate_bundle
 from src.evaluation.gates import evaluate_gates
 from src.evaluation.judge import (
     PINNED_JUDGE_MODEL,
@@ -19,6 +21,7 @@ from src.evaluation.judge import (
     JudgeQuotaPool,
     build_judge_prompt,
     compact_judge_packet,
+    estimate_tokens,
     key_fingerprint,
     parse_judge_json,
 )
@@ -83,6 +86,21 @@ def test_frozen_final_bundle_is_compatible_with_current_sources() -> None:
     }
 
 
+def test_frozen_architecture_v4_bundle_is_valid() -> None:
+    bundle = ROOT / "data" / "eval" / "architecture_v4"
+    if not bundle.is_dir():
+        pytest.skip("architecture_v4 bundle has not been built")
+    result = validate_bundle(bundle, _require_docstore_artifact())
+    assert result["valid"], result["errors"]
+    assert result["counts"]["answers"] == 150
+
+
+def test_program_source_aliases_preserve_cohort_identity() -> None:
+    index = _structured_source_index(ROOT)
+    assert index[("program", "K50_program_2")]["cohort"] == "K50"
+    assert index[("program", "K51_program_2")]["cohort"] == "K51"
+
+
 def test_legacy_compatibility_provenance_records_both_docstore_hashes() -> None:
     provenance = _provenance(
         ROOT / "data" / "eval" / "final_holdout",
@@ -93,6 +111,8 @@ def test_legacy_compatibility_provenance_records_both_docstore_hashes() -> None:
     assert provenance["compatibility_diagnostic"] is True
     assert provenance["docstore_hash"] == provenance["expected_docstore_hash"]
     assert provenance["actual_docstore_hash"]
+    assert provenance["answer_generation_retrieval_mode"] == DEFAULT_RETRIEVAL_MODE
+    assert provenance["phoranker_used_for_answer_generation"] is False
 
 def test_validator_rejects_query_reused_from_legacy_eval(tmp_path: Path) -> None:
     eval_root = tmp_path / "eval"
@@ -373,6 +393,54 @@ def test_human_audit_uses_template_size_and_repeat_flags() -> None:
     assert complete["repeat_completed_n"] == 5
 
 
+def test_human_audit_must_match_frozen_template_and_repeat_contract() -> None:
+    template = [
+        {
+            "id": f"case-{index}",
+            "repeat_for_consistency": index < 2,
+        }
+        for index in range(4)
+    ]
+    audit_rows = [
+        {
+            **row,
+            "human_score": 1.0,
+            "repeat_score": 1.0 if row["repeat_for_consistency"] else None,
+        }
+        for row in template[:3]
+    ]
+    judge_rows = [{"id": row["id"], "judge": {}} for row in template]
+
+    missing_case = summarize_human_audit(
+        audit_rows,
+        judge_rows,
+        template_rows=template,
+    )
+    assert missing_case["required_n"] == 4
+    assert missing_case["complete"] is False
+    assert missing_case["contract_errors"] == [
+        "human_audit_missing_template_ids:case-3"
+    ]
+
+    audit_rows.append(
+        {
+            **template[3],
+            "human_score": 1.0,
+            "repeat_score": None,
+        }
+    )
+    audit_rows[0]["repeat_score"] = None
+    missing_repeat = summarize_human_audit(
+        audit_rows,
+        judge_rows,
+        template_rows=template,
+    )
+    assert missing_repeat["contract_errors"] == []
+    assert missing_repeat["repeat_required_n"] == 2
+    assert missing_repeat["repeat_completed_n"] == 1
+    assert missing_repeat["complete"] is False
+
+
 def test_compact_packet_keeps_required_fact() -> None:
     case = {
         "id": "a",
@@ -391,6 +459,128 @@ def test_compact_packet_keeps_required_fact() -> None:
     packet = compact_judge_packet(case, answer, max_input_tokens=200)
     assert "Tối đa 8 năm học." in packet["retrieved_context"]
     assert packet["required_facts_present_in_packet"] == ["Tối đa 8 năm học."]
+
+
+def test_compact_packet_prefers_normalized_citation_over_execution_json() -> None:
+    case = {
+        "id": "a",
+        "query": "Hạn nộp hồ sơ là khi nào?",
+        "cohort": "K51",
+        "answerability": "answerable",
+        "ground_truth": "Hạn nộp hồ sơ là sau khi học kỳ bắt đầu 04 tuần.",
+        "required_facts": ["Hạn nộp hồ sơ là sau khi học kỳ bắt đầu 04 tuần."],
+        "forbidden_claims": [],
+        "expected_citations": [],
+    }
+    answer = {
+        "answer": "Hạn nộp hồ sơ là sau khi học kỳ bắt đầu 04 tuần.",
+        "context_used": '[{"chunk_id":"noise","metadata":"' + ("x" * 8_000) + '"}]',
+        "citations": [
+            {
+                "chunk_id": "article-30",
+                "content": "Hạn nộp hồ sơ là sau khi học kỳ bắt đầu 04 tuần.",
+            }
+        ],
+    }
+
+    packet = compact_judge_packet(case, answer, max_input_tokens=200)
+
+    assert "sau khi học kỳ bắt đầu 04 tuần" in packet["retrieved_context"]
+    assert "metadata" not in packet["retrieved_context"]
+    assert '"chunk_id"' not in packet["retrieved_context"]
+
+
+def test_compact_packet_uses_full_readable_context_seen_by_composer() -> None:
+    case = {
+        "id": "general-cohort",
+        "query": "Thời gian học tối đa của K51 là bao lâu?",
+        "cohort": "general",
+        "answerability": "answerable",
+        "ground_truth": "K51 học chính quy tối đa 06 năm.",
+        "required_facts": ["K51 học chính quy tối đa 06 năm."],
+        "forbidden_claims": [],
+        "expected_citations": [],
+    }
+    answer = {
+        "answer": "K51 học chính quy tối đa 06 năm.",
+        "context_used": (
+            "PRIMARY SOURCES\n\n[1]\nCohort: K48-K49\nContent: tối đa 8 năm.\n\n"
+            "---\n\n"
+            "[11]\nCohort: K51\nContent: K51 học chính quy tối đa 06 năm."
+        ),
+        # The public list can be shorter than the evidence packet Composer saw.
+        "citations": [{"chunk_id": "public-source", "content": "tối đa 8 năm."}],
+    }
+
+    packet = compact_judge_packet(case, answer, max_input_tokens=300)
+
+    assert "K51 học chính quy tối đa 06 năm." in packet["retrieved_context"]
+    assert "Cohort: K51" in packet["retrieved_context"]
+    assert packet["required_facts_present_in_packet"] == [
+        "K51 học chính quy tối đa 06 năm."
+    ]
+
+
+def test_compact_packet_prefers_complete_citations_for_single_cohort() -> None:
+    case = {
+        "id": "single-cohort",
+        "query": "Hạn nộp hồ sơ là khi nào?",
+        "cohort": "K51",
+        "answerability": "answerable",
+        "ground_truth": "Hạn nộp hồ sơ là sau khi học kỳ bắt đầu 04 tuần.",
+        "required_facts": ["Hạn nộp hồ sơ là sau khi học kỳ bắt đầu 04 tuần."],
+        "forbidden_claims": [],
+        "expected_citations": [],
+    }
+    answer = {
+        "answer": "Hạn nộp hồ sơ là sau khi học kỳ bắt đầu 04 tuần.",
+        "context_used": "PRIMARY SOURCES\n\n[1]\nCohort: K51\nContent: nhiễu.",
+        "citations": [
+            {
+                "chunk_id": "article-30",
+                "content": "Hạn nộp hồ sơ là sau khi học kỳ bắt đầu 04 tuần.",
+            }
+        ],
+    }
+
+    packet = compact_judge_packet(case, answer, max_input_tokens=300)
+
+    assert "sau khi học kỳ bắt đầu 04 tuần" in packet["retrieved_context"]
+    assert "nhiễu" not in packet["retrieved_context"]
+
+
+def test_default_judge_packet_keeps_long_answer_and_later_citation_evidence() -> None:
+    answer_tail = "Kết luận quan trọng nằm ở cuối câu trả lời."
+    later_evidence = "Nguồn thứ sáu xác lập kết luận quan trọng."
+    case = {
+        "id": "long-answer",
+        "query": "Quy định gồm những gì?",
+        "cohort": "K50",
+        "answerability": "answerable",
+        "ground_truth": ("Nội dung nguồn dài. " * 80) + later_evidence,
+        "required_facts": [later_evidence],
+        "forbidden_claims": [],
+        "expected_citations": [],
+    }
+    answer = {
+        "answer": ("Nội dung trả lời có căn cứ. " * 90) + answer_tail,
+        "citations": [
+            {"chunk_id": f"source-{index}", "content": f"Nguồn {index}."}
+            for index in range(5)
+        ]
+        + [{"chunk_id": "source-6", "content": later_evidence}],
+    }
+
+    packet = compact_judge_packet(case, answer)
+
+    assert answer_tail in packet["answer"]
+    assert later_evidence in packet["retrieved_context"]
+    assert len(packet["citations"]) == 6
+    config = JudgeConfig()
+    assert (
+        estimate_tokens(build_judge_prompt(packet)) + config.max_output_tokens
+        <= config.tpm_limit_per_key
+    )
 
 
 def test_judge_parser_rejects_out_of_range_score() -> None:
@@ -516,6 +706,16 @@ def test_all_judge_daily_quota_exhausted_is_explicit(tmp_path: Path) -> None:
         pool.acquire(1)
 
 
+def test_judge_request_larger_than_per_key_tpm_is_explicit(tmp_path: Path) -> None:
+    config = JudgeConfig(
+        state_path=tmp_path / "judge_state.json", tpm_limit_per_key=10
+    )
+    pool = JudgeQuotaPool(["secret"], config)
+
+    with pytest.raises(RuntimeError, match="request_exceeds_per_key_tpm_limit"):
+        pool.acquire(11)
+
+
 def test_gemini_pool_skips_rate_limited_key(tmp_path: Path) -> None:
     pool = GeminiKeyPool(
         ["gemini-one", "gemini-two"],
@@ -608,8 +808,11 @@ def test_generation_restores_eval_environment_when_pipeline_init_fails(
 ) -> None:
     monkeypatch.setenv("STUDENT_RAG_OFFLINE_EVAL", "previous-offline")
     monkeypatch.setenv("STUDENT_RAG_QUALITY_EVAL", "previous-quality")
+    monkeypatch.setenv("STUDENT_RAG_EVAL_RETRIEVAL_MODE", "full")
+    observed_modes: list[str | None] = []
 
     def fail_pipeline():
+        observed_modes.append(os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE"))
         raise RuntimeError("pipeline init failed")
 
     with pytest.raises(RuntimeError, match="pipeline init failed"):
@@ -622,6 +825,33 @@ def test_generation_restores_eval_environment_when_pipeline_init_fails(
 
     assert os.environ["STUDENT_RAG_OFFLINE_EVAL"] == "previous-offline"
     assert os.environ["STUDENT_RAG_QUALITY_EVAL"] == "previous-quality"
+    assert os.environ["STUDENT_RAG_EVAL_RETRIEVAL_MODE"] == "full"
+    assert observed_modes == [DEFAULT_RETRIEVAL_MODE]
+
+
+def test_answer_quality_wait_rejects_degraded_bm25(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        evaluation_suites,
+        "get_bm25_runtime_status",
+        lambda: {"status": "degraded", "attempts": 3, "error_type": "TimeoutError"},
+    )
+
+    with pytest.raises(RuntimeError, match="BM25 entered degraded state"):
+        evaluation_suites._wait_for_bm25_ready(timeout_seconds=0)
+
+
+def test_answer_quality_wait_accepts_ready_bm25(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        evaluation_suites,
+        "get_bm25_runtime_status",
+        lambda: {"status": "ready", "attempts": 1, "error_type": None},
+    )
+
+    evaluation_suites._wait_for_bm25_ready(timeout_seconds=0)
 
 
 def test_mongo_parent_miss_cannot_count_as_retrieval_hit() -> None:

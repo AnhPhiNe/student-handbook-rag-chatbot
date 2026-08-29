@@ -440,7 +440,6 @@ class ChildParentHybridRetriever:
         for cid in union_ids:
             dense_rank = dense_rank_map.get(cid)
             bm25_rank = bm25_rank_map.get(cid)
-            
             # RRF Formula (k=60)
             score_dense = 1 / (dense_rank + 60) if dense_rank else 0.0
             score_bm25 = 1 / (bm25_rank + 60) if bm25_rank else 0.0
@@ -830,23 +829,14 @@ def build_related_references(
 _build_related_references = build_related_references
 
 
-def run_hybrid_retrieval_pipeline(
-    query: str, top_k: int = 5, **kwargs
-) -> dict[str, Any]:
-    """Run the configured hybrid regulation retriever and return pipeline-shaped output.
+def initialize_hybrid_retriever() -> ChildParentHybridRetriever:
+    """Create the process-wide retriever once and start BM25 initialization."""
 
-    Runtime uses the child-parent regulation retriever. The adapter keeps the same
-    output contract as the broader retrieval pipeline so the answer layer and
-    UI do not need separate code paths.
-    """
     global _GLOBAL_RETRIEVER
-
     if _GLOBAL_RETRIEVER is None:
-        import os
         from src.common.env_loader import load_project_env
 
         load_project_env()
-
         qdrant_url = os.getenv("QDRANT_URL")
         qdrant_key = os.getenv("QDRANT_API_KEY")
         collection_name = require_qdrant_collection_name()
@@ -856,6 +846,19 @@ def run_hybrid_retrieval_pipeline(
             qdrant_key,
             collection_name=collection_name,
         )
+    return _GLOBAL_RETRIEVER
+
+
+def run_hybrid_retrieval_pipeline(
+    query: str, top_k: int = 5, **kwargs
+) -> dict[str, Any]:
+    """Run the configured hybrid regulation retriever and return pipeline-shaped output.
+
+    Runtime uses the child-parent regulation retriever. The adapter keeps the same
+    output contract as the broader retrieval pipeline so the answer layer and
+    UI do not need separate code paths.
+    """
+    retriever = initialize_hybrid_retriever()
 
     cohort = kwargs.get("cohort")
     retrieval_query = kwargs.get("retrieval_query") or query
@@ -864,7 +867,7 @@ def run_hybrid_retrieval_pipeline(
     strategy = kwargs.get("strategy") or "hybrid_graph_retrieval"
     target_chunk_types = kwargs.get("target_chunk_types") or ["regulation"]
 
-    docs = _GLOBAL_RETRIEVER.retrieve(
+    docs = retriever.retrieve(
         retrieval_query,
         top_k_final=top_k,
         cohort=cohort,

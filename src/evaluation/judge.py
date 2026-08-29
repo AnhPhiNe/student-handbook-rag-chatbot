@@ -72,6 +72,8 @@ class JudgeQuotaPool:
         return cls([item.strip() for item in raw.split(",") if item.strip()], config)
 
     def acquire(self, estimated_input_tokens: int) -> tuple[str, str]:
+        if estimated_input_tokens > self.config.tpm_limit_per_key:
+            raise RuntimeError("judge_request_exceeds_per_key_tpm_limit")
         deadline = time.monotonic() + self.config.max_quota_wait_seconds
         while True:
             with self._lock:
@@ -179,7 +181,7 @@ def compact_judge_packet(
     case: dict[str, Any],
     answer_record: dict[str, Any],
     *,
-    max_input_tokens: int = 2_800,
+    max_input_tokens: int = 5_000,
 ) -> dict[str, Any]:
     """Build a bounded packet while preserving required facts when available."""
     actual_citations = (
@@ -187,26 +189,35 @@ def compact_judge_packet(
     )
     citation_context = "\n".join(
         str(citation.get("content") or "")
-        for citation in actual_citations[:5]
+        for citation in actual_citations[:10]
         if isinstance(citation, dict)
     )
     structured_context = _build_structured_judge_context(answer_record)
-    context = "\n".join(
-        part
-        for part in (
-            structured_context,
-            str(answer_record.get("context_used") or ""),
-            citation_context,
-        )
-        if part.strip()
+    raw_context = str(answer_record.get("context_used") or "").strip()
+    # RAG and mixed answers store the exact readable packet sent to Composer in
+    # ``context_used``. A general-cohort request can expose 15 such sources
+    # (five per cohort), while the public citation payload is capped at ten, so
+    # that path needs the source-aware Composer packet. For a single cohort,
+    # the smaller citation set is complete and avoids losing relevant evidence
+    # during compaction. Legacy serialized execution JSON also falls back to
+    # normalized citation contents rather than consuming budget on metadata.
+    readable_composer_context = (
+        raw_context
+        if "PRIMARY SOURCES" in raw_context
+        and str(case.get("cohort") or "").lower() == "general"
+        else ""
     )
+    fallback_context = citation_context or raw_context
     required = [str(item) for item in case.get("required_facts") or []]
     query_terms = set(re.findall(r"\w+", str(case.get("query") or "").lower()))
-    sentences = [
-        part.strip()
-        for part in re.split(r"(?<=[.!?;])\s+|\n+", context)
-        if part.strip()
-    ]
+    answer_terms = set(
+        re.findall(r"\w+", str(answer_record.get("answer") or "").lower())
+    )
+    sentences = _split_evidence_units(structured_context)
+    if readable_composer_context:
+        sentences.extend(_source_aware_composer_units(readable_composer_context))
+    else:
+        sentences.extend(_split_evidence_units(fallback_context))
 
     selected: list[str] = []
     for fact in required:
@@ -227,6 +238,7 @@ def compact_judge_packet(
         key=lambda line: (
             bool(re.search(r"\d", line)),
             len(query_terms & set(re.findall(r"\w+", line.lower()))),
+            len(answer_terms & set(re.findall(r"\w+", line.lower()))),
         ),
         reverse=True,
     )
@@ -245,7 +257,7 @@ def compact_judge_packet(
             )
             if citation.get(key) is not None
         }
-        for citation in actual_citations[:5]
+        for citation in actual_citations[:10]
         if isinstance(citation, dict)
     ]
     packet = {
@@ -256,7 +268,7 @@ def compact_judge_packet(
         "question_style": case.get("question_style"),
         "question_specificity": case.get("question_specificity"),
         "expected_answer_behavior": case.get("expected_answer_behavior"),
-        "ground_truth": str(case.get("ground_truth") or "")[:650],
+        "ground_truth": str(case.get("ground_truth") or "")[:4_000],
         "required_facts": required,
         "forbidden_claims": case.get("forbidden_claims") or [],
         "expected_citations": [
@@ -272,7 +284,7 @@ def compact_judge_packet(
             }
             for citation in (case.get("expected_citations") or [])[:5]
         ],
-        "answer": str(answer_record.get("answer") or "")[:1_800],
+        "answer": str(answer_record.get("answer") or "")[:5_000],
         "citations": compact_citations,
         "retrieved_context": "",
     }
@@ -303,6 +315,41 @@ def compact_judge_packet(
     return packet
 
 
+def _split_evidence_units(text: str) -> list[str]:
+    return [
+        part.strip()
+        for part in re.split(r"(?<=[.!?;])\s+|\n+", text)
+        if part.strip()
+    ]
+
+
+def _source_aware_composer_units(context: str) -> list[str]:
+    """Keep each Composer evidence sentence attached to its source identity."""
+    blocks = re.split(
+        r"\n\s*---\s*\n|\n{2,}(?=\[\d+\]\s*\n)",
+        context,
+    )
+    units: list[str] = []
+    for block in blocks:
+        block = block.strip()
+        if not block or block == "PRIMARY SOURCES":
+            continue
+        source_number = re.search(r"(?m)^\[(\d+)\]\s*$", block)
+        metadata: list[str] = []
+        if source_number:
+            metadata.append(f"Source: {source_number.group(1)}")
+        for label in ("Cohort", "Title", "Document", "Pages"):
+            match = re.search(rf"(?m)^{label}:\s*(.+)$", block)
+            if match:
+                metadata.append(f"{label}: {match.group(1).strip()}")
+        prefix = " | ".join(metadata)
+        content_match = re.search(r"(?m)^Content:\s*", block)
+        body = block[content_match.end() :] if content_match else block
+        for unit in _split_evidence_units(body):
+            units.append(f"{prefix} | {unit}" if prefix else unit)
+    return units
+
+
 def _build_structured_judge_context(answer_record: dict[str, Any]) -> str:
     parts: list[str] = []
     for key, label in (
@@ -314,9 +361,6 @@ def _build_structured_judge_context(answer_record: dict[str, Any]) -> str:
         if not value:
             continue
         parts.append(f"{label}:\n{_bounded_json(value, max_chars=5_000)}")
-    citations = answer_record.get("citations_used") or answer_record.get("citations") or []
-    if citations:
-        parts.append(f"CITATION_METADATA:\n{_bounded_json(citations[:5], max_chars=2_500)}")
     return "\n\n".join(parts)
 
 

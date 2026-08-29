@@ -24,6 +24,7 @@ from .metrics import (
     safe_mean,
     wilson_interval,
 )
+from src.retrieval.core.runtime_health import get_bm25_runtime_status
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -63,6 +64,38 @@ LOOKUP_TYPE_ALIASES = {
     },
     "faculty": {"faculty", "program_directory", "program_topic_faculty"},
 }
+
+
+def _wait_for_bm25_ready(timeout_seconds: float | None = None) -> None:
+    """Make answer-quality runs deterministic with respect to BM25 startup.
+
+    Production may deliberately serve dense-only while BM25 initializes. A
+    generate/judge benchmark must not let case order decide which retrieval
+    stack a question receives, so evaluation fails explicitly if hybrid search
+    cannot become ready within a bounded startup window.
+    """
+
+    timeout = (
+        float(timeout_seconds)
+        if timeout_seconds is not None
+        else float(os.environ.get("STUDENT_RAG_EVAL_BM25_READY_TIMEOUT_SECONDS", "180"))
+    )
+    deadline = time.monotonic() + max(0.0, timeout)
+    while True:
+        snapshot = get_bm25_runtime_status()
+        status = snapshot["status"]
+        if status == "ready":
+            return
+        if status == "degraded":
+            raise RuntimeError(
+                "BM25 entered degraded state before answer-quality evaluation "
+                f"(error_type={snapshot.get('error_type') or 'unknown'})"
+            )
+        if time.monotonic() >= deadline:
+            raise TimeoutError(
+                f"BM25 did not become ready within {timeout:.1f}s before evaluation"
+            )
+        time.sleep(0.25)
 
 
 def _is_structured_path(
@@ -1563,18 +1596,32 @@ def generate_answers(
     limit: int | None = None,
     pipeline_factory: Callable[[], Any] | None = None,
 ) -> dict[str, Any]:
+    from src.retrieval.core.hybrid_pipeline import (
+        DEFAULT_RETRIEVAL_MODE,
+        initialize_hybrid_retriever,
+    )
+
+    uses_default_pipeline = pipeline_factory is None
     if pipeline_factory is None:
         from src.generation.answer_pipeline import AnswerPipeline
 
         pipeline_factory = AnswerPipeline
     previous_offline = os.environ.get("STUDENT_RAG_OFFLINE_EVAL")
     previous_quality = os.environ.get("STUDENT_RAG_QUALITY_EVAL")
+    previous_retrieval_mode = os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE")
     os.environ.pop("STUDENT_RAG_OFFLINE_EVAL", None)
     os.environ["STUDENT_RAG_QUALITY_EVAL"] = "1"
+    # Answer-quality evaluation must exercise the production retrieval contract.
+    # PhoRanker is reserved for explicit retrieval-ablation suites and must not
+    # silently enter the 150-case generate/judge result through ambient env.
+    os.environ["STUDENT_RAG_EVAL_RETRIEVAL_MODE"] = DEFAULT_RETRIEVAL_MODE
     existing = load_json(cache_path) if resume and cache_path.exists() else []
     by_id = {row["id"]: row for row in existing}
     try:
         pipeline = pipeline_factory()
+        if uses_default_pipeline:
+            initialize_hybrid_retriever()
+            _wait_for_bm25_ready()
         progress = _progress_cases(
             cases,
             limit=limit,
@@ -1595,6 +1642,8 @@ def generate_answers(
                 record = {
                     "id": case["id"],
                     **clean_output,
+                    "evaluation_retrieval_mode": DEFAULT_RETRIEVAL_MODE,
+                    "phoranker_used": False,
                     "latency_ms": (time.perf_counter() - started) * 1000,
                 }
             except Exception as exc:
@@ -1622,11 +1671,17 @@ def generate_answers(
     finally:
         _restore_env("STUDENT_RAG_OFFLINE_EVAL", previous_offline)
         _restore_env("STUDENT_RAG_QUALITY_EVAL", previous_quality)
+        _restore_env(
+            "STUDENT_RAG_EVAL_RETRIEVAL_MODE",
+            previous_retrieval_mode,
+        )
     rows = [by_id[case["id"]] for case in cases[:limit] if case["id"] in by_id]
     return {
         "suite": "answer_generation",
         "summary": {
             "n": len(rows),
+            "retrieval_mode": DEFAULT_RETRIEVAL_MODE,
+            "phoranker_used": False,
             "success_rate": safe_mean(
                 [float(row.get("status") == "answered") for row in rows]
             ),

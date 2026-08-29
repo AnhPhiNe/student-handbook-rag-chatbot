@@ -1,0 +1,93 @@
+{
+  "contract": "architecture-v4-static-coverage-audit",
+  "ok": true,
+  "errors": [],
+  "answer_count": 150,
+  "case_type_counts": {
+    "regulation_true_rag": 72,
+    "structured_answer": 30,
+    "mixed_answer": 18,
+    "clarification": 10,
+    "unanswerable": 10,
+    "out_of_domain": 10
+  },
+  "path_counts": {
+    "regulation_rag": 82,
+    "structured": 30,
+    "mixed": 18,
+    "clarify": 10,
+    "out_of_domain": 10
+  },
+  "cohort_counts": {
+    "K48-K49": 42,
+    "K50": 40,
+    "K51": 40,
+    "general": 28
+  },
+  "rag_cohort_counts": {
+    "K48-K49": 18,
+    "K50": 18,
+    "K51": 18,
+    "general": 18
+  },
+  "rag_topic_counts": {
+    "hoc_bong": 5,
+    "hoc_phi": 10,
+    "khac": 13,
+    "nganh_hoc": 11,
+    "nghi_hoc": 7,
+    "ngoai_ngu": 6,
+    "phong_ban": 7,
+    "ren_luyen": 9,
+    "tot_nghiep": 4
+  },
+  "rag_unique_parent_sources": 85,
+  "rag_parent_source_uses": 96,
+  "structured_lookup_counts": {
+    "foreign_language": 3,
+    "study_duration": 3,
+    "scholarship": 3,
+    "scoring": 3,
+    "conduct": 3,
+    "service": 3,
+    "office": 3,
+    "faculty": 3,
+    "program": 3,
+    "formula": 3
+  },
+  "eval_split_counts": {
+    "realistic": 109,
+    "stress": 41
+  },
+  "answerability_counts": {
+    "answerable": 120,
+    "unanswerable": 30
+  },
+  "ground_truth_policy": "Derived only from frozen parent sections or structured records; no model output was inspected.",
+  "human_audit_case_type_counts": {
+    "regulation_true_rag": 12,
+    "structured_answer": 6,
+    "mixed_answer": 5,
+    "clarification": 2,
+    "unanswerable": 2,
+    "out_of_domain": 3
+  },
+  "human_audit_cohort_counts": {
+    "K48-K49": 8,
+    "K50": 9,
+    "K51": 7,
+    "general": 6
+  },
+  "human_audit_consistency_repeat_count": 6,
+  "ragas_subset_case_type_counts": {
+    "regulation_true_rag": 30,
+    "structured_answer": 15,
+    "mixed_answer": 15
+  },
+  "ragas_subset_cohort_counts": {
+    "K48-K49": 18,
+    "K50": 18,
+    "K51": 17,
+    "general": 7
+  }
+}

@@ -1,0 +1,1509 @@
+[
+  {
+    "id": "v4_ans_rag_001",
+    "case_type": "regulation_true_rag",
+    "cohort": "K48-K49",
+    "user_input": "Cho em hỏi quy định chính về Học bổng trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh áp dụng cho sinh viên K48-K49?",
+    "reference": "Điều 27. Học bổng\n1. Học bổng khuyến khích học tập (HBKKHT)\na) Chế độ HBKKHT cho sinh viên thực hiện theo các quy định hiện\nhành của Bộ Giáo dục và Đào tạo và của Trường;\nb) HBKKHT chỉ được cấp cho sinh viên hệ chính quy đang học tập\ntại Trường; người học liên thông không được xét cấp.\n2. Học bổng chính sách\nHọc bổng chính sách sẽ được cấp theo hợp đồng giữa Trường và cơ\nquan cử sinh viên theo học diện cử tuyển (nếu có).\n3. Học bổng tài trợ\na) Học bổng tài trợ cho sinh viên do các tổ chức và cá nhân trao theo\nnhững điều kiện và quy trình riêng;\nb) Học bổng tài trợ do Phòng CTCT và HSSV hoặc phối hợp với các\nđơn vị khác tiếp nhận và thông báo đến toàn thể sinh viên khi có thông tin\nvề học bổng.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Học bổng",
+        "source_pages": [
+          51,
+          52
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_003",
+    "case_type": "regulation_true_rag",
+    "cohort": "K48-K49",
+    "user_input": "Bạn tóm tắt giúp em mục Chế độ báo cáo, lưu trữ, công khai thông tin trong Quy chế đào tạo trình độ đại học dành cho sinh viên K48-K49?",
+    "reference": "Điều 23. Chế độ báo cáo, lưu trữ, công khai thông tin\n1. Trước ngày 31 tháng 12 hằng năm\na) Trường báo cáo Bộ Giáo dục và Đào tạo về số liệu sinh viên tuyển\nmới, tốt nghiệp, thôi học và đang học trong năm, dự kiến tốt nghiệp trong\nnăm sau, tốt nghiệp đã có việc làm trong thời gian 12 tháng; phân loại\ntheo đối tượng đầu vào, ngành đào tạo, khóa đào tạo và hình thức đào tạo;\nb) Trường báo cáo Ủy ban nhân dân cấp tỉnh nơi liên kết đào tạo về\ntình hình tuyển sinh và đào tạo tại địa phương.\n2. Trường có trách nhiệm lưu trữ, bảo quản an toàn các tài liệu liên\nquan tới công tác đào tạo theo các quy định do Bộ Giáo dục và Đào tạo\nban hành.\na) Quyết định trúng tuyển, bảng điểm gốc, quyết định công nhận tốt\nnghiệp, sổ gốc cấp phát bằng tốt nghiệp cho sinh viên là tài liệu lưu trữ\nđược bảo quản vĩnh viễn tại Trường;\nb) Tài liệu khác liên quan đến tuyển sinh, đào tạo được lưu trữ, bảo\nquản trong suốt quá trình đào tạo;\nc) Việc tiêu hủy tài liệu liên quan tuyển sinh, đào tạo hết thời gian\nlưu trữ được thực hiện theo quy định hiện hành của Nhà nước.\n3. Trách nhiệm lưu trữ, công khai thông tin và thực hiện chế độ báo\ncáo được thực hiện theo chức năng, nhiệm vụ của các đơn vị thuộc và\ntrực thuộc trường.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu23",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Chế độ báo cáo, lưu trữ, công khai thông tin",
+        "source_pages": [
+          32
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_006",
+    "case_type": "regulation_true_rag",
+    "cohort": "K48-K49",
+    "user_input": "Cho tui hỏi sinh viên K48-K49: le phi kiem tra trinh do dau vao, hoc va thi ket thuc chuong trinh ngoai ngu trong quy dinh to chuc day hoc va cong nhan dat chuan dau ra ngoai ngu áp dụng thế nào?",
+    "reference": "Điều 6. Lệ phí kiểm tra trình độ đầu vào, học và thi kết thúc\nchương trình ngoại ngữ\n1. Miễn lệ phí kiểm tra đầu vào trình độ ngoại ngữ cho tất cả sinh\nviên trình độ đại học.\n2. Lệ phí xét hồ sơ xin miễn học, miễn thi ngoại ngữ hoặc xét công\nnhận trình độ ngoại ngữ để xét tốt nghiệp cho sinh viên: 30.000 đ/sinh\nviên/lần.\n3. Lệ phí học và thi kết thúc chương trình ngoại ngữ\na) Đối với các ngành đào tạo giáo viên: Sinh viên được miễn học phí\n04 tín chỉ cuối trong chương trình ngoại ngữ và miễn lệ phí thi kết thúc\nchương trình ngoại ngữ 01 lần;\nb) Đối với các ngành đào tạo khác: Sinh viên nộp lệ phí học và thi\nkết thúc chương trình ngoại ngữ theo các quy định hiện hành.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu6",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Lệ phí kiểm tra trình độ đầu vào, học và thi kết thúc chương trình ngoại ngữ",
+        "source_pages": []
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_008",
+    "case_type": "regulation_true_rag",
+    "cohort": "K48-K49",
+    "user_input": "Sinh viên K48-K49 cần lưu ý gì về Khen thưởng và kỷ luật trong Quy định công tác cố vấn học tập theo sổ tay?",
+    "reference": "Điều 9. Khen thưởng và kỷ luật\n1. CVHT hoàn thành tốt nhiệm vụ là một trong các tiêu chuẩn xét thi\nđua, khen thưởng hằng năm.\n2. CVHT hoàn thành xuất sắc nhiệm vụ trong nhiều năm được đề nghị\nkhen thưởng, bình chọn danh hiệu thi đua các cấp và được xem xét nâng\nlương trước thời hạn.\n3. CVHT không hoàn thành nhiệm vụ sẽ chịu hình thức kỷ luật theo\nquy định của Nhà trường.\nKT. HIỆU TRƯỞNG\nPHÓ HIỆU TRƯỞNG\n(đã ký)\nThS. Đặng Chính Nghĩa\nBỘ GIÁO DỤC VÀ ĐÀO TẠO\nTRƯỜNG ĐẠI HỌC SƯ PHẠM\nTHÀNH PHỐ HỒ CHÍ MINH\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập – Tự do – Hạnh phúc\nSố: 2650/QĐ-ĐHSP\nThành phố Hồ Chí Minh, ngày 16 tháng 9 năm 2022",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong4_Dieu9",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Khen thưởng và kỷ luật",
+        "source_pages": [
+          68,
+          69
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_011",
+    "case_type": "regulation_true_rag",
+    "cohort": "K48-K49",
+    "user_input": "Sinh viên K48-K49 cần lưu ý gì về Công tác sinh viên trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh theo sổ tay?",
+    "reference": "Điều 3. Công tác sinh viên\n1. Công tác sinh viên là một trong những công tác trọng tâm của\nTrường bao gồm tổng thể các hoạt động giáo dục, tuyên truyền; quản lý;\nhỗ trợ và dịch vụ đối với sinh viên nhằm đảm bảo các mục tiêu của giáo\ndục đại học.\n2. Công tác sinh viên phải thực hiện đúng đường lối của Đảng, chính\nsách, pháp luật của Nhà nước và các quy chế, quy định của Bộ Giáo dục\nvà Đào tạo.\n3. Công tác sinh viên phải bảo đảm khách quan, công bằng, công\nkhai, minh bạch trong các vấn đề có liên quan đến sinh viên.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu3",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Công tác sinh viên",
+        "source_pages": [
+          36,
+          37
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_013",
+    "case_type": "regulation_true_rag",
+    "cohort": "K48-K49",
+    "user_input": "Cho em hỏi quy định chính về Quy định về việc thôi học, chuyển trường, chuyển ngành, buộc thôi học trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh áp dụng cho sinh viên K48-K49?",
+    "reference": "Điều 32. Quy định về việc thôi học, chuyển trường, chuyển ngành,\nbuộc thôi học\n1. Thôi học\nSinh viên được phép thôi học nếu có đơn xin thôi học với lý do rõ\nràng, hợp lệ và bồi hoàn đầy đủ kinh phí đào tạo.\n2. Chuyển trường\na) Đối với sinh viên trúng tuyển từ năm 2021 thực hiện theo Điều 17\ncủa Quy chế đào tạo trình độ đại học chính quy tại Trường Đại học Sư\nphạm Thành phố Hồ Chí Minh được ban hành kèm theo Quyết định số\n1410/QĐ-ĐHSP ngày 08/9/2021 của Hiệu trưởng;\nb) Đối với sinh viên trúng tuyển từ năm 2020 trở về trước thì thực\nhiện theo Quy chế đào tạo đại học và cao đẳng hệ chính quy theo hệ\nthống tín chỉ được ban hành kèm theo Quyết định số 2045/QĐ-ĐHSP\nngày 05/9/2016 của Hiệu trưởng.\n3. Chuyển ngành\na) Về đối tượng: chỉ được áp dụng cho những sinh viên thuộc khóa\ntuyển sinh từ năm 2021 trở về sau;\nb) Về điều kiện hồ sơ: thực hiện theo khoản 1, Điều 17 của Quy chế\nđào tạo trình độ đại học chính quy tại Trường Đại học Sư phạm Thành\nphố Hồ Chí Minh được ban hành kèm theo Quyết định số 1410/QĐ-\nĐHSP ngày 08/9/2021 của Hiệu trưởng.\n4. Buộc thôi học\nSinh viên bị buộc thôi học nếu vi phạm một trong các điểm sau:\na) Sinh viên bị buộc thôi học theo Quy chế đào tạo trình độ đại học\ntại Trường;\n− Đối với sinh viên trúng tuyển từ năm 2021 thực hiện theo khoản\n2, Điều 12 của Quy chế đào tạo trình độ đại học chính quy tại Trường Đại\nhọc Sư phạm Thành phố Hồ Chí Minh được ban hành kèm theo Quyết\nđịnh số 1410/QĐ-ĐHSP ngày 08/9/2021 của Hiệu trưởng;\n− Đối với sinh viên trúng tuyển từ năm 2020 trở về trước thì thực\nhiện theo khoản 2, Điều 16 của Quy chế đào tạo đại học và cao đẳng hệ\nchính quy theo hệ thống tín chỉ được ban hành kèm theo Quyết định số\n2045/QĐ-ĐHSP ngày 05/9/2016 của Hiệu trưởng.\nb) Xếp loại rèn luyện yếu, kém 2 học kỳ liên tiếp lần thứ hai;\nc) Vi phạm kỷ luật theo quy định đến mức buộc thôi học.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Quy định về việc thôi học, chuyển trường, chuyển ngành, buộc thôi học",
+        "source_pages": [
+          56,
+          57
+        ]
+      },
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu12",
+        "grade": 1,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Hệ thống tổ chức, quản lý công tác sinh viên",
+        "source_pages": [
+          45
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_016",
+    "case_type": "regulation_true_rag",
+    "cohort": "K48-K49",
+    "user_input": "Cho tui hỏi sinh viên K48-K49: lap du toan, chi tra kinh phi ho tro trong nghi dinh quy dinh ve chinh sach ho tro tien dong hoc phi, chi phi sinh hoat áp dụng thế nào?",
+    "reference": "Điều 5. Lập dự toán, chi trả kinh phí hỗ trợ\n1. Lập dự toán:\na) Đối với sinh viên sư phạm đào tạo theo phương thức giao nhiệm\nvụ, đặt hàng hoặc đấu thầu (sau đây gọi chung là thuộc đối tượng giao\nnhiệm vụ, đặt hàng hoặc đấu thầu): Căn cứ vào nhu cầu đào tạo giáo viên\ncủa địa phương và các định mức hỗ trợ quy định tại Điều 4 Nghị định\nnày, hằng năm, cơ quan giao nhiệm vụ, đặt hàng hoặc đấu thầu lập dự\ntoán kinh phí đào tạo giáo viên báo cáo cơ quan có thẩm quyền phê duyệt\nkinh phí để chi trả hỗ trợ tiền đóng học phí và chi phí sinh hoạt cho sinh\nviên sư phạm qua cơ sở đào tạo giáo viên;\nb) Đối với sinh viên sư phạm đào tạo theo nhu cầu xã hội (không\nthuộc đối tượng giao nhiệm vụ, đặt hàng hoặc đấu thầu): Căn cứ vào số\nchỉ tiêu còn lại trong phạm vi chỉ tiêu của Bộ Giáo dục và Đào tạo thông\nbáo sau khi trừ đi chỉ tiêu giao nhiệm vụ, đặt hàng hoặc đấu thầu, hằng\nnăm, cơ sở đào tạo giáo viên lập dự toán kinh phí và gửi cơ quan cấp trên\ntổng hợp báo cáo cơ quan tài chính bố trí dự toán theo quy định của Luật\nNgân sách Nhà nước. Kinh phí hỗ trợ tiền đóng học phí và chi phí sinh\nhoạt cho sinh viên sư phạm đào tạo theo nhu cầu xã hội được cấp cho cơ\nsở đào tạo giáo viên theo hình thức giao dự toán theo quy định.\n2. Chi trả kinh phí hỗ trợ từ ngân sách Nhà nước:\na) Kinh phí hỗ trợ tiền đóng học phí và chi phí sinh hoạt cho sinh\nviên sư phạm được bố trí trong dự toán ngân sách Nhà nước hằng năm\nchi cho giáo dục, đào tạo tại các địa phương, bộ, ngành theo các quy định\nhiện hành;\nb) Cơ quan giao nhiệm vụ, đặt hàng hoặc đấu thầu chi trả trực tiếp\ncho cơ sở đào tạo giáo viên kinh phí hỗ trợ tiền đóng học phí và chi phí\nsinh hoạt của sinh viên sư phạm theo cơ chế Nhà nước giao nhiệm vụ, đặt\nhàng hoặc đấu thầu đối với các sinh viên sư phạm thuộc đối tượng giao\nnhiệm vụ, đặt hàng hoặc đấu thầu.\nĐối với kinh phí hỗ trợ tiền đóng học phí và chi phí sinh hoạt cho\nsinh viên sư phạm trong chỉ tiêu Bộ Giáo dục và Đào tạo thông báo\nnhưng không thuộc đối tượng giao nhiệm vụ, đặt hàng hoặc đấu thầu,\nđược bố trí trong dự toán hằng năm của cơ sở đào tạo giáo viên được cấp\ncó thẩm quyền giao theo quy định của Luật Ngân sách Nhà nước;\nc) Cơ sở đào tạo giáo viên có trách nhiệm chi trả tiền hỗ trợ chi phí\nsinh hoạt cho sinh viên sư phạm thông qua tài khoản tiền gửi của sinh\nviên tại ngân hàng.\n3. Việc lập dự toán, chấp hành dự toán và thanh quyết toán kinh phí\nthực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với\nsinh viên sư phạm tại Nghị định này thực hiện theo quy định tại Luật\nNgân sách Nhà nước và các văn bản hướng dẫn thực hiện.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu5",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Lập dự toán, chi trả kinh phí hỗ trợ",
+        "source_pages": [
+          109,
+          110
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_018",
+    "case_type": "regulation_true_rag",
+    "cohort": "K48-K49",
+    "user_input": "Các khoa trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh có vai trò và trách nhiệm gì đối với sinh viên K48-K49?",
+    "reference": "Điều 23. Các khoa\n1. Hệ thống tổ chức, quản lý công tác sinh viên gồm: lãnh đạo khoa, trợ\nlý tổ chức, CVHT và ban cán sự lớp sinh viên.\n2. Thông qua Phòng CTCT và HSSV trình Hiệu trưởng danh sách phân\ncông giảng viên thuộc khoa phụ trách CVHT các lớp sinh viên; chỉ định ban\ncán sự lớp sinh viên (năm thứ nhất), tổ chức bầu ban cán sự lớp; theo dõi tình\nhình học tập, rèn luyện của sinh viên thông qua báo cáo định kỳ của CVHT.\n3. Tổ chức, phối hợp với các đơn vị có liên quan thực hiện công tác\nđánh giá kết quả rèn luyện của sinh viên ở cấp khoa theo từng học kỳ, từng\nnăm học và toàn khóa học.\n4. Thực hiện các công việc hành chính thuộc thẩm quyền cấp khoa.\n5. Thông qua tổ chức Đoàn Thanh niên Cộng sản Hồ Chí Minh cấp\nkhoa, Liên Chi hội Sinh viên tổ chức các hoạt động học tập, rèn luyện sinh\nviên trong khoa: NCKH, câu lạc bộ học thuật, văn hóa văn nghệ, thể dục thể\nthao, các hoạt động ngoại khóa, hoạt động tình nguyện.\n6. Xem xét và kiến nghị với Trường các hình thức khen thưởng, kỷ luật\nvà khiếu nại của sinh viên.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu23",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Các khoa",
+        "source_pages": [
+          49
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_019",
+    "case_type": "regulation_true_rag",
+    "cohort": "K50",
+    "user_input": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập trong Quy chế công tác sinh viên gồm những nội dung nào và áp dụng ra sao cho sinh viên K50?",
+    "reference": "Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên hệ chính quy tại Trường theo kế hoạch đào tạo\ncủa khóa học; không xét HBKKHT đối với sinh viên quá thời gian học\ntập chuẩn được quy định tại khoản 6 Điều 3 Quy chế đào tạo trình độ đại\nhọc chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021\ncủa Hiệu trưởng (đối với sinh viên đào tạo trình độ đại học) hoặc tại\nkhoản 6 Điều 3 Quy chế đào tạo trình độ cao đẳng ngành Giáo dục Mầm\nnon tại phân hiệu của Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 3533/QĐ-ĐHSP ngày 07/12/2023\ncủa Hiệu trưởng (đối với sinh viên đào tạo trình độ cao đẳng ngành Giáo\ndục Mầm non);\nb) Trong học kỳ, sinh viên có kết quả học tập, rèn luyện từ loại khá\ntrở lên, không bị kỷ luật từ mức khiển trách trở lên sẽ được xem xét, cấp\nHBKKHT trong phạm vi quỹ HBKKHT của Trường;\nc) Tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn\nhoặc bằng 15 tín chỉ theo kế hoạch trong CTĐT của khóa học (không bao\ngồm các tín chỉ trả nợ, cải thiện, tương đương,… Tất cả các tín chỉ đều\nphải đạt). Các khoa và phân hiệu xây dựng chương trình học phù hợp và\nCVHT cần tư vấn, hướng dẫn sinh viên xây dựng lịch học đảm bảo quyền\nlợi cho sinh viên;\nd) Đối với sinh viên năm cuối, học bổng được xét:\n– Quy định xét học bổng đối với học kỳ I thực hiện theo điểm a, b, c\nkhoản 1 Điều này.\n– Quy định xét học bổng đối với học kỳ II:\n+ Sinh viên đăng ký từ 6 tín chỉ trở lên;\n+ Trình tự xét HBKKHT cho sinh viên năm cuối theo thứ tự các đối\ntượng như sau:\n Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện xuất sắc.\n Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện tốt.\n Sinh viên còn lại.\n– Điểm học bổng được tính theo điểm đ khoản 1 Điều này.\nđ) Điểm học bổng: là điểm để xét học bổng cho sinh viên được xếp\nloại từ cao xuống thấp, tính theo công thức:\n– Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100.\n(Điểm rèn luyện / 25 là quy đổi về thang điểm 4)\n– Xếp loại học bổng được xếp thành 03 mức:\n+ Học bổng loại Khá: có điểm học bổng từ 2,56 đến 3,35 (điểm học\ntập: 2,50 – 3,19 và điểm rèn luyện >= 70);\n+ Học bổng loại Giỏi: có điểm học bổng từ 3,20 đến 3,67 (điểm học\ntập: 3,20 – 3,59 và điểm rèn luyện >= 80);\n+ Học bổng loại Xuất sắc: có điểm học bổng từ 3,60 đến 4,0 (điểm\nhọc tập: 3,60 – 4,0 và điểm rèn luyện >= 90).\n2. Mức học bổng: Mức học bổng sẽ được tính hằng năm và theo quy\nđịnh của Nhà nước và thực tế của Trường quy định. HBKKHT được cấp\ntheo từng học kỳ chính và cấp 10 tháng trong năm học. Cụ thể:\n+ Học bổng loại Khá:\nSố tín chỉ x định mức học phí 1 tín chỉ x 1,0;\n+ Học bổng loại Giỏi:\nSố tín chỉ x định mức học phí 1 tín chỉ x 1,25;\n+ Học bổng loại Xuất sắc:\nSố tín chỉ x định mức học phí 1 tín chỉ x 1,5.\nMức học phí 1 tín chỉ được xác định phụ thuộc vào ngành học của\nsinh viên và quy định mức thu học phí trong năm học đó.\n3. Quỹ HBKKHT: được bố trí tối thiểu bằng kinh phí 8% từ nguồn\nthu học phí và cấp bù học phí (Căn cứ theo Nghị định 84/2020/NĐ-CP\nngày 17/7/2020 của Chính phủ về Quy định chi tiết một số điều của Luật\nGiáo dục).\n4. Việc xét học bổng được thống nhất xét theo khóa học, ngành học\nvà nơi tổ chức đào tạo.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+        "source_pages": [
+          71,
+          72,
+          73
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_021",
+    "case_type": "regulation_true_rag",
+    "cohort": "K50",
+    "user_input": "Các hành vi sinh viên không được làm trong Quy chế công tác sinh viên gồm những nội dung nào và áp dụng ra sao cho sinh viên K50?",
+    "reference": "Điều 10. Các hành vi sinh viên không được làm\n1. Xúc phạm nhân phẩm, danh dự, xâm phạm thân thể giảng viên,\nviên chức, nhân viên, sinh viên Trường và người khác.\n2. Gian lận trong học tập, kiểm tra, thi cử như: quay cóp, mang tài\nliệu vào phòng thi, xin điểm; học, thi, thực tập hộ người khác hoặc nhờ\nngười khác học, thi, thực tập hộ; sao chép, nhờ hoặc làm hộ tiểu luận, đồ\nán, khóa luận tốt nghiệp; tổ chức hoặc tham gia tổ chức thi hộ hoặc các\nhành vi gian lận khác.\n3. Sản xuất, buôn bán, vận chuyển, phát hành, tàng trữ, sử dụng hoặc\nlôi kéo người khác sử dụng vũ khí, chất nổ, các chất ma túy, các loại\ndược phẩm, hóa chất cấm sử dụng; các tài liệu, ấn phẩm, thông tin phản\nđộng, đồi trụy và các tài liệu cấm khác theo quy định của Nhà nước; tổ\nchức, tham gia, truyền bá các hoạt động mê tín dị đoan, các hoạt động tôn\ngiáo trong Trường và các hành vi vi phạm đạo đức khác.\n4. Hút thuốc, uống rượu, bia trong trường học; say rượu, bia khi đến\nlớp. Bôi xóa, viết vẽ lên bàn, tường trong phòng học và trong khuôn viên\ncủa Trường; làm hư hại các tài sản, trang thiết bị của Trường.\n5. Tổ chức hoặc tham gia tụ tập đông người, biểu tình, khiếu kiện\ntrái pháp luật; tham gia tệ nạn xã hội, gây rối an ninh, trật tự an toàn trong\nTrường và ngoài xã hội.\n6. Tổ chức hoặc tham gia đua xe hoặc cổ vũ đua xe trái phép.\n7. Tổ chức hoặc tham gia đánh bạc dưới mọi hình thức.\n8. Thành lập, tham gia các hoạt động mang tính chất chính trị trái\npháp luật; tổ chức, tham gia các hoạt động tập thể mang danh nghĩa của\nTrường khi chưa được Hiệu trưởng cho phép.\n9. Đăng tải, bình luận, chia sẻ bài viết, hình ảnh có nội dung dung\ntục, phản cảm, bạo lực, đồi trụy, xâm phạm an ninh quốc gia, chống phá\nĐảng và Nhà nước, xuyên tạc, vu khống, xúc phạm uy tín của tổ chức,\ndanh dự và nhân phẩm của cá nhân trên không gian mạng.\n10. Tổ chức hoặc tham gia các hoạt động vi phạm pháp luật khác.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong3_Dieu10",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Các hành vi sinh viên không được làm",
+        "source_pages": [
+          63,
+          64
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_024",
+    "case_type": "regulation_true_rag",
+    "cohort": "K50",
+    "user_input": "Bạn tóm tắt giúp em mục Tổ chức dạy học ngoại ngữ trong Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ dành cho sinh viên K50?",
+    "reference": "Điều 3. Tổ chức dạy học ngoại ngữ\n1. Chương trình ngoại ngữ bao gồm 01 trong 06 ngoại ngữ: tiếng Anh,\ntiếng Hàn Quốc, tiếng Nhật, tiếng Nga, tiếng Pháp, tiếng Trung Quốc.\n2. Chương trình ngoại ngữ được cấu trúc thành nhiều học phần,\ntrong đó học phần cuối cùng là 4 tín chỉ. Chuẩn đầu ra của chương trình\nngoại ngữ tương đương bậc 3/6 theo Khung năng lực ngoại ngữ 6 bậc\ndùng cho Việt Nam. Số lượng học phần và tổng số tín chỉ của chương\ntrình ngoại ngữ do các khoa ngoại ngữ phụ trách xây dựng.\n3. Số tín chỉ sinh viên tích lũy được từ chương trình ngoại ngữ\nkhông tính vào tổng số tín chỉ tích lũy của CTĐT.\n4. Bài thi kết thúc chương trình ngoại ngữ gồm 4 kỹ năng nghe, nói,\nđọc, viết với định dạng tương đương với bài thi cấp chứng chỉ bậc 3/6\ntheo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam. Kết quả kỳ thi\nsẽ được sử dụng cho việc đánh giá khả năng đáp ứng chuẩn đầu ra về\nngoại ngữ để xét tốt nghiệp.\n5. Chương trình giảng dạy, giáo trình, tài liệu học tập học chương\ntrình ngoại ngữ do các khoa ngoại ngữ phụ trách xây dựng, được Trường\ntổ chức nghiệm thu và ban hành theo quy định.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu3",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Tổ chức dạy học ngoại ngữ",
+        "source_pages": [
+          110,
+          111
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_026",
+    "case_type": "regulation_true_rag",
+    "cohort": "K50",
+    "user_input": "Sinh viên K50 cần lưu ý gì về Khen thưởng và kỷ luật trong Quy định công tác cố vấn học tập theo sổ tay?",
+    "reference": "Điều 9. Khen thưởng và kỷ luật\n1. CVHT được đánh giá hoàn thành xuất sắc nhiệm vụ là một trong\ncác tiêu chuẩn xét thi đua, khen thưởng hằng năm.\n2. CVHT được đánh giá không hoàn thành nhiệm vụ 02 năm học\nliên tiếp sẽ bị hạ 01 bậc thi đua.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu9",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Khen thưởng và kỷ luật",
+        "source_pages": [
+          89,
+          90
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_029",
+    "case_type": "regulation_true_rag",
+    "cohort": "K50",
+    "user_input": "K50 hỏi nhanh: lap du toan, chi tra kinh phi ho tro trong nghi dinh quy dinh ve chinh sach ho tro tien dong hoc phi, chi phi sinh hoat là sao vậy?",
+    "reference": "Điều 5. Lập dự toán, chi trả kinh phí hỗ trợ\n1. Lập dự toán:\na) Đối với sinh viên sư phạm đào tạo theo phương thức giao nhiệm\nvụ, đặt hàng hoặc đấu thầu (sau đây gọi chung là thuộc đối tượng giao\nnhiệm vụ, đặt hàng hoặc đấu thầu): Căn cứ vào nhu cầu đào tạo giáo viên\ncủa địa phương và các định mức hỗ trợ quy định tại Điều 4 Nghị định\nnày, hằng năm, cơ quan giao nhiệm vụ, đặt hàng hoặc đấu thầu lập dự\ntoán kinh phí đào tạo giáo viên báo cáo cơ quan có thẩm quyền phê duyệt\nkinh phí để chi trả hỗ trợ tiền đóng học phí và chi phí sinh hoạt cho sinh\nviên sư phạm qua cơ sở đào tạo giáo viên;\nb) Đối với sinh viên sư phạm đào tạo theo nhu cầu xã hội (không\nthuộc đối tượng giao nhiệm vụ, đặt hàng hoặc đấu thầu): Căn cứ vào số\nchỉ tiêu còn lại trong phạm vi chỉ tiêu của Bộ Giáo dục và Đào tạo thông\nbáo sau khi trừ đi chỉ tiêu giao nhiệm vụ, đặt hàng hoặc đấu thầu, hằng\nnăm, cơ sở đào tạo giáo viên lập dự toán kinh phí và gửi cơ quan cấp trên\ntổng hợp báo cáo cơ quan tài chính bố trí dự toán theo quy định của Luật\nNgân sách Nhà nước. Kinh phí hỗ trợ tiền đóng học phí và chi phí sinh\nhoạt cho sinh viên sư phạm đào tạo theo nhu cầu xã hội được cấp cho cơ\nsở đào tạo giáo viên theo hình thức giao dự toán theo quy định.\n2. Chi trả kinh phí hỗ trợ từ ngân sách Nhà nước:\na) Kinh phí hỗ trợ tiền đóng học phí và chi phí sinh hoạt cho sinh\nviên sư phạm được bố trí trong dự toán ngân sách Nhà nước hằng năm\nchi cho giáo dục, đào tạo tại các địa phương, bộ, ngành theo các quy định\nhiện hành;\nb) Cơ quan giao nhiệm vụ, đặt hàng hoặc đấu thầu chi trả trực tiếp\ncho cơ sở đào tạo giáo viên kinh phí hỗ trợ tiền đóng học phí và chi phí\nsinh hoạt của sinh viên sư phạm theo cơ chế Nhà nước giao nhiệm vụ, đặt\nhàng hoặc đấu thầu đối với các sinh viên sư phạm thuộc đối tượng giao\nnhiệm vụ, đặt hàng hoặc đấu thầu.\nĐối với kinh phí hỗ trợ tiền đóng học phí và chi phí sinh hoạt cho\nsinh viên sư phạm trong chỉ tiêu Bộ Giáo dục và Đào tạo thông báo\nnhưng không thuộc đối tượng giao nhiệm vụ, đặt hàng hoặc đấu thầu,\nđược bố trí trong dự toán hằng năm của cơ sở đào tạo giáo viên được cấp\ncó thẩm quyền giao theo quy định của Luật Ngân sách Nhà nước;\nc) Cơ sở đào tạo giáo viên có trách nhiệm chi trả tiền hỗ trợ chi phí\nsinh hoạt cho sinh viên sư phạm thông qua tài khoản tiền gửi của sinh\nviên tại ngân hàng.\n3. Việc lập dự toán, chấp hành dự toán và thanh quyết toán kinh phí\nthực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với\nsinh viên sư phạm tại Nghị định này thực hiện theo quy định tại Luật\nNgân sách Nhà nước và các văn bản hướng dẫn thực hiện.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu5",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Lập dự toán, chi trả kinh phí hỗ trợ",
+        "source_pages": [
+          144,
+          145
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_031",
+    "case_type": "regulation_true_rag",
+    "cohort": "K50",
+    "user_input": "Cho em hỏi quy định chính về Trách nhiệm của các bộ, ngành trong Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt áp dụng cho sinh viên K50?",
+    "reference": "Điều 10. Trách nhiệm của các bộ, ngành\n1. Bộ Giáo dục và Đào tạo:\na) Chủ trì, phối hợp với các bộ, ngành liên quan chỉ đạo, hướng dẫn\ncác địa phương triển khai thực hiện các nội dung quy định tại Nghị\nđịnh này;\nb) Xác định và thông báo chỉ tiêu tuyển sinh đối với các ngành đào\ntạo giáo viên cho các cơ sở đào tạo giáo viên;\nc) Tổ chức kiểm tra, đánh giá việc thực hiện Nghị định này đối với\ncác cơ sở đào tạo giáo viên theo quy định;\nd) Chỉ đạo các cơ sở đào tạo giáo viên phối hợp với Ủy ban nhân\ndân cấp tỉnh, các bộ, ngành liên quan thực hiện chính sách hỗ trợ cho sinh\nviên sư phạm hiệu quả.\n2. Các bộ, ngành liên quan: Trong phạm vi chức năng, nhiệm vụ\nđược giao phối hợp với Bộ Giáo dục và Đào tạo triển khai thực hiện các\nnội dung quy định tại Nghị định này.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu10",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Trách nhiệm của các bộ, ngành",
+        "source_pages": [
+          149
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_034",
+    "case_type": "regulation_true_rag",
+    "cohort": "K50",
+    "user_input": "Phòng Thanh tra Đào tạo trong Quy chế công tác sinh viên có vai trò và trách nhiệm gì đối với sinh viên K50?",
+    "reference": "Điều 20. Phòng Thanh tra Đào tạo\nTiếp nhận ý kiến phản ảnh, đơn, thư khiếu nại, tố cáo liên quan đến\ncông tác sinh viên, tham mưu cho Hiệu trưởng xem xét và giải quyết.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu20",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Phòng Thanh tra Đào tạo",
+        "source_pages": [
+          68
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_036",
+    "case_type": "regulation_true_rag",
+    "cohort": "K50",
+    "user_input": "Hiệu trưởng trong Quy chế công tác sinh viên có vai trò và trách nhiệm gì đối với sinh viên K50?",
+    "reference": "Điều 12. Hiệu trưởng\n1. Chỉ đạo, tổ chức quản lý các hoạt động về công tác sinh viên; bố trí\ncác nguồn lực nhằm bảo đảm thực hiện tốt các nội dung công tác sinh viên.\n2. Tổ chức chỉ đạo việc thực hiện các chủ trương, đường lối của\nĐảng, chính sách, pháp luật của Nhà nước, các quy chế, quy định của Bộ\nGiáo dục và Đào tạo trong công tác sinh viên, bảo đảm công bằng, công\nkhai, minh bạch và dân chủ. Tiến hành các biện pháp thích hợp đưa công\ntác sinh viên vào nề nếp, bảo đảm cho sinh viên thực hiện đầy đủ quyền\nvà nghĩa vụ của mình.\n3. Hằng năm, tổ chức đối thoại với sinh viên để giải thích chủ\ntrương, đường lối của Đảng, chính sách, pháp luật của Nhà nước, cung\ncấp thông tin cần thiết cho sinh viên; hiểu rõ tâm tư, nguyện vọng và giải\nquyết kịp thời những thắc mắc của sinh viên.\n4. Bảo đảm các điều kiện để phát huy vai trò của tổ chức Đoàn\nThanh niên Cộng sản Hồ Chí Minh, Hội Sinh viên Việt Nam trong công\ntác sinh viên; chú trọng công tác giáo dục tư tưởng, chính trị, đạo đức, lối\nsống cho sinh viên.\n5. Quyết định sự tham gia của sinh viên mang tính chất đại diện cho\nTrường khi có huy động của địa phương, các cấp, các ngành hoặc các tổ\nchức khác theo quy định của pháp luật.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong4_Dieu12",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Hiệu trưởng",
+        "source_pages": [
+          64,
+          65
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_037",
+    "case_type": "regulation_true_rag",
+    "cohort": "K51",
+    "user_input": "K51 hỏi nhanh: hoc bong trong quy che cong tac sinh vien là sao vậy?",
+    "reference": "Điều 26. Học bổng\n1. Học bổng khuyến khích học tập\na) Chế độ HBKKHT cho sinh viên thực hiện theo các quy định hiện\nhành của Bộ Giáo dục và Đào tạo và của Trường;\nb) HBKKHT chỉ được cấp cho sinh viên hệ chính quy đang học tập\ntại Trường; người học liên thông không được xét cấp.\n2. Học bổng chính sách\nHọc bổng chính sách sẽ được cấp theo hợp đồng giữa Trường và cơ\nquan cử sinh viên theo học diện cử tuyển (nếu có).\n3. Học bổng tài trợ\na) Học bổng tài trợ cho sinh viên do các tổ chức và cá nhân trao theo\nnhững điều kiện và quy trình riêng;\nb) Học bổng tài trợ do Phòng CTCT&HSSV hoặc phối hợp với các\nđơn vị khác tiếp nhận và thông báo đến toàn thể sinh viên khi có thông tin\nvề học bổng.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu26",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Học bổng",
+        "source_pages": [
+          69,
+          70
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_040",
+    "case_type": "regulation_true_rag",
+    "cohort": "K51",
+    "user_input": "Các khoa và phân hiệu trong Quy chế công tác sinh viên có vai trò và trách nhiệm gì đối với sinh viên K51?",
+    "reference": "Điều 22. Các khoa và phân hiệu\n1. Gửi danh sách phân công giảng viên phụ trách CVHT các lớp sinh\nviên về Phòng CTCT&HSSV; chỉ định BCS lớp sinh viên (năm thứ\nnhất), tổ chức bầu BCS lớp; theo dõi tình hình học tập, rèn luyện của sinh\nviên thông qua báo cáo định kỳ của CVHT.\n2. Tổ chức, phối hợp với các đơn vị có liên quan thực hiện công tác\nđánh giá kết quả rèn luyện của sinh viên ở cấp cơ sở (khoa hoặc phân\nhiệu) theo từng học kỳ, từng năm học và toàn khóa học.\n3. Thực hiện các công việc hành chính thuộc thẩm quyền cấp khoa,\nphân hiệu.\n4. Phối hợp với tổ chức Đoàn Thanh niên Cộng sản Hồ Chí Minh\ncấp khoa, phân hiệu, Liên Chi hội Sinh viên tổ chức các hoạt động học\ntập, rèn luyện sinh viên trong khoa hoặc tại phân hiệu: NCKH, câu lạc bộ\nhọc thuật, văn hóa văn nghệ, thể dục thể thao, các hoạt động ngoại khóa,\nhoạt động tình nguyện.\n5. Xem xét và kiến nghị với Trường các hình thức khen thưởng, kỷ\nluật và khiếu nại của sinh viên.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu22",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Các khoa và phân hiệu",
+        "source_pages": [
+          67
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_043",
+    "case_type": "regulation_true_rag",
+    "cohort": "K51",
+    "user_input": "Hệ thống tổ chức, quản lý công tác sinh viên trong Quy chế công tác sinh viên có vai trò và trách nhiệm gì đối với sinh viên K51?",
+    "reference": "Điều 11. Hệ thống tổ chức, quản lý công tác sinh viên\nHệ thống tổ chức, quản lý công tác sinh viên của Trường gồm: Hiệu\ntrưởng, các đơn vị phụ trách công tác sinh viên, khoa, phân hiệu, CVHT\nvà lớp sinh viên.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K51_QuyCheCongTacSinhVien_Chuong4_Dieu11",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Hệ thống tổ chức, quản lý công tác sinh viên",
+        "source_pages": [
+          63
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_045",
+    "case_type": "regulation_true_rag",
+    "cohort": "K51",
+    "user_input": "Bạn tóm tắt giúp em mục Mức hỗ trợ và thời gian hỗ trợ trong Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt dành cho sinh viên K51?",
+    "reference": "Điều 4. Mức hỗ trợ và thời gian hỗ trợ\n1. Mức hỗ trợ:\na) Sinh viên sư phạm được Nhà nước hỗ trợ tiền đóng học phí bằng\nmức thu học phí của cơ sở đào tạo giáo viên nơi theo học;\nb) Sinh viên sư phạm được Nhà nước hỗ trợ 3,63 triệu đồng/tháng để\nchi trả chi phí sinh hoạt trong thời gian học tập tại trường.\n2. Thời gian hỗ trợ tiền đóng học phí và chi phí sinh hoạt được xác\nđịnh theo số tháng thực tế học tập tại trường theo quy định, nhưng không\nquá 10 tháng/năm học. Trong trường hợp tổ chức giảng dạy theo học chế\ntín chỉ, cơ sở đào tạo giáo viên có thể quy đổi mức hỗ trợ cho phù hợp\nvới học chế tín chỉ. Tổng kinh phí hỗ trợ của cả khóa học theo học chế tín\nchỉ không vượt quá mức hỗ trợ quy định cho khóa học theo năm học.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Mức hỗ trợ và thời gian hỗ trợ",
+        "source_pages": [
+          134
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_048",
+    "case_type": "regulation_true_rag",
+    "cohort": "K51",
+    "user_input": "Bạn tóm tắt giúp em mục Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học trong Quy chế đào tạo trình độ đại học dành cho sinh viên K51?",
+    "reference": "Điều 16. Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học\n1. Sinh viên được xin nghỉ học tạm thời trong các trường hợp sau:\na) Được điều động vào lực lượng vũ trang;\nb) Được cơ quan có thẩm quyền điều động, đại diện quốc gia tham\ndự các kỳ thi, giải đấu quốc tế;\nc) Bị ốm, thai sản hoặc tai nạn phải điều trị thời gian dài có chứng\nnhận của cơ sở khám bệnh, chữa bệnh có thẩm quyền theo quy định của\nBộ Y tế;\nd) Vì lý do cá nhân khác nhưng đã phải học tối thiểu 01 học kỳ và\nkhông thuộc các trường hợp bị xem xét buộc thôi học hoặc xem xét kỷ luật.\n2. Thời gian nghỉ học tạm thời được quy định cụ thể như sau:\na) Thời gian nghỉ học tạm thời đối với các trường hợp được quy định\ntại điểm a, b, c khoản 1 Điều này không tính vào thời gian đào tạo chính\nthức quy định tại Điều 3 của Quy chế này;\nb) Thời gian nghỉ học tạm thời vì nhu cầu cá nhân được tính vào thời\ngian học tập chính thức theo quy định tại Điều 3 của Quy chế này;\nc) Đối với sinh viên bị buộc tạm dừng học tập vì vi phạm kỷ luật\nhoặc vì có xếp loại rèn luyện kém trong cả năm học, thời gian tạm dừng\nhọc tập được tính vào thời gian học của sinh viên.\n3. Sinh viên muốn tạm dừng việc học tập phải làm đơn trình bày rõ\nlý do, có xác nhận của Trưởng khoa quản lý sinh viên, có bảng điểm hợp\nlệ và các giấy tờ khác có liên quan (nếu có) nộp về Phòng CTCT&HSSV.\na) Các trường hợp xin tạm dừng học tập theo quy định tại điểm a, b,\nc khoản 1 Điều này phải nộp kèm các giấy tờ chứng minh để Phòng\nCTCT&HSSV xét duyệt. Trường hợp thời gian nghỉ học tạm thời từ 01\nhọc kì trở lên sẽ được Trường hỗ trợ huỷ các học phần đã đăng ký trong\nhọc kì làm thủ tục xin nghỉ học tạm thời nếu sinh viên có đơn xin hủy;\nb) Sinh viên nghỉ học tạm thời vì lý do cá nhân khác phải làm đơn\ngửi Phòng CTCT&HSSV ít nhất 02 tuần trước khi học kỳ mới bắt đầu.\nQuá thời hạn trên, Trường không hỗ trợ huỷ các học phần đã đăng ký\ntrong học kỳ làm thủ tục xin nghỉ học tạm thời;\nc)7 Hai tuần trước khi hết thời gian tạm dừng học tập, sinh viên phải\nlàm đơn gửi Phòng CTCT&HSSV để tiếp nhận trở lại học tập. Trường\nhợp sinh viên chưa thể trở lại học phải làm đơn xin gia hạn thời gian tạm\ndừng học tập. Quá thời gian tạm dừng học tập, sinh viên không trở lại\nTrường học tập xem như tự ý bỏ học.\n4. Sinh viên được thôi học vì lý do cá nhân, nếu muốn quay trở lại\nhọc phải dự tuyển đầu vào như những thí sinh khác. Sinh viên thôi học\nđược bảo lưu và công nhận kết quả học tập đã tích lũy tại Trường theo\nquy định.\n7 Điểm này đã được sửa đổi tại khoản 6, Điều 1, Quyết định số 4743/QĐ-ĐHSP ngày 31/12/2024 của Hiệu trưởng về\nsửa đổi, bổ sung một số điểm của Quy chế đào tạo trình độ đại học ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày\n09/8/2021, áp dụng từ khoá tuyển sinh năm 2025 trở về sau. Cụ thể như sau:\n“c) Hai tuần trước khi hết thời gian tạm dừng học tập, sinh viên phải làm đơn gửi Phòng CTCT&HSSV để tiếp\nnhận trở lại học tập. Sau thời gian nghỉ học tạm thời, sinh viên trở lại Trường sẽ tiếp tục được học tập theo chương\ntrình đào tạo của khóa tuyển sinh. Trường hợp sinh viên chưa thể trở lại học phải làm đơn xin gia hạn thời gian tạm\ndừng học tập. Quá thời gian tạm dừng học tập sinh viên không trở lại Trường học tập xem như tự ý bỏ học.”",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K51_QuyCheDaoTao_Chuong4_Dieu16",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Nghỉ học tạm thời, tiếp nhận trở lại học và cho thôi học",
+        "source_pages": [
+          25,
+          26
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_051",
+    "case_type": "regulation_true_rag",
+    "cohort": "K51",
+    "user_input": "Bạn tóm tắt giúp em mục Nội dung đánh giá và thang điểm trong Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy dành cho sinh viên K51?",
+    "reference": "Điều 3. Nội dung đánh giá và thang điểm\n1. Xem xét, đánh giá kết quả rèn luyện của sinh viên là đánh giá ý thức,\nthái độ của sinh viên theo các mức điểm đạt được trên các tiêu chí sau:\na) Ý thức tham gia học tập;\nb) Ý thức chấp hành nội quy, quy chế, quy định trong Trường;\nc) Ý thức tham gia các hoạt động chính trị, xã hội, văn hóa, văn\nnghệ, thể thao, phòng chống tội phạm và các tệ nạn xã hội;\nd) Ý thức công dân trong quan hệ cộng đồng;\nđ) Ý thức và kết quả tham gia công tác cán bộ lớp, các đoàn thể, tổ\nchức khác trong Trường hoặc sinh viên đạt được thành tích đặc biệt trong\nhọc tập, rèn luyện.\n2. Điểm rèn luyện được đánh giá bằng thang điểm 100. Khung điểm\nchi tiết được quy định tại Phụ lục 1.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong1_Dieu3",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Nội dung đánh giá và thang điểm",
+        "source_pages": [
+          88,
+          89
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_054",
+    "case_type": "regulation_true_rag",
+    "cohort": "K51",
+    "user_input": "Cho tui hỏi sinh viên K51: hoi dong khen thuong va ky luat sinh vien trong quy che cong tac sinh vien áp dụng thế nào?",
+    "reference": "Điều 37. Hội đồng Khen thưởng và Kỷ luật sinh viên\n1. Hội đồng Khen thưởng và Kỷ luật sinh viên có nhiệm vụ tư vấn\ngiúp Hiệu trưởng xem xét hình thức khen thưởng và kỷ luật sinh viên\ntrong Trường.\n2. Cơ cấu của Hội đồng Khen thưởng và Kỷ luật\na) Chủ tịch: Hiệu trưởng hoặc Phó Hiệu trưởng phụ trách công tác\nhọc sinh, sinh viên;\nb) Thường trực hội đồng: Trưởng Phòng CTCT&HSSV;\nc) Các ủy viên:\n– Bí thư Đoàn Trường, Chủ tịch Hội Sinh viên Việt Nam Trường;\n– Phó Trưởng Phòng CTCT&HSSV;\n– Đại diện Phòng Thanh tra Đào tạo, Phòng Đào tạo;\n– Giám đốc KTX (khi xử lý sinh viên ở nội trú);\n– Đại diện khoa hoặc phân hiệu có sinh viên được khen thưởng hoặc\nbị kỷ luật.\nd) Hội đồng có thể mời CVHT, đại diện lớp sinh viên (lớp trưởng\nhoặc bí thư chi đoàn). Các thành phần này được tham gia phát biểu ý kiến,\nđề xuất mức khen thưởng hoặc kỷ luật nhưng không được biểu quyết.\n3. Nhiệm vụ của Hội đồng Khen thưởng và Kỷ luật sinh viên\na) Hội đồng Khen thưởng và Kỷ luật sinh viên tư vấn giúp Hiệu\ntrưởng triển khai công tác khen thưởng, kỷ luật đối với sinh viên và chịu\nsự chỉ đạo trực tiếp của Hiệu trưởng;\nb) Căn cứ các quy định hiện hành, trên cơ sở đề nghị của khoa hoặc\nphân hiệu, Phòng CTCT&HSSV, Hội đồng tiến hành xét danh sách cá\nnhân và đơn vị sinh viên có thành tích, đề nghị Hiệu trưởng khen thưởng\nhoặc đề nghị lên cấp trên khen thưởng; đề nghị Hiệu trưởng ra quyết định\nđối với những trường hợp vi phạm kỷ luật.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K51_QuyCheCongTacSinhVien_Chuong6_Dieu37",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Hội đồng Khen thưởng và Kỷ luật sinh viên",
+        "source_pages": [
+          80,
+          81
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_055",
+    "case_type": "regulation_true_rag",
+    "cohort": "general",
+    "user_input": "Cho em hỏi quy định chính về Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương tiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh viên người dân tộc thiểu số trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh áp dụng cho sinh viên HCMUE?",
+    "reference": "Điều 30. Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương\ntiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh\nviên người dân tộc thiểu số\n1. Học phí được quy định đóng theo số tín chỉ đăng ký theo từng học\nkỳ, sinh viên có trách nhiệm đóng đầy đủ học phí theo quy định.\n2. Sinh viên thuộc diện được xét miễn, giảm học phí thực hiện theo\nNghị định số 81/2021/NĐ-CP ngày 27/8/2021 của Chính phủ quy định về\ncơ chế thu, quản lý học phí đối với cơ sở giáo dục thuộc hệ thống giáo\ndục quốc dân và chính sách miễn, giảm học phí, hỗ trợ chi phí học tập;\ngiá dịch vụ trong lĩnh vực giáo dục, đào tạo.\n3. Sinh viên là người khuyết tật được cấp học bổng và hỗ trợ phương\ntiện đồ dùng học tập thực hiện theo Nghị định số 28/2012/NĐ-CP ngày\n10/4/2012 của Chính phủ về việc Quy định chi tiết và Hướng dẫn thi\nhành một số điều của Luật Người khuyết tật; Thông tư liên tịch số\n42/2013/TTLT-BGDĐT-BLĐTBXH-BTC, ngày 31/12/2013 của Bộ trưởng\nBộ Giáo dục và Đào tạo, Bộ trưởng Bộ Lao động – Thương binh và Xã\nhội, Bộ trưởng Bộ Tài chính quy định Chính sách về giáo dục đối với\nngười khuyết tật.\n4. Sinh viên là người dân tộc thiểu số được hỗ trợ chi phí học tập\nthực hiện theo Quyết định 66/2013/QĐ-CP ngày 19/3/2013 của Thủ\ntướng Chính phủ Quy định chính sách hỗ trợ chi phí học tập đối với sinh\nviên là người dân tộc thiểu số học tại các cơ sở giáo dục đại học; Thông\ntư liên tịch số 35/2014/TTLT-BGDĐT-BTC ngày 15/10/2014 của Bộ\ntrưởng Bộ Giáo dục và Đào tạo, Bộ trưởng Bộ Tài chính về việc Hướng\ndẫn thực hiện Quyết định 66/2013/QĐ-CP ngày 19/3/2013 của Thủ tướng\nChính phủ Quy định chính sách hỗ trợ chi phí học tập đối với sinh viên là\nngười dân tộc thiểu số học tại các cơ sở giáo dục đại học.\n5. Sinh viên thuộc diện được miễn, giảm học phí, cấp học bổng và\nhỗ trợ chi phí học tập, phải nộp hồ sơ về Phòng CTCT và HSSV đúng\nthời gian được quy định theo từng học kỳ.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Chính sách miễn, giảm học phí và hỗ trợ chi phí, phương tiện đồ dùng học tập, cấp học bổng đối với sinh viên khuyết tật, sinh viên người dân tộc thiểu số",
+        "source_pages": [
+          54,
+          55
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_058",
+    "case_type": "regulation_true_rag",
+    "cohort": "general",
+    "user_input": "Cho em hỏi quy định chính về Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo, chuyển hình thức học trong Quy chế đào tạo trình độ đại học áp dụng cho sinh viên HCMUE?",
+    "reference": "Điều 17. Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo,\nchuyển hình thức học\n1. Sinh viên được xem xét chuyển sang học một chương trình, một\nngành đào tạo khác khi có đủ các điều kiện sau:\na) Không đang là sinh viên trình độ năm thứ nhất hoặc năm cuối\nkhóa, không thuộc diện bị xem xét buộc thôi học và còn đủ thời gian học\ntập theo quy định tại Điều 3 của Quy chế này;\nb) Sinh viên đạt điều kiện trúng tuyển của chương trình, ngành đào\ntạo, của Trường trong cùng khóa tuyển sinh;\nc) Trường có đủ các điều kiện bảo đảm chất lượng, chưa vượt quá\nnăng lực đào tạo đối với chương trình, ngành đào tạo đó theo quy định\nhiện hành của Bộ Giáo dục và Đào tạo;\nd) Được sự đồng ý của Trưởng khoa phụ trách chương trình, ngành\nđào tạo, người phụ trách phân hiệu (nơi chuyển đến, chuyển đi) và của\nHiệu trưởng.\n2. Sinh viên được xem xét chuyển cơ sở đào tạo khi có đủ các điều\nkiện sau:\na) Không đang là sinh viên trình độ năm thứ nhất hoặc năm cuối\nkhóa, không thuộc diện bị xem xét buộc thôi học và còn đủ thời gian học\ntập theo quy định tại Điều 3 của Quy chế này;\nb) Sinh viên đạt điều kiện trúng tuyển của chương trình, ngành đào\ntạo cùng khóa tuyển sinh tại nơi chuyển đến;\nc) Nơi chuyển đến có đủ các điều kiện bảo đảm chất lượng, chưa\nvượt quá năng lực đào tạo đối với chương trình, ngành đào tạo đó theo\nquy định hiện hành của Bộ Giáo dục và Đào tạo;\nd) Được sự đồng ý của Hiệu trưởng cơ sở đào tạo xin chuyển đến và\ncơ sở đào tạo xin chuyển đi.\n3. Sinh viên được xem xét chuyển từ đào tạo theo hình thức chính\nquy sang hình thức vừa làm vừa học của Trường nếu còn đủ thời gian học\ntập theo quy định đối với hình thức chuyển đến.\n4. Quy định chi tiết thẩm quyền, điều kiện, thủ tục chuyển chương\ntrình, ngành đào tạo, chuyển nơi học, chuyển cơ sở đào tạo hoặc chuyển hình\nthức học; việc công nhận kết quả học tập hoặc chuyển đổi tín chỉ đã tích lũy\ncho sinh viên được thực hiện theo các quy định hiện hành của Trường.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu17",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo, chuyển hình thức học",
+        "source_pages": [
+          28,
+          29
+        ]
+      },
+      {
+        "parent_section_id": "K50_QuyCheDaoTao_Chuong4_Dieu17",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo, chuyển hình thức học",
+        "source_pages": [
+          26,
+          27
+        ],
+        "anchor_source": "equivalent_cohort_edition"
+      },
+      {
+        "parent_section_id": "K51_QuyCheDaoTao_Chuong4_Dieu17",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Chuyển ngành, chuyển nơi học, chuyển cơ sở đào tạo, chuyển hình thức học",
+        "source_pages": [
+          26,
+          27
+        ],
+        "anchor_source": "equivalent_cohort_edition"
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_061",
+    "case_type": "regulation_true_rag",
+    "cohort": "general",
+    "user_input": "Cho em hỏi quy định chính về Công nhận kết quả học tập và chuyển đổi tín chỉ trong Quy chế đào tạo trình độ đại học áp dụng cho sinh viên HCMUE?",
+    "reference": "Điều 14. Công nhận kết quả học tập và chuyển đổi tín chỉ\n1. Kết quả học tập của người học đã tích lũy từ một trình độ đào tạo\nkhác, một ngành đào tạo hoặc một CTĐT khác, một khóa học khác hoặc\ntừ một cơ sở đào tạo khác được Trường xem xét công nhận, chuyển đổi\nsang tín chỉ của những học phần trong CTĐT theo học.\n2. Hội đồng chuyên môn của Trường xem xét công nhận, chuyển đổi\ntín chỉ trên cơ sở đối sánh chuẩn đầu ra, nội dung và khối lượng học tập,\ncách thức đánh giá học phần và các điều kiện bảo đảm chất lượng thực\nhiện chương trình theo các cấp độ:\na) Công nhận, chuyển đổi theo từng học phần;\nb) Công nhận, chuyển đổi theo từng nhóm học phần;\nc) Công nhận, chuyển đổi theo cả CTĐT.\n3. Khối lượng tối đa được công nhận, chuyển đổi không vượt quá\n50% khối lượng học tập tối thiểu của CTĐT; riêng đối với ngành đào tạo\ngiáo viên thực hiện theo hướng dẫn của Bộ Giáo dục và Đào tạo.\n4. Quy trình, hồ sơ công nhận kết quả học tập và chuyển đổi tín chỉ\nđược thực hiện theo quy định xét miễn học, miễn thi công nhận điểm học\nphần trong CTĐT trình độ đại học của Trường.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu14",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Công nhận kết quả học tập và chuyển đổi tín chỉ",
+        "source_pages": [
+          25
+        ]
+      },
+      {
+        "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu14",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Công nhận kết quả học tập và chuyển đổi tín chỉ",
+        "source_pages": [
+          23
+        ],
+        "anchor_source": "equivalent_cohort_edition"
+      },
+      {
+        "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu14",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Công nhận kết quả học tập và chuyển đổi tín chỉ",
+        "source_pages": [
+          23
+        ],
+        "anchor_source": "equivalent_cohort_edition"
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_063",
+    "case_type": "regulation_true_rag",
+    "cohort": "general",
+    "user_input": "Bạn tóm tắt giúp em mục Chế độ báo cáo, lưu trữ, công khai thông tin trong Quy chế đào tạo trình độ đại học dành cho sinh viên HCMUE?",
+    "reference": "Điều 23. Chế độ báo cáo, lưu trữ, công khai thông tin\n1. Trước ngày 31 tháng 12 hằng năm\na) Trường báo cáo Bộ Giáo dục và Đào tạo về số liệu sinh viên tuyển\nmới, tốt nghiệp, thôi học và đang học trong năm, dự kiến tốt nghiệp trong\nnăm sau, tốt nghiệp đã có việc làm trong thời gian 12 tháng; phân loại\ntheo đối tượng đầu vào, ngành đào tạo, khóa đào tạo và hình thức đào tạo;\nb) Trường báo cáo Ủy ban nhân dân cấp tỉnh nơi liên kết đào tạo về\ntình hình tuyển sinh và đào tạo tại địa phương.\n2. Trường có trách nhiệm lưu trữ, bảo quản an toàn các tài liệu liên\nquan tới công tác đào tạo theo các quy định do Bộ Giáo dục và Đào tạo\nban hành.\na) Quyết định trúng tuyển, bảng điểm gốc, quyết định công nhận tốt\nnghiệp, sổ gốc cấp phát bằng tốt nghiệp cho sinh viên là tài liệu lưu trữ\nđược bảo quản vĩnh viễn tại Trường;\nb) Tài liệu khác liên quan đến tuyển sinh, đào tạo được lưu trữ, bảo\nquản trong suốt quá trình đào tạo;\nc) Việc tiêu hủy tài liệu liên quan tuyển sinh, đào tạo hết thời gian\nlưu trữ được thực hiện theo quy định hiện hành của Nhà nước.\n3. Trách nhiệm lưu trữ, công khai thông tin và thực hiện chế độ báo\ncáo được thực hiện theo chức năng, nhiệm vụ của các đơn vị thuộc và\ntrực thuộc trường.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu23",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Chế độ báo cáo, lưu trữ, công khai thông tin",
+        "source_pages": [
+          32
+        ]
+      },
+      {
+        "parent_section_id": "K50_QuyCheDaoTao_Chuong5_Dieu23",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Chế độ báo cáo, lưu trữ, công khai thông tin",
+        "source_pages": [
+          30
+        ],
+        "anchor_source": "equivalent_cohort_edition"
+      },
+      {
+        "parent_section_id": "K51_QuyCheDaoTao_Chuong5_Dieu23",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Chế độ báo cáo, lưu trữ, công khai thông tin",
+        "source_pages": [
+          29,
+          30
+        ],
+        "anchor_source": "equivalent_cohort_edition"
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_066",
+    "case_type": "regulation_true_rag",
+    "cohort": "general",
+    "user_input": "Các trường hợp xem xét phân loại điểm rèn luyện trong Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy gồm những nội dung nào và áp dụng ra sao cho sinh viên HCMUE?",
+    "reference": "Điều 10. Các trường hợp xem xét phân loại điểm rèn luyện\n1. Trong thời gian sinh viên bị kỷ luật mức khiển trách, khi đánh giá\nkết quả rèn luyện không được vượt quá loại khá.\n2. Trong thời gian sinh viên bị kỷ luật mức cảnh cáo, khi đánh giá\nkết quả rèn luyện không được vượt quá loại trung bình.\n3. Sinh viên bị kỷ luật mức đình chỉ học tập không được đánh giá kết\nquả rèn luyện trong thời gian bị đình chỉ.\n4. Sinh viên bị kỷ luật mức buộc thôi học không được đánh giá kết\nquả rèn luyện.\n5. Sinh viên hoàn thành chương trình học và tốt nghiệp chậm so với\nquy định của khóa học thì tiếp tục được đánh giá kết quả rèn luyện trong\nthời gian đang hoàn thành bổ sung chương trình học và tốt nghiệp, tùy\nthuộc vào nguyên nhân để quy định mức đánh giá rèn luyện tại kỳ bổ sung.\n6. Sinh viên khuyết tật, tàn tật, mồ côi cả cha lẫn mẹ hoặc cha hoặc\nmẹ, hoàn cảnh gia đình đặc biệt khó khăn có xác nhận của địa phương\ntheo quy định đối với những hoạt động rèn luyện không có khả năng\ntham gia hoặc đáp ứng yêu cầu chung thì được ưu tiên, động viên,\nkhuyến khích, cộng điểm khi đánh giá kết quả rèn luyện qua sự nỗ lực và\ntiến bộ của sinh viên tùy thuộc vào đối tượng và hoàn cảnh cụ thể.\n7. Sinh viên nghỉ học tạm thời được bảo lưu kết quả rèn luyện sẽ\nđược đánh giá kết quả rèn luyện khi tiếp tục trở lại học tập theo quy định.\n8. Sinh viên đồng thời học hai CTĐT sẽ được đánh giá kết quả rèn\nluyện tại đơn vị quản lý chương trình thứ nhất và lấy ý kiến nhận xét của\nđơn vị quản lý chương trình thứ hai làm căn cứ, cơ sở để đánh giá thêm.\nTrường hợp chương trình thứ nhất đã hoàn thành thì đơn vị quản lý\nchương trình thứ hai sẽ tiếp tục được đánh giá kết quả rèn luyện của sinh\nviên (áp dụng đối với đào tạo trình độ đại học).\n9. Sinh viên chuyển trường được sự đồng ý của Hiệu trưởng hai\ntrường thì được bảo lưu kết quả rèn luyện của trường cũ khi học tại trường\nmới và tiếp tục được đánh giá kết quả rèn luyện ở các học kỳ tiếp theo.\n10. Sinh viên không thực hiện tự đánh giá kết quả rèn luyện theo quy\nđịnh sẽ nhận điểm 0 và xếp loại rèn luyện kém (xét theo từng học kỳ).\n11. Sinh viên được chấm điểm rèn luyện trong các học kỳ theo thời\ngian học tập tối đa được thiết kế. Những sinh viên đã hoàn thành CTĐT\ntrong thời gian chờ xét tốt nghiệp không được chấm điểm rèn luyện.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Các trường hợp xem xét phân loại điểm rèn luyện",
+        "source_pages": [
+          94,
+          95
+        ]
+      },
+      {
+        "parent_section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu10",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Các trường hợp xem xét phân loại điểm rèn luyện",
+        "source_pages": [
+          91,
+          92
+        ],
+        "anchor_source": "equivalent_cohort_edition"
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_069",
+    "case_type": "regulation_true_rag",
+    "cohort": "general",
+    "user_input": "Bạn tóm tắt giúp em mục Chế độ thông tin, báo cáo trong Quy định ngoại trú dành cho sinh viên HCMUE?",
+    "reference": "Điều 15. Chế độ thông tin, báo cáo\n1. Phân hiệu và khoa thực hiện báo cáo tình hình sinh viên ngoại trú\nlồng ghép vào báo cáo tổng kết năm học của đơn vị.\n2. Phòng CTCT&HSSV tổng hợp, đánh giá tình hình công tác sinh\nviên ngoại trú, báo cáo Hiệu trưởng sau khi kết thúc mỗi năm học và báo\ncáo Bộ Giáo dục và Đào tạo, các cơ quan có liên quan khi có yêu cầu.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyDinhNgoaiTruSinhVien_Chuong4_Dieu15",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Chế độ thông tin, báo cáo",
+        "source_pages": [
+          120
+        ]
+      },
+      {
+        "parent_section_id": "K51_QuyDinhNgoaiTru_Chuong4_Dieu15",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Chế độ thông tin, báo cáo",
+        "source_pages": [
+          110
+        ],
+        "anchor_source": "equivalent_cohort_edition"
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_rag_072",
+    "case_type": "regulation_true_rag",
+    "cohort": "general",
+    "user_input": "Các hành vi sinh viên không được làm trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh gồm những nội dung nào và áp dụng ra sao cho sinh viên HCMUE?",
+    "reference": "Điều 10. Các hành vi sinh viên không được làm\n1. Xúc phạm nhân phẩm, danh dự, xâm phạm thân thể giảng viên,\nviên chức, nhân viên, sinh viên Trường và người khác.\n2. Gian lận trong học tập, kiểm tra, thi cử như: quay cóp, mang tài\nliệu vào phòng thi, xin điểm; học, thi, thực tập hộ người khác hoặc nhờ\nngười khác học, thi, thực tập hộ; sao chép, nhờ hoặc làm hộ tiểu luận, đồ\nán, khóa luận tốt nghiệp; tổ chức hoặc tham gia tổ chức thi hộ hoặc các\nhành vi gian lận khác.\n3. Sản xuất, buôn bán, vận chuyển, phát hành, tàng trữ, sử dụng hoặc\nlôi kéo người khác sử dụng vũ khí, chất nổ, các chất ma túy, các loại\ndược phẩm, hóa chất cấm sử dụng; các tài liệu, ấn phẩm, thông tin phản\nđộng, đồi trụy và các tài liệu cấm khác theo quy định của Nhà nước; tổ\nchức, tham gia, truyền bá các hoạt động mê tín dị đoan, các hoạt động tôn\ngiáo trong Trường và các hành vi vi phạm đạo đức khác.\n4. Hút thuốc, uống rượu, bia trong trường học; say rượu, bia khi đến\nlớp. Bôi xóa, viết vẽ lên bàn, tường trong phòng học và trong khuôn viên\ncủa Trường; làm hư hại các tài sản, trang thiết bị của Trường.\n5. Tổ chức hoặc tham gia tụ tập đông người, biểu tình, khiếu kiện\ntrái pháp luật; tham gia tệ nạn xã hội, gây rối an ninh, trật tự an toàn trong\nTrường và ngoài xã hội.\n6. Tổ chức hoặc tham gia đua xe hoặc cổ vũ đua xe trái phép.\n7. Tổ chức hoặc tham gia đánh bạc dưới mọi hình thức.\n8. Thành lập, tham gia các hoạt động mang tính chất chính trị trái\npháp luật; tổ chức, tham gia các hoạt động tập thể mang danh nghĩa của\nTrường khi chưa được Hiệu trưởng cho phép.\n9. Đăng tải, bình luận, chia sẻ bài viết, hình ảnh có nội dung dung\ntục, phản cảm, bạo lực, đồi trụy, xâm phạm an ninh quốc gia, chống phá\nĐảng và Nhà nước, xuyên tạc, vu khống, xúc phạm uy tín của tổ chức,\ndanh dự và nhân phẩm của cá nhân trên không gian mạng.\n10. Tổ chức hoặc tham gia các hoạt động vi phạm pháp luật khác.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu10",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Các hành vi sinh viên không được làm",
+        "source_pages": [
+          43,
+          44
+        ]
+      }
+    ],
+    "expected_structured_sources": []
+  },
+  {
+    "id": "v4_ans_struct_001",
+    "case_type": "structured_answer",
+    "cohort": "K48-K49",
+    "user_input": "K48-K49: IELTS 5.5 trong bảng quy đổi tương đương bậc ngoại ngữ nào?",
+    "reference": "{\n  \"table_name\": \"Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4\",\n  \"title\": \"Tổ chức thực hiện\",\n  \"rows\": [\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"TOEFL iBT\",\n      \"level_or_scale\": \"TOEFL iBT\",\n      \"equivalent_level_3\": \"30 - 45\",\n      \"equivalent_level_4\": \"46 - 93\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"TOEFL ITP\",\n      \"level_or_scale\": \"TOEFL ITP\",\n      \"equivalent_level_3\": \"450 - 499\",\n      \"equivalent_level_4\": \"\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"IELTS\",\n      \"level_or_scale\": \"IELTS\",\n      \"equivalent_level_3\": \"4.0 - 5.0\",\n      \"equivalent_level_4\": \"5.5 - 6.5\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"Cambridge Assessment English / Linguaskill\",\n      \"level_or_scale\": \"Cambridge/Linguaskill\",\n      \"equivalent_level_3\": \"B1 Preliminary; B1 Business Preliminary; Linguaskill 140 - 159\",\n      \"equivalent_level_4\": \"B2 First; B2 Business Vantage; Linguaskill 160 - 179\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"TOEIC (4 kỹ năng)\",\n      \"level_or_scale\": \"Nghe, Đọc, Nói, Viết\",\n      \"equivalent_level_3\": \"Nghe 275 - 399; Đọc 275 - 384; Nói 120 - 159; Viết 120 - 149\",\n      \"equivalent_level_4\": \"Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179\",\n      \"input_requirements\": {\n        \"score_mode\": \"per_component\",\n        \"entity_aliases\": [\n          \"TOEIC 4 kỹ năng\",\n          \"TOEIC bốn kỹ năng\"\n        ],\n        \"required_components\": [\n          \"listening\",\n          \"reading\",\n          \"speaking\",\n          \"writing\"\n        ],\n        \"component_slots\": {\n          \"listening\": {\n            \"slot\": \"listening_score\",\n            \"label\": \"Nghe\"\n          },\n          \"reading\": {\n            \"slot\": \"reading_score\",\n            \"label\": \"Đọc\"\n          },\n          \"speaking\": {\n            \"slot\": \"speaking_score\",\n            \"label\": \"Nói\"\n          },\n          \"writing\": {\n            \"slot\": \"writing_score\",\n            \"label\": \"Viết\"\n          }\n        }\n      }\n    },\n    {\n      \"language\": \"Tiếng Pháp\",\n      \"certificate\": \"TCF / DELF\",\n      \"level_or_scale\": \"TCF, DELF\",\n      \"equivalent_level_3\": \"TCF 300 - 399; DELF B1\",\n      \"equivalent_level_4\": \"TCF 400 - 499; DELF B2\"\n    },\n    {\n      \"language\": \"Tiếng Trung Quốc\",\n      \"certificate\": \"Hanyu Shuiping Kaoshi (HSK)\",\n      \"level_or_scale\": \"HSK\",\n      \"equivalent_level_3\": \"HSK bậc 3\",\n      \"equivalent_level_4\": \"HSK bậc 4\"\n    },\n    {\n      \"language\": \"Tiếng Nhật\",\n      \"certificate\": \"Japanese Language Proficiency Test (JLPT)\",\n      \"level_or_scale\": \"JLPT\",\n      \"equivalent_level_3\": \"N4\",\n      \"equivalent_level_4\": \"N3\"\n    },\n    {\n      \"language\": \"Tiếng Nga\",\n      \"certificate\": \"ТРКИ - Тест по русскому языку как иностранному\",\n      \"level_or_scale\": \"ТРКИ\",\n      \"equivalent_level_3\": \"ТРКИ-1\",\n      \"equivalent_level_4\": \"ТРКИ-2\"\n    },\n    {\n      \"language\": \"Tiếng Hàn Quốc\",\n      \"certificate\": \"TOPIK II\",\n      \"level_or_scale\": \"TOPIK II\",\n      \"equivalent_level_3\": \"TOPIK II (120)\",\n      \"equivalent_level_4\": \"TOPIK II (150)\"\n    }\n  ],\n  \"applicability\": \"Điều 1 quy định áp dụng cho sinh viên đại học thuộc phạm vi quy định từ khóa tuyển sinh năm 2022 trở về sau.\"\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "foreign_language",
+        "source_id": "K50_foreign_language_equivalency_dieu8"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_struct_005",
+    "case_type": "structured_answer",
+    "cohort": "K50",
+    "user_input": "Sinh viên K50 hệ chính quy được học tối đa bao nhiêu năm?",
+    "reference": "{\n  \"table_name\": \"Thời gian học tập chuẩn và tối đa\"\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "study_duration",
+        "source_id": "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_struct_009",
+    "case_type": "structured_answer",
+    "cohort": "K51",
+    "user_input": "Mức học bổng Xuất sắc của K51 được tính theo công thức nào?",
+    "reference": "{\n  \"table_name\": \"Mức học bổng khuyến khích học tập\",\n  \"rows\": [\n    {\n      \"scholarship_level\": \"Khá\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,0\",\n      \"multiplier\": 1.0,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học\"\n    },\n    {\n      \"scholarship_level\": \"Giỏi\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,25\",\n      \"multiplier\": 1.25,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học\"\n    },\n    {\n      \"scholarship_level\": \"Xuất sắc\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,5\",\n      \"multiplier\": 1.5,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học\"\n    }\n  ]\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "scholarship",
+        "source_id": "K51_K51_scoring_tables_8"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_struct_010",
+    "case_type": "structured_answer",
+    "cohort": "K48-K49",
+    "user_input": "Ở K48-K49, điểm 7,9 trên thang 10 được quy đổi thành điểm chữ nào?",
+    "reference": "{\n  \"table_name\": \"Bảng quy đổi thang điểm 10 sang điểm chữ\",\n  \"title\": \"Đánh giá và tính điểm học phần\",\n  \"rows\": [\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"8,5 - 10\",\n      \"Thang điểm chữ\": \"A\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"7,8 - 8,4\",\n      \"Thang điểm chữ\": \"B+\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"7,0 - 7,7\",\n      \"Thang điểm chữ\": \"B\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"6,3 - 6,9\",\n      \"Thang điểm chữ\": \"C+\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"5,5 - 6,2\",\n      \"Thang điểm chữ\": \"C\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"4,8 - 5,4\",\n      \"Thang điểm chữ\": \"D+\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"4,0 - 4,7\",\n      \"Thang điểm chữ\": \"D\"\n    },\n    {\n      \"Loại\": \"Không đạt\",\n      \"Thang điểm 10\": \"3,0 - 3,9\",\n      \"Thang điểm chữ\": \"F+\"\n    },\n    {\n      \"Loại\": \"Không đạt\",\n      \"Thang điểm 10\": \"0,0 - 2,9\",\n      \"Thang điểm chữ\": \"F\"\n    }\n  ]\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "scoring",
+        "source_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_struct_014",
+    "case_type": "structured_answer",
+    "cohort": "K50",
+    "user_input": "Điểm rèn luyện 85 của sinh viên K50 được xếp loại gì?",
+    "reference": "{\n  \"table_name\": \"Phân loại kết quả rèn luyện\",\n  \"rows\": [\n    {\n      \"range\": \"90-100\",\n      \"label\": \"Xuất sắc\"\n    },\n    {\n      \"range\": \"80-dưới 90\",\n      \"label\": \"Tốt\"\n    },\n    {\n      \"range\": \"65-dưới 80\",\n      \"label\": \"Khá\"\n    },\n    {\n      \"range\": \"50-dưới 65\",\n      \"label\": \"Trung bình\"\n    },\n    {\n      \"range\": \"35-dưới 50\",\n      \"label\": \"Yếu\"\n    },\n    {\n      \"range\": \"dưới 35\",\n      \"label\": \"Kém\"\n    }\n  ]\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "conduct",
+        "source_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_struct_018",
+    "case_type": "structured_answer",
+    "cohort": "K51",
+    "user_input": "Tài khoản sinh viên của K51 bị lỗi thì đơn vị nào hỗ trợ?",
+    "reference": "{\n  \"unit\": \"Phòng Công nghệ Thông tin\",\n  \"unit_name\": \"Phòng Công nghệ Thông tin\",\n  \"service\": \"Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào tạo theo học chế tín chỉ\",\n  \"summary\": \"Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào tạo theo học chế tín chỉ - đơn vị phụ trách: Phòng Công nghệ Thông tin\",\n  \"phone\": \"(028) 38352020\",\n  \"phones\": [\n    \"(028) 38352020\"\n  ],\n  \"email\": \"phongcntt@hcmue.edu.vn\",\n  \"emails\": [\n    \"phongcntt@hcmue.edu.vn\"\n  ],\n  \"office\": \"Nhà A, tầng 5, P.503, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.\"\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "service",
+        "source_id": "K51_K51_phong_cong_nghe_thong_tin_service_3"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_struct_019",
+    "case_type": "structured_answer",
+    "cohort": "K48-K49",
+    "user_input": "Cho em email và địa chỉ Phòng Đào tạo theo danh bạ K48-K49.",
+    "reference": "{\n  \"unit\": \"Phòng Đào tạo\",\n  \"unit_name\": \"Phòng Đào tạo\",\n  \"summary\": \"Phòng Đào tạo phu trach: Tổ chức tuyển sinh các hệ; Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ; xây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo dõi, giám sát hoạt động dạy và học của giảng viên và sinh viên; Xây dựng và triển khai kế hoạch thực tập, thực tế năm học; Tổ chức xét tuyển ngành học thứ hai (song ngành) cho sinh viên đang theo học tại Trường; Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học; Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận tốt nghiệp tạm thời, văn bằng tốt nghiệp; Thông báo các nội dung liên quan đến công tác đào tạo trên cổng thông tin trực tuyến\",\n  \"phone\": \"(028) 38352020\",\n  \"phones\": [\n    \"(028) 38352020\"\n  ],\n  \"email\": \"phongdt@hcmue.edu.vn\",\n  \"emails\": [\n    \"phongdt@hcmue.edu.vn\"\n  ],\n  \"office\": \"Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.\",\n  \"offices\": [\n    \"Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.\"\n  ],\n  \"website\": \"phongdt.hcmue.edu.vn\",\n  \"websites\": [\n    \"phongdt.hcmue.edu.vn\"\n  ]\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "office",
+        "source_id": "K48-K49_phong_dao_tao"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_struct_023",
+    "case_type": "structured_answer",
+    "cohort": "K50",
+    "user_input": "Khoa Công nghệ Thông tin trong danh bạ K50 có email và văn phòng ở đâu?",
+    "reference": "{\n  \"unit\": \"Khoa Công nghệ Thông tin\",\n  \"unit_name\": \"Khoa Công nghệ Thông tin\",\n  \"faculty_name\": \"Khoa Công nghệ Thông tin\",\n  \"summary\": \"Thông tin liên hệ Khoa Công nghệ Thông tin\",\n  \"phones\": [\n    \"(028) 38352020\"\n  ],\n  \"emails\": [\n    \"khoacntt@hcmue.edu.vn\"\n  ],\n  \"office\": \"Nhà B, tầng 5, P.506, P.507, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.\",\n  \"websites\": [\n    \"khoacntt.hcmue.edu.vn\"\n  ]\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "faculty",
+        "source_id": "K50_K50_faculty_1_khoa_cong_nghe_thong_tin"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_struct_027",
+    "case_type": "structured_answer",
+    "cohort": "K51",
+    "user_input": "Ngành Công nghệ Thông tin của K51 thuộc khoa nào?",
+    "reference": "{\n  \"program_name\": \"Công nghệ Thông tin\",\n  \"faculty_name\": \"Khoa Công nghệ Thông tin\",\n  \"summary\": \"Công nghệ Thông tin\"\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "program",
+        "source_id": "K51_program_2"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_struct_028",
+    "case_type": "structured_answer",
+    "cohort": "K48-K49",
+    "user_input": "Công thức tính điểm trung bình chung tích lũy của K48-K49 là gì?",
+    "reference": "{\n  \"formula_text\": \"A = Σ(ai × ni) / Σ(ni)\",\n  \"variables\": {\n    \"A\": \"Điểm trung bình chung học kỳ, năm học hoặc điểm trung bình chung tích lũy\",\n    \"ai\": \"Điểm của học phần thứ i\",\n    \"ni\": \"Số tín chỉ của học phần thứ i\"\n  }\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "formula",
+        "source_id": "K48-K49_K48-K49_formula_rules_1"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_struct_002",
+    "case_type": "structured_answer",
+    "cohort": "K50",
+    "user_input": "K50: IELTS 5.5 trong bảng quy đổi tương đương bậc ngoại ngữ nào?",
+    "reference": "{\n  \"table_name\": \"Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4\",\n  \"title\": \"Tổ chức thực hiện\",\n  \"rows\": [\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"TOEFL iBT\",\n      \"level_or_scale\": \"TOEFL iBT\",\n      \"equivalent_level_3\": \"30 - 45\",\n      \"equivalent_level_4\": \"46 - 93\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"TOEFL ITP\",\n      \"level_or_scale\": \"TOEFL ITP\",\n      \"equivalent_level_3\": \"450 - 499\",\n      \"equivalent_level_4\": \"\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"IELTS\",\n      \"level_or_scale\": \"IELTS\",\n      \"equivalent_level_3\": \"4.0 - 5.0\",\n      \"equivalent_level_4\": \"5.5 - 6.5\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"Cambridge Assessment English / Linguaskill\",\n      \"level_or_scale\": \"Cambridge/Linguaskill\",\n      \"equivalent_level_3\": \"B1 Preliminary; B1 Business Preliminary; Linguaskill 140 - 159\",\n      \"equivalent_level_4\": \"B2 First; B2 Business Vantage; Linguaskill 160 - 179\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"TOEIC (4 kỹ năng)\",\n      \"level_or_scale\": \"Nghe, Đọc, Nói, Viết\",\n      \"equivalent_level_3\": \"Nghe 275 - 399; Đọc 275 - 384; Nói 120 - 159; Viết 120 - 149\",\n      \"equivalent_level_4\": \"Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179\",\n      \"input_requirements\": {\n        \"score_mode\": \"per_component\",\n        \"entity_aliases\": [\n          \"TOEIC 4 kỹ năng\",\n          \"TOEIC bốn kỹ năng\"\n        ],\n        \"required_components\": [\n          \"listening\",\n          \"reading\",\n          \"speaking\",\n          \"writing\"\n        ],\n        \"component_slots\": {\n          \"listening\": {\n            \"slot\": \"listening_score\",\n            \"label\": \"Nghe\"\n          },\n          \"reading\": {\n            \"slot\": \"reading_score\",\n            \"label\": \"Đọc\"\n          },\n          \"speaking\": {\n            \"slot\": \"speaking_score\",\n            \"label\": \"Nói\"\n          },\n          \"writing\": {\n            \"slot\": \"writing_score\",\n            \"label\": \"Viết\"\n          }\n        }\n      }\n    },\n    {\n      \"language\": \"Tiếng Pháp\",\n      \"certificate\": \"TCF / DELF\",\n      \"level_or_scale\": \"TCF, DELF\",\n      \"equivalent_level_3\": \"TCF 300 - 399; DELF B1\",\n      \"equivalent_level_4\": \"TCF 400 - 499; DELF B2\"\n    },\n    {\n      \"language\": \"Tiếng Trung Quốc\",\n      \"certificate\": \"Hanyu Shuiping Kaoshi (HSK)\",\n      \"level_or_scale\": \"HSK\",\n      \"equivalent_level_3\": \"HSK bậc 3\",\n      \"equivalent_level_4\": \"HSK bậc 4\"\n    },\n    {\n      \"language\": \"Tiếng Nhật\",\n      \"certificate\": \"Japanese Language Proficiency Test (JLPT)\",\n      \"level_or_scale\": \"JLPT\",\n      \"equivalent_level_3\": \"N4\",\n      \"equivalent_level_4\": \"N3\"\n    },\n    {\n      \"language\": \"Tiếng Nga\",\n      \"certificate\": \"ТРКИ - Тест по русскому языку как иностранному\",\n      \"level_or_scale\": \"ТРКИ\",\n      \"equivalent_level_3\": \"ТРКИ-1\",\n      \"equivalent_level_4\": \"ТРКИ-2\"\n    },\n    {\n      \"language\": \"Tiếng Hàn Quốc\",\n      \"certificate\": \"TOPIK II\",\n      \"level_or_scale\": \"TOPIK II\",\n      \"equivalent_level_3\": \"TOPIK II (120)\",\n      \"equivalent_level_4\": \"TOPIK II (150)\"\n    }\n  ],\n  \"applicability\": \"Điều 1 quy định áp dụng cho sinh viên đại học thuộc phạm vi quy định từ khóa tuyển sinh năm 2022 trở về sau.\"\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "foreign_language",
+        "source_id": "K50_foreign_language_equivalency_dieu8"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_struct_006",
+    "case_type": "structured_answer",
+    "cohort": "K51",
+    "user_input": "Sinh viên K51 hệ chính quy được học tối đa bao nhiêu năm?",
+    "reference": "{\n  \"table_name\": \"Thời gian học tập chuẩn và tối đa\"\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "study_duration",
+        "source_id": "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_struct_007",
+    "case_type": "structured_answer",
+    "cohort": "K48-K49",
+    "user_input": "Mức học bổng Xuất sắc của K48-K49 được tính theo công thức nào?",
+    "reference": "{\n  \"table_name\": \"Mức học bổng khuyến khích học tập\",\n  \"rows\": [\n    {\n      \"scholarship_level\": \"Khá\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,0\",\n      \"multiplier\": 1.0,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ tự nhiên hoặc xã hội, tùy ngành học\"\n    },\n    {\n      \"scholarship_level\": \"Giỏi\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,25\",\n      \"multiplier\": 1.25,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ tự nhiên hoặc xã hội, tùy ngành học\"\n    },\n    {\n      \"scholarship_level\": \"Xuất sắc\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,5\",\n      \"multiplier\": 1.5,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ tự nhiên hoặc xã hội, tùy ngành học\"\n    }\n  ]\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "scholarship",
+        "source_id": "K48-K49_K48-K49_scoring_tables_6"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_struct_011",
+    "case_type": "structured_answer",
+    "cohort": "K50",
+    "user_input": "Ở K50, điểm 7,9 trên thang 10 được quy đổi thành điểm chữ nào?",
+    "reference": "{\n  \"table_name\": \"Quy đổi thang điểm 10 sang điểm chữ\",\n  \"rows\": [\n    {\n      \"status\": \"Đạt\",\n      \"score_10_range\": \"8.5-10\",\n      \"letter_grade\": \"A\"\n    },\n    {\n      \"status\": \"Đạt\",\n      \"score_10_range\": \"7.8-8.4\",\n      \"letter_grade\": \"B+\"\n    },\n    {\n      \"status\": \"Đạt\",\n      \"score_10_range\": \"7.0-7.7\",\n      \"letter_grade\": \"B\"\n    },\n    {\n      \"status\": \"Đạt\",\n      \"score_10_range\": \"6.3-6.9\",\n      \"letter_grade\": \"C+\"\n    },\n    {\n      \"status\": \"Đạt\",\n      \"score_10_range\": \"5.5-6.2\",\n      \"letter_grade\": \"C\"\n    },\n    {\n      \"status\": \"Đạt\",\n      \"score_10_range\": \"4.8-5.4\",\n      \"letter_grade\": \"D+\"\n    },\n    {\n      \"status\": \"Đạt\",\n      \"score_10_range\": \"4.0-4.7\",\n      \"letter_grade\": \"D\"\n    },\n    {\n      \"status\": \"Không đạt\",\n      \"score_10_range\": \"3.0-3.9\",\n      \"letter_grade\": \"F+\"\n    },\n    {\n      \"status\": \"Không đạt\",\n      \"score_10_range\": \"0.0-2.9\",\n      \"letter_grade\": \"F\"\n    }\n  ],\n  \"applicability\": \"Áp dụng chung theo bảng quy đổi điểm học phần\"\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "scoring",
+        "source_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_struct_015",
+    "case_type": "structured_answer",
+    "cohort": "K51",
+    "user_input": "Điểm rèn luyện 85 của sinh viên K51 được xếp loại gì?",
+    "reference": "{\n  \"table_name\": \"Phân loại kết quả rèn luyện\",\n  \"rows\": [\n    {\n      \"range\": \"90-100\",\n      \"label\": \"Xuất sắc\"\n    },\n    {\n      \"range\": \"80-dưới 90\",\n      \"label\": \"Tốt\"\n    },\n    {\n      \"range\": \"65-dưới 80\",\n      \"label\": \"Khá\"\n    },\n    {\n      \"range\": \"50-dưới 65\",\n      \"label\": \"Trung bình\"\n    },\n    {\n      \"range\": \"35-dưới 50\",\n      \"label\": \"Yếu\"\n    },\n    {\n      \"range\": \"dưới 35\",\n      \"label\": \"Kém\"\n    }\n  ]\n}",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [],
+    "expected_structured_sources": [
+      {
+        "catalog": "conduct",
+        "source_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_002",
+    "case_type": "mixed_answer",
+    "cohort": "K48-K49",
+    "user_input": "K48-K49: Mức học bổng Xuất sắc tính thế nào và thủ tục xét cấp học bổng gồm những bước gì?",
+    "reference": "Structured evidence:\n{\n  \"table_name\": \"Mức học bổng khuyến khích học tập\",\n  \"rows\": [\n    {\n      \"scholarship_level\": \"Khá\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,0\",\n      \"multiplier\": 1.0,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ tự nhiên hoặc xã hội, tùy ngành học\"\n    },\n    {\n      \"scholarship_level\": \"Giỏi\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,25\",\n      \"multiplier\": 1.25,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ tự nhiên hoặc xã hội, tùy ngành học\"\n    },\n    {\n      \"scholarship_level\": \"Xuất sắc\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,5\",\n      \"multiplier\": 1.5,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ tự nhiên hoặc xã hội, tùy ngành học\"\n    }\n  ]\n}\n\nRegulation evidence:\nĐiều 29. Trình tự và thủ tục xét cấp học bổng\n1. Căn cứ vào quỹ HBKKHT toàn Trường đã xác lập và căn cứ theo\ntỉ lệ số sinh viên của từng khoa, từng khóa, từng ngành học, Phòng CTCT\nvà HSSV phối hợp Phòng Kế hoạch – Tài chính xác định quỹ HBKKHT\ncủa từng ngành học cụ thể ứng với khóa học tương ứng.\n2. Để xét học bổng, CVHT họp lớp đánh giá kết quả rèn luyện của\nsinh viên, khoa xem xét kết quả và nhập điểm rèn luyện vào phần mềm,\nnộp bảng tổng hợp đánh giá kết quả rèn luyện về Phòng CTCT và HSSV\ntheo thời gian quy định.\n3. Căn cứ vào kết quả cập nhật điểm và khóa điểm do Phòng Khảo\nthí và Đảm bảo chất lượng thực hiện, Phòng CTCT và HSSV đối chiếu và\nsử dụng làm cơ sở để xét học bổng.\n4. Học bổng được phân bổ theo thứ tự điểm học bổng giảm dần từ\ncao xuống thấp cho đến hết quỹ học bổng của mỗi ngành học của một\nkhóa học cụ thể.\na) Trường hợp sinh viên có điểm học bổng bằng nhau và kinh phí\nkhông đủ cấp cho tất cả, Trường sẽ ưu tiên xét cấp cho sinh viên có điểm\nhọc tập cao hơn;\nb) Trường hợp có những sinh viên có điểm học tập và điểm rèn\nluyện bằng nhau, Phòng CTCT và HSSV sẽ phân bổ học bổng theo tỉ lệ\nsố tín chỉ. Trường hợp tất cả sinh viên đủ điều kiện trong một ngành học\nđã nhận đủ học bổng mà quỹ còn dư, Phòng CTCT và HSSV sẽ điều phối\nnguồn quỹ này cho các ngành học/khoa khác có sinh viên đủ tiêu chuẩn\ncho đến khi hết nguồn quỹ HBKKHT của toàn Trường.\n5. Việc chi trả HBKKHT theo quyết định của Hiệu trưởng qua tài\nkhoản cá nhân sinh viên đã đăng ký do Phòng Kế hoạch – Tài chính thực hiện.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Trình tự và thủ tục xét cấp học bổng",
+        "source_pages": [
+          53,
+          54
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "scholarship",
+        "source_id": "K48-K49_K48-K49_scoring_tables_6"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_003",
+    "case_type": "mixed_answer",
+    "cohort": "K48-K49",
+    "user_input": "K48-K49: Em được học tối đa bao lâu và nếu cần nghỉ học tạm thời thì điều kiện, hồ sơ thế nào?",
+    "reference": "Structured evidence:\n{\n  \"table_name\": \"Thời gian học tập chuẩn và tối đa\"\n}\n\nRegulation evidence:\nĐiều 31. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận\nsinh viên trở lại học\n1. Sinh viên được nghỉ học tạm thời\na) Được quy định tại khoản 1, Điều 16 của Quy chế đào tạo trình độ\nđại học chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021\ncủa Hiệu trưởng;\nb) Về kết quả học tập: Sinh viên phải hoàn thành ít nhất một học kỳ;\nriêng đối với sinh viên trúng tuyển từ năm 2020 trở về trước thì phải có\nđiểm trung bình chung tích lũy từ 2.0 trở lên;\nc) Về học phí: Sinh viên không nợ học phí và được Phòng Kế hoạch\n– Tài chính xác nhận tại thời điểm làm hồ sơ nghỉ học tạm thời.\n2. Hồ sơ nghỉ học tạm thời bao gồm\na) Đơn xin tạm nghỉ học được Trưởng khoa xác nhận đồng ý cho\nphép nghỉ học tạm thời;\nb) Các minh chứng kèm theo;\nc) Bảng điểm: kết quả học tập từ đầu khóa học đến hết học kỳ gần\nnhất có tham gia học tập; bảng điểm do Phòng Khảo thí và Đảm bảo chất\nlượng cấp;\nd) Hạn cuối để sinh viên phải gửi hồ sơ xin nghỉ học tạm thời là\ntrước khi thi học kỳ 04 tuần.\n3. Tạm dừng tiến độ học tập đối với sinh viên vi phạm\nSinh viên bị đình chỉ tiến độ học tập nếu vi phạm một trong các trường\nhợp sau:\na) Vi phạm kỷ luật theo quy định ở mức buộc nghỉ học tạm thời;\nb) Bị xếp loại rèn luyện yếu, kém trong hai học kỳ liên tiếp.\n4. Tiếp nhận trở lại học\nNếu muốn trở lại học tiếp tại Trường sau thời gian nghỉ học tạm\nthời, sinh viên cần:\na) Hoàn tất thủ tục xin học lại trước thời điểm đăng ký học phần (của\nhọc kỳ sinh viên muốn trở lại học) ít nhất 2 tuần;\nb) Chuẩn bị hồ sơ xin học lại bao gồm: đơn xin học lại (có xác nhận\nđồng ý của Trưởng khoa), quyết định nghỉ học tạm thời và nộp tại Phòng\nCTCT và HSSV;\nc) Các trường hợp đặc biệt, Hiệu trưởng xem xét hồ sơ và quyết định\nthu nhận dựa trên đề xuất của Phòng CTCT và HSSV.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học",
+        "source_pages": [
+          55,
+          56
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "study_duration",
+        "source_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_004",
+    "case_type": "mixed_answer",
+    "cohort": "K48-K49",
+    "user_input": "K48-K49: Điểm 7,9 quy đổi thành điểm chữ gì và điều kiện được công nhận tốt nghiệp gồm những gì?",
+    "reference": "Structured evidence:\n{\n  \"table_name\": \"Bảng quy đổi thang điểm 10 sang điểm chữ\",\n  \"title\": \"Đánh giá và tính điểm học phần\",\n  \"rows\": [\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"8,5 - 10\",\n      \"Thang điểm chữ\": \"A\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"7,8 - 8,4\",\n      \"Thang điểm chữ\": \"B+\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"7,0 - 7,7\",\n      \"Thang điểm chữ\": \"B\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"6,3 - 6,9\",\n      \"Thang điểm chữ\": \"C+\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"5,5 - 6,2\",\n      \"Thang điểm chữ\": \"C\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"4,8 - 5,4\",\n      \"Thang điểm chữ\": \"D+\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"4,0 - 4,7\",\n      \"Thang điểm chữ\": \"D\"\n    },\n    {\n      \"Loại\": \"Không đạt\",\n      \"Thang điểm 10\": \"3,0 - 3,9\",\n      \"Thang điểm chữ\": \"F+\"\n    },\n    {\n      \"Loại\": \"Không đạt\",\n      \"Thang điểm 10\": \"0,0 - 2,9\",\n      \"Thang điểm chữ\": \"F\"\n    }\n  ]\n}\n\nRegulation evidence:\nĐiều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp\n1. Sinh viên được xét và công nhận tốt nghiệp khi có đủ các điều\nkiện sau:\na) Tích lũy đủ học phần, số tín chỉ và hoàn thành các nội dung bắt\nbuộc khác theo yêu cầu của CTĐT, đạt chuẩn đầu ra của CTĐT;\nb) Điểm trung bình tích lũy của toàn khóa học đạt từ trung bình\ntrở lên;\nc) Tại thời điểm xét tốt nghiệp không bị truy cứu trách nhiệm hình\nsự hoặc không đang trong thời gian bị kỷ luật ở mức đình chỉ học tập.\n2. Những sinh viên đủ điều kiện tốt nghiệp được Hiệu trưởng ký\nquyết định công nhận tốt nghiệp và cấp bằng tốt nghiệp trong thời hạn 03\ntháng tính từ thời điểm sinh viên đáp ứng đầy đủ điều kiện tốt nghiệp và\nhoàn thành nghĩa vụ với Trường.\n3. Hạng tốt nghiệp được xác định căn cứ vào điểm trung bình tích\nlũy toàn khoá được quy định tại khoản 6 Điều 11 của Quy chế này, trong\nđó, hạng tốt nghiệp của sinh viên có điểm trung bình tích lũy loại xuất sắc\nvà giỏi sẽ bị giảm đi một mức nếu thuộc một trong các trường hợp sau:\na) Khối lượng của các học phần phải học lại vượt quá 5% so với\ntổng số tín chỉ quy định cho toàn chương trình;\nb) Sinh viên đã bị kỷ luật từ mức cảnh cáo trở lên trong thời gian học.\n4. Sinh viên đã hết thời gian học tập tối đa theo quy định nhưng chưa\nđủ điều kiện tốt nghiệp do chưa hoàn thành những học phần giáo dục\nquốc phòng – an ninh, giáo dục thể chất hoặc chưa đạt chuẩn đầu ra về\nngoại ngữ, công nghệ thông tin, trong thời hạn 03 năm tính từ khi thôi\nhọc được hoàn thiện các điều kiện còn thiếu và đề nghị xét công nhận\ntốt nghiệp.\n5. Sinh viên hết thời gian học tập theo hình thức chính quy được chuyển\nsang học tập theo hình thức vừa làm vừa học tại Trường nếu còn trong thời\ngian học tập theo quy định đối với hình thức đào tạo chuyển đến.\n6. Sinh viên đào tạo theo hình thức chính quy có 03 đợt xét tốt nghiệp\nchính thức, thường được tổ chức vào tháng 5, tháng 8 và tháng 10. Thời\ngian cụ thể của các đợt xét tốt nghiệp được quy định trong kế hoạch năm\nhọc. Căn cứ điều kiện cụ thể từng năm học, Hiệu trưởng quyết định các\nđợt xét tốt nghiệp bổ sung.\n7. Sinh viên đào tạo theo hình thức vừa làm vừa học có 05 đợt xét tốt\nnghiệp chính thức, thường được tổ chức vào tháng 3, tháng 5, tháng 8,\ntháng 10 và tháng 12. Thời gian cụ thể của các đợt xét tốt nghiệp được\nquy định trong kế hoạch năm học. Căn cứ điều kiện cụ thể từng năm học,\nHiệu trưởng quyết định các đợt xét tốt nghiệp bổ sung.\n8. Quy trình xét tốt nghiệp như sau:\na) Trường ban hành kế hoạch xét tốt nghiệp và công bố kết quả tốt\nnghiệp dự kiến trên cổng thông tin điện tử;\nb) Sinh viên chịu trách nhiệm rà soát kết quả xét tốt nghiệp dự kiến\ncủa bản thân và phản hồi về Phòng Đào tạo những sai sót (nếu có) trong\nthời gian quy định. Trường hợp không phản hồi đúng thời gian quy định\nsẽ không được tiếp nhận giải quyết;\nc) Khoa chuyên môn chịu trách nhiệm rà soát kết quả xét tốt nghiệp\ndự kiến của sinh viên và phản hồi về Phòng Đào tạo những sai sót về\nchuẩn xét tốt nghiệp (nếu có);\nd) Họp Hội đồng xét tốt nghiệp và ban hành Quyết định công nhận\ntốt nghiệp.\nTHÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:\n- Lịch/đợt thực hiện theo quy định: 6. Sinh viên đào tạo theo hình thức chính quy có 03 đợt xét tốt nghiệp chính thức, thường được tổ chức vào tháng 5, tháng 8 và tháng 10.\n- Lịch/đợt thực hiện theo quy định: 7. Sinh viên đào tạo theo hình thức vừa làm vừa học có 05 đợt xét tốt nghiệp chính thức, thường được tổ chức vào tháng 3, tháng 5, tháng 8, tháng 10 và tháng 12.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+        "source_pages": [
+          25,
+          26,
+          27
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "scoring",
+        "source_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_005",
+    "case_type": "mixed_answer",
+    "cohort": "K48-K49",
+    "user_input": "K48-K49: 85 điểm rèn luyện xếp loại gì và quy trình đánh giá kết quả rèn luyện diễn ra thế nào?",
+    "reference": "Structured evidence:\n{\n  \"table_name\": \"Bảng phân loại kết quả rèn luyện\",\n  \"title\": \"Phân loại kết quả rèn luyện\",\n  \"rows\": [\n    {\n      \"Khung điểm\": \"Từ 90 đến 100 điểm\",\n      \"Xếp loại\": \"Xuất sắc\"\n    },\n    {\n      \"Khung điểm\": \"Từ 80 đến dưới 90 điểm\",\n      \"Xếp loại\": \"Tốt\"\n    },\n    {\n      \"Khung điểm\": \"Từ 65 đến dưới 80 điểm\",\n      \"Xếp loại\": \"Khá\"\n    },\n    {\n      \"Khung điểm\": \"Từ 50 đến dưới 65 điểm\",\n      \"Xếp loại\": \"Trung bình\"\n    },\n    {\n      \"Khung điểm\": \"Từ 35 đến dưới 50 điểm\",\n      \"Xếp loại\": \"Yếu\"\n    },\n    {\n      \"Khung điểm\": \"Dưới 35 điểm\",\n      \"Xếp loại\": \"Kém\"\n    }\n  ]\n}\n\nRegulation evidence:\nĐiều 11. Quy trình đánh giá kết quả rèn luyện sinh viên\n1. CVHT thông báo đến lớp trưởng lớp sinh viên về quy trình và thời\ngian thực hiện việc chấm điểm rèn luyện.\n2. Sinh viên căn cứ vào kết quả rèn luyện của bản thân, tự đánh giá\ntheo mức điểm chi tiết do Nhà trường quy định kèm theo các minh chứng\nhoạt động và gửi về Ban cán sự (BCS) lớp.\n3. BCS lớp, Ban chấp hành (BCH) chi đoàn, BCH chi hội, CVHT\nchấm lại điểm rèn luyện cho sinh viên trên cơ sở sinh viên tự đánh giá.\n4. CVHT tổ chức họp lớp, tiến hành xem xét và thông qua mức điểm\ntự đánh giá của từng sinh viên trên cơ sở các minh chứng, xác nhận kết\nquả và phải được trên 50% ý kiến đồng ý của tập thể đơn vị lớp và phải\ncó biên bản họp kèm theo. CVHT xác nhận kết quả họp lớp và chuyển kết\nquả lên Hội đồng đánh giá rèn luyện sinh viên cấp Khoa (Hội đồng cấp\nKhoa). Kết quả rèn luyện của sinh viên được CVHT và BCS lớp thông\nqua trước tập thể lớp, là cơ sở quan trọng để Hội đồng cấp Khoa gởi về\nHội đồng cấp Trường công nhận kết quả đánh giá rèn luyện của sinh viên.\nLớp sinh viên lập hồ sơ đánh giá rèn luyện và gửi lên Hội đồng cấp\nKhoa gồm:\n− Biên bản họp xét đánh giá rèn luyện sinh viên của lớp (ký xác\nnhận vào biên bản gồm: CVHT, đại diện BCS, BCH chi đoàn, BCH chi\nhội sinh viên).\n− Bảng kết quả đánh giá rèn luyện sinh viên của lớp có xác nhận\ncủa CVHT.\n− Minh chứng các hoạt động được chấm điểm rèn luyện.\n− Đơn xin không đánh giá rèn luyện (nếu có).\n5. Hội đồng cấp Khoa họp xét, thống nhất, báo cáo Trưởng khoa\nthông qua và trình kết quả lên Hội đồng đánh giá rèn luyện sinh viên cấp\nTrường (Hội đồng cấp Trường).\n6. Hội đồng cấp Trường họp xét, thống nhất trình Hiệu trưởng xem\nxét và quyết định công nhận kết quả.\n7. Kết quả đánh giá, phân loại rèn luyện của sinh viên được công bố\ncông khai và thông báo cho sinh viên biết trước 20 ngày trước khi ban\nhành quyết định chính thức.\nCăn cứ kết quả trong Quyết định chính thức, các khoa cập nhật kết\nquả vào phần mềm quản lý sinh viên Nhà trường.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Quy trình đánh giá kết quả rèn luyện sinh viên",
+        "source_pages": [
+          75,
+          76
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "conduct",
+        "source_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_006",
+    "case_type": "mixed_answer",
+    "cohort": "K48-K49",
+    "user_input": "K48-K49: Cho em thông tin liên hệ Phòng Thanh tra Đào tạo và quyền khiếu nại của sinh viên được quy định thế nào?",
+    "reference": "Structured evidence:\n{\n  \"unit\": \"Phòng Thanh tra Đào tạo\",\n  \"unit_name\": \"Phòng Thanh tra Đào tạo\",\n  \"summary\": \"Phòng Thanh tra Đào tạo phu trach: Tiếp nhận và giải quyết những phản ánh liên quan đến công tác đào tạo; Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên\",\n  \"phone\": \"(028) 38352020\",\n  \"phones\": [\n    \"(028) 38352020\"\n  ],\n  \"email\": \"phongthanhtra@hcmue.edu.vn\",\n  \"emails\": [\n    \"phongthanhtra@hcmue.edu.vn\"\n  ],\n  \"office\": \"Nhà A, tầng 2, P.209, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.\",\n  \"offices\": [\n    \"Nhà A, tầng 2, P.209, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.\"\n  ],\n  \"website\": \"phongttdt.hcmue.edu.vn\",\n  \"websites\": [\n    \"phongttdt.hcmue.edu.vn\"\n  ]\n}\n\nRegulation evidence:\nĐiều 15. Quyền khiếu nại\n1. Sinh viên có quyền khiếu nại nếu thấy việc đánh giá kết quả rèn\nluyện sinh viên chưa chính xác. Sinh viên gửi đơn khiếu nại về Phòng\nCTCT và HSSV trong vòng 07 ngày kể từ ngày công bố kết quả điểm rèn\nluyện đã được Hội đồng Trường thông qua.\n2. Khi nhận được đơn khiếu nại của sinh viên, trong vòng 07 ngày\nHội đồng cấp Khoa và Hội đồng cấp Trường có nhiệm vụ giải quyết và\nphản hồi cho sinh viên theo quy định.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15",
+        "grade": 2,
+        "cohort": "K48-K49",
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
+        "content_type": "regulation_text",
+        "source_section": "Quyền khiếu nại",
+        "source_pages": [
+          79
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "office",
+        "source_id": "K48-K49_phong_thanh_tra_dao_tao"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_007",
+    "case_type": "mixed_answer",
+    "cohort": "K50",
+    "user_input": "K50: IELTS 5.5 tương đương bậc nào và quy định công nhận chuẩn ngoại ngữ để xét tốt nghiệp ra sao?",
+    "reference": "Structured evidence:\n{\n  \"table_name\": \"Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4\",\n  \"title\": \"Tổ chức thực hiện\",\n  \"rows\": [\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"TOEFL iBT\",\n      \"level_or_scale\": \"TOEFL iBT\",\n      \"equivalent_level_3\": \"30 - 45\",\n      \"equivalent_level_4\": \"46 - 93\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"TOEFL ITP\",\n      \"level_or_scale\": \"TOEFL ITP\",\n      \"equivalent_level_3\": \"450 - 499\",\n      \"equivalent_level_4\": \"\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"IELTS\",\n      \"level_or_scale\": \"IELTS\",\n      \"equivalent_level_3\": \"4.0 - 5.0\",\n      \"equivalent_level_4\": \"5.5 - 6.5\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"Cambridge Assessment English / Linguaskill\",\n      \"level_or_scale\": \"Cambridge/Linguaskill\",\n      \"equivalent_level_3\": \"B1 Preliminary; B1 Business Preliminary; Linguaskill 140 - 159\",\n      \"equivalent_level_4\": \"B2 First; B2 Business Vantage; Linguaskill 160 - 179\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"TOEIC (4 kỹ năng)\",\n      \"level_or_scale\": \"Nghe, Đọc, Nói, Viết\",\n      \"equivalent_level_3\": \"Nghe 275 - 399; Đọc 275 - 384; Nói 120 - 159; Viết 120 - 149\",\n      \"equivalent_level_4\": \"Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179\",\n      \"input_requirements\": {\n        \"score_mode\": \"per_component\",\n        \"entity_aliases\": [\n          \"TOEIC 4 kỹ năng\",\n          \"TOEIC bốn kỹ năng\"\n        ],\n        \"required_components\": [\n          \"listening\",\n          \"reading\",\n          \"speaking\",\n          \"writing\"\n        ],\n        \"component_slots\": {\n          \"listening\": {\n            \"slot\": \"listening_score\",\n            \"label\": \"Nghe\"\n          },\n          \"reading\": {\n            \"slot\": \"reading_score\",\n            \"label\": \"Đọc\"\n          },\n          \"speaking\": {\n            \"slot\": \"speaking_score\",\n            \"label\": \"Nói\"\n          },\n          \"writing\": {\n            \"slot\": \"writing_score\",\n            \"label\": \"Viết\"\n          }\n        }\n      }\n    },\n    {\n      \"language\": \"Tiếng Pháp\",\n      \"certificate\": \"TCF / DELF\",\n      \"level_or_scale\": \"TCF, DELF\",\n      \"equivalent_level_3\": \"TCF 300 - 399; DELF B1\",\n      \"equivalent_level_4\": \"TCF 400 - 499; DELF B2\"\n    },\n    {\n      \"language\": \"Tiếng Trung Quốc\",\n      \"certificate\": \"Hanyu Shuiping Kaoshi (HSK)\",\n      \"level_or_scale\": \"HSK\",\n      \"equivalent_level_3\": \"HSK bậc 3\",\n      \"equivalent_level_4\": \"HSK bậc 4\"\n    },\n    {\n      \"language\": \"Tiếng Nhật\",\n      \"certificate\": \"Japanese Language Proficiency Test (JLPT)\",\n      \"level_or_scale\": \"JLPT\",\n      \"equivalent_level_3\": \"N4\",\n      \"equivalent_level_4\": \"N3\"\n    },\n    {\n      \"language\": \"Tiếng Nga\",\n      \"certificate\": \"ТРКИ - Тест по русскому языку как иностранному\",\n      \"level_or_scale\": \"ТРКИ\",\n      \"equivalent_level_3\": \"ТРКИ-1\",\n      \"equivalent_level_4\": \"ТРКИ-2\"\n    },\n    {\n      \"language\": \"Tiếng Hàn Quốc\",\n      \"certificate\": \"TOPIK II\",\n      \"level_or_scale\": \"TOPIK II\",\n      \"equivalent_level_3\": \"TOPIK II (120)\",\n      \"equivalent_level_4\": \"TOPIK II (150)\"\n    }\n  ],\n  \"applicability\": \"Điều 1 quy định áp dụng cho sinh viên đại học thuộc phạm vi quy định từ khóa tuyển sinh năm 2022 trở về sau.\"\n}\n\nRegulation evidence:\nĐiều 4. Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp\n1. Sinh viên theo quy định Điều 1 tốt nghiệp trình độ đại học phải\nđạt tối thiểu bậc 3/6 theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt\nNam hoặc tương đương để được công nhận tốt nghiệp.\n2. Sinh viên được công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt\nnghiệp nếu thuộc 01 trong các trường hợp sau:\na) Đạt yêu cầu kỳ thi kết thúc chương trình ngoại ngữ theo quy định\ntại Điều 3;\nb) Có bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài;\nc) Có chứng chỉ ngoại ngữ bậc 3/6 trở lên theo Khung năng lực\nngoại ngữ 6 bậc dùng cho Việt Nam hoặc chứng chỉ ngoại ngữ quốc tế\ntương đương theo quy định tại Phụ lục;\nd) Đạt giải khuyến khích cấp Trường trở lên trong các kỳ thi\nOlympic ngoại ngữ, thi hùng biện ngoại ngữ dành cho sinh viên không\nthuộc nhóm ngành ngôn ngữ nước ngoài trong thời gian học tại Trường;\nđ) Các trường hợp đặc biệt khác do Hiệu trưởng quyết định.\n3. Sinh viên thuộc đối tượng theo quy định tại các điểm b, c, d, đ\nkhoản 2 Điều này phải thực hiện thủ tục theo quy định tại Điều 5 để được\nxét tốt nghiệp.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp",
+        "source_pages": [
+          111
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "foreign_language",
+        "source_id": "K50_foreign_language_equivalency_dieu8"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_008",
+    "case_type": "mixed_answer",
+    "cohort": "K50",
+    "user_input": "K50: Mức học bổng Xuất sắc tính thế nào và thủ tục xét cấp học bổng gồm những bước gì?",
+    "reference": "Structured evidence:\n{\n  \"table_name\": \"Mức học bổng khuyến khích học tập\",\n  \"rows\": [\n    {\n      \"scholarship_level\": \"Khá\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,0\",\n      \"multiplier\": 1.0,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học\"\n    },\n    {\n      \"scholarship_level\": \"Giỏi\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,25\",\n      \"multiplier\": 1.25,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học\"\n    },\n    {\n      \"scholarship_level\": \"Xuất sắc\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,5\",\n      \"multiplier\": 1.5,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học\"\n    }\n  ]\n}\n\nRegulation evidence:\nĐiều 28. Trình tự và thủ tục xét cấp học bổng\n1. Căn cứ vào quỹ HBKKHT toàn Trường đã xác lập và căn cứ theo\ntỉ lệ số sinh viên của từng khoa, phân hiệu, từng khóa, từng ngành học,\nPhòng CTCT&HSSV phối hợp Phòng Kế hoạch – Tài chính xác định quỹ\nHBKKHT của từng ngành học cụ thể ứng với khóa học tương ứng.\n2. Để xét học bổng, CVHT họp lớp đánh giá kết quả rèn luyện của\nsinh viên, khoa hoặc phân hiệu xem xét kết quả và nhập điểm rèn luyện\nvào phần mềm, nộp bảng tổng hợp đánh giá kết quả rèn luyện về Phòng\nCTCT&HSSV theo thời gian quy định.\n3. Căn cứ vào kết quả cập nhật điểm và khóa điểm do Phòng Khảo\nthí và Đảm bảo chất lượng thực hiện, Phòng CTCT&HSSV đối chiếu và\nsử dụng làm cơ sở để xét học bổng.\n4. Học bổng được phân bổ theo thứ tự điểm học bổng giảm dần từ\ncao xuống thấp cho đến hết quỹ học bổng của mỗi ngành học của một\nkhóa học cụ thể.\na) Trường hợp sinh viên có điểm học bổng bằng nhau và kinh phí\nkhông đủ cấp cho tất cả, Trường sẽ ưu tiên xét cấp cho sinh viên có điểm\nhọc tập cao hơn;\nb) Trường hợp có những sinh viên có điểm học tập và điểm rèn\nluyện bằng nhau, Phòng CTCT&HSSV sẽ phân bổ học bổng theo tỉ lệ số\ntín chỉ. Trường hợp tất cả sinh viên đủ điều kiện trong một ngành học đã\nnhận đủ học bổng mà quỹ còn dư, Phòng CTCT&HSSV sẽ điều phối\nnguồn quỹ này cho các ngành học/khoa khác có sinh viên đủ tiêu chuẩn\ncho đến khi hết nguồn quỹ HBKKHT của toàn Trường.\n5. Việc chi trả HBKKHT theo quyết định của Hiệu trưởng qua tài khoản\ncá nhân sinh viên đã đăng ký do Phòng Kế hoạch – Tài chính thực hiện.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Trình tự và thủ tục xét cấp học bổng",
+        "source_pages": [
+          73,
+          74
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "scholarship",
+        "source_id": "K50_K50_scoring_tables_6"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_010",
+    "case_type": "mixed_answer",
+    "cohort": "K50",
+    "user_input": "K50: Điểm 7,9 quy đổi thành điểm chữ gì và điều kiện được công nhận tốt nghiệp gồm những gì?",
+    "reference": "Structured evidence:\n{\n  \"table_name\": \"Quy đổi thang điểm 10 sang điểm chữ\",\n  \"rows\": [\n    {\n      \"status\": \"Đạt\",\n      \"score_10_range\": \"8.5-10\",\n      \"letter_grade\": \"A\"\n    },\n    {\n      \"status\": \"Đạt\",\n      \"score_10_range\": \"7.8-8.4\",\n      \"letter_grade\": \"B+\"\n    },\n    {\n      \"status\": \"Đạt\",\n      \"score_10_range\": \"7.0-7.7\",\n      \"letter_grade\": \"B\"\n    },\n    {\n      \"status\": \"Đạt\",\n      \"score_10_range\": \"6.3-6.9\",\n      \"letter_grade\": \"C+\"\n    },\n    {\n      \"status\": \"Đạt\",\n      \"score_10_range\": \"5.5-6.2\",\n      \"letter_grade\": \"C\"\n    },\n    {\n      \"status\": \"Đạt\",\n      \"score_10_range\": \"4.8-5.4\",\n      \"letter_grade\": \"D+\"\n    },\n    {\n      \"status\": \"Đạt\",\n      \"score_10_range\": \"4.0-4.7\",\n      \"letter_grade\": \"D\"\n    },\n    {\n      \"status\": \"Không đạt\",\n      \"score_10_range\": \"3.0-3.9\",\n      \"letter_grade\": \"F+\"\n    },\n    {\n      \"status\": \"Không đạt\",\n      \"score_10_range\": \"0.0-2.9\",\n      \"letter_grade\": \"F\"\n    }\n  ],\n  \"applicability\": \"Áp dụng chung theo bảng quy đổi điểm học phần\"\n}\n\nRegulation evidence:\nĐiều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp\n1. Sinh viên được xét và công nhận tốt nghiệp khi có đủ các điều\nkiện sau:\na) Tích lũy đủ học phần, số tín chỉ và hoàn thành các nội dung bắt\nbuộc khác theo yêu cầu của CTĐT, đạt chuẩn đầu ra của CTĐT;\nb) Điểm trung bình tích lũy của toàn khóa học đạt từ trung bình\ntrở lên;\nc) Tại thời điểm xét tốt nghiệp không bị truy cứu trách nhiệm hình\nsự hoặc không đang trong thời gian bị kỷ luật ở mức đình chỉ học tập.\n2. Những sinh viên đủ điều kiện tốt nghiệp được Hiệu trưởng ký\nquyết định công nhận tốt nghiệp và cấp bằng tốt nghiệp trong thời hạn 03\ntháng tính từ thời điểm sinh viên đáp ứng đầy đủ điều kiện tốt nghiệp và\nhoàn thành nghĩa vụ với Trường.\n3. Hạng tốt nghiệp được xác định căn cứ vào điểm trung bình tích\nlũy toàn khóa được quy định tại khoản 6 Điều 11 của Quy chế này, trong\nđó, hạng tốt nghiệp của sinh viên có điểm trung bình tích lũy loại xuất sắc\nvà giỏi sẽ bị giảm đi một mức nếu thuộc một trong các trường hợp sau:\na) Khối lượng của các học phần phải học lại vượt quá 5% so với\ntổng số tín chỉ quy định cho toàn chương trình;\nb) Sinh viên đã bị kỷ luật từ mức cảnh cáo trở lên trong thời gian học.\n4. Sinh viên đã hết thời gian học tập tối đa theo quy định nhưng chưa\nđủ điều kiện tốt nghiệp do chưa hoàn thành những học phần giáo dục\nquốc phòng – an ninh, giáo dục thể chất hoặc chưa đạt chuẩn đầu ra về\nngoại ngữ, công nghệ thông tin, trong thời hạn 03 năm tính từ khi thôi\nhọc được hoàn thiện các điều kiện còn thiếu và đề nghị xét công nhận\ntốt nghiệp.\n5. Sinh viên hết thời gian học tập theo hình thức chính quy được\nchuyển sang học tập theo hình thức vừa làm vừa học tại Trường nếu còn\ntrong thời gian học tập theo quy định đối với hình thức đào tạo chuyển đến.\n6. Sinh viên đào tạo theo hình thức chính quy có 03 đợt xét tốt\nnghiệp chính thức, thường được tổ chức vào tháng 5, tháng 8 và tháng 10.\nThời gian cụ thể của các đợt xét tốt nghiệp được quy định trong kế hoạch\nnăm học. Căn cứ điều kiện cụ thể từng năm học, Hiệu trưởng quyết định\ncác đợt xét tốt nghiệp bổ sung.\n7. Sinh viên đào tạo theo hình thức vừa làm vừa học có 05 đợt xét tốt\nnghiệp chính thức, thường được tổ chức vào tháng 3, tháng 5, tháng 8,\ntháng 10 và tháng 12. Thời gian cụ thể của các đợt xét tốt nghiệp được\nquy định trong kế hoạch năm học. Căn cứ điều kiện cụ thể từng năm học,\nHiệu trưởng quyết định các đợt xét tốt nghiệp bổ sung.\n8. Quy trình xét tốt nghiệp như sau:\na) Trường ban hành kế hoạch xét tốt nghiệp và công bố kết quả tốt\nnghiệp dự kiến trên Cổng thông tin điện tử;\nb) Sinh viên chịu trách nhiệm rà soát kết quả xét tốt nghiệp dự kiến\ncủa bản thân và phản hồi về Phòng Đào tạo những sai sót (nếu có) trong\nthời gian quy định. Trường hợp không phản hồi đúng thời gian quy định\nsẽ không được tiếp nhận giải quyết;\nc) Khoa chuyên môn chịu trách nhiệm rà soát kết quả xét tốt nghiệp\ndự kiến của sinh viên và phản hồi về Phòng Đào tạo những sai sót về\nchuẩn xét tốt nghiệp (nếu có);\nd) Họp Hội đồng xét tốt nghiệp và ban hành Quyết định công nhận\ntốt nghiệp.\nTHÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:\n- Lịch/đợt thực hiện theo quy định: 6. Sinh viên đào tạo theo hình thức chính quy có 03 đợt xét tốt nghiệp chính thức, thường được tổ chức vào tháng 5, tháng 8 và tháng 10.\n- Lịch/đợt thực hiện theo quy định: 7. Sinh viên đào tạo theo hình thức vừa làm vừa học có 05 đợt xét tốt nghiệp chính thức, thường được tổ chức vào tháng 3, tháng 5, tháng 8, tháng 10 và tháng 12.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu15",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+        "source_pages": [
+          23,
+          24,
+          25
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "scoring",
+        "source_id": "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_011",
+    "case_type": "mixed_answer",
+    "cohort": "K50",
+    "user_input": "K50: 85 điểm rèn luyện xếp loại gì và quy trình đánh giá kết quả rèn luyện diễn ra thế nào?",
+    "reference": "Structured evidence:\n{\n  \"table_name\": \"Phân loại kết quả rèn luyện\",\n  \"rows\": [\n    {\n      \"range\": \"90-100\",\n      \"label\": \"Xuất sắc\"\n    },\n    {\n      \"range\": \"80-dưới 90\",\n      \"label\": \"Tốt\"\n    },\n    {\n      \"range\": \"65-dưới 80\",\n      \"label\": \"Khá\"\n    },\n    {\n      \"range\": \"50-dưới 65\",\n      \"label\": \"Trung bình\"\n    },\n    {\n      \"range\": \"35-dưới 50\",\n      \"label\": \"Yếu\"\n    },\n    {\n      \"range\": \"dưới 35\",\n      \"label\": \"Kém\"\n    }\n  ]\n}\n\nRegulation evidence:\nĐiều 11. Quy trình đánh giá kết quả rèn luyện sinh viên\n1. CVHT thông báo đến lớp trưởng lớp sinh viên về quy trình và thời\ngian thực hiện việc chấm điểm rèn luyện.\n2. Sinh viên căn cứ vào kết quả rèn luyện của bản thân, tự đánh giá\ntheo mức điểm chi tiết do Trường quy định kèm theo các minh chứng\nhoạt động và gửi về BCS lớp.\n3. BCS lớp, BCH Chi đoàn, BCH Chi hội, CVHT chấm lại điểm rèn\nluyện cho sinh viên trên cơ sở sinh viên tự đánh giá.\n4. CVHT tổ chức họp lớp, tiến hành xem xét và thông qua mức điểm\ntự đánh giá của từng sinh viên trên cơ sở các minh chứng, xác nhận kết\nquả và phải được trên 50% ý kiến đồng ý của tập thể đơn vị lớp và phải\ncó biên bản họp kèm theo. CVHT xác nhận kết quả họp lớp và chuyển kết\nquả lên Hội đồng đánh giá rèn luyện sinh viên cấp khoa, phân hiệu (Hội\nđồng cấp cơ sở). Kết quả rèn luyện của sinh viên được CVHT và BCS\nlớp thông qua trước tập thể lớp, là cơ sở quan trọng để Hội đồng cấp cơ\nsở gởi về Hội đồng cấp Trường công nhận kết quả đánh giá rèn luyện của\nsinh viên.\nLớp sinh viên lập hồ sơ đánh giá rèn luyện và gửi lên Hội đồng cấp\ncơ sở gồm:\n– Biên bản họp xét đánh giá rèn luyện sinh viên của lớp (ký xác\nnhận vào biên bản gồm: CVHT, đại diện BCS, BCH Chi đoàn, BCH Chi\nhội sinh viên);\n– Bảng kết quả đánh giá rèn luyện sinh viên của lớp có xác nhận của\nCVHT;\n– Minh chứng các hoạt động được chấm điểm rèn luyện;\n– Đơn xin không đánh giá rèn luyện (nếu có).\n5. Hội đồng cấp cơ sở (khoa, phân hiệu) họp xét, thống nhất, báo cáo\nTrưởng đơn vị (Trưởng khoa và Giám đốc phân hiệu) thông qua và trình\nkết quả lên Hội đồng đánh giá rèn luyện sinh viên cấp Trường (Hội đồng\ncấp Trường).\n6. Hội đồng cấp Trường họp xét, thống nhất trình Hiệu trưởng xem\nxét và quyết định công nhận kết quả.\n7. Kết quả đánh giá, phân loại rèn luyện của sinh viên được công bố\ncông khai và thông báo cho sinh viên biết trước 20 ngày trước khi ban\nhành quyết định chính thức.\nCăn cứ kết quả trong Quyết định chính thức, các khoa và phân hiệu\ncập nhật kết quả vào phần mềm quản lý sinh viên Trường.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Quy trình đánh giá kết quả rèn luyện sinh viên",
+        "source_pages": [
+          95,
+          96
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "conduct",
+        "source_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_012",
+    "case_type": "mixed_answer",
+    "cohort": "K50",
+    "user_input": "K50: Cho em thông tin liên hệ Phòng Thanh tra Đào tạo và quyền khiếu nại của sinh viên được quy định thế nào?",
+    "reference": "Structured evidence:\n{\n  \"unit\": \"Phòng Thanh tra Đào tạo\",\n  \"unit_name\": \"Phòng Thanh tra Đào tạo\",\n  \"summary\": \"Phòng Thanh tra Đào tạo phu trach: Tiếp nhận và giải quyết những phản ánh liên quan đến công tác đào tạo; Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên\",\n  \"phone\": \"(028) 38352020\",\n  \"phones\": [\n    \"(028) 38352020\"\n  ],\n  \"email\": \"phongthanhtra@hcmue.edu.vn\",\n  \"emails\": [\n    \"phongthanhtra@hcmue.edu.vn\"\n  ],\n  \"office\": \"Nhà A, tầng 2, P.209, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.\",\n  \"offices\": [\n    \"Nhà A, tầng 2, P.209, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.\"\n  ],\n  \"website\": \"phongttdt.hcmue.edu.vn\",\n  \"websites\": [\n    \"phongttdt.hcmue.edu.vn\"\n  ]\n}\n\nRegulation evidence:\nĐiều 15. Quyền khiếu nại\n1. Sinh viên có quyền khiếu nại nếu thấy việc đánh giá kết quả rèn\nluyện sinh viên chưa chính xác. Sinh viên gửi đơn khiếu nại về Phòng\nCTCT&HSSV trong vòng 07 ngày kể từ ngày công bố kết quả điểm rèn\nluyện đã được Hội đồng cấp Trường thông qua.\n2. Khi nhận được đơn khiếu nại của sinh viên, trong vòng 07 ngày,\nHội đồng cấp cơ sở và Hội đồng cấp Trường có nhiệm vụ giải quyết và\nphản hồi cho sinh viên theo quy định.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Quyền khiếu nại",
+        "source_pages": [
+          99
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "office",
+        "source_id": "K50_phong_thanh_tra_dao_tao"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_013",
+    "case_type": "mixed_answer",
+    "cohort": "K51",
+    "user_input": "K51: IELTS 5.5 tương đương bậc nào và quy định công nhận chuẩn ngoại ngữ để xét tốt nghiệp ra sao?",
+    "reference": "Structured evidence:\n{\n  \"table_name\": \"Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4\",\n  \"title\": \"Tổ chức thực hiện\",\n  \"rows\": [\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"TOEFL iBT\",\n      \"level_or_scale\": \"TOEFL iBT\",\n      \"equivalent_level_3\": \"30 - 45\",\n      \"equivalent_level_4\": \"46 - 93\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"TOEFL ITP\",\n      \"level_or_scale\": \"TOEFL ITP\",\n      \"equivalent_level_3\": \"450 - 499\",\n      \"equivalent_level_4\": \"\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"IELTS\",\n      \"level_or_scale\": \"IELTS\",\n      \"equivalent_level_3\": \"4.0 - 5.0\",\n      \"equivalent_level_4\": \"5.5 - 6.5\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"Cambridge Assessment English / Linguaskill\",\n      \"level_or_scale\": \"Cambridge/Linguaskill\",\n      \"equivalent_level_3\": \"B1 Preliminary; B1 Business Preliminary; Linguaskill 140 - 159\",\n      \"equivalent_level_4\": \"B2 First; B2 Business Vantage; Linguaskill 160 - 179\"\n    },\n    {\n      \"language\": \"Tiếng Anh\",\n      \"certificate\": \"TOEIC (4 kỹ năng)\",\n      \"level_or_scale\": \"Nghe, Đọc, Nói, Viết\",\n      \"equivalent_level_3\": \"Nghe 275 - 399; Đọc 275 - 384; Nói 120 - 159; Viết 120 - 149\",\n      \"equivalent_level_4\": \"Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179\",\n      \"input_requirements\": {\n        \"score_mode\": \"per_component\",\n        \"entity_aliases\": [\n          \"TOEIC 4 kỹ năng\",\n          \"TOEIC bốn kỹ năng\"\n        ],\n        \"required_components\": [\n          \"listening\",\n          \"reading\",\n          \"speaking\",\n          \"writing\"\n        ],\n        \"component_slots\": {\n          \"listening\": {\n            \"slot\": \"listening_score\",\n            \"label\": \"Nghe\"\n          },\n          \"reading\": {\n            \"slot\": \"reading_score\",\n            \"label\": \"Đọc\"\n          },\n          \"speaking\": {\n            \"slot\": \"speaking_score\",\n            \"label\": \"Nói\"\n          },\n          \"writing\": {\n            \"slot\": \"writing_score\",\n            \"label\": \"Viết\"\n          }\n        }\n      }\n    },\n    {\n      \"language\": \"Tiếng Pháp\",\n      \"certificate\": \"TCF / DELF\",\n      \"level_or_scale\": \"TCF, DELF\",\n      \"equivalent_level_3\": \"TCF 300 - 399; DELF B1\",\n      \"equivalent_level_4\": \"TCF 400 - 499; DELF B2\"\n    },\n    {\n      \"language\": \"Tiếng Trung Quốc\",\n      \"certificate\": \"Hanyu Shuiping Kaoshi (HSK)\",\n      \"level_or_scale\": \"HSK\",\n      \"equivalent_level_3\": \"HSK bậc 3\",\n      \"equivalent_level_4\": \"HSK bậc 4\"\n    },\n    {\n      \"language\": \"Tiếng Nhật\",\n      \"certificate\": \"Japanese Language Proficiency Test (JLPT)\",\n      \"level_or_scale\": \"JLPT\",\n      \"equivalent_level_3\": \"N4\",\n      \"equivalent_level_4\": \"N3\"\n    },\n    {\n      \"language\": \"Tiếng Nga\",\n      \"certificate\": \"ТРКИ - Тест по русскому языку как иностранному\",\n      \"level_or_scale\": \"ТРКИ\",\n      \"equivalent_level_3\": \"ТРКИ-1\",\n      \"equivalent_level_4\": \"ТРКИ-2\"\n    },\n    {\n      \"language\": \"Tiếng Hàn Quốc\",\n      \"certificate\": \"TOPIK II\",\n      \"level_or_scale\": \"TOPIK II\",\n      \"equivalent_level_3\": \"TOPIK II (120)\",\n      \"equivalent_level_4\": \"TOPIK II (150)\"\n    }\n  ],\n  \"applicability\": \"Điều 1 quy định áp dụng cho sinh viên đại học thuộc phạm vi quy định từ khóa tuyển sinh năm 2022 trở về sau.\"\n}\n\nRegulation evidence:\nĐiều 4. Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp\n1. Sinh viên theo quy định Điều 1 tốt nghiệp trình độ đại học phải\nđạt tối thiểu bậc 3/6 theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt\nNam hoặc tương đương để được công nhận tốt nghiệp.\n2. Sinh viên được công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt\nnghiệp nếu thuộc 01 trong các trường hợp sau:\na) Đạt yêu cầu kỳ thi kết thúc chương trình ngoại ngữ theo quy định\ntại Điều 3;\nb) Có bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài;\nc) Có chứng chỉ ngoại ngữ bậc 3/6 trở lên theo Khung năng lực\nngoại ngữ 6 bậc dùng cho Việt Nam hoặc chứng chỉ ngoại ngữ quốc tế\ntương đương theo quy định tại Phụ lục;\nd) Đạt giải khuyến khích cấp Trường trở lên trong các kỳ thi\nOlympic ngoại ngữ, thi hùng biện ngoại ngữ dành cho sinh viên không\nthuộc nhóm ngành ngôn ngữ nước ngoài trong thời gian học tại Trường;\nđ) Các trường hợp đặc biệt khác do Hiệu trưởng quyết định.\n3. Sinh viên thuộc đối tượng theo quy định tại các điểm b, c, d, đ\nkhoản 2 Điều này phải thực hiện thủ tục theo quy định tại Điều 5 để được\nxét tốt nghiệp.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4",
+        "grade": 2,
+        "cohort": "K50",
+        "document_id": "so_tay_sinh_vien_khoa_50",
+        "content_type": "regulation_text",
+        "source_section": "Công nhận đạt chuẩn đầu ra ngoại ngữ để xét tốt nghiệp",
+        "source_pages": [
+          111
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "foreign_language",
+        "source_id": "K50_foreign_language_equivalency_dieu8"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_014",
+    "case_type": "mixed_answer",
+    "cohort": "K51",
+    "user_input": "K51: Mức học bổng Xuất sắc tính thế nào và thủ tục xét cấp học bổng gồm những bước gì?",
+    "reference": "Structured evidence:\n{\n  \"table_name\": \"Mức học bổng khuyến khích học tập\",\n  \"rows\": [\n    {\n      \"scholarship_level\": \"Khá\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,0\",\n      \"multiplier\": 1.0,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học\"\n    },\n    {\n      \"scholarship_level\": \"Giỏi\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,25\",\n      \"multiplier\": 1.25,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học\"\n    },\n    {\n      \"scholarship_level\": \"Xuất sắc\",\n      \"formula\": \"Số tín chỉ x định mức học phí 01 tín chỉ x 1,5\",\n      \"multiplier\": 1.5,\n      \"tuition_basis\": \"định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học\"\n    }\n  ]\n}\n\nRegulation evidence:\nĐiều 28. Trình tự và thủ tục xét cấp học bổng\n1. Căn cứ vào quỹ HBKKHT toàn Trường đã xác lập và căn cứ theo\ntỉ lệ số sinh viên của từng khoa, phân hiệu, từng khóa, từng ngành học,\nPhòng CTCT&HSSV phối hợp Phòng Kế hoạch – Tài chính xác định quỹ\nHBKKHT của từng ngành học cụ thể ứng với khóa học tương ứng.\n2. Để xét học bổng, CVHT họp lớp đánh giá kết quả rèn luyện của\nsinh viên, khoa hoặc phân hiệu xem xét kết quả và nhập điểm rèn luyện\nvào phần mềm, nộp bảng tổng hợp đánh giá kết quả rèn luyện về Phòng\nCTCT&HSSV theo thời gian quy định.\n3. Căn cứ vào kết quả cập nhật điểm và khóa điểm do Phòng Khảo\nthí và Đảm bảo chất lượng thực hiện, Phòng CTCT&HSSV đối chiếu và\nsử dụng làm cơ sở để xét học bổng.\n4. Học bổng được phân bổ theo thứ tự điểm học bổng giảm dần từ\ncao xuống thấp cho đến hết quỹ học bổng của mỗi ngành học của một\nkhóa học cụ thể.\na) Trường hợp sinh viên có điểm học bổng bằng nhau và kinh phí\nkhông đủ cấp cho tất cả, Trường sẽ ưu tiên xét cấp cho sinh viên có điểm\nhọc tập cao hơn;\nb) Trường hợp có những sinh viên có điểm học tập và điểm rèn\nluyện bằng nhau, Phòng CTCT&HSSV sẽ phân bổ học bổng theo tỉ lệ số\ntín chỉ. Trường hợp tất cả sinh viên đủ điều kiện trong một ngành học đã\nnhận đủ học bổng mà quỹ còn dư, Phòng CTCT&HSSV sẽ điều phối\nnguồn quỹ này cho các ngành học/khoa khác có sinh viên đủ tiêu chuẩn\ncho đến khi hết nguồn quỹ HBKKHT của toàn Trường.\n5. Việc chi trả HBKKHT theo quyết định của Hiệu trưởng qua tài khoản\ncá nhân sinh viên đã đăng ký do Phòng Kế hoạch – Tài chính thực hiện.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Trình tự và thủ tục xét cấp học bổng",
+        "source_pages": [
+          72,
+          73
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "scholarship",
+        "source_id": "K51_K51_scoring_tables_8"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_015",
+    "case_type": "mixed_answer",
+    "cohort": "K51",
+    "user_input": "K51: Em được học tối đa bao lâu và nếu cần nghỉ học tạm thời thì điều kiện, hồ sơ thế nào?",
+    "reference": "Structured evidence:\n{\n  \"table_name\": \"Thời gian học tập chuẩn và tối đa\"\n}\n\nRegulation evidence:\nĐiều 30. Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp\nnhận sinh viên trở lại học\n1. Sinh viên được nghỉ học tạm thời\na) Được quy định tại khoản 1 Điều 16 Quy chế đào tạo trình độ đại\nhọc chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021\ncủa Hiệu trưởng;\nb) Đối với sinh viên đào tạo trình độ cao đẳng ngành Giáo dục Mầm\nnon thực hiện theo khoản 1 Điều 16 Quy chế đào tạo trình độ cao đẳng\nngành Giáo dục Mầm non tại phân hiệu của Trường Đại học Sư phạm\nThành phố Hồ Chí Minh được ban hành kèm theo Quyết định số\n3533/QĐ-ĐHSP ngày 07/12/2023 của Hiệu trưởng;\nc) Về kết quả học tập: Sinh viên phải hoàn thành ít nhất một học kỳ;\nriêng đối với sinh viên đào tạo trình độ đại học hệ chính quy trúng tuyển\ntừ năm 2020 trở về trước thì phải có điểm trung bình chung tích lũy từ\n2.00 trở lên;\nd) Về học phí: Sinh viên không nợ học phí và được Phòng Kế hoạch\n– Tài chính xác nhận tại thời điểm làm hồ sơ nghỉ học tạm thời.\n2. Hồ sơ nghỉ học tạm thời bao gồm:\na) Đơn xin tạm nghỉ học được Trưởng khoa hoặc Giám đốc phân\nhiệu xác nhận đồng ý cho phép nghỉ học tạm thời;\nb) Các minh chứng kèm theo;\nc) Hạn cuối để sinh viên phải gửi hồ sơ xin nghỉ học tạm thời ở học\nkỳ chính là sau khi học kỳ đó bắt đầu 04 tuần.\n3. Tạm dừng tiến độ học tập đối với sinh viên vi phạm\nSinh viên bị đình chỉ tiến độ học tập nếu vi phạm một trong các\ntrường hợp sau:\na) Vi phạm kỷ luật theo quy định ở mức buộc nghỉ học tạm thời;\nb) Bị xếp loại rèn luyện yếu, kém trong hai học kỳ liên tiếp đối với\nsinh viên đào tạo trình độ đại học hoặc bị xếp rèn luyện kém cả năm đối\nvới sinh viên đào tạo trình độ cao đẳng sư phạm.\n4. Tiếp nhận trở lại học\nNếu muốn trở lại học tiếp tại Trường sau thời gian nghỉ học tạm\nthời, sinh viên cần:\na) Hoàn tất thủ tục xin học lại trước thời điểm đăng ký học phần (của\nhọc kỳ sinh viên muốn trở lại học) ít nhất 02 tuần;\nb) Chuẩn bị hồ sơ xin học lại bao gồm: đơn xin học lại (có xác nhận\nđồng ý của Trưởng khoa hoặc Giám đốc phân hiệu), quyết định nghỉ học\ntạm thời và nộp tại Phòng CTCT&HSSV;\nc) Đối với các sinh viên tuyển sinh từ năm 2025 trở về sau, sau thời\ngian nghỉ học tạm thời, sinh viên trở lại Trường sẽ tiếp tục được học tập\ntheo chương trình đào tạo của khoá tuyển sinh;\nd) Các trường hợp đặc biệt, Hiệu trưởng xem xét hồ sơ và quyết định\nthu nhận dựa trên đề xuất của Phòng Công tác chính trị và Học sinh,\nsinh viên.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận sinh viên trở lại học",
+        "source_pages": [
+          73,
+          74,
+          75
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "study_duration",
+        "source_id": "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_016",
+    "case_type": "mixed_answer",
+    "cohort": "K51",
+    "user_input": "K51: Điểm 7,9 quy đổi thành điểm chữ gì và điều kiện được công nhận tốt nghiệp gồm những gì?",
+    "reference": "Structured evidence:\n{\n  \"table_name\": \"Bảng quy đổi điểm học phần nhóm nền tảng\",\n  \"title\": \"Đánh giá và tính điểm học phần\",\n  \"rows\": [\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"8,5 - 10\",\n      \"Thang điểm chữ\": \"A\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"7,8 - 8,4\",\n      \"Thang điểm chữ\": \"B+\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"7,0 - 7,7\",\n      \"Thang điểm chữ\": \"B\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"6,3 - 6,9\",\n      \"Thang điểm chữ\": \"C+\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"5,5 - 6,2\",\n      \"Thang điểm chữ\": \"C\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"4,8 - 5,4\",\n      \"Thang điểm chữ\": \"D+\"\n    },\n    {\n      \"Loại\": \"Đạt\",\n      \"Thang điểm 10\": \"4,0 - 4,7\",\n      \"Thang điểm chữ\": \"D\"\n    },\n    {\n      \"Loại\": \"Không đạt\",\n      \"Thang điểm 10\": \"3,0 - 3,9\",\n      \"Thang điểm chữ\": \"F+\"\n    },\n    {\n      \"Loại\": \"Không đạt\",\n      \"Thang điểm 10\": \"0,0 - 2,9\",\n      \"Thang điểm chữ\": \"F\"\n    }\n  ],\n  \"applicability\": \"Áp dụng cho học phần giáo dục đại cương/học phần chung thuộc nhóm nền tảng.\"\n}\n\nRegulation evidence:\nĐiều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp\n1. Sinh viên được xét và công nhận tốt nghiệp khi có đủ các điều\nkiện sau:\na) Tích lũy đủ học phần, số tín chỉ và hoàn thành các nội dung bắt\nbuộc khác theo yêu cầu của CTĐT, đạt chuẩn đầu ra của CTĐT;\nb) Điểm trung bình tích lũy của toàn khóa học đạt từ trung bình\ntrở lên;\nc) Tại thời điểm xét tốt nghiệp không bị truy cứu trách nhiệm hình\nsự hoặc không đang trong thời gian bị kỷ luật ở mức đình chỉ học tập.\n2. Những sinh viên đủ điều kiện tốt nghiệp được Hiệu trưởng ký\nquyết định công nhận tốt nghiệp và cấp bằng tốt nghiệp trong thời hạn 03\ntháng tính từ thời điểm sinh viên đáp ứng đầy đủ điều kiện tốt nghiệp và\nhoàn thành nghĩa vụ với Trường.\n3. Hạng tốt nghiệp được xác định căn cứ vào điểm trung bình tích\nlũy toàn khóa được quy định tại khoản 6 Điều 11 của Quy chế này, trong\nđó, hạng tốt nghiệp của sinh viên có điểm trung bình tích lũy loại xuất sắc\nvà giỏi sẽ bị giảm đi một mức nếu thuộc một trong các trường hợp sau:\na) Khối lượng của các học phần phải học lại vượt quá 5% so với\ntổng số tín chỉ quy định cho toàn chương trình;\nb) Sinh viên đã bị kỷ luật từ mức cảnh cáo trở lên trong thời gian học.\n4. Sinh viên đã hết thời gian học tập tối đa theo quy định nhưng chưa\nđủ điều kiện tốt nghiệp do chưa hoàn thành những học phần giáo dục\nquốc phòng – an ninh, giáo dục thể chất hoặc chưa đạt chuẩn đầu ra về\nngoại ngữ, công nghệ thông tin, trong thời hạn 03 năm tính từ khi thôi\nhọc được hoàn thiện các điều kiện còn thiếu và đề nghị xét công nhận\ntốt nghiệp.\n5. Sinh viên hết thời gian học tập theo hình thức chính quy được\nchuyển sang học tập theo hình thức vừa làm vừa học tại Trường nếu còn\ntrong thời gian học tập theo quy định đối với hình thức đào tạo chuyển đến.\n6. Sinh viên đào tạo theo hình thức chính quy có 03 đợt xét tốt\nnghiệp chính thức, thường được tổ chức vào tháng 5, tháng 8 và tháng 10.\nThời gian cụ thể của các đợt xét tốt nghiệp được quy định trong kế hoạch\nnăm học. Căn cứ điều kiện cụ thể từng năm học, Hiệu trưởng quyết định\ncác đợt xét tốt nghiệp bổ sung.\n7. Sinh viên đào tạo theo hình thức vừa làm vừa học có 05 đợt xét tốt\nnghiệp chính thức, thường được tổ chức vào tháng 3, tháng 5, tháng 8,\ntháng 10 và tháng 12. Thời gian cụ thể của các đợt xét tốt nghiệp được\nquy định trong kế hoạch năm học. Căn cứ điều kiện cụ thể từng năm học,\nHiệu trưởng quyết định các đợt xét tốt nghiệp bổ sung.\n8. Quy trình xét tốt nghiệp như sau:\na) Trường ban hành kế hoạch xét tốt nghiệp và công bố kết quả tốt\nnghiệp dự kiến trên Cổng thông tin điện tử;\nb) Sinh viên chịu trách nhiệm rà soát kết quả xét tốt nghiệp dự kiến\ncủa bản thân và phản hồi về Phòng Đào tạo những sai sót (nếu có) trong\nthời gian quy định. Trường hợp không phản hồi đúng thời gian quy định\nsẽ không được tiếp nhận giải quyết;\nc) Khoa chuyên môn chịu trách nhiệm rà soát kết quả xét tốt nghiệp\ndự kiến của sinh viên và phản hồi về Phòng Đào tạo những sai sót về\nchuẩn xét tốt nghiệp (nếu có);\nd) Họp Hội đồng xét tốt nghiệp và ban hành Quyết định công nhận\ntốt nghiệp.\nTHÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:\n- Lịch/đợt thực hiện theo quy định: 6. Sinh viên đào tạo theo hình thức chính quy có 03 đợt xét tốt nghiệp chính thức, thường được tổ chức vào tháng 5, tháng 8 và tháng 10.\n- Lịch/đợt thực hiện theo quy định: 7. Sinh viên đào tạo theo hình thức vừa làm vừa học có 05 đợt xét tốt nghiệp chính thức, thường được tổ chức vào tháng 3, tháng 5, tháng 8, tháng 10 và tháng 12.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu15",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Công nhận tốt nghiệp và cấp bằng tốt nghiệp",
+        "source_pages": [
+          23,
+          24
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "scoring",
+        "source_id": "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation"
+      }
+    ]
+  },
+  {
+    "id": "v4_ans_mixed_018",
+    "case_type": "mixed_answer",
+    "cohort": "K51",
+    "user_input": "K51: Cho em thông tin liên hệ Phòng Thanh tra Đào tạo và quyền khiếu nại của sinh viên được quy định thế nào?",
+    "reference": "Structured evidence:\n{\n  \"unit\": \"Phòng Thanh tra Đào tạo\",\n  \"unit_name\": \"Phòng Thanh tra Đào tạo\",\n  \"summary\": \"Phòng Thanh tra Đào tạo phu trach: Tiếp nhận và giải quyết những phản ánh liên quan đến công tác đào tạo; Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên\",\n  \"phone\": \"(028) 38352020\",\n  \"phones\": [\n    \"(028) 38352020\"\n  ],\n  \"email\": \"phongthanhtra@hcmue.edu.vn\",\n  \"emails\": [\n    \"phongthanhtra@hcmue.edu.vn\"\n  ],\n  \"office\": \"Nhà A, tầng 2, P.209, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.\",\n  \"offices\": [\n    \"Nhà A, tầng 2, P.209, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.\"\n  ],\n  \"website\": \"phongttdt.hcmue.edu.vn\",\n  \"websites\": [\n    \"phongttdt.hcmue.edu.vn\"\n  ]\n}\n\nRegulation evidence:\nĐiều 15. Quyền khiếu nại\n1. Sinh viên có quyền khiếu nại nếu thấy việc đánh giá kết quả rèn\nluyện sinh viên chưa chính xác. Sinh viên gửi đơn khiếu nại về Phòng\nCTCT&HSSV trong vòng 07 ngày kể từ ngày công bố kết quả điểm rèn\nluyện đã được Hội đồng cấp Trường thông qua.\n2. Khi nhận được đơn khiếu nại của sinh viên, trong vòng 07 ngày,\nHội đồng cấp cơ sở và Hội đồng cấp Trường có nhiệm vụ giải quyết và\nphản hồi cho sinh viên theo quy định.",
+    "response": null,
+    "retrieved_contexts": [],
+    "expected_citations": [
+      {
+        "parent_section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu15",
+        "grade": 2,
+        "cohort": "K51",
+        "document_id": "so_tay_sinh_vien_khoa_51",
+        "content_type": "regulation_text",
+        "source_section": "Quyền khiếu nại",
+        "source_pages": [
+          96
+        ],
+        "anchor_source": "architecture_v4_human_auditable_source"
+      }
+    ],
+    "expected_structured_sources": [
+      {
+        "catalog": "office",
+        "source_id": "K51_phong_thanh_tra_dao_tao"
+      }
+    ]
+  }
+]

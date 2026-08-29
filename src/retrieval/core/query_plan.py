@@ -19,7 +19,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v8-domain-guard-single-task-identity"
+QUERY_PLAN_NORMALIZER_VERSION = "v9-bare-article-clarification"
 MAX_QUERY_TASKS = 3
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
 
@@ -42,6 +42,22 @@ _HANDBOOK_DOMAIN_PHRASES = (
     "tot nghiep",
 )
 
+_BARE_ARTICLE_QUESTION_WORDS = {
+    "co",
+    "dinh",
+    "dung",
+    "ghi",
+    "gi",
+    "la",
+    "nao",
+    "noi",
+    "nhu",
+    "quy",
+    "the",
+    "vay",
+    "ve",
+}
+
 
 def _fold_query(value: str) -> str:
     value = value.replace("đ", "d").replace("Đ", "D")
@@ -58,6 +74,28 @@ def _has_handbook_domain_signal(query: str) -> bool:
 
     folded = _fold_query(query)
     return any(phrase in folded for phrase in _HANDBOOK_DOMAIN_PHRASES)
+
+
+def _bare_article_reference(query: str) -> str | None:
+    """Return the article number when a query omits its document and topic.
+
+    Article numbers are document-local identities.  A selected handbook cohort
+    is therefore insufficient to resolve a query such as ``Điều 16 quy định
+    gì?`` because that cohort can contain several regulations with an Điều 16.
+    Keep this guard deliberately narrow: any non-generic word after the number
+    is treated as a document/title/topic signal and left to normal planning.
+    """
+
+    folded = _fold_query(query)
+    folded = re.sub(r"\bk(?:48|49|50|51)\b", " ", folded)
+    folded = re.sub(r"\s+", " ", folded).strip()
+    match = re.fullmatch(r"dieu\s+(\d+[a-z]?)\s*(.*)", folded)
+    if not match:
+        return None
+    remainder = match.group(2).split()
+    if remainder and any(word not in _BARE_ARTICLE_QUESTION_WORDS for word in remainder):
+        return None
+    return match.group(1)
 
 
 def query_plan_json_schema() -> dict[str, Any]:
@@ -215,6 +253,29 @@ def normalize_query_plan(
     registry = registry or load_lookup_registry()
     query_cohorts = extract_cohorts_from_query(query)
     default_cohort = query_cohorts[0] if len(query_cohorts) == 1 else selected_cohort
+    if article_number := _bare_article_reference(query):
+        cohorts = [normalize_cohort(default_cohort)] if default_cohort else []
+        return {
+            "schema_version": QUERY_PLAN_SCHEMA_VERSION,
+            "context_mode": "ambiguous",
+            "normalized_query": query,
+            "standalone_query": None,
+            "referenced_turns": [],
+            "out_of_domain": False,
+            "tasks": [
+                _clarify_task(
+                    "t1",
+                    query,
+                    cohorts=[value for value in cohorts if value],
+                    clarification=(
+                        f"Bạn muốn hỏi Điều {article_number} của văn bản/quy chế nào, "
+                        "hoặc về chủ đề cụ thể nào?"
+                    ),
+                )
+            ],
+            "planner_fallback": "bare_article_requires_document_or_topic",
+            "planner_validation_errors": [],
+        }, []
     if bool(payload.get("out_of_domain")) and _has_handbook_domain_signal(query):
         return legacy_rag_plan(
             query,

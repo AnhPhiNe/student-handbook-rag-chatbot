@@ -37,7 +37,7 @@ from .query_plan import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v31-operational-target-contract"
+ROUTER_PROMPT_VERSION = "structured-regulation-v32-ambiguity-contract"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -92,7 +92,7 @@ Tự kiểm tra route/mode, tool/intent, slot/span và cohort trước khi xuấ
 
 PLANNER_SYSTEM_PROMPT = """
 Lập QueryPlan cho Sổ tay HCMUE. Chỉ xuất JSON theo OUTPUT CONTRACT;
-không trả lời hay giải thích.
+không trả lời.
 
 1. NGỮ CẢNH
 - standalone không dùng history; follow_up chỉ ghép dữ liệu có thật, ghi
@@ -131,6 +131,8 @@ không trả lời hay giải thích.
   chính sách áp dụng nói chung. Không chọn structured chỉ vì trùng từ chủ đề.
 - clarify: thiếu slot TOOLS đánh dấu required hoặc tham chiếu thật sự mơ hồ;
   không clarify vì slot tùy chọn. Chỉ clarify task bị thiếu thông tin.
+- Điều thiếu văn bản/chủ đề, hoặc thuật ngữ đa nghĩa chưa rõ domain (như loại
+  cảnh báo): clarify.
 - Mọi RAG task dùng intent=open_question và lookup_type=null. Clarify task cũng
   có lookup_type=null. Chỉ đặt out_of_domain=true khi toàn bộ QUERY ngoài sổ tay;
   nếu QUERY trộn trong/ngoài phạm vi, giữ các target trong phạm vi và bỏ phần ngoài.

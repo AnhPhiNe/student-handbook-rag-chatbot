@@ -65,6 +65,47 @@ def test_query_plan_accepts_one_and_three_tasks() -> None:
     assert [task["id"] for task in three["tasks"]] == ["t1", "t2", "t3"]
 
 
+@pytest.mark.parametrize(
+    "query",
+    [
+        "Điều 16 quy định gì?",
+        "K51 Điều 16 nói gì vậy?",
+        "Điều 30 có nội dung gì?",
+    ],
+)
+def test_bare_article_reference_requires_document_or_topic(query: str) -> None:
+    plan, errors = normalize_query_plan(
+        _plan([_rag_task(1, query)]),
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert plan["context_mode"] == "ambiguous"
+    assert plan["planner_fallback"] == "bare_article_requires_document_or_topic"
+    assert plan["tasks"][0]["mode"] == "clarify"
+    assert "văn bản/quy chế nào" in plan["tasks"][0]["clarification_question"]
+
+
+@pytest.mark.parametrize(
+    "query",
+    [
+        "Điều 16 của Quy chế đào tạo quy định gì?",
+        "Điều 16 quy định việc nghỉ học tạm thời như thế nào?",
+    ],
+)
+def test_article_reference_with_document_or_topic_keeps_rag(query: str) -> None:
+    plan, errors = normalize_query_plan(
+        _plan([_rag_task(1, query)]),
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert plan["tasks"][0]["mode"] == "rag"
+    assert plan["tasks"][0]["question"] == query
+
+
 def test_cross_cohort_source_requires_validated_applicability() -> None:
     assert not is_validated_source_applicable(
         {"cohort": "K50", "applicable_cohorts": ["K51"]},
@@ -861,6 +902,17 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
         "content": "Điều 8. Nguồn liên quan được retrieval xếp trước.",
         "supports_task_ids": ["t1"],
     }
+    later_citations = [
+        {
+            "chunk_id": f"p{index}",
+            "source_parent_id": f"p{index}",
+            "cohort": "K51",
+            "article_label": f"Điều {index}",
+            "content": f"Điều {index}. Nguồn hợp lệ xuất hiện muộn.",
+            "supports_task_ids": ["t1"],
+        }
+        for index in range(3, 13)
+    ]
     retrieval_result = {
         "query_plan": plan,
         "task_results": [
@@ -886,6 +938,7 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
                 "metadata": {"cohort": "K51", "supports_task_ids": ["t1"]},
             }
         ],
+        "evidence_citations": [unanchored_citation, citation, *later_citations],
         "citations": [unanchored_citation, citation],
         "needs_clarification": False,
         "out_of_domain": False,
@@ -952,11 +1005,12 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
     )
 
     assert captured == [
-        [unanchored_citation, citation],
-        [unanchored_citation, citation],
+        [unanchored_citation, citation, *later_citations],
+        [unanchored_citation, citation, *later_citations],
     ]
     assert stream_answer == sync_output["answer"]
-    assert [item["source_parent_id"] for item in sync_output["citations_used"]] == [
+    assert len(sync_output["citations_used"]) == 10
+    assert [item["source_parent_id"] for item in sync_output["citations_used"][:2]] == [
         "p1",
         "p2",
     ]
@@ -965,9 +1019,7 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
     stream_done = next(
         event for event in stream_events if event.get("type") == "done"
     )
-    assert [
-        item["source_parent_id"] for item in stream_done["citations_used"]
-    ] == ["p1", "p2"]
+    assert stream_done["citations_used"] == sync_output["citations_used"]
     assert "**Kết luận:**" in stream_answer
     assert "Điều 16" in stream_answer
 

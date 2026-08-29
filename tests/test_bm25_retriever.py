@@ -177,3 +177,67 @@ def test_bm25_matches_full_name_from_safe_generated_acronym(tmp_path) -> None:
 
     assert results
     assert results[0][1]["chunk_id"] == "expected"
+
+
+def test_bm25_prioritizes_exact_parent_title_over_incidental_terms(tmp_path) -> None:
+    retriever = BM25Retriever(
+        vocabulary_path=tmp_path / "missing.yaml",
+        program_directory_path=tmp_path / "missing.json",
+    )
+    expected = _chunk(
+        "expected",
+        "Quy định chi tiết được trình bày tại các khoản dưới đây.",
+        cohort="K50",
+    )
+    expected["metadata"].update(
+        {
+            "title": "Lập dự toán, chi trả kinh phí hỗ trợ",
+            "document_title": "Nghị định về chính sách hỗ trợ sinh viên sư phạm",
+        }
+    )
+    incidental = _chunk(
+        "incidental",
+        "Sinh viên được hỗ trợ và đơn vị lập kế hoạch chi trả theo dự toán chung.",
+        cohort="K50",
+    )
+    retriever.build_bm25_index(
+        [
+            incidental,
+            expected,
+            _chunk("other-1", "Quy định đăng ký học tập.", cohort="K50"),
+            _chunk("other-2", "Quy định đánh giá rèn luyện.", cohort="K50"),
+        ]
+    )
+
+    results = retriever.search_bm25(
+        "lập dự toán chi trả kinh phí hỗ trợ",
+        top_k=4,
+    )
+
+    assert results[0][1]["chunk_id"] == "expected"
+
+
+def test_bm25_title_priority_is_accent_insensitive(tmp_path) -> None:
+    retriever = BM25Retriever(
+        vocabulary_path=tmp_path / "missing.yaml",
+        program_directory_path=tmp_path / "missing.json",
+    )
+    expected = _chunk(
+        "expected",
+        "Nội dung chi tiết.",
+        cohort="K48-K49",
+    )
+    expected["metadata"]["title"] = "Hình thức đào tạo"
+    distractor = _chunk(
+        "distractor",
+        "Hình thức xử lý và chương trình đào tạo có nhiều nội dung liên quan.",
+        cohort="K48-K49",
+    )
+    retriever.build_bm25_index([distractor, expected])
+
+    results = retriever.search_bm25(
+        "hinh thuc dao tao duoc quy dinh the nao",
+        top_k=2,
+    )
+
+    assert results[0][1]["chunk_id"] == "expected"

@@ -1,5 +1,6 @@
 import logging
 import re
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +21,30 @@ except ModuleNotFoundError:
     underthesea = None
 
 logger = logging.getLogger(__name__)
+
+
+def _fold_text(value: str) -> str:
+    value = value.replace("đ", "d").replace("Đ", "D")
+    value = "".join(
+        character
+        for character in unicodedata.normalize("NFD", value)
+        if unicodedata.category(character) != "Mn"
+    )
+    return " ".join(re.findall(r"[a-z0-9]+", value.casefold()))
+
+
+def title_query_match_priority(query: str, chunk: dict[str, Any]) -> int:
+    """Return a conservative lexical priority for an explicit section title."""
+
+    metadata = chunk.get("metadata") or {}
+    title = _fold_text(
+        str(metadata.get("title") or metadata.get("source_section") or "")
+    )
+    query_text = _fold_text(query)
+    # Single-token headings such as "Quyền" are too broad to be anchors.
+    if len(title.split()) < 2:
+        return 0
+    return int(bool(title and re.search(rf"(?:^| )({re.escape(title)})(?: |$)", query_text)))
 
 
 class BM25Retriever:
@@ -123,9 +148,24 @@ class BM25Retriever:
 
     def build_bm25_index(self, chunks: list[dict[str, Any]]):
         self.chunks = chunks
-        corpus_tokens = [self._tokenize(str(chunk.get("content") or "")) for chunk in self.chunks]
+        corpus_tokens = [self._tokenize(self._index_text(chunk)) for chunk in self.chunks]
         self.bm25_index = BM25Okapi(corpus_tokens)
         logger.info(f"BM25 index built with {len(self.chunks)} chunks.")
+
+    @staticmethod
+    def _index_text(chunk: dict[str, Any]) -> str:
+        """Build a field-aware lexical document without changing result payloads."""
+
+        metadata = chunk.get("metadata") or {}
+        title = str(metadata.get("title") or metadata.get("source_section") or "").strip()
+        article = str(metadata.get("article") or "").strip()
+        document_title = str(metadata.get("document_title") or "").strip()
+        content = str(chunk.get("content") or "")
+        # Repeating the short section title gives an explicit article-topic match
+        # more weight than incidental terms inside a long clause. Document title
+        # disambiguates repeated headings across different regulations.
+        fields = [title, title, title, article, document_title, content]
+        return "\n".join(field for field in fields if field)
 
     def search_bm25(self, query: str, top_k: int = 24) -> list[tuple[float, dict[str, Any]]]:
         if not self.bm25_index or not self.chunks:
@@ -138,8 +178,18 @@ class BM25Retriever:
         scored_chunks = [(float(score), dict(chunk)) for score, chunk in zip(scores, self.chunks)]
         
         # Filter zero scores and sort
-        scored_chunks = [sc for sc in scored_chunks if sc[0] > 0.0]
-        scored_chunks.sort(key=lambda x: x[0], reverse=True)
+        scored_chunks = [
+            item
+            for item in scored_chunks
+            if item[0] > 0.0 or title_query_match_priority(query, item[1])
+        ]
+        scored_chunks.sort(
+            key=lambda item: (
+                title_query_match_priority(query, item[1]),
+                item[0],
+            ),
+            reverse=True,
+        )
         return scored_chunks[:top_k]
 
     def sparse_search(

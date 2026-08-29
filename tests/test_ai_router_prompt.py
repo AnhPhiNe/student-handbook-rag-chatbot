@@ -59,7 +59,7 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     )
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v31-operational-target-contract"
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v32-ambiguity-contract"
 
 
 def test_plan_cache_key_includes_normalizer_version(monkeypatch, tmp_path: Path) -> None:
@@ -341,6 +341,29 @@ def test_router_normalization_infers_program_list_scope_from_faculty_query() -> 
     )
 
     assert decision["slots"]["scope"] == "faculty"
+
+
+def test_router_normalization_grounds_student_service_in_full_query() -> None:
+    query = "Tài khoản sinh viên bị lỗi thì đơn vị nào hỗ trợ?"
+    decision = normalize_router_decision(
+        {
+            "route": "structured",
+            "execution_mode": "structured",
+            "intent": "contact",
+            "lookup_type": "student_service",
+            "slots": {
+                "service": "hỗ trợ lỗi tài khoản",
+                "requested_field": "unit",
+            },
+            "slot_spans": {"service": "hỗ trợ lỗi tài khoản"},
+        },
+        query=query,
+        selected_cohort="K48-K49",
+    )
+
+    assert decision["slots"]["service"] == query
+    assert decision["slot_spans"]["service"] == query
+    assert decision["slots"]["requested_field"] == "unit"
     assert validate_router_decision(
         decision,
         query=query,

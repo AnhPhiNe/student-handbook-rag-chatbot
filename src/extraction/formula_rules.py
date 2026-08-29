@@ -1,3 +1,4 @@
+import re
 from typing import Any
 
 from .text_utils import source_page_range
@@ -103,6 +104,8 @@ def extract_formula_rules(sections: list[dict[str, Any]]) -> list[dict[str, Any]
         lower_content = content.lower()
         pages = source_page_range(section["page_start"], section["page_end"])
 
+        source_parent_id = section.get("section_id")
+
         if article == "Điều 11." and "điểm trung bình" in lower_content:
             formulas.append(
                 {
@@ -119,12 +122,18 @@ def extract_formula_rules(sections: list[dict[str, Any]]) -> list[dict[str, Any]
                     "source_article": article,
                     "source_title": section.get("title"),
                     "source_pages": pages,
+                    "source_parent_id": source_parent_id,
                     "review_status": "needs_human_verified",
                     "raw_excerpt": content[:1500],
                 }
             )
 
-        if article == "Điều 28." and "điểm học bổng" in lower_content:
+        scholarship_formula_present = (
+            "điểm học bổng" in lower_content
+            and re.search(r"điểm\s+học\s+bổng\s*=", lower_content) is not None
+            and all(token in lower_content for token in ("80", "25", "20", "100"))
+        )
+        if scholarship_formula_present:
             formulas.append(
                 {
                     "rule_id": "scholarship_score",
@@ -139,6 +148,7 @@ def extract_formula_rules(sections: list[dict[str, Any]]) -> list[dict[str, Any]
                     "source_article": article,
                     "source_title": section.get("title"),
                     "source_pages": pages,
+                    "source_parent_id": source_parent_id,
                     "review_status": "needs_human_verified",
                     "raw_excerpt": content[:1800],
                 }

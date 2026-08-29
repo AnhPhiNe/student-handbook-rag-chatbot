@@ -17,11 +17,28 @@ def formula_lookup(
     if cohort:
         formula_rules = [r for r in formula_rules if is_cohort_applicable(r, cohort)]
 
+    ascii_query = _ascii_text(query)
+    explicit_rule_ids = _requested_rule_ids(ascii_query, formula_rules)
+    if len(explicit_rule_ids) > 1 and _asks_for_multiple_formulas(ascii_query):
+        matched = [
+            result
+            for rule_id in explicit_rule_ids
+            if (result := _find_formula(formula_rules, rule_id)) is not None
+        ]
+        if len(matched) > 1:
+            return {
+                "lookup_type": "multi_formula",
+                "formula_count": len(matched),
+                "result": matched,
+                "sub_lookups": matched,
+                "cohort": cohort,
+                "content_type": "multi_formula",
+            }
+
     if slots:
         formula_type = str(slots.get("formula_type") or "").strip()
         return _find_formula_by_data(formula_rules, formula_type)
 
-    ascii_query = _ascii_text(query)
     if not _asks_for_formula(ascii_query):
         return None
 
@@ -82,15 +99,13 @@ def _find_formula(
                 "cohort": rule.get("cohort"),
                 "document_id": rule.get("document_id"),
                 "source_section": rule.get("source_section"),
+                "source_parent_id": rule.get("source_parent_id"),
                 "content_type": rule.get("content_type") or "formula_rule",
             }
     return None
 
 
 def _preferred_rule_id(ascii_query: str) -> str | None:
-    if "hoc bong" in ascii_query:
-        return "scholarship_score"
-
     if (
         "gpa" in ascii_query
         or "diem trung binh" in ascii_query
@@ -100,7 +115,38 @@ def _preferred_rule_id(ascii_query: str) -> str | None:
     ):
         return "gpa_weighted_average"
 
+    if "hoc bong" in ascii_query:
+        return "scholarship_score"
+
     return None
+
+
+def _requested_rule_ids(
+    ascii_query: str,
+    formula_rules: list[dict[str, Any]],
+) -> list[str]:
+    """Return every formula family explicitly named by the user.
+
+    The planner normally creates one task per formula. This deterministic
+    completeness guard preserves multi-formula requests when a provider emits
+    one combined structured task.
+    """
+
+    requested: list[str] = []
+    for rule in formula_rules:
+        rule_id = str(rule.get("rule_id") or "").strip()
+        if not rule_id or rule_id in requested:
+            continue
+        folded_id = _ascii_text(rule_id.replace("_", " "))
+        folded_name = _ascii_text(str(rule.get("rule_name") or ""))
+        aliases = {folded_id, folded_name}
+        if "gpa" in folded_id:
+            aliases.update({"gpa", "diem trung binh", "diem tbc"})
+        if "scholarship" in folded_id or "hoc bong" in folded_name:
+            aliases.update({"hoc bong", "diem hoc bong"})
+        if any(alias and alias in ascii_query for alias in aliases):
+            requested.append(rule_id)
+    return requested
 
 
 def _asks_for_formula(ascii_query: str) -> bool:
@@ -113,6 +159,13 @@ def _asks_for_formula(ascii_query: str) -> bool:
         "tinh ra sao",
     ]
     return any(term in ascii_query for term in formula_terms)
+
+
+def _asks_for_multiple_formulas(ascii_query: str) -> bool:
+    return bool(
+        re.search(r"\b(?:cac|nhung|hai)\s+cong thuc\b", ascii_query)
+        or re.search(r"\bcong thuc\b.*\b(?:va|voi)\b", ascii_query)
+    )
 
 
 def _ascii_text(text: str) -> str:

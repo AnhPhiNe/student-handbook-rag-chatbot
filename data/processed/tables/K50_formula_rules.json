@@ -25,7 +25,8 @@
     "document_id": "so_tay_sinh_vien_khoa_50",
     "cohort": "K50",
     "source_section": "formula_rule",
-    "content_mode": "structured_only"
+    "content_mode": "structured_only",
+    "source_parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu11"
   },
   {
     "rule_id": "scholarship_score",
@@ -37,20 +38,22 @@
       "diem_hoc_tap": "Điểm học tập theo thang điểm 4",
       "diem_ren_luyen": "Điểm rèn luyện theo thang điểm 100"
     },
-    "source_article": "Điều 28.",
-    "source_title": "Trình tự và thủ tục xét cấp học bổng",
+    "source_article": "Điều 27.",
+    "source_title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
     "source_pages": [
-      73,
-      74
+      71,
+      72,
+      73
     ],
     "review_status": "needs_human_verified",
-    "raw_excerpt": "Điều 28. Trình tự và thủ tục xét cấp học bổng\n1. Căn cứ vào quỹ HBKKHT toàn Trường đã xác lập và căn cứ theo\ntỉ lệ số sinh viên của từng khoa, phân hiệu, từng khóa, từng ngành học,\nPhòng CTCT&HSSV phối hợp Phòng Kế hoạch – Tài chính xác định quỹ\nHBKKHT của từng ngành học cụ thể ứng với khóa học tương ứng.\n2. Để xét học bổng, CVHT họp lớp đánh giá kết quả rèn luyện của\nsinh viên, khoa hoặc phân hiệu xem xét kết quả và nhập điểm rèn luyện\nvào phần mềm, nộp bảng tổng hợp đánh giá kết quả rèn luyện về Phòng\nCTCT&HSSV theo thời gian quy định.\n3. Căn cứ vào kết quả cập nhật điểm và khóa điểm do Phòng Khảo\nthí và Đảm bảo chất lượng thực hiện, Phòng CTCT&HSSV đối chiếu và\nsử dụng làm cơ sở để xét học bổng.\n4. Học bổng được phân bổ theo thứ tự điểm học bổng giảm dần từ\ncao xuống thấp cho đến hết quỹ học bổng của mỗi ngành học của một\nkhóa học cụ thể.\na) Trường hợp sinh viên có điểm học bổng bằng nhau và kinh phí\nkhông đủ cấp cho tất cả, Trường sẽ ưu tiên xét cấp cho sinh viên có điểm\nhọc tập cao hơn;\nb) Trường hợp có những sinh viên có điểm học tập và điểm rèn\nluyện bằng nhau, Phòng CTCT&HSSV sẽ phân bổ học bổng theo tỉ lệ số\ntín chỉ. Trường hợp tất cả sinh viên đủ điều kiện trong một ngành học đã\nnhận đủ học bổng mà quỹ còn dư, Phòng CTCT&HSSV sẽ điều phối\nnguồn quỹ này cho các ngành học/khoa khác có sinh viên đủ tiêu chuẩn\ncho đến khi hết nguồn quỹ HBKKHT của toàn Trường.\n5. Việc chi trả HBKKHT theo quyết định của Hiệu trưởng qua tài khoản\ncá nhân sinh viên đã đăng ký do Phòng Kế hoạch – Tài chính thực hiện.",
+    "raw_excerpt": "Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên hệ chính quy tại Trường theo kế hoạch đào tạo\ncủa khóa học; không xét HBKKHT đối với sinh viên quá thời gian học\ntập chuẩn được quy định tại khoản 6 Điều 3 Quy chế đào tạo trình độ đại\nhọc chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021\ncủa Hiệu trưởng (đối với sinh viên đào tạo trình độ đại học) hoặc tại\nkhoản 6 Điều 3 Quy chế đào tạo trình độ cao đẳng ngành Giáo dục Mầm\nnon tại phân hiệu của Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 3533/QĐ-ĐHSP ngày 07/12/2023\ncủa Hiệu trưởng (đối với sinh viên đào tạo trình độ cao đẳng ngành Giáo\ndục Mầm non);\nb) Trong học kỳ, sinh viên có kết quả học tập, rèn luyện từ loại khá\ntrở lên, không bị kỷ luật từ mức khiển trách trở lên sẽ được xem xét, cấp\nHBKKHT trong phạm vi quỹ HBKKHT của Trường;\nc) Tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn\nhoặc bằng 15 tín chỉ theo kế hoạch trong CTĐT của khóa học (không bao\ngồm các tín chỉ trả nợ, cải thiện, tương đương,… Tất cả các tín chỉ đều\nphải đạt). Các khoa và phân hiệu xây dựng chương trình học phù hợp và\nCVHT cần tư vấn, hướng dẫn sinh viên xây dựng lịch học đảm bảo quyền\nlợi cho sinh viên;\nd) Đối với sinh viên năm cuối, học bổng được xét:\n– Quy định xét học bổng đối với học kỳ I thực hiện theo điểm a, b, c\nkhoản 1 Điều này.\n– Quy định xét học bổng đối với học kỳ II:\n+ Sinh viên đăng ký từ 6 tín chỉ trở lên;\n+ Trình tự xét HBKKHT cho sinh viên năm cuối theo thứ tự các đối\ntượng như sau:\n Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện xuất sắc.\n Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện",
     "content_type": "formula_rule",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
     "document_id": "so_tay_sinh_vien_khoa_50",
     "cohort": "K50",
     "source_section": "formula_rule",
-    "content_mode": "structured_only"
+    "content_mode": "structured_only",
+    "source_parent_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27"
   }
 ]

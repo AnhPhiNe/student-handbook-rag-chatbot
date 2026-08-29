@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 from typing import Any
 
 from src.common.cohort import is_cohort_applicable, normalize_cohort
@@ -105,6 +106,92 @@ def _bind_regulation_source(
     bound["source_section"] = source_parent_ids[0]
     if len({str(table.get("document_id") or "") for table in candidates}) == 1:
         bound["document_id"] = candidates[0].get("document_id")
+    bound["source_pages"] = sorted(
+        {
+            page
+            for table in candidates
+            for page in table.get("source_pages") or []
+        }
+    )
+    return bound
+
+
+def _formula_article_number(result: dict[str, Any]) -> str | None:
+    match = re.search(r"\bĐiều\s+(\d+)\b", str(result.get("source_article") or ""), re.IGNORECASE)
+    return match.group(1) if match else None
+
+
+def _bind_formula_source(
+    result: dict[str, Any] | None,
+    registry: list[dict[str, Any]],
+    *,
+    cohort: str | None,
+) -> dict[str, Any] | None:
+    """Bind formula provenance by canonical parent identity.
+
+    Formula type or planner slots are not source identities. Prefer the parent
+    ID emitted by extraction; use document/article only as a legacy fallback
+    when that pair resolves to exactly one parent.
+    """
+
+    if result is None:
+        return None
+    sub_lookups = result.get("sub_lookups")
+    if isinstance(sub_lookups, list) and sub_lookups:
+        bound_sub_lookups = []
+        for item in sub_lookups:
+            if not isinstance(item, dict):
+                continue
+            bound_item = _bind_formula_source(item, registry, cohort=cohort)
+            if bound_item is not None:
+                bound_sub_lookups.append(bound_item)
+        bound = dict(result)
+        bound["sub_lookups"] = bound_sub_lookups
+        bound["result"] = bound_sub_lookups
+        bound["formula_count"] = len(bound_sub_lookups)
+        return bound
+
+    document_id = str(result.get("document_id") or "").strip()
+    declared_parent_id = str(result.get("source_parent_id") or "").strip()
+    if declared_parent_id:
+        candidates = [
+            table
+            for table in registry
+            if str(table.get("source_parent_id") or table.get("source_section_id") or "")
+            == declared_parent_id
+            and is_cohort_applicable(table, cohort)
+        ]
+    else:
+        article_number = _formula_article_number(result)
+        if not article_number or not document_id:
+            return result
+        article_pattern = re.compile(
+            rf"(?:^|_)Dieu{re.escape(article_number)}(?:_|$)",
+            re.IGNORECASE,
+        )
+        candidates = [
+            table
+            for table in registry
+            if str(table.get("document_id") or "") == document_id
+            and is_cohort_applicable(table, cohort)
+            and article_pattern.search(
+                str(table.get("source_parent_id") or table.get("source_section_id") or "")
+            )
+        ]
+    parent_ids = list(
+        dict.fromkeys(
+            str(table.get("source_parent_id") or table.get("source_section_id") or "")
+            for table in candidates
+            if table.get("source_parent_id") or table.get("source_section_id")
+        )
+    )
+    if len(parent_ids) != 1:
+        return result
+
+    bound = dict(result)
+    bound["source_parent_ids"] = parent_ids
+    bound["source_parent_id"] = parent_ids[0]
+    bound["source_section"] = parent_ids[0]
     bound["source_pages"] = sorted(
         {
             page
@@ -584,22 +671,11 @@ def _resolve_single_lookup(
             cohort=effective_cohort,
             slots=slots,
         )
-        formula_type = str(slots.get("formula_type") or "")
-        if formula_type == "scholarship_score":
-            result = _bind_regulation_source(
-                result,
-                structured_tables_registry,
-                cohort=effective_cohort,
-                table_type="scholarship",
-            )
-        else:
-            result = _bind_regulation_source(
-                result,
-                structured_tables_registry,
-                cohort=effective_cohort,
-                table_type="scoring",
-                subtypes={"academic_classification"},
-            )
+        result = _bind_formula_source(
+            result,
+            structured_tables_registry,
+            cohort=effective_cohort,
+        )
         return _resolution(
             lookup_type,
             "formula_lookup",

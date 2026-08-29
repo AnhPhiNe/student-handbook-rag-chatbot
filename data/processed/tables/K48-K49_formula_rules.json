@@ -25,7 +25,8 @@
     "document_id": "so_tay_sinh_vien_khoa_48_49",
     "cohort": "K48-K49",
     "source_section": "formula_rule",
-    "content_mode": "structured_only"
+    "content_mode": "structured_only",
+    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11"
   },
   {
     "rule_id": "scholarship_score",
@@ -51,6 +52,7 @@
     "document_id": "so_tay_sinh_vien_khoa_48_49",
     "cohort": "K48-K49",
     "source_section": "formula_rule",
-    "content_mode": "structured_only"
+    "content_mode": "structured_only",
+    "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28"
   }
 ]

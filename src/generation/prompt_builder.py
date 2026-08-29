@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import json
+import re
+import unicodedata
 from typing import Any
 
+from src.common.cohort import is_validated_source_applicable
 from src.common.legal_reference import article_label_from_heading, normalize_article_label
 
 from .amendment_precedence import (
@@ -14,7 +17,7 @@ from .context_allocation import ContextAllocationConfig
 
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.11-polarity-entailment"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.16-unit-first-evidence-budget"
 
 
 def build_answer_prompt(
@@ -54,15 +57,18 @@ QUY TẮC BẮT BUỘC
 3. Với mỗi kết luận, phải giữ đúng phạm vi ngữ nghĩa mà nguồn trực tiếp xác lập: đối tượng, hành vi, kết quả được áp dụng, điều kiện và hệ quả. Không chuyển thông tin giữa các khái niệm gần nghĩa hoặc coi chúng là cùng một cơ chế nếu nguồn không trực tiếp xác lập điều đó.
 4. Không coi hai khái niệm là tương đương hoặc là tên gọi thay thế, kể cả khi đặt trong ngoặc, trừ khi nguồn trực tiếp định nghĩa như vậy. Nếu yêu cầu hoặc evidence có nhiều cơ chế hay phạm vi, hãy gọi tên và trình bày riêng từng phần, giữ đúng điều kiện và ngoại lệ tương ứng.
 5. Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp, hãy trình bày rõ từng trường hợp có căn cứ và nêu thông tin còn thiếu để xác định trường hợp của người dùng; không tự đoán hoặc trả lời có/không tuyệt đối.
-6. Khi primary evidence có article_label, nêu đúng article_label tại phần kết luận mà nguồn đó trực tiếp hỗ trợ. Không tự tạo Điều/khoản/điểm và không liệt kê các nguồn không được dùng để trả lời.
+6. Khi evidence có article_label, nêu đúng article_label tại phần kết luận mà nguồn đó trực tiếp hỗ trợ. Không tự tạo Điều/khoản/điểm và không liệt kê các nguồn không được dùng để trả lời.
 7. Với câu hỏi có/không, chỉ được trả lời có/không khi evidence trực tiếp cho phép hoặc cấm đúng hành vi/kết quả được hỏi. Lịch, thời hạn, điều kiện, quy trình, yêu cầu phê duyệt và việc nguồn không nói "được phép" đều không đủ để suy ra lệnh cấm. Nếu thiếu căn cứ trực tiếp, bắt buộc nói "Sổ tay chưa nêu trực tiếp..." rồi chỉ trình bày thông tin liên quan mà nguồn thực sự xác lập.
 8. Nếu evidence chỉ gần chủ đề hoặc không đủ cho một phần, hãy nói rõ phần đó chưa tìm thấy căn cứ; trả lời partial hoặc abstain, không đổi câu hỏi sang khái niệm gần nghĩa.
 9. Nếu nguồn chỉ dẫn chiếu sang văn bản khác mà không trực tiếp liệt kê đối tượng, điều kiện hoặc giá trị được hỏi, phải nói rõ nguồn hiện có không liệt kê nội dung đó và nêu văn bản được dẫn chiếu; không trình bày câu dẫn chiếu như thể đã trả lời danh sách.
+10. Khi evidence có role=target, phải bao quát đủ các khoản/ý trực tiếp của target. Nếu chỉ có role=candidate, trả lời thận trọng trong phạm vi evidence và không biến mục gần nghĩa thành target mới.
 
 QUY CÁCH
 - Không dùng kiến thức ngoài AUTHORIZED_EVIDENCE_BY_UNIT.
 - Không chèn mã nguồn như [S1] vào câu trả lời; giao diện hiển thị nguồn riêng.
 - Với đơn vị mode=structured, chỉ nêu kết quả trực tiếp và giải thích cần thiết; không sao chép toàn bộ bảng, danh mục hoặc structured JSON vào Markdown vì giao diện đã hiển thị dữ liệu đó riêng.
+- Nếu structured evidence có resolved_result, phải sao chép chính xác kết quả đó; không tự chọn lại hàng hoặc tính lại từ bảng đầy đủ.
+- Mọi số liệu phải lấy nguyên từ evidence đúng cohort của đơn vị; không tính lại, nội suy hoặc chuyển số liệu từ cohort khác.
 - Dùng Markdown có chọn lọc: in đậm kết luận chính, số liệu, thời hạn và điều kiện quan trọng; dùng danh sách khi có nhiều bước, điều kiện hoặc trường hợp. Không in đậm cả đoạn.
 - Với coverage=needs_clarification, chỉ nêu clarification_question của đơn vị đó.
 - Với coverage=uncovered hoặc không có source_ref được phép, nói chưa tìm thấy căn cứ cho đúng ý đó.
@@ -77,8 +83,6 @@ Câu hỏi gốc: {query}
 
 Các đơn vị bắt buộc phải xử lý theo đúng thứ tự:
 {_to_pretty_json(required_units)}
-
-KIỂM TRA CUỐI BẮT BUỘC: Nếu câu trả lời sắp mở đầu bằng một kết luận có/không, hãy xác nhận primary_evidence có quy định trực tiếp đúng hành vi/kết quả đó. Nếu không, thay kết luận có/không bằng "Sổ tay chưa nêu trực tiếp..."; không dùng sự vắng mặt của quy định, lịch, điều kiện hay thủ tục để suy ra cho phép/cấm.
 
 Chỉ xuất câu trả lời cuối cùng cho sinh viên."""
 
@@ -100,17 +104,36 @@ def build_authorized_evidence_packet(
         fallback_cohort=fallback_cohort,
         fallback_question=query,
     )
-    per_source_chars = _source_content_budget(
-        max_context_chars=max_context_chars,
-        source_count=max(1, len(sources)),
-    )
-
-    packet_units: list[dict[str, Any]] = []
+    source_groups: list[list[dict[str, Any]]] = []
     for unit in units:
         authorized_sources = [
-            _source_for_unit(source, unit, per_source_chars)
+            source
             for source in sources
             if _source_supports_unit(source, unit)
+        ]
+        authorized_sources = _assign_evidence_roles(
+            authorized_sources,
+            unit_question=unit["question"],
+            original_query=query,
+        )
+        source_groups.append(authorized_sources)
+
+    source_budgets = _allocate_source_content_budgets(
+        units,
+        source_groups,
+        max_context_chars=max_context_chars,
+    )
+    packet_units: list[dict[str, Any]] = []
+    for unit, authorized_sources, budgets in zip(
+        units,
+        source_groups,
+        source_budgets,
+        strict=True,
+    ):
+        authorized_sources = [
+            rendered
+            for source, budget in zip(authorized_sources, budgets, strict=True)
+            if (rendered := _source_for_unit(source, unit, budget))["content"]
         ]
         amendments = collect_applicable_amendments(
             retrieval_result,
@@ -177,9 +200,14 @@ def build_prompt(
 
 def limit_context(context: str, max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS) -> str:
     context = (context or "").strip()
+    if max_context_chars <= 0:
+        return ""
     if len(context) <= max_context_chars:
         return context
-    return context[:max_context_chars].rstrip() + "\n\n[Evidence đã được rút gọn.]"
+    marker = "\n\n[Evidence đã được rút gọn.]"
+    if max_context_chars <= len(marker):
+        return context[:max_context_chars]
+    return context[: max_context_chars - len(marker)].rstrip() + marker
 
 
 def _resolve_primary_citations(
@@ -315,8 +343,17 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
         "source_id": source_id,
         "title": citation.get("title") or metadata.get("title"),
         "article_label": article_label,
-        "source_cohort": citation.get("cohort") or metadata.get("cohort"),
+        "source_cohort": (
+            citation.get("source_cohort")
+            or metadata.get("source_cohort")
+            or citation.get("cohort")
+            or metadata.get("cohort")
+        ),
         "applicable_cohorts": [str(value) for value in applicable_cohorts],
+        "applicability_validated": bool(
+            citation.get("applicability_validated")
+            or metadata.get("applicability_validated")
+        ),
         "applicability": citation.get("applicability") or metadata.get("applicability"),
         "source_pages": citation.get("source_pages") or metadata.get("source_pages") or [],
         "supports_task_ids": [str(task_id) for task_id in supports_task_ids],
@@ -337,11 +374,66 @@ def _source_supports_unit(source: dict[str, Any], unit: dict[str, Any]) -> bool:
     if task_id != "legacy" and task_id not in supports_task_ids:
         return False
 
-    # Task binding is authoritative. Cohort filtering becomes strict only when
-    # runtime exposes explicit applicability metadata; a K50-authored policy
-    # may legitimately apply to K51.
-    applicable_cohorts = source["applicable_cohorts"]
-    return not applicable_cohorts or unit["cohort"] in applicable_cohorts
+    target_cohort = None if unit["cohort"] == "default" else unit["cohort"]
+    return is_validated_source_applicable(source, target_cohort)
+
+
+def _assign_evidence_roles(
+    sources: list[dict[str, Any]],
+    *,
+    unit_question: str,
+    original_query: str,
+) -> list[dict[str, Any]]:
+    """Mark one deterministic exact target without treating rank as authority."""
+
+    query_text = _fold_text(f"{unit_question} {original_query}")
+    article_numbers = set(re.findall(r"\bdieu\s+(\d+)\b", query_text))
+    article_matches = [
+        index
+        for index, source in enumerate(sources)
+        if _article_number(source.get("article_label")) in article_numbers
+    ]
+    title_match_lengths = [
+        _exact_title_match_length(source.get("title"), query_text)
+        for source in sources
+    ]
+    longest_title_match = max(title_match_lengths, default=0)
+    title_matches = [
+        index
+        for index, match_length in enumerate(title_match_lengths)
+        if longest_title_match and match_length == longest_title_match
+    ]
+
+    target_index: int | None = None
+    if len(article_matches) == 1:
+        target_index = article_matches[0]
+    elif len(title_matches) == 1:
+        target_index = title_matches[0]
+
+    if target_index is None:
+        return [{**source, "role": "candidate"} for source in sources]
+    return [{**sources[target_index], "role": "target"}]
+
+
+def _fold_text(value: Any) -> str:
+    text = unicodedata.normalize("NFD", str(value or "").casefold())
+    text = "".join(character for character in text if not unicodedata.combining(character))
+    text = text.replace("đ", "d")
+    return " ".join(re.sub(r"[^a-z0-9]+", " ", text).split())
+
+
+def _article_number(article_label: Any) -> str | None:
+    match = re.search(r"\bdieu\s+(\d+)\b", _fold_text(article_label))
+    return match.group(1) if match else None
+
+
+def _exact_title_match_length(title: Any, query_text: str) -> int:
+    title_text = _fold_text(title)
+    title_text = re.sub(r"^dieu\s+\d+\s+", "", title_text).strip()
+    token_count = len(title_text.split())
+    if token_count < 2 or f" {title_text} " not in f" {query_text} ":
+        return 0
+    return token_count
 
 
 def _source_for_unit(
@@ -357,9 +449,7 @@ def _source_for_unit(
     JSON/table representation.
     """
 
-    content = source["content"]
-    if unit.get("mode") == "rag" and source.get("parent_content"):
-        content = source["parent_content"]
+    content = _source_content_for_unit(source, unit)
     return {
         key: value
         for key, value in {
@@ -370,9 +460,103 @@ def _source_for_unit(
     }
 
 
-def _source_content_budget(*, max_context_chars: int, source_count: int) -> int:
-    usable = max(1000, int(max_context_chars) * 3 // 4)
-    return max(1000, usable // max(1, source_count))
+def _source_content_for_unit(source: dict[str, Any], unit: dict[str, Any]) -> str:
+    if unit.get("mode") == "rag" and source.get("parent_content"):
+        return str(source["parent_content"])
+    return str(source.get("content") or "")
+
+
+def _allocate_source_content_budgets(
+    units: list[dict[str, Any]],
+    source_groups: list[list[dict[str, Any]]],
+    *,
+    max_context_chars: int,
+) -> list[list[int]]:
+    """Protect exact targets, then share candidate budget by unit and source."""
+
+    usable = max(0, int(max_context_chars) * 3 // 4)
+    budgets = [[0 for _ in sources] for sources in source_groups]
+    target_entries: list[tuple[int, int, int]] = []
+    candidate_entries_by_unit: list[list[tuple[int, int]]] = []
+    for unit_index, (unit, sources) in enumerate(
+        zip(units, source_groups, strict=True)
+    ):
+        unit_candidates: list[tuple[int, int]] = []
+        for source_index, source in enumerate(sources):
+            content_length = len(_source_content_for_unit(source, unit))
+            if source.get("role") == "target":
+                target_entries.append((unit_index, source_index, content_length))
+            else:
+                unit_candidates.append((source_index, content_length))
+        candidate_entries_by_unit.append(unit_candidates)
+
+    target_allocations = _fair_allocations(
+        [length for _, _, length in target_entries],
+        usable,
+    )
+    for (unit_index, source_index, _), allocation in zip(
+        target_entries,
+        target_allocations,
+        strict=True,
+    ):
+        budgets[unit_index][source_index] = allocation
+
+    remaining = usable - sum(target_allocations)
+    candidate_unit_indexes = [
+        unit_index
+        for unit_index, entries in enumerate(candidate_entries_by_unit)
+        if entries
+    ]
+    candidate_unit_allocations = _fair_allocations(
+        [
+            sum(length for _, length in candidate_entries_by_unit[unit_index])
+            for unit_index in candidate_unit_indexes
+        ],
+        remaining,
+    )
+    for unit_index, unit_allocation in zip(
+        candidate_unit_indexes,
+        candidate_unit_allocations,
+        strict=True,
+    ):
+        entries = candidate_entries_by_unit[unit_index]
+        source_allocations = _fair_allocations(
+            [length for _, length in entries],
+            unit_allocation,
+        )
+        for (source_index, _), allocation in zip(
+            entries,
+            source_allocations,
+            strict=True,
+        ):
+            budgets[unit_index][source_index] = allocation
+    return budgets
+
+
+def _fair_allocations(
+    needs: list[int],
+    available: int,
+) -> list[int]:
+    """Water-fill a bounded budget and redistribute every unused share."""
+
+    allocations = [0 for _ in needs]
+    pending = [index for index, need in enumerate(needs) if need > 0]
+    remaining = max(0, available)
+    while pending and remaining > 0:
+        share, remainder = divmod(remaining, len(pending))
+        completed = [index for index in pending if needs[index] <= share]
+        if completed:
+            for index in completed:
+                allocations[index] = needs[index]
+                remaining -= needs[index]
+                pending.remove(index)
+            continue
+        for position, index in enumerate(pending):
+            allocation = share + int(position < remainder)
+            allocations[index] = allocation
+            remaining -= allocation
+        break
+    return allocations
 
 
 def _has_primary_evidence(retrieval_result: dict[str, Any]) -> bool:

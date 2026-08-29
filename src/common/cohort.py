@@ -261,8 +261,9 @@ def is_validated_source_applicable(
         or record_or_citation.get("cohort")
         or metadata.get("cohort")
     )
-    if not source_cohort or str(source_cohort).lower() in {
-        "",
+    if not source_cohort:
+        return False
+    if str(source_cohort).lower() in {
         "all",
         "general",
         "shared",

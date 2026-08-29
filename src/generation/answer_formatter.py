@@ -28,6 +28,13 @@ def clean_answer(text: str) -> str:
     )
     text = re.sub(r"\[AMENDMENT\s*\d*\]", "", text, flags=re.IGNORECASE)
     text = re.sub(r"\bAMENDMENT\s*\d+\b", "", text, flags=re.IGNORECASE)
+    # Evidence packet labels are internal routing aids, not public citations.
+    text = re.sub(
+        r"\s*\(\s*S\d+(?:\s*[,;/]\s*S\d+)*\s*\)",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
     text = re.sub(r"[ ]{2,}", " ", text)
     return text.strip()
 

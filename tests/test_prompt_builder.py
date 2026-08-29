@@ -36,7 +36,11 @@ def test_prompt_is_compact_and_places_final_task_after_evidence() -> None:
                     "chunk_id": "p1",
                     "content": "Có ba điều kiện xét học bổng.",
                     "score": 0.91,
-                    "metadata": {"title": "Điều 12", "dense_score": 0.88},
+                    "metadata": {
+                        "title": "Điều 12",
+                        "cohort": "K51",
+                        "dense_score": 0.88,
+                    },
                 }
             ],
         },
@@ -89,12 +93,15 @@ def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
     assert "Mở đầu bằng câu trả lời trực tiếp" not in prompt
     assert "chỉ được trả lời có/không khi evidence trực tiếp" in prompt
     assert "việc nguồn không nói \"được phép\"" in prompt
-    assert "KIỂM TRA CUỐI BẮT BUỘC" in prompt
-    assert "không dùng sự vắng mặt của quy định" in prompt
     assert "nêu đúng article_label" in prompt
     assert "in đậm kết luận chính" in prompt
     assert "Với đơn vị mode=structured" in prompt
     assert "không sao chép toàn bộ bảng" in prompt
+    assert "structured evidence có resolved_result" in prompt
+    assert "role=target" in prompt
+    assert "bao quát đủ các khoản/ý trực tiếp của target" in prompt
+    assert "không biến mục gần nghĩa thành target mới" in prompt
+    assert "không tính lại, nội suy hoặc chuyển số liệu từ cohort khác" in prompt
     assert '"article_label": "Điều 16"' in prompt
 
 
@@ -133,6 +140,7 @@ def test_packet_does_not_promote_cross_reference_to_source_article() -> None:
                 "chunk_id": "source-without-article",
                 "title": "Quy định chung",
                 "content": "Nội dung này dẫn chiếu Điều 99 ở đoạn sau.",
+                "cohort": "K51",
             }
         ],
         fallback_cohort="K51",
@@ -268,12 +276,14 @@ def test_packet_binds_explicit_applicability_per_cohort() -> None:
                 "chunk_id": "p50",
                 "content": "Quy định K50",
                 "supports_task_ids": ["t1"],
+                "source_cohort": "K50",
                 "applicable_cohorts": ["K50"],
             },
             {
                 "chunk_id": "p51",
                 "content": "Quy định K51",
                 "supports_task_ids": ["t1"],
+                "source_cohort": "K51",
                 "applicable_cohorts": ["K51"],
             },
         ],
@@ -290,17 +300,131 @@ def test_selected_citations_are_the_only_primary_evidence() -> None:
         query="Câu hỏi",
         retrieval_result={
             "citations": [
-                {"chunk_id": "allowed", "content": "Được chọn"},
-                {"chunk_id": "not-selected", "content": "Không được chọn"},
+                {"chunk_id": "allowed", "content": "Được chọn", "cohort": "K51"},
+                {
+                    "chunk_id": "not-selected",
+                    "content": "Không được chọn",
+                    "cohort": "K51",
+                },
             ]
         },
-        selected_citations=[{"chunk_id": "allowed", "content": "Được chọn"}],
+        selected_citations=[
+            {"chunk_id": "allowed", "content": "Được chọn", "cohort": "K51"}
+        ],
         fallback_cohort="K51",
         max_context_chars=10000,
     )
 
     evidence = packet["units"][0]["primary_evidence"]
     assert [source["source_id"] for source in evidence] == ["allowed"]
+
+
+def test_packet_fails_closed_when_source_cohort_is_missing() -> None:
+    packet = build_authorized_evidence_packet(
+        query="Quy định K51 là gì?",
+        retrieval_result={},
+        selected_citations=[{"chunk_id": "unknown", "content": "Không rõ khóa."}],
+        fallback_cohort="K51",
+        max_context_chars=10000,
+    )
+
+    assert packet["units"][0]["primary_evidence"] == []
+    assert packet["units"][0]["allowed_source_refs"] == []
+
+
+def test_packet_only_allows_validated_cross_cohort_applicability() -> None:
+    base_source = {
+        "chunk_id": "K50-policy",
+        "content": "Quy định áp dụng từ khóa tuyển sinh 2022 trở về sau.",
+        "source_cohort": "K50",
+        "applicable_cohorts": ["K51"],
+    }
+    denied = build_authorized_evidence_packet(
+        query="Quy định K51 là gì?",
+        retrieval_result={},
+        selected_citations=[base_source],
+        fallback_cohort="K51",
+        max_context_chars=10000,
+    )
+    allowed = build_authorized_evidence_packet(
+        query="Quy định K51 là gì?",
+        retrieval_result={},
+        selected_citations=[{**base_source, "applicability_validated": True}],
+        fallback_cohort="K51",
+        max_context_chars=10000,
+    )
+
+    assert denied["units"][0]["primary_evidence"] == []
+    assert [source["source_id"] for source in allowed["units"][0]["primary_evidence"]] == [
+        "K50-policy"
+    ]
+
+
+def test_packet_marks_unique_exact_title_as_target_without_using_rank() -> None:
+    packet = build_authorized_evidence_packet(
+        query=(
+            "Sinh viên cần lưu ý gì về Chi phí bồi hoàn và cách tính "
+            "chi phí bồi hoàn?"
+        ),
+        retrieval_result={},
+        selected_citations=[
+            {
+                "chunk_id": "related-first",
+                "title": "Thu hồi chi phí bồi hoàn",
+                "content": "Nguồn liên quan đứng hạng đầu.",
+                "cohort": "K50",
+            },
+            {
+                "chunk_id": "exact-second",
+                "title": "Chi phí bồi hoàn và cách tính chi phí bồi hoàn",
+                "content": "Nguồn đích danh đứng hạng hai.",
+                "cohort": "K50",
+            },
+            {
+                "chunk_id": "generic-third",
+                "title": "Sinh viên",
+                "content": "Tiêu đề ngắn cũng xuất hiện trong câu hỏi.",
+                "cohort": "K50",
+            },
+        ],
+        fallback_cohort="K50",
+        max_context_chars=10000,
+    )
+
+    evidence = packet["units"][0]["primary_evidence"]
+    assert [(source["source_id"], source["role"]) for source in evidence] == [
+        ("exact-second", "target"),
+    ]
+
+
+def test_packet_keeps_ambiguous_article_sources_as_candidates() -> None:
+    packet = build_authorized_evidence_packet(
+        query="Điều 16 quy định gì?",
+        retrieval_result={},
+        selected_citations=[
+            {
+                "chunk_id": "doc-a-16",
+                "title": "Nghỉ học tạm thời",
+                "article_label": "Điều 16",
+                "content": "Quy chế A.",
+                "cohort": "K50",
+            },
+            {
+                "chunk_id": "doc-b-16",
+                "title": "Phòng Hợp tác Quốc tế",
+                "article_label": "Điều 16",
+                "content": "Quy chế B.",
+                "cohort": "K50",
+            },
+        ],
+        fallback_cohort="K50",
+        max_context_chars=10000,
+    )
+
+    assert [
+        (source["source_id"], source["role"])
+        for source in packet["units"][0]["primary_evidence"]
+    ] == [("doc-a-16", "candidate"), ("doc-b-16", "candidate")]
 
 
 def test_structured_legacy_fallback_preserves_full_table() -> None:
@@ -492,6 +616,166 @@ def test_long_primary_source_uses_request_budget_not_legacy_1500_cap() -> None:
         max_context_chars=5000,
     )
     assert "TAIL_MARKER_CONTEXT_VAN_CON" in prompt
+
+
+def test_unit_budget_is_computed_after_task_cohort_and_target_filtering() -> None:
+    tasks = [
+        _task(f"t{task_index}", f"Quy định task {task_index}?", ["K48-K49", "K50", "K51"])
+        for task_index in range(1, 4)
+    ]
+    tasks[0]["question"] = "Điều khoản đích danh quy định gì?"
+    long_target = ("nội dung Điều khoản đích danh " * 240) + "TARGET_TAIL_PRESERVED"
+    citations = []
+    for task_index in range(1, 4):
+        for cohort in ("K48-K49", "K50", "K51"):
+            for source_index in range(1, 6):
+                is_target = task_index == 1 and source_index == 1
+                citations.append(
+                    {
+                        "chunk_id": f"t{task_index}-{cohort}-{source_index}",
+                        "title": (
+                            "Điều khoản đích danh"
+                            if is_target
+                            else f"Nguồn liên quan {task_index} {source_index}"
+                        ),
+                        "content": long_target if is_target else "Nội dung liên quan.",
+                        "cohort": cohort,
+                        "supports_task_ids": [f"t{task_index}"],
+                    }
+                )
+
+    packet = build_authorized_evidence_packet(
+        query="Điều khoản đích danh quy định gì?",
+        retrieval_result={
+            "query_plan": {"tasks": tasks},
+            "task_results": [
+                {
+                    "task_id": task["id"],
+                    "coverage": "covered",
+                    "coverage_by_cohort": {
+                        "K48-K49": "covered",
+                        "K50": "covered",
+                        "K51": "covered",
+                    },
+                }
+                for task in tasks
+            ],
+        },
+        selected_citations=citations,
+        fallback_cohort=None,
+        max_context_chars=160000,
+    )
+
+    target_unit = next(
+        unit
+        for unit in packet["units"]
+        if unit["task_id"] == "t1" and unit["cohort"] == "K51"
+    )
+    assert len(citations) == 45
+    assert len(target_unit["primary_evidence"]) == 1
+    assert target_unit["primary_evidence"][0]["role"] == "target"
+    assert "TARGET_TAIL_PRESERVED" in target_unit["primary_evidence"][0]["content"]
+
+
+def test_global_evidence_cap_truncates_only_oversized_candidate_workload() -> None:
+    tasks = [
+        _task(f"t{task_index}", f"Câu hỏi rộng task {task_index}?", ["K48-K49", "K50", "K51"])
+        for task_index in range(1, 4)
+    ]
+    citations = [
+        {
+            "chunk_id": f"t{task_index}-{cohort}-{source_index}",
+            "title": f"Nguồn candidate {task_index} {source_index}",
+            "content": ("candidate dài " * 650) + "CANDIDATE_TAIL",
+            "cohort": cohort,
+            "supports_task_ids": [f"t{task_index}"],
+        }
+        for task_index in range(1, 4)
+        for cohort in ("K48-K49", "K50", "K51")
+        for source_index in range(1, 6)
+    ]
+    packet = build_authorized_evidence_packet(
+        query="Một câu hỏi rộng không đích danh Điều hoặc tiêu đề",
+        retrieval_result={
+            "query_plan": {"tasks": tasks},
+            "task_results": [
+                {
+                    "task_id": task["id"],
+                    "coverage": "covered",
+                    "coverage_by_cohort": {
+                        "K48-K49": "covered",
+                        "K50": "covered",
+                        "K51": "covered",
+                    },
+                }
+                for task in tasks
+            ],
+        },
+        selected_citations=citations,
+        fallback_cohort=None,
+        max_context_chars=160000,
+    )
+
+    evidence = [
+        source
+        for unit in packet["units"]
+        for source in unit["primary_evidence"]
+    ]
+    assert len(evidence) == 45
+    assert sum(len(source["content"]) for source in evidence) <= 120000
+    assert all(source["role"] == "candidate" for source in evidence)
+    assert any("[Evidence đã được rút gọn.]" in source["content"] for source in evidence)
+
+
+def test_candidate_budget_is_split_by_unit_before_sources() -> None:
+    tasks = [
+        _task("t1", "Câu hỏi rộng thứ nhất?", ["K51"]),
+        _task("t2", "Câu hỏi rộng thứ hai?", ["K51"]),
+    ]
+    citations = [
+        {
+            "chunk_id": "t1-only-source",
+            "title": "Nguồn chung thứ nhất",
+            "content": "A" * 1000,
+            "cohort": "K51",
+            "supports_task_ids": ["t1"],
+        },
+        *[
+            {
+                "chunk_id": f"t2-source-{index}",
+                "title": f"Nguồn chung thứ hai {index}",
+                "content": "B" * 1000,
+                "cohort": "K51",
+                "supports_task_ids": ["t2"],
+            }
+            for index in range(1, 6)
+        ],
+    ]
+    packet = build_authorized_evidence_packet(
+        query="Hai câu hỏi rộng không đích danh Điều hoặc tiêu đề",
+        retrieval_result={
+            "query_plan": {"tasks": tasks},
+            "task_results": [
+                {
+                    "task_id": task["id"],
+                    "coverage": "covered",
+                    "coverage_by_cohort": {"K51": "covered"},
+                }
+                for task in tasks
+            ],
+        },
+        selected_citations=citations,
+        fallback_cohort="K51",
+        max_context_chars=400,
+    )
+
+    content_by_task = {
+        unit["task_id"]: sum(
+            len(source["content"]) for source in unit["primary_evidence"]
+        )
+        for unit in packet["units"]
+    }
+    assert content_by_task == {"t1": 150, "t2": 150}
 
 
 def test_prompt_distinguishes_external_referral_from_direct_answer() -> None:

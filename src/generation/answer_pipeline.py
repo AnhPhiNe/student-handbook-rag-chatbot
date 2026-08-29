@@ -310,9 +310,15 @@ class AnswerPipeline:
             )
 
         context_started = time.monotonic()
+        prompt_citations = (
+            retrieval_result.get("evidence_citations")
+            if retrieval_result.get("query_plan")
+            else None
+        )
         context_used = build_context_for_prompt(
             retrieval_result,
             query=effective_query,
+            selected_citations=prompt_citations,
             max_context_chars=self.max_context_chars,
             allocation_config=self.context_allocation,
         )
@@ -401,7 +407,11 @@ class AnswerPipeline:
         guardrails_config = self.config.get("guardrails", {})
 
         if retrieval_result.get("query_plan"):
-            selected_citations = list(retrieval_result.get("citations") or [])[:10]
+            selected_citations = list(
+                retrieval_result.get("evidence_citations")
+                or retrieval_result.get("citations")
+                or []
+            )
         else:
             selected_citations = select_relevant_citations(
                 retrieval_result.get("citations"),
@@ -462,7 +472,12 @@ class AnswerPipeline:
                 used_cache=True,
             )
 
-        all_citations = retrieval_result.get("citations") or []
+        all_citations = (
+            retrieval_result.get("evidence_citations")
+            or retrieval_result.get("citations")
+            or []
+        )
+        public_retrieval_citations = retrieval_result.get("citations") or []
 
         prompt_started = time.monotonic()
         prompt = build_answer_prompt(
@@ -491,7 +506,7 @@ class AnswerPipeline:
                 retrieval_result=retrieval_result,
                 final_answer=final_answer,
                 context_used=context_used,
-                selected_citations=all_citations,
+                selected_citations=public_retrieval_citations,
                 status="api_error",
                 error_type="api_init_error",
                 error_message=str(exc),
@@ -535,7 +550,7 @@ class AnswerPipeline:
                 retrieval_result=retrieval_result,
                 final_answer=final_answer,
                 context_used=context_used,
-                selected_citations=all_citations,
+                selected_citations=public_retrieval_citations,
                 status="api_error",
                 error_type=error_type,
                 error_message=llm_result.get("error_message"),
@@ -785,7 +800,11 @@ class AnswerPipeline:
         guardrails_config = self.config.get("guardrails", {})
 
         if retrieval_result.get("query_plan"):
-            selected_citations = list(retrieval_result.get("citations") or [])[:10]
+            selected_citations = list(
+                retrieval_result.get("evidence_citations")
+                or retrieval_result.get("citations")
+                or []
+            )
         else:
             selected_citations = select_relevant_citations(
                 retrieval_result.get("citations"),
@@ -816,7 +835,12 @@ class AnswerPipeline:
             yield {"type": "done", "tracker": tracker}
             return
 
-        all_citations = retrieval_result.get("citations") or []
+        all_citations = (
+            retrieval_result.get("evidence_citations")
+            or retrieval_result.get("citations")
+            or []
+        )
+        public_retrieval_citations = retrieval_result.get("citations") or []
         related_references = retrieval_result.get("related_references") or []
 
         prompt = build_answer_prompt(
@@ -833,7 +857,7 @@ class AnswerPipeline:
             retrieval_result,
             status="answered",
             effective_query=effective_query,
-            citations_used=all_citations,
+            citations_used=public_retrieval_citations,
             related_references=related_references,
             llm_called=True,
             run_id=run_id,
@@ -1366,6 +1390,7 @@ class AnswerPipeline:
             "lookup_type": None,
             "structured_result": structured_result,
             "retrieved_items": merged_items,
+            "evidence_citations": merged_citations,
             "citations": selected_citations,
             "related_references": self._merge_related_references(
                 all_related_references

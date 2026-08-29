@@ -1,8 +1,15 @@
 from src.generation.answer_formatter import (
+    clean_answer,
     ensure_primary_article_anchors,
     missing_primary_article_anchors,
     normalize_unlabeled_enumeration_references,
 )
+
+
+def test_clean_answer_removes_internal_source_packet_labels() -> None:
+    answer = "Căn cứ Điều 35 (S1, S6) và Điều 21 (S2/S8), sinh viên bị xử lý."
+
+    assert clean_answer(answer) == "Căn cứ Điều 35 và Điều 21, sinh viên bị xử lý."
 
 
 def test_appends_primary_article_anchor_when_llm_omits_it() -> None:

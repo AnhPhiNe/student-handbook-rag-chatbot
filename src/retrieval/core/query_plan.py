@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+import unicodedata
 from typing import Any
 
 from src.common.cohort import (
@@ -17,9 +19,45 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v7-general-rag-multi-cohort"
+QUERY_PLAN_NORMALIZER_VERSION = "v8-domain-guard-single-task-identity"
 MAX_QUERY_TASKS = 3
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
+
+_HANDBOOK_DOMAIN_PHRASES = (
+    "bao luu",
+    "chi phi boi hoan",
+    "chuan dau ra",
+    "chuyen nganh",
+    "chuyen truong",
+    "co van hoc tap",
+    "diem hoc bong",
+    "diem ren luyen",
+    "hoc bong",
+    "hoc phi",
+    "ky tuc xa",
+    "nghi hoc",
+    "quy che",
+    "so tay sinh vien",
+    "tin chi",
+    "tot nghiep",
+)
+
+
+def _fold_query(value: str) -> str:
+    value = value.replace("đ", "d").replace("Đ", "D")
+    decomposed = unicodedata.normalize("NFD", value)
+    ascii_text = "".join(
+        char for char in decomposed if unicodedata.category(char) != "Mn"
+    )
+    ascii_text = re.sub(r"[^a-zA-Z0-9]+", " ", ascii_text)
+    return re.sub(r"\s+", " ", ascii_text.casefold()).strip()
+
+
+def _has_handbook_domain_signal(query: str) -> bool:
+    """Reject terminal OOD only when the query has no strong handbook anchor."""
+
+    folded = _fold_query(query)
+    return any(phrase in folded for phrase in _HANDBOOK_DOMAIN_PHRASES)
 
 
 def query_plan_json_schema() -> dict[str, Any]:
@@ -177,6 +215,12 @@ def normalize_query_plan(
     registry = registry or load_lookup_registry()
     query_cohorts = extract_cohorts_from_query(query)
     default_cohort = query_cohorts[0] if len(query_cohorts) == 1 else selected_cohort
+    if bool(payload.get("out_of_domain")) and _has_handbook_domain_signal(query):
+        return legacy_rag_plan(
+            query,
+            default_cohort,
+            reason="domain_signal_overrides_out_of_domain",
+        ), []
     if bool(payload.get("out_of_domain")):
         context_mode = str(payload.get("context_mode") or "standalone").strip().lower()
         if context_mode not in {"standalone", "follow_up", "ambiguous"}:
@@ -239,6 +283,16 @@ def normalize_query_plan(
 
     tasks = _merge_compatible_structured_tasks(tasks, original_query=query)
     tasks = _merge_cohort_variant_tasks(tasks)
+    if (
+        context_mode == "standalone"
+        and len(tasks) == 1
+        and tasks[0].get("mode") == "rag"
+    ):
+        # A single RAG task has no decomposition benefit from rewriting its
+        # question. Reuse the original user query so a planner paraphrase at
+        # either task or top-plan level cannot silently change the subject or
+        # predicate before retrieval.
+        tasks[0]["question"] = query
     if len(tasks) > MAX_QUERY_TASKS:
         return _too_many_tasks_plan(query, default_cohort), []
     for index, task in enumerate(tasks, start=1):

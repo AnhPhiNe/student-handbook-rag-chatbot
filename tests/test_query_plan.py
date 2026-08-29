@@ -125,6 +125,66 @@ def test_terminal_out_of_domain_does_not_require_executable_tasks() -> None:
     assert plan["planner_fallback"] is None
 
 
+def test_handbook_domain_signal_overrides_false_out_of_domain() -> None:
+    query = "K51 co duoc boi hoan hoc phi khi nghi hoc khong?"
+    plan, errors = normalize_query_plan(
+        {
+            "schema_version": "v1",
+            "context_mode": "standalone",
+            "normalized_query": query,
+            "standalone_query": None,
+            "referenced_turns": [],
+            "out_of_domain": True,
+            "tasks": [],
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert plan["out_of_domain"] is False
+    assert plan["planner_fallback"] == "domain_signal_overrides_out_of_domain"
+    assert plan["tasks"][0]["mode"] == "rag"
+    assert plan["tasks"][0]["question"] == query
+    assert plan["tasks"][0]["cohorts"] == ["K51"]
+
+
+def test_unrelated_reimbursement_query_remains_out_of_domain() -> None:
+    query = "Cửa hàng có bồi hoàn tiền mua sản phẩm cho tôi không?"
+    plan, errors = normalize_query_plan(
+        {
+            "schema_version": "v1",
+            "context_mode": "standalone",
+            "normalized_query": query,
+            "standalone_query": None,
+            "referenced_turns": [],
+            "out_of_domain": True,
+            "tasks": [],
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert plan["out_of_domain"] is True
+    assert plan["tasks"] == []
+
+
+def test_single_rag_task_preserves_original_subject_and_predicate() -> None:
+    query = "Quy định về lớp sinh viên K50 là gì?"
+    payload = _plan([_rag_task(1, "Quy định về điểm cho sinh viên K50 là gì?")])
+    payload["normalized_query"] = "Quy định về diem cho sinh vien K50 là gì?"
+
+    plan, errors = normalize_query_plan(
+        payload,
+        query=query,
+        selected_cohort="K50",
+    )
+
+    assert errors == []
+    assert plan["tasks"][0]["question"] == query
+
+
 def test_invalid_lookup_is_clarified_but_reference_table_slots_are_optional() -> None:
     invalid = {
         **_rag_task(1),

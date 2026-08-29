@@ -87,7 +87,10 @@ def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
     assert "Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp" in prompt
     assert "không tự đoán hoặc trả lời có/không tuyệt đối" in prompt
     assert "Mở đầu bằng câu trả lời trực tiếp" not in prompt
-    assert "không tự biến việc diễn giải tiêu chí thành lệnh cấm hoặc cho phép" in prompt
+    assert "chỉ được trả lời có/không khi evidence trực tiếp" in prompt
+    assert "việc nguồn không nói \"được phép\"" in prompt
+    assert "KIỂM TRA CUỐI BẮT BUỘC" in prompt
+    assert "không dùng sự vắng mặt của quy định" in prompt
     assert "nêu đúng article_label" in prompt
     assert "in đậm kết luận chính" in prompt
     assert "Với đơn vị mode=structured" in prompt

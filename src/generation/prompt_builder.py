@@ -14,7 +14,7 @@ from .context_allocation import ContextAllocationConfig
 
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.9-structured-summary"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.11-polarity-entailment"
 
 
 def build_answer_prompt(
@@ -55,7 +55,7 @@ QUY TẮC BẮT BUỘC
 4. Không coi hai khái niệm là tương đương hoặc là tên gọi thay thế, kể cả khi đặt trong ngoặc, trừ khi nguồn trực tiếp định nghĩa như vậy. Nếu yêu cầu hoặc evidence có nhiều cơ chế hay phạm vi, hãy gọi tên và trình bày riêng từng phần, giữ đúng điều kiện và ngoại lệ tương ứng.
 5. Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp, hãy trình bày rõ từng trường hợp có căn cứ và nêu thông tin còn thiếu để xác định trường hợp của người dùng; không tự đoán hoặc trả lời có/không tuyệt đối.
 6. Khi primary evidence có article_label, nêu đúng article_label tại phần kết luận mà nguồn đó trực tiếp hỗ trợ. Không tự tạo Điều/khoản/điểm và không liệt kê các nguồn không được dùng để trả lời.
-7. Với câu hỏi có/không về một hành vi hoặc vật cụ thể: nếu nguồn chỉ nêu tiêu chí định tính chung mà không trực tiếp gọi tên hoặc định nghĩa trường hợp được hỏi, chỉ nêu tiêu chí và nói rõ Sổ tay không kết luận trực tiếp cho trường hợp đó; không tự biến việc diễn giải tiêu chí thành lệnh cấm hoặc cho phép.
+7. Với câu hỏi có/không, chỉ được trả lời có/không khi evidence trực tiếp cho phép hoặc cấm đúng hành vi/kết quả được hỏi. Lịch, thời hạn, điều kiện, quy trình, yêu cầu phê duyệt và việc nguồn không nói "được phép" đều không đủ để suy ra lệnh cấm. Nếu thiếu căn cứ trực tiếp, bắt buộc nói "Sổ tay chưa nêu trực tiếp..." rồi chỉ trình bày thông tin liên quan mà nguồn thực sự xác lập.
 8. Nếu evidence chỉ gần chủ đề hoặc không đủ cho một phần, hãy nói rõ phần đó chưa tìm thấy căn cứ; trả lời partial hoặc abstain, không đổi câu hỏi sang khái niệm gần nghĩa.
 9. Nếu nguồn chỉ dẫn chiếu sang văn bản khác mà không trực tiếp liệt kê đối tượng, điều kiện hoặc giá trị được hỏi, phải nói rõ nguồn hiện có không liệt kê nội dung đó và nêu văn bản được dẫn chiếu; không trình bày câu dẫn chiếu như thể đã trả lời danh sách.
 
@@ -77,6 +77,8 @@ Câu hỏi gốc: {query}
 
 Các đơn vị bắt buộc phải xử lý theo đúng thứ tự:
 {_to_pretty_json(required_units)}
+
+KIỂM TRA CUỐI BẮT BUỘC: Nếu câu trả lời sắp mở đầu bằng một kết luận có/không, hãy xác nhận primary_evidence có quy định trực tiếp đúng hành vi/kết quả đó. Nếu không, thay kết luận có/không bằng "Sổ tay chưa nêu trực tiếp..."; không dùng sự vắng mặt của quy định, lịch, điều kiện hay thủ tục để suy ra cho phép/cấm.
 
 Chỉ xuất câu trả lời cuối cùng cho sinh viên."""
 

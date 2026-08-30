@@ -342,11 +342,11 @@ replace_slangs:
 - match: HB
   replace_with: học bổng
 - match: hạ bằng
-  replace_with: hạng tốt nghiệp bị giảm đi một mức xếp loại tốt nghiệp chỉ áp dụng với xuất sắc giỏi nếu khối lượng tín chỉ học lại vượt quá 5% hoặc bị kỷ luật cảnh cáo trở lên công nhận tốt nghiệp và cấp bằng tốt nghiệp
+  replace_with: giảm một mức xếp loại tốt nghiệp
 - match: hạ bậc
-  replace_with: hạng tốt nghiệp bị giảm đi một mức xếp loại tốt nghiệp chỉ áp dụng với xuất sắc giỏi nếu khối lượng tín chỉ học lại vượt quá 5% hoặc bị kỷ luật cảnh cáo trở lên công nhận tốt nghiệp và cấp bằng tốt nghiệp
+  replace_with: giảm một mức xếp loại tốt nghiệp
 - match: hạ hạng
-  replace_with: hạng tốt nghiệp bị giảm đi một mức xếp loại tốt nghiệp chỉ áp dụng với xuất sắc giỏi nếu khối lượng tín chỉ học lại vượt quá 5% hoặc bị kỷ luật cảnh cáo trở lên công nhận tốt nghiệp và cấp bằng tốt nghiệp
+  replace_with: giảm một mức xếp loại tốt nghiệp
 expand_slangs:
 - match: học lại sau bảo lưu
   expand_with: tiếp nhận trở lại học sau nghỉ học tạm thời bảo lưu kết quả học tập

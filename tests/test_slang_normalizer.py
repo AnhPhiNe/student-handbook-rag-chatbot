@@ -110,7 +110,7 @@ def test_replacement_only_matches_complete_token(tmp_path) -> None:
     assert normalizer.normalize("học cntt") == "học công nghệ thông tin"
 
 
-def test_graduation_rank_slang_adds_regulation_anchor() -> None:
+def test_graduation_rank_slang_only_canonicalizes_the_user_term() -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
     router_query = normalizer.replace_for_router(
@@ -121,11 +121,13 @@ def test_graduation_rank_slang_adds_regulation_anchor() -> None:
     )
 
     assert "hạ bằng" not in router_query
-    assert "hạng tốt nghiệp bị giảm đi một mức" in router_query
+    assert "giảm một mức xếp loại tốt nghiệp" in router_query
     assert "hạ bằng" not in normalized
     assert "tiếp nhận trở lại học" not in normalized
-    assert "hạng tốt nghiệp bị giảm đi một mức" in normalized
-    assert "công nhận tốt nghiệp và cấp bằng tốt nghiệp" in normalized
+    assert "giảm một mức xếp loại tốt nghiệp" in normalized
+    assert "khối lượng tín chỉ học lại vượt quá 5%" not in normalized
+    assert "kỷ luật cảnh cáo trở lên" not in normalized
+    assert "công nhận tốt nghiệp và cấp bằng tốt nghiệp" not in normalized
 
 
 def test_accentless_slangs_use_same_canonical_mappings() -> None:
@@ -139,9 +141,9 @@ def test_accentless_slangs_use_same_canonical_mappings() -> None:
     )
 
     assert "ha bang" not in router_query
-    assert "hạng tốt nghiệp bị giảm đi một mức" in router_query
-    assert "khối lượng tín chỉ học lại vượt quá 5%" in normalized
-    assert "kỷ luật cảnh cáo trở lên" in normalized
+    assert "giảm một mức xếp loại tốt nghiệp" in router_query
+    assert "khối lượng tín chỉ học lại vượt quá 5%" not in normalized
+    assert "kỷ luật cảnh cáo trở lên" not in normalized
     assert "học phần đã đạt đăng ký học lại để cải thiện điểm" in normalized
     assert "học phần chưa đạt phải học lại" in normalized
 

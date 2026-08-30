@@ -1,4 +1,1 @@
 -r requirements-dev.txt
-
-# Optional framework-level answer evaluation. Kept outside production runtime.
-ragas==0.4.3

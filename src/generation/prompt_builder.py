@@ -17,7 +17,7 @@ from .context_allocation import ContextAllocationConfig
 
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.18-contract-cleanup"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.19-explicit-article-target"
 
 
 def build_answer_prompt(
@@ -389,7 +389,7 @@ def _assign_evidence_roles(
     unit_question: str,
     original_query: str,
 ) -> list[dict[str, Any]]:
-    """Mark one deterministic exact target without treating rank as authority."""
+    """Mark one uniquely requested article without treating rank as authority."""
 
     query_text = _fold_text(f"{unit_question} {original_query}")
     article_numbers = set(re.findall(r"\bdieu\s+(\d+)\b", query_text))
@@ -398,22 +398,10 @@ def _assign_evidence_roles(
         for index, source in enumerate(sources)
         if _article_number(source.get("article_label")) in article_numbers
     ]
-    title_match_lengths = [
-        _exact_title_match_length(source.get("title"), query_text)
-        for source in sources
-    ]
-    longest_title_match = max(title_match_lengths, default=0)
-    title_matches = [
-        index
-        for index, match_length in enumerate(title_match_lengths)
-        if longest_title_match and match_length == longest_title_match
-    ]
 
     target_index: int | None = None
     if len(article_matches) == 1:
         target_index = article_matches[0]
-    elif len(title_matches) == 1:
-        target_index = title_matches[0]
 
     if target_index is None:
         return [{**source, "role": "candidate"} for source in sources]
@@ -430,15 +418,6 @@ def _fold_text(value: Any) -> str:
 def _article_number(article_label: Any) -> str | None:
     match = re.search(r"\bdieu\s+(\d+)\b", _fold_text(article_label))
     return match.group(1) if match else None
-
-
-def _exact_title_match_length(title: Any, query_text: str) -> int:
-    title_text = _fold_text(title)
-    title_text = re.sub(r"^dieu\s+\d+\s+", "", title_text).strip()
-    token_count = len(title_text.split())
-    if token_count < 2 or f" {title_text} " not in f" {query_text} ":
-        return 0
-    return token_count
 
 
 def _source_for_unit(

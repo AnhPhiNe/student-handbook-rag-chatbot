@@ -408,7 +408,7 @@ def test_packet_only_allows_validated_cross_cohort_applicability() -> None:
     ]
 
 
-def test_packet_marks_unique_exact_title_as_target_without_using_rank() -> None:
+def test_packet_does_not_treat_title_substrings_as_authority() -> None:
     packet = build_authorized_evidence_packet(
         query=(
             "Sinh viên cần lưu ý gì về Chi phí bồi hoàn và cách tính "
@@ -441,7 +441,9 @@ def test_packet_marks_unique_exact_title_as_target_without_using_rank() -> None:
 
     evidence = packet["units"][0]["primary_evidence"]
     assert [(source["source_id"], source["role"]) for source in evidence] == [
-        ("exact-second", "target"),
+        ("related-first", "candidate"),
+        ("exact-second", "candidate"),
+        ("generic-third", "candidate"),
     ]
 
 
@@ -671,7 +673,7 @@ def test_unit_budget_is_computed_after_task_cohort_and_target_filtering() -> Non
         _task(f"t{task_index}", f"Quy định task {task_index}?", ["K48-K49", "K50", "K51"])
         for task_index in range(1, 4)
     ]
-    tasks[0]["question"] = "Điều khoản đích danh quy định gì?"
+    tasks[0]["question"] = "Điều 27 quy định gì?"
     long_target = ("nội dung Điều khoản đích danh " * 240) + "TARGET_TAIL_PRESERVED"
     citations = []
     for task_index in range(1, 4):
@@ -686,6 +688,7 @@ def test_unit_budget_is_computed_after_task_cohort_and_target_filtering() -> Non
                             if is_target
                             else f"Nguồn liên quan {task_index} {source_index}"
                         ),
+                        "article_label": "Điều 27" if is_target else None,
                         "content": long_target if is_target else "Nội dung liên quan.",
                         "cohort": cohort,
                         "supports_task_ids": [f"t{task_index}"],
@@ -693,7 +696,7 @@ def test_unit_budget_is_computed_after_task_cohort_and_target_filtering() -> Non
                 )
 
     packet = build_authorized_evidence_packet(
-        query="Điều khoản đích danh quy định gì?",
+        query="Điều 27 quy định gì?",
         retrieval_result={
             "query_plan": {"tasks": tasks},
             "task_results": [

@@ -1,9 +1,73 @@
 from src.retrieval.core.citation_builder import (
+    build_citation_from_lookup,
     build_citations_from_vector_results,
     enrich_citations_with_parent_details,
     sanitize_citation_content,
 )
 from src.common.source_identity import canonical_article_source_id
+
+
+def test_structured_citation_preserves_resolved_result_for_composer():
+    resolved_result = {
+        "result": {
+            "certificate": "IELTS",
+            "matched_level": "bac_4",
+            "matched_value": 6.0,
+        }
+    }
+    citations = build_citation_from_lookup(
+        {
+            "lookup_type": "foreign_language",
+            "table_name": "Bảng quy đổi ngoại ngữ",
+            "source_parent_id": "K50_Dieu8",
+            "cohort": "K51",
+            "source_cohort": "K50",
+            "applicable_cohorts": ["K48-K49", "K50", "K51"],
+            "applicability_validated": True,
+            "applicability_basis_parent_id": "K50_Dieu1",
+            "result": {"rows": [{"certificate": "IELTS"}]},
+            "resolved_result": resolved_result,
+        }
+    )
+
+    assert citations[0]["resolved_result"] == resolved_result
+    assert citations[0]["cohort"] == "K51"
+    assert citations[0]["source_cohort"] == "K50"
+    assert citations[0]["applicable_cohorts"] == ["K48-K49", "K50", "K51"]
+    assert citations[0]["applicability_validated"] is True
+    assert citations[0]["applicability_basis_parent_id"] == "K50_Dieu1"
+
+
+def test_enrichment_preserves_target_cohort_and_uses_source_cohort_for_identity():
+    citation = {
+        "chunk_type": "structured_lookup",
+        "title": "Bảng quy đổi ngoại ngữ",
+        "source_parent_id": "K50_Dieu8",
+        "cohort": "K51",
+        "source_cohort": "K50",
+        "content": "IELTS 6.0 tương đương bậc 4",
+    }
+    parent = {
+        "_id": "K50_Dieu8",
+        "content": "Điều 8. Bảng quy đổi ngoại ngữ.",
+        "metadata": {
+            "article": "Điều 8",
+            "title": "Tổ chức thực hiện",
+            "document_title": "Quy định chuẩn đầu ra ngoại ngữ",
+            "document_id": "handbook-k50",
+            "cohort": "K50",
+        },
+    }
+
+    result = enrich_citations_with_parent_details([citation], {"K50_Dieu8": parent})
+
+    assert result[0]["cohort"] == "K51"
+    assert result[0]["source_cohort"] == "K50"
+    assert result[0]["canonical_source_id"] == canonical_article_source_id(
+        document_identity="Quy định chuẩn đầu ra ngoại ngữ",
+        cohort="K50",
+        article_label="Điều 8",
+    )
 
 
 def test_enriches_structured_table_citation_with_parent_article_details():

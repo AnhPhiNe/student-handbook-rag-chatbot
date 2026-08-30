@@ -141,7 +141,14 @@ def enrich_citations_with_parent_details(
         )
         item["document_id"] = metadata.get("document_id") or item.get("document_id")
         item["document_identity"] = document_identity
-        item["cohort"] = metadata.get("cohort") or item.get("cohort")
+        source_cohort = (
+            item.get("source_cohort")
+            or metadata.get("source_cohort")
+            or metadata.get("cohort")
+            or item.get("cohort")
+        )
+        item["source_cohort"] = source_cohort
+        item["cohort"] = item.get("cohort") or metadata.get("cohort")
         article_label = normalize_article_label(
             metadata.get("article"),
             metadata.get("source_section"),
@@ -154,7 +161,7 @@ def enrich_citations_with_parent_details(
         item["parent_article"] = article_label
         item["canonical_source_id"] = canonical_article_source_id(
             document_identity=document_identity,
-            cohort=item.get("cohort"),
+            cohort=source_cohort or item.get("cohort"),
             article_label=article_label,
         )
         item["parent_title"] = metadata.get("title")
@@ -333,11 +340,20 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
             "source_label": str(source_label) if source_label else None,
             "source_url": _first_value(lookup_result, ("source_url", "url", "document_url")),
             "cohort": lookup_result.get("cohort"),
+            "source_cohort": lookup_result.get("source_cohort"),
+            "applicable_cohorts": lookup_result.get("applicable_cohorts"),
+            "applicability_validated": lookup_result.get(
+                "applicability_validated"
+            ),
+            "applicability_basis_parent_id": lookup_result.get(
+                "applicability_basis_parent_id"
+            ),
             "document_id": document_id,
             "source_section": source_section,
             "source_parent_id": source_section,
             "parent_section_id": source_section,
             "applicability": lookup_result.get("applicability"),
+            "resolved_result": lookup_result.get("resolved_result"),
             "content": sanitize_citation_content(content),
         }
     ]

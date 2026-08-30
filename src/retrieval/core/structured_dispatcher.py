@@ -392,9 +392,13 @@ def _reference_table_lookup(
                 "source_label": table.get("document_title")
                 or "Bảng dữ liệu có cấu trúc trong Sổ tay sinh viên HCMUE",
                 "cohort": effective_cohort or table.get("cohort"),
-                "source_cohort": table.get("cohort"),
+                "source_cohort": table.get("source_cohort") or table.get("cohort"),
                 "applicable_cohorts": table.get("applicable_cohorts"),
                 "applicability": table.get("applicability"),
+                "applicability_validated": table.get("applicability_validated"),
+                "applicability_basis_parent_id": table.get(
+                    "applicability_basis_parent_id"
+                ),
                 "document_id": table.get("document_id"),
                 "source_section": source_section,
                 "source_parent_id": source_section,

@@ -98,11 +98,59 @@ def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
     assert "Với đơn vị mode=structured" in prompt
     assert "không sao chép toàn bộ bảng" in prompt
     assert "structured evidence có resolved_result" in prompt
+    assert 'không suy "Sổ tay không quy định"' in prompt
     assert "role=target" in prompt
     assert "bao quát đủ các khoản/ý trực tiếp của target" in prompt
     assert "không biến mục gần nghĩa thành target mới" in prompt
-    assert "không tính lại, nội suy hoặc chuyển số liệu từ cohort khác" in prompt
+    assert "Nguồn hiện có chưa trực tiếp xác lập" in prompt
+    assert "Sổ tay chưa nêu trực tiếp" not in prompt
+    assert "evidence đã được cấp cho đơn vị" in prompt
+    assert "không tính lại, nội suy hoặc mượn số liệu từ đơn vị khác" in prompt
     assert '"article_label": "Điều 16"' in prompt
+
+
+def test_resolved_structured_result_is_explicit_in_authorized_packet() -> None:
+    resolved_result = {
+        "result": {
+            "certificate": "IELTS",
+            "matched_level": "bac_4",
+            "matched_value": 6.0,
+        }
+    }
+    citation = {
+        "chunk_id": "K50_Dieu8",
+        "source_parent_id": "K50_Dieu8",
+        "cohort": "K51",
+        "source_cohort": "K50",
+        "applicable_cohorts": ["K51"],
+        "applicability_validated": True,
+        "supports_task_ids": ["t1"],
+        "content": '{"rows":[{"certificate":"IELTS"}]}',
+        "resolved_result": resolved_result,
+    }
+    packet = build_authorized_evidence_packet(
+        query="IELTS 6.0 tương đương bậc mấy?",
+        retrieval_result={
+            "query_plan": {
+                "tasks": [
+                    {
+                        "id": "t1",
+                        "question": "IELTS 6.0 tương đương bậc mấy?",
+                        "mode": "structured",
+                        "cohorts": ["K51"],
+                    }
+                ]
+            },
+            "task_results": [{"task_id": "t1", "coverage": "covered"}],
+            "coverage_by_task": {"t1": "covered"},
+            "evidence_citations": [citation],
+        },
+        selected_citations=[citation],
+        max_context_chars=10000,
+        fallback_cohort="K51",
+    )
+
+    assert packet["units"][0]["primary_evidence"][0]["resolved_result"] == resolved_result
 
 
 def test_prompt_separates_distinct_scopes_without_case_specific_rules() -> None:

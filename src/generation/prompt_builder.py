@@ -17,7 +17,7 @@ from .context_allocation import ContextAllocationConfig
 
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.16-unit-first-evidence-budget"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.18-contract-cleanup"
 
 
 def build_answer_prompt(
@@ -58,8 +58,8 @@ QUY TẮC BẮT BUỘC
 4. Không coi hai khái niệm là tương đương hoặc là tên gọi thay thế, kể cả khi đặt trong ngoặc, trừ khi nguồn trực tiếp định nghĩa như vậy. Nếu yêu cầu hoặc evidence có nhiều cơ chế hay phạm vi, hãy gọi tên và trình bày riêng từng phần, giữ đúng điều kiện và ngoại lệ tương ứng.
 5. Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp, hãy trình bày rõ từng trường hợp có căn cứ và nêu thông tin còn thiếu để xác định trường hợp của người dùng; không tự đoán hoặc trả lời có/không tuyệt đối.
 6. Khi evidence có article_label, nêu đúng article_label tại phần kết luận mà nguồn đó trực tiếp hỗ trợ. Không tự tạo Điều/khoản/điểm và không liệt kê các nguồn không được dùng để trả lời.
-7. Với câu hỏi có/không, chỉ được trả lời có/không khi evidence trực tiếp cho phép hoặc cấm đúng hành vi/kết quả được hỏi. Lịch, thời hạn, điều kiện, quy trình, yêu cầu phê duyệt và việc nguồn không nói "được phép" đều không đủ để suy ra lệnh cấm. Nếu thiếu căn cứ trực tiếp, bắt buộc nói "Sổ tay chưa nêu trực tiếp..." rồi chỉ trình bày thông tin liên quan mà nguồn thực sự xác lập.
-8. Nếu evidence chỉ gần chủ đề hoặc không đủ cho một phần, hãy nói rõ phần đó chưa tìm thấy căn cứ; trả lời partial hoặc abstain, không đổi câu hỏi sang khái niệm gần nghĩa.
+7. Với câu hỏi có/không, chỉ được trả lời có/không khi evidence trực tiếp cho phép hoặc cấm đúng hành vi/kết quả được hỏi. Lịch, thời hạn, điều kiện, quy trình, yêu cầu phê duyệt và việc nguồn không nói "được phép" đều không đủ để suy ra lệnh cấm. Nếu thiếu căn cứ trực tiếp, bắt buộc nói "Nguồn hiện có chưa trực tiếp xác lập..." rồi chỉ trình bày thông tin liên quan mà nguồn thực sự xác lập.
+8. Nếu evidence không đủ cho một ý thực sự được hỏi, nói chưa tìm thấy căn cứ cho ý đó; không đổi target và không suy "Sổ tay không quy định" chỉ vì packet không chứa thông tin ngoài target.
 9. Nếu nguồn chỉ dẫn chiếu sang văn bản khác mà không trực tiếp liệt kê đối tượng, điều kiện hoặc giá trị được hỏi, phải nói rõ nguồn hiện có không liệt kê nội dung đó và nêu văn bản được dẫn chiếu; không trình bày câu dẫn chiếu như thể đã trả lời danh sách.
 10. Khi evidence có role=target, phải bao quát đủ các khoản/ý trực tiếp của target. Nếu chỉ có role=candidate, trả lời thận trọng trong phạm vi evidence và không biến mục gần nghĩa thành target mới.
 
@@ -68,7 +68,7 @@ QUY CÁCH
 - Không chèn mã nguồn như [S1] vào câu trả lời; giao diện hiển thị nguồn riêng.
 - Với đơn vị mode=structured, chỉ nêu kết quả trực tiếp và giải thích cần thiết; không sao chép toàn bộ bảng, danh mục hoặc structured JSON vào Markdown vì giao diện đã hiển thị dữ liệu đó riêng.
 - Nếu structured evidence có resolved_result, phải sao chép chính xác kết quả đó; không tự chọn lại hàng hoặc tính lại từ bảng đầy đủ.
-- Mọi số liệu phải lấy nguyên từ evidence đúng cohort của đơn vị; không tính lại, nội suy hoặc chuyển số liệu từ cohort khác.
+- Mọi số liệu phải lấy nguyên từ evidence đã được cấp cho đơn vị; không tính lại, nội suy hoặc mượn số liệu từ đơn vị khác.
 - Dùng Markdown có chọn lọc: in đậm kết luận chính, số liệu, thời hạn và điều kiện quan trọng; dùng danh sách khi có nhiều bước, điều kiện hoặc trường hợp. Không in đậm cả đoạn.
 - Với coverage=needs_clarification, chỉ nêu clarification_question của đơn vị đó.
 - Với coverage=uncovered hoặc không có source_ref được phép, nói chưa tìm thấy căn cứ cho đúng ý đó.
@@ -355,6 +355,11 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
             or metadata.get("applicability_validated")
         ),
         "applicability": citation.get("applicability") or metadata.get("applicability"),
+        **(
+            {"resolved_result": citation["resolved_result"]}
+            if citation.get("resolved_result") is not None
+            else {}
+        ),
         "source_pages": citation.get("source_pages") or metadata.get("source_pages") or [],
         "supports_task_ids": [str(task_id) for task_id in supports_task_ids],
         "content": strip_misattached_amendment_notes(

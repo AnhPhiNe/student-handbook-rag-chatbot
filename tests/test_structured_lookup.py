@@ -413,7 +413,12 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertIn("Nghe, Đọc", resolution.result["clarification_question"])
 
     def test_scholarship_policy_schema_is_versioned_by_cohort(self) -> None:
-        legacy = next(
+        legacy_k48_k49 = next(
+            table
+            for table in build_scoring_tables("K48-K49")
+            if table.get("table_id") == "scholarship_classification"
+        )
+        legacy_k50 = next(
             table
             for table in build_scoring_tables("K50")
             if table.get("table_id") == "scholarship_classification"
@@ -424,8 +429,17 @@ class StructuredLookupTest(unittest.TestCase):
             if table.get("table_id") == "scholarship_classification"
         )
 
-        self.assertEqual(legacy["schema_variant"], "score_ranges")
-        self.assertIn("scholarship_score_range", legacy["rows"][0])
+        self.assertEqual(legacy_k50["schema_variant"], "score_ranges")
+        self.assertIn("scholarship_score_range", legacy_k50["rows"][0])
+        self.assertEqual(
+            [row["scholarship_score_range"] for row in legacy_k48_k49["rows"]],
+            ["2.56-3.352", "3.20-3.672", "3.60-4.0"],
+        )
+        self.assertEqual(
+            [row["scholarship_score_range"] for row in legacy_k50["rows"]],
+            ["2.56-3.35", "3.20-3.67", "3.60-4.0"],
+        )
+        self.assertEqual(legacy_k50["source_pages"], [71, 72, 73])
         self.assertEqual(amended["schema_variant"], "classification_matrix")
         self.assertEqual(len(amended["rows"]), 6)
         self.assertEqual(amended["source_pages"], [70, 71, 72])
@@ -443,7 +457,20 @@ class StructuredLookupTest(unittest.TestCase):
             for table in registry
             if table.get("table_id") == "scholarship_classification"
         }
-        self.assertIn("scholarship_score_range", registry_tables["K50"]["rows"][0])
+        self.assertEqual(
+            [
+                row["scholarship_score_range"]
+                for row in registry_tables["K48-K49"]["rows"]
+            ],
+            ["2.56-3.352", "3.20-3.672", "3.60-4.0"],
+        )
+        self.assertEqual(
+            [
+                row["scholarship_score_range"]
+                for row in registry_tables["K50"]["rows"]
+            ],
+            ["2.56-3.35", "3.20-3.67", "3.60-4.0"],
+        )
         self.assertEqual(len(registry_tables["K51"]["rows"]), 6)
         self.assertTrue(
             all(

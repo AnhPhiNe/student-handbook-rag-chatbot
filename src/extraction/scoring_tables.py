@@ -148,6 +148,35 @@ def _scholarship_classification_table(cohort: str) -> dict[str, Any]:
             ],
         }
 
+    if cohort == "K50":
+        return {
+            "table_id": "scholarship_classification",
+            "table_name": "Xếp loại học bổng khuyến khích học tập",
+            "source_pages": [71, 72, 73],
+            "review_status": "source_verified",
+            "schema_variant": "score_ranges",
+            "rows": [
+                {
+                    "label": "Khá",
+                    "scholarship_score_range": "2.56-3.35",
+                    "academic_score_range": "2.50-3.19",
+                    "conduct_score_condition": ">=70",
+                },
+                {
+                    "label": "Giỏi",
+                    "scholarship_score_range": "3.20-3.67",
+                    "academic_score_range": "3.20-3.59",
+                    "conduct_score_condition": ">=80",
+                },
+                {
+                    "label": "Xuất sắc",
+                    "scholarship_score_range": "3.60-4.0",
+                    "academic_score_range": "3.60-4.0",
+                    "conduct_score_condition": ">=90",
+                },
+            ],
+        }
+
     return {
         "table_id": "scholarship_classification",
         "table_name": "Xếp loại học bổng khuyến khích học tập",

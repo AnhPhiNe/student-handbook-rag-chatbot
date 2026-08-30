@@ -1,7 +1,7 @@
 {
   "version": "architecture-v4.0-comprehensive-answer-evaluation",
   "frozen": true,
-  "created_at_utc": "2026-08-29T13:03:54.386570+00:00",
+  "created_at_utc": "2026-08-30T03:56:44.697760+00:00",
   "description": "Comprehensive source-grounded answer evaluation with realistic RAG, all structured lookup groups, related mixed tasks, clarification, in-domain abstention, and out-of-domain handling.",
   "counts": {
     "deterministic": 144,
@@ -20,14 +20,14 @@
     "ragas_subset": "7bff702fee3c383e824a3913ea00834b45cb5e6a862d9881115fc0f8f0819176",
     "coverage_report": "7d83ae46a831f325a098608422cfd4cd48518fc228c418f9a79c6cd9e4c1c24f"
   },
-  "git_commit": "40205fa041be1f3fe0e22313d3973a9a7af998bb",
+  "git_commit": "69bb7debc9f4fa721ef224ad804655df26ef70f7",
   "config_hashes": {
     "answer_generation": "6ef914cd5a5714f05966bd9e9e478095eb2042adc55c3814d45dc4b8542188dc",
     "retrieval": "c4069c06c8f2bb99f8097ab737db4293ad1b98fe4b5e5d88fc30c0023cc650e5",
     "ai_router": "613dcbf5937b1566b72e405d6e5156bf622235d63ddc8e2292fc71c39052b9f4",
-    "structured_lookup_registry": "49abac6c534f2f32b5af54eeaa4a7d3dc684a3ebc522415699e30aa67521296c"
+    "structured_lookup_registry": "e1e8d384edaa21a7bbff3c34c46f8c914be66019e44812a915e78f22b01a6c44"
   },
-  "docstore_hash": "f160a4bc2892183555532ae563b348ba1691471aa8da012b955844ad82b6828b",
+  "docstore_hash": "763ccb8f5b613450b3cc4bea27bc20bb698fa1f8a90f7b348fe70cbafe4a8669",
   "generation_provider": "gemini",
   "generation_model": "gemini-3.1-flash-lite",
   "router_provider": "groq",

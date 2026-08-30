@@ -86,6 +86,21 @@ def test_frozen_final_bundle_is_compatible_with_current_sources() -> None:
     }
 
 
+def test_frozen_architecture_v5_holdout_is_valid() -> None:
+    result = validate_bundle(
+        ROOT / "data" / "eval" / "architecture_v5_holdout",
+        _require_docstore_artifact(),
+        enforce_docstore_hash=True,
+    )
+    assert result["valid"], result["errors"]
+    assert result["counts"] == {
+        "deterministic": 140,
+        "retrieval": 160,
+        "answers": 150,
+        "production": 60,
+    }
+
+
 def test_frozen_architecture_v4_bundle_is_valid() -> None:
     bundle = ROOT / "data" / "eval" / "architecture_v4"
     if not bundle.is_dir():

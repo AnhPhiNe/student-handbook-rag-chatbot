@@ -1,0 +1,215 @@
+{
+  "contract": "frozen-holdout-overlap-audit-v1",
+  "ok": true,
+  "old_json_files_scanned": 212,
+  "old_unique_queries": 902,
+  "new_query_rows": 510,
+  "exact_query_overlap_count": 0,
+  "exact_query_overlaps": [],
+  "retrieval_anchor_id_overlap_count": 0,
+  "retrieval_topic_group_overlap_count": 0,
+  "max_lexical_similarity": 0.907606,
+  "top_25_lexical_matches": [
+    {
+      "id": "v5_ret_061",
+      "suite": "retrieval",
+      "query": "Theo Điều 22. của Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, mục Trạm Y tế quy định gì cho sinh viên K48-K49?",
+      "max_char_trigram_cosine": 0.907606,
+      "closest_old_query": "Cho em hỏi quy định chính về Học bổng trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh áp dụng cho sinh viên K48-K49?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ret_044",
+      "suite": "retrieval",
+      "query": "k48-k49: phong cong tac chinh tri va hoc sinh, sinh vien trong quy che cong tac sinh vien doi voi chuong trinh dao tao dai hoc he chinh quy truong dai hoc su pham thanh pho ho chi minh quy dinh sao?",
+      "max_char_trigram_cosine": 0.901116,
+      "closest_old_query": "Cho tui hỏi sinh viên K48-K49: hoi dong khen thuong va ky luat sinh vien trong quy che cong tac sinh vien doi voi chuong trinh dao tao dai hoc he chinh quy truong dai hoc su pham thanh pho ho chi minh áp dụng thế nào?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ans_rag_004",
+      "suite": "answers",
+      "query": "k48-k49: phong cong tac chinh tri va hoc sinh, sinh vien trong quy che cong tac sinh vien doi voi chuong trinh dao tao dai hoc he chinh quy truong dai hoc su pham thanh pho ho chi minh quy dinh sao?",
+      "max_char_trigram_cosine": 0.901116,
+      "closest_old_query": "Cho tui hỏi sinh viên K48-K49: hoi dong khen thuong va ky luat sinh vien trong quy che cong tac sinh vien doi voi chuong trinh dao tao dai hoc he chinh quy truong dai hoc su pham thanh pho ho chi minh áp dụng thế nào?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_prod_cold_09",
+      "suite": "production",
+      "query": "k48-k49: phong cong tac chinh tri va hoc sinh, sinh vien trong quy che cong tac sinh vien doi voi chuong trinh dao tao dai hoc he chinh quy truong dai hoc su pham thanh pho ho chi minh quy dinh sao?",
+      "max_char_trigram_cosine": 0.901116,
+      "closest_old_query": "Cho tui hỏi sinh viên K48-K49: hoi dong khen thuong va ky luat sinh vien trong quy che cong tac sinh vien doi voi chuong trinh dao tao dai hoc he chinh quy truong dai hoc su pham thanh pho ho chi minh áp dụng thế nào?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ret_060",
+      "suite": "retrieval",
+      "query": "k48-k49: trung tam ho tro sinh vien va phat trien khoi nghiep trong quy che cong tac sinh vien doi voi chuong trinh dao tao dai hoc he chinh quy truong dai hoc su pham thanh pho ho chi minh quy dinh sao?",
+      "max_char_trigram_cosine": 0.895394,
+      "closest_old_query": "Cho tui hỏi sinh viên K48-K49: hoi dong khen thuong va ky luat sinh vien trong quy che cong tac sinh vien doi voi chuong trinh dao tao dai hoc he chinh quy truong dai hoc su pham thanh pho ho chi minh áp dụng thế nào?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ret_057",
+      "suite": "retrieval",
+      "query": "Theo Điều 7. của Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, mục Nhiệm vụ của sinh viên quy định gì cho sinh viên K48-K49?",
+      "max_char_trigram_cosine": 0.893678,
+      "closest_old_query": "Cho em hỏi quy định chính về Học bổng trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh áp dụng cho sinh viên K48-K49?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ans_rag_017",
+      "suite": "answers",
+      "query": "Theo Điều 7. của Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, mục Nhiệm vụ của sinh viên quy định gì cho sinh viên K48-K49?",
+      "max_char_trigram_cosine": 0.893678,
+      "closest_old_query": "Cho em hỏi quy định chính về Học bổng trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh áp dụng cho sinh viên K48-K49?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ret_017",
+      "suite": "retrieval",
+      "query": "Theo Điều 3. của Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, mục Yêu cầu về hoạt động nghiên cứu khoa học của sinh viên quy định gì cho sinh viên HCMUE?",
+      "max_char_trigram_cosine": 0.890052,
+      "closest_old_query": "Cho em hỏi quy định chính về Chuyển đổi điểm nghiên cứu khoa học của sinh viên trong Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên áp dụng cho sinh viên HCMUE?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ans_rag_071",
+      "suite": "answers",
+      "query": "Theo Điều 3. của Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, mục Yêu cầu về hoạt động nghiên cứu khoa học của sinh viên quy định gì cho sinh viên HCMUE?",
+      "max_char_trigram_cosine": 0.890052,
+      "closest_old_query": "Cho em hỏi quy định chính về Chuyển đổi điểm nghiên cứu khoa học của sinh viên trong Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên áp dụng cho sinh viên HCMUE?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ret_041",
+      "suite": "retrieval",
+      "query": "Theo Điều 28. của Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, mục Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập quy định gì cho sinh viên K48-K49?",
+      "max_char_trigram_cosine": 0.887386,
+      "closest_old_query": "Cho em hỏi quy định chính về Học bổng trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh áp dụng cho sinh viên K48-K49?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ans_rag_001",
+      "suite": "answers",
+      "query": "Theo Điều 28. của Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, mục Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập quy định gì cho sinh viên K48-K49?",
+      "max_char_trigram_cosine": 0.887386,
+      "closest_old_query": "Cho em hỏi quy định chính về Học bổng trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh áp dụng cho sinh viên K48-K49?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_prod_cold_06",
+      "suite": "production",
+      "query": "Theo Điều 28. của Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, mục Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập quy định gì cho sinh viên K48-K49?",
+      "max_char_trigram_cosine": 0.887386,
+      "closest_old_query": "Cho em hỏi quy định chính về Học bổng trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh áp dụng cho sinh viên K48-K49?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_prod_warm_02",
+      "suite": "production",
+      "query": "Theo Điều 28. của Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, mục Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập quy định gì cho sinh viên K48-K49?",
+      "max_char_trigram_cosine": 0.887386,
+      "closest_old_query": "Cho em hỏi quy định chính về Học bổng trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh áp dụng cho sinh viên K48-K49?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_prod_stream_01",
+      "suite": "production",
+      "query": "Theo Điều 28. của Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, mục Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập quy định gì cho sinh viên K48-K49?",
+      "max_char_trigram_cosine": 0.887386,
+      "closest_old_query": "Cho em hỏi quy định chính về Học bổng trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh áp dụng cho sinh viên K48-K49?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ans_mixed_002",
+      "suite": "answers",
+      "query": "Đối với K48-K49, mức tiền học bổng Giỏi dùng hệ số bao nhiêu; đồng thời k48-k49: trung tam ho tro sinh vien va phat trien khoi nghiep trong quy che cong tac sinh vien doi voi chuong trinh dao tao dai hoc he chinh quy truong dai hoc su pham thanh pho ho chi minh quy dinh sao?",
+      "max_char_trigram_cosine": 0.883354,
+      "closest_old_query": "Cho tui hỏi sinh viên K48-K49: hoi dong khen thuong va ky luat sinh vien trong quy che cong tac sinh vien doi voi chuong trinh dao tao dai hoc he chinh quy truong dai hoc su pham thanh pho ho chi minh áp dụng thế nào?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ret_121",
+      "suite": "retrieval",
+      "query": "Theo Điều 9. của Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt, mục Thu hồi kinh phí hỗ trợ quy định gì cho sinh viên K51?",
+      "max_char_trigram_cosine": 0.881639,
+      "closest_old_query": "Sinh viên K51 cần lưu ý gì về Bồi hoàn kinh phí hỗ trợ trong Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt theo sổ tay?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ans_rag_037",
+      "suite": "answers",
+      "query": "Theo Điều 9. của Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt, mục Thu hồi kinh phí hỗ trợ quy định gì cho sinh viên K51?",
+      "max_char_trigram_cosine": 0.881639,
+      "closest_old_query": "Sinh viên K51 cần lưu ý gì về Bồi hoàn kinh phí hỗ trợ trong Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt theo sổ tay?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_prod_cold_16",
+      "suite": "production",
+      "query": "Theo Điều 9. của Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt, mục Thu hồi kinh phí hỗ trợ quy định gì cho sinh viên K51?",
+      "max_char_trigram_cosine": 0.881639,
+      "closest_old_query": "Sinh viên K51 cần lưu ý gì về Bồi hoàn kinh phí hỗ trợ trong Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt theo sổ tay?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_prod_warm_04",
+      "suite": "production",
+      "query": "Theo Điều 9. của Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt, mục Thu hồi kinh phí hỗ trợ quy định gì cho sinh viên K51?",
+      "max_char_trigram_cosine": 0.881639,
+      "closest_old_query": "Sinh viên K51 cần lưu ý gì về Bồi hoàn kinh phí hỗ trợ trong Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt theo sổ tay?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_prod_stream_07",
+      "suite": "production",
+      "query": "Theo Điều 9. của Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt, mục Thu hồi kinh phí hỗ trợ quy định gì cho sinh viên K51?",
+      "max_char_trigram_cosine": 0.881639,
+      "closest_old_query": "Sinh viên K51 cần lưu ý gì về Bồi hoàn kinh phí hỗ trợ trong Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt theo sổ tay?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ret_045",
+      "suite": "retrieval",
+      "query": "Theo Điều 36. của Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, mục Trình tự, thủ tục và hồ sơ xét kỷ luật quy định gì cho sinh viên K48-K49?",
+      "max_char_trigram_cosine": 0.879791,
+      "closest_old_query": "Cho em hỏi quy định chính về Học bổng trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh áp dụng cho sinh viên K48-K49?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ans_rag_005",
+      "suite": "answers",
+      "query": "Theo Điều 36. của Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, mục Trình tự, thủ tục và hồ sơ xét kỷ luật quy định gì cho sinh viên K48-K49?",
+      "max_char_trigram_cosine": 0.879791,
+      "closest_old_query": "Cho em hỏi quy định chính về Học bổng trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh áp dụng cho sinh viên K48-K49?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_prod_cold_10",
+      "suite": "production",
+      "query": "Theo Điều 36. của Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, mục Trình tự, thủ tục và hồ sơ xét kỷ luật quy định gì cho sinh viên K48-K49?",
+      "max_char_trigram_cosine": 0.879791,
+      "closest_old_query": "Cho em hỏi quy định chính về Học bổng trong Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh áp dụng cho sinh viên K48-K49?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ret_052",
+      "suite": "retrieval",
+      "query": "k48-k49: phong khao thi va dam bao chat luong trong quy che cong tac sinh vien doi voi chuong trinh dao tao dai hoc he chinh quy truong dai hoc su pham thanh pho ho chi minh quy dinh sao?",
+      "max_char_trigram_cosine": 0.878366,
+      "closest_old_query": "Cho tui hỏi sinh viên K48-K49: hoi dong khen thuong va ky luat sinh vien trong quy che cong tac sinh vien doi voi chuong trinh dao tao dai hoc he chinh quy truong dai hoc su pham thanh pho ho chi minh áp dụng thế nào?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    },
+    {
+      "id": "v5_ret_091",
+      "suite": "retrieval",
+      "query": "Cho em hỏi quy định về tài chính cho hoạt động nghiên cứu khoa học của sinh viên áp dụng thế nào cho sinh viên K50?",
+      "max_char_trigram_cosine": 0.878366,
+      "closest_old_query": "Cho em hỏi quy định chính về Chuyển đổi điểm nghiên cứu khoa học của sinh viên trong Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên áp dụng cho sinh viên HCMUE?",
+      "closest_old_path": "data/eval/architecture_v4/generated_answer_cases.json"
+    }
+  ],
+  "policy": "Exact query overlap and retrieval topic-group overlap are forbidden. High lexical matches are disclosed for manual review, not silently discarded."
+}

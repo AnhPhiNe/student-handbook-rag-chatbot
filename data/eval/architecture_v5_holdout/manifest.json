@@ -1,0 +1,110 @@
+{
+  "version": "architecture-v5.0-unseen-one-shot-holdout",
+  "frozen": true,
+  "created_at_utc": "2026-08-30T10:40:02.886330+00:00",
+  "evaluated_system_commit": "71e5ad5ca68142d4c583082bee6585089cc33c1b",
+  "description": "Unseen, source-grounded one-shot evaluation frozen after v32 deployment.",
+  "counts": {
+    "deterministic": 140,
+    "retrieval": 160,
+    "answers": 150,
+    "production": 60
+  },
+  "dataset_hashes": {
+    "deterministic": "9a0dec897452362eb8848a8d733719af3b2d19717714975e5226ed6b7d48c9d2",
+    "retrieval": "466b438026cada97109bdb216e6dcd97b193653ea0c18d40618f6159eaeb07c1",
+    "answers": "796dfbce030613b2ef643f2cdd3932af39a2c80ba6a99459619b35098c463ada",
+    "production": "dda2bdc13eaba0f70e06c536cf3f272706c363704ba3ab616bb1fa9e3f4b3a26"
+  },
+  "auxiliary_hashes": {
+    "ragas_subset": "65de7483e24d63b7d898b5478cdfc6deb7a972f94fd1b3177f2056ed8f0b0fb3",
+    "human_audit_template": "7764f8ad7c394dabe31c2a32af5d9c36d1ae3711e3ad69efb4bbb87d9a490e50",
+    "overlap_audit": "6e2a2870d9d4142ace50870b020c7468dcb940f2929325d79243ca255894524c",
+    "coverage_report": "2a53992fad1031d6aff724a0c6edc685ae047a8b4843638b9c38b7c433a59cc9"
+  },
+  "docstore_hash": "4d410553cfaddeaef51fc096ffd0025d52e585b4c5dfe7ee0807e73570648143",
+  "config_hashes": {
+    "answer_generation": "6ef914cd5a5714f05966bd9e9e478095eb2042adc55c3814d45dc4b8542188dc",
+    "retrieval": "c4069c06c8f2bb99f8097ab737db4293ad1b98fe4b5e5d88fc30c0023cc650e5",
+    "ai_router": "613dcbf5937b1566b72e405d6e5156bf622235d63ddc8e2292fc71c39052b9f4",
+    "structured_lookup_registry": "74e7a22b878eb6e4acb8ed9048410ae57a3899d26239c1bfa06002a2bafca708"
+  },
+  "generation_provider": "gemini",
+  "generation_model": "gemini-3.1-flash-lite",
+  "router_provider": "groq",
+  "router_model": "qwen/qwen3.6-27b",
+  "judge_provider": "groq",
+  "judge_model": "openai/gpt-oss-120b",
+  "headline_backend": "qdrant_cloud+mongodb",
+  "strict_structured_sources": true,
+  "strict_cohort_conflicts": true,
+  "strict_query_duplicates": true,
+  "holdout_policy": "single_run_no_post_tuning",
+  "previous_suites_are_development_only": true,
+  "source_build_id": "build-02a2eed8dae5b4307427",
+  "source_qdrant_collection": "student_handbook_semantic_v32",
+  "source_mongo_collection": "parent_docs_v32",
+  "evaluation_contract": "unseen-one-shot-source-grounded-v5",
+  "deterministic_contract": "query-plan-unseen-holdout-v5",
+  "retrieval_contract": "regulation-rag-source-first-v3",
+  "answer_contract": "answer-quality-unseen-holdout-v5",
+  "deterministic_case_type_counts": {
+    "positive": 60,
+    "hard_negative": 36,
+    "ambiguous": 12,
+    "out_of_domain": 8,
+    "architecture": 24
+  },
+  "deterministic_positive_lookup_counts": {
+    "foreign_language": 6,
+    "study_duration": 6,
+    "scholarship": 6,
+    "scoring": 6,
+    "service": 6,
+    "office": 6,
+    "program": 6,
+    "faculty": 6,
+    "conduct": 6,
+    "formula": 6
+  },
+  "retrieval_cohort_counts": {
+    "K48-K49": 40,
+    "K50": 40,
+    "K51": 40,
+    "general": 40
+  },
+  "retrieval_eval_split_counts": {
+    "realistic": 120,
+    "stress": 40
+  },
+  "retrieval_forbidden_query_fragments": [
+    "hệ thống cần tìm đúng điều nào",
+    "nội dung chính trong sổ tay là gì",
+    "hỏi về general"
+  ],
+  "max_parent_query_usage": 2,
+  "answer_case_type_counts": {
+    "regulation_true_rag": 72,
+    "structured_answer": 30,
+    "mixed_answer": 18,
+    "clarification": 10,
+    "unanswerable": 10,
+    "out_of_domain": 10
+  },
+  "answer_path_counts": {
+    "regulation_rag": 82,
+    "structured": 30,
+    "mixed": 18,
+    "clarify": 10,
+    "out_of_domain": 10
+  },
+  "answer_eval_split_counts": {
+    "realistic": 101,
+    "stress": 49
+  },
+  "human_audit_required_n": 40,
+  "human_audit_repeat_n": 5,
+  "human_audit_plus_all_automatic_failures": true,
+  "ragas_subset_n": 60,
+  "overlap_policy": "Exact query overlap and retrieval topic-group overlap are forbidden. High lexical matches are disclosed for manual review, not silently discarded."
+}

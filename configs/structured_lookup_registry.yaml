@@ -51,7 +51,7 @@ tools:
     data_category: regulation_table
     presentation_type: table
     selection_mode: table_first
-    description: "Hoc bong KKHT: dieu kien, xep loai, diem xep hang va muc tien. Xep loai GPA/hoc luc/ren luyen dung scoring."
+    description: "HBKKHT: dieu kien, xep loai, muc tien. Cong thuc diem dung formula; GPA/ren luyen dung scoring."
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
@@ -178,14 +178,14 @@ tools:
 
   formula:
     presentation_type: table
-    description: Tra cong thuc GPA; hoc bong dung scholarship_classification.
+    description: "Cong thuc: diem hoc bong=scholarship_score; GPA=gpa_weighted_average."
     intents: [formula]
     required_slots:
       formula: [formula_type]
     slot_schema:
       formula_type:
         type: string
-        enum: [gpa_weighted_average]
+        enum: [scholarship_score, gpa_weighted_average]
     strategy: formula_lookup
     response_intent: formula_query
     target_chunk_types: [structured_lookup]

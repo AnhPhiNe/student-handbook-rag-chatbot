@@ -40,6 +40,8 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
     assert "operand_requirements" not in prompt_registry
     assert "required=" in prompt_registry
     assert "values" in prompt_registry
+    assert 'formula_type":{"values":["scholarship_score","gpa_weighted_average"]}' in prompt_registry
+    assert "diem hoc bong=scholarship_score" in prompt_registry
 
 
 def test_router_contract_omits_fields_derived_by_code() -> None:
@@ -59,7 +61,7 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     )
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v32-ambiguity-contract"
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v34-contract-cleanup"
 
 
 def test_plan_cache_key_includes_normalizer_version(monkeypatch, tmp_path: Path) -> None:
@@ -117,9 +119,13 @@ def test_planner_prompt_treats_compare_as_presentation_and_slots_as_optional() -
     assert "không lọc hàng bên trong bảng đã chọn" in PLANNER_PROMPT_TEXT
 
 
+def test_planner_only_clarifies_genuinely_ambiguous_input() -> None:
+    assert "tham chiếu thật sự mơ hồ" in PLANNER_PROMPT_TEXT
+    assert "như loại cảnh báo" not in PLANNER_PROMPT_TEXT
+
+
 def test_planner_prompt_splits_independent_answer_targets() -> None:
-    assert "RAG HARD CONSTRAINT" in PLANNER_PROMPT_TEXT
-    assert "mỗi task.question chỉ chứa một subject/predicate" in PLANNER_PROMPT_TEXT
+    assert "Mỗi task.question chỉ chứa một yêu cầu có thể tra và trả lời độc lập" in PLANNER_PROMPT_TEXT
     assert "So sánh/tổng hợp A và B phải xuất hai task" in PLANNER_PROMPT_TEXT
     assert "Không chọn một mode chung cho toàn QUERY" in PLANNER_PROMPT_TEXT
     assert "Ngoại lệ duy nhất: nhiều entity" in PLANNER_PROMPT_TEXT
@@ -127,6 +133,12 @@ def test_planner_prompt_splits_independent_answer_targets() -> None:
     assert "mỗi answer target xuất hiện đúng một lần" in PLANNER_PROMPT_TEXT
     assert "có kết luận hoặc nguồn riêng" in PLANNER_PROMPT_TEXT
     assert "composer mới kết hợp" in PLANNER_PROMPT_TEXT
+
+
+def test_planner_limits_tool_contract_to_structured_tasks() -> None:
+    assert "Với structured, chỉ dùng lookup_type, intent và slots" in PLANNER_PROMPT_TEXT
+    assert "RAG và clarify tuân theo quy tắc riêng ở phần MODE" in PLANNER_PROMPT_TEXT
+    assert "Chỉ dùng lookup_type, intent, slots khai báo trong TOOLS" not in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_requires_grounded_slots_for_structured_mode() -> None:

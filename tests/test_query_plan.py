@@ -226,6 +226,28 @@ def test_single_rag_task_preserves_original_subject_and_predicate() -> None:
     assert plan["tasks"][0]["question"] == query
 
 
+def test_single_structured_task_preserves_original_qualifiers() -> None:
+    query = "Điểm học bổng loại Giỏi được tính như thế nào?"
+    task = {
+        **_rag_task(1, "Công thức tính điểm học bổng là gì?"),
+        "mode": "structured",
+        "intent": "formula",
+        "lookup_type": "formula",
+        "slots": {"formula_type": "scholarship_score"},
+        "slot_spans": {"formula_type": "Điểm học bổng"},
+    }
+
+    plan, errors = normalize_query_plan(
+        _plan([task]),
+        query=query,
+        selected_cohort="K50",
+    )
+
+    assert errors == []
+    assert plan["tasks"][0]["question"] == query
+    assert plan["tasks"][0]["slots"] == {"formula_type": "scholarship_score"}
+
+
 def test_invalid_lookup_is_clarified_but_reference_table_slots_are_optional() -> None:
     invalid = {
         **_rag_task(1),

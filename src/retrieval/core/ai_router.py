@@ -37,7 +37,7 @@ from .query_plan import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v32-ambiguity-contract"
+ROUTER_PROMPT_VERSION = "structured-regulation-v34-contract-cleanup"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -104,9 +104,9 @@ không trả lời.
 
 2. ANSWER TARGETS VÀ LOGICAL TASKS
 - Trước mode, tool hoặc cohort, xác định từng answer target có kết luận hoặc nguồn riêng.
-- RAG HARD CONSTRAINT: mỗi task.question chỉ chứa một subject/predicate retrieve
-  riêng. So sánh/tổng hợp A và B phải xuất hai task; composer mới kết hợp, kể cả
-  khi cùng domain hoặc nguồn.
+- Mỗi task.question chỉ chứa một yêu cầu có thể tra và trả lời độc lập.
+  So sánh/tổng hợp A và B phải xuất hai task; composer mới kết hợp, kể cả khi
+  cùng domain hoặc nguồn.
 - Không chọn một mode chung cho toàn QUERY.
 - Ngoại lệ duy nhất: nhiều entity được hỏi bằng cùng một structured lookup và
   cùng phép tra thì gộp trong một task; giữ đủ entity trong task.question.
@@ -131,19 +131,18 @@ không trả lời.
   chính sách áp dụng nói chung. Không chọn structured chỉ vì trùng từ chủ đề.
 - clarify: thiếu slot TOOLS đánh dấu required hoặc tham chiếu thật sự mơ hồ;
   không clarify vì slot tùy chọn. Chỉ clarify task bị thiếu thông tin.
-- Điều thiếu văn bản/chủ đề, hoặc thuật ngữ đa nghĩa chưa rõ domain (như loại
-  cảnh báo): clarify.
 - Mọi RAG task dùng intent=open_question và lookup_type=null. Clarify task cũng
   có lookup_type=null. Chỉ đặt out_of_domain=true khi toàn bộ QUERY ngoài sổ tay;
   nếu QUERY trộn trong/ngoài phạm vi, giữ các target trong phạm vi và bỏ phần ngoài.
 
 5. TỰ KIỂM TRA
-- Đối chiếu lại QUERY: mỗi answer target xuất hiện đúng một lần và không task nào
-  chứa hai kết quả có thể trả lời độc lập, trừ ngoại lệ multi-entity structured.
-- Không trộn structured và RAG trong một task.
+- Đối chiếu lại QUERY: mỗi answer target xuất hiện đúng một lần; mỗi task chỉ có
+  một mode và không chứa hai kết quả có thể trả lời độc lập, trừ ngoại lệ
+  multi-entity structured.
 - task.question tự đủ nghĩa; không thêm entity, số liệu, phủ định hay chủ đề.
 - slot_spans là chuỗi nguyên văn hoặc danh sách chuỗi; không xuất `{start,end}`.
-- Chỉ dùng lookup_type, intent, slots khai báo trong TOOLS.
+- Với structured, chỉ dùng lookup_type, intent và slots khai báo trong TOOLS.
+  RAG và clarify tuân theo quy tắc riêng ở phần MODE.
 - CATALOG_HINT là metadata đã được grounding; chỉ dùng cho task liên quan, không
   dùng hint để tạo yêu cầu, intent hay slot mới.
 """

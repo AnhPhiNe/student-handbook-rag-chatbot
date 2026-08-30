@@ -19,7 +19,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v9-bare-article-clarification"
+QUERY_PLAN_NORMALIZER_VERSION = "v10-standalone-task-identity"
 MAX_QUERY_TASKS = 3
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
 
@@ -347,9 +347,9 @@ def normalize_query_plan(
     if (
         context_mode == "standalone"
         and len(tasks) == 1
-        and tasks[0].get("mode") == "rag"
+        and tasks[0].get("mode") in {"rag", "structured"}
     ):
-        # A single RAG task has no decomposition benefit from rewriting its
+        # A single task has no decomposition benefit from rewriting its
         # question. Reuse the original user query so a planner paraphrase at
         # either task or top-plan level cannot silently change the subject or
         # predicate before retrieval.

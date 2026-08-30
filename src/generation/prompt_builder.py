@@ -17,7 +17,7 @@ from .context_allocation import ContextAllocationConfig
 
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.19-explicit-article-target"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.20-target-priority"
 
 
 def build_answer_prompt(
@@ -405,7 +405,13 @@ def _assign_evidence_roles(
 
     if target_index is None:
         return [{**source, "role": "candidate"} for source in sources]
-    return [{**sources[target_index], "role": "target"}]
+    return [
+        {
+            **source,
+            "role": "target" if index == target_index else "candidate",
+        }
+        for index, source in enumerate(sources)
+    ]
 
 
 def _fold_text(value: Any) -> str:

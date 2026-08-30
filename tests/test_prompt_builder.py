@@ -723,8 +723,14 @@ def test_unit_budget_is_computed_after_task_cohort_and_target_filtering() -> Non
         if unit["task_id"] == "t1" and unit["cohort"] == "K51"
     )
     assert len(citations) == 45
-    assert len(target_unit["primary_evidence"]) == 1
-    assert target_unit["primary_evidence"][0]["role"] == "target"
+    assert len(target_unit["primary_evidence"]) == 5
+    assert [source["role"] for source in target_unit["primary_evidence"]] == [
+        "target",
+        "candidate",
+        "candidate",
+        "candidate",
+        "candidate",
+    ]
     assert "TARGET_TAIL_PRESERVED" in target_unit["primary_evidence"][0]["content"]
 
 

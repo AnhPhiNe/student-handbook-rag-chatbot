@@ -79,6 +79,31 @@ CASES: list[dict[str, Any]] = [
         "required_modes": {"clarify"},
         "expected_task_cohorts": {"K51"},
     },
+    {
+        "id": "formula_without_formula_keyword",
+        "query": "Điểm dùng để xét học bổng ở K50 kết hợp điểm học tập và rèn luyện ra sao?",
+        "min_tasks": 1,
+        "max_tasks": 1,
+        "required_modes": {"structured"},
+        "required_lookup_types": {"formula"},
+        "expected_task_cohorts": {"K50"},
+    },
+    {
+        "id": "one_policy_process_multiple_facets",
+        "query": "Điểm thi kết thúc học phần của K50 được công bố và phúc khảo ra sao?",
+        "min_tasks": 1,
+        "max_tasks": 1,
+        "required_modes": {"rag"},
+        "expected_task_cohorts": {"K50"},
+    },
+    {
+        "id": "regulatory_responsibility_not_directory",
+        "query": "Hồ sơ hỗ trợ sinh viên khuyết tật K48-K49 được tiếp nhận theo trách nhiệm nào?",
+        "min_tasks": 1,
+        "max_tasks": 1,
+        "required_modes": {"rag"},
+        "expected_task_cohorts": {"K48-K49"},
+    },
 ]
 
 
@@ -112,6 +137,16 @@ def _plan_checks(case: dict[str, Any], plan: dict[str, Any]) -> list[str]:
     missing_modes = set(case.get("required_modes") or set()) - modes
     if missing_modes:
         failures.append(f"missing_modes={sorted(missing_modes)}")
+    lookup_types = {
+        str(task.get("lookup_type"))
+        for task in tasks
+        if task.get("lookup_type") is not None
+    }
+    missing_lookup_types = (
+        set(case.get("required_lookup_types") or set()) - lookup_types
+    )
+    if missing_lookup_types:
+        failures.append(f"missing_lookup_types={sorted(missing_lookup_types)}")
     expected_cohorts = set(case.get("expected_task_cohorts") or set())
     if expected_cohorts:
         for task in tasks:

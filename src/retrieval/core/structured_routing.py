@@ -494,6 +494,14 @@ def _span_is_grounded(span: Any, source_text: str) -> bool:
     return bool(normalized) and normalized in _normalize_text(source_text)
 
 
+def _span_is_only_cohort(span: Any) -> bool:
+    if isinstance(span, dict):
+        return bool(span) and all(_span_is_only_cohort(value) for value in span.values())
+    if isinstance(span, list):
+        return bool(span) and all(_span_is_only_cohort(value) for value in span)
+    return bool(build_cohort_token_regex().fullmatch(str(span).strip()))
+
+
 def _matches_type(value: Any, expected: str) -> bool:
     if expected == "string":
         if isinstance(value, str):
@@ -516,7 +524,12 @@ def _matches_type(value: Any, expected: str) -> bool:
 
 def _validate_slot_contract(slots: dict[str, Any], spec: dict[str, Any]) -> list[str]:
     errors: list[str] = []
-    for slot_name, schema in (spec.get("slot_schema") or {}).items():
+    slot_schema = spec.get("slot_schema") or {}
+    for slot_name in slots:
+        if slot_name not in slot_schema:
+            errors.append(f"unknown_slot:{slot_name}")
+
+    for slot_name, schema in slot_schema.items():
         if slot_name not in slots:
             continue
         value = slots[slot_name]
@@ -601,6 +614,10 @@ def validate_router_decision(
 
     slots = decision.get("slots") or {}
     spans = decision.get("slot_spans") or {}
+    declared_slots = set((spec.get("slot_schema") or {}).keys())
+    for slot_name in spans:
+        if slot_name not in declared_slots:
+            errors.append(f"unknown_slot_span:{slot_name}")
     contract_intent = (
         intent if intent in allowed_intents else spec.get("default_intent")
     )
@@ -616,12 +633,24 @@ def validate_router_decision(
             errors.append(f"missing_slot_span:{slot_name}")
         elif not _span_is_grounded(spans[slot_name], source_text):
             errors.append(f"ungrounded_slot:{slot_name}")
+        elif _span_is_only_cohort(spans[slot_name]):
+            errors.append(f"misgrounded_slot:{slot_name}")
 
-    for slot_name, span in spans.items():
-        if slot_name in required or slot_name in UNGROUNDED_SCHEMA_SLOTS:
+    for slot_name, value in slots.items():
+        if (
+            slot_name in required
+            or slot_name in UNGROUNDED_SCHEMA_SLOTS
+            or slot_name not in declared_slots
+            or not _is_present(value)
+        ):
             continue
-        if _is_present(span) and not _span_is_grounded(span, source_text):
+        span = spans.get(slot_name)
+        if not _is_present(span):
+            errors.append(f"missing_slot_span:{slot_name}")
+        elif not _span_is_grounded(span, source_text):
             errors.append(f"ungrounded_slot:{slot_name}")
+        elif _span_is_only_cohort(span):
+            errors.append(f"misgrounded_slot:{slot_name}")
 
     errors.extend(_validate_slot_contract(slots, spec))
 

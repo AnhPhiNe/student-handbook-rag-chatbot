@@ -19,8 +19,9 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v10-standalone-task-identity"
+QUERY_PLAN_NORMALIZER_VERSION = "v11-slot-contract-hardening"
 MAX_QUERY_TASKS = 3
+MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
 
 _HANDBOOK_DOMAIN_PHRASES = (
@@ -131,7 +132,10 @@ def query_plan_response_schema() -> dict[str, Any]:
         "type": "object",
         "additionalProperties": False,
         "properties": {
-            "schema_version": {"type": "string"},
+            "schema_version": {
+                "type": "string",
+                "enum": [QUERY_PLAN_SCHEMA_VERSION],
+            },
             "context_mode": {
                 "type": "string",
                 "enum": ["standalone", "follow_up", "ambiguous"],
@@ -145,8 +149,8 @@ def query_plan_response_schema() -> dict[str, Any]:
             "out_of_domain": {"type": ["boolean", "null"]},
             "tasks": {
                 "type": "array",
-                "minItems": 1,
-                "maxItems": MAX_QUERY_TASKS,
+                "minItems": 0,
+                "maxItems": MAX_RAW_QUERY_TASKS,
                 "items": {
                     "type": "object",
                     "additionalProperties": False,
@@ -190,7 +194,10 @@ def query_plan_response_schema() -> dict[str, Any]:
                         "id",
                         "question",
                         "mode",
+                        "intent",
                         "lookup_type",
+                        "slots",
+                        "slot_spans",
                         "cohorts",
                         "clarification_question",
                     ],
@@ -311,7 +318,7 @@ def normalize_query_plan(
             "missing_tasks"
         ]
 
-    if len(raw_tasks) > 12:
+    if len(raw_tasks) > MAX_RAW_QUERY_TASKS:
         return _too_many_tasks_plan(query, default_cohort), []
 
     context_mode = str(payload.get("context_mode") or "standalone").strip().lower()
@@ -510,29 +517,39 @@ def _normalize_task(
         registry=registry,
     )
     spec = registry.get("tools", {}).get(lookup_type, {})
+    required_slots = set(
+        (spec.get("required_slots") or {}).get(decision.get("intent"), [])
+    )
     if spec.get("selection_mode") == "table_first":
-        required_slots = set(
-            (spec.get("required_slots") or {}).get(decision.get("intent"), [])
-        )
-        optional_ungrounded = {
+        optional_invalid = {
             error.partition(":")[2]
             for error in validation_errors
-            if error.startswith("ungrounded_slot:")
+            if error.startswith(
+                (
+                    "missing_slot_span:",
+                    "ungrounded_slot:",
+                    "misgrounded_slot:",
+                    "invalid_slot_type:",
+                    "invalid_slot_value:",
+                    "unknown_slot:",
+                    "unknown_slot_span:",
+                )
+            )
             and error.partition(":")[2] not in required_slots
         }
-        if optional_ungrounded:
+        if optional_invalid:
             # Optional row hints must never discard an otherwise valid small
-            # reference table. Drop only ungrounded hints and let the composer
-            # select from the complete applicable table.
+            # reference table. Drop invalid or ungrounded hints and let the
+            # composer select from the complete applicable table.
             decision["slots"] = {
                 key: value
                 for key, value in (decision.get("slots") or {}).items()
-                if key not in optional_ungrounded
+                if key not in optional_invalid
             }
             decision["slot_spans"] = {
                 key: value
                 for key, value in (decision.get("slot_spans") or {}).items()
-                if key not in optional_ungrounded
+                if key not in optional_invalid
             }
             validation_errors = validate_router_decision(
                 decision,
@@ -543,17 +560,24 @@ def _normalize_task(
             )
     if validation_errors:
         errors.extend(validation_errors)
-        if all(
-            error.startswith(
-                (
-                    "missing_slot",
-                    "missing_cohort",
-                    "unsupported_intent",
-                    "ungrounded_slot",
-                )
-            )
+        clarification_errors = {
+            error
             for error in validation_errors
-        ):
+            if error == "missing_cohort"
+            or (
+                error.partition(":")[0]
+                in {
+                    "missing_slot",
+                    "missing_slot_span",
+                    "ungrounded_slot",
+                    "misgrounded_slot",
+                    "invalid_slot_type",
+                    "invalid_slot_value",
+                }
+                and error.partition(":")[2] in required_slots
+            )
+        }
+        if len(clarification_errors) == len(validation_errors):
             return _clarify_task(
                 task_id,
                 question,
@@ -562,6 +586,24 @@ def _normalize_task(
                 or "Bạn có thể bổ sung thông tin còn thiếu để mình tra đúng bảng không?",
                 validation_errors=errors,
             ), errors
+
+        # A structured task must never reach the executor with unresolved
+        # contract errors. Preserve sibling tasks by degrading only this task
+        # to regulation RAG instead of invalidating the complete plan.
+        if not cohorts:
+            cohorts = list(supported_cohort_order)
+        return {
+            "id": task_id,
+            "question": question,
+            "mode": "rag",
+            "intent": "open_question",
+            "lookup_type": None,
+            "slots": {},
+            "slot_spans": {},
+            "cohorts": cohorts,
+            "clarification_question": None,
+            "validation_errors": errors.copy(),
+        }, errors
 
     return {
         "id": task_id,

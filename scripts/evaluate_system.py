@@ -98,7 +98,7 @@ def _provenance(
         "response_cache_mode": "exact" if cache_config.get("enabled", True) else "off",
         "router_provider": router_config.get("provider", "groq"),
         "router_model": os.environ.get("STUDENT_RAG_ROUTER_MODEL")
-        or router_config.get("model_name", "qwen/qwen3.6-27b"),
+        or router_config.get("model_name", "qwen/qwen3.8-27b"),
         "router_reasoning_effort": os.environ.get(
             "STUDENT_RAG_ROUTER_REASONING_EFFORT"
         )

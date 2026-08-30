@@ -1,8 +1,8 @@
 enabled: true
 provider: groq
-model_name: qwen/qwen3.6-27b
-reasoning_effort: none
-response_format: auto
+model_name: qwen/qwen3.8-27b
+reasoning_effort: low
+response_format: json_schema
 temperature: 0.0
 max_output_tokens: 384
 request_timeout_seconds: 5

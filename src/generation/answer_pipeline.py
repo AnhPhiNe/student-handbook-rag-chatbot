@@ -1226,12 +1226,12 @@ class AnswerPipeline:
         )
         plan = {key: raw_plan.get(key) for key in plan_keys}
         planner_fallback = raw_plan.get("planner_fallback")
-        effective_query = str(
+        effective_query_candidate = (
             plan.get("standalone_query")
             if plan.get("context_mode") == "follow_up"
             else plan.get("normalized_query")
-            or query
-        ).strip() or query
+        )
+        effective_query = str(effective_query_candidate or query).strip() or query
         query_handling = {
             "raw_query": query,
             "effective_query": effective_query,

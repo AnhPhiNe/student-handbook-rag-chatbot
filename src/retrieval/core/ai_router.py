@@ -36,8 +36,8 @@ from .query_plan import (
 )
 
 
-DEFAULT_ROUTER_MODEL = "qwen/qwen3.6-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v34-contract-cleanup"
+DEFAULT_ROUTER_MODEL = "qwen/qwen3.8-27b"
+ROUTER_PROMPT_VERSION = "structured-regulation-v36-qwen38-schema"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -91,60 +91,82 @@ Tự kiểm tra route/mode, tool/intent, slot/span và cohort trước khi xuấ
 """
 
 PLANNER_SYSTEM_PROMPT = """
-Lập QueryPlan cho Sổ tay HCMUE. Chỉ xuất JSON theo OUTPUT CONTRACT;
+Lập QueryPlan cho Sổ tay HCMUE. Chỉ xuất JSON theo schema được cung cấp;
 không trả lời.
 
 1. NGỮ CẢNH
-- standalone không dùng history; follow_up chỉ ghép dữ liệu có thật, ghi
-  standalone_query và referenced_turns.
-- context_mode=ambiguous chỉ khi toàn QUERY mơ hồ; nếu chỉ một yêu cầu mơ hồ,
-  tạo clarify cho riêng task đó.
+- standalone không dùng history. follow_up chỉ ghép dữ liệu có thật từ history;
+  phải ghi standalone_query tự đủ nghĩa và referenced_turns là chỉ số [n] đã dùng.
+- context_mode=ambiguous chỉ khi toàn QUERY mơ hồ hoặc QUERY có hơn 3 yêu cầu
+  độc lập. Nếu chỉ một yêu cầu mơ hồ, tạo clarify cho riêng task đó.
+- Với QUERY có nhiều yêu cầu, vẫn tạo task cho mọi yêu cầu rõ nghĩa; không dùng
+  một clarify task để bắt người dùng chọn giữa các yêu cầu, trừ trường hợp hơn 3.
 - normalized_query chỉ sửa dấu, chính tả nhẹ hoặc viết tắt phổ biến; không đổi
   entity, cohort, số liệu, phủ định, chủ đề hoặc ý định.
 
-2. ANSWER TARGETS VÀ LOGICAL TASKS
-- Trước mode, tool hoặc cohort, xác định từng answer target có kết luận hoặc nguồn riêng.
-- Mỗi task.question chỉ chứa một yêu cầu có thể tra và trả lời độc lập.
-  So sánh/tổng hợp A và B phải xuất hai task; composer mới kết hợp, kể cả khi
-  cùng domain hoặc nguồn.
-- Không chọn một mode chung cho toàn QUERY.
-- Ngoại lệ duy nhất: nhiều entity được hỏi bằng cùng một structured lookup và
-  cùng phép tra thì gộp trong một task; giữ đủ entity trong task.question.
-- Mỗi task chỉ có một mode; structured target và RAG target luôn là hai task.
+2. NHÓM LOGICAL TASKS
+- Trước khi chọn mode, xác định mọi kết quả độc lập mà người dùng cần.
+- Một task giữ các khía cạnh bổ sung của cùng một đối tượng, quá trình hoặc
+  chính sách nếu chúng dùng cùng mode và cùng phạm vi tra cứu. Các câu hỏi
+  ai/khi nào/cách nào/điều kiện của cùng quá trình không tự trở thành nhiều task.
+- Tách task khi các phần hỏi về đối tượng/chủ đề độc lập hoặc cần mode/lookup
+  khác nhau. Từ nối "và" hoặc "so sánh" không tự quyết định số task.
+- Nhiều entity dùng cùng một structured lookup và cùng phép tra được gộp trong
+  một task; giữ đủ entity và ý so sánh trong task.question.
+- Mỗi task chỉ có một mode và tối đa một lookup_type. Structured target và RAG
+  target luôn là hai task; composer mới kết hợp kết quả.
 - TASK IDENTITY không phụ thuộc cohort: M target trên N cohort vẫn là M task,
   không tạo M×N tasks; mỗi task giữ đủ `cohorts`.
-- Plan có 1-3 tasks. Nếu hơn 3 yêu cầu độc lập, clarify để chọn tối đa 3.
+- Nếu QUERY có hơn 3 yêu cầu độc lập, không thực thi một phần: xuất đúng một
+  clarify task, đặt context_mode=ambiguous và yêu cầu chọn tối đa 3 nội dung.
 
 3. COHORT
 - Ưu tiên QUERY rồi history. COHORT từ UI chỉ điền cho task vẫn chưa có cohort;
   không ghi đè hoặc nhân bản task.
 
-4. MODE
-- structured: tra dữ liệu từ đúng một nguồn trong TOOLS. Với bảng tham chiếu
-  nhỏ, backend gửi toàn bảng. intent/slots là metadata tương thích tùy chọn; slot
-  chỉ chọn bảng con, không lọc hàng bên trong bảng đã chọn.
-- So sánh là yêu cầu trình bày, không phải phép lookup structured. Không dùng
-  intent=compare; giữ ý so sánh trong task.question và tất cả cohort trong task.
-- Nếu xuất entity/value slots, chúng phải được grounding trong QUERY/HISTORY;
-  Control slots được phép chuẩn hóa nhưng không tạo dữ liệu mới.
-- rag: cần đọc quy định, thủ tục, điều kiện, ngoại lệ, hậu quả hoặc một chuẩn/
-  chính sách áp dụng nói chung. Không chọn structured chỉ vì trùng từ chủ đề.
+4. CHỌN MODE VÀ TOOL
+- structured khi TOOLS.use trực tiếp cung cấp kết quả được hỏi, dù QUERY không
+  có từ "bảng", "tra cứu" hoặc "công thức". Với bảng tham chiếu nhỏ, backend
+  gửi toàn bảng; slot chỉ chọn đúng bảng con, không lọc hàng trong bảng đã chọn.
+- Chỉ chọn RAG khi cần đọc quy định, thủ tục, điều kiện áp dụng, ngoại lệ, hậu
+  quả, trách nhiệm hoặc khi tool chỉ trùng chủ đề nhưng không trực tiếp trả được
+  kết quả. Không chọn structured chỉ vì trùng từ chủ đề.
+- Phạm vi và loại trừ ghi trong TOOLS.use là bắt buộc. Nếu TOOLS.use chỉ định
+  một loại yêu cầu phải dùng RAG thì không chọn structured tool đó.
+- Phân biệt giá trị trong bảng với chính sách sử dụng giá trị đó: bảng tham
+  chiếu không tự xác lập mức nào là bắt buộc, ai phải áp dụng hoặc điều kiện nào
+  cần đạt. Các kết luận chính sách này dùng RAG, trừ khi TOOLS.use nói rõ có chứa.
+- Yêu cầu về cách tính hoặc quan hệ toán học giữa các thành phần dùng formula
+  nếu TOOLS có công thức tương ứng, kể cả khi QUERY không viết từ "công thức".
+- So sánh là yêu cầu trình bày, không phải intent. Không dùng intent=compare;
+  giữ ý so sánh trong task.question và mọi cohort cần tra.
 - clarify: thiếu slot TOOLS đánh dấu required hoặc tham chiếu thật sự mơ hồ;
   không clarify vì slot tùy chọn. Chỉ clarify task bị thiếu thông tin.
-- Mọi RAG task dùng intent=open_question và lookup_type=null. Clarify task cũng
-  có lookup_type=null. Chỉ đặt out_of_domain=true khi toàn bộ QUERY ngoài sổ tay;
-  nếu QUERY trộn trong/ngoài phạm vi, giữ các target trong phạm vi và bỏ phần ngoài.
 
-5. TỰ KIỂM TRA
+5. SLOTS VÀ GROUNDING
+- Với structured, luôn chọn lookup_type và intent được TOOLS hỗ trợ, rồi điền đủ
+  required slots. Optional slots chỉ xuất khi có căn cứ trong QUERY/HISTORY.
+- Entity/service slot là cụm nguyên văn ngắn nhất nhưng đủ nghĩa, không phải toàn
+  bộ câu hỏi. Mỗi slot_span phải chính là cụm nguyên văn tạo ra canonical slot
+  value tương ứng; control value được chuẩn hóa nhưng không được đổi nghĩa.
+- CATALOG_HINT là metadata đã được grounding. Chỉ dùng lookup_type và entity_text
+  cho task liên quan; chỉ suy intent/requested_field từ QUERY/HISTORY, không tạo
+  thêm yêu cầu hoặc slot không có căn cứ.
+
+6. OUTPUT VÀ TỰ KIỂM TRA
+- Mọi RAG task dùng intent=open_question và lookup_type=null. Clarify task cũng
+  có lookup_type=null. Chỉ đặt out_of_domain=true khi toàn bộ QUERY ngoài phạm vi
+  nội dung Sổ tay; khi đó tasks=[]. Không đánh dấu OOD chỉ vì chủ thể được nhắc
+  đến là cơ quan hoặc đơn vị bên ngoài sinh viên.
+- Nếu QUERY trộn trong/ngoài phạm vi, giữ các target trong phạm vi và bỏ phần ngoài.
 - Đối chiếu lại QUERY: mỗi answer target xuất hiện đúng một lần; mỗi task chỉ có
-  một mode và không chứa hai kết quả có thể trả lời độc lập, trừ ngoại lệ
-  multi-entity structured.
+  một mode/lookup và không chứa hai kết quả độc lập, trừ multi-entity structured.
+- Với mỗi structured task, xác nhận TOOLS.use trực tiếp chứa loại kết quả đang
+  được hỏi; trùng tên domain nhưng không chứa kết quả thì phải đổi sang RAG.
 - task.question tự đủ nghĩa; không thêm entity, số liệu, phủ định hay chủ đề.
 - slot_spans là chuỗi nguyên văn hoặc danh sách chuỗi; không xuất `{start,end}`.
 - Với structured, chỉ dùng lookup_type, intent và slots khai báo trong TOOLS.
   RAG và clarify tuân theo quy tắc riêng ở phần MODE.
-- CATALOG_HINT là metadata đã được grounding; chỉ dùng cho task liên quan, không
-  dùng hint để tạo yêu cầu, intent hay slot mới.
 """
 
 
@@ -1044,14 +1066,21 @@ class AIRouter:
             if content:
                 history_lines.append(f"[{local_index}] {role}:{content}")
         history = "\n".join(history_lines) or "none"
-        schema = json.dumps(
-            query_plan_json_schema(), ensure_ascii=False, separators=(",", ":")
-        )
+        if self._resolved_response_format() == "json_schema":
+            output_guidance = (
+                "OUTPUT: tuân theo native JSON Schema; các quy tắc trên quyết định "
+                "ngữ nghĩa từng field.\n"
+            )
+        else:
+            schema = json.dumps(
+                query_plan_json_schema(), ensure_ascii=False, separators=(",", ":")
+            )
+            output_guidance = f"OUTPUT CONTRACT:\n{schema}\n\n"
         hint = json.dumps(routing_hint, ensure_ascii=False, separators=(",", ":"))
         return (
             "TOOLS:\n"
             f"{compact_registry_for_prompt(self.registry)}\n\n"
-            f"OUTPUT CONTRACT:\n{schema}\n\n"
+            f"{output_guidance}"
             f"CATALOG_HINT: {hint if routing_hint else 'none'}\n"
             f"COHORT: {cohort or 'unknown'}\n"
             f"CHAT HISTORY:\n{history}\n"
@@ -1061,12 +1090,19 @@ class AIRouter:
     def _resolved_reasoning_effort(self) -> str:
         if self.reasoning_effort != "auto":
             return self.reasoning_effort
+        if "qwen3.8" in self.model_name.lower():
+            return "low"
         return "low" if "gpt-oss" in self.model_name.lower() else "none"
 
     def _resolved_response_format(self) -> str:
         if self.response_format != "auto":
             return self.response_format
-        return "json_schema" if "gpt-oss" in self.model_name.lower() else "json_object"
+        model_name = self.model_name.lower()
+        return (
+            "json_schema"
+            if "gpt-oss" in model_name or "qwen3.8" in model_name
+            else "json_object"
+        )
 
     def _response_format_payload(self) -> dict[str, Any]:
         if self._resolved_response_format() == "json_schema":

@@ -41,7 +41,7 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
     assert "required=" in prompt_registry
     assert "values" in prompt_registry
     assert 'formula_type":{"values":["scholarship_score","gpa_weighted_average"]}' in prompt_registry
-    assert "diem hoc bong=scholarship_score" in prompt_registry
+    assert "diem hoc bong tu diem hoc tap va ren luyen=scholarship_score" in prompt_registry
 
 
 def test_router_contract_omits_fields_derived_by_code() -> None:
@@ -53,19 +53,19 @@ def test_router_contract_omits_fields_derived_by_code() -> None:
 
 
 def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None:
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
     dynamic_prompt = router._build_prompt(
         "K50 IELTS 5.5 là bậc mấy?",
         cohort="K50",
         chat_history=[],
     )
 
-    assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6700
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v34-contract-cleanup"
+    assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6800
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v36-qwen38-schema"
 
 
 def test_plan_cache_key_includes_normalizer_version(monkeypatch, tmp_path: Path) -> None:
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
     key = router._cache_key(
         "So sánh K50 và K51",
         cohort="K51",
@@ -87,7 +87,7 @@ def test_plan_cache_key_includes_normalizer_version(monkeypatch, tmp_path: Path)
 
 
 def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None:
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
     dynamic_prompt = router._build_plan_prompt(
         "So sánh hai khóa về thời gian học và một quy định học vụ.",
         cohort="K51",
@@ -96,11 +96,13 @@ def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     stats = AIRouter._prompt_stats_for_system(
         PLANNER_SYSTEM_PROMPT,
         dynamic_prompt,
-        {"type": "json_object"},
+        router._plan_response_format_payload(),
     )
 
-    assert stats["total_chars"] <= 6800
-    assert stats["estimated_input_tokens"] <= 1700
+    assert stats["total_chars"] <= 9700
+    assert stats["estimated_input_tokens"] <= 2500
+    assert "OUTPUT CONTRACT" not in dynamic_prompt
+    assert "native JSON Schema" in dynamic_prompt
 
 
 def test_planner_prompt_defines_cohort_independent_task_identity() -> None:
@@ -111,12 +113,13 @@ def test_planner_prompt_defines_cohort_independent_task_identity() -> None:
     assert "So sánh K50 và K51 về thời gian học tối đa" not in PLANNER_PROMPT_TEXT
 
 
-def test_planner_prompt_treats_compare_as_presentation_and_slots_as_optional() -> None:
+def test_planner_prompt_treats_compare_as_presentation_and_slots_as_grounded() -> None:
     assert "So sánh là yêu cầu trình bày" in PLANNER_PROMPT_TEXT
     assert "Không dùng intent=compare" in PLANNER_PROMPT_TEXT
-    assert "intent/slots là metadata tương thích tùy chọn" in PLANNER_PROMPT_TEXT
-    assert "chỉ chọn bảng con" in PLANNER_PROMPT_TEXT
-    assert "không lọc hàng bên trong bảng đã chọn" in PLANNER_PROMPT_TEXT
+    assert "điền đủ required slots" in PLANNER_PROMPT_TEXT
+    assert "Optional slots chỉ xuất khi có căn cứ" in PLANNER_PROMPT_TEXT
+    assert "slot chỉ chọn đúng bảng con" in PLANNER_PROMPT_TEXT
+    assert "không lọc hàng trong bảng đã chọn" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_only_clarifies_genuinely_ambiguous_input() -> None:
@@ -125,13 +128,12 @@ def test_planner_only_clarifies_genuinely_ambiguous_input() -> None:
 
 
 def test_planner_prompt_splits_independent_answer_targets() -> None:
-    assert "Mỗi task.question chỉ chứa một yêu cầu có thể tra và trả lời độc lập" in PLANNER_PROMPT_TEXT
-    assert "So sánh/tổng hợp A và B phải xuất hai task" in PLANNER_PROMPT_TEXT
-    assert "Không chọn một mode chung cho toàn QUERY" in PLANNER_PROMPT_TEXT
-    assert "Ngoại lệ duy nhất: nhiều entity" in PLANNER_PROMPT_TEXT
+    assert "các khía cạnh bổ sung của cùng một đối tượng" in PLANNER_PROMPT_TEXT
+    assert "Tách task khi các phần hỏi về đối tượng/chủ đề độc lập" in PLANNER_PROMPT_TEXT
+    assert "Từ nối \"và\" hoặc \"so sánh\" không tự quyết định" in PLANNER_PROMPT_TEXT
+    assert "Nhiều entity dùng cùng một structured lookup" in PLANNER_PROMPT_TEXT
     assert "Mỗi task chỉ có một mode" in PLANNER_PROMPT_TEXT
     assert "mỗi answer target xuất hiện đúng một lần" in PLANNER_PROMPT_TEXT
-    assert "có kết luận hoặc nguồn riêng" in PLANNER_PROMPT_TEXT
     assert "composer mới kết hợp" in PLANNER_PROMPT_TEXT
 
 
@@ -142,10 +144,11 @@ def test_planner_limits_tool_contract_to_structured_tasks() -> None:
 
 
 def test_planner_prompt_requires_grounded_slots_for_structured_mode() -> None:
-    assert "Nếu xuất entity/value slots, chúng phải được grounding" in PLANNER_PROMPT_TEXT
-    assert "Control slots" in PLANNER_PROMPT_TEXT
-    assert "được phép chuẩn" in PLANNER_PROMPT_TEXT
+    assert "Mỗi slot_span phải chính là cụm nguyên văn" in PLANNER_PROMPT_TEXT
+    assert "control value được chuẩn hóa" in PLANNER_PROMPT_TEXT
+    assert "không phải toàn bộ câu hỏi" in PLANNER_PROMPT_TEXT
     assert "Không chọn structured chỉ vì trùng từ chủ đề" in PLANNER_PROMPT_TEXT
+    assert "dù QUERY không" in PLANNER_PROMPT_TEXT
     assert "Chỉ clarify task bị thiếu thông tin" in PLANNER_PROMPT_TEXT
 
 
@@ -153,16 +156,35 @@ def test_planner_prompt_defines_context_and_hint_precedence_once() -> None:
     assert "standalone_query" in PLANNER_PROMPT_TEXT
     assert "referenced_turns" in PLANNER_PROMPT_TEXT
     assert "CATALOG_HINT là metadata đã được grounding" in PLANNER_PROMPT_TEXT
-    assert PLANNER_PROMPT_TEXT.count("hơn 3 yêu cầu độc lập") == 1
+    assert PLANNER_PROMPT_TEXT.count("hơn 3 yêu cầu") == 2
+    assert "xuất đúng một clarify task" in PLANNER_PROMPT_TEXT
+    assert "không thực thi một phần" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_matches_global_context_and_rag_contract() -> None:
-    assert "context_mode=ambiguous chỉ khi toàn QUERY mơ hồ" in PLANNER_PROMPT_TEXT
+    assert "context_mode=ambiguous chỉ khi toàn QUERY mơ hồ hoặc QUERY có hơn 3" in PLANNER_PROMPT_TEXT
     assert "clarify cho riêng task đó" in PLANNER_PROMPT_TEXT
     assert "Mọi RAG task dùng intent=open_question" in PLANNER_PROMPT_TEXT
     assert "Chỉ đặt out_of_domain=true khi toàn bộ QUERY" in PLANNER_PROMPT_TEXT
+    assert "khi đó tasks=[]" in PLANNER_PROMPT_TEXT
     assert "giữ các target trong phạm vi" in PLANNER_PROMPT_TEXT
     assert "thiếu evidence" not in PLANNER_PROMPT_TEXT
+
+
+def test_json_object_planner_keeps_embedded_output_contract(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+
+    dynamic_prompt = router._build_plan_prompt(
+        "K50 học gì?",
+        cohort="K50",
+        chat_history=[],
+    )
+
+    assert "OUTPUT CONTRACT" in dynamic_prompt
+    assert "native JSON Schema" not in dynamic_prompt
 
 
 def test_planner_prompt_protects_normalized_query_semantics() -> None:
@@ -175,11 +197,14 @@ def test_model_defaults_select_supported_reasoning_and_format(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    qwen = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+    qwen_36 = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+    qwen_38 = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
     gpt_oss = _router(monkeypatch, tmp_path, model_name="openai/gpt-oss-20b")
 
-    assert qwen._resolved_reasoning_effort() == "none"
-    assert qwen._response_format_payload() == {"type": "json_object"}
+    assert qwen_36._resolved_reasoning_effort() == "none"
+    assert qwen_36._response_format_payload() == {"type": "json_object"}
+    assert qwen_38._resolved_reasoning_effort() == "low"
+    assert qwen_38._response_format_payload()["type"] == "json_schema"
     assert gpt_oss._resolved_reasoning_effort() == "low"
     assert gpt_oss._response_format_payload()["type"] == "json_schema"
 
@@ -210,7 +235,7 @@ def test_router_falls_back_to_regulation_rag_after_provider_error(
             self.chat = SimpleNamespace(completions=_Completions())
 
     monkeypatch.setattr(ai_router_module, "Groq", _FakeGroq)
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
 
     decision = router.route(
         "K48-K49: co duoc xin nang diem ren luyen neu thieu minh chung khong?",
@@ -237,7 +262,7 @@ def test_from_config_accepts_model_environment_override(
     config_path.write_text(
         "\n".join(
             (
-                "model_name: qwen/qwen3.6-27b",
+                "model_name: qwen/qwen3.8-27b",
                 "reasoning_effort: auto",
                 "response_format: auto",
                 "cache_enabled: false",
@@ -251,7 +276,7 @@ def test_from_config_accepts_model_environment_override(
     router = AIRouter.from_config(config_path)
 
     assert router.model_name == "openai/gpt-oss-20b"
-    assert router._resolved_reasoning_effort() == "none"
+    assert router._resolved_reasoning_effort() == "low"
     assert router.max_output_tokens == 1024
 
 

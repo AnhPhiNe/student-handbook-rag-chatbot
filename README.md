@@ -42,7 +42,7 @@ flowchart LR
     Student["Student"] --> UI["React + Vite UI<br/>Vercel"]
     UI -->|"HTTPS / SSE"| API["FastAPI API<br/>Hugging Face Spaces"]
 
-    API --> Planner["Query Planner<br/>Qwen 3.6 27B · Groq"]
+    API --> Planner["Query Planner<br/>Qwen 3.8 27B · Groq"]
     API --> Composer["Answer Composer<br/>Gemini 3.1 Flash-Lite"]
     API --> Cache[("Redis<br/>response/cache controls")]
 

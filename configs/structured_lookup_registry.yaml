@@ -5,7 +5,7 @@ tools:
     data_category: regulation_table
     presentation_type: table
     selection_mode: table_first
-    description: "Quy doi diem/chung chi sang bac; lookup tu clarify diem thanh phan bat buoc. Yeu cau chuan/pham vi/thu tuc: RAG."
+    description: "Quy doi chung chi/diem da neu sang bac tuong duong hoac liet ke bang quy doi; khong cung cap chinh sach bat buoc mot bac cu the."
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
@@ -106,7 +106,7 @@ tools:
   student_service:
     data_category: directory_table
     presentation_type: contact_card
-    description: Tim don vi phu trach khi nguoi dung mo ta mot cong viec/dich vu can lam; khong dung cho quy dinh hay thu tuc.
+    description: Tim don vi/lien he xu ly mot dich vu van hanh cu the; trach nhiem duoc quy dinh boi quy che, chinh sach hay thu tuc dung RAG.
     intents: [direct_value, contact]
     default_intent: contact
     required_slots:
@@ -178,7 +178,7 @@ tools:
 
   formula:
     presentation_type: table
-    description: "Cong thuc: diem hoc bong=scholarship_score; GPA=gpa_weighted_average."
+    description: "Cach tinh/quan he toan hoc: diem hoc bong tu diem hoc tap va ren luyen=scholarship_score; GPA co trong so=gpa_weighted_average. Khong dung cho muc tien, dieu kien hay xep loai hoc bong."
     intents: [formula]
     required_slots:
       formula: [formula_type]

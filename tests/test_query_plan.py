@@ -124,13 +124,18 @@ def test_cross_cohort_source_requires_validated_applicability() -> None:
     assert not is_validated_source_applicable({"cohort": "K48-K49"}, "K51")
 
 
-def test_native_plan_schema_keeps_structured_slots_as_optional_compatibility() -> None:
-    task_schema = query_plan_response_schema()["properties"]["tasks"]["items"]
+def test_native_plan_schema_matches_normalizer_contract() -> None:
+    schema = query_plan_response_schema()
+    tasks_schema = schema["properties"]["tasks"]
+    task_schema = tasks_schema["items"]
 
+    assert schema["properties"]["schema_version"]["enum"] == ["v1"]
+    assert tasks_schema["minItems"] == 0
+    assert tasks_schema["maxItems"] == 12
     assert "lookup_type" in task_schema["required"]
-    assert "intent" not in task_schema["required"]
-    assert "slots" not in task_schema["required"]
-    assert "slot_spans" not in task_schema["required"]
+    assert "intent" in task_schema["required"]
+    assert "slots" in task_schema["required"]
+    assert "slot_spans" in task_schema["required"]
 
 
 def test_query_plan_turns_more_than_three_requests_into_clarification() -> None:
@@ -418,6 +423,144 @@ def test_table_first_follow_up_drops_ungrounded_optional_row_hint() -> None:
     assert errors == []
     assert plan["tasks"][0]["mode"] == "structured"
     assert plan["tasks"][0]["lookup_type"] == "study_duration"
+    assert plan["tasks"][0]["slots"] == {}
+    assert plan["tasks"][0]["slot_spans"] == {}
+
+
+def test_table_first_drops_invalid_optional_row_hint() -> None:
+    query = "K51 thời gian học tối đa là bao lâu?"
+    task = {
+        **_rag_task(1, query),
+        "mode": "structured",
+        "intent": "direct_value",
+        "lookup_type": "study_duration",
+        "slots": {"training_mode": "K51"},
+        "slot_spans": {"training_mode": "K51"},
+        "cohorts": ["K51"],
+    }
+
+    plan, errors = normalize_query_plan(
+        _plan([task]),
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert plan["tasks"][0]["mode"] == "structured"
+    assert plan["tasks"][0]["slots"] == {}
+    assert plan["tasks"][0]["slot_spans"] == {}
+
+
+def test_table_first_drops_optional_slot_grounded_only_by_cohort() -> None:
+    query = "K51 thời gian học tối đa là bao lâu?"
+    task = {
+        **_rag_task(1, query),
+        "mode": "structured",
+        "intent": "direct_value",
+        "lookup_type": "study_duration",
+        "slots": {"program_type": "first_degree"},
+        "slot_spans": {"program_type": "K51"},
+        "cohorts": ["K51"],
+    }
+
+    plan, errors = normalize_query_plan(
+        _plan([task]),
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert plan["tasks"][0]["mode"] == "structured"
+    assert plan["tasks"][0]["slots"] == {}
+    assert plan["tasks"][0]["slot_spans"] == {}
+
+
+def test_table_first_drops_optional_slot_without_span() -> None:
+    query = "K51 thời gian học tối đa là bao lâu?"
+    task = {
+        **_rag_task(1, query),
+        "mode": "structured",
+        "intent": "direct_value",
+        "lookup_type": "study_duration",
+        "slots": {"program_type": "second_degree"},
+        "slot_spans": {},
+        "cohorts": ["K51"],
+    }
+
+    plan, errors = normalize_query_plan(
+        _plan([task]),
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert plan["tasks"][0]["mode"] == "structured"
+    assert plan["tasks"][0]["slots"] == {}
+    assert plan["tasks"][0]["slot_spans"] == {}
+
+
+def test_table_first_drops_unknown_nested_slot() -> None:
+    query = "K51 thời gian học tối đa là bao lâu?"
+    task = {
+        **_rag_task(1, query),
+        "mode": "structured",
+        "intent": "direct_value",
+        "lookup_type": "study_duration",
+        "slots": {"slot_spans": {"program_type": "second_degree"}},
+        "slot_spans": {},
+        "cohorts": ["K51"],
+    }
+
+    plan, errors = normalize_query_plan(
+        _plan([task]),
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert plan["tasks"][0]["mode"] == "structured"
+    assert plan["tasks"][0]["slots"] == {}
+    assert plan["tasks"][0]["slot_spans"] == {}
+
+
+def test_required_entity_slot_without_span_requires_clarification() -> None:
+    query = "Email Khoa Toán là gì?"
+    task = {
+        **_rag_task(1, query),
+        "mode": "structured",
+        "intent": "contact",
+        "lookup_type": "faculty",
+        "slots": {"faculty": "Khoa Toán", "requested_field": "email"},
+        "slot_spans": {},
+    }
+
+    plan, errors = normalize_query_plan(_plan([task]), query=query)
+
+    assert "t1:missing_slot_span:faculty" in errors
+    assert plan["tasks"][0]["mode"] == "clarify"
+    assert plan["tasks"][0]["lookup_type"] is None
+
+
+def test_non_table_lookup_with_unknown_slot_degrades_to_safe_rag() -> None:
+    query = "Email Khoa Toán là gì?"
+    task = {
+        **_rag_task(1, query),
+        "mode": "structured",
+        "intent": "contact",
+        "lookup_type": "faculty",
+        "slots": {
+            "faculty": "Khoa Toán",
+            "requested_field": "email",
+            "unknown_hint": "không hợp lệ",
+        },
+        "slot_spans": {"faculty": "Khoa Toán"},
+    }
+
+    plan, errors = normalize_query_plan(_plan([task]), query=query)
+
+    assert "t1:unknown_slot:unknown_hint" in errors
+    assert plan["tasks"][0]["mode"] == "rag"
+    assert plan["tasks"][0]["lookup_type"] is None
     assert plan["tasks"][0]["slots"] == {}
     assert plan["tasks"][0]["slot_spans"] == {}
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 # ruff: noqa: E402
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -41,6 +42,7 @@ REQUIRED_ARTIFACTS = [
 ]
 
 CONTENT_FIELDS = {"content", "document", "raw_text", "text"}
+BUILD_MANIFEST_PATH = Path("data/processed/metadata/build_manifest.json")
 
 
 def find_repeated_handbook_header(value: object) -> str | None:
@@ -86,6 +88,67 @@ def validate_artifact(path: Path, kind: str) -> str | None:
     return None
 
 
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def validate_build_manifest(path: Path = BUILD_MANIFEST_PATH) -> list[str]:
+    """Return artifact identity mismatches declared by a build manifest."""
+
+    if not path.is_file():
+        return [f"missing build manifest: {path}"]
+    try:
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        return [f"invalid build manifest JSON: {exc}"]
+
+    artifacts = manifest.get("artifacts")
+    if not isinstance(artifacts, dict) or not artifacts:
+        return ["build manifest does not declare artifacts"]
+
+    errors: list[str] = []
+    for name, record in artifacts.items():
+        if not isinstance(record, dict):
+            errors.append(f"{name}: artifact record is not an object")
+            continue
+        raw_path = str(record.get("path") or "").strip()
+        if not raw_path:
+            errors.append(f"{name}: missing path")
+            continue
+        artifact_path = Path(raw_path.replace("\\", "/"))
+        if not artifact_path.is_file():
+            errors.append(f"{name}: missing artifact {artifact_path}")
+            continue
+
+        expected_sha = str(record.get("sha256") or "").strip().lower()
+        actual_sha = _sha256_file(artifact_path)
+        if not expected_sha:
+            errors.append(f"{name}: missing sha256")
+        elif expected_sha != actual_sha:
+            errors.append(
+                f"{name}: sha256 mismatch "
+                f"(manifest={expected_sha}, actual={actual_sha})"
+            )
+
+        expected_count = record.get("count")
+        if expected_count is None or artifact_path.suffix.lower() != ".json":
+            continue
+        try:
+            value = json.loads(artifact_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            continue
+        if isinstance(value, list) and int(expected_count) != len(value):
+            errors.append(
+                f"{name}: count mismatch "
+                f"(manifest={expected_count}, actual={len(value)})"
+            )
+    return errors
+
+
 def main() -> None:
     configure_utf8_stdio()
 
@@ -101,6 +164,11 @@ def main() -> None:
         print(f"{status}: {raw_path}" + (f" ({error})" if error else ""))
         if error is not None:
             failures.append((raw_path, error))
+
+    for error in validate_build_manifest():
+        status = "WARN" if args.warn_only else "FAIL"
+        print(f"{status}: build_manifest ({error})")
+        failures.append(("build_manifest", error))
 
     if failures and args.warn_only:
         print(

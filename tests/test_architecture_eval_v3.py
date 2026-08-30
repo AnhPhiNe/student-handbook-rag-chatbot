@@ -132,6 +132,10 @@ def test_architecture_v3_bundle_validates_with_manifest_driven_counts(
     tmp_path: Path,
 ) -> None:
     target = tmp_path / "architecture_v3"
+    build_manifest = load_json(
+        ROOT / "data" / "processed" / "metadata" / "build_manifest.json"
+    )
+    storage_targets = build_manifest["storage_targets"]
 
     manifest = build_bundle(LEGACY_BUNDLE, target)
     result = validate_bundle(target, DOCSTORE)
@@ -139,7 +143,9 @@ def test_architecture_v3_bundle_validates_with_manifest_driven_counts(
     assert manifest["counts"]["deterministic"] == 144
     assert manifest["counts"]["retrieval"] == 180
     assert manifest["retrieval_contract"] == "regulation-rag-source-first-v3"
-    assert manifest["source_qdrant_collection"] == "student_handbook_semantic_v31"
-    assert manifest["source_mongo_collection"] == "parent_docs_v31"
+    assert manifest["source_qdrant_collection"] == storage_targets["qdrant_collection"]
+    assert manifest["source_mongo_collection"] == storage_targets[
+        "mongo_parent_collection"
+    ]
     assert result["valid"], result["errors"]
     assert result["warnings"] == []

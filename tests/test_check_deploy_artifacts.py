@@ -1,6 +1,7 @@
+import hashlib
 import json
 
-from scripts.check_deploy_artifacts import validate_artifact
+from scripts.check_deploy_artifacts import validate_artifact, validate_build_manifest
 
 
 def test_deploy_audit_rejects_repeated_header_in_content(tmp_path) -> None:
@@ -24,3 +25,31 @@ def test_deploy_audit_allows_handbook_name_in_regular_sentence(tmp_path) -> None
     )
 
     assert validate_artifact(artifact, "file") is None
+
+
+def test_deploy_audit_checks_manifest_hash_and_count(tmp_path) -> None:
+    artifact = tmp_path / "items.json"
+    artifact.write_text('[{"id": 1}]\n', encoding="utf-8")
+    manifest = tmp_path / "build_manifest.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "artifacts": {
+                    "items": {
+                        "path": str(artifact),
+                        "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+                        "count": 1,
+                    }
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    assert validate_build_manifest(manifest) == []
+
+    artifact.write_text('[{"id": 1}, {"id": 2}]\n', encoding="utf-8")
+    errors = validate_build_manifest(manifest)
+
+    assert any("sha256 mismatch" in error for error in errors)
+    assert any("count mismatch" in error for error in errors)

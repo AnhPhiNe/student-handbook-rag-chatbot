@@ -1,9 +1,9 @@
 {
   "schema_version": "structured-table-embedding-audit-v1",
   "docstore_path": "data\\processed\\chunks\\all_docstore_items.json",
-  "docstore_sha256": "e62561025a807f1802598aa0b7e9ebfd4d5c564dc502bf3245cb26bc59748829",
+  "docstore_sha256": "4d410553cfaddeaef51fc096ffd0025d52e585b4c5dfe7ee0807e73570648143",
   "structured_registry_path": "data\\processed\\tables\\structured_tables_registry.json",
-  "structured_registry_sha256": "a22beae884d310704ebabed1d127560863bd178f60e7df1379c199b7e209e8f3",
+  "structured_registry_sha256": "865fe92aca6283147713f02b400734dac44dfc9a0f4d959095ce30978d8fb0fd",
   "child_output_path": "data\\processed\\chunks\\child_parent_chunks.json",
   "child_count": 3125,
   "total_table_like_rows": 167,
@@ -3786,6 +3786,6 @@
       ]
     }
   ],
-  "build_id": "build-2254b92ccb60f7984bfa",
-  "child_output_sha256": "4e75584720a87b99342569a911e95e955bf926bffaae28f6da5b074806d6874f"
+  "build_id": "build-02a2eed8dae5b4307427",
+  "child_output_sha256": "acb78cd5a2f4db3d4ddc4d5c548ad9cc6823cebb4c20c67cecd8e5c1220ce26c"
 }

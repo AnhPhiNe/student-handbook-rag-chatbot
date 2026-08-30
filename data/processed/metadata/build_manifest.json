@@ -1,7 +1,7 @@
 {
   "schema_version": "student-handbook-build-v1",
-  "build_id": "build-2254b92ccb60f7984bfa",
-  "created_at": "2026-08-26T16:34:54.498031+00:00",
+  "build_id": "build-02a2eed8dae5b4307427",
+  "created_at": "2026-08-30T08:40:42.998366+00:00",
   "source_pdfs": {
     "so-tay-sinh-vien-khoa-48-49.pdf": "4bf7b510b66e6ed8ce60008d48efd05723f06899171cbf89e4494f4b277739db",
     "so-tay-sinh-vien-khoa-50.pdf": "bbae270b9821c71eeede660e3168c868bde07f458f07b648645c14584bdeb8b0",
@@ -9,8 +9,8 @@
   },
   "artifacts": {
     "parent_docstore": {
-      "path": "data\\processed\\chunks\\all_docstore_items.json",
-      "sha256": "e62561025a807f1802598aa0b7e9ebfd4d5c564dc502bf3245cb26bc59748829",
+      "path": "data/processed/chunks/all_docstore_items.json",
+      "sha256": "4d410553cfaddeaef51fc096ffd0025d52e585b4c5dfe7ee0807e73570648143",
       "count": 462,
       "cohort_counts": {
         "K48-K49": 123,
@@ -19,8 +19,8 @@
       }
     },
     "child_chunks": {
-      "path": "data\\processed\\chunks\\child_parent_chunks.json",
-      "sha256": "4e75584720a87b99342569a911e95e955bf926bffaae28f6da5b074806d6874f",
+      "path": "data/processed/chunks/child_parent_chunks.json",
+      "sha256": "acb78cd5a2f4db3d4ddc4d5c548ad9cc6823cebb4c20c67cecd8e5c1220ce26c",
       "count": 3125,
       "cohort_counts": {
         "K48-K49": 877,
@@ -29,28 +29,28 @@
       }
     },
     "structured_tables": {
-      "path": "data\\processed\\tables\\structured_tables_registry.json",
-      "sha256": "a22beae884d310704ebabed1d127560863bd178f60e7df1379c199b7e209e8f3",
-      "count": 26,
+      "path": "data/processed/tables/structured_tables_registry.json",
+      "sha256": "865fe92aca6283147713f02b400734dac44dfc9a0f4d959095ce30978d8fb0fd",
+      "count": 35,
       "cohort_counts": {
-        "K48-K49": 8,
-        "K50": 9,
-        "K51": 9
+        "K48-K49": 11,
+        "K50": 12,
+        "K51": 12
       }
     },
     "graph_edges": {
-      "path": "data\\processed\\graphs\\document_edges.json",
-      "sha256": "c6f2929f7b0543ec251fbc1890ba11023ca01948854fdb7610fc9303d29e7b3b",
-      "count": 94,
+      "path": "data/processed/graphs/document_edges.json",
+      "sha256": "ed42590ba9b2b0c749d531b095166460694bf1b81cbfb7bac6e4e3bc014fc77f",
+      "count": 78,
       "cohort_counts": {
-        "K48-K49": 30,
-        "K50": 34,
-        "K51": 30
+        "K48-K49": 26,
+        "K50": 30,
+        "K51": 22
       }
     },
     "table_embedding_audit": {
-      "path": "data\\processed\\metadata\\structured_table_embedding_audit.json",
-      "sha256": "b9232ff1b349fd24dd00631c76ddf3dd809c112c07ff32cd5a82432b6a8d2e78",
+      "path": "data/processed/metadata/structured_table_embedding_audit.json",
+      "sha256": "b5b65d7a2f79aa9bd7a7e0ad2a688c6613bdde827fc897304970272eb6d52d5c",
       "total_table_like_rows": 167,
       "excluded_as_structured": 145,
       "retained_unmatched": 0,
@@ -63,12 +63,12 @@
     "normalize_embeddings": true
   },
   "storage_targets": {
-    "qdrant_collection": "student_handbook_semantic_v31",
-    "mongo_parent_collection": "parent_docs_v31"
+    "qdrant_collection": "student_handbook_semantic_v32",
+    "mongo_parent_collection": "parent_docs_v32"
   },
   "index_contract": {
-    "embedding_input": "data\\processed\\chunks\\child_parent_chunks.json",
-    "parent_input": "data\\processed\\chunks\\all_docstore_items.json",
+    "embedding_input": "data/processed/chunks/child_parent_chunks.json",
+    "parent_input": "data/processed/chunks/all_docstore_items.json",
     "structured_json_indexed_in_qdrant": false,
     "covered_table_rows_indexed_in_qdrant": false
   }

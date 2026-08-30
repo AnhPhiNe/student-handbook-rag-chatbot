@@ -24,7 +24,7 @@ jobs:
           python -m pip install -r requirements-dev.txt
 
       - name: Audit deploy artifacts
-        run: python scripts/check_deploy_artifacts.py --warn-only
+        run: python scripts/check_deploy_artifacts.py
 
       - name: Lint backend
         run: python -m ruff check src tests scripts/check_deploy_artifacts.py scripts/evaluate_system.py --select E,F --ignore E402,E501

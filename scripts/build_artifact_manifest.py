@@ -227,25 +227,25 @@ def build_artifact_manifest(
         "source_pdfs": source_pdf_hashes,
         "artifacts": {
             "parent_docstore": {
-                "path": str(parent_path),
+                "path": parent_path.as_posix(),
                 "sha256": sha256_file(parent_path),
                 "count": len(parents),
                 "cohort_counts": _cohort_counts(parents),
             },
             "child_chunks": {
-                "path": str(child_path),
+                "path": child_path.as_posix(),
                 "sha256": sha256_file(child_path),
                 "count": len(children),
                 "cohort_counts": _cohort_counts(children),
             },
             "structured_tables": {
-                "path": str(table_path),
+                "path": table_path.as_posix(),
                 "sha256": sha256_file(table_path),
                 "count": len(tables),
                 "cohort_counts": _cohort_counts(tables),
             },
             "graph_edges": {
-                "path": str(graph_path),
+                "path": graph_path.as_posix(),
                 "sha256": sha256_file(graph_path),
                 "count": len(graph_edges),
                 "cohort_counts": _cohort_counts(graph_edges),
@@ -257,15 +257,15 @@ def build_artifact_manifest(
             "mongo_parent_collection": mongo_collection,
         },
         "index_contract": {
-            "embedding_input": str(child_path),
-            "parent_input": str(parent_path),
+            "embedding_input": child_path.as_posix(),
+            "parent_input": parent_path.as_posix(),
             "structured_json_indexed_in_qdrant": False,
             "covered_table_rows_indexed_in_qdrant": False,
         },
     }
     if table_embedding_audit is not None and table_embedding_audit_path is not None:
         manifest["artifacts"]["table_embedding_audit"] = {
-            "path": str(table_embedding_audit_path),
+            "path": table_embedding_audit_path.as_posix(),
             "sha256": sha256_file(table_embedding_audit_path),
             "total_table_like_rows": table_embedding_audit[
                 "total_table_like_rows"

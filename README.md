@@ -47,8 +47,8 @@ flowchart LR
     API --> Cache[("Redis<br/>response/cache controls")]
 
     API --> Structured["Structured JSON catalogs"]
-    API --> Qdrant[("Qdrant Cloud<br/>student_handbook_semantic_v31")]
-    API --> Mongo[("MongoDB Atlas<br/>parent_docs_v31")]
+    API --> Qdrant[("Qdrant Cloud<br/>student_handbook_semantic_v32")]
+    API --> Mongo[("MongoDB Atlas<br/>parent_docs_v32")]
     API --> Graph["Local article graph"]
 
     Qdrant -. child parent ID .-> Mongo
@@ -405,9 +405,9 @@ Important environment variables:
 ```dotenv
 QDRANT_URL=https://your-cluster.qdrant.io
 QDRANT_API_KEY=...
-QDRANT_COLLECTION_NAME=student_handbook_semantic_v31
+QDRANT_COLLECTION_NAME=student_handbook_semantic_v32
 MONGODB_URL=mongodb+srv://...
-MONGODB_PARENT_COLLECTION=parent_docs_v31
+MONGODB_PARENT_COLLECTION=parent_docs_v32
 GROQ_API_KEYS=...
 GEMINI_API_KEYS=...
 ```
@@ -463,8 +463,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\deploy_hf_backend.
 
 Before pushing, the script requires the packaged manifest to target:
 
-- Qdrant: `student_handbook_semantic_v31`
-- MongoDB: `parent_docs_v31`
+- Qdrant: `student_handbook_semantic_v32`
+- MongoDB: `parent_docs_v32`
 
 After deployment, `/health`, `/health/readiness`, and short structured, regulation, compound, and clarification smoke tests must pass.
 

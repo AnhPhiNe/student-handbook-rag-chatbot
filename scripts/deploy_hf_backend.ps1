@@ -141,10 +141,10 @@ Copy-RequiredJsonArtifact "data\processed\metadata\build_manifest.json" "data\pr
 
 $packagedManifestPath = Join-Path $TempDir "data\processed\metadata\build_manifest.json"
 $packagedManifest = Get-Content -Raw -LiteralPath $packagedManifestPath | ConvertFrom-Json
-if ($packagedManifest.storage_targets.qdrant_collection -ne "student_handbook_semantic_v31") {
+if ($packagedManifest.storage_targets.qdrant_collection -ne "student_handbook_semantic_v32") {
     throw "Unexpected Qdrant target in packaged build manifest: $($packagedManifest.storage_targets.qdrant_collection)"
 }
-if ($packagedManifest.storage_targets.mongo_parent_collection -ne "parent_docs_v31") {
+if ($packagedManifest.storage_targets.mongo_parent_collection -ne "parent_docs_v32") {
     throw "Unexpected Mongo target in packaged build manifest: $($packagedManifest.storage_targets.mongo_parent_collection)"
 }
 

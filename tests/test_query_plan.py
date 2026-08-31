@@ -11,6 +11,7 @@ from src.common.cohort import is_validated_source_applicable
 from src.generation.answer_pipeline import AnswerPipeline
 from src.generation.context_allocation import ContextAllocationConfig
 from src.api.routes.chat import _to_chat_response
+from src.retrieval.core.office_lookup import office_lookup
 from src.retrieval.core.query_plan import (
     legacy_rag_plan,
     normalize_query_plan,
@@ -73,6 +74,8 @@ def test_query_plan_accepts_one_and_three_tasks() -> None:
         "Điều 30 có nội dung gì?",
     ],
 )
+
+
 def test_bare_article_reference_requires_document_or_topic(query: str) -> None:
     plan, errors = normalize_query_plan(
         _plan([_rag_task(1, query)]),
@@ -122,6 +125,117 @@ def test_cross_cohort_source_requires_validated_applicability() -> None:
     )
     assert is_validated_source_applicable({"cohort": "K51"}, "K51")
     assert not is_validated_source_applicable({"cohort": "K48-K49"}, "K51")
+
+
+@pytest.mark.parametrize(
+    ("query", "clarifies"),
+    [
+        ("Em thuộc K50 nhưng năm tuyển sinh là 2025", True),
+        ("Em thuộc K50, năm tuyển sinh là 2024", False),
+        ("So sánh K50 với sinh viên tuyển sinh năm 2025", False),
+        ("K50 so với sinh viên tuyển sinh năm 2025", False),
+        ("K50 hỏi quy định ban hành năm 2025", False),
+    ],
+)
+def test_cohort_admission_year_conflict_is_conservative(
+    query: str, clarifies: bool
+) -> None:
+    plan, errors = normalize_query_plan(
+        _plan([_rag_task(1, query)]), query=query, selected_cohort="K51"
+    )
+    assert errors == []
+    assert (plan["tasks"][0]["mode"] == "clarify") is clarifies
+    if clarifies:
+        assert plan["planner_fallback"] == "cohort_admission_year_conflict"
+
+
+def test_cohort_year_guard_uses_registry_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setitem(
+        cohort_module.COHORT_REGISTRY,
+        "K52",
+        {"aliases": ("K52",), "admission_years": (2026,)},
+    )
+    query = "Em thuộc K52 nhưng năm tuyển sinh 2027"
+    plan, _ = normalize_query_plan(_plan([_rag_task(1, query)]), query=query)
+    assert plan["tasks"][0]["mode"] == "clarify"
+    assert "2026" in plan["tasks"][0]["clarification_question"]
+
+
+def test_selected_cohort_conflicting_with_explicit_admission_year_clarifies() -> None:
+    query = "Em tuyển sinh năm 2025 và muốn tra thời gian đào tạo"
+    plan, _ = normalize_query_plan(
+        _plan([_rag_task(1, query)]), query=query, selected_cohort="K50"
+    )
+    assert plan["tasks"][0]["mode"] == "clarify"
+    assert plan["planner_fallback"] == "cohort_admission_year_conflict"
+
+
+def test_office_lookup_never_falls_back_to_another_cohort() -> None:
+    record = {
+        "record_id": "office-k50",
+        "unit_name": "Phòng Đào tạo",
+        "aliases": ["phòng đào tạo"],
+        "cohort": "K50",
+    }
+    assert (
+        office_lookup(
+            "Phòng Đào tạo",
+            [record],
+            cohort="K51",
+            candidate_text="Phòng Đào tạo",
+            require_confident_match=True,
+        )
+        is None
+    )
+
+
+def test_office_lookup_accepts_only_validated_cross_cohort_source() -> None:
+    base = {
+        "record_id": "office-shared",
+        "unit_name": "Phòng Đào tạo",
+        "aliases": ["phòng đào tạo"],
+        "cohort": "K50",
+        "applicable_cohorts": ["K51"],
+    }
+    assert (
+        office_lookup(
+            "Phòng Đào tạo",
+            [base],
+            cohort="K51",
+            candidate_text="Phòng Đào tạo",
+            require_confident_match=True,
+        )
+        is None
+    )
+    result = office_lookup(
+        "Phòng Đào tạo",
+        [{**base, "applicability_validated": True}],
+        cohort="K51",
+        candidate_text="Phòng Đào tạo",
+        require_confident_match=True,
+    )
+    assert result is not None
+    assert result["result"][0]["unit_name"] == "Phòng Đào tạo"
+
+
+def test_office_lookup_keeps_explicit_shared_source() -> None:
+    result = office_lookup(
+        "Trung tâm dùng chung",
+        [
+            {
+                "record_id": "shared-office",
+                "unit_name": "Trung tâm dùng chung",
+                "aliases": ["trung tâm dùng chung"],
+                "cohort": "shared",
+            }
+        ],
+        cohort="K51",
+        candidate_text="Trung tâm dùng chung",
+        require_confident_match=True,
+    )
+    assert result is not None
 
 
 def test_native_plan_schema_matches_normalizer_contract() -> None:

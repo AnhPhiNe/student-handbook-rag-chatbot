@@ -7,7 +7,7 @@ from typing import Any
 
 import numpy as np
 
-from src.common.cohort import is_cohort_applicable, normalize_cohort
+from src.common.cohort import is_validated_source_applicable, normalize_cohort
 
 
 STOPWORDS = {
@@ -242,7 +242,7 @@ def find_grounded_catalog_hint(
     )
     for lookup_type, records in catalogs:
         for record in records:
-            if not is_cohort_applicable(record, normalized_cohort):
+            if not is_validated_source_applicable(record, normalized_cohort):
                 continue
             for value in _candidate_values(record):
                 value_norm = normalize_text(value)
@@ -441,13 +441,11 @@ def office_lookup(
     normalized_cohort = normalize_cohort(cohort)
     candidates = office_directory
     if normalized_cohort:
-        cohort_matches = [
+        candidates = [
             item
             for item in candidates
-            if is_cohort_applicable(item, normalized_cohort)
+            if is_validated_source_applicable(item, normalized_cohort)
         ]
-        if cohort_matches:
-            candidates = cohort_matches
 
     ranked = _rank_candidates(candidate_text or query, candidates, model)
     match_score = ranked[0]["confidence"] if ranked else 0.0

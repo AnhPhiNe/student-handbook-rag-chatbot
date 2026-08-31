@@ -5,6 +5,7 @@ import unicodedata
 from typing import Any
 
 from src.common.cohort import (
+    admission_years_for_cohort,
     build_cohort_token_regex,
     extract_cohorts_from_query,
     normalize_cohort,
@@ -19,7 +20,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v14-validated-fact-lock"
+QUERY_PLAN_NORMALIZER_VERSION = "v15-cohort-year-conflict"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
@@ -59,6 +60,20 @@ _BARE_ARTICLE_QUESTION_WORDS = {
     "ve",
 }
 
+_ADMISSION_YEAR_PATTERNS = (
+    re.compile(r"\bnam tuyen sinh\s*(?:la\s*)?(20\d{2})\b"),
+    re.compile(r"\btuyen sinh nam\s*(?:la\s*)?(20\d{2})\b"),
+)
+_COMPARISON_PHRASES = (
+    "so sanh",
+    "so voi",
+    "doi chieu",
+    "khac nhau",
+    "khac gi",
+    "giua cac",
+    "giua hai",
+)
+
 
 def _fold_query(value: str) -> str:
     value = value.replace("đ", "d").replace("Đ", "D")
@@ -75,6 +90,39 @@ def _has_handbook_domain_signal(query: str) -> bool:
 
     folded = _fold_query(query)
     return any(phrase in folded for phrase in _HANDBOOK_DOMAIN_PHRASES)
+
+
+def _cohort_admission_year_conflict(
+    query: str, selected_cohort: str | None = None
+) -> tuple[str, int] | None:
+    """Return one explicit cohort/year mismatch for the same described student.
+
+    Only years explicitly introduced as an admission year participate. Queries
+    that explicitly compare groups are left to the planner instead of being
+    mistaken for contradictory profile metadata.
+    """
+
+    query_cohorts = extract_cohorts_from_query(query)
+    if len(query_cohorts) > 1:
+        return None
+    selected = normalize_cohort(selected_cohort)
+    cohorts = query_cohorts or ([selected] if selected in valid_cohorts() else [])
+    if len(cohorts) != 1:
+        return None
+    folded = _fold_query(query)
+    if any(phrase in folded for phrase in _COMPARISON_PHRASES):
+        return None
+    years = {
+        int(match.group(1))
+        for pattern in _ADMISSION_YEAR_PATTERNS
+        for match in pattern.finditer(folded)
+    }
+    if len(years) != 1:
+        return None
+    cohort = cohorts[0]
+    year = next(iter(years))
+    admitted = set(admission_years_for_cohort(cohort))
+    return (cohort, year) if admitted and year not in admitted else None
 
 
 def _bare_article_reference(query: str) -> str | None:
@@ -260,6 +308,34 @@ def normalize_query_plan(
     registry = registry or load_lookup_registry()
     query_cohorts = extract_cohorts_from_query(query)
     default_cohort = query_cohorts[0] if len(query_cohorts) == 1 else selected_cohort
+    if conflict := _cohort_admission_year_conflict(query, selected_cohort):
+        cohort, year = conflict
+        expected_years = ", ".join(
+            str(value) for value in admission_years_for_cohort(cohort)
+        )
+        return {
+            "schema_version": QUERY_PLAN_SCHEMA_VERSION,
+            "context_mode": "ambiguous",
+            "normalized_query": query,
+            "standalone_query": None,
+            "referenced_turns": [],
+            "out_of_domain": False,
+            "tasks": [
+                _clarify_task(
+                    "t1",
+                    query,
+                    cohorts=[cohort],
+                    clarification=(
+                        f"Bạn đang nêu {cohort} nhưng năm tuyển sinh {year}; "
+                        f"theo dữ liệu khóa hiện có, {cohort} tương ứng năm "
+                        f"{expected_years}. Bạn muốn tra theo khóa hay theo năm "
+                        "tuyển sinh?"
+                    ),
+                )
+            ],
+            "planner_fallback": "cohort_admission_year_conflict",
+            "planner_validation_errors": [],
+        }, []
     if article_number := _bare_article_reference(query):
         cohorts = [normalize_cohort(default_cohort)] if default_cohort else []
         return {

@@ -24,7 +24,6 @@ from src.evaluation.gates import evaluate_gates
 from src.evaluation.human_audit import summarize_human_audit
 from src.evaluation.reporting import write_report_bundle
 from src.evaluation.suites import (
-    evaluate_deterministic,
     evaluate_deterministic_v2,
     evaluate_graph_supplement,
     evaluate_production,
@@ -131,6 +130,38 @@ def _file_hash(path: Path) -> str:
 def _require_env(names: tuple[str, ...], message: str) -> None:
     if not any(os.environ.get(name) for name in names):
         raise SystemExit(message)
+
+
+def _resolve_deterministic_contract(
+    manifest: dict[str, Any], cases: list[dict[str, Any]]
+) -> str:
+    """Resolve the deterministic evaluator contract without a legacy fallback."""
+    declared = str(manifest.get("deterministic_contract") or "").strip()
+    case_contracts = {
+        str(case.get("contract_version") or "").strip()
+        for case in cases
+        if str(case.get("contract_version") or "").strip()
+    }
+    if len(case_contracts) > 1:
+        raise ValueError(
+            "Deterministic cases declare conflicting contracts: "
+            + ", ".join(sorted(case_contracts))
+        )
+    case_contract = next(iter(case_contracts), "")
+    if declared and case_contract and declared != case_contract:
+        raise ValueError(
+            "Deterministic contract mismatch: "
+            f"manifest={declared!r}, cases={case_contract!r}"
+        )
+    contract = declared or case_contract
+    if not contract:
+        raise ValueError(
+            "Deterministic evaluation contract is missing; refusing to use the "
+            "legacy evaluator implicitly"
+        )
+    if not contract.startswith("query-plan-"):
+        raise ValueError(f"Unsupported deterministic evaluation contract: {contract!r}")
+    return contract
 
 
 def _runtime_storage_errors(
@@ -490,23 +521,18 @@ def main() -> None:
             ("GROQ_ROUTER_API_KEYS", "GROQ_API_KEYS"),
             "A Groq API key pool is required for the Qwen structured router",
         )
-        deterministic_contract = str(provenance.get("deterministic_contract") or "")
-        evaluator = (
-            evaluate_deterministic_v2
-            if deterministic_contract.startswith("query-plan-")
-            else evaluate_deterministic
+        deterministic_contract = _resolve_deterministic_contract(
+            manifest, deterministic_cases
         )
-        if evaluator is evaluate_deterministic_v2:
-            report = evaluator(
-                deterministic_cases,
-                limit=args.limit,
-                evaluation_contract=deterministic_contract,
-                checkpoint_path=args.output / f"deterministic_checkpoint_{args.profile}.json",
-                resume=args.resume,
-                checkpoint_context=_checkpoint_context(provenance, args.profile),
-            )
-        else:
-            report = evaluator(deterministic_cases, limit=args.limit)
+        provenance["resolved_deterministic_contract"] = deterministic_contract
+        report = evaluate_deterministic_v2(
+            deterministic_cases,
+            limit=args.limit,
+            evaluation_contract=deterministic_contract,
+            checkpoint_path=args.output / f"deterministic_checkpoint_{args.profile}.json",
+            resume=args.resume,
+            checkpoint_context=_checkpoint_context(provenance, args.profile),
+        )
         _finalize_report(
             report,
             expected_n=len(deterministic_cases),

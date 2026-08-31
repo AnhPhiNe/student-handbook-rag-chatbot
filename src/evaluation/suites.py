@@ -941,10 +941,10 @@ def _evaluate_deterministic_v2_uncached(
                     task_modes_ok
                     and dict(Counter(actual_modes)) == expected["mode_counts"]
                 )
-            task_semantics_ok = (
+            task_semantics_ok: bool | None = (
                 _expected_tasks_match(case["expected_tasks"], tasks)
                 if "expected_tasks" in case
-                else True
+                else None
             )
 
             expected_lookup_types = set(expected.get("lookup_types") or [])
@@ -953,9 +953,10 @@ def _evaluate_deterministic_v2_uncached(
                 for task in tasks
                 if task.get("lookup_type")
             }
-            lookup_type_ok = (
-                not expected_lookup_types
-                or actual_lookup_types == expected_lookup_types
+            lookup_type_ok: bool | None = (
+                actual_lookup_types == expected_lookup_types
+                if "lookup_types" in expected
+                else None
             )
 
             expected_cohorts = set(expected.get("cohorts") or [])
@@ -965,18 +966,24 @@ def _evaluate_deterministic_v2_uncached(
                 for cohort in (task.get("cohorts") or [])
                 if cohort
             }
-            cohort_ok = not expected_cohorts or actual_cohorts == expected_cohorts
-            out_of_domain_ok = bool(plan.get("out_of_domain")) == bool(
-                expected.get("out_of_domain")
+            cohort_ok: bool | None = (
+                actual_cohorts == expected_cohorts if "cohorts" in expected else None
+            )
+            out_of_domain_ok: bool | None = (
+                bool(plan.get("out_of_domain")) == bool(expected["out_of_domain"])
+                if "out_of_domain" in expected
+                else None
             )
 
             clarification_expected = bool(expected.get("needs_clarification"))
-            clarification_ok = bool(result.get("needs_clarification")) == (
-                clarification_expected
+            clarification_ok: bool | None = (
+                bool(result.get("needs_clarification")) == clarification_expected
+                if "needs_clarification" in expected
+                else None
             )
             expected_llm_called = case.get("expected_llm_called")
-            llm_call_ok = (
-                True
+            llm_call_ok: bool | None = (
+                None
                 if expected_llm_called is None
                 else bool(result.get("needs_llm_answer")) == bool(expected_llm_called)
             )
@@ -995,9 +1002,13 @@ def _evaluate_deterministic_v2_uncached(
                 and task.get("coverage") == "covered"
                 and bool(task.get("evidence"))
             )
-            structured_execution_ok = all(
-                covered_structured[lookup_type] >= count
-                for lookup_type, count in required_structured.items()
+            structured_execution_ok: bool | None = (
+                all(
+                    covered_structured[lookup_type] >= count
+                    for lookup_type, count in required_structured.items()
+                )
+                if required_structured
+                else None
             )
 
             structured = (
@@ -1013,16 +1024,16 @@ def _evaluate_deterministic_v2_uncached(
             expects_structured = (
                 allowed_modes == {"structured"} and not clarification_expected
             )
-            structured_evidence_ok = True
-            table_first_ok = True
+            structured_evidence_ok: bool | None = None
+            table_first_ok: bool | None = None
             if expects_structured:
                 structured_evidence_ok = bool(structured)
                 table_first_ok = _has_structured_payload(structured)
 
             citations = result.get("citations") or _structured_citations(structured)
-            citation_ok = True
+            citation_ok: bool | None = None
             cross_cohort_leak = False
-            if expects_structured:
+            if expects_structured and "expected_citation_cohort" in case:
                 citation_ok = bool(citations) and all(
                     _cohort_matches(
                         citation.get("cohort")
@@ -1042,18 +1053,28 @@ def _evaluate_deterministic_v2_uncached(
 
             flattened = _flatten_text(structured)
             expected_any = case.get("expected_contains_any") or []
-            value_exact = not expected_any or any(
-                str(value).casefold() in flattened.casefold() for value in expected_any
+            value_exact: bool | None = (
+                any(
+                    str(value).casefold() in flattened.casefold()
+                    for value in expected_any
+                )
+                if "expected_contains_any" in case
+                else None
             )
             numeric_expected = case.get("expected_numeric_value")
             tolerance = float(case.get("numeric_tolerance", 0.0))
-            numeric_ok = numeric_expected is None or any(
-                abs(number - float(numeric_expected)) <= tolerance
-                for number in _numeric_values(structured)
+            numeric_ok: bool | None = (
+                any(
+                    abs(number - float(numeric_expected)) <= tolerance
+                    for number in _numeric_values(structured)
+                )
+                if numeric_expected is not None
+                else None
             )
 
             passed = all(
-                (
+                check
+                for check in (
                     task_count_ok,
                     task_modes_ok,
                     task_semantics_ok,
@@ -1070,6 +1091,7 @@ def _evaluate_deterministic_v2_uncached(
                     value_exact,
                     numeric_ok,
                 )
+                if check is not None
             )
             row = {
                 **case,
@@ -1124,11 +1146,6 @@ def _evaluate_deterministic_v2_uncached(
         rows_by_id[case["id"]] for case in cases[:limit] if case["id"] in rows_by_id
     ]
 
-    positives = [
-        row
-        for row in rows
-        if (row.get("evaluation_case_type") or row.get("case_type")) == "positive"
-    ]
     predicted_structured = [
         row for row in rows if "structured" in (row.get("actual_task_modes") or [])
     ]
@@ -1142,6 +1159,25 @@ def _evaluate_deterministic_v2_uncached(
     true_positive_n = sum(expects_structured(row) for row in predicted_structured)
     false_positive_n = sum(not expects_structured(row) for row in predicted_structured)
     passed_n = sum(bool(row.get("passed")) for row in rows)
+
+    def assertion_accuracy(field: str) -> float | None:
+        values = [row[field] for row in rows if row.get(field) is not None]
+        return safe_mean([float(bool(value)) for value in values])
+
+    assertion_fields = {
+        "task_semantics": "task_semantics_correct",
+        "lookup_type": "lookup_type_correct",
+        "cohort": "cohort_correct",
+        "out_of_domain": "out_of_domain_correct",
+        "clarification": "clarification_correct",
+        "llm_call": "llm_call_correct",
+        "structured_execution": "structured_execution_correct",
+        "structured_evidence": "structured_evidence_present",
+        "table_first_evidence": "table_first_evidence_present",
+        "citation_metadata": "citation_metadata_correct",
+        "structured_value": "structured_value_exact",
+        "numeric_value": "numeric_value_correct",
+    }
     summary = {
         "n": len(rows),
         "passed": passed_n,
@@ -1171,19 +1207,34 @@ def _evaluate_deterministic_v2_uncached(
                 for row in rows
             ]
         ),
-        "lookup_type_accuracy": safe_mean(
-            [float(bool(row.get("lookup_type_correct"))) for row in rows]
+        "task_semantics_accuracy": assertion_accuracy("task_semantics_correct"),
+        "lookup_type_accuracy": assertion_accuracy("lookup_type_correct"),
+        "cohort_accuracy": assertion_accuracy("cohort_correct"),
+        "out_of_domain_accuracy": assertion_accuracy("out_of_domain_correct"),
+        "clarification_accuracy": assertion_accuracy("clarification_correct"),
+        "llm_call_accuracy": assertion_accuracy("llm_call_correct"),
+        "structured_execution_accuracy": assertion_accuracy(
+            "structured_execution_correct"
         ),
-        "citation_metadata_accuracy": safe_mean(
-            [float(bool(row.get("citation_metadata_correct"))) for row in positives]
+        "structured_evidence_accuracy": assertion_accuracy(
+            "structured_evidence_present"
+        ),
+        "citation_metadata_accuracy": assertion_accuracy(
+            "citation_metadata_correct"
         ),
         "cross_cohort_leak": sum(bool(row.get("cross_cohort_leak")) for row in rows)
         / len(rows)
         if rows
         else 0.0,
-        "table_first_evidence_accuracy": safe_mean(
-            [float(bool(row.get("table_first_evidence_present"))) for row in positives]
+        "table_first_evidence_accuracy": assertion_accuracy(
+            "table_first_evidence_present"
         ),
+        "structured_value_accuracy": assertion_accuracy("structured_value_exact"),
+        "numeric_value_accuracy": assertion_accuracy("numeric_value_correct"),
+        "assertion_support": {
+            name: sum(row.get(field) is not None for row in rows)
+            for name, field in assertion_fields.items()
+        },
         "planner_fallback_rate": 1.0
         - safe_mean([float(bool(row.get("planner_fallback_free"))) for row in rows]),
     }

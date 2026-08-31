@@ -13,6 +13,81 @@ import src.evaluation.suites as suites
 from src.evaluation.metrics import retrieval_metrics
 
 
+def test_v6_deterministic_contract_is_resolved_from_cases() -> None:
+    cases = [
+        {"id": "one", "contract_version": "query-plan-target-holdout-v6"},
+        {"id": "two", "contract_version": "query-plan-target-holdout-v6"},
+    ]
+    assert (
+        runner._resolve_deterministic_contract(
+            {"evaluation_contract": "comprehensive-question-scenario-holdout-v6"},
+            cases,
+        )
+        == "query-plan-target-holdout-v6"
+    )
+
+
+def test_deterministic_contract_resolution_fails_closed() -> None:
+    with pytest.raises(ValueError, match="contract is missing"):
+        runner._resolve_deterministic_contract({}, [{"id": "one"}])
+    with pytest.raises(ValueError, match="Unsupported"):
+        runner._resolve_deterministic_contract(
+            {"deterministic_contract": "legacy-implicit"}, [{"id": "one"}]
+        )
+    with pytest.raises(ValueError, match="conflicting"):
+        runner._resolve_deterministic_contract(
+            {},
+            [
+                {"id": "one", "contract_version": "query-plan-a"},
+                {"id": "two", "contract_version": "query-plan-b"},
+            ],
+        )
+
+
+def test_deterministic_v2_reports_non_applicable_assertions_as_na() -> None:
+    class Pipeline:
+        def _run_retrieval(self, query, cohort=None):
+            return {
+                "query_plan": {
+                    "tasks": [
+                        {
+                            "mode": "rag",
+                            "intent": "open_question",
+                            "cohorts": ["K51"],
+                        }
+                    ]
+                },
+                "needs_llm_answer": True,
+                "task_results": [],
+            }
+
+    case = {
+        "id": "one",
+        "query": "quy định nào?",
+        "cohort": "K51",
+        "expected_llm_called": True,
+        "expected_plan": {
+            "task_count": 1,
+            "allowed_modes": ["rag"],
+            "lookup_types": [],
+            "cohorts": ["K51"],
+            "out_of_domain": False,
+            "needs_clarification": False,
+        },
+        "expected_tasks": [
+            {"mode": "rag", "intent": "open_question", "cohorts": ["K51"]}
+        ],
+    }
+    report = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)
+    row = report["cases"][0]
+    assert row["citation_metadata_correct"] is None
+    assert row["structured_value_exact"] is None
+    assert row["numeric_value_correct"] is None
+    assert report["summary"]["citation_metadata_accuracy"] is None
+    assert report["summary"]["assertion_support"]["citation_metadata"] == 0
+    assert report["summary"]["passed"] == 1
+
+
 def test_v6_runtime_storage_identity_requires_qdrant_and_mongo_v32() -> None:
     manifest = {
         "schema_version": "architecture-evaluation-v6",

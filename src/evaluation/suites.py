@@ -7,6 +7,7 @@ import re
 import statistics
 import time
 import unicodedata
+from uuid import NAMESPACE_URL, uuid5
 from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from itertools import permutations
@@ -2576,6 +2577,12 @@ def evaluate_production(
 
     def run(case: dict[str, Any]) -> dict[str, Any]:
         endpoint = "/chat/stream" if case["scenario"] == "streaming" else "/chat"
+        # Production browsers send an anonymous UUID used by the API's
+        # per-browser rate limiter.  Reuse the originating identity for a warm
+        # cache repeat; independent cases represent independent clients.  The
+        # public-IP abuse guard still applies to the whole evaluation run.
+        client_identity = str(case.get("repeat_of") or case["id"])
+        client_id = str(uuid5(NAMESPACE_URL, f"student-rag-eval:{client_identity}"))
         payload = json.dumps(
             {
                 "query": case["query"],
@@ -2587,7 +2594,10 @@ def evaluate_production(
         req = urllib_request.Request(
             base_url.rstrip("/") + endpoint,
             data=payload,
-            headers={"Content-Type": "application/json"},
+            headers={
+                "Content-Type": "application/json",
+                "X-Client-ID": client_id,
+            },
             method="POST",
         )
         started = time.perf_counter()

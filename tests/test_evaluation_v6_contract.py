@@ -336,3 +336,49 @@ def test_production_retains_auditable_answers_history_and_checkpoint(
     resumed = suites.evaluate_production([case], **kwargs, resume=True)
     assert len(calls) == 1
     assert resumed["summary"]["n"] == 1
+
+
+def test_production_uses_browser_identity_and_reuses_it_for_warm_repeat(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client_ids: list[str] = []
+    response_payload = {"status": "answered", "answer": "Có căn cứ."}
+
+    class Response(BytesIO):
+        status = 200
+
+    def request(req, **_kwargs):
+        client_ids.append(req.get_header("X-client-id"))
+        return Response(json.dumps(response_payload).encode())
+
+    monkeypatch.setattr(suites.urllib_request, "urlopen", request)
+    cases = [
+        {
+            "id": "cold",
+            "query": "q",
+            "cohort": "K51",
+            "scenario": "cold_rag",
+            "expected_path": "regulation_rag",
+        },
+        {
+            "id": "warm",
+            "repeat_of": "cold",
+            "query": "q",
+            "cohort": "K51",
+            "scenario": "warm_cache",
+            "expected_path": "regulation_rag",
+        },
+        {
+            "id": "independent",
+            "query": "q2",
+            "cohort": "K51",
+            "scenario": "cold_rag",
+            "expected_path": "regulation_rag",
+        },
+    ]
+
+    report = suites.evaluate_production(cases, base_url="http://unused")
+
+    assert report["summary"]["n"] == 3
+    assert client_ids[0] == client_ids[1]
+    assert client_ids[0] != client_ids[2]

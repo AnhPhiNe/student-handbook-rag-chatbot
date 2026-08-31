@@ -31,6 +31,7 @@ from src.evaluation.suites import (
     evaluate_retrieval,
     generate_answers,
     judge_answers,
+    load_answer_checkpoint,
 )
 from src.generation.answer_pipeline import PIPELINE_VERSION
 from src.retrieval.core.hybrid_pipeline import DEFAULT_RETRIEVAL_MODE
@@ -145,11 +146,13 @@ def _write(report: dict[str, Any], output_dir: Path, name: str) -> None:
 
 
 def _finalize_report(
-    report: dict[str, Any], *, expected_n: int, provenance: dict[str, Any]
+    report: dict[str, Any], *, expected_n: int, provenance: dict[str, Any],
+    profile: str = "full",
 ) -> dict[str, Any]:
     actual_n = int((report.get("summary") or {}).get("n", 0))
     report["provenance"] = provenance
     report["completeness"] = {
+        "profile": profile,
         "expected_n": expected_n,
         "actual_n": actual_n,
         "complete": actual_n == expected_n,
@@ -168,7 +171,34 @@ def _finalize_report(
         if actual_n != expected_n:
             report["gates"]["passed"] = False
             report["gates"]["reason"] = "partial_report"
+    if report.get("suite") == "judge":
+        judged_n = int((report.get("summary") or {}).get("judged_n", 0))
+        report["completeness"]["judged_n"] = judged_n
+        if judged_n != expected_n:
+            report["completeness"]["complete"] = False
+            report["completeness"]["publication_status"] = "partial_judge_not_for_headline"
+            report["gates"]["passed"] = False
+            report["gates"]["reason"] = "partial_judge"
+    if profile == "smoke":
+        # A completed diagnostic sample is never a completed headline suite.
+        report["completeness"]["complete"] = False
+        report["completeness"]["publication_status"] = "smoke_not_for_headline"
+        if "gates" in report:
+            report["gates"]["passed"] = False
+            report["gates"]["reason"] = "smoke_profile"
     return report
+
+
+def _checkpoint_context(
+    provenance: dict[str, Any], profile: str,
+) -> dict[str, Any]:
+    return {
+        "profile": profile,
+        "provenance": {
+            key: value for key, value in provenance.items()
+            if key not in {"run_at_utc", "platform"}
+        },
+    }
 
 
 def _run_retrieval_modes(
@@ -187,8 +217,13 @@ def _run_retrieval_modes(
             mode=mode,
             scope=args.retrieval_scope,
             limit=args.limit,
+            checkpoint_path=args.output / f"retrieval_{args.retrieval_scope}_{mode}_checkpoint_{args.profile}.json",
+            resume=args.resume,
+            checkpoint_context=_checkpoint_context(provenance, args.profile),
         )
-        _finalize_report(report, expected_n=180, provenance=provenance)
+        _finalize_report(
+            report, expected_n=len(cases), provenance=provenance, profile=args.profile,
+        )
         reports[mode] = report
         _write(
             report,
@@ -431,6 +466,9 @@ def main() -> None:
                 deterministic_cases,
                 limit=args.limit,
                 evaluation_contract=deterministic_contract,
+                checkpoint_path=args.output / f"deterministic_checkpoint_{args.profile}.json",
+                resume=args.resume,
+                checkpoint_context=_checkpoint_context(provenance, args.profile),
             )
         else:
             report = evaluator(deterministic_cases, limit=args.limit)
@@ -438,6 +476,7 @@ def main() -> None:
             report,
             expected_n=len(deterministic_cases),
             provenance=provenance,
+            profile=args.profile,
         )
         _write(report, args.output, f"deterministic_{args.profile}")
 
@@ -458,6 +497,7 @@ def main() -> None:
             report,
             expected_n=int((report.get("summary") or {}).get("n") or 0),
             provenance=provenance,
+            profile=args.profile,
         )
         _write(report, args.output, f"graph_supplement_{args.profile}")
 
@@ -480,11 +520,13 @@ def main() -> None:
             cache_path=answer_cache_path,
             resume=args.resume,
             limit=args.limit,
+            checkpoint_context=_checkpoint_context(provenance, args.profile),
         )
         _finalize_report(
             report,
             expected_n=answer_expected_n,
             provenance=provenance,
+            profile=args.profile,
         )
         _write(report, args.output, f"answer_generation_{args.profile}")
 
@@ -499,10 +541,14 @@ def main() -> None:
             )
         report = judge_answers(
             answer_cases,
-            load_json(answer_cache_path),
+            load_answer_checkpoint(
+                answer_cases, answer_cache_path,
+                checkpoint_context=_checkpoint_context(provenance, args.profile),
+            ),
             checkpoint_path=args.output / f"judge_checkpoint_{args.profile}.json",
             resume=args.resume,
             limit=args.limit,
+            checkpoint_context=_checkpoint_context(provenance, args.profile),
         )
         audit_path = args.human_audit or (args.output / "human_audit.json")
         if args.human_audit is None and not audit_path.exists():
@@ -539,6 +585,7 @@ def main() -> None:
             report,
             expected_n=answer_expected_n,
             provenance=provenance,
+            profile=args.profile,
         )
         if not report["human_audit"].get("complete"):
             report["completeness"]["complete"] = False
@@ -549,9 +596,17 @@ def main() -> None:
 
     if args.suite in {"production", "all"}:
         report = evaluate_production(
-            production_cases, base_url=args.base_url, limit=args.limit
+            production_cases,
+            base_url=args.base_url,
+            limit=args.limit,
+            checkpoint_path=args.output / f"production_checkpoint_{args.profile}.json",
+            resume=args.resume,
+            checkpoint_context=_checkpoint_context(provenance, args.profile),
         )
-        _finalize_report(report, expected_n=60, provenance=provenance)
+        _finalize_report(
+            report, expected_n=len(production_cases), provenance=provenance,
+            profile=args.profile,
+        )
         _write(report, args.output, f"production_{args.profile}")
 
     if args.suite in {"faults", "all"}:
@@ -620,7 +675,9 @@ def main() -> None:
             "pytest_stdout": completed.stdout[-4000:],
             "pytest_stderr": completed.stderr[-4000:],
         }
-        _finalize_report(report, expected_n=len(nodes), provenance=provenance)
+        _finalize_report(
+            report, expected_n=len(nodes), provenance=provenance, profile=args.profile,
+        )
         _write(report, args.output, f"fault_injection_{args.profile}")
 
 

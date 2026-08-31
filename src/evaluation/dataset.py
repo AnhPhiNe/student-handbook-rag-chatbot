@@ -560,7 +560,8 @@ def validate_bundle(
                 if not isinstance(judgments, list) or (
                     not judgments
                     and case.get("answerability") != "unanswerable"
-                    and case.get("expected_path") not in {"structured", "mixed"}
+                    and case.get("expected_path")
+                    not in {"structured", "mixed", "clarify", "out_of_domain"}
                 ):
                     errors.append(f"{case_id}: missing relevance_judgments")
                 for judgment in judgments or []:
@@ -748,15 +749,22 @@ def validate_bundle(
         errors.append(
             f"deterministic case distribution mismatch: {dict(actual_det_types)}"
         )
+    lookup_case_types = set(
+        manifest.get("deterministic_lookup_case_types") or ["positive"]
+    )
     positive_groups = Counter(
         case.get("lookup_group")
         for case in deterministic
-        if case.get("case_type") == "positive"
+        if case.get("case_type") in lookup_case_types
     )
-    expected_positive_groups = manifest.get("deterministic_positive_lookup_counts")
+    expected_positive_groups = manifest.get("deterministic_lookup_group_counts")
+    if expected_positive_groups is None:
+        expected_positive_groups = manifest.get(
+            "deterministic_positive_lookup_counts"
+        )
     positive_groups_valid = (
         dict(positive_groups) == expected_positive_groups
-        if expected_positive_groups
+        if expected_positive_groups is not None
         else len(positive_groups) == 10
         and all(count == 6 for count in positive_groups.values())
     )
@@ -817,7 +825,10 @@ def validate_bundle(
     ):
         errors.append("retrieval dataset has no supporting relevance grade=1")
 
-    if manifest.get("retrieval_contract") == "regulation-rag-source-first-v3":
+    if manifest.get("retrieval_contract") in {
+        "regulation-rag-source-first-v3",
+        "regulation-rag-question-target-holdout-v6",
+    }:
         forbidden_fragments = [
             normalize_query(value)
             for value in manifest.get("retrieval_forbidden_query_fragments") or []
@@ -862,7 +873,16 @@ def validate_bundle(
     if dict(answer_split) != expected_answer_split:
         errors.append(f"answer eval_split mismatch: {dict(answer_split)}")
 
-    if manifest.get("evaluation_contract") == "comprehensive-source-grounded-answer-v4":
+    evaluation_contract = manifest.get("evaluation_contract")
+    if evaluation_contract in {
+        "comprehensive-source-grounded-answer-v4",
+        "comprehensive-question-target-holdout-v6",
+    }:
+        expected_answer_contract = (
+            "answer-quality-target-holdout-v6"
+            if evaluation_contract == "comprehensive-question-target-holdout-v6"
+            else "answer-quality-source-grounded-v4"
+        )
         expected_paths = manifest.get("answer_path_counts") or {}
         actual_paths = Counter(case.get("expected_path") for case in answers)
         if dict(actual_paths) != expected_paths:
@@ -901,8 +921,11 @@ def validate_bundle(
         for case in answers:
             case_id = str(case.get("id") or "")
             case_type = str(case.get("case_type") or "")
-            if case.get("contract_version") != "answer-quality-source-grounded-v4":
-                errors.append(f"{case_id}: wrong v4 answer contract")
+            if case.get("contract_version") != expected_answer_contract:
+                errors.append(
+                    f"{case_id}: wrong answer contract; expected "
+                    f"{expected_answer_contract}"
+                )
             if path_by_type.get(case_type) != case.get("expected_path"):
                 errors.append(
                     f"{case_id}: case_type={case_type} has invalid path={case.get('expected_path')}"
@@ -919,13 +942,16 @@ def validate_bundle(
 
     production = datasets.get("production", [])
     production_scenarios = Counter(case.get("scenario") for case in production)
-    if dict(production_scenarios) != {
+    expected_production_scenarios = manifest.get(
+        "production_scenario_counts"
+    ) or {
         "cold_rag": 20,
         "deterministic": 10,
         "warm_cache": 10,
         "streaming": 10,
         "burst": 10,
-    }:
+    }
+    if dict(production_scenarios) != expected_production_scenarios:
         errors.append(
             f"production scenario distribution mismatch: {dict(production_scenarios)}"
         )
@@ -956,7 +982,8 @@ def validate_bundle(
         if expected_audit_hash != stable_json_hash(audit_template):
             errors.append("human audit template hash mismatch")
         expected_audit_n = int(manifest.get("human_audit_required_n") or 20)
-        expected_repeat_n = int(manifest.get("human_audit_repeat_n") or 5)
+        repeat_value = manifest.get("human_audit_repeat_n")
+        expected_repeat_n = 5 if repeat_value is None else int(repeat_value)
         if len(audit_template) != expected_audit_n:
             errors.append(
                 f"human audit template expected {expected_audit_n} rows, found {len(audit_template)}"

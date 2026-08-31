@@ -70,7 +70,9 @@ def bootstrap_mean_ci(values: list[float]) -> dict[str, float | None]:
     return bootstrap_interval(values)
 
 
-def retrieval_metrics(grades: list[int], k: int = 5) -> dict[str, float]:
+def retrieval_metrics(
+    grades: list[int], k: int = 5, *, gold_grades: list[int] | None = None
+) -> dict[str, float]:
     binary = [grade > 0 for grade in grades]
     first_relevant = next((index for index, hit in enumerate(binary) if hit), None)
 
@@ -80,7 +82,7 @@ def retrieval_metrics(grades: list[int], k: int = 5) -> dict[str, float]:
     dcg = sum(
         (2**grade - 1) / math.log2(index + 2) for index, grade in enumerate(grades[:k])
     )
-    ideal = sorted(grades, reverse=True)[:k]
+    ideal = sorted(gold_grades if gold_grades is not None else grades, reverse=True)[:k]
     idcg = sum(
         (2**grade - 1) / math.log2(index + 2) for index, grade in enumerate(ideal)
     )

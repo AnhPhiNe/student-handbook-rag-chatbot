@@ -9,13 +9,14 @@ import time
 import unicodedata
 from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from itertools import permutations
 from pathlib import Path
 from typing import Any, Callable
 from urllib import error as urllib_error
 from urllib import request as urllib_request
 from tqdm import tqdm
 
-from .dataset import load_json
+from .dataset import load_json, stable_json_hash
 from .judge import GroqJudgeClient, compact_judge_packet
 from .metrics import (
     bootstrap_mean_ci,
@@ -653,18 +654,190 @@ def evaluate_deterministic_v2(
     *,
     limit: int | None = None,
     evaluation_contract: str = "query-plan-table-first-v2",
+    checkpoint_path: Path | None = None,
+    resume: bool = False,
+    pipeline_factory: Callable[[], Any] | None = None,
+    checkpoint_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Evaluate QueryPlan/table-first contracts without legacy route aliases."""
-    from src.generation.answer_pipeline import AnswerPipeline
+    previous_cache = os.environ.get("STUDENT_RAG_DISABLE_ROUTER_CACHE")
+    os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"
+    try:
+        return _evaluate_deterministic_v2_uncached(
+            cases,
+            limit=limit,
+            evaluation_contract=evaluation_contract,
+            checkpoint_path=checkpoint_path,
+            resume=resume,
+            pipeline_factory=pipeline_factory,
+            checkpoint_context=checkpoint_context,
+        )
+    finally:
+        _restore_env("STUDENT_RAG_DISABLE_ROUTER_CACHE", previous_cache)
 
-    pipeline = AnswerPipeline()
-    rows: list[dict[str, Any]] = []
+
+def _eval_checkpoint_identity(
+    cases: list[dict[str, Any]],
+    *,
+    suite: str,
+    context: dict[str, Any] | None = None,
+    **settings: Any,
+) -> dict[str, Any]:
+    """Bind resume to the dataset and declared run contract.
+
+    ``context`` already carries the frozen commit, dataset/config hashes, model
+    settings and collection recorded by the CLI. Hashing the whole source tree,
+    package inventory or ambient environment here would add unstable duplicate
+    state without improving the benchmark contract.
+    """
+    return {
+        "schema_version": 1,
+        "suite": suite,
+        "cases_hash": stable_json_hash(cases),
+        "settings": settings,
+        "context": context or {},
+    }
+
+
+def _load_eval_checkpoint(
+    path: Path | None, *, resume: bool, identity: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    if path is None:
+        return []
+    identity_path = path.with_suffix(path.suffix + ".identity.json")
+    if not path.exists():
+        if identity_path.exists() and load_json(identity_path) != identity:
+            raise ValueError(f"Evaluation checkpoint identity mismatch: {path}; use a fresh output path")
+        return []
+    if not resume:
+        raise FileExistsError(f"Refusing to overwrite evaluation checkpoint: {path}; use --resume")
+    if identity is None or not identity_path.exists():
+        raise ValueError(
+            f"Legacy checkpoint has no verifiable identity: {path}. "
+            "Keep it as a historical artifact; use a fresh output path or an "
+            "explicit legacy compatibility diagnostic, not a headline resume."
+        )
+    if load_json(identity_path) != identity:
+        raise ValueError(f"Evaluation checkpoint identity mismatch: {path}; use a fresh output path")
+    rows = load_json(path)
+    if (
+        not isinstance(rows, list)
+        or any(not isinstance(row, dict) or not isinstance(row.get("id"), str) for row in rows)
+        or len({row["id"] for row in rows}) != len(rows)
+    ):
+        raise ValueError(f"Invalid or duplicate checkpoint rows: {path}")
+    return rows
+
+
+def _save_eval_checkpoint(
+    path: Path | None, rows: list[dict[str, Any]], *, identity: dict[str, Any] | None,
+) -> None:
+    if path is None:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if identity is None:
+        raise ValueError("Evaluation checkpoints require an identity")
+    identity_path = path.with_suffix(path.suffix + ".identity.json")
+    if identity_path.exists():
+        if load_json(identity_path) != identity:
+            raise ValueError(f"Evaluation checkpoint identity mismatch: {path}")
+    else:
+        identity_temporary = identity_path.with_suffix(identity_path.suffix + ".tmp")
+        identity_temporary.write_text(
+            json.dumps(identity, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        identity_temporary.replace(identity_path)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(
+        json.dumps(rows, ensure_ascii=False, indent=2, default=str), encoding="utf-8"
+    )
+    temporary.replace(path)
+
+
+def _case_history_kwargs(case: dict[str, Any]) -> dict[str, Any]:
+    history = case.get("chat_history") or case.get("history")
+    return {"chat_history": history} if history else {}
+
+
+def _expected_tasks_match(expected: list[dict[str, Any]], actual: list[dict[str, Any]]) -> bool:
+    """Compare frozen semantic task golds, independent of emission order/IDs."""
+    if len(expected) != len(actual):
+        return False
+
+    def normalized(value: Any) -> Any:
+        if isinstance(value, str):
+            # Preserve semantic punctuation: B+ must never compare equal to B.
+            text = unicodedata.normalize("NFD", value.casefold())
+            text = "".join(char for char in text if unicodedata.category(char) != "Mn")
+            return " ".join(text.replace("đ", "d").split())
+        if isinstance(value, list):
+            return sorted(str(normalized(item)) for item in value)
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            # JSON models may emit 367 or "367" for the same schema union.
+            return format(value, ".15g")
+        return value
+
+    def matches(gold: dict[str, Any], task: dict[str, Any]) -> bool:
+        for field in ("mode", "lookup_type", "cohorts"):
+            if field in gold and normalized(task.get(field)) != normalized(gold[field]):
+                return False
+        allowed_intents = gold.get("allowed_intents") or (
+            [gold["intent"]] if "intent" in gold else []
+        )
+        if allowed_intents and task.get("intent") not in allowed_intents:
+            return False
+        slots = task.get("slots") or {}
+        if not set(gold.get("required_slot_keys") or []) <= set(slots):
+            return False
+        for key, value in (gold.get("slots") or {}).items():
+            alternatives = (gold.get("slot_value_alternatives") or {}).get(key) or [value]
+            if key not in slots or normalized(slots[key]) not in [normalized(item) for item in alternatives]:
+                return False
+        return True
+
+    return any(
+        all(matches(gold, task) for gold, task in zip(expected, ordering))
+        for ordering in permutations(actual)
+    )
+
+
+def _evaluate_deterministic_v2_uncached(
+    cases: list[dict[str, Any]],
+    *,
+    limit: int | None,
+    evaluation_contract: str,
+    checkpoint_path: Path | None,
+    resume: bool,
+    pipeline_factory: Callable[[], Any] | None,
+    checkpoint_context: dict[str, Any] | None,
+) -> dict[str, Any]:
+    uses_default_pipeline = pipeline_factory is None
+    if pipeline_factory is None:
+        from src.generation.answer_pipeline import AnswerPipeline
+
+        pipeline_factory = AnswerPipeline
+    identity = _eval_checkpoint_identity(
+        cases, suite="deterministic", context=checkpoint_context,
+        evaluation_contract=evaluation_contract,
+    ) if checkpoint_path else None
+    rows = _load_eval_checkpoint(checkpoint_path, resume=resume, identity=identity)
+    completed_ids = {row["id"] for row in rows}
+    pipeline = pipeline_factory()
+    if uses_default_pipeline:
+        from src.retrieval.core.hybrid_pipeline import initialize_hybrid_retriever
+
+        initialize_hybrid_retriever()
+        _wait_for_bm25_ready()
     progress = _progress_cases(cases, limit=limit, desc="Deterministic Eval V2")
     for case in progress:
         progress.set_postfix_str(str(case.get("id") or "unknown"))
+        if case["id"] in completed_ids:
+            continue
         started = time.perf_counter()
         try:
-            result = pipeline._run_retrieval(case["query"], cohort=case.get("cohort"))
+            result = pipeline._run_retrieval(
+                case["query"], cohort=case.get("cohort"), **_case_history_kwargs(case)
+            )
             plan = result.get("query_plan") or {}
             tasks = plan.get("tasks") if isinstance(plan, dict) else []
             tasks = tasks if isinstance(tasks, list) else []
@@ -677,6 +850,15 @@ def evaluate_deterministic_v2(
                 not allowed_modes
                 or bool(actual_modes)
                 and all(mode in allowed_modes for mode in actual_modes)
+            )
+            required_modes = set(expected.get("required_modes") or [])
+            task_modes_ok = task_modes_ok and required_modes <= set(actual_modes)
+            if expected.get("mode_counts") is not None:
+                task_modes_ok = task_modes_ok and dict(Counter(actual_modes)) == expected["mode_counts"]
+            task_semantics_ok = (
+                _expected_tasks_match(case["expected_tasks"], tasks)
+                if "expected_tasks" in case
+                else True
             )
 
             expected_lookup_types = set(expected.get("lookup_types") or [])
@@ -706,9 +888,31 @@ def evaluate_deterministic_v2(
             clarification_ok = bool(result.get("needs_clarification")) == (
                 clarification_expected
             )
-            expected_llm_called = bool(case.get("expected_llm_called"))
-            llm_call_ok = bool(result.get("needs_llm_answer")) == expected_llm_called
+            expected_llm_called = case.get("expected_llm_called")
+            llm_call_ok = (
+                True
+                if expected_llm_called is None
+                else bool(result.get("needs_llm_answer")) == bool(expected_llm_called)
+            )
             fallback_ok = not bool(result.get("planner_fallback"))
+
+            task_results = result.get("task_results") or []
+            required_structured = Counter(
+                str(task.get("lookup_type") or "")
+                for task in case.get("expected_tasks") or []
+                if task.get("mode") == "structured"
+            )
+            covered_structured = Counter(
+                str(task.get("lookup_type") or "")
+                for task in task_results
+                if task.get("mode") == "structured"
+                and task.get("coverage") == "covered"
+                and bool(task.get("evidence"))
+            )
+            structured_execution_ok = all(
+                covered_structured[lookup_type] >= count
+                for lookup_type, count in required_structured.items()
+            )
 
             structured = (
                 result.get("structured_result")
@@ -766,12 +970,14 @@ def evaluate_deterministic_v2(
                 (
                     task_count_ok,
                     task_modes_ok,
+                    task_semantics_ok,
                     lookup_type_ok,
                     cohort_ok,
                     out_of_domain_ok,
                     clarification_ok,
                     llm_call_ok,
                     fallback_ok,
+                    structured_execution_ok,
                     structured_evidence_ok,
                     table_first_ok,
                     citation_ok,
@@ -790,12 +996,14 @@ def evaluate_deterministic_v2(
                 "actual_cohorts": sorted(actual_cohorts),
                 "task_count_correct": task_count_ok,
                 "task_modes_correct": task_modes_ok,
+                "task_semantics_correct": task_semantics_ok,
                 "lookup_type_correct": lookup_type_ok,
                 "cohort_correct": cohort_ok,
                 "out_of_domain_correct": out_of_domain_ok,
                 "clarification_correct": clarification_ok,
                 "llm_call_correct": llm_call_ok,
                 "planner_fallback_free": fallback_ok,
+                "structured_execution_correct": structured_execution_ok,
                 "structured_evidence_present": structured_evidence_ok,
                 "table_first_evidence_present": table_first_ok,
                 "citation_metadata_correct": citation_ok,
@@ -822,27 +1030,28 @@ def evaluate_deterministic_v2(
                 {"case": case.get("id"), "pass": 0, "error": type(exc).__name__},
                 refresh=False,
             )
+        finally:
+            _save_eval_checkpoint(checkpoint_path, rows, identity=identity)
+
+    rows_by_id = {row["id"]: row for row in rows}
+    rows = [rows_by_id[case["id"]] for case in cases[:limit] if case["id"] in rows_by_id]
 
     positives = [
         row
         for row in rows
         if (row.get("evaluation_case_type") or row.get("case_type")) == "positive"
     ]
-    negatives = [
-        row
-        for row in rows
-        if (row.get("evaluation_case_type") or row.get("case_type"))
-        == "hard_negative"
-    ]
     predicted_structured = [
         row for row in rows if "structured" in (row.get("actual_task_modes") or [])
     ]
-    true_positive_n = sum(
-        "structured" in (row.get("actual_task_modes") or []) for row in positives
-    )
-    false_positive_n = sum(
-        "structured" in (row.get("actual_task_modes") or []) for row in negatives
-    )
+    def expects_structured(row: dict[str, Any]) -> bool:
+        gold = row.get("expected_plan") or {}
+        return "structured" in (gold.get("allowed_modes") or [])
+
+    expected_positive_rows = [row for row in rows if expects_structured(row)]
+    expected_negative_rows = [row for row in rows if not expects_structured(row)]
+    true_positive_n = sum(expects_structured(row) for row in predicted_structured)
+    false_positive_n = sum(not expects_structured(row) for row in predicted_structured)
     passed_n = sum(bool(row.get("passed")) for row in rows)
     summary = {
         "n": len(rows),
@@ -853,8 +1062,15 @@ def evaluate_deterministic_v2(
             if predicted_structured
             else 0.0
         ),
-        "recall": true_positive_n / len(positives) if positives else 0.0,
-        "false_positive_rate": false_positive_n / len(negatives) if negatives else 0.0,
+        "recall": true_positive_n / len(expected_positive_rows) if expected_positive_rows else 0.0,
+        "false_positive_rate": false_positive_n / len(expected_negative_rows) if expected_negative_rows else 0.0,
+        "structured_selection_counts": {
+            "true_positive": true_positive_n,
+            "false_positive": false_positive_n,
+            "expected_positive_n": len(expected_positive_rows),
+            "expected_negative_n": len(expected_negative_rows),
+            "predicted_positive_n": len(predicted_structured),
+        },
         "plan_structure_accuracy": safe_mean(
             [
                 float(
@@ -1037,6 +1253,9 @@ def evaluate_retrieval(
     scope: str = "pure",
     limit: int | None = None,
     pipeline_factory: Callable[[], Any] | None = None,
+    checkpoint_path: Path | None = None,
+    resume: bool = False,
+    checkpoint_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if backend != "qdrant":
         raise ValueError("backend must be qdrant")
@@ -1052,6 +1271,12 @@ def evaluate_retrieval(
         )
     if scope not in {"pure", "end_to_end"}:
         raise ValueError("scope must be pure or end_to_end")
+    identity = _eval_checkpoint_identity(
+        cases, suite="retrieval", context=checkpoint_context,
+        backend=backend, mode=mode, scope=scope,
+    ) if checkpoint_path else None
+    rows = _load_eval_checkpoint(checkpoint_path, resume=resume, identity=identity)
+    completed_ids = {row["id"] for row in rows}
     previous_backend = os.environ.get("STUDENT_RAG_USE_QDRANT")
     previous_hybrid = os.environ.get("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL")
     previous_mode = os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE")
@@ -1059,21 +1284,28 @@ def evaluate_retrieval(
         "STUDENT_RAG_EVAL_FORCE_REGULATION_RAG"
     )
     previous_router_wait = os.environ.get("STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED")
+    previous_router_cache = os.environ.get("STUDENT_RAG_DISABLE_ROUTER_CACHE")
     os.environ["STUDENT_RAG_USE_QDRANT"] = "1"
     os.environ.pop("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL", None)
     os.environ["STUDENT_RAG_EVAL_RETRIEVAL_MODE"] = mode
+    os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"
     if scope == "pure":
         os.environ["STUDENT_RAG_EVAL_FORCE_REGULATION_RAG"] = "1"
     else:
         os.environ.pop("STUDENT_RAG_EVAL_FORCE_REGULATION_RAG", None)
         os.environ["STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED"] = "1"
+    uses_default_pipeline = pipeline_factory is None
     if pipeline_factory is None:
         from src.generation.answer_pipeline import AnswerPipeline
 
         pipeline_factory = AnswerPipeline
-    pipeline = pipeline_factory()
-    rows: list[dict[str, Any]] = []
     try:
+        pipeline = pipeline_factory()
+        if uses_default_pipeline:
+            from src.retrieval.core.hybrid_pipeline import initialize_hybrid_retriever
+
+            initialize_hybrid_retriever()
+            _wait_for_bm25_ready()
         progress = _progress_cases(
             cases,
             limit=limit,
@@ -1081,6 +1313,8 @@ def evaluate_retrieval(
         )
         for case in progress:
             progress.set_postfix_str(str(case.get("id") or "unknown"))
+            if case["id"] in completed_ids:
+                continue
             started = time.perf_counter()
             try:
                 requested_cohort = case.get("cohort")
@@ -1089,10 +1323,12 @@ def evaluate_retrieval(
                     if requested_cohort in {None, "", "general", "all"}
                     else requested_cohort
                 )
-                result = pipeline._run_retrieval(case["query"], cohort=retrieval_cohort)
+                result = pipeline._run_retrieval(
+                    case["query"], cohort=retrieval_cohort, **_case_history_kwargs(case)
+                )
                 items = result.get("retrieved_items") or []
                 related_items = result.get("related_items") or []
-                ranked_ids = [_item_parent_id(item) for item in items]
+                ranked_ids = list(dict.fromkeys(_item_parent_id(item) for item in items))
                 related_ids = [_item_parent_id(item) for item in related_items]
                 expected_ids = {
                     item["parent_section_id"] for item in case["relevance_judgments"]
@@ -1265,6 +1501,8 @@ def evaluate_retrieval(
                     },
                     refresh=False,
                 )
+            finally:
+                _save_eval_checkpoint(checkpoint_path, rows, identity=identity)
     finally:
         _restore_env("STUDENT_RAG_USE_QDRANT", previous_backend)
         _restore_env("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL", previous_hybrid)
@@ -1274,7 +1512,10 @@ def evaluate_retrieval(
             previous_force_regulation,
         )
         _restore_env("STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED", previous_router_wait)
+        _restore_env("STUDENT_RAG_DISABLE_ROUTER_CACHE", previous_router_cache)
 
+    by_id = {row["id"]: row for row in rows}
+    rows = [by_id[case["id"]] for case in cases[:limit] if case["id"] in by_id]
     true_rag = [row for row in rows if row["case_type"] == "regulation_true_rag"]
     summary = _retrieval_summary(rows, true_rag)
     summary["retrieval_scope"] = scope
@@ -1292,7 +1533,10 @@ def evaluate_retrieval(
 def _retrieval_summary(
     rows: list[dict[str, Any]], headline: list[dict[str, Any]]
 ) -> dict[str, Any]:
-    metric_names = ("hit_at_1", "hit_at_3", "hit_at_5", "mrr", "ndcg_at_5")
+    metric_names = (
+        "hit_at_1", "hit_at_3", "hit_at_5", "mrr", "ndcg_at_5",
+        "primary_hit_at_5", "required_source_recall_at_5",
+    )
     summary: dict[str, Any] = {"n": len(rows), "headline_n": len(headline)}
     for name in metric_names:
         values = [float(row.get(name, 0.0)) for row in headline]
@@ -1379,6 +1623,19 @@ def _retrieval_metrics_for_execution_units(
     the flattened groups would incorrectly turn the first K50 result into rank
     six merely because five K48-K49 parents were emitted first.
     """
+    def score(ids: list[str], relevance: dict[str, int]) -> dict[str, float]:
+        # Score unique parent sections, not repeated chunks/tasks from a parent.
+        ids = list(dict.fromkeys(ids))
+        metrics = retrieval_metrics(
+            [relevance.get(parent_id, 0) for parent_id in ids],
+            gold_grades=list(relevance.values()),
+        )
+        required_ids = {parent_id for parent_id, grade in relevance.items() if grade == 2}
+        found = required_ids & set(ids[:5])
+        metrics["primary_hit_at_5"] = float(bool(found))
+        metrics["required_source_recall_at_5"] = len(found) / len(required_ids) if required_ids else 0.0
+        return metrics
+
     relevance_by_cohort: dict[str, dict[str, int]] = {}
     for judgment in case.get("relevance_judgments") or []:
         cohort = str(judgment.get("cohort") or "").strip()
@@ -1394,9 +1651,7 @@ def _retrieval_metrics_for_execution_units(
         or len(relevance_by_cohort) <= 1
     ):
         return (
-            retrieval_metrics(
-                [grade_by_id.get(parent_id, 0) for parent_id in ranked_ids]
-            ),
+            score(ranked_ids, grade_by_id),
             "request_global",
         )
 
@@ -1407,12 +1662,7 @@ def _retrieval_metrics_for_execution_units(
             ranked_by_cohort.setdefault(cohort, []).append(parent_id)
 
     unit_metrics = [
-        retrieval_metrics(
-            [
-                cohort_relevance.get(parent_id, 0)
-                for parent_id in ranked_by_cohort.get(cohort, [])
-            ]
-        )
+        score(ranked_by_cohort.get(cohort, []), cohort_relevance)
         for cohort, cohort_relevance in sorted(relevance_by_cohort.items())
     ]
     if not unit_metrics:
@@ -1428,6 +1678,10 @@ def _retrieval_metrics_for_execution_units(
             ),
             "ndcg_at_5": safe_mean(
                 [metric["ndcg_at_5"] for metric in unit_metrics]
+            ),
+            "primary_hit_at_5": min(metric["primary_hit_at_5"] for metric in unit_metrics),
+            "required_source_recall_at_5": safe_mean(
+                [metric["required_source_recall_at_5"] for metric in unit_metrics]
             ),
         },
         "per_cohort_execution_unit",
@@ -1595,12 +1849,18 @@ def generate_answers(
     resume: bool,
     limit: int | None = None,
     pipeline_factory: Callable[[], Any] | None = None,
+    checkpoint_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     from src.retrieval.core.hybrid_pipeline import (
         DEFAULT_RETRIEVAL_MODE,
         initialize_hybrid_retriever,
     )
 
+    identity = _eval_checkpoint_identity(
+        cases, suite="answer_generation", context=checkpoint_context,
+        retrieval_mode=DEFAULT_RETRIEVAL_MODE,
+    )
+    existing = _load_eval_checkpoint(cache_path, resume=resume, identity=identity)
     uses_default_pipeline = pipeline_factory is None
     if pipeline_factory is None:
         from src.generation.answer_pipeline import AnswerPipeline
@@ -1609,13 +1869,14 @@ def generate_answers(
     previous_offline = os.environ.get("STUDENT_RAG_OFFLINE_EVAL")
     previous_quality = os.environ.get("STUDENT_RAG_QUALITY_EVAL")
     previous_retrieval_mode = os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE")
+    previous_router_cache = os.environ.get("STUDENT_RAG_DISABLE_ROUTER_CACHE")
     os.environ.pop("STUDENT_RAG_OFFLINE_EVAL", None)
     os.environ["STUDENT_RAG_QUALITY_EVAL"] = "1"
     # Answer-quality evaluation must exercise the production retrieval contract.
     # PhoRanker is reserved for explicit retrieval-ablation suites and must not
     # silently enter the 150-case generate/judge result through ambient env.
     os.environ["STUDENT_RAG_EVAL_RETRIEVAL_MODE"] = DEFAULT_RETRIEVAL_MODE
-    existing = load_json(cache_path) if resume and cache_path.exists() else []
+    os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"
     by_id = {row["id"]: row for row in existing}
     try:
         pipeline = pipeline_factory()
@@ -1637,7 +1898,9 @@ def generate_answers(
                 continue
             started = time.perf_counter()
             try:
-                output = pipeline.answer(case["query"], cohort=case.get("cohort"))
+                output = pipeline.answer(
+                    case["query"], cohort=case.get("cohort"), **_case_history_kwargs(case)
+                )
                 clean_output = {k: v for k, v in output.items() if k != "tracker"}
                 record = {
                     "id": case["id"],
@@ -1663,14 +1926,11 @@ def generate_answers(
                 },
                 refresh=False,
             )
-            cache_path.parent.mkdir(parents=True, exist_ok=True)
-            cache_path.write_text(
-                json.dumps(list(by_id.values()), ensure_ascii=False, indent=2, default=str),
-                encoding="utf-8",
-            )
+            _save_eval_checkpoint(cache_path, list(by_id.values()), identity=identity)
     finally:
         _restore_env("STUDENT_RAG_OFFLINE_EVAL", previous_offline)
         _restore_env("STUDENT_RAG_QUALITY_EVAL", previous_quality)
+        _restore_env("STUDENT_RAG_DISABLE_ROUTER_CACHE", previous_router_cache)
         _restore_env(
             "STUDENT_RAG_EVAL_RETRIEVAL_MODE",
             previous_retrieval_mode,
@@ -1693,6 +1953,20 @@ def generate_answers(
     }
 
 
+def load_answer_checkpoint(
+    cases: list[dict[str, Any]], cache_path: Path, *,
+    checkpoint_context: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    """Verify generation provenance before using cached answers in a new judge run."""
+    from src.retrieval.core.hybrid_pipeline import DEFAULT_RETRIEVAL_MODE
+
+    identity = _eval_checkpoint_identity(
+        cases, suite="answer_generation", context=checkpoint_context,
+        retrieval_mode=DEFAULT_RETRIEVAL_MODE,
+    )
+    return _load_eval_checkpoint(cache_path, resume=True, identity=identity)
+
+
 def judge_answers(
     cases: list[dict[str, Any]],
     answer_cache: list[dict[str, Any]],
@@ -1701,10 +1975,15 @@ def judge_answers(
     resume: bool,
     limit: int | None = None,
     judge_client: GroqJudgeClient | None = None,
+    checkpoint_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    identity = _eval_checkpoint_identity(
+        cases, suite="judge", context=checkpoint_context,
+        answer_cache_hash=stable_json_hash(answer_cache),
+    )
+    existing = _load_eval_checkpoint(checkpoint_path, resume=resume, identity=identity)
     client = judge_client or GroqJudgeClient()
     answers = {row["id"]: row for row in answer_cache}
-    existing = load_json(checkpoint_path) if resume and checkpoint_path.exists() else []
     judged = {row["id"]: row for row in existing}
     progress = _progress_cases(
         cases,
@@ -1753,11 +2032,7 @@ def judge_answers(
             },
             refresh=False,
         )
-        checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
-        checkpoint_path.write_text(
-            json.dumps(list(judged.values()), ensure_ascii=False, indent=2, default=str),
-            encoding="utf-8",
-        )
+        _save_eval_checkpoint(checkpoint_path, list(judged.values()), identity=identity)
     rows = [judged[c["id"]] for c in cases[:limit] if c["id"] in judged]
     valid = [row for row in rows if (row.get("judge") or {}).get("ok")]
     summary = {
@@ -1835,13 +2110,16 @@ def _answer_checks(case: dict[str, Any], answer: dict[str, Any]) -> dict[str, An
         "out_of_domain",
     }
     behavior = str(case.get("expected_answer_behavior") or "direct_answer")
+    expects_no_direct_answer = behavior in {"abstain", "clarify_or_scope"}
     return {
         "required_fact_hit": required_fact_hit,
         "numeric_accuracy": all(value in text for value in numeric)
         if numeric
         else True,
         "citation_exact_match": citation_exact_match,
-        "abstention_correct": (not abstained) if answerable else abstained,
+        "abstention_correct": (
+            abstained if expects_no_direct_answer or not answerable else not abstained
+        ),
         "answer_success": answer_success,
         "question_handling_correctness": _question_handling_correct(
             behavior=behavior,
@@ -2184,9 +2462,17 @@ def evaluate_production(
     *,
     base_url: str,
     limit: int | None = None,
+    checkpoint_path: Path | None = None,
+    resume: bool = False,
+    checkpoint_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     selected = cases[:limit]
-    rows: list[dict[str, Any]] = []
+    identity = _eval_checkpoint_identity(
+        cases, suite="production", context=checkpoint_context, base_url=base_url,
+    ) if checkpoint_path else None
+    rows = _load_eval_checkpoint(checkpoint_path, resume=resume, identity=identity)
+    completed_ids = {row["id"] for row in rows}
+    pending = [case for case in selected if case["id"] not in completed_ids]
 
     def run(case: dict[str, Any]) -> dict[str, Any]:
         endpoint = "/chat/stream" if case["scenario"] == "streaming" else "/chat"
@@ -2195,6 +2481,7 @@ def evaluate_production(
                 "query": case["query"],
                 "cohort": case.get("cohort"),
                 "include_debug": True,
+                **_case_history_kwargs(case),
             }
         ).encode("utf-8")
         req = urllib_request.Request(
@@ -2212,6 +2499,7 @@ def evaluate_production(
             stream_error = False
             stream_token_chars = 0
             stream_metadata: dict[str, Any] = {}
+            answer_parts: list[str] = []
             with urllib_request.urlopen(
                 req, timeout=float(case.get("timeout_seconds", 90))
             ) as response:
@@ -2235,6 +2523,7 @@ def evaluate_production(
                             if current_event == "metadata":
                                 stream_metadata = event_data
                             elif current_event == "token":
+                                answer_parts.append(str(event_data.get("text") or ""))
                                 stream_token_chars += len(
                                     str(event_data.get("text") or "")
                                 )
@@ -2266,6 +2555,7 @@ def evaluate_production(
                     )
                 )
                 answer_chars = stream_token_chars
+                answer_text = "".join(answer_parts)
             else:
                 answer_text = str(parsed.get("answer") or "").strip()
                 payload_success = bool(answer_text) and not parsed.get("error_type")
@@ -2281,6 +2571,8 @@ def evaluate_production(
                 "latency_ms": (time.perf_counter() - started) * 1000,
                 "ttft_ms": ttft,
                 "answer_chars": answer_chars,
+                "answer": answer_text,
+                "response_payload": response_payload,
                 "stream_done": stream_done if endpoint.endswith("/stream") else None,
                 "stream_error": stream_error if endpoint.endswith("/stream") else None,
                 "response_status": response_status,
@@ -2338,7 +2630,7 @@ def evaluate_production(
                 "error": str(exc),
             }
 
-    sequential = [case for case in selected if case["scenario"] != "burst"]
+    sequential = [case for case in pending if case["scenario"] != "burst"]
     sequential_progress = tqdm(
         sequential,
         desc="Production Eval",
@@ -2349,6 +2641,7 @@ def evaluate_production(
         sequential_progress.set_postfix_str(str(case.get("id") or "unknown"))
         row = run(case)
         rows.append(row)
+        _save_eval_checkpoint(checkpoint_path, rows, identity=identity)
         sequential_progress.set_postfix(
             {
                 "case": case.get("id"),
@@ -2357,7 +2650,7 @@ def evaluate_production(
             },
             refresh=False,
         )
-    bursts = [case for case in selected if case["scenario"] == "burst"]
+    bursts = [case for case in pending if case["scenario"] == "burst"]
     by_concurrency: dict[int, list[dict[str, Any]]] = defaultdict(list)
     for case in bursts:
         by_concurrency[int(case.get("concurrency", 3))].append(case)
@@ -2375,6 +2668,7 @@ def evaluate_production(
                 case = futures[future]
                 row = future.result()
                 rows.append(row)
+                _save_eval_checkpoint(checkpoint_path, rows, identity=identity)
                 burst_progress.set_postfix(
                     {
                         "case": case.get("id"),
@@ -2384,6 +2678,8 @@ def evaluate_production(
                     refresh=False,
                 )
 
+    by_id = {row["id"]: row for row in rows}
+    rows = [by_id[case["id"]] for case in selected if case["id"] in by_id]
     summary = _summarize_production_rows(rows)
     return {
         "suite": "production",

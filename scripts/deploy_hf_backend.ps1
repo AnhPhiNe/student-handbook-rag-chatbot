@@ -127,6 +127,7 @@ Copy-RequiredFile "Dockerfile" "Dockerfile"
 Copy-RequiredFile "requirements.txt" "requirements.txt"
 Copy-RequiredFile "runtime.txt" "runtime.txt"
 Copy-RequiredFile ".env.example" ".env.example"
+Copy-RequiredFile ".gitattributes" ".gitattributes"
 Copy-RequiredFile "LICENSE" "LICENSE"
 
 Write-Host "[3/5] Copying runtime data allowlist..."

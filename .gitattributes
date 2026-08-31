@@ -3,3 +3,11 @@
 *.jpeg filter=lfs diff=lfs merge=lfs -text
 frontend/public/*.png -filter -diff -merge -text
 frontend/src/assets/*.png -filter -diff -merge -text
+
+# Build manifests hash generated runtime artifacts byte-for-byte.
+# Preserve producer bytes across Windows/Linux checkouts and HF packaging.
+data/processed/chunks/all_docstore_items.json -text whitespace=cr-at-eol
+data/processed/chunks/child_parent_chunks.json -text whitespace=cr-at-eol
+data/processed/tables/structured_tables_registry.json -text whitespace=cr-at-eol
+data/processed/graphs/document_edges.json -text whitespace=cr-at-eol
+data/processed/metadata/structured_table_embedding_audit.json -text whitespace=cr-at-eol

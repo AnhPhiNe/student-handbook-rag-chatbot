@@ -88,18 +88,8 @@ def _infer_explicit_structured_slots(
                 value = level_match.group(1).upper()
                 slots["score_or_level"] = value
                 spans["score_or_level"] = value
-            else:
-                score_match = re.search(
-                    r"\b(?:ielts|toefl|toeic|hsk|topik)?\s*(\d+(?:[.,]\d+)?)\b",
-                    normalized,
-                )
-                if score_match and any(
-                    key in normalized
-                    for key in ("ielts", "toefl", "toeic", "hsk", "topik")
-                ):
-                    value = score_match.group(1).replace(",", ".")
-                    slots["score_or_level"] = value
-                    spans["score_or_level"] = value
+            # A bare number may be a skill count, target level or year, not a
+            # supplied score. Leave optional numeric slots to the grounded plan.
 
     if lookup_type == "program" and intent == "list_items":
         if not _is_present(slots.get("scope")):

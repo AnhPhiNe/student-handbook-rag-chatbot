@@ -19,7 +19,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v11-slot-contract-hardening"
+QUERY_PLAN_NORMALIZER_VERSION = "v12-no-guessed-numeric-slots"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}

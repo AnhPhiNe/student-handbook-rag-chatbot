@@ -17,7 +17,7 @@ from .context_allocation import ContextAllocationConfig
 
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.20-target-priority"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.21-runtime-clarification"
 
 
 def build_answer_prompt(
@@ -71,7 +71,7 @@ QUY CÁCH
 - Mọi số liệu phải lấy nguyên từ evidence đã được cấp cho đơn vị; không tính lại, nội suy hoặc mượn số liệu từ đơn vị khác.
 - Dùng Markdown có chọn lọc: in đậm kết luận chính, số liệu, thời hạn và điều kiện quan trọng; dùng danh sách khi có nhiều bước, điều kiện hoặc trường hợp. Không in đậm cả đoạn.
 - Với coverage=needs_clarification, chỉ nêu clarification_question của đơn vị đó.
-- Với coverage=uncovered hoặc không có source_ref được phép, nói chưa tìm thấy căn cứ cho đúng ý đó.
+- Với các đơn vị không cần clarification: nếu coverage=uncovered hoặc không có source_ref được phép, nói chưa tìm thấy căn cứ cho đúng ý đó.
 - Nếu có applicable_amendments, áp dụng nội dung mới nhất trong đúng phạm vi nhưng không nhắc nhãn kỹ thuật amendment.
 - Không hiển thị quá trình suy luận, metadata kỹ thuật hoặc tự tạo mục nguồn.
 
@@ -281,6 +281,15 @@ def _composition_units(
                 or coverage_by_task.get(task_id)
                 or "uncovered"
             )
+            clarification_question = None
+            if coverage == "needs_clarification":
+                by_cohort = result.get("clarification_by_cohort")
+                clarification_question = (
+                    by_cohort.get(cohort_key)
+                    if isinstance(by_cohort, dict)
+                    else task.get("clarification_question")
+                    or result.get("clarification_question")
+                )
             units.append(
                 {
                     "task_id": task_id,
@@ -288,8 +297,7 @@ def _composition_units(
                     "mode": str(task.get("mode") or result.get("mode") or "rag"),
                     "cohort": cohort_key,
                     "coverage": coverage,
-                    "clarification_question": task.get("clarification_question")
-                    or result.get("clarification_question"),
+                    "clarification_question": clarification_question,
                 }
             )
 

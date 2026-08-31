@@ -940,6 +940,113 @@ def test_covered_and_uncovered_tasks_keep_partial_answer_path(monkeypatch) -> No
     assert result["needs_clarification"] is False
 
 
+@pytest.mark.parametrize("intent", ["list_items", "direct_value"])
+@pytest.mark.parametrize("question", [
+    "Bảng quy đổi điểm TOEIC 4 kỹ năng sang bậc tương đương",
+    "Bậc 3 tương ứng ngưỡng IELTS nào?",
+    "Bảng quy đổi TOEFL áp dụng từ năm 2022",
+])
+def test_normalizer_does_not_invent_score_from_untyped_query_number(
+    intent: str, question: str,
+) -> None:
+    task = {
+        **_rag_task(1, question),
+        "mode": "structured",
+        "lookup_type": "foreign_language",
+        "intent": intent,
+    }
+    plan, errors = normalize_query_plan(
+        _plan([task]), query=question, selected_cohort="K51",
+    )
+    assert not errors
+    assert plan["tasks"][0]["mode"] == "structured"
+    assert "score_or_level" not in plan["tasks"][0]["slots"]
+    assert "score_or_level" not in plan["tasks"][0]["slot_spans"]
+
+
+def test_normalizer_preserves_grounded_score_and_component_guard() -> None:
+    from src.retrieval.core.structured_dispatcher import resolve_structured_decision
+
+    question = "TOEIC tổng 650 tương đương bậc nào?"
+    task = {
+        **_rag_task(1, question),
+        "mode": "structured",
+        "lookup_type": "foreign_language",
+        "intent": "direct_value",
+        "slots": {"certificate_or_language": "TOEIC", "score_or_level": 650},
+        "slot_spans": {"certificate_or_language": "TOEIC", "score_or_level": "650"},
+    }
+    plan, errors = normalize_query_plan(
+        _plan([task]), query=question, selected_cohort="K51",
+    )
+    assert not errors
+    normalized_task = plan["tasks"][0]
+    assert normalized_task["slots"]["score_or_level"] == 650
+    registry = json.loads(Path(
+        "data/processed/tables/structured_tables_registry.json"
+    ).read_text(encoding="utf-8"))
+    resolution = resolve_structured_decision(
+        normalized_task, query=question, cohort="K51", scoring_tables=[],
+        formula_rules=[], office_directory=[], student_service_directory=[],
+        student_faculty_profiles=[], foreign_language_tables=[],
+        structured_tables_registry=registry, program_directory=[], probe_other_domains=False,
+    )
+    assert resolution.result_kind == "clarification"
+    assert set(resolution.result["missing_slots"]) == {
+        "listening_score", "reading_score", "speaking_score", "writing_score",
+    }
+
+
+def test_runtime_clarification_stays_on_its_task_and_cohort(monkeypatch) -> None:
+    from src.generation.prompt_builder import build_authorized_evidence_packet
+
+    structured_task = {
+        **_rag_task(1, "Yêu cầu cần dữ kiện bổ sung"),
+        "mode": "structured",
+        "lookup_type": "foreign_language",
+        "intent": "direct_value",
+        "cohorts": ["K50", "K51"],
+    }
+    rag_task = {**_rag_task(2, "Yêu cầu về quy định"), "cohorts": ["K51"]}
+    pipeline = _pipeline(_plan([structured_task, rag_task]))
+    clarification = "Vui lòng cung cấp các thành phần còn thiếu của kết quả."
+
+    def fake_execute(*, task, task_id, cohort, **kwargs):
+        if task_id == "t1" and cohort == "K50":
+            return {
+                "coverage": "needs_clarification",
+                "clarification_question": clarification,
+                "evidence": [], "citations": [], "retrieved_items": [],
+            }
+        citation = {
+            "chunk_id": f"{task_id}-{cohort}", "cohort": cohort,
+            "content": "Nội dung đủ căn cứ.", "supports_task_ids": [task_id],
+        }
+        return {
+            "coverage": "covered", "evidence": [],
+            "citations": [citation], "retrieved_items": [],
+        }
+
+    monkeypatch.setattr(pipeline, "_execute_planned_structured_task", fake_execute)
+    monkeypatch.setattr(pipeline, "_execute_planned_rag_task", fake_execute)
+    result = pipeline._run_query_plan(query="hai ý", cohort=None, chat_history=[])
+    assert result["needs_llm_answer"] is True
+    assert result["needs_clarification"] is False
+    assert result["task_results"][0]["clarification_by_cohort"] == {"K50": clarification}
+    assert result["task_results"][1]["clarification_by_cohort"] == {}
+
+    packet = build_authorized_evidence_packet(
+        query="hai ý", retrieval_result=result, selected_citations=None,
+        fallback_cohort=None, max_context_chars=10000,
+    )
+    units = {(unit["task_id"], unit["cohort"]): unit for unit in packet["units"]}
+    assert units[("t1", "K50")]["clarification_question"] == clarification
+    assert units[("t1", "K50")]["allowed_source_refs"] == []
+    for key in [("t1", "K51"), ("t2", "K51")]:
+        assert units[key]["clarification_question"] is None
+        assert units[key]["allowed_source_refs"]
+
+
 def test_sync_and_stream_metadata_share_plan_coverage_and_fallback() -> None:
     pipeline = _pipeline(_plan([_rag_task(1)]))
     retrieval_result = {

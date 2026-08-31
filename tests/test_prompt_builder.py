@@ -240,6 +240,128 @@ def test_packet_binds_sources_to_their_tasks() -> None:
     assert [source["content"] for source in second["primary_evidence"]] == ["Nguồn bảo lưu"]
 
 
+def test_packet_binds_runtime_clarification_to_exact_cohort() -> None:
+    first_question = "Sinh viên K48-K49 cần tra cứu chứng chỉ nào?"
+    second_question = "Sinh viên K50 cần tra cứu chứng chỉ nào?"
+    packet = build_authorized_evidence_packet(
+        query="So sánh yêu cầu ngoại ngữ giữa các khóa",
+        retrieval_result={
+            "query_plan": {
+                "tasks": [
+                    {
+                        **_task(
+                            "t1",
+                            "Yêu cầu ngoại ngữ?",
+                            ["K48-K49", "K50", "K51"],
+                        ),
+                        "mode": "structured",
+                        "clarification_question": "Không dùng câu hỏi chung của task.",
+                    },
+                    {
+                        **_task("t2", "Yêu cầu chứng chỉ?", ["K51"]),
+                        "mode": "structured",
+                        "clarification_question": "Không dùng câu hỏi task khác.",
+                    },
+                ]
+            },
+            "task_results": [
+                {
+                    "task_id": "t1",
+                    "coverage": "needs_clarification",
+                    "coverage_by_cohort": {
+                        "K48-K49": "needs_clarification",
+                        "K50": "needs_clarification",
+                        "K51": "covered",
+                    },
+                    "clarification_by_cohort": {
+                        "K48-K49": first_question,
+                        "K50": second_question,
+                        "K51": "Không dùng câu hỏi cũ cho khóa đã đủ nguồn.",
+                    },
+                    "clarification_question": "Không dùng câu hỏi chung của result.",
+                },
+                {
+                    "task_id": "t2",
+                    "coverage": "needs_clarification",
+                    "coverage_by_cohort": {"K51": "needs_clarification"},
+                    "clarification_by_cohort": {},
+                    "clarification_question": "Không dùng câu hỏi result khác.",
+                },
+            ],
+            "clarification_question": "Không dùng câu hỏi toàn cục.",
+        },
+        selected_citations=[
+            {
+                "chunk_id": "language-k51",
+                "content": "Yêu cầu ngoại ngữ K51",
+                "supports_task_ids": ["t1"],
+                "cohort": "K51",
+            }
+        ],
+        fallback_cohort=None,
+        max_context_chars=10000,
+    )
+
+    units = {
+        (unit["task_id"], unit["cohort"]): unit for unit in packet["units"]
+    }
+    assert units[("t1", "K48-K49")]["clarification_question"] == first_question
+    assert units[("t1", "K50")]["clarification_question"] == second_question
+    assert units[("t1", "K51")]["clarification_question"] is None
+    assert units[("t2", "K51")]["clarification_question"] is None
+    for key in (("t1", "K48-K49"), ("t1", "K50"), ("t2", "K51")):
+        assert units[key]["coverage"] == "needs_clarification"
+        assert units[key]["allowed_source_refs"] == []
+        assert units[key]["primary_evidence"] == []
+    assert units[("t1", "K51")]["coverage"] == "covered"
+    assert units[("t1", "K51")]["allowed_source_refs"] == ["S1"]
+
+
+def test_packet_preserves_legacy_task_and_result_clarification_questions() -> None:
+    task_question = "Bạn muốn tra cứu quy định nào?"
+    result_question = "Bạn muốn tra cứu chứng chỉ nào?"
+    packet = build_authorized_evidence_packet(
+        query="Hai yêu cầu cần làm rõ",
+        retrieval_result={
+            "query_plan": {
+                "tasks": [
+                    {
+                        **_task("t1", "Quy định?", ["K51"]),
+                        "mode": "clarify",
+                        "clarification_question": task_question,
+                    },
+                    {
+                        **_task("t2", "Yêu cầu ngoại ngữ?", ["K51"]),
+                        "mode": "structured",
+                    },
+                ]
+            },
+            "task_results": [
+                {
+                    "task_id": "t1",
+                    "coverage": "needs_clarification",
+                    "clarification_question": "Câu hỏi task được ưu tiên.",
+                },
+                {
+                    "task_id": "t2",
+                    "coverage": "needs_clarification",
+                    "clarification_by_cohort": None,
+                    "clarification_question": result_question,
+                },
+            ],
+            "clarification_question": "Không dùng câu hỏi toàn cục.",
+        },
+        selected_citations=[],
+        fallback_cohort="K51",
+        max_context_chars=10000,
+    )
+
+    first, second = packet["units"]
+    assert first["clarification_question"] == task_question
+    assert second["clarification_question"] == result_question
+    assert first["allowed_source_refs"] == second["allowed_source_refs"] == []
+
+
 def test_shared_source_uses_table_for_structured_and_parent_text_for_rag() -> None:
     structured_task = {
         **_task("t1", "Điểm học bổng loại Giỏi?", ["K51"]),

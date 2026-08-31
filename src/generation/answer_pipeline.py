@@ -56,7 +56,7 @@ from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v51-target-priority"
+PIPELINE_VERSION = "v52-runtime-clarification"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -1290,6 +1290,7 @@ class AnswerPipeline:
             task_cohorts = list(dict.fromkeys(task_cohorts))
             task_evidence: list[dict[str, Any]] = []
             cohort_coverage: dict[str, str] = {}
+            clarification_by_cohort: dict[str, str] = {}
             task_citations: list[dict[str, Any]] = []
             task_items: list[dict[str, Any]] = []
 
@@ -1336,6 +1337,7 @@ class AnswerPipeline:
                 clarification = sub_result.get("clarification_question")
                 if clarification:
                     clarification_questions.append(str(clarification))
+                    clarification_by_cohort[cohort_key] = str(clarification)
 
             statuses = list(cohort_coverage.values())
             if statuses and all(status == "covered" for status in statuses):
@@ -1356,6 +1358,7 @@ class AnswerPipeline:
                 "cohorts": task_cohorts,
                 "coverage": coverage,
                 "coverage_by_cohort": cohort_coverage,
+                "clarification_by_cohort": clarification_by_cohort,
                 "evidence": task_evidence,
                 "citation_count": len(task_citations),
             })

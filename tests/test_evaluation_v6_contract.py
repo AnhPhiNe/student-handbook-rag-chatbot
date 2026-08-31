@@ -13,6 +13,42 @@ import src.evaluation.suites as suites
 from src.evaluation.metrics import retrieval_metrics
 
 
+def test_v6_runtime_storage_identity_requires_qdrant_and_mongo_v32() -> None:
+    manifest = {
+        "schema_version": "architecture-evaluation-v6",
+        "hybrid_collection": "student_handbook_semantic_v32",
+        "mongodb_parent_collection": "parent_docs_v32",
+    }
+    provenance = {
+        "qdrant_collection": "student_handbook_semantic_v32",
+        "mongodb_parent_collection": "parent_docs_v32",
+    }
+    assert runner._runtime_storage_errors(manifest, provenance, "qdrant") == []
+
+    provenance["mongodb_parent_collection"] = "parent_docs_v31"
+    assert runner._runtime_storage_errors(manifest, provenance, "qdrant") == [
+        "runtime storage mismatch: mongodb_parent_collection='parent_docs_v31', "
+        "expected 'parent_docs_v32'"
+    ]
+
+
+def test_v6_runtime_storage_identity_rejects_missing_manifest_field() -> None:
+    errors = runner._runtime_storage_errors(
+        {
+            "schema_version": "architecture-evaluation-v6",
+            "hybrid_collection": "student_handbook_semantic_v32",
+        },
+        {
+            "qdrant_collection": "student_handbook_semantic_v32",
+            "mongodb_parent_collection": "parent_docs_v32",
+        },
+        "qdrant",
+    )
+    assert errors == [
+        "manifest missing storage identity: mongodb_parent_collection"
+    ]
+
+
 def test_retrieval_completeness_uses_dataset_count(monkeypatch: pytest.MonkeyPatch) -> None:
     captured = []
     monkeypatch.setattr(runner, "evaluate_retrieval", lambda *args, **kwargs: {"suite": "retrieval", "summary": {"n": 160}})

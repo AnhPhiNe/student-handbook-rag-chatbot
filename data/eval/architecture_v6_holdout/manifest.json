@@ -19,6 +19,7 @@
   "retrieval_mode": "vector_primary_graph_supplement",
   "reranker_enabled": false,
   "hybrid_collection": "student_handbook_semantic_v32",
+  "mongodb_parent_collection": "parent_docs_v32",
   "counts": {
     "deterministic": 140,
     "retrieval": 160,

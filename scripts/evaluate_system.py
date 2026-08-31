@@ -133,6 +133,36 @@ def _require_env(names: tuple[str, ...], message: str) -> None:
         raise SystemExit(message)
 
 
+def _runtime_storage_errors(
+    manifest: dict[str, Any], provenance: dict[str, Any], backend: str
+) -> list[str]:
+    """Reject evaluation runs whose storage identity differs from the manifest."""
+    if backend != "qdrant":
+        return []
+
+    fields = (
+        ("hybrid_collection", "qdrant_collection"),
+        ("mongodb_parent_collection", "mongodb_parent_collection"),
+    )
+    errors: list[str] = []
+    require_complete_identity = (
+        manifest.get("schema_version") == "architecture-evaluation-v6"
+    )
+    for manifest_key, provenance_key in fields:
+        expected = str(manifest.get(manifest_key) or "").strip()
+        actual = str(provenance.get(provenance_key) or "").strip()
+        if not expected:
+            if require_complete_identity:
+                errors.append(f"manifest missing storage identity: {manifest_key}")
+            continue
+        if actual != expected:
+            errors.append(
+                f"runtime storage mismatch: {provenance_key}={actual!r}, "
+                f"expected {expected!r}"
+            )
+    return errors
+
+
 def _write(report: dict[str, Any], output_dir: Path, name: str) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     paths = write_report_bundle(report, output_dir / f"{name}.json")
@@ -400,6 +430,11 @@ def main() -> None:
         args.backend,
         allow_docstore_drift=args.allow_docstore_drift,
     )
+    manifest = load_json(args.dataset / "manifest.json")
+    storage_errors = _runtime_storage_errors(manifest, provenance, args.backend)
+    if storage_errors:
+        validation["errors"].extend(storage_errors)
+        validation["valid"] = False
     validation_report = {
         "suite": "validation",
         "summary": validation,

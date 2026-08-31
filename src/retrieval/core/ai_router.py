@@ -15,6 +15,7 @@ from typing import Any
 from groq import Groq
 import yaml
 
+from src.common.cohort import cohort_admission_years
 from src.common.env_loader import load_project_env
 
 from .structured_routing import (
@@ -37,7 +38,7 @@ from .query_plan import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.8-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v36-qwen38-schema"
+ROUTER_PROMPT_VERSION = "structured-regulation-v37-task-scope"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -105,10 +106,9 @@ không trả lời.
   entity, cohort, số liệu, phủ định, chủ đề hoặc ý định.
 
 2. NHÓM LOGICAL TASKS
-- Trước khi chọn mode, xác định mọi kết quả độc lập mà người dùng cần.
-- Một task giữ các khía cạnh bổ sung của cùng một đối tượng, quá trình hoặc
-  chính sách nếu chúng dùng cùng mode và cùng phạm vi tra cứu. Các câu hỏi
-  ai/khi nào/cách nào/điều kiện của cùng quá trình không tự trở thành nhiều task.
+- Trước khi chọn mode, xác định mọi yêu cầu có thể tra và thực thi độc lập.
+- Mỗi task.question chứa một yêu cầu độc lập. Chỉ gộp các khía cạnh bổ sung khi
+  chúng cùng đối tượng, mode, lookup và phạm vi nguồn để tạo một answer target.
 - Tách task khi các phần hỏi về đối tượng/chủ đề độc lập hoặc cần mode/lookup
   khác nhau. Từ nối "và" hoặc "so sánh" không tự quyết định số task.
 - Nhiều entity dùng cùng một structured lookup và cùng phép tra được gộp trong
@@ -123,11 +123,15 @@ không trả lời.
 3. COHORT
 - Ưu tiên QUERY rồi history. COHORT từ UI chỉ điền cho task vẫn chưa có cohort;
   không ghi đè hoặc nhân bản task.
+- COHORT_ADMISSION_YEARS là metadata xác thực từ registry. Nếu QUERY ghi rõ khóa
+  và năm tuyển sinh cho cùng một đối tượng nhưng hai giá trị không khớp, clarify
+  trước lookup và nêu đúng hai giá trị cần xác nhận. Không áp dụng cho câu so sánh
+  nhiều khóa hoặc năm không được xác định là năm tuyển sinh.
 
 4. CHỌN MODE VÀ TOOL
 - structured khi TOOLS.use trực tiếp cung cấp kết quả được hỏi, dù QUERY không
-  có từ "bảng", "tra cứu" hoặc "công thức". Với bảng tham chiếu nhỏ, backend
-  gửi toàn bảng; slot chỉ chọn đúng bảng con, không lọc hàng trong bảng đã chọn.
+  có từ "bảng", "tra cứu" hoặc "công thức". Trích xuất mọi dữ kiện có căn cứ
+  trong QUERY/HISTORY; runtime chịu trách nhiệm chọn bảng và giải quyết kết quả.
 - Chỉ chọn RAG khi cần đọc quy định, thủ tục, điều kiện áp dụng, ngoại lệ, hậu
   quả, trách nhiệm hoặc khi tool chỉ trùng chủ đề nhưng không trực tiếp trả được
   kết quả. Không chọn structured chỉ vì trùng từ chủ đề.
@@ -159,8 +163,8 @@ không trả lời.
   nội dung Sổ tay; khi đó tasks=[]. Không đánh dấu OOD chỉ vì chủ thể được nhắc
   đến là cơ quan hoặc đơn vị bên ngoài sinh viên.
 - Nếu QUERY trộn trong/ngoài phạm vi, giữ các target trong phạm vi và bỏ phần ngoài.
-- Đối chiếu lại QUERY: mỗi answer target xuất hiện đúng một lần; mỗi task chỉ có
-  một mode/lookup và không chứa hai kết quả độc lập, trừ multi-entity structured.
+- Đối chiếu lại QUERY: mỗi yêu cầu độc lập xuất hiện đúng một lần; mỗi task chỉ
+  có một mode/lookup và tuân đúng quy tắc gộp ở phần NHÓM LOGICAL TASKS.
 - Với mỗi structured task, xác nhận TOOLS.use trực tiếp chứa loại kết quả đang
   được hỏi; trùng tên domain nhưng không chứa kết quả thì phải đổi sang RAG.
 - task.question tự đủ nghĩa; không thêm entity, số liệu, phủ định hay chủ đề.
@@ -1073,12 +1077,18 @@ class AIRouter:
             )
             output_guidance = f"OUTPUT CONTRACT:\n{schema}\n\n"
         hint = json.dumps(routing_hint, ensure_ascii=False, separators=(",", ":"))
+        cohort_years = json.dumps(
+            cohort_admission_years(),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
         return (
             "TOOLS:\n"
             f"{compact_registry_for_prompt(self.registry)}\n\n"
             f"{output_guidance}"
             f"CATALOG_HINT: {hint if routing_hint else 'none'}\n"
             f"COHORT: {cohort or 'unknown'}\n"
+            f"COHORT_ADMISSION_YEARS: {cohort_years}\n"
             f"CHAT HISTORY:\n{history}\n"
             f"QUERY: {query}"
         )

@@ -126,6 +126,10 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
         slot_contract: dict[str, Any] = {}
         for slot_name, slot_spec in (spec.get("slot_schema") or {}).items():
             compact_spec: dict[str, Any] = {}
+            if slot_spec.get("type") is not None:
+                compact_spec["type"] = slot_spec["type"]
+            if slot_spec.get("description"):
+                compact_spec["description"] = slot_spec["description"]
             allowed_values = (
                 slot_spec.get("enum") or slot_spec.get("canonical_values") or []
             )
@@ -139,10 +143,10 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
                     f"use={spec.get('description') or ''}",
                     f"intents={intents}",
                     "required="
-                    + json.dumps(required, ensure_ascii=True, separators=(",", ":")),
+                    + json.dumps(required, ensure_ascii=False, separators=(",", ":")),
                     "slots="
                     + json.dumps(
-                        slot_contract, ensure_ascii=True, separators=(",", ":")
+                        slot_contract, ensure_ascii=False, separators=(",", ":")
                     ),
                 )
             )

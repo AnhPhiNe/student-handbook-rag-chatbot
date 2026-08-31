@@ -82,12 +82,13 @@ def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
     )
 
     assert "không tự ý rút gọn đến mức gây hiểu lầm" in prompt
-    assert "phải giữ đúng phạm vi ngữ nghĩa mà nguồn trực tiếp xác lập" in prompt
-    assert "đối tượng, hành vi, kết quả được áp dụng, điều kiện và hệ quả" in prompt
-    assert "Không coi hai khái niệm là tương đương" in prompt
+    assert "Giữ đúng phạm vi ngữ nghĩa mà nguồn trực tiếp xác lập" in prompt
+    assert "đối tượng, hành vi, kết quả, điều kiện và hệ quả" in prompt
+    assert "coi chúng là tương đương/tên gọi thay thế" in prompt
     assert "kể cả khi đặt trong ngoặc" in prompt
-    assert "gọi tên và trình bày riêng từng phần" in prompt
-    assert "Chỉ kết luận dứt khoát đối với từng ý" in prompt
+    assert "trình bày riêng từng phần" in prompt
+    assert "Chỉ kết luận dứt khoát khi evidence trực tiếp" in prompt
+    assert "Không tóm tắt toàn bộ Điều" in prompt
     assert "Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp" in prompt
     assert "không tự đoán hoặc trả lời có/không tuyệt đối" in prompt
     assert "Mở đầu bằng câu trả lời trực tiếp" not in prompt
@@ -100,9 +101,11 @@ def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
     assert "structured evidence có resolved_result" in prompt
     assert 'không suy "Sổ tay không quy định"' in prompt
     assert "role=target" in prompt
-    assert "bao quát đủ các khoản/ý trực tiếp của target" in prompt
+    assert "ưu tiên target để trả lời đúng khía cạnh được hỏi" in prompt
+    assert "chỉ bổ sung khoản/ý khác khi cần giải thích" in prompt
     assert "không biến mục gần nghĩa thành target mới" in prompt
     assert "Nguồn hiện có chưa trực tiếp xác lập" in prompt
+    assert "không thay câu trả lời bằng một chính sách khác chỉ vì cùng chủ đề" in prompt
     assert "Sổ tay chưa nêu trực tiếp" not in prompt
     assert "evidence đã được cấp cho đơn vị" in prompt
     assert "không tính lại, nội suy hoặc mượn số liệu từ đơn vị khác" in prompt
@@ -173,8 +176,8 @@ def test_prompt_separates_distinct_scopes_without_case_specific_rules() -> None:
     )
 
     assert "khái niệm gần nghĩa" in prompt
-    assert "coi chúng là cùng một cơ chế" in prompt
-    assert "giữ đúng điều kiện và ngoại lệ tương ứng" in prompt
+    assert "coi chúng là tương đương/tên gọi thay thế" in prompt
+    assert "giữ đúng điều kiện, ngoại lệ tương ứng" in prompt
     assert "bảo lưu kết quả học tập" not in prompt
     assert "nghỉ học tạm thời" not in prompt
 
@@ -963,7 +966,7 @@ def test_prompt_distinguishes_external_referral_from_direct_answer() -> None:
         retrieval_result={"retrieved_items": []},
     )
 
-    assert "Chỉ kết luận dứt khoát đối với từng ý" in prompt
+    assert "Chỉ kết luận dứt khoát khi evidence trực tiếp" in prompt
     assert "Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp" in prompt
     assert "nguồn chỉ dẫn chiếu sang văn bản khác" in prompt
     assert "không trình bày câu dẫn chiếu như thể đã trả lời danh sách" in prompt

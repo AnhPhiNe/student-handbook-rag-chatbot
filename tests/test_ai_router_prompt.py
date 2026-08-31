@@ -42,8 +42,10 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
     assert "operand_requirements" not in prompt_registry
     assert "required=" in prompt_registry
     assert "values" in prompt_registry
-    assert 'formula_type":{"values":["scholarship_score","gpa_weighted_average"]}' in prompt_registry
-    assert "diem hoc bong tu diem hoc tap va ren luyen=scholarship_score" in prompt_registry
+    assert 'formula_type":{"type":"string","values":["scholarship_score","gpa_weighted_average"]}' in prompt_registry
+    assert "điểm học bổng từ điểm học tập và rèn luyện=scholarship_score" in prompt_registry
+    assert "Điểm hoặc tên mức xếp loại được hỏi" in prompt_registry
+    assert "Dịch vụ cần hỗ trợ, không phải tên đơn vị" in prompt_registry
 
 
 def test_router_contract_omits_fields_derived_by_code() -> None:
@@ -62,8 +64,8 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
         chat_history=[],
     )
 
-    assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 6800
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v36-qwen38-schema"
+    assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 7400
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v37-task-scope"
 
 
 def test_plan_cache_key_includes_normalizer_version(monkeypatch, tmp_path: Path) -> None:
@@ -101,10 +103,11 @@ def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
         router._plan_response_format_payload(),
     )
 
-    assert stats["total_chars"] <= 9700
-    assert stats["estimated_input_tokens"] <= 2500
+    assert stats["total_chars"] <= 10500
+    assert stats["estimated_input_tokens"] <= 2650
     assert "OUTPUT CONTRACT" not in dynamic_prompt
     assert "native JSON Schema" in dynamic_prompt
+    assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
 
 
 def test_planner_prompt_defines_cohort_independent_task_identity() -> None:
@@ -120,8 +123,9 @@ def test_planner_prompt_treats_compare_as_presentation_and_slots_as_grounded() -
     assert "Không dùng intent=compare" in PLANNER_PROMPT_TEXT
     assert "điền đủ required slots" in PLANNER_PROMPT_TEXT
     assert "Optional slots chỉ xuất khi có căn cứ" in PLANNER_PROMPT_TEXT
-    assert "slot chỉ chọn đúng bảng con" in PLANNER_PROMPT_TEXT
-    assert "không lọc hàng trong bảng đã chọn" in PLANNER_PROMPT_TEXT
+    assert "Trích xuất mọi dữ kiện có căn cứ" in PLANNER_PROMPT_TEXT
+    assert "runtime chịu trách nhiệm chọn bảng và giải quyết kết quả" in PLANNER_PROMPT_TEXT
+    assert "không lọc hàng trong bảng đã chọn" not in PLANNER_PROMPT_TEXT
 
 
 def test_planner_only_clarifies_genuinely_ambiguous_input() -> None:
@@ -130,13 +134,21 @@ def test_planner_only_clarifies_genuinely_ambiguous_input() -> None:
 
 
 def test_planner_prompt_splits_independent_answer_targets() -> None:
-    assert "các khía cạnh bổ sung của cùng một đối tượng" in PLANNER_PROMPT_TEXT
+    assert "Mỗi task.question chứa một yêu cầu độc lập" in PLANNER_PROMPT_TEXT
+    assert "Chỉ gộp các khía cạnh bổ sung" in PLANNER_PROMPT_TEXT
     assert "Tách task khi các phần hỏi về đối tượng/chủ đề độc lập" in PLANNER_PROMPT_TEXT
     assert "Từ nối \"và\" hoặc \"so sánh\" không tự quyết định" in PLANNER_PROMPT_TEXT
     assert "Nhiều entity dùng cùng một structured lookup" in PLANNER_PROMPT_TEXT
     assert "Mỗi task chỉ có một mode" in PLANNER_PROMPT_TEXT
-    assert "mỗi answer target xuất hiện đúng một lần" in PLANNER_PROMPT_TEXT
+    assert "mỗi yêu cầu độc lập xuất hiện đúng một lần" in PLANNER_PROMPT_TEXT
     assert "composer mới kết hợp" in PLANNER_PROMPT_TEXT
+
+
+def test_planner_prompt_defines_registry_grounded_cohort_conflict() -> None:
+    assert "COHORT_ADMISSION_YEARS là metadata xác thực từ registry" in PLANNER_PROMPT_TEXT
+    assert "khóa và năm tuyển sinh cho cùng một đối tượng" in PLANNER_PROMPT_TEXT
+    assert "nêu đúng hai giá trị cần xác nhận" in PLANNER_PROMPT_TEXT
+    assert "Không áp dụng cho câu so sánh nhiều khóa" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_limits_tool_contract_to_structured_tasks() -> None:

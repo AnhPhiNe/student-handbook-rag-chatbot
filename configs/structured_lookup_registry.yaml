@@ -5,7 +5,7 @@ tools:
     data_category: regulation_table
     presentation_type: table
     selection_mode: table_first
-    description: "Quy doi chung chi/diem da neu sang bac tuong duong hoac liet ke bang quy doi; khong cung cap chinh sach bat buoc mot bac cu the."
+    description: "Quy đổi chứng chỉ/điểm ngoại ngữ đã nêu sang bậc tương đương hoặc liệt kê bảng quy đổi; không xác lập chuẩn đầu ra bắt buộc."
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
@@ -30,7 +30,7 @@ tools:
     data_category: regulation_table
     presentation_type: table
     selection_mode: table_first
-    description: Tra thoi gian hoc chuan/toi da theo he va loai chuong trinh.
+    description: Tra thời gian học chuẩn/tối đa theo hệ đào tạo và loại chương trình.
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
@@ -51,14 +51,16 @@ tools:
     data_category: regulation_table
     presentation_type: table
     selection_mode: table_first
-    description: "HBKKHT: dieu kien, xep loai, muc tien. Cong thuc diem dung formula; GPA/ren luyen dung scoring."
+    description: "Tra điều kiện, xếp loại hoặc mức tiền HBKKHT. Công thức điểm dùng formula; quy đổi GPA/rèn luyện dùng scoring."
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
       direct_value: []
       list_items: []
     slot_schema:
-      score_or_label: {type: [string, number]}
+      score_or_label:
+        type: [string, number]
+        description: Điểm hoặc tên mức xếp loại được hỏi.
     strategy: scholarship_classification_lookup
     response_intent: scholarship_classification_lookup_query
     target_chunk_types: [structured_lookup]
@@ -67,7 +69,7 @@ tools:
     data_category: regulation_table
     presentation_type: table
     selection_mode: table_first
-    description: Tra cuu va quy doi thang diem hoc phan (thang 10, diem chu, thang 4, dat/khong dat), xep loai hoc luc hoac phan loai tong diem ren luyen; khong tra nguong diem de dat tung loai hoc bong.
+    description: Tra và quy đổi thang điểm học phần, xếp loại học lực hoặc phân loại tổng điểm rèn luyện; không tra ngưỡng điểm để đạt từng loại học bổng.
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
@@ -106,14 +108,16 @@ tools:
   student_service:
     data_category: directory_table
     presentation_type: contact_card
-    description: Tim don vi/lien he xu ly mot dich vu van hanh cu the; trach nhiem duoc quy dinh boi quy che, chinh sach hay thu tuc dung RAG.
+    description: Tìm đơn vị/liên hệ xử lý một dịch vụ vận hành cụ thể; trách nhiệm theo quy chế, chính sách hoặc thủ tục dùng RAG.
     intents: [direct_value, contact]
     default_intent: contact
     required_slots:
       direct_value: [service, requested_field]
       contact: [service, requested_field]
     slot_schema:
-      service: {type: string}
+      service:
+        type: string
+        description: Dịch vụ cần hỗ trợ, không phải tên đơn vị.
       requested_field:
         type: string
         enum: [unit, phone, email, office, website, all]
@@ -124,7 +128,7 @@ tools:
   office:
     data_category: directory_table
     presentation_type: contact_card
-    description: "Tra danh ba va dich vu tong quat. Trach nhiem theo quy che, quy dinh, thu tuc hoac bieu mau dung RAG."
+    description: "Tra danh bạ và dịch vụ tổng quát. Trách nhiệm theo quy chế, quy định, thủ tục hoặc biểu mẫu dùng RAG."
     intents: [contact]
     default_intent: contact
     required_slots:
@@ -141,7 +145,7 @@ tools:
   faculty:
     data_category: directory_table
     presentation_type: contact_card
-    description: Tra email, phone, website hoac dia chi cua mot Khoa cu the; khong dung cho cau hoi danh sach nganh.
+    description: Tra email, số điện thoại, website hoặc địa chỉ của một Khoa cụ thể; không dùng cho câu hỏi danh sách ngành.
     intents: [contact]
     default_intent: contact
     required_slots:
@@ -158,7 +162,7 @@ tools:
   program:
     data_category: directory_table
     presentation_type: table
-    description: Tra nganh dao tao, khoa phu trach, danh sach nganh, mo ta chuong trinh va dau ra/co hoi nghe nghiep.
+    description: Tra ngành đào tạo, khoa phụ trách, danh sách ngành, mô tả chương trình và đầu ra/cơ hội nghề nghiệp.
     intents: [direct_value, list_items, exists]
     required_slots:
       direct_value: [program_or_faculty, requested_field]
@@ -178,7 +182,7 @@ tools:
 
   formula:
     presentation_type: table
-    description: "Cach tinh/quan he toan hoc: diem hoc bong tu diem hoc tap va ren luyen=scholarship_score; GPA co trong so=gpa_weighted_average. Khong dung cho muc tien, dieu kien hay xep loai hoc bong."
+    description: "Cách tính/quan hệ toán học: điểm học bổng từ điểm học tập và rèn luyện=scholarship_score; GPA có trọng số=gpa_weighted_average. Không dùng cho mức tiền, điều kiện hay xếp loại học bổng."
     intents: [formula]
     required_slots:
       formula: [formula_type]

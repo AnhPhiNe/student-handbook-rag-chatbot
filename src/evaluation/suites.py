@@ -112,6 +112,52 @@ def _is_structured_path(
     return bool(needs_llm_answer) and strategy in DETERMINISTIC_STRATEGIES
 
 
+def _query_plan_task_modes(result: dict[str, Any]) -> set[str]:
+    plan = result.get("query_plan")
+    if not isinstance(plan, dict):
+        return set()
+    tasks = plan.get("tasks")
+    if not isinstance(tasks, list):
+        return set()
+    return {
+        str(task.get("mode") or "").strip().lower()
+        for task in tasks
+        if isinstance(task, dict)
+        and str(task.get("mode") or "").strip().lower()
+        in {"structured", "rag", "clarify"}
+    }
+
+
+def _deterministic_actual_group(
+    result: dict[str, Any],
+    structured: dict[str, Any],
+) -> str:
+    """Classify the executed QueryPlan, not whether Composer is still needed."""
+
+    task_modes = _query_plan_task_modes(result)
+    if result.get("needs_clarification") or task_modes == {"clarify"}:
+        return "clarification"
+    if result.get("out_of_domain") or result.get("intent") == "out_of_domain":
+        return "out_of_domain"
+    if "structured" in task_modes and "rag" in task_modes:
+        return "mixed" if structured else "rag"
+    if task_modes == {"structured"}:
+        return "structured" if structured else "rag"
+    if task_modes == {"rag"}:
+        return "rag"
+
+    strategy = result.get("strategy")
+    needs_llm_answer = bool(result.get("needs_llm_answer"))
+    if _is_structured_path(
+        strategy,
+        structured,
+        needs_llm_answer=needs_llm_answer,
+    ):
+        return "structured"
+    deterministic = strategy in DETERMINISTIC_STRATEGIES and needs_llm_answer is False
+    return "deterministic" if deterministic else "rag"
+
+
 def _router_validation_errors(result: dict[str, Any]) -> list[str]:
     direct_errors = result.get("router_validation_errors")
     if isinstance(direct_errors, list):
@@ -389,33 +435,13 @@ def evaluate_deterministic(
                     cohort=case.get("cohort"),
                 )
                 strategy = result.get("strategy")
-                deterministic = (
-                    strategy in DETERMINISTIC_STRATEGIES
-                    and result.get("needs_llm_answer") is False
-                )
                 structured = (
                     result.get("structured_result")
                     or result.get("formula_result")
                     or result.get("tool_result")
                     or {}
                 )
-                needs_llm_answer = bool(result.get("needs_llm_answer"))
-                structured_group = _is_structured_path(
-                    strategy,
-                    structured,
-                    needs_llm_answer=needs_llm_answer,
-                )
-                if result.get("needs_clarification"):
-                    actual_group = "clarification"
-                elif (
-                    result.get("out_of_domain")
-                    or result.get("intent") == "out_of_domain"
-                ):
-                    actual_group = "guardrail"
-                elif structured_group:
-                    actual_group = "structured"
-                else:
-                    actual_group = "deterministic" if deterministic else "rag"
+                actual_group = _deterministic_actual_group(result, structured)
                 lookup_type = str(
                     structured.get("source_lookup_type")
                     or structured.get("lookup_type")
@@ -424,9 +450,7 @@ def evaluate_deterministic(
                     or ""
                 )
                 lookup_match_text = _lookup_match_text(structured, lookup_type)
-                citations = result.get("citations") or _structured_citations(
-                    structured
-                )
+                citations = result.get("citations") or _structured_citations(structured)
                 expected_citation_type = case.get("expected_citation_content_type")
                 citation_required = expected_citation_type is not None
                 citation_cohort_ok = (bool(citations) or not citation_required) and all(
@@ -485,7 +509,12 @@ def evaluate_deterministic(
                 expected_group = case["expected_group"]
                 accepted_groups = (
                     {"clarification", "rag", "deterministic", "structured"}
-                    if expected_group in {"clarification_or_rag", "clarification_or_deterministic", "clarification_or_structured"}
+                    if expected_group
+                    in {
+                        "clarification_or_rag",
+                        "clarification_or_deterministic",
+                        "clarification_or_structured",
+                    }
                     else {"structured", "deterministic"}
                     if expected_group in {"structured", "deterministic"}
                     else {expected_group}
@@ -494,10 +523,24 @@ def evaluate_deterministic(
                 expected_intents = case.get("expected_intents") or [
                     case.get("expected_intent")
                 ]
-                if expected_group == "rag":
-                    intent_ok = actual_group == "rag"
-                elif expected_group in {"clarification_or_rag", "clarification_or_deterministic", "clarification_or_structured"}:
-                    intent_ok = actual_group in {"clarification", "rag", "deterministic", "structured"}
+                if expected_group in {
+                    "rag",
+                    "mixed",
+                    "clarification",
+                    "out_of_domain",
+                }:
+                    intent_ok = group_ok
+                elif expected_group in {
+                    "clarification_or_rag",
+                    "clarification_or_deterministic",
+                    "clarification_or_structured",
+                }:
+                    intent_ok = actual_group in {
+                        "clarification",
+                        "rag",
+                        "deterministic",
+                        "structured",
+                    }
                 elif expected_group == "structured":
                     intent_ok = actual_group in {"structured", "deterministic"}
                 else:
@@ -507,10 +550,21 @@ def evaluate_deterministic(
                 expected_strategies = case.get("expected_strategies") or [
                     case.get("expected_strategy")
                 ]
-                if expected_group == "rag":
+                if expected_group in {"clarification", "out_of_domain"}:
+                    strategy_ok = group_ok
+                elif expected_group == "rag":
                     strategy_ok = actual_group == "rag"
-                elif expected_group in {"clarification_or_rag", "clarification_or_deterministic", "clarification_or_structured"}:
-                    strategy_ok = actual_group in {"clarification", "rag", "deterministic", "structured"}
+                elif expected_group in {
+                    "clarification_or_rag",
+                    "clarification_or_deterministic",
+                    "clarification_or_structured",
+                }:
+                    strategy_ok = actual_group in {
+                        "clarification",
+                        "rag",
+                        "deterministic",
+                        "structured",
+                    }
                 elif expected_group == "structured":
                     if set(expected_strategies) == {"structured_table"}:
                         strategy_ok = actual_group in {"structured", "deterministic"}
@@ -528,7 +582,8 @@ def evaluate_deterministic(
                     ) in set(expected_strategies)
                 fallback_ok = (
                     actual_group not in {"deterministic", "structured"}
-                    if expected_group not in {
+                    if expected_group
+                    not in {
                         "deterministic",
                         "structured",
                         "clarification_or_rag",
@@ -700,17 +755,24 @@ def _eval_checkpoint_identity(
 
 
 def _load_eval_checkpoint(
-    path: Path | None, *, resume: bool, identity: dict[str, Any] | None = None,
+    path: Path | None,
+    *,
+    resume: bool,
+    identity: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     if path is None:
         return []
     identity_path = path.with_suffix(path.suffix + ".identity.json")
     if not path.exists():
         if identity_path.exists() and load_json(identity_path) != identity:
-            raise ValueError(f"Evaluation checkpoint identity mismatch: {path}; use a fresh output path")
+            raise ValueError(
+                f"Evaluation checkpoint identity mismatch: {path}; use a fresh output path"
+            )
         return []
     if not resume:
-        raise FileExistsError(f"Refusing to overwrite evaluation checkpoint: {path}; use --resume")
+        raise FileExistsError(
+            f"Refusing to overwrite evaluation checkpoint: {path}; use --resume"
+        )
     if identity is None or not identity_path.exists():
         raise ValueError(
             f"Legacy checkpoint has no verifiable identity: {path}. "
@@ -718,11 +780,16 @@ def _load_eval_checkpoint(
             "explicit legacy compatibility diagnostic, not a headline resume."
         )
     if load_json(identity_path) != identity:
-        raise ValueError(f"Evaluation checkpoint identity mismatch: {path}; use a fresh output path")
+        raise ValueError(
+            f"Evaluation checkpoint identity mismatch: {path}; use a fresh output path"
+        )
     rows = load_json(path)
     if (
         not isinstance(rows, list)
-        or any(not isinstance(row, dict) or not isinstance(row.get("id"), str) for row in rows)
+        or any(
+            not isinstance(row, dict) or not isinstance(row.get("id"), str)
+            for row in rows
+        )
         or len({row["id"] for row in rows}) != len(rows)
     ):
         raise ValueError(f"Invalid or duplicate checkpoint rows: {path}")
@@ -730,7 +797,10 @@ def _load_eval_checkpoint(
 
 
 def _save_eval_checkpoint(
-    path: Path | None, rows: list[dict[str, Any]], *, identity: dict[str, Any] | None,
+    path: Path | None,
+    rows: list[dict[str, Any]],
+    *,
+    identity: dict[str, Any] | None,
 ) -> None:
     if path is None:
         return
@@ -759,7 +829,9 @@ def _case_history_kwargs(case: dict[str, Any]) -> dict[str, Any]:
     return {"chat_history": history} if history else {}
 
 
-def _expected_tasks_match(expected: list[dict[str, Any]], actual: list[dict[str, Any]]) -> bool:
+def _expected_tasks_match(
+    expected: list[dict[str, Any]], actual: list[dict[str, Any]]
+) -> bool:
     """Compare frozen semantic task golds, independent of emission order/IDs."""
     if len(expected) != len(actual):
         return False
@@ -790,8 +862,12 @@ def _expected_tasks_match(expected: list[dict[str, Any]], actual: list[dict[str,
         if not set(gold.get("required_slot_keys") or []) <= set(slots):
             return False
         for key, value in (gold.get("slots") or {}).items():
-            alternatives = (gold.get("slot_value_alternatives") or {}).get(key) or [value]
-            if key not in slots or normalized(slots[key]) not in [normalized(item) for item in alternatives]:
+            alternatives = (gold.get("slot_value_alternatives") or {}).get(key) or [
+                value
+            ]
+            if key not in slots or normalized(slots[key]) not in [
+                normalized(item) for item in alternatives
+            ]:
                 return False
         return True
 
@@ -816,10 +892,16 @@ def _evaluate_deterministic_v2_uncached(
         from src.generation.answer_pipeline import AnswerPipeline
 
         pipeline_factory = AnswerPipeline
-    identity = _eval_checkpoint_identity(
-        cases, suite="deterministic", context=checkpoint_context,
-        evaluation_contract=evaluation_contract,
-    ) if checkpoint_path else None
+    identity = (
+        _eval_checkpoint_identity(
+            cases,
+            suite="deterministic",
+            context=checkpoint_context,
+            evaluation_contract=evaluation_contract,
+        )
+        if checkpoint_path
+        else None
+    )
     rows = _load_eval_checkpoint(checkpoint_path, resume=resume, identity=identity)
     completed_ids = {row["id"] for row in rows}
     pipeline = pipeline_factory()
@@ -854,7 +936,10 @@ def _evaluate_deterministic_v2_uncached(
             required_modes = set(expected.get("required_modes") or [])
             task_modes_ok = task_modes_ok and required_modes <= set(actual_modes)
             if expected.get("mode_counts") is not None:
-                task_modes_ok = task_modes_ok and dict(Counter(actual_modes)) == expected["mode_counts"]
+                task_modes_ok = (
+                    task_modes_ok
+                    and dict(Counter(actual_modes)) == expected["mode_counts"]
+                )
             task_semantics_ok = (
                 _expected_tasks_match(case["expected_tasks"], tasks)
                 if "expected_tasks" in case
@@ -1034,7 +1119,9 @@ def _evaluate_deterministic_v2_uncached(
             _save_eval_checkpoint(checkpoint_path, rows, identity=identity)
 
     rows_by_id = {row["id"]: row for row in rows}
-    rows = [rows_by_id[case["id"]] for case in cases[:limit] if case["id"] in rows_by_id]
+    rows = [
+        rows_by_id[case["id"]] for case in cases[:limit] if case["id"] in rows_by_id
+    ]
 
     positives = [
         row
@@ -1044,6 +1131,7 @@ def _evaluate_deterministic_v2_uncached(
     predicted_structured = [
         row for row in rows if "structured" in (row.get("actual_task_modes") or [])
     ]
+
     def expects_structured(row: dict[str, Any]) -> bool:
         gold = row.get("expected_plan") or {}
         return "structured" in (gold.get("allowed_modes") or [])
@@ -1058,12 +1146,14 @@ def _evaluate_deterministic_v2_uncached(
         "passed": passed_n,
         "accuracy": passed_n / len(rows) if rows else 0.0,
         "precision": (
-            true_positive_n / len(predicted_structured)
-            if predicted_structured
-            else 0.0
+            true_positive_n / len(predicted_structured) if predicted_structured else 0.0
         ),
-        "recall": true_positive_n / len(expected_positive_rows) if expected_positive_rows else 0.0,
-        "false_positive_rate": false_positive_n / len(expected_negative_rows) if expected_negative_rows else 0.0,
+        "recall": true_positive_n / len(expected_positive_rows)
+        if expected_positive_rows
+        else 0.0,
+        "false_positive_rate": false_positive_n / len(expected_negative_rows)
+        if expected_negative_rows
+        else 0.0,
         "structured_selection_counts": {
             "true_positive": true_positive_n,
             "false_positive": false_positive_n,
@@ -1086,9 +1176,7 @@ def _evaluate_deterministic_v2_uncached(
         "citation_metadata_accuracy": safe_mean(
             [float(bool(row.get("citation_metadata_correct"))) for row in positives]
         ),
-        "cross_cohort_leak": sum(
-            bool(row.get("cross_cohort_leak")) for row in rows
-        )
+        "cross_cohort_leak": sum(bool(row.get("cross_cohort_leak")) for row in rows)
         / len(rows)
         if rows
         else 0.0,
@@ -1230,16 +1318,12 @@ def summarize_deterministic_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 for row in normalized_rows
             ]
         ),
-        "latency_ms": _latency_summary(
-            [row["latency_ms"] for row in normalized_rows]
-        ),
+        "latency_ms": _latency_summary([row["latency_ms"] for row in normalized_rows]),
         "pass_ci95": wilson_interval(
             sum(bool(row.get("passed")) for row in normalized_rows),
             len(normalized_rows),
         ),
-        "realistic_score": _split_pass_rate(
-            _split_rows(normalized_rows, "realistic")
-        ),
+        "realistic_score": _split_pass_rate(_split_rows(normalized_rows, "realistic")),
         "stress_score": _split_pass_rate(_split_rows(normalized_rows, "stress")),
     }
     return summary
@@ -1271,18 +1355,24 @@ def evaluate_retrieval(
         )
     if scope not in {"pure", "end_to_end"}:
         raise ValueError("scope must be pure or end_to_end")
-    identity = _eval_checkpoint_identity(
-        cases, suite="retrieval", context=checkpoint_context,
-        backend=backend, mode=mode, scope=scope,
-    ) if checkpoint_path else None
+    identity = (
+        _eval_checkpoint_identity(
+            cases,
+            suite="retrieval",
+            context=checkpoint_context,
+            backend=backend,
+            mode=mode,
+            scope=scope,
+        )
+        if checkpoint_path
+        else None
+    )
     rows = _load_eval_checkpoint(checkpoint_path, resume=resume, identity=identity)
     completed_ids = {row["id"] for row in rows}
     previous_backend = os.environ.get("STUDENT_RAG_USE_QDRANT")
     previous_hybrid = os.environ.get("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL")
     previous_mode = os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE")
-    previous_force_regulation = os.environ.get(
-        "STUDENT_RAG_EVAL_FORCE_REGULATION_RAG"
-    )
+    previous_force_regulation = os.environ.get("STUDENT_RAG_EVAL_FORCE_REGULATION_RAG")
     previous_router_wait = os.environ.get("STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED")
     previous_router_cache = os.environ.get("STUDENT_RAG_DISABLE_ROUTER_CACHE")
     os.environ["STUDENT_RAG_USE_QDRANT"] = "1"
@@ -1328,7 +1418,9 @@ def evaluate_retrieval(
                 )
                 items = result.get("retrieved_items") or []
                 related_items = result.get("related_items") or []
-                ranked_ids = list(dict.fromkeys(_item_parent_id(item) for item in items))
+                ranked_ids = list(
+                    dict.fromkeys(_item_parent_id(item) for item in items)
+                )
                 related_ids = [_item_parent_id(item) for item in related_items]
                 expected_ids = {
                     item["parent_section_id"] for item in case["relevance_judgments"]
@@ -1357,9 +1449,7 @@ def evaluate_retrieval(
                 citation_ids = {_citation_parent_id(item) for item in citations}
                 structured = result.get("structured_result") or {}
                 cohort_ok = all(
-                    _cohort_matches(
-                        _item_applicability(item), case.get("cohort")
-                    )
+                    _cohort_matches(_item_applicability(item), case.get("cohort"))
                     for item in items
                 ) and (
                     not structured
@@ -1371,9 +1461,7 @@ def evaluate_retrieval(
                     )
                 )
                 related_cohort_ok = all(
-                    _cohort_matches(
-                        _item_applicability(item), case.get("cohort")
-                    )
+                    _cohort_matches(_item_applicability(item), case.get("cohort"))
                     for item in related_items
                 )
                 actual_content_types = {
@@ -1534,8 +1622,13 @@ def _retrieval_summary(
     rows: list[dict[str, Any]], headline: list[dict[str, Any]]
 ) -> dict[str, Any]:
     metric_names = (
-        "hit_at_1", "hit_at_3", "hit_at_5", "mrr", "ndcg_at_5",
-        "primary_hit_at_5", "required_source_recall_at_5",
+        "hit_at_1",
+        "hit_at_3",
+        "hit_at_5",
+        "mrr",
+        "ndcg_at_5",
+        "primary_hit_at_5",
+        "required_source_recall_at_5",
     )
     summary: dict[str, Any] = {"n": len(rows), "headline_n": len(headline)}
     for name in metric_names:
@@ -1623,6 +1716,7 @@ def _retrieval_metrics_for_execution_units(
     the flattened groups would incorrectly turn the first K50 result into rank
     six merely because five K48-K49 parents were emitted first.
     """
+
     def score(ids: list[str], relevance: dict[str, int]) -> dict[str, float]:
         # Score unique parent sections, not repeated chunks/tasks from a parent.
         ids = list(dict.fromkeys(ids))
@@ -1630,10 +1724,14 @@ def _retrieval_metrics_for_execution_units(
             [relevance.get(parent_id, 0) for parent_id in ids],
             gold_grades=list(relevance.values()),
         )
-        required_ids = {parent_id for parent_id, grade in relevance.items() if grade == 2}
+        required_ids = {
+            parent_id for parent_id, grade in relevance.items() if grade == 2
+        }
         found = required_ids & set(ids[:5])
         metrics["primary_hit_at_5"] = float(bool(found))
-        metrics["required_source_recall_at_5"] = len(found) / len(required_ids) if required_ids else 0.0
+        metrics["required_source_recall_at_5"] = (
+            len(found) / len(required_ids) if required_ids else 0.0
+        )
         return metrics
 
     relevance_by_cohort: dict[str, dict[str, int]] = {}
@@ -1676,10 +1774,10 @@ def _retrieval_metrics_for_execution_units(
             "reciprocal_rank": safe_mean(
                 [metric["reciprocal_rank"] for metric in unit_metrics]
             ),
-            "ndcg_at_5": safe_mean(
-                [metric["ndcg_at_5"] for metric in unit_metrics]
+            "ndcg_at_5": safe_mean([metric["ndcg_at_5"] for metric in unit_metrics]),
+            "primary_hit_at_5": min(
+                metric["primary_hit_at_5"] for metric in unit_metrics
             ),
-            "primary_hit_at_5": min(metric["primary_hit_at_5"] for metric in unit_metrics),
             "required_source_recall_at_5": safe_mean(
                 [metric["required_source_recall_at_5"] for metric in unit_metrics]
             ),
@@ -1727,9 +1825,7 @@ def evaluate_graph_supplement(
         progress.set_postfix_str(source or f"edge-{index}")
         started = time.perf_counter()
         expanded_nodes = (
-            traverser.expand_context([source], max_depth=graph_depth)
-            if source
-            else []
+            traverser.expand_context([source], max_depth=graph_depth) if source else []
         )
         selected = select_graph_related_parent_candidates(
             [source],
@@ -1770,9 +1866,7 @@ def evaluate_graph_supplement(
                 "latency_ms": (time.perf_counter() - started) * 1000,
             }
         )
-    selected_counts = [
-        float(row["selected_related_parent_count"]) for row in rows
-    ]
+    selected_counts = [float(row["selected_related_parent_count"]) for row in rows]
     summary = {
         "n": len(rows),
         "graph_nodes": traverser.graph.number_of_nodes(),
@@ -1857,7 +1951,9 @@ def generate_answers(
     )
 
     identity = _eval_checkpoint_identity(
-        cases, suite="answer_generation", context=checkpoint_context,
+        cases,
+        suite="answer_generation",
+        context=checkpoint_context,
         retrieval_mode=DEFAULT_RETRIEVAL_MODE,
     )
     existing = _load_eval_checkpoint(cache_path, resume=resume, identity=identity)
@@ -1899,7 +1995,9 @@ def generate_answers(
             started = time.perf_counter()
             try:
                 output = pipeline.answer(
-                    case["query"], cohort=case.get("cohort"), **_case_history_kwargs(case)
+                    case["query"],
+                    cohort=case.get("cohort"),
+                    **_case_history_kwargs(case),
                 )
                 clean_output = {k: v for k, v in output.items() if k != "tracker"}
                 record = {
@@ -1954,14 +2052,18 @@ def generate_answers(
 
 
 def load_answer_checkpoint(
-    cases: list[dict[str, Any]], cache_path: Path, *,
+    cases: list[dict[str, Any]],
+    cache_path: Path,
+    *,
     checkpoint_context: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     """Verify generation provenance before using cached answers in a new judge run."""
     from src.retrieval.core.hybrid_pipeline import DEFAULT_RETRIEVAL_MODE
 
     identity = _eval_checkpoint_identity(
-        cases, suite="answer_generation", context=checkpoint_context,
+        cases,
+        suite="answer_generation",
+        context=checkpoint_context,
         retrieval_mode=DEFAULT_RETRIEVAL_MODE,
     )
     return _load_eval_checkpoint(cache_path, resume=True, identity=identity)
@@ -1978,7 +2080,9 @@ def judge_answers(
     checkpoint_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     identity = _eval_checkpoint_identity(
-        cases, suite="judge", context=checkpoint_context,
+        cases,
+        suite="judge",
+        context=checkpoint_context,
         answer_cache_hash=stable_json_hash(answer_cache),
     )
     existing = _load_eval_checkpoint(checkpoint_path, resume=resume, identity=identity)
@@ -2361,18 +2465,11 @@ def _summarize_production_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
             [float(row.get("status_code") == 429) for row in rows]
         ),
         "timeout_rate": safe_mean(
-            [
-                float("timed out" in str(row.get("error") or "").lower())
-                for row in rows
-            ]
+            [float("timed out" in str(row.get("error") or "").lower()) for row in rows]
         ),
         "latency_ms": _latency_summary([row["latency_ms"] for row in rows]),
         "streaming_ttft_ms": _latency_summary(
-            [
-                row["ttft_ms"]
-                for row in streaming_rows
-                if row.get("ttft_ms") is not None
-            ]
+            [row["ttft_ms"] for row in streaming_rows if row.get("ttft_ms") is not None]
         ),
         "streaming_ttft_coverage": streaming_ttft_coverage,
         "cold_regulation_rag_latency_ms": _latency_summary(
@@ -2413,15 +2510,11 @@ def _summarize_production_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         ),
         "key_distribution": dict(
             Counter(
-                row.get("key_fingerprint")
-                for row in rows
-                if row.get("key_fingerprint")
+                row.get("key_fingerprint") for row in rows if row.get("key_fingerprint")
             )
         ),
         "retry_count": sum(int(row.get("retry_count") or 0) for row in rows),
-        "cooldown_events": sum(
-            int(row.get("cooldown_events") or 0) for row in rows
-        ),
+        "cooldown_events": sum(int(row.get("cooldown_events") or 0) for row in rows),
         "realistic_score": safe_mean(
             [
                 float(row["success"])
@@ -2467,9 +2560,16 @@ def evaluate_production(
     checkpoint_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     selected = cases[:limit]
-    identity = _eval_checkpoint_identity(
-        cases, suite="production", context=checkpoint_context, base_url=base_url,
-    ) if checkpoint_path else None
+    identity = (
+        _eval_checkpoint_identity(
+            cases,
+            suite="production",
+            context=checkpoint_context,
+            base_url=base_url,
+        )
+        if checkpoint_path
+        else None
+    )
     rows = _load_eval_checkpoint(checkpoint_path, resume=resume, identity=identity)
     completed_ids = {row["id"] for row in rows}
     pending = [case for case in selected if case["id"] not in completed_ids]

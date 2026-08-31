@@ -29,6 +29,7 @@ from src.evaluation.metrics import retrieval_metrics, wilson_interval
 from src.evaluation.reporting import write_report_bundle
 from src.evaluation.suites import (
     _answer_checks,
+    _deterministic_actual_group,
     _expected_response_status,
     _response_status_matches_expected,
     _retrieval_summary,
@@ -134,6 +135,7 @@ def test_legacy_compatibility_provenance_records_both_docstore_hashes() -> None:
     assert provenance["answer_generation_retrieval_mode"] == DEFAULT_RETRIEVAL_MODE
     assert provenance["phoranker_used_for_answer_generation"] is False
 
+
 def test_validator_rejects_query_reused_from_legacy_eval(tmp_path: Path) -> None:
     eval_root = tmp_path / "eval"
     bundle_dir = eval_root / "final_holdout"
@@ -205,9 +207,7 @@ def test_graph_supplement_eval_scores_related_selection_cap(tmp_path: Path) -> N
     report = evaluate_graph_supplement(edges_path=edges_path, related_limit=5)
 
     selected = {
-        row["target_parent_id"]
-        for row in report["cases"]
-        if row["target_selected"]
+        row["target_parent_id"] for row in report["cases"] if row["target_selected"]
     }
     assert len(report["cases"]) == 6
     assert report["summary"]["direct_expansion_recall"] == 1.0
@@ -250,6 +250,48 @@ def test_deterministic_summary_counts_nested_router_validation_errors() -> None:
     summary = summarize_deterministic_rows(rows)
 
     assert summary["router_validation_failure_rate"] == 0.5
+
+
+def test_deterministic_group_uses_query_plan_modes_with_composer_enabled() -> None:
+    structured = {"lookup_type": "foreign_language", "items": [{"value": "B1"}]}
+    result = {
+        "strategy": "query_plan_execution",
+        "needs_llm_answer": True,
+        "query_plan": {"tasks": [{"mode": "structured"}]},
+    }
+
+    assert _deterministic_actual_group(result, structured) == "structured"
+
+
+def test_deterministic_group_recognizes_mixed_query_plan() -> None:
+    result = {
+        "strategy": "query_plan_execution",
+        "needs_llm_answer": True,
+        "query_plan": {
+            "tasks": [{"mode": "structured"}, {"mode": "rag"}],
+        },
+    }
+
+    assert _deterministic_actual_group(result, {"items": [{"value": "x"}]}) == "mixed"
+
+
+def test_deterministic_group_preserves_guardrail_names() -> None:
+    assert (
+        _deterministic_actual_group(
+            {"out_of_domain": True, "query_plan": {"tasks": []}}, {}
+        )
+        == "out_of_domain"
+    )
+    assert (
+        _deterministic_actual_group(
+            {
+                "needs_clarification": True,
+                "query_plan": {"tasks": [{"mode": "clarify"}]},
+            },
+            {},
+        )
+        == "clarification"
+    )
 
 
 def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:
@@ -357,7 +399,9 @@ def test_production_clarify_abstain_accepts_guardrail_statuses() -> None:
     assert not _response_status_matches_expected("error", expected_status)
 
 
-def test_production_eval_records_http_error_status(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_production_eval_records_http_error_status(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     def raise_rate_limit(*_args, **_kwargs):
         raise HTTPError(
             url="http://127.0.0.1:8000/chat",
@@ -727,9 +771,7 @@ def test_all_judge_daily_quota_exhausted_is_explicit(tmp_path: Path) -> None:
 
 
 def test_judge_request_larger_than_per_key_tpm_is_explicit(tmp_path: Path) -> None:
-    config = JudgeConfig(
-        state_path=tmp_path / "judge_state.json", tpm_limit_per_key=10
-    )
+    config = JudgeConfig(state_path=tmp_path / "judge_state.json", tpm_limit_per_key=10)
     pool = JudgeQuotaPool(["secret"], config)
 
     with pytest.raises(RuntimeError, match="request_exceeds_per_key_tpm_limit"):
@@ -940,9 +982,7 @@ def test_retrieval_cohort_check_uses_applicable_cohorts() -> None:
         "topic": "test",
         "query_style": "natural",
         "expected_content_types": ["regulation_text"],
-        "relevance_judgments": [
-            {"parent_section_id": "policy-k50", "grade": 2}
-        ],
+        "relevance_judgments": [{"parent_section_id": "policy-k50", "grade": 2}],
     }
 
     report = evaluate_retrieval(

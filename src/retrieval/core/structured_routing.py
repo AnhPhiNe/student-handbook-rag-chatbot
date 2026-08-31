@@ -496,6 +496,53 @@ def _span_is_only_cohort(span: Any) -> bool:
     return bool(build_cohort_token_regex().fullmatch(str(span).strip()))
 
 
+def _as_values(value: Any) -> list[Any]:
+    return value if isinstance(value, list) else [value]
+
+
+def _normalized_phrase_in_text(phrase: Any, text: Any) -> bool:
+    normalized_phrase = _normalize_text(phrase).replace("_", " ")
+    normalized_text = _normalize_text(text).replace("_", " ")
+    if not normalized_phrase or not normalized_text:
+        return False
+    return f" {normalized_phrase} " in f" {normalized_text} "
+
+
+def _numeric_value_matches_span(value: Any, span: Any) -> bool:
+    """Treat Vietnamese decimal commas and decimal points as equivalent."""
+
+    if isinstance(value, bool):
+        return False
+    raw_value = str(value).strip()
+    if not re.fullmatch(r"[-+]?\d+(?:[.,]\d+)?", raw_value):
+        return False
+    expected = float(raw_value.replace(",", "."))
+    for token in re.findall(r"[-+]?\d+(?:[.,]\d+)?", str(span)):
+        if float(token.replace(",", ".")) == expected:
+            return True
+    return False
+
+
+def _span_matches_slot_value(value: Any, span: Any, schema: dict[str, Any]) -> bool:
+    """Validate extracted values against their literal spans and aliases."""
+
+    constrained_values = schema.get("enum") or schema.get("canonical_values") or []
+    aliases_by_value = schema.get("span_aliases") or {}
+    span_values = _as_values(span)
+    for item in _as_values(value):
+        aliases = [item]
+        if constrained_values:
+            aliases.extend(aliases_by_value.get(str(item)) or [])
+        if not any(
+            _normalized_phrase_in_text(alias, literal_span)
+            or _numeric_value_matches_span(item, literal_span)
+            for alias in aliases
+            for literal_span in span_values
+        ):
+            return False
+    return True
+
+
 def _matches_type(value: Any, expected: str) -> bool:
     if expected == "string":
         if isinstance(value, str):
@@ -537,11 +584,52 @@ def _validate_slot_contract(slots: dict[str, Any], spec: dict[str, Any]) -> list
         ):
             errors.append(f"invalid_slot_type:{slot_name}")
             continue
-        allowed = schema.get("enum") or []
-        if allowed and value not in allowed:
+        allowed = schema.get("enum") or schema.get("canonical_values") or []
+        if allowed and any(item not in allowed for item in _as_values(value)):
             errors.append(f"invalid_slot_value:{slot_name}")
 
     return errors
+
+
+def validate_fact_lock_inputs(
+    decision: dict[str, Any],
+    *,
+    query: str,
+    registry: dict[str, Any] | None = None,
+) -> list[str]:
+    """Return reasons why a table-first decision must not emit a fact lock."""
+
+    registry = registry or load_lookup_registry()
+    lookup_type = str(decision.get("lookup_type") or "")
+    spec = registry.get("tools", {}).get(lookup_type)
+    if not isinstance(spec, dict):
+        return ["unknown_lookup_type"]
+
+    slots = decision.get("slots") or {}
+    spans = decision.get("slot_spans") or {}
+    slot_schema = spec.get("slot_schema") or {}
+    errors = _validate_slot_contract(slots, spec)
+    grounded_value_slots = 0
+    for slot_name, value in slots.items():
+        if (
+            slot_name in UNGROUNDED_SCHEMA_SLOTS
+            or slot_name not in slot_schema
+            or not _is_present(value)
+        ):
+            continue
+        grounded_value_slots += 1
+        span = spans.get(slot_name)
+        if not _is_present(span):
+            errors.append(f"missing_slot_span:{slot_name}")
+        elif not _span_is_grounded(span, query):
+            errors.append(f"ungrounded_slot:{slot_name}")
+        elif _span_is_only_cohort(span):
+            errors.append(f"misgrounded_slot:{slot_name}")
+        elif not _span_matches_slot_value(value, span, slot_schema[slot_name]):
+            errors.append(f"slot_span_mismatch:{slot_name}")
+    if grounded_value_slots == 0:
+        errors.append("missing_fact_lock_value")
+    return list(dict.fromkeys(errors))
 
 
 def validate_router_decision(
@@ -608,6 +696,7 @@ def validate_router_decision(
 
     slots = decision.get("slots") or {}
     spans = decision.get("slot_spans") or {}
+    slot_schema = spec.get("slot_schema") or {}
     declared_slots = set((spec.get("slot_schema") or {}).keys())
     for slot_name in spans:
         if slot_name not in declared_slots:
@@ -629,6 +718,10 @@ def validate_router_decision(
             errors.append(f"ungrounded_slot:{slot_name}")
         elif _span_is_only_cohort(spans[slot_name]):
             errors.append(f"misgrounded_slot:{slot_name}")
+        elif not _span_matches_slot_value(
+            slots[slot_name], spans[slot_name], slot_schema[slot_name]
+        ):
+            errors.append(f"slot_span_mismatch:{slot_name}")
 
     for slot_name, value in slots.items():
         if (
@@ -645,6 +738,8 @@ def validate_router_decision(
             errors.append(f"ungrounded_slot:{slot_name}")
         elif _span_is_only_cohort(span):
             errors.append(f"misgrounded_slot:{slot_name}")
+        elif not _span_matches_slot_value(value, span, slot_schema[slot_name]):
+            errors.append(f"slot_span_mismatch:{slot_name}")
 
     errors.extend(_validate_slot_contract(slots, spec))
 

@@ -475,6 +475,57 @@ def test_table_first_drops_optional_slot_grounded_only_by_cohort() -> None:
     assert plan["tasks"][0]["slot_spans"] == {}
 
 
+def test_table_first_drops_optional_slot_whose_span_describes_another_value() -> None:
+    query = "Điểm 7,9 quy đổi thành điểm chữ gì ở K51?"
+    task = {
+        **_rag_task(1, query),
+        "mode": "structured",
+        "intent": "direct_value",
+        "lookup_type": "scoring",
+        "slots": {
+            "operation": "grade_10_to_letter",
+            "score_or_grade": "8,5",
+        },
+        "slot_spans": {"score_or_grade": "7,9"},
+        "cohorts": ["K51"],
+    }
+
+    plan, errors = normalize_query_plan(
+        _plan([task]),
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert plan["tasks"][0]["mode"] == "structured"
+    assert plan["tasks"][0]["slots"] == {"operation": "grade_10_to_letter"}
+    assert plan["tasks"][0]["slot_spans"] == {}
+
+
+def test_table_first_drops_optional_slot_outside_declared_domain() -> None:
+    query = "K51 học chương trình không xác định trong bao lâu?"
+    task = {
+        **_rag_task(1, query),
+        "mode": "structured",
+        "intent": "direct_value",
+        "lookup_type": "study_duration",
+        "slots": {"program_type": "invented_program"},
+        "slot_spans": {"program_type": "chương trình không xác định"},
+        "cohorts": ["K51"],
+    }
+
+    plan, errors = normalize_query_plan(
+        _plan([task]),
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert plan["tasks"][0]["mode"] == "structured"
+    assert plan["tasks"][0]["slots"] == {}
+    assert plan["tasks"][0]["slot_spans"] == {}
+
+
 def test_table_first_drops_optional_slot_without_span() -> None:
     query = "K51 thời gian học tối đa là bao lâu?"
     task = {

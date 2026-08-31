@@ -19,7 +19,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v13-task-local-fallback"
+QUERY_PLAN_NORMALIZER_VERSION = "v14-validated-fact-lock"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
@@ -531,6 +531,7 @@ def _normalize_task(
                     "misgrounded_slot:",
                     "invalid_slot_type:",
                     "invalid_slot_value:",
+                    "slot_span_mismatch:",
                     "unknown_slot:",
                     "unknown_slot_span:",
                 )
@@ -573,6 +574,7 @@ def _normalize_task(
                     "misgrounded_slot",
                     "invalid_slot_type",
                     "invalid_slot_value",
+                    "slot_span_mismatch",
                 }
                 and error.partition(":")[2] in required_slots
             )

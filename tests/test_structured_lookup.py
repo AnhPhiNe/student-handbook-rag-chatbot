@@ -198,7 +198,9 @@ class StructuredLookupTest(unittest.TestCase):
             "table_type": "foreign_language",
             "data_category": "regulation_table",
             "cohort": "K50",
+            "source_cohort": "K50",
             "applicable_cohorts": ["K50", "K51"],
+            "applicability_validated": True,
             "rows": [
                 {"certificate": "IELTS", "equivalent_level_4": "5.5 - 6.5"},
                 {"certificate": "TOEFL iBT", "equivalent_level_4": "46 - 93"},
@@ -329,7 +331,9 @@ class StructuredLookupTest(unittest.TestCase):
             "table_type": "foreign_language",
             "data_category": "regulation_table",
             "cohort": "K50",
+            "source_cohort": "K50",
             "applicable_cohorts": ["K50", "K51"],
+            "applicability_validated": True,
             "source_parent_id": "K50_foreign_language_rule",
             "source_pages": [112],
             "rows": [
@@ -688,6 +692,7 @@ class StructuredLookupTest(unittest.TestCase):
                     "operation": "grade_10_to_letter",
                     "score_or_grade": "7,9",
                 },
+                "slot_spans": {"score_or_grade": "7,9"},
             },
             query="Điểm 7,9 quy đổi thành điểm chữ gì?",
             cohort="K50",
@@ -707,6 +712,112 @@ class StructuredLookupTest(unittest.TestCase):
         resolved = resolution.result["resolved_result"]
         self.assertEqual(resolved["input_value"], 7.9)
         self.assertEqual(resolved["result"][0]["row"]["letter_grade"], "B+")
+
+    def test_reference_table_keeps_full_rows_without_untrusted_fact_lock(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        registry_table = {
+            "table_id": "K50_grade_scale_general",
+            "table_name": "Bảng quy đổi thang điểm 10 sang điểm chữ",
+            "table_type": "scoring",
+            "table_subtype": "grade_scale",
+            "data_category": "regulation_table",
+            "cohort": "K50",
+            "rows": [
+                {"Thang điểm 10": "7,8 - 8,4", "Thang điểm chữ": "B+"},
+                {"Thang điểm 10": "7,0 - 7,7", "Thang điểm chữ": "B"},
+            ],
+            "source_parent_id": "K50_Dieu10",
+        }
+        scoring_table = {
+            "table_id": "K50_grade_10_to_letter",
+            "lookup_group": "grade_10_to_letter",
+            "cohort": "K50",
+            "rows": [
+                {"score_10_range": "7.8-8.4", "letter_grade": "B+"},
+                {"score_10_range": "7.0-7.7", "letter_grade": "B"},
+            ],
+        }
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "scoring",
+                "intent": "direct_value",
+                "slots": {
+                    "operation": "grade_10_to_letter",
+                    "score_or_grade": "8,5",
+                },
+                "slot_spans": {"score_or_grade": "7,9"},
+            },
+            query="Điểm 7,9 quy đổi thành điểm chữ gì?",
+            cohort="K50",
+            scoring_tables=[scoring_table],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=[],
+            structured_tables_registry=[registry_table],
+            program_directory=[],
+            probe_other_domains=False,
+        )
+
+        self.assertIsNotNone(resolution)
+        self.assertEqual(len(resolution.result["display_rows"]), 2)
+        self.assertNotIn("resolved_result", resolution.result)
+
+    def test_reference_table_rejects_unvalidated_cross_cohort_fallback(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        table = {
+            "table_id": "K50_grade_scale_general",
+            "table_name": "Bảng quy đổi thang điểm 10 sang điểm chữ",
+            "table_type": "scoring",
+            "table_subtype": "grade_scale",
+            "data_category": "regulation_table",
+            "cohort": "K50",
+            "source_cohort": "K50",
+            "applicable_cohorts": ["K50", "K51"],
+            "rows": [{"Thang điểm 10": "7,8 - 8,4", "Thang điểm chữ": "B+"}],
+            "source_parent_id": "K50_Dieu10",
+        }
+        kwargs = {
+            "scoring_tables": [],
+            "formula_rules": [],
+            "office_directory": [],
+            "student_service_directory": [],
+            "student_faculty_profiles": [],
+            "foreign_language_tables": [],
+            "structured_tables_registry": [table],
+            "program_directory": [],
+            "probe_other_domains": False,
+        }
+        decision = {
+            "lookup_type": "scoring",
+            "intent": "list_items",
+            "slots": {},
+            "slot_spans": {},
+        }
+
+        cross_cohort = resolve_structured_decision(
+            decision,
+            query="Cho xem bảng điểm chữ của K51",
+            cohort="K51",
+            **kwargs,
+        )
+        exact_cohort = resolve_structured_decision(
+            decision,
+            query="Cho xem bảng điểm chữ của K50",
+            cohort="K50",
+            **kwargs,
+        )
+
+        self.assertIsNone(cross_cohort)
+        self.assertIsNotNone(exact_cohort)
+        self.assertEqual(len(exact_cohort.result["display_rows"]), 1)
 
     def test_reference_fact_lock_is_optional_and_cross_domain(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
@@ -731,6 +842,10 @@ class StructuredLookupTest(unittest.TestCase):
                     "certificate_or_language": "IELTS",
                     "score_or_level": "5.5",
                 },
+                "slot_spans": {
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": "5.5",
+                },
             },
             query="IELTS 5.5 tương đương bậc mấy?",
             cohort="K51",
@@ -749,8 +864,12 @@ class StructuredLookupTest(unittest.TestCase):
                 "lookup_type": "study_duration",
                 "intent": "direct_value",
                 "slots": {
-                    "training_mode": "chính quy",
-                    "program_type": "Đào tạo đại học cấp bằng thứ nhất",
+                    "training_mode": "chinh_quy",
+                    "program_type": "first_degree",
+                },
+                "slot_spans": {
+                    "training_mode": "Chính quy",
+                    "program_type": "cấp bằng thứ nhất",
                 },
             },
             query="Chính quy cấp bằng thứ nhất K51 học tối đa bao lâu?",

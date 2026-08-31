@@ -40,9 +40,17 @@ tools:
       training_mode:
         type: string
         enum: [chinh_quy, vua_lam_vua_hoc]
+        span_aliases:
+          chinh_quy: [chính quy]
+          vua_lam_vua_hoc: [vừa làm vừa học, VLVH]
       program_type:
         type: string
         canonical_values: [first_degree, college_bridge, secondary_bridge, second_degree]
+        span_aliases:
+          first_degree: [cấp bằng thứ nhất, bằng thứ nhất, cử nhân, first degree]
+          college_bridge: [liên thông từ cao đẳng, cao đẳng, college bridge]
+          secondary_bridge: [liên thông từ trung cấp, trung cấp, secondary bridge]
+          second_degree: [bằng đại học thứ hai, văn bằng hai, second degree]
     strategy: study_duration_lookup
     response_intent: study_duration_lookup_query
     target_chunk_types: [structured_lookup]

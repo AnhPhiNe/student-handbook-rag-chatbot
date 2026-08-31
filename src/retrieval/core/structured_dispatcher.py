@@ -4,7 +4,11 @@ from dataclasses import dataclass
 import re
 from typing import Any
 
-from src.common.cohort import is_cohort_applicable, normalize_cohort
+from src.common.cohort import (
+    is_cohort_applicable,
+    is_validated_source_applicable,
+    normalize_cohort,
+)
 
 from .formula_lookup import formula_lookup
 from .foreign_language_lookup import foreign_language_lookup
@@ -13,7 +17,7 @@ from .program_lookup import program_lookup
 from .scholarship_lookup import scholarship_classification_lookup
 from .study_duration_lookup import study_duration_lookup
 from .structured_lookup import structured_lookup_from_slots
-from .structured_routing import load_lookup_registry
+from .structured_routing import load_lookup_registry, validate_fact_lock_inputs
 
 
 _REFERENCE_TABLE_TYPES: dict[str, set[str]] = {
@@ -324,7 +328,7 @@ def _reference_table_lookup(
         for table in registry
         if table.get("data_category") == "regulation_table"
         and str(table.get("table_type") or "") in table_types
-        and is_cohort_applicable(table, effective_cohort)
+        and is_validated_source_applicable(table, effective_cohort)
         and isinstance(table.get("rows"), list)
         and bool(table.get("rows"))
     ]
@@ -513,8 +517,13 @@ def _resolve_single_lookup(
         )
         # Keep the complete reference table for UI rendering, but expose a
         # deterministic fact lock when an existing domain resolver identifies
-        # exactly one row. Ambiguous/list lookups deliberately stay unlocked.
-        if result is not None and not result.get("needs_clarification"):
+        # exactly one row. Ungrounded, invalid, or non-unique lookups stay unlocked.
+        fact_lock_errors = validate_fact_lock_inputs(decision, query=query)
+        if (
+            result is not None
+            and not result.get("needs_clarification")
+            and not fact_lock_errors
+        ):
             resolved_result = _unique_reference_resolution(
                 lookup_type,
                 query=query,

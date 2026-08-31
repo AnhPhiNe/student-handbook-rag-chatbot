@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 import src.retrieval.core.ai_router as ai_router_module
 from src.retrieval.core.ai_router import (
     AIRouter,
@@ -213,6 +215,99 @@ def test_router_treats_upstream_disconnect_as_transient() -> None:
     error = RuntimeError("Server disconnected without sending a response.")
 
     assert AIRouter._classify_error(error) == "transient_error"
+
+
+def _mock_plan_response(monkeypatch, tasks: list) -> None:
+    payload = {
+        "schema_version": "v1",
+        "context_mode": "standalone",
+        "out_of_domain": False,
+        "tasks": tasks,
+    }
+
+    class _FakeGroq:
+        def __init__(self, **_kwargs) -> None:
+            self.chat = SimpleNamespace(
+                completions=SimpleNamespace(
+                    create=lambda **kwargs: SimpleNamespace(
+                        choices=[SimpleNamespace(message=SimpleNamespace(
+                            content=json.dumps(payload, ensure_ascii=False),
+                        ))],
+                        usage=None,
+                    ),
+                ),
+            )
+
+    monkeypatch.setattr(ai_router_module, "Groq", _FakeGroq)
+
+
+def _valid_plan_task() -> dict:
+    return {
+        "question": "IELTS 6.0 tương đương bậc mấy?",
+        "mode": "structured",
+        "lookup_type": "foreign_language",
+        "intent": "direct_value",
+        "slots": {"certificate_or_language": "IELTS", "score_or_level": "6.0"},
+        "slot_spans": {"certificate_or_language": "IELTS", "score_or_level": "6.0"},
+        "cohorts": ["K51"],
+    }
+
+
+@pytest.mark.parametrize(
+    ("raw_mode", "lookup_type", "expected_mode", "error_marker"),
+    [
+        ("structured", "nonexistent_tool", "clarify", "unknown_lookup_type"),
+        ("rag", "foreign_language", "rag", "rag_must_not_select_lookup"),
+        ("invalid-mode", None, "rag", "invalid_mode"),
+    ],
+)
+def test_planner_preserves_siblings_after_safe_task_repair(
+    monkeypatch, tmp_path, raw_mode, lookup_type, expected_mode, error_marker,
+) -> None:
+    _mock_plan_response(monkeypatch, [
+        _valid_plan_task(),
+        {
+            "question": "Quy định học vụ thế nào?",
+            "mode": raw_mode,
+            "lookup_type": lookup_type,
+            "intent": "open_question",
+            "cohorts": ["K51"],
+        },
+    ])
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+    plan = router.plan(
+        "IELTS 6.0 tương đương bậc mấy và quy định học vụ thế nào?", cohort="K51",
+    )
+
+    assert [task["mode"] for task in plan["tasks"]] == ["structured", expected_mode]
+    assert plan["tasks"][0]["slots"]["score_or_level"] == "6.0"
+    assert plan["tasks"][1]["lookup_type"] is None
+    assert not plan.get("planner_fallback")
+    assert any(error_marker in error for error in plan["planner_validation_errors"])
+
+
+def test_planner_does_not_execute_partial_plan_after_unreadable_task(monkeypatch, tmp_path) -> None:
+    _mock_plan_response(monkeypatch, [_valid_plan_task(), "not a task object"])
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+    plan = router.plan("IELTS 6.0 tương đương bậc mấy và quy định học vụ thế nào?", cohort="K51")
+
+    assert plan["planner_fallback"] == "legacy_rag"
+    assert [task["mode"] for task in plan["tasks"]] == ["rag"]
+    assert any("invalid_object" in error for error in plan["planner_validation_errors"])
+
+
+def test_planner_still_blocks_unrepaired_structured_contract_errors(monkeypatch, tmp_path) -> None:
+    task = {**_valid_plan_task(), "validation_errors": ["missing_slot_span:score_or_level"]}
+    _mock_plan_response(monkeypatch, [task])
+    monkeypatch.setattr(
+        ai_router_module, "normalize_query_plan",
+        lambda *args, **kwargs: ({"tasks": [task]}, ["t1:missing_slot_span:score_or_level"]),
+    )
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+    plan = router.plan("IELTS 6.0 tương đương bậc mấy?", cohort="K51")
+
+    assert plan["planner_fallback"] == "legacy_rag"
+    assert [task["mode"] for task in plan["tasks"]] == ["rag"]
 
 
 def test_router_treats_provider_json_validation_failure_as_transient() -> None:

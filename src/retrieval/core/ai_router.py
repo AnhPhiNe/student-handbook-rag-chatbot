@@ -763,16 +763,12 @@ class AIRouter:
                     grounding_context=grounding_context,
                     registry=self.registry,
                 )
+                # Task-local errors remain diagnostic after normalization has
+                # converted that task to safe RAG/clarification. Do not discard
+                # its valid siblings. An unreadable task was dropped, however,
+                # so that partial plan must still fall back as a whole.
                 fatal_validation = any(
-                    any(
-                        marker in error
-                        for marker in (
-                            "invalid_object",
-                            "invalid_mode",
-                            "rag_must_not_select_lookup",
-                            "unknown_lookup_type",
-                        )
-                    )
+                    error.rsplit(":", 1)[-1] == "invalid_object"
                     for error in validation_errors
                 ) or any(
                     task.get("mode") == "structured" and task.get("validation_errors")

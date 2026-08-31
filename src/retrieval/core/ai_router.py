@@ -38,7 +38,7 @@ from .query_plan import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.8-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v37-task-scope"
+ROUTER_PROMPT_VERSION = "structured-regulation-v38-directory-task-contract"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -98,10 +98,9 @@ không trả lời.
 1. NGỮ CẢNH
 - standalone không dùng history. follow_up chỉ ghép dữ liệu có thật từ history;
   phải ghi standalone_query tự đủ nghĩa và referenced_turns là chỉ số [n] đã dùng.
-- context_mode=ambiguous chỉ khi toàn QUERY mơ hồ hoặc QUERY có hơn 3 yêu cầu
-  độc lập. Nếu chỉ một yêu cầu mơ hồ, tạo clarify cho riêng task đó.
-- Với QUERY có nhiều yêu cầu, vẫn tạo task cho mọi yêu cầu rõ nghĩa; không dùng
-  một clarify task để bắt người dùng chọn giữa các yêu cầu, trừ trường hợp hơn 3.
+- context_mode=ambiguous chỉ khi toàn QUERY mơ hồ hoặc có hơn 3 yêu cầu độc lập.
+  Với 1–3 yêu cầu, giữ đủ answer target; chỉ yêu cầu mơ hồ mới clarify cho
+  riêng task đó. Đúng 3 yêu cầu thì không hỏi người dùng chọn tối đa 3.
 - normalized_query chỉ sửa dấu, chính tả nhẹ hoặc viết tắt phổ biến; không đổi
   entity, cohort, số liệu, phủ định, chủ đề hoặc ý định.
 
@@ -140,6 +139,9 @@ không trả lời.
 - Phân biệt giá trị trong bảng với chính sách sử dụng giá trị đó: bảng tham
   chiếu không tự xác lập mức nào là bắt buộc, ai phải áp dụng hoặc điều kiện nào
   cần đạt. Các kết luận chính sách này dùng RAG, trừ khi TOOLS.use nói rõ có chứa.
+- Đơn vị nêu đích danh + yêu cầu email/điện thoại/website/địa chỉ/văn phòng
+  → directory office/faculty; không clarify/OOD chỉ vì tên thiếu tiền tố Phòng/Khoa.
+- student_service chỉ dùng khi QUERY mô tả việc cần hỗ trợ và hỏi đơn vị phụ trách.
 - Yêu cầu về cách tính hoặc quan hệ toán học giữa các thành phần dùng formula
   nếu TOOLS có công thức tương ứng, kể cả khi QUERY không viết từ "công thức".
 - So sánh là yêu cầu trình bày, không phải intent. Không dùng intent=compare;

@@ -99,11 +99,21 @@ def _infer_explicit_structured_slots(
                 slots["scope"] = "school"
 
     if lookup_type == "student_service":
-        # The directory ranks free-text service descriptions. Keep the user's
-        # complete wording instead of accepting an ungrounded paraphrase from
-        # the planner as the retrieval identity.
-        slots["service"] = raw_query
-        spans["service"] = raw_query
+        # Preserve a compact service phrase only when the planner copied it
+        # faithfully from the query. Otherwise use the complete query instead
+        # of accepting an invented paraphrase as the retrieval identity.
+        service = slots.get("service")
+        service_span = spans.get("service")
+        grounded_service = (
+            isinstance(service, str)
+            and isinstance(service_span, str)
+            and bool(_normalize_text(service))
+            and _normalize_text(service) == _normalize_text(service_span)
+            and _normalize_text(service_span) in _normalize_text(raw_query)
+        )
+        if not grounded_service:
+            slots["service"] = raw_query
+            spans["service"] = raw_query
         if not _is_present(slots.get("requested_field")) and "don vi" in normalized:
             slots["requested_field"] = "unit"
 

@@ -20,7 +20,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v15-cohort-year-conflict"
+QUERY_PLAN_NORMALIZER_VERSION = "v16-grounded-service-span"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}

@@ -65,7 +65,7 @@ def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     )
 
     assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 7400
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v37-task-scope"
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v38-directory-task-contract"
 
 
 def test_plan_cache_key_includes_normalizer_version(monkeypatch, tmp_path: Path) -> None:
@@ -116,6 +116,17 @@ def test_planner_prompt_defines_cohort_independent_task_identity() -> None:
     assert "COHORT từ UI chỉ điền cho task vẫn chưa có cohort" in PLANNER_PROMPT_TEXT
     assert "không ghi đè" in PLANNER_PROMPT_TEXT
     assert "So sánh K50 và K51 về thời gian học tối đa" not in PLANNER_PROMPT_TEXT
+
+
+def test_planner_prompt_keeps_exactly_three_answer_targets() -> None:
+    assert "Với 1–3 yêu cầu" in PLANNER_PROMPT_TEXT
+    assert "Đúng 3 yêu cầu" in PLANNER_PROMPT_TEXT
+
+
+def test_planner_prompt_routes_named_unit_contacts_to_directory() -> None:
+    assert "Đơn vị nêu đích danh" in PLANNER_PROMPT_TEXT
+    assert "directory office/faculty" in PLANNER_PROMPT_TEXT
+    assert "student_service chỉ dùng" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_treats_compare_as_presentation_and_slots_as_grounded() -> None:
@@ -176,7 +187,7 @@ def test_planner_prompt_defines_context_and_hint_precedence_once() -> None:
 
 
 def test_planner_prompt_matches_global_context_and_rag_contract() -> None:
-    assert "context_mode=ambiguous chỉ khi toàn QUERY mơ hồ hoặc QUERY có hơn 3" in PLANNER_PROMPT_TEXT
+    assert "context_mode=ambiguous chỉ khi toàn QUERY mơ hồ hoặc có hơn 3" in PLANNER_PROMPT_TEXT
     assert "clarify cho riêng task đó" in PLANNER_PROMPT_TEXT
     assert "Mọi RAG task dùng intent=open_question" in PLANNER_PROMPT_TEXT
     assert "Chỉ đặt out_of_domain=true khi toàn bộ QUERY" in PLANNER_PROMPT_TEXT
@@ -508,6 +519,34 @@ def test_router_normalization_grounds_student_service_in_full_query() -> None:
     assert decision["slots"]["service"] == query
     assert decision["slot_spans"]["service"] == query
     assert decision["slots"]["requested_field"] == "unit"
+    assert validate_router_decision(
+        decision,
+        query=query,
+        selected_cohort="K51",
+    ) == []
+
+
+def test_router_normalization_preserves_grounded_student_service_span() -> None:
+    query = "Muốn mượn phòng học thì hỏi đơn vị nào; cho tôi website Khoa Hóa học."
+    decision = normalize_router_decision(
+        {
+            "route": "structured",
+            "execution_mode": "structured",
+            "intent": "contact",
+            "lookup_type": "student_service",
+            "cohort": "K51",
+            "slots": {
+                "service": "mượn phòng học",
+                "requested_field": "unit",
+            },
+            "slot_spans": {"service": "mượn phòng học"},
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert decision["slots"]["service"] == "mượn phòng học"
+    assert decision["slot_spans"]["service"] == "mượn phòng học"
     assert validate_router_decision(
         decision,
         query=query,

@@ -1,0 +1,173 @@
+{
+  "bundle": "architecture_v6_holdout",
+  "schema_version": "architecture-evaluation-v6",
+  "frozen": true,
+  "review_state": "approved_frozen_not_system_executed",
+  "evaluated_system_commit": "b0560d1b06355737dd576ff8f01c4102c6fe7a8a",
+  "evaluation_harness_commit": "3ba07cb3",
+  "hf_runtime_package_commit": "4d82df6ae85bac9e94f4984b4232e614900f418c",
+  "planner_model": "qwen/qwen3.8-27b",
+  "planner_reasoning_effort": "low",
+  "planner_response_format": "json_schema",
+  "planner_strict": false,
+  "router_prompt_version": "structured-regulation-v36-qwen38-schema",
+  "query_plan_normalizer_version": "v13-task-local-fallback",
+  "pipeline_version": "v52-runtime-clarification",
+  "answer_prompt_version": "student-handbook-answer-v3.21-runtime-clarification",
+  "generation_model": "gemini-3.1-flash-lite",
+  "judge_model": "openai/gpt-oss-120b",
+  "retrieval_mode": "vector_primary_graph_supplement",
+  "reranker_enabled": false,
+  "hybrid_collection": "student_handbook_semantic_v32",
+  "counts": {
+    "deterministic": 140,
+    "retrieval": 160,
+    "answers": 150,
+    "production": 60
+  },
+  "strict_structured_sources": true,
+  "strict_cohort_conflicts": true,
+  "strict_query_duplicates": true,
+  "max_parent_query_usage": 5,
+  "deterministic_case_type_counts": {
+    "single_structured": 60,
+    "compound": 28,
+    "capability_boundary": 24,
+    "missing_or_ambiguous": 12,
+    "unsupported_in_domain": 8,
+    "out_of_domain": 8
+  },
+  "deterministic_lookup_case_types": [
+    "single_structured"
+  ],
+  "deterministic_lookup_group_counts": {
+    "foreign_language": 6,
+    "study_duration": 6,
+    "scholarship_classification": 6,
+    "scoring": 6,
+    "conduct": 6,
+    "student_service": 6,
+    "office": 6,
+    "faculty": 6,
+    "program": 12
+  },
+  "retrieval_contract": "regulation-rag-question-scenario-holdout-v6",
+  "retrieval_cohort_counts": {
+    "general": 8,
+    "K51": 46,
+    "K50": 53,
+    "K48-K49": 53
+  },
+  "retrieval_eval_split_counts": {
+    "realistic": 120,
+    "stress": 40
+  },
+  "retrieval_forbidden_query_fragments": [],
+  "evaluation_contract": "comprehensive-question-scenario-holdout-v6",
+  "answer_case_type_counts": {
+    "regulation_true_rag": 72,
+    "structured_answer": 30,
+    "mixed_answer": 18,
+    "clarification": 10,
+    "unanswerable": 10,
+    "out_of_domain": 10
+  },
+  "answer_eval_split_counts": {
+    "realistic": 117,
+    "stress": 33
+  },
+  "answer_path_counts": {
+    "regulation_rag": 82,
+    "structured": 30,
+    "mixed": 18,
+    "clarify": 10,
+    "out_of_domain": 10
+  },
+  "answer_rag_cohort_counts": {
+    "general": 8,
+    "K51": 34,
+    "K50": 20,
+    "K48-K49": 10
+  },
+  "answer_structured_lookup_counts": {
+    "foreign_language": 3,
+    "study_duration": 3,
+    "scholarship_classification": 3,
+    "scoring": 3,
+    "conduct": 3,
+    "student_service": 3,
+    "office": 3,
+    "faculty": 3,
+    "program": 6
+  },
+  "production_scenario_counts": {
+    "cold_rag": 20,
+    "structured": 10,
+    "warm_cache": 10,
+    "streaming": 10,
+    "burst": 10
+  },
+  "production_request_count": 60,
+  "production_unique_query_count": 50,
+  "human_audit_required_n": 40,
+  "human_audit_repeat_n": 0,
+  "human_audit_selection_policy": "pre-output stratified selection by case type, cohort and capability; stable SHA256 order within strata",
+  "human_audit_case_type_counts": {
+    "regulation_true_rag": 16,
+    "structured_answer": 8,
+    "mixed_answer": 6,
+    "clarification": 4,
+    "unanswerable": 3,
+    "out_of_domain": 3
+  },
+  "production_metric_scope": "availability, payload/stream contract, latency and cache scenarios; not semantic correctness",
+  "automatic_failures_audit_policy": "append_all_outside_preselected_40",
+  "dataset_hashes": {
+    "deterministic": "2aafbd7110ef09ba49534eb52f03ba289e7c9cf8977cf7e2c793745c96f70ff1",
+    "retrieval": "6148b648a66b854cb7d6882ad636448b87d03945ef821eb81e65a97376e74f27",
+    "answers": "6280ad14258e875d66a1f819b8b9877e8f237114af96e5cd54011667e66ba56c",
+    "production": "46ae37fa2e7d08a6d178ba85b4ecbebbe906f466998a2381205c64bc5fc69222"
+  },
+  "auxiliary_hashes": {
+    "human_audit_template": "0f60a5e50959215a46b3ef5193fa234e073868bf8522d653ba1ac601798bed75"
+  },
+  "docstore_path": "data/processed/chunks/all_docstore_items.json",
+  "docstore_hash": "4d410553cfaddeaef51fc096ffd0025d52e585b4c5dfe7ee0807e73570648143",
+  "artifact_hashes": {
+    "data/processed/graphs/document_edges.json": "ed42590ba9b2b0c749d531b095166460694bf1b81cbfb7bac6e4e3bc014fc77f",
+    "data/processed/tables/structured_tables_registry.json": "865fe92aca6283147713f02b400734dac44dfc9a0f4d959095ce30978d8fb0fd",
+    "data/processed/tables/foreign_language_equivalency_table.json": "486a1749c7a5fc794c733bf494f103ff407716dc30fc04f8517c3b51b3486947",
+    "configs/ai_router.yaml": "42e1a4ae0d49e03738c8d42a84a38e1a5d3aaa2fb5c906eef4210e14ed0efc66",
+    "configs/answer_generation.yaml": "6ef914cd5a5714f05966bd9e9e478095eb2042adc55c3814d45dc4b8542188dc",
+    "configs/retrieval.yaml": "c4069c06c8f2bb99f8097ab737db4293ad1b98fe4b5e5d88fc30c0023cc650e5"
+  },
+  "overlap_policy": {
+    "historical_exact_query_matches_required": 0,
+    "same_source_new_target_allowed": true,
+    "previously_exposed_facts_allowed_in_new_scenarios": true,
+    "direct_paraphrase_of_old_question_disallowed": true,
+    "old_full_answer_subset_disallowed": false,
+    "cross_suite_reuse_requires_linked_ids_and_duplicate_group": true,
+    "semantic_similarity_is_review_signal_not_filter": true,
+    "scope": "Readable local historical datasets, development artifacts and literal script/test queries; cannot certify absence from deleted/chat-only history."
+  },
+  "limitations": [
+    "This is a new-question/scenario holdout on the same fixed three-handbook corpus, not an unseen-document or entirely unseen-fact benchmark.",
+    "Previously exposed policy facts and finite table values may recur in new focused scenarios, boundaries or compositions; zero exact query overlap does not prove zero semantic or fact overlap.",
+    "Formula routing is covered through new compound compositions, not a standalone formula stratum; no per-formula headline accuracy can be inferred.",
+    "Production has 60 requests but 50 unique questions because 10 warm-cache requests are deliberate repeats.",
+    "Production is a small bounded load/stream/cache check, not a capacity, security or long-duration reliability benchmark.",
+    "AI source audit is preparation assistance, not completed independent human review; all user review and execution approvals are pending."
+  ],
+  "user_review_approved": true,
+  "execution_approved": true,
+  "system_executed_on_dataset": false,
+  "review_method": "ai_assisted_source_audit_delegated_by_project_owner",
+  "independent_human_review_completed": false,
+  "frozen_file_hashes": {
+    "deterministic_tool_cases.json": "182256dc0469c6170bd60f41f1ecd092439512748afcf9f923071981cb72b8a0",
+    "retrieval_cases.json": "de5c04f8f7c96cbdd484329c93c4254e21c1aa80ca55940f1eee0007765fb7f3",
+    "generated_answer_cases.json": "9f7823a986c9612ea0a7a9d22288fd45710f42670234e429b39942392dd78b8d",
+    "production_cases.json": "fbac7bfb28e730f0c8d7d281c74c94e1a1672a2d87a7443862a849a6c9e9f005"
+  }
+}

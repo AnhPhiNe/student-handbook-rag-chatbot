@@ -767,8 +767,17 @@ def extract_internal_numbers(raw_text: str) -> list[str]:
 
 
 def extract_websites(raw_text: str) -> list[str]:
-    matches = re.findall(r"(?:https?://)?[A-Za-z0-9.-]+\.hcmue\.edu\.vn", raw_text)
-    return sorted(set(match.rstrip(".,;") for match in matches))
+    pattern = re.compile(
+        r"(?<![.@A-Za-z0-9])(?:https?://)?(?:www\.)?"
+        r"[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?\.[A-Za-z]{2,}"
+        r"(?:/[^\s,;]*)?"
+    )
+    matches = {
+        match.group(0).rstrip(".,;")
+        for match in pattern.finditer(raw_text)
+        if raw_text[match.end() : match.end() + 1] != "@"
+    }
+    return sorted(matches)
 
 
 def extract_office(raw_text: str) -> str:

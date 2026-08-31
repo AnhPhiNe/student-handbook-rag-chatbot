@@ -2,7 +2,10 @@ import json
 
 from scripts.build_structured_table_layer import (
     attach_scholarship_tables,
+    build_student_office_profiles,
+    build_student_service_directory,
     build_registry,
+    extract_websites,
 )
 from src.extraction.scoring_tables import build_scoring_tables
 
@@ -106,3 +109,30 @@ def test_scholarship_policy_tables_coexist_on_same_parent(tmp_path) -> None:
     records = build_registry([parent], scoring_path)
     assert len(records) == 4
     assert {record["source_parent_id"] for record in records} == {parent_id}
+
+
+def test_directory_build_preserves_official_website_outside_hcmue_domain() -> None:
+    raw_text = (
+        "Viện Nghiên cứu Giáo dục\n"
+        "Email: vienncgd@hcmue.edu.vn\n"
+        "Website: www.ier.edu.vn\n"
+        "Những công việc của đơn vị liên quan đến sinh viên:\n"
+        "- Hỗ trợ nghiên cứu khoa học."
+    )
+    records = [
+        {
+            "record_id": "office_1",
+            "cohort": "K50",
+            "unit_name": "Viện Nghiên cứu Giáo dục",
+            "raw_text": raw_text,
+            "source_pages": [1],
+            "document_id": "handbook_k50",
+        }
+    ]
+
+    assert extract_websites(raw_text) == ["www.ier.edu.vn"]
+    services = build_student_service_directory(source_records=records)
+    profiles = build_student_office_profiles(services)
+
+    assert profiles[0]["websites"] == ["www.ier.edu.vn"]
+    assert profiles[0]["website"] == "www.ier.edu.vn"

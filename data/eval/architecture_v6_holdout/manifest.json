@@ -4,7 +4,7 @@
   "frozen": true,
   "review_state": "approved_frozen_not_system_executed",
   "evaluated_system_commit": "b0560d1b06355737dd576ff8f01c4102c6fe7a8a",
-  "evaluation_harness_commit": "0499d63d",
+  "evaluation_harness_commit": "a013cdc8",
   "hf_runtime_package_commit": "4d82df6ae85bac9e94f4984b4232e614900f418c",
   "planner_model": "qwen/qwen3.8-27b",
   "planner_reasoning_effort": "low",

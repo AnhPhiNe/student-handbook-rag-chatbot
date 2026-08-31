@@ -272,6 +272,8 @@ Không nên làm: keyword `micro → phòng X`, `Điều 8 → luôn thêm ngu�
 
 Sửa một bug thật rồi kiểm tra bằng v6-regression là hợp lý; không được gọi điểm sau sửa trên cùng các câu đã phân tích là clean holdout accuracy. Một lượt trước sai harness được phép có bản sửa công khai, nhưng không xóa lịch sử hoặc trộn các lượt thành one-shot đẹp hơn.
 
+Chẩn đoán hậu V6 cho nhóm directory: lookup Thư viện hoạt động đúng ở cả helper và pipeline compound. Case mượn micro có record K51 đúng nhưng Planner từng gán toàn bộ câu hỏi vào `service/slot_span`; matcher vì thế trả `uncovered`, trong khi span ngắn đúng contract tìm được Phòng Quản trị – Thiết bị. Prompt đã yêu cầu entity/service span là cụm nguyên văn ngắn nhất. Chưa có bằng chứng về lỗi helper độc lập đủ an toàn để đổi threshold hoặc thêm mapping, nên phần tuân thủ span này được giữ ở backlog thay vì vá `micro → đơn vị`.
+
 ## 10. Có thể chốt gì ngay?
 
 | Mục tiêu | Kết luận |

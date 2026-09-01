@@ -39,30 +39,6 @@ def join_non_empty(parts: list[str], sep: str = "\n") -> str:
     return sep.join([part.strip() for part in parts if part and part.strip()])
 
 
-def format_source_pages(pages: list[int]) -> str:
-    """Định dạng một danh sách các số trang thành một chuỗi dễ đọc.
-
-    Hàm này sẽ chuyển đổi một danh sách các số trang thành một định dạng chuỗi thân thiện với người dùng.
-    Ví dụ:
-    - Nếu danh sách rỗng, trả về "Không rõ trang".
-    - Nếu có một trang, trả về "Trang X".
-    - Nếu có nhiều trang, trả về "Trang X-Y" (với X là trang nhỏ nhất và Y là trang lớn nhất).
-
-    Args:
-        pages: Một danh sách các số nguyên đại diện cho các số trang (ví dụ: [1, 5, 3]).
-
-    Returns:
-        Một chuỗi mô tả các trang đã được định dạng (ví dụ: "Trang 1", "Trang 1-5", "Không rõ trang").
-    """
-    if not pages:
-        return "Không rõ trang"
-
-    if len(pages) == 1:
-        return f"Trang {pages[0]}"
-
-    return f"Trang {min(pages)}-{max(pages)}"
-
-
 def source_page_range(start: int, end: int) -> list[int]:
     """Tạo một danh sách các số nguyên đại diện cho một phạm vi trang.
 

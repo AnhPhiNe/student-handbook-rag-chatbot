@@ -174,12 +174,12 @@ Debug fields such as QueryPlan, task results, and evidence telemetry only appear
 
 ## Observability with LangSmith
 
-LangSmith tracing follows the current QueryPlan architecture instead of the legacy single-router decision. Both `/chat` and `/chat/stream` create the same compact trace contract (`hcmue-query-plan-v2`). Public SSE responses still hide debug fields unless `include_debug=true`; the server retains an internal copy for observability before applying that redaction.
+LangSmith tracing follows the current QueryPlan architecture. Both `/chat` and `/chat/stream` create the same compact trace contract (`hcmue-query-plan-v2`). Public SSE responses still hide debug fields unless `include_debug=true`; the server retains an internal copy for observability before applying that redaction.
 
 ```mermaid
 flowchart LR
     Request["Request"] --> Root["Root chain run<br/>sync or stream"]
-    Root --> Router["AI Router child run<br/>Qwen planner usage"]
+    Root --> Planner["Query Planner child run<br/>Qwen usage"]
     Root --> Composer["LLM Generation child run<br/>Gemini usage"]
 
     Root --> PlanMeta["QueryPlan summary<br/>task count · modes · cohorts"]
@@ -192,9 +192,9 @@ Each root trace records:
 
 - interface (`sync` or `stream`), status, total latency, streaming TTFT, cache hit, and whether the answer LLM was called;
 - QueryPlan context mode, task count, task mode, lookup type, cohorts, per-task coverage, evidence count, citation count, and planner fallback;
-- pipeline, router-prompt, answer-prompt, QueryPlan schema/normalizer, Qdrant collection, and MongoDB parent-collection identity;
+- pipeline, planner-prompt, answer-prompt, QueryPlan schema/normalizer, Qdrant collection, and MongoDB parent-collection identity;
 - compact citation and structured-result summaries, including task/cohort binding and source pages;
-- token usage and timed Router/Composer child runs when usage telemetry is available.
+- token usage and timed Planner/Composer child runs when usage telemetry is available.
 
 The trace deliberately excludes raw chat history, full source text, parent article bodies, retrieval scores, API keys, and database URLs. The student query and final answer remain the LangSmith root input/output because they are required for debugging product behavior.
 
@@ -230,7 +230,7 @@ Detailed release report: [`docs/V7_RELEASE_EVALUATION_VI.md`](./docs/V7_RELEASE_
 | Retrieval mode | `vector_primary_graph_supplement`; PhoRanker disabled |
 | Storage | Qdrant `student_handbook_semantic_v32`; MongoDB `parent_docs_v32` |
 | Runtime contract | pipeline `v58-registry-grounded-routing`; QueryPlan schema `v1`; normalizer `v17-registry-literal-grounding` |
-| Prompt contracts | Router `structured-regulation-v38-directory-task-contract`; Composer `student-handbook-answer-v3.22-answer-scope` |
+| Prompt contracts | Planner `structured-regulation-v38-directory-task-contract`; Composer `student-handbook-answer-v3.22-answer-scope` |
 | Evaluation volume | 140 deterministic + 160 retrieval + 150 generated/judged + 60 production requests |
 
 ### 1. Deterministic Architecture — 140 Cases
@@ -520,7 +520,7 @@ The Vite frontend uses `VITE_API_BASE_URL` to reach the Hugging Face Space. Prod
 
 ```text
 student_handbook_rag/
-├── configs/                    # Router, answer, retrieval, and structured contracts
+├── configs/                    # Planner, answer, retrieval, and structured contracts
 ├── data/
 │   ├── raw/                    # Three source handbooks
 │   ├── processed/              # Versioned tables, parents, chunks, graph, and manifest

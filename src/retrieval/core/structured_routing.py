@@ -9,7 +9,7 @@ from typing import Any
 
 import yaml
 
-from src.common.cohort import build_cohort_token_regex, normalize_cohort, valid_cohorts
+from src.common.cohort import build_cohort_token_regex, normalize_cohort
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -18,8 +18,6 @@ ALLOWED_ROUTES = {"structured", "rag", "clarify", "out_of_domain"}
 ALLOWED_EXECUTION_MODES = {"structured", "regulation", "mixed"}
 ALLOWED_CONTEXT_MODES = {"standalone", "follow_up", "ambiguous"}
 ALLOWED_CONFIDENCE_LEVELS = {"high", "medium", "low", "none"}
-LEGACY_STRUCTURED_ROUTES = {"deterministic"}
-LEGACY_STRUCTURED_MODES = {"direct_lookup", "structured_reasoning"}
 COHORT_SCOPED_LOOKUPS = {
     "foreign_language",
     "study_duration",
@@ -196,132 +194,6 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
     return "\n".join(lines)
 
 
-def router_json_schema() -> dict[str, Any]:
-    registry = load_lookup_registry()
-    tools = list(registry.get("tools", {}).keys())
-    cohorts = list(valid_cohorts())
-    lookup_type_enum = "|".join(tools) + "|null" if tools else "tool name or null"
-    
-    return {
-        "context_mode": "standalone|follow_up|ambiguous",
-        "context_confidence": "high|medium|low|none",
-        "normalized_query": "orthographic correction only or original query",
-        "normalization_confidence": "high|medium|low|none",
-        "corrections": [
-            {
-                "original_span": "exact span from QUERY",
-                "normalized_span": "corrected spelling",
-            }
-        ],
-        "standalone_query": "history-grounded query for follow_up or null",
-        "referenced_turns": [],
-        "route": "structured|rag|clarify|out_of_domain",
-        "execution_mode": "structured|regulation|mixed",
-        "intent": "intent name",
-        "lookup_type": lookup_type_enum,
-        "cohort": "|".join(cohorts) + "|null",
-        "cohorts": cohorts,
-        "is_multi_cohort": False,
-        "slots": {},
-        "slot_spans": {},
-        "clarification_question": None,
-    }
-
-
-def router_response_schema() -> dict[str, Any]:
-    """JSON Schema used by providers that support structured output."""
-
-    tools = list(load_lookup_registry().get("tools", {}).keys())
-    cohorts = list(valid_cohorts())
-    return {
-        "type": "object",
-        "additionalProperties": False,
-        "properties": {
-            "context_mode": {
-                "type": "string",
-                "enum": ["standalone", "follow_up", "ambiguous"],
-            },
-            "context_confidence": {
-                "type": "string",
-                "enum": ["high", "medium", "low", "none"],
-            },
-            "normalized_query": {"type": ["string", "null"]},
-            "normalization_confidence": {
-                "type": "string",
-                "enum": ["high", "medium", "low", "none"],
-            },
-            "corrections": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "additionalProperties": False,
-                    "properties": {
-                        "original_span": {"type": "string"},
-                        "normalized_span": {"type": "string"},
-                    },
-                    "required": ["original_span", "normalized_span"],
-                },
-            },
-            "standalone_query": {"type": ["string", "null"]},
-            "referenced_turns": {
-                "type": "array",
-                "items": {"type": "integer"},
-            },
-            "route": {
-                "type": "string",
-                "enum": ["structured", "rag", "clarify", "out_of_domain"],
-            },
-            "execution_mode": {
-                "type": "string",
-                "enum": ["structured", "regulation", "mixed"],
-            },
-            "intent": {"type": "string"},
-            "lookup_type": {
-                "anyOf": [
-                    {"type": "string", "enum": tools},
-                    {"type": "null"},
-                ]
-            },
-            "cohort": {
-                "anyOf": [
-                    {"type": "string", "enum": cohorts},
-                    {"type": "null"},
-                ]
-            },
-            "cohorts": {
-                "type": "array",
-                "items": {
-                    "type": "string",
-                    "enum": cohorts,
-                },
-            },
-            "is_multi_cohort": {"type": ["boolean", "null"]},
-            "slots": {"type": "object", "additionalProperties": True},
-            "slot_spans": {"type": "object", "additionalProperties": True},
-            "clarification_question": {"type": ["string", "null"]},
-        },
-        "required": [
-            "context_mode",
-            "context_confidence",
-            "normalized_query",
-            "normalization_confidence",
-            "corrections",
-            "standalone_query",
-            "referenced_turns",
-            "route",
-            "execution_mode",
-            "intent",
-            "lookup_type",
-            "cohort",
-            "cohorts",
-            "is_multi_cohort",
-            "slots",
-            "slot_spans",
-            "clarification_question",
-        ],
-    }
-
-
 def normalize_router_decision(
     payload: dict[str, Any],
     *,
@@ -330,13 +202,7 @@ def normalize_router_decision(
 ) -> dict[str, Any]:
     raw_route = str(payload.get("route") or "rag").strip().lower()
     raw_execution_mode = str(payload.get("execution_mode") or "").strip().lower()
-    if (
-        raw_route in LEGACY_STRUCTURED_ROUTES
-        or raw_execution_mode in LEGACY_STRUCTURED_MODES
-    ):
-        route = "structured"
-        execution_mode = "structured"
-    elif raw_route == "structured":
+    if raw_route == "structured":
         route = "structured"
         execution_mode = "structured"
     elif raw_route in ALLOWED_ROUTES:
@@ -785,49 +651,6 @@ def validate_router_decision(
     errors.extend(_validate_slot_contract(slots, spec))
 
     return errors
-
-
-def fallback_to_rag(
-    decision: dict[str, Any], errors: list[str], *, query: str
-) -> dict[str, Any]:
-    lookup_type = decision.get("lookup_type")
-    office_scope = lookup_type in {"office", "student_service"}
-    faculty_scope = lookup_type == "faculty"
-    rejected_decision = {
-        "route": decision.get("route"),
-        "execution_mode": decision.get("execution_mode"),
-        "intent": decision.get("intent"),
-        "lookup_type": decision.get("lookup_type"),
-        "slots": decision.get("slots") or {},
-        "slot_spans": decision.get("slot_spans") or {},
-    }
-    return {
-        **decision,
-        "route": "rag",
-        "execution_mode": "regulation",
-        "intent": "open_question",
-        "lookup_type": None,
-        "slots": {},
-        "slot_spans": {},
-        "retrieval_query": decision.get("retrieval_query") or query,
-        "target_chunk_types": (
-            ["office_directory"]
-            if office_scope
-            else ["faculty_program_directory"]
-            if faculty_scope
-            else ["regulation"]
-        ),
-        "content_types": (
-            ["student_service_directory", "student_office_profile"]
-            if office_scope
-            else ["student_faculty_profile", "faculty_program_directory"]
-            if faculty_scope
-            else []
-        ),
-        "router_validation_errors": list(errors),
-        "router_rejected_decision": rejected_decision,
-        "router_fallback": "invalid_structured_decision_to_rag",
-    }
 
 
 def registry_digest(registry: dict[str, Any] | None = None) -> str:

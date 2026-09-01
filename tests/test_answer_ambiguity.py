@@ -57,7 +57,6 @@ class AnswerAmbiguityTest(unittest.TestCase):
             "coverage_by_task": {"t1": "covered"},
             "citations": [{"source_parent_id": "policy_source"}],
             "retrieved_items": [],
-            "context_for_llm": "",
         }
 
         self.assertFalse(is_low_confidence(retrieval))

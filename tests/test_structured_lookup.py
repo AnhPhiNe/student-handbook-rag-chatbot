@@ -4,7 +4,6 @@ import json
 import unittest
 from pathlib import Path
 
-from src.generation.answer_guardrails import build_deterministic_answer
 from src.extraction.scoring_tables import build_scoring_tables
 from src.retrieval.core.office_lookup import office_lookup
 from src.retrieval.core.program_lookup import program_lookup
@@ -44,22 +43,6 @@ class StructuredLookupTest(unittest.TestCase):
 
         first = result["result"][0]
         self.assertEqual(first["row"]["letter_grade"], "A")
-
-    def test_numeric_grade_answer_mentions_letter_grade(self) -> None:
-        result = structured_lookup("Điểm 8.5 tương ứng điểm chữ nào?", self.tables)
-        self.assertIsNotNone(result)
-
-        answer = build_deterministic_answer(
-            "Điểm 8.5 tương ứng điểm chữ nào?",
-            {
-                "structured_result": result,
-                "retrieved_items": [],
-                "tool_result": None,
-                "formula_result": None,
-            },
-        )
-        self.assertIn("điểm chữ A", answer)
-
 
     def test_conduct_label_maps_back_to_score_range(self) -> None:
         tables = [
@@ -224,7 +207,6 @@ class StructuredLookupTest(unittest.TestCase):
             foreign_language_tables=[],
             structured_tables_registry=[table],
             program_directory=[],
-            probe_other_domains=False,
         )
 
         self.assertIsNotNone(resolution)
@@ -255,7 +237,6 @@ class StructuredLookupTest(unittest.TestCase):
             foreign_language_tables=[],
             structured_tables_registry=registry,
             program_directory=[],
-            probe_other_domains=False,
         )
 
         self.assertIsNotNone(resolution)
@@ -376,7 +357,6 @@ class StructuredLookupTest(unittest.TestCase):
             foreign_language_tables=[],
             structured_tables_registry=[table],
             program_directory=[],
-            probe_other_domains=False,
         )
 
         self.assertIsNotNone(resolution)
@@ -405,7 +385,6 @@ class StructuredLookupTest(unittest.TestCase):
             foreign_language_tables=[],
             structured_tables_registry=[table],
             program_directory=[],
-            probe_other_domains=False,
         )
 
         self.assertIsNotNone(alias_resolution)
@@ -586,7 +565,6 @@ class StructuredLookupTest(unittest.TestCase):
             foreign_language_tables=[],
             structured_tables_registry=registry,
             program_directory=[],
-            probe_other_domains=False,
         )
 
         self.assertIsNotNone(resolution)
@@ -646,7 +624,6 @@ class StructuredLookupTest(unittest.TestCase):
             foreign_language_tables=[],
             structured_tables_registry=registry,
             program_directory=[],
-            probe_other_domains=False,
         )
 
         self.assertIsNotNone(resolution)
@@ -704,7 +681,6 @@ class StructuredLookupTest(unittest.TestCase):
             foreign_language_tables=[],
             structured_tables_registry=[registry_table],
             program_directory=[],
-            probe_other_domains=False,
         )
 
         self.assertIsNotNone(resolution)
@@ -760,7 +736,6 @@ class StructuredLookupTest(unittest.TestCase):
             foreign_language_tables=[],
             structured_tables_registry=[registry_table],
             program_directory=[],
-            probe_other_domains=False,
         )
 
         self.assertIsNotNone(resolution)
@@ -793,7 +768,6 @@ class StructuredLookupTest(unittest.TestCase):
             "foreign_language_tables": [],
             "structured_tables_registry": [table],
             "program_directory": [],
-            "probe_other_domains": False,
         }
         decision = {
             "lookup_type": "scoring",
@@ -857,7 +831,6 @@ class StructuredLookupTest(unittest.TestCase):
             foreign_language_tables=foreign_tables,
             structured_tables_registry=registry,
             program_directory=[],
-            probe_other_domains=False,
         )
         duration = resolve_structured_decision(
             {
@@ -882,7 +855,6 @@ class StructuredLookupTest(unittest.TestCase):
             foreign_language_tables=foreign_tables,
             structured_tables_registry=registry,
             program_directory=[],
-            probe_other_domains=False,
         )
 
         self.assertIsNotNone(foreign)
@@ -921,7 +893,6 @@ class StructuredLookupTest(unittest.TestCase):
             foreign_language_tables=[],
             structured_tables_registry=registry,
             program_directory=[],
-            probe_other_domains=False,
         )
 
         self.assertIsNotNone(resolution)
@@ -963,7 +934,6 @@ class StructuredLookupTest(unittest.TestCase):
             foreign_language_tables=[],
             structured_tables_registry=[],
             program_directory=[],
-            probe_other_domains=False,
         )
 
         self.assertIsNotNone(resolution)
@@ -1159,59 +1129,6 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertEqual(res["result"]["result_count"], 2)
         labels = {r["label"] for r in res["result"]["rows"]}
         self.assertEqual(labels, {"Khá", "Giỏi"})
-
-    def test_inter_table_multi_structured_resolution(self):
-        from src.retrieval.core.structured_dispatcher import resolve_structured_decision
-
-        decision = {"lookup_type": "foreign_language", "slots": {}}
-        query = "ielts 6.0 quy đổi ra bậc mấy và điểm học bổng loại giỏi là bao nhiêu"
-        fl_tables = [
-            {
-                "table_id": "foreign_language_equivalency_table",
-                "table_name": "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ",
-                "table_type": "foreign_language",
-                "data_category": "regulation_table",
-                "cohort": "K51",
-                "applicable_cohorts": ["K51"],
-                "rows": [
-                    {
-                        "language": "Tiếng Anh",
-                        "certificate": "IELTS",
-                        "level_or_scale": "IELTS",
-                        "equivalent_level_3": "4.0 - 5.0",
-                        "equivalent_level_4": "5.5 - 6.5",
-                    }
-                ],
-            }
-        ]
-        scoring_tables = [
-            {
-                "table_id": "scholarship_classification",
-                "table_name": "Xếp loại học bổng khuyến khích học tập",
-                "table_type": "scholarship",
-                "data_category": "regulation_table",
-                "cohort": "K51",
-                "rows": [
-                    {"label": "Giỏi", "scholarship_score_range": "3.36-3.832"},
-                ],
-            }
-        ]
-        res = resolve_structured_decision(
-            decision,
-            query=query,
-            cohort="K51",
-            scoring_tables=scoring_tables,
-            formula_rules=[],
-            office_directory=[],
-            student_service_directory=[],
-            student_faculty_profiles=[],
-            foreign_language_tables=fl_tables,
-            structured_tables_registry=fl_tables + scoring_tables,
-            program_directory=[],
-        )
-        self.assertIsNotNone(res)
-        self.assertEqual(res.lookup_type, "multi_structured")
-        self.assertEqual(res.result.get("lookup_count"), 2)
 
 
 if __name__ == "__main__":

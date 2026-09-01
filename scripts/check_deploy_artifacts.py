@@ -33,7 +33,6 @@ REQUIRED_ARTIFACTS = [
     ("data/processed/directories/faculty_directory.json", "file"),
     ("data/processed/directories/program_directory.json", "file"),
     ("data/processed/directories/faculty_program_directory.json", "file"),
-    ("data/processed/entities/entity_registry.json", "file"),
     ("data/processed/graphs/document_edges.json", "file"),
     ("data/processed/chunks/all_docstore_items.json", "file"),
     ("data/processed/chunks/child_parent_chunks.json", "file"),

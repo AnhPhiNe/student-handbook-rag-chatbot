@@ -829,7 +829,14 @@ def initialize_hybrid_retriever() -> ChildParentHybridRetriever:
 
 
 def run_hybrid_retrieval_pipeline(
-    query: str, top_k: int = 5, **kwargs
+    query: str,
+    top_k: int = 5,
+    *,
+    cohort: str | None = None,
+    retrieval_query: str | None = None,
+    intent: str = "regulation_query",
+    strategy: str = "hybrid_graph_retrieval",
+    target_chunk_types: list[str] | None = None,
 ) -> dict[str, Any]:
     """Run the configured hybrid regulation retriever and return pipeline-shaped output.
 
@@ -839,12 +846,8 @@ def run_hybrid_retrieval_pipeline(
     """
     retriever = initialize_hybrid_retriever()
 
-    cohort = kwargs.get("cohort")
-    retrieval_query = kwargs.get("retrieval_query") or query
-    detected_entities = kwargs.get("detected_entities") or []
-    intent = kwargs.get("intent") or "regulation_query"
-    strategy = kwargs.get("strategy") or "hybrid_graph_retrieval"
-    target_chunk_types = kwargs.get("target_chunk_types") or ["regulation"]
+    retrieval_query = retrieval_query or query
+    target_chunk_types = target_chunk_types or ["regulation"]
 
     docs = retriever.retrieve(
         retrieval_query,
@@ -871,15 +874,12 @@ def run_hybrid_retrieval_pipeline(
         formatted_results.append(doc_copy)
 
     from .citation_builder import build_citations_from_vector_results
-    from .context_builder import build_context_from_vector_results
-
     citations = build_citations_from_vector_results(formatted_results)
     related_references = build_related_references(related_items)
 
     return {
         "query": query,
         "retrieval_query": retrieval_query,
-        "detected_entities": detected_entities,
         "intent": intent,
         "strategy": strategy,
         "target_chunk_types": target_chunk_types,
@@ -889,10 +889,6 @@ def run_hybrid_retrieval_pipeline(
         "related_items": related_items,
         "related_references": related_references,
         "citations": citations,
-        "context_for_llm": build_context_from_vector_results(
-            formatted_results,
-            related_items=related_items,
-        ),
         "needs_llm_answer": True,
         "needs_clarification": False,
         "out_of_domain": False,

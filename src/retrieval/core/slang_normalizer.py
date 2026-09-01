@@ -170,7 +170,3 @@ class SlangNormalizer:
             normalized = self.replace_pattern.sub(replace_match, normalized)
 
         return self._clean(normalized)
-
-    def normalize(self, query: str) -> str:
-        """Backward-compatible alias for full retrieval normalization."""
-        return self.normalize_for_retrieval(query)

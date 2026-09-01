@@ -35,10 +35,6 @@ class DisabledMongoDocStore:
     def get_document_by_id(self, doc_id: str) -> Optional[Dict[str, Any]]:
         return None
 
-    def drop_collection(self) -> None:
-        raise RuntimeError("MongoDB parent lookup is disabled.")
-
-
 class MongoDocStore:
     def __init__(
         self,
@@ -96,12 +92,6 @@ class MongoDocStore:
                 extra={"doc_id": doc_id, "error": str(exc)},
             )
             return None
-
-    def drop_collection(self) -> None:
-        """Drop the configured parent-doc collection."""
-        self.collection.drop()
-        logger.info(f"Dropped collection {self.collection.name}.")
-
 
 def get_mongo_store() -> MongoDocStore | DisabledMongoDocStore:
     if not _env_bool("MONGODB_PARENT_LOOKUP_ENABLED", default=True):

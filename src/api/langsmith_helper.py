@@ -295,7 +295,6 @@ def build_trace_metadata(
         ),
         "planner_fallback": planner_fallback,
         "planner_fallback_used": bool(planner_fallback),
-        "detected_entities": src.get("detected_entities") or [],
         "target_chunk_types": src.get("target_chunk_types") or [],
         "effective_query": src.get("effective_query") or query,
         "retrieved_chunks_count": int(src.get("retrieved_chunks_count") or 0),

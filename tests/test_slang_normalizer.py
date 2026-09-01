@@ -25,9 +25,9 @@ def test_explicit_acronyms_are_case_insensitive(tmp_path) -> None:
         program_directory=[],
     )
 
-    assert normalizer.normalize("CNTT") == "công nghệ thông tin"
-    assert normalizer.normalize("cntt") == "công nghệ thông tin"
-    assert normalizer.normalize("Cntt") == "công nghệ thông tin"
+    assert normalizer.normalize_for_retrieval("CNTT") == "công nghệ thông tin"
+    assert normalizer.normalize_for_retrieval("cntt") == "công nghệ thông tin"
+    assert normalizer.normalize_for_retrieval("Cntt") == "công nghệ thông tin"
 
 
 def test_router_replacement_does_not_apply_retrieval_expansion(tmp_path) -> None:
@@ -79,9 +79,9 @@ def test_unique_generated_acronyms_are_replaced_case_insensitively(tmp_path) -> 
         ],
     )
 
-    assert normalizer.normalize("GDMN học gì?") == "giáo dục mầm non học gì?"
-    assert normalizer.normalize("gdmn học gì?") == "giáo dục mầm non học gì?"
-    assert normalizer.normalize("Gdmn học gì?") == "giáo dục mầm non học gì?"
+    assert normalizer.normalize_for_retrieval("GDMN học gì?") == "giáo dục mầm non học gì?"
+    assert normalizer.normalize_for_retrieval("gdmn học gì?") == "giáo dục mầm non học gì?"
+    assert normalizer.normalize_for_retrieval("Gdmn học gì?") == "giáo dục mầm non học gì?"
 
 
 def test_short_or_ambiguous_generated_acronyms_are_not_replaced(tmp_path) -> None:
@@ -94,10 +94,10 @@ def test_short_or_ambiguous_generated_acronyms_are_not_replaced(tmp_path) -> Non
         ],
     )
 
-    assert normalizer.normalize("TA") == "TA"
-    assert normalizer.normalize("ta") == "ta"
-    assert normalizer.normalize("SPTH") == "SPTH"
-    assert normalizer.normalize("spth") == "spth"
+    assert normalizer.normalize_for_retrieval("TA") == "TA"
+    assert normalizer.normalize_for_retrieval("ta") == "ta"
+    assert normalizer.normalize_for_retrieval("SPTH") == "SPTH"
+    assert normalizer.normalize_for_retrieval("spth") == "spth"
 
 
 def test_replacement_only_matches_complete_token(tmp_path) -> None:
@@ -106,8 +106,8 @@ def test_replacement_only_matches_complete_token(tmp_path) -> None:
         program_directory=[],
     )
 
-    assert normalizer.normalize("cnttt") == "cnttt"
-    assert normalizer.normalize("học cntt") == "học công nghệ thông tin"
+    assert normalizer.normalize_for_retrieval("cnttt") == "cnttt"
+    assert normalizer.normalize_for_retrieval("học cntt") == "học công nghệ thông tin"
 
 
 def test_graduation_rank_slang_only_canonicalizes_the_user_term() -> None:

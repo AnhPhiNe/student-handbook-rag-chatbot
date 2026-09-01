@@ -42,25 +42,6 @@ def _strip_order_prefix(value: Any) -> str:
     return re.sub(r"^\s*\d+\.\s*", "", str(value or "")).strip()
 
 
-def _office_search_text(record: dict[str, Any]) -> str:
-    return " ".join(
-        str(value)
-        for value in [
-            record.get("unit_name"),
-            record.get("unit"),
-            record.get("service"),
-            " ".join(record.get("aliases") or []),
-            record.get("summary"),
-            record.get("raw_text"),
-            record.get("email"),
-            record.get("phone"),
-            record.get("office"),
-            record.get("source_section"),
-        ]
-        if value
-    )
-
-
 def _candidate_values(record: dict[str, Any]) -> list[str]:
     base_unit = _strip_order_prefix(record.get("unit_name") or record.get("unit"))
     values = [
@@ -424,7 +405,6 @@ def office_lookup(
     query: str,
     office_directory: list[dict[str, Any]],
     cohort: str | None = None,
-    detected_entities: list[dict[str, Any]] | None = None,
     routing: dict[str, Any] | None = None,
     top_k: int = 3,
     candidate_text: str | None = None,
@@ -442,12 +422,6 @@ def office_lookup(
         or "office_directory" in target_types
     )
     typed_candidate = bool(candidate_text and candidate_text.strip())
-    entity_targets = {
-        target
-        for entity in (detected_entities or [])
-        for target in (entity.get("target_chunk_types") or [])
-    }
-    routed_to_office = routed_to_office or "office_directory" in entity_targets
 
     if not typed_candidate and not routed_to_office:
         return None

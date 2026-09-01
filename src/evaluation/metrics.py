@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 import random
-from typing import Any, Callable, Iterable
+from typing import Callable, Iterable
 
 
 def safe_mean(values: Iterable[float]) -> float | None:
@@ -94,17 +94,3 @@ def retrieval_metrics(
         else 1.0 / (first_relevant + 1),
         "ndcg_at_5": dcg / idcg if idcg else 0.0,
     }
-
-
-def summarize_numeric_rows(
-    rows: list[dict[str, Any]],
-    fields: list[str],
-) -> dict[str, Any]:
-    summary: dict[str, Any] = {"cases": len(rows)}
-    for field in fields:
-        values = [
-            float(row[field]) for row in rows if isinstance(row.get(field), int | float)
-        ]
-        summary[field] = round(safe_mean(values) or 0.0, 4) if values else None
-        summary[f"{field}_ci95"] = bootstrap_interval(values)
-    return summary

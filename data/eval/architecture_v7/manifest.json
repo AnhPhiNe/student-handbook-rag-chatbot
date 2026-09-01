@@ -1,0 +1,151 @@
+{
+  "bundle": "architecture_v7",
+  "schema_version": "architecture-evaluation-v7",
+  "version": "7.0-draft.1",
+  "revision": 1,
+  "frozen": false,
+  "review_state": "draft_approved_for_execution",
+  "authored_against_runtime_commit": "1f11f6500bc56de861adaecc876ccd9505d93538",
+  "evaluated_system_commit": "1f11f6500bc56de861adaecc876ccd9505d93538",
+  "evaluation_harness_commit": "pending_commit_after_owner_review",
+  "planner_model": "qwen/qwen3.8-27b",
+  "planner_reasoning_effort": "low",
+  "generation_model": "gemini-3.1-flash-lite",
+  "judge_model": "openai/gpt-oss-120b",
+  "retrieval_mode": "vector_primary_graph_supplement",
+  "reranker_enabled": false,
+  "hybrid_collection": "student_handbook_semantic_v32",
+  "mongodb_parent_collection": "parent_docs_v32",
+  "counts": {
+    "deterministic": 140,
+    "retrieval": 160,
+    "answers": 150,
+    "production": 60
+  },
+  "strict_structured_sources": true,
+  "strict_cohort_conflicts": true,
+  "strict_query_duplicates": true,
+  "max_parent_query_usage": 5,
+  "deterministic_contract": "query-plan-outcome-equivalent-v7",
+  "deterministic_case_type_counts": {
+    "single_structured": 60,
+    "capability_boundary": 24,
+    "compound": 28,
+    "missing_or_ambiguous": 12,
+    "unsupported_in_domain": 8,
+    "out_of_domain": 8
+  },
+  "deterministic_lookup_case_types": [
+    "single_structured"
+  ],
+  "deterministic_lookup_group_counts": {
+    "foreign_language": 6,
+    "study_duration": 6,
+    "scholarship_classification": 6,
+    "scoring": 8,
+    "conduct": 6,
+    "formula": 2,
+    "office": 6,
+    "faculty": 6,
+    "program": 8,
+    "student_service": 6
+  },
+  "retrieval_contract": "regulation-rag-outcome-draft-v7",
+  "retrieval_cohort_counts": {
+    "general": 12,
+    "K50": 55,
+    "K51": 47,
+    "K48-K49": 46
+  },
+  "retrieval_eval_split_counts": {
+    "realistic": 108,
+    "stress": 52
+  },
+  "retrieval_forbidden_query_fragments": [],
+  "evaluation_contract": "comprehensive-outcome-draft-v7",
+  "answer_case_type_counts": {
+    "regulation_true_rag": 90,
+    "structured_answer": 30,
+    "mixed_answer": 10,
+    "clarification": 8,
+    "unanswerable": 6,
+    "out_of_domain": 6
+  },
+  "answer_eval_split_counts": {
+    "stress": 48,
+    "realistic": 102
+  },
+  "answer_path_counts": {
+    "regulation_rag": 96,
+    "structured": 30,
+    "mixed": 10,
+    "clarify": 8,
+    "out_of_domain": 6
+  },
+  "answer_rag_cohort_counts": {
+    "K48-K49": 21,
+    "K50": 25,
+    "K51": 36,
+    "general": 8
+  },
+  "answer_structured_lookup_counts": {
+    "foreign_language": 6,
+    "study_duration": 6,
+    "scholarship_classification": 6,
+    "scoring": 8,
+    "conduct": 4
+  },
+  "production_scenario_counts": {
+    "cold_rag": 20,
+    "structured": 10,
+    "warm_cache": 10,
+    "streaming": 10,
+    "burst": 10
+  },
+  "production_request_count": 60,
+  "production_unique_query_count": 50,
+  "production_metric_scope": "availability, sync/stream payload contract, bounded latency, cache and burst scenarios; semantic correctness remains in answer judge/human audit",
+  "human_audit_required_n": 40,
+  "human_audit_repeat_n": 0,
+  "human_audit_selection_policy": "pre-output stratified by answer case type; stable SHA256 order",
+  "dataset_hashes": {
+    "deterministic": "6daa4f4be0e5a1426e11b9106d5ee64e34f4a37ea8ffabe42ea1adae7d329941",
+    "retrieval": "d9511afa0cce9ca1c8e02c24f2c79803c43e38625ddf1cb5e36d84aded18ccd2",
+    "answers": "5da5f17eaac5c208eb7ccee5b25d8f17713f1ab081a4124f2588bf1bb6532f15",
+    "production": "ad47bf0c0e7782803750692a8b32e440949c6f26466c850d01514d5cfe457f0f"
+  },
+  "auxiliary_hashes": {
+    "human_audit_template": "cedf20699ac34092454f592bb574b6bc6970f6ded6352abe5ef75e8d2f3587bc"
+  },
+  "docstore_path": "data/processed/chunks/all_docstore_items.json",
+  "docstore_hash": "4d410553cfaddeaef51fc096ffd0025d52e585b4c5dfe7ee0807e73570648143",
+  "config_hashes": {
+    "ai_router": "42e1a4ae0d49e03738c8d42a84a38e1a5d3aaa2fb5c906eef4210e14ed0efc66",
+    "structured_lookup_registry": "fd7856cefd46a5f5f008da68fcb4a5021dc1302d638b0e494383d374c43dd3ce",
+    "retrieval": "c4069c06c8f2bb99f8097ab737db4293ad1b98fe4b5e5d88fc30c0023cc650e5",
+    "answer_generation": "51ddf38366efa133aa3a302acb0f4a9a1c4faddeeca436ccebfc24246bf8c76a"
+  },
+  "artifact_hashes": {
+    "data/processed/tables/structured_tables_registry.json": "865fe92aca6283147713f02b400734dac44dfc9a0f4d959095ce30978d8fb0fd",
+    "data/processed/tables/foreign_language_equivalency_table.json": "486a1749c7a5fc794c733bf494f103ff407716dc30fc04f8517c3b51b3486947",
+    "data/processed/directories/student_office_profiles.json": "945bf352e7f5c81087fa893199129995377af79edfb5b1a02bfd1549ac4dd2b6",
+    "data/processed/directories/student_faculty_profiles.json": "2508817bbb7536e411146e79a0fb9c60d9770f40ce1405367de3b3e600417e16",
+    "data/processed/directories/program_directory.json": "16589ec3310c6c654d87a315b7cff1ec0391909a4b6489379d2e10b16de784a6",
+    "data/processed/directories/student_service_directory.json": "d2f0d187fc3d696c2de76533f5df39ff72703f5e48fc38b9719d34b52bc25104",
+    "data/processed/graphs/document_edges.json": "ed42590ba9b2b0c749d531b095166460694bf1b81cbfb7bac6e4e3bc014fc77f"
+  },
+  "overlap_policy": {
+    "exact_historical_query_matches_required": 0,
+    "semantic_similarity_is_review_signal_not_filter": true,
+    "same_fixed_corpus_reuse_allowed": true,
+    "cross_suite_reuse_requires_linked_ids_and_duplicate_group": true
+  },
+  "system_executed_on_dataset": false,
+  "user_review_approved": true,
+  "limitations": [
+    "V7 is a mutable draft benchmark and cannot produce final CV or paper headline metrics.",
+    "It uses the same three-handbook corpus; novelty concerns question/target composition, not unseen documents.",
+    "Source-first automatic authoring requires owner review of phrasing and gold scope before execution.",
+    "Production 60 is a bounded contract/load smoke, not a capacity or security benchmark."
+  ]
+}

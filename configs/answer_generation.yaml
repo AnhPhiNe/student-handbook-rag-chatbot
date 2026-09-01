@@ -8,21 +8,14 @@ input:
   structured_tables_registry: data/processed/tables/structured_tables_registry.json
   parent_docstore: data/processed/chunks/all_docstore_items.json
   program_directory: data/processed/directories/program_directory.json
-  entity_registry: data/processed/entities/entity_registry.json
-  query_expansion_rules: data/processed/entities/query_expansion_rules.json
 
 embedding:
   model_name: BAAI/bge-m3
-  batch_size: 8
-  normalize_embeddings: true
 
 retrieval:
   default_top_k: 5
-  candidate_multiplier: 5
-  min_candidates: 25
 
 planning:
-  enabled: true
   max_tasks: 3
   rag_top_k: 5
   max_citations: 10

@@ -9,8 +9,6 @@ input:
   faculty_directory: data/processed/directories/faculty_directory.json
   program_directory: data/processed/directories/program_directory.json
   faculty_program_directory: data/processed/directories/faculty_program_directory.json
-  entity_registry: data/processed/entities/entity_registry.json
-  query_expansion_rules: data/processed/entities/query_expansion_rules.json
 
 
 embedding:

@@ -20,17 +20,12 @@ from src.common.env_loader import load_project_env
 
 from .structured_routing import (
     compact_registry_for_prompt,
-    fallback_to_rag,
     load_lookup_registry,
-    normalize_router_decision,
     registry_digest,
-    router_json_schema,
-    router_response_schema,
-    validate_router_decision,
 )
 from .query_plan import (
     QUERY_PLAN_NORMALIZER_VERSION,
-    legacy_rag_plan,
+    safe_rag_fallback_plan,
     normalize_query_plan,
     query_plan_json_schema,
     query_plan_response_schema,
@@ -38,58 +33,13 @@ from .query_plan import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.8-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v38-directory-task-contract"
+ROUTER_PROMPT_VERSION = "structured-regulation-v39-reference-table-selector"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
     r"((?:\d+(?:\.\d+)?\s*(?:ms|[hms])\s*)+)",
     re.IGNORECASE,
 )
-
-ROUTER_SYSTEM_PROMPT = """
-Bạn là AI Router của hệ thống Sổ tay Sinh viên HCMUE.
-Chỉ phân loại và trích xuất dữ liệu; không trả lời câu hỏi. Chỉ xuất một JSON
-đúng OUTPUT CONTRACT, không Markdown hay giải thích.
-
-NGỮ CẢNH VÀ CHUẨN HÓA
-- standalone: QUERY tự đủ nghĩa; không lấy thông tin từ CHAT HISTORY.
-- follow_up: QUERY thật sự nối tiếp lịch sử (context_confidence=high hoặc medium);
-  standalone_query chỉ ghép thông tin có trong QUERY và referenced_turns.
-- ambiguous: không xác định chắc ngữ cảnh; route=clarify và hỏi lại ngắn gọn.
-- normalized_query chỉ sửa dấu, lỗi chính tả nhẹ hoặc viết tắt phổ biến.
-  Không đổi cohort, số liệu, phủ định, thực thể hay chủ đề.
-- Không thay một từ đã hợp lệ bằng từ gần âm hoặc khái niệm khác. Nếu không chắc,
-  giữ nguyên từ người dùng đã viết.
-- Nếu có sửa, corrections phải chứa original_span nguyên văn và normalized_span.
-
-PHÂN LUỒNG
-- structured/structured: tra trực tiếp bảng hoặc catalog JSON trong TOOLS.
-- rag/regulation: cần đọc Điều/khoản về quy định, điều kiện, thủ tục, ngoại lệ,
-  hậu quả, quyền, nghĩa vụ hoặc trường hợp áp dụng.
-- rag/mixed: câu hỏi phức hợp cần tra cứu một nguồn structured chính trong TOOLS và đồng thời cần đối chiếu quy định/điều kiện.
-- clarify: thiếu entity/cohort cốt lõi khiến tra cứu không xác định được.
-  Không clarify câu hỏi quy chế chung chỉ vì thiếu tên môn hoặc ngành.
-- out_of_domain: ngoài phạm vi sổ tay sinh viên HCMUE.
-
-RÀNG BUỘC
-- Chỉ dùng lookup_type và intent khai báo trong TOOLS.
-- structured dùng đúng một tool; regulation có lookup_type=null,
-  intent=regulation; mixed chọn đúng một tool chính.
-- Giá trị, danh sách và thông tin catalog dùng structured. Điều kiện áp dụng,
-  ngoại lệ hoặc hệ quả dùng regulation; cần cả hai thì dùng mixed.
-- Khi câu hỏi chứa từ 2 ý định trở lên (chứa cả ý tra cứu bảng dữ liệu trong TOOLS và ý quy định/điều kiện), hãy chọn route=rag, execution_mode=mixed và đặt lookup_type là tool tương ứng với bảng dữ liệu đó.
-- Hỏi đích danh đơn vị dùng office/faculty; mô tả dịch vụ cần làm dùng
-  student_service; ngành, chương trình, đầu ra nghề nghiệp dùng program.
-- Không có form/procedure tool. Hồ sơ, biểu mẫu và quy trình là regulation.
-- formula chỉ tra công thức, không tính toán.
-- Giữ cohort nếu có; không tự đoán cohort hoặc entity.
-- cohort và cohorts: Nếu QUERY chỉ nêu 1 khóa duy nhất, đặt cohort và cohorts=[cohort], is_multi_cohort=false. Nếu QUERY đề cập hoặc so sánh từ 2 khóa trở lên, hãy trích xuất tất cả các khóa vào mảng cohorts, đặt is_multi_cohort=true và cohort là khóa đầu tiên.
-- slots tuân thủ TOOLS. slot_spans phải xuất hiện nguyên văn trong QUERY hoặc
-  CHAT HISTORY. Không bịa slot để thỏa contract.
-- Không tự tạo dữ liệu, tool, intent hoặc chủ đề mới.
-
-Tự kiểm tra route/mode, tool/intent, slot/span và cohort trước khi xuất JSON.
-"""
 
 PLANNER_SYSTEM_PROMPT = """
 Lập QueryPlan cho Sổ tay HCMUE. Chỉ xuất JSON theo schema được cung cấp;
@@ -587,7 +537,7 @@ class RouterDecisionCache:
 
 
 class AIRouter:
-    """Groq-backed query-understanding router with a strict JSON contract."""
+    """Groq-backed QueryPlan planner with a validated JSON contract."""
 
     def __init__(
         self,
@@ -781,7 +731,7 @@ class AIRouter:
                     for task in (plan.get("tasks") or [])
                 )
                 if fatal_validation:
-                    plan = legacy_rag_plan(query, cohort, reason="legacy_rag")
+                    plan = safe_rag_fallback_plan(query, cohort, reason="safe_rag")
                     plan["planner_validation_errors"] = validation_errors
                 if self.cache:
                     self.cache.set(cache_key, plan)
@@ -815,7 +765,7 @@ class AIRouter:
                 )
 
         if last_error is not None:
-            fallback = legacy_rag_plan(query, cohort, reason="legacy_rag")
+            fallback = safe_rag_fallback_plan(query, cohort, reason="safe_rag")
             return {
                 **fallback,
                 "model_used": self.model_name,
@@ -828,230 +778,6 @@ class AIRouter:
                 "planner_error": str(last_error),
             }
         raise RuntimeError("ai_planner_failed: no_attempts")
-
-    def route(
-        self,
-        query: str,
-        *,
-        cohort: str | None = None,
-        chat_history: list[dict[str, str]] | None = None,
-        routing_hint: dict[str, Any] | None = None,
-    ) -> dict[str, Any]:
-        dynamic_prompt = self._build_prompt(
-            query,
-            cohort=cohort,
-            chat_history=chat_history,
-            routing_hint=routing_hint,
-        )
-        response_format = self._response_format_payload()
-        prompt_stats = self._prompt_stats(dynamic_prompt, response_format)
-        cache_key = self._cache_key(
-            query,
-            cohort=cohort,
-            chat_history=chat_history,
-            routing_hint=routing_hint,
-        )
-        if self.cache and (cached := self.cache.get(cache_key)):
-            return {
-                **cached,
-                "model_used": self.model_name,
-                "usage": None,
-                "router_cache_hit": True,
-                "prompt_stats": prompt_stats,
-            }
-
-        estimated_tokens = max(
-            128,
-            int(prompt_stats["estimated_input_tokens"]) + self.max_output_tokens,
-        )
-        attempts = 0
-        transient_failures = 0
-        max_attempts = len(self.available_keys)
-        last_error: Exception | None = None
-        while attempts < max_attempts:
-            key, key_id, key_index = self.key_pool.acquire_key(estimated_tokens)
-            attempts += 1
-            try:
-                client = Groq(
-                    api_key=key,
-                    timeout=self.request_timeout_seconds,
-                    max_retries=0,
-                )
-                response = client.chat.completions.create(
-                    model=self.model_name,
-                    messages=[
-                        {
-                            "role": "system",
-                            "content": ROUTER_SYSTEM_PROMPT.strip(),
-                        },
-                        {
-                            "role": "user",
-                            "content": dynamic_prompt,
-                        },
-                    ],
-                    temperature=self.temperature,
-                    max_tokens=self.max_output_tokens,
-                    reasoning_effort=self._resolved_reasoning_effort(),
-                    response_format=response_format,
-                )
-                raw = response.choices[0].message.content or ""
-                parsed = self._extract_json_object(raw)
-                usage = self._usage(response)
-                actual_tokens = int(usage.get("total", estimated_tokens))
-                self.key_pool.record_success(
-                    key_id,
-                    actual_tokens=actual_tokens,
-                    reserved_tokens=estimated_tokens,
-                )
-                decision = normalize_router_decision(
-                    parsed,
-                    query=query,
-                    selected_cohort=cohort,
-                )
-                grounding_context = "\n".join(
-                    str(item.get("content") or "")
-                    for item in (chat_history or [])[-4:]
-                    if isinstance(item, dict)
-                )
-                validation_errors = validate_router_decision(
-                    decision,
-                    query=query,
-                    selected_cohort=cohort,
-                    grounding_context=grounding_context,
-                    registry=self.registry,
-                )
-                if validation_errors:
-                    decision = fallback_to_rag(
-                        decision,
-                        validation_errors,
-                        query=query,
-                    )
-                decision["router_validation_errors"] = validation_errors
-                if self.cache:
-                    self.cache.set(cache_key, decision)
-                return {
-                    **decision,
-                    "model_used": self.model_name,
-                    "usage": usage,
-                    "key_fingerprint": key_id,
-                    "router_cache_hit": False,
-                    "attempts": attempts,
-                    "prompt_stats": prompt_stats,
-                }
-            except Exception as exc:
-                last_error = exc
-                error_type = self._classify_error(exc)
-                if error_type == "rate_limit":
-                    self.key_pool.record_rate_limit(
-                        key_id,
-                        retry_after_seconds=_retry_after_seconds(exc),
-                    )
-                    continue
-                self.key_pool.record_failure(key_id, error_type)
-                if error_type not in {"timeout", "api_error", "transient_error"}:
-                    break
-                transient_failures += 1
-                if transient_failures > self.max_retries:
-                    break
-                print(
-                    f"[AIRouter] Retrying {self.model_name} after {error_type} "
-                    f"on key {key_index}:{key_id}."
-                )
-
-        if last_error is not None:
-            return self._fallback_after_router_error(
-                query,
-                cohort=cohort,
-                attempts=attempts,
-                prompt_stats=prompt_stats,
-                error=last_error,
-            )
-        raise RuntimeError("ai_router_failed: no_attempts")
-
-    def _fallback_after_router_error(
-        self,
-        query: str,
-        *,
-        cohort: str | None,
-        attempts: int,
-        prompt_stats: dict[str, Any],
-        error: Exception,
-    ) -> dict[str, Any]:
-        error_type = self._classify_error(error)
-        decision = normalize_router_decision(
-            {
-                "context_mode": "standalone",
-                "context_confidence": "none",
-                "normalized_query": query,
-                "normalization_confidence": "none",
-                "corrections": [],
-                "standalone_query": None,
-                "referenced_turns": [],
-                "route": "rag",
-                "execution_mode": "regulation",
-                "intent": "open_question",
-                "lookup_type": None,
-                "cohort": cohort,
-                "slots": {},
-                "slot_spans": {},
-                "target_chunk_types": ["regulation"],
-                "retrieval_query": query,
-                "clarification_question": None,
-            },
-            query=query,
-            selected_cohort=cohort,
-        )
-        return {
-            **decision,
-            "model_used": self.model_name,
-            "usage": None,
-            "key_fingerprint": None,
-            "router_cache_hit": False,
-            "attempts": attempts,
-            "prompt_stats": prompt_stats,
-            "router_validation_errors": [],
-            "router_error_type": error_type,
-            "router_error": str(error),
-            "router_fallback": "router_error_to_rag",
-        }
-
-    def _build_prompt(
-        self,
-        query: str,
-        *,
-        cohort: str | None,
-        chat_history: list[dict[str, str]] | None,
-        routing_hint: dict[str, Any] | None = None,
-    ) -> str:
-        history_lines = []
-        history_window = (chat_history or [])[-4:]
-        for local_index, item in enumerate(history_window):
-            role = str(item.get("role") or "user")
-            content = str(item.get("content") or "")[:300]
-            if content:
-                history_lines.append(f"[{local_index}] {role}:{content}")
-        history = "\n".join(history_lines) or "none"
-        schema = json.dumps(
-            router_json_schema(), ensure_ascii=False, separators=(",", ":")
-        )
-        hint = json.dumps(routing_hint, ensure_ascii=False, separators=(",", ":"))
-        hint_instruction = (
-            "CATALOG_HINT is grounded production metadata. Use its lookup_type and "
-            "entity_text; infer only intent/requested_field from QUERY.\n"
-            if routing_hint
-            else ""
-        )
-        return (
-            f"{hint_instruction}"
-            "TOOLS:\n"
-            f"{compact_registry_for_prompt(self.registry)}\n\n"
-            f"OUTPUT CONTRACT:\n"
-            f"{schema}\n\n"
-            f"CATALOG_HINT: {hint if routing_hint else 'none'}\n"
-            f"COHORT: {cohort or 'unknown'}\n"
-            f"CHAT HISTORY:\n{history}\n"
-            f"QUERY: {query}"
-        )
 
     def _build_plan_prompt(
         self,
@@ -1112,18 +838,6 @@ class AIRouter:
             else "json_object"
         )
 
-    def _response_format_payload(self) -> dict[str, Any]:
-        if self._resolved_response_format() == "json_schema":
-            return {
-                "type": "json_schema",
-                "json_schema": {
-                    "name": "router_decision",
-                    "strict": False,
-                    "schema": router_response_schema(),
-                },
-            }
-        return {"type": "json_object"}
-
     def _plan_response_format_payload(self) -> dict[str, Any]:
         if self._resolved_response_format() == "json_schema":
             return {
@@ -1135,15 +849,6 @@ class AIRouter:
                 },
             }
         return {"type": "json_object"}
-
-    @staticmethod
-    def _prompt_stats(
-        dynamic_prompt: str,
-        response_format: dict[str, Any],
-    ) -> dict[str, int]:
-        return AIRouter._prompt_stats_for_system(
-            ROUTER_SYSTEM_PROMPT, dynamic_prompt, response_format
-        )
 
     @staticmethod
     def _prompt_stats_for_system(

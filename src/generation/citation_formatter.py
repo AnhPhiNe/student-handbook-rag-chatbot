@@ -4,7 +4,11 @@ from typing import Any
 
 INTENT_CHUNK_PRIORITY = {
     "office_query": ["office_directory"],
-    "faculty_query": ["program_directory", "faculty_directory", "faculty_program_directory"],
+    "faculty_query": [
+        "program_directory",
+        "faculty_directory",
+        "faculty_program_directory",
+    ],
     "regulation_query": ["regulation"],
     "score_lookup_query": ["structured_lookup"],
     "structured_lookup": ["structured_lookup"],
@@ -172,60 +176,6 @@ def select_relevant_citations(
     return [citation for _, citation in ranked[:max_sources]]
 
 
-def format_sources_text(citations: list[dict[str, Any]] | None) -> str:
-    if not citations:
-        return ""
-
-    lines: list[str] = []
-    seen: set[str] = set()
-    for citation in deduplicate_citations(citations):
-        item = format_citation(citation)
-        if not item or item in seen:
-            continue
-        seen.add(item)
-        lines.append(f"- {item}")
-
-    if not lines:
-        return ""
-
-    return "Nguồn:\n" + "\n".join(lines)
-
-
-def build_sources_text(citations: list[dict[str, Any]] | None) -> str:
-    return format_sources_text(citations)
-
-
-def format_pages(pages: Any) -> str:
-    parsed_pages = parse_source_pages(pages)
-    if not parsed_pages:
-        return ""
-
-    ranges: list[str] = []
-    start = previous = parsed_pages[0]
-
-    for page in parsed_pages[1:]:
-        if page == previous + 1:
-            previous = page
-            continue
-
-        ranges.append(_format_page_range(start, previous))
-        start = previous = page
-
-    ranges.append(_format_page_range(start, previous))
-    return ", ".join(ranges)
-
-
-def format_citation(citation: dict[str, Any]) -> str:
-    title = _citation_title(citation)
-    pages_text = format_pages(citation.get("source_pages"))
-
-    if title and pages_text:
-        return f"{title}, trang {pages_text}"
-    if pages_text:
-        return f"Trang {pages_text}"
-    return title
-
-
 def _priority_index(citation: dict[str, Any], priorities: list[str]) -> int:
     chunk_type = _chunk_type(citation)
     purpose = str(citation.get("retrieval_purpose") or citation.get("purpose") or "")
@@ -362,9 +312,3 @@ def _extract_article_references(value: Any) -> set[str]:
         match.casefold()
         for match in _ARTICLE_REFERENCE_PATTERN.findall(str(value or ""))
     }
-
-
-def _format_page_range(start: int, end: int) -> str:
-    if start == end:
-        return str(start)
-    return f"{start}-{end}"

@@ -113,7 +113,6 @@ def test_formula_sources_bind_to_each_formula_parent() -> None:
         foreign_language_tables=[],
         structured_tables_registry=registry,
         program_directory=[],
-        probe_other_domains=False,
     )
 
     assert resolution is not None

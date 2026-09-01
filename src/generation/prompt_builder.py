@@ -223,7 +223,7 @@ def _resolve_primary_citations(
     if citations and any(citation.get("content") or citation.get("document") for citation in citations):
         return [dict(citation) for citation in citations]
 
-    # Compatibility for legacy call sites/tests that only provide retrieved items.
+    # Forced retrieval evaluation provides retrieved items without a QueryPlan.
     result: list[dict[str, Any]] = []
     for item in retrieval_result.get("retrieved_items") or []:
         metadata = dict(item.get("metadata") or {})
@@ -308,7 +308,7 @@ def _composition_units(
 
     return [
         {
-            "task_id": "legacy",
+            "task_id": "_unplanned",
             "question": str(
                 retrieval_result.get("effective_query")
                 or retrieval_result.get("query")
@@ -386,7 +386,7 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
 def _source_supports_unit(source: dict[str, Any], unit: dict[str, Any]) -> bool:
     task_id = unit["task_id"]
     supports_task_ids = source["supports_task_ids"]
-    if task_id != "legacy" and task_id not in supports_task_ids:
+    if task_id != "_unplanned" and task_id not in supports_task_ids:
         return False
 
     target_cohort = None if unit["cohort"] == "default" else unit["cohort"]

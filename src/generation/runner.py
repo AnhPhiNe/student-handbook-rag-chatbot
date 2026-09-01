@@ -4,7 +4,7 @@ from typing import Any
 
 from src.common.env_loader import load_project_env
 
-from .io_utils import save_json
+from src.common.io import save_json
 from .answer_pipeline import DEFAULT_CONFIG_PATH, AnswerPipeline
 
 

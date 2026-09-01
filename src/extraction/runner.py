@@ -10,7 +10,7 @@ from .directory_parser import (
 )
 from .audit_builder import build_content_audit
 from .formula_rules import extract_formula_rules
-from .io_utils import load_json, load_yaml, save_json
+from src.common.io import load_json, load_yaml, save_json
 from .program_faculty_enricher import (
     attach_program_legacy_record_ids,
     enrich_program_faculty_names,

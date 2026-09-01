@@ -27,6 +27,7 @@ from .metrics import (
     wilson_interval,
 )
 from src.retrieval.core.runtime_health import get_bm25_runtime_status
+from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -2258,10 +2259,7 @@ def generate_answers(
     pipeline_factory: Callable[[], Any] | None = None,
     checkpoint_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    from src.retrieval.core.hybrid_pipeline import (
-        DEFAULT_RETRIEVAL_MODE,
-        initialize_hybrid_retriever,
-    )
+    from src.retrieval.core.hybrid_pipeline import initialize_hybrid_retriever
 
     identity = _eval_checkpoint_identity(
         cases,
@@ -2377,8 +2375,6 @@ def load_answer_checkpoint(
     checkpoint_context: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     """Verify generation provenance before using cached answers in a new judge run."""
-    from src.retrieval.core.hybrid_pipeline import DEFAULT_RETRIEVAL_MODE
-
     identity = _eval_checkpoint_identity(
         cases,
         suite="answer_generation",

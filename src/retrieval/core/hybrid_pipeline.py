@@ -1,30 +1,24 @@
-import os
-from dotenv import load_dotenv
-from src.retrieval.vectorstore.mongo_store import get_mongo_store
-from src.common.storage_config import require_qdrant_collection_name
-load_dotenv()
-os.environ["TRANSFORMERS_VERBOSITY"] = "error"
 import logging
+import os
 import threading
 import time
 from collections import defaultdict
 from typing import Any
-from src.retrieval.core.cross_encoder_reranker import get_local_reranker
-from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
+
+from qdrant_client import QdrantClient
+from qdrant_client.models import FieldCondition, Filter, MatchValue
+
 from src.common.cohort import is_cohort_applicable, normalize_cohort
 from src.common.legal_reference import normalize_article_label
 from src.common.source_identity import canonical_article_source_id
+from src.common.storage_config import require_qdrant_collection_name
+from src.retrieval.core.cross_encoder_reranker import get_local_reranker
+from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
+from src.retrieval.core.retrieval_mode import resolve_retrieval_mode
 from src.retrieval.core.runtime_health import set_bm25_runtime_status
-from src.retrieval.core.retrieval_mode import (
-    DEFAULT_RETRIEVAL_MODE as DEFAULT_RETRIEVAL_MODE,
-    resolve_retrieval_mode,
-)
-from qdrant_client import QdrantClient
-from qdrant_client.models import (
-    FieldCondition,
-    Filter,
-    MatchValue,
-)
+from src.retrieval.vectorstore.mongo_store import get_mongo_store
+
+os.environ["TRANSFORMERS_VERBOSITY"] = "error"
 
 logger = logging.getLogger("hybrid_pipeline")
 
@@ -812,10 +806,6 @@ def build_related_references(
     return references
 
 
-# Backward-compatible private alias for existing callers/tests.
-_build_related_references = build_related_references
-
-
 def initialize_hybrid_retriever() -> ChildParentHybridRetriever:
     """Create the process-wide retriever once and start BM25 initialization."""
 
@@ -839,7 +829,14 @@ def initialize_hybrid_retriever() -> ChildParentHybridRetriever:
 
 
 def run_hybrid_retrieval_pipeline(
-    query: str, top_k: int = 5, **kwargs
+    query: str,
+    top_k: int = 5,
+    *,
+    cohort: str | None = None,
+    retrieval_query: str | None = None,
+    intent: str = "regulation_query",
+    strategy: str = "hybrid_graph_retrieval",
+    target_chunk_types: list[str] | None = None,
 ) -> dict[str, Any]:
     """Run the configured hybrid regulation retriever and return pipeline-shaped output.
 
@@ -849,12 +846,8 @@ def run_hybrid_retrieval_pipeline(
     """
     retriever = initialize_hybrid_retriever()
 
-    cohort = kwargs.get("cohort")
-    retrieval_query = kwargs.get("retrieval_query") or query
-    detected_entities = kwargs.get("detected_entities") or []
-    intent = kwargs.get("intent") or "regulation_query"
-    strategy = kwargs.get("strategy") or "hybrid_graph_retrieval"
-    target_chunk_types = kwargs.get("target_chunk_types") or ["regulation"]
+    retrieval_query = retrieval_query or query
+    target_chunk_types = target_chunk_types or ["regulation"]
 
     docs = retriever.retrieve(
         retrieval_query,
@@ -881,15 +874,12 @@ def run_hybrid_retrieval_pipeline(
         formatted_results.append(doc_copy)
 
     from .citation_builder import build_citations_from_vector_results
-    from .context_builder import build_context_from_vector_results
-
     citations = build_citations_from_vector_results(formatted_results)
     related_references = build_related_references(related_items)
 
     return {
         "query": query,
         "retrieval_query": retrieval_query,
-        "detected_entities": detected_entities,
         "intent": intent,
         "strategy": strategy,
         "target_chunk_types": target_chunk_types,
@@ -899,10 +889,6 @@ def run_hybrid_retrieval_pipeline(
         "related_items": related_items,
         "related_references": related_references,
         "citations": citations,
-        "context_for_llm": build_context_from_vector_results(
-            formatted_results,
-            related_items=related_items,
-        ),
         "needs_llm_answer": True,
         "needs_clarification": False,
         "out_of_domain": False,

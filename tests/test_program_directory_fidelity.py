@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 
 from src.extraction.program_parser import extract_program_directory
-from src.retrieval.core.build_entity_registry import build_registry
 from src.retrieval.core.program_lookup import program_lookup
 
 
@@ -136,18 +135,6 @@ def test_processed_program_catalog_has_source_audited_cohort_differences() -> No
         for programs in by_cohort.values()
         for record in programs.values()
     )
-
-
-def test_entity_registry_keeps_curated_single_token_faculty_alias() -> None:
-    faculty = next(
-        entity
-        for entity in build_registry()
-        if entity.get("entity_type") == "faculty"
-        and entity.get("cohort") == "K51"
-        and entity.get("canonical_name") == "Khoa Toán - Tin học"
-    )
-    assert "Toán" in faculty["aliases"]
-    assert "toan" in faculty["aliases"]
 
 
 def test_faculty_lookup_prefers_long_alias_over_overlapping_short_alias() -> None:

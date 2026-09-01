@@ -22,7 +22,6 @@ from src.retrieval.core.hybrid_pipeline import (
     run_hybrid_retrieval_pipeline,
     select_graph_related_parent_candidates,
 )
-from src.retrieval.core.query_context import select_effective_query
 from src.retrieval.core.vector_retriever import (
     load_embedding_model,
 )
@@ -46,7 +45,7 @@ from .citation_formatter import (
     select_relevant_citations,
 )
 from .gemini_client import GeminiClient
-from .io_utils import load_json, load_yaml
+from src.common.io import load_json, load_yaml
 from .prompt_builder import (
     ANSWER_PROMPT_VERSION,
     DEFAULT_MAX_CONTEXT_CHARS,
@@ -58,7 +57,7 @@ from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v58-registry-grounded-routing"
+PIPELINE_VERSION = "v61-directory-alias-pools"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -197,14 +196,6 @@ class AnswerPipeline:
             if isinstance(item, dict) and item.get("_id")
         }
         self.program_directory = load_json(self.config["input"]["program_directory"])
-        self.entity_registry = load_json(self.config["input"]["entity_registry"])
-        
-        query_expansion_rules_path = self.config["input"].get("query_expansion_rules")
-        self.expansion_rules = (
-            load_json(query_expansion_rules_path)
-            if query_expansion_rules_path and Path(query_expansion_rules_path).is_file()
-            else {}
-        )
         self.slang_normalizer = SlangNormalizer(
             program_directory=self.program_directory,
         )
@@ -248,7 +239,7 @@ class AnswerPipeline:
     ) -> dict[str, Any]:
         """Return a complete answer for one user query.
 
-        The sync path runs router + retrieval,
+        The sync path runs planning + retrieval,
         applies deterministic guardrails for structured/tool answers, builds a
         bounded context for true-RAG questions, then calls the configured LLM
         only when generation is actually required.
@@ -653,7 +644,6 @@ class AnswerPipeline:
             "citations_used": resolved_citations,
             "related_references": resolved_related,
             "structured_results": structured_results,
-            "detected_entities": res.get("detected_entities") or [],
             "target_chunk_types": res.get("target_chunk_types") or [],
             "query_plan": res.get("query_plan"),
             "task_results": res.get("task_results") or [],
@@ -1013,7 +1003,7 @@ class AnswerPipeline:
         cohort: str | None = None,
         chat_history: list[dict[str, str]] | None = None,
     ) -> dict[str, Any]:
-        """Run the backend retrieval/router stack with the active cohort context."""
+        """Run the active QueryPlan and retrieval stack for one cohort context."""
         if _env_bool("STUDENT_RAG_EVAL_FORCE_REGULATION_RAG"):
             query_handling = {
                 "raw_query": query,
@@ -1033,27 +1023,8 @@ class AnswerPipeline:
             retrieval_query = self.slang_normalizer.normalize_for_retrieval(query)
             result = run_hybrid_retrieval_pipeline(
                 query=query,
-                scoring_tables=self.scoring_tables,
-                formula_rules=self.formula_rules,
-                entity_registry=self.entity_registry,
-                expansion_rules=self.expansion_rules,
-                office_directory=self.student_office_profiles,
-                student_service_directory=self.student_service_directory,
-                student_faculty_profiles=self.student_faculty_profiles,
-                foreign_language_tables=self.foreign_language_tables,
-                structured_tables_registry=self.structured_tables_registry,
-                program_directory=self.program_directory,
                 top_k=self.config["retrieval"]["default_top_k"],
-                batch_size=self.config["retrieval"].get("batch_size", 8),
-                normalize_embeddings=self.config["embedding"].get(
-                    "normalize_embeddings", True
-                ),
                 cohort=cohort,
-                candidate_multiplier=int(
-                    self.config["retrieval"].get("candidate_multiplier", 5)
-                ),
-                min_candidates=int(self.config["retrieval"].get("min_candidates", 25)),
-                chat_history=chat_history,
                 intent="open_question",
                 strategy="regulation",
                 retrieval_query=retrieval_query,
@@ -1080,190 +1051,11 @@ class AnswerPipeline:
             from src.retrieval.core.ai_router import AIRouter
             self.router = AIRouter.from_config()
 
-        planning_config = self.config.get("planning", {})
-        planning_enabled = _env_bool(
-            "STUDENT_RAG_QUERY_PLAN_ENABLED",
-            bool(planning_config.get("enabled", True)),
-        )
-        if planning_enabled and hasattr(self.router, "plan"):
-            return self._run_query_plan(
-                query=query,
-                cohort=cohort,
-                chat_history=chat_history,
-            )
-
-        router_input_query = self.slang_normalizer.replace_for_router(query)
-        try:
-            router_decision = self.router.route(
-                router_input_query,
-                chat_history=chat_history,
-                cohort=cohort,
-            )
-        except TypeError:
-            router_decision = self.router.route(
-                router_input_query,
-                chat_history=chat_history,
-            )
-        handling = select_effective_query(
-            query,
-            router_decision,
+        return self._run_query_plan(
+            query=query,
+            cohort=cohort,
             chat_history=chat_history,
-            selected_cohort=cohort,
         )
-        query_handling = handling.to_dict()
-        effective_query = handling.effective_query or query
-        router_decision = {
-            **router_decision,
-            "query_handling": query_handling,
-            "effective_query": effective_query,
-            "router_input_query": router_input_query,
-        }
-        if handling.needs_clarification:
-            return {
-                "query": query,
-                "retrieval_query": query,
-                "intent": router_decision.get("intent"),
-                "strategy": "query_context_clarification",
-                "router_decision": router_decision,
-                "structured_result": None,
-                "retrieved_items": [],
-                "citations": [],
-                "needs_llm_answer": False,
-                "needs_clarification": True,
-                "clarification_question": handling.clarification_question,
-                "out_of_domain": False,
-                "selected_cohort": cohort,
-                "query_handling": query_handling,
-                "effective_query": effective_query,
-                "raw_query": query,
-                "deterministic_validated": False,
-            }
-
-        if router_decision.get("route") == "out_of_domain":
-            router_decision = {
-                **router_decision,
-                "intent": "out_of_domain",
-            }
-            return {
-                "query": query,
-                "retrieval_query": query,
-                "intent": "out_of_domain",
-                "strategy": "none",
-                "router_decision": router_decision,
-                "structured_result": None,
-                "retrieved_items": [],
-                "citations": [],
-                "needs_llm_answer": False,
-                "needs_clarification": False,
-                "clarification_question": None,
-                "out_of_domain": True,
-                "selected_cohort": cohort,
-                "query_handling": query_handling,
-                "effective_query": effective_query,
-                "raw_query": query,
-                "deterministic_validated": False,
-            }
-
-        normalized_retrieval_query = self.slang_normalizer.normalize_for_retrieval(
-            effective_query
-        )
-
-        cohorts = router_decision.get("cohorts") or []
-        is_multi_cohort = bool(
-            router_decision.get("is_multi_cohort") and len(cohorts) >= 2
-        )
-
-        if not is_multi_cohort:
-            return self._execute_single_cohort_retrieval(
-                query=query,
-                effective_query=effective_query,
-                normalized_retrieval_query=normalized_retrieval_query,
-                cohort=cohort,
-                router_decision=router_decision,
-                query_handling=query_handling,
-                chat_history=chat_history,
-            )
-
-        sub_results: list[dict[str, Any]] = []
-        for c in cohorts:
-            sub_res = self._execute_single_cohort_retrieval(
-                query=query,
-                effective_query=effective_query,
-                normalized_retrieval_query=normalized_retrieval_query,
-                cohort=c,
-                router_decision=router_decision,
-                query_handling=query_handling,
-                chat_history=chat_history,
-            )
-            sub_results.append(sub_res)
-
-        merged_retrieved_items: list[dict[str, Any]] = []
-        seen_item_keys: set[Any] = set()
-        for sub in sub_results:
-            for item in sub.get("retrieved_items") or []:
-                item_cohort = (
-                    item.get("metadata", {}).get("cohort")
-                    or sub.get("selected_cohort")
-                )
-                item_id = str(item.get("chunk_id") or item.get("_id") or "")
-                key = (item_cohort, item_id)
-                if key not in seen_item_keys:
-                    seen_item_keys.add(key)
-                    merged_retrieved_items.append(item)
-
-        merged_citations: list[dict[str, Any]] = []
-        seen_cit_keys: set[Any] = set()
-        for sub in sub_results:
-            for cit in sub.get("citations") or []:
-                cit_cohort = cit.get("cohort") or sub.get("selected_cohort")
-                key = (
-                    cit_cohort,
-                    cit.get("document_id"),
-                    cit.get("title") or cit.get("source_parent_id"),
-                    tuple(cit.get("source_pages") or []),
-                )
-                if key not in seen_cit_keys:
-                    seen_cit_keys.add(key)
-                    merged_citations.append(cit)
-
-        structured_results_list = [
-            sub.get("structured_result")
-            for sub in sub_results
-            if sub.get("structured_result")
-        ]
-        if len(structured_results_list) > 1:
-            merged_structured: Any = {
-                "lookup_type": "multi_cohort_structured",
-                "cohorts": cohorts,
-                "sub_lookups": structured_results_list,
-                "result": structured_results_list,
-                "table_name": f"So sánh bảng số liệu các khóa: {', '.join(cohorts)}",
-                "source_label": "Dữ liệu bảng quy chế tra cứu theo từng khóa",
-            }
-        elif len(structured_results_list) == 1:
-            merged_structured = structured_results_list[0]
-        else:
-            merged_structured = None
-
-        return {
-            "query": query,
-            "retrieval_query": normalized_retrieval_query,
-            "intent": router_decision.get("intent") or "multi_cohort_comparison",
-            "strategy": "multi_cohort_fusion",
-            "router_decision": router_decision,
-            "structured_result": merged_structured,
-            "retrieved_items": merged_retrieved_items,
-            "citations": merged_citations[:10],
-            "needs_llm_answer": True,
-            "needs_clarification": False,
-            "clarification_question": None,
-            "out_of_domain": False,
-            "selected_cohort": ", ".join(cohorts),
-            "query_handling": query_handling,
-            "effective_query": effective_query,
-            "raw_query": query,
-            "deterministic_validated": False,
-        }
 
     def _run_query_plan(
         self,
@@ -1274,17 +1066,11 @@ class AnswerPipeline:
     ) -> dict[str, Any]:
         """Plan and execute at most three independent, non-recursive tasks."""
         router_input_query = self.slang_normalizer.replace_for_router(query)
-        try:
-            raw_plan = self.router.plan(
-                router_input_query,
-                chat_history=chat_history,
-                cohort=cohort,
-            )
-        except TypeError:
-            raw_plan = self.router.plan(
-                router_input_query,
-                chat_history=chat_history,
-            )
+        raw_plan = self.router.plan(
+            router_input_query,
+            chat_history=chat_history,
+            cohort=cohort,
+        )
 
         plan_keys = (
             "schema_version",
@@ -1392,7 +1178,6 @@ class AnswerPipeline:
                         task=task,
                         task_id=task_id,
                         cohort=task_cohort,
-                        chat_history=chat_history,
                     )
                 cohort_key = str(task_cohort or "default")
                 cohort_coverage[cohort_key] = sub_result["coverage"]
@@ -1524,7 +1309,6 @@ class AnswerPipeline:
             structured_tables_registry=self.structured_tables_registry,
             program_directory=self.program_directory,
             model=self.model,
-            probe_other_domains=False,
         )
         if not resolution or not resolution.result:
             return {"coverage": "uncovered", "evidence": [], "citations": [], "retrieved_items": []}
@@ -1565,29 +1349,13 @@ class AnswerPipeline:
         task: dict[str, Any],
         task_id: str,
         cohort: str | None,
-        chat_history: list[dict[str, str]] | None,
     ) -> dict[str, Any]:
         task_query = str(task.get("question") or "").strip()
         retrieval_query = self.slang_normalizer.normalize_for_retrieval(task_query)
         result = run_hybrid_retrieval_pipeline(
             query=task_query,
-            scoring_tables=self.scoring_tables,
-            formula_rules=self.formula_rules,
-            entity_registry=self.entity_registry,
-            expansion_rules=self.expansion_rules,
-            office_directory=self.student_office_profiles,
-            student_service_directory=self.student_service_directory,
-            student_faculty_profiles=self.student_faculty_profiles,
-            foreign_language_tables=self.foreign_language_tables,
-            structured_tables_registry=self.structured_tables_registry,
-            program_directory=self.program_directory,
             top_k=int(self.config.get("planning", {}).get("rag_top_k", 5)),
-            batch_size=self.config["retrieval"].get("batch_size", 8),
-            normalize_embeddings=self.config["embedding"].get("normalize_embeddings", True),
             cohort=cohort,
-            candidate_multiplier=int(self.config["retrieval"].get("candidate_multiplier", 5)),
-            min_candidates=int(self.config["retrieval"].get("min_candidates", 25)),
-            chat_history=chat_history,
             intent=task.get("intent") or "open_question",
             strategy="regulation",
             retrieval_query=retrieval_query,
@@ -1789,121 +1557,6 @@ class AnswerPipeline:
                 selected.append(citation)
         return selected[:max_sources]
 
-    def _execute_single_cohort_retrieval(
-        self,
-        *,
-        query: str,
-        effective_query: str,
-        normalized_retrieval_query: str,
-        cohort: str | None,
-        router_decision: dict[str, Any],
-        query_handling: dict[str, Any],
-        chat_history: list[dict[str, str]] | None = None,
-    ) -> dict[str, Any]:
-        if router_decision.get("execution_mode") == "structured":
-            from src.retrieval.core.structured_dispatcher import resolve_structured_decision
-            resolution = resolve_structured_decision(
-                router_decision,
-                query=normalized_retrieval_query,
-                cohort=cohort,
-                scoring_tables=self.scoring_tables,
-                formula_rules=self.formula_rules,
-                office_directory=self.student_office_profiles,
-                student_service_directory=self.student_service_directory,
-                student_faculty_profiles=self.student_faculty_profiles,
-                foreign_language_tables=self.foreign_language_tables,
-                structured_tables_registry=self.structured_tables_registry,
-                program_directory=self.program_directory,
-                model=self.model,
-            )
-            if resolution and resolution.result:
-                is_clarification = resolution.result_kind == "clarification"
-                structured_citations = enrich_citations_with_parent_details(
-                    build_citation_from_lookup(resolution.result),
-                    getattr(self, "parent_sources_by_id", {}),
-                )
-                related_references = self._structured_related_references(
-                    structured_citations,
-                    cohort=cohort,
-                )
-                return {
-                    "query": query,
-                    "retrieval_query": normalized_retrieval_query,
-                    "intent": router_decision.get("intent"),
-                    "strategy": resolution.strategy,
-                    "router_decision": router_decision,
-                    "structured_result": resolution.result,
-                    "retrieved_items": [],
-                    "citations": structured_citations,
-                    "related_references": related_references,
-                    "needs_llm_answer": False,
-                    "needs_clarification": is_clarification,
-                    "clarification_question": resolution.result.get("clarification_question") if is_clarification else None,
-                    "out_of_domain": False,
-                    "selected_cohort": cohort,
-                    "query_handling": query_handling,
-                    "effective_query": effective_query,
-                    "raw_query": query,
-                    "deterministic_validated": not is_clarification
-                }
-
-        result = run_hybrid_retrieval_pipeline(
-            query=effective_query,
-            scoring_tables=self.scoring_tables,
-            formula_rules=self.formula_rules,
-            entity_registry=self.entity_registry,
-            expansion_rules=self.expansion_rules,
-            office_directory=self.student_office_profiles,
-            student_service_directory=self.student_service_directory,
-            student_faculty_profiles=self.student_faculty_profiles,
-            foreign_language_tables=self.foreign_language_tables,
-            structured_tables_registry=self.structured_tables_registry,
-            program_directory=self.program_directory,
-            top_k=self.config["retrieval"]["default_top_k"],
-            batch_size=self.config["retrieval"].get("batch_size", 8),
-            normalize_embeddings=self.config["embedding"].get(
-                "normalize_embeddings", True
-            ),
-            cohort=cohort,
-            candidate_multiplier=int(
-                self.config["retrieval"].get("candidate_multiplier", 5)
-            ),
-            min_candidates=int(self.config["retrieval"].get("min_candidates", 25)),
-            chat_history=chat_history,
-            intent=router_decision.get("intent"),
-            strategy=router_decision.get("execution_mode") or "hybrid_graph_retrieval",
-            retrieval_query=normalized_retrieval_query,
-        )
-        # Only resolve structured tables if explicitly designated by Router (e.g. mixed mode or lookup_type present)
-        if not result.get("structured_result") and (
-            router_decision.get("execution_mode") == "mixed"
-            or router_decision.get("lookup_type")
-        ):
-            from src.retrieval.core.structured_dispatcher import resolve_structured_decision
-            supp_resolution = resolve_structured_decision(
-                router_decision,
-                query=normalized_retrieval_query,
-                cohort=cohort,
-                scoring_tables=self.scoring_tables,
-                formula_rules=self.formula_rules,
-                office_directory=self.student_office_profiles,
-                student_service_directory=self.student_service_directory,
-                student_faculty_profiles=self.student_faculty_profiles,
-                foreign_language_tables=self.foreign_language_tables,
-                structured_tables_registry=self.structured_tables_registry,
-                program_directory=self.program_directory,
-                model=self.model,
-            )
-            if supp_resolution and supp_resolution.result:
-                result["structured_result"] = supp_resolution.result
-
-        result["selected_cohort"] = cohort
-        result["router_decision"] = router_decision
-        result["raw_query"] = query
-        result["effective_query"] = effective_query
-        result["query_handling"] = query_handling
-        return result
-
     def _get_llm_client(self) -> Any:
         """Lazily create the configured LLM client for generated true-RAG answers."""
         if self._llm_client is None:
@@ -1985,7 +1638,6 @@ class AnswerPipeline:
             "execution_mode": retrieval_result.get("execution_mode") or (router_decision or {}).get("execution_mode") or "regulation",
             "lookup_type": retrieval_result.get("lookup_type") or (router_decision or {}).get("lookup_type"),
             "query_type": retrieval_result.get("query_type") or (router_decision or {}).get("query_type") or "standalone",
-            "detected_entities": retrieval_result.get("detected_entities") or [],
             "target_chunk_types": retrieval_result.get("target_chunk_types") or [],
             "raw_query": query,
             "fallback_reason": error_type or (status if status in {"out_of_domain", "needs_clarification", "low_confidence", "retrieval_error", "api_error"} else "none"),

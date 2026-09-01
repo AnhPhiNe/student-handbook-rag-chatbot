@@ -33,10 +33,6 @@ def is_section_title(line: str) -> bool:
     return any(pattern.search(line) for pattern in SECTION_TITLE_PATTERNS)
 
 
-def is_bullet_line(line: str) -> bool:
-    return bool(BULLET_PATTERN.match(line.strip()))
-
-
 def is_office_heading(line: str) -> bool:
     return bool(OFFICE_HEADING_PATTERN.match(line.strip()))
 

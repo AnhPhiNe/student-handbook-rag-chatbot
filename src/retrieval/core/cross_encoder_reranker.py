@@ -89,12 +89,3 @@ class LocalReranker:
 
 def get_local_reranker() -> LocalReranker:
     return LocalReranker()
-
-
-def rerank_with_cross_encoder(
-    query: str,
-    results: list[dict[str, Any]],
-    top_n: int = 5,
-) -> list[dict[str, Any]]:
-    reranker = get_local_reranker()
-    return reranker.rerank(query, results, top_n)

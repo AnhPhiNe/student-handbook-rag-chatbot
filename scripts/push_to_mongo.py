@@ -7,7 +7,7 @@ from collections import Counter
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
-from src.chunking.io_utils import load_json
+from src.common.io import load_json
 from pathlib import Path
 
 

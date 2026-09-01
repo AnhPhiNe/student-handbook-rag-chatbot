@@ -120,7 +120,7 @@ def _case_checks(case: dict[str, Any], result: dict[str, Any]) -> list[str]:
             failures.append(f"covered_without_citation={task_id}")
     if len(result.get("citations_used") or []) > 10:
         failures.append("citations>10")
-    if result.get("planner_fallback") and result.get("planner_fallback") != "legacy_rag":
+    if result.get("planner_fallback") and result.get("planner_fallback") != "safe_rag":
         failures.append("invalid_planner_fallback")
     return failures
 
@@ -186,7 +186,6 @@ def main() -> int:
     ]
 
     os.environ.setdefault("STUDENT_RAG_DISABLE_ROUTER_CACHE", "1")
-    os.environ.setdefault("STUDENT_RAG_QUERY_PLAN_ENABLED", "1")
 
     if args.plan_only:
         router = AIRouter.from_config()

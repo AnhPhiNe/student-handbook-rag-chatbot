@@ -45,15 +45,6 @@ def _asks_school_programs(query: str) -> bool:
     )
 
 
-def _faculty_entities(detected_entities: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    return [
-        entity
-        for entity in detected_entities
-        if entity.get("entity_type") == "faculty"
-        or "faculty_directory" in (entity.get("target_chunk_types") or [])
-    ]
-
-
 def _normalize_faculty_name(value: Any) -> str:
     text = normalize_text(value)
     text = re.sub(r"^\d+\s+", "", text)
@@ -130,28 +121,6 @@ def _filter_by_cohort(
         record
         for record in records
         if is_cohort_applicable(record, normalized_cohort)
-    ]
-
-
-def _filter_by_faculty(
-    records: list[dict[str, Any]],
-    faculty_entities: list[dict[str, Any]],
-) -> list[dict[str, Any]]:
-    if not faculty_entities:
-        return records
-
-    faculty_names = {
-        _normalize_faculty_name(entity.get("canonical_name"))
-        for entity in faculty_entities
-        if entity.get("canonical_name")
-    }
-    if not faculty_names:
-        return records
-
-    return [
-        record
-        for record in records
-        if _normalize_faculty_name(record.get("faculty_name")) in faculty_names
     ]
 
 
@@ -377,7 +346,6 @@ def program_lookup(
     query: str,
     program_directory: list[dict[str, Any]],
     cohort: str | None = None,
-    detected_entities: list[dict[str, Any]] | None = None,
     routing: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     """Tra cuu nganh tu structured data theo quyet dinh cua router."""
@@ -399,13 +367,11 @@ def program_lookup(
     ):
         return None
 
-    detected_entities = detected_entities or []
-    faculty_entities = _faculty_entities(detected_entities)
     scope = str(routing.get("scope") or "").strip()
     asks_school_programs = scope == "school" or (
         not routed_to_program_list and _asks_school_programs(query)
     )
-    asks_faculty_programs = scope == "faculty" or bool(faculty_entities)
+    asks_faculty_programs = scope == "faculty"
 
     if (
         not asks_school_programs
@@ -450,7 +416,7 @@ def program_lookup(
         }
 
     inferred_faculty_names: set[str] = set()
-    if scope == "faculty" and not faculty_entities:
+    if scope == "faculty":
         inferred_faculty_names = _infer_faculty_names_from_query(candidates, query)
         if not inferred_faculty_names:
             topic_matches = _filter_by_program_topic(candidates, query)
@@ -473,11 +439,7 @@ def program_lookup(
         and not routed_to_program_faculty
         and not topic_filtered_for_faculty
     ):
-        candidates = (
-            _filter_by_faculty(candidates, faculty_entities)
-            if faculty_entities
-            else _filter_by_faculty_names(candidates, inferred_faculty_names)
-        )
+        candidates = _filter_by_faculty_names(candidates, inferred_faculty_names)
         lookup_scope = "faculty"
     elif topic_filtered_for_faculty:
         lookup_scope = "program_topic_faculty"

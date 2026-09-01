@@ -957,9 +957,6 @@ def main(argv: list[str] | None = None):
         check=True,
     )
 
-    print(f"\n{'='*50}\n--- BUILDING ENTITY REGISTRY ---\n{'='*50}")
-    subprocess.run([sys.executable, "-m", "src.retrieval.core.build_entity_registry"], check=True)
-
     print(f"\n{'='*50}\n--- BUILDING CROSS-REFERENCE GRAPH ---\n{'='*50}")
     subprocess.run([sys.executable, "-m", "src.ingestion.graph_extractor"], check=True)
 

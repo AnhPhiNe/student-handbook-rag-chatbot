@@ -20,7 +20,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v17-registry-literal-grounding"
+QUERY_PLAN_NORMALIZER_VERSION = "v19-reference-table-selector"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
@@ -264,12 +264,13 @@ def query_plan_response_schema() -> dict[str, Any]:
     }
 
 
-def legacy_rag_plan(
+def safe_rag_fallback_plan(
     query: str,
     cohort: str | None = None,
     *,
-    reason: str = "legacy_rag",
+    reason: str = "safe_rag",
 ) -> dict[str, Any]:
+    """Return one bounded RAG task when planning cannot be trusted."""
     normalized_cohort = normalize_cohort(cohort)
     return {
         "schema_version": QUERY_PLAN_SCHEMA_VERSION,
@@ -360,7 +361,7 @@ def normalize_query_plan(
             "planner_validation_errors": [],
         }, []
     if bool(payload.get("out_of_domain")) and _has_handbook_domain_signal(query):
-        return legacy_rag_plan(
+        return safe_rag_fallback_plan(
             query,
             default_cohort,
             reason="domain_signal_overrides_out_of_domain",
@@ -390,7 +391,7 @@ def normalize_query_plan(
         }, []
     raw_tasks = payload.get("tasks")
     if not isinstance(raw_tasks, list) or not raw_tasks:
-        return legacy_rag_plan(query, default_cohort, reason="invalid_plan_to_legacy_rag"), [
+        return safe_rag_fallback_plan(query, default_cohort, reason="invalid_plan_to_safe_rag"), [
             "missing_tasks"
         ]
 
@@ -443,7 +444,7 @@ def normalize_query_plan(
         task["id"] = f"t{index}"
 
     if not tasks:
-        return legacy_rag_plan(query, default_cohort, reason="invalid_plan_to_legacy_rag"), (
+        return safe_rag_fallback_plan(query, default_cohort, reason="invalid_plan_to_safe_rag"), (
             errors or ["missing_valid_tasks"]
         )
 

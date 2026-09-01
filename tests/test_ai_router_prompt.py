@@ -11,13 +11,11 @@ from src.retrieval.core.ai_router import (
     AIRouter,
     PLANNER_SYSTEM_PROMPT,
     ROUTER_PROMPT_VERSION,
-    ROUTER_SYSTEM_PROMPT,
 )
 from src.retrieval.core.query_plan import QUERY_PLAN_NORMALIZER_VERSION
 from src.retrieval.core.structured_routing import (
     compact_registry_for_prompt,
     normalize_router_decision,
-    router_json_schema,
     validate_router_decision,
 )
 
@@ -45,27 +43,89 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
     assert 'formula_type":{"type":"string","values":["scholarship_score","gpa_weighted_average"]}' in prompt_registry
     assert "điểm học bổng từ điểm học tập và rèn luyện=scholarship_score" in prompt_registry
     assert "Điểm hoặc tên mức xếp loại được hỏi" in prompt_registry
+    assert '"aspect":{"type":"string"' in prompt_registry
+    assert '"values":["amount","classification"]' in prompt_registry
+    scholarship_contract = prompt_registry.split("scholarship_classification|", 1)[1].split(
+        "\n", 1
+    )[0]
+    assert "điều kiện" not in scholarship_contract
     assert "Dịch vụ cần hỗ trợ, không phải tên đơn vị" in prompt_registry
 
 
-def test_router_contract_omits_fields_derived_by_code() -> None:
-    contract = router_json_schema()
-
-    assert "retrieval_query" not in contract
-    assert "target_chunk_types" not in contract
-    assert "needs_clarification" not in contract
-
-
-def test_compact_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None:
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
-    dynamic_prompt = router._build_prompt(
-        "K50 IELTS 5.5 là bậc mấy?",
-        cohort="K50",
-        chat_history=[],
+@pytest.mark.parametrize(
+    ("query", "lookup_type", "expected_slots"),
+    [
+        (
+            "Mức tiền học bổng Xuất sắc là bao nhiêu?",
+            "scholarship_classification",
+            {"aspect": "amount"},
+        ),
+        (
+            "Xếp loại học bổng thế nào?",
+            "scholarship_classification",
+            {"aspect": "classification"},
+        ),
+        (
+            "Thời gian tối đa hệ chính quy là bao lâu?",
+            "study_duration",
+            {"training_mode": "chinh_quy"},
+        ),
+    ],
+)
+def test_reference_table_selectors_are_grounded_from_registry_metadata(
+    query: str,
+    lookup_type: str,
+    expected_slots: dict[str, str],
+) -> None:
+    normalized = normalize_router_decision(
+        {
+            "route": "structured",
+            "lookup_type": lookup_type,
+            "intent": "direct_value",
+            "slots": {},
+            "slot_spans": {},
+        },
+        query=query,
+        selected_cohort="K51",
     )
 
-    assert len(ROUTER_SYSTEM_PROMPT.strip()) + len(dynamic_prompt) <= 7400
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v38-directory-task-contract"
+    assert normalized["slots"] == expected_slots
+    assert set(normalized["slot_spans"]) == set(expected_slots)
+    assert validate_router_decision(normalized, query=query) == []
+
+
+def test_reference_table_selector_stays_absent_for_general_question() -> None:
+    normalized = normalize_router_decision(
+        {
+            "route": "structured",
+            "lookup_type": "scholarship_classification",
+            "intent": "direct_value",
+            "slots": {},
+            "slot_spans": {},
+        },
+        query="Cho tôi thông tin tổng quan về học bổng.",
+        selected_cohort="K51",
+    )
+
+    assert normalized["slots"] == {}
+    assert normalized["slot_spans"] == {}
+
+
+def test_scholarship_policy_question_does_not_infer_structured_aspect() -> None:
+    normalized = normalize_router_decision(
+        {
+            "route": "structured",
+            "lookup_type": "scholarship_classification",
+            "intent": "direct_value",
+            "slots": {},
+            "slot_spans": {},
+        },
+        query="Điều kiện để được xét học bổng là gì?",
+        selected_cohort="K51",
+    )
+
+    assert normalized["slots"] == {}
+    assert normalized["slot_spans"] == {}
 
 
 def test_plan_cache_key_includes_normalizer_version(monkeypatch, tmp_path: Path) -> None:
@@ -103,8 +163,9 @@ def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
         router._plan_response_format_payload(),
     )
 
-    assert stats["total_chars"] <= 10500
-    assert stats["estimated_input_tokens"] <= 2650
+    assert stats["total_chars"] <= 10700
+    assert stats["estimated_input_tokens"] <= 2700
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v39-reference-table-selector"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
     assert "native JSON Schema" in dynamic_prompt
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
@@ -227,11 +288,11 @@ def test_model_defaults_select_supported_reasoning_and_format(
     gpt_oss = _router(monkeypatch, tmp_path, model_name="openai/gpt-oss-20b")
 
     assert qwen_36._resolved_reasoning_effort() == "none"
-    assert qwen_36._response_format_payload() == {"type": "json_object"}
+    assert qwen_36._plan_response_format_payload() == {"type": "json_object"}
     assert qwen_38._resolved_reasoning_effort() == "low"
-    assert qwen_38._response_format_payload()["type"] == "json_schema"
+    assert qwen_38._plan_response_format_payload()["type"] == "json_schema"
     assert gpt_oss._resolved_reasoning_effort() == "low"
-    assert gpt_oss._response_format_payload()["type"] == "json_schema"
+    assert gpt_oss._plan_response_format_payload()["type"] == "json_schema"
 
 
 def test_router_treats_upstream_disconnect_as_transient() -> None:
@@ -314,7 +375,7 @@ def test_planner_does_not_execute_partial_plan_after_unreadable_task(monkeypatch
     router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
     plan = router.plan("IELTS 6.0 tương đương bậc mấy và quy định học vụ thế nào?", cohort="K51")
 
-    assert plan["planner_fallback"] == "legacy_rag"
+    assert plan["planner_fallback"] == "safe_rag"
     assert [task["mode"] for task in plan["tasks"]] == ["rag"]
     assert any("invalid_object" in error for error in plan["planner_validation_errors"])
 
@@ -329,7 +390,7 @@ def test_planner_still_blocks_unrepaired_structured_contract_errors(monkeypatch,
     router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
     plan = router.plan("IELTS 6.0 tương đương bậc mấy?", cohort="K51")
 
-    assert plan["planner_fallback"] == "legacy_rag"
+    assert plan["planner_fallback"] == "safe_rag"
     assert [task["mode"] for task in plan["tasks"]] == ["rag"]
 
 
@@ -355,17 +416,14 @@ def test_router_falls_back_to_regulation_rag_after_provider_error(
     monkeypatch.setattr(ai_router_module, "Groq", _FakeGroq)
     router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
 
-    decision = router.route(
+    decision = router.plan(
         "K48-K49: co duoc xin nang diem ren luyen neu thieu minh chung khong?",
         cohort="K48-K49",
     )
 
-    assert decision["route"] == "rag"
-    assert decision["execution_mode"] == "regulation"
-    assert decision["target_chunk_types"] == ["regulation"]
-    assert decision["retrieval_query"].startswith("K48-K49")
-    assert decision["router_error_type"] == "transient_error"
-    assert decision["router_fallback"] == "router_error_to_rag"
+    assert [task["mode"] for task in decision["tasks"]] == ["rag"]
+    assert decision["planner_error_type"] == "transient_error"
+    assert decision["planner_fallback"] == "safe_rag"
 
 
 def test_from_config_accepts_model_environment_override(
@@ -396,63 +454,6 @@ def test_from_config_accepts_model_environment_override(
     assert router.model_name == "openai/gpt-oss-20b"
     assert router._resolved_reasoning_effort() == "low"
     assert router.max_output_tokens == 1024
-
-
-def test_invalid_structured_decision_falls_back_to_safe_rag(
-    monkeypatch,
-    tmp_path: Path,
-) -> None:
-    request: dict = {}
-    payload = {
-        "context_mode": "standalone",
-        "context_confidence": "high",
-        "normalized_query": "K50 học gì?",
-        "normalization_confidence": "high",
-        "corrections": [],
-        "standalone_query": None,
-        "referenced_turns": [],
-        "route": "structured",
-        "execution_mode": "structured",
-        "intent": "list_items",
-        "lookup_type": "program",
-        "cohort": "K50",
-        "slots": {},
-        "slot_spans": {},
-        "clarification_question": None,
-    }
-
-    class _Completions:
-        @staticmethod
-        def create(**kwargs):
-            request.update(kwargs)
-            return SimpleNamespace(
-                choices=[
-                    SimpleNamespace(
-                        message=SimpleNamespace(
-                            content=json.dumps(payload, ensure_ascii=False)
-                        )
-                    )
-                ],
-                usage=SimpleNamespace(
-                    prompt_tokens=100,
-                    completion_tokens=40,
-                    total_tokens=140,
-                ),
-            )
-
-    class _FakeGroq:
-        def __init__(self, **_kwargs) -> None:
-            self.chat = SimpleNamespace(completions=_Completions())
-
-    monkeypatch.setattr(ai_router_module, "Groq", _FakeGroq)
-    router = _router(monkeypatch, tmp_path, model_name="openai/gpt-oss-20b")
-
-    decision = router.route("K50 học gì?", cohort="K50")
-
-    assert decision["route"] == "rag"
-    assert "missing_slot:scope" in decision["router_validation_errors"]
-    assert request["reasoning_effort"] == "low"
-    assert request["response_format"]["type"] == "json_schema"
 
 
 def test_router_normalization_infers_explicit_jlpt_level_slot() -> None:
@@ -640,7 +641,7 @@ def test_router_normalization_handles_multi_cohort_comparison() -> None:
     assert decision["cohort"] == "K50"
 
 
-def test_router_normalization_preserves_single_cohort_backward_compatibility() -> None:
+def test_structured_normalization_preserves_single_cohort() -> None:
     query = "K50 mấy điểm qua môn?"
     decision = normalize_router_decision(
         {

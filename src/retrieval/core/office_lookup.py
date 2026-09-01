@@ -42,25 +42,6 @@ def _strip_order_prefix(value: Any) -> str:
     return re.sub(r"^\s*\d+\.\s*", "", str(value or "")).strip()
 
 
-def _office_search_text(record: dict[str, Any]) -> str:
-    return " ".join(
-        str(value)
-        for value in [
-            record.get("unit_name"),
-            record.get("unit"),
-            record.get("service"),
-            " ".join(record.get("aliases") or []),
-            record.get("summary"),
-            record.get("raw_text"),
-            record.get("email"),
-            record.get("phone"),
-            record.get("office"),
-            record.get("source_section"),
-        ]
-        if value
-    )
-
-
 def _candidate_values(record: dict[str, Any]) -> list[str]:
     base_unit = _strip_order_prefix(record.get("unit_name") or record.get("unit"))
     values = [
@@ -155,83 +136,6 @@ def _entity_key(record: dict[str, Any]) -> str:
     return normalize_text(
         _strip_order_prefix(record.get("unit_name") or record.get("unit"))
     ) or normalize_text(record.get("record_id") or record.get("service_id"))
-
-
-def _grounded_query_span(query: str, normalized_value: str) -> str | None:
-    words = re.findall(r"[\w@._+-]+", query, flags=re.UNICODE)
-    target_size = max(1, len(normalized_value.split()))
-    for size in range(max(1, target_size - 1), target_size + 2):
-        for start in range(0, len(words) - size + 1):
-            span = " ".join(words[start : start + size])
-            if normalize_text(span) == normalized_value:
-                return span
-    return None
-
-
-def find_grounded_catalog_hint(
-    query: str,
-    office_directory: list[dict[str, Any]],
-    student_service_directory: list[dict[str, Any]],
-    student_faculty_profiles: list[dict[str, Any]] | None = None,
-    *,
-    cohort: str | None = None,
-) -> dict[str, Any] | None:
-    """Return an exact catalog span that can safely repair a premature clarify route."""
-    query_norm = normalize_text(query)
-    if not query_norm:
-        return None
-    normalized_cohort = normalize_cohort(cohort)
-    matches: list[dict[str, Any]] = []
-    catalogs = (
-        ("office", office_directory),
-        ("student_service", student_service_directory),
-        ("faculty", student_faculty_profiles or []),
-    )
-    for lookup_type, records in catalogs:
-        for record in records:
-            if not is_validated_source_applicable(record, normalized_cohort):
-                continue
-            for value in _candidate_values(record):
-                value_norm = normalize_text(value)
-                if len(value_norm) < 3:
-                    continue
-                if not re.search(
-                    rf"(?<![a-z0-9]){re.escape(value_norm)}(?![a-z0-9])",
-                    query_norm,
-                ):
-                    continue
-                grounded_span = _grounded_query_span(query, value_norm)
-                if not grounded_span:
-                    continue
-                matches.append(
-                    {
-                        "lookup_type": lookup_type,
-                        "entity_text": grounded_span,
-                        "unit_name": _strip_order_prefix(
-                            record.get("unit_name") or record.get("unit")
-                        ),
-                        "entity_key": _entity_key(record),
-                        "specificity": (len(value_norm.split()), len(value_norm)),
-                        "match_type": "exact_catalog_span",
-                    }
-                )
-
-    if not matches:
-        return None
-    matches.sort(key=lambda item: item["specificity"], reverse=True)
-    top = matches[0]
-    tied_entities = {
-        item["entity_key"]
-        for item in matches
-        if item["specificity"] == top["specificity"]
-    }
-    if len(tied_entities) > 1:
-        return None
-    return {
-        key: value
-        for key, value in top.items()
-        if key not in {"entity_key", "specificity"}
-    }
 
 
 def _rank_candidates(
@@ -501,7 +405,6 @@ def office_lookup(
     query: str,
     office_directory: list[dict[str, Any]],
     cohort: str | None = None,
-    detected_entities: list[dict[str, Any]] | None = None,
     routing: dict[str, Any] | None = None,
     top_k: int = 3,
     candidate_text: str | None = None,
@@ -519,12 +422,6 @@ def office_lookup(
         or "office_directory" in target_types
     )
     typed_candidate = bool(candidate_text and candidate_text.strip())
-    entity_targets = {
-        target
-        for entity in (detected_entities or [])
-        for target in (entity.get("target_chunk_types") or [])
-    }
-    routed_to_office = routed_to_office or "office_directory" in entity_targets
 
     if not typed_candidate and not routed_to_office:
         return None
@@ -589,20 +486,20 @@ def office_lookup(
     is_faculty = "student_faculty_profile" in selected_content_types
     if is_service:
         lookup_scope = "student_service"
-        table_name = "Danh sach dich vu sinh vien"
-        source_label = "Danh muc dich vu sinh vien trong So tay sinh vien HCMUE"
+        table_name = "Danh sách dịch vụ sinh viên"
+        source_label = "Danh mục dịch vụ sinh viên trong Sổ tay sinh viên HCMUE"
         source_section = "student_service_directory"
         content_type = "student_service_directory"
     elif is_faculty:
         lookup_scope = "faculty"
-        table_name = "Danh sach Khoa lien he"
-        source_label = "Danh muc Khoa/lien he trong So tay sinh vien HCMUE"
+        table_name = "Danh sách khoa liên hệ"
+        source_label = "Danh mục khoa/liên hệ trong Sổ tay sinh viên HCMUE"
         source_section = "student_faculty_profiles"
         content_type = "student_faculty_profile"
     else:
         lookup_scope = "office"
-        table_name = "Danh sach phong ban lien he"
-        source_label = "Danh muc phong ban/lien he trong So tay sinh vien HCMUE"
+        table_name = "Danh sách phòng ban liên hệ"
+        source_label = "Danh mục phòng ban/liên hệ trong Sổ tay sinh viên HCMUE"
         source_section = "student_office_profiles"
         content_type = "student_office_profile"
 

@@ -14,6 +14,7 @@ from .formula_lookup import formula_lookup
 from .foreign_language_lookup import foreign_language_lookup
 from .office_lookup import normalize_text, office_lookup
 from .program_lookup import program_lookup
+from .scholarship_lookup import scholarship_table_lookup
 from .study_duration_lookup import study_duration_lookup
 from .structured_lookup import structured_lookup_from_slots
 from .structured_routing import load_lookup_registry, validate_fact_lock_inputs
@@ -284,6 +285,7 @@ def _reference_table_lookup(
     if isinstance(selector_spec, dict):
         selected_types = set(selector_spec.get("table_types") or [])
         selected_subtypes = set(selector_spec.get("table_subtypes") or [])
+        selected_id_suffixes = tuple(selector_spec.get("table_id_suffixes") or [])
         selected = [
             table
             for table in candidates
@@ -291,6 +293,10 @@ def _reference_table_lookup(
             and (
                 not selected_subtypes
                 or table.get("table_subtype") in selected_subtypes
+            )
+            and (
+                not selected_id_suffixes
+                or str(table.get("table_id") or "").endswith(selected_id_suffixes)
             )
         ]
         # A stale selector must not turn valid table evidence into uncovered.
@@ -417,6 +423,23 @@ def _unique_reference_resolution(
         row_count = sum(len(table.get("rows") or []) for table in tables)
         return resolved if resolved and row_count == 1 else None
 
+    if lookup_type == "scholarship_classification":
+        aspect = str(slots.get("aspect") or "")
+        table_id = {
+            "amount": "scholarship_amount",
+            "classification": "scholarship_classification",
+        }.get(aspect)
+        if table_id is None or not slots.get("score_or_label"):
+            return None
+        resolved = scholarship_table_lookup(
+            query,
+            structured_tables_registry,
+            cohort=cohort,
+            slots=slots,
+            table_id=table_id,
+        )
+        return resolved if resolved and len(resolved.get("items") or []) == 1 else None
+
     return None
 
 
@@ -434,7 +457,6 @@ def _resolve_single_lookup(
     foreign_language_tables: list[dict[str, Any]],
     structured_tables_registry: list[dict[str, Any]],
     program_directory: list[dict[str, Any]],
-    detected_entities: list[dict[str, Any]] | None = None,
     model: Any | None = None,
 ) -> StructuredResolution | None:
     slots = decision.get("slots") or {}
@@ -496,8 +518,10 @@ def _resolve_single_lookup(
         )
         if lookup_type == "student_service":
             directory = student_service_directory + office_directory
+        elif lookup_type == "office":
+            directory = office_directory
         else:
-            directory = office_directory + (student_faculty_profiles or [])
+            directory = student_faculty_profiles or []
 
         routing = {
             "intent": "office_query",
@@ -508,7 +532,6 @@ def _resolve_single_lookup(
             query,
             directory,
             cohort=effective_cohort,
-            detected_entities=detected_entities,
             routing=routing,
             candidate_text=candidate_text,
             require_confident_match=True,
@@ -542,8 +565,8 @@ def _resolve_single_lookup(
         }
         target_content_types = {
             "student_service": ["student_service_directory", "student_office_profile"],
-            "office": ["student_office_profile", "student_faculty_profile"],
-            "faculty": ["student_faculty_profile", "student_office_profile"],
+            "office": ["student_office_profile"],
+            "faculty": ["student_faculty_profile"],
         }
         return _resolution(
             lookup_type,
@@ -569,7 +592,6 @@ def _resolve_single_lookup(
             candidate_text,
             program_directory,
             cohort=effective_cohort,
-            detected_entities=detected_entities,
             routing={
                 "content_type": "program_directory",
                 "action": action,
@@ -601,30 +623,6 @@ def _resolve_single_lookup(
 
 
 
-def _is_valid_probe_result(
-    resolution: StructuredResolution | None,
-) -> bool:
-    if not resolution or not resolution.result or resolution.result_kind == "clarification":
-        return False
-    res_data = resolution.result
-    if isinstance(res_data, dict):
-        if "result" in res_data and isinstance(res_data["result"], list):
-            return len(res_data["result"]) > 0
-        if "rows" in res_data and isinstance(res_data["rows"], list):
-            return len(res_data["rows"]) > 0
-        if "items" in res_data and isinstance(res_data["items"], list):
-            return len(res_data["items"]) > 0
-        if "table" in res_data and isinstance(res_data["table"], dict):
-            return bool(res_data["table"])
-        if res_data.get("exists") is True:
-            return True
-        if res_data.get("formula_text"):
-            return True
-    elif isinstance(res_data, list):
-        return len(res_data) > 0
-    return False
-
-
 def resolve_structured_decision(
     decision: dict[str, Any],
     *,
@@ -638,9 +636,7 @@ def resolve_structured_decision(
     foreign_language_tables: list[dict[str, Any]],
     structured_tables_registry: list[dict[str, Any]],
     program_directory: list[dict[str, Any]],
-    detected_entities: list[dict[str, Any]] | None = None,
     model: Any | None = None,
-    probe_other_domains: bool = True,
 ) -> StructuredResolution | None:
     lookup_type = str(decision.get("lookup_type") or "").strip()
     effective_cohort = normalize_cohort(cohort or decision.get("cohort"))
@@ -657,94 +653,10 @@ def resolve_structured_decision(
         "foreign_language_tables": foreign_language_tables,
         "structured_tables_registry": structured_tables_registry,
         "program_directory": program_directory,
-        "detected_entities": detected_entities,
         "model": model,
     }
 
-    primary_res = _resolve_single_lookup(lookup_type, **lookup_kwargs) if lookup_type else None
-
-    # QueryPlan assigns exactly one structured tool to each task.  Keep the
-    # historical cross-domain probing only for the legacy route path.
-    if not probe_other_domains:
-        return primary_res
-
-    # When Router explicitly determines single pure regulation without lookup_type, skip structured probing
-    if decision.get("execution_mode") == "regulation" and not lookup_type:
-        return None
-
-    candidate_domains = [
-        "foreign_language",
-        "scholarship_classification",
-        "study_duration",
-        "scoring",
-        "formula",
-        "program",
-        "office",
-        "student_service",
-    ]
-
-    collected: list[StructuredResolution] = []
-    seen_lookups: set[str] = set()
-    if primary_res and _is_valid_probe_result(primary_res):
-        collected.append(primary_res)
-        seen_lookups.add(primary_res.lookup_type)
-        if primary_res.lookup_type in {"office", "faculty", "student_service"}:
-            seen_lookups.update({"office", "faculty", "student_service"})
-
-    for cand_type in candidate_domains:
-        if cand_type in seen_lookups:
-            continue
-        cand_res = _resolve_single_lookup(cand_type, **lookup_kwargs)
-        if _is_valid_probe_result(cand_res):
-            collected.append(cand_res)
-            seen_lookups.add(cand_type)
-            if cand_type in {"office", "faculty", "student_service"}:
-                seen_lookups.update({"office", "faculty", "student_service"})
-
-    if len(collected) >= 2:
-        combined_result = {
-            "lookup_type": "multi_structured",
-            "input_value": query,
-            "cohort": effective_cohort,
-            "lookup_count": len(collected),
-            "result": [
-                {
-                    "lookup_type": item.lookup_type,
-                    "table_name": item.result.get("table_name") or item.lookup_type,
-                    "data": item.result.get("result") or item.result.get("items") or item.result,
-                }
-                for item in collected
-            ],
-            "sub_lookups": [
-                item.result
-                for item in collected
-                if item.result and isinstance(item.result, dict)
-            ],
-            "source_pages": sorted(
-                list(
-                    {
-                        p
-                        for item in collected
-                        for p in (item.result.get("source_pages") or [])
-                    }
-                )
-            ),
-            "table_name": "Các bảng tra cứu liên quan",
-            "source_label": "Dữ liệu tra cứu tổng hợp trong Sổ tay sinh viên HCMUE",
-            "content_type": "multi_structured_lookup",
-        }
-        all_target_chunks = list({ct for item in collected for ct in item.target_chunk_types})
-        return StructuredResolution(
-            lookup_type="multi_structured",
-            strategy="multi_structured_lookup",
-            result_kind="multi_structured",
-            result=combined_result,
-            target_chunk_types=all_target_chunks,
-        )
-    elif len(collected) == 1:
-        return collected[0]
-
-    return primary_res
+    return _resolve_single_lookup(lookup_type, **lookup_kwargs) if lookup_type else None
 
 
 def _resolution(

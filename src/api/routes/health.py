@@ -124,11 +124,6 @@ def _required_artifacts() -> list[ArtifactStatus]:
             "processed_json",
         ),
         _artifact(
-            "data/processed/entities/entity_registry.json",
-            Path("data/processed/entities/entity_registry.json").is_file(),
-            "processed_json",
-        ),
-        _artifact(
             "data/processed/amendments/amendments.json",
             Path("data/processed/amendments/amendments.json").is_file(),
             "processed_json",

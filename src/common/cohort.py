@@ -118,22 +118,6 @@ def build_cohort_token_regex(
     return re.compile(rf"(?<!\w)(?:{'|'.join(alternatives)})(?!\w)", re.IGNORECASE)
 
 
-# Backward-compatible derived views. Runtime code should prefer the functions
-# above so tests or applications can supply an extended registry dynamically.
-VALID_COHORTS = set(valid_cohorts())
-COHORT_ADMISSION_YEARS = cohort_admission_years()
-COHORT_GROUPS = {
-    alias: canonical
-    for alias, canonical in cohort_alias_map().items()
-    if alias not in VALID_COHORTS
-}
-LEGACY_COHORTS = {
-    _alias_key(str(alias)): canonical
-    for canonical, spec in COHORT_REGISTRY.items()
-    for alias in (spec.get("legacy_aliases") or ())
-}
-
-
 def normalize_cohort(cohort: str | None) -> str | None:
     if not cohort:
         return None

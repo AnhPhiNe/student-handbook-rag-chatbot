@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Any
 import os
 
-from .io_utils import load_json, load_yaml, save_json
+from src.common.io import load_json, load_yaml, save_json
 from .regulation_chunker import build_regulation_chunks
 from .report_builder import build_chunk_report
 from .validator import validate_chunks, validate_parent_links

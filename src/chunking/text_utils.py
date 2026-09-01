@@ -1,5 +1,4 @@
 import re
-from typing import Any
 
 
 def normalize_text(text: str) -> str:
@@ -40,30 +39,6 @@ def join_non_empty(parts: list[str], sep: str = "\n") -> str:
     return sep.join([part.strip() for part in parts if part and part.strip()])
 
 
-def format_source_pages(pages: list[int]) -> str:
-    """Định dạng một danh sách các số trang thành một chuỗi dễ đọc.
-
-    Hàm này sẽ chuyển đổi một danh sách các số trang thành một định dạng chuỗi thân thiện với người dùng.
-    Ví dụ:
-    - Nếu danh sách rỗng, trả về "Không rõ trang".
-    - Nếu có một trang, trả về "Trang X".
-    - Nếu có nhiều trang, trả về "Trang X-Y" (với X là trang nhỏ nhất và Y là trang lớn nhất).
-
-    Args:
-        pages: Một danh sách các số nguyên đại diện cho các số trang (ví dụ: [1, 5, 3]).
-
-    Returns:
-        Một chuỗi mô tả các trang đã được định dạng (ví dụ: "Trang 1", "Trang 1-5", "Không rõ trang").
-    """
-    if not pages:
-        return "Không rõ trang"
-
-    if len(pages) == 1:
-        return f"Trang {pages[0]}"
-
-    return f"Trang {min(pages)}-{max(pages)}"
-
-
 def source_page_range(start: int, end: int) -> list[int]:
     """Tạo một danh sách các số nguyên đại diện cho một phạm vi trang.
 
@@ -78,29 +53,3 @@ def source_page_range(start: int, end: int) -> list[int]:
         Ví dụ: `source_page_range(1, 3)` sẽ trả về `[1, 2, 3]`.
     """
     return list(range(start, end + 1))
-
-
-def get_source_pages_from_item(item: dict[str, Any]) -> list[int]:
-    """Trích xuất danh sách các số trang từ một đối tượng (thường là một từ điển).
-
-    Hàm này cố gắng tìm thông tin về các số trang trong đối tượng `item` theo thứ tự ưu tiên:
-    1. Kiểm tra khóa 'source_pages'.
-    2. Nếu không có 'source_pages', kiểm tra các khóa 'page_start' và 'page_end' để tạo phạm vi trang.
-    Nếu không tìm thấy thông tin trang nào, hàm sẽ trả về một danh sách rỗng.
-
-    Args:
-        item: Một từ điển hoặc đối tượng tương tự từ điển, có thể chứa các khóa
-              'source_pages' (danh sách số nguyên) hoặc 'page_start' (số nguyên)
-              và 'page_end' (số nguyên).
-
-    Returns:
-        Một danh sách các số nguyên đại diện cho các số trang.
-        Trả về danh sách rỗng nếu không tìm thấy thông tin trang hợp lệ.
-    """
-    if "source_pages" in item and item["source_pages"]:
-        return item["source_pages"]
-
-    if "page_start" in item and "page_end" in item:
-        return source_page_range(item["page_start"], item["page_end"])
-
-    return []

@@ -82,12 +82,14 @@ def _is_scholarship_lookup_query(query_norm: str) -> bool:
 def _filter_tables(
     tables: list[dict[str, Any]],
     cohort: str | None,
+    *,
+    table_id: str = "scholarship_classification",
 ) -> list[dict[str, Any]]:
     normalized_cohort = normalize_cohort(cohort)
     candidates = [
         table
         for table in tables
-        if table.get("table_id") == "scholarship_classification"
+        if table.get("table_id") == table_id
     ]
     if not normalized_cohort:
         return candidates
@@ -136,11 +138,13 @@ def _rows_for_query(
     return matched, score
 
 
-def scholarship_classification_lookup(
+def scholarship_table_lookup(
     query: str,
     tables: list[dict[str, Any]],
     cohort: str | None = None,
     slots: dict[str, Any] | None = None,
+    *,
+    table_id: str = "scholarship_classification",
 ) -> dict[str, Any] | None:
     if slots and slots.get("score_or_label"):
         query_norm = normalize_text(slots.get("score_or_label"))
@@ -150,7 +154,7 @@ def scholarship_classification_lookup(
             return None
 
     effective_cohort = normalize_cohort(cohort) or resolve_cohort_from_query(query)
-    candidates = _filter_tables(tables, effective_cohort)
+    candidates = _filter_tables(tables, effective_cohort, table_id=table_id)
     if not candidates:
         return None
 
@@ -177,10 +181,29 @@ def scholarship_classification_lookup(
         "display_rows": list(table.get("rows") or []),
         "source_pages": table.get("source_pages") or [],
         "table_name": table.get("table_name")
-        or "Xếp loại học bổng khuyến khích học tập",
-        "source_label": "Bảng xếp loại học bổng khuyến khích học tập trong Sổ tay sinh viên HCMUE",
+        or (
+            "Mức học bổng khuyến khích học tập"
+            if table_id == "scholarship_amount"
+            else "Xếp loại học bổng khuyến khích học tập"
+        ),
+        "source_label": "Bảng học bổng khuyến khích học tập trong Sổ tay sinh viên HCMUE",
         "cohort": table.get("cohort"),
         "document_id": table.get("document_id"),
         "source_section": table.get("source_section") or "scoring_table",
         "content_type": "structured_lookup",
     }
+
+
+def scholarship_classification_lookup(
+    query: str,
+    tables: list[dict[str, Any]],
+    cohort: str | None = None,
+    slots: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
+    return scholarship_table_lookup(
+        query,
+        tables,
+        cohort=cohort,
+        slots=slots,
+        table_id="scholarship_classification",
+    )

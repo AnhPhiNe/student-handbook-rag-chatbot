@@ -267,6 +267,8 @@ replace_slangs:
   replace_with: trung cấp chuyên nghiệp
 - match: HSSV
   replace_with: học sinh, sinh viên
+- match: SĐT
+  replace_with: số điện thoại
 - match: NCKH
   replace_with: nghiên cứu khoa học
 - match: NVSP

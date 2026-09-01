@@ -339,27 +339,6 @@ def _source_pages(value: Any) -> tuple[int, ...]:
     return tuple(pages)
 
 
-def format_applicable_amendments(amendments: list[ApplicableAmendment]) -> str:
-    if not amendments:
-        return ""
-
-    blocks = []
-    for index, amendment in enumerate(amendments, start=1):
-        blocks.append(
-            "\n".join(
-                [
-                    f"[AMENDMENT {index}]",
-                    f"Nguồn: {amendment.source_title}",
-                    f"Source ID: {amendment.source_parent_id}",
-                    f"Phạm vi hiệu lực: {amendment.effective_rule}",
-                    "Nội dung thay thế/bổ sung:",
-                    amendment.replacement_text,
-                ]
-            )
-        )
-    return "APPLICABLE AMENDMENTS\n\n" + "\n\n---\n\n".join(blocks)
-
-
 def _applies_to_years(note: str, years: tuple[int, ...]) -> tuple[bool, str]:
     min_year_match = _MIN_YEAR_RE.search(note)
     max_year_match = _MAX_YEAR_RE.search(note)

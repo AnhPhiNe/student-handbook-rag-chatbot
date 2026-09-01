@@ -4,7 +4,7 @@ version: 1
 unit_aliases:
   Phòng Đào tạo: [PĐT, PDT, học vụ]
   Phòng Công nghệ Thông tin: [CNTT, phòng IT]
-  Phòng Công tác chính trị và Học sinh, sinh viên: [CTCT&HSSV, CTCT HSSV, CTSV, HSSV]
+  Phòng Công tác chính trị và Học sinh, sinh viên: [CTCT&HSSV, CTCT-HSSV, CTCT/HSSV, CTCT HSSV, CTSV, HSSV, Phòng Công tác sinh viên]
   Phòng Kế hoạch - Tài chính: [KHTC, phòng tài chính]
   Phòng Khảo thí và Đảm bảo chất lượng: [KT&ĐBCL, KT DBCL, phòng khảo thí]
   Ký túc xá: [KTX, nội trú]

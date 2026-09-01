@@ -12,17 +12,13 @@ from src.generation.answer_pipeline import AnswerPipeline
 from src.api.routes.chat import _to_chat_response
 from src.retrieval.core.office_lookup import office_lookup
 from src.retrieval.core.query_plan import (
-    legacy_rag_plan,
+    safe_rag_fallback_plan,
     normalize_query_plan,
     query_plan_json_schema,
     query_plan_response_schema,
 )
 from src.retrieval.core.slang_normalizer import SlangNormalizer
 from src.retrieval.core.structured_dispatcher import StructuredResolution
-from src.retrieval.core.structured_routing import (
-    router_json_schema,
-    router_response_schema,
-)
 
 
 def _rag_task(index: int, question: str | None = None) -> dict[str, Any]:
@@ -816,11 +812,6 @@ def test_extended_cohort_registry_drives_schema_normalization_and_merging(
     assert "K52" in query_plan_response_schema()["properties"]["tasks"]["items"][
         "properties"
     ]["cohorts"]["items"]["enum"]
-    assert "K52" in router_json_schema()["cohorts"]
-    assert "K52" in router_response_schema()["properties"]["cohorts"]["items"][
-        "enum"
-    ]
-
     first = {
         **_rag_task(1, "Quy định đăng ký học phần của K51 là gì?"),
         "cohorts": ["K51"],
@@ -839,9 +830,9 @@ def test_extended_cohort_registry_drives_schema_normalization_and_merging(
     assert plan["tasks"][0]["cohorts"] == ["K51", "K52"]
 
 
-def test_legacy_fallback_is_one_regulation_rag_task() -> None:
-    plan = legacy_rag_plan("quy định học vụ", "K51", reason="legacy_rag")
-    assert plan["planner_fallback"] == "legacy_rag"
+def test_safe_fallback_is_one_regulation_rag_task() -> None:
+    plan = safe_rag_fallback_plan("quy định học vụ", "K51", reason="safe_rag")
+    assert plan["planner_fallback"] == "safe_rag"
     assert plan["tasks"] == [
         {
             "id": "t1",
@@ -863,16 +854,11 @@ def _pipeline(plan: dict[str, Any]) -> AnswerPipeline:
     pipeline.router = type("Planner", (), {"plan": lambda self, *args, **kwargs: plan})()
     pipeline.slang_normalizer = SlangNormalizer()
     pipeline.config = {
-        "planning": {"enabled": True, "max_citations": 10},
-        "retrieval": {"batch_size": 8, "candidate_multiplier": 5, "min_candidates": 24},
-        "embedding": {"normalize_embeddings": True},
+        "planning": {"max_citations": 10},
     }
     pipeline.model = None
-    pipeline.collection = None
     pipeline.scoring_tables = []
     pipeline.formula_rules = []
-    pipeline.entity_registry = []
-    pipeline.expansion_rules = []
     pipeline.student_office_profiles = []
     pipeline.student_service_directory = []
     pipeline.student_faculty_profiles = []
@@ -938,7 +924,6 @@ def test_planned_rag_task_rejects_unvalidated_cross_cohort_sources(
         task=task,
         task_id="t1",
         cohort="K51",
-        chat_history=[],
     )
 
     assert [item["chunk_id"] for item in result["retrieved_items"]] == [
@@ -969,10 +954,10 @@ def test_two_structured_domains_execute_without_cross_domain_probing(monkeypatch
             "cohorts": ["K51"],
         },
     ]
-    calls: list[tuple[str, bool]] = []
+    calls: list[str] = []
 
     def fake_resolve(decision, **kwargs):
-        calls.append((decision["lookup_type"], kwargs["probe_other_domains"]))
+        calls.append(decision["lookup_type"])
         lookup_type = decision["lookup_type"]
         return StructuredResolution(
             lookup_type=lookup_type,
@@ -995,7 +980,7 @@ def test_two_structured_domains_execute_without_cross_domain_probing(monkeypatch
         fake_resolve,
     )
     result = _pipeline(_plan(tasks))._run_query_plan(query="hai ý", cohort="K51", chat_history=[])
-    assert calls == [("foreign_language", False), ("scholarship_classification", False)]
+    assert calls == ["foreign_language", "scholarship_classification"]
     assert result["coverage_by_task"] == {"t1": "covered", "t2": "covered"}
     assert len(result["citations"]) == 2
 
@@ -1153,7 +1138,7 @@ def test_normalizer_preserves_grounded_score_and_component_guard() -> None:
         normalized_task, query=question, cohort="K51", scoring_tables=[],
         formula_rules=[], office_directory=[], student_service_directory=[],
         student_faculty_profiles=[], foreign_language_tables=[],
-        structured_tables_registry=registry, program_directory=[], probe_other_domains=False,
+        structured_tables_registry=registry, program_directory=[],
     )
     assert resolution.result_kind == "clarification"
     assert set(resolution.result["missing_slots"]) == {
@@ -1217,7 +1202,7 @@ def test_sync_and_stream_metadata_share_plan_coverage_and_fallback() -> None:
         "query_plan": _plan([_rag_task(1)]),
         "task_results": [{"task_id": "t1", "coverage": "covered"}],
         "coverage_by_task": {"t1": "covered"},
-        "planner_fallback": "legacy_rag",
+        "planner_fallback": "safe_rag",
         "supports_task_ids": {"p1": ["t1"]},
         "citations": [{"chunk_id": "p1", "supports_task_ids": ["t1"]}],
         "effective_query": "q",

@@ -33,7 +33,7 @@ from .query_plan import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.8-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v38-directory-task-contract"
+ROUTER_PROMPT_VERSION = "structured-regulation-v39-reference-table-selector"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"

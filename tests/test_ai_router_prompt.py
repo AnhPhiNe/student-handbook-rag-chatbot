@@ -43,7 +43,89 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
     assert 'formula_type":{"type":"string","values":["scholarship_score","gpa_weighted_average"]}' in prompt_registry
     assert "điểm học bổng từ điểm học tập và rèn luyện=scholarship_score" in prompt_registry
     assert "Điểm hoặc tên mức xếp loại được hỏi" in prompt_registry
+    assert '"aspect":{"type":"string"' in prompt_registry
+    assert '"values":["amount","classification"]' in prompt_registry
+    scholarship_contract = prompt_registry.split("scholarship_classification|", 1)[1].split(
+        "\n", 1
+    )[0]
+    assert "điều kiện" not in scholarship_contract
     assert "Dịch vụ cần hỗ trợ, không phải tên đơn vị" in prompt_registry
+
+
+@pytest.mark.parametrize(
+    ("query", "lookup_type", "expected_slots"),
+    [
+        (
+            "Mức tiền học bổng Xuất sắc là bao nhiêu?",
+            "scholarship_classification",
+            {"aspect": "amount"},
+        ),
+        (
+            "Xếp loại học bổng thế nào?",
+            "scholarship_classification",
+            {"aspect": "classification"},
+        ),
+        (
+            "Thời gian tối đa hệ chính quy là bao lâu?",
+            "study_duration",
+            {"training_mode": "chinh_quy"},
+        ),
+    ],
+)
+def test_reference_table_selectors_are_grounded_from_registry_metadata(
+    query: str,
+    lookup_type: str,
+    expected_slots: dict[str, str],
+) -> None:
+    normalized = normalize_router_decision(
+        {
+            "route": "structured",
+            "lookup_type": lookup_type,
+            "intent": "direct_value",
+            "slots": {},
+            "slot_spans": {},
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert normalized["slots"] == expected_slots
+    assert set(normalized["slot_spans"]) == set(expected_slots)
+    assert validate_router_decision(normalized, query=query) == []
+
+
+def test_reference_table_selector_stays_absent_for_general_question() -> None:
+    normalized = normalize_router_decision(
+        {
+            "route": "structured",
+            "lookup_type": "scholarship_classification",
+            "intent": "direct_value",
+            "slots": {},
+            "slot_spans": {},
+        },
+        query="Cho tôi thông tin tổng quan về học bổng.",
+        selected_cohort="K51",
+    )
+
+    assert normalized["slots"] == {}
+    assert normalized["slot_spans"] == {}
+
+
+def test_scholarship_policy_question_does_not_infer_structured_aspect() -> None:
+    normalized = normalize_router_decision(
+        {
+            "route": "structured",
+            "lookup_type": "scholarship_classification",
+            "intent": "direct_value",
+            "slots": {},
+            "slot_spans": {},
+        },
+        query="Điều kiện để được xét học bổng là gì?",
+        selected_cohort="K51",
+    )
+
+    assert normalized["slots"] == {}
+    assert normalized["slot_spans"] == {}
 
 
 def test_plan_cache_key_includes_normalizer_version(monkeypatch, tmp_path: Path) -> None:
@@ -81,9 +163,9 @@ def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
         router._plan_response_format_payload(),
     )
 
-    assert stats["total_chars"] <= 10500
-    assert stats["estimated_input_tokens"] <= 2650
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v38-directory-task-contract"
+    assert stats["total_chars"] <= 10700
+    assert stats["estimated_input_tokens"] <= 2700
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v39-reference-table-selector"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
     assert "native JSON Schema" in dynamic_prompt
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt

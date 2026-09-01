@@ -525,7 +525,8 @@ class StructuredLookupTest(unittest.TestCase):
             )
         )
 
-    def test_scholarship_lookup_returns_complete_policy_bundle(self) -> None:
+    def test_scholarship_lookup_without_aspect_returns_complete_policy_bundle(self) -> None:
+        from src.generation.structured_result_presenter import build_structured_results
         from src.retrieval.core.structured_dispatcher import (
             resolve_structured_decision,
         )
@@ -555,7 +556,7 @@ class StructuredLookupTest(unittest.TestCase):
                 "lookup_type": "scholarship_classification",
                 "slots": {},
             },
-            query="Mức học bổng Xuất sắc là bao nhiêu?",
+            query="Cho tôi thông tin tổng quan về học bổng khuyến khích học tập.",
             cohort="K51",
             scoring_tables=[],
             formula_rules=[],
@@ -570,6 +571,7 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertIsNotNone(resolution)
         self.assertEqual(resolution.strategy, "reference_table_lookup")
         self.assertEqual(resolution.result["result"]["table_count"], 4)
+        self.assertEqual(len(build_structured_results(resolution.result)), 4)
         self.assertEqual(
             {
                 item["table_subtype"]
@@ -594,6 +596,185 @@ class StructuredLookupTest(unittest.TestCase):
                 for row in amount["items"]
             )
         )
+
+    def test_scholarship_aspect_selects_only_the_requested_table(self) -> None:
+        from src.generation.structured_result_presenter import build_structured_results
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        registry = json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        cases = {
+            "amount": "scholarship_amount",
+            "classification": "scholarship_classification",
+        }
+
+        for aspect, expected_subtype in cases.items():
+            with self.subTest(aspect=aspect):
+                resolution = resolve_structured_decision(
+                    {
+                        "lookup_type": "scholarship_classification",
+                        "intent": "direct_value",
+                        "slots": {"aspect": aspect},
+                    },
+                    query="Tra cứu học bổng khuyến khích học tập.",
+                    cohort="K51",
+                    scoring_tables=[],
+                    formula_rules=[],
+                    office_directory=[],
+                    student_service_directory=[],
+                    student_faculty_profiles=[],
+                    foreign_language_tables=[],
+                    structured_tables_registry=registry,
+                    program_directory=[],
+                )
+
+                self.assertIsNotNone(resolution)
+                self.assertEqual(resolution.result["table_subtype"], expected_subtype)
+                self.assertTrue(resolution.result["display_rows"])
+                self.assertNotIn("sub_lookups", resolution.result)
+                self.assertNotIn("resolved_result", resolution.result)
+                self.assertEqual(len(build_structured_results(resolution.result)), 1)
+
+    def test_scholarship_exact_level_exposes_deterministic_resolved_result(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        registry = json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        cases = (
+            (
+                "Mức tiền học bổng Xuất sắc là bao nhiêu?",
+                "amount",
+                "Mức tiền",
+                "Xuất sắc",
+                "multiplier",
+                1.5,
+            ),
+            (
+                "Học bổng loại Xuất sắc yêu cầu xếp loại thế nào?",
+                "classification",
+                "xếp loại",
+                "Xuất sắc",
+                "scholarship_level",
+                "Xuất sắc",
+            ),
+        )
+
+        for query, aspect, aspect_span, level, result_field, expected in cases:
+            with self.subTest(aspect=aspect, level=level):
+                resolution = resolve_structured_decision(
+                    {
+                        "lookup_type": "scholarship_classification",
+                        "intent": "direct_value",
+                        "slots": {
+                            "aspect": aspect,
+                            "score_or_label": level,
+                        },
+                        "slot_spans": {
+                            "aspect": aspect_span,
+                            "score_or_label": level,
+                        },
+                    },
+                    query=query,
+                    cohort="K51",
+                    scoring_tables=[],
+                    formula_rules=[],
+                    office_directory=[],
+                    student_service_directory=[],
+                    student_faculty_profiles=[],
+                    foreign_language_tables=[],
+                    structured_tables_registry=registry,
+                    program_directory=[],
+                )
+
+                self.assertIsNotNone(resolution)
+                resolved = resolution.result["resolved_result"]
+                self.assertEqual(len(resolved["items"]), 1)
+                self.assertEqual(resolved["result"][result_field], expected)
+                self.assertEqual(
+                    len(resolution.result["display_rows"]),
+                    3 if aspect == "amount" else 6,
+                )
+
+        ambiguous = resolve_structured_decision(
+            {
+                "lookup_type": "scholarship_classification",
+                "intent": "direct_value",
+                "slots": {
+                    "aspect": "classification",
+                    "score_or_label": "Giỏi",
+                },
+                "slot_spans": {
+                    "aspect": "xếp loại",
+                    "score_or_label": "Giỏi",
+                },
+            },
+            query="Học bổng loại Giỏi yêu cầu xếp loại thế nào?",
+            cohort="K51",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=[],
+            structured_tables_registry=registry,
+            program_directory=[],
+        )
+
+        self.assertIsNotNone(ambiguous)
+        self.assertNotIn("resolved_result", ambiguous.result)
+        self.assertEqual(len(ambiguous.result["display_rows"]), 6)
+
+    def test_study_duration_training_mode_selects_only_the_requested_table(self) -> None:
+        from src.generation.structured_result_presenter import build_structured_results
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        registry = json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+
+        for training_mode in ("chinh_quy", "vua_lam_vua_hoc"):
+            with self.subTest(training_mode=training_mode):
+                resolution = resolve_structured_decision(
+                    {
+                        "lookup_type": "study_duration",
+                        "intent": "direct_value",
+                        "slots": {"training_mode": training_mode},
+                    },
+                    query="Thời gian đào tạo tối đa là bao lâu?",
+                    cohort="K51",
+                    scoring_tables=[],
+                    formula_rules=[],
+                    office_directory=[],
+                    student_service_directory=[],
+                    student_faculty_profiles=[],
+                    foreign_language_tables=[],
+                    structured_tables_registry=registry,
+                    program_directory=[],
+                )
+
+                self.assertIsNotNone(resolution)
+                self.assertTrue(
+                    resolution.result["table_id"].endswith(
+                        f"study_duration_{training_mode}"
+                    )
+                )
+                self.assertTrue(resolution.result["display_rows"])
+                self.assertNotIn("sub_lookups", resolution.result)
+                self.assertEqual(len(build_structured_results(resolution.result)), 1)
 
     def test_scoring_selector_returns_every_row_of_the_selected_table(self) -> None:
         from src.retrieval.core.structured_dispatcher import (

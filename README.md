@@ -230,7 +230,7 @@ Detailed release report: [`docs/V7_RELEASE_EVALUATION_VI.md`](./docs/V7_RELEASE_
 | Retrieval mode | `vector_primary_graph_supplement`; PhoRanker disabled |
 | Storage | Qdrant `student_handbook_semantic_v32`; MongoDB `parent_docs_v32` |
 | Runtime contract | pipeline `v58-registry-grounded-routing`; QueryPlan schema `v1`; normalizer `v17-registry-literal-grounding` |
-| Prompt contracts | Planner `structured-regulation-v38-directory-task-contract`; Composer `student-handbook-answer-v3.22-answer-scope` |
+| Prompt contracts | Planner `structured-regulation-v39-reference-table-selector`; Composer `student-handbook-answer-v3.22-answer-scope` |
 | Evaluation volume | 140 deterministic + 160 retrieval + 150 generated/judged + 60 production requests |
 
 ### 1. Deterministic Architecture — 140 Cases

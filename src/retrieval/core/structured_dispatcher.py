@@ -14,6 +14,7 @@ from .formula_lookup import formula_lookup
 from .foreign_language_lookup import foreign_language_lookup
 from .office_lookup import normalize_text, office_lookup
 from .program_lookup import program_lookup
+from .scholarship_lookup import scholarship_table_lookup
 from .study_duration_lookup import study_duration_lookup
 from .structured_lookup import structured_lookup_from_slots
 from .structured_routing import load_lookup_registry, validate_fact_lock_inputs
@@ -284,6 +285,7 @@ def _reference_table_lookup(
     if isinstance(selector_spec, dict):
         selected_types = set(selector_spec.get("table_types") or [])
         selected_subtypes = set(selector_spec.get("table_subtypes") or [])
+        selected_id_suffixes = tuple(selector_spec.get("table_id_suffixes") or [])
         selected = [
             table
             for table in candidates
@@ -291,6 +293,10 @@ def _reference_table_lookup(
             and (
                 not selected_subtypes
                 or table.get("table_subtype") in selected_subtypes
+            )
+            and (
+                not selected_id_suffixes
+                or str(table.get("table_id") or "").endswith(selected_id_suffixes)
             )
         ]
         # A stale selector must not turn valid table evidence into uncovered.
@@ -416,6 +422,23 @@ def _unique_reference_resolution(
         tables = ((resolved or {}).get("result") or {}).get("tables") or []
         row_count = sum(len(table.get("rows") or []) for table in tables)
         return resolved if resolved and row_count == 1 else None
+
+    if lookup_type == "scholarship_classification":
+        aspect = str(slots.get("aspect") or "")
+        table_id = {
+            "amount": "scholarship_amount",
+            "classification": "scholarship_classification",
+        }.get(aspect)
+        if table_id is None or not slots.get("score_or_label"):
+            return None
+        resolved = scholarship_table_lookup(
+            query,
+            structured_tables_registry,
+            cohort=cohort,
+            slots=slots,
+            table_id=table_id,
+        )
+        return resolved if resolved and len(resolved.get("items") or []) == 1 else None
 
     return None
 

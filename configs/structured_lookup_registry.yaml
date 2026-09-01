@@ -1,4 +1,4 @@
-version: 4
+version: 5
 
 tools:
   foreign_language:
@@ -66,6 +66,13 @@ tools:
           college_bridge: [liên thông từ cao đẳng, cao đẳng, college bridge]
           secondary_bridge: [liên thông từ trung cấp, trung cấp, secondary bridge]
           second_degree: [bằng đại học thứ hai, văn bằng hai, second degree]
+    table_selector:
+      slot: training_mode
+      values:
+        chinh_quy:
+          table_id_suffixes: [study_duration_chinh_quy]
+        vua_lam_vua_hoc:
+          table_id_suffixes: [study_duration_vua_lam_vua_hoc]
     strategy: study_duration_lookup
     response_intent: study_duration_lookup_query
     target_chunk_types: [structured_lookup]
@@ -74,16 +81,32 @@ tools:
     data_category: regulation_table
     presentation_type: table
     selection_mode: table_first
-    description: "Tra điều kiện, xếp loại hoặc mức tiền HBKKHT. Công thức điểm dùng formula; quy đổi GPA/rèn luyện dùng scoring."
+    description: Tra mức tiền, hệ số hoặc xếp loại HBKKHT.
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
       direct_value: []
       list_items: []
     slot_schema:
+      aspect:
+        type: string
+        enum: [amount, classification]
+        description: Khía cạnh học bổng được hỏi; để trống khi câu hỏi yêu cầu tổng quan.
+        span_aliases:
+          amount: [mức tiền, mức học bổng, hệ số]
+          classification: [xếp loại, loại học bổng]
       score_or_label:
         type: [string, number]
         description: Điểm hoặc tên mức xếp loại được hỏi.
+    table_selector:
+      slot: aspect
+      values:
+        amount:
+          table_types: [scholarship]
+          table_subtypes: [scholarship_amount]
+        classification:
+          table_types: [scholarship]
+          table_subtypes: [scholarship_classification]
     strategy: scholarship_classification_lookup
     response_intent: scholarship_classification_lookup_query
     target_chunk_types: [structured_lookup]

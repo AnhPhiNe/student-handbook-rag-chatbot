@@ -309,10 +309,6 @@ Trong lần tổng hợp này chỉ thêm báo cáo, **không sửa prompt, Plan
 
 ## 12. Bằng chứng gốc
 
-- [Manifest v6](</C:/Users/A Fee/Desktop/Workspace/student_handbook_rag/data/eval/architecture_v6_holdout/manifest.json>)
-- [Deterministic raw](</C:/Users/A Fee/Desktop/Workspace/student_handbook_rag/work/v6_official_0499d63d_run01/deterministic_full.json>) và [review cũ](</C:/Users/A Fee/Desktop/Workspace/student_handbook_rag/work/v6_official_0499d63d_run01/deterministic_failure_review.md>) — giới hạn evaluator được đính chính tại mục 3 của báo cáo này.
-- [Retrieval raw](</C:/Users/A Fee/Desktop/Workspace/student_handbook_rag/work/v6_retrieval_official_a013cdc8_run01/retrieval_end_to_end_qdrant_vector_primary_graph_supplement_full.json>) và [failure taxonomy](</C:/Users/A Fee/Desktop/Workspace/student_handbook_rag/work/v6_retrieval_official_a013cdc8_run01/retrieval_failure_taxonomy.md>)
-- [Generate raw](</C:/Users/A Fee/Desktop/Workspace/student_handbook_rag/work/v6_answer_official_a013cdc8_run01/answer_generation_full.json>) và [Judge raw](</C:/Users/A Fee/Desktop/Workspace/student_handbook_rag/work/v6_answer_official_a013cdc8_run01/generated_answer_judge_full.json>)
-- [Audit 60](</C:/Users/A Fee/Desktop/Workspace/student_handbook_rag/work/v6_answer_official_a013cdc8_run01/human_audit_60_report.md>) và [audit 40 đã chọn trước](</C:/Users/A Fee/Desktop/Workspace/student_handbook_rag/work/v6_answer_official_a013cdc8_run01/human_audit_40_official.json>)
-- [Production audit](</C:/Users/A Fee/Desktop/Workspace/student_handbook_rag/work/v6_production_official_845b481d_run01/PRODUCTION_AUDIT_VI.md>)
-- Evaluator: [suites.py](</C:/Users/A Fee/Desktop/Workspace/student_handbook_rag/src/evaluation/suites.py>), [evaluate_system.py](</C:/Users/A Fee/Desktop/Workspace/student_handbook_rag/scripts/evaluate_system.py>); phần dispatch đã được đối chiếu thêm bằng `git show 0499d63d:scripts/evaluate_system.py`.
+- [Manifest v6](../data/eval/architecture_v6_holdout/manifest.json)
+- Các báo cáo raw của Deterministic, Retrieval, Generate/Judge, Human audit và Production được lưu trong thư mục làm việc cục bộ `work/` tại thời điểm đánh giá. Thư mục này không được đưa vào Git vì chứa checkpoint và output có thể tái tạo; các metric, caveat và failure taxonomy cần công bố đã được tổng hợp trong báo cáo này.
+- Evaluator: [suites.py](../src/evaluation/suites.py), [evaluate_system.py](../scripts/evaluate_system.py); phần dispatch đã được đối chiếu thêm bằng `git show 0499d63d:scripts/evaluate_system.py`.

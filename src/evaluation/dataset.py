@@ -550,6 +550,91 @@ def _validate_deterministic_contract(
             errors.append(f"{prefix}.slot_value_alternatives must be an object")
 
 
+def _validate_deterministic_v7_contract(
+    case: dict[str, Any], errors: list[str]
+) -> None:
+    """Validate V7 outcome golds without prescribing one QueryPlan emission.
+
+    V7 deliberately evaluates architectural outcomes.  It may constrain a mode,
+    lookup capability or grounded slot when that distinction is material, but it
+    does not require an exact task order, task identifier or raw slot spelling.
+    """
+
+    case_id = str(case.get("id") or "<missing-id>")
+    contract = str(case.get("contract_version") or "").strip()
+    if contract != "query-plan-outcome-equivalent-v7":
+        errors.append(f"{case_id}: invalid V7 deterministic contract={contract!r}")
+
+    outcomes = case.get("accepted_outcomes")
+    if not isinstance(outcomes, list) or not outcomes:
+        errors.append(f"{case_id}: accepted_outcomes must be a non-empty list")
+        return
+
+    allowed_states = {"answer", "clarify", "out_of_domain", "safe_unavailable"}
+    allowed_modes = {"structured", "rag", "clarify"}
+    seen_names: set[str] = set()
+    for index, outcome in enumerate(outcomes, start=1):
+        prefix = f"{case_id}: accepted_outcomes[{index}]"
+        if not isinstance(outcome, dict):
+            errors.append(f"{prefix} must be an object")
+            continue
+        name = str(outcome.get("name") or "").strip()
+        if not name:
+            errors.append(f"{prefix}.name must be non-empty")
+        elif name in seen_names:
+            errors.append(f"{prefix}.name is duplicated")
+        seen_names.add(name)
+        if outcome.get("state") not in allowed_states:
+            errors.append(f"{prefix}.state is invalid")
+
+        modes = outcome.get("allowed_modes")
+        if not isinstance(modes, list) or any(mode not in allowed_modes for mode in modes):
+            errors.append(f"{prefix}.allowed_modes must contain supported modes")
+
+        task_count = outcome.get("task_count")
+        if task_count is not None:
+            if not isinstance(task_count, dict):
+                errors.append(f"{prefix}.task_count must be an object")
+            else:
+                minimum = task_count.get("min")
+                maximum = task_count.get("max")
+                if (
+                    not isinstance(minimum, int)
+                    or isinstance(minimum, bool)
+                    or not isinstance(maximum, int)
+                    or isinstance(maximum, bool)
+                    or minimum < 0
+                    or maximum > 3
+                    or minimum > maximum
+                ):
+                    errors.append(f"{prefix}.task_count must satisfy 0 <= min <= max <= 3")
+
+        required_tasks = outcome.get("required_tasks") or []
+        if not isinstance(required_tasks, list):
+            errors.append(f"{prefix}.required_tasks must be a list")
+            continue
+        for task_index, task in enumerate(required_tasks, start=1):
+            task_prefix = f"{prefix}.required_tasks[{task_index}]"
+            if not isinstance(task, dict):
+                errors.append(f"{task_prefix} must be an object")
+                continue
+            mode = task.get("mode")
+            if mode not in allowed_modes:
+                errors.append(f"{task_prefix}.mode is invalid")
+            if mode == "structured" and not str(task.get("lookup_type") or "").strip():
+                errors.append(f"{task_prefix}.lookup_type is required")
+            for field in ("required_slot_keys", "cohorts"):
+                if field in task and (
+                    not isinstance(task.get(field), list)
+                    or any(not isinstance(item, str) for item in task[field])
+                ):
+                    errors.append(f"{task_prefix}.{field} must be a string list")
+            if "slot_value_alternatives" in task and not isinstance(
+                task.get("slot_value_alternatives"), dict
+            ):
+                errors.append(f"{task_prefix}.slot_value_alternatives must be an object")
+
+
 def validate_bundle(
     bundle_dir: Path,
     docstore_path: Path,
@@ -778,6 +863,8 @@ def validate_bundle(
                         errors.append(f"{case_id}: missing deterministic field {field}")
                 if manifest.get("schema_version") == "architecture-evaluation-v6":
                     _validate_deterministic_contract(case, errors)
+                elif manifest.get("schema_version") == "architecture-evaluation-v7":
+                    _validate_deterministic_v7_contract(case, errors)
             elif suite == "production" and not case.get("scenario"):
                 errors.append(f"{case_id}: missing production scenario")
 
@@ -810,9 +897,16 @@ def validate_bundle(
                 continue
             ratio = SequenceMatcher(None, normalized, other).ratio()
             if ratio >= 0.96:
-                errors.append(
+                message = (
                     f"unreviewed near duplicate ({ratio:.3f}): {case_id} ~ {other_id}"
                 )
+                if (
+                    manifest.get("schema_version") == "architecture-evaluation-v7"
+                    and not manifest.get("frozen")
+                ):
+                    warnings.append(message)
+                else:
+                    errors.append(message)
 
     legacy_queries: dict[str, str] = {}
     for legacy_path in bundle_dir.parent.glob("*.json"):
@@ -935,6 +1029,7 @@ def validate_bundle(
     if manifest.get("retrieval_contract") in {
         "regulation-rag-source-first-v3",
         "regulation-rag-question-target-holdout-v6",
+        "regulation-rag-outcome-draft-v7",
     }:
         forbidden_fragments = [
             normalize_query(value)
@@ -984,10 +1079,13 @@ def validate_bundle(
     if evaluation_contract in {
         "comprehensive-source-grounded-answer-v4",
         "comprehensive-question-target-holdout-v6",
+        "comprehensive-outcome-draft-v7",
     }:
         expected_answer_contract = (
             "answer-quality-target-holdout-v6"
             if evaluation_contract == "comprehensive-question-target-holdout-v6"
+            else "answer-quality-outcome-draft-v7"
+            if evaluation_contract == "comprehensive-outcome-draft-v7"
             else "answer-quality-source-grounded-v4"
         )
         expected_paths = manifest.get("answer_path_counts") or {}

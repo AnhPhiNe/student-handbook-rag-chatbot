@@ -878,6 +878,236 @@ def _expected_tasks_match(
     )
 
 
+def _normalized_contract_value(value: Any) -> Any:
+    if isinstance(value, str):
+        text = unicodedata.normalize("NFD", value.casefold())
+        text = "".join(char for char in text if unicodedata.category(char) != "Mn")
+        return " ".join(text.replace("đ", "d").split())
+    if isinstance(value, list):
+        return sorted(str(_normalized_contract_value(item)) for item in value)
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return format(value, ".15g")
+    return value
+
+
+def _v7_task_matches(gold: dict[str, Any], actual: dict[str, Any]) -> bool:
+    """Match only architecture-significant task fields declared by the gold."""
+
+    for field in ("mode", "lookup_type", "cohorts"):
+        if field in gold and _normalized_contract_value(actual.get(field)) != (
+            _normalized_contract_value(gold[field])
+        ):
+            return False
+    allowed_intents = gold.get("allowed_intents") or []
+    if allowed_intents and actual.get("intent") not in allowed_intents:
+        return False
+    slots = actual.get("slots") or {}
+    if not set(gold.get("required_slot_keys") or []) <= set(slots):
+        return False
+    for key, alternatives in (gold.get("slot_value_alternatives") or {}).items():
+        if not isinstance(alternatives, list):
+            alternatives = [alternatives]
+        if key not in slots or _normalized_contract_value(slots[key]) not in {
+            _normalized_contract_value(item) for item in alternatives
+        }:
+            return False
+    return True
+
+
+def _v7_required_tasks_match(
+    required: list[dict[str, Any]], actual: list[dict[str, Any]]
+) -> bool:
+    """Injectively match required semantic tasks to an unordered actual plan."""
+
+    def visit(index: int, used: set[int]) -> bool:
+        if index >= len(required):
+            return True
+        return any(
+            visit(index + 1, used | {actual_index})
+            for actual_index, task in enumerate(actual)
+            if actual_index not in used and _v7_task_matches(required[index], task)
+        )
+
+    return len(required) <= len(actual) and visit(0, set())
+
+
+def _v7_has_task_evidence(
+    task_results: list[dict[str, Any]], *, mode: str, lookup_type: str | None = None
+) -> bool:
+    for task in task_results:
+        if task.get("mode") != mode:
+            continue
+        if lookup_type and task.get("lookup_type") != lookup_type:
+            continue
+        if task.get("coverage") == "covered" and bool(task.get("evidence")):
+            return True
+    return False
+
+
+def _evaluate_v7_outcome_case(
+    case: dict[str, Any], result: dict[str, Any], *, started: float
+) -> dict[str, Any]:
+    """Evaluate one mutable V7 case against any declared safe outcome."""
+
+    plan = result.get("query_plan") or {}
+    tasks = plan.get("tasks") if isinstance(plan, dict) else []
+    tasks = tasks if isinstance(tasks, list) else []
+    task_results = result.get("task_results") or []
+    actual_modes = [str(task.get("mode") or "") for task in tasks]
+    actual_lookup_types = sorted(
+        {
+            str(task.get("lookup_type") or "")
+            for task in tasks
+            if task.get("lookup_type")
+        }
+    )
+    actual_cohorts = sorted(
+        {
+            str(cohort)
+            for task in tasks
+            for cohort in (task.get("cohorts") or [])
+            if cohort
+        }
+    )
+    structured = (
+        result.get("structured_result")
+        or result.get("formula_result")
+        or result.get("tool_result")
+        or {}
+    )
+    citations = result.get("citations") or _structured_citations(structured)
+    has_structured_payload = _has_structured_payload(structured)
+    has_rag_evidence = bool(citations) or any(
+        task.get("mode") == "rag"
+        and task.get("coverage") == "covered"
+        and bool(task.get("evidence"))
+        for task in task_results
+    )
+    needs_clarification = bool(result.get("needs_clarification")) or any(
+        task.get("mode") == "clarify" for task in tasks
+    )
+    out_of_domain = bool(plan.get("out_of_domain"))
+
+    evaluations: list[dict[str, Any]] = []
+    for outcome in case.get("accepted_outcomes") or []:
+        allowed_modes = set(outcome.get("allowed_modes") or [])
+        mode_ok = not allowed_modes or all(mode in allowed_modes for mode in actual_modes)
+        count = outcome.get("task_count") or {}
+        count_ok = int(count.get("min", 0)) <= len(tasks) <= int(
+            count.get("max", 3)
+        )
+        required_tasks = outcome.get("required_tasks") or []
+        semantics_ok = _v7_required_tasks_match(required_tasks, tasks)
+        state = outcome.get("state")
+        state_ok = (
+            state == "answer"
+            and not needs_clarification
+            and not out_of_domain
+            or state == "clarify"
+            and needs_clarification
+            or state == "out_of_domain"
+            and out_of_domain
+            or state == "safe_unavailable"
+            and (
+                needs_clarification
+                or out_of_domain
+                or not has_structured_payload
+                and not has_rag_evidence
+            )
+        )
+        required_structured = [
+            task for task in required_tasks if task.get("mode") == "structured"
+        ]
+        structured_execution_ok = all(
+            _v7_has_task_evidence(
+                task_results,
+                mode="structured",
+                lookup_type=str(task.get("lookup_type") or "") or None,
+            )
+            for task in required_structured
+        )
+        if outcome.get("structured_evidence") == "required":
+            structured_execution_ok = structured_execution_ok and has_structured_payload
+        rag_evidence_ok = (
+            has_rag_evidence
+            if outcome.get("rag_evidence") == "required"
+            else True
+        )
+        checks = {
+            "state": state_ok,
+            "task_count": count_ok,
+            "task_modes": mode_ok,
+            "task_semantics": semantics_ok,
+            "structured_execution": structured_execution_ok,
+            "rag_evidence": rag_evidence_ok,
+        }
+        evaluations.append(
+            {
+                "name": outcome.get("name"),
+                "checks": checks,
+                "passed": all(checks.values()),
+            }
+        )
+
+    selected = next((item for item in evaluations if item["passed"]), None)
+    best = selected or max(
+        evaluations,
+        key=lambda item: sum(bool(value) for value in item["checks"].values()),
+        default={"name": None, "checks": {}},
+    )
+    checks = best.get("checks") or {}
+    expected_citation_cohort = case.get("expected_citation_cohort")
+    citation_ok: bool | None = None
+    cross_cohort_leak = False
+    if expected_citation_cohort and citations:
+        citation_ok = all(
+            _cohort_matches(
+                citation.get("cohort")
+                or (citation.get("metadata") or {}).get("cohort"),
+                expected_citation_cohort,
+            )
+            for citation in citations
+        )
+        cross_cohort_leak = not citation_ok
+
+    return {
+        **case,
+        "query_plan": plan,
+        "task_results": task_results,
+        "structured_result": structured,
+        "citations": citations,
+        "actual_task_modes": actual_modes,
+        "actual_lookup_types": actual_lookup_types,
+        "actual_cohorts": actual_cohorts,
+        "accepted_outcome_evaluations": evaluations,
+        "matched_outcome": selected.get("name") if selected else None,
+        "task_count_correct": checks.get("task_count"),
+        "task_modes_correct": checks.get("task_modes"),
+        "task_semantics_correct": checks.get("task_semantics"),
+        "lookup_type_correct": None,
+        "cohort_correct": None,
+        "out_of_domain_correct": checks.get("state") if out_of_domain else None,
+        "clarification_correct": checks.get("state") if needs_clarification else None,
+        "llm_call_correct": None,
+        "planner_fallback_free": not bool(result.get("planner_fallback")),
+        "structured_execution_correct": checks.get("structured_execution"),
+        "structured_evidence_present": (
+            has_structured_payload if any(
+                outcome.get("structured_evidence") == "required"
+                for outcome in case.get("accepted_outcomes") or []
+            ) else None
+        ),
+        "table_first_evidence_present": None,
+        "citation_metadata_correct": citation_ok,
+        "cross_cohort_leak": cross_cohort_leak,
+        "structured_value_exact": None,
+        "numeric_value_correct": None,
+        "outcome_contract_correct": bool(selected),
+        "passed": bool(selected) and not bool(result.get("planner_fallback")),
+        "latency_ms": (time.perf_counter() - started) * 1000,
+    }
+
+
 def _evaluate_deterministic_v2_uncached(
     cases: list[dict[str, Any]],
     *,
@@ -924,6 +1154,18 @@ def _evaluate_deterministic_v2_uncached(
             plan = result.get("query_plan") or {}
             tasks = plan.get("tasks") if isinstance(plan, dict) else []
             tasks = tasks if isinstance(tasks, list) else []
+            if case.get("contract_version") == "query-plan-outcome-equivalent-v7":
+                row = _evaluate_v7_outcome_case(case, result, started=started)
+                rows.append(row)
+                progress.set_postfix(
+                    {
+                        "case": case.get("id"),
+                        "pass": int(bool(row.get("passed"))),
+                        "outcome": row.get("matched_outcome") or "none",
+                    },
+                    refresh=False,
+                )
+                continue
             expected = case.get("expected_plan") or {}
             allowed_modes = set(expected.get("allowed_modes") or [])
             actual_modes = [str(task.get("mode") or "") for task in tasks]
@@ -1151,6 +1393,12 @@ def _evaluate_deterministic_v2_uncached(
     ]
 
     def expects_structured(row: dict[str, Any]) -> bool:
+        if row.get("contract_version") == "query-plan-outcome-equivalent-v7":
+            return any(
+                task.get("mode") == "structured"
+                for outcome in row.get("accepted_outcomes") or []
+                for task in outcome.get("required_tasks") or []
+            )
         gold = row.get("expected_plan") or {}
         return "structured" in (gold.get("allowed_modes") or [])
 
@@ -1177,6 +1425,7 @@ def _evaluate_deterministic_v2_uncached(
         "citation_metadata": "citation_metadata_correct",
         "structured_value": "structured_value_exact",
         "numeric_value": "numeric_value_correct",
+        "outcome_contract": "outcome_contract_correct",
     }
     summary = {
         "n": len(rows),
@@ -1231,6 +1480,7 @@ def _evaluate_deterministic_v2_uncached(
         ),
         "structured_value_accuracy": assertion_accuracy("structured_value_exact"),
         "numeric_value_accuracy": assertion_accuracy("numeric_value_correct"),
+        "outcome_contract_accuracy": assertion_accuracy("outcome_contract_correct"),
         "assertion_support": {
             name: sum(row.get(field) is not None for row in rows)
             for name, field in assertion_fields.items()

@@ -115,6 +115,108 @@ def test_v6_deterministic_gold_contract_requires_plan_and_tasks() -> None:
     )
     assert errors == []
 
+
+def test_v7_outcome_contract_accepts_equivalent_task_shape() -> None:
+    errors: list[str] = []
+    case = {
+        "id": "v7-equivalent",
+        "contract_version": "query-plan-outcome-equivalent-v7",
+        "accepted_outcomes": [
+            {
+                "name": "structured-evidence",
+                "state": "answer",
+                "allowed_modes": ["structured"],
+                "task_count": {"min": 1, "max": 1},
+                "required_tasks": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "scoring",
+                        "required_slot_keys": ["operation", "score_or_grade"],
+                        "slot_value_alternatives": {
+                            "score_or_grade": ["B+", "b+"]
+                        },
+                    }
+                ],
+                "structured_evidence": "required",
+            }
+        ],
+    }
+    dataset._validate_deterministic_v7_contract(case, errors)
+    assert errors == []
+    assert suites._v7_required_tasks_match(
+        case["accepted_outcomes"][0]["required_tasks"],
+        [
+            {
+                "task_id": "implementation-detail",
+                "mode": "structured",
+                "lookup_type": "scoring",
+                "intent": "direct_value",
+                "cohorts": ["K51"],
+                "slots": {"operation": "letter_to_grade_4", "score_or_grade": "b+"},
+            }
+        ],
+    )
+
+
+def test_v7_outcome_contract_allows_task_level_clarification() -> None:
+    class Pipeline:
+        def _run_retrieval(self, query, cohort=None):
+            return {
+                "query_plan": {
+                    "tasks": [
+                        {
+                            "mode": "structured",
+                            "lookup_type": "foreign_language",
+                            "intent": "direct_value",
+                            "cohorts": ["K51"],
+                            "slots": {"certificate_or_language": "TOEIC"},
+                        }
+                    ]
+                },
+                "needs_clarification": True,
+                "task_results": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "foreign_language",
+                        "coverage": "uncovered",
+                        "evidence": [],
+                    }
+                ],
+            }
+
+    case = {
+        "id": "v7-clarify",
+        "query": "TOEIC bốn kỹ năng nhưng thiếu điểm Viết",
+        "cohort": "K51",
+        "expected_llm_called": True,
+        "contract_version": "query-plan-outcome-equivalent-v7",
+        "accepted_outcomes": [
+            {
+                "name": "task-level-clarification",
+                "state": "clarify",
+                "allowed_modes": ["structured", "clarify"],
+                "task_count": {"min": 1, "max": 1},
+                "required_tasks": [],
+            }
+        ],
+    }
+    report = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)
+    assert report["summary"]["passed"] == 1
+    assert report["cases"][0]["matched_outcome"] == "task-level-clarification"
+
+
+def test_mutable_dataset_report_is_never_headline_eligible() -> None:
+    report = runner._finalize_report(
+        {"suite": "deterministic", "summary": {"n": 140}},
+        expected_n=140,
+        provenance={"dataset_frozen": False},
+        profile="full",
+    )
+    assert (
+        report["completeness"]["publication_status"]
+        == "draft_dataset_not_for_headline"
+    )
+
     errors = []
     dataset._validate_deterministic_contract(
         {
@@ -135,6 +237,54 @@ def test_v6_deterministic_gold_contract_requires_plan_and_tasks() -> None:
         errors,
     )
     assert errors == []
+
+
+def test_architecture_v7_draft_bundle_is_valid_but_not_frozen() -> None:
+    project_root = Path(__file__).resolve().parents[1]
+    bundle_dir = project_root / "data" / "eval" / "architecture_v7"
+    docstore_path = (
+        project_root
+        / "data"
+        / "processed"
+        / "chunks"
+        / "all_docstore_items.json"
+    )
+
+    draft_report = dataset.validate_bundle(
+        bundle_dir,
+        docstore_path,
+        require_frozen=False,
+    )
+    assert draft_report["valid"] is True
+    assert draft_report["errors"] == []
+    assert draft_report["warnings"] == []
+    assert draft_report["counts"] == {
+        "deterministic": 140,
+        "retrieval": 160,
+        "answers": 150,
+        "production": 60,
+    }
+
+    manifest = json.loads((bundle_dir / "manifest.json").read_text(encoding="utf-8"))
+    overlap = json.loads(
+        (bundle_dir / "overlap_audit.json").read_text(encoding="utf-8")
+    )
+    assert manifest["frozen"] is False
+    # Execution/review lifecycle fields may advance after the draft bundle is
+    # committed. They are provenance, not part of the dataset's validation
+    # contract; only the immutable case counts, hashes, and frozen flag are.
+    assert isinstance(manifest["system_executed_on_dataset"], bool)
+    assert isinstance(manifest["user_review_approved"], bool)
+    assert overlap["exact_historical_match_count"] == 0
+    assert overlap["high_similarity_review_count"] == 0
+
+    frozen_report = dataset.validate_bundle(
+        bundle_dir,
+        docstore_path,
+        require_frozen=True,
+    )
+    assert frozen_report["valid"] is False
+    assert "manifest must set frozen=true" in frozen_report["errors"]
 
 
 def test_deterministic_v2_reports_non_applicable_assertions_as_na() -> None:

@@ -96,6 +96,8 @@ def _provenance(
         "system_commit_matches_manifest": system_commit_matches_manifest,
         "benchmark_run_kind": benchmark_run_kind,
         "dataset_version": manifest.get("version"),
+        "dataset_frozen": bool(manifest.get("frozen")),
+        "dataset_revision": manifest.get("revision"),
         "evaluation_contract": manifest.get("evaluation_contract"),
         "deterministic_contract": manifest.get("deterministic_contract"),
         "retrieval_contract": manifest.get("retrieval_contract"),
@@ -194,9 +196,10 @@ def _runtime_storage_errors(
         ("mongodb_parent_collection", "mongodb_parent_collection"),
     )
     errors: list[str] = []
-    require_complete_identity = (
-        manifest.get("schema_version") == "architecture-evaluation-v6"
-    )
+    require_complete_identity = manifest.get("schema_version") in {
+        "architecture-evaluation-v6",
+        "architecture-evaluation-v7",
+    }
     for manifest_key, provenance_key in fields:
         expected = str(manifest.get(manifest_key) or "").strip()
         actual = str(provenance.get(provenance_key) or "").strip()
@@ -236,6 +239,8 @@ def _finalize_report(
     )
     if complete and provenance.get("benchmark_run_kind") == "post_fix_regression":
         publication_status = "post_fix_regression_not_original_holdout"
+    if not provenance.get("dataset_frozen", True):
+        publication_status = "draft_dataset_not_for_headline"
     report["completeness"] = {
         "profile": profile,
         "expected_n": expected_n,
@@ -468,6 +473,14 @@ def main() -> None:
             "dataset, source, cohort, count, and schema checks remain strict."
         ),
     )
+    parser.add_argument(
+        "--allow-draft-dataset",
+        action="store_true",
+        help=(
+            "Validate and run a mutable draft bundle. Every report still records "
+            "the Git commit and dataset hashes, but is marked not for headline use."
+        ),
+    )
     args = parser.parse_args()
 
     if args.profile == "smoke" and args.limit is None:
@@ -475,7 +488,7 @@ def main() -> None:
     validation = validate_bundle(
         args.dataset,
         DEFAULT_DOCSTORE,
-        require_frozen=True,
+        require_frozen=not args.allow_draft_dataset,
         enforce_docstore_hash=not args.allow_docstore_drift,
     )
     provenance = _provenance(

@@ -1116,6 +1116,30 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertNotEqual(res.get("resolution_status"), "ambiguous")
         self.assertEqual(len(res["result"]), 2)
 
+    def test_office_lookup_uses_declared_aliases_instead_of_runtime_acronyms(self):
+        record = {
+            "unit_name": "Phòng Alpha Beta",
+            "aliases": [],
+            "cohort": "K51",
+        }
+        without_alias = office_lookup(
+            "PAB",
+            [record],
+            cohort="K51",
+            candidate_text="PAB",
+            require_confident_match=True,
+        )
+        with_alias = office_lookup(
+            "PAB",
+            [{**record, "aliases": ["PAB"]}],
+            cohort="K51",
+            candidate_text="PAB",
+            require_confident_match=True,
+        )
+
+        self.assertIsNone(without_alias)
+        self.assertIsNotNone(with_alias)
+
     def test_multi_entity_scholarship_lookup_all_matched(self):
         tables = [
             {

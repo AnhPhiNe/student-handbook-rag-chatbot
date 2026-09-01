@@ -50,53 +50,87 @@ def _query_mentions_cohort(query: str) -> bool:
     return bool(build_cohort_token_regex().search(query))
 
 
+def _literal_query_span(query: str, literal: Any) -> str | None:
+    """Return the exact query span for one declared literal alias."""
+
+    normalized_literal = _normalize_text(literal).replace("_", " ")
+    if not normalized_literal:
+        return None
+    tokens = list(re.finditer(r"[\w+.,-]+", str(query or ""), flags=re.UNICODE))
+    token_count = len(normalized_literal.split())
+    if not tokens or token_count <= 0:
+        return None
+    for start in range(0, len(tokens) - token_count + 1):
+        end = start + token_count - 1
+        span = query[tokens[start].start() : tokens[end].end()]
+        if _normalize_text(span).replace("_", " ") == normalized_literal:
+            return span
+    return None
+
+
+def _ground_declared_literal_slots(
+    query: str,
+    *,
+    intent: str | None,
+    spec: dict[str, Any] | None,
+    slots: dict[str, Any],
+    spans: dict[str, Any],
+) -> None:
+    """Ground exact slot literals declared by the capability registry."""
+
+    for slot_name, slot_spec in ((spec or {}).get("slot_schema") or {}).items():
+        aliases_by_value = slot_spec.get("span_aliases") or {}
+        if not isinstance(aliases_by_value, dict) or not aliases_by_value:
+            continue
+        allowed_intents = slot_spec.get("grounding_intents") or []
+        if allowed_intents and intent not in allowed_intents:
+            continue
+
+        current_value = slots.get(slot_name)
+        if _is_present(current_value) and _is_present(spans.get(slot_name)):
+            continue
+        matches: list[tuple[str, str]] = []
+        for canonical_value, aliases in aliases_by_value.items():
+            if _is_present(current_value) and str(current_value) != str(canonical_value):
+                continue
+            literal_aliases = [canonical_value, *(_as_values(aliases))]
+            for alias in literal_aliases:
+                literal_span = _literal_query_span(query, alias)
+                if literal_span:
+                    matches.append((str(canonical_value), literal_span))
+                    break
+
+        matched_values = {canonical_value for canonical_value, _ in matches}
+        if len(matched_values) != 1:
+            continue
+        canonical_value = next(iter(matched_values))
+        literal_span = max(
+            (span for value, span in matches if value == canonical_value),
+            key=len,
+        )
+        slots[slot_name] = canonical_value
+        spans[slot_name] = literal_span
+
+
 def _infer_explicit_structured_slots(
     query: str,
     *,
     lookup_type: str | None,
     intent: str | None,
+    spec: dict[str, Any] | None,
     slots: dict[str, Any],
     spans: dict[str, Any],
 ) -> None:
     """Fill slots that are explicitly present in the query but missed by the router."""
 
-    normalized = _normalize_text(query)
     raw_query = str(query or "")
-
-    if lookup_type == "foreign_language":
-        certificate_patterns = {
-            "JLPT": r"\bjlpt\b",
-            "IELTS": r"\bielts\b",
-            "TOEFL": r"\btoefl\b",
-            "TOEIC": r"\btoeic\b",
-            "HSK": r"\bhsk\b",
-            "TOPIK": r"\btopik\b",
-        }
-        if not _is_present(slots.get("certificate_or_language")):
-            for certificate, pattern in certificate_patterns.items():
-                match = re.search(pattern, normalized)
-                if match:
-                    slots["certificate_or_language"] = certificate
-                    spans["certificate_or_language"] = raw_query[
-                        match.start() : match.end()
-                    ] or certificate
-                    break
-
-        if not _is_present(slots.get("score_or_level")):
-            level_match = re.search(r"\b(?:jlpt\s*)?(n[1-5])\b", normalized)
-            if level_match:
-                value = level_match.group(1).upper()
-                slots["score_or_level"] = value
-                spans["score_or_level"] = value
-            # A bare number may be a skill count, target level or year, not a
-            # supplied score. Leave optional numeric slots to the grounded plan.
-
-    if lookup_type == "program" and intent == "list_items":
-        if not _is_present(slots.get("scope")):
-            if "khoa" in normalized:
-                slots["scope"] = "faculty"
-            elif re.search(r"\b(?:cac|nhung)?\s*nganh\b", normalized):
-                slots["scope"] = "school"
+    _ground_declared_literal_slots(
+        query,
+        intent=intent,
+        spec=spec,
+        slots=slots,
+        spans=spans,
+    )
 
     if lookup_type == "student_service":
         # Preserve a compact service phrase only when the planner copied it
@@ -114,8 +148,6 @@ def _infer_explicit_structured_slots(
         if not grounded_service:
             slots["service"] = raw_query
             spans["service"] = raw_query
-        if not _is_present(slots.get("requested_field")) and "don vi" in normalized:
-            slots["requested_field"] = "unit"
 
 
 @lru_cache(maxsize=4)
@@ -432,6 +464,7 @@ def normalize_router_decision(
         query,
         lookup_type=lookup_type,
         intent=intent,
+        spec=spec,
         slots=slots,
         spans=spans,
     )
@@ -536,13 +569,11 @@ def _numeric_value_matches_span(value: Any, span: Any) -> bool:
 def _span_matches_slot_value(value: Any, span: Any, schema: dict[str, Any]) -> bool:
     """Validate extracted values against their literal spans and aliases."""
 
-    constrained_values = schema.get("enum") or schema.get("canonical_values") or []
     aliases_by_value = schema.get("span_aliases") or {}
     span_values = _as_values(span)
     for item in _as_values(value):
         aliases = [item]
-        if constrained_values:
-            aliases.extend(aliases_by_value.get(str(item)) or [])
+        aliases.extend(aliases_by_value.get(str(item)) or [])
         if not any(
             _normalized_phrase_in_text(alias, literal_span)
             or _numeric_value_matches_span(item, literal_span)

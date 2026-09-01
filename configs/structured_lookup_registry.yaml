@@ -1,4 +1,4 @@
-version: 3
+version: 4
 
 tools:
   foreign_language:
@@ -15,9 +15,24 @@ tools:
       certificate_or_language:
         type: string
         examples: [IELTS, TOEFL, JLPT, HSK, TOPIK]
+        span_aliases:
+          IELTS: [IELTS]
+          TOEFL: [TOEFL, TOEFL iBT, TOEFL ITP]
+          TOEIC: [TOEIC, TOEIC 4 kỹ năng, TOEIC 4 ky nang]
+          Cambridge: [Cambridge, Linguaskill]
+          JLPT: [JLPT, Japanese Language Proficiency Test]
+          HSK: [HSK, Hanyu Shuiping Kaoshi]
+          TOPIK: [TOPIK, TOPIK II]
+          TCF_DELF: [TCF, DELF, TCF DELF]
       score_or_level:
         type: [string, number]
         examples: [5.5, N3, HSK4, TOPIK3]
+        span_aliases:
+          N1: [N1]
+          N2: [N2]
+          N3: [N3]
+          N4: [N4]
+          N5: [N5]
       listening_score: {type: [string, number]}
       reading_score: {type: [string, number]}
       speaking_score: {type: [string, number]}
@@ -129,9 +144,19 @@ tools:
       requested_field:
         type: string
         enum: [unit, phone, email, office, website, all]
+        span_aliases:
+          unit: [đơn vị, don vi, bộ phận, bo phan]
+          phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, phone]
+          email: [email, thư điện tử, thu dien tu]
+          office: [địa chỉ, dia chi, phòng làm việc, phong lam viec]
+          website: [website, trang web]
+          all: [thông tin liên hệ, thong tin lien he]
     strategy: student_service_lookup
     response_intent: office_query
     target_chunk_types: [office_directory]
+    matching:
+      min_confidence: 0.62
+      ambiguity_margin: 0.08
 
   office:
     data_category: directory_table
@@ -146,9 +171,19 @@ tools:
       requested_field:
         type: string
         enum: [phone, email, office, website, services, all]
+        span_aliases:
+          phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, phone]
+          email: [email, thư điện tử, thu dien tu]
+          office: [địa chỉ, dia chi, phòng làm việc, phong lam viec]
+          website: [website, trang web]
+          services: [dịch vụ, dich vu, hỗ trợ gì, ho tro gi]
+          all: [thông tin liên hệ, thong tin lien he, liên hệ, lien he]
     strategy: office_lookup
     response_intent: office_query
     target_chunk_types: [office_directory]
+    matching:
+      min_confidence: 0.72
+      ambiguity_margin: 0.08
 
   faculty:
     data_category: directory_table
@@ -163,9 +198,18 @@ tools:
       requested_field:
         type: string
         enum: [phone, email, office, website, all]
+        span_aliases:
+          phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, phone]
+          email: [email, thư điện tử, thu dien tu]
+          office: [địa chỉ, dia chi, văn phòng, van phong]
+          website: [website, trang web]
+          all: [thông tin liên hệ, thong tin lien he, liên hệ, lien he]
     strategy: faculty_lookup
     response_intent: faculty_query
     target_chunk_types: [faculty_program_directory]
+    matching:
+      min_confidence: 0.72
+      ambiguity_margin: 0.08
 
   program:
     data_category: directory_table
@@ -184,6 +228,10 @@ tools:
       scope:
         type: string
         enum: [school, faculty]
+        grounding_intents: [list_items]
+        span_aliases:
+          school: [các ngành của trường, cac nganh cua truong, những ngành của trường, nhung nganh cua truong, toàn trường, toan truong, trường có những ngành, truong co nhung nganh]
+          faculty: [khoa]
     strategy: program_lookup
     response_intent: faculty_query
     target_chunk_types: [program_directory]

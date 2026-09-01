@@ -481,6 +481,7 @@ def _resolve_single_lookup(
         )
 
     if lookup_type in {"student_service", "office", "faculty"}:
+        matching_config = _LOOKUP_TOOL_SPECS.get(lookup_type, {}).get("matching") or {}
         candidate_slot = {
             "student_service": "service",
             "office": "office",
@@ -512,6 +513,8 @@ def _resolve_single_lookup(
             candidate_text=candidate_text,
             require_confident_match=True,
             model=model if lookup_type == "student_service" else None,
+            min_confidence=float(matching_config.get("min_confidence", 0.72)),
+            ambiguity_margin=float(matching_config.get("ambiguity_margin", 0.08)),
         )
         if result is not None and result.get("resolution_status") == "ambiguous":
             options = result.get("clarification_options") or []
@@ -552,14 +555,13 @@ def _resolve_single_lookup(
     if lookup_type == "program":
         candidate_text = _slot_text(decision, "program_or_faculty") or query
         intent = decision.get("intent")
-        q_norm = normalize_text(candidate_text)
-        scope = str(slots.get("scope") or ("faculty" if "khoa" in q_norm else "school"))
+        scope = str(slots.get("scope") or "school")
         requested_field = str(slots.get("requested_field") or "")
-        if intent == "resolve_faculty" or requested_field == "faculty" or "thuoc khoa" in q_norm or "khoa nao" in q_norm or "o khoa" in q_norm:
+        if requested_field == "faculty":
             action = "resolve_faculty"
         elif intent == "exists" or requested_field == "exists":
             action = "exists"
-        elif intent == "list_items" or requested_field in {"list", "programs", "nganh"} or "danh sach" in q_norm or "cac nganh" in q_norm or "co nhung nganh" in q_norm:
+        elif intent == "list_items" or requested_field == "programs":
             action = "list"
         else:
             action = "resolve_faculty"

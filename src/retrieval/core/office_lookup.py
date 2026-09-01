@@ -10,37 +10,10 @@ import numpy as np
 from src.common.cohort import is_validated_source_applicable, normalize_cohort
 
 
-STOPWORDS = {
-    "ai",
-    "ban",
-    "can",
-    "cho",
-    "co",
-    "cua",
-    "dang",
-    "de",
-    "den",
-    "duoc",
-    "gi",
-    "hoi",
-    "la",
-    "lam",
-    "lien",
-    "minh",
-    "nao",
-    "neu",
-    "o",
-    "phong",
-    "sinh",
-    "thi",
-    "toi",
-    "truong",
-    "vien",
-    "ve",
-}
-
 _EMBEDDING_CACHE: dict[tuple[int, str], np.ndarray] = {}
 _EMBEDDING_CACHE_LOCK = threading.Lock()
+DEFAULT_MIN_CONFIDENCE = 0.72
+DEFAULT_AMBIGUITY_MARGIN = 0.08
 _IGNORED_ENTITY_SPAN_WORDS = {
     "dia",
     "chi",
@@ -54,7 +27,6 @@ _IGNORED_ENTITY_SPAN_WORDS = {
     "thoai",
     "email",
 }
-_ENTITY_CONJUNCTIONS = (" va ", " voi ", " cung ", " hoac ", " lan ")
 
 
 def normalize_text(text: Any) -> str:
@@ -64,14 +36,6 @@ def normalize_text(text: Any) -> str:
     value = "".join(char for char in decomposed if unicodedata.category(char) != "Mn")
     value = re.sub(r"[^a-z0-9@._+-]+", " ", value)
     return re.sub(r"\s+", " ", value).strip()
-
-
-def tokenize(text: Any) -> set[str]:
-    return {
-        token
-        for token in normalize_text(text).split()
-        if len(token) >= 2 and token not in STOPWORDS
-    }
 
 
 def _strip_order_prefix(value: Any) -> str:
@@ -97,13 +61,6 @@ def _office_search_text(record: dict[str, Any]) -> str:
     )
 
 
-def _generate_generic_acronym(phrase: str) -> str:
-    tokens = [t for t in normalize_text(phrase).split() if t not in STOPWORDS]
-    if len(tokens) >= 2:
-        return "".join(t[0] for t in tokens).upper()
-    return ""
-
-
 def _candidate_values(record: dict[str, Any]) -> list[str]:
     base_unit = _strip_order_prefix(record.get("unit_name") or record.get("unit"))
     values = [
@@ -111,30 +68,6 @@ def _candidate_values(record: dict[str, Any]) -> list[str]:
         str(record.get("service") or "").strip(),
         *(str(alias).strip() for alias in record.get("aliases") or []),
     ]
-    # Generic linguistic & acronym expansion
-    match_prefix = re.match(r"^(Khoa|Phòng|Ban|Trung tâm|Viện)\s+(.+)$", base_unit, flags=re.IGNORECASE)
-    if match_prefix:
-        prefix, stem = match_prefix.group(1), match_prefix.group(2)
-        values.append(stem)
-        # Suffix qualifier stripping (e.g. 'Tiếng Hàn Quốc' -> 'Tiếng Hàn')
-        if stem.lower().endswith(" quốc"):
-            short_stem = stem[:-5].strip()
-            values.extend([short_stem, f"{prefix} {short_stem}"])
-        # Conjunction & compound splitting (e.g. 'Công tác chính trị và Học sinh, sinh viên')
-        parts = re.split(r"\s+(?:và|–|-|/|,)\s+", stem, flags=re.IGNORECASE)
-        if len(parts) >= 2:
-            for p in parts:
-                p_clean = p.strip()
-                if p_clean and len(p_clean) >= 3:
-                    values.extend([p_clean, f"{prefix} {p_clean}"])
-                    acronym = _generate_generic_acronym(p_clean)
-                    if acronym:
-                        values.extend([acronym, f"{prefix} {acronym}"])
-        # Full stem acronym
-        full_acronym = _generate_generic_acronym(stem)
-        if full_acronym:
-            values.extend([full_acronym, f"{prefix} {full_acronym}"])
-
     return list(dict.fromkeys(value for value in values if value))
 
 
@@ -521,9 +454,10 @@ def _select_confident_candidates(
     *,
     query: str,
     candidate_text: str,
-    candidates: list[dict[str, Any]],
     ranked: list[dict[str, Any]],
     require_confident_match: bool,
+    min_confidence: float,
+    ambiguity_margin: float,
 ) -> tuple[list[dict[str, Any]] | None, dict[str, Any] | None, int]:
     """Apply confidence, explicit-entity and ambiguity rules to ranked records."""
 
@@ -533,15 +467,7 @@ def _select_confident_candidates(
     match_score = ranked[0]["confidence"] if ranked else 0.0
     runner_up_score = ranked[1]["confidence"] if len(ranked) > 1 else 0.0
     score_margin = match_score - runner_up_score
-    minimum_confidence = (
-        0.62
-        if any(
-            record.get("content_type") == "student_service_directory"
-            for record in candidates
-        )
-        else 0.72
-    )
-    if not ranked or match_score < minimum_confidence:
+    if not ranked or match_score < min_confidence:
         return None, None, 0
 
     normalized_candidate = normalize_text(candidate_text)
@@ -557,11 +483,7 @@ def _select_confident_candidates(
     if len(explicit_entities) == 1 and tied_span_count <= 1:
         return explicit_entities, None, 1
 
-    has_conjunction = (
-        any(marker in f" {search_text} " for marker in _ENTITY_CONJUNCTIONS)
-        or "," in candidate_text
-    )
-    if len(ranked) > 1 and score_margin < 0.08 and not has_conjunction:
+    if len(ranked) > 1 and score_margin < ambiguity_margin:
         return (
             None,
             _clarification_response(
@@ -585,6 +507,8 @@ def office_lookup(
     candidate_text: str | None = None,
     require_confident_match: bool = False,
     model: Any | None = None,
+    min_confidence: float = DEFAULT_MIN_CONFIDENCE,
+    ambiguity_margin: float = DEFAULT_AMBIGUITY_MARGIN,
 ) -> dict[str, Any] | None:
     """Resolve an office or student service from the production catalog."""
     routing = routing or {}
@@ -621,9 +545,10 @@ def office_lookup(
     ranked, ambiguity, explicit_entity_count = _select_confident_candidates(
         query=query,
         candidate_text=candidate_text or query,
-        candidates=candidates,
         ranked=ranked,
         require_confident_match=require_confident_match,
+        min_confidence=min_confidence,
+        ambiguity_margin=ambiguity_margin,
     )
     if ambiguity is not None:
         return ambiguity

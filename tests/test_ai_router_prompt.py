@@ -479,6 +479,69 @@ def test_router_normalization_infers_explicit_jlpt_level_slot() -> None:
     ) == []
 
 
+def test_router_normalization_grounds_literals_for_another_registry_tool() -> None:
+    query = "K51 hệ vừa làm vừa học văn bằng hai tối đa bao lâu?"
+    decision = normalize_router_decision(
+        {
+            "route": "structured",
+            "execution_mode": "structured",
+            "intent": "direct_value",
+            "lookup_type": "study_duration",
+            "cohort": "K51",
+            "slots": {},
+            "slot_spans": {},
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert decision["slots"] == {
+        "training_mode": "vua_lam_vua_hoc",
+        "program_type": "second_degree",
+    }
+    assert decision["slot_spans"] == {
+        "training_mode": "vừa làm vừa học",
+        "program_type": "văn bằng hai",
+    }
+
+
+def test_router_normalization_does_not_choose_between_two_declared_literals() -> None:
+    decision = normalize_router_decision(
+        {
+            "route": "structured",
+            "execution_mode": "structured",
+            "intent": "direct_value",
+            "lookup_type": "foreign_language",
+            "cohort": "K51",
+            "slots": {},
+            "slot_spans": {},
+        },
+        query="So sánh IELTS và TOEFL ở K51.",
+        selected_cohort="K51",
+    )
+
+    assert "certificate_or_language" not in decision["slots"]
+
+
+def test_router_normalization_grounds_requested_field_from_registry() -> None:
+    query = "Tài khoản sinh viên bị lỗi thì đơn vị nào hỗ trợ?"
+    decision = normalize_router_decision(
+        {
+            "route": "structured",
+            "execution_mode": "structured",
+            "intent": "contact",
+            "lookup_type": "student_service",
+            "slots": {"service": "Tài khoản sinh viên bị lỗi"},
+            "slot_spans": {"service": "Tài khoản sinh viên bị lỗi"},
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert decision["slots"]["requested_field"] == "unit"
+    assert decision["slot_spans"]["requested_field"] == "đơn vị"
+
+
 def test_router_normalization_infers_program_list_scope_from_faculty_query() -> None:
     query = "Khoa Công nghệ Thông tin có những ngành nào?"
     decision = normalize_router_decision(

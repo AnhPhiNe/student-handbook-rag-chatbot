@@ -1,4 +1,4 @@
-import { BookOpen, Building2, Database, Globe2, Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
+import { BookOpen, Building2, ChevronDown, Database, Globe2, Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
 import type { Citation, StructuredCellValue, StructuredResult } from '../hooks/useChat';
 
 const FIELD_LABELS: Record<string, string> = {
@@ -113,74 +113,79 @@ export function StructuredResults({ results, onOpenSource }: StructuredResultsPr
   if (results.length === 0) return null;
 
   return (
-    <section className="structured-results" aria-label="Kết quả tra cứu dữ liệu">
-      <div className="structured-results-heading">
-        <Database size={17} aria-hidden="true" />
-        <span>Kết quả tra cứu dữ liệu</span>
-      </div>
+    <section className="structured-results" aria-label="Dữ liệu tra cứu bổ sung">
+      <details className="structured-results-disclosure">
+        <summary className="structured-results-heading">
+          <span className="structured-results-heading-label">
+            <Database size={17} aria-hidden="true" />
+            <span>Dữ liệu tra cứu ({results.length})</span>
+          </span>
+          <ChevronDown className="structured-results-chevron" size={18} aria-hidden="true" />
+        </summary>
 
-      <div className="structured-results-list">
-        {results.map((result) => (
-          <article className="structured-result-card" key={result.id}>
-            <header className="structured-result-card-header">
-              <div>
-                <h3>{result.title}</h3>
-                <p>{result.provenance.source_label || 'Dữ liệu có cấu trúc từ Sổ tay sinh viên'}</p>
-              </div>
-              {result.presentation_type !== 'contact_card' && result.cohort && (
-                <span className="structured-result-badge">{result.cohort}</span>
+        <div className="structured-results-list">
+          {results.map((result) => (
+            <article className="structured-result-card" key={result.id}>
+              <header className="structured-result-card-header">
+                <div>
+                  <h3>{result.title}</h3>
+                  <p>{result.provenance.source_label || 'Dữ liệu có cấu trúc từ Sổ tay sinh viên'}</p>
+                </div>
+                {result.presentation_type !== 'contact_card' && result.cohort && (
+                  <span className="structured-result-badge">{result.cohort}</span>
+                )}
+              </header>
+
+              {result.applicability && (
+                <p className="structured-result-applicability">{result.applicability}</p>
               )}
-            </header>
 
-            {result.applicability && (
-              <p className="structured-result-applicability">{result.applicability}</p>
-            )}
+              {result.provenance.source_reference && onOpenSource && (
+                <button
+                  type="button"
+                  className="structured-result-source-button"
+                  onClick={() => onOpenSource(result.provenance.source_reference as Citation)}
+                >
+                  <BookOpen size={15} aria-hidden="true" />
+                  Xem căn cứ {result.provenance.source_reference.article_label}
+                </button>
+              )}
 
-            {result.provenance.source_reference && onOpenSource && (
-              <button
-                type="button"
-                className="structured-result-source-button"
-                onClick={() => onOpenSource(result.provenance.source_reference as Citation)}
-              >
-                <BookOpen size={15} aria-hidden="true" />
-                Xem căn cứ {result.provenance.source_reference.article_label}
-              </button>
-            )}
-
-            {result.presentation_type === 'contact_card' ? (
-              <ContactCards result={result} />
-            ) : (
-              <div className="structured-result-table-wrap" tabIndex={0} role="region" aria-label={result.title}>
-                <table className="structured-result-table">
-                  <thead>
-                    <tr>
-                      {result.columns.map((column) => (
-                        <th scope="col" key={column}>{fieldLabel(column)}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {result.rows.map((row, rowIndex) => (
-                      <tr key={`${result.id}:${rowIndex}`}>
+              {result.presentation_type === 'contact_card' ? (
+                <ContactCards result={result} />
+              ) : (
+                <div className="structured-result-table-wrap" tabIndex={0} role="region" aria-label={result.title}>
+                  <table className="structured-result-table">
+                    <thead>
+                      <tr>
                         {result.columns.map((column) => (
-                          <td key={column}>{displayValue(row[column])}</td>
+                          <th scope="col" key={column}>{fieldLabel(column)}</th>
                         ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                    </thead>
+                    <tbody>
+                      {result.rows.map((row, rowIndex) => (
+                        <tr key={`${result.id}:${rowIndex}`}>
+                          {result.columns.map((column) => (
+                            <td key={column}>{displayValue(row[column])}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
 
-            {Object.values(result.field_provenance || {}).map((provenance) => (
-              <div className="structured-result-provenance" key={provenance.source_label}>
-                <ShieldCheck size={14} aria-hidden="true" />
-                <span>{provenance.source_label}; đây là dữ liệu danh mục đã chuẩn hóa, không phải trích dẫn trực tiếp từ một trang quy định.</span>
-              </div>
-            ))}
-          </article>
-        ))}
-      </div>
+              {Object.values(result.field_provenance || {}).map((provenance) => (
+                <div className="structured-result-provenance" key={provenance.source_label}>
+                  <ShieldCheck size={14} aria-hidden="true" />
+                  <span>{provenance.source_label}; đây là dữ liệu danh mục đã chuẩn hóa, không phải trích dẫn trực tiếp từ một trang quy định.</span>
+                </div>
+              ))}
+            </article>
+          ))}
+        </div>
+      </details>
     </section>
   );
 }

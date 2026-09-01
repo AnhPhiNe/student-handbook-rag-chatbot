@@ -3545,16 +3545,45 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .structured-results-heading {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
-  margin-bottom: 0.65rem;
+  padding: 0.2rem 0;
   color: var(--text-secondary);
   font-size: 0.875rem;
   font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.structured-results-heading::-webkit-details-marker {
+  display: none;
+}
+
+.structured-results-heading:focus-visible {
+  border-radius: var(--radius-sm);
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+
+.structured-results-heading-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.structured-results-chevron {
+  flex: 0 0 auto;
+  transition: transform 160ms ease;
+}
+
+.structured-results-disclosure[open] .structured-results-chevron {
+  transform: rotate(180deg);
 }
 
 .structured-results-list {
   display: grid;
   gap: 0.75rem;
+  margin-top: 0.65rem;
 }
 
 .structured-result-card {
@@ -3747,7 +3776,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  margin: 0.75rem 0.8rem 0;
+  margin: 0.75rem 0.9rem;
   padding: 0.45rem 0.65rem;
   border: 1px solid color-mix(in srgb, var(--primary) 24%, var(--border-color));
   border-radius: var(--radius-sm);

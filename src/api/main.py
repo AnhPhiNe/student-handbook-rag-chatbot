@@ -18,41 +18,10 @@ import sys
 if sys.stdout and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8")
 
-from contextlib import asynccontextmanager
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Quản lý vòng đời của ứng dụng FastAPI, bao gồm việc tải trước các mô hình.
-
-    Hàm này được gọi khi ứng dụng FastAPI khởi động và tắt.
-    Khi ứng dụng khởi động, nó sẽ tải trước các mô hình học máy nặng
-    như dịch vụ trả lời và bộ truy xuất BM25
-    để đảm bảo các yêu cầu đầu tiên không bị chậm do quá trình khởi tạo mô hình.
-    Điều này giúp tránh hiện tượng "cold start" (khởi động lạnh).
-
-    Args:
-        app: Đối tượng ứng dụng FastAPI hiện tại.
-
-    Yields:
-        Không có giá trị cụ thể nào được trả về, nhưng nó cho phép ứng dụng chạy
-        trong khi các tài nguyên đã được chuẩn bị.
-    """
-    print("🚀 [FastAPI] Preloading heavy models to prevent Cold Start...")
-    from src.api.deps import get_answer_service
-    from src.retrieval.core.bm25_retriever import get_bm25_retriever
-
-    # Kích hoạt Singleton ngay từ lúc server khởi động
-    get_answer_service()
-    get_bm25_retriever()
-    print("✅ [FastAPI] All models preloaded successfully!")
-    yield
-
 
 app = FastAPI(
     title="Student Handbook RAG API",
     version=API_VERSION,
-    lifespan=lifespan,
 )
 
 cors_origins = [

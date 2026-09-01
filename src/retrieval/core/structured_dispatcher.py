@@ -14,7 +14,6 @@ from .formula_lookup import formula_lookup
 from .foreign_language_lookup import foreign_language_lookup
 from .office_lookup import normalize_text, office_lookup
 from .program_lookup import program_lookup
-from .scholarship_lookup import scholarship_classification_lookup
 from .study_duration_lookup import study_duration_lookup
 from .structured_lookup import structured_lookup_from_slots
 from .structured_routing import load_lookup_registry, validate_fact_lock_inputs
@@ -51,52 +50,6 @@ def _slot_text(decision: dict[str, Any], *names: str) -> str:
                 if joined:
                     return joined
     return ""
-
-
-def _bind_regulation_source(
-    result: dict[str, Any] | None,
-    registry: list[dict[str, Any]],
-    *,
-    cohort: str | None,
-    table_type: str,
-    subtypes: set[str] | None = None,
-) -> dict[str, Any] | None:
-    if result is None:
-        return None
-    candidates = [
-        table
-        for table in registry
-        if table.get("data_category") == "regulation_table"
-        and table.get("table_type") == table_type
-        and is_cohort_applicable(table, cohort)
-        and (
-            not subtypes
-            or str(table.get("table_subtype") or "") in subtypes
-        )
-    ]
-    source_parent_ids = list(
-        dict.fromkeys(
-            str(table.get("source_parent_id") or table.get("source_section_id"))
-            for table in candidates
-            if table.get("source_parent_id") or table.get("source_section_id")
-        )
-    )
-    if not source_parent_ids:
-        return result
-    bound = dict(result)
-    bound["source_parent_ids"] = source_parent_ids
-    bound["source_parent_id"] = source_parent_ids[0]
-    bound["source_section"] = source_parent_ids[0]
-    if len({str(table.get("document_id") or "") for table in candidates}) == 1:
-        bound["document_id"] = candidates[0].get("document_id")
-    bound["source_pages"] = sorted(
-        {
-            page
-            for table in candidates
-            for page in table.get("source_pages") or []
-        }
-    )
-    return bound
 
 
 def _formula_article_number(result: dict[str, Any]) -> str | None:
@@ -526,100 +479,6 @@ def _resolve_single_lookup(
             ),
             target_chunk_types=["structured_lookup"],
         )
-
-    if lookup_type == "foreign_language":
-        result = foreign_language_lookup(
-            query,
-            foreign_language_tables,
-            cohort=effective_cohort,
-            slots=slots,
-        )
-        result = _bind_regulation_source(
-            result,
-            structured_tables_registry,
-            cohort=effective_cohort,
-            table_type="foreign_language",
-        )
-        return _resolution(lookup_type, "foreign_language_lookup", result)
-
-    if lookup_type == "study_duration":
-        result = study_duration_lookup(
-            query,
-            structured_tables_registry,
-            cohort=effective_cohort,
-            slots=slots,
-        )
-        result = _bind_regulation_source(
-            result,
-            structured_tables_registry,
-            cohort=effective_cohort,
-            table_type="study_duration",
-        )
-        return _resolution(lookup_type, "study_duration_lookup", result)
-
-    if lookup_type == "scholarship_classification":
-        result = scholarship_classification_lookup(
-            query,
-            scoring_tables,
-            cohort=effective_cohort,
-            slots=slots,
-        )
-        result = _bind_regulation_source(
-            result,
-            structured_tables_registry,
-            cohort=effective_cohort,
-            table_type="scholarship",
-        )
-        return _resolution(
-            lookup_type,
-            "scholarship_classification_lookup",
-            result,
-        )
-
-    if lookup_type == "scoring":
-        result = structured_lookup_from_slots(
-            slots,
-            scoring_tables,
-            cohort=effective_cohort,
-        ) if slots else None
-        if result is None:
-            from .structured_lookup import structured_lookup
-            result = structured_lookup(
-                query,
-                scoring_tables,
-                cohort=effective_cohort,
-            )
-        operation = str(slots.get("operation") or "")
-        subtype_map = {
-            "grade_10_to_letter": {
-                "grade_scale",
-                "grade_10_to_letter",
-            },
-            "pass_fail_ungraded": {
-                "grade_scale",
-                "grade_10_to_letter",
-                "pass_fail_ungraded",
-            },
-            "pass_threshold": {
-                "grade_scale",
-                "grade_10_to_letter",
-                "pass_fail_ungraded",
-            },
-            "letter_to_grade_4": {"letter_to_grade4", "letter_to_grade_4"},
-            "academic_classification": {"academic_classification"},
-            "conduct_classification": {"conduct_classification", "conduct"},
-        }
-        canonical_type = (
-            "conduct" if operation == "conduct_classification" else "scoring"
-        )
-        result = _bind_regulation_source(
-            result,
-            structured_tables_registry,
-            cohort=effective_cohort,
-            table_type=canonical_type,
-            subtypes=subtype_map.get(operation),
-        )
-        return _resolution(lookup_type, "structured_lookup", result)
 
     if lookup_type in {"student_service", "office", "faculty"}:
         candidate_slot = {

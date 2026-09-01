@@ -240,13 +240,3 @@ class BM25Retriever:
             if len(results) >= top_k:
                 break
         return results
-
-
-# Global instance for legacy pipeline compat
-_global_bm25_retriever = None
-
-def get_bm25_retriever():
-    global _global_bm25_retriever
-    if _global_bm25_retriever is None:
-        _global_bm25_retriever = BM25Retriever()
-    return _global_bm25_retriever

@@ -41,6 +41,20 @@ STOPWORDS = {
 
 _EMBEDDING_CACHE: dict[tuple[int, str], np.ndarray] = {}
 _EMBEDDING_CACHE_LOCK = threading.Lock()
+_IGNORED_ENTITY_SPAN_WORDS = {
+    "dia",
+    "chi",
+    "so",
+    "thong",
+    "tin",
+    "ban",
+    "khoa",
+    "phong",
+    "dien",
+    "thoai",
+    "email",
+}
+_ENTITY_CONJUNCTIONS = (" va ", " voi ", " cung ", " hoac ", " lan ")
 
 
 def normalize_text(text: Any) -> str:
@@ -408,6 +422,159 @@ def _summarize_office(record: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _explicit_ranked_entities(
+    search_text: str,
+    ranked: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], int]:
+    """Return distinct catalog entities explicitly named in the search text."""
+
+    span_matches: list[tuple[int, int, int, str, dict[str, Any]]] = []
+    for ranked_item in ranked:
+        for candidate_value in _candidate_values(ranked_item["record"]):
+            normalized_value = normalize_text(candidate_value)
+            if (
+                len(normalized_value) < 3
+                or normalized_value in _IGNORED_ENTITY_SPAN_WORDS
+            ):
+                continue
+            for match in re.finditer(
+                rf"(?<![a-z0-9]){re.escape(normalized_value)}(?![a-z0-9])",
+                search_text,
+            ):
+                span_matches.append(
+                    (
+                        len(normalized_value),
+                        match.start(),
+                        match.end(),
+                        normalized_value,
+                        ranked_item,
+                    )
+                )
+
+    span_matches.sort(key=lambda item: (item[0], len(item[3].split())), reverse=True)
+    accepted_spans: list[tuple[int, int]] = []
+    distinct_items: list[dict[str, Any]] = []
+    seen_entity_keys: set[str] = set()
+    for _, start, end, _, ranked_item in span_matches:
+        if any(
+            accepted_start <= start and end <= accepted_end
+            for accepted_start, accepted_end in accepted_spans
+        ):
+            continue
+        accepted_spans.append((start, end))
+        entity_key = _entity_key(ranked_item["record"])
+        if entity_key not in seen_entity_keys:
+            seen_entity_keys.add(entity_key)
+            distinct_items.append(ranked_item)
+
+    if not span_matches:
+        return distinct_items, 0
+    top_span = span_matches[0]
+    tied_span_count = sum(
+        match[1] == top_span[1] and match[2] == top_span[2]
+        for match in span_matches
+    )
+    return distinct_items, tied_span_count
+
+
+def _clarification_response(
+    ranked: list[dict[str, Any]],
+    *,
+    candidate_text: str,
+    match_score: float,
+    score_margin: float,
+) -> dict[str, Any]:
+    options: list[str] = []
+    seen_units: set[str] = set()
+    for item in ranked[:3]:
+        record = item["record"]
+        unit = _strip_order_prefix(record.get("unit_name") or record.get("unit"))
+        if unit in seen_units:
+            continue
+        seen_units.add(unit)
+
+        service = record.get("service")
+        if not service:
+            responsibilities = record.get("responsibilities")
+            if responsibilities and isinstance(responsibilities, list):
+                service = responsibilities[0] if responsibilities else None
+
+        if service:
+            service_text = str(service).strip()
+            if len(service_text) > 250:
+                service_text = service_text[:247] + "..."
+            options.append(f"- **{unit}**: {service_text}")
+        else:
+            options.append(f"- **{unit}**")
+
+    return {
+        "lookup_type": "office_directory",
+        "resolution_status": "ambiguous",
+        "clarification_options": options,
+        "candidate_text": candidate_text,
+        "match_score": round(match_score, 4),
+        "score_margin": round(score_margin, 4),
+    }
+
+
+def _select_confident_candidates(
+    *,
+    query: str,
+    candidate_text: str,
+    candidates: list[dict[str, Any]],
+    ranked: list[dict[str, Any]],
+    require_confident_match: bool,
+) -> tuple[list[dict[str, Any]] | None, dict[str, Any] | None, int]:
+    """Apply confidence, explicit-entity and ambiguity rules to ranked records."""
+
+    if not require_confident_match:
+        return ranked, None, 0
+
+    match_score = ranked[0]["confidence"] if ranked else 0.0
+    runner_up_score = ranked[1]["confidence"] if len(ranked) > 1 else 0.0
+    score_margin = match_score - runner_up_score
+    minimum_confidence = (
+        0.62
+        if any(
+            record.get("content_type") == "student_service_directory"
+            for record in candidates
+        )
+        else 0.72
+    )
+    if not ranked or match_score < minimum_confidence:
+        return None, None, 0
+
+    normalized_candidate = normalize_text(candidate_text)
+    normalized_query = normalize_text(query)
+    search_text = (
+        normalized_query
+        if len(normalized_query) > len(normalized_candidate)
+        else normalized_candidate
+    )
+    explicit_entities, tied_span_count = _explicit_ranked_entities(search_text, ranked)
+    if len(explicit_entities) > 1:
+        return explicit_entities, None, len(explicit_entities)
+    if len(explicit_entities) == 1 and tied_span_count <= 1:
+        return explicit_entities, None, 1
+
+    has_conjunction = (
+        any(marker in f" {search_text} " for marker in _ENTITY_CONJUNCTIONS)
+        or "," in candidate_text
+    )
+    if len(ranked) > 1 and score_margin < 0.08 and not has_conjunction:
+        return (
+            None,
+            _clarification_response(
+                ranked,
+                candidate_text=candidate_text,
+                match_score=match_score,
+                score_margin=score_margin,
+            ),
+            0,
+        )
+    return ranked, None, 0
+
+
 def office_lookup(
     query: str,
     office_directory: list[dict[str, Any]],
@@ -451,90 +618,19 @@ def office_lookup(
     match_score = ranked[0]["confidence"] if ranked else 0.0
     runner_up_score = ranked[1]["confidence"] if len(ranked) > 1 else 0.0
     score_margin = match_score - runner_up_score
-    if require_confident_match:
-        minimum_confidence = (
-            0.62
-            if any(
-                record.get("content_type") == "student_service_directory"
-                for record in candidates
-            )
-            else 0.72
-        )
-        if not ranked or match_score < minimum_confidence:
-            return None
+    ranked, ambiguity, explicit_entity_count = _select_confident_candidates(
+        query=query,
+        candidate_text=candidate_text or query,
+        candidates=candidates,
+        ranked=ranked,
+        require_confident_match=require_confident_match,
+    )
+    if ambiguity is not None:
+        return ambiguity
+    if ranked is None:
+        return None
 
-        _IGNORED_SPAN_WORDS = {"dia", "chi", "so", "thong", "tin", "ban", "khoa", "phong", "dien", "thoai", "email"}
-        search_text = normalize_text(candidate_text or query)
-        raw_query_norm = normalize_text(query)
-        effective_search = raw_query_norm if len(raw_query_norm) > len(search_text) else search_text
-        has_conjunction = (
-            any(conj in f" {effective_search} " for conj in [" va ", " voi ", " cung ", " hoac ", " lan "])
-            or "," in (candidate_text or query)
-        )
-
-        span_matches = []
-        for r_item in ranked:
-            for val in _candidate_values(r_item["record"]):
-                val_norm = normalize_text(val)
-                if len(val_norm) < 3 or val_norm in _IGNORED_SPAN_WORDS:
-                    continue
-                for m in re.finditer(rf"(?<![a-z0-9]){re.escape(val_norm)}(?![a-z0-9])", effective_search):
-                    span_matches.append((len(val_norm), m.start(), m.end(), val_norm, r_item))
-
-        span_matches.sort(key=lambda x: (x[0], len(x[3].split())), reverse=True)
-
-        accepted_spans = []
-        multi_entity_items = []
-        seen_entity_keys = set()
-        for length, start, end, val_norm, r_item in span_matches:
-            is_subsumed = any(acc_s <= start and end <= acc_e for acc_s, acc_e in accepted_spans)
-            if not is_subsumed:
-                accepted_spans.append((start, end))
-                ekey = _entity_key(r_item["record"])
-                if ekey not in seen_entity_keys:
-                    seen_entity_keys.add(ekey)
-                    multi_entity_items.append(r_item)
-
-        top_span = span_matches[0] if span_matches else None
-        tied_spans = [s for s in span_matches if s[1] == top_span[1] and s[2] == top_span[2]] if top_span else []
-
-        if len(multi_entity_items) > 1:
-            ranked = multi_entity_items
-        elif len(multi_entity_items) == 1 and len(tied_spans) <= 1:
-            ranked = multi_entity_items
-        elif len(ranked) > 1 and score_margin < 0.08 and not has_conjunction:
-            options = []
-            seen_units = set()
-            for item in ranked[:3]:
-                record = item["record"]
-                unit = _strip_order_prefix(record.get("unit_name") or record.get("unit"))
-                if unit in seen_units:
-                    continue
-                seen_units.add(unit)
-                
-                service = record.get("service")
-                if not service:
-                    resps = record.get("responsibilities")
-                    if resps and isinstance(resps, list) and len(resps) > 0:
-                        service = resps[0]
-                
-                if service:
-                    svc_text = str(service).strip()
-                    if len(svc_text) > 250:
-                        svc_text = svc_text[:247] + "..."
-                    options.append(f"- **{unit}**: {svc_text}")
-                else:
-                    options.append(f"- **{unit}**")
-
-            return {
-                "lookup_type": "office_directory",
-                "resolution_status": "ambiguous",
-                "clarification_options": options,
-                "candidate_text": candidate_text or query,
-                "match_score": round(match_score, 4),
-                "score_margin": round(score_margin, 4),
-            }
-    effective_top_k = max(top_k, len(multi_entity_items)) if "multi_entity_items" in locals() and len(multi_entity_items) > 1 else top_k
+    effective_top_k = max(top_k, explicit_entity_count)
     matches = [
         _summarize_office(item["record"])
         | {

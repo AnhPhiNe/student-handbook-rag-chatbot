@@ -13,9 +13,6 @@ from .amendment_precedence import (
     collect_applicable_amendments,
     strip_misattached_amendment_notes,
 )
-from .context_allocation import ContextAllocationConfig
-
-
 DEFAULT_MAX_CONTEXT_CHARS = 160000
 ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.22-answer-scope"
 
@@ -26,7 +23,6 @@ def build_answer_prompt(
     selected_citations: list[dict[str, Any]] | None = None,
     max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS,
     cohort: str | None = None,
-    context_allocation: ContextAllocationConfig | dict[str, Any] | None = None,
 ) -> str:
     """Build a compact, task-bound answer prompt."""
     prompt, _ = build_answer_prompt_bundle(
@@ -35,7 +31,6 @@ def build_answer_prompt(
         selected_citations=selected_citations,
         max_context_chars=max_context_chars,
         cohort=cohort,
-        context_allocation=context_allocation,
     )
     return prompt
 
@@ -46,7 +41,6 @@ def build_answer_prompt_bundle(
     selected_citations: list[dict[str, Any]] | None = None,
     max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS,
     cohort: str | None = None,
-    context_allocation: ContextAllocationConfig | dict[str, Any] | None = None,
 ) -> tuple[str, str]:
     """Build the Composer prompt and return its exact evidence JSON.
 
@@ -54,7 +48,6 @@ def build_answer_prompt_bundle(
     Composer actually received, rather than a second legacy rendering of the
     same retrieval result.
     """
-    del context_allocation  # Kept in the public signature for compatibility.
     packet = build_authorized_evidence_packet(
         query=query,
         retrieval_result=retrieval_result,
@@ -205,23 +198,6 @@ def _amendment_evidence(amendment: ApplicableAmendment) -> dict[str, Any]:
         "effective_rule": amendment.effective_rule,
         "replacement_text": amendment.replacement_text,
     }
-
-
-def build_prompt(
-    query: str,
-    retrieval_result: dict[str, Any],
-    max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS,
-    cohort: str | None = None,
-    context_allocation: ContextAllocationConfig | dict[str, Any] | None = None,
-) -> str:
-    return build_answer_prompt(
-        query=query,
-        retrieval_result=retrieval_result,
-        selected_citations=retrieval_result.get("citations"),
-        max_context_chars=max_context_chars,
-        cohort=cohort,
-        context_allocation=context_allocation,
-    )
 
 
 def limit_context(context: str, max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS) -> str:

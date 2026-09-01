@@ -83,16 +83,6 @@ def normalize_unlabeled_enumeration_references(answer: str) -> str:
     return UNNUMBERED_FIRST_THREE_PATTERN.sub("ba trường hợp đầu nêu trên", answer)
 
 
-def append_sources(answer: str, sources_text: str) -> str:
-    answer = remove_existing_sources_section(answer)
-    sources_text = clean_answer(sources_text)
-
-    if not sources_text:
-        return answer
-
-    return f"{answer}\n\n{sources_text}".strip()
-
-
 def format_final_answer(
     answer: str, selected_citations: list[dict[str, Any]] | None
 ) -> str:

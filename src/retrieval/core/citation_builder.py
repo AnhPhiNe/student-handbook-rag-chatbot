@@ -2,7 +2,10 @@ import json
 import re
 from typing import Any
 
-from src.common.legal_reference import article_label_from_heading, normalize_article_label
+from src.common.legal_reference import (
+    article_label_from_heading,
+    normalize_article_label,
+)
 from src.common.source_identity import canonical_article_source_id
 
 
@@ -166,7 +169,9 @@ def enrich_citations_with_parent_details(
         )
         item["parent_title"] = metadata.get("title")
         item["parent_content"] = parent_content or None
-        item["detail_kind"] = "table" if item.get("chunk_type") == "structured_lookup" else "article"
+        item["detail_kind"] = (
+            "table" if item.get("chunk_type") == "structured_lookup" else "article"
+        )
         if item.get("chunk_type") == "structured_lookup":
             item["table_name"] = item.get("title")
 
@@ -223,7 +228,9 @@ def build_citations_from_vector_results(
             metadata.get("title"),
             source_heading,
         )
-        document_identity = metadata.get("document_title") or metadata.get("document_id")
+        document_identity = metadata.get("document_title") or metadata.get(
+            "document_id"
+        )
         source_parent_id = (
             metadata.get("source_parent_id")
             or metadata.get("parent_section_id")
@@ -244,13 +251,13 @@ def build_citations_from_vector_results(
                 or metadata.get("rule_name"),
                 "source_pages": parse_source_pages(metadata.get("source_pages")),
                 "source_label": _build_source_label(metadata),
-                "source_url": _first_value(metadata, ("source_url", "url", "document_url")),
+                "source_url": _first_value(
+                    metadata, ("source_url", "url", "document_url")
+                ),
                 "cohort": metadata.get("cohort"),
                 "source_cohort": metadata.get("source_cohort")
                 or metadata.get("cohort"),
-                "applicable_cohorts": list(
-                    metadata.get("applicable_cohorts") or []
-                ),
+                "applicable_cohorts": list(metadata.get("applicable_cohorts") or []),
                 "applicability_validated": bool(
                     metadata.get("applicability_validated")
                 ),
@@ -272,9 +279,7 @@ def build_citations_from_vector_results(
                 "distance": item.get("distance"),
                 "rerank": item.get("rerank"),
                 "retrieval_purpose": item.get("retrieval_purpose"),
-                "content": sanitize_citation_content(
-                    raw_content
-                ),
+                "content": sanitize_citation_content(raw_content),
                 "relevant_excerpt": sanitize_citation_content(focused_content),
             }
         )
@@ -298,7 +303,12 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
     lookup_type = str(lookup_result.get("lookup_type") or "structured_lookup")
     chunk_type = str(
         lookup_result.get("content_type")
-        or (lookup_type if lookup_type in {"program_directory", "office_directory", "faculty_directory"} else "structured_lookup")
+        or (
+            lookup_type
+            if lookup_type
+            in {"program_directory", "office_directory", "faculty_directory"}
+            else "structured_lookup"
+        )
     )
     source_pages = parse_source_pages(lookup_result.get("source_pages"))
     source_section = _first_value(
@@ -338,13 +348,13 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
             or lookup_type,
             "source_pages": source_pages,
             "source_label": str(source_label) if source_label else None,
-            "source_url": _first_value(lookup_result, ("source_url", "url", "document_url")),
+            "source_url": _first_value(
+                lookup_result, ("source_url", "url", "document_url")
+            ),
             "cohort": lookup_result.get("cohort"),
             "source_cohort": lookup_result.get("source_cohort"),
             "applicable_cohorts": lookup_result.get("applicable_cohorts"),
-            "applicability_validated": lookup_result.get(
-                "applicability_validated"
-            ),
+            "applicability_validated": lookup_result.get("applicability_validated"),
             "applicability_basis_parent_id": lookup_result.get(
                 "applicability_basis_parent_id"
             ),
@@ -357,8 +367,3 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
             "content": sanitize_citation_content(content),
         }
     ]
-
-
-def build_citation_from_formula(formula_result: dict[str, Any]) -> list[dict[str, Any]]:
-    """Formula results use the same source-binding rules as other lookups."""
-    return build_citation_from_lookup(formula_result)

@@ -1,5 +1,3 @@
-import re
-import unicodedata
 from typing import Any
 
 
@@ -158,22 +156,6 @@ def build_clarification_question(query: str, retrieval_result: dict[str, Any]) -
     if clarification_q and str(clarification_q).strip():
         return str(clarification_q).strip()
     return "Bạn có thể nói rõ hơn bạn muốn tra cứu quy định, thủ tục hay đơn vị nào không?"
-
-
-def _normalize_query(query: str) -> str:
-    normalized = query.lower().replace("–", "-").replace("—", "-")
-    normalized = re.sub(r"\s+", " ", normalized)
-    return normalized.strip()
-
-
-def _ascii_text(text: str) -> str:
-    text = text.replace("đ", "d").replace("Đ", "D")
-    decomposed = unicodedata.normalize("NFD", text)
-    stripped = "".join(
-        char for char in decomposed if unicodedata.category(char) != "Mn"
-    )
-    stripped = re.sub(r"[^a-zA-Z0-9]+", " ", stripped)
-    return re.sub(r"\s+", " ", stripped.lower()).strip()
 
 
 def _has_result(value: Any) -> bool:

@@ -77,17 +77,6 @@ def normalize_query_with_entities(
     return query + " " + " ".join(additions)
 
 
-def get_entity_target_chunk_types(
-    detected_entities: list[dict[str, Any]],
-) -> list[str]:
-    chunk_types = []
-
-    for entity in detected_entities:
-        chunk_types.extend(entity.get("target_chunk_types", []))
-
-    return list(dict.fromkeys(chunk_types))
-
-
 STRICT_DISJOINT_TOKENS = {"phong", "khoa", "ban", "trung", "vien"}
 
 def _has_fuzzy_alias_match(query: str, aliases: list[str]) -> bool:

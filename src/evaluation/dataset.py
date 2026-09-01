@@ -137,14 +137,6 @@ def _doc_id(item: dict[str, Any]) -> str:
     ).strip()
 
 
-def _judgment_ids(case: dict[str, Any]) -> list[str]:
-    return [
-        str(item.get("parent_section_id") or "").strip()
-        for item in case.get("relevance_judgments", [])
-        if isinstance(item, dict) and str(item.get("parent_section_id") or "").strip()
-    ]
-
-
 def _record_id(record: dict[str, Any]) -> str:
     for key in (
         "record_id",
@@ -370,10 +362,6 @@ def _structured_source_index(
                     ):
                         index[(alias, source_id)] = record
     return index
-
-
-def _structured_source_ids(root: Path) -> set[str]:
-    return {record_id for _, record_id in _structured_source_index(root)}
 
 
 def _normalize_eval_cohort(value: Any) -> str | None:

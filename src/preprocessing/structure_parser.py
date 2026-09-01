@@ -407,20 +407,6 @@ def should_close_on_content_type_change(
     return current_section.get("content_type") != new_content_type
 
 
-def should_split_long_non_article_section(
-    current_section: Optional[dict[str, Any]],
-) -> bool:
-    if current_section is None:
-        return False
-
-    if current_section.get("section_level") != "non_article":
-        return False
-
-    current_content = "\n".join(current_section.get("content_lines", []))
-
-    return len(current_content) >= MAX_NON_ARTICLE_CHARS
-
-
 def build_structured_sections(
     line_records: list[dict[str, Any]],
     lookup_dict: dict[tuple[int, int], dict[str, Any]],

@@ -45,10 +45,6 @@ def normalize_text(value: Any) -> str:
     return re.sub(r"[^a-z0-9+.,\s-]", " ", text)
 
 
-def compact_text(value: Any) -> str:
-    return re.sub(r"\s+", " ", str(value or "")).strip()
-
-
 def _filter_by_cohort(
     tables: list[dict[str, Any]],
     cohort: str | None,

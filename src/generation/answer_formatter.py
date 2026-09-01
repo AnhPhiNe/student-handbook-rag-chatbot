@@ -21,6 +21,15 @@ EVIDENCE_LABEL_PATTERN = re.compile(
     r"\s*\(\s*S\d+(?:\s*[,;/]\s*S\d+)*\s*\)",
     re.IGNORECASE,
 )
+DANGLING_MARKDOWN_TAIL_PATTERN = re.compile(
+    r"(?:^|(?<=\s))(?:[*_~`]+\s*\(?|\()\s*$"
+)
+
+
+def _remove_dangling_markdown_tail(text: str) -> str:
+    """Drop an unbalanced wrapper left after removing a private source tail."""
+
+    return DANGLING_MARKDOWN_TAIL_PATTERN.sub("", text or "").rstrip()
 
 
 def clean_stream_fragment(text: str) -> str:
@@ -53,12 +62,15 @@ def clean_answer(text: str) -> str:
     text = (text or "").strip()
     text = re.sub(r"^```(?:\w+)?\s*", "", text)
     text = re.sub(r"\s*```$", "", text)
-    return clean_stream_fragment(text).strip()
+    return _remove_dangling_markdown_tail(clean_stream_fragment(text).strip())
 
 
 def remove_existing_sources_section(answer: str) -> str:
     answer = clean_answer(answer)
-    return SOURCE_SECTION_PATTERN.sub("", answer).strip()
+    source_section = SOURCE_SECTION_PATTERN.search(answer)
+    if source_section is None:
+        return answer
+    return _remove_dangling_markdown_tail(answer[: source_section.start()].strip())
 
 
 def normalize_unlabeled_enumeration_references(answer: str) -> str:

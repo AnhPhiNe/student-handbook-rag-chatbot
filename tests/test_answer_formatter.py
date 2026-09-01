@@ -1,6 +1,7 @@
 from src.generation.answer_formatter import (
     clean_answer,
     ensure_primary_article_anchors,
+    format_final_response,
     missing_primary_article_anchors,
     normalize_unlabeled_enumeration_references,
 )
@@ -10,6 +11,20 @@ def test_clean_answer_removes_internal_source_packet_labels() -> None:
     answer = "Căn cứ Điều 35 (S1, S6) và Điều 21 (S2/S8), sinh viên bị xử lý."
 
     assert clean_answer(answer) == "Căn cứ Điều 35 và Điều 21, sinh viên bị xử lý."
+
+
+def test_clean_answer_removes_dangling_markdown_after_private_source_label() -> None:
+    assert clean_answer("Nội dung đúng.\n\n*(S1)") == "Nội dung đúng."
+
+
+def test_final_response_removes_wrapper_before_generated_sources_section() -> None:
+    answer = "Nội dung đúng.\n\n*(Nguồn: Điều 16, Điều 30)"
+
+    assert format_final_response(answer) == "Nội dung đúng."
+
+
+def test_clean_answer_preserves_balanced_markdown_ending() -> None:
+    assert clean_answer("Kết quả là **Tốt**") == "Kết quả là **Tốt**"
 
 
 def test_appends_primary_article_anchor_when_llm_omits_it() -> None:

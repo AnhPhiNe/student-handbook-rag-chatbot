@@ -58,7 +58,7 @@ from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v56-stream-context-runtime-contract"
+PIPELINE_VERSION = "v57-stream-context-output-cleanup"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None

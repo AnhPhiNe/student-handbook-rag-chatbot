@@ -1,0 +1,137 @@
+{
+  "schema_version": "architecture-v7-release-results-v1",
+  "status": "official_internal_release_evaluation",
+  "benchmark_run_kind": "one_shot_release_evaluation",
+  "dataset_version": "7.0.0",
+  "evaluated_system_commit": "1f11f6500bc56de861adaecc876ccd9505d93538",
+  "evaluation_harness_commit": "c053bfcf8a63cc85a3448b1c3691310798319c11",
+  "post_run_runtime_patch_and_rerun": false,
+  "dataset_hashes_unchanged_from_first_run": true,
+  "scope_note": "Official for this repository release and accurately scoped CV claims; not a pre-registered external holdout or independent expert study.",
+  "runtime": {
+    "planner_model": "qwen/qwen3.8-27b",
+    "planner_reasoning_effort": "low",
+    "generation_model": "gemini-3.1-flash-lite",
+    "judge_model": "openai/gpt-oss-120b",
+    "retrieval_mode": "vector_primary_graph_supplement",
+    "reranker_enabled": false,
+    "qdrant_collection": "student_handbook_semantic_v32",
+    "mongodb_parent_collection": "parent_docs_v32",
+    "pipeline_version": "v58-registry-grounded-routing",
+    "query_plan_schema": "v1",
+    "query_plan_normalizer": "v17-registry-literal-grounding",
+    "router_prompt": "structured-regulation-v38-directory-task-contract",
+    "answer_prompt": "student-handbook-answer-v3.22-answer-scope"
+  },
+  "dataset_hashes": {
+    "deterministic": "6daa4f4be0e5a1426e11b9106d5ee64e34f4a37ea8ffabe42ea1adae7d329941",
+    "retrieval": "d9511afa0cce9ca1c8e02c24f2c79803c43e38625ddf1cb5e36d84aded18ccd2",
+    "answers": "5da5f17eaac5c208eb7ccee5b25d8f17713f1ab081a4124f2588bf1bb6532f15",
+    "production": "ad47bf0c0e7782803750692a8b32e440949c6f26466c850d01514d5cfe457f0f"
+  },
+  "deterministic": {
+    "n": 140,
+    "passed": 130,
+    "outcome_contract_accuracy": 0.9285714285714286,
+    "structured_selection_precision": 0.9886363636363636,
+    "structured_selection_recall": 0.9886363636363636,
+    "structured_false_positive_rate": 0.019230769230769232,
+    "plan_structure_accuracy": 0.9642857142857143,
+    "task_semantics_accuracy": 0.9571428571428572,
+    "structured_execution_accuracy": 0.9785714285714285,
+    "structured_evidence_accuracy": 0.9886363636363636,
+    "planner_fallback_rate": 0.021428571428571463,
+    "cross_cohort_leak": 0.0,
+    "gate_passed": true
+  },
+  "retrieval": {
+    "n": 160,
+    "hit_at_1": 0.7875,
+    "hit_at_3": 0.90625,
+    "hit_at_5": 0.925,
+    "primary_hit_at_5": 0.925,
+    "mrr": 0.8558680555555556,
+    "ndcg_at_5": 0.8247950905344881,
+    "required_source_recall_at_5": 0.8802083333333334,
+    "citation_binding": 0.9375,
+    "content_type_match": 0.94375,
+    "cohort_match": 1.0,
+    "cohort_leak_rate": 0.0,
+    "empty_retrieval_rate": 0.025,
+    "latency_p50_ms": 2673.7227000121493,
+    "latency_p95_ms": 5162.9318999592215,
+    "gate_passed": false,
+    "failed_gate": "content_type_match < 0.98"
+  },
+  "answer_generation": {
+    "n": 150,
+    "literal_answered_status_rate": 0.88,
+    "latency_mean_ms": 6250.108986668444,
+    "latency_p50_ms": 5516.778849996626,
+    "latency_p95_ms": 10684.956730008707,
+    "latency_max_ms": 84847.1308000153
+  },
+  "llm_judge": {
+    "n": 150,
+    "faithfulness": 0.9264666666666667,
+    "answer_relevancy": 0.9391333333333334,
+    "answer_correctness": 0.8829999999999999,
+    "citation_correctness": 0.9424666666666667,
+    "context_precision": 0.501,
+    "context_recall": 0.7992666666666667,
+    "packet_required_fact_coverage": 0.8266666666666667,
+    "required_fact_hit": 0.5133333333333333,
+    "numeric_accuracy": 0.8133333333333334,
+    "abstention_correct": 0.9733333333333334,
+    "question_handling_correctness": 0.98,
+    "judge_unsupported_claim_rate": 0.08666666666666667,
+    "judge_critical_false_passes": 2,
+    "gate_passed": false
+  },
+  "source_grounded_audit": {
+    "stratified_cases": 40,
+    "all_judge_flagged_cases_reviewed": 14,
+    "overall_score": 0.9606,
+    "correctness": 0.9323,
+    "faithfulness": 0.9838,
+    "completeness": 0.9463,
+    "citation_quality": 0.9738,
+    "safe_behavior": 0.995,
+    "judge_audit_mae": 0.0333375,
+    "agreement_within_0_15": 0.95,
+    "labels": {
+      "pass": 32,
+      "acceptable_minor_limitation": 4,
+      "evaluation_case_issue": 3,
+      "confirmed_system_defect": 1
+    }
+  },
+  "production": {
+    "n": 60,
+    "transport_success_rate": 1.0,
+    "payload_success_rate": 1.0,
+    "response_status_accuracy": 1.0,
+    "http_429_rate": 0.0,
+    "timeout_rate": 0.0,
+    "overall_latency_p50_ms": 5445.109099993715,
+    "overall_latency_p95_ms": 12478.03568497183,
+    "streaming_ttft_p50_ms": 4586.247949977405,
+    "streaming_ttft_p95_ms": 5811.482660018373,
+    "warm_cache_hit_rate": 1.0,
+    "cold_cache_hit_rate": 0.0,
+    "telemetry_coverage": 0.0,
+    "gate_passed": false,
+    "failed_gates": [
+      "public-endpoint telemetry coverage",
+      "warm-cache p95 latency"
+    ]
+  },
+  "known_limitations": [
+    {
+      "id": "v7_ans_struct_020",
+      "classification": "confirmed_system_defect",
+      "scope": "narrow structured scoring table-subtype ambiguity",
+      "decision": "retained without a post-evaluation prompt or normalizer patch"
+    }
+  ]
+}

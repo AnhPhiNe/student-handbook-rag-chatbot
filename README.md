@@ -56,7 +56,7 @@ flowchart LR
     Graph -. related references .-> API
 ```
 
-The production data stores share build ID `build-2254b92ccb60f7984bfa`. Readiness checks compare environment collection names against the packaged build manifest, preventing Qdrant and MongoDB from silently using artifacts from different builds.
+The production data stores share build ID `build-02a2eed8dae5b4307427`. Readiness checks compare environment collection names against the packaged build manifest, preventing Qdrant and MongoDB from silently using artifacts from different builds.
 
 ## Data Processing Pipeline
 
@@ -70,7 +70,7 @@ flowchart TD
     Policy --> TableExtract["Structured table and directory extraction"]
     Policy --> GraphExtract["Cross-reference graph extraction"]
 
-    TableExtract --> Catalogs["26 cohort-aware table catalogs<br/>+ faculty/program/office directories"]
+    TableExtract --> Catalogs["35 cohort-aware table catalogs<br/>+ faculty/program/office directories"]
     Catalogs --> Registry["Structured registry + provenance"]
 
     Parents --> Chunking["Child-parent chunking"]
@@ -79,10 +79,10 @@ flowchart TD
     Chunking --> Children["3,125 regulation child chunks"]
     Children --> Embedding["BAAI/bge-m3<br/>1,024 dimensions"]
 
-    Parents --> Mongo[("MongoDB v31")]
-    Embedding --> Qdrant[("Qdrant v31")]
+    Parents --> Mongo[("MongoDB parent_docs_v32")]
+    Embedding --> Qdrant[("Qdrant student_handbook_semantic_v32")]
     Children --> BM25["BM25 index built from Qdrant payload"]
-    GraphExtract --> Graph["94 directed article edges"]
+    GraphExtract --> Graph["78 validated directed article edges"]
 
     Parents --> Manifest["Build manifest<br/>hashes · counts · build ID"]
     Catalogs --> Manifest
@@ -97,8 +97,8 @@ flowchart TD
 |---|---:|---|
 | Parent articles | 462 | Full context for answers and citations |
 | Child chunks | 3,125 | Fine-grained dense and BM25 retrieval |
-| Structured table catalogs | 26 | Deterministic cohort-aware table lookup |
-| Article graph edges | 94 | Related references; never a substitute for primary evidence |
+| Structured table catalogs | 35 | Deterministic cohort-aware table lookup |
+| Article graph edges | 78 | Related references for the UI; never Composer evidence or a substitute for primary evidence |
 | Embedding | BAAI/bge-m3, 1,024 dimensions | Semantic dense retrieval |
 
 Structured tables remain available in JSON and in MongoDB parent documents. Excluding registry-covered rows only removes duplicated, flattened table content from Qdrant; it does not remove tables from the system.
@@ -120,11 +120,11 @@ flowchart TD
     Dense --> RRF["RRF fusion · top 24 children"]
     Sparse --> RRF
     RRF --> Group["Group by parent · top 5 primary parents"]
-    Group --> Expand["Graph depth 2<br/>related references only"]
+    Group --> Expand["Graph depth 2<br/>validated related references"]
 
     Lookup --> Packet["Evidence fusion<br/>task/cohort/source binding + coverage"]
     Group --> Packet
-    Expand --> Packet
+    Expand --> RelatedUI["Related-reference metadata<br/>UI only"]
     C --> Packet
 
     Packet --> Terminal{"Executable evidence available?"}
@@ -133,6 +133,7 @@ flowchart TD
     Answer --> Render["Markdown answer + citations<br/>+ structured table cards"]
     Deterministic --> Response["Sync response / SSE done event"]
     Render --> Response
+    RelatedUI --> Response
 ```
 
 ### QueryPlan Contract
@@ -207,178 +208,220 @@ LANGSMITH_PROJECT=hcmue-student-handbook-rag
 
 Legacy `LANGCHAIN_API_KEY` and `LANGCHAIN_PROJECT` names remain supported for existing deployments.
 
-## Evaluation
+## Evaluation Results
 
-The repository uses separate evaluation suites because planning correctness, retrieval quality, answer quality, and production behavior are different questions. A score from one suite is never presented as a substitute for another. The current release evidence is summarized first, followed by the exact composition and metrics of every maintained suite.
+Planning correctness, regulation retrieval, answer quality, and API behavior are evaluated separately. Their denominators and contracts are not combined into one synthetic score.
 
-### Release Evidence at a Glance
+The current release uses **Architecture V7 (`7.0.0`)** as its official internal release evaluation. V7 was executed once against runtime commit `1f11f6500bc56de861adaecc876ccd9505d93538`; the four case-file hashes in the manifest still match the first-run reports, and the runtime was not patched and rerun to improve the numbers. The bundle was promoted to release status after that run. It is suitable for project and CV reporting, but it is not described as a pre-registered external holdout.
 
-| Suite | Role | Cases | Latest recorded result | Release gate? |
-|---|---|---:|---:|---|
-| Deterministic architecture | QueryPlan, routing, table-first execution, cohort and citation contracts | 144 | **143/144 (99.31%)** | Architecture evidence |
-| End-to-end regulation retrieval | Planner plus production hybrid retrieval | 180 | **Hit@5: 175/180 (97.22%)** | Retrieval evidence |
-| Legacy product regression | Re-runnable development regression | 30 | **30/30 automatic shape checks**; human review pending for that run | No |
-| Product acceptance | Realistic end-to-end product behavior | 50 | **47/50 automatic; 50/50 human pass** | **Yes** |
-| Generated answers + LLM judge | Grounding and citation diagnostics | 100 | No release score claimed for the current checkpoint | No |
-| Production scenarios | Cold/warm cache, streaming, and concurrency exercises | 60 | Dataset maintained; no release score claimed here | No |
-| Automated tests | Unit, integration, API, build, and regression invariants | — | **349 passed** | Engineering gate |
+Dataset: [`data/eval/architecture_v7`](./data/eval/architecture_v7)
 
-Raw LLM-judge scores are diagnostic only. A suspected critical unsupported claim counts as a product failure only after source-based human review.
+Detailed release report: [`docs/V7_RELEASE_EVALUATION_VI.md`](./docs/V7_RELEASE_EVALUATION_VI.md)
 
-### 1. Deterministic Architecture Suite — 144 Cases
+### Evaluation Identity
 
-Dataset: [`data/eval/architecture_v3/deterministic_tool_cases.json`](./data/eval/architecture_v3/deterministic_tool_cases.json)
+| Item | Recorded value |
+|---|---|
+| Evaluated runtime commit | `1f11f6500bc56de861adaecc876ccd9505d93538` |
+| Evaluator commit | `c053bfcf8a63cc85a3448b1c3691310798319c11` |
+| Planner | `qwen/qwen3.8-27b`, reasoning `low`, native JSON Schema |
+| Composer | `gemini-3.1-flash-lite` |
+| Judge | `openai/gpt-oss-120b`, project-specific rubric; not RAGAS |
+| Retrieval mode | `vector_primary_graph_supplement`; PhoRanker disabled |
+| Storage | Qdrant `student_handbook_semantic_v32`; MongoDB `parent_docs_v32` |
+| Runtime contract | pipeline `v58-registry-grounded-routing`; QueryPlan schema `v1`; normalizer `v17-registry-literal-grounding` |
+| Prompt contracts | Router `structured-regulation-v38-directory-task-contract`; Composer `student-handbook-answer-v3.22-answer-scope` |
+| Evaluation volume | 140 deterministic + 160 retrieval + 150 generated/judged + 60 production requests |
 
-This suite calls the planning and retrieval-preparation path without asking the answer LLM to judge its own behavior. A case passes only when all applicable structural invariants pass: task count, task modes, lookup types, cohort extraction, OOD behavior, clarification behavior, expected LLM-call decision, planner fallback absence, structured evidence availability, table-first payload shape, and cohort-correct source binding.
+### 1. Deterministic Architecture — 140 Cases
 
-#### Distribution by case type
+This suite evaluates QueryPlan outcomes and executable structured evidence without using the Composer as a judge. V7 accepts semantically equivalent safe plans rather than requiring identical task IDs or raw slot spellings.
 
-| Case type | Count | What it tests |
-|---|---:|---|
-| Positive structured lookup | 60 | Ten lookup families, six cases each |
-| Hard negative | 40 | Preventing unsupported structured routing or fabricated lookup evidence |
-| Ambiguous | 12 | Scoped clarification instead of guessing required information |
-| Out of domain | 8 | Terminal OOD behavior without an answer-LLM call |
-| Architecture scenarios | 24 | Multi-task, mixed-mode, multi-cohort, and three-task boundary behavior |
-| **Total** | **144** | 84 realistic and 60 stress cases |
+#### Composition and result by case type
 
-The 60 positive cases contain six cases each for conduct, faculty, foreign language, formula, office, program, scholarship, scoring, student service, and study duration. The 24 architecture cases contain 3 multi-structured, 7 structured+regulation, 4 multi-regulation, 4 multi-cohort, 2 clarification, 2 multi-entity same-table, 1 three-task boundary, and 1 mixed-scope case.
+| Case type | Cases | Passed | Pass rate |
+|---|---:|---:|---:|
+| Single structured lookup | 60 | 58 | 96.67% |
+| Capability boundary | 24 | 24 | 100.00% |
+| Compound query | 28 | 24 | 85.71% |
+| Missing or ambiguous information | 12 | 11 | 91.67% |
+| Unsupported but in-domain | 8 | 5 | 62.50% |
+| Out of domain | 8 | 8 | 100.00% |
+| **Total** | **140** | **130** | **92.86%** |
 
-**Metric:** strict case pass rate, computed as `passed cases / 144`. The current result is **143/144 = 99.31%**. The remaining case is a structural planner merge of closely related regulation requests; the final evidence is still complete, so the project reports it rather than adding a keyword parser to force 100%.
+The split contains 95 realistic cases (**92/95 = 96.84%**) and 45 stress cases (**38/45 = 84.44%**).
 
-### 2. Regulation Retrieval Suite — 180 Cases
+#### Architecture metrics
 
-Dataset: [`data/eval/architecture_v3/retrieval_cases.json`](./data/eval/architecture_v3/retrieval_cases.json)
+| Metric | Result |
+|---|---:|
+| Outcome-contract accuracy | **130/140 = 92.86%** |
+| Structured-selection precision | **98.86%** |
+| Structured-selection recall | **98.86%** |
+| Structured false-positive rate | **1.92%** |
+| Plan-structure accuracy | **96.43%** |
+| Task-semantics accuracy | **95.71%** |
+| Structured-execution accuracy | **97.86%** |
+| Structured-evidence accuracy | **98.86%** |
+| Planner fallback rate | **2.14%** |
+| Observed cross-cohort leak | **0/140** |
 
-All 180 cases are source-anchored regulation questions. Structured-table questions are intentionally excluded because those use the deterministic catalog path rather than Qdrant. The evaluator supports two scopes:
+The deterministic gate passed its applicable precision, recall, false-positive, and cohort-leak thresholds. Metrics that the outcome-equivalent contract does not assert for every case are reported as `N/A`, not silently converted into 100%.
 
-- **pure retrieval:** force the regulation retrieval path to isolate Qdrant/BM25/RRF quality;
-- **end to end:** include QueryPlan routing and then score the parent documents returned by the production path.
+### 2. End-to-End Regulation Retrieval — 160 Cases
 
-The release headline reported in this README is the stricter end-to-end result.
+All cases require regulation evidence and run through the Planner plus the production retrieval path: BGE-M3 dense search, BM25, RRF, parent grouping, and graph-related UI references. Structured-only lookups are excluded.
 
-#### Distribution
+#### Dataset composition
 
 | Dimension | Distribution |
 |---|---|
-| Evaluation split | 135 realistic, 45 stress |
-| Cohort | 46 K48–K49, 45 K50, 45 K51, 44 general/multi-cohort |
-| Query style | 26 keyword, 25 student style, 20 short natural, 18 paraphrase, 13 typo/no accent, 11 condition/procedure, 7 graph-reference, 6 numeric/fact, 5 cohort-sensitive, 4 typo/no diacritics, 45 stress |
+| Evaluation split | 108 realistic, 52 stress |
+| Cohort | 46 K48–K49, 55 K50, 47 K51, 12 general |
+| Target patterns | 30 exact article, 20 graph-reference, 20 multi-source, 32 cohort-sensitive, 32 condition/procedure, 10 no-diacritic typo; tags may overlap |
 
-#### Metrics
+#### Retrieval metrics
 
-| Metric | Definition |
-|---|---|
-| Hit@1 / Hit@3 / Hit@5 | `1` when at least one source-anchored relevant parent appears in the first `k` parents, otherwise `0`; reported as the mean over cases |
-| MRR | Mean reciprocal rank of the first relevant parent |
-| nDCG@5 | Rank-sensitive graded relevance over the first five parents |
-| Cohort leak rate | Fraction of cases containing a parent that violates cohort/applicability scope |
-| Empty/error rate | Fraction with no usable retrieval result or a runtime failure |
-| Latency | Mean and percentile retrieval time |
-
-For general multi-cohort queries, Hit@k is computed within each cohort execution unit before request-level aggregation. This avoids incorrectly treating the first K50 result as rank six merely because five K48–K49 parents were emitted first.
-
-**Current end-to-end result:** **Hit@5 = 175/180 = 97.22%**. The five documented misses are stress-style accentless queries or very broad heading-level questions. Production uses dense + BM25 + RRF; PhoRanker fields may exist in historical evaluator telemetry, but PhoRanker is disabled in the production path.
-
-### 3. Generated Answer and Judge Suite — 100 Cases
-
-Dataset: [`data/eval/architecture_v3/generated_answer_cases.json`](./data/eval/architecture_v3/generated_answer_cases.json)
-
-| Case type | Count |
+| Metric | Result |
 |---|---:|
-| Regulation RAG answers | 60 |
-| Structured answers | 20 |
-| Mixed structured + regulation answers | 10 |
-| Unanswerable / abstention | 10 |
-| **Total** | **100** |
+| Hit@1 | **126/160 = 78.75%** |
+| Hit@3 | **145/160 = 90.63%** |
+| Hit@5 | **148/160 = 92.50%** |
+| Primary-source Hit@5 | **148/160 = 92.50%** |
+| MRR | **0.8559** |
+| nDCG@5 | **0.8248** |
+| Required-source recall@5 | **0.8802** |
+| Citation binding | **93.75%** |
+| Content-type match | **94.38%** |
+| Cohort match | **100.00%** |
+| Observed cohort leak | **0/160** |
+| Empty retrieval | **4/160 = 2.50%** |
+| Retrieval latency p50 / p95 | **2.674 s / 5.163 s** |
 
-The split is 75 realistic and 25 stress cases; 90 are answerable and 10 are unanswerable. Each case contains source anchors, ground truth, required facts, forbidden claims, expected citations, and answerability metadata.
+#### Diagnostic breakdown
 
-Deterministic checks cover required-fact presence, numeric fidelity, citation-anchor match, abstention correctness, answer status, and expected question-handling behavior. The optional judge reports faithfulness, answer relevancy, answer correctness, context precision, context recall, citation correctness, unsupported-claim flags, and critical-false-pass flags.
+| Group | Cases | Hit@3 | MRR |
+|---|---:|---:|---:|
+| Realistic | 108 | 93.52% | 0.8834 |
+| Stress | 52 | 84.62% | 0.7987 |
+| Exact article | 30 | 100.00% | 0.9278 |
+| Graph reference | 20 | 95.00% | 0.9250 |
+| Multi-source | 20 | 80.00% | 0.7500 |
+| Cohort-sensitive | 32 | 78.13% | 0.7252 |
+| No-diacritic typo | 10 | 50.00% | 0.3833 |
 
-This suite is **diagnostic, not an acceptance gate**. Judge output can prioritize human review, but it cannot replace direct inspection of the answer and source anchors. No current release score is claimed because the beta decision uses the 50-case human-reviewed product set instead.
+Hit@3, Hit@5, MRR, nDCG@5, and cohort isolation passed their configured gates. The overall retrieval gate remained **failed** because content-type match was 94.38% against a 98% threshold; this failure is retained rather than hidden behind the stronger Hit@5 score.
 
-### 4. Production Scenario Suite — 60 Cases
+### 3. Answer Generation — 150 Cases
 
-Dataset: [`data/eval/architecture_v3/production_cases.json`](./data/eval/architecture_v3/production_cases.json)
+#### Composition
 
-| Scenario | Count | Purpose |
-|---|---:|---|
-| Cold regulation RAG | 20 | Uncached end-to-end latency and correctness |
-| Deterministic | 10 | Structured/guardrail response behavior |
-| Warm cache | 10 | Cache-hit behavior and latency |
-| Streaming | 10 | SSE metadata, tokens, done event, and TTFT |
-| Burst | 10 | Five cases at concurrency 3 and five at concurrency 5 |
-| **Total** | **60** | 56 realistic and 4 stress cases |
-
-The suite measures HTTP success, expected response status, completion rate, error rate, latency, TTFT, stream completion, token output, warm-cache behavior, and burst stability. It is a deployment/performance diagnostic and is not combined with retrieval or human answer-quality scores.
-
-### 5. Legacy Product Regression — 30 Cases
-
-Dataset: [`data/eval/product_regression/cases.json`](./data/eval/product_regression/cases.json)
-
-This is an opened development set that may be rerun after general fixes. It contains 5 structured-single, 3 multi-entity same-table, 3 structured+structured, 4 regulation-single, 3 regulation+regulation, 4 structured+regulation, 3 multi-cohort, and one case each for clarification, follow-up, partial answer, OOD, and two questions in one message.
-
-Automatic checks verify no runtime error, expected outcome shape, and citations for covered tasks. The latest report records **30/30 automatic checks passed**, but its human-review status is still `pending_human_review`; therefore it is not advertised as a 30/30 human quality result and is not the release gate.
-
-### 6. Product Acceptance — 50 Cases
-
-Dataset and review: [`data/eval/product_acceptance`](./data/eval/product_acceptance)
-Raw runs: [`data/eval/reports/product_acceptance`](./data/eval/reports/product_acceptance)
-
-This is the final product gate: 50 natural questions selected to resemble real student use, not an adversarial stress benchmark. The overlap audit found zero exact-query overlap with the 144 deterministic cases, 180 retrieval cases, and the earlier 30-case product set.
-
-#### Distribution by scenario
-
-| Scenario | Count |
+| Case type | Cases |
 |---|---:|
-| Structured single-task | 8 |
-| Multi-entity in one table | 5 |
-| Structured + structured | 4 |
-| Regulation single-task | 8 |
-| Regulation + regulation | 5 |
-| Structured + regulation | 6 |
-| Multi-cohort | 6 |
-| Clarification / follow-up | 4 |
-| Partial / unanswerable | 3 |
-| Out of domain | 1 |
-| **Total** | **50** |
+| Regulation RAG | 90 |
+| Structured answer | 30 |
+| Mixed structured + RAG | 10 |
+| Clarification | 8 |
+| Unanswerable | 6 |
+| Out of domain | 6 |
+| **Total** | **150** |
 
-Expected outcomes are 44 answered, 3 partial, 2 clarification, and 1 OOD. Cohort selection contains 35 K51, 8 K50, 1 K48–K49, and 6 cases whose cohort is carried by the query or spans multiple cohorts.
+The answer split contains 102 realistic and 48 stress cases. All 150 outputs were produced with production retrieval mode and without PhoRanker.
 
-#### Automatic and human metrics
+| Generation metric | Result |
+|---|---:|
+| Literal `answered` status rate | **88.00%** |
+| Generation latency mean | **6.250 s** |
+| Generation latency p50 | **5.517 s** |
+| Generation latency p95 | **10.685 s** |
+| Maximum observed latency | **84.847 s** |
 
-| Layer | Metric | Result |
-|---|---|---:|
-| Automatic | No runtime error | Checked per case |
-| Automatic | Expected outcome/status shape | Checked per case |
-| Automatic | Every covered task has a citation | Checked per case |
-| Automatic aggregate | All automatic checks pass | **47/50 (94.00%)** |
-| Human | Task completeness | Reviewed against the question |
-| Human | Grounding and source correctness | Reviewed against source anchors |
-| Human | Citation and cohort correctness | Reviewed directly |
-| Human | Abstention/clarification correctness | Reviewed for missing evidence |
-| Human aggregate | Product pass | **50/50 (100%)** |
-| Human severity | Critical / major | **0 / 0** |
-| Human severity | Accepted minor limitations | **4** |
+The 88% value counts only the literal `answered` status. It is not an answer-quality score because valid clarification, abstention, and OOD responses may use other statuses.
 
-All automatic failures were human-reviewed, and at least ten automatic passes were manually spot-checked. Four cases passed with documented minor limitations: aggregate status telemetry for partial answers and a follow-up that asks for a dependent entity rather than automatically forwarding a previous task output. These limitations were retained instead of adding task dependencies or a semantic parser merely to turn the automatic score into 50/50.
+### 4. LLM Judge — 150 Cases
 
-### Evaluation Data Governance
+The judge uses `openai/gpt-oss-120b` with a project-specific source-grounded rubric. These are LLM-as-judge diagnostics, not RAGAS and not independent human annotation.
 
-- [`data/eval/architecture_v3/manifest.json`](./data/eval/architecture_v3/manifest.json) records dataset hashes, counts, source build ID, model identities, collection names, and evaluation contracts.
-- The 144/180/100/60 architecture bundle is versioned evidence, while the 30-case set is explicitly an opened development regression.
-- The 50-case product set was committed before its first run. Its [`overlap_audit.json`](./data/eval/product_acceptance/overlap_audit.json), [`acceptance_summary.json`](./data/eval/product_acceptance/acceptance_summary.json), and [`human_signoff.json`](./data/eval/product_acceptance/human_signoff.json) keep automatic and human conclusions separate.
-- No metric is silently dropped after seeing an output, and raw judge scores are never presented as human sign-off.
+| Judge metric | Result |
+|---|---:|
+| Faithfulness | **92.65%** |
+| Answer relevancy | **93.91%** |
+| Answer correctness | **88.30%** |
+| Citation correctness | **94.25%** |
+| Context precision | **50.10%** |
+| Context recall | **79.93%** |
+| Packet required-fact coverage | **82.67%** |
+| Exact required-fact hit | **51.33%** |
+| Numeric accuracy | **81.33%** |
+| Abstention correctness | **97.33%** |
+| Question-handling correctness | **98.00%** |
+| Judge unsupported-claim rate | **8.67%** |
+| Judge critical-false-pass flags | **2/150** |
+
+Faithfulness, correctness, citation, and abstention gates passed. Numeric accuracy, unsupported-claim rate, and critical-false-pass gates failed. Exact required-fact matching is intentionally reported separately because literal matching can disagree with a semantically correct paraphrase.
+
+### 5. Source-Grounded Audit — 40 Cases plus All Judge Flags
+
+The 40-case stratified audit was completed by AI-assisted source review under the owner-approved workflow. Every one of the 14 Judge-flagged cases was also inspected against the actual answer, authorized evidence, query scope, and gold target.
+
+| Audit dimension | Result |
+|---|---:|
+| Overall audit score | **96.06%** |
+| Correctness | **93.23%** |
+| Faithfulness | **98.38%** |
+| Completeness | **94.63%** |
+| Citation quality | **97.38%** |
+| Safe behavior | **99.50%** |
+| Judge–audit MAE | **0.0333** |
+| Agreement within ±0.15 | **95.00%** |
+
+Audit labels were 32 pass, 4 acceptable minor limitations, 3 evaluation-case issues, and 1 confirmed system defect. The confirmed defect is `v7_ans_struct_020`: a stress-form scoring query caused the structured router to select the ungraded pass/fail table instead of the K51 “remaining courses” table. Natural follow-up probes showed normal threshold questions are handled conditionally and correctly, so this is retained as a narrow known limitation rather than patched after evaluation.
+
+### 6. Production Contract and Performance — 60 Requests
+
+This suite measures transport, payload, cache, streaming, and bounded concurrency behavior. It does not replace the answer-quality suite.
+
+| Scenario | Requests | Success | p50 latency | p95 latency |
+|---|---:|---:|---:|---:|
+| Cold regulation RAG | 20 | 100% | 5.533 s | 21.015 s |
+| Structured | 10 | 100% | 3.648 s | 5.715 s |
+| Warm cache | 10 | 100% | 1.980 s | 6.751 s |
+| Streaming | 10 | 100% | 5.511 s | 6.745 s |
+| Burst | 10 | 100% | 9.382 s | 13.542 s |
+| **Total** | **60** | **100%** | **5.445 s** | **12.478 s** |
+
+| Production metric | Result |
+|---|---:|
+| HTTP transport success | **60/60** |
+| Payload success | **60/60** |
+| Expected response-status accuracy | **60/60** |
+| HTTP 429 / timeout rate | **0% / 0%** |
+| Warm-cache hit rate | **100%** |
+| Cold-cache hit rate | **0%** |
+| Streaming TTFT coverage | **100%** |
+| Streaming TTFT p50 / p95 | **4.586 s / 5.811 s** |
+| Mean sources returned | **4.12** |
+| Source utilization | **76.67%** |
+
+The production gate remained **failed** because public-endpoint telemetry coverage was 0% and warm-cache p95 exceeded the configured 2-second target. Availability, cache protocol, RAG p95, and streaming TTFT gates passed. This is a bounded smoke/load evaluation, not a capacity, security, or real-user traffic benchmark.
+
+### Evaluation Governance
+
+- [`data/eval/architecture_v7/manifest.json`](./data/eval/architecture_v7/manifest.json) records counts, hashes, runtime/evaluator identities, model settings, retrieval mode, collections, and limitations.
+- The four evaluated case files retain the SHA-256 hashes recorded during the first run. No question, gold answer, source target, runtime behavior, or threshold was changed and rerun to raise V7 scores.
+- V7 is the official internal release evaluation for this repository and can support accurately scoped project/CV claims. A paper should additionally use a prospectively frozen or external benchmark and independent human annotation.
+- Raw Judge flags and source-grounded audit conclusions remain separate. Judge output is never relabeled as independent human sign-off.
+- The older V3 architecture, 30-case development regression, and 50-case product-acceptance suites remain historical/opened development evidence; they are not substituted for V7 metrics.
 
 ### Known Limitations
 
-- The planner can occasionally merge two closely related requests into one task even when the final evidence remains complete. The project does not add a keyword parser merely to force a perfect structural score.
-- Some accentless stress queries or overly generic headings can miss the expected source in the top five.
-- Aggregate status can remain `answered` when the final text answers one part and abstains on another. Making this fully deterministic would require a more complex task-level answer protocol.
-- A follow-up that depends on a prior task's output, such as “the email of that faculty,” can become a clarification instead of automatically forwarding the entity.
-- The source drawer can still show up to five cohort-valid retrieval candidates even when the answer cites fewer articles inline; inline `Điều` references and their source popovers identify the evidence actually used in the answer.
-- Gemini 3.1 Flash-Lite is retained because its quota and latency fit the deployment target. Important claims should still be checked against their citations.
+- `v7_ans_struct_020` exposes a narrow table-subtype ambiguity: wording about whether a course “passes or fails” can be confused with the special ungraded pass/fail course type when the query contains competing table signals.
+- Retrieval is weaker on no-diacritic typo, multi-source, and broad cohort-sensitive stress queries; content-type match missed its release threshold.
+- The LLM Judge over-flags some supported expansions, while numeric fidelity and exact required-fact matching remain weaker than citation and faithfulness scores.
+- Public production responses intentionally omit internal debug telemetry, so the Production 60 telemetry-coverage gate is not met.
+- The source drawer can show up to five cohort-valid retrieval candidates even when fewer articles are referenced inline.
+- Graph edges provide related-reference navigation in the UI only; they are not Composer evidence.
+- Gemini 3.1 Flash-Lite is retained for deployment quota and latency. Important academic decisions should still be verified against the cited source.
 
 ## Local Development
 
@@ -481,7 +524,7 @@ student_handbook_rag/
 ├── data/
 │   ├── raw/                    # Three source handbooks
 │   ├── processed/              # Versioned tables, parents, chunks, graph, and manifest
-│   └── eval/architecture_v3/   # Current deterministic and retrieval evaluation set
+│   └── eval/architecture_v7/   # Current release evaluation bundle and manifest
 ├── frontend/                   # React + TypeScript + Vite
 ├── scripts/                    # Build, audit, publishing, evaluation, and deployment
 ├── src/

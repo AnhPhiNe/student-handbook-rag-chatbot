@@ -1,13 +1,15 @@
 {
   "bundle": "architecture_v7",
   "schema_version": "architecture-evaluation-v7",
-  "version": "7.0-draft.1",
+  "version": "7.0.0",
   "revision": 1,
-  "frozen": false,
-  "review_state": "draft_approved_for_execution",
+  "frozen": true,
+  "review_state": "release_evaluation_complete",
   "authored_against_runtime_commit": "1f11f6500bc56de861adaecc876ccd9505d93538",
   "evaluated_system_commit": "1f11f6500bc56de861adaecc876ccd9505d93538",
-  "evaluation_harness_commit": "pending_commit_after_owner_review",
+  "evaluation_harness_commit": "c053bfcf8a63cc85a3448b1c3691310798319c11",
+  "benchmark_run_kind": "one_shot_release_evaluation",
+  "official_results_report": "docs/V7_RELEASE_EVALUATION_VI.md",
   "planner_model": "qwen/qwen3.8-27b",
   "planner_reasoning_effort": "low",
   "generation_model": "gemini-3.1-flash-lite",
@@ -115,7 +117,8 @@
     "production": "ad47bf0c0e7782803750692a8b32e440949c6f26466c850d01514d5cfe457f0f"
   },
   "auxiliary_hashes": {
-    "human_audit_template": "cedf20699ac34092454f592bb574b6bc6970f6ded6352abe5ef75e8d2f3587bc"
+    "human_audit_template": "cedf20699ac34092454f592bb574b6bc6970f6ded6352abe5ef75e8d2f3587bc",
+    "release_results_summary": "1c38a4eb7c55fdc1243367944038091ce68414154f9a16acd2d04c3fb1e24d14"
   },
   "docstore_path": "data/processed/chunks/all_docstore_items.json",
   "docstore_hash": "4d410553cfaddeaef51fc096ffd0025d52e585b4c5dfe7ee0807e73570648143",
@@ -140,12 +143,12 @@
     "same_fixed_corpus_reuse_allowed": true,
     "cross_suite_reuse_requires_linked_ids_and_duplicate_group": true
   },
-  "system_executed_on_dataset": false,
+  "system_executed_on_dataset": true,
   "user_review_approved": true,
   "limitations": [
-    "V7 is a mutable draft benchmark and cannot produce final CV or paper headline metrics.",
+    "V7 was promoted to the official release evaluation after its single completed run; the recorded case-file hashes are unchanged from that run. It is not presented as a pre-registered external holdout.",
     "It uses the same three-handbook corpus; novelty concerns question/target composition, not unseen documents.",
-    "Source-first automatic authoring requires owner review of phrasing and gold scope before execution.",
+    "The 40-case answer audit is an AI-assisted source-grounded review completed under the owner-approved workflow, not an independent expert annotation study.",
     "Production 60 is a bounded contract/load smoke, not a capacity or security benchmark."
   ]
 }

@@ -239,7 +239,7 @@ def test_mutable_dataset_report_is_never_headline_eligible() -> None:
     assert errors == []
 
 
-def test_architecture_v7_draft_bundle_is_valid_but_not_frozen() -> None:
+def test_architecture_v7_release_bundle_is_valid_and_frozen() -> None:
     project_root = Path(__file__).resolve().parents[1]
     bundle_dir = project_root / "data" / "eval" / "architecture_v7"
     docstore_path = (
@@ -269,12 +269,9 @@ def test_architecture_v7_draft_bundle_is_valid_but_not_frozen() -> None:
     overlap = json.loads(
         (bundle_dir / "overlap_audit.json").read_text(encoding="utf-8")
     )
-    assert manifest["frozen"] is False
-    # Execution/review lifecycle fields may advance after the draft bundle is
-    # committed. They are provenance, not part of the dataset's validation
-    # contract; only the immutable case counts, hashes, and frozen flag are.
-    assert isinstance(manifest["system_executed_on_dataset"], bool)
-    assert isinstance(manifest["user_review_approved"], bool)
+    assert manifest["frozen"] is True
+    assert manifest["system_executed_on_dataset"] is True
+    assert manifest["user_review_approved"] is True
     assert overlap["exact_historical_match_count"] == 0
     assert overlap["high_similarity_review_count"] == 0
 
@@ -283,8 +280,8 @@ def test_architecture_v7_draft_bundle_is_valid_but_not_frozen() -> None:
         docstore_path,
         require_frozen=True,
     )
-    assert frozen_report["valid"] is False
-    assert "manifest must set frozen=true" in frozen_report["errors"]
+    assert frozen_report["valid"] is True
+    assert frozen_report["errors"] == []
 
 
 def test_deterministic_v2_reports_non_applicable_assertions_as_na() -> None:

@@ -169,7 +169,7 @@ tools:
         enum: [unit, phone, email, office, website, all]
         span_aliases:
           unit: [đơn vị, don vi, bộ phận, bo phan]
-          phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, phone]
+          phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, sđt, sdt, phone]
           email: [email, thư điện tử, thu dien tu]
           office: [địa chỉ, dia chi, phòng làm việc, phong lam viec]
           website: [website, trang web]
@@ -195,7 +195,7 @@ tools:
         type: string
         enum: [phone, email, office, website, services, all]
         span_aliases:
-          phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, phone]
+          phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, sđt, sdt, phone]
           email: [email, thư điện tử, thu dien tu]
           office: [địa chỉ, dia chi, phòng làm việc, phong lam viec]
           website: [website, trang web]
@@ -222,7 +222,7 @@ tools:
         type: string
         enum: [phone, email, office, website, all]
         span_aliases:
-          phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, phone]
+          phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, sđt, sdt, phone]
           email: [email, thư điện tử, thu dien tu]
           office: [địa chỉ, dia chi, văn phòng, van phong]
           website: [website, trang web]

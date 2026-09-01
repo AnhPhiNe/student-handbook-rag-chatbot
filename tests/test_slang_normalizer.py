@@ -19,6 +19,27 @@ expand_slangs:
     return path
 
 
+def _write_empty_vocabulary(tmp_path):
+    path = tmp_path / "empty-vocabulary.yaml"
+    path.write_text("replace_slangs: []\nexpand_slangs: []\n", encoding="utf-8")
+    return path
+
+
+def _write_unit_aliases(tmp_path):
+    path = tmp_path / "unit-aliases.yaml"
+    path.write_text(
+        """
+unit_aliases:
+  Phòng Đào tạo: [PĐT, PDT]
+  Phòng Công tác chính trị và Học sinh, sinh viên: [CTCT-HSSV, CTCT&HSSV, CTCT/HSSV, HSSV, Phòng Công tác sinh viên]
+  Phòng Công nghệ Thông tin: [CNTT]
+  Khoa Công nghệ Thông tin: [CNTT]
+""".strip(),
+        encoding="utf-8",
+    )
+    return path
+
+
 def test_explicit_acronyms_are_case_insensitive(tmp_path) -> None:
     normalizer = SlangNormalizer(
         _write_vocabulary(tmp_path),
@@ -108,6 +129,74 @@ def test_replacement_only_matches_complete_token(tmp_path) -> None:
 
     assert normalizer.normalize_for_retrieval("cnttt") == "cnttt"
     assert normalizer.normalize_for_retrieval("học cntt") == "học công nghệ thông tin"
+
+
+def test_unique_directory_aliases_are_canonicalized_before_routing(tmp_path) -> None:
+    normalizer = SlangNormalizer(
+        _write_empty_vocabulary(tmp_path),
+        program_directory=[],
+        unit_alias_config_path=_write_unit_aliases(tmp_path),
+    )
+
+    canonical = "phòng công tác chính trị và học sinh, sinh viên"
+    assert normalizer.replace_for_router("Phòng CTCT-HSSV nằm ở đâu?") == (
+        f"{canonical} nằm ở đâu?"
+    )
+    assert normalizer.replace_for_router("Phòng CTCT&HSSV nằm ở đâu?") == (
+        f"{canonical} nằm ở đâu?"
+    )
+    assert normalizer.replace_for_router("Phòng CTCT/HSSV nằm ở đâu?") == (
+        f"{canonical} nằm ở đâu?"
+    )
+    assert normalizer.replace_for_router("phòng công tác sinh viên ở đâu?") == (
+        f"{canonical} ở đâu?"
+    )
+    assert normalizer.replace_for_router("số điện thoại PDT") == (
+        "số điện thoại phòng đào tạo"
+    )
+
+
+def test_ambiguous_directory_alias_is_not_canonicalized(tmp_path) -> None:
+    normalizer = SlangNormalizer(
+        _write_empty_vocabulary(tmp_path),
+        program_directory=[],
+        unit_alias_config_path=_write_unit_aliases(tmp_path),
+    )
+
+    assert normalizer.replace_for_router("CNTT ở đâu?") == "CNTT ở đâu?"
+
+
+def test_short_alias_is_not_replaced_inside_unregistered_compound(tmp_path) -> None:
+    vocabulary = tmp_path / "compound-vocabulary.yaml"
+    vocabulary.write_text(
+        """
+replace_slangs:
+  - match: HSSV
+    replace_with: học sinh, sinh viên
+expand_slangs: []
+""".strip(),
+        encoding="utf-8",
+    )
+    normalizer = SlangNormalizer(
+        vocabulary,
+        program_directory=[],
+        unit_alias_config_path=None,
+    )
+
+    for compound in ("CTCT-HSSV", "CTCT&HSSV", "CTCT/HSSV"):
+        assert normalizer.replace_for_router(compound) == compound
+    assert normalizer.replace_for_router("HSSV") == "học sinh, sinh viên"
+
+
+def test_phone_abbreviation_is_canonicalized_for_router() -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router("sdt của phòng đào tạo") == (
+        "số điện thoại của phòng đào tạo"
+    )
+    assert normalizer.replace_for_router("SĐT của phòng đào tạo") == (
+        "số điện thoại của phòng đào tạo"
+    )
 
 
 def test_graduation_rank_slang_only_canonicalizes_the_user_term() -> None:

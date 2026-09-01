@@ -486,20 +486,20 @@ def office_lookup(
     is_faculty = "student_faculty_profile" in selected_content_types
     if is_service:
         lookup_scope = "student_service"
-        table_name = "Danh sach dich vu sinh vien"
-        source_label = "Danh muc dich vu sinh vien trong So tay sinh vien HCMUE"
+        table_name = "Danh sách dịch vụ sinh viên"
+        source_label = "Danh mục dịch vụ sinh viên trong Sổ tay sinh viên HCMUE"
         source_section = "student_service_directory"
         content_type = "student_service_directory"
     elif is_faculty:
         lookup_scope = "faculty"
-        table_name = "Danh sach Khoa lien he"
-        source_label = "Danh muc Khoa/lien he trong So tay sinh vien HCMUE"
+        table_name = "Danh sách khoa liên hệ"
+        source_label = "Danh mục khoa/liên hệ trong Sổ tay sinh viên HCMUE"
         source_section = "student_faculty_profiles"
         content_type = "student_faculty_profile"
     else:
         lookup_scope = "office"
-        table_name = "Danh sach phong ban lien he"
-        source_label = "Danh muc phong ban/lien he trong So tay sinh vien HCMUE"
+        table_name = "Danh sách phòng ban liên hệ"
+        source_label = "Danh mục phòng ban/liên hệ trong Sổ tay sinh viên HCMUE"
         source_section = "student_office_profiles"
         content_type = "student_office_profile"
 

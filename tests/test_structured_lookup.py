@@ -1123,6 +1123,108 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertEqual(resolution.result["result"][0]["unit_name"], "Phòng Đào tạo")
         self.assertEqual(resolution.result["result"][0]["websites"], [])
 
+    def test_office_lookup_does_not_search_faculty_pool(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "office",
+                "intent": "contact",
+                "slots": {
+                    "office": "Phòng Công tác chính trị và Học sinh, sinh viên",
+                    "requested_field": "office",
+                },
+                "slot_spans": {
+                    "office": "Phòng Công tác chính trị và Học sinh, sinh viên"
+                },
+            },
+            query="Phòng Công tác chính trị và Học sinh, sinh viên ở đâu?",
+            cohort="K50",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[
+                {
+                    "unit_name": "Phòng Công tác chính trị và Học sinh, sinh viên",
+                    "aliases": ["CTCT-HSSV", "phòng công tác sinh viên"],
+                    "offices": ["Nhà A, tầng 1, P.108"],
+                    "cohort": "K50",
+                    "content_type": "student_office_profile",
+                }
+            ],
+            student_service_directory=[],
+            student_faculty_profiles=[
+                {
+                    "unit_name": "Khoa Sinh học",
+                    "aliases": ["Sinh", "Sinh học"],
+                    "offices": ["Nhà B"],
+                    "cohort": "K50",
+                    "content_type": "student_faculty_profile",
+                }
+            ],
+            foreign_language_tables=[],
+            structured_tables_registry=[],
+            program_directory=[],
+        )
+
+        self.assertIsNotNone(resolution)
+        self.assertEqual(
+            resolution.result["result"][0]["unit_name"],
+            "Phòng Công tác chính trị và Học sinh, sinh viên",
+        )
+        self.assertEqual(resolution.target_chunk_types, ["student_office_profile"])
+
+    def test_faculty_lookup_does_not_search_office_pool(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "faculty",
+                "intent": "contact",
+                "slots": {
+                    "faculty": "Khoa Công nghệ Thông tin",
+                    "requested_field": "office",
+                },
+                "slot_spans": {"faculty": "Khoa Công nghệ Thông tin"},
+            },
+            query="Khoa Công nghệ Thông tin ở đâu?",
+            cohort="K51",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[
+                {
+                    "unit_name": "Phòng Công nghệ Thông tin",
+                    "aliases": ["phòng CNTT", "CNTT"],
+                    "offices": ["Nhà A, P.503"],
+                    "cohort": "K51",
+                    "content_type": "student_office_profile",
+                }
+            ],
+            student_service_directory=[],
+            student_faculty_profiles=[
+                {
+                    "unit_name": "Khoa Công nghệ Thông tin",
+                    "aliases": ["khoa CNTT", "CNTT"],
+                    "offices": ["Nhà C"],
+                    "cohort": "K51",
+                    "content_type": "student_faculty_profile",
+                }
+            ],
+            foreign_language_tables=[],
+            structured_tables_registry=[],
+            program_directory=[],
+        )
+
+        self.assertIsNotNone(resolution)
+        self.assertEqual(
+            resolution.result["result"][0]["unit_name"],
+            "Khoa Công nghệ Thông tin",
+        )
+        self.assertEqual(resolution.target_chunk_types, ["student_faculty_profile"])
+
     def test_program_lookup_faculty_programs_per_cohort_counts(self) -> None:
         programs = [
             {
@@ -1290,6 +1392,49 @@ class StructuredLookupTest(unittest.TestCase):
 
         self.assertIsNone(without_alias)
         self.assertIsNotNone(with_alias)
+
+    def test_office_lookup_exposes_accented_vietnamese_display_metadata(self):
+        cases = [
+            (
+                "Dịch vụ sinh viên",
+                "student_service_directory",
+                "Danh sách dịch vụ sinh viên",
+                "Danh mục dịch vụ sinh viên trong Sổ tay sinh viên HCMUE",
+            ),
+            (
+                "Khoa Công nghệ Thông tin",
+                "student_faculty_profile",
+                "Danh sách khoa liên hệ",
+                "Danh mục khoa/liên hệ trong Sổ tay sinh viên HCMUE",
+            ),
+            (
+                "Phòng Đào tạo",
+                "student_office_profile",
+                "Danh sách phòng ban liên hệ",
+                "Danh mục phòng ban/liên hệ trong Sổ tay sinh viên HCMUE",
+            ),
+        ]
+
+        for unit_name, content_type, table_name, source_label in cases:
+            with self.subTest(content_type=content_type):
+                result = office_lookup(
+                    unit_name,
+                    [
+                        {
+                            "unit_name": unit_name,
+                            "aliases": [unit_name],
+                            "content_type": content_type,
+                            "cohort": "K51",
+                        }
+                    ],
+                    cohort="K51",
+                    candidate_text=unit_name,
+                    require_confident_match=True,
+                )
+
+                self.assertIsNotNone(result)
+                self.assertEqual(result["table_name"], table_name)
+                self.assertEqual(result["source_label"], source_label)
 
     def test_multi_entity_scholarship_lookup_all_matched(self):
         tables = [

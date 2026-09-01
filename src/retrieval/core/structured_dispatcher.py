@@ -518,8 +518,10 @@ def _resolve_single_lookup(
         )
         if lookup_type == "student_service":
             directory = student_service_directory + office_directory
+        elif lookup_type == "office":
+            directory = office_directory
         else:
-            directory = office_directory + (student_faculty_profiles or [])
+            directory = student_faculty_profiles or []
 
         routing = {
             "intent": "office_query",
@@ -563,8 +565,8 @@ def _resolve_single_lookup(
         }
         target_content_types = {
             "student_service": ["student_service_directory", "student_office_profile"],
-            "office": ["student_office_profile", "student_faculty_profile"],
-            "faculty": ["student_faculty_profile", "student_office_profile"],
+            "office": ["student_office_profile"],
+            "faculty": ["student_faculty_profile"],
         }
         return _resolution(
             lookup_type,

@@ -11,7 +11,6 @@ import pytest
 
 from scripts.evaluate_system import _provenance
 import src.evaluation.suites as evaluation_suites
-from src.retrieval.core.hybrid_pipeline import DEFAULT_RETRIEVAL_MODE
 from src.evaluation.dataset import _structured_source_index, validate_bundle
 from src.evaluation.gates import evaluate_gates
 from src.evaluation.judge import (
@@ -25,6 +24,7 @@ from src.evaluation.judge import (
     key_fingerprint,
     parse_judge_json,
 )
+from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
 from src.evaluation.metrics import retrieval_metrics, wilson_interval
 from src.evaluation.reporting import write_report_bundle
 from src.evaluation.suites import (

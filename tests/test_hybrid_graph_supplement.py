@@ -7,13 +7,13 @@ from unittest.mock import Mock, patch
 from src.generation.answer_pipeline import AnswerPipeline
 from src.retrieval.core.hybrid_pipeline import (
     ChildParentHybridRetriever,
-    DEFAULT_RETRIEVAL_MODE,
-    _build_related_references,
+    build_related_references,
     _chunk_matches_regulation_scope,
     _is_supplemental_regulation_metadata,
     _v7_query_filter,
     select_graph_related_parent_candidates,
 )
+from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
 
 
 def test_retired_migration_parent_is_excluded_from_graph_context() -> None:
@@ -98,7 +98,7 @@ def test_graph_supplement_prefers_lower_depth_then_primary_rank() -> None:
 
 
 def test_related_references_are_ui_metadata_not_answer_evidence() -> None:
-    references = _build_related_references(
+    references = build_related_references(
         [
             {
                 "chunk_id": "K51_dieu_3",

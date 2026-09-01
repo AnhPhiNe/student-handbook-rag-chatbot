@@ -1,30 +1,24 @@
-import os
-from dotenv import load_dotenv
-from src.retrieval.vectorstore.mongo_store import get_mongo_store
-from src.common.storage_config import require_qdrant_collection_name
-load_dotenv()
-os.environ["TRANSFORMERS_VERBOSITY"] = "error"
 import logging
+import os
 import threading
 import time
 from collections import defaultdict
 from typing import Any
-from src.retrieval.core.cross_encoder_reranker import get_local_reranker
-from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
+
+from qdrant_client import QdrantClient
+from qdrant_client.models import FieldCondition, Filter, MatchValue
+
 from src.common.cohort import is_cohort_applicable, normalize_cohort
 from src.common.legal_reference import normalize_article_label
 from src.common.source_identity import canonical_article_source_id
+from src.common.storage_config import require_qdrant_collection_name
+from src.retrieval.core.cross_encoder_reranker import get_local_reranker
+from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
+from src.retrieval.core.retrieval_mode import resolve_retrieval_mode
 from src.retrieval.core.runtime_health import set_bm25_runtime_status
-from src.retrieval.core.retrieval_mode import (
-    DEFAULT_RETRIEVAL_MODE as DEFAULT_RETRIEVAL_MODE,
-    resolve_retrieval_mode,
-)
-from qdrant_client import QdrantClient
-from qdrant_client.models import (
-    FieldCondition,
-    Filter,
-    MatchValue,
-)
+from src.retrieval.vectorstore.mongo_store import get_mongo_store
+
+os.environ["TRANSFORMERS_VERBOSITY"] = "error"
 
 logger = logging.getLogger("hybrid_pipeline")
 
@@ -810,10 +804,6 @@ def build_related_references(
             }
         )
     return references
-
-
-# Backward-compatible private alias for existing callers/tests.
-_build_related_references = build_related_references
 
 
 def initialize_hybrid_retriever() -> ChildParentHybridRetriever:

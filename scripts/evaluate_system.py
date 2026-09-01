@@ -33,7 +33,7 @@ from src.evaluation.suites import (
     load_answer_checkpoint,
 )
 from src.generation.answer_pipeline import PIPELINE_VERSION
-from src.retrieval.core.hybrid_pipeline import DEFAULT_RETRIEVAL_MODE
+from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
 
 
 DEFAULT_DATASET = ROOT / "data" / "eval" / "architecture_v3"

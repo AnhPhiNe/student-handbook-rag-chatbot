@@ -46,7 +46,7 @@ from .citation_formatter import (
     select_relevant_citations,
 )
 from .gemini_client import GeminiClient
-from .io_utils import load_json, load_yaml
+from src.common.io import load_json, load_yaml
 from .prompt_builder import (
     ANSWER_PROMPT_VERSION,
     DEFAULT_MAX_CONTEXT_CHARS,

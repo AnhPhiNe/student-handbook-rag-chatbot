@@ -147,6 +147,12 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertIn(payload["status"], {"ok", "degraded"})
         self.assertIsInstance(payload["ready"], bool)
         self.assertGreaterEqual(payload["missing_count"], 0)
+        self.assertEqual(payload["qdrant"]["status"], "not_configured")
+        self.assertEqual(payload["mongodb"]["status"], "not_configured")
+        self.assertEqual(
+            payload["retrieval_mode"],
+            "vector_primary_graph_supplement",
+        )
         self.assertEqual(
             payload["bm25"],
             {
@@ -171,6 +177,21 @@ class ApiRoutesTest(unittest.TestCase):
                     "error_type": "TimeoutError",
                 },
             ),
+            patch(
+                "src.api.routes.health.get_dependency_runtime_statuses",
+                return_value={
+                    "qdrant": {
+                        "status": "ready",
+                        "error_type": None,
+                        "latency_ms": 1.0,
+                    },
+                    "mongodb": {
+                        "status": "ready",
+                        "error_type": None,
+                        "latency_ms": 1.0,
+                    },
+                },
+            ),
         ):
             response = self.client.get("/health/readiness")
 
@@ -179,6 +200,44 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertTrue(payload["ready"])
         self.assertEqual(payload["status"], "degraded")
         self.assertEqual(payload["bm25"]["status"], "degraded")
+
+    def test_readiness_is_not_ready_when_primary_store_probe_fails(self) -> None:
+        artifact_status = ArtifactHealthResponse(status="ok", required_artifacts=[])
+        with (
+            patch(
+                "src.api.routes.health._artifact_health_response",
+                return_value=artifact_status,
+            ),
+            patch(
+                "src.api.routes.health.get_bm25_runtime_status",
+                return_value={
+                    "status": "ready",
+                    "attempts": 1,
+                    "error_type": None,
+                },
+            ),
+            patch(
+                "src.api.routes.health.get_dependency_runtime_statuses",
+                return_value={
+                    "qdrant": {
+                        "status": "degraded",
+                        "error_type": "TimeoutError",
+                        "latency_ms": 1500.0,
+                    },
+                    "mongodb": {
+                        "status": "ready",
+                        "error_type": None,
+                        "latency_ms": 2.0,
+                    },
+                },
+            ),
+        ):
+            response = self.client.get("/health/readiness")
+
+        payload = response.json()
+        self.assertFalse(payload["ready"])
+        self.assertEqual(payload["status"], "degraded")
+        self.assertEqual(payload["qdrant"]["error_type"], "TimeoutError")
 
     def test_artifact_health_uses_qdrant_environment(self) -> None:
         with patch.dict(
@@ -469,6 +528,44 @@ class ApiRoutesTest(unittest.TestCase):
             )
         )
         assert done_payload["citations_used"] == [{"source": "final", "page": 2}]
+
+    def test_stream_done_uses_terminal_error_status(self) -> None:
+        class ErrorStreamService:
+            def answer_stream(self, *args, **kwargs):
+                yield {"type": "metadata", "status": "streaming"}
+                yield {"type": "token", "text": "fallback"}
+                yield {
+                    "type": "metadata",
+                    "status": "api_error",
+                    "fallback_reason": "api_error",
+                }
+                yield {
+                    "type": "done",
+                    "status": "api_error",
+                    "error_type": "RuntimeError",
+                    "citations_used": [],
+                }
+
+        app.dependency_overrides[get_answer_service] = lambda: ErrorStreamService()
+        response = self.client.post(
+            "/chat/stream",
+            json={"query": "Câu hỏi hợp lệ", "cohort": "K51"},
+        )
+
+        done_block = next(
+            block
+            for block in response.text.split("\n\n")
+            if block.startswith("event: done")
+        )
+        done_payload = json.loads(
+            next(
+                line.removeprefix("data: ")
+                for line in done_block.splitlines()
+                if line.startswith("data: ")
+            )
+        )
+        assert done_payload["status"] == "api_error"
+        assert done_payload["error_type"] == "RuntimeError"
 
 
 if __name__ == "__main__":

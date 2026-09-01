@@ -273,7 +273,10 @@ def test_full_ablation_reranks_the_same_twenty_four_vector_chunks() -> None:
     with (
         patch.dict(
             os.environ,
-            {"STUDENT_RAG_EVAL_RETRIEVAL_MODE": "full"},
+            {
+                "STUDENT_RAG_EVAL_RETRIEVAL_MODE": "full",
+                "STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION": "1",
+            },
         ),
         patch(
             "src.retrieval.core.hybrid_pipeline._query_points_with_retry",

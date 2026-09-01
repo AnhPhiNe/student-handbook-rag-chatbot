@@ -69,7 +69,8 @@ def chat_stream(
     trực quan tức thì.
 
     Client sẽ nhận được các loại sự kiện sau:
-    1.  `event: metadata`: Chứa thông tin về ý định, chiến lược và các trích dẫn (được gửi đầu tiên).
+    1.  `event: metadata`: Chứa thông tin về ý định, nguồn và trạng thái;
+        được gửi khi bắt đầu và cập nhật lại bằng trạng thái cuối.
     2.  `event: token`: Chứa các đoạn văn bản nhỏ (token) khi Gemini tạo ra chúng.
     3.  `event: done`: Tín hiệu cho biết luồng dữ liệu đã hoàn tất.
     4.  `event: error`: Tín hiệu cho biết có lỗi xảy ra trong quá trình xử lý.
@@ -189,6 +190,21 @@ def chat_stream(
                             {"message": chunk.get("message", "")},
                         )
                     elif chunk_type == "done":
+                        final_status = str(chunk.get("status") or final_status)
+                        final_metadata["status"] = final_status
+                        final_metadata["used_cache"] = bool(
+                            chunk.get("used_cache", final_metadata.get("used_cache", False))
+                        )
+                        if chunk.get("error_type"):
+                            final_metadata["error_type"] = chunk["error_type"]
+                        if trace_source_metadata:
+                            trace_source_metadata.update(
+                                {
+                                    "status": final_status,
+                                    "used_cache": final_metadata["used_cache"],
+                                    "error_type": final_metadata.get("error_type"),
+                                }
+                            )
                         raw_done_citations = (
                             chunk.get("citations_used")
                             if "citations_used" in chunk
@@ -261,6 +277,9 @@ def chat_stream(
                             {
                                 "request_id": request_id,
                                 "latency_ms": latency_ms,
+                                "status": final_status,
+                                "error_type": final_metadata.get("error_type"),
+                                "used_cache": final_metadata.get("used_cache", False),
                                 "citations_used": final_citations,
                             },
                         )

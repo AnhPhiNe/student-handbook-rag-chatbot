@@ -9,6 +9,7 @@ from src.generation.prompt_builder import (
     ANSWER_PROMPT_VERSION,
     _amendment_evidence,
     build_answer_prompt,
+    build_answer_prompt_bundle,
     build_authorized_evidence_packet,
 )
 
@@ -22,6 +23,30 @@ def _task(task_id: str, question: str, cohorts: list[str]) -> dict:
         "lookup_type": None,
         "cohorts": cohorts,
     }
+
+
+def test_prompt_bundle_exposes_the_exact_authorized_evidence_context() -> None:
+    retrieval_result = {
+        "effective_query": "Điều kiện xét học bổng là gì?",
+        "retrieved_items": [
+            {
+                "chunk_id": "p1",
+                "content": "Có ba điều kiện xét học bổng.",
+                "metadata": {"title": "Điều 12", "cohort": "K51"},
+            }
+        ],
+    }
+
+    prompt, context_used = build_answer_prompt_bundle(
+        query="Điều kiện xét học bổng là gì?",
+        retrieval_result=retrieval_result,
+        max_context_chars=10000,
+        cohort="K51",
+    )
+
+    assert context_used in prompt
+    assert "Có ba điều kiện xét học bổng." in context_used
+    assert "retrieval_query" not in context_used
 
 
 def test_prompt_is_compact_and_places_final_task_after_evidence() -> None:

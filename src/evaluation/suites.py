@@ -1423,13 +1423,19 @@ def evaluate_retrieval(
     completed_ids = {row["id"] for row in rows}
     previous_backend = os.environ.get("STUDENT_RAG_USE_QDRANT")
     previous_hybrid = os.environ.get("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL")
+    previous_runtime_mode = os.environ.get("STUDENT_RAG_RETRIEVAL_MODE")
     previous_mode = os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE")
+    previous_ablation_guard = os.environ.get(
+        "STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION"
+    )
     previous_force_regulation = os.environ.get("STUDENT_RAG_EVAL_FORCE_REGULATION_RAG")
     previous_router_wait = os.environ.get("STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED")
     previous_router_cache = os.environ.get("STUDENT_RAG_DISABLE_ROUTER_CACHE")
     os.environ["STUDENT_RAG_USE_QDRANT"] = "1"
     os.environ.pop("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL", None)
+    os.environ["STUDENT_RAG_RETRIEVAL_MODE"] = mode
     os.environ["STUDENT_RAG_EVAL_RETRIEVAL_MODE"] = mode
+    os.environ["STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION"] = "1"
     os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"
     if scope == "pure":
         os.environ["STUDENT_RAG_EVAL_FORCE_REGULATION_RAG"] = "1"
@@ -1646,7 +1652,12 @@ def evaluate_retrieval(
     finally:
         _restore_env("STUDENT_RAG_USE_QDRANT", previous_backend)
         _restore_env("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL", previous_hybrid)
+        _restore_env("STUDENT_RAG_RETRIEVAL_MODE", previous_runtime_mode)
         _restore_env("STUDENT_RAG_EVAL_RETRIEVAL_MODE", previous_mode)
+        _restore_env(
+            "STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION",
+            previous_ablation_guard,
+        )
         _restore_env(
             "STUDENT_RAG_EVAL_FORCE_REGULATION_RAG",
             previous_force_regulation,
@@ -2016,6 +2027,7 @@ def generate_answers(
         pipeline_factory = AnswerPipeline
     previous_offline = os.environ.get("STUDENT_RAG_OFFLINE_EVAL")
     previous_quality = os.environ.get("STUDENT_RAG_QUALITY_EVAL")
+    previous_runtime_retrieval_mode = os.environ.get("STUDENT_RAG_RETRIEVAL_MODE")
     previous_retrieval_mode = os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE")
     previous_router_cache = os.environ.get("STUDENT_RAG_DISABLE_ROUTER_CACHE")
     os.environ.pop("STUDENT_RAG_OFFLINE_EVAL", None)
@@ -2023,6 +2035,7 @@ def generate_answers(
     # Answer-quality evaluation must exercise the production retrieval contract.
     # PhoRanker is reserved for explicit retrieval-ablation suites and must not
     # silently enter the 150-case generate/judge result through ambient env.
+    os.environ["STUDENT_RAG_RETRIEVAL_MODE"] = DEFAULT_RETRIEVAL_MODE
     os.environ["STUDENT_RAG_EVAL_RETRIEVAL_MODE"] = DEFAULT_RETRIEVAL_MODE
     os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"
     by_id = {row["id"]: row for row in existing}
@@ -2080,6 +2093,10 @@ def generate_answers(
     finally:
         _restore_env("STUDENT_RAG_OFFLINE_EVAL", previous_offline)
         _restore_env("STUDENT_RAG_QUALITY_EVAL", previous_quality)
+        _restore_env(
+            "STUDENT_RAG_RETRIEVAL_MODE",
+            previous_runtime_retrieval_mode,
+        )
         _restore_env("STUDENT_RAG_DISABLE_ROUTER_CACHE", previous_router_cache)
         _restore_env(
             "STUDENT_RAG_EVAL_RETRIEVAL_MODE",
@@ -2706,6 +2723,9 @@ def evaluate_production(
                 payload_success = (
                     stream_done
                     and not stream_error
+                    and str(stream_metadata.get("status") or "")
+                    not in {"api_error", "retrieval_error"}
+                    and not stream_metadata.get("error_type")
                     and (
                         stream_token_chars > 0
                         or str(stream_metadata.get("status") or "")

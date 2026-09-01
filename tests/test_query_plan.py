@@ -9,7 +9,6 @@ import pytest
 import src.common.cohort as cohort_module
 from src.common.cohort import is_validated_source_applicable
 from src.generation.answer_pipeline import AnswerPipeline
-from src.generation.context_allocation import ContextAllocationConfig
 from src.api.routes.chat import _to_chat_response
 from src.retrieval.core.office_lookup import office_lookup
 from src.retrieval.core.query_plan import (
@@ -1284,7 +1283,6 @@ def test_compound_plan_calls_answer_llm_once(monkeypatch) -> None:
     }
     pipeline = _pipeline(retrieval_result["query_plan"])
     pipeline.max_context_chars = 10000
-    pipeline.context_allocation = ContextAllocationConfig.from_config({"strategy": "full_sources"})
     pipeline.llm_config = {"model_name": "fake"}
     pipeline.config.update({"citations": {"max_sources": 5}, "guardrails": {"skip_llm_on_low_confidence": True}})
     pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
@@ -1382,9 +1380,6 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
     }
     pipeline = _pipeline(plan)
     pipeline.max_context_chars = 10000
-    pipeline.context_allocation = ContextAllocationConfig.from_config(
-        {"strategy": "full_sources"}
-    )
     pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
     pipeline._throttle_llm_call = lambda: None
     pipeline.config.update(
@@ -1424,11 +1419,14 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
 
     def capture_prompt(**kwargs):
         captured.append(kwargs["selected_citations"])
-        return "prompt"
+        return "prompt", '{"units": []}'
 
     pipeline.response_cache = Cache()
     pipeline._get_llm_client = lambda: LLM()
-    monkeypatch.setattr("src.generation.answer_pipeline.build_answer_prompt", capture_prompt)
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.build_answer_prompt_bundle",
+        capture_prompt,
+    )
     monkeypatch.setattr(
         "src.generation.answer_pipeline.resolve_cohort_from_query",
         lambda query, cohort: cohort,
@@ -1436,12 +1434,14 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
 
     sync_output = pipeline.answer(task["question"], cohort="K51")
     cached_output = pipeline.answer(task["question"], cohort="K51")
+    pipeline.response_cache.value = None
     stream_events = list(pipeline.answer_stream(task["question"], cohort="K51"))
     stream_answer = "".join(
         event["text"] for event in stream_events if event.get("type") == "token"
     )
 
     assert captured == [
+        [unanchored_citation, citation, *later_citations],
         [unanchored_citation, citation, *later_citations],
         [unanchored_citation, citation, *later_citations],
     ]
@@ -1459,6 +1459,185 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
     assert stream_done["citations_used"] == sync_output["citations_used"]
     assert "**Kết luận:**" in stream_answer
     assert "Điều 16" in stream_answer
+
+
+def test_stream_cleans_internal_labels_sources_and_reports_terminal_status(
+    monkeypatch,
+) -> None:
+    task = _rag_task(1, "Điều kiện học tập?")
+    task["cohorts"] = ["K51"]
+    plan = _plan([task])
+    citation = {
+        "chunk_id": "p1",
+        "source_parent_id": "p1",
+        "cohort": "K51",
+        "content": "Nguồn hợp lệ.",
+        "supports_task_ids": ["t1"],
+    }
+    retrieval_result = {
+        "query_plan": plan,
+        "task_results": [{"task_id": "t1", "coverage": "covered"}],
+        "coverage_by_task": {"t1": "covered"},
+        "effective_query": task["question"],
+        "execution_mode": "rag",
+        "selected_cohort": "K51",
+        "evidence_citations": [citation],
+        "citations": [citation],
+        "retrieved_items": [{"chunk_id": "p1", "content": "Nguồn hợp lệ."}],
+        "needs_clarification": False,
+        "out_of_domain": False,
+    }
+    pipeline = _pipeline(plan)
+    pipeline.max_context_chars = 10000
+    pipeline.llm_config = {"model_name": "fake"}
+    pipeline.request_sleep_seconds = 0
+    pipeline._last_llm_call_at = 0
+    pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
+
+    class Cache:
+        value = None
+
+        def make_cache_key(self, **kwargs):
+            return "key"
+
+        def get(self, key):
+            return self.value
+
+        def set(self, key, value):
+            self.value = value
+
+    class DirtyLLM:
+        calls = 0
+
+        def generate_stream(self, prompt):
+            self.calls += 1
+            yield "```markdown\nTheo Điều 16 (S1), sinh viên đủ điều kiện "
+            yield "(được bổ sung bởi AMENDMENT 2).\n\nNguồn:\n- S1"
+
+    pipeline.response_cache = Cache()
+    llm = DirtyLLM()
+    pipeline._get_llm_client = lambda: llm
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.resolve_cohort_from_query",
+        lambda query, cohort: cohort,
+    )
+
+    events = list(pipeline.answer_stream(task["question"], cohort="K51"))
+    answer = "".join(event["text"] for event in events if event["type"] == "token")
+    statuses = [event["status"] for event in events if event["type"] == "metadata"]
+    done = next(event for event in events if event["type"] == "done")
+
+    assert statuses == ["streaming", "answered"]
+    assert done["status"] == "answered"
+    assert "Theo Điều 16" in answer
+    assert "S1" not in answer
+    assert "AMENDMENT" not in answer
+    assert "Nguồn:" not in answer
+    assert "```" not in answer
+    assert pipeline.response_cache.value["answer"] == answer
+
+    cached_events = list(pipeline.answer_stream(task["question"], cohort="K51"))
+    cached_metadata = next(
+        event for event in cached_events if event["type"] == "metadata"
+    )
+    cached_done = next(event for event in cached_events if event["type"] == "done")
+    assert llm.calls == 1
+    assert cached_metadata["used_cache"] is True
+    assert cached_done["used_cache"] is True
+
+
+def test_stream_failure_finishes_with_api_error_metadata(monkeypatch) -> None:
+    task = _rag_task(1, "Điều kiện học tập?")
+    task["cohorts"] = ["K51"]
+    plan = _plan([task])
+    citation = {
+        "chunk_id": "p1",
+        "source_parent_id": "p1",
+        "cohort": "K51",
+        "content": "Nguồn hợp lệ.",
+        "supports_task_ids": ["t1"],
+    }
+    retrieval_result = {
+        "query_plan": plan,
+        "task_results": [{"task_id": "t1", "coverage": "covered"}],
+        "coverage_by_task": {"t1": "covered"},
+        "effective_query": task["question"],
+        "execution_mode": "rag",
+        "selected_cohort": "K51",
+        "evidence_citations": [citation],
+        "citations": [citation],
+        "retrieved_items": [{"chunk_id": "p1", "content": "Nguồn hợp lệ."}],
+        "needs_clarification": False,
+        "out_of_domain": False,
+    }
+    pipeline = _pipeline(plan)
+    pipeline.max_context_chars = 10000
+    pipeline.llm_config = {"model_name": "fake"}
+    pipeline.request_sleep_seconds = 0
+    pipeline._last_llm_call_at = 0
+    pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
+
+    class Cache:
+        def make_cache_key(self, **kwargs):
+            return "key"
+
+        def get(self, key):
+            return None
+
+        def set(self, key, value):
+            raise AssertionError("failed streams must not be cached")
+
+    class FailingLLM:
+        def generate_stream(self, prompt):
+            yield "Một phần chưa hoàn chỉnh"
+            raise RuntimeError("stream failed")
+
+    pipeline.response_cache = Cache()
+    pipeline._get_llm_client = lambda: FailingLLM()
+    monkeypatch.setattr(
+        "src.generation.answer_pipeline.resolve_cohort_from_query",
+        lambda query, cohort: cohort,
+    )
+
+    events = list(pipeline.answer_stream(task["question"], cohort="K51"))
+    statuses = [event["status"] for event in events if event["type"] == "metadata"]
+    done = next(event for event in events if event["type"] == "done")
+
+    assert statuses == ["streaming", "api_error"]
+    assert done["status"] == "api_error"
+    assert done["error_type"] == "RuntimeError"
+
+
+def test_execution_mode_ignores_clarification_when_one_task_executes() -> None:
+    structured = {
+        **_rag_task(1, "Tra bảng"),
+        "mode": "structured",
+        "lookup_type": "scoring",
+        "intent": "direct_value",
+        "cohorts": ["K51"],
+    }
+    clarify = {
+        **_rag_task(2, "Yêu cầu chưa rõ"),
+        "mode": "clarify",
+        "clarification_question": "Bạn muốn tra nội dung nào?",
+        "cohorts": ["K51"],
+    }
+    pipeline = _pipeline(_plan([structured, clarify]))
+    pipeline._execute_planned_structured_task = lambda **kwargs: {
+        "coverage": "covered",
+        "evidence": [],
+        "citations": [],
+        "retrieved_items": [],
+        "structured_result": {"lookup_type": "scoring", "result": []},
+    }
+
+    result = pipeline._run_query_plan(
+        query="hai yêu cầu",
+        cohort="K51",
+        chat_history=[],
+    )
+
+    assert result["execution_mode"] == "structured"
 
 
 def test_query_plan_telemetry_is_hidden_without_api_debug() -> None:

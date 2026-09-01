@@ -132,6 +132,12 @@ class RetrievalComponentStatus(BaseModel):
     error_type: str | None = None
 
 
+class DependencyComponentStatus(BaseModel):
+    status: Literal["ready", "degraded", "not_configured"]
+    error_type: str | None = None
+    latency_ms: float | None = None
+
+
 class ReadinessResponse(BaseModel):
     status: str
     service: str
@@ -139,6 +145,9 @@ class ReadinessResponse(BaseModel):
     ready: bool
     missing_count: int = 0
     bm25: RetrievalComponentStatus
+    qdrant: DependencyComponentStatus
+    mongodb: DependencyComponentStatus
+    retrieval_mode: str
 
 
 class ArtifactStatus(BaseModel):

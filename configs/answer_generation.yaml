@@ -46,13 +46,6 @@ llm:
     state_path: data/cache/gemini_key_state.json
     wait_when_all_keys_limited: true
 
-context_allocation:
-  strategy: full_sources
-  min_chars_per_doc: 0
-  max_chars_per_doc: 50000
-  sentence_boundary: true
-  cache_version: context_alloc_v14_full_sources_gemini
-
 cache:
   enabled: true
   path: data/cache/answer_response_cache.json

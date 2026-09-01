@@ -432,6 +432,54 @@ def test_production_eval_records_http_error_status(
     assert report["summary"]["http_429_rate"] == 1.0
 
 
+def test_production_eval_rejects_terminal_stream_api_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class StreamResponse:
+        status = 200
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        def __iter__(self):
+            payload = (
+                'event: metadata\ndata: {"status":"streaming"}\n\n'
+                'event: token\ndata: {"text":"fallback"}\n\n'
+                'event: metadata\ndata: '
+                '{"status":"api_error","error_type":"RuntimeError"}\n\n'
+                'event: done\ndata: {"status":"api_error"}\n\n'
+            )
+            return iter(payload.encode("utf-8").splitlines(keepends=True))
+
+    monkeypatch.setattr(
+        "src.evaluation.suites.urllib_request.urlopen",
+        lambda *_args, **_kwargs: StreamResponse(),
+    )
+    report = evaluate_production(
+        [
+            {
+                "id": "stream-api-error",
+                "scenario": "streaming",
+                "query": "q",
+                "cohort": "K50",
+                "expected_path": "regulation_rag",
+                "eval_split": "stress",
+            }
+        ],
+        base_url="http://127.0.0.1:8000",
+    )
+
+    row = report["cases"][0]
+    assert row["transport_success"] is True
+    assert row["payload_success"] is False
+    assert row["success"] is False
+    assert row["response_status"] == "api_error"
+    assert row["response_error_type"] == "RuntimeError"
+
+
 def test_human_audit_uses_template_size_and_repeat_flags() -> None:
     audit_rows = [
         {
@@ -580,6 +628,61 @@ def test_compact_packet_uses_full_readable_context_seen_by_composer() -> None:
 
     assert "K51 học chính quy tối đa 06 năm." in packet["retrieved_context"]
     assert "Cohort: K51" in packet["retrieved_context"]
+    assert packet["required_facts_present_in_packet"] == [
+        "K51 học chính quy tối đa 06 năm."
+    ]
+
+
+def test_compact_packet_reads_current_authorized_evidence_json() -> None:
+    case = {
+        "id": "authorized-packet",
+        "query": "Thời gian học tối đa của K51 là bao lâu?",
+        "cohort": "general",
+        "answerability": "answerable",
+        "ground_truth": "K51 học chính quy tối đa 06 năm.",
+        "required_facts": ["K51 học chính quy tối đa 06 năm."],
+        "forbidden_claims": [],
+        "expected_citations": [],
+    }
+    context_used = json.dumps(
+        {
+            "answer_prompt_version": "test",
+            "units": [
+                {
+                    "task_id": "t1",
+                    "cohort": "K51",
+                    "primary_evidence": [
+                        {
+                            "source_ref": "S11",
+                            "title": "Điều 5",
+                            "content": "K51 học chính quy tối đa 06 năm.",
+                            "resolved_result": {"maximum_years": 6},
+                        }
+                    ],
+                    "applicable_amendments": [
+                        {
+                            "amendment_source": "Quyết định sửa đổi",
+                            "effective_rule": "Áp dụng cho K51.",
+                            "replacement_text": "Thời hạn mới là 06 năm.",
+                        }
+                    ],
+                }
+            ],
+        },
+        ensure_ascii=False,
+    )
+    answer = {
+        "answer": "K51 học chính quy tối đa 06 năm.",
+        "context_used": context_used,
+        "citations": [{"chunk_id": "public-source", "content": "tối đa 8 năm."}],
+    }
+
+    packet = compact_judge_packet(case, answer, max_input_tokens=300)
+
+    assert "K51 học chính quy tối đa 06 năm." in packet["retrieved_context"]
+    assert "Task: t1" in packet["retrieved_context"]
+    assert 'Resolved result: {"maximum_years": 6}' in packet["retrieved_context"]
+    assert "Amendment: Quyết định sửa đổi" in packet["retrieved_context"]
     assert packet["required_facts_present_in_packet"] == [
         "K51 học chính quy tối đa 06 năm."
     ]

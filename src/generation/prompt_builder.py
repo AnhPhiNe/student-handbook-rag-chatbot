@@ -29,6 +29,31 @@ def build_answer_prompt(
     context_allocation: ContextAllocationConfig | dict[str, Any] | None = None,
 ) -> str:
     """Build a compact, task-bound answer prompt."""
+    prompt, _ = build_answer_prompt_bundle(
+        query=query,
+        retrieval_result=retrieval_result,
+        selected_citations=selected_citations,
+        max_context_chars=max_context_chars,
+        cohort=cohort,
+        context_allocation=context_allocation,
+    )
+    return prompt
+
+
+def build_answer_prompt_bundle(
+    query: str,
+    retrieval_result: dict[str, Any],
+    selected_citations: list[dict[str, Any]] | None = None,
+    max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS,
+    cohort: str | None = None,
+    context_allocation: ContextAllocationConfig | dict[str, Any] | None = None,
+) -> tuple[str, str]:
+    """Build the Composer prompt and return its exact evidence JSON.
+
+    ``context_used`` in API/debug/evaluation output must describe what the
+    Composer actually received, rather than a second legacy rendering of the
+    same retrieval result.
+    """
     del context_allocation  # Kept in the public signature for compatibility.
     packet = build_authorized_evidence_packet(
         query=query,
@@ -48,8 +73,9 @@ def build_answer_prompt(
         }
         for unit in packet["units"]
     ]
+    evidence_context = _to_pretty_json(packet)
 
-    return f"""Bạn là chatbot tra cứu Sổ tay sinh viên. Trả lời bằng tiếng Việt tự nhiên, rõ ràng, đủ ý và chính xác; không tự ý rút gọn đến mức gây hiểu lầm.
+    prompt = f"""Bạn là chatbot tra cứu Sổ tay sinh viên. Trả lời bằng tiếng Việt tự nhiên, rõ ràng, đủ ý và chính xác; không tự ý rút gọn đến mức gây hiểu lầm.
 
 QUY TẮC BẮT BUỘC
 1. Trả lời đúng và đầy đủ các ý thực sự được hỏi trong từng đơn vị. Không tóm tắt toàn bộ Điều hoặc mở rộng sang chính sách khác khi câu hỏi chỉ yêu cầu một khía cạnh. Chỉ kết luận dứt khoát khi evidence trực tiếp xác lập kết luận và câu hỏi đã cung cấp đủ điều kiện cần thiết.
@@ -75,7 +101,7 @@ QUY CÁCH
 - Không hiển thị quá trình suy luận, metadata kỹ thuật hoặc tự tạo mục nguồn.
 
 AUTHORIZED_EVIDENCE_BY_UNIT
-{_to_pretty_json(packet)}
+{evidence_context}
 
 FINAL_INSTRUCTIONS
 Câu hỏi gốc: {query}
@@ -84,6 +110,7 @@ Các đơn vị bắt buộc phải xử lý theo đúng thứ tự:
 {_to_pretty_json(required_units)}
 
 Chỉ xuất câu trả lời cuối cùng cho sinh viên."""
+    return prompt, evidence_context
 
 
 def build_authorized_evidence_packet(

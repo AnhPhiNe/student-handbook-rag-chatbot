@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from pathlib import Path
+from threading import Lock
 from typing import Any
 
 from src.generation.answer_pipeline import DEFAULT_CONFIG_PATH, AnswerPipeline
@@ -16,6 +17,7 @@ class AnswerService:
         config_path: str | Path | None = None,
     ) -> None:
         self._pipeline = pipeline
+        self._pipeline_lock = Lock()
         if config_path is not None:
             self.config_path = Path(config_path)
         elif pipeline is not None and hasattr(pipeline, "config_path"):
@@ -57,5 +59,7 @@ class AnswerService:
 
     def _get_pipeline(self) -> AnswerPipeline:
         if self._pipeline is None:
-            self._pipeline = AnswerPipeline(config_path=self.config_path)
+            with self._pipeline_lock:
+                if self._pipeline is None:
+                    self._pipeline = AnswerPipeline(config_path=self.config_path)
         return self._pipeline

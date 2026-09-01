@@ -11,32 +11,49 @@ UNNUMBERED_FIRST_THREE_PATTERN = re.compile(
     r"\b(?:các\s+)?trường\s+hợp\s+(?:tại\s+)?mục\s+1\s*,\s*2\s*(?:,|và)\s*3(?:\s+nêu\s+trên)?\b",
     re.IGNORECASE,
 )
+AMENDMENT_NOTE_PATTERN = re.compile(
+    r"\s*\(\s*(?:được\s+)?(?:sửa\s+đổi[,\s]+)?bổ\s+sung\s+bởi\s+AMENDMENT\s*\d*\s*\)",
+    re.IGNORECASE,
+)
+AMENDMENT_TAG_PATTERN = re.compile(r"\[AMENDMENT\s*\d*\]", re.IGNORECASE)
+AMENDMENT_TOKEN_PATTERN = re.compile(r"\bAMENDMENT\s*\d+\b", re.IGNORECASE)
+EVIDENCE_LABEL_PATTERN = re.compile(
+    r"\s*\(\s*S\d+(?:\s*[,;/]\s*S\d+)*\s*\)",
+    re.IGNORECASE,
+)
+
+
+def clean_stream_fragment(text: str) -> str:
+    """Remove public-output artifacts without trimming fragment boundaries."""
+
+    text = AMENDMENT_NOTE_PATTERN.sub("", text or "")
+    text = AMENDMENT_TAG_PATTERN.sub("", text)
+    text = AMENDMENT_TOKEN_PATTERN.sub("", text)
+    text = EVIDENCE_LABEL_PATTERN.sub("", text)
+    text = re.sub(r"[ \t]+\n", "\n", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    text = re.sub(r"[ ]{2,}", " ", text)
+    return normalize_unlabeled_enumeration_references(text)
+
+
+def clean_stream_start(text: str) -> str:
+    """Remove an opening Markdown fence once enough stream text is buffered."""
+
+    return re.sub(r"^```(?:\w+)?\s*", "", text or "", count=1)
+
+
+def sources_section_start(text: str) -> int | None:
+    """Return the start of a model-generated source section, if present."""
+
+    match = SOURCE_SECTION_PATTERN.search(text or "")
+    return match.start() if match else None
 
 
 def clean_answer(text: str) -> str:
     text = (text or "").strip()
     text = re.sub(r"^```(?:\w+)?\s*", "", text)
     text = re.sub(r"\s*```$", "", text)
-    text = re.sub(r"[ \t]+\n", "\n", text)
-    text = re.sub(r"\n{3,}", "\n\n", text)
-    # Loại bỏ hoàn toàn các nhãn kỹ thuật nội bộ nếu LLM vô tình sinh ra
-    text = re.sub(
-        r"\s*\(\s*(?:được\s+)?(?:sửa\s+đổi[,\s]+)?bổ\s+sung\s+bởi\s+AMENDMENT\s*\d*\s*\)",
-        "",
-        text,
-        flags=re.IGNORECASE,
-    )
-    text = re.sub(r"\[AMENDMENT\s*\d*\]", "", text, flags=re.IGNORECASE)
-    text = re.sub(r"\bAMENDMENT\s*\d+\b", "", text, flags=re.IGNORECASE)
-    # Evidence packet labels are internal routing aids, not public citations.
-    text = re.sub(
-        r"\s*\(\s*S\d+(?:\s*[,;/]\s*S\d+)*\s*\)",
-        "",
-        text,
-        flags=re.IGNORECASE,
-    )
-    text = re.sub(r"[ ]{2,}", " ", text)
-    return text.strip()
+    return clean_stream_fragment(text).strip()
 
 
 def remove_existing_sources_section(answer: str) -> str:

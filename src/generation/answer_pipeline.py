@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import time
@@ -27,9 +28,11 @@ from src.retrieval.core.vector_retriever import (
 )
 from src.retrieval.core.slang_normalizer import SlangNormalizer
 from .answer_formatter import (
+    clean_stream_fragment,
+    clean_stream_start,
     format_final_answer,
     format_final_response,
-    normalize_unlabeled_enumeration_references,
+    sources_section_start,
 )
 from .answer_guardrails import (
     build_clarification_question,
@@ -42,13 +45,12 @@ from .citation_formatter import (
     prioritize_citations_by_answer_anchors,
     select_relevant_citations,
 )
-from .context_allocation import ContextAllocationConfig, build_context_for_prompt
 from .gemini_client import GeminiClient
 from .io_utils import load_json, load_yaml
 from .prompt_builder import (
     ANSWER_PROMPT_VERSION,
     DEFAULT_MAX_CONTEXT_CHARS,
-    build_answer_prompt,
+    build_answer_prompt_bundle,
 )
 from .response_cache import get_response_cache
 from .structured_result_presenter import build_structured_results
@@ -56,8 +58,8 @@ from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v55-cohort-year-directory-guard"
-STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 128
+PIPELINE_VERSION = "v56-stream-context-runtime-contract"
+STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
 )
@@ -77,6 +79,14 @@ def _normalize_retrieval_cohort(cohort: str | None) -> str | None:
     if normalized.lower() in {"", "general", "all"}:
         return None
     return normalized
+
+
+def _authorized_context_fingerprint(context_used: str) -> dict[str, str]:
+    return {
+        "authorized_evidence_sha256": hashlib.sha256(
+            context_used.encode("utf-8")
+        ).hexdigest()
+    }
 
 
 def _merge_structured_citation_content(
@@ -219,9 +229,6 @@ class AnswerPipeline:
         self.max_context_chars = int(
             llm_config.get("max_context_chars", DEFAULT_MAX_CONTEXT_CHARS)
         )
-        self.context_allocation = ContextAllocationConfig.from_config(
-            self.config.get("context_allocation")
-        )
         self.request_sleep_seconds = float(llm_config.get("request_sleep_seconds", 2))
         self._last_llm_call_at = 0.0
 
@@ -309,25 +316,9 @@ class AnswerPipeline:
                 used_cache=False,
             )
 
-        context_started = time.monotonic()
-        prompt_citations = (
-            retrieval_result.get("evidence_citations")
-            if retrieval_result.get("query_plan")
-            else None
-        )
-        context_used = build_context_for_prompt(
-            retrieval_result,
-            query=effective_query,
-            selected_citations=prompt_citations,
-            max_context_chars=self.max_context_chars,
-            allocation_config=self.context_allocation,
-        )
-        if telemetry is not None:
-            telemetry["context_build_ms"] = (time.monotonic() - context_started) * 1000
-            telemetry["context_chars"] = len(context_used)
-            telemetry["source_count"] = len(
-                retrieval_result.get("retrieved_items") or []
-            )
+        # This stays empty unless Composer is called.  When it is called below,
+        # it is replaced with the exact authorized evidence JSON in the prompt.
+        context_used = ""
 
         if retrieval_result.get("needs_clarification"):
             return self._build_output(
@@ -442,12 +433,30 @@ class AnswerPipeline:
                 used_cache=False,
             )
 
+        context_started = time.monotonic()
+        prompt, context_used = build_answer_prompt_bundle(
+            query=effective_query,
+            retrieval_result=retrieval_result,
+            selected_citations=selected_citations,
+            max_context_chars=self.max_context_chars,
+            cohort=cohort,
+        )
+        if telemetry is not None:
+            telemetry["context_build_ms"] = (
+                time.monotonic() - context_started
+            ) * 1000
+            telemetry["context_chars"] = len(context_used)
+            telemetry["source_count"] = len(
+                retrieval_result.get("retrieved_items") or []
+            )
+            telemetry["prompt_chars"] = len(prompt)
+
         cache_key = self.response_cache.make_cache_key(
             query=effective_query,
             retrieval_result=retrieval_result,
             selected_citations=selected_citations,
             cohort=cohort,
-            context_fingerprint=self.context_allocation.cache_fingerprint(),
+            context_fingerprint=_authorized_context_fingerprint(context_used),
             pipeline_version=PIPELINE_VERSION,
             answer_prompt_version=ANSWER_PROMPT_VERSION,
         )
@@ -478,19 +487,6 @@ class AnswerPipeline:
             or []
         )
         public_retrieval_citations = retrieval_result.get("citations") or []
-
-        prompt_started = time.monotonic()
-        prompt = build_answer_prompt(
-            query=effective_query,
-            retrieval_result=retrieval_result,
-            selected_citations=selected_citations,
-            max_context_chars=self.max_context_chars,
-            cohort=cohort,
-            context_allocation=self.context_allocation,
-        )
-        if telemetry is not None:
-            telemetry["prompt_build_ms"] = (time.monotonic() - prompt_started) * 1000
-            telemetry["prompt_chars"] = len(prompt)
 
         try:
             llm_client = self._get_llm_client()
@@ -605,9 +601,11 @@ class AnswerPipeline:
         status: str,
         effective_query: str,
         fallback_reason: str | None = None,
+        error_type: str | None = None,
         citations_used: list[dict[str, Any]] | None = None,
         related_references: list[dict[str, Any]] | None = None,
         llm_called: bool = False,
+        used_cache: bool = False,
         run_id: str | None = None,
         query_type_override: str | None = None,
     ) -> dict[str, Any]:
@@ -627,7 +625,9 @@ class AnswerPipeline:
         )
         model_name = (getattr(self, "llm_config", {}) or {}).get("model_name", "gemini-3.1-flash-lite")
 
-        resolved_fallback = fallback_reason or ("none" if status == "answered" else status)
+        resolved_fallback = fallback_reason or (
+            "none" if status in {"answered", "streaming"} else status
+        )
         resolved_citations = citations_used if citations_used is not None else (res.get("citations_used") or res.get("citations") or [])
         resolved_related = related_references if related_references is not None else (res.get("related_references") or [])
         structured_results = build_structured_results(
@@ -649,6 +649,7 @@ class AnswerPipeline:
             "effective_query": effective_query,
             "query_handling": query_handling if query_handling else None,
             "fallback_reason": resolved_fallback,
+            "error_type": error_type,
             "citations_used": resolved_citations,
             "related_references": resolved_related,
             "structured_results": structured_results,
@@ -660,6 +661,7 @@ class AnswerPipeline:
             "planner_fallback": res.get("planner_fallback"),
             "supports_task_ids": res.get("supports_task_ids") or {},
             "llm_called": llm_called,
+            "used_cache": used_cache,
         }
 
     def answer_stream(
@@ -843,19 +845,54 @@ class AnswerPipeline:
         public_retrieval_citations = retrieval_result.get("citations") or []
         related_references = retrieval_result.get("related_references") or []
 
-        prompt = build_answer_prompt(
+        prompt, context_used = build_answer_prompt_bundle(
             query=effective_query,
             retrieval_result=retrieval_result,
             selected_citations=selected_citations,
             max_context_chars=self.max_context_chars,
             cohort=cohort,
-            context_allocation=self.context_allocation,
         )
+        cache_key = self.response_cache.make_cache_key(
+            query=effective_query,
+            retrieval_result=retrieval_result,
+            selected_citations=selected_citations,
+            cohort=cohort,
+            context_fingerprint=_authorized_context_fingerprint(context_used),
+            pipeline_version=PIPELINE_VERSION,
+            answer_prompt_version=ANSWER_PROMPT_VERSION,
+        )
+        cached = self.response_cache.get(cache_key)
+        if cached:
+            cached_answer = str(cached.get("answer") or "")
+            cached_citations = prioritize_citations_by_answer_anchors(
+                cached.get("citations") or public_retrieval_citations,
+                cached_answer,
+                max_sources=10,
+            )
+            yield self._build_stream_metadata(
+                retrieval_result,
+                status=str(cached.get("status") or "answered"),
+                effective_query=effective_query,
+                citations_used=cached_citations,
+                related_references=related_references,
+                llm_called=False,
+                used_cache=True,
+                run_id=run_id,
+            )
+            yield {"type": "token", "text": cached_answer}
+            yield {
+                "type": "done",
+                "status": str(cached.get("status") or "answered"),
+                "used_cache": True,
+                "tracker": tracker,
+                "citations_used": cached_citations,
+            }
+            return
 
         yield {"type": "progress", "message": "Đang tổng hợp câu trả lời..."}
         yield self._build_stream_metadata(
             retrieval_result,
-            status="answered",
+            status="streaming",
             effective_query=effective_query,
             citations_used=public_retrieval_citations,
             related_references=related_references,
@@ -864,19 +901,28 @@ class AnswerPipeline:
         )
 
         final_answer_for_citations = ""
+        terminal_status = "answered"
+        terminal_error_type: str | None = None
         try:
             llm_client = self._get_llm_client()
             start_time_llm = datetime.now(timezone.utc).isoformat()
             self._throttle_llm_call()
-            streamed_answer_parts: list[str] = []
+            emitted_answer_parts: list[str] = []
             pending_stream_text = ""
+            stream_prefix_emitted = False
+            suppress_source_tail = False
             for chunk in llm_client.generate_stream(prompt):
                 chunk_text = str(chunk)
-                streamed_answer_parts.append(chunk_text)
+                if suppress_source_tail:
+                    continue
                 pending_stream_text += chunk_text
-                pending_stream_text = normalize_unlabeled_enumeration_references(
-                    pending_stream_text
-                )
+                if not stream_prefix_emitted:
+                    pending_stream_text = clean_stream_start(pending_stream_text)
+                source_start = sources_section_start(pending_stream_text)
+                if source_start is not None:
+                    pending_stream_text = pending_stream_text[:source_start]
+                    suppress_source_tail = True
+                pending_stream_text = clean_stream_fragment(pending_stream_text)
                 if len(pending_stream_text) > STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:
                     safe_text = pending_stream_text[
                         :-STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS
@@ -884,18 +930,20 @@ class AnswerPipeline:
                     pending_stream_text = pending_stream_text[
                         -STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:
                     ]
-                    yield {"type": "token", "text": safe_text}
+                    if safe_text:
+                        stream_prefix_emitted = True
+                        emitted_answer_parts.append(safe_text)
+                        yield {"type": "token", "text": safe_text}
 
             if pending_stream_text:
-                yield {
-                    "type": "token",
-                    "text": normalize_unlabeled_enumeration_references(
-                        pending_stream_text
-                    ),
-                }
-            final_answer_for_citations = normalize_unlabeled_enumeration_references(
-                "".join(streamed_answer_parts)
-            )
+                final_tail = format_final_response(
+                    pending_stream_text,
+                    primary_citations=selected_citations,
+                )
+                if final_tail:
+                    emitted_answer_parts.append(final_tail)
+                    yield {"type": "token", "text": final_tail}
+            final_answer_for_citations = "".join(emitted_answer_parts)
             end_time_llm = datetime.now(timezone.utc).isoformat()
             self._last_llm_call_at = time.monotonic()
 
@@ -912,26 +960,51 @@ class AnswerPipeline:
                     start_time=start_time_llm,
                     end_time=end_time_llm,
                 )
-        except Exception:
+        except Exception as exc:
+            terminal_status = "api_error"
+            terminal_error_type = type(exc).__name__
             fallback = build_fallback_answer(
                 effective_query, retrieval_result, reason="api_error"
             )
             final_answer_for_citations = fallback
             yield {"type": "token", "text": fallback}
 
-        # Chặn việc yield sources text dưới dạng văn bản thô
-        # sources_text = format_sources_text(selected_citations)
-        # if sources_text:
-        #     yield {"type": "token", "text": f"\n\n{sources_text}"}
+        final_citations = prioritize_citations_by_answer_anchors(
+            all_citations,
+            final_answer_for_citations,
+            max_sources=10,
+        )
+        yield self._build_stream_metadata(
+            retrieval_result,
+            status=terminal_status,
+            effective_query=effective_query,
+            fallback_reason=("api_error" if terminal_status == "api_error" else None),
+            error_type=terminal_error_type,
+            citations_used=final_citations,
+            related_references=related_references,
+            llm_called=True,
+            run_id=run_id,
+        )
+
+        if terminal_status == "answered":
+            self.response_cache.set(
+                cache_key,
+                {
+                    "answer": final_answer_for_citations,
+                    "status": "answered",
+                    "error_type": None,
+                    "error_message": None,
+                    "citations": final_citations,
+                },
+            )
 
         yield {
             "type": "done",
+            "status": terminal_status,
+            "error_type": terminal_error_type,
+            "used_cache": False,
             "tracker": tracker,
-            "citations_used": prioritize_citations_by_answer_anchors(
-                all_citations,
-                final_answer_for_citations,
-                max_sources=10,
-            ),
+            "citations_used": final_citations,
         }
 
     def _run_retrieval(
@@ -941,8 +1014,6 @@ class AnswerPipeline:
         chat_history: list[dict[str, str]] | None = None,
     ) -> dict[str, Any]:
         """Run the backend retrieval/router stack with the active cohort context."""
-        os.environ["STUDENT_RAG_DISABLE_PHORANKER"] = "1"
-
         if _env_bool("STUDENT_RAG_EVAL_FORCE_REGULATION_RAG"):
             query_handling = {
                 "raw_query": query,
@@ -1385,11 +1456,20 @@ class AnswerPipeline:
         else:
             structured_result = None
         task_modes = {str(task.get("mode")) for task in (plan.get("tasks") or [])}
+        executable_modes = task_modes - {"clarify"}
+        if len(executable_modes) > 1:
+            execution_mode = "mixed"
+        elif executable_modes:
+            execution_mode = next(iter(executable_modes))
+        elif "clarify" in task_modes:
+            execution_mode = "clarify"
+        else:
+            execution_mode = "regulation"
         return {
             **base_result,
             "intent": "multi_task" if len(task_results) > 1 else (task_results[0].get("intent") if task_results else "open_question"),
             "strategy": "query_plan_execution",
-            "execution_mode": "mixed" if len(task_modes - {"clarify"}) > 1 else next(iter(task_modes), "regulation"),
+            "execution_mode": execution_mode,
             "lookup_type": None,
             "structured_result": structured_result,
             "retrieved_items": merged_items,

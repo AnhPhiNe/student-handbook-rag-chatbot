@@ -15,6 +15,10 @@ from src.common.cohort import is_cohort_applicable, normalize_cohort
 from src.common.legal_reference import normalize_article_label
 from src.common.source_identity import canonical_article_source_id
 from src.retrieval.core.runtime_health import set_bm25_runtime_status
+from src.retrieval.core.retrieval_mode import (
+    DEFAULT_RETRIEVAL_MODE as DEFAULT_RETRIEVAL_MODE,
+    resolve_retrieval_mode,
+)
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
     FieldCondition,
@@ -24,13 +28,6 @@ from qdrant_client.models import (
 
 logger = logging.getLogger("hybrid_pipeline")
 
-DEFAULT_RETRIEVAL_MODE = "vector_primary_graph_supplement"
-SUPPORTED_RETRIEVAL_MODES = {
-    "full",
-    "no_graph",
-    "vector_only",
-    DEFAULT_RETRIEVAL_MODE,
-}
 GRAPH_SUPPLEMENT_PARENT_LIMIT = 5
 PHORANKER_EVAL_MODES = {"full", "no_graph"}
 BM25_INIT_MAX_ATTEMPTS = 3
@@ -335,18 +332,7 @@ class ChildParentHybridRetriever:
         outbound graph neighbors as context-only related sources. PhoRanker is
         reserved for controlled evaluation modes over the same vector pool.
         """
-        eval_mode = (
-            os.environ.get(
-                "STUDENT_RAG_EVAL_RETRIEVAL_MODE",
-                DEFAULT_RETRIEVAL_MODE,
-            )
-            .strip()
-            .lower()
-        )
-        if eval_mode not in SUPPORTED_RETRIEVAL_MODES:
-            raise ValueError(
-                f"Unsupported STUDENT_RAG_EVAL_RETRIEVAL_MODE={eval_mode!r}"
-            )
+        eval_mode = resolve_retrieval_mode()
         if eval_mode in {"no_graph", "vector_only"}:
             graph_depth = 0
 
@@ -759,6 +745,7 @@ def _v7_query_filter(cohort: str | None) -> Filter:
 
 
 _GLOBAL_RETRIEVER = None
+_GLOBAL_RETRIEVER_LOCK = threading.Lock()
 def build_related_references(
     related_items: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
@@ -834,18 +821,20 @@ def initialize_hybrid_retriever() -> ChildParentHybridRetriever:
 
     global _GLOBAL_RETRIEVER
     if _GLOBAL_RETRIEVER is None:
-        from src.common.env_loader import load_project_env
+        with _GLOBAL_RETRIEVER_LOCK:
+            if _GLOBAL_RETRIEVER is None:
+                from src.common.env_loader import load_project_env
 
-        load_project_env()
-        qdrant_url = os.getenv("QDRANT_URL")
-        qdrant_key = os.getenv("QDRANT_API_KEY")
-        collection_name = require_qdrant_collection_name()
-        logger.info("Initializing child-parent regulation retriever...")
-        _GLOBAL_RETRIEVER = ChildParentHybridRetriever(
-            qdrant_url,
-            qdrant_key,
-            collection_name=collection_name,
-        )
+                load_project_env()
+                qdrant_url = os.getenv("QDRANT_URL")
+                qdrant_key = os.getenv("QDRANT_API_KEY")
+                collection_name = require_qdrant_collection_name()
+                logger.info("Initializing child-parent regulation retriever...")
+                _GLOBAL_RETRIEVER = ChildParentHybridRetriever(
+                    qdrant_url,
+                    qdrant_key,
+                    collection_name=collection_name,
+                )
     return _GLOBAL_RETRIEVER
 
 

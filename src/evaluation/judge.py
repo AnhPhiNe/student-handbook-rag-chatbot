@@ -194,14 +194,10 @@ def compact_judge_packet(
     )
     structured_context = _build_structured_judge_context(answer_record)
     raw_context = str(answer_record.get("context_used") or "").strip()
-    # RAG and mixed answers store the exact readable packet sent to Composer in
-    # ``context_used``. A general-cohort request can expose 15 such sources
-    # (five per cohort), while the public citation payload is capped at ten, so
-    # that path needs the source-aware Composer packet. For a single cohort,
-    # the smaller citation set is complete and avoids losing relevant evidence
-    # during compaction. Legacy serialized execution JSON also falls back to
-    # normalized citation contents rather than consuming budget on metadata.
-    readable_composer_context = (
+    # Prefer the exact authorized packet sent to Composer. Public citations are
+    # capped independently and can omit task/cohort evidence in compound cases.
+    authorized_packet_units = _authorized_packet_evidence_units(raw_context)
+    legacy_composer_context = (
         raw_context
         if "PRIMARY SOURCES" in raw_context
         and str(case.get("cohort") or "").lower() == "general"
@@ -214,8 +210,10 @@ def compact_judge_packet(
         re.findall(r"\w+", str(answer_record.get("answer") or "").lower())
     )
     sentences = _split_evidence_units(structured_context)
-    if readable_composer_context:
-        sentences.extend(_source_aware_composer_units(readable_composer_context))
+    if authorized_packet_units:
+        sentences.extend(authorized_packet_units)
+    elif legacy_composer_context:
+        sentences.extend(_source_aware_composer_units(legacy_composer_context))
     else:
         sentences.extend(_split_evidence_units(fallback_context))
 
@@ -347,6 +345,58 @@ def _source_aware_composer_units(context: str) -> list[str]:
         body = block[content_match.end() :] if content_match else block
         for unit in _split_evidence_units(body):
             units.append(f"{prefix} | {unit}" if prefix else unit)
+    return units
+
+
+def _authorized_packet_evidence_units(context: str) -> list[str]:
+    """Extract evidence text from the current task-bound Composer packet."""
+
+    try:
+        packet = json.loads(context)
+    except (TypeError, json.JSONDecodeError):
+        return []
+    if not isinstance(packet, dict) or not isinstance(packet.get("units"), list):
+        return []
+
+    units: list[str] = []
+    for task_unit in packet["units"]:
+        if not isinstance(task_unit, dict):
+            continue
+        task_id = str(task_unit.get("task_id") or "unknown")
+        cohort = str(task_unit.get("cohort") or "default")
+        for source in task_unit.get("primary_evidence") or []:
+            if not isinstance(source, dict):
+                continue
+            source_ref = str(source.get("source_ref") or "unknown")
+            title = str(source.get("title") or source.get("article_label") or "")
+            prefix = f"Task: {task_id} | Cohort: {cohort} | Source: {source_ref}"
+            if title:
+                prefix += f" | Title: {title}"
+            body = str(source.get("content") or "")
+            for evidence_unit in _split_evidence_units(body):
+                units.append(f"{prefix} | {evidence_unit}")
+            resolved_result = source.get("resolved_result")
+            if resolved_result is not None:
+                units.append(
+                    f"{prefix} | Resolved result: "
+                    f"{_bounded_json(resolved_result, max_chars=2_000)}"
+                )
+        for amendment in task_unit.get("applicable_amendments") or []:
+            if not isinstance(amendment, dict):
+                continue
+            amendment_source = str(
+                amendment.get("amendment_source")
+                or amendment.get("citation_source")
+                or "unknown"
+            )
+            prefix = (
+                f"Task: {task_id} | Cohort: {cohort} | "
+                f"Amendment: {amendment_source}"
+            )
+            for field in ("effective_rule", "replacement_text"):
+                value = str(amendment.get(field) or "").strip()
+                for evidence_unit in _split_evidence_units(value):
+                    units.append(f"{prefix} | {field}: {evidence_unit}")
     return units
 
 

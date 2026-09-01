@@ -7,6 +7,7 @@ from pathlib import Path
 from fastapi import APIRouter, Depends
 
 from src.api.deps import verify_admin_api_key
+from src.api.dependency_health import get_dependency_runtime_statuses
 from src.api.schemas import (
     ArtifactHealthResponse,
     ArtifactStatus,
@@ -15,6 +16,7 @@ from src.api.schemas import (
     RetrievalComponentStatus,
 )
 from src.retrieval.core.runtime_health import get_bm25_runtime_status
+from src.retrieval.core.retrieval_mode import resolve_retrieval_mode
 
 
 router = APIRouter(tags=["health"])
@@ -227,7 +229,24 @@ def readiness() -> ReadinessResponse:
     """
     artifact_status = _artifact_health_response()
     missing_count = sum(1 for item in artifact_status.required_artifacts if not item.exists)
-    ready = artifact_status.status == "ok"
+    dependencies = get_dependency_runtime_statuses()
+    qdrant_status = dependencies["qdrant"]
+    mongodb_status = dependencies["mongodb"]
+    try:
+        retrieval_mode = resolve_retrieval_mode()
+        retrieval_mode_valid = True
+    except ValueError:
+        retrieval_mode = "invalid"
+        retrieval_mode_valid = False
+    stores_ready = all(
+        dependency.get("status") == "ready"
+        for dependency in (qdrant_status, mongodb_status)
+    )
+    ready = (
+        artifact_status.status == "ok"
+        and stores_ready
+        and retrieval_mode_valid
+    )
     bm25_status = RetrievalComponentStatus(**get_bm25_runtime_status())
     return ReadinessResponse(
         status="ok" if ready and bm25_status.status != "degraded" else "degraded",
@@ -236,6 +255,9 @@ def readiness() -> ReadinessResponse:
         ready=ready,
         missing_count=missing_count,
         bm25=bm25_status,
+        qdrant=qdrant_status,
+        mongodb=mongodb_status,
+        retrieval_mode=retrieval_mode,
     )
 
 

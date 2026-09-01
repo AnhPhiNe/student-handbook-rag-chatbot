@@ -927,6 +927,51 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertIsNotNone(resolution)
         self.assertNotIn("resolved_result", resolution.result)
 
+    def test_directory_record_is_preserved_when_optional_field_is_absent(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "office",
+                "intent": "contact",
+                "slots": {
+                    "office": "Phòng Đào tạo",
+                    "requested_field": "website",
+                },
+                "slot_spans": {"office": "Phòng Đào tạo"},
+            },
+            query="Website của Phòng Đào tạo là gì?",
+            cohort="K51",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[
+                {
+                    "unit_name": "Phòng Đào tạo",
+                    "aliases": ["phòng đào tạo"],
+                    "emails": ["daotao@example.edu.vn"],
+                    "websites": [],
+                    "cohort": "K51",
+                    "content_type": "student_office_profile",
+                    "document_id": "handbook-k51",
+                    "source_pages": [10],
+                }
+            ],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=[],
+            structured_tables_registry=[],
+            program_directory=[],
+            probe_other_domains=False,
+        )
+
+        self.assertIsNotNone(resolution)
+        self.assertEqual(resolution.strategy, "office_lookup")
+        self.assertEqual(resolution.result["requested_field"], "website")
+        self.assertEqual(resolution.result["result"][0]["unit_name"], "Phòng Đào tạo")
+        self.assertEqual(resolution.result["result"][0]["websites"], [])
+
     def test_program_lookup_faculty_programs_per_cohort_counts(self) -> None:
         programs = [
             {

@@ -53,27 +53,6 @@ def _slot_text(decision: dict[str, Any], *names: str) -> str:
     return ""
 
 
-def _result_supports_requested_field(
-    result: dict[str, Any] | None,
-    requested_field: str,
-) -> bool:
-    if result is None or requested_field in {"", "all"}:
-        return result is not None
-    field_map = {
-        "unit": "unit_name",
-        "phone": "phones",
-        "email": "emails",
-        "office": "office",
-        "website": "websites",
-        "services": "responsibilities",
-    }
-    record_field = field_map.get(requested_field)
-    if record_field is None:
-        return False
-    records = result.get("result") or []
-    return bool(records) and all(record.get(record_field) for record in records)
-
-
 def _bind_regulation_source(
     result: dict[str, Any] | None,
     registry: list[dict[str, Any]],
@@ -688,9 +667,11 @@ def _resolve_single_lookup(
                 target_chunk_types=[],
             )
         requested_field = str(slots.get("requested_field") or "")
-        if not _result_supports_requested_field(result, requested_field):
-            result = None
-        elif result is not None:
+        # A grounded directory record remains valid structured evidence even
+        # when it does not contain the optional field requested by the user.
+        # The Composer receives the record and must state that the available
+        # evidence does not provide that field instead of inventing a value.
+        if result is not None:
             result["requested_field"] = requested_field
         strategies = {
             "student_service": "student_service_lookup",

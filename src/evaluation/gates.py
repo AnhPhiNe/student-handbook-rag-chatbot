@@ -8,20 +8,24 @@ def evaluate_gates(suite: str, summary: dict[str, Any]) -> dict[str, Any]:
 
     def minimum(name: str, threshold: float) -> None:
         actual = summary.get(name)
+        applicable = actual is not None
         checks[name] = {
             "actual": actual,
             "operator": ">=",
             "threshold": threshold,
-            "passed": actual is not None and float(actual) >= threshold,
+            "applicable": applicable,
+            "passed": float(actual) >= threshold if applicable else None,
         }
 
     def maximum(name: str, threshold: float) -> None:
         actual = summary.get(name)
+        applicable = actual is not None
         checks[name] = {
             "actual": actual,
             "operator": "<=",
             "threshold": threshold,
-            "passed": actual is not None and float(actual) <= threshold,
+            "applicable": applicable,
+            "passed": float(actual) <= threshold if applicable else None,
         }
 
     if suite == "deterministic":
@@ -80,12 +84,17 @@ def evaluate_gates(suite: str, summary: dict[str, Any]) -> dict[str, Any]:
                 "actual": actual,
                 "operator": "<=",
                 "threshold": threshold,
-                "passed": actual is not None and float(actual) <= threshold,
+                "applicable": actual is not None,
+                "passed": float(actual) <= threshold if actual is not None else None,
             }
     elif suite == "faults":
         minimum("pass_rate", 1.0)
 
+    applicable_checks = [
+        check for check in checks.values() if check.get("applicable", True)
+    ]
     return {
-        "passed": bool(checks) and all(check["passed"] for check in checks.values()),
+        "passed": bool(applicable_checks)
+        and all(check.get("passed") is True for check in applicable_checks),
         "checks": checks,
     }

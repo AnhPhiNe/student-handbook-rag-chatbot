@@ -67,18 +67,34 @@ def _provenance(
     )
     llm_config = answer_config.get("llm") or {}
     cache_config = answer_config.get("cache") or {}
-    config_hashes = dict(manifest.get("config_hashes") or {})
-    config_hashes.update(
-        {
-            "ai_router": _file_hash(AI_ROUTER_CONFIG),
-            "structured_lookup_registry": _file_hash(LOOKUP_REGISTRY_CONFIG),
-            "retrieval": _file_hash(RETRIEVAL_CONFIG),
-            "answer_generation": _file_hash(ANSWER_GENERATION_CONFIG),
-        }
+    expected_config_hashes = dict(manifest.get("config_hashes") or {})
+    actual_config_hashes = {
+        "ai_router": _file_hash(AI_ROUTER_CONFIG),
+        "structured_lookup_registry": _file_hash(LOOKUP_REGISTRY_CONFIG),
+        "retrieval": _file_hash(RETRIEVAL_CONFIG),
+        "answer_generation": _file_hash(ANSWER_GENERATION_CONFIG),
+    }
+    current_commit = _git_commit()
+    evaluated_system_commit = str(manifest.get("evaluated_system_commit") or "")
+    system_commit_matches_manifest = bool(evaluated_system_commit) and (
+        current_commit == evaluated_system_commit
+    )
+    config_hashes_match_manifest = bool(expected_config_hashes) and all(
+        actual_config_hashes.get(name) == expected_hash
+        for name, expected_hash in expected_config_hashes.items()
+    )
+    benchmark_run_kind = (
+        "frozen_holdout"
+        if system_commit_matches_manifest and config_hashes_match_manifest
+        else "post_fix_regression"
     )
     return {
         "run_at_utc": datetime.now(timezone.utc).isoformat(),
-        "git_commit": _git_commit(),
+        "git_commit": current_commit,
+        "evaluated_system_commit": evaluated_system_commit or None,
+        "evaluation_harness_commit": manifest.get("evaluation_harness_commit"),
+        "system_commit_matches_manifest": system_commit_matches_manifest,
+        "benchmark_run_kind": benchmark_run_kind,
         "dataset_version": manifest.get("version"),
         "evaluation_contract": manifest.get("evaluation_contract"),
         "deterministic_contract": manifest.get("deterministic_contract"),
@@ -88,7 +104,9 @@ def _provenance(
         "expected_docstore_hash": manifest.get("docstore_hash"),
         "actual_docstore_hash": _file_hash(DEFAULT_DOCSTORE),
         "compatibility_diagnostic": allow_docstore_drift,
-        "config_hashes": config_hashes,
+        "config_hashes": actual_config_hashes,
+        "expected_config_hashes": expected_config_hashes,
+        "config_hashes_match_manifest": config_hashes_match_manifest,
         "generation_model": llm_config.get("model_name")
         or manifest.get("generation_model"),
         "dataset_generation_model": manifest.get("generation_model"),
@@ -212,14 +230,18 @@ def _finalize_report(
 ) -> dict[str, Any]:
     actual_n = int((report.get("summary") or {}).get("n", 0))
     report["provenance"] = provenance
+    complete = actual_n == expected_n
+    publication_status = (
+        "headline_eligible" if complete else "partial_not_for_headline"
+    )
+    if complete and provenance.get("benchmark_run_kind") == "post_fix_regression":
+        publication_status = "post_fix_regression_not_original_holdout"
     report["completeness"] = {
         "profile": profile,
         "expected_n": expected_n,
         "actual_n": actual_n,
-        "complete": actual_n == expected_n,
-        "publication_status": "headline_eligible"
-        if actual_n == expected_n
-        else "partial_not_for_headline",
+        "complete": complete,
+        "publication_status": publication_status,
     }
     if report.get("suite") in {
         "deterministic",

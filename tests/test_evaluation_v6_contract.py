@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 
 import scripts.evaluate_system as runner
+import src.evaluation.dataset as dataset
 import src.evaluation.suites as suites
 from src.evaluation.metrics import retrieval_metrics
 
@@ -42,6 +43,98 @@ def test_deterministic_contract_resolution_fails_closed() -> None:
                 {"id": "two", "contract_version": "query-plan-b"},
             ],
         )
+
+
+def test_deterministic_gate_skips_non_applicable_metrics() -> None:
+    gate = runner.evaluate_gates(
+        "deterministic",
+        {
+            "precision": 1.0,
+            "recall": 1.0,
+            "false_positive_rate": 0.0,
+            "citation_metadata_accuracy": None,
+            "cross_cohort_leak": 0.0,
+        },
+    )
+    assert gate["passed"] is True
+    assert gate["checks"]["citation_metadata_accuracy"] == {
+        "actual": None,
+        "operator": ">=",
+        "threshold": 1.0,
+        "applicable": False,
+        "passed": None,
+    }
+
+
+def test_post_fix_regression_is_not_labeled_original_holdout() -> None:
+    report = {"suite": "deterministic", "summary": {"n": 140}}
+    runner._finalize_report(
+        report,
+        expected_n=140,
+        provenance={"benchmark_run_kind": "post_fix_regression"},
+    )
+    assert report["completeness"]["complete"] is True
+    assert (
+        report["completeness"]["publication_status"]
+        == "post_fix_regression_not_original_holdout"
+    )
+
+
+def test_v6_deterministic_gold_contract_requires_plan_and_tasks() -> None:
+    errors: list[str] = []
+    dataset._validate_deterministic_contract(
+        {"id": "missing", "contract_version": "query-plan-target-holdout-v6"},
+        errors,
+    )
+    assert "missing: expected_plan must be an object" in errors
+
+    errors = []
+    dataset._validate_deterministic_contract(
+        {
+            "id": "valid",
+            "contract_version": "query-plan-target-holdout-v6",
+            "expected_plan": {
+                "task_count": 1,
+                "allowed_modes": ["rag"],
+                "required_modes": ["rag"],
+                "mode_counts": {"rag": 1},
+                "lookup_types": [],
+                "cohorts": ["K51"],
+                "out_of_domain": False,
+                "needs_clarification": False,
+            },
+            "expected_tasks": [
+                {
+                    "mode": "rag",
+                    "intent": "open_question",
+                    "cohorts": ["K51"],
+                }
+            ],
+        },
+        errors,
+    )
+    assert errors == []
+
+    errors = []
+    dataset._validate_deterministic_contract(
+        {
+            "id": "clarify",
+            "contract_version": "query-plan-target-holdout-v6",
+            "expected_plan": {
+                "task_count": 1,
+                "allowed_modes": ["clarify"],
+                "required_modes": ["clarify"],
+                "mode_counts": {"clarify": 1},
+                "lookup_types": [],
+                "cohorts": ["K51"],
+                "out_of_domain": False,
+                "needs_clarification": True,
+            },
+            "expected_tasks": [{"mode": "clarify", "cohorts": ["K51"]}],
+        },
+        errors,
+    )
+    assert errors == []
 
 
 def test_deterministic_v2_reports_non_applicable_assertions_as_na() -> None:

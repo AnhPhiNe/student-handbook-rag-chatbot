@@ -445,6 +445,111 @@ def _validate_common(case: dict[str, Any], suite: str, errors: list[str]) -> Non
         )
 
 
+def _validate_deterministic_contract(
+    case: dict[str, Any], errors: list[str]
+) -> None:
+    """Fail closed when a deterministic case cannot express its V6 gold contract."""
+    case_id = str(case.get("id") or "<missing-id>")
+    contract = str(case.get("contract_version") or "").strip()
+    if not contract.startswith("query-plan-"):
+        errors.append(f"{case_id}: invalid deterministic contract_version={contract!r}")
+
+    expected = case.get("expected_plan")
+    if not isinstance(expected, dict):
+        errors.append(f"{case_id}: expected_plan must be an object")
+        return
+    required_plan_fields = {
+        "task_count",
+        "allowed_modes",
+        "required_modes",
+        "mode_counts",
+        "lookup_types",
+        "cohorts",
+        "out_of_domain",
+        "needs_clarification",
+    }
+    missing_plan_fields = sorted(required_plan_fields - set(expected))
+    if missing_plan_fields:
+        errors.append(
+            f"{case_id}: expected_plan missing fields {missing_plan_fields}"
+        )
+
+    task_count = expected.get("task_count")
+    if (
+        not isinstance(task_count, int)
+        or isinstance(task_count, bool)
+        or not 0 <= task_count <= 3
+    ):
+        errors.append(f"{case_id}: invalid expected_plan.task_count={task_count!r}")
+        task_count = None
+    allowed_task_modes = {"structured", "rag", "clarify"}
+    for field in ("allowed_modes", "required_modes", "lookup_types", "cohorts"):
+        value = expected.get(field)
+        if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
+            errors.append(f"{case_id}: expected_plan.{field} must be a string list")
+    allowed_modes_value = expected.get("allowed_modes")
+    required_modes_value = expected.get("required_modes")
+    allowed_modes = allowed_modes_value if isinstance(allowed_modes_value, list) else []
+    required_modes = (
+        required_modes_value if isinstance(required_modes_value, list) else []
+    )
+    if any(mode not in allowed_task_modes for mode in allowed_modes + required_modes):
+        errors.append(f"{case_id}: expected_plan contains unsupported task mode")
+    if not set(required_modes) <= set(allowed_modes):
+        errors.append(f"{case_id}: required_modes must be a subset of allowed_modes")
+
+    mode_counts = expected.get("mode_counts")
+    if not isinstance(mode_counts, dict) or any(
+        mode not in allowed_task_modes
+        or not isinstance(count, int)
+        or isinstance(count, bool)
+        or count < 0
+        for mode, count in (mode_counts or {}).items()
+    ):
+        errors.append(f"{case_id}: invalid expected_plan.mode_counts")
+    elif task_count is not None and sum(mode_counts.values()) != task_count:
+        errors.append(f"{case_id}: mode_counts must sum to task_count")
+    for field in ("out_of_domain", "needs_clarification"):
+        if not isinstance(expected.get(field), bool):
+            errors.append(f"{case_id}: expected_plan.{field} must be boolean")
+
+    expected_tasks = case.get("expected_tasks")
+    if not isinstance(expected_tasks, list):
+        errors.append(f"{case_id}: expected_tasks must be a list")
+        return
+    if task_count is not None and len(expected_tasks) != task_count:
+        errors.append(f"{case_id}: expected_tasks length must equal task_count")
+    for index, task in enumerate(expected_tasks, start=1):
+        prefix = f"{case_id}: expected_tasks[{index}]"
+        if not isinstance(task, dict):
+            errors.append(f"{prefix} must be an object")
+            continue
+        mode = task.get("mode")
+        if mode not in allowed_task_modes:
+            errors.append(f"{prefix}.mode is invalid")
+        if mode != "clarify" and (
+            not isinstance(task.get("intent"), str) or not task.get("intent")
+        ):
+            errors.append(f"{prefix}.intent must be a non-empty string")
+        cohorts = task.get("cohorts")
+        if not isinstance(cohorts, list) or any(
+            not isinstance(cohort, str) for cohort in cohorts
+        ):
+            errors.append(f"{prefix}.cohorts must be a string list")
+        if mode == "structured" and not str(task.get("lookup_type") or "").strip():
+            errors.append(f"{prefix}.lookup_type is required for structured mode")
+        if "slots" in task and not isinstance(task.get("slots"), dict):
+            errors.append(f"{prefix}.slots must be an object")
+        if "required_slot_keys" in task and not isinstance(
+            task.get("required_slot_keys"), list
+        ):
+            errors.append(f"{prefix}.required_slot_keys must be a list")
+        if "slot_value_alternatives" in task and not isinstance(
+            task.get("slot_value_alternatives"), dict
+        ):
+            errors.append(f"{prefix}.slot_value_alternatives must be an object")
+
+
 def validate_bundle(
     bundle_dir: Path,
     docstore_path: Path,
@@ -671,6 +776,8 @@ def validate_bundle(
                 for field in ("case_type", "expected_group", "expected_llm_called"):
                     if field not in case:
                         errors.append(f"{case_id}: missing deterministic field {field}")
+                if manifest.get("schema_version") == "architecture-evaluation-v6":
+                    _validate_deterministic_contract(case, errors)
             elif suite == "production" and not case.get("scenario"):
                 errors.append(f"{case_id}: missing production scenario")
 

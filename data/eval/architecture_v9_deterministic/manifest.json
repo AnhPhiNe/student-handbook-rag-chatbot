@@ -7,7 +7,7 @@
   "review_state": "corrected_deterministic_scope_owner_approved_frozen",
   "authored_against_runtime_commit": "7f1fc82bc0d6a02a10cc64f0a7726b3cc7a913a9",
   "evaluated_system_commit": "7f1fc82bc0d6a02a10cc64f0a7726b3cc7a913a9",
-  "evaluation_harness_commit": "d3c6dd30cdde2d9e0d8808446ba24358f3931e14",
+  "evaluation_harness_commit": "915114b05ec31a87d219efd863f43c42e9f24ead",
   "benchmark_run_kind": "fresh_post_fix_deterministic",
   "planner_model": "qwen/qwen3.8-27b",
   "planner_reasoning_effort": "low",

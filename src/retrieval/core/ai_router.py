@@ -33,7 +33,7 @@ from .query_plan import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.8-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v39-reference-table-selector"
+ROUTER_PROMPT_VERSION = "structured-regulation-v40-capability-boundaries"
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -96,8 +96,11 @@ không trả lời.
   nếu TOOLS có công thức tương ứng, kể cả khi QUERY không viết từ "công thức".
 - So sánh là yêu cầu trình bày, không phải intent. Không dùng intent=compare;
   giữ ý so sánh trong task.question và mọi cohort cần tra.
-- clarify: thiếu slot TOOLS đánh dấu required hoặc tham chiếu thật sự mơ hồ;
-  không clarify vì slot tùy chọn. Chỉ clarify task bị thiếu thông tin.
+- clarify chỉ khi một task thiếu slot required hoặc có tham chiếu thật sự mơ hồ.
+  Chỉ clarify task bị thiếu thông tin. Không dùng vì slot tùy chọn hay vì target
+  rõ nhưng nguồn có thể thiếu dữ liệu.
+- Target rõ về trạng thái hiện thời, dữ liệu cá nhân hoặc vận hành mà Sổ tay có
+  thể không chứa → RAG để xác định phạm vi nguồn.
 
 5. SLOTS VÀ GROUNDING
 - Với structured, luôn chọn lookup_type và intent được TOOLS hỗ trợ, rồi điền đủ

@@ -49,6 +49,11 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
         "\n", 1
     )[0]
     assert "điều kiện" not in scholarship_contract
+    assert "công thức tiền" in scholarship_contract
+    assert "căn cứ học phí" in scholarship_contract
+    scoring_contract = prompt_registry.split("scoring|", 1)[1].split("\n", 1)[0]
+    assert "tổng điểm rèn luyện" in scoring_contract
+    assert "từng tiêu chí thành phần" in scoring_contract
     assert "Dịch vụ cần hỗ trợ, không phải tên đơn vị" in prompt_registry
 
 
@@ -163,9 +168,9 @@ def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
         router._plan_response_format_payload(),
     )
 
-    assert stats["total_chars"] <= 10700
-    assert stats["estimated_input_tokens"] <= 2700
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v39-reference-table-selector"
+    assert stats["total_chars"] <= 10850
+    assert stats["estimated_input_tokens"] <= 2750
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v40-capability-boundaries"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
     assert "native JSON Schema" in dynamic_prompt
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
@@ -203,6 +208,8 @@ def test_planner_prompt_treats_compare_as_presentation_and_slots_as_grounded() -
 def test_planner_only_clarifies_genuinely_ambiguous_input() -> None:
     assert "tham chiếu thật sự mơ hồ" in PLANNER_PROMPT_TEXT
     assert "như loại cảnh báo" not in PLANNER_PROMPT_TEXT
+    assert "Target rõ về trạng thái hiện thời" in PLANNER_PROMPT_TEXT
+    assert "vì target rõ nhưng nguồn có thể thiếu dữ liệu" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_splits_independent_answer_targets() -> None:

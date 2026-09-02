@@ -81,7 +81,7 @@ tools:
     data_category: regulation_table
     presentation_type: table
     selection_mode: table_first
-    description: Tra mức tiền, hệ số hoặc xếp loại HBKKHT.
+    description: Tra mức tiền, công thức tiền, hệ số, căn cứ học phí hoặc xếp loại HBKKHT trong bảng.
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
@@ -115,7 +115,7 @@ tools:
     data_category: regulation_table
     presentation_type: table
     selection_mode: table_first
-    description: Tra và quy đổi thang điểm học phần, xếp loại học lực hoặc phân loại tổng điểm rèn luyện; không tra ngưỡng điểm để đạt từng loại học bổng.
+    description: Tra bảng quy đổi điểm học phần, xếp loại học lực hoặc phân loại tổng điểm rèn luyện; quy tắc chấm từng tiêu chí thành phần và chính sách học bổng dùng RAG.
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:

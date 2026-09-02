@@ -136,6 +136,19 @@ def test_legacy_compatibility_provenance_records_both_docstore_hashes() -> None:
     assert provenance["phoranker_used_for_answer_generation"] is False
 
 
+def test_v8_provenance_hashes_every_manifest_config() -> None:
+    provenance = _provenance(
+        ROOT / "data" / "eval" / "architecture_v8",
+        "qdrant",
+    )
+
+    assert provenance["config_hashes_match_manifest"] is True
+    assert provenance["config_hashes"].keys() == provenance[
+        "expected_config_hashes"
+    ].keys()
+    assert "slang_dictionary" in provenance["config_hashes"]
+
+
 def test_validator_rejects_query_reused_from_legacy_eval(tmp_path: Path) -> None:
     eval_root = tmp_path / "eval"
     bundle_dir = eval_root / "final_holdout"

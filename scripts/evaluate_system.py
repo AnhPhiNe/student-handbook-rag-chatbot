@@ -43,6 +43,7 @@ AI_ROUTER_CONFIG = ROOT / "configs" / "ai_router.yaml"
 LOOKUP_REGISTRY_CONFIG = ROOT / "configs" / "structured_lookup_registry.yaml"
 RETRIEVAL_CONFIG = ROOT / "configs" / "retrieval.yaml"
 ANSWER_GENERATION_CONFIG = ROOT / "configs" / "answer_generation.yaml"
+SLANG_DICTIONARY_CONFIG = ROOT / "configs" / "hcmue_slang_dictionary.yaml"
 
 
 def _git_commit() -> str:
@@ -73,6 +74,7 @@ def _provenance(
         "structured_lookup_registry": _file_hash(LOOKUP_REGISTRY_CONFIG),
         "retrieval": _file_hash(RETRIEVAL_CONFIG),
         "answer_generation": _file_hash(ANSWER_GENERATION_CONFIG),
+        "slang_dictionary": _file_hash(SLANG_DICTIONARY_CONFIG),
     }
     current_commit = _git_commit()
     evaluated_system_commit = str(manifest.get("evaluated_system_commit") or "")

@@ -323,9 +323,9 @@ replace_slangs:
   replace_with: điểm rèn luyện
 - match: DRL
   replace_with: điểm rèn luyện
+- match: CBHT
+  replace_with: cảnh báo học tập
 - match: ĐTB
-  replace_with: điểm trung bình
-- match: GPA
   replace_with: điểm trung bình
 - match: CPA
   replace_with: điểm trung bình chung tích lũy
@@ -350,6 +350,8 @@ replace_slangs:
 - match: hạ hạng
   replace_with: giảm một mức xếp loại tốt nghiệp
 expand_slangs:
+- match: GPA
+  expand_with: điểm trung bình học kỳ hoặc điểm trung bình tích lũy
 - match: học lại sau bảo lưu
   expand_with: tiếp nhận trở lại học sau nghỉ học tạm thời bảo lưu kết quả học tập
 - match: dính biên bản

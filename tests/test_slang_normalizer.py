@@ -199,6 +199,40 @@ def test_phone_abbreviation_is_canonicalized_for_router() -> None:
     )
 
 
+def test_academic_warning_acronym_is_canonicalized_for_router() -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router("các lý do dẫn đến cbht") == (
+        "các lý do dẫn đến cảnh báo học tập"
+    )
+    assert normalizer.replace_for_router("CBHT do đâu?") == (
+        "cảnh báo học tập do đâu?"
+    )
+
+
+def test_generic_gpa_is_preserved_for_router_and_expanded_for_retrieval() -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+    query = "hai kỳ liên tiếp GPA và điểm rèn luyện xuất sắc"
+
+    router_query = normalizer.replace_for_router(query)
+    retrieval_query = normalizer.normalize_for_retrieval(query)
+
+    assert router_query == query
+    assert "GPA" in retrieval_query
+    assert "điểm trung bình học kỳ hoặc điểm trung bình tích lũy" in retrieval_query
+
+
+def test_explicit_gpa_scope_keeps_existing_canonical_replacement() -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router("GPA học kỳ") == (
+        "điểm trung bình chung học kỳ"
+    )
+    assert normalizer.replace_for_router("GPA tích lũy") == (
+        "điểm trung bình chung tích lũy"
+    )
+
+
 def test_graduation_rank_slang_only_canonicalizes_the_user_term() -> None:
     normalizer = SlangNormalizer(program_directory=[])
 

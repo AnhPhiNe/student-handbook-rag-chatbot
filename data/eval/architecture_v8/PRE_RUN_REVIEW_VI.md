@@ -6,7 +6,7 @@ Trạng thái: **Đạt điều kiện đóng băng và chạy chính thức**
 ## Phạm vi đã duyệt
 
 - Runtime được đánh giá: `09b1d3da5206f8b16a7f6c10e34793c813ff4d30`.
-- Evaluator: `30d16c863d8e93bfac841f85a006e5fd58a291c3`.
+- Evaluator: `b755a1ce40fe09d58ee8f64961d213d208f865e3`.
 - Deterministic: 140 case.
 - Retrieval: 160 case.
 - Generate + Judge: 150 case.
@@ -45,4 +45,3 @@ Trạng thái: **Đạt điều kiện đóng băng và chạy chính thức**
 - Không sửa runtime, câu hỏi hoặc gold rồi chạy lại V8 để nâng điểm.
 - Failure được phân loại, đưa sang regression cho phiên bản kế tiếp và không làm thay đổi metric V8 chính thức.
 - Báo kết quả từng suite trước khi chuyển sang suite tiếp theo; không gộp thành một điểm tổng.
-

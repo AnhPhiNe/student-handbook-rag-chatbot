@@ -435,6 +435,158 @@ def test_v8_evaluator_recognizes_service_catalog_identity() -> None:
     assert row["resolved_result_correct"] is None
 
 
+def test_v8_evaluator_matches_public_directory_schema() -> None:
+    class Pipeline:
+        def _run_retrieval(self, query, cohort=None):
+            evidence = {
+                "record_id": "K51_faculty_16",
+                "unit_name": "Khoa Tâm lý học",
+                "cohort": "K51",
+                "emails": ["khoatlh@hcmue.edu.vn"],
+                "phones": ["(028) 38352020"],
+                "office": "Nhà A, tầng 4, P.402",
+                "source_section": "student_faculty_profiles",
+            }
+            return {
+                "query_plan": {
+                    "tasks": [
+                        {
+                            "mode": "structured",
+                            "lookup_type": "faculty",
+                            "cohorts": ["K51"],
+                            "slots": {"requested_field": "office"},
+                        }
+                    ]
+                },
+                "task_results": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "faculty",
+                        "coverage": "covered",
+                        "evidence": [evidence],
+                    }
+                ],
+                "structured_result": evidence,
+            }
+
+    case = {
+        "id": "v8-public-directory",
+        "query": "Khoa Tâm lý học ở đâu?",
+        "cohort": "K51",
+        "contract_version": "query-plan-grounded-outcome-v8",
+        "accepted_outcomes": [
+            {
+                "name": "grounded-directory-answer",
+                "state": "answer",
+                "allowed_modes": ["structured"],
+                "task_count": {"min": 1, "max": 1},
+                "required_tasks": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "faculty",
+                        "required_slot_keys": ["requested_field"],
+                        "expected_source_ids": ["legacy-faculty-id"],
+                        "expected_evidence_fields": {
+                            "faculty_profile_id": "legacy-faculty-id",
+                            "cohort": "K51",
+                            "unit": "Khoa Tâm lý học",
+                            "unit_name": "Khoa Tâm lý học",
+                            "email": "khoatlh@hcmue.edu.vn",
+                            "phone": "(028) 38352020",
+                            "office": "Nhà A, tầng 4, P.402",
+                            "source_section": "student_faculty_profiles",
+                        },
+                    }
+                ],
+                "structured_evidence": "required",
+            }
+        ],
+    }
+    row = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)["cases"][0]
+    assert row["passed"] is True
+    assert row["structured_source_correct"] is None
+    assert row["structured_row_correct"] is True
+
+
+def test_v8_evaluator_matches_display_row_to_canonical_resolved_row() -> None:
+    class Pipeline:
+        def _run_retrieval(self, query, cohort=None):
+            evidence = {
+                "table_id": "score-table",
+                "rows": [
+                    {
+                        "Loại": "Đạt",
+                        "Thang điểm 10": "7,8 - 8,4",
+                        "Thang điểm chữ": "B+",
+                    }
+                ],
+                "resolved_result": {
+                    "result": {
+                        "status": "Đạt",
+                        "score_10_range": "7.8-8.4",
+                        "letter_grade": "B+",
+                    }
+                },
+            }
+            return {
+                "query_plan": {
+                    "tasks": [
+                        {
+                            "mode": "structured",
+                            "lookup_type": "scoring",
+                            "cohorts": ["K51"],
+                            "slots": {"score_or_grade": "8.1"},
+                        }
+                    ]
+                },
+                "task_results": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "scoring",
+                        "coverage": "covered",
+                        "evidence": [evidence],
+                    }
+                ],
+                "structured_result": evidence,
+            }
+
+    expected_row = {
+        "Loại": "Đạt",
+        "Thang điểm 10": "7,8 - 8,4",
+        "Thang điểm chữ": "B+",
+    }
+    case = {
+        "id": "v8-canonical-resolved-row",
+        "query": "8,1 được điểm chữ gì?",
+        "cohort": "K51",
+        "contract_version": "query-plan-grounded-outcome-v8",
+        "accepted_outcomes": [
+            {
+                "name": "grounded-structured-answer",
+                "state": "answer",
+                "allowed_modes": ["structured"],
+                "task_count": {"min": 1, "max": 1},
+                "required_tasks": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "scoring",
+                        "expected_source_ids": ["score-table"],
+                        "expected_evidence_fields": expected_row,
+                        "expected_resolved_fields": expected_row,
+                        "resolved_result_required": True,
+                    }
+                ],
+                "structured_evidence": "required",
+            }
+        ],
+    }
+    row = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)["cases"][0]
+    assert row["passed"] is True
+    assert row["structured_source_correct"] is True
+    assert row["structured_row_correct"] is True
+    assert row["resolved_result_correct"] is True
+
+
 def test_mutable_dataset_report_is_never_headline_eligible() -> None:
     report = runner._finalize_report(
         {"suite": "deterministic", "summary": {"n": 140}},

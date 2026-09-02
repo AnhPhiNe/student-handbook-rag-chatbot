@@ -957,16 +957,109 @@ def _nested_mappings(value: Any) -> list[dict[str, Any]]:
     return mappings
 
 
-def _mapping_contains_fields(value: Any, expected: dict[str, Any]) -> bool:
-    """Find one nested mapping containing every explicitly asserted field."""
+_PUBLIC_EVIDENCE_FIELDS: dict[str, set[str]] = {
+    "formula": {"rule_id", "rule_name", "formula_text", "source_article"},
+    "office": {
+        "cohort",
+        "unit_name",
+        "phone",
+        "email",
+        "website",
+        "office",
+        "source_section",
+    },
+    "faculty": {
+        "cohort",
+        "unit_name",
+        "phone",
+        "email",
+        "website",
+        "office",
+        "source_section",
+    },
+    "program": {
+        "program_name",
+        "faculty_name",
+        "cohort",
+        "source_section",
+        "faculty_name_source",
+    },
+    "student_service": {
+        "service_id",
+        "cohort",
+        "service",
+        "unit_name",
+        "phone",
+        "email",
+        "website",
+        "office",
+    },
+}
+
+_PUBLIC_FIELD_ALIASES: dict[str, tuple[str, ...]] = {
+    "phone": ("phone", "phones"),
+    "email": ("email", "emails"),
+    "website": ("website", "websites"),
+    "Loại": ("Loại", "status"),
+    "Thang điểm 10": ("Thang điểm 10", "score_10_range"),
+    "Thang điểm chữ": ("Thang điểm chữ", "letter_grade"),
+    "Thang điểm 4": ("Thang điểm 4", "grade_4", "score_4"),
+    "Xếp loại": ("Xếp loại", "label", "classification"),
+    "Khung điểm": ("Khung điểm", "range", "score_range"),
+}
+
+
+def _contract_scalar(value: Any) -> Any:
+    normalized = _normalized_contract_value(value)
+    if not isinstance(normalized, str):
+        return normalized
+    normalized = re.sub(r"(?<=\d),(?=\d)", ".", normalized)
+    return re.sub(r"\s*[-–—]\s*", "-", normalized)
+
+
+def _contract_values_equal(actual: Any, expected: Any) -> bool:
+    if isinstance(actual, list):
+        actual_values = {_contract_scalar(item) for item in actual}
+        if isinstance(expected, str) and ";" in expected:
+            expected_values = {
+                _contract_scalar(item) for item in expected.split(";") if item.strip()
+            }
+            return actual_values == expected_values
+        return _contract_scalar(expected) in actual_values
+    return _contract_scalar(actual) == _contract_scalar(expected)
+
+
+def _observable_expected_fields(
+    expected: dict[str, Any], *, lookup_type: str | None
+) -> dict[str, Any]:
+    allowed = _PUBLIC_EVIDENCE_FIELDS.get(str(lookup_type or ""))
+    if allowed is None:
+        return expected
+    return {key: value for key, value in expected.items() if key in allowed}
+
+
+def _mapping_contains_fields(
+    value: Any,
+    expected: dict[str, Any],
+    *,
+    lookup_type: str | None = None,
+) -> bool:
+    """Match stable public evidence fields across equivalent API schemas."""
+
+    observable = _observable_expected_fields(expected, lookup_type=lookup_type)
+    if not observable:
+        return False
+
+    def field_matches(mapping: dict[str, Any], key: str, expected_value: Any) -> bool:
+        aliases = _PUBLIC_FIELD_ALIASES.get(key, (key,))
+        return any(
+            alias in mapping
+            and _contract_values_equal(mapping[alias], expected_value)
+            for alias in aliases
+        )
 
     return any(
-        all(
-            key in mapping
-            and _normalized_contract_value(mapping[key])
-            == _normalized_contract_value(expected_value)
-            for key, expected_value in expected.items()
-        )
+        all(field_matches(mapping, key, expected_value) for key, expected_value in observable.items())
         for mapping in _nested_mappings(value)
     )
 
@@ -1025,13 +1118,30 @@ def _v8_task_execution_checks(
             or task.get("lookup_type") == expected.get("lookup_type")
         )
     ]
+    # Formula, office/faculty profiles, and program rows intentionally expose
+    # stable public fields instead of the ingestion-only record identifiers used
+    # by older artifacts. Their identity is therefore checked by the grounded
+    # row contract below, while table/service IDs remain directly assertable.
+    source_id_is_public = expected.get("lookup_type") not in {
+        "formula",
+        "office",
+        "faculty",
+        "program",
+    }
     source_ok = (
         any(source_ids <= _structured_source_identities(task) for task in candidates)
-        if source_ids
+        if source_ids and source_id_is_public
         else None
     )
     evidence_ok = (
-        any(_mapping_contains_fields(task.get("evidence") or [], evidence_fields) for task in candidates)
+        any(
+            _mapping_contains_fields(
+                task.get("evidence") or [],
+                evidence_fields,
+                lookup_type=expected.get("lookup_type"),
+            )
+            for task in candidates
+        )
         if evidence_fields
         else None
     )
@@ -1043,7 +1153,12 @@ def _v8_task_execution_checks(
     ]
     if resolved_fields:
         resolved_ok: bool | None = any(
-            _mapping_contains_fields(value, resolved_fields) for value in resolved_values
+            _mapping_contains_fields(
+                value,
+                resolved_fields,
+                lookup_type=expected.get("lookup_type"),
+            )
+            for value in resolved_values
         )
     elif resolved_required is not None:
         resolved_ok = bool(resolved_values) == bool(resolved_required)

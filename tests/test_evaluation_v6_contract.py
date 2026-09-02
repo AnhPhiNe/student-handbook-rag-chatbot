@@ -14,6 +14,36 @@ import src.evaluation.suites as suites
 from src.evaluation.metrics import retrieval_metrics
 
 
+@pytest.mark.parametrize(
+    ("actual", "expected"),
+    [
+        (0.0, "0,0"),
+        ("3.2-dưới 3.6", "Từ 3,2 đến dưới 3,6"),
+        ("dưới 35", "Dưới 35 điểm"),
+        ("65-dưới 80", "Từ 65 đến dưới 80 điểm"),
+        ("90-100", "Từ 90 đến 100 điểm"),
+    ],
+)
+def test_contract_values_accept_equivalent_numeric_and_range_renderings(
+    actual: object, expected: object
+) -> None:
+    assert suites._contract_values_equal(actual, expected)
+
+
+@pytest.mark.parametrize(
+    ("actual", "expected"),
+    [
+        ("65-dưới 80", "65-80"),
+        ("dưới 35", "35-50"),
+        ("90-100", "80-dưới 90"),
+    ],
+)
+def test_contract_values_preserve_range_semantics(
+    actual: object, expected: object
+) -> None:
+    assert not suites._contract_values_equal(actual, expected)
+
+
 def test_v6_deterministic_contract_is_resolved_from_cases() -> None:
     cases = [
         {"id": "one", "contract_version": "query-plan-target-holdout-v6"},

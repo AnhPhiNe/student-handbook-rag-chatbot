@@ -1014,7 +1014,27 @@ def _contract_scalar(value: Any) -> Any:
     if not isinstance(normalized, str):
         return normalized
     normalized = re.sub(r"(?<=\d),(?=\d)", ".", normalized)
-    return re.sub(r"\s*[-–—]\s*", "-", normalized)
+    normalized = re.sub(r"\s*[-–—]\s*", "-", normalized)
+
+    # Public table schemas may expose a number as a JSON number while the
+    # source-grounded gold preserves its localized textual form (for example
+    # ``0,0``).  Compare those representations by value, not serialization.
+    if re.fullmatch(r"[+-]?\d+(?:\.\d+)?", normalized):
+        return format(float(normalized), ".15g")
+
+    # Range labels are rendered differently by source tables and resolvers:
+    # ``Từ 65 đến dưới 80 điểm`` and ``65-dưới 80`` carry the same bounds.
+    # Remove presentation-only words while preserving semantic qualifiers such
+    # as ``dưới``/``trên`` so genuinely different intervals remain different.
+    if re.search(r"\d", normalized) and (
+        "-" in normalized
+        or re.search(r"\b(?:tu|den|duoi|tren|diem)\b", normalized)
+    ):
+        normalized = re.sub(r"\b(?:tu|den|diem)\b", " ", normalized)
+        normalized = normalized.replace("-", " ")
+        return " ".join(normalized.split())
+
+    return normalized
 
 
 def _contract_values_equal(actual: Any, expected: Any) -> bool:

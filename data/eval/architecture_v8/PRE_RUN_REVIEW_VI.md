@@ -6,7 +6,7 @@ Trạng thái: **Đạt điều kiện đóng băng và chạy chính thức**
 ## Phạm vi đã duyệt
 
 - Runtime được đánh giá: `09b1d3da5206f8b16a7f6c10e34793c813ff4d30`.
-- Evaluator: `b755a1ce40fe09d58ee8f64961d213d208f865e3`.
+- Evaluator: `f8161ff827c396931c164ab8b26f0b1cc64b071f`.
 - Deterministic: 140 case.
 - Retrieval: 160 case.
 - Generate + Judge: 150 case.

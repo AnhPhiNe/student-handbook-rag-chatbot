@@ -18,7 +18,7 @@ import build_architecture_eval_v7 as v7
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "eval" / "architecture_v8"
 RUNTIME_COMMIT = "09b1d3da5206f8b16a7f6c10e34793c813ff4d30"
-EVALUATOR_COMMIT = "b755a1ce40fe09d58ee8f64961d213d208f865e3"
+EVALUATOR_COMMIT = "f8161ff827c396931c164ab8b26f0b1cc64b071f"
 COUNTS = {"deterministic": 140, "retrieval": 160, "answers": 150, "production": 60}
 DETERMINISTIC_CONTRACT = "query-plan-grounded-outcome-v8"
 
@@ -76,6 +76,11 @@ def write(path: Path, value: Any) -> None:
 
 def file_hash(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def normalized_text_hash(path: Path) -> str:
+    text = path.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 def stable_hash(value: Any) -> str:
@@ -1292,12 +1297,19 @@ def build_manifest(
             "answer_pipeline": "v61-directory-alias-pools",
         },
         "config_hashes": {
-            "ai_router": file_hash(ROOT / "configs" / "ai_router.yaml"),
-            "structured_lookup_registry": file_hash(ROOT / "configs" / "structured_lookup_registry.yaml"),
-            "retrieval": file_hash(ROOT / "configs" / "retrieval.yaml"),
-            "answer_generation": file_hash(ROOT / "configs" / "answer_generation.yaml"),
-            "slang_dictionary": file_hash(ROOT / "configs" / "hcmue_slang_dictionary.yaml"),
+            "ai_router": normalized_text_hash(ROOT / "configs" / "ai_router.yaml"),
+            "structured_lookup_registry": normalized_text_hash(
+                ROOT / "configs" / "structured_lookup_registry.yaml"
+            ),
+            "retrieval": normalized_text_hash(ROOT / "configs" / "retrieval.yaml"),
+            "answer_generation": normalized_text_hash(
+                ROOT / "configs" / "answer_generation.yaml"
+            ),
+            "slang_dictionary": normalized_text_hash(
+                ROOT / "configs" / "hcmue_slang_dictionary.yaml"
+            ),
         },
+        "config_hash_method": "sha256-lf-normalized-v1",
         "artifact_hashes": {
             str(path.relative_to(ROOT)).replace("\\", "/"): file_hash(path)
             for path in artifacts

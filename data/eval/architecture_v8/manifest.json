@@ -7,7 +7,7 @@
   "review_state": "pre_run_codex_reviewed_owner_authorized",
   "authored_against_runtime_commit": "09b1d3da5206f8b16a7f6c10e34793c813ff4d30",
   "evaluated_system_commit": "09b1d3da5206f8b16a7f6c10e34793c813ff4d30",
-  "evaluation_harness_commit": "b755a1ce40fe09d58ee8f64961d213d208f865e3",
+  "evaluation_harness_commit": "f8161ff827c396931c164ab8b26f0b1cc64b071f",
   "benchmark_run_kind": "frozen_internal_holdout",
   "planner_model": "qwen/qwen3.8-27b",
   "planner_reasoning_effort": "low",
@@ -129,12 +129,13 @@
     "answer_pipeline": "v61-directory-alias-pools"
   },
   "config_hashes": {
-    "ai_router": "928f466367197c4570291949447dcc96d3defe53f4e4158d3cadcc312527e84c",
-    "structured_lookup_registry": "db5e15b35ed1aef437672be32f93b2cc46d89fc08eaf43df9384f7389a45ab9a",
-    "retrieval": "2303a24f4c9ab831589f95ceb5ee2f15b2f827382475ff95356934f380383d00",
-    "answer_generation": "20b9a86a6f6f0cd85e66acf4726e9be4b0b1b6ad68fa403c79cf32fbcc4125b6",
-    "slang_dictionary": "59473838a985e35ee4cf6d75c7a517c31a73aec20515a2408fa606a780f039c1"
+    "ai_router": "56c208e38dfd5a2b893ef9c058a28ccc1eed3abf70f3d3db9af4c490a9189813",
+    "structured_lookup_registry": "545b95f49374641800e12ddd3690fb1a8c7a7b2e7330fcc1ba5a408b25e2a70f",
+    "retrieval": "746d0f6a601d097541f58b614d8b4a1b714aeef475e77445c224e6cfad8c2160",
+    "answer_generation": "4dc8598c5165b9ba73ee67426310a1cccbc1a62e697a3c230ca4e329bed24b39",
+    "slang_dictionary": "487439bd04391a910982b2d1208fbd8e05b4d528dbc4e256b8b0297d5875f3ab"
   },
+  "config_hash_method": "sha256-lf-normalized-v1",
   "artifact_hashes": {
     "data/processed/tables/structured_tables_registry.json": "865fe92aca6283147713f02b400734dac44dfc9a0f4d959095ce30978d8fb0fd",
     "data/processed/tables/foreign_language_equivalency_table.json": "486a1749c7a5fc794c733bf494f103ff407716dc30fc04f8517c3b51b3486947",

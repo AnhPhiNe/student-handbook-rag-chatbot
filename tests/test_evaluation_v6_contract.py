@@ -205,6 +205,236 @@ def test_v7_outcome_contract_allows_task_level_clarification() -> None:
     assert report["cases"][0]["matched_outcome"] == "task-level-clarification"
 
 
+def test_v8_contract_validates_grounded_execution_assertions() -> None:
+    errors: list[str] = []
+    case = {
+        "id": "v8-grounded",
+        "contract_version": "query-plan-grounded-outcome-v8",
+        "accepted_outcomes": [
+            {
+                "name": "grounded-structured-answer",
+                "state": "answer",
+                "allowed_modes": ["structured"],
+                "task_count": {"min": 1, "max": 1},
+                "required_tasks": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "scoring",
+                        "expected_source_ids": ["score-table"],
+                        "expected_evidence_fields": {"letter_grade": "B+"},
+                        "expected_resolved_fields": {
+                            "letter_grade": "B+",
+                            "grade_4": 3.5,
+                        },
+                        "resolved_result_required": True,
+                    }
+                ],
+                "structured_evidence": "required",
+            }
+        ],
+    }
+    dataset._validate_deterministic_v8_contract(case, errors)
+    assert errors == []
+
+    case["accepted_outcomes"][0]["required_tasks"][0]["expected_source_ids"] = []
+    dataset._validate_deterministic_v8_contract(case, errors)
+    assert any("expected_source_ids must be a non-empty string list" in error for error in errors)
+
+
+def test_v8_evaluator_checks_source_row_and_resolved_result() -> None:
+    class Pipeline:
+        def _run_retrieval(self, query, cohort=None):
+            evidence = {
+                "table_id": "score-table",
+                "rows": [{"letter_grade": "B+", "grade_4": 3.5}],
+                "resolved_result": {
+                    "result": {"letter_grade": "B+", "grade_4": 3.5}
+                },
+            }
+            return {
+                "query_plan": {
+                    "tasks": [
+                        {
+                            "mode": "structured",
+                            "lookup_type": "scoring",
+                            "cohorts": ["K51"],
+                            "slots": {"score_or_grade": "B+"},
+                        }
+                    ]
+                },
+                "task_results": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "scoring",
+                        "coverage": "covered",
+                        "evidence": [evidence],
+                    }
+                ],
+                "structured_result": evidence,
+            }
+
+    case = {
+        "id": "v8-grounded",
+        "query": "B+ đổi sang hệ 4 là bao nhiêu?",
+        "cohort": "K51",
+        "contract_version": "query-plan-grounded-outcome-v8",
+        "accepted_outcomes": [
+            {
+                "name": "grounded-structured-answer",
+                "state": "answer",
+                "allowed_modes": ["structured"],
+                "task_count": {"min": 1, "max": 1},
+                "required_tasks": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "scoring",
+                        "required_slot_keys": ["score_or_grade"],
+                        "expected_source_ids": ["score-table"],
+                        "expected_evidence_fields": {"letter_grade": "B+"},
+                        "expected_resolved_fields": {"grade_4": 3.5},
+                        "resolved_result_required": True,
+                    }
+                ],
+                "structured_evidence": "required",
+            }
+        ],
+    }
+    report = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)
+    row = report["cases"][0]
+    assert row["passed"] is True
+    assert row["structured_source_correct"] is True
+    assert row["structured_row_correct"] is True
+    assert row["resolved_result_correct"] is True
+    assert report["summary"]["assertion_support"]["resolved_result"] == 1
+
+
+def test_v8_evaluator_fails_wrong_resolved_value_without_inflating_na() -> None:
+    class Pipeline:
+        def _run_retrieval(self, query, cohort=None):
+            evidence = {
+                "table_id": "score-table",
+                "rows": [{"letter_grade": "B+", "grade_4": 3.5}],
+                "resolved_result": {
+                    "result": {"letter_grade": "B", "grade_4": 3.0}
+                },
+            }
+            return {
+                "query_plan": {
+                    "tasks": [
+                        {
+                            "mode": "structured",
+                            "lookup_type": "scoring",
+                            "cohorts": ["K51"],
+                            "slots": {},
+                        }
+                    ]
+                },
+                "task_results": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "scoring",
+                        "coverage": "covered",
+                        "evidence": [evidence],
+                    }
+                ],
+                "structured_result": evidence,
+            }
+
+    case = {
+        "id": "v8-wrong-resolved",
+        "query": "B+ đổi sang hệ 4 là bao nhiêu?",
+        "cohort": "K51",
+        "contract_version": "query-plan-grounded-outcome-v8",
+        "accepted_outcomes": [
+            {
+                "name": "grounded-structured-answer",
+                "state": "answer",
+                "allowed_modes": ["structured"],
+                "task_count": {"min": 1, "max": 1},
+                "required_tasks": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "scoring",
+                        "expected_resolved_fields": {"grade_4": 3.5},
+                    }
+                ],
+                "structured_evidence": "required",
+            }
+        ],
+    }
+    report = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)
+    row = report["cases"][0]
+    assert row["passed"] is False
+    assert row["structured_source_correct"] is None
+    assert row["structured_row_correct"] is None
+    assert row["resolved_result_correct"] is False
+    assert report["summary"]["structured_source_accuracy"] is None
+
+
+def test_v8_evaluator_recognizes_service_catalog_identity() -> None:
+    class Pipeline:
+        def _run_retrieval(self, query, cohort=None):
+            evidence = {
+                "service_id": "K51_service_print_transcript",
+                "unit_name": "Phòng Khảo thí",
+            }
+            return {
+                "query_plan": {
+                    "tasks": [
+                        {
+                            "mode": "structured",
+                            "lookup_type": "student_service",
+                            "cohorts": ["K51"],
+                            "slots": {"requested_field": "unit"},
+                        }
+                    ]
+                },
+                "task_results": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "student_service",
+                        "coverage": "covered",
+                        "evidence": [evidence],
+                    }
+                ],
+                "structured_result": evidence,
+            }
+
+    case = {
+        "id": "v8-service-source",
+        "query": "Đơn vị nào hỗ trợ in bảng điểm?",
+        "cohort": "K51",
+        "contract_version": "query-plan-grounded-outcome-v8",
+        "accepted_outcomes": [
+            {
+                "name": "grounded-service-answer",
+                "state": "answer",
+                "allowed_modes": ["structured"],
+                "task_count": {"min": 1, "max": 1},
+                "required_tasks": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "student_service",
+                        "expected_source_ids": ["K51_service_print_transcript"],
+                        "expected_evidence_fields": {
+                            "unit_name": "Phòng Khảo thí"
+                        },
+                    }
+                ],
+                "structured_evidence": "required",
+            }
+        ],
+    }
+    report = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)
+    row = report["cases"][0]
+    assert row["passed"] is True, json.dumps(
+        row["accepted_outcome_evaluations"], ensure_ascii=False, indent=2
+    )
+    assert row["structured_source_correct"] is True
+    assert row["structured_row_correct"] is True
+    assert row["resolved_result_correct"] is None
+
+
 def test_mutable_dataset_report_is_never_headline_eligible() -> None:
     report = runner._finalize_report(
         {"suite": "deterministic", "summary": {"n": 140}},

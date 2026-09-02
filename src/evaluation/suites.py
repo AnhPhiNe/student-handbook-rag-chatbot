@@ -945,10 +945,121 @@ def _v7_has_task_evidence(
     return False
 
 
+def _nested_mappings(value: Any) -> list[dict[str, Any]]:
+    mappings: list[dict[str, Any]] = []
+    if isinstance(value, dict):
+        mappings.append(value)
+        for child in value.values():
+            mappings.extend(_nested_mappings(child))
+    elif isinstance(value, list):
+        for child in value:
+            mappings.extend(_nested_mappings(child))
+    return mappings
+
+
+def _mapping_contains_fields(value: Any, expected: dict[str, Any]) -> bool:
+    """Find one nested mapping containing every explicitly asserted field."""
+
+    return any(
+        all(
+            key in mapping
+            and _normalized_contract_value(mapping[key])
+            == _normalized_contract_value(expected_value)
+            for key, expected_value in expected.items()
+        )
+        for mapping in _nested_mappings(value)
+    )
+
+
+def _structured_source_identities(value: Any) -> set[str]:
+    identities: set[str] = set()
+    identity_keys = {
+        "table_id",
+        "source_id",
+        "source_record_id",
+        "source_parent_id",
+        "source_section",
+        "parent_section_id",
+        "record_id",
+        "service_id",
+        "office_profile_id",
+        "faculty_profile_id",
+    }
+    for mapping in _nested_mappings(value):
+        for key in identity_keys:
+            raw = mapping.get(key)
+            if isinstance(raw, str) and raw.strip():
+                identities.add(raw.strip())
+        parent_id = str(mapping.get("source_parent_id") or "").strip()
+        subtype = str(mapping.get("table_subtype") or "").strip()
+        if parent_id and subtype:
+            identities.add(f"{parent_id}_{subtype}")
+        cohort = str(mapping.get("cohort") or "").strip()
+        record_id = str(mapping.get("record_id") or "").strip()
+        if cohort and record_id:
+            identities.add(f"{cohort}_{record_id}")
+    return identities
+
+
+def _v8_task_execution_checks(
+    expected: dict[str, Any], task_results: list[dict[str, Any]]
+) -> dict[str, bool | None]:
+    """Check only grounded structured assertions declared by one V8 task gold."""
+
+    source_ids = set(expected.get("expected_source_ids") or [])
+    evidence_fields = expected.get("expected_evidence_fields")
+    resolved_fields = expected.get("expected_resolved_fields")
+    resolved_required = expected.get("resolved_result_required")
+    applicable = bool(source_ids or evidence_fields or resolved_fields) or (
+        resolved_required is not None
+    )
+    if not applicable:
+        return {"source": None, "evidence_fields": None, "resolved_result": None}
+
+    candidates = [
+        task
+        for task in task_results
+        if task.get("mode") == expected.get("mode")
+        and (
+            not expected.get("lookup_type")
+            or task.get("lookup_type") == expected.get("lookup_type")
+        )
+    ]
+    source_ok = (
+        any(source_ids <= _structured_source_identities(task) for task in candidates)
+        if source_ids
+        else None
+    )
+    evidence_ok = (
+        any(_mapping_contains_fields(task.get("evidence") or [], evidence_fields) for task in candidates)
+        if evidence_fields
+        else None
+    )
+    resolved_values = [
+        mapping.get("resolved_result")
+        for task in candidates
+        for mapping in _nested_mappings(task.get("evidence") or [])
+        if mapping.get("resolved_result") is not None
+    ]
+    if resolved_fields:
+        resolved_ok: bool | None = any(
+            _mapping_contains_fields(value, resolved_fields) for value in resolved_values
+        )
+    elif resolved_required is not None:
+        resolved_ok = bool(resolved_values) == bool(resolved_required)
+    else:
+        resolved_ok = None
+    return {
+        "source": source_ok,
+        "evidence_fields": evidence_ok,
+        "resolved_result": resolved_ok,
+    }
+
+
 def _evaluate_v7_outcome_case(
     case: dict[str, Any], result: dict[str, Any], *, started: float
 ) -> dict[str, Any]:
-    """Evaluate one mutable V7 case against any declared safe outcome."""
+    """Evaluate one outcome-based V7/V8 case against declared safe outcomes."""
 
     plan = result.get("query_plan") or {}
     tasks = plan.get("tasks") if isinstance(plan, dict) else []
@@ -988,6 +1099,9 @@ def _evaluate_v7_outcome_case(
         task.get("mode") == "clarify" for task in tasks
     )
     out_of_domain = bool(plan.get("out_of_domain"))
+    grounded_contract = (
+        case.get("contract_version") == "query-plan-grounded-outcome-v8"
+    )
 
     evaluations: list[dict[str, Any]] = []
     for outcome in case.get("accepted_outcomes") or []:
@@ -1028,32 +1142,58 @@ def _evaluate_v7_outcome_case(
             for task in required_structured
         )
         if outcome.get("structured_evidence") == "required":
-            structured_execution_ok = structured_execution_ok and has_structured_payload
+            has_required_task_evidence = bool(required_structured) and (
+                structured_execution_ok
+            )
+            structured_execution_ok = structured_execution_ok and (
+                has_structured_payload or has_required_task_evidence
+            )
         rag_evidence_ok = (
             has_rag_evidence
             if outcome.get("rag_evidence") == "required"
             else True
         )
-        checks = {
+        task_execution_checks = (
+            [_v8_task_execution_checks(task, task_results) for task in required_structured]
+            if grounded_contract
+            else []
+        )
+
+        def combined_check(name: str) -> bool | None:
+            values = [
+                item[name]
+                for item in task_execution_checks
+                if item.get(name) is not None
+            ]
+            return all(values) if values else None
+
+        checks: dict[str, bool | None] = {
             "state": state_ok,
             "task_count": count_ok,
             "task_modes": mode_ok,
             "task_semantics": semantics_ok,
             "structured_execution": structured_execution_ok,
             "rag_evidence": rag_evidence_ok,
+            "structured_source": combined_check("source"),
+            "structured_row": combined_check("evidence_fields"),
+            "resolved_result": combined_check("resolved_result"),
         }
         evaluations.append(
             {
                 "name": outcome.get("name"),
                 "checks": checks,
-                "passed": all(checks.values()),
+                "passed": all(
+                    bool(value) for value in checks.values() if value is not None
+                ),
             }
         )
 
     selected = next((item for item in evaluations if item["passed"]), None)
     best = selected or max(
         evaluations,
-        key=lambda item: sum(bool(value) for value in item["checks"].values()),
+        key=lambda item: sum(
+            bool(value) for value in item["checks"].values() if value is not None
+        ),
         default={"name": None, "checks": {}},
     )
     checks = best.get("checks") or {}
@@ -1103,6 +1243,9 @@ def _evaluate_v7_outcome_case(
         "cross_cohort_leak": cross_cohort_leak,
         "structured_value_exact": None,
         "numeric_value_correct": None,
+        "structured_source_correct": checks.get("structured_source"),
+        "structured_row_correct": checks.get("structured_row"),
+        "resolved_result_correct": checks.get("resolved_result"),
         "outcome_contract_correct": bool(selected),
         "passed": bool(selected) and not bool(result.get("planner_fallback")),
         "latency_ms": (time.perf_counter() - started) * 1000,
@@ -1155,7 +1298,10 @@ def _evaluate_deterministic_v2_uncached(
             plan = result.get("query_plan") or {}
             tasks = plan.get("tasks") if isinstance(plan, dict) else []
             tasks = tasks if isinstance(tasks, list) else []
-            if case.get("contract_version") == "query-plan-outcome-equivalent-v7":
+            if case.get("contract_version") in {
+                "query-plan-outcome-equivalent-v7",
+                "query-plan-grounded-outcome-v8",
+            }:
                 row = _evaluate_v7_outcome_case(case, result, started=started)
                 rows.append(row)
                 progress.set_postfix(
@@ -1394,7 +1540,10 @@ def _evaluate_deterministic_v2_uncached(
     ]
 
     def expects_structured(row: dict[str, Any]) -> bool:
-        if row.get("contract_version") == "query-plan-outcome-equivalent-v7":
+        if row.get("contract_version") in {
+            "query-plan-outcome-equivalent-v7",
+            "query-plan-grounded-outcome-v8",
+        }:
             return any(
                 task.get("mode") == "structured"
                 for outcome in row.get("accepted_outcomes") or []
@@ -1426,6 +1575,9 @@ def _evaluate_deterministic_v2_uncached(
         "citation_metadata": "citation_metadata_correct",
         "structured_value": "structured_value_exact",
         "numeric_value": "numeric_value_correct",
+        "structured_source": "structured_source_correct",
+        "structured_row": "structured_row_correct",
+        "resolved_result": "resolved_result_correct",
         "outcome_contract": "outcome_contract_correct",
     }
     summary = {
@@ -1481,6 +1633,11 @@ def _evaluate_deterministic_v2_uncached(
         ),
         "structured_value_accuracy": assertion_accuracy("structured_value_exact"),
         "numeric_value_accuracy": assertion_accuracy("numeric_value_correct"),
+        "structured_source_accuracy": assertion_accuracy(
+            "structured_source_correct"
+        ),
+        "structured_row_accuracy": assertion_accuracy("structured_row_correct"),
+        "resolved_result_accuracy": assertion_accuracy("resolved_result_correct"),
         "outcome_contract_accuracy": assertion_accuracy("outcome_contract_correct"),
         "assertion_support": {
             name: sum(row.get(field) is not None for row in rows)

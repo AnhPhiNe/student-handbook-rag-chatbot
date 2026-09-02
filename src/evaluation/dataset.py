@@ -539,9 +539,12 @@ def _validate_deterministic_contract(
 
 
 def _validate_deterministic_v7_contract(
-    case: dict[str, Any], errors: list[str]
+    case: dict[str, Any],
+    errors: list[str],
+    *,
+    expected_contract: str = "query-plan-outcome-equivalent-v7",
 ) -> None:
-    """Validate V7 outcome golds without prescribing one QueryPlan emission.
+    """Validate outcome golds without prescribing one QueryPlan emission.
 
     V7 deliberately evaluates architectural outcomes.  It may constrain a mode,
     lookup capability or grounded slot when that distinction is material, but it
@@ -550,8 +553,11 @@ def _validate_deterministic_v7_contract(
 
     case_id = str(case.get("id") or "<missing-id>")
     contract = str(case.get("contract_version") or "").strip()
-    if contract != "query-plan-outcome-equivalent-v7":
-        errors.append(f"{case_id}: invalid V7 deterministic contract={contract!r}")
+    if contract != expected_contract:
+        errors.append(
+            f"{case_id}: invalid deterministic contract={contract!r}; "
+            f"expected {expected_contract!r}"
+        )
 
     outcomes = case.get("accepted_outcomes")
     if not isinstance(outcomes, list) or not outcomes:
@@ -621,6 +627,45 @@ def _validate_deterministic_v7_contract(
                 task.get("slot_value_alternatives"), dict
             ):
                 errors.append(f"{task_prefix}.slot_value_alternatives must be an object")
+
+
+def _validate_deterministic_v8_contract(
+    case: dict[str, Any], errors: list[str]
+) -> None:
+    """Validate V8 outcome gold plus optional grounded-execution assertions."""
+
+    _validate_deterministic_v7_contract(
+        case,
+        errors,
+        expected_contract="query-plan-grounded-outcome-v8",
+    )
+    case_id = str(case.get("id") or "<missing-id>")
+    for outcome_index, outcome in enumerate(case.get("accepted_outcomes") or [], start=1):
+        for task_index, task in enumerate(outcome.get("required_tasks") or [], start=1):
+            prefix = (
+                f"{case_id}: accepted_outcomes[{outcome_index}]"
+                f".required_tasks[{task_index}]"
+            )
+            if "expected_source_ids" in task and (
+                not isinstance(task.get("expected_source_ids"), list)
+                or not task["expected_source_ids"]
+                or any(
+                    not isinstance(item, str) or not item.strip()
+                    for item in task["expected_source_ids"]
+                )
+            ):
+                errors.append(
+                    f"{prefix}.expected_source_ids must be a non-empty string list"
+                )
+            for field in ("expected_evidence_fields", "expected_resolved_fields"):
+                if field in task and (
+                    not isinstance(task.get(field), dict) or not task[field]
+                ):
+                    errors.append(f"{prefix}.{field} must be a non-empty object")
+            if "resolved_result_required" in task and not isinstance(
+                task.get("resolved_result_required"), bool
+            ):
+                errors.append(f"{prefix}.resolved_result_required must be boolean")
 
 
 def validate_bundle(
@@ -853,6 +898,8 @@ def validate_bundle(
                     _validate_deterministic_contract(case, errors)
                 elif manifest.get("schema_version") == "architecture-evaluation-v7":
                     _validate_deterministic_v7_contract(case, errors)
+                elif manifest.get("schema_version") == "architecture-evaluation-v8":
+                    _validate_deterministic_v8_contract(case, errors)
             elif suite == "production" and not case.get("scenario"):
                 errors.append(f"{case_id}: missing production scenario")
 
@@ -889,7 +936,8 @@ def validate_bundle(
                     f"unreviewed near duplicate ({ratio:.3f}): {case_id} ~ {other_id}"
                 )
                 if (
-                    manifest.get("schema_version") == "architecture-evaluation-v7"
+                    manifest.get("schema_version")
+                    in {"architecture-evaluation-v7", "architecture-evaluation-v8"}
                     and not manifest.get("frozen")
                 ):
                     warnings.append(message)
@@ -1018,6 +1066,7 @@ def validate_bundle(
         "regulation-rag-source-first-v3",
         "regulation-rag-question-target-holdout-v6",
         "regulation-rag-outcome-draft-v7",
+        "regulation-rag-grounded-holdout-v8",
     }:
         forbidden_fragments = [
             normalize_query(value)
@@ -1068,12 +1117,15 @@ def validate_bundle(
         "comprehensive-source-grounded-answer-v4",
         "comprehensive-question-target-holdout-v6",
         "comprehensive-outcome-draft-v7",
+        "comprehensive-grounded-holdout-v8",
     }:
         expected_answer_contract = (
             "answer-quality-target-holdout-v6"
             if evaluation_contract == "comprehensive-question-target-holdout-v6"
             else "answer-quality-outcome-draft-v7"
             if evaluation_contract == "comprehensive-outcome-draft-v7"
+            else "answer-quality-grounded-holdout-v8"
+            if evaluation_contract == "comprehensive-grounded-holdout-v8"
             else "answer-quality-source-grounded-v4"
         )
         expected_paths = manifest.get("answer_path_counts") or {}

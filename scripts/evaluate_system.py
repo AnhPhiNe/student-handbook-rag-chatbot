@@ -199,6 +199,7 @@ def _runtime_storage_errors(
     require_complete_identity = manifest.get("schema_version") in {
         "architecture-evaluation-v6",
         "architecture-evaluation-v7",
+        "architecture-evaluation-v8",
     }
     for manifest_key, provenance_key in fields:
         expected = str(manifest.get(manifest_key) or "").strip()

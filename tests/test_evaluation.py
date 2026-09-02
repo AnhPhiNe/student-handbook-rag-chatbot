@@ -9,7 +9,7 @@ from urllib.error import HTTPError
 
 import pytest
 
-from scripts.evaluate_system import _provenance
+from scripts.evaluate_system import _normalized_text_hash, _provenance
 import src.evaluation.suites as evaluation_suites
 from src.evaluation.dataset import _structured_source_index, validate_bundle
 from src.evaluation.gates import evaluate_gates
@@ -147,6 +147,15 @@ def test_v8_provenance_hashes_every_manifest_config() -> None:
         "expected_config_hashes"
     ].keys()
     assert "slang_dictionary" in provenance["config_hashes"]
+
+
+def test_normalized_text_hash_is_stable_across_line_endings(tmp_path: Path) -> None:
+    lf_path = tmp_path / "lf.yaml"
+    crlf_path = tmp_path / "crlf.yaml"
+    lf_path.write_bytes(b"key: value\nitems:\n  - one\n")
+    crlf_path.write_bytes(b"key: value\r\nitems:\r\n  - one\r\n")
+
+    assert _normalized_text_hash(lf_path) == _normalized_text_hash(crlf_path)
 
 
 def test_validator_rejects_query_reused_from_legacy_eval(tmp_path: Path) -> None:

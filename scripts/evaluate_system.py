@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import platform
@@ -55,6 +56,11 @@ def _git_commit() -> str:
         return "unknown"
 
 
+def _normalized_text_hash(path: Path) -> str:
+    text = path.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
 def _provenance(
     dataset_dir: Path,
     backend: str,
@@ -69,12 +75,17 @@ def _provenance(
     llm_config = answer_config.get("llm") or {}
     cache_config = answer_config.get("cache") or {}
     expected_config_hashes = dict(manifest.get("config_hashes") or {})
+    config_hash = (
+        _normalized_text_hash
+        if manifest.get("config_hash_method") == "sha256-lf-normalized-v1"
+        else _file_hash
+    )
     actual_config_hashes = {
-        "ai_router": _file_hash(AI_ROUTER_CONFIG),
-        "structured_lookup_registry": _file_hash(LOOKUP_REGISTRY_CONFIG),
-        "retrieval": _file_hash(RETRIEVAL_CONFIG),
-        "answer_generation": _file_hash(ANSWER_GENERATION_CONFIG),
-        "slang_dictionary": _file_hash(SLANG_DICTIONARY_CONFIG),
+        "ai_router": config_hash(AI_ROUTER_CONFIG),
+        "structured_lookup_registry": config_hash(LOOKUP_REGISTRY_CONFIG),
+        "retrieval": config_hash(RETRIEVAL_CONFIG),
+        "answer_generation": config_hash(ANSWER_GENERATION_CONFIG),
+        "slang_dictionary": config_hash(SLANG_DICTIONARY_CONFIG),
     }
     current_commit = _git_commit()
     evaluated_system_commit = str(manifest.get("evaluated_system_commit") or "")

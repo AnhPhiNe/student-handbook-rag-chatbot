@@ -136,9 +136,9 @@ def test_legacy_compatibility_provenance_records_both_docstore_hashes() -> None:
     assert provenance["phoranker_used_for_answer_generation"] is False
 
 
-def test_v8_provenance_hashes_every_manifest_config() -> None:
+def test_v9_provenance_hashes_every_manifest_config() -> None:
     provenance = _provenance(
-        ROOT / "data" / "eval" / "architecture_v8",
+        ROOT / "data" / "eval" / "architecture_v9_deterministic",
         "qdrant",
     )
 
@@ -147,6 +147,18 @@ def test_v8_provenance_hashes_every_manifest_config() -> None:
         "expected_config_hashes"
     ].keys()
     assert "slang_dictionary" in provenance["config_hashes"]
+
+
+def test_v9_provenance_accepts_evaluator_only_commits() -> None:
+    provenance = _provenance(
+        ROOT / "data" / "eval" / "architecture_v9_deterministic",
+        "qdrant",
+    )
+
+    assert provenance["system_commit_matches_manifest"] is False
+    assert provenance["runtime_code_matches_manifest"] is True
+    assert provenance["runtime_identity_matches_manifest"] is True
+    assert provenance["benchmark_run_kind"] == "fresh_post_fix_deterministic"
 
 
 def test_normalized_text_hash_is_stable_across_line_endings(tmp_path: Path) -> None:

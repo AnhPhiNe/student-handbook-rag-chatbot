@@ -56,6 +56,32 @@ def _git_commit() -> str:
         return "unknown"
 
 
+def _runtime_code_matches_commit(commit: str) -> bool:
+    """Compare production Python code while allowing evaluator-only commits."""
+
+    if not commit or commit == "unknown":
+        return False
+    try:
+        completed = subprocess.run(
+            [
+                "git",
+                "diff",
+                "--quiet",
+                commit,
+                "--",
+                "src",
+                ":(exclude)src/evaluation",
+            ],
+            cwd=ROOT,
+            check=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except OSError:
+        return False
+    return completed.returncode == 0
+
+
 def _normalized_text_hash(path: Path) -> str:
     text = path.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
@@ -92,13 +118,22 @@ def _provenance(
     system_commit_matches_manifest = bool(evaluated_system_commit) and (
         current_commit == evaluated_system_commit
     )
+    runtime_code_matches_manifest = _runtime_code_matches_commit(
+        evaluated_system_commit
+    )
     config_hashes_match_manifest = bool(expected_config_hashes) and all(
         actual_config_hashes.get(name) == expected_hash
         for name, expected_hash in expected_config_hashes.items()
     )
+    actual_docstore_hash = _file_hash(DEFAULT_DOCSTORE)
+    runtime_identity_matches_manifest = (
+        runtime_code_matches_manifest
+        and config_hashes_match_manifest
+        and actual_docstore_hash == manifest.get("docstore_hash")
+    )
     benchmark_run_kind = (
-        "frozen_holdout"
-        if system_commit_matches_manifest and config_hashes_match_manifest
+        str(manifest.get("benchmark_run_kind") or "frozen_holdout")
+        if runtime_identity_matches_manifest
         else "post_fix_regression"
     )
     return {
@@ -107,6 +142,8 @@ def _provenance(
         "evaluated_system_commit": evaluated_system_commit or None,
         "evaluation_harness_commit": manifest.get("evaluation_harness_commit"),
         "system_commit_matches_manifest": system_commit_matches_manifest,
+        "runtime_code_matches_manifest": runtime_code_matches_manifest,
+        "runtime_identity_matches_manifest": runtime_identity_matches_manifest,
         "benchmark_run_kind": benchmark_run_kind,
         "dataset_version": manifest.get("version"),
         "dataset_frozen": bool(manifest.get("frozen")),
@@ -117,7 +154,7 @@ def _provenance(
         "dataset_hashes": manifest.get("dataset_hashes"),
         "docstore_hash": manifest.get("docstore_hash"),
         "expected_docstore_hash": manifest.get("docstore_hash"),
-        "actual_docstore_hash": _file_hash(DEFAULT_DOCSTORE),
+        "actual_docstore_hash": actual_docstore_hash,
         "compatibility_diagnostic": allow_docstore_drift,
         "config_hashes": actual_config_hashes,
         "expected_config_hashes": expected_config_hashes,

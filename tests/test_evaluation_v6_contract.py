@@ -44,6 +44,14 @@ def test_contract_values_preserve_range_semantics(
     assert not suites._contract_values_equal(actual, expected)
 
 
+def test_scoring_grade_four_heading_accepts_classification_range_schema() -> None:
+    assert suites._mapping_contains_fields(
+        {"range": "3.2-dưới 3.6", "label": "Giỏi"},
+        {"Thang điểm 4": "Từ 3,2 đến dưới 3,6", "Xếp loại": "Giỏi"},
+        lookup_type="scoring",
+    )
+
+
 def test_v6_deterministic_contract_is_resolved_from_cases() -> None:
     cases = [
         {"id": "one", "contract_version": "query-plan-target-holdout-v6"},

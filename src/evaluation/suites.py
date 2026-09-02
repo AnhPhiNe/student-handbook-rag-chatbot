@@ -1003,7 +1003,9 @@ _PUBLIC_FIELD_ALIASES: dict[str, tuple[str, ...]] = {
     "Loại": ("Loại", "status"),
     "Thang điểm 10": ("Thang điểm 10", "score_10_range"),
     "Thang điểm chữ": ("Thang điểm chữ", "letter_grade"),
-    "Thang điểm 4": ("Thang điểm 4", "grade_4", "score_4"),
+    # Depending on the scoring table, this public heading denotes either one
+    # scalar grade-4 value or the grade-4 interval used for classification.
+    "Thang điểm 4": ("Thang điểm 4", "grade_4", "score_4", "range"),
     "Xếp loại": ("Xếp loại", "label", "classification"),
     "Khung điểm": ("Khung điểm", "range", "score_range"),
 }

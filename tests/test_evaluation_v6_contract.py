@@ -241,6 +241,103 @@ def test_v8_contract_validates_grounded_execution_assertions() -> None:
     assert any("expected_source_ids must be a non-empty string list" in error for error in errors)
 
 
+def test_v9_contract_requires_explicit_fact_lock_scope() -> None:
+    errors: list[str] = []
+    task = {
+        "mode": "structured",
+        "lookup_type": "office",
+        "expected_source_ids": ["office-record"],
+        "expected_evidence_fields": {"unit_name": "Phòng Đào tạo"},
+        "fact_lock_applicable": False,
+    }
+    case = {
+        "id": "v9-directory-evidence-only",
+        "contract_version": "query-plan-grounded-outcome-v9",
+        "accepted_outcomes": [
+            {
+                "name": "grounded-structured-answer",
+                "state": "answer",
+                "allowed_modes": ["structured"],
+                "task_count": {"min": 1, "max": 1},
+                "required_tasks": [task],
+                "structured_evidence": "required",
+            }
+        ],
+    }
+
+    dataset._validate_deterministic_v9_contract(case, errors)
+    assert errors == []
+
+    task["expected_resolved_fields"] = {"unit_name": "Phòng Đào tạo"}
+    dataset._validate_deterministic_v9_contract(case, errors)
+    assert any("must not assert resolved_result" in error for error in errors)
+
+
+def test_v9_evidence_only_task_reports_resolved_result_as_na() -> None:
+    class Pipeline:
+        def _run_retrieval(self, query, cohort=None):
+            evidence = {
+                "office_profile_id": "office-record",
+                "unit_name": "Phòng Đào tạo",
+                "resolved_result": {"unit_name": "Phòng Đào tạo"},
+            }
+            return {
+                "query_plan": {
+                    "tasks": [
+                        {
+                            "mode": "structured",
+                            "lookup_type": "office",
+                            "cohorts": ["K51"],
+                            "slots": {"requested_field": "phone"},
+                        }
+                    ]
+                },
+                "task_results": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "office",
+                        "coverage": "covered",
+                        "evidence": [evidence],
+                    }
+                ],
+                "structured_result": evidence,
+            }
+
+    case = {
+        "id": "v9-directory-evidence-only",
+        "query": "Số điện thoại Phòng Đào tạo là gì?",
+        "cohort": "K51",
+        "contract_version": "query-plan-grounded-outcome-v9",
+        "accepted_outcomes": [
+            {
+                "name": "grounded-structured-answer",
+                "state": "answer",
+                "allowed_modes": ["structured"],
+                "task_count": {"min": 1, "max": 1},
+                "required_tasks": [
+                    {
+                        "mode": "structured",
+                        "lookup_type": "office",
+                        "required_slot_keys": ["requested_field"],
+                        "expected_evidence_fields": {
+                            "unit_name": "Phòng Đào tạo"
+                        },
+                        "fact_lock_applicable": False,
+                    }
+                ],
+                "structured_evidence": "required",
+            }
+        ],
+    }
+
+    report = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)
+    row = report["cases"][0]
+    assert row["passed"] is True
+    assert row["structured_row_correct"] is True
+    assert row["resolved_result_correct"] is None
+    assert report["summary"]["assertion_support"]["resolved_result"] == 0
+
+
 def test_v8_evaluator_checks_source_row_and_resolved_result() -> None:
     class Pipeline:
         def _run_retrieval(self, query, cohort=None):

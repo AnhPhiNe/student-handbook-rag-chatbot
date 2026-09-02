@@ -629,15 +629,19 @@ def _validate_deterministic_v7_contract(
                 errors.append(f"{task_prefix}.slot_value_alternatives must be an object")
 
 
-def _validate_deterministic_v8_contract(
-    case: dict[str, Any], errors: list[str]
+def _validate_grounded_deterministic_contract(
+    case: dict[str, Any],
+    errors: list[str],
+    *,
+    expected_contract: str,
+    require_fact_lock_scope: bool,
 ) -> None:
-    """Validate V8 outcome gold plus optional grounded-execution assertions."""
+    """Validate outcome gold plus optional grounded-execution assertions."""
 
     _validate_deterministic_v7_contract(
         case,
         errors,
-        expected_contract="query-plan-grounded-outcome-v8",
+        expected_contract=expected_contract,
     )
     case_id = str(case.get("id") or "<missing-id>")
     for outcome_index, outcome in enumerate(case.get("accepted_outcomes") or [], start=1):
@@ -666,6 +670,57 @@ def _validate_deterministic_v8_contract(
                 task.get("resolved_result_required"), bool
             ):
                 errors.append(f"{prefix}.resolved_result_required must be boolean")
+            if task.get("mode") != "structured" or not require_fact_lock_scope:
+                continue
+            fact_lock_applicable = task.get("fact_lock_applicable")
+            if not isinstance(fact_lock_applicable, bool):
+                errors.append(f"{prefix}.fact_lock_applicable must be boolean")
+            elif fact_lock_applicable:
+                if task.get("resolved_result_required") is not True:
+                    errors.append(
+                        f"{prefix}.resolved_result_required must be true when "
+                        "fact_lock_applicable=true"
+                    )
+                if not isinstance(task.get("expected_resolved_fields"), dict) or not task.get(
+                    "expected_resolved_fields"
+                ):
+                    errors.append(
+                        f"{prefix}.expected_resolved_fields is required when "
+                        "fact_lock_applicable=true"
+                    )
+            elif "expected_resolved_fields" in task or task.get(
+                "resolved_result_required"
+            ) is True:
+                errors.append(
+                    f"{prefix} must not assert resolved_result when "
+                    "fact_lock_applicable=false"
+                )
+
+
+def _validate_deterministic_v8_contract(
+    case: dict[str, Any], errors: list[str]
+) -> None:
+    """Validate V8 grounded execution assertions."""
+
+    _validate_grounded_deterministic_contract(
+        case,
+        errors,
+        expected_contract="query-plan-grounded-outcome-v8",
+        require_fact_lock_scope=False,
+    )
+
+
+def _validate_deterministic_v9_contract(
+    case: dict[str, Any], errors: list[str]
+) -> None:
+    """Validate V9 grounded assertions and explicit fact-lock applicability."""
+
+    _validate_grounded_deterministic_contract(
+        case,
+        errors,
+        expected_contract="query-plan-grounded-outcome-v9",
+        require_fact_lock_scope=True,
+    )
 
 
 def validate_bundle(
@@ -900,6 +955,8 @@ def validate_bundle(
                     _validate_deterministic_v7_contract(case, errors)
                 elif manifest.get("schema_version") == "architecture-evaluation-v8":
                     _validate_deterministic_v8_contract(case, errors)
+                elif manifest.get("schema_version") == "architecture-evaluation-v9":
+                    _validate_deterministic_v9_contract(case, errors)
             elif suite == "production" and not case.get("scenario"):
                 errors.append(f"{case_id}: missing production scenario")
 
@@ -937,7 +994,11 @@ def validate_bundle(
                 )
                 if (
                     manifest.get("schema_version")
-                    in {"architecture-evaluation-v7", "architecture-evaluation-v8"}
+                    in {
+                        "architecture-evaluation-v7",
+                        "architecture-evaluation-v8",
+                        "architecture-evaluation-v9",
+                    }
                     and not manifest.get("frozen")
                 ):
                     warnings.append(message)

@@ -1103,6 +1103,9 @@ def _v8_task_execution_checks(
     evidence_fields = expected.get("expected_evidence_fields")
     resolved_fields = expected.get("expected_resolved_fields")
     resolved_required = expected.get("resolved_result_required")
+    if expected.get("fact_lock_applicable") is False:
+        resolved_fields = None
+        resolved_required = None
     applicable = bool(source_ids or evidence_fields or resolved_fields) or (
         resolved_required is not None
     )
@@ -1214,9 +1217,10 @@ def _evaluate_v7_outcome_case(
         task.get("mode") == "clarify" for task in tasks
     )
     out_of_domain = bool(plan.get("out_of_domain"))
-    grounded_contract = (
-        case.get("contract_version") == "query-plan-grounded-outcome-v8"
-    )
+    grounded_contract = case.get("contract_version") in {
+        "query-plan-grounded-outcome-v8",
+        "query-plan-grounded-outcome-v9",
+    }
 
     evaluations: list[dict[str, Any]] = []
     for outcome in case.get("accepted_outcomes") or []:
@@ -1416,6 +1420,7 @@ def _evaluate_deterministic_v2_uncached(
             if case.get("contract_version") in {
                 "query-plan-outcome-equivalent-v7",
                 "query-plan-grounded-outcome-v8",
+                "query-plan-grounded-outcome-v9",
             }:
                 row = _evaluate_v7_outcome_case(case, result, started=started)
                 rows.append(row)
@@ -1658,6 +1663,7 @@ def _evaluate_deterministic_v2_uncached(
         if row.get("contract_version") in {
             "query-plan-outcome-equivalent-v7",
             "query-plan-grounded-outcome-v8",
+            "query-plan-grounded-outcome-v9",
         }:
             return any(
                 task.get("mode") == "structured"

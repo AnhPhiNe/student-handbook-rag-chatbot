@@ -2,12 +2,12 @@
   "bundle": "architecture_v9_deterministic",
   "schema_version": "architecture-evaluation-v9",
   "version": "9.0.0-deterministic",
-  "revision": 2,
+  "revision": 3,
   "frozen": true,
-  "review_state": "pre_run_codex_reviewed_owner_approved_frozen",
+  "review_state": "corrected_deterministic_scope_owner_approved_frozen",
   "authored_against_runtime_commit": "7f1fc82bc0d6a02a10cc64f0a7726b3cc7a913a9",
   "evaluated_system_commit": "7f1fc82bc0d6a02a10cc64f0a7726b3cc7a913a9",
-  "evaluation_harness_commit": "ea89b67c6d13fcede58450bb4aa0c8b4f44e38eb",
+  "evaluation_harness_commit": "d3c6dd30cdde2d9e0d8808446ba24358f3931e14",
   "benchmark_run_kind": "fresh_post_fix_deterministic",
   "planner_model": "qwen/qwen3.8-27b",
   "planner_reasoning_effort": "low",
@@ -18,7 +18,7 @@
   "hybrid_collection": "student_handbook_semantic_v32",
   "mongodb_parent_collection": "parent_docs_v32",
   "counts": {
-    "deterministic": 140,
+    "deterministic": 135,
     "retrieval": 160,
     "answers": 150,
     "production": 60
@@ -33,7 +33,7 @@
     "capability_boundary": 24,
     "compound": 28,
     "missing_or_ambiguous": 12,
-    "unsupported_in_domain": 8,
+    "unsupported_in_domain": 3,
     "out_of_domain": 8
   },
   "deterministic_lookup_case_types": [
@@ -110,7 +110,7 @@
   "human_audit_repeat_n": 0,
   "human_audit_selection_policy": "pre-output stratified by answer case type; stable SHA256 order; all automatic failures added after scoring",
   "dataset_hashes": {
-    "deterministic": "ff0f19999523f33c7b2ae3303c4a09c5f2c2602fbd3c1317a0fae8c0956b9c67",
+    "deterministic": "a89528de83bd824e084428278991f0b5189b9ca3f9002f238936f86929a0da5e",
     "retrieval": "5532c031461ce4b1cf95181f19cae6a9cdffceb97623a9ef01fe7409cd431891",
     "answers": "d9ddce3823c214d188dcd3b5f6978afb0e638c94d06514c7f474f95bfe32df6b",
     "production": "99fb21e11ae63a75b5e75b999d899048f13264470baf3d7d21e08e372605ae20"

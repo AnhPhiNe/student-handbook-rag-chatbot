@@ -134,13 +134,8 @@
 | `v9_det_122` | `stress` | `K51` | `missing_or_ambiguous` | 0 | So sánh thời gian đào tạo của hai khóa giúp em, nhưng em chưa nêu hai khóa. |
 | `v9_det_123` | `stress` | `K51` | `missing_or_ambiguous` | 0 | Em cần hỏi bốn việc riêng: GPA, danh bạ khoa, danh sách ngành và thủ tục nghỉ học. |
 | `v9_det_124` | `stress` | `K51` | `missing_or_ambiguous` | 0 | Tra giúp em bảng IELTS, email Thư viện, khoa quản lý ngành Hóa và quy định chuyển trường. |
-| `v9_det_125` | `realistic` | `K51` | `unsupported_in_domain` | 0 | Hồ sơ miễn học phần ngoại ngữ của riêng em đang được ai xử lý? |
-| `v9_det_126` | `realistic` | `K51` | `unsupported_in_domain` | 0 | Khoản học bổng cá nhân của em sẽ vào tài khoản lúc mấy giờ hôm nay? |
 | `v9_det_127` | `realistic` | `K51` | `unsupported_in_domain` | 0 | Lớp học phần sáng mai còn bao nhiêu chỗ trống theo thời gian thực? |
-| `v9_det_128` | `realistic` | `K51` | `unsupported_in_domain` | 0 | Bài thi của em hiện được giảng viên nào chấm? |
 | `v9_det_129` | `realistic` | `K51` | `unsupported_in_domain` | 0 | Ca trực tối nay ở Trạm Y tế có những ai? |
-| `v9_det_130` | `realistic` | `K51` | `unsupported_in_domain` | 0 | Ký túc xá đang còn chính xác bao nhiêu giường để đăng ký ngay? |
-| `v9_det_131` | `realistic` | `K51` | `unsupported_in_domain` | 0 | Mã giao dịch học phí mới nhất trong tài khoản của em là gì? |
 | `v9_det_132` | `realistic` | `K51` | `unsupported_in_domain` | 0 | Cho em danh sách tên sinh viên đang bị cảnh cáo trong lớp. |
 | `v9_det_133` | `realistic` | `general` | `out_of_domain` | 0 | Viết giúp mình một hàm Python sắp xếp danh sách. |
 | `v9_det_134` | `realistic` | `general` | `out_of_domain` | 0 | Gợi ý món ăn cuối tuần cho bốn người. |

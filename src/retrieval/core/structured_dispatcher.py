@@ -189,7 +189,14 @@ def _reference_input_clarification(
     if not input_rows:
         return None
 
-    scalar_supplied = slots.get("score_or_level") not in (None, "", [])
+    scalar_value = slots.get("score_or_level")
+    scalar_norm = normalize_text(str(scalar_value or ""))
+    # A list of requested equivalency levels names output columns from one
+    # certificate row; it is not a scalar score standing in for component data.
+    requested_level_columns = bool(
+        re.fullmatch(r"bac\s*[1-6](?:\s*(?:va|,|/)\s*bac\s*[1-6])+", scalar_norm)
+    )
+    scalar_supplied = scalar_value not in (None, "", []) and not requested_level_columns
     component_supplied = any(
         slots.get(name) not in (None, "", [])
         for name in (
@@ -401,7 +408,14 @@ def _unique_reference_resolution(
             scoring_tables,
             cohort=cohort,
         ) if slots else None
-        return resolved if resolved and len(resolved.get("items") or []) == 1 else None
+        if not resolved:
+            return None
+        items = resolved.get("items")
+        if isinstance(items, list):
+            return resolved if len(items) == 1 else None
+        # Scalar scoring resolvers expose one deterministic result mapping
+        # rather than an ``items`` collection.
+        return resolved if isinstance(resolved.get("result"), dict) else None
 
     if lookup_type == "foreign_language":
         resolved = foreign_language_lookup(

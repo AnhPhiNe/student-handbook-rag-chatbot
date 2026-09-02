@@ -33,7 +33,28 @@ from .query_plan import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.8-27b"
-ROUTER_PROMPT_VERSION = "structured-regulation-v40-capability-boundaries"
+ROUTER_PROMPT_VERSION = "structured-regulation-v41-explicit-request-count"
+
+
+_EXPLICIT_REQUEST_MARKERS = (
+    re.compile(r"\bthứ\s+nhất\b", re.IGNORECASE),
+    re.compile(r"\bthứ\s+hai\b", re.IGNORECASE),
+    re.compile(r"\bthứ\s+ba\b", re.IGNORECASE),
+)
+
+
+def _explicit_request_count(query: str) -> int | None:
+    """Count a contiguous Vietnamese ordinal list without guessing semantics."""
+
+    present = [bool(pattern.search(query)) for pattern in _EXPLICIT_REQUEST_MARKERS]
+    count = 0
+    for marker_present in present:
+        if not marker_present:
+            break
+        count += 1
+    return count if count >= 2 else None
+
+
 _DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
 _RETRY_TEXT_RE = re.compile(
     r"(?:try again in|retry after)\s+"
@@ -50,7 +71,7 @@ không trả lời.
   phải ghi standalone_query tự đủ nghĩa và referenced_turns là chỉ số [n] đã dùng.
 - context_mode=ambiguous chỉ khi toàn QUERY mơ hồ hoặc có hơn 3 yêu cầu độc lập.
   Với 1–3 yêu cầu, giữ đủ answer target; chỉ yêu cầu mơ hồ mới clarify cho
-  riêng task đó. Đúng 3 yêu cầu thì không hỏi người dùng chọn tối đa 3.
+  riêng task đó. EXPLICIT_REQUEST_COUNT=2/3 thì phải có đủ số task đó.
 - normalized_query chỉ sửa dấu, chính tả nhẹ hoặc viết tắt phổ biến; không đổi
   entity, cohort, số liệu, phủ định, chủ đề hoặc ý định.
 
@@ -669,9 +690,11 @@ class AIRouter:
                 "prompt_stats": prompt_stats,
             }
 
+        explicit_request_count = _explicit_request_count(query)
         max_output_tokens = max(
             self.max_output_tokens,
             int(os.environ.get("STUDENT_RAG_PLANNER_MAX_OUTPUT_TOKENS", "768")),
+            640 * (explicit_request_count or 1),
         )
         estimated_tokens = max(
             128,
@@ -704,12 +727,6 @@ class AIRouter:
                 raw = response.choices[0].message.content or ""
                 parsed = self._extract_json_object(raw)
                 usage = self._usage(response)
-                actual_tokens = int(usage.get("total", estimated_tokens))
-                self.key_pool.record_success(
-                    key_id,
-                    actual_tokens=actual_tokens,
-                    reserved_tokens=estimated_tokens,
-                )
                 grounding_context = "\n".join(
                     str(item.get("content") or "")
                     for item in (chat_history or [])[-4:]
@@ -721,6 +738,69 @@ class AIRouter:
                     selected_cohort=cohort,
                     grounding_context=grounding_context,
                     registry=self.registry,
+                )
+                planner_repairs = 0
+                if (
+                    explicit_request_count is not None
+                    and len(plan.get("tasks") or []) != explicit_request_count
+                ):
+                    planner_repairs = 1
+                    repair_response = client.chat.completions.create(
+                        model=self.model_name,
+                        messages=[
+                            {"role": "system", "content": PLANNER_SYSTEM_PROMPT.strip()},
+                            {"role": "user", "content": dynamic_prompt},
+                            {"role": "assistant", "content": raw},
+                            {
+                                "role": "user",
+                                "content": (
+                                    "VALIDATION_FEEDBACK: QUERY có "
+                                    f"{explicit_request_count} yêu cầu được đánh số độc lập, "
+                                    f"nhưng plan có {len(plan.get('tasks') or [])} task. "
+                                    "Hãy tạo lại toàn bộ plan với đúng một task cho mỗi "
+                                    "yêu cầu, theo đúng thứ tự và không gộp hoặc bỏ sót."
+                                ),
+                            },
+                        ],
+                        temperature=self.temperature,
+                        max_tokens=max_output_tokens,
+                        reasoning_effort=self._resolved_reasoning_effort(),
+                        response_format=response_format,
+                    )
+                    repair_raw = repair_response.choices[0].message.content or ""
+                    repair_parsed = self._extract_json_object(repair_raw)
+                    repair_usage = self._usage(repair_response)
+                    usage = {
+                        key: int(usage.get(key, 0)) + int(repair_usage.get(key, 0))
+                        for key in ("input", "output", "total")
+                    }
+                    plan, validation_errors = normalize_query_plan(
+                        repair_parsed,
+                        query=query,
+                        selected_cohort=cohort,
+                        grounding_context=grounding_context,
+                        registry=self.registry,
+                    )
+                    if len(plan.get("tasks") or []) != explicit_request_count:
+                        actual_count = len(plan.get("tasks") or [])
+                        plan = safe_rag_fallback_plan(
+                            query,
+                            cohort,
+                            reason="planner_task_count_mismatch",
+                        )
+                        validation_errors = [
+                            *validation_errors,
+                            (
+                                "plan:explicit_task_count_mismatch:"
+                                f"expected={explicit_request_count}:actual={actual_count}"
+                            ),
+                        ]
+                        plan["planner_validation_errors"] = validation_errors
+                actual_tokens = int(usage.get("total", estimated_tokens))
+                self.key_pool.record_success(
+                    key_id,
+                    actual_tokens=actual_tokens,
+                    reserved_tokens=estimated_tokens,
                 )
                 # Task-local errors remain diagnostic after normalization has
                 # converted that task to safe RAG/clarification. Do not discard
@@ -745,6 +825,7 @@ class AIRouter:
                     "key_fingerprint": key_id,
                     "router_cache_hit": False,
                     "attempts": attempts,
+                    "planner_repairs": planner_repairs,
                     "prompt_stats": prompt_stats,
                 }
             except Exception as exc:
@@ -813,6 +894,7 @@ class AIRouter:
             ensure_ascii=False,
             separators=(",", ":"),
         )
+        explicit_request_count = _explicit_request_count(query)
         return (
             "TOOLS:\n"
             f"{compact_registry_for_prompt(self.registry)}\n\n"
@@ -820,6 +902,7 @@ class AIRouter:
             f"CATALOG_HINT: {hint if routing_hint else 'none'}\n"
             f"COHORT: {cohort or 'unknown'}\n"
             f"COHORT_ADMISSION_YEARS: {cohort_years}\n"
+            f"EXPLICIT_REQUEST_COUNT: {explicit_request_count or 'not_declared'}\n"
             f"CHAT HISTORY:\n{history}\n"
             f"QUERY: {query}"
         )

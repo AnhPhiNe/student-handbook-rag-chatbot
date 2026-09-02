@@ -908,6 +908,135 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertEqual(resolved["input_value"], 7.9)
         self.assertEqual(resolved["result"][0]["row"]["letter_grade"], "B+")
 
+    def test_scalar_scoring_result_is_kept_as_unique_fact_lock(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        scoring_tables = json.loads(
+            Path("data/processed/tables/scoring_tables.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        registry = json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "scoring",
+                "intent": "direct_value",
+                "slots": {
+                    "operation": "letter_to_grade_4",
+                    "score_or_grade": "B+",
+                },
+                "slot_spans": {
+                    "operation": "hệ 4",
+                    "score_or_grade": "B+",
+                },
+            },
+            query="B+ tương ứng hệ 4 bao nhiêu?",
+            cohort="K51",
+            scoring_tables=scoring_tables,
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=[],
+            structured_tables_registry=registry,
+            program_directory=[],
+        )
+
+        self.assertIsNotNone(resolution)
+        self.assertEqual(
+            resolution.result["resolved_result"]["result"]["score_4"], 3.5
+        )
+
+    def test_foreign_language_output_columns_do_not_require_component_scores(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        registry = json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        foreign_language_tables = json.loads(
+            Path("data/processed/tables/foreign_language_equivalency_table.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "foreign_language",
+                "intent": "direct_value",
+                "slots": {
+                    "certificate_or_language": "TOEIC (4 kỹ năng)",
+                    "score_or_level": "bậc 3 và bậc 4",
+                },
+                "slot_spans": {
+                    "certificate_or_language": "TOEIC (4 kỹ năng)",
+                    "score_or_level": "bậc 3 và bậc 4",
+                },
+            },
+            query="TOEIC (4 kỹ năng) tương ứng bậc 3 và bậc 4 thế nào?",
+            cohort="K51",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=foreign_language_tables,
+            structured_tables_registry=registry,
+            program_directory=[],
+        )
+
+        self.assertIsNotNone(resolution)
+        self.assertEqual(resolution.result_kind, "structured")
+        self.assertFalse(resolution.result.get("needs_clarification", False))
+        self.assertIn("resolved_result", resolution.result)
+
+    def test_study_duration_uses_grounded_query_text_for_unique_row(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        registry = json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        query = (
+            "Hệ vừa làm vừa học, chương trình liên thông đại học đối với người "
+            "đã có một bằng đại học có thời gian chuẩn và tối đa bao lâu?"
+        )
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "study_duration",
+                "intent": "direct_value",
+                "slots": {"training_mode": "vua_lam_vua_hoc"},
+                "slot_spans": {"training_mode": "vừa làm vừa học"},
+            },
+            query=query,
+            cohort="K48-K49",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=[],
+            structured_tables_registry=registry,
+            program_directory=[],
+        )
+
+        self.assertIsNotNone(resolution)
+        resolved = resolution.result["resolved_result"]
+        rows = resolved["result"]["tables"][0]["rows"]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["Thời gian học tập chuẩn"], "2,5 năm học")
+
     def test_reference_table_keeps_full_rows_without_untrusted_fact_lock(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
             resolve_structured_decision,

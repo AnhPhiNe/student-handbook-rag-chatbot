@@ -131,7 +131,8 @@ def study_duration_lookup(
     )
     if has_relevant_slots:
         query_norm = normalize_text(
-            f"{slots.get('training_mode', '')} {slots.get('program_type', '')}"
+            f"{query} {slots.get('training_mode', '')} "
+            f"{slots.get('program_type', '')}"
         )
     else:
         query_norm = normalize_text(query)

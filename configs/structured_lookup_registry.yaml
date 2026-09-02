@@ -138,7 +138,7 @@ tools:
         enum: [foundation, remaining, pass_fail_ungraded]
         span_aliases:
           foundation: [học phần nền tảng, học phần chung, học phần giáo dục đại cương]
-          remaining: [học phần còn lại, các học phần còn lại]
+          remaining: [học phần còn lại, các học phần còn lại, môn còn lại, các môn còn lại]
           pass_fail_ungraded: [học phần đạt không phân mức, học phần chỉ yêu cầu đạt, không tính vào điểm trung bình]
     table_selector:
       slot: operation

@@ -99,6 +99,31 @@ def test_reference_table_selectors_are_grounded_from_registry_metadata(
     assert validate_router_decision(normalized, query=query) == []
 
 
+def test_scoring_course_scope_accepts_natural_course_synonym() -> None:
+    query = "Môn còn lại của K51 được 5,0 thì có đạt không?"
+    normalized = normalize_router_decision(
+        {
+            "route": "structured",
+            "lookup_type": "scoring",
+            "intent": "direct_value",
+            "slots": {
+                "operation": "pass_threshold",
+                "score_or_grade": "5.0",
+            },
+            "slot_spans": {
+                "operation": "có đạt không",
+                "score_or_grade": "5,0",
+            },
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert normalized["slots"]["course_scope"] == "remaining"
+    assert normalized["slot_spans"]["course_scope"] == "Môn còn lại"
+    assert validate_router_decision(normalized, query=query) == []
+
+
 def test_reference_table_selector_stays_absent_for_general_question() -> None:
     normalized = normalize_router_decision(
         {
@@ -171,10 +196,23 @@ def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     # Optional scoring scope adds a small, explicit selector contract.
     assert stats["total_chars"] <= 10950
     assert stats["estimated_input_tokens"] <= 2750
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v40-capability-boundaries"
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v41-explicit-request-count"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
     assert "native JSON Schema" in dynamic_prompt
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
+
+
+def test_dynamic_prompt_preserves_explicit_three_request_count(
+    monkeypatch, tmp_path: Path
+) -> None:
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+    dynamic_prompt = router._build_plan_prompt(
+        "Thứ nhất: hỏi A. Thứ hai: hỏi B. Thứ ba: hỏi C.",
+        cohort="K51",
+        chat_history=[],
+    )
+
+    assert "EXPLICIT_REQUEST_COUNT: 3" in dynamic_prompt
 
 
 def test_planner_prompt_defines_cohort_independent_task_identity() -> None:
@@ -187,7 +225,7 @@ def test_planner_prompt_defines_cohort_independent_task_identity() -> None:
 
 def test_planner_prompt_keeps_exactly_three_answer_targets() -> None:
     assert "Với 1–3 yêu cầu" in PLANNER_PROMPT_TEXT
-    assert "Đúng 3 yêu cầu" in PLANNER_PROMPT_TEXT
+    assert "EXPLICIT_REQUEST_COUNT=2/3" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_routes_named_unit_contacts_to_directory() -> None:
@@ -333,6 +371,54 @@ def _mock_plan_response(monkeypatch, tasks: list) -> None:
     monkeypatch.setattr(ai_router_module, "Groq", _FakeGroq)
 
 
+def _mock_plan_response_sequence(monkeypatch, task_sequences: list[list]) -> list[dict]:
+    calls: list[dict] = []
+    payloads = [
+        {
+            "schema_version": "v1",
+            "context_mode": "standalone",
+            "out_of_domain": False,
+            "tasks": tasks,
+        }
+        for tasks in task_sequences
+    ]
+
+    class _Completions:
+        @staticmethod
+        def create(**kwargs):
+            calls.append(kwargs)
+            payload = payloads[min(len(calls) - 1, len(payloads) - 1)]
+            return SimpleNamespace(
+                choices=[
+                    SimpleNamespace(
+                        message=SimpleNamespace(
+                            content=json.dumps(payload, ensure_ascii=False),
+                        )
+                    )
+                ],
+                usage=None,
+            )
+
+    class _FakeGroq:
+        def __init__(self, **_kwargs) -> None:
+            self.chat = SimpleNamespace(completions=_Completions())
+
+    monkeypatch.setattr(ai_router_module, "Groq", _FakeGroq)
+    return calls
+
+
+def _rag_task(question: str) -> dict:
+    return {
+        "question": question,
+        "mode": "rag",
+        "lookup_type": None,
+        "intent": "open_question",
+        "slots": {},
+        "slot_spans": {},
+        "cohorts": ["K51"],
+    }
+
+
 def _valid_plan_task() -> dict:
     return {
         "question": "IELTS 6.0 tương đương bậc mấy?",
@@ -343,6 +429,65 @@ def _valid_plan_task() -> dict:
         "slot_spans": {"certificate_or_language": "IELTS", "score_or_level": "6.0"},
         "cohorts": ["K51"],
     }
+
+
+def test_planner_repairs_an_explicit_numbered_task_count_once(
+    monkeypatch, tmp_path,
+) -> None:
+    query = (
+        "Thứ nhất: Điều 1 nói gì? Thứ hai: Điều 2 nói gì? "
+        "Thứ ba: Điều 3 nói gì?"
+    )
+    calls = _mock_plan_response_sequence(
+        monkeypatch,
+        [
+            [_rag_task("Điều 1 nói gì?"), _rag_task("Điều 2 nói gì?")],
+            [
+                _rag_task("Điều 1 nói gì?"),
+                _rag_task("Điều 2 nói gì?"),
+                _rag_task("Điều 3 nói gì?"),
+            ],
+        ],
+    )
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+
+    plan = router.plan(query, cohort="K51")
+
+    assert len(calls) == 2
+    assert calls[0]["max_tokens"] == 1920
+    assert calls[1]["max_tokens"] == 1920
+    assert len(plan["tasks"]) == 3
+    assert plan["planner_repairs"] == 1
+    assert "VALIDATION_FEEDBACK" in calls[1]["messages"][-1]["content"]
+    assert not plan.get("planner_fallback")
+
+
+def test_planner_never_executes_a_persistently_incomplete_numbered_plan(
+    monkeypatch, tmp_path,
+) -> None:
+    query = (
+        "Thứ nhất: Điều 1 nói gì? Thứ hai: Điều 2 nói gì? "
+        "Thứ ba: Điều 3 nói gì?"
+    )
+    calls = _mock_plan_response_sequence(
+        monkeypatch,
+        [
+            [_rag_task("Điều 1 nói gì?"), _rag_task("Điều 2 nói gì?")],
+            [_rag_task("Điều 1 nói gì?"), _rag_task("Điều 2 nói gì?")],
+        ],
+    )
+    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+
+    plan = router.plan(query, cohort="K51")
+
+    assert len(calls) == 2
+    assert [task["mode"] for task in plan["tasks"]] == ["rag"]
+    assert plan["tasks"][0]["question"] == query
+    assert plan["planner_fallback"] == "planner_task_count_mismatch"
+    assert any(
+        "explicit_task_count_mismatch" in error
+        for error in plan["planner_validation_errors"]
+    )
 
 
 @pytest.mark.parametrize(

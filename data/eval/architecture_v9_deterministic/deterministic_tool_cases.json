@@ -7,7 +7,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -173,7 +173,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -308,7 +308,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -443,7 +443,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -578,7 +578,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -713,7 +713,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -848,7 +848,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -967,7 +967,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -1086,7 +1086,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -1203,7 +1203,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -1320,7 +1320,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -1437,7 +1437,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -1554,7 +1554,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -1666,7 +1666,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -1775,7 +1775,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -1876,7 +1876,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -1988,7 +1988,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -2100,7 +2100,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -2200,7 +2200,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "stress"
     ],
@@ -2319,7 +2319,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "stress"
     ],
@@ -2438,7 +2438,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "stress"
     ],
@@ -2556,7 +2556,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "stress"
     ],
@@ -2674,7 +2674,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "stress"
     ],
@@ -2787,7 +2787,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "stress"
     ],
@@ -2900,7 +2900,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "stress"
     ],
@@ -3013,7 +3013,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "stress"
     ],
@@ -3126,7 +3126,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -3237,7 +3237,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -3348,7 +3348,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -3459,7 +3459,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -3570,7 +3570,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -3681,7 +3681,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -3792,7 +3792,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -3905,7 +3905,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -4017,7 +4017,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -4180,7 +4180,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -4349,7 +4349,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -4509,7 +4509,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -4665,7 +4665,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -4837,7 +4837,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -4987,7 +4987,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -5121,7 +5121,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -5258,7 +5258,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -5393,7 +5393,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -5528,7 +5528,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -5667,7 +5667,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -5806,7 +5806,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -5928,7 +5928,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -6051,7 +6051,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -6176,7 +6176,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -6298,7 +6298,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -6420,7 +6420,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -6543,7 +6543,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -6665,7 +6665,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -6788,7 +6788,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -6916,7 +6916,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -7056,7 +7056,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -7184,7 +7184,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -7315,7 +7315,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -7449,7 +7449,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "single_structured",
       "realistic"
     ],
@@ -7583,7 +7583,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -7658,7 +7658,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -7734,7 +7734,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -7809,7 +7809,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -7885,7 +7885,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -7960,7 +7960,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -8035,7 +8035,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -8111,7 +8111,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -8188,7 +8188,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -8263,7 +8263,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -8339,7 +8339,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -8414,7 +8414,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -8491,7 +8491,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -8568,7 +8568,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -8643,7 +8643,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -8719,7 +8719,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -8795,7 +8795,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -8870,7 +8870,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -8945,7 +8945,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -9021,7 +9021,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -9097,7 +9097,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -9173,7 +9173,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -9250,7 +9250,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -9325,7 +9325,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "capability_boundary",
       "realistic"
     ],
@@ -9400,7 +9400,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -9594,7 +9594,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -9792,7 +9792,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -9994,7 +9994,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -10191,7 +10191,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -10391,7 +10391,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -10609,7 +10609,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -10847,7 +10847,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -11032,7 +11032,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -11260,7 +11260,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -11488,7 +11488,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -11729,7 +11729,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -11907,7 +11907,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "stress"
     ],
@@ -12181,7 +12181,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "stress"
     ],
@@ -12490,7 +12490,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "stress"
     ],
@@ -12770,7 +12770,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "stress"
     ],
@@ -13065,7 +13065,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "stress"
     ],
@@ -13356,7 +13356,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "stress"
     ],
@@ -13653,7 +13653,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -13821,7 +13821,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -13982,7 +13982,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -14146,7 +14146,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -14361,7 +14361,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -14577,7 +14577,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -14735,7 +14735,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "realistic"
     ],
@@ -14904,7 +14904,7 @@
     "cohort": "K50",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "stress"
     ],
@@ -15123,7 +15123,7 @@
     "cohort": "K48-K49",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "stress"
     ],
@@ -15309,7 +15309,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "compound",
       "stress"
     ],
@@ -15493,7 +15493,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "missing_or_ambiguous",
       "stress"
     ],
@@ -15544,7 +15544,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "missing_or_ambiguous",
       "stress"
     ],
@@ -15595,7 +15595,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "missing_or_ambiguous",
       "stress"
     ],
@@ -15646,7 +15646,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "missing_or_ambiguous",
       "stress"
     ],
@@ -15697,7 +15697,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "missing_or_ambiguous",
       "stress"
     ],
@@ -15748,7 +15748,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "missing_or_ambiguous",
       "stress"
     ],
@@ -15799,7 +15799,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "missing_or_ambiguous",
       "stress"
     ],
@@ -15850,7 +15850,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "missing_or_ambiguous",
       "stress"
     ],
@@ -15901,7 +15901,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "missing_or_ambiguous",
       "stress"
     ],
@@ -15952,7 +15952,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "missing_or_ambiguous",
       "stress"
     ],
@@ -16003,7 +16003,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "missing_or_ambiguous",
       "stress"
     ],
@@ -16054,7 +16054,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "missing_or_ambiguous",
       "stress"
     ],
@@ -16105,7 +16105,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "unsupported_in_domain",
       "stress"
     ],
@@ -16180,7 +16180,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "unsupported_in_domain",
       "stress"
     ],
@@ -16255,7 +16255,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "unsupported_in_domain",
       "stress"
     ],
@@ -16330,7 +16330,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "unsupported_in_domain",
       "stress"
     ],
@@ -16405,7 +16405,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "unsupported_in_domain",
       "stress"
     ],
@@ -16480,7 +16480,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "unsupported_in_domain",
       "stress"
     ],
@@ -16555,7 +16555,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "unsupported_in_domain",
       "stress"
     ],
@@ -16630,7 +16630,7 @@
     "cohort": "K51",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "unsupported_in_domain",
       "stress"
     ],
@@ -16705,7 +16705,7 @@
     "cohort": "general",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "out_of_domain",
       "stress"
     ],
@@ -16752,7 +16752,7 @@
     "cohort": "general",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "out_of_domain",
       "stress"
     ],
@@ -16799,7 +16799,7 @@
     "cohort": "general",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "out_of_domain",
       "stress"
     ],
@@ -16846,7 +16846,7 @@
     "cohort": "general",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "out_of_domain",
       "stress"
     ],
@@ -16893,7 +16893,7 @@
     "cohort": "general",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "out_of_domain",
       "stress"
     ],
@@ -16940,7 +16940,7 @@
     "cohort": "general",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "out_of_domain",
       "stress"
     ],
@@ -16987,7 +16987,7 @@
     "cohort": "general",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "out_of_domain",
       "stress"
     ],
@@ -17034,7 +17034,7 @@
     "cohort": "general",
     "history": [],
     "tags": [
-      "architecture_v8_holdout",
+      "architecture_v9_deterministic",
       "out_of_domain",
       "stress"
     ],

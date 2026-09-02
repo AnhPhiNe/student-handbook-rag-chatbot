@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "data" / "eval" / "architecture_v8"
 OUT = ROOT / "data" / "eval" / "architecture_v9_deterministic"
 RUNTIME_COMMIT = "7f1fc82bc0d6a02a10cc64f0a7726b3cc7a913a9"
-EVALUATOR_COMMIT = "c02cf91351c6e2b020fb97b709c2d8ce0605dd6c"
+EVALUATOR_COMMIT = "ea89b67c6d13fcede58450bb4aa0c8b4f44e38eb"
 CONTRACT = "query-plan-grounded-outcome-v9"
 
 
@@ -299,6 +299,12 @@ def build_cases(*, frozen: bool) -> list[dict[str, Any]]:
         case["query_origin"] = "v9_source_grounded_rewrite_after_v8_diagnostic"
         case["diagnostic_ancestry_id"] = old_id
         case["near_duplicate_reviewed"] = frozen
+        case["tags"] = [
+            "architecture_v9_deterministic"
+            if tag == "architecture_v8_holdout"
+            else tag
+            for tag in case.get("tags") or []
+        ]
         case.pop("duplicate_group", None)
         if case["case_type"] == "single_structured":
             group_index = sum(
@@ -490,10 +496,10 @@ def build_manifest(
             "bundle": "architecture_v9_deterministic",
             "schema_version": "architecture-evaluation-v9",
             "version": "9.0.0-deterministic",
-            "revision": 1,
+            "revision": 2,
             "frozen": frozen,
             "review_state": (
-                "pre_run_codex_reviewed_frozen_pending_run_approval"
+                "pre_run_codex_reviewed_owner_approved_frozen"
                 if frozen
                 else "draft_pending_owner_review"
             ),
@@ -528,8 +534,8 @@ def build_manifest(
                 "semantic_review": "human_only",
             },
             "system_executed_on_dataset": False,
-            "user_review_approved": False,
-            "run_authorized": False,
+            "user_review_approved": frozen,
+            "run_authorized": frozen,
             "limitations": [
                 "V9 refreshes only the deterministic suite after V8 exposed runtime and contract defects.",
                 "The fixed three-handbook corpus requires reuse of capabilities and source facts; exact query reuse is prohibited but topical overlap is expected.",

@@ -2,12 +2,12 @@
   "bundle": "architecture_v9_deterministic",
   "schema_version": "architecture-evaluation-v9",
   "version": "9.0.0-deterministic",
-  "revision": 1,
+  "revision": 2,
   "frozen": true,
-  "review_state": "pre_run_codex_reviewed_frozen_pending_run_approval",
+  "review_state": "pre_run_codex_reviewed_owner_approved_frozen",
   "authored_against_runtime_commit": "7f1fc82bc0d6a02a10cc64f0a7726b3cc7a913a9",
   "evaluated_system_commit": "7f1fc82bc0d6a02a10cc64f0a7726b3cc7a913a9",
-  "evaluation_harness_commit": "c02cf91351c6e2b020fb97b709c2d8ce0605dd6c",
+  "evaluation_harness_commit": "ea89b67c6d13fcede58450bb4aa0c8b4f44e38eb",
   "benchmark_run_kind": "fresh_post_fix_deterministic",
   "planner_model": "qwen/qwen3.8-27b",
   "planner_reasoning_effort": "low",
@@ -110,7 +110,7 @@
   "human_audit_repeat_n": 0,
   "human_audit_selection_policy": "pre-output stratified by answer case type; stable SHA256 order; all automatic failures added after scoring",
   "dataset_hashes": {
-    "deterministic": "4f2b6b48b1200181495f4448aaff5da13e8fefa6b33971fb06084fc9ba1a633c",
+    "deterministic": "ff0f19999523f33c7b2ae3303c4a09c5f2c2602fbd3c1317a0fae8c0956b9c67",
     "retrieval": "5532c031461ce4b1cf95181f19cae6a9cdffceb97623a9ef01fe7409cd431891",
     "answers": "d9ddce3823c214d188dcd3b5f6978afb0e638c94d06514c7f474f95bfe32df6b",
     "production": "99fb21e11ae63a75b5e75b999d899048f13264470baf3d7d21e08e372605ae20"
@@ -170,7 +170,7 @@
     "semantic_review": "human_only"
   },
   "system_executed_on_dataset": false,
-  "user_review_approved": false,
+  "user_review_approved": true,
   "limitations": [
     "V9 refreshes only the deterministic suite after V8 exposed runtime and contract defects.",
     "The fixed three-handbook corpus requires reuse of capabilities and source facts; exact query reuse is prohibited but topical overlap is expected.",
@@ -185,5 +185,5 @@
     "answers": "architecture_v8",
     "production": "architecture_v8"
   },
-  "run_authorized": false
+  "run_authorized": true
 }

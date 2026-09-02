@@ -1,0 +1,181 @@
+{
+  "bundle": "architecture_v8",
+  "schema_version": "architecture-evaluation-v8",
+  "version": "8.0.0",
+  "revision": 1,
+  "frozen": true,
+  "review_state": "pre_run_codex_reviewed_owner_authorized",
+  "authored_against_runtime_commit": "09b1d3da5206f8b16a7f6c10e34793c813ff4d30",
+  "evaluated_system_commit": "09b1d3da5206f8b16a7f6c10e34793c813ff4d30",
+  "evaluation_harness_commit": "30d16c863d8e93bfac841f85a006e5fd58a291c3",
+  "benchmark_run_kind": "frozen_internal_holdout",
+  "planner_model": "qwen/qwen3.8-27b",
+  "planner_reasoning_effort": "low",
+  "generation_model": "gemini-3.1-flash-lite",
+  "judge_model": "openai/gpt-oss-120b",
+  "retrieval_mode": "vector_primary_graph_supplement",
+  "reranker_enabled": false,
+  "hybrid_collection": "student_handbook_semantic_v32",
+  "mongodb_parent_collection": "parent_docs_v32",
+  "counts": {
+    "deterministic": 140,
+    "retrieval": 160,
+    "answers": 150,
+    "production": 60
+  },
+  "strict_structured_sources": true,
+  "strict_cohort_conflicts": true,
+  "strict_query_duplicates": true,
+  "max_parent_query_usage": 5,
+  "deterministic_contract": "query-plan-grounded-outcome-v8",
+  "deterministic_case_type_counts": {
+    "single_structured": 60,
+    "capability_boundary": 24,
+    "compound": 28,
+    "missing_or_ambiguous": 12,
+    "unsupported_in_domain": 8,
+    "out_of_domain": 8
+  },
+  "deterministic_lookup_case_types": [
+    "single_structured"
+  ],
+  "deterministic_lookup_group_counts": {
+    "foreign_language": 6,
+    "study_duration": 6,
+    "scholarship_classification": 6,
+    "scoring": 8,
+    "conduct": 6,
+    "formula": 2,
+    "office": 6,
+    "faculty": 6,
+    "program": 8,
+    "student_service": 6
+  },
+  "retrieval_contract": "regulation-rag-grounded-holdout-v8",
+  "retrieval_cohort_counts": {
+    "general": 12,
+    "K50": 55,
+    "K51": 47,
+    "K48-K49": 46
+  },
+  "retrieval_eval_split_counts": {
+    "stress": 32,
+    "realistic": 128
+  },
+  "retrieval_forbidden_query_fragments": [],
+  "evaluation_contract": "comprehensive-grounded-holdout-v8",
+  "answer_case_type_counts": {
+    "regulation_true_rag": 90,
+    "structured_answer": 30,
+    "mixed_answer": 10,
+    "clarification": 8,
+    "unanswerable": 6,
+    "out_of_domain": 6
+  },
+  "answer_eval_split_counts": {
+    "realistic": 120,
+    "stress": 30
+  },
+  "answer_path_counts": {
+    "regulation_rag": 96,
+    "structured": 30,
+    "mixed": 10,
+    "clarify": 8,
+    "out_of_domain": 6
+  },
+  "answer_rag_cohort_counts": {
+    "K48-K49": 21,
+    "K50": 25,
+    "K51": 36,
+    "general": 8
+  },
+  "answer_structured_lookup_counts": {
+    "foreign_language": 6,
+    "study_duration": 6,
+    "scholarship_classification": 6,
+    "scoring": 8,
+    "conduct": 4
+  },
+  "production_scenario_counts": {
+    "cold_rag": 20,
+    "structured": 10,
+    "warm_cache": 10,
+    "streaming": 10,
+    "burst": 10
+  },
+  "production_request_count": 60,
+  "production_unique_query_count": 50,
+  "production_metric_scope": "availability, sync/stream payload contract, TTFT/latency, cache, fallback and bounded burst; semantic correctness is measured by answer judge and audit",
+  "human_audit_required_n": 40,
+  "human_audit_repeat_n": 0,
+  "human_audit_selection_policy": "pre-output stratified by answer case type; stable SHA256 order; all automatic failures added after scoring",
+  "dataset_hashes": {
+    "deterministic": "1eb72e64c0dfdfbb6226735e03e4b843348d42c816c32d7548dc77b75900f3ee",
+    "retrieval": "5532c031461ce4b1cf95181f19cae6a9cdffceb97623a9ef01fe7409cd431891",
+    "answers": "d9ddce3823c214d188dcd3b5f6978afb0e638c94d06514c7f474f95bfe32df6b",
+    "production": "99fb21e11ae63a75b5e75b999d899048f13264470baf3d7d21e08e372605ae20"
+  },
+  "auxiliary_hashes": {
+    "human_audit_template": "6e60a6dd6289b3bc3735667b7557081f4fbbec0867f4943a21b1b529519afd51",
+    "overlap_audit": "a534df6e8d1c98d645f70a2fbe251ea3b76cc4e6709dfe5fe6fa8fdfa78d097a"
+  },
+  "docstore_path": "data/processed/chunks/all_docstore_items.json",
+  "docstore_hash": "4d410553cfaddeaef51fc096ffd0025d52e585b4c5dfe7ee0807e73570648143",
+  "versions": {
+    "query_plan_schema": "v1",
+    "query_plan_normalizer": "v20-grounded-scoring-scope",
+    "planner_prompt": "structured-regulation-v40-capability-boundaries",
+    "composer_prompt": "student-handbook-answer-v3.22-answer-scope",
+    "answer_pipeline": "v61-directory-alias-pools"
+  },
+  "config_hashes": {
+    "ai_router": "928f466367197c4570291949447dcc96d3defe53f4e4158d3cadcc312527e84c",
+    "structured_lookup_registry": "db5e15b35ed1aef437672be32f93b2cc46d89fc08eaf43df9384f7389a45ab9a",
+    "retrieval": "2303a24f4c9ab831589f95ceb5ee2f15b2f827382475ff95356934f380383d00",
+    "answer_generation": "20b9a86a6f6f0cd85e66acf4726e9be4b0b1b6ad68fa403c79cf32fbcc4125b6",
+    "slang_dictionary": "59473838a985e35ee4cf6d75c7a517c31a73aec20515a2408fa606a780f039c1"
+  },
+  "artifact_hashes": {
+    "data/processed/tables/structured_tables_registry.json": "865fe92aca6283147713f02b400734dac44dfc9a0f4d959095ce30978d8fb0fd",
+    "data/processed/tables/foreign_language_equivalency_table.json": "486a1749c7a5fc794c733bf494f103ff407716dc30fc04f8517c3b51b3486947",
+    "data/processed/tables/formula_rules.json": "27894d022c6535ac2a2a08ffbd452d7bdbbdfee579b921032ab44f3a13757f75",
+    "data/processed/directories/student_office_profiles.json": "ce5e6cb40e0e8b4b0b7ee5b0d70cea9a8036d7b566abe1d2f0503833e6c5d69d",
+    "data/processed/directories/student_faculty_profiles.json": "2508817bbb7536e411146e79a0fb9c60d9770f40ce1405367de3b3e600417e16",
+    "data/processed/directories/program_directory.json": "16589ec3310c6c654d87a315b7cff1ec0391909a4b6489379d2e10b16de784a6",
+    "data/processed/directories/student_service_directory.json": "d2f0d187fc3d696c2de76533f5df39ff72703f5e48fc38b9719d34b52bc25104",
+    "data/processed/graphs/document_edges.json": "ed42590ba9b2b0c749d531b095166460694bf1b81cbfb7bac6e4e3bc014fc77f"
+  },
+  "dependency_hashes": {
+    "requirements.txt": "b6bcd95f7bf16a59c298660f764427eda15a26169a5f5cf9184da3f964aab194",
+    "requirements-eval.txt": "ee5c751324157ce5281a7501e26bc16ebad3c068a934776c63da576443046018",
+    "runtime.txt": "22b887d1cffe47b56610fe6e05190fd94a687e78afc31a049aab1ecdae9c1c5a"
+  },
+  "cache_policy": {
+    "router_cache": "disabled_for_evaluation",
+    "answer_cache": "new_identity_bound_checkpoint_no_resume",
+    "production_warm_cache": "only_declared_repeat_of_pairs"
+  },
+  "overlap_policy": {
+    "exact_historical_query_matches_required": 0,
+    "internal_cross_suite_exact_matches_required": 0,
+    "lexical_threshold": 0.82,
+    "semantic_threshold": 0.9,
+    "semantic_similarity_is_review_signal_not_filter": true,
+    "same_fixed_corpus_reuse_allowed": true
+  },
+  "overlap_summary": {
+    "exact": 0,
+    "internal_cross_suite_exact": 0,
+    "lexical_review": 12,
+    "semantic_review": 134,
+    "semantic_model": "BAAI/bge-m3"
+  },
+  "system_executed_on_dataset": false,
+  "user_review_approved": true,
+  "limitations": [
+    "V8 is an internal frozen holdout over the same three handbooks, not an external public benchmark.",
+    "Similarity to historical questions is reviewed rather than automatically rejected because the source corpus and policy targets are finite.",
+    "Production 60 is a bounded contract and burst smoke, not a capacity, security or soak benchmark.",
+    "For a paper, V8 still needs baselines, ablations, uncertainty intervals and independent reviewer agreement."
+  ]
+}

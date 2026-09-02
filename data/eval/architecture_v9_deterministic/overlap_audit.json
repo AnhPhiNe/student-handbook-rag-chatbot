@@ -1,0 +1,3510 @@
+{
+  "policy": "No exact historical query; topical and semantic overlap is allowed for the fixed corpus.",
+  "historical_query_count": 3518,
+  "exact_historical_match_count": 0,
+  "lexical_review_threshold": 0.82,
+  "lexical_review_count": 21,
+  "semantic_review": "pending_optional_human_review",
+  "cases": [
+    {
+      "id": "v9_det_001",
+      "query": "Em học K51; bảng ngoại ngữ quy đổi TOEIC (4 kỹ năng) sang bậc 3 và bậc 4 thế nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6211,
+          "id": "v8_prod_structured_01",
+          "path": "data/eval/architecture_v8/production_cases.json",
+          "query": "Nhờ giải đáp: TOEIC (4 kỹ năng) tương ứng bậc 3 và bậc 4 ở bảng áp dụng cho K51 thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5989,
+          "id": "v8_ans_struct_001",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Tra cứu rồi trả lời ngắn gọn: TOEIC (4 kỹ năng) tương ứng bậc 3 và bậc 4 ở bảng áp dụng cho K51 thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5541,
+          "id": "v8_det_001",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "TOEIC (4 kỹ năng) tương ứng bậc 3 và bậc 4 ở bảng áp dụng cho K51 thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_002",
+      "query": "Trong bảng áp dụng cho K50, hai mức tương đương của TCF / DELF là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6131,
+          "id": "v5_prod_burst_05",
+          "path": "data/eval/architecture_v5_holdout/production_cases.json",
+          "query": "Theo bảng áp dụng cho K50, TOPIK II đạt 150 tương đương bậc ngoại ngữ nào?"
+        },
+        {
+          "sequence_ratio": 0.6131,
+          "id": "v5_ans_struct_002",
+          "path": "data/eval/architecture_v5_holdout/generated_answer_cases.json",
+          "query": "Theo bảng áp dụng cho K50, TOPIK II đạt 150 tương đương bậc ngoại ngữ nào?"
+        },
+        {
+          "sequence_ratio": 0.5985,
+          "id": "v5_prod_burst_08",
+          "path": "data/eval/architecture_v5_holdout/production_cases.json",
+          "query": "Theo bảng áp dụng cho K51, TOPIK II đạt 150 tương đương bậc ngoại ngữ nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_003",
+      "query": "Cho em tra dòng ТРКИ - Тест по русскому языку как иностранному: chuẩn bậc 3 và bậc 4 được ghi ra sao?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7069,
+          "id": "v8_prod_structured_03",
+          "path": "data/eval/architecture_v8/production_cases.json",
+          "query": "Cho em tra nhanh: tra đúng dòng ТРКИ - Тест по русскому языку как иностранному: chuẩn bậc 3 và bậc 4 là bao nhiêu?"
+        },
+        {
+          "sequence_ratio": 0.6869,
+          "id": "v8_det_003",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Tra đúng dòng ТРКИ - Тест по русскому языку как иностранному: chuẩn bậc 3 và bậc 4 là bao nhiêu?"
+        },
+        {
+          "sequence_ratio": 0.6535,
+          "id": "v7_prod_structured_05",
+          "path": "data/eval/architecture_v7/production_cases.json",
+          "query": "Chỉ xem bảng: HSK bậc 3 và bậc 4 tương ứng cấp nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_004",
+      "query": "Em học K51; bảng ngoại ngữ quy đổi TOPIK II sang bậc 3 và bậc 4 thế nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.585,
+          "id": "v8_prod_structured_04",
+          "path": "data/eval/architecture_v8/production_cases.json",
+          "query": "Nhờ giải đáp: TOPIK II tương ứng bậc 3 và bậc 4 ở bảng áp dụng cho K51 thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5644,
+          "id": "v8_ans_struct_004",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Tra cứu rồi trả lời ngắn gọn: TOPIK II tương ứng bậc 3 và bậc 4 ở bảng áp dụng cho K51 thế nào?"
+        },
+        {
+          "sequence_ratio": 0.539,
+          "id": "v8_det_001",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "TOEIC (4 kỹ năng) tương ứng bậc 3 và bậc 4 ở bảng áp dụng cho K51 thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_005",
+      "query": "Trong bảng áp dụng cho K50, hai mức tương đương của TOEFL iBT là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6232,
+          "id": "v5_prod_burst_05",
+          "path": "data/eval/architecture_v5_holdout/production_cases.json",
+          "query": "Theo bảng áp dụng cho K50, TOPIK II đạt 150 tương đương bậc ngoại ngữ nào?"
+        },
+        {
+          "sequence_ratio": 0.6232,
+          "id": "v5_ans_struct_002",
+          "path": "data/eval/architecture_v5_holdout/generated_answer_cases.json",
+          "query": "Theo bảng áp dụng cho K50, TOPIK II đạt 150 tương đương bậc ngoại ngữ nào?"
+        },
+        {
+          "sequence_ratio": 0.6087,
+          "id": "v5_prod_burst_08",
+          "path": "data/eval/architecture_v5_holdout/production_cases.json",
+          "query": "Theo bảng áp dụng cho K51, TOPIK II đạt 150 tương đương bậc ngoại ngữ nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_006",
+      "query": "Cho em tra dòng Hanyu Shuiping Kaoshi (HSK): chuẩn bậc 3 và bậc 4 được ghi ra sao?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7976,
+          "id": "v8_prod_structured_06",
+          "path": "data/eval/architecture_v8/production_cases.json",
+          "query": "Cho em tra nhanh: tra đúng dòng Hanyu Shuiping Kaoshi (HSK): chuẩn bậc 3 và bậc 4 là bao nhiêu?"
+        },
+        {
+          "sequence_ratio": 0.7947,
+          "id": "v8_det_006",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Tra đúng dòng Hanyu Shuiping Kaoshi (HSK): chuẩn bậc 3 và bậc 4 là bao nhiêu?"
+        },
+        {
+          "sequence_ratio": 0.7,
+          "id": "v8_ans_struct_006",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Tra cứu rồi trả lời ngắn gọn: tra đúng dòng Hanyu Shuiping Kaoshi (HSK): chuẩn bậc 3 và bậc 4 là bao nhiêu?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_007",
+      "query": "Sinh viên K51 hệ chính quy học chuẩn bao lâu và được phép hoàn thành tối đa trong mấy năm?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6621,
+          "id": "v4_ans_struct_006",
+          "path": "data/eval/architecture_v4/generated_answer_cases.json",
+          "query": "Sinh viên K51 hệ chính quy được học tối đa bao nhiêu năm?"
+        },
+        {
+          "sequence_ratio": 0.6483,
+          "id": "v4_ans_struct_005",
+          "path": "data/eval/architecture_v4/generated_answer_cases.json",
+          "query": "Sinh viên K50 hệ chính quy được học tối đa bao nhiêu năm?"
+        },
+        {
+          "sequence_ratio": 0.6174,
+          "id": "v4_ans_struct_004",
+          "path": "data/eval/architecture_v4/generated_answer_cases.json",
+          "query": "Sinh viên K48-K49 hệ chính quy được học tối đa bao nhiêu năm?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_008",
+      "query": "Sinh viên K51 hệ vừa làm vừa học học chuẩn bao lâu và được phép hoàn thành tối đa trong mấy năm?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5786,
+          "id": "v7_prod_structured_08",
+          "path": "data/eval/architecture_v7/production_cases.json",
+          "query": "K51 vừa làm vừa học: bảng ghi cả mốc chuẩn lẫn mốc tối đa thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5786,
+          "id": "v7_ans_struct_008",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "K51 vừa làm vừa học: bảng ghi cả mốc chuẩn lẫn mốc tối đa thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5786,
+          "id": "v7_det_008",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "K51 vừa làm vừa học: bảng ghi cả mốc chuẩn lẫn mốc tối đa thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_009",
+      "query": "Ở K50, đào tạo đại học cấp bằng thứ nhất theo hệ chính quy học chuẩn bao lâu và được phép hoàn thành tối đa trong mấy năm?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6571,
+          "id": "v7_prod_structured_09",
+          "path": "data/eval/architecture_v7/production_cases.json",
+          "query": "Bằng đại học thứ nhất hệ chính quy K50 được thiết kế bao lâu và trần hoàn thành là mấy năm?"
+        },
+        {
+          "sequence_ratio": 0.6571,
+          "id": "v7_ans_struct_009",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Bằng đại học thứ nhất hệ chính quy K50 được thiết kế bao lâu và trần hoàn thành là mấy năm?"
+        },
+        {
+          "sequence_ratio": 0.6571,
+          "id": "v7_det_009",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Bằng đại học thứ nhất hệ chính quy K50 được thiết kế bao lâu và trần hoàn thành là mấy năm?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_010",
+      "query": "Ở K50, đào tạo đại học cấp bằng thứ nhất theo hệ vừa làm vừa học học chuẩn bao lâu và được phép hoàn thành tối đa trong mấy năm?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5926,
+          "id": "v7_prod_structured_09",
+          "path": "data/eval/architecture_v7/production_cases.json",
+          "query": "Bằng đại học thứ nhất hệ chính quy K50 được thiết kế bao lâu và trần hoàn thành là mấy năm?"
+        },
+        {
+          "sequence_ratio": 0.5926,
+          "id": "v7_ans_struct_009",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Bằng đại học thứ nhất hệ chính quy K50 được thiết kế bao lâu và trần hoàn thành là mấy năm?"
+        },
+        {
+          "sequence_ratio": 0.5926,
+          "id": "v7_det_009",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Bằng đại học thứ nhất hệ chính quy K50 được thiết kế bao lâu và trần hoàn thành là mấy năm?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_011",
+      "query": "Ở K48-K49, đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học theo hệ chính quy học chuẩn bao lâu và được phép hoàn thành tối đa trong mấy năm?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6381,
+          "id": "v6_prod_structured_09",
+          "path": "data/eval/architecture_v6_holdout/production_cases.json",
+          "query": "Học liên thông cao đẳng lên đại học hệ chính quy thì kế hoạch chuẩn bao nhiêu năm, hạn tối đa bao nhiêu năm?"
+        },
+        {
+          "sequence_ratio": 0.6381,
+          "id": "v6_ans_struct_004",
+          "path": "data/eval/architecture_v6_holdout/generated_answer_cases.json",
+          "query": "Học liên thông cao đẳng lên đại học hệ chính quy thì kế hoạch chuẩn bao nhiêu năm, hạn tối đa bao nhiêu năm?"
+        },
+        {
+          "sequence_ratio": 0.6381,
+          "id": "v6_det_007",
+          "path": "data/eval/architecture_v6_holdout/deterministic_tool_cases.json",
+          "query": "Học liên thông cao đẳng lên đại học hệ chính quy thì kế hoạch chuẩn bao nhiêu năm, hạn tối đa bao nhiêu năm?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_012",
+      "query": "Ở K48-K49, đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học theo hệ vừa làm vừa học học chuẩn bao lâu và được phép hoàn thành tối đa trong mấy năm?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6084,
+          "id": "v8_det_012",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Sinh viên K48-K49 học hệ vừa làm vừa học, chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học có thời gian chuẩn và tối đa bao lâu?"
+        },
+        {
+          "sequence_ratio": 0.5845,
+          "id": "v8_prod_streaming_07",
+          "path": "data/eval/architecture_v8/production_cases.json",
+          "query": "Cho em tra nhanh: sinh viên K48-K49 học hệ vừa làm vừa học, chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học có thời gian chuẩn và tối đa bao lâu?"
+        },
+        {
+          "sequence_ratio": 0.5651,
+          "id": "v8_ans_struct_012",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Tra cứu rồi trả lời ngắn gọn: sinh viên K48-K49 học hệ vừa làm vừa học, chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học có thời gian chuẩn và tối đa bao lâu?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_013",
+      "query": "Mức học bổng Giỏi của K51 dùng hệ số nào và lấy mức học phí nào làm căn cứ?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7669,
+          "id": "v7_prod_streaming_08",
+          "path": "data/eval/architecture_v7/production_cases.json",
+          "query": "Mức học bổng loại Giỏi K51 dùng hệ số và căn cứ học phí nào?"
+        },
+        {
+          "sequence_ratio": 0.7669,
+          "id": "v7_ans_struct_013",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Mức học bổng loại Giỏi K51 dùng hệ số và căn cứ học phí nào?"
+        },
+        {
+          "sequence_ratio": 0.7669,
+          "id": "v7_det_013",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Mức học bổng loại Giỏi K51 dùng hệ số và căn cứ học phí nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_014",
+      "query": "Ở K51, học lực Giỏi và rèn luyện Tốt trở lên thì được xếp học bổng mức nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8873,
+          "id": "v7_ans_struct_014",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Học lực Giỏi và rèn luyện Tốt trở lên được xếp học bổng mức nào ở K51?"
+        },
+        {
+          "sequence_ratio": 0.8873,
+          "id": "v7_det_014",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Học lực Giỏi và rèn luyện Tốt trở lên được xếp học bổng mức nào ở K51?"
+        },
+        {
+          "sequence_ratio": 0.5913,
+          "id": "v7_ans_struct_027",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "K51 có 34 điểm rèn luyện thì thuộc mức nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_015",
+      "query": "Điều kiện học bổng K51 ở tiêu chí đối tượng yêu cầu gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7541,
+          "id": "v8_det_015",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Trong điều kiện xét học bổng của K51, mục đối tượng yêu cầu cụ thể gì?"
+        },
+        {
+          "sequence_ratio": 0.6093,
+          "id": "v8_ans_struct_015",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Tra cứu rồi trả lời ngắn gọn: trong điều kiện xét học bổng của K51, mục đối tượng yêu cầu cụ thể gì?"
+        },
+        {
+          "sequence_ratio": 0.5905,
+          "id": "v8_det_022",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Điểm môn học 4,3 ở K48–K49 được đổi sang điểm chữ gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_016",
+      "query": "Mức học bổng Xuất sắc của K50 dùng hệ số nào và lấy mức học phí nào làm căn cứ?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7742,
+          "id": "v8_det_016",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Học bổng mức Xuất sắc của K50 được nhân hệ số nào và dựa trên mức học phí nào?"
+        },
+        {
+          "sequence_ratio": 0.702,
+          "id": "v8_det_013",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Học bổng mức Giỏi của K51 được nhân hệ số nào và dựa trên mức học phí nào?"
+        },
+        {
+          "sequence_ratio": 0.7007,
+          "id": "v7_prod_streaming_08",
+          "path": "data/eval/architecture_v7/production_cases.json",
+          "query": "Mức học bổng loại Giỏi K51 dùng hệ số và căn cứ học phí nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_017",
+      "query": "Khoảng điểm nào được xếp học bổng loại Giỏi ở K50?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6538,
+          "id": "v7_ans_struct_017",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Khoảng điểm học bổng của loại Giỏi K50 được ghi thế nào?"
+        },
+        {
+          "sequence_ratio": 0.6538,
+          "id": "v7_det_017",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Khoảng điểm học bổng của loại Giỏi K50 được ghi thế nào?"
+        },
+        {
+          "sequence_ratio": 0.6408,
+          "id": "v9_det_024",
+          "path": "data/eval/final_holdout/deterministic_tool_cases.json",
+          "query": "Khoảng điểm ứng với học bổng Giỏi của K50 là bao nhiêu?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_018",
+      "query": "Điều kiện học bổng K48-K49 ở tiêu chí học tập, rèn luyện và kỷ luật yêu cầu gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8214,
+          "id": "v8_det_018",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Trong điều kiện xét học bổng của K48-K49, mục học tập, rèn luyện và kỷ luật yêu cầu cụ thể gì?"
+        },
+        {
+          "sequence_ratio": 0.7005,
+          "id": "v8_ans_struct_018",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Tra cứu rồi trả lời ngắn gọn: trong điều kiện xét học bổng của K48-K49, mục học tập, rèn luyện và kỷ luật yêu cầu cụ thể gì?"
+        },
+        {
+          "sequence_ratio": 0.6892,
+          "id": "v7_ans_struct_018",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Bảng K48–K49 yêu cầu gì về học tập, rèn luyện và kỷ luật khi xét học bổng?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_019",
+      "query": "Học phần nền tảng của K51 được 8,3 thì quy thành điểm chữ nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7967,
+          "id": "v7_ans_struct_019",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Học phần nền tảng được 8,4 thì bảng K51 đổi thành điểm chữ nào?"
+        },
+        {
+          "sequence_ratio": 0.7967,
+          "id": "v7_det_019",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Học phần nền tảng được 8,4 thì bảng K51 đổi thành điểm chữ nào?"
+        },
+        {
+          "sequence_ratio": 0.7652,
+          "id": "v8_det_019",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Một học phần nền tảng K51 đạt 8,1 thì nhận điểm chữ gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_020",
+      "query": "Một môn còn lại ở K51 đạt 5,1 điểm thì nhận điểm chữ gì và có qua không?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6866,
+          "id": "v8_det_020",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Môn còn lại của K51 được 5,0 thì quy ra chữ nào và có đạt không?"
+        },
+        {
+          "sequence_ratio": 0.672,
+          "id": "v8_det_019",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Một học phần nền tảng K51 đạt 8,1 thì nhận điểm chữ gì?"
+        },
+        {
+          "sequence_ratio": 0.6012,
+          "id": "v8_ans_struct_020",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Tra cứu rồi trả lời ngắn gọn: môn còn lại của K51 được 5,0 thì quy ra chữ nào và có đạt không?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_021",
+      "query": "Điểm học phần 7,6 của sinh viên K50 tương ứng điểm chữ nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.785,
+          "id": "v7_ans_struct_021",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Điểm học phần 7,7 của K50 nằm ở hàng điểm chữ nào?"
+        },
+        {
+          "sequence_ratio": 0.785,
+          "id": "v7_det_021",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Điểm học phần 7,7 của K50 nằm ở hàng điểm chữ nào?"
+        },
+        {
+          "sequence_ratio": 0.6555,
+          "id": "v5_det_076",
+          "path": "data/eval/architecture_v5_holdout/deterministic_tool_cases.json",
+          "query": "Điểm học phần bị hủy khi sinh viên K51 vi phạm thi cử thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_022",
+      "query": "Ở K48-K49, môn học được 4,5 thì đổi sang điểm chữ gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6667,
+          "id": "v8_det_022",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Điểm môn học 4,3 ở K48–K49 được đổi sang điểm chữ gì?"
+        },
+        {
+          "sequence_ratio": 0.6435,
+          "id": "v4_ans_struct_010",
+          "path": "data/eval/architecture_v4/generated_answer_cases.json",
+          "query": "Ở K48-K49, điểm 7,9 trên thang 10 được quy đổi thành điểm chữ nào?"
+        },
+        {
+          "sequence_ratio": 0.6355,
+          "id": "v5_det_019",
+          "path": "data/eval/architecture_v5_holdout/deterministic_tool_cases.json",
+          "query": "Theo bảng điểm K48-K49, 6,8 được chuyển thành điểm chữ gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_023",
+      "query": "B+ trong thang điểm K51 bằng bao nhiêu điểm hệ 4?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7174,
+          "id": "v8_det_023",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Trong thang điểm K51, B+ có giá trị hệ 4 là mấy?"
+        },
+        {
+          "sequence_ratio": 0.7021,
+          "id": "v8_det_024",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Ở bảng K50, điểm F tương ứng bao nhiêu điểm hệ 4?"
+        },
+        {
+          "sequence_ratio": 0.6292,
+          "id": "v9_det_036",
+          "path": "data/eval/final_holdout/deterministic_tool_cases.json",
+          "query": "Ở K51, B+ được tính bao nhiêu điểm trên hệ 4?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_024",
+      "query": "Theo bảng K50, điểm chữ F có giá trị hệ 4 là bao nhiêu?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6735,
+          "id": "v8_det_023",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Trong thang điểm K51, B+ có giá trị hệ 4 là mấy?"
+        },
+        {
+          "sequence_ratio": 0.6263,
+          "id": "v6_ans_struct_010",
+          "path": "data/eval/architecture_v6_holdout/generated_answer_cases.json",
+          "query": "Điểm chữ F+ quy đổi sang thang 4 bằng bao nhiêu?"
+        },
+        {
+          "sequence_ratio": 0.6263,
+          "id": "v6_det_019",
+          "path": "data/eval/architecture_v6_holdout/deterministic_tool_cases.json",
+          "query": "Điểm chữ F+ quy đổi sang thang 4 bằng bao nhiêu?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_025",
+      "query": "GPA 3,58 của K51 thuộc xếp loại học lực nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.9412,
+          "id": "v8_det_025",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "GPA 3,55 của K51 được xếp loại học lực nào?"
+        },
+        {
+          "sequence_ratio": 0.8333,
+          "id": "v7_ans_struct_025",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "GPA 3,59 theo bảng K51 vẫn thuộc xếp loại học lực nào?"
+        },
+        {
+          "sequence_ratio": 0.8333,
+          "id": "v7_det_025",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "GPA 3,59 theo bảng K51 vẫn thuộc xếp loại học lực nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_026",
+      "query": "Sinh viên K48-K49 có GPA 0,90 thì xếp học lực gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6275,
+          "id": "v5_ret_078",
+          "path": "data/eval/architecture_v5_holdout/retrieval_cases.json",
+          "query": "Sinh viên k48-k49 có những quyền gì theo mục Quyền lợi?"
+        },
+        {
+          "sequence_ratio": 0.6122,
+          "id": "v8_ret_117",
+          "path": "data/eval/architecture_v8/retrieval_cases.json",
+          "query": "Sinh vien K48-K49 can hieu gi ve phan lop hoc phan?"
+        },
+        {
+          "sequence_ratio": 0.5902,
+          "id": "v8_ret_097",
+          "path": "data/eval/architecture_v8/retrieval_cases.json",
+          "query": "Sinh viên K48-K49 cần hiểu gì về phần phòng khảo thí và đảm bảo chất lượng?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_027",
+      "query": "31 điểm rèn luyện ở K51 được xếp loại gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8372,
+          "id": "v7_ans_struct_029",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Mốc 65 điểm rèn luyện của K50 được xếp loại gì?"
+        },
+        {
+          "sequence_ratio": 0.8372,
+          "id": "v7_det_029",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Mốc 65 điểm rèn luyện của K50 được xếp loại gì?"
+        },
+        {
+          "sequence_ratio": 0.814,
+          "id": "v8_det_028",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Nếu có 51 điểm rèn luyện ở K51 thì xếp loại gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_028",
+      "query": "58 điểm rèn luyện ở K51 được xếp loại gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8605,
+          "id": "v7_ans_struct_029",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Mốc 65 điểm rèn luyện của K50 được xếp loại gì?"
+        },
+        {
+          "sequence_ratio": 0.8605,
+          "id": "v7_det_029",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Mốc 65 điểm rèn luyện của K50 được xếp loại gì?"
+        },
+        {
+          "sequence_ratio": 0.814,
+          "id": "v8_det_028",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Nếu có 51 điểm rèn luyện ở K51 thì xếp loại gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_029",
+      "query": "72 điểm rèn luyện ở K50 được xếp loại gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8605,
+          "id": "v7_ans_struct_029",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Mốc 65 điểm rèn luyện của K50 được xếp loại gì?"
+        },
+        {
+          "sequence_ratio": 0.8605,
+          "id": "v7_det_029",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Mốc 65 điểm rèn luyện của K50 được xếp loại gì?"
+        },
+        {
+          "sequence_ratio": 0.814,
+          "id": "v8_det_030",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Nếu có 82 điểm rèn luyện ở K50 thì xếp loại gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_030",
+      "query": "85 điểm rèn luyện ở K50 được xếp loại gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8837,
+          "id": "v7_ans_struct_029",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Mốc 65 điểm rèn luyện của K50 được xếp loại gì?"
+        },
+        {
+          "sequence_ratio": 0.8837,
+          "id": "v7_det_029",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Mốc 65 điểm rèn luyện của K50 được xếp loại gì?"
+        },
+        {
+          "sequence_ratio": 0.814,
+          "id": "v8_det_030",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Nếu có 82 điểm rèn luyện ở K50 thì xếp loại gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_031",
+      "query": "88 điểm rèn luyện ở K48-K49 được xếp loại gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8298,
+          "id": "v8_det_031",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Nếu có 87 điểm rèn luyện ở K48-K49 thì xếp loại gì?"
+        },
+        {
+          "sequence_ratio": 0.8085,
+          "id": "v8_det_032",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Nếu có 97 điểm rèn luyện ở K48-K49 thì xếp loại gì?"
+        },
+        {
+          "sequence_ratio": 0.8,
+          "id": "v4_ans_struct_013",
+          "path": "data/eval/architecture_v4/generated_answer_cases.json",
+          "query": "Điểm rèn luyện 85 của sinh viên K48-K49 được xếp loại gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_032",
+      "query": "96 điểm rèn luyện ở K48-K49 được xếp loại gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8298,
+          "id": "v8_det_032",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Nếu có 97 điểm rèn luyện ở K48-K49 thì xếp loại gì?"
+        },
+        {
+          "sequence_ratio": 0.8085,
+          "id": "v8_det_031",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Nếu có 87 điểm rèn luyện ở K48-K49 thì xếp loại gì?"
+        },
+        {
+          "sequence_ratio": 0.8,
+          "id": "v4_ans_struct_013",
+          "path": "data/eval/architecture_v4/generated_answer_cases.json",
+          "query": "Điểm rèn luyện 85 của sinh viên K48-K49 được xếp loại gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_033",
+      "query": "Cách tính GPA có trọng số tín chỉ được viết như thế nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6316,
+          "id": "v7_det_033",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Trong công thức GPA, mẫu số và trọng số của từng học phần được xác định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5036,
+          "id": "v7_ret_011",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Trong Sổ tay sinh viên, tổ chức thực hiện được quy chế rèn luyện quy định như thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5,
+          "id": "v8_det_033",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Khi tính GPA có tín chỉ, tử số và mẫu số của công thức được lập ra sao?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_034",
+      "query": "Công thức điểm dùng để xếp hạng học bổng kết hợp học tập và rèn luyện ra sao?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.825,
+          "id": "v7_det_034",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Công thức điểm xếp hạng học bổng kết hợp điểm học tập và rèn luyện theo tỷ trọng nào?"
+        },
+        {
+          "sequence_ratio": 0.8108,
+          "id": "v5_det_059",
+          "path": "data/eval/architecture_v5_holdout/deterministic_tool_cases.json",
+          "query": "Điểm dùng để xét học bổng ở K51 kết hợp điểm học tập và rèn luyện ra sao?"
+        },
+        {
+          "sequence_ratio": 0.8108,
+          "id": "v5_det_057",
+          "path": "data/eval/architecture_v5_holdout/deterministic_tool_cases.json",
+          "query": "Điểm dùng để xét học bổng ở K50 kết hợp điểm học tập và rèn luyện ra sao?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_035",
+      "query": "Danh bạ K51 ghi địa chỉ làm việc của Thư viện là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6296,
+          "id": "v8_det_035",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Cho em xin địa chỉ làm việc của Thư viện theo danh bạ K51."
+        },
+        {
+          "sequence_ratio": 0.625,
+          "id": "v7_det_035",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi email của Ký túc xá là gì?"
+        },
+        {
+          "sequence_ratio": 0.5743,
+          "id": "v7_det_038",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi office của Phòng Đào tạo là gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_036",
+      "query": "Danh bạ K50 ghi số điện thoại của Phòng Công nghệ Thông tin là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8413,
+          "id": "v7_det_039",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi email của Phòng Công nghệ Thông tin là gì?"
+        },
+        {
+          "sequence_ratio": 0.7377,
+          "id": "v9_det_053",
+          "path": "data/eval/final_holdout/deterministic_tool_cases.json",
+          "query": "Địa chỉ email của Phòng Công nghệ Thông tin cho K50 là gì?"
+        },
+        {
+          "sequence_ratio": 0.7377,
+          "id": "v9_det_053",
+          "path": "data/eval/architecture_v4/deterministic_tool_cases.json",
+          "query": "Địa chỉ email của Phòng Công nghệ Thông tin cho K50 là gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_037",
+      "query": "Danh bạ K48-K49 ghi email của Phòng Sau Đại học là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8155,
+          "id": "v7_det_038",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi office của Phòng Đào tạo là gì?"
+        },
+        {
+          "sequence_ratio": 0.807,
+          "id": "v7_det_039",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi email của Phòng Công nghệ Thông tin là gì?"
+        },
+        {
+          "sequence_ratio": 0.7755,
+          "id": "v7_det_035",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi email của Ký túc xá là gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_038",
+      "query": "Danh bạ K51 ghi địa chỉ làm việc của Phòng Quản trị – Thiết bị là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7101,
+          "id": "v8_det_038",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Cho em xin địa chỉ làm việc của Phòng Quản trị – Thiết bị theo danh bạ K51."
+        },
+        {
+          "sequence_ratio": 0.6379,
+          "id": "v7_det_038",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi office của Phòng Đào tạo là gì?"
+        },
+        {
+          "sequence_ratio": 0.6142,
+          "id": "v7_det_039",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi email của Phòng Công nghệ Thông tin là gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_039",
+      "query": "Danh bạ K50 ghi địa chỉ làm việc của Phòng Khảo thí và Đảm bảo chất lượng là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7724,
+          "id": "v5_det_034",
+          "path": "data/eval/architecture_v5_holdout/deterministic_tool_cases.json",
+          "query": "Danh bạ K50 ghi Phòng Khảo thí và Đảm bảo chất lượng ở địa chỉ nào?"
+        },
+        {
+          "sequence_ratio": 0.7586,
+          "id": "v5_det_036",
+          "path": "data/eval/architecture_v5_holdout/deterministic_tool_cases.json",
+          "query": "Danh bạ K51 ghi Phòng Khảo thí và Đảm bảo chất lượng ở địa chỉ nào?"
+        },
+        {
+          "sequence_ratio": 0.7561,
+          "id": "v8_det_039",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Cho em xin địa chỉ làm việc của Phòng Khảo thí và Đảm bảo chất lượng theo danh bạ K50."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_040",
+      "query": "Danh bạ K48-K49 ghi email của Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7977,
+          "id": "v6_det_042",
+          "path": "data/eval/architecture_v6_holdout/deterministic_tool_cases.json",
+          "query": "Email của Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học được ghi thế nào?"
+        },
+        {
+          "sequence_ratio": 0.7763,
+          "id": "v7_det_039",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi email của Phòng Công nghệ Thông tin là gì?"
+        },
+        {
+          "sequence_ratio": 0.7447,
+          "id": "v8_det_040",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Cho em xin email của Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học theo danh bạ K48-K49."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_041",
+      "query": "Danh bạ K51 ghi địa chỉ làm việc của Khoa Tâm lý học là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6721,
+          "id": "v8_det_041",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Cho em xin địa chỉ làm việc của Khoa Tâm lý học theo danh bạ K51."
+        },
+        {
+          "sequence_ratio": 0.6481,
+          "id": "v7_det_038",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi office của Phòng Đào tạo là gì?"
+        },
+        {
+          "sequence_ratio": 0.6019,
+          "id": "v7_det_035",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi email của Ký túc xá là gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_042",
+      "query": "Danh bạ K50 ghi số điện thoại của Khoa Khoa học Giáo dục là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6923,
+          "id": "v8_det_042",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Cho em xin số điện thoại của Khoa Khoa học Giáo dục theo danh bạ K50."
+        },
+        {
+          "sequence_ratio": 0.637,
+          "id": "v5_ans_struct_020",
+          "path": "data/eval/architecture_v5_holdout/generated_answer_cases.json",
+          "query": "Danh bạ K50 ghi số điện thoại và địa chỉ Phòng Kế hoạch – Tài chính thế nào?"
+        },
+        {
+          "sequence_ratio": 0.6222,
+          "id": "v5_ans_struct_021",
+          "path": "data/eval/architecture_v5_holdout/generated_answer_cases.json",
+          "query": "Danh bạ K51 ghi số điện thoại và địa chỉ Phòng Kế hoạch – Tài chính thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_043",
+      "query": "Danh bạ K48-K49 ghi email của Khoa Giáo dục Tiểu học là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7961,
+          "id": "v7_det_035",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi email của Ký túc xá là gì?"
+        },
+        {
+          "sequence_ratio": 0.7407,
+          "id": "v7_det_038",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi office của Phòng Đào tạo là gì?"
+        },
+        {
+          "sequence_ratio": 0.7395,
+          "id": "v7_det_039",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi email của Phòng Công nghệ Thông tin là gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_044",
+      "query": "Danh bạ K51 ghi website của Khoa Tiếng Hàn Quốc là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6923,
+          "id": "v7_det_037",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi website của Đoàn Thanh niên và Hội Sinh viên Trường là gì?"
+        },
+        {
+          "sequence_ratio": 0.6796,
+          "id": "v7_det_038",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi office của Phòng Đào tạo là gì?"
+        },
+        {
+          "sequence_ratio": 0.6531,
+          "id": "v7_det_035",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi email của Ký túc xá là gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_045",
+      "query": "Danh bạ K50 ghi địa chỉ làm việc của Khoa Sinh học là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.661,
+          "id": "v8_det_045",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Cho em xin địa chỉ làm việc của Khoa Sinh học theo danh bạ K50."
+        },
+        {
+          "sequence_ratio": 0.6226,
+          "id": "v7_det_038",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi office của Phòng Đào tạo là gì?"
+        },
+        {
+          "sequence_ratio": 0.5833,
+          "id": "v8_det_041",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Cho em xin địa chỉ làm việc của Khoa Tâm lý học theo danh bạ K51."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_046",
+      "query": "Danh bạ K48-K49 ghi số điện thoại của Khoa Vật lí là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7429,
+          "id": "v7_det_038",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi office của Phòng Đào tạo là gì?"
+        },
+        {
+          "sequence_ratio": 0.72,
+          "id": "v7_det_035",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi email của Ký túc xá là gì?"
+        },
+        {
+          "sequence_ratio": 0.6897,
+          "id": "v7_det_039",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi email của Phòng Công nghệ Thông tin là gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_047",
+      "query": "Sinh viên K51 học ngành Công tác xã hội thì ngành này do khoa nào quản lý?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7424,
+          "id": "v8_det_047",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K51, ngành Công tác xã hội do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.637,
+          "id": "v8_det_053",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K51, ngành Công nghệ Giáo dục do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.6119,
+          "id": "v8_det_048",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K50, ngành Sư phạm Công nghệ do khoa nào quản lý?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_048",
+      "query": "Sinh viên K50 học ngành Sư phạm Công nghệ thì ngành này do khoa nào quản lý?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.75,
+          "id": "v8_det_048",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K50, ngành Sư phạm Công nghệ do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.6861,
+          "id": "v8_det_051",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K50, ngành Sư phạm tiếng Pháp do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.6569,
+          "id": "v8_det_053",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K51, ngành Công nghệ Giáo dục do khoa nào quản lý?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_049",
+      "query": "Sinh viên K48-K49 học ngành Văn học thì ngành này do khoa nào quản lý?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7258,
+          "id": "v8_det_049",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K48-K49, ngành Văn học do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.6667,
+          "id": "v8_det_052",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K48-K49, ngành Sư phạm Tin học do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.6286,
+          "id": "v9_det_107",
+          "path": "data/eval/final_holdout/deterministic_tool_cases.json",
+          "query": "Chương trình này do khoa nào quản lý?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_050",
+      "query": "Sinh viên K51 học ngành Giáo dục Mầm non (trình độ cao đẳng và đại học) thì ngành này do khoa nào quản lý?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8229,
+          "id": "v8_det_050",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K51, ngành Giáo dục Mầm non (trình độ cao đẳng và đại học) do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.712,
+          "id": "v7_det_053",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Ngành Giáo dục Mầm non (trình độ cao đẳng và đại học) thuộc khoa nào theo danh mục K48-K49?"
+        },
+        {
+          "sequence_ratio": 0.5556,
+          "id": "v8_det_047",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K51, ngành Công tác xã hội do khoa nào quản lý?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_051",
+      "query": "Sinh viên K50 học ngành Sư phạm tiếng Pháp thì ngành này do khoa nào quản lý?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7536,
+          "id": "v8_det_051",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K50, ngành Sư phạm tiếng Pháp do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.7007,
+          "id": "v8_det_048",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K50, ngành Sư phạm Công nghệ do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.6619,
+          "id": "v8_det_052",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K48-K49, ngành Sư phạm Tin học do khoa nào quản lý?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_052",
+      "query": "Sinh viên K48-K49 học ngành Sư phạm Tin học thì ngành này do khoa nào quản lý?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7571,
+          "id": "v8_det_052",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K48-K49, ngành Sư phạm Tin học do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.6667,
+          "id": "v8_det_049",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K48-K49, ngành Văn học do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.6522,
+          "id": "v8_det_048",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K50, ngành Sư phạm Công nghệ do khoa nào quản lý?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_053",
+      "query": "Sinh viên K51 học ngành Công nghệ Giáo dục thì ngành này do khoa nào quản lý?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7536,
+          "id": "v8_det_053",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K51, ngành Công nghệ Giáo dục do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.6519,
+          "id": "v8_det_047",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K51, ngành Công tác xã hội do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.6131,
+          "id": "v8_det_048",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K50, ngành Sư phạm Công nghệ do khoa nào quản lý?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_054",
+      "query": "Sinh viên K50 học ngành Quốc tế học thì ngành này do khoa nào quản lý?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7258,
+          "id": "v8_det_054",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K50, ngành Quốc tế học do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.6852,
+          "id": "v6_ans_struct_025",
+          "path": "data/eval/architecture_v6_holdout/generated_answer_cases.json",
+          "query": "Ngành Quốc tế học được khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.6852,
+          "id": "v6_det_049",
+          "path": "data/eval/architecture_v6_holdout/deterministic_tool_cases.json",
+          "query": "Ngành Quốc tế học được khoa nào quản lý?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_055",
+      "query": "Ở K51, nếu cần quản lý trang thông tin điện tử của trường thì em liên hệ đơn vị nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.638,
+          "id": "v8_det_055",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Em muốn quản lý trang thông tin điện tử của Trường; bộ phận nào phụ trách việc này?"
+        },
+        {
+          "sequence_ratio": 0.5614,
+          "id": "v7_det_056",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Nếu cần các công tác khác có liên quan đến công nghệ thông tin, em phải liên hệ đơn vị nào?"
+        },
+        {
+          "sequence_ratio": 0.5587,
+          "id": "v6_ans_rag_030",
+          "path": "data/eval/architecture_v6_holdout/generated_answer_cases.json",
+          "query": "CVHT phụ trách K51 cần tài liệu và thông tin quản lý lớp thì có quyền đề nghị đơn vị nào cung cấp?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_056",
+      "query": "Ở K50, nếu cần thu học phí, lệ phí các hệ đào tạo thì em liên hệ đơn vị nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5931,
+          "id": "v8_det_056",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Em muốn thu học phí, lệ phí các hệ đào tạo; bộ phận nào phụ trách việc này?"
+        },
+        {
+          "sequence_ratio": 0.5789,
+          "id": "v7_det_060",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Nếu cần cấp phát hbkkht và trợ cấp các loại chế độ chính sách cho sinh viên các hệ đào tạo, em phải liên hệ đơn vị nào?"
+        },
+        {
+          "sequence_ratio": 0.5062,
+          "id": "v7_det_056",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Nếu cần các công tác khác có liên quan đến công nghệ thông tin, em phải liên hệ đơn vị nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_057",
+      "query": "Ở K48-K49, nếu cần tổ chức khám sức khỏe đầu khoá học cho tân sinh viên thì em liên hệ đơn vị nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6631,
+          "id": "v8_det_057",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Em muốn tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; bộ phận nào phụ trách việc này?"
+        },
+        {
+          "sequence_ratio": 0.58,
+          "id": "v7_det_058",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Nếu cần cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc học tập, em phải liên hệ đơn vị nào?"
+        },
+        {
+          "sequence_ratio": 0.5455,
+          "id": "v7_det_059",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Nếu cần cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận tốt nghiệp tạm thời, văn bằng tốt nghiệp, em phải liên hệ đơn vị nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_058",
+      "query": "Ở K51, nếu cần tổ chức tuyển sinh các hệ thì em liên hệ đơn vị nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5854,
+          "id": "v9_det_043",
+          "path": "data/eval/final_holdout/deterministic_tool_cases.json",
+          "query": "Tài khoản cổng sinh viên bị lỗi, K50 nên liên hệ đơn vị nào?"
+        },
+        {
+          "sequence_ratio": 0.5854,
+          "id": "v9_det_043",
+          "path": "data/eval/architecture_v4/deterministic_tool_cases.json",
+          "query": "Tài khoản cổng sinh viên bị lỗi, K50 nên liên hệ đơn vị nào?"
+        },
+        {
+          "sequence_ratio": 0.5854,
+          "id": "v9_det_043",
+          "path": "data/eval/architecture_v3/deterministic_tool_cases.json",
+          "query": "Tài khoản cổng sinh viên bị lỗi, K50 nên liên hệ đơn vị nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_059",
+      "query": "Ở K50, nếu cần công tác giáo dục đạo đức, lối sống, kỹ năng sống thì em liên hệ đơn vị nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6818,
+          "id": "v7_det_056",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Nếu cần các công tác khác có liên quan đến công nghệ thông tin, em phải liên hệ đơn vị nào?"
+        },
+        {
+          "sequence_ratio": 0.659,
+          "id": "v8_det_059",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Em muốn công tác giáo dục đạo đức, lối sống, kỹ năng sống; bộ phận nào phụ trách việc này?"
+        },
+        {
+          "sequence_ratio": 0.5655,
+          "id": "v9_det_043",
+          "path": "data/eval/final_holdout/deterministic_tool_cases.json",
+          "query": "Tài khoản cổng sinh viên bị lỗi, K50 nên liên hệ đơn vị nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_060",
+      "query": "Ở K48-K49, nếu cần liên hệ đoàn thanh niên và hội sinh viên trường thì em liên hệ đơn vị nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6548,
+          "id": "v7_det_037",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Danh bạ K48-K49 ghi website của Đoàn Thanh niên và Hội Sinh viên Trường là gì?"
+        },
+        {
+          "sequence_ratio": 0.6441,
+          "id": "v8_det_060",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Em muốn liên hệ Đoàn Thanh niên và Hội Sinh viên Trường; bộ phận nào phụ trách việc này?"
+        },
+        {
+          "sequence_ratio": 0.5949,
+          "id": "v7_det_058",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Nếu cần cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc học tập, em phải liên hệ đơn vị nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_061",
+      "query": "Theo Điều 13 của chính sách người học tài năng dành cho K51, phần tổ chức thực hiện quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6218,
+          "id": "v7_det_061",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 13 dành cho K51, nội dung về tổ chức thực hiện được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5248,
+          "id": "v7_det_081",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 6 dành cho K51, nội dung về hỗ trợ và dịch vụ sinh viên được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5182,
+          "id": "v8_ret_011",
+          "path": "data/eval/architecture_v8/retrieval_cases.json",
+          "query": "Trong Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy, phần tổ chức thực hiện có điểm chung nào áp dụng từ K48 đến K51?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_062",
+      "query": "Theo Điều 8 của quy tắc ứng xử dành cho K50, phần ứng xử với người học quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6813,
+          "id": "v7_det_062",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 8 dành cho K50, nội dung về ứng xử với người học được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.6441,
+          "id": "v8_ans_rag_056",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Tóm tắt ngắn gọn cho em: ở K50, phần ứng xử với người học có những lưu ý nào?"
+        },
+        {
+          "sequence_ratio": 0.6257,
+          "id": "v8_ret_013",
+          "path": "data/eval/architecture_v8/retrieval_cases.json",
+          "query": "Em đang xem Điều 8 dành cho K50; phần ứng xử với người học nói cụ thể điều gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_063",
+      "query": "Theo Điều 1 của quy định cố vấn học tập dành cho K50, phần phạm vi và đối tượng áp dụng quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7103,
+          "id": "v7_ans_rag_057",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Điều 1 của quy định cố vấn học tập áp dụng cho K50 quy định gì về phạm vi và đối tượng áp dụng?"
+        },
+        {
+          "sequence_ratio": 0.7103,
+          "id": "v7_ret_014",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 1 của quy định cố vấn học tập áp dụng cho K50 quy định gì về phạm vi và đối tượng áp dụng?"
+        },
+        {
+          "sequence_ratio": 0.6763,
+          "id": "v7_det_063",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 1 dành cho K50, nội dung về phạm vi và đối tượng áp dụng được quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_064",
+      "query": "Theo Điều 3 của quy chế công tác sinh viên dành cho K50, phần công tác sinh viên quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7368,
+          "id": "v5_ret_141",
+          "path": "data/eval/architecture_v5_holdout/retrieval_cases.json",
+          "query": "Theo Điều 8. của Quy chế công tác sinh viên, mục Quyền của sinh viên quy định gì cho sinh viên K51?"
+        },
+        {
+          "sequence_ratio": 0.69,
+          "id": "v7_ans_rag_058",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Điều 3 của quy chế công tác sinh viên áp dụng cho K50 quy định gì về công tác sinh viên?"
+        },
+        {
+          "sequence_ratio": 0.69,
+          "id": "v7_ret_015",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 3 của quy chế công tác sinh viên áp dụng cho K50 quy định gì về công tác sinh viên?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_065",
+      "query": "Theo Điều 2 của quy định cố vấn học tập dành cho K51, phần mục đích công tác cố vấn học tập quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7207,
+          "id": "v7_ans_rag_059",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Điều 2 của quy định cố vấn học tập áp dụng cho K51 quy định gì về mục đích công tác cố vấn học tập?"
+        },
+        {
+          "sequence_ratio": 0.7207,
+          "id": "v7_ret_016",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 2 của quy định cố vấn học tập áp dụng cho K51 quy định gì về mục đích công tác cố vấn học tập?"
+        },
+        {
+          "sequence_ratio": 0.6884,
+          "id": "v7_det_065",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 2 dành cho K51, nội dung về mục đích công tác cố vấn học tập được quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_066",
+      "query": "Theo Điều 1 của quy chế đào tạo đại học dành cho K50, phần phạm vi điều chỉnh và đối tượng áp dụng quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7137,
+          "id": "v8_ret_001",
+          "path": "data/eval/architecture_v8/retrieval_cases.json",
+          "query": "Trong Quy chế đào tạo trình độ đại học, phần phạm vi điều chỉnh và đối tượng áp dụng có điểm chung nào áp dụng từ K48 đến K51?"
+        },
+        {
+          "sequence_ratio": 0.7074,
+          "id": "v7_det_066",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 1 dành cho K50, nội dung về phạm vi điều chỉnh và đối tượng áp dụng được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.6987,
+          "id": "v7_det_080",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 1 dành cho K51, nội dung về phạm vi điều chỉnh và đối tượng áp dụng được quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_067",
+      "query": "Theo Điều 10 của quy chế công tác sinh viên dành cho K51, phần các hành vi sinh viên không được làm quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7395,
+          "id": "v7_ans_rag_060",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Điều 10 của quy chế công tác sinh viên áp dụng cho K51 quy định gì về các hành vi sinh viên không được làm?"
+        },
+        {
+          "sequence_ratio": 0.7395,
+          "id": "v7_ret_017",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 10 của quy chế công tác sinh viên áp dụng cho K51 quy định gì về các hành vi sinh viên không được làm?"
+        },
+        {
+          "sequence_ratio": 0.693,
+          "id": "v7_det_067",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 10 dành cho K51, nội dung về các hành vi sinh viên không được làm được quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_068",
+      "query": "Theo Điều 16 của quy chế rèn luyện dành cho K50, phần trách nhiệm của các đơn vị liên quan quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7353,
+          "id": "v5_ret_153",
+          "path": "data/eval/architecture_v5_holdout/retrieval_cases.json",
+          "query": "Theo Điều 16. của Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy, mục Trách nhiệm của các đơn vị liên quan quy định gì cho sinh viên K51?"
+        },
+        {
+          "sequence_ratio": 0.7215,
+          "id": "v7_det_068",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 16 dành cho K50, nội dung về trách nhiệm của các đơn vị liên quan được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.6593,
+          "id": "v8_ret_002",
+          "path": "data/eval/architecture_v8/retrieval_cases.json",
+          "query": "Trong Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy, phần trách nhiệm của các đơn vị liên quan có điểm chung nào áp dụng từ K48 đến K51?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_069",
+      "query": "Theo Điều 6 của quy chế rèn luyện dành cho K48-K49, phần đánh giá về ý thức và kết quả tham gia các hoạt động chính trị – xã hội, văn hóa, văn nghệ, thể thao, phòng chống tệ nạn xã hội quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8456,
+          "id": "v7_det_069",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 6 dành cho K48-K49, nội dung về đánh giá về ý thức và kết quả tham gia các hoạt động chính trị – xã hội, văn hóa, văn nghệ, thể thao, phòng chống tệ nạn xã hội được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.7607,
+          "id": "v8_det_069",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Em thuộc K48-K49 và muốn đọc đúng Điều 6; phần đánh giá về ý thức và kết quả tham gia các hoạt động chính trị – xã hội, văn hóa, văn nghệ, thể thao, phòng chống tệ nạn xã hội có các ý chính nào?"
+        },
+        {
+          "sequence_ratio": 0.535,
+          "id": "v5_ret_109",
+          "path": "data/eval/architecture_v5_holdout/retrieval_cases.json",
+          "query": "Theo Điều 5. của Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy, mục Đánh giá về ý thức và kết quả chấp hành quy chế, nội quy, quy định trong Trường quy định gì cho sinh viên K50?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_070",
+      "query": "Theo Điều 10 của quy định cố vấn học tập dành cho K51, phần hiệu lực thi hành quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6804,
+          "id": "v7_ans_rag_061",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Điều 10 của quy định cố vấn học tập áp dụng cho K51 quy định gì về hiệu lực thi hành?"
+        },
+        {
+          "sequence_ratio": 0.6804,
+          "id": "v7_ret_018",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 10 của quy định cố vấn học tập áp dụng cho K51 quy định gì về hiệu lực thi hành?"
+        },
+        {
+          "sequence_ratio": 0.6417,
+          "id": "v7_det_070",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 10 dành cho K51, nội dung về hiệu lực thi hành được quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_071",
+      "query": "Theo Điều 15 của quy chế công tác sinh viên dành cho K50, phần phòng khảo thí và đảm bảo chất lượng quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8293,
+          "id": "v5_ret_145",
+          "path": "data/eval/architecture_v5_holdout/retrieval_cases.json",
+          "query": "Theo Điều 15. của Quy chế công tác sinh viên, mục Phòng Khảo thí và Đảm bảo chất lượng quy định gì cho sinh viên K51?"
+        },
+        {
+          "sequence_ratio": 0.693,
+          "id": "v7_det_071",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 15 dành cho K50, nội dung về phòng khảo thí và đảm bảo chất lượng được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.6489,
+          "id": "v8_ret_019",
+          "path": "data/eval/architecture_v8/retrieval_cases.json",
+          "query": "Em đang xem Điều 15 dành cho K50; phần phòng khảo thí và đảm bảo chất lượng nói cụ thể điều gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_072",
+      "query": "Theo Điều 7 của quy định nghiên cứu khoa học sinh viên dành cho K51, phần quy trình tổ chức và tiến độ triển khai hoạt động nghiên cứu khoa học của sinh viên quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7965,
+          "id": "v7_ans_rag_063",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Điều 7 của quy định nghiên cứu khoa học áp dụng cho K51 quy định gì về quy trình tổ chức và tiến độ triển khai hoạt động nghiên cứu khoa học của sinh viên?"
+        },
+        {
+          "sequence_ratio": 0.7965,
+          "id": "v7_ret_020",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 7 của quy định nghiên cứu khoa học áp dụng cho K51 quy định gì về quy trình tổ chức và tiến độ triển khai hoạt động nghiên cứu khoa học của sinh viên?"
+        },
+        {
+          "sequence_ratio": 0.753,
+          "id": "v7_det_072",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 7 dành cho K51, nội dung về quy trình tổ chức và tiến độ triển khai hoạt động nghiên cứu khoa học của sinh viên được quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_073",
+      "query": "Theo Điều 34 của quy chế công tác sinh viên dành cho K51, phần hình thức kỷ luật và nội dung vi phạm quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7417,
+          "id": "v7_ans_rag_064",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Điều 34 của quy chế công tác sinh viên áp dụng cho K51 quy định gì về hình thức kỷ luật và nội dung vi phạm?"
+        },
+        {
+          "sequence_ratio": 0.7417,
+          "id": "v7_ret_021",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 34 của quy chế công tác sinh viên áp dụng cho K51 quy định gì về hình thức kỷ luật và nội dung vi phạm?"
+        },
+        {
+          "sequence_ratio": 0.7333,
+          "id": "v7_ret_029",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 34 của quy chế công tác sinh viên áp dụng cho K50 quy định gì về hình thức kỷ luật và nội dung vi phạm?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_074",
+      "query": "Theo Điều 6 của quy chế đào tạo đại học dành cho K51, phần liên kết đào tạo quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6507,
+          "id": "v8_ret_004",
+          "path": "data/eval/architecture_v8/retrieval_cases.json",
+          "query": "Trong Quy chế đào tạo trình độ đại học, phần liên kết đào tạo có điểm chung nào áp dụng từ K48 đến K51?"
+        },
+        {
+          "sequence_ratio": 0.6441,
+          "id": "v5_ret_157",
+          "path": "data/eval/architecture_v5_holdout/retrieval_cases.json",
+          "query": "Theo Điều 11. của Quy chế đào tạo trình độ đại học, mục Đánh giá kết quả học tập theo học kỳ, năm học quy định gì cho sinh viên K51?"
+        },
+        {
+          "sequence_ratio": 0.6339,
+          "id": "v7_det_074",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 6 dành cho K51, nội dung về liên kết đào tạo được quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_075",
+      "query": "Theo Điều 14 của chính sách người học tài năng dành cho K51, phần kiểm tra, khen thưởng, kỷ luật quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6605,
+          "id": "v7_det_075",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 14 dành cho K51, nội dung về kiểm tra, khen thưởng, kỷ luật được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.6132,
+          "id": "v8_ret_022",
+          "path": "data/eval/architecture_v8/retrieval_cases.json",
+          "query": "Em đang xem Điều 14 dành cho K51; phần kiểm tra, khen thưởng, kỷ luật nói cụ thể điều gì?"
+        },
+        {
+          "sequence_ratio": 0.5679,
+          "id": "v5_ans_rag_045",
+          "path": "data/eval/architecture_v5_holdout/generated_answer_cases.json",
+          "query": "Theo Điều 38. của Quy chế công tác sinh viên, mục Quyền khiếu nại về khen thưởng, kỷ luật quy định gì cho sinh viên K51?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_076",
+      "query": "Theo Điều 12 của nghị định hỗ trợ sinh viên sư phạm dành cho K48-K49, phần trách nhiệm của cơ sở đào tạo giáo viên quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.688,
+          "id": "v7_det_076",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 12 dành cho K48-K49, nội dung về trách nhiệm của cơ sở đào tạo giáo viên được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.6518,
+          "id": "v5_ans_rag_049",
+          "path": "data/eval/architecture_v5_holdout/generated_answer_cases.json",
+          "query": "Theo Điều 12. của Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt, mục Trách nhiệm của cơ sở đào tạo giáo viên quy định gì cho sinh viên K51?"
+        },
+        {
+          "sequence_ratio": 0.6518,
+          "id": "v5_ret_133",
+          "path": "data/eval/architecture_v5_holdout/retrieval_cases.json",
+          "query": "Theo Điều 12. của Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt, mục Trách nhiệm của cơ sở đào tạo giáo viên quy định gì cho sinh viên K51?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_077",
+      "query": "Theo Điều 8 của quy định cố vấn học tập dành cho K51, phần đánh giá kết quả hoạt động quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7048,
+          "id": "v7_ans_rag_067",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Điều 8 của quy định cố vấn học tập áp dụng cho K51 quy định gì về đánh giá kết quả hoạt động?"
+        },
+        {
+          "sequence_ratio": 0.7048,
+          "id": "v7_ret_024",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 8 của quy định cố vấn học tập áp dụng cho K51 quy định gì về đánh giá kết quả hoạt động?"
+        },
+        {
+          "sequence_ratio": 0.67,
+          "id": "v7_det_077",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 8 dành cho K51, nội dung về đánh giá kết quả hoạt động được quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_078",
+      "query": "Theo Điều 7 của quy chế rèn luyện dành cho K50, phần đánh giá về phẩm chất công dân và quan hệ với cộng đồng quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7608,
+          "id": "v7_det_078",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 7 dành cho K50, nội dung về đánh giá về phẩm chất công dân và quan hệ với cộng đồng được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.7578,
+          "id": "v7_ans_rag_068",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Điều 7 của quy chế rèn luyện áp dụng cho K50 quy định gì về đánh giá về phẩm chất công dân và quan hệ với cộng đồng?"
+        },
+        {
+          "sequence_ratio": 0.7578,
+          "id": "v7_ret_025",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 7 của quy chế rèn luyện áp dụng cho K50 quy định gì về đánh giá về phẩm chất công dân và quan hệ với cộng đồng?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_079",
+      "query": "Theo Điều 12 của quy định ngoại trú dành cho K51, phần cố vấn học tập, bcs lớp quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6804,
+          "id": "v7_ans_rag_069",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Điều 12 của quy định ngoại trú áp dụng cho K51 quy định gì về cố vấn học tập, bcs lớp?"
+        },
+        {
+          "sequence_ratio": 0.6804,
+          "id": "v7_ret_026",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 12 của quy định ngoại trú áp dụng cho K51 quy định gì về cố vấn học tập, bcs lớp?"
+        },
+        {
+          "sequence_ratio": 0.6771,
+          "id": "v7_det_079",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 12 dành cho K51, nội dung về cố vấn học tập, bcs lớp được quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_080",
+      "query": "Theo Điều 1 của chính sách người học tài năng dành cho K51, phần phạm vi điều chỉnh và đối tượng áp dụng quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6894,
+          "id": "v7_det_080",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 1 dành cho K51, nội dung về phạm vi điều chỉnh và đối tượng áp dụng được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.6809,
+          "id": "v7_det_066",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 1 dành cho K50, nội dung về phạm vi điều chỉnh và đối tượng áp dụng được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.6466,
+          "id": "v8_ret_027",
+          "path": "data/eval/architecture_v8/retrieval_cases.json",
+          "query": "Em đang xem Điều 1 dành cho K51; phần phạm vi điều chỉnh và đối tượng áp dụng nói cụ thể điều gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_081",
+      "query": "Theo Điều 6 của quy chế công tác sinh viên dành cho K51, phần hỗ trợ và dịch vụ sinh viên quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7156,
+          "id": "v7_ret_028",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 6 của quy chế công tác sinh viên áp dụng cho K51 quy định gì về hỗ trợ và dịch vụ sinh viên?"
+        },
+        {
+          "sequence_ratio": 0.6972,
+          "id": "v5_ret_141",
+          "path": "data/eval/architecture_v5_holdout/retrieval_cases.json",
+          "query": "Theo Điều 8. của Quy chế công tác sinh viên, mục Quyền của sinh viên quy định gì cho sinh viên K51?"
+        },
+        {
+          "sequence_ratio": 0.6635,
+          "id": "v7_det_081",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 6 dành cho K51, nội dung về hỗ trợ và dịch vụ sinh viên được quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_082",
+      "query": "Theo Điều 34 của quy chế công tác sinh viên dành cho K50, phần hình thức kỷ luật và nội dung vi phạm quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7417,
+          "id": "v7_ret_029",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 34 của quy chế công tác sinh viên áp dụng cho K50 quy định gì về hình thức kỷ luật và nội dung vi phạm?"
+        },
+        {
+          "sequence_ratio": 0.7333,
+          "id": "v7_ans_rag_064",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Điều 34 của quy chế công tác sinh viên áp dụng cho K51 quy định gì về hình thức kỷ luật và nội dung vi phạm?"
+        },
+        {
+          "sequence_ratio": 0.7333,
+          "id": "v7_ret_021",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 34 của quy chế công tác sinh viên áp dụng cho K51 quy định gì về hình thức kỷ luật và nội dung vi phạm?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_083",
+      "query": "Theo Điều 4 của quy định nghiên cứu khoa học sinh viên dành cho K48-K49, phần nội dung hoạt động nghiên cứu khoa học của sinh viên quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.705,
+          "id": "v7_det_083",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 4 dành cho K48-K49, nội dung về nội dung hoạt động nghiên cứu khoa học của sinh viên được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.6691,
+          "id": "v8_ret_030",
+          "path": "data/eval/architecture_v8/retrieval_cases.json",
+          "query": "Em đang xem Điều 4 dành cho K48-K49; phần nội dung hoạt động nghiên cứu khoa học của sinh viên nói cụ thể điều gì?"
+        },
+        {
+          "sequence_ratio": 0.6029,
+          "id": "v5_ans_rag_025",
+          "path": "data/eval/architecture_v5_holdout/generated_answer_cases.json",
+          "query": "Cho em hỏi quy định về nội dung hoạt động nghiên cứu khoa học của sinh viên áp dụng thế nào cho sinh viên K50?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_084",
+      "query": "Theo Điều 21 của quy chế công tác sinh viên dành cho K48-K49, phần phòng thanh tra đào tạo quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6667,
+          "id": "v7_det_084",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 21 dành cho K48-K49, nội dung về phòng thanh tra đào tạo được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.658,
+          "id": "v5_prod_cold_20",
+          "path": "data/eval/architecture_v5_holdout/production_cases.json",
+          "query": "Theo Điều 32. của Quy chế công tác sinh viên, mục Nội dung, hình thức khen thưởng quy định gì cho sinh viên K51?"
+        },
+        {
+          "sequence_ratio": 0.658,
+          "id": "v5_prod_cold_15",
+          "path": "data/eval/architecture_v5_holdout/production_cases.json",
+          "query": "Theo Điều 32. của Quy chế công tác sinh viên, mục Nội dung, hình thức khen thưởng quy định gì cho sinh viên K50?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_085",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: em học K51; bảng ngoại ngữ quy đổi TOPIK II sang bậc 3 và bậc 4 thế nào? Thứ hai: ở K51, học lực Giỏi và rèn luyện Tốt trở lên thì được xếp học bổng mức nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.506,
+          "id": "v7_ans_struct_014",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Học lực Giỏi và rèn luyện Tốt trở lên được xếp học bổng mức nào ở K51?"
+        },
+        {
+          "sequence_ratio": 0.506,
+          "id": "v7_det_014",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Học lực Giỏi và rèn luyện Tốt trở lên được xếp học bổng mức nào ở K51?"
+        },
+        {
+          "sequence_ratio": 0.4642,
+          "id": "v8_det_085",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: TOPIK II tương ứng bậc 3 và bậc 4 ở bảng áp dụng cho K51 thế nào? Thứ hai: bảng xếp loại học bổng K51 quy định mức Giỏi cần kết quả gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_086",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: 72 điểm rèn luyện ở K50 được xếp loại gì? Thứ hai: danh bạ K50 ghi số điện thoại của Khoa Khoa học Giáo dục là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7023,
+          "id": "v8_det_086",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: nếu có 68 điểm rèn luyện ở K50 thì xếp loại gì? Thứ hai: cho em xin số điện thoại của Khoa Khoa học Giáo dục theo danh bạ K50?"
+        },
+        {
+          "sequence_ratio": 0.5578,
+          "id": "v7_det_091",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Điểm rèn luyện 89 của K48–K49 được phân loại thế nào. Đồng thời, danh bạ K48-K49 ghi office của Phòng Đào tạo là gì?"
+        },
+        {
+          "sequence_ratio": 0.5556,
+          "id": "v5_det_118",
+          "path": "data/eval/architecture_v5_holdout/deterministic_tool_cases.json",
+          "query": "72 điểm rèn luyện xếp loại gì và số điện thoại Phòng Kế hoạch – Tài chính là gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_087",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: ở K48-K49, nếu cần liên hệ đoàn thanh niên và hội sinh viên trường thì em liên hệ đơn vị nào? Thứ hai: ở K48-K49, môn học được 4,5 thì đổi sang điểm chữ gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6464,
+          "id": "v8_det_087",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: em muốn liên hệ Đoàn Thanh niên và Hội Sinh viên Trường; bộ phận nào phụ trách việc này? Thứ hai: điểm môn học 4,3 ở K48–K49 được đổi sang điểm chữ gì?"
+        },
+        {
+          "sequence_ratio": 0.5208,
+          "id": "v8_det_060",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Em muốn liên hệ Đoàn Thanh niên và Hội Sinh viên Trường; bộ phận nào phụ trách việc này?"
+        },
+        {
+          "sequence_ratio": 0.4984,
+          "id": "v7_ret_153",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Em thuộc K48-K49 và cần biết hai nội dung: (1) nhiệm vụ của sinh viên; (2) phạm vi và đối tượng áp dụng. Mỗi nội dung có những điểm chính nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_088",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: ở K51, nếu cần quản lý trang thông tin điện tử của trường thì em liên hệ đơn vị nào? Thứ hai: sinh viên K51 hệ chính quy học chuẩn bao lâu và được phép hoàn thành tối đa trong mấy năm?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.4228,
+          "id": "v7_prod_structured_09",
+          "path": "data/eval/architecture_v7/production_cases.json",
+          "query": "Bằng đại học thứ nhất hệ chính quy K50 được thiết kế bao lâu và trần hoàn thành là mấy năm?"
+        },
+        {
+          "sequence_ratio": 0.4228,
+          "id": "v7_ans_struct_009",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Bằng đại học thứ nhất hệ chính quy K50 được thiết kế bao lâu và trần hoàn thành là mấy năm?"
+        },
+        {
+          "sequence_ratio": 0.4228,
+          "id": "v7_det_009",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Bằng đại học thứ nhất hệ chính quy K50 được thiết kế bao lâu và trần hoàn thành là mấy năm?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_089",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: 85 điểm rèn luyện ở K50 được xếp loại gì? Thứ hai: danh bạ K50 ghi địa chỉ làm việc của Khoa Sinh học là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6969,
+          "id": "v8_det_089",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: nếu có 82 điểm rèn luyện ở K50 thì xếp loại gì? Thứ hai: cho em xin địa chỉ làm việc của Khoa Sinh học theo danh bạ K50?"
+        },
+        {
+          "sequence_ratio": 0.5633,
+          "id": "v7_det_091",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Điểm rèn luyện 89 của K48–K49 được phân loại thế nào. Đồng thời, danh bạ K48-K49 ghi office của Phòng Đào tạo là gì?"
+        },
+        {
+          "sequence_ratio": 0.5016,
+          "id": "v8_prod_burst_09",
+          "path": "data/eval/architecture_v8/production_cases.json",
+          "query": "Cho em tra nhanh: thứ nhất: nếu có 87 điểm rèn luyện ở K48-K49 thì xếp loại gì? Thứ hai: em thuộc K48-K49 và muốn đọc đúng Điều 21; phần phòng thanh tra đào tạo có các ý chính nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_090",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: ở K48-K49, môn học được 4,5 thì đổi sang điểm chữ gì? Thứ hai: danh bạ K48-K49 ghi email của Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6971,
+          "id": "v8_det_090",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: điểm môn học 4,3 ở K48–K49 được đổi sang điểm chữ gì? Thứ hai: cho em xin email của Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học theo danh bạ K48-K49?"
+        },
+        {
+          "sequence_ratio": 0.5362,
+          "id": "v8_det_040",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Cho em xin email của Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học theo danh bạ K48-K49."
+        },
+        {
+          "sequence_ratio": 0.5361,
+          "id": "v7_det_091",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Điểm rèn luyện 89 của K48–K49 được phân loại thế nào. Đồng thời, danh bạ K48-K49 ghi office của Phòng Đào tạo là gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_091",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: sinh viên K51 học ngành Công tác xã hội thì ngành này do khoa nào quản lý? Thứ hai: em học K51; bảng ngoại ngữ quy đổi TOEIC (4 kỹ năng) sang bậc 3 và bậc 4 thế nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6391,
+          "id": "v8_det_091",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: theo danh mục K51, ngành Công tác xã hội do khoa nào quản lý? Thứ hai: TOEIC (4 kỹ năng) tương ứng bậc 3 và bậc 4 ở bảng áp dụng cho K51 thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5831,
+          "id": "v8_prod_burst_10",
+          "path": "data/eval/architecture_v8/production_cases.json",
+          "query": "Nhờ giải đáp: thứ nhất: theo danh mục K51, ngành Công nghệ Giáo dục do khoa nào quản lý? Thứ hai: em thuộc K51 và muốn đọc đúng Điều 8; phần đánh giá kết quả hoạt động có các ý chính nào?"
+        },
+        {
+          "sequence_ratio": 0.5654,
+          "id": "v8_det_109",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: theo danh mục K51, ngành Công nghệ Giáo dục do khoa nào quản lý? Thứ hai: em thuộc K51 và muốn đọc đúng Điều 8; phần đánh giá kết quả hoạt động có các ý chính nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_092",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: công thức điểm dùng để xếp hạng học bổng kết hợp học tập và rèn luyện ra sao? Thứ hai: sinh viên K50 học ngành Sư phạm Công nghệ thì ngành này do khoa nào quản lý?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7102,
+          "id": "v8_det_092",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: điểm dùng để xếp hạng học bổng được ghép từ điểm học tập và rèn luyện theo công thức nào? Thứ hai: theo danh mục K50, ngành Sư phạm Công nghệ do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.5368,
+          "id": "v7_det_034",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Công thức điểm xếp hạng học bổng kết hợp điểm học tập và rèn luyện theo tỷ trọng nào?"
+        },
+        {
+          "sequence_ratio": 0.5217,
+          "id": "v8_det_034",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Điểm dùng để xếp hạng học bổng được ghép từ điểm học tập và rèn luyện theo công thức nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_093",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: danh bạ K48-K49 ghi email của Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học là gì? Thứ hai: ở K48-K49, nếu cần tổ chức khám sức khỏe đầu khoá học cho tân sinh viên thì em liên hệ đơn vị nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5359,
+          "id": "v8_det_090",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: điểm môn học 4,3 ở K48–K49 được đổi sang điểm chữ gì? Thứ hai: cho em xin email của Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học theo danh bạ K48-K49?"
+        },
+        {
+          "sequence_ratio": 0.5296,
+          "id": "v8_det_040",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Cho em xin email của Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học theo danh bạ K48-K49."
+        },
+        {
+          "sequence_ratio": 0.5033,
+          "id": "v6_det_042",
+          "path": "data/eval/architecture_v6_holdout/deterministic_tool_cases.json",
+          "query": "Email của Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học được ghi thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_094",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: danh bạ K51 ghi địa chỉ làm việc của Phòng Quản trị – Thiết bị là gì? Thứ hai: sinh viên K51 học ngành Công nghệ Giáo dục thì ngành này do khoa nào quản lý?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7075,
+          "id": "v8_det_094",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: cho em xin địa chỉ làm việc của Phòng Quản trị – Thiết bị theo danh bạ K51? Thứ hai: theo danh mục K51, ngành Công nghệ Giáo dục do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.5,
+          "id": "v6_det_073",
+          "path": "data/eval/architecture_v6_holdout/deterministic_tool_cases.json",
+          "query": "Website của Phòng Quản trị – Thiết bị có ghi trong danh bạ không, và Ngôn ngữ Nhật do khoa nào phụ trách?"
+        },
+        {
+          "sequence_ratio": 0.494,
+          "id": "v8_det_038",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Cho em xin địa chỉ làm việc của Phòng Quản trị – Thiết bị theo danh bạ K51."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_095",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: danh bạ K50 ghi số điện thoại của Phòng Công nghệ Thông tin là gì? Thứ hai: sinh viên K50 học ngành Sư phạm tiếng Pháp thì ngành này do khoa nào quản lý?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7059,
+          "id": "v8_det_095",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: cho em xin số điện thoại của Phòng Công nghệ Thông tin theo danh bạ K50? Thứ hai: theo danh mục K50, ngành Sư phạm tiếng Pháp do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.5523,
+          "id": "v8_det_092",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: điểm dùng để xếp hạng học bổng được ghép từ điểm học tập và rèn luyện theo công thức nào? Thứ hai: theo danh mục K50, ngành Sư phạm Công nghệ do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.49,
+          "id": "v8_det_036",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Cho em xin số điện thoại của Phòng Công nghệ Thông tin theo danh bạ K50."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_096",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: ở K48-K49, nếu cần tổ chức khám sức khỏe đầu khoá học cho tân sinh viên thì em liên hệ đơn vị nào? Thứ hai: điều kiện học bổng K48-K49 ở tiêu chí học tập, rèn luyện và kỷ luật yêu cầu gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5333,
+          "id": "v8_ans_struct_018",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Tra cứu rồi trả lời ngắn gọn: trong điều kiện xét học bổng của K48-K49, mục học tập, rèn luyện và kỷ luật yêu cầu cụ thể gì?"
+        },
+        {
+          "sequence_ratio": 0.5183,
+          "id": "v8_det_057",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Em muốn tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; bộ phận nào phụ trách việc này?"
+        },
+        {
+          "sequence_ratio": 0.485,
+          "id": "v8_det_018",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Trong điều kiện xét học bổng của K48-K49, mục học tập, rèn luyện và kỷ luật yêu cầu cụ thể gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_097",
+      "query": "Em hỏi ba ý riêng. Thứ nhất: 58 điểm rèn luyện ở K51 được xếp loại gì? Thứ hai: danh bạ K51 ghi website của Khoa Tiếng Hàn Quốc là gì? Thứ ba: ở K51, nếu cần tổ chức tuyển sinh các hệ thì em liên hệ đơn vị nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5114,
+          "id": "v8_det_112",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: cho em xin website của Khoa Tiếng Hàn Quốc theo danh bạ K51? Thứ hai: em thuộc K51 và muốn đọc đúng Điều 6; phần hỗ trợ và dịch vụ sinh viên có các ý chính nào?"
+        },
+        {
+          "sequence_ratio": 0.4885,
+          "id": "v8_ans_mixed_010",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Giải đáp lần lượt giúp em. Thứ nhất: cho em xin website của Khoa Tiếng Hàn Quốc theo danh bạ K51? Thứ hai: em thuộc K51 và muốn đọc đúng Điều 6; phần hỗ trợ và dịch vụ sinh viên có các ý chính nào?"
+        },
+        {
+          "sequence_ratio": 0.4628,
+          "id": "v8_prod_burst_09",
+          "path": "data/eval/architecture_v8/production_cases.json",
+          "query": "Cho em tra nhanh: thứ nhất: nếu có 87 điểm rèn luyện ở K48-K49 thì xếp loại gì? Thứ hai: em thuộc K48-K49 và muốn đọc đúng Điều 21; phần phòng thanh tra đào tạo có các ý chính nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_098",
+      "query": "Em hỏi ba ý riêng. Thứ nhất: danh bạ K50 ghi địa chỉ làm việc của Phòng Khảo thí và Đảm bảo chất lượng là gì? Thứ hai: sinh viên K50 học ngành Quốc tế học thì ngành này do khoa nào quản lý? Thứ ba: ở K50, đào tạo đại học cấp bằng thứ nhất theo hệ chính quy học chuẩn bao lâu và được phép hoàn thành tối đa trong mấy năm?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.4708,
+          "id": "v5_ans_rag_012",
+          "path": "data/eval/architecture_v5_holdout/generated_answer_cases.json",
+          "query": "k48-k49: phong khao thi va dam bao chat luong trong quy che cong tac sinh vien doi voi chuong trinh dao tao dai hoc he chinh quy truong dai hoc su pham thanh pho ho chi minh quy dinh sao?"
+        },
+        {
+          "sequence_ratio": 0.4708,
+          "id": "v5_ret_052",
+          "path": "data/eval/architecture_v5_holdout/retrieval_cases.json",
+          "query": "k48-k49: phong khao thi va dam bao chat luong trong quy che cong tac sinh vien doi voi chuong trinh dao tao dai hoc he chinh quy truong dai hoc su pham thanh pho ho chi minh quy dinh sao?"
+        },
+        {
+          "sequence_ratio": 0.4425,
+          "id": "v8_ans_struct_010",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Tra cứu rồi trả lời ngắn gọn: sinh viên K50 học hệ vừa làm vừa học, chương trình đào tạo đại học cấp bằng thứ nhất có thời gian chuẩn và tối đa bao lâu?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_099",
+      "query": "Em hỏi ba ý riêng. Thứ nhất: điều kiện học bổng K48-K49 ở tiêu chí học tập, rèn luyện và kỷ luật yêu cầu gì? Thứ hai: danh bạ K48-K49 ghi email của Phòng Sau Đại học là gì? Thứ ba: sinh viên K48-K49 học ngành Sư phạm Tin học thì ngành này do khoa nào quản lý?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5336,
+          "id": "v8_det_092",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: điểm dùng để xếp hạng học bổng được ghép từ điểm học tập và rèn luyện theo công thức nào? Thứ hai: theo danh mục K50, ngành Sư phạm Công nghệ do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.5026,
+          "id": "v7_det_088",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Bảng K48–K49 yêu cầu gì về học tập, rèn luyện và kỷ luật khi xét học bổng. Đồng thời, danh bạ K48-K49 ghi email của Ký túc xá là gì?"
+        },
+        {
+          "sequence_ratio": 0.469,
+          "id": "v8_ans_struct_018",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Tra cứu rồi trả lời ngắn gọn: trong điều kiện xét học bổng của K48-K49, mục học tập, rèn luyện và kỷ luật yêu cầu cụ thể gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_100",
+      "query": "Em hỏi ba ý riêng. Thứ nhất: b+ trong thang điểm K51 bằng bao nhiêu điểm hệ 4? Thứ hai: danh bạ K51 ghi địa chỉ làm việc của Thư viện là gì? Thứ ba: sinh viên K51 học ngành Giáo dục Mầm non (trình độ cao đẳng và đại học) thì ngành này do khoa nào quản lý?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.509,
+          "id": "v8_det_050",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Theo danh mục K51, ngành Giáo dục Mầm non (trình độ cao đẳng và đại học) do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.4753,
+          "id": "v8_det_094",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: cho em xin địa chỉ làm việc của Phòng Quản trị – Thiết bị theo danh bạ K51? Thứ hai: theo danh mục K51, ngành Công nghệ Giáo dục do khoa nào quản lý?"
+        },
+        {
+          "sequence_ratio": 0.4461,
+          "id": "v8_det_089",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: nếu có 82 điểm rèn luyện ở K50 thì xếp loại gì? Thứ hai: cho em xin địa chỉ làm việc của Khoa Sinh học theo danh bạ K50?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_101",
+      "query": "Em hỏi ba ý riêng. Thứ nhất: danh bạ K50 ghi số điện thoại của Khoa Khoa học Giáo dục là gì? Thứ hai: ở K50, nếu cần thu học phí, lệ phí các hệ đào tạo thì em liên hệ đơn vị nào? Thứ ba: ở K50, đào tạo đại học cấp bằng thứ nhất theo hệ vừa làm vừa học học chuẩn bao lâu và được phép hoàn thành tối đa trong mấy năm?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.3973,
+          "id": "v8_prod_structured_10",
+          "path": "data/eval/architecture_v8/production_cases.json",
+          "query": "Nhờ giải đáp: sinh viên K50 học hệ vừa làm vừa học, chương trình đào tạo đại học cấp bằng thứ nhất có thời gian chuẩn và tối đa bao lâu?"
+        },
+        {
+          "sequence_ratio": 0.3833,
+          "id": "v8_ans_struct_010",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Tra cứu rồi trả lời ngắn gọn: sinh viên K50 học hệ vừa làm vừa học, chương trình đào tạo đại học cấp bằng thứ nhất có thời gian chuẩn và tối đa bao lâu?"
+        },
+        {
+          "sequence_ratio": 0.3812,
+          "id": "v8_det_010",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Sinh viên K50 học hệ vừa làm vừa học, chương trình đào tạo đại học cấp bằng thứ nhất có thời gian chuẩn và tối đa bao lâu?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_102",
+      "query": "Em hỏi ba ý riêng. Thứ nhất: danh bạ K48-K49 ghi email của Phòng Sau Đại học là gì? Thứ hai: sinh viên K48-K49 học ngành Sư phạm Tin học thì ngành này do khoa nào quản lý? Thứ ba: ở K48-K49, đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học theo hệ vừa làm vừa học học chuẩn bao lâu và được phép hoàn thành tối đa trong mấy năm?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5458,
+          "id": "v8_ans_struct_012",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Tra cứu rồi trả lời ngắn gọn: sinh viên K48-K49 học hệ vừa làm vừa học, chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học có thời gian chuẩn và tối đa bao lâu?"
+        },
+        {
+          "sequence_ratio": 0.5392,
+          "id": "v8_prod_streaming_07",
+          "path": "data/eval/architecture_v8/production_cases.json",
+          "query": "Cho em tra nhanh: sinh viên K48-K49 học hệ vừa làm vừa học, chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học có thời gian chuẩn và tối đa bao lâu?"
+        },
+        {
+          "sequence_ratio": 0.5138,
+          "id": "v8_det_012",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Sinh viên K48-K49 học hệ vừa làm vừa học, chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học có thời gian chuẩn và tối đa bao lâu?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_103",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: sinh viên K51 hệ chính quy học chuẩn bao lâu và được phép hoàn thành tối đa trong mấy năm? Thứ hai: theo Điều 10 của quy chế công tác sinh viên dành cho K51, phần các hành vi sinh viên không được làm quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5532,
+          "id": "v7_prod_burst_06",
+          "path": "data/eval/architecture_v7/production_cases.json",
+          "query": "Mức học bổng loại Giỏi K51 dùng hệ số và căn cứ học phí nào; ngoài ra theo Điều 10 dành cho K51, nội dung về các hành vi sinh viên không được làm được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5532,
+          "id": "v7_ans_mixed_003",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Mức học bổng loại Giỏi K51 dùng hệ số và căn cứ học phí nào; ngoài ra theo Điều 10 dành cho K51, nội dung về các hành vi sinh viên không được làm được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5532,
+          "id": "v7_det_105",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Mức học bổng loại Giỏi K51 dùng hệ số và căn cứ học phí nào; ngoài ra theo Điều 10 dành cho K51, nội dung về các hành vi sinh viên không được làm được quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_104",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: công thức điểm dùng để xếp hạng học bổng kết hợp học tập và rèn luyện ra sao? Thứ hai: theo Điều 34 của quy chế công tác sinh viên dành cho K50, phần hình thức kỷ luật và nội dung vi phạm quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5459,
+          "id": "v7_prod_burst_09",
+          "path": "data/eval/architecture_v7/production_cases.json",
+          "query": "Đúng 50 điểm rèn luyện đã vào loại Trung bình chưa; ngoài ra theo Điều 34 dành cho K51, nội dung về hình thức kỷ luật và nội dung vi phạm được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5459,
+          "id": "v7_ans_mixed_006",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Đúng 50 điểm rèn luyện đã vào loại Trung bình chưa; ngoài ra theo Điều 34 dành cho K51, nội dung về hình thức kỷ luật và nội dung vi phạm được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5459,
+          "id": "v7_det_108",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Đúng 50 điểm rèn luyện đã vào loại Trung bình chưa; ngoài ra theo Điều 34 dành cho K51, nội dung về hình thức kỷ luật và nội dung vi phạm được quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_105",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: ở K48-K49, đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học theo hệ chính quy học chuẩn bao lâu và được phép hoàn thành tối đa trong mấy năm? Thứ hai: theo Điều 6 của quy chế rèn luyện dành cho K48-K49, phần đánh giá về ý thức và kết quả tham gia các hoạt động chính trị – xã hội, văn hóa, văn nghệ, thể thao, phòng chống tệ nạn xã hội quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5983,
+          "id": "v8_det_069",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Em thuộc K48-K49 và muốn đọc đúng Điều 6; phần đánh giá về ý thức và kết quả tham gia các hoạt động chính trị – xã hội, văn hóa, văn nghệ, thể thao, phòng chống tệ nạn xã hội có các ý chính nào?"
+        },
+        {
+          "sequence_ratio": 0.5778,
+          "id": "v8_prod_burst_06",
+          "path": "data/eval/architecture_v8/production_cases.json",
+          "query": "Cho em tra nhanh: thứ nhất: sinh viên K48-K49 học hệ chính quy, chương trình đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học có thời gian chuẩn và tối đa bao lâu? Thứ hai: em thuộc K48-K49 và muốn đọc đúng Điều 6; phần đánh giá về ý thức và kết quả tham gia các hoạt động chính trị – xã hội, văn hóa, văn nghệ, thể thao, phòng chống tệ nạn xã hội có các ý chính nào?"
+        },
+        {
+          "sequence_ratio": 0.5729,
+          "id": "v7_det_069",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 6 dành cho K48-K49, nội dung về đánh giá về ý thức và kết quả tham gia các hoạt động chính trị – xã hội, văn hóa, văn nghệ, thể thao, phòng chống tệ nạn xã hội được quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_106",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: em học K51; bảng ngoại ngữ quy đổi TOEIC (4 kỹ năng) sang bậc 3 và bậc 4 thế nào? Thứ hai: theo Điều 34 của quy chế công tác sinh viên dành cho K51, phần hình thức kỷ luật và nội dung vi phạm quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5149,
+          "id": "v7_prod_burst_09",
+          "path": "data/eval/architecture_v7/production_cases.json",
+          "query": "Đúng 50 điểm rèn luyện đã vào loại Trung bình chưa; ngoài ra theo Điều 34 dành cho K51, nội dung về hình thức kỷ luật và nội dung vi phạm được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5149,
+          "id": "v7_ans_mixed_006",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Đúng 50 điểm rèn luyện đã vào loại Trung bình chưa; ngoài ra theo Điều 34 dành cho K51, nội dung về hình thức kỷ luật và nội dung vi phạm được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5149,
+          "id": "v7_det_108",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Đúng 50 điểm rèn luyện đã vào loại Trung bình chưa; ngoài ra theo Điều 34 dành cho K51, nội dung về hình thức kỷ luật và nội dung vi phạm được quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_107",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: danh bạ K50 ghi số điện thoại của Phòng Công nghệ Thông tin là gì? Thứ hai: theo Điều 7 của quy chế rèn luyện dành cho K50, phần đánh giá về phẩm chất công dân và quan hệ với cộng đồng quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.57,
+          "id": "v5_ret_065",
+          "path": "data/eval/architecture_v5_holdout/retrieval_cases.json",
+          "query": "Theo Điều 7. của Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy, mục Đánh giá về phẩm chất công dân và quan hệ với cộng đồng quy định gì cho sinh viên K48-K49?"
+        },
+        {
+          "sequence_ratio": 0.5593,
+          "id": "v8_ret_025",
+          "path": "data/eval/architecture_v8/retrieval_cases.json",
+          "query": "Em đang xem Điều 7 dành cho K50; phần đánh giá về phẩm chất công dân và quan hệ với cộng đồng nói cụ thể điều gì?"
+        },
+        {
+          "sequence_ratio": 0.5515,
+          "id": "v8_det_078",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Em thuộc K50 và muốn đọc đúng Điều 7; phần đánh giá về phẩm chất công dân và quan hệ với cộng đồng có các ý chính nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_108",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: 88 điểm rèn luyện ở K48-K49 được xếp loại gì? Thứ hai: theo Điều 21 của quy chế công tác sinh viên dành cho K48-K49, phần phòng thanh tra đào tạo quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.619,
+          "id": "v8_prod_burst_09",
+          "path": "data/eval/architecture_v8/production_cases.json",
+          "query": "Cho em tra nhanh: thứ nhất: nếu có 87 điểm rèn luyện ở K48-K49 thì xếp loại gì? Thứ hai: em thuộc K48-K49 và muốn đọc đúng Điều 21; phần phòng thanh tra đào tạo có các ý chính nào?"
+        },
+        {
+          "sequence_ratio": 0.6047,
+          "id": "v8_ans_mixed_006",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Giải đáp lần lượt giúp em. Thứ nhất: nếu có 87 điểm rèn luyện ở K48-K49 thì xếp loại gì? Thứ hai: em thuộc K48-K49 và muốn đọc đúng Điều 21; phần phòng thanh tra đào tạo có các ý chính nào?"
+        },
+        {
+          "sequence_ratio": 0.6015,
+          "id": "v8_det_108",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: nếu có 87 điểm rèn luyện ở K48-K49 thì xếp loại gì? Thứ hai: em thuộc K48-K49 và muốn đọc đúng Điều 21; phần phòng thanh tra đào tạo có các ý chính nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_109",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: sinh viên K51 học ngành Công nghệ Giáo dục thì ngành này do khoa nào quản lý? Thứ hai: theo Điều 8 của quy định cố vấn học tập dành cho K51, phần đánh giá kết quả hoạt động quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6375,
+          "id": "v8_prod_burst_10",
+          "path": "data/eval/architecture_v8/production_cases.json",
+          "query": "Nhờ giải đáp: thứ nhất: theo danh mục K51, ngành Công nghệ Giáo dục do khoa nào quản lý? Thứ hai: em thuộc K51 và muốn đọc đúng Điều 8; phần đánh giá kết quả hoạt động có các ý chính nào?"
+        },
+        {
+          "sequence_ratio": 0.6226,
+          "id": "v8_ans_mixed_007",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Giải đáp lần lượt giúp em. Thứ nhất: theo danh mục K51, ngành Công nghệ Giáo dục do khoa nào quản lý? Thứ hai: em thuộc K51 và muốn đọc đúng Điều 8; phần đánh giá kết quả hoạt động có các ý chính nào?"
+        },
+        {
+          "sequence_ratio": 0.6197,
+          "id": "v8_det_109",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: theo danh mục K51, ngành Công nghệ Giáo dục do khoa nào quản lý? Thứ hai: em thuộc K51 và muốn đọc đúng Điều 8; phần đánh giá kết quả hoạt động có các ý chính nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_110",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: danh bạ K50 ghi địa chỉ làm việc của Phòng Khảo thí và Đảm bảo chất lượng là gì? Thứ hai: theo Điều 15 của quy chế công tác sinh viên dành cho K50, phần phòng khảo thí và đảm bảo chất lượng quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5635,
+          "id": "v5_ret_145",
+          "path": "data/eval/architecture_v5_holdout/retrieval_cases.json",
+          "query": "Theo Điều 15. của Quy chế công tác sinh viên, mục Phòng Khảo thí và Đảm bảo chất lượng quy định gì cho sinh viên K51?"
+        },
+        {
+          "sequence_ratio": 0.4931,
+          "id": "v7_ans_rag_055",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Em thuộc K48-K49; cho em hỏi phòng khảo thí và đảm bảo chất lượng được quy chế công tác sinh viên quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.4931,
+          "id": "v7_ret_097",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Em thuộc K48-K49; cho em hỏi phòng khảo thí và đảm bảo chất lượng được quy chế công tác sinh viên quy định thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_111",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: danh bạ K48-K49 ghi số điện thoại của Khoa Vật lí là gì? Thứ hai: theo Điều 4 của quy định nghiên cứu khoa học sinh viên dành cho K48-K49, phần nội dung hoạt động nghiên cứu khoa học của sinh viên quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5395,
+          "id": "v8_ret_030",
+          "path": "data/eval/architecture_v8/retrieval_cases.json",
+          "query": "Em đang xem Điều 4 dành cho K48-K49; phần nội dung hoạt động nghiên cứu khoa học của sinh viên nói cụ thể điều gì?"
+        },
+        {
+          "sequence_ratio": 0.5297,
+          "id": "v7_det_083",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Theo Điều 4 dành cho K48-K49, nội dung về nội dung hoạt động nghiên cứu khoa học của sinh viên được quy định thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5269,
+          "id": "v8_det_083",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Em thuộc K48-K49 và muốn đọc đúng Điều 4; phần nội dung hoạt động nghiên cứu khoa học của sinh viên có các ý chính nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_112",
+      "query": "Em hỏi hai ý riêng. Thứ nhất: danh bạ K51 ghi website của Khoa Tiếng Hàn Quốc là gì? Thứ hai: theo Điều 6 của quy chế công tác sinh viên dành cho K51, phần hỗ trợ và dịch vụ sinh viên quy định những nội dung chính nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5806,
+          "id": "v8_ans_mixed_010",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Giải đáp lần lượt giúp em. Thứ nhất: cho em xin website của Khoa Tiếng Hàn Quốc theo danh bạ K51? Thứ hai: em thuộc K51 và muốn đọc đúng Điều 6; phần hỗ trợ và dịch vụ sinh viên có các ý chính nào?"
+        },
+        {
+          "sequence_ratio": 0.5778,
+          "id": "v8_det_112",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Mình có các câu hỏi độc lập. Thứ nhất: cho em xin website của Khoa Tiếng Hàn Quốc theo danh bạ K51? Thứ hai: em thuộc K51 và muốn đọc đúng Điều 6; phần hỗ trợ và dịch vụ sinh viên có các ý chính nào?"
+        },
+        {
+          "sequence_ratio": 0.5065,
+          "id": "v7_ret_028",
+          "path": "data/eval/architecture_v7/retrieval_cases.json",
+          "query": "Điều 6 của quy chế công tác sinh viên áp dụng cho K51 quy định gì về hỗ trợ và dịch vụ sinh viên?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_113",
+      "query": "Em thuộc K50 nhưng lại nhớ năm nhập học là 2025; nên dùng thông tin khóa nào để tra?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7799,
+          "id": "v8_ans_clarify_001",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Em đang chọn K51 nhưng năm nhập học lại là 2024; cần dùng thông tin nào để tra?"
+        },
+        {
+          "sequence_ratio": 0.578,
+          "id": "v6_prod_burst_09",
+          "path": "data/eval/architecture_v6_holdout/production_cases.json",
+          "query": "Em ghi mình thuộc K50 nhưng lại ghi năm tuyển sinh là 2025; em chưa biết thông tin nào đúng. Tra thời gian học chính quy cho em được không?"
+        },
+        {
+          "sequence_ratio": 0.578,
+          "id": "v6_ans_clarify_001",
+          "path": "data/eval/architecture_v6_holdout/generated_answer_cases.json",
+          "query": "Em ghi mình thuộc K50 nhưng lại ghi năm tuyển sinh là 2025; em chưa biết thông tin nào đúng. Tra thời gian học chính quy cho em được không?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_114",
+      "query": "Em muốn quy đổi TOEIC bốn kỹ năng nhưng chưa có điểm Nói và Viết.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5528,
+          "id": "v5_det_097",
+          "path": "data/eval/architecture_v5_holdout/deterministic_tool_cases.json",
+          "query": "Em muốn tra mức đó nhưng chưa nhớ đang nói về điểm hay tiền."
+        },
+        {
+          "sequence_ratio": 0.5091,
+          "id": "v9_ret_161",
+          "path": "data/eval/final_holdout/retrieval_cases.json",
+          "query": "Nếu cần áp dụng đúng quy định hình thức kỷ luật và nội dung vi phạm có điểm nào dễ bị hiểu nhầm không?"
+        },
+        {
+          "sequence_ratio": 0.5038,
+          "id": "v5_det_137",
+          "path": "data/eval/architecture_v5_holdout/deterministic_tool_cases.json",
+          "query": "TOEIC bốn kỹ năng của em mới có tổng điểm, đã xác định được bậc chưa?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_115",
+      "query": "Cho em xin địa chỉ của khoa đó với.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8235,
+          "id": "v8_det_115",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Cho mình địa chỉ của đơn vị đó với."
+        },
+        {
+          "sequence_ratio": 0.7077,
+          "id": "v7_ans_clarify_003",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Tra giúp em địa chỉ của khoa đó."
+        },
+        {
+          "sequence_ratio": 0.7077,
+          "id": "v7_det_115",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Tra giúp em địa chỉ của khoa đó."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_116",
+      "query": "Em muốn biết mức này được cấp theo tháng hay theo học kỳ, nhưng chưa nói loại hỗ trợ.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6069,
+          "id": "v8_det_116",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Khoản hỗ trợ vừa nhắc được tính theo tháng hay theo học kỳ vậy?"
+        },
+        {
+          "sequence_ratio": 0.5641,
+          "id": "v6_ans_unanswerable_002",
+          "path": "data/eval/architecture_v6_holdout/generated_answer_cases.json",
+          "query": "Em muốn biết kỳ này tài khoản ngân hàng của em đã nhận tiền học bổng chưa."
+        },
+        {
+          "sequence_ratio": 0.5641,
+          "id": "v6_det_126",
+          "path": "data/eval/architecture_v6_holdout/deterministic_tool_cases.json",
+          "query": "Em muốn biết kỳ này tài khoản ngân hàng của em đã nhận tiền học bổng chưa."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_117",
+      "query": "Đổi điểm này sang thang còn lại giúp em, em chưa gửi điểm.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7115,
+          "id": "v8_det_117",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Đổi số điểm vừa nói sang thang còn lại giúp mình."
+        },
+        {
+          "sequence_ratio": 0.6737,
+          "id": "v7_ans_clarify_005",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Chuyển điểm này sang hệ còn lại giúp em."
+        },
+        {
+          "sequence_ratio": 0.6737,
+          "id": "v7_det_117",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Chuyển điểm này sang hệ còn lại giúp em."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_118",
+      "query": "Quy định này của K50 hay K51 vậy? Em chưa xác định được khóa.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.576,
+          "id": "v6_ans_clarify_010",
+          "path": "data/eval/architecture_v6_holdout/generated_answer_cases.json",
+          "query": "So sánh quy định vừa nêu của hai khóa giúp em, em chưa ghi tên khóa."
+        },
+        {
+          "sequence_ratio": 0.576,
+          "id": "v6_det_122",
+          "path": "data/eval/architecture_v6_holdout/deterministic_tool_cases.json",
+          "query": "So sánh quy định vừa nêu của hai khóa giúp em, em chưa ghi tên khóa."
+        },
+        {
+          "sequence_ratio": 0.5455,
+          "id": "v8_ans_clarify_006",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Em chưa chắc mình thuộc K50 hay K51 nhưng muốn xem quy định đó."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_119",
+      "query": "Cho em thông tin liên hệ của hai phòng vừa nhắc tới.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8155,
+          "id": "v8_ans_clarify_007",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Cho mình thông tin liên hệ của cả hai đơn vị vừa nói."
+        },
+        {
+          "sequence_ratio": 0.6957,
+          "id": "v8_det_119",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Gửi mình thông tin liên hệ của hai chỗ đó."
+        },
+        {
+          "sequence_ratio": 0.6949,
+          "id": "v5_det_139",
+          "path": "data/eval/architecture_v5_holdout/deterministic_tool_cases.json",
+          "query": "Cho em thông tin liên hệ Phòng Kế hoạch – Tài chính và Phòng Khảo thí."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_120",
+      "query": "Chứng chỉ ngoại ngữ này còn hiệu lực không? Em không nhớ loại chứng chỉ và ngày cấp.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7692,
+          "id": "v8_det_120",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Chứng chỉ ngoại ngữ còn hiệu lực không nếu chưa biết ngày cấp?"
+        },
+        {
+          "sequence_ratio": 0.6,
+          "id": "v7_ans_clarify_008",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Chứng chỉ của em có còn hạn không nếu em chưa nhớ ngày cấp?"
+        },
+        {
+          "sequence_ratio": 0.6,
+          "id": "v7_det_120",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Chứng chỉ của em có còn hạn không nếu em chưa nhớ ngày cấp?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_121",
+      "query": "Em cần nội dung Điều 16 nhưng chưa rõ đang nói đến văn bản nào.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6087,
+          "id": "v7_det_121",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Em muốn hỏi Điều 16 nhưng không nhớ thuộc quy chế nào."
+        },
+        {
+          "sequence_ratio": 0.5455,
+          "id": "v5_det_097",
+          "path": "data/eval/architecture_v5_holdout/deterministic_tool_cases.json",
+          "query": "Em muốn tra mức đó nhưng chưa nhớ đang nói về điểm hay tiền."
+        },
+        {
+          "sequence_ratio": 0.4915,
+          "id": "v7_ans_clarify_006",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Em cần tra quy định vừa nói nhưng chưa rõ là K50 hay K51."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_122",
+      "query": "So sánh thời gian đào tạo của hai khóa giúp em, nhưng em chưa nêu hai khóa.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8116,
+          "id": "v7_det_122",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "So sánh thời gian học của hai khóa, nhưng em chưa ghi hai khóa nào."
+        },
+        {
+          "sequence_ratio": 0.7647,
+          "id": "v8_det_122",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "So sánh thời gian học giữa hai khóa, nhưng em chưa chọn khóa nào."
+        },
+        {
+          "sequence_ratio": 0.6906,
+          "id": "v6_ans_clarify_010",
+          "path": "data/eval/architecture_v6_holdout/generated_answer_cases.json",
+          "query": "So sánh quy định vừa nêu của hai khóa giúp em, em chưa ghi tên khóa."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_123",
+      "query": "Em cần hỏi bốn việc riêng: GPA, danh bạ khoa, danh sách ngành và thủ tục nghỉ học.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6215,
+          "id": "v6_det_124",
+          "path": "data/eval/architecture_v6_holdout/deterministic_tool_cases.json",
+          "query": "Em cần công thức GPA, số điện thoại Khoa Lịch sử, danh sách ngành Khoa Ngữ văn và thủ tục vào học lại."
+        },
+        {
+          "sequence_ratio": 0.5974,
+          "id": "v7_det_124",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Em cần GPA, số Khoa Lịch sử, danh sách ngành Khoa Ngữ văn và quy định nghỉ học."
+        },
+        {
+          "sequence_ratio": 0.5315,
+          "id": "v6_det_070",
+          "path": "data/eval/architecture_v6_holdout/deterministic_tool_cases.json",
+          "query": "Em cần địa chỉ Nhà xuất bản và khoa quản lý ngành Công tác xã hội."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_124",
+      "query": "Tra giúp em bảng IELTS, email Thư viện, khoa quản lý ngành Hóa và quy định chuyển trường.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7176,
+          "id": "v7_det_123",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Cho em email Thư viện, khoa quản lý ngành Hóa học, bảng IELTS và thủ tục chuyển trường."
+        },
+        {
+          "sequence_ratio": 0.6477,
+          "id": "v6_det_123",
+          "path": "data/eval/architecture_v6_holdout/deterministic_tool_cases.json",
+          "query": "Cho em email Thư viện, khoa của ngành Vật lý học, bậc của DELF B2 và điều kiện chuyển trường."
+        },
+        {
+          "sequence_ratio": 0.5939,
+          "id": "v8_det_123",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Cho mình email Thư viện, khoa quản lý ngành Vật lý, bảng TOEFL và thủ tục bảo lưu."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_125",
+      "query": "Hồ sơ miễn học phần ngoại ngữ của riêng em đang được ai xử lý?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7231,
+          "id": "v8_det_125",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Hồ sơ miễn học phần ngoại ngữ của em hiện được duyệt tới bước nào rồi?"
+        },
+        {
+          "sequence_ratio": 0.6719,
+          "id": "v8_ans_unanswerable_001",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Xem giúp hồ sơ xin miễn ngoại ngữ của riêng em đang ở công đoạn nào."
+        },
+        {
+          "sequence_ratio": 0.6116,
+          "id": "v7_ans_unanswerable_001",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Hồ sơ công nhận ngoại ngữ em gửi sáng nay đã được duyệt chưa?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_126",
+      "query": "Khoản học bổng cá nhân của em sẽ vào tài khoản lúc mấy giờ hôm nay?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6087,
+          "id": "v8_det_126",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Khoản học bổng cá nhân của em đã được chuyển chưa?"
+        },
+        {
+          "sequence_ratio": 0.5739,
+          "id": "v5_ans_unanswerable_010",
+          "path": "data/eval/architecture_v5_holdout/generated_answer_cases.json",
+          "query": "Bao giờ tiền học bổng kỳ này vào tài khoản của em?"
+        },
+        {
+          "sequence_ratio": 0.5421,
+          "id": "v5_ans_clarify_003",
+          "path": "data/eval/architecture_v5_holdout/generated_answer_cases.json",
+          "query": "Khoản học bổng này em nhận được bao nhiêu?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_127",
+      "query": "Lớp học phần sáng mai còn bao nhiêu chỗ trống theo thời gian thực?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7967,
+          "id": "v8_det_127",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Lớp học phần sáng mai còn bao nhiêu chỗ trống ngay lúc này?"
+        },
+        {
+          "sequence_ratio": 0.6341,
+          "id": "v8_ans_unanswerable_003",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Hiện giờ lớp học phần sáng mai còn chính xác bao nhiêu chỗ?"
+        },
+        {
+          "sequence_ratio": 0.5906,
+          "id": "v6_ans_unanswerable_003",
+          "path": "data/eval/architecture_v6_holdout/generated_answer_cases.json",
+          "query": "Lớp Sư phạm Công nghệ của em còn bao nhiêu chỗ đăng ký học phần sáng thứ ba tuần tới?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_128",
+      "query": "Bài thi của em hiện được giảng viên nào chấm?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.907,
+          "id": "v8_det_128",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Bài thi của em đang do giảng viên nào chấm?"
+        },
+        {
+          "sequence_ratio": 0.5333,
+          "id": "v5_ans_unanswerable_003",
+          "path": "data/eval/architecture_v5_holdout/generated_answer_cases.json",
+          "query": "Điểm thi môn gần nhất của em đã được nhập chưa?"
+        },
+        {
+          "sequence_ratio": 0.4956,
+          "id": "v8_det_125",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Hồ sơ miễn học phần ngoại ngữ của em hiện được duyệt tới bước nào rồi?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_129",
+      "query": "Ca trực tối nay ở Trạm Y tế có những ai?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8395,
+          "id": "v8_det_129",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Ca trực hiện tại của Trạm Y tế có những ai?"
+        },
+        {
+          "sequence_ratio": 0.6575,
+          "id": "v7_ans_unanswerable_005",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Tối nay Trạm Y tế có ai trực không?"
+        },
+        {
+          "sequence_ratio": 0.6575,
+          "id": "v7_det_129",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Tối nay Trạm Y tế có ai trực không?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_130",
+      "query": "Ký túc xá đang còn chính xác bao nhiêu giường để đăng ký ngay?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5965,
+          "id": "v7_ans_struct_023",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Điểm chữ B+ tương ứng chính xác bao nhiêu trên thang 4?"
+        },
+        {
+          "sequence_ratio": 0.5965,
+          "id": "v7_det_023",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Điểm chữ B+ tương ứng chính xác bao nhiêu trên thang 4?"
+        },
+        {
+          "sequence_ratio": 0.5913,
+          "id": "v5_ans_unanswerable_002",
+          "path": "data/eval/architecture_v5_holdout/generated_answer_cases.json",
+          "query": "Em còn thiếu chính xác bao nhiêu tín chỉ để tốt nghiệp?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_131",
+      "query": "Mã giao dịch học phí mới nhất trong tài khoản của em là gì?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7304,
+          "id": "v7_det_131",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Đọc giúp em mã giao dịch học phí gần nhất trong tài khoản."
+        },
+        {
+          "sequence_ratio": 0.7167,
+          "id": "v8_det_131",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Kiểm tra giúp giao dịch đóng học phí mới nhất của tài khoản em."
+        },
+        {
+          "sequence_ratio": 0.6456,
+          "id": "v6_ans_unanswerable_007",
+          "path": "data/eval/architecture_v6_holdout/generated_answer_cases.json",
+          "query": "Em bị thất lạc biên lai, có thể đọc cho em mã giao dịch học phí gần nhất trong tài khoản của em không?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_132",
+      "query": "Cho em danh sách tên sinh viên đang bị cảnh cáo trong lớp.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.844,
+          "id": "v7_det_132",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Cho em danh sách sinh viên đang bị kỷ luật trong lớp."
+        },
+        {
+          "sequence_ratio": 0.5231,
+          "id": "v8_ans_rag_058",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Tóm tắt ngắn gọn cho em: phần công tác sinh viên dành cho K50 nêu những gì?"
+        },
+        {
+          "sequence_ratio": 0.4918,
+          "id": "v8_ret_032",
+          "path": "data/eval/architecture_v8/retrieval_cases.json",
+          "query": "Em đang xem Điều 2 dành cho K50; phần sinh viên nói cụ thể điều gì?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_133",
+      "query": "Viết giúp mình một hàm Python sắp xếp danh sách.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.9462,
+          "id": "v4_ans_ood_004",
+          "path": "data/eval/architecture_v4/generated_answer_cases.json",
+          "query": "Viết giúp tôi một hàm Python sắp xếp danh sách."
+        },
+        {
+          "sequence_ratio": 0.9247,
+          "id": "v8_det_133",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Viết cho mình một hàm Python sắp xếp danh sách."
+        },
+        {
+          "sequence_ratio": 0.5545,
+          "id": "v6_ans_ood_010",
+          "path": "data/eval/architecture_v6_holdout/generated_answer_cases.json",
+          "query": "Viết giúp mình công thức Excel tính lãi kép theo tháng."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_134",
+      "query": "Gợi ý món ăn cuối tuần cho bốn người.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.6667,
+          "id": "v9_det_114",
+          "path": "data/eval/final_holdout/deterministic_tool_cases.json",
+          "query": "Gợi ý thực đơn tối nay cho gia đình bốn người."
+        },
+        {
+          "sequence_ratio": 0.6667,
+          "id": "v9_det_114",
+          "path": "data/eval/architecture_v4/deterministic_tool_cases.json",
+          "query": "Gợi ý thực đơn tối nay cho gia đình bốn người."
+        },
+        {
+          "sequence_ratio": 0.6667,
+          "id": "v9_det_114",
+          "path": "data/eval/architecture_v3/deterministic_tool_cases.json",
+          "query": "Gợi ý thực đơn tối nay cho gia đình bốn người."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_135",
+      "query": "Tóm tắt nội dung bộ phim Interstellar.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5116,
+          "id": "v8_det_135",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Kể ngắn gọn nội dung một phim hoạt hình nổi tiếng."
+        },
+        {
+          "sequence_ratio": 0.5057,
+          "id": "v7_ans_ood_003",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Tóm tắt cốt truyện một bộ phim khoa học viễn tưởng."
+        },
+        {
+          "sequence_ratio": 0.5057,
+          "id": "v7_det_135",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Tóm tắt cốt truyện một bộ phim khoa học viễn tưởng."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_136",
+      "query": "Xe máy bị hết bình giữa đường thì xử lý thế nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.967,
+          "id": "v8_det_136",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Xe máy hết bình giữa đường thì xử lý thế nào?"
+        },
+        {
+          "sequence_ratio": 0.8041,
+          "id": "v8_ans_ood_004",
+          "path": "data/eval/architecture_v8/generated_answer_cases.json",
+          "query": "Xe máy bị hết bình giữa đường thì nên làm gì trước?"
+        },
+        {
+          "sequence_ratio": 0.549,
+          "id": "v9_det_017",
+          "path": "data/eval/final_holdout/deterministic_tool_cases.json",
+          "query": "Quá thời hạn đào tạo thì sinh viên K50 bị xử lý thế nào?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_137",
+      "query": "Giá Bitcoin hôm nay tăng hay giảm?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7792,
+          "id": "v8_det_137",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Giá cổ phiếu công nghệ hôm nay tăng hay giảm?"
+        },
+        {
+          "sequence_ratio": 0.75,
+          "id": "v9_det_113",
+          "path": "data/eval/final_holdout/deterministic_tool_cases.json",
+          "query": "Tỷ giá đô la hôm nay đang tăng hay giảm?"
+        },
+        {
+          "sequence_ratio": 0.75,
+          "id": "v9_det_113",
+          "path": "data/eval/architecture_v4/deterministic_tool_cases.json",
+          "query": "Tỷ giá đô la hôm nay đang tăng hay giảm?"
+        }
+      ]
+    },
+    {
+      "id": "v9_det_138",
+      "query": "Giải phương trình 2x bình cộng 7x trừ 4 bằng 0.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.8889,
+          "id": "v7_ans_ood_006",
+          "path": "data/eval/architecture_v7/generated_answer_cases.json",
+          "query": "Giải phương trình bậc hai x bình cộng 3x trừ 4 bằng 0."
+        },
+        {
+          "sequence_ratio": 0.8889,
+          "id": "v7_det_138",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Giải phương trình bậc hai x bình cộng 3x trừ 4 bằng 0."
+        },
+        {
+          "sequence_ratio": 0.8132,
+          "id": "v8_det_138",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Giải phương trình x bình trừ 5x cộng 6 bằng 0."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_139",
+      "query": "Viết caption quảng cáo cho quán cà phê.",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.7671,
+          "id": "v7_det_139",
+          "path": "data/eval/architecture_v7/deterministic_tool_cases.json",
+          "query": "Viết lời quảng cáo cho quán trà sữa."
+        },
+        {
+          "sequence_ratio": 0.6988,
+          "id": "v5_det_111",
+          "path": "data/eval/architecture_v5_holdout/deterministic_tool_cases.json",
+          "query": "Viết lời quảng cáo cho cửa hàng giày thể thao."
+        },
+        {
+          "sequence_ratio": 0.6486,
+          "id": "v8_det_139",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Viết caption khai trương tiệm cà phê."
+        }
+      ]
+    },
+    {
+      "id": "v9_det_140",
+      "query": "Tạo bảng và index trong MySQL như thế nào?",
+      "exact_historical_matches": [],
+      "nearest_lexical": [
+        {
+          "sequence_ratio": 0.5556,
+          "id": "v8_det_140",
+          "path": "data/eval/architecture_v8/deterministic_tool_cases.json",
+          "query": "Tạo migration cho một bảng PostgreSQL như thế nào?"
+        },
+        {
+          "sequence_ratio": 0.5155,
+          "id": "v9_prod_burst_07",
+          "path": "data/eval/final_holdout/production_cases.json",
+          "query": "K50: bang diem chu, diem so va thang 4 nen doc nhu the nao?"
+        },
+        {
+          "sequence_ratio": 0.5155,
+          "id": "v9_ans_068",
+          "path": "data/eval/final_holdout/generated_answer_cases.json",
+          "query": "K50: bang diem chu, diem so va thang 4 nen doc nhu the nao?"
+        }
+      ]
+    }
+  ]
+}

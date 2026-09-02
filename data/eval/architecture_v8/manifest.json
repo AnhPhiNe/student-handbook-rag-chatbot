@@ -7,7 +7,7 @@
   "review_state": "pre_run_codex_reviewed_owner_authorized",
   "authored_against_runtime_commit": "09b1d3da5206f8b16a7f6c10e34793c813ff4d30",
   "evaluated_system_commit": "09b1d3da5206f8b16a7f6c10e34793c813ff4d30",
-  "evaluation_harness_commit": "f8161ff827c396931c164ab8b26f0b1cc64b071f",
+  "evaluation_harness_commit": "48749e1f941c659b28c248d559f6266c96491a3e",
   "benchmark_run_kind": "frozen_internal_holdout",
   "planner_model": "qwen/qwen3.8-27b",
   "planner_reasoning_effort": "low",

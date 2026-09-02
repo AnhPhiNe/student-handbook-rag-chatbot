@@ -18,7 +18,7 @@ import build_architecture_eval_v7 as v7
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "eval" / "architecture_v8"
 RUNTIME_COMMIT = "09b1d3da5206f8b16a7f6c10e34793c813ff4d30"
-EVALUATOR_COMMIT = "f8161ff827c396931c164ab8b26f0b1cc64b071f"
+EVALUATOR_COMMIT = "48749e1f941c659b28c248d559f6266c96491a3e"
 COUNTS = {"deterministic": 140, "retrieval": 160, "answers": 150, "production": 60}
 DETERMINISTIC_CONTRACT = "query-plan-grounded-outcome-v8"
 

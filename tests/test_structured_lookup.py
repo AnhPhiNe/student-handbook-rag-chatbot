@@ -44,6 +44,44 @@ class StructuredLookupTest(unittest.TestCase):
         first = result["result"][0]
         self.assertEqual(first["row"]["letter_grade"], "A")
 
+    def test_scoped_k51_pass_result_uses_remaining_course_table(self) -> None:
+        result = structured_lookup_from_slots(
+            {
+                "operation": "pass_threshold",
+                "score_or_grade": "5,2",
+                "course_scope": "remaining",
+            },
+            build_scoring_tables("K51"),
+        )
+
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result["items"]), 1)
+        self.assertEqual(
+            result["items"][0]["table_id"],
+            "grade_10_to_letter_remaining",
+        )
+        self.assertEqual(result["items"][0]["row"]["letter_grade"], "D+")
+        self.assertEqual(result["items"][0]["row"]["status"], "Không đạt")
+
+    def test_scoped_k51_pass_result_distinguishes_foundation_course(self) -> None:
+        result = structured_lookup_from_slots(
+            {
+                "operation": "pass_threshold",
+                "score_or_grade": "5,2",
+                "course_scope": "foundation",
+            },
+            build_scoring_tables("K51"),
+        )
+
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result["items"]), 1)
+        self.assertEqual(
+            result["items"][0]["table_id"],
+            "grade_10_to_letter_foundation",
+        )
+        self.assertEqual(result["items"][0]["row"]["letter_grade"], "D+")
+        self.assertEqual(result["items"][0]["row"]["status"], "Đạt")
+
     def test_conduct_label_maps_back_to_score_range(self) -> None:
         tables = [
             {

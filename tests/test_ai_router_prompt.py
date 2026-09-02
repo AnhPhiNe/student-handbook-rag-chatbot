@@ -168,7 +168,8 @@ def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
         router._plan_response_format_payload(),
     )
 
-    assert stats["total_chars"] <= 10850
+    # Optional scoring scope adds a small, explicit selector contract.
+    assert stats["total_chars"] <= 10950
     assert stats["estimated_input_tokens"] <= 2750
     assert ROUTER_PROMPT_VERSION == "structured-regulation-v40-capability-boundaries"
     assert "OUTPUT CONTRACT" not in dynamic_prompt

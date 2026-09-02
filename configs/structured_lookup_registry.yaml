@@ -125,7 +125,21 @@ tools:
       operation:
         type: string
         enum: [grade_10_to_letter, pass_fail_ungraded, letter_to_grade_4, academic_classification, conduct_classification, pass_threshold]
+        span_aliases:
+          grade_10_to_letter: [quy đổi điểm chữ, đổi sang điểm chữ, điểm chữ gì]
+          pass_fail_ungraded: [học phần đạt không phân mức, học phần chỉ yêu cầu đạt, không tính vào điểm trung bình]
+          letter_to_grade_4: [quy đổi sang thang 4, đổi sang thang 4, điểm hệ 4]
+          academic_classification: [xếp loại học lực, loại học lực]
+          conduct_classification: [xếp loại rèn luyện, loại rèn luyện]
+          pass_threshold: [qua môn, qua học phần, đạt hay không đạt, có đạt không, rớt môn, trượt môn, điểm tối thiểu]
       score_or_grade: {type: [string, number]}
+      course_scope:
+        type: string
+        enum: [foundation, remaining, pass_fail_ungraded]
+        span_aliases:
+          foundation: [học phần nền tảng, học phần chung, học phần giáo dục đại cương]
+          remaining: [học phần còn lại, các học phần còn lại]
+          pass_fail_ungraded: [học phần đạt không phân mức, học phần chỉ yêu cầu đạt, không tính vào điểm trung bình]
     table_selector:
       slot: operation
       values:

@@ -387,6 +387,20 @@ def structured_lookup_from_slots(
             if table.get("cohort") == normalized_cohort
         ]
 
+    course_scope = normalize_text(slots.get("course_scope")).replace(" ", "_")
+    if course_scope:
+        scoped_tables = [
+            table
+            for table in tables
+            if normalize_text(table.get("course_scope")).replace(" ", "_")
+            == course_scope
+        ]
+        # Legacy cohorts expose one generally applicable grade table without
+        # course-scope metadata. Preserve that behavior; when scoped metadata
+        # exists, however, an unmatched scope must not resolve another table.
+        if scoped_tables or any(table.get("course_scope") for table in tables):
+            tables = scoped_tables
+
     operation = normalize_text(slots.get("operation"))
     value = slots.get("score_or_grade")
 

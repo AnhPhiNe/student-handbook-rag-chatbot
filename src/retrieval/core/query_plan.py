@@ -20,7 +20,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v19-reference-table-selector"
+QUERY_PLAN_NORMALIZER_VERSION = "v20-grounded-scoring-scope"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
@@ -426,7 +426,11 @@ def normalize_query_plan(
         tasks.append(task)
         errors.extend(f"{task['id']}:{error}" for error in task_errors)
 
-    tasks = _merge_compatible_structured_tasks(tasks, original_query=query)
+    tasks = _merge_compatible_structured_tasks(
+        tasks,
+        original_query=query,
+        registry=registry,
+    )
     tasks = _merge_cohort_variant_tasks(tasks)
     if (
         context_mode == "standalone"
@@ -585,6 +589,7 @@ def _normalize_task(
         },
         query=original_query,
         selected_cohort=cohorts[0] if cohorts else selected_cohort,
+        registry=registry,
     )
     validation_errors = validate_router_decision(
         decision,
@@ -788,6 +793,7 @@ def _merge_compatible_structured_tasks(
     tasks: list[dict[str, Any]],
     *,
     original_query: str,
+    registry: dict[str, Any],
 ) -> list[dict[str, Any]]:
     """Keep multiple entities in one logical task without adding recursive planning."""
     merged: list[dict[str, Any]] = []
@@ -811,10 +817,43 @@ def _merge_compatible_structured_tasks(
         existing["cohorts"] = list(
             dict.fromkeys((existing.get("cohorts") or []) + (task.get("cohorts") or []))
         )
-        # Multi-entity structured lookups select the matching table/rows from
-        # the whole task question. Scalar slots would otherwise discard peers.
-        existing["slots"] = {}
-        existing["slot_spans"] = {}
+        # Keep facts that do not conflict across facets of the same lookup.
+        # Conflicting scalar selectors are dropped, then grounded again from
+        # the complete query. Multi-entity lookups still lose their conflicting
+        # scalar values and therefore keep the existing full-table behavior.
+        existing_slots = dict(existing.get("slots") or {})
+        existing_spans = dict(existing.get("slot_spans") or {})
+        incoming_slots = dict(task.get("slots") or {})
+        incoming_spans = dict(task.get("slot_spans") or {})
+        for slot_name in set(existing_slots) | set(incoming_slots):
+            existing_present = _task_slot_is_present(existing_slots.get(slot_name))
+            incoming_present = _task_slot_is_present(incoming_slots.get(slot_name))
+            if existing_present and incoming_present:
+                if existing_slots[slot_name] != incoming_slots[slot_name]:
+                    existing_slots.pop(slot_name, None)
+                    existing_spans.pop(slot_name, None)
+                continue
+            if incoming_present:
+                existing_slots[slot_name] = incoming_slots[slot_name]
+                if slot_name in incoming_spans:
+                    existing_spans[slot_name] = incoming_spans[slot_name]
+
+        regrounded = normalize_router_decision(
+            {
+                "route": "structured",
+                "execution_mode": "structured",
+                "intent": existing.get("intent"),
+                "lookup_type": existing.get("lookup_type"),
+                "cohorts": existing.get("cohorts") or [],
+                "slots": existing_slots,
+                "slot_spans": existing_spans,
+            },
+            query=original_query,
+            selected_cohort=(existing.get("cohorts") or [None])[0],
+            registry=registry,
+        )
+        existing["slots"] = regrounded.get("slots") or {}
+        existing["slot_spans"] = regrounded.get("slot_spans") or {}
         existing["validation_errors"] = list(
             dict.fromkeys(
                 (existing.get("validation_errors") or [])

@@ -608,7 +608,123 @@ def test_table_first_drops_optional_slot_whose_span_describes_another_value() ->
     assert errors == []
     assert plan["tasks"][0]["mode"] == "structured"
     assert plan["tasks"][0]["slots"] == {"operation": "grade_10_to_letter"}
-    assert plan["tasks"][0]["slot_spans"] == {}
+    assert plan["tasks"][0]["slot_spans"] == {"operation": "điểm chữ gì"}
+
+
+def test_scoring_literals_repair_selector_and_infer_course_scope() -> None:
+    query = "Học phần còn lại được 5,2: bảng K51 ghi D+ và trạng thái đạt hay không đạt?"
+    task = {
+        **_rag_task(1, query),
+        "mode": "structured",
+        "intent": "direct_value",
+        "lookup_type": "scoring",
+        "slots": {
+            "operation": "pass_fail_ungraded",
+            "score_or_grade": "5,2",
+        },
+        "slot_spans": {
+            "operation": "đạt hay không đạt",
+            "score_or_grade": "5,2",
+        },
+        "cohorts": ["K51"],
+    }
+
+    plan, errors = normalize_query_plan(
+        _plan([task]),
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert plan["tasks"][0]["slots"] == {
+        "operation": "pass_threshold",
+        "score_or_grade": "5,2",
+        "course_scope": "remaining",
+    }
+    assert plan["tasks"][0]["slot_spans"]["operation"] == "đạt hay không đạt"
+    assert plan["tasks"][0]["slot_spans"]["course_scope"] in {
+        "học phần còn lại",
+        "Học phần còn lại",
+    }
+
+
+def test_scoring_explicit_ungraded_scope_keeps_ungraded_selector() -> None:
+    query = "Học phần chỉ yêu cầu đạt được 5,2 thì có đạt không?"
+    task = {
+        **_rag_task(1, query),
+        "mode": "structured",
+        "intent": "direct_value",
+        "lookup_type": "scoring",
+        "slots": {
+            "operation": "pass_threshold",
+            "score_or_grade": "5,2",
+        },
+        "slot_spans": {
+            "operation": "có đạt không",
+            "score_or_grade": "5,2",
+        },
+        "cohorts": ["K51"],
+    }
+
+    plan, errors = normalize_query_plan(
+        _plan([task]),
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert plan["tasks"][0]["slots"]["operation"] == "pass_threshold"
+    assert plan["tasks"][0]["slots"]["course_scope"] == "pass_fail_ungraded"
+
+
+def test_scoring_facets_merge_without_losing_grounded_scope_and_score() -> None:
+    query = "Học phần còn lại được 5,2: bảng K51 ghi D+ và trạng thái đạt hay không đạt?"
+    first = {
+        **_rag_task(1, "Học phần còn lại được 5,2 tương ứng điểm chữ gì?"),
+        "mode": "structured",
+        "intent": "direct_value",
+        "lookup_type": "scoring",
+        "slots": {
+            "operation": "grade_10_to_letter",
+            "score_or_grade": "5,2",
+            "course_scope": "remaining",
+        },
+        "slot_spans": {
+            "operation": "điểm chữ gì",
+            "score_or_grade": "5,2",
+            "course_scope": "học phần còn lại",
+        },
+        "cohorts": ["K51"],
+    }
+    second = {
+        **_rag_task(2, "Trạng thái đạt hay không đạt của học phần còn lại?"),
+        "mode": "structured",
+        "intent": "direct_value",
+        "lookup_type": "scoring",
+        "slots": {
+            "operation": "pass_threshold",
+            "course_scope": "remaining",
+        },
+        "slot_spans": {
+            "operation": "đạt hay không đạt",
+            "course_scope": "học phần còn lại",
+        },
+        "cohorts": ["K51"],
+    }
+
+    plan, errors = normalize_query_plan(
+        _plan([first, second]),
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert errors == []
+    assert len(plan["tasks"]) == 1
+    assert plan["tasks"][0]["slots"] == {
+        "operation": "pass_threshold",
+        "score_or_grade": "5,2",
+        "course_scope": "remaining",
+    }
 
 
 def test_table_first_drops_optional_slot_outside_declared_domain() -> None:

@@ -85,12 +85,16 @@ def _ground_declared_literal_slots(
             continue
 
         current_value = slots.get(slot_name)
-        if _is_present(current_value) and _is_present(spans.get(slot_name)):
+        current_span = spans.get(slot_name)
+        if (
+            _is_present(current_value)
+            and _is_present(current_span)
+            and _span_matches_slot_value(current_value, current_span, slot_spec)
+        ):
             continue
+
         matches: list[tuple[str, str]] = []
         for canonical_value, aliases in aliases_by_value.items():
-            if _is_present(current_value) and str(current_value) != str(canonical_value):
-                continue
             literal_aliases = [canonical_value, *(_as_values(aliases))]
             for alias in literal_aliases:
                 literal_span = _literal_query_span(query, alias)
@@ -199,6 +203,7 @@ def normalize_router_decision(
     *,
     query: str,
     selected_cohort: str | None = None,
+    registry: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     raw_route = str(payload.get("route") or "rag").strip().lower()
     raw_execution_mode = str(payload.get("execution_mode") or "").strip().lower()
@@ -253,7 +258,8 @@ def normalize_router_decision(
         if nested_spans:
             spans[slot_name] = nested_spans
 
-    spec = load_lookup_registry()["tools"].get(lookup_type) if lookup_type else None
+    registry = registry or load_lookup_registry()
+    spec = registry["tools"].get(lookup_type) if lookup_type else None
     allowed_intents = list((spec or {}).get("intents") or [])
     if route == "structured" and intent not in allowed_intents:
         default_intent = (spec or {}).get("default_intent")

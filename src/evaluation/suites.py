@@ -2777,7 +2777,13 @@ def judge_answers(
         "answer_success",
         "question_handling_correctness",
     ):
-        summary[metric] = safe_mean([float(bool(row.get(metric))) for row in rows])
+        applicable_values = [
+            float(bool(row[metric]))
+            for row in rows
+            if row.get(metric) is not None
+        ]
+        summary[metric] = safe_mean(applicable_values) if applicable_values else None
+        summary[f"{metric}_n"] = len(applicable_values)
     summary["hallucination_rate"] = safe_mean(
         [float(bool(row["judge"]["scores"].get("unsupported_claim"))) for row in valid]
     )
@@ -2803,7 +2809,15 @@ def judge_answers(
 def _answer_checks(case: dict[str, Any], answer: dict[str, Any]) -> dict[str, Any]:
     text = _normalize_eval_text(answer.get("answer") or "")
     required = [_normalize_eval_text(item) for item in case.get("required_facts") or []]
-    numeric = re.findall(r"\d+(?:[.,]\d+)?%?", " ".join(required))
+    numeric_assertions = {
+        _canonical_numeric_token(item)
+        for item in case.get("numeric_assertions") or []
+        if _canonical_numeric_token(item)
+    }
+    answer_numeric = {
+        _canonical_numeric_token(item)
+        for item in re.findall(r"\d+(?:[.,]\d+)?%?", text)
+    }
     expected_ids = {
         item["parent_section_id"] for item in case.get("expected_citations") or []
     }
@@ -2817,9 +2831,7 @@ def _answer_checks(case: dict[str, Any], answer: dict[str, Any]) -> dict[str, An
         "out_of_domain",
         "low_confidence",
     } or _answer_text_abstains(text)
-    citation_exact_match = (
-        bool(expected_ids & actual_ids) if expected_ids else not actual_ids
-    )
+    citation_exact_match = bool(expected_ids & actual_ids) if expected_ids else None
     required_fact_hit = (
         all(_soft_fact_match(fact, text) for fact in required) if required else True
     )
@@ -2832,9 +2844,9 @@ def _answer_checks(case: dict[str, Any], answer: dict[str, Any]) -> dict[str, An
     expects_no_direct_answer = behavior in {"abstain", "clarify_or_scope"}
     return {
         "required_fact_hit": required_fact_hit,
-        "numeric_accuracy": all(value in text for value in numeric)
-        if numeric
-        else True,
+        "numeric_accuracy": (
+            numeric_assertions <= answer_numeric if numeric_assertions else None
+        ),
         "citation_exact_match": citation_exact_match,
         "abstention_correct": (
             abstained if expects_no_direct_answer or not answerable else not abstained
@@ -2859,6 +2871,17 @@ def _normalize_eval_text(value: Any) -> str:
     return " ".join(text.split())
 
 
+def _canonical_numeric_token(value: Any) -> str:
+    token = str(value or "").strip().replace(",", ".")
+    match = re.fullmatch(r"(\d+(?:\.\d+)?)(%)?", token)
+    if not match:
+        return ""
+    number, percent = match.groups()
+    if "." in number:
+        number = number.rstrip("0").rstrip(".")
+    return f"{number}{percent or ''}"
+
+
 def _answer_text_abstains(answer_text: str) -> bool:
     abstention_signals = (
         "chua thay",
@@ -2868,6 +2891,12 @@ def _answer_text_abstains(answer_text: str) -> bool:
         "khong du can cu",
         "chua du can cu",
         "khong du thong tin",
+        "chua du du lieu",
+        "khong co du lieu",
+        "khong cung cap thong tin",
+        "khong the xac dinh",
+        "chua truc tiep xac lap",
+        "khong co quyen truy cap",
         "khong thay can cu",
         "khong co can cu truc tiep",
         "chua thay can cu truc tiep",
@@ -2896,7 +2925,7 @@ def _question_handling_correct(
     behavior: str,
     answer_success: bool,
     required_fact_hit: bool,
-    citation_exact_match: bool,
+    citation_exact_match: bool | None,
     abstained: bool,
     has_citations: bool,
 ) -> bool:

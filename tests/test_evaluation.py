@@ -852,6 +852,65 @@ def test_textual_abstention_counts_for_unanswerable_answer() -> None:
     assert checks["question_handling_correctness"] is True
 
 
+def test_textual_abstention_accepts_safe_missing_data_language() -> None:
+    case = {
+        "answerability": "unanswerable",
+        "expected_answer_behavior": "abstain",
+        "required_facts": [],
+        "expected_citations": [],
+    }
+    answer = {
+        "status": "answered",
+        "answer": "Nguồn hiện có chưa trực tiếp xác lập quyền lợi này.",
+        "citations": [],
+    }
+
+    checks = _answer_checks(case, answer)
+
+    assert checks["abstention_correct"] is True
+    assert checks["question_handling_correctness"] is True
+
+
+def test_numeric_accuracy_is_only_measured_when_explicitly_declared() -> None:
+    base_case = {
+        "answerability": "answerable",
+        "required_facts": ["Nguồn nhắc đến Điều 8 và thời hạn 15 ngày."],
+        "expected_citations": [],
+    }
+    answer = {
+        "status": "answered",
+        "answer": "Thời hạn áp dụng là 15 ngày.",
+        "citations": [],
+    }
+
+    assert _answer_checks(base_case, answer)["numeric_accuracy"] is None
+
+    measured_case = {**base_case, "numeric_assertions": ["15", "1,50"]}
+    measured_answer = {
+        **answer,
+        "answer": "Thời hạn là 15 ngày và hệ số là 1.5.",
+    }
+    wrong_answer = {**answer, "answer": "Thời hạn là 15 ngày và hệ số là 1.25."}
+
+    assert _answer_checks(measured_case, measured_answer)["numeric_accuracy"] is True
+    assert _answer_checks(measured_case, wrong_answer)["numeric_accuracy"] is False
+
+
+def test_citation_exact_match_is_na_when_gold_has_no_citation_assertion() -> None:
+    case = {
+        "answerability": "answerable",
+        "required_facts": [],
+        "expected_citations": [],
+    }
+    answer = {
+        "status": "answered",
+        "answer": "Kết quả tra cứu có cấu trúc.",
+        "citations": [{"parent_section_id": "structured-table"}],
+    }
+
+    assert _answer_checks(case, answer)["citation_exact_match"] is None
+
+
 def test_judge_prompt_is_fair_for_unanswerable_abstention() -> None:
     prompt = build_judge_prompt(
         {

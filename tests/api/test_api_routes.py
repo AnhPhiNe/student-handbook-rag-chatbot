@@ -642,6 +642,47 @@ class ApiRoutesTest(unittest.TestCase):
 
         assert response.status_code == 422
 
+    def test_chat_succeeds_when_trace_queue_drops_telemetry(self) -> None:
+        with patch(
+            "src.api.routes.chat.submit_trace_to_langsmith",
+            return_value=False,
+        ) as submit_trace:
+            response = self.client.post(
+                "/chat",
+                json={"query": "Email Phòng Đào tạo?", "cohort": "K51"},
+            )
+
+        assert response.status_code == 200
+        submit_trace.assert_called_once()
+
+    def test_stream_succeeds_when_trace_queue_drops_telemetry(self) -> None:
+        with patch(
+            "src.api.routes.chat_stream.submit_trace_to_langsmith",
+            return_value=False,
+        ) as submit_trace:
+            response = self.client.post(
+                "/chat/stream",
+                json={"query": "Email Phòng Đào tạo?", "cohort": "K51"},
+            )
+
+        assert response.status_code == 200
+        assert "event: done" in response.text
+        submit_trace.assert_called_once()
+
+    def test_feedback_succeeds_when_telemetry_queue_is_full(self) -> None:
+        with patch(
+            "src.api.routes.chat.submit_feedback_to_langsmith",
+            return_value=False,
+        ) as submit_feedback:
+            response = self.client.post(
+                "/chat/feedback",
+                json={"run_id": "run", "score": 1.0},
+            )
+
+        assert response.status_code == 200
+        assert response.json() == {"status": "success"}
+        submit_feedback.assert_called_once_with("run", 1.0, None)
+
     def test_feedback_rejects_invalid_score_and_long_comment(self) -> None:
         invalid_score = self.client.post(
             "/chat/feedback",

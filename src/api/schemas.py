@@ -2,7 +2,12 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+
+MAX_CHAT_HISTORY_MESSAGES = 8
+MAX_CHAT_HISTORY_CONTENT_CHARS = 16_000
+MAX_FEEDBACK_COMMENT_CHARS = 2_000
 
 
 class ChatRequest(BaseModel):
@@ -24,8 +29,35 @@ class ChatRequest(BaseModel):
 
     query: str = ""
     include_debug: bool = False
-    chat_history: list[dict[str, Any]] = Field(default_factory=list)
-    cohort: str | None = None
+    chat_history: list[dict[str, Any]] = Field(
+        default_factory=list,
+        max_length=MAX_CHAT_HISTORY_MESSAGES,
+    )
+    cohort: str | None = Field(default=None, max_length=32)
+
+    @field_validator("chat_history")
+    @classmethod
+    def validate_chat_history(
+        cls,
+        history: list[dict[str, Any]],
+    ) -> list[dict[str, str]]:
+        """Keep only the bounded role/content contract consumed by the Planner."""
+
+        normalized: list[dict[str, str]] = []
+        for message in history:
+            role = message.get("role")
+            content = message.get("content")
+            if role not in {"user", "assistant"}:
+                raise ValueError("chat history role must be user or assistant")
+            if not isinstance(content, str):
+                raise ValueError("chat history content must be a string")
+            if len(content) > MAX_CHAT_HISTORY_CONTENT_CHARS:
+                raise ValueError(
+                    "chat history content must be at most "
+                    f"{MAX_CHAT_HISTORY_CONTENT_CHARS} characters"
+                )
+            normalized.append({"role": role, "content": content})
+        return normalized
 
 
 class ChatResponse(BaseModel):
@@ -74,39 +106,13 @@ class ChatFeedbackRequest(BaseModel):
     Lớp này được sử dụng để thu thập đánh giá và bình luận của người dùng về chất lượng
     của một câu trả lời cụ thể từ hệ thống trò chuyện.
 
-    Attributes:
-        run_id (str): ID của lần chạy xử lý mà người dùng đang cung cấp phản hồi.
-            Điều này giúp liên kết phản hồi với một phiên trò chuyện cụ thể.
-        score (float): Điểm đánh giá của người dùng cho câu trả lời, thường là một giá trị số
-            (ví dụ: từ 1 đến 5).
-        comment (str | None): Bình luận chi tiết của người dùng về câu trả lời. Mặc định là `None`.
-        citations_used (list[dict[str, Any]]): Danh sách các nguồn tham khảo (trích dẫn)
-            đã được sử dụng trong câu trả lời. Mặc định là một danh sách rỗng.
-        clarification_needed (bool): Nếu là `True`, người dùng cảm thấy cần làm rõ thêm
-            về câu trả lời. Mặc định là `False`.
-        intent (str | None): Mục đích hoặc ý định của câu hỏi gốc của người dùng. Mặc định là `None`.
-        strategy (str | None): Chiến lược mà hệ thống đã sử dụng để tạo ra câu trả lời. Mặc định là `None`.
-        llm_called (bool): Nếu là `True`, có nghĩa là một mô hình ngôn ngữ lớn (LLM) đã được
-            gọi để tạo ra câu trả lời. Mặc định là `False`.
-        used_cache (bool): Nếu là `True`, câu trả lời đã được lấy từ bộ nhớ đệm thay vì
-            tạo mới. Mặc định là `False`.
-        error_type (str | None): Loại lỗi xảy ra (nếu có) trong quá trình tạo câu trả lời. Mặc định là `None`.
-        error_message (str | None): Thông báo lỗi chi tiết (nếu có). Mặc định là `None`.
-        debug (dict[str, Any] | None): Thông tin gỡ lỗi bổ sung liên quan đến phản hồi. Mặc định là `None`.
+    Chỉ nhận ba trường mà endpoint và frontend thực sự sử dụng: mã lần chạy,
+    điểm like/dislike trong khoảng 0–1 và bình luận tùy chọn có giới hạn.
     """
 
-    run_id: str
-    score: float
-    comment: str | None = None
-    citations_used: list[dict[str, Any]] = Field(default_factory=list)
-    clarification_needed: bool = False
-    intent: str | None = None
-    strategy: str | None = None
-    llm_called: bool = False
-    used_cache: bool = False
-    error_type: str | None = None
-    error_message: str | None = None
-    debug: dict[str, Any] | None = None
+    run_id: str = Field(min_length=1, max_length=128)
+    score: float = Field(ge=0.0, le=1.0)
+    comment: str | None = Field(default=None, max_length=MAX_FEEDBACK_COMMENT_CHARS)
 
 
 class HealthResponse(BaseModel):

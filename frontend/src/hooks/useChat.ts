@@ -206,9 +206,10 @@ export function useChat(cohort: string = 'K48-K49') {
     try {
       const chatHistory = messages
         .filter(m => !m.isStreaming && !m.isHardcoded)
+        .slice(-8)
         .map(m => ({
           role: m.role === 'bot' ? 'assistant' : 'user',
-          content: m.content
+          content: m.content.slice(0, 16000)
         }));
 
       const controller = new AbortController();

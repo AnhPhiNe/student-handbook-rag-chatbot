@@ -567,6 +567,94 @@ class ApiRoutesTest(unittest.TestCase):
         assert done_payload["status"] == "api_error"
         assert done_payload["error_type"] == "RuntimeError"
 
+    def test_stream_exception_before_metadata_has_terminal_error_contract(self) -> None:
+        class RaisingStreamService:
+            def answer_stream(self, *args, **kwargs):
+                raise RuntimeError("stream failed before metadata")
+
+        app.dependency_overrides[get_answer_service] = lambda: RaisingStreamService()
+        response = self.client.post(
+            "/chat/stream",
+            json={"query": "Câu hỏi hợp lệ", "cohort": "K51"},
+        )
+
+        blocks = response.text.split("\n\n")
+        error_block = next(block for block in blocks if block.startswith("event: error"))
+        done_block = next(block for block in blocks if block.startswith("event: done"))
+        error_payload = json.loads(
+            next(
+                line.removeprefix("data: ")
+                for line in error_block.splitlines()
+                if line.startswith("data: ")
+            )
+        )
+        done_payload = json.loads(
+            next(
+                line.removeprefix("data: ")
+                for line in done_block.splitlines()
+                if line.startswith("data: ")
+            )
+        )
+
+        assert error_payload["status"] == "api_error"
+        assert error_payload["error_type"] == "RuntimeError"
+        assert done_payload["status"] == "api_error"
+        assert done_payload["error_type"] == "RuntimeError"
+
+    def test_stream_capacity_failure_has_terminal_error_contract(self) -> None:
+        env = {
+            "STUDENT_RAG_MAX_CONCURRENT_CHAT": "1",
+            "STUDENT_RAG_MAX_QUEUE_SIZE": "0",
+        }
+        with patch.dict("os.environ", env, clear=False):
+            with chat_controls.chat_capacity_slot():
+                response = self.client.post(
+                    "/chat/stream",
+                    json={"query": "Câu hỏi hợp lệ", "cohort": "K51"},
+                )
+
+        done_block = next(
+            block
+            for block in response.text.split("\n\n")
+            if block.startswith("event: done")
+        )
+        done_payload = json.loads(
+            next(
+                line.removeprefix("data: ")
+                for line in done_block.splitlines()
+                if line.startswith("data: ")
+            )
+        )
+
+        assert done_payload["status"] == "api_error"
+        assert done_payload["error_type"] == "server_busy"
+
+    def test_chat_rejects_oversized_history_envelope(self) -> None:
+        response = self.client.post(
+            "/chat",
+            json={
+                "query": "Câu hỏi hợp lệ",
+                "chat_history": [
+                    {"role": "user", "content": str(index)} for index in range(9)
+                ],
+            },
+        )
+
+        assert response.status_code == 422
+
+    def test_feedback_rejects_invalid_score_and_long_comment(self) -> None:
+        invalid_score = self.client.post(
+            "/chat/feedback",
+            json={"run_id": "run", "score": 2.0},
+        )
+        long_comment = self.client.post(
+            "/chat/feedback",
+            json={"run_id": "run", "score": 0.0, "comment": "x" * 2001},
+        )
+
+        assert invalid_score.status_code == 422
+        assert long_comment.status_code == 422
+
 
 if __name__ == "__main__":
     unittest.main()

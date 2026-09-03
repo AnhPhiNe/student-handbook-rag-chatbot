@@ -289,6 +289,8 @@ def chat_stream(
                 if acquired and limiter:
                     limiter.release()
         except ChatCapacityError as exc:
+            terminal_status = "api_error"
+            terminal_error_type = "server_busy"
             logger.warning(
                 "chat_stream_overloaded",
                 extra={"request_id": request_id, "reason": exc.reason},
@@ -297,7 +299,8 @@ def chat_stream(
                 "error",
                 {
                     "request_id": request_id,
-                    "error_type": "server_busy",
+                    "status": terminal_status,
+                    "error_type": terminal_error_type,
                     "error_message": (
                         "Trường đang đông quá, phòng chờ của AI đã đầy mất tiêu rồi! Bạn đợi 1 xíu nữa quay lại hỏi nha, xếp hàng cũng nhanh lắm! 🏃💨"
                         if exc.reason == "queue_full"
@@ -305,8 +308,17 @@ def chat_stream(
                     ),
                 },
             )
-            yield _sse_event("done", {"request_id": request_id})
-        except Exception:
+            yield _sse_event(
+                "done",
+                {
+                    "request_id": request_id,
+                    "status": terminal_status,
+                    "error_type": terminal_error_type,
+                },
+            )
+        except Exception as exc:
+            terminal_status = "api_error"
+            terminal_error_type = type(exc).__name__
             logger.exception(
                 "chat_stream_error",
                 extra={"request_id": request_id},
@@ -315,10 +327,19 @@ def chat_stream(
                 "error",
                 {
                     "request_id": request_id,
+                    "status": terminal_status,
+                    "error_type": terminal_error_type,
                     "error_message": "Internal chatbot service error",
                 },
             )
-            yield _sse_event("done", {"request_id": request_id})
+            yield _sse_event(
+                "done",
+                {
+                    "request_id": request_id,
+                    "status": terminal_status,
+                    "error_type": terminal_error_type,
+                },
+            )
 
     return StreamingResponse(
         event_generator(),

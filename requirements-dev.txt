@@ -1,3 +1,4 @@
+-c constraints-runtime.txt
 -r requirements.txt
 
 # Offline checks and CI helpers.

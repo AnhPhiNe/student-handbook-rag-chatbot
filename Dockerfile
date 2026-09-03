@@ -9,8 +9,9 @@ RUN useradd -m -u 1000 appuser
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt constraints-runtime.txt ./
+RUN pip install --no-cache-dir -c constraints-runtime.txt -r requirements.txt \
+    && pip check
 
 COPY . .
 

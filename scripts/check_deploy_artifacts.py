@@ -17,26 +17,24 @@ from src.ingestion.pdf_loader import HANDBOOK_HEADER_PATTERN
 
 
 REQUIRED_ARTIFACTS = [
+    ("constraints-runtime.txt", "file"),
+    ("configs/ai_router.yaml", "file"),
     ("configs/answer_generation.yaml", "file"),
     ("configs/hcmue_slang_dictionary.yaml", "file"),
-    ("configs/retrieval.yaml", "file"),
+    ("configs/office_aliases.yaml", "file"),
     ("configs/structured_lookup_registry.yaml", "file"),
     ("data/processed/tables/scoring_tables.json", "file"),
     ("data/processed/tables/formula_rules.json", "file"),
-    ("data/processed/tables/threshold_rules.json", "file"),
     ("data/processed/tables/structured_tables_registry.json", "file"),
     ("data/processed/tables/foreign_language_equivalency_table.json", "file"),
     ("data/processed/directories/student_service_directory.json", "file"),
     ("data/processed/directories/student_office_profiles.json", "file"),
     ("data/processed/directories/student_faculty_profiles.json", "file"),
-    ("data/processed/directories/office_directory.json", "file"),
-    ("data/processed/directories/faculty_directory.json", "file"),
     ("data/processed/directories/program_directory.json", "file"),
-    ("data/processed/directories/faculty_program_directory.json", "file"),
     ("data/processed/graphs/document_edges.json", "file"),
+    ("data/processed/amendments/amendments.json", "file"),
     ("data/processed/chunks/all_docstore_items.json", "file"),
     ("data/processed/chunks/child_parent_chunks.json", "file"),
-    ("data/processed/metadata/structured_table_embedding_audit.json", "file"),
     ("data/processed/metadata/build_manifest.json", "file"),
 ]
 

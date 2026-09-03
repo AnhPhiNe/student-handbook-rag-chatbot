@@ -54,6 +54,11 @@ def _build_manifest_matches_environment() -> bool:
 def _required_artifacts() -> list[ArtifactStatus]:
     required = [
         _artifact(
+            "configs/ai_router.yaml",
+            Path("configs/ai_router.yaml").is_file(),
+            "config",
+        ),
+        _artifact(
             "configs/answer_generation.yaml",
             Path("configs/answer_generation.yaml").is_file(),
             "config",
@@ -69,8 +74,8 @@ def _required_artifacts() -> list[ArtifactStatus]:
             "config",
         ),
         _artifact(
-            "configs/retrieval.yaml",
-            Path("configs/retrieval.yaml").is_file(),
+            "configs/office_aliases.yaml",
+            Path("configs/office_aliases.yaml").is_file(),
             "config",
         ),
         _artifact(
@@ -81,11 +86,6 @@ def _required_artifacts() -> list[ArtifactStatus]:
         _artifact(
             "data/processed/tables/formula_rules.json",
             Path("data/processed/tables/formula_rules.json").is_file(),
-            "processed_json",
-        ),
-        _artifact(
-            "data/processed/tables/threshold_rules.json",
-            Path("data/processed/tables/threshold_rules.json").is_file(),
             "processed_json",
         ),
         _artifact(
@@ -111,11 +111,6 @@ def _required_artifacts() -> list[ArtifactStatus]:
         _artifact(
             "data/processed/directories/student_faculty_profiles.json",
             Path("data/processed/directories/student_faculty_profiles.json").is_file(),
-            "processed_json",
-        ),
-        _artifact(
-            "data/processed/directories/faculty_directory.json",
-            Path("data/processed/directories/faculty_directory.json").is_file(),
             "processed_json",
         ),
         _artifact(

@@ -705,7 +705,7 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 
 # Cài đặt toàn bộ thư viện phụ thuộc
-pip install -r requirements.txt
+pip install -c constraints-runtime.txt -r requirements.txt
 
 # Khởi chạy FastAPI Server tại cổng 8000
 python -m uvicorn src.api.main:app --host 127.0.0.1 --port 8000 --reload

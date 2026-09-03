@@ -415,7 +415,7 @@ This bounded smoke/load run is evidence of transport behavior, not a current cap
 ```bash
 python -m venv .venv
 # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+pip install -c constraints-runtime.txt -r requirements.txt
 copy .env.example .env
 python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000
 ```

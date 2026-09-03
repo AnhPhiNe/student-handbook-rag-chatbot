@@ -1,0 +1,25 @@
+{
+  "source_bundle": "architecture_v9_deterministic",
+  "evaluated_system_commit": "7f1fc82bc0d6a02a10cc64f0a7726b3cc7a913a9",
+  "evaluation_harness_commit": "943d9b3805842ae764de7e3c893eceb1dbe96e7c",
+  "runtime_changed": false,
+  "outputs_changed": false,
+  "retrieval_exclusions": {
+    "v8_ret_047": "Tiêu đề Điều 1 dùng chung; query không xác định văn bản K51.",
+    "v8_ret_051": "Tiêu đề Điều 1 dùng chung; query không xác định văn bản K50.",
+    "v8_ret_118": "Tiêu đề Điều 1 dùng chung; query không xác định Nghị định/văn bản.",
+    "v8_ret_141": "Query nói hai việc nhưng liệt kê ba target; gold không bao phủ target thứ ba.",
+    "v8_ret_151": "Hai tiêu đề chung không xác định hai văn bản mà gold ngầm chọn."
+  },
+  "answer_exclusions": {
+    "v8_ans_rag_005": "Query không xác định văn bản K51 nhưng gold chọn riêng một Điều 1.",
+    "v8_ans_rag_009": "Query không xác định văn bản K50 nhưng gold chọn riêng một Điều 1.",
+    "v8_ans_rag_057": "Tên mục chung không xác định văn bản cố vấn học tập.",
+    "v8_ans_rag_069": "Query CVHT/BCS không xác định văn bản ngoại trú mà gold ngầm chọn.",
+    "v8_ans_rag_085": "Gold ghép nội dung khen thưởng NCKH ngoài phạm vi query học bổng.",
+    "v8_ans_rag_086": "Gold ghép hiệu lực văn bản ngoài phạm vi query về đơn vị.",
+    "v8_ans_rag_088": "Gold ghép nghỉ học tạm thời ngoài phạm vi query tổ chức quản lý.",
+    "v8_ans_rag_089": "Gold ghép thời gian làm việc ngoài phạm vi mục ứng xử được hỏi.",
+    "v8_ans_rag_090": "Gold ghép trách nhiệm quản lý ngoài phạm vi mục ứng xử được hỏi."
+  }
+}

@@ -14,8 +14,7 @@ const ToolsPage = React.lazy(() => import('./components/pages/ToolsPage').then(m
 const TuitionPage = React.lazy(() => import('./components/pages/TuitionPage').then(module => ({ default: module.TuitionPage })));
 const SurvivalGuidePage = React.lazy(() => import('./components/pages/SurvivalGuidePage').then(module => ({ default: module.SurvivalGuidePage })));
 const CreditsPage = React.lazy(() => import('./components/pages/CreditsPage').then(module => ({ default: module.CreditsPage })));
-const AdmissionPage = React.lazy(() => import('./components/pages/AdmissionPage').then(module => ({ default: module.AdmissionPage })));
-const FaqPage = React.lazy(() => import('./components/pages/FaqPage').then(module => ({ default: module.FaqPage })));
+
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { MobileHeader } from './components/MobileHeader';
 import { BottomTabBar } from './components/BottomTabBar';
@@ -170,8 +169,7 @@ function App() {
               {activeTab === 'credits' && <CreditsPage />}
               {activeTab === 'survival-guide' && <SurvivalGuidePage />}
               {activeTab === 'huong-dan' && <GuidePage onNavigate={handleNavigate} />}
-              {activeTab === 'tuyen-sinh' && <AdmissionPage />}
-              {activeTab === 'faq' && <FaqPage cohort={cohort} onAskQuestion={(q) => { setActiveTab('chat'); sendMessage(q); }} />}
+
             </Suspense>
             {isMobile && (
               <MobileScrollAffordance

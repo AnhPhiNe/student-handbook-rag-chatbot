@@ -7,8 +7,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "validate:admissions": "node scripts/validate-admissions.mjs",
-    "build": "npm run validate:admissions && tsc -b && vite build",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

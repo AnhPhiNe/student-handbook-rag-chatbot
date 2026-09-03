@@ -1,29 +1,45 @@
-# HCMUE AI — Student Handbook RAG Assistant
+<div align="center">
+  <img src="./frontend/public/bot_avatar.png" width="112" alt="HCMUE AI assistant mascot">
+  <h1>HCMUE AI</h1>
+  <p><strong>Student Handbook RAG Assistant</strong></p>
+  <p>
+    A cohort-aware assistant for the HCMUE student handbooks: K48–K49, K50, and K51.<br>
+    Multi-request planning, deterministic structured lookup, hybrid RAG, citations, and a production-oriented React interface.
+  </p>
+
+  <p>
+    <a href="https://www.hcmuebot.id.vn"><img src="https://img.shields.io/badge/Live_Demo-hcmuebot.id.vn-2563EB?style=for-the-badge" alt="Live demo"></a>
+    <a href="https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api"><img src="https://img.shields.io/badge/API-Hugging_Face-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black" alt="Hugging Face backend"></a>
+    <a href="#evaluation-results"><img src="https://img.shields.io/badge/Evaluation-V9.1-7C3AED?style=for-the-badge" alt="Architecture V9.1 evaluation"></a>
+  </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/Python-3.11-3670A0?style=flat-square&logo=python&logoColor=white" alt="Python 3.11">
+    <img src="https://img.shields.io/badge/FastAPI-Backend-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
+    <img src="https://img.shields.io/badge/React_+_Vite-Frontend-20232A?style=flat-square&logo=react&logoColor=61DAFB" alt="React and Vite">
+    <img src="https://img.shields.io/badge/Qdrant-Vector_Search-E21727?style=flat-square" alt="Qdrant">
+    <img src="https://img.shields.io/badge/MongoDB-Parent_Docs-4EA94B?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB">
+    <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-0F172A?style=flat-square" alt="MIT License"></a>
+  </p>
+
+  <p>
+    <a href="#project-overview">Overview</a> ·
+    <a href="#system-architecture">Architecture</a> ·
+    <a href="#data-and-repository-structure">Data &amp; Repository</a> ·
+    <a href="#runtime-design">Runtime</a> ·
+    <a href="#evaluation-results">Evaluation</a> ·
+    <a href="#local-development">Run Locally</a> ·
+    <a href="#deployment">Deployment</a>
+  </p>
+</div>
 
 <p align="center">
-  <strong>A cohort-aware assistant for the HCMUE student handbooks: K48–K49, K50, and K51.</strong><br>
-  Multi-request planning, deterministic structured lookup, hybrid RAG, citations, and a production-oriented React interface.
+  <img src="./frontend/public/chat_ui_screenshot.png" width="100%" alt="HCMUE AI chat interface">
 </p>
+<p align="center"><sub>Grounded answers, cohort-aware citations, structured lookup cards, and source navigation.</sub></p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.11-3670A0?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11">
-  <img src="https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
-  <img src="https://img.shields.io/badge/React%20%2B%20Vite-Frontend-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React and Vite">
-  <img src="https://img.shields.io/badge/Qdrant-Vector%20Search-E21727?style=for-the-badge" alt="Qdrant">
-  <img src="https://img.shields.io/badge/MongoDB-Parent%20Docs-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
-</p>
-
-<p align="center">
-  <a href="https://www.hcmuebot.id.vn"><strong>Live demo</strong></a>
-  ·
-  <a href="https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api"><strong>Backend Space</strong></a>
-  ·
-  <a href="#evaluation-results"><strong>Evaluation</strong></a>
-</p>
-
-![HCMUE AI chat interface](./frontend/public/chat_ui_screenshot.png)
-
-> HCMUE AI is an independent, non-commercial student project. It is not an official application of Ho Chi Minh City University of Education. Users should verify cited sources or contact the responsible university office before making important academic decisions.
+> [!IMPORTANT]
+> HCMUE AI is an independent, non-commercial student project—not an official HCMUE application. Verify cited sources or contact the responsible university office before making important academic decisions.
 
 ## Project Overview
 
@@ -37,6 +53,26 @@ The project demonstrates:
 - **Evidence-bound generation:** the Gemini composer receives only evidence authorized for the corresponding task and cohort. A unique, grounded table row may also be supplied as a fact lock through `resolved_result`.
 - **Production delivery:** FastAPI supports synchronous and SSE streaming responses; React renders citations and structured data in dedicated source drawers.
 - **Reproducible evaluation:** planning, retrieval, answer quality, human audit, and transport behavior are reported separately with explicit denominators and provenance.
+
+### At a glance
+
+| Grounded knowledge | Production retrieval | Answer quality | Cohort safety |
+|:---:|:---:|:---:|:---:|
+| **462** parent articles<br>**35** structured catalogs | **149/155** Hit@5<br>**0.9085** MRR | **91.77%** Judge correctness<br>**97.41%** audit score | **0/155** retrieval leaks<br>**0/135** deterministic leaks |
+
+<p align="center"><sub>V9.1 corrected evaluation. Metrics retain their original suite-specific denominators and are not combined into one score.</sub></p>
+
+### Technology stack
+
+| Layer | Technology | Responsibility |
+|---|---|---|
+| Web client | React, TypeScript, Vite | Chat UX, SSE rendering, citations, and structured source drawers |
+| API | FastAPI, Pydantic | Request contracts, orchestration, readiness, and streaming |
+| Planner | Qwen 3.8 27B on Groq | Typed multi-request `QueryPlan` with native JSON Schema |
+| Composer | Gemini 3.1 Flash-Lite | Evidence-bound Vietnamese answer generation |
+| Retrieval | BGE-M3, BM25, RRF, Qdrant | Cohort-filtered regulation search |
+| Knowledge stores | MongoDB, versioned JSON, local graph | Parent articles, structured catalogs, and UI references |
+| Operations | Redis, LangSmith, Hugging Face, Vercel | Cache, tracing, backend hosting, and frontend delivery |
 
 ## System Architecture
 

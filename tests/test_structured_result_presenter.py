@@ -11,8 +11,8 @@ from src.retrieval.core.citation_builder import build_citation_from_lookup
 from src.retrieval.core.foreign_language_lookup import foreign_language_lookup
 from src.retrieval.core.office_lookup import office_lookup
 from src.retrieval.core.program_lookup import program_lookup
-from src.retrieval.core.scholarship_lookup import scholarship_classification_lookup
-from src.retrieval.core.structured_lookup import structured_lookup
+from src.retrieval.core.scholarship_lookup import scholarship_table_lookup
+from src.retrieval.core.structured_lookup import structured_lookup_from_slots
 from src.retrieval.core.study_duration_lookup import study_duration_lookup
 
 
@@ -153,8 +153,8 @@ def test_presenter_prefers_full_display_rows_over_matched_result() -> None:
 def test_real_conduct_lookup_keeps_match_and_displays_complete_table() -> None:
     scoring_tables = _load_json("data/processed/tables/scoring_tables.json")
 
-    lookup = structured_lookup(
-        "85 điểm rèn luyện được xếp loại gì?",
+    lookup = structured_lookup_from_slots(
+        {"operation": "conduct_classification", "score_or_grade": 85},
         scoring_tables,
         "K51",
     )
@@ -364,20 +364,33 @@ def test_current_structured_assets_project_across_supported_domains() -> None:
     offices = _load_json("data/processed/directories/student_office_profiles.json")
 
     lookups = [
-        structured_lookup("85 điểm rèn luyện xếp loại gì?", scoring_tables, "K51"),
-        structured_lookup("GPA 3.4 xếp loại học lực gì?", scoring_tables, "K51"),
-        structured_lookup("8.0 quy đổi sang điểm chữ nào?", scoring_tables, "K51"),
+        structured_lookup_from_slots(
+            {"operation": "conduct_classification", "score_or_grade": 85},
+            scoring_tables,
+            "K51",
+        ),
+        structured_lookup_from_slots(
+            {"operation": "academic_classification", "score_or_grade": 3.4},
+            scoring_tables,
+            "K51",
+        ),
+        structured_lookup_from_slots(
+            {"operation": "grade_10_to_letter", "score_or_grade": 8.0},
+            scoring_tables,
+            "K51",
+        ),
         foreign_language_lookup(
             "IELTS 6.0 tương đương bậc mấy?",
             language_tables,
             "K51",
             slots={"certificate_or_language": "IELTS", "score_or_level": "6.0"},
         ),
-        scholarship_classification_lookup(
+        scholarship_table_lookup(
             "Học bổng loại Giỏi",
             structured_tables,
             "K51",
             slots={"score_or_label": "Giỏi"},
+            table_id="scholarship_classification",
         ),
         study_duration_lookup(
             "Thời gian đào tạo đại học chính quy",

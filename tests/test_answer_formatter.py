@@ -1,8 +1,6 @@
 from src.generation.answer_formatter import (
     clean_answer,
-    ensure_primary_article_anchors,
     format_final_response,
-    missing_primary_article_anchors,
     normalize_unlabeled_enumeration_references,
 )
 
@@ -25,42 +23,6 @@ def test_final_response_removes_wrapper_before_generated_sources_section() -> No
 
 def test_clean_answer_preserves_balanced_markdown_ending() -> None:
     assert clean_answer("Kết quả là **Tốt**") == "Kết quả là **Tốt**"
-
-
-def test_appends_primary_article_anchor_when_llm_omits_it() -> None:
-    answer = "Sinh viên được đăng ký học lại học phần chưa đạt."
-    citations = [{"source_section": "Điều 24. Học lại", "title": "Quy chế đào tạo"}]
-
-    assert ensure_primary_article_anchors(answer, citations) == (
-        "Sinh viên được đăng ký học lại học phần chưa đạt."
-    )
-
-
-def test_does_not_duplicate_article_anchor_already_in_answer() -> None:
-    answer = "Theo Điều 24, sinh viên được đăng ký học lại học phần chưa đạt."
-    citations = [{"title": "Điều 24. Học lại"}]
-
-    assert ensure_primary_article_anchors(answer, citations) == answer
-
-
-def test_extracts_article_anchor_from_normalized_parent_section_id() -> None:
-    citations = [{"source_section": "K48-K49_QuyCheDaoTao_Chuong1_Dieu3"}]
-
-    assert ensure_primary_article_anchors("Thời gian tối đa là 8 năm.", citations) == (
-        "Thời gian tối đa là 8 năm."
-    )
-
-
-def test_uses_only_primary_metadata_not_cross_references_in_content() -> None:
-    citations = [
-        {
-            "title": "Quy định học lại",
-            "source_section": "Chương IV",
-            "content": "Việc này được dẫn chiếu đến Điều 99.",
-        }
-    ]
-
-    assert missing_primary_article_anchors("Nội dung trả lời.", citations) == []
 
 
 def test_replaces_unlabeled_first_three_case_reference() -> None:

@@ -4,9 +4,6 @@ from typing import Any
 SOURCE_SECTION_PATTERN = re.compile(
     r"(?ims)\n?\s*(?:#+\s*)?(?:nguồn|nguon|tham khảo|tham khao|sources?)\s*:\s*.*$"
 )
-ARTICLE_ANCHOR_PATTERN = re.compile(
-    r"(?<![A-Za-zÀ-ỹ])(?:điều|dieu)[\s_-]*(\d+[a-z]?)\b", re.IGNORECASE
-)
 UNNUMBERED_FIRST_THREE_PATTERN = re.compile(
     r"\b(?:các\s+)?trường\s+hợp\s+(?:tại\s+)?mục\s+1\s*,\s*2\s*(?:,|và)\s*3(?:\s+nêu\s+trên)?\b",
     re.IGNORECASE,
@@ -88,45 +85,6 @@ def format_final_answer(
 ) -> str:
     # UI đã hiển thị nguồn bằng citation card, nên nội dung trả lời không lặp lại
     # khối "Nguồn:" dạng văn bản thô.
-    return remove_existing_sources_section(answer)
-
-
-def missing_primary_article_anchors(
-    answer: str, primary_citations: list[dict[str, Any]] | None
-) -> list[str]:
-    """Return article anchors present in Primary metadata but absent from the answer.
-
-    Only title and source_section are inspected.  Citation content may mention
-    a different article as a cross-reference, so using it here could attach an
-    incorrect legal anchor to the answer.
-    """
-    primary_anchors: list[str] = []
-    seen: set[str] = set()
-    for citation in primary_citations or []:
-        if not isinstance(citation, dict):
-            continue
-        for field in ("source_section", "title"):
-            value = citation.get(field)
-            if not value:
-                continue
-            for match in ARTICLE_ANCHOR_PATTERN.finditer(str(value)):
-                anchor = f"Điều {match.group(1).lower()}"
-                normalized = anchor.casefold()
-                if normalized not in seen:
-                    seen.add(normalized)
-                    primary_anchors.append(anchor)
-
-    mentioned = {
-        f"Điều {match.group(1).lower()}".casefold()
-        for match in ARTICLE_ANCHOR_PATTERN.finditer(answer or "")
-    }
-    return [anchor for anchor in primary_anchors if anchor.casefold() not in mentioned]
-
-
-def ensure_primary_article_anchors(
-    answer: str, primary_citations: list[dict[str, Any]] | None
-) -> str:
-    """Return answer cleaned without appending redundant citation anchors."""
     return remove_existing_sources_section(answer)
 
 

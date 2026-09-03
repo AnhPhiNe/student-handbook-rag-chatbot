@@ -7,11 +7,8 @@ from pathlib import Path
 from src.extraction.scoring_tables import build_scoring_tables
 from src.retrieval.core.office_lookup import office_lookup
 from src.retrieval.core.program_lookup import program_lookup
-from src.retrieval.core.scholarship_lookup import scholarship_classification_lookup
-from src.retrieval.core.structured_lookup import (
-    structured_lookup,
-    structured_lookup_from_slots,
-)
+from src.retrieval.core.scholarship_lookup import scholarship_table_lookup
+from src.retrieval.core.structured_lookup import structured_lookup_from_slots
 
 
 class StructuredLookupTest(unittest.TestCase):
@@ -26,7 +23,13 @@ class StructuredLookupTest(unittest.TestCase):
 
         for query, (expected_grade, expected_score) in cases.items():
             with self.subTest(query=query):
-                result = structured_lookup(query, self.tables)
+                result = structured_lookup_from_slots(
+                    {
+                        "operation": "letter_to_grade_4",
+                        "score_or_grade": expected_grade,
+                    },
+                    self.tables,
+                )
 
                 self.assertIsNotNone(result)
                 row = result["result"]
@@ -34,7 +37,10 @@ class StructuredLookupTest(unittest.TestCase):
                 self.assertEqual(row["score_4"], expected_score)
 
     def test_numeric_grade_10_maps_to_letter_grade(self) -> None:
-        result = structured_lookup("Điểm 8.5 tương ứng điểm chữ nào?", self.tables)
+        result = structured_lookup_from_slots(
+            {"operation": "grade_10_to_letter", "score_or_grade": 8.5},
+            self.tables,
+        )
 
         self.assertIsNotNone(result)
         self.assertEqual(result["lookup_type"], "grade_10_to_letter")
@@ -1617,7 +1623,12 @@ class StructuredLookupTest(unittest.TestCase):
             }
         ]
         query = "điểm học bổng loại khá và loại giỏi là bao nhiêu"
-        res = scholarship_classification_lookup(query, tables, cohort="K51")
+        res = scholarship_table_lookup(
+            query,
+            tables,
+            cohort="K51",
+            table_id="scholarship_classification",
+        )
         self.assertIsNotNone(res)
         self.assertEqual(res["result"]["result_count"], 2)
         labels = {r["label"] for r in res["result"]["rows"]}

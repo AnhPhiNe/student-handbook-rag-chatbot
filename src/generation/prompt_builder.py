@@ -17,24 +17,6 @@ DEFAULT_MAX_CONTEXT_CHARS = 160000
 ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.22-answer-scope"
 
 
-def build_answer_prompt(
-    query: str,
-    retrieval_result: dict[str, Any],
-    selected_citations: list[dict[str, Any]] | None = None,
-    max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS,
-    cohort: str | None = None,
-) -> str:
-    """Build a compact, task-bound answer prompt."""
-    prompt, _ = build_answer_prompt_bundle(
-        query=query,
-        retrieval_result=retrieval_result,
-        selected_citations=selected_citations,
-        max_context_chars=max_context_chars,
-        cohort=cohort,
-    )
-    return prompt
-
-
 def build_answer_prompt_bundle(
     query: str,
     retrieval_result: dict[str, Any],

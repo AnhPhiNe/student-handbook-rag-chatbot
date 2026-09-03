@@ -1932,6 +1932,61 @@ def summarize_deterministic_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
     return summary
 
 
+def _run_pure_regulation_retrieval(
+    pipeline: Any,
+    query: str,
+    cohort: str | None,
+) -> dict[str, Any]:
+    """Run retrieval-only evaluation without changing production orchestration."""
+
+    from src.retrieval.core.hybrid_pipeline import run_hybrid_retrieval_pipeline
+
+    retrieval_query = pipeline.slang_normalizer.normalize_for_retrieval(query)
+    result = run_hybrid_retrieval_pipeline(
+        query=query,
+        top_k=pipeline.config["retrieval"]["default_top_k"],
+        cohort=cohort,
+        intent="open_question",
+        strategy="regulation",
+        retrieval_query=retrieval_query,
+    )
+    query_handling = {
+        "raw_query": query,
+        "effective_query": query,
+        "mode": "raw",
+        "context_mode": "standalone",
+        "source": "evaluation_pure_regulation",
+        "normalized_query": None,
+        "standalone_query": None,
+        "referenced_turns": [],
+        "normalization_confidence": "none",
+        "context_confidence": "none",
+        "validation_errors": [],
+        "needs_clarification": False,
+        "clarification_question": None,
+    }
+    result.update(
+        {
+            "selected_cohort": cohort,
+            "router_decision": {
+                "route": "rag",
+                "execution_mode": "regulation",
+                "intent": "open_question",
+                "lookup_type": None,
+                "cohort": cohort,
+                "retrieval_query": retrieval_query,
+                "query_handling": query_handling,
+                "evaluation_scope": "pure_regulation",
+            },
+            "raw_query": query,
+            "effective_query": query,
+            "query_handling": query_handling,
+            "retrieval_query": retrieval_query,
+        }
+    )
+    return result
+
+
 def evaluate_retrieval(
     cases: list[dict[str, Any]],
     *,
@@ -1979,7 +2034,6 @@ def evaluate_retrieval(
     previous_ablation_guard = os.environ.get(
         "STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION"
     )
-    previous_force_regulation = os.environ.get("STUDENT_RAG_EVAL_FORCE_REGULATION_RAG")
     previous_router_wait = os.environ.get("STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED")
     previous_router_cache = os.environ.get("STUDENT_RAG_DISABLE_ROUTER_CACHE")
     os.environ["STUDENT_RAG_USE_QDRANT"] = "1"
@@ -1988,10 +2042,7 @@ def evaluate_retrieval(
     os.environ["STUDENT_RAG_EVAL_RETRIEVAL_MODE"] = mode
     os.environ["STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION"] = "1"
     os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"
-    if scope == "pure":
-        os.environ["STUDENT_RAG_EVAL_FORCE_REGULATION_RAG"] = "1"
-    else:
-        os.environ.pop("STUDENT_RAG_EVAL_FORCE_REGULATION_RAG", None)
+    if scope != "pure":
         os.environ["STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED"] = "1"
     uses_default_pipeline = pipeline_factory is None
     if pipeline_factory is None:
@@ -2022,9 +2073,18 @@ def evaluate_retrieval(
                     if requested_cohort in {None, "", "general", "all"}
                     else requested_cohort
                 )
-                result = pipeline._run_retrieval(
-                    case["query"], cohort=retrieval_cohort, **_case_history_kwargs(case)
-                )
+                if scope == "pure" and uses_default_pipeline:
+                    result = _run_pure_regulation_retrieval(
+                        pipeline,
+                        case["query"],
+                        retrieval_cohort,
+                    )
+                else:
+                    result = pipeline._run_retrieval(
+                        case["query"],
+                        cohort=retrieval_cohort,
+                        **_case_history_kwargs(case),
+                    )
                 items = result.get("retrieved_items") or []
                 related_items = result.get("related_items") or []
                 ranked_ids = list(
@@ -2208,10 +2268,6 @@ def evaluate_retrieval(
         _restore_env(
             "STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION",
             previous_ablation_guard,
-        )
-        _restore_env(
-            "STUDENT_RAG_EVAL_FORCE_REGULATION_RAG",
-            previous_force_regulation,
         )
         _restore_env("STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED", previous_router_wait)
         _restore_env("STUDENT_RAG_DISABLE_ROUTER_CACHE", previous_router_cache)

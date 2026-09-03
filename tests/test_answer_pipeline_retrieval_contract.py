@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from src.evaluation.suites import _run_pure_regulation_retrieval
 from src.generation.answer_pipeline import AnswerPipeline
 
 
@@ -55,7 +56,7 @@ def test_answer_output_propagates_query_handling() -> None:
     assert output["router_decision"]["query_handling"] == handling
 
 
-def test_answer_pipeline_pure_retrieval_bypasses_planner(monkeypatch) -> None:
+def test_evaluation_pure_retrieval_bypasses_planner(monkeypatch) -> None:
     pipeline = _minimal_pipeline()
 
     class FailingRouter:
@@ -76,15 +77,18 @@ def test_answer_pipeline_pure_retrieval_bypasses_planner(monkeypatch) -> None:
         }
 
     pipeline.router = FailingRouter()
-    monkeypatch.setenv("STUDENT_RAG_EVAL_FORCE_REGULATION_RAG", "1")
     monkeypatch.setattr(
-        "src.generation.answer_pipeline.run_hybrid_retrieval_pipeline",
+        "src.retrieval.core.hybrid_pipeline.run_hybrid_retrieval_pipeline",
         fake_hybrid_pipeline,
     )
 
-    result = pipeline._run_retrieval("K50 bao luu duoc bao lau?", cohort="K50")
+    result = _run_pure_regulation_retrieval(
+        pipeline,
+        "K50 bao luu duoc bao lau?",
+        cohort="K50",
+    )
 
     assert captured["query"] == "K50 bao luu duoc bao lau?"
     assert captured["retrieval_query"] == "slang::K50 bao luu duoc bao lau?"
-    assert result["router_decision"]["eval_force_regulation"] is True
-    assert result["query_handling"]["source"] == "eval_force_regulation"
+    assert result["router_decision"]["evaluation_scope"] == "pure_regulation"
+    assert result["query_handling"]["source"] == "evaluation_pure_regulation"

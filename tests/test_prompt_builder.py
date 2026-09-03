@@ -8,7 +8,6 @@ from src.generation.amendment_precedence import (
 from src.generation.prompt_builder import (
     ANSWER_PROMPT_VERSION,
     _amendment_evidence,
-    build_answer_prompt,
     build_answer_prompt_bundle,
     build_authorized_evidence_packet,
 )
@@ -23,6 +22,10 @@ def _task(task_id: str, question: str, cohorts: list[str]) -> dict:
         "lookup_type": None,
         "cohorts": cohorts,
     }
+
+
+def _build_prompt_text(*args, **kwargs) -> str:
+    return build_answer_prompt_bundle(*args, **kwargs)[0]
 
 
 def test_prompt_bundle_exposes_the_exact_authorized_evidence_context() -> None:
@@ -50,7 +53,7 @@ def test_prompt_bundle_exposes_the_exact_authorized_evidence_context() -> None:
 
 
 def test_prompt_is_compact_and_places_final_task_after_evidence() -> None:
-    prompt = build_answer_prompt(
+    prompt = _build_prompt_text(
         query="Điều kiện xét học bổng là gì?",
         retrieval_result={
             "effective_query": "Điều kiện xét học bổng là gì?",
@@ -88,7 +91,7 @@ def test_prompt_is_compact_and_places_final_task_after_evidence() -> None:
 
 
 def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
-    prompt = build_answer_prompt(
+    prompt = _build_prompt_text(
         query="Năm nhất có được xin nghỉ học tạm thời?",
         retrieval_result={
             "citations": [
@@ -182,7 +185,7 @@ def test_resolved_structured_result_is_explicit_in_authorized_packet() -> None:
 
 
 def test_prompt_separates_distinct_scopes_without_case_specific_rules() -> None:
-    prompt = build_answer_prompt(
+    prompt = _build_prompt_text(
         query="Quy định này áp dụng thế nào?",
         retrieval_result={
             "citations": [
@@ -628,7 +631,7 @@ def test_packet_keeps_ambiguous_article_sources_as_candidates() -> None:
 
 
 def test_structured_legacy_fallback_preserves_full_table() -> None:
-    prompt = build_answer_prompt(
+    prompt = _build_prompt_text(
         query="K50 hệ chính quy học tối đa bao lâu?",
         retrieval_result={
             "structured_result": {
@@ -659,7 +662,7 @@ def test_applicable_amendment_is_kept_in_the_unit() -> None:
         "Cụ thể như sau:\n"
         "“Sinh viên học cải thiện được dùng điểm đạt cao nhất làm điểm chính thức.”"
     )
-    prompt = build_answer_prompt(
+    prompt = _build_prompt_text(
         query="K51 học cải thiện thì lấy điểm nào?",
         retrieval_result={
             "retrieved_items": [
@@ -802,7 +805,7 @@ def test_non_substantive_registry_note_is_not_promoted() -> None:
 
 def test_long_primary_source_uses_request_budget_not_legacy_1500_cap() -> None:
     long_content = ("nội dung dài " * 160) + "TAIL_MARKER_CONTEXT_VAN_CON"
-    prompt = build_answer_prompt(
+    prompt = _build_prompt_text(
         query="Điều kiện là gì?",
         retrieval_result={
             "retrieved_items": [
@@ -986,7 +989,7 @@ def test_candidate_budget_is_split_by_unit_before_sources() -> None:
 
 
 def test_prompt_distinguishes_external_referral_from_direct_answer() -> None:
-    prompt = build_answer_prompt(
+    prompt = _build_prompt_text(
         query="Ai thuộc diện miễn giảm học phí?",
         retrieval_result={"retrieved_items": []},
     )

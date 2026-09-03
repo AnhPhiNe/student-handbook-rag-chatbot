@@ -192,18 +192,3 @@ def scholarship_table_lookup(
         "source_section": table.get("source_section") or "scoring_table",
         "content_type": "structured_lookup",
     }
-
-
-def scholarship_classification_lookup(
-    query: str,
-    tables: list[dict[str, Any]],
-    cohort: str | None = None,
-    slots: dict[str, Any] | None = None,
-) -> dict[str, Any] | None:
-    return scholarship_table_lookup(
-        query,
-        tables,
-        cohort=cohort,
-        slots=slots,
-        table_id="scholarship_classification",
-    )

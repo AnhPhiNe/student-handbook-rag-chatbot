@@ -255,7 +255,7 @@ class AnswerPipeline:
         )
         _evaluation_telemetry.set(telemetry)
         effective_query = query
-        from src.api.usage_tracker import UsageTracker
+        from src.common.usage_tracker import UsageTracker
         from datetime import datetime, timezone
 
         tracker = UsageTracker()
@@ -669,7 +669,7 @@ class AnswerPipeline:
         """
         run_id = None
 
-        from src.api.usage_tracker import UsageTracker
+        from src.common.usage_tracker import UsageTracker
         from datetime import datetime, timezone
 
         tracker = UsageTracker()
@@ -1004,49 +1004,6 @@ class AnswerPipeline:
         chat_history: list[dict[str, str]] | None = None,
     ) -> dict[str, Any]:
         """Run the active QueryPlan and retrieval stack for one cohort context."""
-        if _env_bool("STUDENT_RAG_EVAL_FORCE_REGULATION_RAG"):
-            query_handling = {
-                "raw_query": query,
-                "effective_query": query,
-                "mode": "raw",
-                "context_mode": "standalone",
-                "source": "eval_force_regulation",
-                "normalized_query": None,
-                "standalone_query": None,
-                "referenced_turns": [],
-                "normalization_confidence": "none",
-                "context_confidence": "none",
-                "validation_errors": [],
-                "needs_clarification": False,
-                "clarification_question": None,
-            }
-            retrieval_query = self.slang_normalizer.normalize_for_retrieval(query)
-            result = run_hybrid_retrieval_pipeline(
-                query=query,
-                top_k=self.config["retrieval"]["default_top_k"],
-                cohort=cohort,
-                intent="open_question",
-                strategy="regulation",
-                retrieval_query=retrieval_query,
-            )
-            router_decision = {
-                "route": "rag",
-                "execution_mode": "regulation",
-                "intent": "open_question",
-                "lookup_type": None,
-                "cohort": cohort,
-                "retrieval_query": retrieval_query,
-                "query_handling": query_handling,
-                "eval_force_regulation": True,
-            }
-            result["selected_cohort"] = cohort
-            result["router_decision"] = router_decision
-            result["raw_query"] = query
-            result["effective_query"] = query
-            result["query_handling"] = query_handling
-            result["retrieval_query"] = retrieval_query
-            return result
-
         if not hasattr(self, "router"):
             from src.retrieval.core.ai_router import AIRouter
             self.router = AIRouter.from_config()

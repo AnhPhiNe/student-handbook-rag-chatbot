@@ -149,7 +149,15 @@ def test_v9_provenance_hashes_every_manifest_config() -> None:
     assert "slang_dictionary" in provenance["config_hashes"]
 
 
-def test_v9_provenance_accepts_evaluator_only_commits() -> None:
+def test_v9_provenance_accepts_evaluator_only_commits(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "scripts.evaluate_system._git_commit",
+        lambda: "evaluator-only-commit",
+    )
+    monkeypatch.setattr(
+        "scripts.evaluate_system._runtime_code_matches_commit",
+        lambda _commit: True,
+    )
     provenance = _provenance(
         ROOT / "data" / "eval" / "architecture_v9_deterministic",
         "qdrant",

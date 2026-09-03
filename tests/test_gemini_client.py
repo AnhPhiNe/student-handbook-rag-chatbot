@@ -14,14 +14,39 @@ class _SlowStreamModels:
         yield type("Chunk", (), {"text": "late"})()
 
 
+class _StallingStreamModels:
+    def generate_content_stream(self, **kwargs):
+        yield type("Chunk", (), {"text": "first"})()
+        time.sleep(0.05)
+        yield type("Chunk", (), {"text": "late"})()
+
+
 class _FakeClient:
     models = _SlowStreamModels()
 
 
+class _StallingClient:
+    models = _StallingStreamModels()
+
+
+class _FakeHttpOptions:
+    def __init__(self, *, timeout: int) -> None:
+        self.timeout = timeout
+
+
+class _FakeTypes:
+    HttpOptions = _FakeHttpOptions
+
+
 class _FakeGenAI:
+    calls: list[dict] = []
+
     @staticmethod
-    def Client(api_key: str):
-        return {"api_key": api_key}
+    def Client(api_key: str, http_options=None):
+        _FakeGenAI.calls.append(
+            {"api_key": api_key, "http_options": http_options}
+        )
+        return {"api_key": api_key, "http_options": http_options}
 
 
 class _FakePool:
@@ -51,6 +76,18 @@ class _FakePool:
 
 
 class GeminiClientTest(unittest.TestCase):
+    def test_request_clients_use_sdk_transport_timeout_in_milliseconds(self) -> None:
+        client = object.__new__(GeminiClient)
+        client._genai = _FakeGenAI()
+        client._types = _FakeTypes()
+        client.request_timeout_seconds = 2.5
+        _FakeGenAI.calls.clear()
+
+        request_client = client._create_client("secret")
+
+        self.assertEqual(request_client["api_key"], "secret")
+        self.assertEqual(request_client["http_options"].timeout, 2500)
+
     def test_streaming_call_times_out_without_chunks(self) -> None:
         client = object.__new__(GeminiClient)
         client._client = _FakeClient()
@@ -60,6 +97,19 @@ class GeminiClientTest(unittest.TestCase):
 
         with self.assertRaises(TimeoutError):
             list(client._generate_stream_once("prompt"))
+
+    def test_streaming_call_times_out_when_stream_stalls_between_chunks(self) -> None:
+        client = object.__new__(GeminiClient)
+        client._client = _StallingClient()
+        client._config = object()
+        client.model_name = "fake-model"
+        client.request_timeout_seconds = 0.01
+
+        stream = client._generate_stream_once("prompt")
+
+        self.assertEqual(next(stream), "first")
+        with self.assertRaises(TimeoutError):
+            next(stream)
 
     def test_generate_retries_next_key_after_rate_limit(self) -> None:
         client = object.__new__(GeminiClient)
@@ -71,6 +121,8 @@ class GeminiClientTest(unittest.TestCase):
         client.retry_max_delay_seconds = 0
         client.key_pool = fake_pool
         client._genai = _FakeGenAI()
+        client._types = _FakeTypes()
+        client.request_timeout_seconds = 1
         client._config = object()
 
         calls = {"count": 0}
@@ -101,6 +153,8 @@ class GeminiClientTest(unittest.TestCase):
         client.retry_max_delay_seconds = 0
         client.key_pool = fake_pool
         client._genai = _FakeGenAI()
+        client._types = _FakeTypes()
+        client.request_timeout_seconds = 1
         client._config = object()
 
         calls = {"count": 0}
@@ -145,6 +199,8 @@ class GeminiClientTest(unittest.TestCase):
         client.retry_max_delay_seconds = 0
         client.key_pool = fake_pool
         client._genai = _FakeGenAI()
+        client._types = _FakeTypes()
+        client.request_timeout_seconds = 1
         client._config = object()
         barrier = Barrier(2)
 

@@ -7,7 +7,6 @@ import queue
 import threading
 import time
 from collections.abc import Iterator
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeoutError
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -271,9 +270,7 @@ class GeminiClient:
             config=key_pool_config,
         )
 
-        self._client = self._genai.Client(api_key=self.available_keys[0])
-        # google-genai does not expose a stable per-call timeout parameter across
-        # all versions, so generate() enforces timeout around the blocking call.
+        self._client = self._create_client(self.available_keys[0])
         self._config = self._types.GenerateContentConfig(
             temperature=temperature,
             max_output_tokens=max_output_tokens,
@@ -281,6 +278,15 @@ class GeminiClient:
         self._last_stream_usage: dict[str, int] | None = None
         self._last_stream_model: str = model_name
         self._last_usage: dict[str, int] | None = None
+
+    def _create_client(self, api_key: str) -> Any:
+        """Create a request client whose transport enforces the configured timeout."""
+
+        timeout_ms = max(1, int(round(self.request_timeout_seconds * 1000)))
+        return self._genai.Client(
+            api_key=api_key,
+            http_options=self._types.HttpOptions(timeout=timeout_ms),
+        )
 
     def generate(self, prompt: str) -> dict[str, Any]:
         attempts = 0
@@ -292,7 +298,7 @@ class GeminiClient:
             current_key, key_id, key_index = self.key_pool.acquire_key()
             attempts += 1
             try:
-                request_client = self._genai.Client(api_key=current_key)
+                request_client = self._create_client(current_key)
                 text = self._generate_once(prompt, client=request_client)
                 if not text:
                     raise RuntimeError("Gemini API returned an empty response.")
@@ -347,26 +353,11 @@ class GeminiClient:
 
     def _generate_once(self, prompt: str, *, client: Any | None = None) -> str:
         request_client = client or self._client
-        executor = ThreadPoolExecutor(max_workers=1)
-        future = executor.submit(
-            request_client.models.generate_content,
+        response = request_client.models.generate_content(
             model=self.model_name,
             contents=prompt,
             config=self._config,
         )
-        try:
-            response = future.result(timeout=self.request_timeout_seconds)
-        except FutureTimeoutError as exc:
-            future.cancel()
-            executor.shutdown(wait=False, cancel_futures=True)
-            raise TimeoutError(
-                f"Gemini request timed out after {self.request_timeout_seconds} seconds."
-            ) from exc
-        except Exception:
-            executor.shutdown(wait=True, cancel_futures=False)
-            raise
-        else:
-            executor.shutdown(wait=True, cancel_futures=False)
 
         text = (getattr(response, "text", None) or "").strip()
         usage_obj = getattr(response, "usage_metadata", None)
@@ -439,7 +430,7 @@ class GeminiClient:
             current_key, key_id, key_index = self.key_pool.acquire_key()
             attempts += 1
             try:
-                request_client = self._genai.Client(api_key=current_key)
+                request_client = self._create_client(current_key)
                 yield from self._generate_stream_once(prompt, client=request_client)
                 self.key_pool.record_success(key_id)
                 return

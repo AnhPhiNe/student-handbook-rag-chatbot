@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import threading
 import time
 from typing import Any
 from uuid import uuid4
@@ -19,9 +18,9 @@ from src.api.deps import get_answer_service
 from src.api.schemas import ChatRequest, ChatResponse, ChatFeedbackRequest
 from src.generation.structured_result_presenter import public_regulation_citations
 from src.api.langsmith_helper import (
-    push_trace_to_langsmith,
-    push_feedback_to_langsmith,
     build_trace_metadata,
+    submit_feedback_to_langsmith,
+    submit_trace_to_langsmith,
 )
 
 
@@ -188,25 +187,18 @@ def chat(
                 chat_history=request.chat_history,
                 latency_ms=sync_latency,
             )
-            # Push trace to LangSmith (Realtime)
-            threading.Thread(
-                target=push_trace_to_langsmith,
-                args=(
-                    request_id,
-                    "Chat (Sync)",
-                    request.cohort,
-                    query,
-                    str(result.get("answer") or ""),
-                ),
-                kwargs={
-                    "metadata": trace_metadata,
-                    "latency_ms": sync_latency,
-                    "model": trace_metadata.get("model"),
-                    "tags": ["sync"],
-                    "tracker": result.get("tracker"),
-                },
-                daemon=True,
-            ).start()
+            submit_trace_to_langsmith(
+                request_id,
+                "Chat (Sync)",
+                request.cohort,
+                query,
+                str(result.get("answer") or ""),
+                metadata=trace_metadata,
+                latency_ms=sync_latency,
+                model=trace_metadata.get("model"),
+                tags=["sync"],
+                tracker=result.get("tracker"),
+            )
     except ChatCapacityError as exc:
         latency_ms = round((time.perf_counter() - started_at) * 1000, 2)
         logger.warning(
@@ -274,15 +266,5 @@ def submit_feedback(request: ChatFeedbackRequest):
     if not request.run_id:
         raise HTTPException(status_code=400, detail="run_id is required")
 
-    try:
-        threading.Thread(
-            target=push_feedback_to_langsmith,
-            args=(request.run_id, request.score, request.comment),
-            daemon=True,
-        ).start()
-        return {"status": "success"}
-    except Exception as exc:
-        logger.exception("feedback_submission_failed", extra={"run_id": request.run_id})
-        raise HTTPException(
-            status_code=500, detail="Failed to submit feedback"
-        ) from exc
+    submit_feedback_to_langsmith(request.run_id, request.score, request.comment)
+    return {"status": "success"}

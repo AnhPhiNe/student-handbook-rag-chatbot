@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import threading
+from concurrent.futures import Future
 from unittest.mock import patch
 
+from src.api import langsmith_helper
 from src.api.langsmith_helper import (
     build_trace_metadata,
     get_langsmith_client,
@@ -155,6 +158,23 @@ class _FakeLangSmithClient:
         self.runs.append(kwargs)
 
 
+class _ControlledExecutor:
+    def __init__(self) -> None:
+        self.futures: list[Future] = []
+
+    def submit(self, *args, **kwargs) -> Future:
+        del args, kwargs
+        future = Future()
+        self.futures.append(future)
+        return future
+
+
+class _RejectingExecutor:
+    def submit(self, *args, **kwargs) -> Future:
+        del args, kwargs
+        raise RuntimeError("executor unavailable")
+
+
 def test_explicit_langsmith_switch_disables_client_creation() -> None:
     with (
         patch.dict(
@@ -170,6 +190,38 @@ def test_explicit_langsmith_switch_disables_client_creation() -> None:
         assert get_langsmith_client() is None
 
     client_class.assert_not_called()
+
+
+def test_background_submission_is_bounded_and_releases_capacity() -> None:
+    executor = _ControlledExecutor()
+    slots = threading.BoundedSemaphore(1)
+
+    with (
+        patch.object(langsmith_helper, "_langsmith_executor", executor),
+        patch.object(langsmith_helper, "_langsmith_slots", slots),
+        patch.object(langsmith_helper, "_tracing_enabled", return_value=True),
+    ):
+        assert langsmith_helper._try_submit_langsmith(lambda: None) is True
+        assert langsmith_helper._try_submit_langsmith(lambda: None) is False
+
+        executor.futures[0].set_result(None)
+
+        assert langsmith_helper._try_submit_langsmith(lambda: None) is True
+        executor.futures[1].set_result(None)
+
+
+def test_background_submit_failure_does_not_escape_request_path() -> None:
+    slots = threading.BoundedSemaphore(1)
+
+    with (
+        patch.object(langsmith_helper, "_langsmith_executor", _RejectingExecutor()),
+        patch.object(langsmith_helper, "_langsmith_slots", slots),
+        patch.object(langsmith_helper, "_tracing_enabled", return_value=True),
+    ):
+        assert langsmith_helper._try_submit_langsmith(lambda: None) is False
+
+    assert slots.acquire(blocking=False) is True
+    slots.release()
 
 
 def test_push_trace_uses_task_tags_and_compact_root_outputs() -> None:

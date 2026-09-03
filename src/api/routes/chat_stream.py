@@ -18,10 +18,9 @@ import time
 from typing import Any
 from uuid import uuid4
 
-import threading
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
-from src.api.langsmith_helper import push_trace_to_langsmith, build_trace_metadata
+from src.api.langsmith_helper import build_trace_metadata, submit_trace_to_langsmith
 
 from src.api.chat_controls import (
     ChatCapacityError,
@@ -241,24 +240,18 @@ def chat_stream(
                             ttft_ms=ttft_ms,
                             status_override=final_status,
                         )
-                        threading.Thread(
-                            target=push_trace_to_langsmith,
-                            args=(
-                                request_id, 
-                                "Chat (Stream)", 
-                                request.cohort, 
-                                query, 
-                                full_text, 
-                            ),
-                            kwargs={
-                                "metadata": trace_metadata,
-                                "latency_ms": done_latency,
-                                "model": trace_metadata.get("model"),
-                                "tags": ["stream"],
-                                "tracker": tracker,
-                            },
-                            daemon=True
-                        ).start()
+                        submit_trace_to_langsmith(
+                            request_id,
+                            "Chat (Stream)",
+                            request.cohort,
+                            query,
+                            full_text,
+                            metadata=trace_metadata,
+                            latency_ms=done_latency,
+                            model=trace_metadata.get("model"),
+                            tags=["stream"],
+                            tracker=tracker,
+                        )
                         
                         latency_ms = round((time.perf_counter() - started_at) * 1000, 2)
                         logger.info(

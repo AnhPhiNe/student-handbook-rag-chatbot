@@ -1,6 +1,9 @@
 import os
 import uuid
 import logging
+import threading
+from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone, timedelta
 from typing import Any
 
@@ -10,6 +13,16 @@ logger = logging.getLogger("student_handbook_rag.api.langsmith_helper")
 
 _client: Client | None = None
 TRACE_SCHEMA_VERSION = "hcmue-query-plan-v2"
+
+_LANGSMITH_BACKGROUND_WORKERS = 2
+_LANGSMITH_BACKGROUND_QUEUE_SIZE = 32
+_langsmith_executor = ThreadPoolExecutor(
+    max_workers=_LANGSMITH_BACKGROUND_WORKERS,
+    thread_name_prefix="langsmith",
+)
+_langsmith_slots = threading.BoundedSemaphore(
+    _LANGSMITH_BACKGROUND_WORKERS + _LANGSMITH_BACKGROUND_QUEUE_SIZE
+)
 
 _CITATION_TRACE_FIELDS = (
     "chunk_id",
@@ -46,6 +59,7 @@ def get_langsmith_client() -> Client | None:
     global _client
     if not _tracing_enabled():
         return None
+
     if _client is not None:
         return _client
 
@@ -61,6 +75,57 @@ def get_langsmith_client() -> Client | None:
     except Exception as exc:
         logger.warning(f"Failed to initialize LangSmith Client: {exc}")
         return None
+
+
+def _run_langsmith_task(
+    task: Callable[..., Any],
+    args: tuple[Any, ...],
+    kwargs: dict[str, Any],
+) -> None:
+    """Keep observability failures outside the request lifecycle."""
+
+    try:
+        task(*args, **kwargs)
+    except Exception:
+        logger.warning(
+            "langsmith_background_task_failed",
+            extra={"task": getattr(task, "__name__", type(task).__name__)},
+            exc_info=True,
+        )
+
+
+def _try_submit_langsmith(
+    task: Callable[..., Any],
+    /,
+    *args: Any,
+    **kwargs: Any,
+) -> bool:
+    """Submit bounded process-wide telemetry work without blocking chat requests."""
+
+    if not _tracing_enabled():
+        return False
+
+    slots = _langsmith_slots
+    if not slots.acquire(blocking=False):
+        logger.warning(
+            "langsmith_background_queue_full",
+            extra={"task": getattr(task, "__name__", type(task).__name__)},
+        )
+        return False
+
+    try:
+        future = _langsmith_executor.submit(_run_langsmith_task, task, args, kwargs)
+    except Exception:
+        slots.release()
+        logger.warning(
+            "langsmith_background_submit_failed",
+            extra={"task": getattr(task, "__name__", type(task).__name__)},
+            exc_info=True,
+        )
+        return False
+
+    future.add_done_callback(lambda _future: slots.release())
+    return True
 
 
 def _runtime_identity() -> dict[str, Any]:
@@ -549,3 +614,15 @@ def push_feedback_to_langsmith(
         logger.info(f"[LangSmith] Feedback recorded for run {run_id}: score={score}")
     except Exception as exc:
         logger.warning(f"[LangSmith] Feedback submission error: {exc}")
+
+
+def submit_trace_to_langsmith(*args: Any, **kwargs: Any) -> bool:
+    """Queue one trace submission, dropping it safely when telemetry is saturated."""
+
+    return _try_submit_langsmith(push_trace_to_langsmith, *args, **kwargs)
+
+
+def submit_feedback_to_langsmith(*args: Any, **kwargs: Any) -> bool:
+    """Queue one feedback submission without creating a thread per request."""
+
+    return _try_submit_langsmith(push_feedback_to_langsmith, *args, **kwargs)

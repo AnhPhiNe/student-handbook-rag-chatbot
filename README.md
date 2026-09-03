@@ -41,7 +41,9 @@
 > [!IMPORTANT]
 > HCMUE AI is an independent, non-commercial student project—not an official HCMUE application. Verify cited sources or contact the responsible university office before making important academic decisions.
 
-## Project Overview
+<a id="project-overview"></a>
+
+## ✨ Project Overview
 
 HCMUE AI answers questions from three student-handbook groups: **K48–K49, K50, and K51**. The backend separates deterministic table lookup from regulation retrieval because a grade conversion and a policy explanation require different evidence contracts.
 
@@ -54,7 +56,7 @@ The project demonstrates:
 - **Production delivery:** FastAPI supports synchronous and SSE streaming responses; React renders citations and structured data in dedicated source drawers.
 - **Reproducible evaluation:** planning, retrieval, answer quality, human audit, and transport behavior are reported separately with explicit denominators and provenance.
 
-### At a glance
+### 📌 At a glance
 
 | Grounded knowledge | Production retrieval | Answer quality | Cohort safety |
 |:---:|:---:|:---:|:---:|
@@ -62,7 +64,7 @@ The project demonstrates:
 
 <p align="center"><sub>V9.1 corrected evaluation. Metrics retain their original suite-specific denominators and are not combined into one score.</sub></p>
 
-### Technology stack
+### 🧰 Technology stack
 
 | Layer | Technology | Responsibility |
 |---|---|---|
@@ -74,7 +76,9 @@ The project demonstrates:
 | Knowledge stores | MongoDB, versioned JSON, local graph | Parent articles, structured catalogs, and UI references |
 | Operations | Redis, LangSmith, Hugging Face, Vercel | Cache, tracing, backend hosting, and frontend delivery |
 
-## System Architecture
+<a id="system-architecture"></a>
+
+## 🏗️ System Architecture
 
 ```mermaid
 flowchart LR
@@ -97,7 +101,7 @@ flowchart LR
 
 The packaged data stores share build ID `build-02a2eed8dae5b4307427`. Readiness checks compare configured collection names with the build manifest so Qdrant, MongoDB, and local artifacts cannot silently come from different builds.
 
-### Runtime flow
+### 🔄 Runtime flow
 
 ```mermaid
 flowchart TD
@@ -125,7 +129,7 @@ flowchart TD
     Graph --> Response
 ```
 
-### Core contracts
+### 🛡️ Core contracts
 
 - Each planned task owns its question, mode, cohorts, and structured capability when applicable.
 - Multiple cohorts are executed inside one logical task instead of multiplying task count.
@@ -134,9 +138,11 @@ flowchart TD
 - Graph traversal supplies related-reference navigation to the UI; graph results are not Composer evidence.
 - Planner failure safely falls back to one regulation-RAG task using the original query and is recorded in telemetry.
 
-## Data and Repository Structure
+<a id="data-and-repository-structure"></a>
 
-### Current data snapshot
+## 🗂️ Data and Repository Structure
+
+### 📚 Current data snapshot
 
 | Artifact | Count | Purpose |
 |---|---:|---|
@@ -148,7 +154,7 @@ flowchart TD
 
 Structured tables remain available in versioned JSON and MongoDB parent documents. Rows represented by the structured registry are excluded from Qdrant to avoid indexing a duplicated, flattened representation; they are not removed from the system.
 
-### Repository layout
+### 🧭 Repository layout
 
 ```text
 student_handbook_rag/
@@ -172,7 +178,7 @@ student_handbook_rag/
 └── tests/                           # Unit, integration, and regression tests
 ```
 
-### Data build pipeline
+### 🔨 Data build pipeline
 
 ```mermaid
 flowchart LR
@@ -191,9 +197,11 @@ flowchart LR
     Mongo --> Manifest
 ```
 
-## Runtime Design
+<a id="runtime-design"></a>
 
-### Planning and structured lookup
+## ⚙️ Runtime Design
+
+### 🧠 Planning and structured lookup
 
 The Planner distinguishes a table value from the policy governing that value. Native JSON Schema constrains the plan structure; the normalizer validates grounded slots, repairs harmless optional metadata, and prevents invalid structured tasks from executing.
 
@@ -205,7 +213,7 @@ For structured tasks, runtime—not the Planner—selects the applicable catalog
 4. create `resolved_result` only for a uniquely resolved, evidence-grounded row;
 5. otherwise retain the available catalog or request clarification instead of guessing.
 
-### Retrieval and grounding
+### 🔎 Retrieval and grounding
 
 Production retrieval uses `vector_primary_graph_supplement`:
 
@@ -218,7 +226,9 @@ Production retrieval uses `vector_primary_graph_supplement`:
 
 PhoRanker remains available for controlled experiments but is **disabled in production and in the reported V9.1 retrieval run**.
 
-## API
+<a id="api"></a>
+
+## 🔌 API
 
 | Method | Endpoint | Purpose |
 |---|---|---|
@@ -231,7 +241,9 @@ PhoRanker remains available for controlled experiments but is **disabled in prod
 
 QueryPlan, task results, and evidence diagnostics are returned only when `include_debug=true`.
 
-## Evaluation Results
+<a id="evaluation-results"></a>
+
+## 📊 Evaluation Results
 
 The current report is **Architecture V9.1 corrected evaluation**. V9.1 corrects applicability and denominators in the evaluator while preserving the same frozen runtime outputs. It did **not** change Planner, Composer, retrieval, databases, generated answers, or Judge decisions.
 
@@ -241,7 +253,7 @@ The current report is **Architecture V9.1 corrected evaluation**. V9.1 corrects 
 
 Planning, retrieval, generated-answer quality, and transport are intentionally reported separately. There is no synthetic overall score.
 
-### Evaluation identity
+### 🪪 Evaluation identity
 
 | Item | Recorded value |
 |---|---|
@@ -257,7 +269,7 @@ Planning, retrieval, generated-answer quality, and transport are intentionally r
 | Retrieval | `vector_primary_graph_supplement`; no PhoRanker |
 | Storage | Qdrant `student_handbook_semantic_v32`; MongoDB `parent_docs_v32` |
 
-### 1. Deterministic architecture — 135 cases
+### 1. 🧭 Deterministic architecture — 135 cases
 
 This suite measures QueryPlan behavior, structured routing, executable evidence, row selection, and fact locks without treating the Composer as the evaluator.
 
@@ -289,7 +301,7 @@ The realistic split scored **100/107 (93.46%)**; the stress split scored **24/28
 
 The 11 failures comprise seven runtime-contract deviations and four missing or incorrect fact locks. The legacy deterministic gate misses only its false-positive threshold: **2.13% observed vs 2.00% required**. Thresholds were not relaxed after seeing results.
 
-### 2. Regulation retrieval — 155 cases
+### 2. 🔎 Regulation retrieval — 155 cases
 
 Retrieval was evaluated end to end through the Planner and the production retrieval mode. Five source-ambiguous cases were removed by the documented contract correction; the remaining 155 cases have uniquely defensible targets.
 
@@ -313,7 +325,7 @@ Retrieval was evaluated end to end through the Planner and the production retrie
 
 Six cases are genuine retrieval failures. Hit@5, ranking quality, and cohort isolation are strong, but the legacy retrieval gate remains failed because content-type match is **96.13%** against a **98%** target.
 
-### 3. Answer generation — 141 cases
+### 3. ✍️ Answer generation — 141 cases
 
 All retained answers were generated with the production retrieval mode and without PhoRanker.
 
@@ -328,7 +340,7 @@ All retained answers were generated with the production retrieval mode and witho
 
 The literal `answered` rate is an operational status distribution, not a quality score: clarification and out-of-domain responses can be correct outcomes.
 
-### 4. LLM Judge — 141 cases
+### 4. ⚖️ LLM Judge — 141 cases
 
 The Judge uses `openai/gpt-oss-120b` with a fixed, source-grounded rubric. V9.1 replayed existing per-case Judge outputs because neither answers nor the Judge prompt changed.
 
@@ -348,7 +360,7 @@ The Judge uses `openai/gpt-oss-120b` with a fixed, source-grounded rubric. V9.1 
 
 `numeric_accuracy` is **N/A (0 applicable cases)** because this dataset does not declare independent numeric assertions. The older number produced by scanning every numeral in long gold passages is not reported as a valid metric.
 
-### 5. Source-grounded audit — 40 sampled answers plus all risks
+### 5. 👁️ Source-grounded audit — 40 sampled answers plus all risks
 
 The stratified 40-answer audit and all 21 retained automatic-risk cases were checked against the query, authorized evidence, and expected scope.
 
@@ -362,7 +374,7 @@ The stratified 40-answer audit and all 21 retained automatic-risk cases were che
 
 Of the 21 automatic-risk cases, 11 were Judge false positives, six were runtime failures, and four were minor quality issues. This is a **single-reviewer audit**; inter-rater agreement and Cohen's kappa are therefore not claimed.
 
-### 6. Production evidence — historical, non-headline
+### 6. 🌐 Production evidence — historical, non-headline
 
 The 60-case production transport suite is retained in the V9.1 bundle for provenance but was **not rerun as a V9.1 metric**. The latest published run is the historical V7 transport evaluation:
 
@@ -377,7 +389,7 @@ The 60-case production transport suite is retained in the V9.1 bundle for proven
 
 This bounded smoke/load run is evidence of transport behavior, not a current capacity, security, or real-user traffic benchmark. Its gate remained failed because public responses intentionally omitted internal telemetry and warm-cache p95 exceeded the configured two-second target.
 
-### Interpretation and limitations
+### 📝 Interpretation and limitations
 
 - V9.1 is a **post-hoc corrected measurement on frozen outputs**, not a newly generated or prospectively registered holdout.
 - Deterministic and retrieval headline scores are strong, with zero observed cross-cohort leakage, but each retains one narrowly missed legacy gate.
@@ -386,7 +398,9 @@ This bounded smoke/load run is evidence of transport behavior, not a current cap
 - Six retrieval misses and seven runtime-contract deviations remain known limitations; the report does not hide them or patch the runtime and rerun the same suite.
 - A future paper should add a new prospective/external test set and independent multi-reviewer annotation. V9.1 is suitable for accurately scoped portfolio or CV claims when the denominator and correction status are stated.
 
-## Local Development
+<a id="local-development"></a>
+
+## 💻 Local Development
 
 ### Requirements
 
@@ -438,7 +452,9 @@ npm run lint
 npm run build
 ```
 
-## Data Build and Publishing
+<a id="data-build-and-publishing"></a>
+
+## 🧱 Data Build and Publishing
 
 The build pipeline writes versioned artifacts and does not overwrite a live production collection in place.
 
@@ -457,7 +473,9 @@ Safe publishing sequence:
 5. Switch both collection variables in one release.
 6. Retain the previous build until canary checks pass.
 
-## Observability
+<a id="observability"></a>
+
+## 🔭 Observability
 
 LangSmith tracing uses the current QueryPlan contract for both `/chat` and `/chat/stream`. Root traces record interface, status, latency, TTFT, cache behavior, task/coverage summaries, evidence identity, collection identity, and Planner/Composer usage when available.
 
@@ -471,7 +489,9 @@ LANGSMITH_PROJECT=hcmue-student-handbook-rag
 
 Legacy `LANGCHAIN_API_KEY` and `LANGCHAIN_PROJECT` variables remain supported for existing deployments.
 
-## Deployment
+<a id="deployment"></a>
+
+## 🚀 Deployment
 
 ### Backend — Hugging Face Spaces
 
@@ -488,7 +508,9 @@ Before publishing, the packaged manifest must target Qdrant `student_handbook_se
 
 The Vite frontend reads `VITE_API_BASE_URL` and is published at [https://www.hcmuebot.id.vn](https://www.hcmuebot.id.vn). A manual CLI deployment should link the existing Vercel project before publishing to avoid creating a duplicate project.
 
-## Evaluation Governance and Release Policy
+<a id="evaluation-governance-and-release-policy"></a>
+
+## 🧪 Evaluation Governance and Release Policy
 
 - Dataset files, evaluator code, runtime identity, model configuration, storage collections, and output hashes are recorded separately.
 - Non-applicable assertions are reported as `N/A`, never as automatic passes.
@@ -496,6 +518,8 @@ The Vite frontend reads `VITE_API_BASE_URL` and is published at [https://www.hcm
 - Failures become regression evidence for a later version rather than question-specific runtime patches.
 - The project favors general correctness invariants over benchmark keyword exceptions and does not optimize for 100% stress-case performance.
 
-## License
+<a id="license"></a>
+
+## 📄 License
 
 The source code is released under the [MIT License](./LICENSE). Student-handbook content and university regulations remain the property of their respective publishers.

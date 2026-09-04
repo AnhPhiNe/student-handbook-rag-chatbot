@@ -985,6 +985,66 @@ def _pipeline(plan: dict[str, Any]) -> AnswerPipeline:
     return pipeline
 
 
+def test_execute_task_normalizes_clarification_without_retrieval(monkeypatch) -> None:
+    task = {
+        **_rag_task(1, "Điều nào?"),
+        "mode": "clarify",
+        "cohorts": ["K50", "K50"],
+        "clarification_question": "Bạn muốn hỏi quy chế nào?",
+    }
+    pipeline = _pipeline(_plan([task]))
+
+    def fail_if_called(**kwargs):
+        del kwargs
+        raise AssertionError("clarification tasks must not execute retrieval")
+
+    monkeypatch.setattr(pipeline, "_execute_planned_rag_task", fail_if_called)
+    execution = pipeline.execute_task(
+        task=task,
+        task_index=0,
+        default_cohort="K51",
+    )
+
+    assert execution["task_result"] == {
+        "task_id": "t1",
+        "question": "Điều nào?",
+        "mode": "clarify",
+        "coverage": "needs_clarification",
+        "clarification_question": "Bạn muốn hỏi quy chế nào?",
+        "cohorts": ["K50"],
+        "evidence": [],
+    }
+    assert execution["clarification_questions"] == ["Bạn muốn hỏi quy chế nào?"]
+    assert execution["retrieved_items"] == []
+
+
+def test_aggregate_results_keeps_clarification_contract() -> None:
+    task = {
+        **_rag_task(1, "Điều nào?"),
+        "mode": "clarify",
+        "clarification_question": "Bạn muốn hỏi quy chế nào?",
+    }
+    plan = _plan([task])
+    pipeline = _pipeline(plan)
+    execution = pipeline.execute_task(
+        task=task,
+        task_index=0,
+        default_cohort="K51",
+    )
+
+    result = pipeline.aggregate_results(
+        base_result={"query": "Điều nào?"},
+        plan=plan,
+        task_executions=[execution],
+    )
+
+    assert result["execution_mode"] == "clarify"
+    assert result["coverage_by_task"] == {"t1": "needs_clarification"}
+    assert result["needs_llm_answer"] is False
+    assert result["needs_clarification"] is True
+    assert result["clarification_question"] == "Bạn muốn hỏi quy chế nào?"
+
+
 def test_planned_rag_task_rejects_unvalidated_cross_cohort_sources(
     monkeypatch,
 ) -> None:

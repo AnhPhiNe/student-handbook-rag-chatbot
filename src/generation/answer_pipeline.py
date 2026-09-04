@@ -1089,100 +1089,163 @@ class AnswerPipeline:
                 "out_of_domain": True,
             }
 
-        task_results: list[dict[str, Any]] = []
-        structured_results: list[dict[str, Any]] = []
-        all_items: list[dict[str, Any]] = []
-        all_citations: list[dict[str, Any]] = []
-        all_related_references: list[dict[str, Any]] = []
-        coverage_by_task: dict[str, str] = {}
-        clarification_questions: list[str] = []
+        task_executions = [
+            self.execute_task(
+                task=task,
+                task_index=index,
+                default_cohort=cohort,
+            )
+            for index, task in enumerate(plan.get("tasks") or [])
+        ]
+        return self.aggregate_results(
+            base_result=base_result,
+            plan=plan,
+            task_executions=task_executions,
+        )
 
-        for task in plan.get("tasks") or []:
-            task_id = str(task.get("id") or f"t{len(task_results) + 1}")
-            mode = task.get("mode")
-            task_cohorts = task.get("cohorts") or ([cohort] if cohort else [None])
-            task_cohorts = list(dict.fromkeys(task_cohorts))
-            task_evidence: list[dict[str, Any]] = []
-            cohort_coverage: dict[str, str] = {}
-            clarification_by_cohort: dict[str, str] = {}
-            task_citations: list[dict[str, Any]] = []
-            task_items: list[dict[str, Any]] = []
+    def execute_task(
+        self,
+        *,
+        task: dict[str, Any],
+        task_index: int,
+        default_cohort: str | None,
+    ) -> dict[str, Any]:
+        """Execute one planned task across its cohorts and normalize the result."""
 
-            if mode == "clarify":
-                question = str(
-                    task.get("clarification_question")
-                    or "Bạn có thể làm rõ yêu cầu này không?"
-                )
-                clarification_questions.append(question)
-                coverage_by_task[task_id] = "needs_clarification"
-                task_results.append(
-                    {
-                        "task_id": task_id,
-                        "question": task.get("question"),
-                        "mode": mode,
-                        "coverage": "needs_clarification",
-                        "clarification_question": question,
-                        "cohorts": task_cohorts,
-                        "evidence": [],
-                    }
-                )
-                continue
+        task_id = str(task.get("id") or f"t{task_index + 1}")
+        mode = task.get("mode")
+        task_cohorts = task.get("cohorts") or (
+            [default_cohort] if default_cohort else [None]
+        )
+        task_cohorts = list(dict.fromkeys(task_cohorts))
 
-            for task_cohort in task_cohorts:
-                if mode == "structured":
-                    sub_result = self._execute_planned_structured_task(
-                        task=task,
-                        task_id=task_id,
-                        cohort=task_cohort,
-                    )
-                else:
-                    sub_result = self._execute_planned_rag_task(
-                        task=task,
-                        task_id=task_id,
-                        cohort=task_cohort,
-                    )
-                cohort_key = str(task_cohort or "default")
-                cohort_coverage[cohort_key] = sub_result["coverage"]
-                task_evidence.extend(sub_result.get("evidence") or [])
-                task_citations.extend(sub_result.get("citations") or [])
-                task_items.extend(sub_result.get("retrieved_items") or [])
-                all_related_references.extend(
-                    sub_result.get("related_references") or []
-                )
-                structured = sub_result.get("structured_result")
-                if structured:
-                    structured_results.append(structured)
-                clarification = sub_result.get("clarification_question")
-                if clarification:
-                    clarification_questions.append(str(clarification))
-                    clarification_by_cohort[cohort_key] = str(clarification)
-
-            statuses = list(cohort_coverage.values())
-            if statuses and all(status == "covered" for status in statuses):
-                coverage = "covered"
-            elif any(status == "needs_clarification" for status in statuses):
-                coverage = "needs_clarification"
-            else:
-                coverage = "uncovered"
-            coverage_by_task[task_id] = coverage
-            all_items.extend(task_items)
-            all_citations.extend(task_citations)
-            task_results.append(
-                {
+        if mode == "clarify":
+            question = str(
+                task.get("clarification_question")
+                or "Bạn có thể làm rõ yêu cầu này không?"
+            )
+            return {
+                "task_result": {
                     "task_id": task_id,
                     "question": task.get("question"),
                     "mode": mode,
-                    "lookup_type": task.get("lookup_type"),
-                    "intent": task.get("intent"),
+                    "coverage": "needs_clarification",
+                    "clarification_question": question,
                     "cohorts": task_cohorts,
-                    "coverage": coverage,
-                    "coverage_by_cohort": cohort_coverage,
-                    "clarification_by_cohort": clarification_by_cohort,
-                    "evidence": task_evidence,
-                    "citation_count": len(task_citations),
-                }
-            )
+                    "evidence": [],
+                },
+                "structured_results": [],
+                "retrieved_items": [],
+                "citations": [],
+                "related_references": [],
+                "clarification_questions": [question],
+            }
 
+        task_evidence: list[dict[str, Any]] = []
+        cohort_coverage: dict[str, str] = {}
+        clarification_by_cohort: dict[str, str] = {}
+        task_citations: list[dict[str, Any]] = []
+        task_items: list[dict[str, Any]] = []
+        related_references: list[dict[str, Any]] = []
+        structured_results: list[dict[str, Any]] = []
+        clarification_questions: list[str] = []
+
+        for task_cohort in task_cohorts:
+            if mode == "structured":
+                sub_result = self._execute_planned_structured_task(
+                    task=task,
+                    task_id=task_id,
+                    cohort=task_cohort,
+                )
+            else:
+                sub_result = self._execute_planned_rag_task(
+                    task=task,
+                    task_id=task_id,
+                    cohort=task_cohort,
+                )
+            cohort_key = str(task_cohort or "default")
+            cohort_coverage[cohort_key] = sub_result["coverage"]
+            task_evidence.extend(sub_result.get("evidence") or [])
+            task_citations.extend(sub_result.get("citations") or [])
+            task_items.extend(sub_result.get("retrieved_items") or [])
+            related_references.extend(sub_result.get("related_references") or [])
+            structured = sub_result.get("structured_result")
+            if structured:
+                structured_results.append(structured)
+            clarification = sub_result.get("clarification_question")
+            if clarification:
+                clarification = str(clarification)
+                clarification_questions.append(clarification)
+                clarification_by_cohort[cohort_key] = clarification
+
+        statuses = list(cohort_coverage.values())
+        if statuses and all(status == "covered" for status in statuses):
+            coverage = "covered"
+        elif any(status == "needs_clarification" for status in statuses):
+            coverage = "needs_clarification"
+        else:
+            coverage = "uncovered"
+
+        return {
+            "task_result": {
+                "task_id": task_id,
+                "question": task.get("question"),
+                "mode": mode,
+                "lookup_type": task.get("lookup_type"),
+                "intent": task.get("intent"),
+                "cohorts": task_cohorts,
+                "coverage": coverage,
+                "coverage_by_cohort": cohort_coverage,
+                "clarification_by_cohort": clarification_by_cohort,
+                "evidence": task_evidence,
+                "citation_count": len(task_citations),
+            },
+            "structured_results": structured_results,
+            "retrieved_items": task_items,
+            "citations": task_citations,
+            "related_references": related_references,
+            "clarification_questions": clarification_questions,
+        }
+
+    def aggregate_results(
+        self,
+        *,
+        base_result: dict[str, Any],
+        plan: dict[str, Any],
+        task_executions: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        """Merge task executions into the stable retrieval result contract."""
+
+        task_results = [execution["task_result"] for execution in task_executions]
+        coverage_by_task = {
+            str(result["task_id"]): str(result["coverage"])
+            for result in task_results
+        }
+        structured_results = [
+            result
+            for execution in task_executions
+            for result in execution.get("structured_results") or []
+        ]
+        all_items = [
+            item
+            for execution in task_executions
+            for item in execution.get("retrieved_items") or []
+        ]
+        all_citations = [
+            citation
+            for execution in task_executions
+            for citation in execution.get("citations") or []
+        ]
+        all_related_references = [
+            reference
+            for execution in task_executions
+            for reference in execution.get("related_references") or []
+        ]
+        clarification_questions = [
+            question
+            for execution in task_executions
+            for question in execution.get("clarification_questions") or []
+        ]
         merged_items = self._merge_task_items(all_items)
         merged_citations = self._merge_task_citations(all_citations)
         selected_citations = self._select_task_primary_citations(

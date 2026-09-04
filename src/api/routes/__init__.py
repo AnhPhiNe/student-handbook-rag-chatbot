@@ -1,1 +1,1 @@
-"""Các module route của API."""
+"""API route modules."""

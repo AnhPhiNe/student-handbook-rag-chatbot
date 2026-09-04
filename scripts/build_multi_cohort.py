@@ -291,12 +291,7 @@ def merge_json_documents(cohort_files, output_path):
 
 
 def validate_cohort_tags(paths: list[Path]) -> None:
-    """
-    Kiểm tra mọi record dữ liệu truy vấn đều có cohort thuộc tập khóa hợp lệ.
-
-    File manifest/cấu hình không đi qua hàm này. Với dữ liệu lấy từ sổ tay, pipeline
-    không cho phép thiếu cohort hoặc dùng cohort chung như "all".
-    """
+    """Require every retrievable handbook record to use an allowed cohort key."""
     issues = []
 
     for path in paths:
@@ -693,7 +688,7 @@ def should_skip(name: str) -> bool:
 
 
 def cleanup_legacy_cohort_artifacts() -> None:
-    """Loại bỏ artifact sinh tự động của cohort cũ trước khi build lại."""
+    """Remove generated legacy-cohort artifacts before rebuilding."""
     removed = []
     for directory in GENERATED_OUTPUT_DIRS:
         if not directory.exists():

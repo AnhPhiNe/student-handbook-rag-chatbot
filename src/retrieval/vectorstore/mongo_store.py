@@ -29,13 +29,22 @@ def _env_int(name: str, default: int) -> int:
 
 
 class DisabledMongoDocStore:
+    """Expose a no-op docstore when MongoDB parent lookup is disabled."""
+
     def insert_documents(self, documents: List[Dict[str, Any]]) -> None:
+        """Reject writes because this docstore is intentionally disabled."""
+
         raise RuntimeError("MongoDB parent lookup is disabled.")
 
     def get_document_by_id(self, doc_id: str) -> Optional[Dict[str, Any]]:
+        """Return no parent while lookup is disabled."""
+
         return None
 
+
 class MongoDocStore:
+    """Persist and retrieve full parent documents in MongoDB."""
+
     def __init__(
         self,
         uri: str,
@@ -58,6 +67,8 @@ class MongoDocStore:
         self._disabled_until = 0.0
 
     def insert_documents(self, documents: List[Dict[str, Any]]) -> None:
+        """Upsert parent documents in bounded unordered batches."""
+
         if not documents:
             return
 
@@ -80,6 +91,8 @@ class MongoDocStore:
             logger.info(f"Inserted/Updated {inserted_or_updated} docs into MongoDB.")
 
     def get_document_by_id(self, doc_id: str) -> Optional[Dict[str, Any]]:
+        """Fetch one parent document with temporary backoff after failures."""
+
         if time.monotonic() < self._disabled_until:
             return None
 
@@ -93,7 +106,10 @@ class MongoDocStore:
             )
             return None
 
+
 def get_mongo_store() -> MongoDocStore | DisabledMongoDocStore:
+    """Create the configured MongoDB docstore or its disabled fallback."""
+
     if not _env_bool("MONGODB_PARENT_LOOKUP_ENABLED", default=True):
         return DisabledMongoDocStore()
 
@@ -108,9 +124,11 @@ def get_mongo_store() -> MongoDocStore | DisabledMongoDocStore:
 
     timeout_ms = _env_int("MONGODB_TIMEOUT_MS", 30000)
     failure_backoff_seconds = _env_int("MONGODB_FAILURE_BACKOFF_SECONDS", 300)
+    db_name = str(os.environ.get("MONGODB_DB_NAME") or "chatbotHCMUE").strip()
     collection_name = require_mongo_parent_collection_name()
     return MongoDocStore(
         uri=uri,
+        db_name=db_name,
         collection_name=collection_name,
         timeout_ms=timeout_ms,
         failure_backoff_seconds=failure_backoff_seconds,

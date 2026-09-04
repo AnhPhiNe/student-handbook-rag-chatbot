@@ -56,6 +56,8 @@ def _tracing_enabled() -> bool:
 
 
 def get_langsmith_client() -> Client | None:
+    """Return the lazily initialized LangSmith client when tracing is enabled."""
+
     global _client
     if not _tracing_enabled():
         return None
@@ -63,9 +65,7 @@ def get_langsmith_client() -> Client | None:
     if _client is not None:
         return _client
 
-    api_key = os.environ.get("LANGSMITH_API_KEY") or os.environ.get(
-        "LANGCHAIN_API_KEY"
-    )
+    api_key = os.environ.get("LANGSMITH_API_KEY") or os.environ.get("LANGCHAIN_API_KEY")
     if not api_key:
         return None
 
@@ -160,9 +160,7 @@ def _compact_source_records(records: Any) -> list[dict[str, Any]]:
         if not isinstance(record, dict):
             continue
         metadata = (
-            record.get("metadata")
-            if isinstance(record.get("metadata"), dict)
-            else {}
+            record.get("metadata") if isinstance(record.get("metadata"), dict) else {}
         )
         item = {
             field: record.get(field, metadata.get(field))
@@ -205,9 +203,7 @@ def _compact_structured_results(results: Any) -> list[dict[str, Any]]:
 
 def _task_summaries(source: dict[str, Any]) -> list[dict[str, Any]]:
     plan = (
-        source.get("query_plan")
-        if isinstance(source.get("query_plan"), dict)
-        else {}
+        source.get("query_plan") if isinstance(source.get("query_plan"), dict) else {}
     )
     plan_tasks = plan.get("tasks") if isinstance(plan.get("tasks"), list) else []
     task_results = (
@@ -275,9 +271,7 @@ def build_trace_metadata(
     src = source or {}
     router_decision = src.get("router_decision") or {}
     query_handling = (
-        src.get("query_handling")
-        or router_decision.get("query_handling")
-        or {}
+        src.get("query_handling") or router_decision.get("query_handling") or {}
     )
 
     status = status_override or src.get("status") or "answered"
@@ -298,7 +292,9 @@ def build_trace_metadata(
         src.get("citations_used") or src.get("citations") or []
     )
     related = _compact_source_records(src.get("related_references") or [])
-    structured_results = _compact_structured_results(src.get("structured_results") or [])
+    structured_results = _compact_structured_results(
+        src.get("structured_results") or []
+    )
     task_summaries = _task_summaries(src)
     resolved_cohort = (
         cohort
@@ -344,9 +340,7 @@ def build_trace_metadata(
         "structured_results_count": len(structured_results),
         "context_mode": plan.get("context_mode") or query_type,
         "task_count": len(task_summaries),
-        "task_modes": _ordered_unique(
-            [task.get("mode") for task in task_summaries]
-        ),
+        "task_modes": _ordered_unique([task.get("mode") for task in task_summaries]),
         "lookup_types": _ordered_unique(
             [task.get("lookup_type") for task in task_summaries]
         ),
@@ -394,9 +388,7 @@ def push_trace_to_langsmith(
     tags: list[str] | None = None,
     tracker: Any = None,
 ) -> None:
-    """Gửi thông tin Trace + Run tree lên LangSmith.
-    Chạy trong Background Thread độc lập để không block phản hồi API/SSE.
-    """
+    """Create a LangSmith root trace and optional child runs."""
     client = get_langsmith_client()
     if not client:
         return
@@ -477,7 +469,7 @@ def push_trace_to_langsmith(
         if final_usage:
             extra_dict["usage"] = final_usage
 
-        # 1. Tạo Root Run (Parent Chain)
+        # Create the root chain run.
         meta.setdefault("cohort", resolved_cohort)
         citations_payload = meta.get("citations_used") or []
         related_payload = meta.get("related_references") or []
@@ -507,14 +499,16 @@ def push_trace_to_langsmith(
             extra=extra_dict,
         )
 
-        # 2. Tạo các Sub-Runs (Child steps) nếu có telemetry tracker
+        # Add child runs when the pipeline telemetry tracker exposes steps.
         if tracker and hasattr(tracker, "get_steps"):
             steps = tracker.get_steps() or []
             for step in steps:
                 step_name = step.get("step_name") or "Pipeline Step"
                 step_type = (
                     "llm"
-                    if "llm" in step_name.lower() or "gemini" in step_name.lower() or "router" in step_name.lower()
+                    if "llm" in step_name.lower()
+                    or "gemini" in step_name.lower()
+                    or "router" in step_name.lower()
                     else "retriever"
                 )
                 # Parse start/end datetime for exact LLM latency calculation
@@ -576,7 +570,9 @@ def push_trace_to_langsmith(
                     name=step_name,
                     run_type=step_type,
                     parent_run_id=run_uuid,
-                    inputs=step.get("inputs", {"query": input_text, "prompts": [input_text]}),
+                    inputs=step.get(
+                        "inputs", {"query": input_text, "prompts": [input_text]}
+                    ),
                     outputs=step_outputs,
                     start_time=step_start,
                     end_time=step_end,
@@ -593,7 +589,7 @@ def push_feedback_to_langsmith(
     comment: str | None = None,
     feedback_key: str = "user-rating",
 ) -> None:
-    """Gửi đánh giá Like/Dislike (1.0 / 0.0) từ sinh viên lên LangSmith."""
+    """Attach a bounded user rating to the matching LangSmith run."""
     client = get_langsmith_client()
     if not client or not run_id:
         return

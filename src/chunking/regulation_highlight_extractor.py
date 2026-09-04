@@ -5,17 +5,17 @@ from typing import Any
 
 
 def extract_regulation_highlights(section: dict[str, Any]) -> list[dict[str, Any]]:
-    """Trích các câu quy định giàu tín hiệu để tạo chunk riêng cho truy vấn chính xác."""
+    """Extract high-signal regulation statements into focused search records."""
 
     content = str(section.get("content") or "")
     if not content:
         return []
 
-    source_pages = list(
-        range(int(section["page_start"]), int(section["page_end"]) + 1)
-    )
+    source_pages = list(range(int(section["page_start"]), int(section["page_end"]) + 1))
     highlights: list[dict[str, Any]] = []
-    highlights.extend(_extract_period_schedule_highlights(section, content, source_pages))
+    highlights.extend(
+        _extract_period_schedule_highlights(section, content, source_pages)
+    )
     return highlights
 
 
@@ -23,6 +23,8 @@ def build_regulation_highlight_chunk_content(
     section: dict[str, Any],
     highlight: dict[str, Any],
 ) -> str:
+    """Render one regulation highlight as standalone retrieval content."""
+
     parts = [
         f"Tài liệu: {section.get('document_title') or ''}",
         f"Điều: {section.get('article') or ''}",
@@ -34,6 +36,8 @@ def build_regulation_highlight_chunk_content(
 
 
 def highlight_metadata_payload(highlight: dict[str, Any]) -> dict[str, Any]:
+    """Project a highlight onto metadata persisted with its parent."""
+
     return {
         "highlight_id": highlight["highlight_id"],
         "highlight_name": highlight["highlight_name"],

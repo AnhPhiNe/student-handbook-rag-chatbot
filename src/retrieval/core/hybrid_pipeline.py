@@ -2,7 +2,7 @@ import logging
 import os
 import threading
 import time
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
 from typing import Any
 
 from qdrant_client import QdrantClient
@@ -16,6 +16,7 @@ from src.retrieval.core.cross_encoder_reranker import get_local_reranker
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from src.retrieval.core.retrieval_mode import resolve_retrieval_mode
 from src.retrieval.core.runtime_health import set_bm25_runtime_status
+from src.retrieval.runtime_config import load_retrieval_runtime_config
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
 
 os.environ["TRANSFORMERS_VERBOSITY"] = "error"
@@ -37,6 +38,7 @@ def _chunk_matches_regulation_scope(
     if _is_supplemental_regulation_metadata(metadata):
         return False
     return is_cohort_applicable(chunk, cohort)
+
 
 def _query_points_with_retry(
     client: QdrantClient,
@@ -100,15 +102,10 @@ def select_graph_related_parent_candidates(
     """
 
     primary_ids = [
-        str(parent_id)
-        for parent_id in primary_parent_ids
-        if str(parent_id).strip()
+        str(parent_id) for parent_id in primary_parent_ids if str(parent_id).strip()
     ]
     primary_set = set(primary_ids)
-    primary_rank = {
-        parent_id: index
-        for index, parent_id in enumerate(primary_ids)
-    }
+    primary_rank = {parent_id: index for index, parent_id in enumerate(primary_ids)}
     best_by_parent: dict[str, dict[str, Any]] = {}
 
     for edge_order, node in enumerate(expanded_nodes):
@@ -167,30 +164,39 @@ class ChildParentHybridRetriever:
         qdrant_url: str,
         qdrant_key: str,
         collection_name: str,
+        runtime_config: dict[str, Any] | None = None,
     ):
+        self.runtime_config = runtime_config or load_retrieval_runtime_config()
+        runtime = self.runtime_config.get("runtime") or {}
+        embedding = self.runtime_config.get("embedding") or {}
         self.qdrant_client = QdrantClient(
             url=qdrant_url,
             api_key=qdrant_key,
-            timeout=60.0,
+            timeout=float(runtime.get("qdrant_timeout_seconds", 60.0)),
         )
         self.collection_name = collection_name
 
         from sentence_transformers import SentenceTransformer
 
-        self.embed_model = SentenceTransformer("BAAI/bge-m3")
+        self.embed_model = SentenceTransformer(str(embedding["model_name"]))
+        self.normalize_embeddings = bool(embedding.get("normalize_embeddings", True))
         self.graph = NetworkXGraphTraverser()
 
         # PhoRanker is evaluation-only and is loaded lazily by its ablation modes.
         self.reranker = None
 
-        # Parent đầy đủ lấy từ MongoDB.
+        # Full parent content comes from MongoDB.
         self.mongo_store = get_mongo_store()
 
-        # Cache runtime, không phải dữ liệu local.
-        self.parent_cache: dict[str, dict[str, Any]] = {}
+        # This bounded map is a runtime cache, not local source data.
+        self.parent_cache_max_entries = max(
+            1, int(runtime.get("parent_cache_max_entries", 2048))
+        )
+        self.parent_cache: OrderedDict[str, dict[str, Any]] = OrderedDict()
 
         # BM25 Retriever
         from src.retrieval.core.bm25_retriever import BM25Retriever
+
         self.bm25 = BM25Retriever()
         self._initialize_bm25_async()
 
@@ -205,6 +211,8 @@ class ChildParentHybridRetriever:
         ).start()
 
     def _fetch_bm25_chunks_from_qdrant(self) -> list[dict[str, Any]]:
+        """Load the lexical corpus from Qdrant for the local BM25 index."""
+
         chunks: list[dict[str, Any]] = []
         scroll_offset = None
         while True:
@@ -255,8 +263,7 @@ class ChildParentHybridRetriever:
                     return False
                 delay = max(0.0, float(backoff_seconds)) * attempt
                 logger.warning(
-                    "Qdrant BM25 scroll failed on attempt %s/%s; "
-                    "retrying in %.1fs: %s",
+                    "Qdrant BM25 scroll failed on attempt %s/%s; retrying in %.1fs: %s",
                     attempt,
                     attempts,
                     delay,
@@ -284,23 +291,37 @@ class ChildParentHybridRetriever:
         return True
 
     def _get_parent(self, parent_id: str) -> dict[str, Any] | None:
+        """Resolve and cache one full parent document from MongoDB."""
+
         if not parent_id:
             return None
 
         cached = self.parent_cache.get(parent_id)
         if cached is not None:
+            if hasattr(self.parent_cache, "move_to_end"):
+                self.parent_cache.move_to_end(parent_id)
             return cached
 
         parent = self.mongo_store.get_document_by_id(parent_id)
 
         if parent is not None:
             self.parent_cache[parent_id] = parent
+            cache_limit = max(1, int(getattr(self, "parent_cache_max_entries", 2048)))
+            while len(self.parent_cache) > cache_limit:
+                if hasattr(self.parent_cache, "popitem"):
+                    try:
+                        self.parent_cache.popitem(last=False)
+                        continue
+                    except TypeError:
+                        pass
+                oldest = next(iter(self.parent_cache))
+                self.parent_cache.pop(oldest, None)
 
         return parent
-    
+
     @staticmethod
     def _qdrant_point_to_chunk(point: Any) -> dict[str, Any]:
-        """Chuyển một Qdrant point thành cấu trúc chunk nội bộ."""
+        """Convert a Qdrant point into the internal chunk contract."""
         payload = dict(point.payload or {})
         chunk_id = str(payload.get("chunk_id") or point.id)
 
@@ -310,7 +331,6 @@ class ChildParentHybridRetriever:
             "content": str(payload.get("content") or ""),
             "metadata": payload,
         }
-
 
     def retrieve(
         self,
@@ -332,7 +352,10 @@ class ChildParentHybridRetriever:
 
         retrieval_started = time.perf_counter()
         logger.info("==> Child-parent query: %s", query)
-        query_vector = self.embed_model.encode(query).tolist()
+        query_vector = self.embed_model.encode(
+            query,
+            normalize_embeddings=getattr(self, "normalize_embeddings", True),
+        ).tolist()
         query_filter = _v7_query_filter(cohort)
         search_limit = max(top_k_vector * 2, 24)
         search_results = _query_points_with_retry(
@@ -344,9 +367,7 @@ class ChildParentHybridRetriever:
         )
 
         seed_chunks = [
-            self._qdrant_point_to_chunk(hit)
-            for hit in search_results
-            if hit.payload
+            self._qdrant_point_to_chunk(hit) for hit in search_results if hit.payload
         ]
 
         seed_chunks = [
@@ -361,9 +382,7 @@ class ChildParentHybridRetriever:
             return []
 
         vector_scores = {
-            str(hit.payload.get("chunk_id")): float(
-                getattr(hit, "score", 0.0) or 0.0
-            )
+            str(hit.payload.get("chunk_id")): float(getattr(hit, "score", 0.0) or 0.0)
             for hit in search_results
             if hit.payload and hit.payload.get("chunk_id")
         }
@@ -377,7 +396,7 @@ class ChildParentHybridRetriever:
             )
             for chunk in seed_chunks
         ]
-        
+
         # --- BM25 RETRIEVAL & RECIPROCAL RANK FUSION (RRF) ---
         bm25_results = [
             (float(chunk.get("bm25_score") or 0.0), chunk)
@@ -389,11 +408,15 @@ class ChildParentHybridRetriever:
                 cohort=cohort,
             )
         ]
-        
+
         # Union of chunk IDs
-        dense_chunk_ids = [str(c.get("_id") or c.get("chunk_id") or "") for _, c in vector_scored]
-        bm25_chunk_ids = [str(c.get("_id") or c.get("chunk_id") or "") for _, c in bm25_results]
-        
+        dense_chunk_ids = [
+            str(c.get("_id") or c.get("chunk_id") or "") for _, c in vector_scored
+        ]
+        bm25_chunk_ids = [
+            str(c.get("_id") or c.get("chunk_id") or "") for _, c in bm25_results
+        ]
+
         # Extract unique IDs sequentially to ensure deterministic base order
         union_ids = []
         seen = set()
@@ -401,11 +424,11 @@ class ChildParentHybridRetriever:
             if cid not in seen:
                 seen.add(cid)
                 union_ids.append(cid)
-        
+
         # Maps to store ranks
         dense_rank_map = {cid: rank + 1 for rank, cid in enumerate(dense_chunk_ids)}
         bm25_rank_map = {cid: rank + 1 for rank, cid in enumerate(bm25_chunk_ids)}
-        
+
         # Map to original chunks
         chunk_map = {}
         for _, c in vector_scored:
@@ -424,16 +447,16 @@ class ChildParentHybridRetriever:
             score_dense = 1 / (dense_rank + 60) if dense_rank else 0.0
             score_bm25 = 1 / (bm25_rank + 60) if bm25_rank else 0.0
             rrf_score = score_dense + score_bm25
-            
+
             fusion_scored.append((rrf_score, chunk_map[cid]))
-            
+
         # Sort strictly by RRF score (descending).
         # Tie-break neutrally using chunk ID to ensure determinism without favoring Dense or BM25
         fusion_scored.sort(key=lambda x: (x[0], str(x[1].get("_id", ""))), reverse=True)
-        
+
         # Cut top K
         primary_scored = fusion_scored[:search_limit]
-        
+
         # Reconstruct seed_chunks and seeds_parent_ids from the new fused top K
         seed_chunks = [chunk for _, chunk in primary_scored]
         seed_parent_ids = {
@@ -490,9 +513,7 @@ class ChildParentHybridRetriever:
         supplement_telemetry = {
             **retrieval_telemetry,
             **related_telemetry,
-            "retrieval_latency_ms": (
-                time.perf_counter() - retrieval_started
-            ) * 1000,
+            "retrieval_latency_ms": (time.perf_counter() - retrieval_started) * 1000,
         }
         for item in primary_results:
             item_metadata = dict(item.get("metadata") or {})
@@ -585,11 +606,7 @@ class ChildParentHybridRetriever:
         telemetry = {
             "graph_depth": graph_depth,
             "graph_expanded_parents": len(
-                {
-                    str(node.get("id") or "")
-                    for node in expanded
-                    if node.get("id")
-                }
+                {str(node.get("id") or "") for node in expanded if node.get("id")}
             ),
             "graph_related_parent_limit": GRAPH_SUPPLEMENT_PARENT_LIMIT,
             "graph_related_parents_selected": len(related_results),
@@ -610,13 +627,14 @@ class ChildParentHybridRetriever:
         pairs = [[query, str(chunk.get("content") or "")] for chunk in chunks]
         scores = self._get_reranker_model().predict(pairs)
         scored = [
-            (float(scores[index]), dict(chunk))
-            for index, chunk in enumerate(chunks)
+            (float(scores[index]), dict(chunk)) for index, chunk in enumerate(chunks)
         ]
         scored.sort(key=lambda pair: pair[0], reverse=True)
         return scored
 
     def _get_reranker_model(self):
+        """Lazily initialize the shared cross-encoder reranker."""
+
         if self.reranker is None:
             logger.info("Loading shared PhoRanker singleton for retrieval ablation...")
             self.reranker = get_local_reranker().model
@@ -663,7 +681,7 @@ class ChildParentHybridRetriever:
                     parent_id,
                 )
                 continue
-    
+
             parent_metadata = dict(parent.get("metadata") or {})
             focused_chunks = self._focused_chunks_for_parent(
                 scored_group=parent_groups[parent_id],
@@ -740,6 +758,8 @@ def _v7_query_filter(cohort: str | None) -> Filter:
 
 _GLOBAL_RETRIEVER = None
 _GLOBAL_RETRIEVER_LOCK = threading.Lock()
+
+
 def build_related_references(
     related_items: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
@@ -755,9 +775,7 @@ def build_related_references(
         related_chunk_id = str(
             item.get("chunk_id") or item.get("_id") or item.get("id") or ""
         ).strip()
-        primary_chunk_id = str(
-            metadata.get("related_source_primary_id") or ""
-        ).strip()
+        primary_chunk_id = str(metadata.get("related_source_primary_id") or "").strip()
         if not related_chunk_id or not primary_chunk_id:
             continue
 
@@ -771,7 +789,9 @@ def build_related_references(
         article_label = normalize_article_label(
             metadata.get("source_section"), metadata.get("title"), content[:600]
         )
-        document_identity = metadata.get("document_title") or metadata.get("document_id")
+        document_identity = metadata.get("document_title") or metadata.get(
+            "document_id"
+        )
         canonical_source_id = canonical_article_source_id(
             document_identity=document_identity,
             cohort=metadata.get("cohort"),
@@ -819,18 +839,20 @@ def initialize_hybrid_retriever() -> ChildParentHybridRetriever:
                 qdrant_url = os.getenv("QDRANT_URL")
                 qdrant_key = os.getenv("QDRANT_API_KEY")
                 collection_name = require_qdrant_collection_name()
+                runtime_config = load_retrieval_runtime_config()
                 logger.info("Initializing child-parent regulation retriever...")
                 _GLOBAL_RETRIEVER = ChildParentHybridRetriever(
                     qdrant_url,
                     qdrant_key,
                     collection_name=collection_name,
+                    runtime_config=runtime_config,
                 )
     return _GLOBAL_RETRIEVER
 
 
 def run_hybrid_retrieval_pipeline(
     query: str,
-    top_k: int = 5,
+    top_k: int | None = None,
     *,
     cohort: str | None = None,
     retrieval_query: str | None = None,
@@ -845,6 +867,9 @@ def run_hybrid_retrieval_pipeline(
     UI do not need separate code paths.
     """
     retriever = initialize_hybrid_retriever()
+    if top_k is None:
+        retrieval_config = getattr(retriever, "runtime_config", {}).get("retrieval", {})
+        top_k = int(retrieval_config.get("default_top_k", 5))
 
     retrieval_query = retrieval_query or query
     target_chunk_types = target_chunk_types or ["regulation"]
@@ -862,9 +887,7 @@ def run_hybrid_retrieval_pipeline(
         if not related_items:
             raw_related = metadata.pop("related_items", [])
             if isinstance(raw_related, list):
-                related_items = [
-                    item for item in raw_related if isinstance(item, dict)
-                ]
+                related_items = [item for item in raw_related if isinstance(item, dict)]
         doc_copy = dict(doc)
         doc_copy["metadata"] = metadata
         doc_copy["chunk_id"] = doc.get("chunk_id") or doc.get("_id") or doc.get("id")
@@ -874,6 +897,7 @@ def run_hybrid_retrieval_pipeline(
         formatted_results.append(doc_copy)
 
     from .citation_builder import build_citations_from_vector_results
+
     citations = build_citations_from_vector_results(formatted_results)
     related_references = build_related_references(related_items)
 

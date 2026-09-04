@@ -23,7 +23,7 @@ def attach_cohort_metadata(
     cohort: str | None,
     document_id: str | None = None,
 ) -> None:
-    """Gắn cohort cho mọi chunk và parent doc được sinh từ một sổ tay."""
+    """Attach handbook identity metadata to all child and parent records."""
     if not cohort and not document_id:
         return
 
@@ -54,6 +54,8 @@ def attach_cohort_metadata(
 def split_chunks_by_index_mode(
     chunks: list[dict[str, Any]],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    """Partition chunks by the runtime component responsible for indexing them."""
+
     semantic = [chunk for chunk in chunks if chunk["index_mode"] == "semantic"]
     structured = [chunk for chunk in chunks if chunk["index_mode"] == "structured"]
     tool = [chunk for chunk in chunks if chunk["index_mode"] == "tool"]
@@ -62,12 +64,7 @@ def split_chunks_by_index_mode(
 
 
 def build_index_manifest(config: dict[str, Any]) -> dict[str, Any]:
-    """
-    Manifest này dùng để nhắc Embedding:
-    - Chỉ embed semantic_chunks.json
-    - Không embed all_chunks.json
-    - structured/tool xử lý riêng
-    """
+    """Declare which artifacts feed embedding, lookup, and tool stages."""
     return {
         "embedding_input": config["output"]["semantic_chunks"],
         "structured_lookup_input": config["output"]["structured_lookup_chunks"],
@@ -85,6 +82,8 @@ def build_index_manifest(config: dict[str, Any]) -> dict[str, Any]:
 
 
 def main() -> None:
+    """Run chunk construction and persist indexes, parents, manifests, and reports."""
+
     config = load_yaml(CONFIG_PATH)
 
     structured_sections = load_json(Path(config["input"]["structured_sections"]))

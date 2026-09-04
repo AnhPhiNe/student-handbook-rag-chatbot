@@ -18,6 +18,8 @@ LABEL_ALIASES = {
 
 
 def normalize_text(value: Any) -> str:
+    """Normalize text for scholarship rule matching."""
+
     text = str(value or "").lower()
     text = unicodedata.normalize("NFD", text)
     text = "".join(ch for ch in text if unicodedata.category(ch) != "Mn")
@@ -44,7 +46,9 @@ def _strip_cohort_numbers(query_norm: str) -> str:
 def _is_scholarship_lookup_query(query_norm: str) -> bool:
     if "hoc bong" not in query_norm:
         return False
-    if "tinh" in query_norm and any(term in query_norm for term in ["gpa", "ren luyen"]):
+    if "tinh" in query_norm and any(
+        term in query_norm for term in ["gpa", "ren luyen"]
+    ):
         return False
     policy_terms = [
         "dieu kien",
@@ -86,17 +90,11 @@ def _filter_tables(
     table_id: str = "scholarship_classification",
 ) -> list[dict[str, Any]]:
     normalized_cohort = normalize_cohort(cohort)
-    candidates = [
-        table
-        for table in tables
-        if table.get("table_id") == table_id
-    ]
+    candidates = [table for table in tables if table.get("table_id") == table_id]
     if not normalized_cohort:
         return candidates
     return [
-        table
-        for table in candidates
-        if is_cohort_applicable(table, normalized_cohort)
+        table for table in candidates if is_cohort_applicable(table, normalized_cohort)
     ]
 
 
@@ -119,9 +117,7 @@ def _rows_for_query(
         return [
             row
             for row in rows
-            if normalize_text(
-                row.get("label") or row.get("scholarship_level")
-            )
+            if normalize_text(row.get("label") or row.get("scholarship_level"))
             in norm_labels
         ], None
 
@@ -146,6 +142,8 @@ def scholarship_table_lookup(
     *,
     table_id: str = "scholarship_classification",
 ) -> dict[str, Any] | None:
+    """Resolve scholarship thresholds from normalized tables."""
+
     if slots and slots.get("score_or_label"):
         query_norm = normalize_text(slots.get("score_or_label"))
     else:

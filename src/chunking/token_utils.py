@@ -2,11 +2,7 @@ import re
 
 
 def count_tokens_approx(text: str) -> int:
-    """
-    Ước lượng token đơn giản.
-    Với tiếng Việt, tạm dùng số word/punctuation.
-    Có thể thay bằng tokenizer chính xác hơn như tiktoken nếu cần.
-    """
+    """Estimate multilingual token count from words and punctuation."""
     if not text:
         return 0
 
@@ -19,10 +15,7 @@ def split_text_by_paragraph(
     max_tokens: int,
     overlap_tokens: int = 0,
 ) -> list[str]:
-    """
-    Split theo paragraph trước.
-    Nếu paragraph quá dài thì split tiếp theo câu.
-    """
+    """Split on paragraphs first, then sentences when a paragraph is too long."""
     paragraphs = [p.strip() for p in text.split("\n") if p.strip()]
     chunks = []
     current = []
@@ -49,6 +42,8 @@ def split_text_by_paragraph(
 
 
 def split_text_by_sentence(text: str, max_tokens: int) -> list[str]:
+    """Greedily group sentences under an approximate token limit."""
+
     sentences = re.split(r"(?<=[.!?。])\s+", text)
     chunks = []
     current = []

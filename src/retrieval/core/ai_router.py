@@ -215,6 +215,8 @@ def _next_local_midnight_timestamp() -> float:
 
 @dataclass(frozen=True)
 class GroqRouterPoolConfig:
+    """Define bounded retry, quota, and cooldown settings for router API keys."""
+
     rpm_limit_per_key: int = 30
     rpd_limit_per_key: int = 1000
     tpm_limit_per_key: int = 8000
@@ -225,6 +227,8 @@ class GroqRouterPoolConfig:
 
     @classmethod
     def from_config(cls, config: dict[str, Any] | None) -> "GroqRouterPoolConfig":
+        """Build quota-aware key-pool settings from a configuration mapping."""
+
         config = config or {}
         return cls(
             rpm_limit_per_key=max(1, int(config.get("rpm_limit_per_key", 30))),
@@ -268,9 +272,13 @@ class GroqRouterKeyPool:
 
     @staticmethod
     def fingerprint(key: str) -> str:
+        """Return a non-secret identity for the configured key pool."""
+
         return hashlib.sha256(key.encode("utf-8")).hexdigest()[:12]
 
     def acquire_key(self, estimated_tokens: int) -> tuple[str, str, int]:
+        """Select the next eligible API key under local quota constraints."""
+
         estimated_tokens = max(1, int(estimated_tokens))
         while True:
             with self._lock:
@@ -297,10 +305,7 @@ class GroqRouterKeyPool:
                             available_at=_next_local_midnight_timestamp(),
                         )
                         continue
-                    if (
-                        tokens_today + estimated_tokens
-                        > self.config.tpd_limit_per_key
-                    ):
+                    if tokens_today + estimated_tokens > self.config.tpd_limit_per_key:
                         daily_reasons.add("daily_token_quota")
                         state_changed |= self._mark_unavailable(
                             state,
@@ -389,6 +394,8 @@ class GroqRouterKeyPool:
     def record_success(
         self, key_id: str, *, actual_tokens: int, reserved_tokens: int
     ) -> None:
+        """Record successful usage and clear transient failure state."""
+
         with self._lock:
             state = self._key_state(key_id)
             extra = max(0, int(actual_tokens) - int(reserved_tokens))
@@ -402,6 +409,8 @@ class GroqRouterKeyPool:
             self._save_state()
 
     def record_failure(self, key_id: str, error_type: str) -> None:
+        """Record a failed router attempt for cooldown decisions."""
+
         with self._lock:
             state = self._key_state(key_id)
             state["failure_count"] = int(state.get("failure_count", 0)) + 1
@@ -414,6 +423,8 @@ class GroqRouterKeyPool:
         *,
         retry_after_seconds: float | None = None,
     ) -> None:
+        """Mark a key unavailable until its provider retry boundary."""
+
         with self._lock:
             state = self._key_state(key_id)
             retry_seconds = (
@@ -460,10 +471,9 @@ class GroqRouterKeyPool:
         reason: str,
         available_at: float,
     ) -> bool:
-        changed = (
-            state.get("unavailable_reason") != reason
-            or float(state.get("available_at", 0.0)) != float(available_at)
-        )
+        changed = state.get("unavailable_reason") != reason or float(
+            state.get("available_at", 0.0)
+        ) != float(available_at)
         state["unavailable_reason"] = reason
         state["available_at"] = float(available_at)
         return changed
@@ -527,6 +537,8 @@ class GroqRouterKeyPool:
 
 
 class RouterDecisionCache:
+    """Cache validated planner decisions by normalized request identity."""
+
     def __init__(self, path: str, max_entries: int = 2000) -> None:
         self.path = Path(path)
         self.max_entries = max(1, int(max_entries))
@@ -540,11 +552,15 @@ class RouterDecisionCache:
             pass
 
     def get(self, key: str) -> dict[str, Any] | None:
+        """Return a defensive copy of one cached planner decision."""
+
         with self._lock:
             value = self._items.get(key)
             return dict(value) if isinstance(value, dict) else None
 
     def set(self, key: str, value: dict[str, Any]) -> None:
+        """Store one planner decision and evict the oldest entry when bounded."""
+
         with self._lock:
             self._items[key] = dict(value)
             if len(self._items) > self.max_entries:
@@ -575,6 +591,8 @@ class AIRouter:
         key_pool_config: GroqRouterPoolConfig | dict[str, Any] | None = None,
         cache_path: str = "data/cache/qwen_router_cache.json",
         cache_enabled: bool = True,
+        output_tokens_per_task: int = 640,
+        hard_max_output_tokens: int = 2048,
     ) -> None:
         load_project_env()
         keys_value = (
@@ -586,12 +604,14 @@ class AIRouter:
             key.strip() for key in keys_value.split(",") if key.strip()
         ]
         if not self.available_keys:
-            raise RuntimeError(
-                "Missing GROQ_ROUTER_API_KEYS or GROQ_API_KEYS."
-            )
+            raise RuntimeError("Missing GROQ_ROUTER_API_KEYS or GROQ_API_KEYS.")
         self.model_name = model_name
         self.temperature = float(temperature)
         self.max_output_tokens = max(64, int(max_output_tokens))
+        self.output_tokens_per_task = max(64, int(output_tokens_per_task))
+        self.hard_max_output_tokens = max(
+            self.max_output_tokens, int(hard_max_output_tokens)
+        )
         self.request_timeout_seconds = max(1.0, float(request_timeout_seconds))
         self.max_retries = max(0, int(max_retries))
         self.reasoning_effort = str(reasoning_effort or "auto").strip().lower()
@@ -606,6 +626,8 @@ class AIRouter:
 
     @classmethod
     def from_config(cls, path: str | Path = "configs/ai_router.yaml") -> "AIRouter":
+        """Build the planner client from its YAML and environment settings."""
+
         try:
             config = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
         except OSError:
@@ -636,6 +658,12 @@ class AIRouter:
             model_name=model_name,
             temperature=float(config.get("temperature", 0.0)),
             max_output_tokens=max_output_tokens,
+            output_tokens_per_task=int(config.get("output_tokens_per_task", 640)),
+            hard_max_output_tokens=int(
+                os.environ.get("STUDENT_RAG_ROUTER_HARD_MAX_OUTPUT_TOKENS")
+                or config.get("hard_max_output_tokens")
+                or 2048
+            ),
             request_timeout_seconds=float(config.get("request_timeout_seconds", 5.0)),
             max_retries=int(config.get("max_retries", 1)),
             reasoning_effort=str(
@@ -655,6 +683,16 @@ class AIRouter:
             cache_enabled=bool(config.get("cache_enabled", True))
             and not cache_disabled,
         )
+
+    def _planner_output_token_limit(self, explicit_request_count: int | None) -> int:
+        """Scale planner output capacity by task count under a hard cap."""
+
+        task_count = max(1, int(explicit_request_count or 1))
+        requested = max(
+            self.max_output_tokens,
+            self.output_tokens_per_task * task_count,
+        )
+        return min(requested, self.hard_max_output_tokens)
 
     def plan(
         self,
@@ -691,11 +729,7 @@ class AIRouter:
             }
 
         explicit_request_count = _explicit_request_count(query)
-        max_output_tokens = max(
-            self.max_output_tokens,
-            int(os.environ.get("STUDENT_RAG_PLANNER_MAX_OUTPUT_TOKENS", "768")),
-            640 * (explicit_request_count or 1),
-        )
+        max_output_tokens = self._planner_output_token_limit(explicit_request_count)
         estimated_tokens = max(
             128,
             int(prompt_stats["estimated_input_tokens"]) + max_output_tokens,
@@ -748,7 +782,10 @@ class AIRouter:
                     repair_response = client.chat.completions.create(
                         model=self.model_name,
                         messages=[
-                            {"role": "system", "content": PLANNER_SYSTEM_PROMPT.strip()},
+                            {
+                                "role": "system",
+                                "content": PLANNER_SYSTEM_PROMPT.strip(),
+                            },
                             {"role": "user", "content": dynamic_prompt},
                             {"role": "assistant", "content": raw},
                             {

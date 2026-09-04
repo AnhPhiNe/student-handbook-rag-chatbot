@@ -6,6 +6,8 @@ from src.common.cohort import normalize_cohort
 
 
 def extract_number(query: str) -> Optional[float]:
+    """Extract the first numeric value from text."""
+
     match = re.search(r"\d+(?:[,.]\d+)?", query)
     if not match:
         return None
@@ -13,11 +15,15 @@ def extract_number(query: str) -> Optional[float]:
 
 
 def extract_numbers_from_text(text: str) -> list[float]:
+    """Extract all numeric values from text in source order."""
+
     matches = re.finditer(r"\d+(?:[,.]\d+)?", text)
     return [float(match.group(0).replace(",", ".")) for match in matches]
 
 
 def find_table(tables: list[dict[str, Any]], table_id: str) -> Optional[dict[str, Any]]:
+    """Find a normalized table by its identifier."""
+
     for table in tables:
         if table.get("table_id") == table_id:
             return table
@@ -25,6 +31,8 @@ def find_table(tables: list[dict[str, Any]], table_id: str) -> Optional[dict[str
 
 
 def normalize_text(text: Any) -> str:
+    """Normalize text for deterministic table lookup."""
+
     value = str(text or "").lower()
     value = value.replace("đ", "d").replace("Đ", "D")
     value = unicodedata.normalize("NFD", value)
@@ -74,10 +82,12 @@ def _with_metadata(
 
 
 def in_range(value: float, range_text: str) -> bool:
+    """Return whether a value satisfies optional lower and upper bounds."""
+
     text = range_text.lower().replace(",", ".").strip()
     nums = extract_numbers_from_text(text)
 
-    # Cac range trong so tay co the viet "duoi 3.2" hoac "2.5-duoi 3.2".
+    # Handbook intervals may provide only an upper bound or both bounds.
     if "dưới" in text:
         if len(nums) == 1:
             return value < nums[0]
@@ -97,11 +107,13 @@ def in_range(value: float, range_text: str) -> bool:
 def lookup_conduct_classification(
     query: str, tables: list[dict[str, Any]]
 ) -> Optional[dict[str, Any]]:
+    """Resolve a conduct score classification."""
+
     table = find_table(tables, "conduct_classification")
     if not table:
         return None
 
-    # Tra bang diem ren luyen: input la mot so diem, output la xep loai.
+    # Map a conduct score to its deterministic classification.
     value = extract_number(query)
     if value is None:
         normalized_query = normalize_text(query)
@@ -136,7 +148,9 @@ def lookup_conduct_classification(
 def lookup_academic_classification(
     query: str, tables: list[dict[str, Any]]
 ) -> Optional[dict[str, Any]]:
-    # Tra bang hoc luc theo GPA/thang 4.
+    # Map a four-point GPA to its academic classification.
+    """Resolve a four-point GPA classification."""
+
     value = extract_number(query)
     if value is None:
         return None
@@ -161,14 +175,16 @@ def lookup_academic_classification(
 def lookup_letter_grade(
     query: str, tables: list[dict[str, Any]]
 ) -> Optional[dict[str, Any]]:
-    # Tra diem chu sang thang 4, vi day la bang co ket qua deterministic.
+    # Map a letter grade through the deterministic four-point table.
+    """Resolve the four-point value for a letter grade."""
+
     table = find_table(tables, "letter_to_grade_4")
     if not table:
         return None
 
     q = query.upper()
 
-    # Ưu tiên match grade dài trước: B+ trước B
+    # Match longer grades first so B+ is not consumed as B.
     rows = sorted(table["rows"], key=lambda x: len(x["letter_grade"]), reverse=True)
 
     for row in rows:
@@ -189,6 +205,8 @@ def lookup_grade_10_to_letter(
     query: str,
     tables: list[dict[str, Any]],
 ) -> Optional[dict[str, Any]]:
+    """Resolve the letter grade for a ten-point score."""
+
     matching_tables = [
         table
         for table in tables
@@ -206,8 +224,7 @@ def lookup_grade_10_to_letter(
         )
     else:
         table_name = "Các bảng: " + " | ".join(
-            table.get("table_name", "Bảng quy đổi")
-            for table in matching_tables
+            table.get("table_name", "Bảng quy đổi") for table in matching_tables
         )
 
     requested_grade = _requested_letter_grade(query, tables)
@@ -233,9 +250,7 @@ def lookup_grade_10_to_letter(
             "requested_letter_grade": requested_grade,
             "requested_grade_rows": requested_grade_rows,
             "letter_grade_4": (
-                letter_grade_4.get("result")
-                if letter_grade_4
-                else None
+                letter_grade_4.get("result") if letter_grade_4 else None
             ),
         },
         matching_tables,
@@ -280,8 +295,8 @@ def _matching_grade_rows(
 
 
 def _contains_letter_grade(text: str, grade: str) -> bool:
-    # Diem chu co dau "+" khong hop voi \b word-boundary, nen can chan
-    # ky tu chu/so va dau "+" bang lookaround de B+ khong bi match thanh B.
+    # Letter grades containing plus signs do not work with word boundaries;
+    # use lookarounds so a longer grade is not consumed as its base letter.
     normalized_text = normalize_text(text).upper()
     normalized_grade = normalize_text(grade).upper()
     pattern = rf"(?<![A-Z0-9]){re.escape(normalized_grade)}(?![A-Z0-9+])"
@@ -296,11 +311,7 @@ def structured_lookup_from_slots(
     """Resolve a scoring request from typed slots without query keyword routing."""
     normalized_cohort = normalize_cohort(cohort)
     if normalized_cohort:
-        tables = [
-            table
-            for table in tables
-            if table.get("cohort") == normalized_cohort
-        ]
+        tables = [table for table in tables if table.get("cohort") == normalized_cohort]
 
     course_scope = normalize_text(slots.get("course_scope")).replace(" ", "_")
     if course_scope:
@@ -345,15 +356,15 @@ def structured_lookup_from_slots(
         operation.replace(" ", "_"),
     )
 
-    # 1. Điểm rèn luyện → xếp loại
+    # Map conduct scores to classifications.
     if canonical == "conduct_classification":
         return lookup_conduct_classification(value_text, tables)
 
-    # 2. Điểm chữ → thang điểm 4
+    # Map letter grades to the four-point scale.
     if canonical == "letter_to_grade_4":
         return lookup_letter_grade(value_text, tables)
 
-    # 3. Điểm thang 10 → điểm chữ
+    # Map ten-point grades to letter grades.
     if canonical == "grade_10_to_letter":
         try:
             score = float(value_text.replace(",", "."))
@@ -362,7 +373,7 @@ def structured_lookup_from_slots(
 
         return _lookup_grade_10_value(score, tables)
 
-    # 4. Câu hỏi về ngưỡng đạt/rớt học phần
+    # Resolve course pass/fail threshold questions.
     pass_threshold_signals = [
         "qua mon",
         "qua hoc phan",
@@ -376,10 +387,7 @@ def structured_lookup_from_slots(
 
     asks_pass_threshold = (
         canonical == "pass_threshold"
-        or any(
-            signal in normalized_value
-            for signal in pass_threshold_signals
-        )
+        or any(signal in normalized_value for signal in pass_threshold_signals)
         or bool(re.fullmatch(r"[abcdf]\+?", normalized_value))
     )
 
@@ -390,7 +398,7 @@ def structured_lookup_from_slots(
             return lookup_grade_10_to_letter(value_text, tables)
         return _lookup_grade_10_value(score, tables)
 
-    # 5. GPA/thang điểm 4 → xếp loại học lực
+    # Map GPA values to academic classifications.
     if canonical == "academic_classification":
         return lookup_academic_classification(value_text, tables)
 
@@ -409,7 +417,9 @@ def _lookup_grade_10_value(
     matches: list[dict[str, Any]] = []
     for table in matching_tables:
         for row in table.get("rows") or []:
-            if in_range(value, str(row.get("score_10_range") or row.get("range") or "")):
+            if in_range(
+                value, str(row.get("score_10_range") or row.get("range") or "")
+            ):
                 matches.append(
                     {
                         "table_id": table.get("table_id"),

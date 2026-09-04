@@ -154,6 +154,8 @@ def _infer_explicit_structured_slots(
 
 @lru_cache(maxsize=4)
 def load_lookup_registry(path: str | Path = DEFAULT_REGISTRY_PATH) -> dict[str, Any]:
+    """Load the structured lookup registry."""
+
     data = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
     tools = data.get("tools")
     if not isinstance(tools, dict) or not tools:
@@ -162,6 +164,8 @@ def load_lookup_registry(path: str | Path = DEFAULT_REGISTRY_PATH) -> dict[str, 
 
 
 def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
+    """Project lookup capabilities into a compact planner prompt."""
+
     registry = registry or load_lookup_registry()
     lines: list[str] = []
     for name, spec in registry["tools"].items():
@@ -205,6 +209,8 @@ def normalize_router_decision(
     selected_cohort: str | None = None,
     registry: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    """Normalize a raw router decision to the stable contract."""
+
     raw_route = str(payload.get("route") or "rag").strip().lower()
     raw_execution_mode = str(payload.get("execution_mode") or "").strip().lower()
     if raw_route == "structured":
@@ -237,11 +243,7 @@ def normalize_router_decision(
     if lookup_type is not None:
         lookup_type = str(lookup_type).strip().lower() or None
 
-    slots = (
-        dict(payload.get("slots"))
-        if isinstance(payload.get("slots"), dict)
-        else {}
-    )
+    slots = dict(payload.get("slots")) if isinstance(payload.get("slots"), dict) else {}
     spans = (
         dict(payload.get("slot_spans"))
         if isinstance(payload.get("slot_spans"), dict)
@@ -277,7 +279,9 @@ def normalize_router_decision(
 
     raw_cohorts = payload.get("cohorts")
     if isinstance(raw_cohorts, list):
-        payload_cohorts = [normalize_cohort(c) for c in raw_cohorts if normalize_cohort(c)]
+        payload_cohorts = [
+            normalize_cohort(c) for c in raw_cohorts if normalize_cohort(c)
+        ]
     else:
         payload_cohorts = []
     payload_cohort = normalize_cohort(payload.get("cohort"))
@@ -285,7 +289,9 @@ def normalize_router_decision(
         payload_cohorts.insert(0, payload_cohort)
     payload_cohorts = list(dict.fromkeys(payload_cohorts))
 
-    is_multi_cohort = len(payload_cohorts) >= 2 or bool(payload.get("is_multi_cohort") and len(payload_cohorts) >= 2)
+    is_multi_cohort = len(payload_cohorts) >= 2 or bool(
+        payload.get("is_multi_cohort") and len(payload_cohorts) >= 2
+    )
     selected = normalize_cohort(selected_cohort)
     if is_multi_cohort:
         cohorts = payload_cohorts
@@ -405,7 +411,9 @@ def _span_is_grounded(span: Any, source_text: str) -> bool:
 
 def _span_is_only_cohort(span: Any) -> bool:
     if isinstance(span, dict):
-        return bool(span) and all(_span_is_only_cohort(value) for value in span.values())
+        return bool(span) and all(
+            _span_is_only_cohort(value) for value in span.values()
+        )
     if isinstance(span, list):
         return bool(span) and all(_span_is_only_cohort(value) for value in span)
     return bool(build_cohort_token_regex().fullmatch(str(span).strip()))
@@ -461,13 +469,17 @@ def _matches_type(value: Any, expected: str) -> bool:
         if isinstance(value, str):
             return bool(value.strip())
         if isinstance(value, list):
-            return bool(value) and all(isinstance(v, str) and bool(v.strip()) for v in value)
+            return bool(value) and all(
+                isinstance(v, str) and bool(v.strip()) for v in value
+            )
         return False
     if expected == "number":
         if isinstance(value, int | float) and not isinstance(value, bool):
             return True
         if isinstance(value, list):
-            return bool(value) and all(isinstance(v, int | float) and not isinstance(v, bool) for v in value)
+            return bool(value) and all(
+                isinstance(v, int | float) and not isinstance(v, bool) for v in value
+            )
         return False
     if expected == "object":
         return isinstance(value, dict)
@@ -553,6 +565,8 @@ def validate_router_decision(
     grounding_context: str = "",
     registry: dict[str, Any] | None = None,
 ) -> list[str]:
+    """Validate router intent, tasks, cohorts, and lookup targets."""
+
     registry = registry or load_lookup_registry()
     errors: list[str] = []
     route = decision.get("route")
@@ -660,6 +674,8 @@ def validate_router_decision(
 
 
 def registry_digest(registry: dict[str, Any] | None = None) -> str:
+    """Return a stable digest for structured-routing configuration."""
+
     registry = registry or load_lookup_registry()
     return json.dumps(
         registry, ensure_ascii=True, sort_keys=True, separators=(",", ":")

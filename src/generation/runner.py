@@ -16,6 +16,8 @@ SAMPLE_QUERIES = [
 
 
 def main() -> None:
+    """Run one CLI query through the answer pipeline and print JSON output."""
+
     load_project_env()
 
     parser = argparse.ArgumentParser(description="Run answer generation.")
@@ -59,6 +61,8 @@ def main() -> None:
 
 
 def _build_unhandled_error_result(query: str, exc: Exception) -> dict[str, Any]:
+    """Convert an unexpected CLI failure into the standard result contract."""
+
     return {
         "query": query,
         "answer": "Mình gặp lỗi ngoài dự kiến khi xử lý câu hỏi này.",

@@ -30,6 +30,8 @@ _ARTICLE_REFERENCE_PATTERN = re.compile(
 
 
 def parse_source_pages(value: Any) -> list[int]:
+    """Normalize citation page metadata into sorted page numbers."""
+
     if value is None:
         return []
 
@@ -64,6 +66,8 @@ def parse_source_pages(value: Any) -> list[int]:
 def deduplicate_citations(
     citations: list[dict[str, Any]] | None,
 ) -> list[dict[str, Any]]:
+    """Deduplicate citations by stable source identity."""
+
     if not citations:
         return []
 
@@ -86,12 +90,7 @@ def prioritize_citations_by_answer_anchors(
     *,
     max_sources: int = 10,
 ) -> list[dict[str, Any]]:
-    """Stably move citations explicitly anchored in the answer to the front.
-
-    Article mentions are a ranking signal only. Unmentioned citations are kept
-    in their original retrieval order so a missing ``Điều X`` mention never
-    removes the user's path back to valid evidence.
-    """
+    """Move answer-anchored citations forward without dropping other evidence."""
     if max_sources <= 0:
         return []
 
@@ -124,6 +123,8 @@ def select_relevant_citations(
     retrieval_result: dict[str, Any] | None = None,
     max_sources: int = 1,
 ) -> list[dict[str, Any]]:
+    """Select answer-relevant citations under a source limit."""
+
     deduped = deduplicate_citations(citations)
     if not deduped or max_sources <= 0:
         return []

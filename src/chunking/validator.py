@@ -3,25 +3,7 @@ from collections import Counter
 
 
 def validate_chunks(chunks: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Kiểm tra tính hợp lệ của một danh sách các "chunk" dữ liệu.
-
-    Hàm này duyệt qua từng "chunk" trong danh sách và kiểm tra các điều kiện
-    quan trọng để đảm bảo dữ liệu được định dạng đúng. Nó sẽ phát hiện các vấn đề
-    như thiếu ID, ID bị trùng lặp, nội dung trống, thiếu loại chunk,
-    chế độ index không hợp lệ, hoặc thiếu thông tin trang nguồn.
-
-    Args:
-        chunks: Một danh sách các dictionary, mỗi dictionary đại diện cho một "chunk"
-            dữ liệu. Mỗi chunk dự kiến có các khóa như "chunk_id", "content",
-            "chunk_type", "index_mode", và "metadata" (chứa "source_pages").
-
-    Returns:
-        Một danh sách các dictionary. Mỗi dictionary mô tả một vấn đề được tìm thấy
-        trong các chunk. Mỗi vấn đề sẽ có các khóa như "issue" (tên vấn đề),
-        "severity" (mức độ nghiêm trọng: "high" hoặc "medium"), và thông tin
-        liên quan đến chunk gây ra vấn đề (ví dụ: "chunk" hoặc "chunk_id").
-        Nếu không có vấn đề nào được tìm thấy, danh sách sẽ trống.
-    """
+    """Report malformed, duplicate, empty, or incorrectly routed chunks."""
     issues = []
     chunk_ids = [chunk.get("chunk_id") for chunk in chunks]
     id_counts = Counter(chunk_ids)
@@ -83,7 +65,7 @@ def validate_parent_links(
     chunks: list[dict[str, Any]],
     docstore_items: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
-    """Kiểm tra child chunks có trỏ được về parent doc trong docstore hay không."""
+    """Report child chunks whose parent document is absent from the docstore."""
     issues = []
     parent_ids = {item.get("_id") for item in docstore_items if item.get("_id")}
 

@@ -119,6 +119,8 @@ def build_cohort_token_regex(
 
 
 def normalize_cohort(cohort: str | None) -> str | None:
+    """Normalize a cohort label to the canonical runtime identity."""
+
     if not cohort:
         return None
 
@@ -134,6 +136,8 @@ def admission_years_for_cohort(cohort: str | None) -> tuple[int, ...]:
 
 
 def resolve_cohort_from_query(query: str, fallback: str | None = None) -> str | None:
+    """Resolve an explicit cohort mention from a user query."""
+
     cohort = normalize_cohort(fallback)
     match = re.search(r"(?i)\bk(?:h[oó][aá])?[\s:._-]*k?[\s:._-]*(\d{2})\b", query)
     if match:
@@ -170,7 +174,13 @@ def is_cohort_applicable(
         return False
 
     norm_target = normalize_cohort(target_cohort)
-    if not norm_target or str(norm_target).lower() in {"", "all", "general", "shared", "*"}:
+    if not norm_target or str(norm_target).lower() in {
+        "",
+        "all",
+        "general",
+        "shared",
+        "*",
+    }:
         return True
 
     meta = (

@@ -371,6 +371,8 @@ def _structured_expected_ids(value: Any, expected_ids: set[str]) -> list[str]:
 
 
 def load_runtime_resources(root: Path = ROOT) -> dict[str, Any]:
+    """Load shared runtime resources required by evaluation suites."""
+
     paths = {
         "scoring_tables": "data/processed/tables/scoring_tables.json",
         "formula_rules": "data/processed/tables/formula_rules.json",
@@ -414,6 +416,8 @@ def evaluate_deterministic(
     *,
     limit: int | None = None,
 ) -> dict[str, Any]:
+    """Evaluate deterministic routing, lookup, and policy assertions."""
+
     from src.generation.answer_pipeline import AnswerPipeline
 
     pipeline = AnswerPipeline()
@@ -1025,12 +1029,11 @@ def _contract_scalar(value: Any) -> Any:
         return format(float(normalized), ".15g")
 
     # Range labels are rendered differently by source tables and resolvers:
-    # ``Từ 65 đến dưới 80 điểm`` and ``65-dưới 80`` carry the same bounds.
+    # Equivalent lower-bound phrases should produce the same interval.
     # Remove presentation-only words while preserving semantic qualifiers such
-    # as ``dưới``/``trên`` so genuinely different intervals remain different.
+    # Preserve meaningful distinctions between open and closed bounds.
     if re.search(r"\d", normalized) and (
-        "-" in normalized
-        or re.search(r"\b(?:tu|den|duoi|tren|diem)\b", normalized)
+        "-" in normalized or re.search(r"\b(?:tu|den|duoi|tren|diem)\b", normalized)
     ):
         normalized = re.sub(r"\b(?:tu|den|diem)\b", " ", normalized)
         normalized = normalized.replace("-", " ")
@@ -1075,13 +1078,15 @@ def _mapping_contains_fields(
     def field_matches(mapping: dict[str, Any], key: str, expected_value: Any) -> bool:
         aliases = _PUBLIC_FIELD_ALIASES.get(key, (key,))
         return any(
-            alias in mapping
-            and _contract_values_equal(mapping[alias], expected_value)
+            alias in mapping and _contract_values_equal(mapping[alias], expected_value)
             for alias in aliases
         )
 
     return any(
-        all(field_matches(mapping, key, expected_value) for key, expected_value in observable.items())
+        all(
+            field_matches(mapping, key, expected_value)
+            for key, expected_value in observable.items()
+        )
         for mapping in _nested_mappings(value)
     )
 
@@ -1247,11 +1252,11 @@ def _evaluate_v7_outcome_case(
     evaluations: list[dict[str, Any]] = []
     for outcome in case.get("accepted_outcomes") or []:
         allowed_modes = set(outcome.get("allowed_modes") or [])
-        mode_ok = not allowed_modes or all(mode in allowed_modes for mode in actual_modes)
-        count = outcome.get("task_count") or {}
-        count_ok = int(count.get("min", 0)) <= len(tasks) <= int(
-            count.get("max", 3)
+        mode_ok = not allowed_modes or all(
+            mode in allowed_modes for mode in actual_modes
         )
+        count = outcome.get("task_count") or {}
+        count_ok = int(count.get("min", 0)) <= len(tasks) <= int(count.get("max", 3))
         required_tasks = outcome.get("required_tasks") or []
         semantics_ok = _v7_required_tasks_match(required_tasks, tasks)
         state = outcome.get("state")
@@ -1290,12 +1295,13 @@ def _evaluate_v7_outcome_case(
                 has_structured_payload or has_required_task_evidence
             )
         rag_evidence_ok = (
-            has_rag_evidence
-            if outcome.get("rag_evidence") == "required"
-            else True
+            has_rag_evidence if outcome.get("rag_evidence") == "required" else True
         )
         task_execution_checks = (
-            [_v8_task_execution_checks(task, task_results) for task in required_structured]
+            [
+                _v8_task_execution_checks(task, task_results)
+                for task in required_structured
+            ]
             if grounded_contract
             else []
         )
@@ -1374,10 +1380,12 @@ def _evaluate_v7_outcome_case(
         "planner_fallback_free": not bool(result.get("planner_fallback")),
         "structured_execution_correct": checks.get("structured_execution"),
         "structured_evidence_present": (
-            has_structured_payload if any(
+            has_structured_payload
+            if any(
                 outcome.get("structured_evidence") == "required"
                 for outcome in case.get("accepted_outcomes") or []
-            ) else None
+            )
+            else None
         ),
         "table_first_evidence_present": None,
         "citation_metadata_correct": citation_ok,
@@ -1764,9 +1772,7 @@ def _evaluate_deterministic_v2_uncached(
         "structured_evidence_accuracy": assertion_accuracy(
             "structured_evidence_present"
         ),
-        "citation_metadata_accuracy": assertion_accuracy(
-            "citation_metadata_correct"
-        ),
+        "citation_metadata_accuracy": assertion_accuracy("citation_metadata_correct"),
         "cross_cohort_leak": sum(bool(row.get("cross_cohort_leak")) for row in rows)
         / len(rows)
         if rows
@@ -1776,9 +1782,7 @@ def _evaluate_deterministic_v2_uncached(
         ),
         "structured_value_accuracy": assertion_accuracy("structured_value_exact"),
         "numeric_value_accuracy": assertion_accuracy("numeric_value_correct"),
-        "structured_source_accuracy": assertion_accuracy(
-            "structured_source_correct"
-        ),
+        "structured_source_accuracy": assertion_accuracy("structured_source_correct"),
         "structured_row_accuracy": assertion_accuracy("structured_row_correct"),
         "resolved_result_accuracy": assertion_accuracy("resolved_result_correct"),
         "outcome_contract_accuracy": assertion_accuracy("outcome_contract_correct"),
@@ -1827,6 +1831,8 @@ def _has_structured_payload(value: Any) -> bool:
 
 
 def summarize_deterministic_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Aggregate deterministic case results into suite metrics."""
+
     normalized_rows: list[dict[str, Any]] = []
     for row in rows:
         normalized = dict(row)
@@ -1999,6 +2005,8 @@ def evaluate_retrieval(
     resume: bool = False,
     checkpoint_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    """Evaluate retrieval quality against labeled evidence targets."""
+
     if backend != "qdrant":
         raise ValueError("backend must be qdrant")
     if mode not in {
@@ -2031,9 +2039,7 @@ def evaluate_retrieval(
     previous_hybrid = os.environ.get("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL")
     previous_runtime_mode = os.environ.get("STUDENT_RAG_RETRIEVAL_MODE")
     previous_mode = os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE")
-    previous_ablation_guard = os.environ.get(
-        "STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION"
-    )
+    previous_ablation_guard = os.environ.get("STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION")
     previous_router_wait = os.environ.get("STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED")
     previous_router_cache = os.environ.get("STUDENT_RAG_DISABLE_ROUTER_CACHE")
     os.environ["STUDENT_RAG_USE_QDRANT"] = "1"
@@ -2615,6 +2621,8 @@ def generate_answers(
     pipeline_factory: Callable[[], Any] | None = None,
     checkpoint_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    """Generate answer artifacts for the evaluation dataset."""
+
     from src.retrieval.core.hybrid_pipeline import initialize_hybrid_retriever
 
     identity = _eval_checkpoint_identity(
@@ -2750,6 +2758,8 @@ def judge_answers(
     judge_client: GroqJudgeClient | None = None,
     checkpoint_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    """Score generated answers with the configured automated judge."""
+
     identity = _eval_checkpoint_identity(
         cases,
         suite="judge",
@@ -2834,9 +2844,7 @@ def judge_answers(
         "question_handling_correctness",
     ):
         applicable_values = [
-            float(bool(row[metric]))
-            for row in rows
-            if row.get(metric) is not None
+            float(bool(row[metric])) for row in rows if row.get(metric) is not None
         ]
         summary[metric] = safe_mean(applicable_values) if applicable_values else None
         summary[f"{metric}_n"] = len(applicable_values)
@@ -2997,6 +3005,8 @@ def _question_handling_correct(
 def build_human_audit_template(
     cases: list[dict[str, Any]], rows: list[dict[str, Any]]
 ) -> list[dict[str, Any]]:
+    """Create a stratified template for manual answer review."""
+
     rows_by_id = {str(row["id"]): row for row in rows}
     candidates = [case for case in cases if str(case["id"]) in rows_by_id]
 
@@ -3259,6 +3269,8 @@ def evaluate_production(
     resume: bool = False,
     checkpoint_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    """Run the production evaluation workflow and quality gates."""
+
     selected = cases[:limit]
     identity = (
         _eval_checkpoint_identity(

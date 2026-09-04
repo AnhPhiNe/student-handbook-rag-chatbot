@@ -19,6 +19,8 @@ HANDBOOK_HEADER_PATTERN = re.compile(
 
 
 def load_yaml_config(config_path: Path) -> dict[str, Any]:
+    """Load one UTF-8 YAML configuration file."""
+
     if not config_path.exists():
         raise FileNotFoundError(f"Config file not found: {config_path}")
 
@@ -27,10 +29,7 @@ def load_yaml_config(config_path: Path) -> dict[str, Any]:
 
 
 def clean_text(text: str) -> str:
-    """
-    Làm sạch text cơ bản.
-    Mục tiêu: bỏ header/footer, số trang, khoảng trắng dư.
-    """
+    """Remove repeated headers, page numbers, and excess whitespace."""
 
     lines = text.splitlines()
     cleaned_lines = []
@@ -41,12 +40,12 @@ def clean_text(text: str) -> str:
         if not line:
             continue
 
-        # Bỏ header/footer lặp lại của mọi cohort, nhưng chỉ khi toàn bộ dòng
-        # đúng mẫu header để không xóa nội dung có nhắc tên Sổ tay.
+        # Remove repeated handbook headers only when the complete line matches,
+        # so legitimate references to the handbook title remain intact.
         if HANDBOOK_HEADER_PATTERN.fullmatch(line):
             continue
 
-        # Bỏ dòng chỉ có số trang
+        # Remove lines that contain only a page number.
         if re.fullmatch(r"\d{1,3}", line):
             continue
 
@@ -54,7 +53,7 @@ def clean_text(text: str) -> str:
 
     cleaned_text = "\n".join(cleaned_lines)
 
-    # Chuẩn hóa khoảng trắng
+    # Normalize whitespace.
     cleaned_text = re.sub(r"[ \t]+", " ", cleaned_text)
     cleaned_text = re.sub(r"\n{3,}", "\n\n", cleaned_text)
 
@@ -62,10 +61,7 @@ def clean_text(text: str) -> str:
 
 
 def detect_by_page_range(page_number: int, config: dict[str, Any]) -> tuple[str, str]:
-    """
-    Gắn content_type theo config page range.
-    Không hardcode trong code, muốn đổi chỉ sửa YAML.
-    """
+    """Resolve content types from YAML page ranges."""
 
     for section in config.get("sections", []):
         if section["page_start"] <= page_number <= section["page_end"]:
@@ -75,10 +71,7 @@ def detect_by_page_range(page_number: int, config: dict[str, Any]) -> tuple[str,
 
 
 def detect_by_pattern(text: str) -> list[str]:
-    """
-    Nhận diện bằng pattern để kiểm tra lại page range.
-    Một trang có thể khớp nhiều pattern.
-    """
+    """Detect content types from text patterns for range cross-checking."""
 
     lower_text = text.lower()
     matched = []
@@ -101,8 +94,6 @@ def detect_by_pattern(text: str) -> list[str]:
     if "nội dung đánh giá" in lower_text and "điểm đánh giá" in lower_text:
         matched.append("scoring_table")
 
-
-
     if "phòng đào tạo" in lower_text or "phòng công tác chính trị" in lower_text:
         matched.append("office_directory")
 
@@ -118,12 +109,7 @@ def detect_by_pattern(text: str) -> list[str]:
 def estimate_confidence(
     range_type: str, pattern_types: list[str], char_count: int
 ) -> tuple[float, bool, str]:
-    """
-    Tính confidence đơn giản:
-    - Config và pattern trùng nhau: tin cao.
-    - Trang ít chữ: cần review hoặc bỏ.
-    - Config có nhưng pattern chưa confirm: tin vừa.
-    """
+    """Estimate extraction confidence from range, pattern, and text density."""
 
     if char_count < 100:
         return 0.95, False, "low_text_page"
@@ -141,6 +127,8 @@ def estimate_confidence(
 
 
 def has_table_hint(text: str, pattern_types: list[str]) -> bool:
+    """Detect layout signals that suggest a page contains a table."""
+
     table_keywords = [
         "thang điểm",
         "xếp loại",
@@ -158,6 +146,8 @@ def has_table_hint(text: str, pattern_types: list[str]) -> bool:
 
 
 def extract_pdf_pages(pdf_path: Path, config: dict[str, Any]) -> list[dict[str, Any]]:
+    """Extract and classify every page from a handbook PDF."""
+
     if not pdf_path.exists():
         raise FileNotFoundError(f"PDF file not found: {pdf_path}")
 
@@ -207,6 +197,8 @@ def extract_pdf_pages(pdf_path: Path, config: dict[str, Any]) -> list[dict[str, 
 def build_document_profile(
     pages: list[dict[str, Any]], config: dict[str, Any]
 ) -> dict[str, Any]:
+    """Summarize content distribution and extraction quality for one document."""
+
     content_type_count = {}
     low_text_pages = []
     possible_table_pages = []
@@ -241,9 +233,7 @@ def build_document_profile(
 
 
 def build_extraction_report(pages: list[dict[str, Any]]) -> dict[str, Any]:
-    """
-    Report để debug nhanh bước PDF extraction.
-    """
+    """Build a compact diagnostic report for PDF extraction."""
 
     return {
         "total_pages": len(pages),
@@ -278,6 +268,8 @@ def build_extraction_report(pages: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def save_json(data: Any, output_path: Path) -> None:
+    """Persist JSON output with Unicode preserved."""
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(output_path, "w", encoding="utf-8") as f:
@@ -285,6 +277,8 @@ def save_json(data: Any, output_path: Path) -> None:
 
 
 def main() -> None:
+    """Run PDF ingestion and write page records plus diagnostics."""
+
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     cohort = os.environ.get("COHORT", "UNKNOWN")

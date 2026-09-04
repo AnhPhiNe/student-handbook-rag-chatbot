@@ -136,7 +136,7 @@ def _required_facts_from_text(
     article = _compact(metadata.get("article"))
     # PDF extraction preserves physical line breaks that do not represent semantic
     # boundaries. Collapse them before splitting so a fact is a complete clause,
-    # not a fragment such as "theo các quy định hiện".
+    # not a truncated generic-reference fragment.
     content = _compact(_reference_text(source))
     pieces = re.split(r"(?<=[.;!?])\s+", content)
     facts: list[str] = []
@@ -438,7 +438,7 @@ def _select_rag_cases(
         topic = str(retrieval_case.get("topic") or "khac")
         source_metadata = _metadata(primary)
         # Answer-quality cases must identify their governing document. Generic
-        # section titles such as "Khen thưởng và kỷ luật" otherwise produce a
+    # broad section titles otherwise produce a
         # semantically different question from the frozen parent used as the
         # reference answer. Retrieval robustness is measured in its own suite;
         # this suite isolates whether Composer uses known evidence correctly.

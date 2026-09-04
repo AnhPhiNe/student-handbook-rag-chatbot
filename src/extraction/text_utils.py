@@ -4,6 +4,8 @@ from typing import Any
 
 
 def normalize_text(text: str) -> str:
+    """Normalize whitespace for structured extraction comparisons."""
+
     text = unicodedata.normalize("NFC", text)
     text = text.replace("\u00a0", " ")
     text = re.sub(r"[ \t]+", " ", text)
@@ -15,8 +17,12 @@ def get_pages_by_type(
     pages: list[dict[str, Any]],
     content_type: str,
 ) -> list[dict[str, Any]]:
+    """Select page records that match a content type."""
+
     return [page for page in pages if page.get("content_type") == content_type]
 
 
 def source_page_range(start: int, end: int) -> list[int]:
+    """Return an inclusive page-number range."""
+
     return list(range(start, end + 1))

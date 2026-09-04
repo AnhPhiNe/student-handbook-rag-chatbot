@@ -10,6 +10,8 @@ def summarize_human_audit(
     judge_rows: list[dict[str, Any]],
     template_rows: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
+    """Aggregate completed human-review labels into summary metrics."""
+
     contract_errors: list[str] = []
     expected_rows = template_rows if template_rows is not None else audit_rows
     expected_by_id = {str(row.get("id") or ""): row for row in expected_rows}
@@ -35,9 +37,7 @@ def summarize_human_audit(
             )
             actual_repeat = bool(actual_by_id[case_id].get("repeat_for_consistency"))
             if expected_repeat != actual_repeat:
-                contract_errors.append(
-                    f"human_audit_repeat_flag_mismatch:{case_id}"
-                )
+                contract_errors.append(f"human_audit_repeat_flag_mismatch:{case_id}")
 
     judge_by_id = {row["id"]: row for row in judge_rows}
     completed = [

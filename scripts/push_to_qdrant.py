@@ -13,7 +13,12 @@ from qdrant_client.models import Distance, PayloadSchemaType, PointStruct, Vecto
 from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from src.common.storage_config import require_qdrant_collection_name
+from src.retrieval.runtime_config import load_retrieval_runtime_config
 
 
 DATA_PATH = Path("data/processed/chunks/child_parent_chunks.json")
@@ -55,8 +60,7 @@ def validate_build_contract(
     if int(child_artifact.get("count") or 0) != len(chunks):
         raise RuntimeError("Child chunk count does not match the build manifest.")
     build_ids = {
-        str((chunk.get("metadata") or {}).get("build_id") or "")
-        for chunk in chunks
+        str((chunk.get("metadata") or {}).get("build_id") or "") for chunk in chunks
     }
     if build_ids != {build_id}:
         raise RuntimeError(
@@ -97,7 +101,7 @@ def main() -> None:
 
     chunks = json.loads(DATA_PATH.read_text(encoding="utf-8"))
     print(f"Loaded {len(chunks)} child-parent chunks from {DATA_PATH}")
-    
+
     if not isinstance(chunks, list) or not chunks:
         raise RuntimeError(
             "Refusing to push Qdrant because the child-parent chunk file is empty "
@@ -119,7 +123,7 @@ def main() -> None:
             "Refusing to overwrite Qdrant because the child-parent chunk file "
             f"does not contain all 3 cohorts. Current cohorts: {sorted(actual_cohorts)}"
         )
-        
+
     allowed_content_types = {
         "regulation_text",
         "regulation_sections",
@@ -147,7 +151,9 @@ def main() -> None:
     )
     print(f"Validated build contract: {build_id}")
 
-    model_name = os.getenv("STUDENT_RAG_EMBEDDING_MODEL", "BAAI/bge-m3")
+    retrieval_config = load_retrieval_runtime_config()
+    embedding_config = retrieval_config["embedding"]
+    model_name = str(embedding_config["model_name"])
     encode_batch_size = int(os.getenv("STUDENT_RAG_EMBEDDING_BATCH_SIZE", "32"))
     print(f"Loading embedding model: {model_name}")
     model = SentenceTransformer(model_name)
@@ -159,7 +165,7 @@ def main() -> None:
         texts,
         batch_size=encode_batch_size,
         show_progress_bar=True,
-        normalize_embeddings=True,
+        normalize_embeddings=bool(embedding_config.get("normalize_embeddings", True)),
     )
 
     points: list[PointStruct] = []

@@ -1,1 +1,1 @@
-"""Gói nạp dữ liệu PDF."""
+"""PDF ingestion package."""

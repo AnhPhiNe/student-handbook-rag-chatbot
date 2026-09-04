@@ -11,7 +11,11 @@ import yaml
 PROGRAM_OVERRIDES_PATH = Path("configs/program_overrides.yaml")
 
 
-def load_program_faculty_overrides(path: Path = PROGRAM_OVERRIDES_PATH) -> dict[str, str]:
+def load_program_faculty_overrides(
+    path: Path = PROGRAM_OVERRIDES_PATH,
+) -> dict[str, str]:
+    """Load explicit program-to-faculty corrections."""
+
     if not path.exists():
         return MANUAL_PROGRAM_FACULTY
     with path.open("r", encoding="utf-8") as f:
@@ -23,6 +27,8 @@ def load_program_faculty_overrides(path: Path = PROGRAM_OVERRIDES_PATH) -> dict[
 
 
 def load_program_name_overrides(path: Path = PROGRAM_OVERRIDES_PATH) -> dict[str, str]:
+    """Load canonical program-name corrections."""
+
     if not path.exists():
         return {}
     with path.open("r", encoding="utf-8") as f:
@@ -92,6 +98,8 @@ MANUAL_PROGRAM_FACULTY = {
 
 
 def fold_text(text: str | None) -> str:
+    """Fold Vietnamese text into a comparison-safe representation."""
+
     text = str(text or "").lower().replace("đ", "d").replace("Đ", "D")
     decomposed = unicodedata.normalize("NFD", text)
     text = "".join(ch for ch in decomposed if unicodedata.category(ch) != "Mn")
@@ -106,6 +114,8 @@ FACULTY_NAME_ALIASES = {
 
 
 def clean_faculty_name(name: str | None) -> str:
+    """Normalize a faculty name for output."""
+
     cleaned = re.sub(r"^\d+\.\s*", "", str(name or "")).strip()
     return FACULTY_NAME_ALIASES.get(fold_text(cleaned), cleaned)
 
@@ -114,6 +124,8 @@ def resolve_faculty_name(
     candidate: str,
     faculty_records: list[dict[str, Any]],
 ) -> str:
+    """Resolve a program faculty from explicit and inferred mappings."""
+
     folded_candidate = fold_text(clean_faculty_name(candidate))
     for faculty in faculty_records:
         faculty_name = clean_faculty_name(faculty.get("faculty_or_unit_name"))
@@ -126,7 +138,7 @@ def enrich_program_faculty_names(
     program_records: list[dict[str, Any]],
     faculty_records: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
-    """Bổ sung khoa phụ trách cho ngành khi sổ tay không ghi trực tiếp cạnh ngành."""
+    """Infer a program faculty only when the handbook omits the direct mapping."""
     program_name_overrides = load_program_name_overrides()
     for program in program_records:
         program_key = fold_text(program.get("program_name"))

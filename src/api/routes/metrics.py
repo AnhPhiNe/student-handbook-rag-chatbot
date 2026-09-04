@@ -15,6 +15,8 @@ _redis_client = None
 
 
 def get_redis_client():
+    """Return a cached Redis client for metrics collection."""
+
     global _redis_client
     if _redis_client is not None:
         return _redis_client
@@ -46,8 +48,14 @@ async def get_visit_count(
         return {"count": None, "status": "redis_unavailable"}
 
     try:
-        raw_count = int(r.incr(VISIT_TOTAL_KEY)) if increment else int(r.get(VISIT_TOTAL_KEY) or 0)
-        offset = int(os.getenv("STUDENT_RAG_VISIT_COUNT_OFFSET", str(DEFAULT_VISIT_COUNT_OFFSET)))
+        raw_count = (
+            int(r.incr(VISIT_TOTAL_KEY))
+            if increment
+            else int(r.get(VISIT_TOTAL_KEY) or 0)
+        )
+        offset = int(
+            os.getenv("STUDENT_RAG_VISIT_COUNT_OFFSET", str(DEFAULT_VISIT_COUNT_OFFSET))
+        )
         return {"count": offset + raw_count, "raw_count": raw_count, "status": "ok"}
     except Exception as e:
         print(f"[Metrics] Error tracking visits: {e}")

@@ -19,22 +19,26 @@ _ORGANIZATION_PREFIXES = ("bo mon ", "chuyen nganh ", "khoa ", "nganh ")
 
 
 def ascii_upper(value: str) -> str:
+    """Fold text to uppercase ASCII for stable acronym matching."""
+
     normalized = unicodedata.normalize(
         "NFD",
         value.replace("Đ", "D").replace("đ", "d"),
     )
     return "".join(
-        character
-        for character in normalized
-        if unicodedata.category(character) != "Mn"
+        character for character in normalized if unicodedata.category(character) != "Mn"
     ).upper()
 
 
 def canonical_acronym(value: str) -> str:
+    """Normalize an acronym token to its canonical form."""
+
     return re.sub(r"[^A-Z0-9]", "", ascii_upper(value))
 
 
 def normalize_entity_name(value: str) -> str:
+    """Normalize an entity name for alias matching."""
+
     without_parenthetical = re.sub(r"\([^)]*\)", " ", str(value or ""))
     normalized = re.sub(r"\s+", " ", without_parenthetical).strip()
     ascii_name = ascii_upper(normalized).lower()
@@ -46,6 +50,8 @@ def normalize_entity_name(value: str) -> str:
 
 
 def acronym_for_name(value: str) -> str | None:
+    """Derive an acronym from a normalized multi-word entity name."""
+
     normalized = normalize_entity_name(value)
     initials: list[str] = []
     for word in re.findall(r"[^\W_]+", normalized, flags=re.UNICODE):
@@ -60,6 +66,8 @@ def acronym_for_name(value: str) -> str | None:
 
 @dataclass(frozen=True)
 class AcronymRegistry:
+    """Resolve canonical entities from explicit and derived acronyms."""
+
     explicit_replacements: dict[str, str]
     generated_replacements: dict[str, str]
     ambiguous_generated: dict[str, tuple[str, ...]]
@@ -68,11 +76,17 @@ class AcronymRegistry:
 
     @property
     def literal_acronyms(self) -> frozenset[str]:
+        """Return acronyms that should remain indivisible lexical tokens."""
+
         return self.explicit_literals | self.generated_literals
 
     def replacement_for(self, token: str) -> str | None:
+        """Return the canonical expansion for an acronym token."""
+
         key = canonical_acronym(token)
-        return self.explicit_replacements.get(key) or self.generated_replacements.get(key)
+        return self.explicit_replacements.get(key) or self.generated_replacements.get(
+            key
+        )
 
 
 def _load_vocabulary(config_path: Path) -> dict[str, Any]:
@@ -163,6 +177,8 @@ def build_acronym_registry(
     program_directory_path: str | Path = DEFAULT_PROGRAM_DIRECTORY_PATH,
     program_directory: list[dict[str, Any]] | None = None,
 ) -> AcronymRegistry:
+    """Build the shared acronym registry from project resources."""
+
     vocabulary = _load_vocabulary(Path(vocabulary_path))
     explicit_replacements, explicit_literals = _explicit_acronyms(vocabulary)
     directory = (

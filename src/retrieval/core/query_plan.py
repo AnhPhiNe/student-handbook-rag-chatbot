@@ -126,14 +126,7 @@ def _cohort_admission_year_conflict(
 
 
 def _bare_article_reference(query: str) -> str | None:
-    """Return the article number when a query omits its document and topic.
-
-    Article numbers are document-local identities.  A selected handbook cohort
-    is therefore insufficient to resolve a query such as ``Điều 16 quy định
-    gì?`` because that cohort can contain several regulations with an Điều 16.
-    Keep this guard deliberately narrow: any non-generic word after the number
-    is treated as a document/title/topic signal and left to normal planning.
-    """
+    """Return an article number only when its document and topic are omitted."""
 
     folded = _fold_query(query)
     folded = re.sub(r"\bk(?:48|49|50|51)\b", " ", folded)
@@ -142,12 +135,16 @@ def _bare_article_reference(query: str) -> str | None:
     if not match:
         return None
     remainder = match.group(2).split()
-    if remainder and any(word not in _BARE_ARTICLE_QUESTION_WORDS for word in remainder):
+    if remainder and any(
+        word not in _BARE_ARTICLE_QUESTION_WORDS for word in remainder
+    ):
         return None
     return match.group(1)
 
 
 def query_plan_json_schema() -> dict[str, Any]:
+    """Return the strict JSON schema accepted from the planner model."""
+
     tools = list(load_lookup_registry().get("tools", {}).keys())
     cohorts = list(valid_cohorts())
     return {
@@ -174,6 +171,8 @@ def query_plan_json_schema() -> dict[str, Any]:
 
 
 def query_plan_response_schema() -> dict[str, Any]:
+    """Return the provider response-format wrapper for QueryPlan."""
+
     tools = list(load_lookup_registry().get("tools", {}).keys())
     cohorts = list(valid_cohorts())
     return {
@@ -306,6 +305,8 @@ def normalize_query_plan(
     grounding_context: str = "",
     registry: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], list[str]]:
+    """Validate and normalize a raw planner decision."""
+
     registry = registry or load_lookup_registry()
     query_cohorts = extract_cohorts_from_query(query)
     default_cohort = query_cohorts[0] if len(query_cohorts) == 1 else selected_cohort
@@ -380,9 +381,7 @@ def normalize_query_plan(
             "referenced_turns": [
                 value
                 for value in (payload.get("referenced_turns") or [])
-                if isinstance(value, int)
-                and not isinstance(value, bool)
-                and value >= 0
+                if isinstance(value, int) and not isinstance(value, bool) and value >= 0
             ],
             "out_of_domain": True,
             "tasks": [],
@@ -391,9 +390,9 @@ def normalize_query_plan(
         }, []
     raw_tasks = payload.get("tasks")
     if not isinstance(raw_tasks, list) or not raw_tasks:
-        return safe_rag_fallback_plan(query, default_cohort, reason="invalid_plan_to_safe_rag"), [
-            "missing_tasks"
-        ]
+        return safe_rag_fallback_plan(
+            query, default_cohort, reason="invalid_plan_to_safe_rag"
+        ), ["missing_tasks"]
 
     if len(raw_tasks) > MAX_RAW_QUERY_TASKS:
         return _too_many_tasks_plan(query, default_cohort), []
@@ -448,9 +447,9 @@ def normalize_query_plan(
         task["id"] = f"t{index}"
 
     if not tasks:
-        return safe_rag_fallback_plan(query, default_cohort, reason="invalid_plan_to_safe_rag"), (
-            errors or ["missing_valid_tasks"]
-        )
+        return safe_rag_fallback_plan(
+            query, default_cohort, reason="invalid_plan_to_safe_rag"
+        ), (errors or ["missing_valid_tasks"])
 
     plan = {
         "schema_version": QUERY_PLAN_SCHEMA_VERSION,
@@ -509,7 +508,9 @@ def _normalize_task(
     lookup_type = str(lookup_type).strip().lower() if lookup_type else None
     intent = str(raw_task.get("intent") or "open_question").strip().lower()
     clarification = str(raw_task.get("clarification_question") or "").strip() or None
-    slots = dict(raw_task.get("slots")) if isinstance(raw_task.get("slots"), dict) else {}
+    slots = (
+        dict(raw_task.get("slots")) if isinstance(raw_task.get("slots"), dict) else {}
+    )
     raw_spans = (
         dict(raw_task.get("slot_spans"))
         if isinstance(raw_task.get("slot_spans"), dict)
@@ -518,7 +519,8 @@ def _normalize_task(
     spans = {
         key: value
         for key, raw_value in raw_spans.items()
-        if (value := _normalize_span_value(raw_value, original_query)) not in (None, "", [])
+        if (value := _normalize_span_value(raw_value, original_query))
+        not in (None, "", [])
     }
 
     if mode == "structured" and intent == "compare":
@@ -716,9 +718,7 @@ def _structured_lookup_intent(
     """
 
     allowed = [
-        str(intent)
-        for intent in spec.get("intents") or []
-        if str(intent) != "compare"
+        str(intent) for intent in spec.get("intents") or [] if str(intent) != "compare"
     ]
     preferred = ["direct_value", "list_items"]
     default_intent = spec.get("default_intent")
@@ -783,7 +783,8 @@ def _normalize_span_value(value: Any, source_text: str) -> Any:
         normalized = [
             item
             for raw_item in value
-            if (item := _normalize_span_value(raw_item, source_text)) not in (None, "", [])
+            if (item := _normalize_span_value(raw_item, source_text))
+            not in (None, "", [])
         ]
         return normalized
     return str(value).strip() if value is not None else None

@@ -66,6 +66,8 @@ _STOPWORDS = {
 
 @dataclass(frozen=True)
 class ApplicableAmendment:
+    """Represent an amendment that applies to one source section."""
+
     source_parent_id: str
     source_role: str
     source_title: str
@@ -81,7 +83,12 @@ class ApplicableAmendment:
 
 @lru_cache(maxsize=1)
 def load_amendment_registry() -> tuple[dict[str, Any], ...]:
-    path = Path(__file__).resolve().parents[2] / "data/processed/amendments/amendments.json"
+    """Load and normalize amendment precedence rules."""
+
+    path = (
+        Path(__file__).resolve().parents[2]
+        / "data/processed/amendments/amendments.json"
+    )
     if not path.exists():
         return ()
     payload = json.loads(path.read_text(encoding="utf-8"))
@@ -198,9 +205,7 @@ def collect_applicable_amendments(
                 source_document_id=str(record.get("source_document_id") or ""),
                 source_locator=str(record.get("source_locator") or ""),
                 source_handbook_id=str(record.get("source_handbook_id") or ""),
-                source_handbook_title=str(
-                    record.get("source_handbook_title") or ""
-                ),
+                source_handbook_title=str(record.get("source_handbook_title") or ""),
                 source_pages=_source_pages(record.get("source_pages")),
             )
         )

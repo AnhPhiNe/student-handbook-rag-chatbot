@@ -20,6 +20,8 @@ class UsageTracker:
         end_time: str,
         metadata: dict[str, Any] | None = None,
     ) -> None:
+        """Record one timed pipeline step and its token usage."""
+
         self._steps.append(
             {
                 "step_name": step_name,
@@ -34,12 +36,18 @@ class UsageTracker:
         )
 
     def get_steps(self) -> list[dict[str, Any]]:
+        """Return defensive copies of all recorded pipeline steps."""
+
         return self._steps
 
     def total_tokens(self) -> int:
+        """Return the aggregate token count across recorded steps."""
+
         return sum(int(step.get("total_tokens") or 0) for step in self._steps)
 
     def get_total_usage(self) -> dict[str, int]:
+        """Return aggregate input, output, and total token usage."""
+
         input_tokens = sum(int(step.get("input_tokens") or 0) for step in self._steps)
         output_tokens = sum(int(step.get("output_tokens") or 0) for step in self._steps)
         total_tokens = sum(int(step.get("total_tokens") or 0) for step in self._steps)

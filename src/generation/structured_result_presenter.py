@@ -93,7 +93,9 @@ def _safe_row(value: dict[str, Any], context: dict[str, Any]) -> dict[str, Any]:
     return row
 
 
-def _flatten_rows(value: Any, context: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+def _flatten_rows(
+    value: Any, context: dict[str, Any] | None = None
+) -> list[dict[str, Any]]:
     context = dict(context or {})
     if isinstance(value, list):
         rows: list[dict[str, Any]] = []
@@ -228,7 +230,9 @@ def _public_source_reference(
             continue
         if cohort and citation_cohort and citation_cohort != cohort:
             continue
-        content = str(citation.get("parent_content") or citation.get("content") or "").strip()
+        content = str(
+            citation.get("parent_content") or citation.get("content") or ""
+        ).strip()
         article_label = citation.get("article_label") or citation.get("parent_article")
         if not content or not article_label:
             continue
@@ -304,10 +308,15 @@ def build_structured_results(
 
 def is_structured_result_citation(citation: Any) -> bool:
     """Identify citations created from a deterministic lookup, not PDF RAG."""
-    return isinstance(citation, dict) and citation.get("evidence_kind") == "structured_result"
+    return (
+        isinstance(citation, dict)
+        and citation.get("evidence_kind") == "structured_result"
+    )
 
 
 def public_regulation_citations(citations: Any) -> list[Any]:
+    """Project internal citations onto the public regulation schema."""
+
     if not isinstance(citations, list):
         return []
     return [item for item in citations if not is_structured_result_citation(item)]

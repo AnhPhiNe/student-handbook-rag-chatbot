@@ -10,6 +10,8 @@ from src.common.cohort import (
 
 
 def normalize_text(value: Any) -> str:
+    """Normalize text for study-duration rule matching."""
+
     text = str(value or "").lower()
     text = unicodedata.normalize("NFD", text)
     text = "".join(ch for ch in text if unicodedata.category(ch) != "Mn")
@@ -22,13 +24,13 @@ def _filter_by_cohort(
     cohort: str | None,
 ) -> list[dict[str, Any]]:
     normalized_cohort = normalize_cohort(cohort)
-    candidates = [table for table in tables if table.get("table_type") == "study_duration"]
+    candidates = [
+        table for table in tables if table.get("table_type") == "study_duration"
+    ]
     if not normalized_cohort:
         return candidates
     return [
-        table
-        for table in candidates
-        if is_cohort_applicable(table, normalized_cohort)
+        table for table in candidates if is_cohort_applicable(table, normalized_cohort)
     ]
 
 
@@ -93,9 +95,15 @@ def _row_score(row: dict[str, Any], query_norm: str) -> int:
     ):
         if "cap bang thu nhat" in program:
             score += 4
-    if any(term in query_norm for term in ("cao dang", "college bridge")) and "cao dang" in program:
+    if (
+        any(term in query_norm for term in ("cao dang", "college bridge"))
+        and "cao dang" in program
+    ):
         score += 4
-    if any(term in query_norm for term in ("trung cap", "secondary bridge")) and "trung cap" in program:
+    if (
+        any(term in query_norm for term in ("trung cap", "secondary bridge"))
+        and "trung cap" in program
+    ):
         score += 4
     if any(
         term in query_norm
@@ -126,13 +134,14 @@ def study_duration_lookup(
     cohort: str | None = None,
     slots: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
+    """Resolve program duration rules from normalized tables."""
+
     has_relevant_slots = slots and (
         slots.get("training_mode") or slots.get("program_type")
     )
     if has_relevant_slots:
         query_norm = normalize_text(
-            f"{query} {slots.get('training_mode', '')} "
-            f"{slots.get('program_type', '')}"
+            f"{query} {slots.get('training_mode', '')} {slots.get('program_type', '')}"
         )
     else:
         query_norm = normalize_text(query)
@@ -152,7 +161,9 @@ def study_duration_lookup(
         elif "chinh quy" in mode_value:
             wanted_mode = "chinh_quy"
     if wanted_mode:
-        candidates = [table for table in candidates if _table_mode(table) == wanted_mode]
+        candidates = [
+            table for table in candidates if _table_mode(table) == wanted_mode
+        ]
     if not candidates:
         return None
 
@@ -177,11 +188,7 @@ def study_duration_lookup(
         return None
 
     source_pages = sorted(
-        {
-            page
-            for table in table_results
-            for page in table.get("source_pages") or []
-        }
+        {page for table in table_results for page in table.get("source_pages") or []}
     )
     document_ids = {
         table.get("document_id") for table in table_results if table.get("document_id")

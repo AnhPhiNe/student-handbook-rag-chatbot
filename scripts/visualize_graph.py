@@ -32,7 +32,7 @@ def generate_graph_html(json_path="data/processed/graph/triplets.json", out_path
             "title": f"Chunk ID: {chunk}"
         })
 
-    # Tạo mảng nodes cho Vis.js
+    # Build the Vis.js node array.
     nodes_js = [{"id": n, "label": n} for n in nodes_set]
 
     html_content = f"""<!DOCTYPE html>

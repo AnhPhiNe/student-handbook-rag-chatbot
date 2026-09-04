@@ -9,7 +9,7 @@ from src.generation.answer_pipeline import DEFAULT_CONFIG_PATH, AnswerPipeline
 
 
 class AnswerService:
-    """Lớp dịch vụ mỏng dùng chung cho UI và các adapter API."""
+    """Share one lazily loaded answer pipeline across UI and API adapters."""
 
     def __init__(
         self,
@@ -32,6 +32,8 @@ class AnswerService:
         cohort: str | None = None,
         **kwargs,
     ) -> dict[str, Any]:
+        """Run the synchronous answer pipeline for one user query."""
+
         return self._get_pipeline().answer(
             query, chat_history=chat_history, cohort=cohort, **kwargs
         )
@@ -43,12 +45,14 @@ class AnswerService:
         cohort: str | None = None,
         **kwargs,
     ) -> Iterator[dict[str, Any]]:
-        """Trả dần các phần câu trả lời từ pipeline."""
+        """Yield incremental events from the streaming answer pipeline."""
         yield from self._get_pipeline().answer_stream(
             query, chat_history=chat_history, cohort=cohort, **kwargs
         )
 
     def health(self) -> dict[str, Any]:
+        """Report service identity and lazy pipeline initialization state."""
+
         return {
             "status": "ok",
             "service": self.__class__.__name__,
@@ -58,6 +62,8 @@ class AnswerService:
         }
 
     def _get_pipeline(self) -> AnswerPipeline:
+        """Initialize the shared pipeline once, guarded against concurrent requests."""
+
         if self._pipeline is None:
             with self._pipeline_lock:
                 if self._pipeline is None:

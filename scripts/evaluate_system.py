@@ -125,6 +125,11 @@ def _provenance(
         actual_config_hashes.get(name) == expected_hash
         for name, expected_hash in expected_config_hashes.items()
     )
+    config_hash_mismatches = sorted(
+        name
+        for name, expected_hash in expected_config_hashes.items()
+        if actual_config_hashes.get(name) != expected_hash
+    )
     actual_docstore_hash = _file_hash(DEFAULT_DOCSTORE)
     runtime_identity_matches_manifest = (
         runtime_code_matches_manifest
@@ -159,6 +164,7 @@ def _provenance(
         "config_hashes": actual_config_hashes,
         "expected_config_hashes": expected_config_hashes,
         "config_hashes_match_manifest": config_hashes_match_manifest,
+        "config_hash_mismatches": config_hash_mismatches,
         "generation_model": llm_config.get("model_name")
         or manifest.get("generation_model"),
         "dataset_generation_model": manifest.get("generation_model"),
@@ -169,17 +175,13 @@ def _provenance(
         "router_provider": router_config.get("provider", "groq"),
         "router_model": os.environ.get("STUDENT_RAG_ROUTER_MODEL")
         or router_config.get("model_name", "qwen/qwen3.8-27b"),
-        "router_reasoning_effort": os.environ.get(
-            "STUDENT_RAG_ROUTER_REASONING_EFFORT"
-        )
+        "router_reasoning_effort": os.environ.get("STUDENT_RAG_ROUTER_REASONING_EFFORT")
         or router_config.get("reasoning_effort", "auto"),
         "router_max_output_tokens": int(
             os.environ.get("STUDENT_RAG_ROUTER_MAX_OUTPUT_TOKENS")
             or router_config.get("max_output_tokens", 256)
         ),
-        "router_response_format": os.environ.get(
-            "STUDENT_RAG_ROUTER_RESPONSE_FORMAT"
-        )
+        "router_response_format": os.environ.get("STUDENT_RAG_ROUTER_RESPONSE_FORMAT")
         or router_config.get("response_format", "auto"),
         "judge_model": manifest.get("judge_model"),
         "backend": backend,
@@ -280,15 +282,16 @@ def _write(report: dict[str, Any], output_dir: Path, name: str) -> None:
 
 
 def _finalize_report(
-    report: dict[str, Any], *, expected_n: int, provenance: dict[str, Any],
+    report: dict[str, Any],
+    *,
+    expected_n: int,
+    provenance: dict[str, Any],
     profile: str = "full",
 ) -> dict[str, Any]:
     actual_n = int((report.get("summary") or {}).get("n", 0))
     report["provenance"] = provenance
     complete = actual_n == expected_n
-    publication_status = (
-        "headline_eligible" if complete else "partial_not_for_headline"
-    )
+    publication_status = "headline_eligible" if complete else "partial_not_for_headline"
     if complete and provenance.get("benchmark_run_kind") == "post_fix_regression":
         publication_status = "post_fix_regression_not_original_holdout"
     if not provenance.get("dataset_frozen", True):
@@ -316,7 +319,9 @@ def _finalize_report(
         report["completeness"]["judged_n"] = judged_n
         if judged_n != expected_n:
             report["completeness"]["complete"] = False
-            report["completeness"]["publication_status"] = "partial_judge_not_for_headline"
+            report["completeness"]["publication_status"] = (
+                "partial_judge_not_for_headline"
+            )
             report["gates"]["passed"] = False
             report["gates"]["reason"] = "partial_judge"
     if profile == "smoke":
@@ -330,12 +335,14 @@ def _finalize_report(
 
 
 def _checkpoint_context(
-    provenance: dict[str, Any], profile: str,
+    provenance: dict[str, Any],
+    profile: str,
 ) -> dict[str, Any]:
     return {
         "profile": profile,
         "provenance": {
-            key: value for key, value in provenance.items()
+            key: value
+            for key, value in provenance.items()
             if key not in {"run_at_utc", "platform"}
         },
     }
@@ -357,21 +364,22 @@ def _run_retrieval_modes(
             mode=mode,
             scope=args.retrieval_scope,
             limit=args.limit,
-            checkpoint_path=args.output / f"retrieval_{args.retrieval_scope}_{mode}_checkpoint_{args.profile}.json",
+            checkpoint_path=args.output
+            / f"retrieval_{args.retrieval_scope}_{mode}_checkpoint_{args.profile}.json",
             resume=args.resume,
             checkpoint_context=_checkpoint_context(provenance, args.profile),
         )
         _finalize_report(
-            report, expected_n=len(cases), provenance=provenance, profile=args.profile,
+            report,
+            expected_n=len(cases),
+            provenance=provenance,
+            profile=args.profile,
         )
         reports[mode] = report
         _write(
             report,
             args.output,
-            (
-                f"retrieval_{args.retrieval_scope}_{args.backend}_"
-                f"{mode}_{args.profile}"
-            ),
+            (f"retrieval_{args.retrieval_scope}_{args.backend}_{mode}_{args.profile}"),
         )
     if len(reports) > 1:
         full = reports["full"]["summary"]
@@ -574,7 +582,9 @@ def main() -> None:
         ]
     if args.case_type:
         deterministic_cases = [
-            case for case in deterministic_cases if case.get("case_type") == args.case_type
+            case
+            for case in deterministic_cases
+            if case.get("case_type") == args.case_type
         ]
     retrieval_cases = load_json(args.dataset / DATASET_FILES["retrieval"])
     answer_cases = load_json(args.dataset / DATASET_FILES["answers"])
@@ -616,7 +626,8 @@ def main() -> None:
             deterministic_cases,
             limit=args.limit,
             evaluation_contract=deterministic_contract,
-            checkpoint_path=args.output / f"deterministic_checkpoint_{args.profile}.json",
+            checkpoint_path=args.output
+            / f"deterministic_checkpoint_{args.profile}.json",
             resume=args.resume,
             checkpoint_context=_checkpoint_context(provenance, args.profile),
         )
@@ -690,7 +701,8 @@ def main() -> None:
         report = judge_answers(
             answer_cases,
             load_answer_checkpoint(
-                answer_cases, answer_cache_path,
+                answer_cases,
+                answer_cache_path,
                 checkpoint_context=_checkpoint_context(provenance, args.profile),
             ),
             checkpoint_path=args.output / f"judge_checkpoint_{args.profile}.json",
@@ -712,9 +724,7 @@ def main() -> None:
             )
         dataset_template_path = args.dataset / "human_audit_template.json"
         audit_template = (
-            load_json(dataset_template_path)
-            if dataset_template_path.exists()
-            else None
+            load_json(dataset_template_path) if dataset_template_path.exists() else None
         )
         if audit_path.exists():
             report["human_audit"] = summarize_human_audit(
@@ -752,7 +762,9 @@ def main() -> None:
             checkpoint_context=_checkpoint_context(provenance, args.profile),
         )
         _finalize_report(
-            report, expected_n=len(production_cases), provenance=provenance,
+            report,
+            expected_n=len(production_cases),
+            provenance=provenance,
             profile=args.profile,
         )
         _write(report, args.output, f"production_{args.profile}")
@@ -824,7 +836,10 @@ def main() -> None:
             "pytest_stderr": completed.stderr[-4000:],
         }
         _finalize_report(
-            report, expected_n=len(nodes), provenance=provenance, profile=args.profile,
+            report,
+            expected_n=len(nodes),
+            provenance=provenance,
+            profile=args.profile,
         )
         _write(report, args.output, f"fault_injection_{args.profile}")
 

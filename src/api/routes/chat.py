@@ -29,22 +29,7 @@ logger = logging.getLogger("student_handbook_rag.api.chat")
 
 
 def _build_debug_payload(result: dict[str, Any]) -> dict[str, Any]:
-    """Xây dựng một payload (tải trọng) chứa thông tin gỡ lỗi (debug) từ kết quả xử lý chat.
-
-    Hàm này lấy một từ điển chứa kết quả chi tiết của quá trình xử lý câu hỏi chat
-    và định dạng lại thành một từ điển chỉ chứa các thông tin cần thiết cho việc gỡ lỗi,
-    giúp dễ dàng kiểm tra và phân tích hoạt động của chatbot.
-
-    Args:
-        result (dict[str, Any]): Một từ điển chứa kết quả chi tiết của quá trình xử lý câu hỏi chat.
-            Nó có thể bao gồm các thông tin như câu trả lời, ngữ cảnh sử dụng, trích dẫn,
-            chiến lược, v.v.
-
-    Returns:
-        dict[str, Any]: Một từ điển chứa các thông tin gỡ lỗi đã được định dạng,
-            bao gồm các trường như `intent`, `strategy`, `effective_query`,
-            `llm_called`, `latency_ms`, v.v.
-    """
+    """Project internal pipeline state into the bounded public debug payload."""
     context_used = str(result.get("context_used") or "")
     citations = result.get("citations") or []
     citations_used = result.get("citations_used") or []
@@ -81,24 +66,7 @@ def _to_chat_response(
     *,
     include_debug: bool,
 ) -> ChatResponse:
-    """Chuyển đổi kết quả xử lý chat từ dạng từ điển nội bộ sang đối tượng ChatResponse.
-
-    Hàm này nhận một từ điển chứa kết quả chi tiết của quá trình xử lý câu hỏi chat
-    và chuyển đổi nó thành một đối tượng `ChatResponse` theo định dạng API.
-    Nó cũng có thể tùy chọn bao gồm thông tin gỡ lỗi nếu được yêu cầu.
-
-    Args:
-        result (dict[str, Any]): Một từ điển chứa kết quả chi tiết của quá trình xử lý câu hỏi chat.
-            Ví dụ: câu trả lời, trạng thái, các trích dẫn được sử dụng, v.v.
-        include_debug (bool): Một cờ (flag) cho biết có nên bao gồm thông tin gỡ lỗi
-            trong phản hồi `ChatResponse` hay không. Nếu `True`, thông tin gỡ lỗi
-            sẽ được tạo và thêm vào.
-
-    Returns:
-        ChatResponse: Một đối tượng phản hồi chat đã được định dạng, sẵn sàng
-            để gửi về cho người dùng. Đối tượng này chứa câu trả lời, trạng thái,
-            ID yêu cầu, và các thông tin khác.
-    """
+    """Convert an internal answer result into the stable public API schema."""
     citations_used = public_regulation_citations(result.get("citations_used") or [])
     if isinstance(citations_used, list) and not include_debug:
         citations_used = [
@@ -140,33 +108,7 @@ def chat(
     http_request: Request,
     answer_service: Any = Depends(get_answer_service),
 ) -> ChatResponse:
-    """Xử lý yêu cầu chat từ người dùng và trả về câu trả lời.
-
-    Đây là một API endpoint (điểm cuối API) nhận yêu cầu chat từ người dùng,
-    xác thực câu hỏi, kiểm tra giới hạn tần suất (rate limit), sau đó gọi
-    dịch vụ trả lời câu hỏi để nhận câu trả lời. Cuối cùng, nó định dạng
-    câu trả lời và các thông tin liên quan thành một đối tượng `ChatResponse`
-    để gửi về cho người dùng.
-
-    Args:
-        request (ChatRequest): Đối tượng chứa thông tin yêu cầu chat từ người dùng.
-            Bao gồm `query` (câu hỏi), `chat_history` (lịch sử chat),
-            `cohort` (nhóm người dùng) và `include_debug` (có muốn thông tin gỡ lỗi không).
-        http_request (Request): Đối tượng yêu cầu HTTP từ FastAPI, được sử dụng
-            để lấy thông tin như địa chỉ IP của người dùng để kiểm tra giới hạn tần suất.
-        answer_service (Any): Dịch vụ dùng để xử lý và trả lời câu hỏi.
-            Dịch vụ này được cung cấp thông qua Dependency Injection (tiêm phụ thuộc)
-            bởi hàm `get_answer_service`.
-
-    Returns:
-        ChatResponse: Đối tượng phản hồi chat chứa câu trả lời, trạng thái,
-            ID yêu cầu, độ trễ, các trích dẫn được sử dụng và tùy chọn thông tin gỡ lỗi.
-
-    Raises:
-        HTTPException: Nếu có lỗi xảy ra trong quá trình xử lý yêu cầu chat,
-            ví dụ như lỗi nội bộ của dịch vụ chatbot, một ngoại lệ HTTP 500
-            sẽ được trả về.
-    """
+    """Validate, rate-limit, execute, trace, and serialize a chat request."""
     request_id = uuid4().hex
     started_at = time.perf_counter()
     query = validate_chat_query(request.query)
@@ -252,17 +194,7 @@ def chat(
 
 @router.post("/chat/feedback")
 def submit_feedback(request: ChatFeedbackRequest):
-    """Gửi phản hồi (feedback) của người dùng về một câu trả lời cụ thể lên LangSmith.
-
-    Args:
-        request (ChatFeedbackRequest): Đối tượng chứa thông tin phản hồi từ người dùng.
-            Bao gồm `run_id` (ID của lần chạy chatbot đã tạo ra câu trả lời),
-            `score` (điểm đánh giá: 1 cho thích, 0 cho không thích),
-            và `comment` (bình luận chi tiết của người dùng).
-
-    Returns:
-        dict: `{"status": "success"}`.
-    """
+    """Queue bounded user feedback for the corresponding LangSmith run."""
     if not request.run_id:
         raise HTTPException(status_code=400, detail="run_id is required")
 

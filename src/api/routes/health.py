@@ -37,10 +37,9 @@ def _build_manifest_matches_environment() -> bool:
     except (OSError, json.JSONDecodeError):
         return False
     targets = manifest.get("storage_targets") or {}
-    qdrant_collection = (
-        os.environ.get("STUDENT_RAG_HYBRID_COLLECTION")
-        or os.environ.get("QDRANT_COLLECTION_NAME")
-    )
+    qdrant_collection = os.environ.get(
+        "STUDENT_RAG_HYBRID_COLLECTION"
+    ) or os.environ.get("QDRANT_COLLECTION_NAME")
     mongo_collection = os.environ.get("MONGODB_PARENT_COLLECTION")
     return bool(
         manifest.get("build_id")
@@ -95,7 +94,9 @@ def _required_artifacts() -> list[ArtifactStatus]:
         ),
         _artifact(
             "data/processed/tables/foreign_language_equivalency_table.json",
-            Path("data/processed/tables/foreign_language_equivalency_table.json").is_file(),
+            Path(
+                "data/processed/tables/foreign_language_equivalency_table.json"
+            ).is_file(),
             "processed_json",
         ),
         _artifact(
@@ -174,7 +175,9 @@ def _required_artifacts() -> list[ArtifactStatus]:
                 "env",
             ),
             _artifact("GROQ_API_KEYS", bool(os.environ.get("GROQ_API_KEYS")), "env"),
-            _artifact("GEMINI_API_KEYS", bool(os.environ.get("GEMINI_API_KEYS")), "env"),
+            _artifact(
+                "GEMINI_API_KEYS", bool(os.environ.get("GEMINI_API_KEYS")), "env"
+            ),
         ]
     )
     return required
@@ -188,20 +191,7 @@ def _artifact_health_response() -> ArtifactHealthResponse:
 
 @router.api_route("/health", methods=["GET", "HEAD"], response_model=HealthResponse)
 def health() -> HealthResponse:
-    """
-    Kiểm tra trạng thái hoạt động của dịch vụ.
-
-    Hàm này cung cấp một điểm cuối (endpoint) để kiểm tra xem dịch vụ có đang chạy
-    và phản hồi bình thường hay không. Nó trả về thông tin cơ bản về trạng thái
-    của dịch vụ.
-
-    Returns:
-        HealthResponse: Một đối tượng chứa thông tin về trạng thái của dịch vụ,
-                        bao gồm:
-                        - `status`: Trạng thái chung của dịch vụ (ví dụ: "ok").
-                        - `service`: Tên của dịch vụ (ví dụ: "student_handbook_rag").
-                        - `version`: Phiên bản hiện tại của dịch vụ (ví dụ: "0.1.0").
-    """
+    """Return a lightweight liveness response without probing dependencies."""
     return HealthResponse(
         status="ok",
         service=SERVICE_NAME,
@@ -218,7 +208,9 @@ def readiness() -> ReadinessResponse:
     current container has the required runtime files and environment variables.
     """
     artifact_status = _artifact_health_response()
-    missing_count = sum(1 for item in artifact_status.required_artifacts if not item.exists)
+    missing_count = sum(
+        1 for item in artifact_status.required_artifacts if not item.exists
+    )
     dependencies = get_dependency_runtime_statuses()
     qdrant_status = dependencies["qdrant"]
     mongodb_status = dependencies["mongodb"]
@@ -232,11 +224,7 @@ def readiness() -> ReadinessResponse:
         dependency.get("status") == "ready"
         for dependency in (qdrant_status, mongodb_status)
     )
-    ready = (
-        artifact_status.status == "ok"
-        and stores_ready
-        and retrieval_mode_valid
-    )
+    ready = artifact_status.status == "ok" and stores_ready and retrieval_mode_valid
     bm25_status = RetrievalComponentStatus(**get_bm25_runtime_status())
     return ReadinessResponse(
         status="ok" if ready and bm25_status.status != "degraded" else "degraded",
@@ -257,31 +245,5 @@ def readiness() -> ReadinessResponse:
     dependencies=[Depends(verify_admin_api_key)],
 )
 def artifact_health() -> ArtifactHealthResponse:
-    """
-    Kiểm tra trạng thái của các tài nguyên (artifacts) cần thiết cho dịch vụ.
-
-    Hàm này kiểm tra sự tồn tại của các file cấu hình, dữ liệu đã xử lý và
-    kho vector (vectorstore) mà dịch vụ cần để hoạt động. Nó cũng kiểm tra
-    các biến môi trường cần thiết nếu dịch vụ sử dụng kho vector đám mây.
-    Chỉ những người dùng có quyền quản trị (admin) mới có thể truy cập điểm cuối này.
-
-    Returns:
-        ArtifactHealthResponse: Một đối tượng chứa thông tin về trạng thái của
-                                các tài nguyên, bao gồm:
-                                - `status`: Trạng thái chung của các tài nguyên
-                                            ("ok" nếu tất cả đều tồn tại,
-                                            "missing_artifacts" nếu có cái bị thiếu).
-                                - `required_artifacts`: Một danh sách các đối tượng
-                                                        `ArtifactStatus`, mỗi đối tượng
-                                                        mô tả một tài nguyên cụ thể:
-                                                        - `path`: Đường dẫn hoặc tên
-                                                                  của tài nguyên.
-                                                        - `exists`: `True` nếu tài nguyên
-                                                                    tồn tại, `False` nếu
-                                                                    không.
-                                                        - `kind`: Loại của tài nguyên
-                                                                  (ví dụ: "config",
-                                                                  "processed_json",
-                                                                  "vectorstore", "env").
-    """
+    """Return admin-only availability for required files and environment keys."""
     return _artifact_health_response()

@@ -21,7 +21,16 @@ DEFAULT_CACHE_TTL_SECONDS = 86400
 DEFAULT_CACHE_NAMESPACE = "v44-answer-anchor-citation-order"
 
 
+def _env_bool(name: str, default: bool = False) -> bool:
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
 class ResponseCache:
+    """Provide a bounded process-local JSON cache for single-instance deployments."""
+
     def __init__(
         self,
         path: str | Path,
@@ -36,6 +45,8 @@ class ResponseCache:
         self._load()
 
     def get(self, key: str) -> dict[str, Any] | None:
+        """Return a non-expired local response, if present."""
+
         if not self.enabled:
             return None
         with self._lock:
@@ -47,6 +58,8 @@ class ResponseCache:
         return cached
 
     def set(self, key: str, value: dict[str, Any]) -> None:
+        """Store one response in the process-local cache."""
+
         if not self.enabled:
             return
         with self._lock:
@@ -57,6 +70,8 @@ class ResponseCache:
             self.save()
 
     def save(self) -> None:
+        """Persist the in-memory cache atomically when local storage is enabled."""
+
         if not self.enabled:
             return
         with self._lock:
@@ -92,6 +107,8 @@ class ResponseCache:
         pipeline_version: str | None = None,
         answer_prompt_version: str | None = None,
     ) -> str:
+        """Build a stable key from query, cohort, history, and runtime identity."""
+
         payload = {
             "query": query,
             "cohort": cohort,
@@ -120,6 +137,8 @@ class ResponseCache:
         return hashlib.sha256(stable_json.encode("utf-8")).hexdigest()
 
     def _load(self) -> None:
+        """Load valid cache entries from disk and discard malformed state."""
+
         if not self.enabled or not self.path.exists():
             self._data = {}
             return
@@ -136,6 +155,8 @@ class ResponseCache:
         self._data = loaded if isinstance(loaded, dict) else {}
 
     def _unwrap_entry(self, entry: Any) -> dict[str, Any] | None:
+        """Return the payload only when a cache entry has not expired."""
+
         if not isinstance(entry, dict):
             return None
 
@@ -158,6 +179,8 @@ class ResponseCache:
 
     @contextmanager
     def _file_lock(self) -> Any:
+        """Serialize local cache reads and writes across processes."""
+
         lock_path = self.path.with_suffix(f"{self.path.suffix}.lock")
         lock_path.parent.mkdir(parents=True, exist_ok=True)
         with lock_path.open("a+b") as lock_file:
@@ -193,6 +216,8 @@ def _release_file_lock(lock_file: Any) -> None:
 
 
 class RedisResponseCache(ResponseCache):
+    """Store shared answer results in Redis for multi-replica deployments."""
+
     def __init__(
         self,
         redis_url: str,
@@ -200,13 +225,17 @@ class RedisResponseCache(ResponseCache):
         enabled: bool = True,
         ttl_seconds: int = DEFAULT_CACHE_TTL_SECONDS,
     ) -> None:
-        super().__init__(path=path, enabled=enabled, ttl_seconds=ttl_seconds)
+        # Reuse key/TTL helpers without loading or writing process-local JSON.
+        super().__init__(path=path, enabled=False, ttl_seconds=ttl_seconds)
+        self.enabled = bool(enabled)
         self.redis_url = redis_url
         import redis
 
         self.client = redis.from_url(self.redis_url)
 
     def get(self, key: str) -> dict[str, Any] | None:
+        """Return a non-expired shared response, treating Redis errors as misses."""
+
         if not self.enabled:
             return None
         try:
@@ -216,12 +245,13 @@ class RedisResponseCache(ResponseCache):
                 entry = json.loads(cached_json)
                 return self._unwrap_entry(entry)
         except Exception as e:
-            logging.warning(f"Redis get failed: {e}. Falling back to local cache.")
+            logging.warning("Redis get failed; treating as cache miss: %s", e)
 
-        # If not in Redis (or Redis failed), fallback to local
-        return super().get(key)
+        return None
 
     def set(self, key: str, value: dict[str, Any]) -> None:
+        """Store one response in Redis with the configured TTL."""
+
         if not self.enabled:
             return
 
@@ -237,10 +267,7 @@ class RedisResponseCache(ResponseCache):
             )
             print(f"[Redis Cache] Wrote key {key[:8]}...")
         except Exception as e:
-            logging.warning(f"Redis set failed: {e}. Falling back to local cache.")
-
-        # Write to local cache as well (Two-Tier caching)
-        super().set(key, value)
+            logging.warning("Redis set failed; response was not cached: %s", e)
 
 
 def get_response_cache(
@@ -248,6 +275,8 @@ def get_response_cache(
     enabled: bool = True,
     ttl_seconds: int = DEFAULT_CACHE_TTL_SECONDS,
 ) -> ResponseCache:
+    """Create the configured Redis cache or the bounded local fallback."""
+
     if os.environ.get("STUDENT_RAG_DISABLE_REDIS", "").strip().lower() in {
         "1",
         "true",
@@ -264,9 +293,11 @@ def get_response_cache(
 
             r = redis.from_url(redis_url)
             r.ping()
-            print("[Cache] Connected to Redis. Enabling Two-Tier Caching.")
+            print("[Cache] Connected to Redis. Using Redis-only caching.")
             return RedisResponseCache(redis_url, path, enabled, ttl_seconds)
         except Exception as e:
+            if _env_bool("STUDENT_RAG_REQUIRE_REDIS"):
+                raise RuntimeError("Redis is required but unavailable") from e
             print(f"[Cache] Redis connection failed: {e}. Falling back to Local JSON.")
 
     print("[Cache] Using Local JSON Caching.")

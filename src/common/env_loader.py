@@ -12,7 +12,7 @@ def load_project_env(
     *,
     override: bool = True,
 ) -> Path | None:
-    """Tải biến môi trường cấp dự án từ file .env nếu file tồn tại."""
+    """Load the project-level ``.env`` file when it exists."""
     global _ENV_LOADED
 
     path = Path(env_path) if env_path is not None else _project_root() / ".env"

@@ -34,28 +34,40 @@ _CAPACITY_SETTINGS: tuple[int, int, float] | None = None
 
 
 class ChatCapacityError(RuntimeError):
+    """Signal that a chat request cannot enter or acquire the local queue."""
+
     def __init__(self, reason: str) -> None:
         self.reason = reason
         super().__init__(reason)
 
 
 class QueueTicket:
-    def __init__(self, limiter: 'ChatCapacityLimiter', ticket_id: int):
+    """Represent one request waiting in the process-local capacity queue."""
+
+    def __init__(self, limiter: "ChatCapacityLimiter", ticket_id: int):
         self.limiter = limiter
         self.ticket_id = ticket_id
 
     @property
     def position(self) -> int:
+        """Return the current one-based queue position, or zero after leaving."""
+
         return self.limiter.get_position(self.ticket_id)
 
     def try_acquire(self, timeout: float = 1.0) -> bool:
+        """Try to enter active capacity before the timeout expires."""
+
         return self.limiter.try_acquire(self.ticket_id, timeout)
 
     def leave_queue(self) -> None:
+        """Remove this ticket from the queue if it is still waiting."""
+
         self.limiter.remove_from_queue(self.ticket_id)
 
 
 class ChatCapacityLimiter:
+    """Bound concurrent chat work and maintain a FIFO overflow queue."""
+
     def __init__(self, *, max_concurrent: int, max_queue_size: int) -> None:
         self.max_concurrent = max_concurrent
         self.max_queue_size = max_queue_size
@@ -66,8 +78,13 @@ class ChatCapacityLimiter:
         self._ticket_counter = 0
 
     def enter_queue(self) -> QueueTicket:
+        """Create a FIFO ticket or reject when the queue is full."""
+
         with self._lock:
-            if self._active_count >= self.max_concurrent and len(self._queue) >= self.max_queue_size:
+            if (
+                self._active_count >= self.max_concurrent
+                and len(self._queue) >= self.max_queue_size
+            ):
                 raise ChatCapacityError("queue_full")
             self._ticket_counter += 1
             ticket_id = self._ticket_counter
@@ -75,6 +92,8 @@ class ChatCapacityLimiter:
             return QueueTicket(self, ticket_id)
 
     def get_position(self, ticket_id: int) -> int:
+        """Return the current one-based position for a queue ticket."""
+
         with self._lock:
             try:
                 # position 1 means you are next in line
@@ -83,47 +102,42 @@ class ChatCapacityLimiter:
                 return 0
 
     def try_acquire(self, ticket_id: int, timeout: float) -> bool:
+        """Wait briefly for a queued ticket to acquire active capacity."""
+
         start = time.monotonic()
         with self._condition:
             while True:
-                if self._queue and self._queue[0] == ticket_id and self._active_count < self.max_concurrent:
+                if (
+                    self._queue
+                    and self._queue[0] == ticket_id
+                    and self._active_count < self.max_concurrent
+                ):
                     self._queue.popleft()
                     self._active_count += 1
                     return True
-                
+
                 remaining = timeout - (time.monotonic() - start)
                 if remaining <= 0:
                     return False
                 self._condition.wait(timeout=remaining)
 
     def release(self) -> None:
+        """Release one active slot and wake queued requests."""
+
         with self._condition:
             self._active_count = max(0, self._active_count - 1)
             self._condition.notify_all()
 
     def remove_from_queue(self, ticket_id: int) -> None:
+        """Remove an abandoned ticket from the FIFO queue."""
+
         with self._lock:
             if ticket_id in self._queue:
                 self._queue.remove(ticket_id)
 
 
 def validate_chat_query(raw_query: str) -> str:
-    """Kiểm tra và làm sạch chuỗi truy vấn (câu hỏi) từ người dùng.
-
-    Hàm này đảm bảo rằng chuỗi truy vấn không rỗng và không vượt quá độ dài tối đa cho phép.
-    Nếu truy vấn không hợp lệ, nó sẽ ném ra một lỗi HTTP.
-
-    Args:
-        raw_query (str): Chuỗi truy vấn thô (chưa được xử lý) từ người dùng.
-
-    Returns:
-        str: Chuỗi truy vấn đã được làm sạch và hợp lệ.
-
-    Raises:
-        HTTPException:
-            - Nếu truy vấn rỗng (status_code=400).
-            - Nếu truy vấn quá dài so với giới hạn cho phép (status_code=400).
-    """
+    """Strip and validate a user query against the configured length limit."""
     query = raw_query.strip()
     if not query:
         raise HTTPException(status_code=400, detail="Query must not be empty")
@@ -202,7 +216,9 @@ def _client_ip_for_rate_limit(request: Request) -> str:
         raw_value = request.headers.get(header)
         if not raw_value:
             continue
-        candidates = raw_value.split(",") if header == "X-Forwarded-For" else [raw_value]
+        candidates = (
+            raw_value.split(",") if header == "X-Forwarded-For" else [raw_value]
+        )
         for candidate in candidates:
             value = candidate.strip()
             if _is_valid_ip(value):
@@ -244,8 +260,11 @@ def _cleanup_rate_limit_buckets(now: float) -> None:
 
 @contextlib.contextmanager
 def chat_capacity_slot():
-    """Context manager này giữ lại cho các hàm đồng bộ không cần streaming position. 
-    Để stream position, hãy dùng limiter.enter_queue() trực tiếp."""
+    """Reserve local chat capacity for synchronous callers.
+
+    Streaming callers should use ``ChatCapacityLimiter.enter_queue`` directly
+    when they need to expose queue position updates.
+    """
     settings = chat_capacity_settings()
     max_concurrent, _, timeout_seconds = settings
     if max_concurrent <= 0:
@@ -279,6 +298,8 @@ def _chat_capacity_limiter(settings: tuple[int, int, float]) -> ChatCapacityLimi
 
 
 def chat_capacity_settings() -> tuple[int, int, float]:
+    """Return concurrency, queue-size, and timeout settings from the environment."""
+
     return (
         _env_int(
             "STUDENT_RAG_MAX_CONCURRENT_CHAT",
@@ -299,36 +320,18 @@ def chat_capacity_settings() -> tuple[int, int, float]:
 
 
 def max_query_chars() -> int:
-    """Lấy giá trị độ dài tối đa cho phép của một chuỗi truy vấn.
-
-    Giá trị này được đọc từ biến môi trường có tên "STUDENT_RAG_MAX_QUERY_CHARS".
-    Nếu biến môi trường không tồn tại hoặc không phải là số hợp lệ,
-    hàm sẽ sử dụng giá trị mặc định. Giá trị trả về luôn là số dương.
-
-    Returns:
-        int: Số ký tự tối đa cho phép trong một truy vấn.
-             Giá trị này luôn lớn hơn hoặc bằng 1.
-    """
+    """Return the positive maximum query length configured for the API."""
     raw_value = os.getenv("STUDENT_RAG_MAX_QUERY_CHARS", str(DEFAULT_MAX_QUERY_CHARS))
     try:
         value = int(raw_value)
     except ValueError:
-        # Nếu giá trị trong biến môi trường không phải là số, dùng giá trị mặc định
+        # Fall back when the environment value is not an integer.
         return DEFAULT_MAX_QUERY_CHARS
-    return max(1, value)  # Đảm bảo giá trị trả về ít nhất là 1
+    return max(1, value)  # Keep the effective limit positive.
 
 
 def rate_limit_per_minute() -> int:
-    """Lấy giá trị giới hạn số lượng yêu cầu mỗi phút.
-
-    Giá trị này được đọc từ biến môi trường có tên "STUDENT_RAG_RATE_LIMIT_PER_MINUTE".
-    Nếu biến môi trường không tồn tại hoặc không phải là số hợp lệ,
-    hàm sẽ sử dụng giá trị mặc định. Giá trị trả về luôn là số không âm.
-
-    Returns:
-        int: Số lượng yêu cầu tối đa được phép trong một phút.
-             Giá trị này luôn lớn hơn hoặc bằng 0.
-    """
+    """Return the non-negative per-client request limit per minute."""
     raw_value = os.getenv(
         "STUDENT_RAG_RATE_LIMIT_PER_MINUTE",
         str(DEFAULT_RATE_LIMIT_PER_MINUTE),
@@ -336,9 +339,9 @@ def rate_limit_per_minute() -> int:
     try:
         value = int(raw_value)
     except ValueError:
-        # Nếu giá trị trong biến môi trường không phải là số, dùng giá trị mặc định
+        # Fall back when the environment value is not an integer.
         return DEFAULT_RATE_LIMIT_PER_MINUTE
-    return max(0, value)  # Đảm bảo giá trị trả về ít nhất là 0
+    return max(0, value)  # Zero disables this limit.
 
 
 def ip_rate_limit_per_minute() -> int:
@@ -369,22 +372,7 @@ def _env_float(name: str, default: float, *, minimum: float) -> float:
 
 
 def should_include_debug(include_debug: bool) -> bool:
-    """Kiểm tra xem có nên hiển thị thông tin gỡ lỗi (debug) hay không.
-
-    Quyết định này dựa trên hai yếu tố:
-    1. Tham số `include_debug` được truyền vào hàm.
-    2. Giá trị của biến môi trường "STUDENT_RAG_SHOW_DEBUG".
-
-    Thông tin gỡ lỗi chỉ được hiển thị nếu cả `include_debug` là `True`
-    VÀ biến môi trường "STUDENT_RAG_SHOW_DEBUG" được đặt thành một giá trị "true-ish"
-    (ví dụ: "1", "true", "yes", "on", không phân biệt chữ hoa chữ thường).
-
-    Args:
-        include_debug (bool): Một giá trị boolean ban đầu cho biết có muốn hiển thị debug hay không.
-
-    Returns:
-        bool: `True` nếu nên hiển thị thông tin gỡ lỗi, ngược lại là `False`.
-    """
+    """Allow debug output only when both the request and deployment enable it."""
     return include_debug and os.getenv("STUDENT_RAG_SHOW_DEBUG", "false").lower() in {
         "1",
         "true",

@@ -31,17 +31,15 @@ GRADE4_ROWS = [
 
 
 def extract_regulation_tables(section: dict[str, Any]) -> list[dict[str, Any]]:
-    """Trích các bảng quy định bị flatten thành cấu trúc dễ đọc cho RAG."""
+    """Recover flattened regulation tables into RAG-friendly row structures."""
 
-    # Chuẩn hóa Unicode ngay từ đầu để tránh lỗi tiếng Việt trong PDF (NFC vs NFD)
+    # Normalize once before matching decomposed Vietnamese PDF text.
     raw_content = str(section.get("content") or "")
     if not raw_content:
         return []
     content = unicodedata.normalize("NFC", raw_content)
 
-    source_pages = list(
-        range(int(section["page_start"]), int(section["page_end"]) + 1)
-    )
+    source_pages = list(range(int(section["page_start"]), int(section["page_end"]) + 1))
     tables: list[dict[str, Any]] = []
     tables.extend(_extract_study_duration_tables(section, content, source_pages))
     tables.extend(_extract_grade_scale_tables(section, content, source_pages))
@@ -49,12 +47,16 @@ def extract_regulation_tables(section: dict[str, Any]) -> list[dict[str, Any]]:
     if pass_fail_table is not None:
         tables.append(pass_fail_table)
     tables.extend(_extract_grade4_tables(section, content, source_pages))
-    tables.extend(_extract_academic_classification_tables(section, content, source_pages))
+    tables.extend(
+        _extract_academic_classification_tables(section, content, source_pages)
+    )
     tables.extend(_extract_conduct_tables(section, content, source_pages))
     return tables
 
 
 def format_tables_for_parent(tables: list[dict[str, Any]]) -> str:
+    """Render normalized tables as a Markdown appendix for parent context."""
+
     if not tables:
         return ""
 
@@ -73,11 +75,13 @@ def build_regulation_table_chunk_content(
     section: dict[str, Any],
     table: dict[str, Any],
 ) -> str:
+    """Render one normalized table as standalone retrieval content."""
+
     raw_title = str(section.get("title") or "").strip()
     article = str(section.get("article") or "").strip()
     clean_title = raw_title
     if article and clean_title.lower().startswith(article.lower()):
-        clean_title = clean_title[len(article):].lstrip(" .:-")
+        clean_title = clean_title[len(article) :].lstrip(" .:-")
 
     parts = [
         f"Tài liệu: {section.get('document_title') or ''}",
@@ -97,6 +101,8 @@ def build_regulation_table_chunk_content(
 
 
 def table_metadata_payload(table: dict[str, Any]) -> dict[str, Any]:
+    """Project a normalized table onto metadata persisted with its parent."""
+
     return {
         "table_id": table["table_id"],
         "table_name": table["table_name"],
@@ -113,25 +119,58 @@ def _extract_study_duration_tables(
     source_pages: list[int],
 ) -> list[dict[str, Any]]:
     lowered = content.lower()
-    if "thời gian học tập chuẩn" not in lowered or "thời gian học tập tối đa" not in lowered:
+    if (
+        "thời gian học tập chuẩn" not in lowered
+        or "thời gian học tập tối đa" not in lowered
+    ):
         return []
 
     normalized = _collapse_space(content)
-    
+
     blocks = []
-    # Phân tách block chính quy và vừa làm vừa học nếu có
+    # Separate regular-program and work-study blocks when both are present.
     idx_chinh_quy = lowered.find("hình thức đào tạo chính quy")
     idx_vua_lam = lowered.find("hình thức đào tạo vừa làm vừa học")
-    
+
     if idx_chinh_quy != -1 and idx_vua_lam != -1:
         if idx_chinh_quy < idx_vua_lam:
-            blocks.append(("chinh_quy", normalized[idx_chinh_quy:idx_vua_lam], "Áp dụng cho hình thức đào tạo chính quy."))
-            blocks.append(("vua_lam_vua_hoc", normalized[idx_vua_lam:], "Áp dụng cho hình thức đào tạo vừa làm vừa học."))
+            blocks.append(
+                (
+                    "chinh_quy",
+                    normalized[idx_chinh_quy:idx_vua_lam],
+                    "Áp dụng cho hình thức đào tạo chính quy.",
+                )
+            )
+            blocks.append(
+                (
+                    "vua_lam_vua_hoc",
+                    normalized[idx_vua_lam:],
+                    "Áp dụng cho hình thức đào tạo vừa làm vừa học.",
+                )
+            )
         else:
-            blocks.append(("vua_lam_vua_hoc", normalized[idx_vua_lam:idx_chinh_quy], "Áp dụng cho hình thức đào tạo vừa làm vừa học."))
-            blocks.append(("chinh_quy", normalized[idx_chinh_quy:], "Áp dụng cho hình thức đào tạo chính quy."))
+            blocks.append(
+                (
+                    "vua_lam_vua_hoc",
+                    normalized[idx_vua_lam:idx_chinh_quy],
+                    "Áp dụng cho hình thức đào tạo vừa làm vừa học.",
+                )
+            )
+            blocks.append(
+                (
+                    "chinh_quy",
+                    normalized[idx_chinh_quy:],
+                    "Áp dụng cho hình thức đào tạo chính quy.",
+                )
+            )
     else:
-        blocks.append(("chung", normalized, "Theo hình thức đào tạo được nêu trong điều khoản nguồn."))
+        blocks.append(
+            (
+                "chung",
+                normalized,
+                "Theo hình thức đào tạo được nêu trong điều khoản nguồn.",
+            )
+        )
 
     row_patterns = [
         r"(Đào tạo đại học cấp bằng thứ nhất)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
@@ -141,7 +180,7 @@ def _extract_study_duration_tables(
         r"(Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
         r"(Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học)\s+([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)",
     ]
-    
+
     amendment_rows = {}
     amendment_text = ""
     for marker in ("sửa đổi, bổ sung", "sửa đổi bổ sung"):
@@ -152,7 +191,9 @@ def _extract_study_duration_tables(
                 r"(Chính quy|Vừa làm vừa học|Đào tạo đại học[^\n0-9]*)\s+"
                 r"([0-9,\.]+\s*năm học)\s+([0-9,\.]+\s*năm học)"
             )
-            for match in re.finditer(amendment_pattern, amendment_text, flags=re.IGNORECASE):
+            for match in re.finditer(
+                amendment_pattern, amendment_text, flags=re.IGNORECASE
+            ):
                 lbl = match.group(1).strip().lower()
                 amendment_rows[lbl] = {
                     "Thời gian học tập chuẩn": match.group(2).strip(),
@@ -245,21 +286,21 @@ def _extract_grade_scale_tables(
 
     compact = _collapse_space(content)
     blocks: list[tuple[str, str, str]] = []
-    
+
     if "giáo dục đại cương" in lowered or "nền tảng" in lowered:
-        # Cố gắng tìm phần nền tảng
+        # Prefer the explicit base scale when the PDF preserves its heading.
         foundation_idx = lowered.find("giáo dục đại cương")
         if foundation_idx == -1:
             foundation_idx = lowered.find("nền tảng")
-            
+
         remaining_idx = lowered.find("còn lại")
         if remaining_idx == -1:
-            remaining_idx = lowered.find("còn lại") # NFD 'ò' in some PDFs
-            
+            remaining_idx = lowered.find("còn lại")  # Match decomposed PDF text.
+
         end_idx = lowered.find("đạt không phân mức")
         if end_idx == -1:
             end_idx = len(compact)
-            
+
         if foundation_idx != -1 and remaining_idx != -1:
             foundation = compact[foundation_idx:remaining_idx]
             remaining = compact[remaining_idx:end_idx]
@@ -384,17 +425,24 @@ def _extract_grade4_tables(
         return []
 
     compact = _collapse_space(content)
-    # Tìm xem ít nhất có chữ A và F không
+    # Require both ends of the grade scale to avoid partial false positives.
     if not ("A" in compact and "F" in compact):
         return []
 
     rows = []
     for letter, point in GRADE4_ROWS:
-        # Cho phép match các dạng 'A 4,0', 'A: 4.0'
-        if re.search(rf"{re.escape(letter)}\s*[:]?\s*{re.escape(point)}", compact, flags=re.IGNORECASE) or \
-           re.search(rf"{re.escape(letter)}\s*[:]?\s*{point.replace(',', '.')}", compact, flags=re.IGNORECASE):
+        # Accept flattened variants such as A 4.0 and A: 4.0.
+        if re.search(
+            rf"{re.escape(letter)}\s*[:]?\s*{re.escape(point)}",
+            compact,
+            flags=re.IGNORECASE,
+        ) or re.search(
+            rf"{re.escape(letter)}\s*[:]?\s*{point.replace(',', '.')}",
+            compact,
+            flags=re.IGNORECASE,
+        ):
             rows.append({"Thang điểm chữ": letter, "Thang điểm 4": point})
-    
+
     if not rows:
         return []
 
@@ -425,7 +473,11 @@ def _extract_academic_classification_tables(
         (r"Xuất sắc\s+Từ 3[,.]6 đến 4[,.]0", "Xuất sắc", "Từ 3,6 đến 4,0"),
         (r"Giỏi\s+Từ 3[,.]2 đến dưới 3[,.]6", "Giỏi", "Từ 3,2 đến dưới 3,6"),
         (r"Khá\s+Từ 2[,.]5 đến dưới 3[,.]2", "Khá", "Từ 2,5 đến dưới 3,2"),
-        (r"Trung bình\s+Từ 2[,.]0 đến dưới 2[,.]5", "Trung bình", "Từ 2,0 đến dưới 2,5"),
+        (
+            r"Trung bình\s+Từ 2[,.]0 đến dưới 2[,.]5",
+            "Trung bình",
+            "Từ 2,0 đến dưới 2,5",
+        ),
         (r"Yếu\s+Từ 1[,.]0 đến dưới 2[,.]0", "Yếu", "Từ 1,0 đến dưới 2,0"),
         (r"Kém\s+Dưới 1[,.]0", "Kém", "Dưới 1,0"),
     ]
@@ -464,7 +516,11 @@ def _extract_conduct_tables(
         (r"Từ 90 đến 100 điểm\s+Xuất sắc", "Từ 90 đến 100 điểm", "Xuất sắc"),
         (r"Từ 80 đến dưới 90 điểm\s+Tốt", "Từ 80 đến dưới 90 điểm", "Tốt"),
         (r"Từ 65 đến dưới 80 điểm\s+Khá", "Từ 65 đến dưới 80 điểm", "Khá"),
-        (r"Từ 50 đến dưới 65 điểm\s+Trung bình", "Từ 50 đến dưới 65 điểm", "Trung bình"),
+        (
+            r"Từ 50 đến dưới 65 điểm\s+Trung bình",
+            "Từ 50 đến dưới 65 điểm",
+            "Trung bình",
+        ),
         (r"Từ 35 đến dưới 50 điểm\s+Yếu", "Từ 35 đến dưới 50 điểm", "Yếu"),
         (r"Dưới 35 điểm\s+Kém", "Dưới 35 điểm", "Kém"),
     ]

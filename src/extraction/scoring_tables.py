@@ -3,6 +3,8 @@ from typing import Any
 
 
 def build_scoring_tables(cohort: str | None = None) -> list[dict[str, Any]]:
+    """Extract normalized scoring tables from structured sections."""
+
     cohort = (cohort or os.environ.get("COHORT", "")).upper()
     grade_tables = (
         _new_cohort_grade_10_tables(cohort)
@@ -75,7 +77,11 @@ def _new_cohort_grade_10_tables(cohort: str) -> list[dict[str, Any]]:
             "pass_threshold": "Từ 5.0 trở lên",
             "rows": [
                 {"status": "Đạt", "score_10_range": "5.0-10", "letter_grade": "P"},
-                {"status": "Không đạt", "score_10_range": "0.0-dưới 5.0", "letter_grade": "F"},
+                {
+                    "status": "Không đạt",
+                    "score_10_range": "0.0-dưới 5.0",
+                    "letter_grade": "F",
+                },
             ],
         },
     ]

@@ -5,34 +5,7 @@ from .text_utils import source_page_range
 
 
 def extract_formula_rules(sections: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Trích xuất các quy tắc công thức tính toán từ các phần của tài liệu.
-
-    Hàm này duyệt qua một danh sách các phần (sections) của một tài liệu
-    (ví dụ: các điều khoản trong một quy chế). Nó tìm kiếm các từ khóa và
-    số điều cụ thể để xác định và trích xuất thông tin về các công thức
-    tính điểm trung bình chung (GPA) và điểm học bổng.
-
-    Args:
-        sections: Một danh sách các dictionary, mỗi dictionary đại diện cho
-            một phần của tài liệu. Mỗi phần cần có các khóa như "article"
-            (số điều), "content" (nội dung văn bản), "page_start" (trang bắt đầu),
-            "page_end" (trang kết thúc) và "title" (tiêu đề của phần).
-
-    Returns:
-        Một danh sách các dictionary. Mỗi dictionary mô tả một công thức
-        được tìm thấy, bao gồm:
-        - "rule_id": Mã định danh duy nhất của quy tắc.
-        - "rule_name": Tên của quy tắc (ví dụ: "Công thức tính điểm trung bình chung").
-        - "rule_type": Loại quy tắc (luôn là "formula" trong trường hợp này).
-        - "calculation_type": Loại tính toán (ví dụ: "weighted_average").
-        - "formula_text": Văn bản mô tả công thức.
-        - "variables": Một dictionary giải thích các biến trong công thức.
-        - "source_article": Điều khoản nguồn.
-        - "source_title": Tiêu đề của phần nguồn.
-        - "source_pages": Phạm vi trang nguồn.
-        - "review_status": Trạng thái xem xét (ví dụ: "needs_human_verified").
-        - "raw_excerpt": Đoạn trích nội dung gốc từ tài liệu.
-    """
+    """Extract configured calculation rules from structured document sections."""
     formulas = []
 
     for section in sections:

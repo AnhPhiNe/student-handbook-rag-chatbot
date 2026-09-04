@@ -1,3 +1,5 @@
+retrieval_config: configs/retrieval.yaml
+
 input:
   scoring_tables: data/processed/tables/scoring_tables.json
   formula_rules: data/processed/tables/formula_rules.json
@@ -8,17 +10,6 @@ input:
   structured_tables_registry: data/processed/tables/structured_tables_registry.json
   parent_docstore: data/processed/chunks/all_docstore_items.json
   program_directory: data/processed/directories/program_directory.json
-
-embedding:
-  model_name: BAAI/bge-m3
-
-retrieval:
-  default_top_k: 5
-
-planning:
-  max_tasks: 3
-  rag_top_k: 5
-  max_citations: 10
 
 llm:
   provider: gemini
@@ -44,9 +35,8 @@ cache:
   path: data/cache/answer_response_cache.json
 
 citations:
-  max_sources: 5
-  prefer_intent_chunk_type: true
-  deduplicate: true
+  selection_max_sources: 5
+  public_max_sources: 10
 
 guardrails:
   skip_llm_on_low_confidence: true

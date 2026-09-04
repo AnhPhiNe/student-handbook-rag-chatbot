@@ -40,6 +40,8 @@ DOCUMENT_TITLE_PATTERNS = [
 
 
 def load_json(path: Path) -> Any:
+    """Load a UTF-8 JSON artifact."""
+
     if not path.exists():
         raise FileNotFoundError(f"Missing file: {path}")
 
@@ -48,6 +50,8 @@ def load_json(path: Path) -> Any:
 
 
 def save_json(data: Any, path: Path) -> None:
+    """Persist a UTF-8 JSON artifact with stable formatting."""
+
     path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(path, "w", encoding="utf-8") as f:
@@ -55,6 +59,8 @@ def save_json(data: Any, path: Path) -> None:
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
+    """Load one UTF-8 YAML configuration file."""
+
     if not path.exists():
         raise FileNotFoundError(f"Missing config file: {path}")
 
@@ -63,12 +69,16 @@ def load_yaml(path: Path) -> dict[str, Any]:
 
 
 def normalize_line(line: str) -> str:
+    """Collapse whitespace in one extracted PDF line."""
+
     line = line.strip()
     line = re.sub(r"\s+", " ", line)
     return line
 
 
 def is_heading_like(line: str) -> bool:
+    """Detect lines whose typography resembles a document heading."""
+
     if len(line) > 140:
         return False
 
@@ -83,6 +93,8 @@ def is_heading_like(line: str) -> bool:
 
 
 def classify_line(line: str) -> str:
+    """Classify one normalized line using configured structural patterns."""
+
     line = normalize_line(line)
 
     if not line:
@@ -115,6 +127,8 @@ def pages_to_line_records(
     pages: list[dict[str, Any]],
     target_content_types: list[str],
 ) -> list[dict[str, Any]]:
+    """Flatten page text into classified line records with provenance."""
+
     line_records = []
 
     for page in pages:
@@ -146,6 +160,8 @@ def pages_to_line_records(
 
 
 def extract_article_info(line: str) -> tuple[str, str, int]:
+    """Extract article identity and title from a heading line."""
+
     match = ARTICLE_PATTERN.match(line)
 
     if not match:
@@ -159,6 +175,8 @@ def extract_article_info(line: str) -> tuple[str, str, int]:
 
 
 def slugify_text(text: str) -> str:
+    """Convert source text into a stable ASCII identifier fragment."""
+
     text = text.lower()
     text = re.sub(r"[^\w\s-]", "", text, flags=re.UNICODE)
     text = re.sub(r"\s+", "_", text)
@@ -174,6 +192,8 @@ def make_section_id(
     article: Optional[str] = None,
     content_type: Optional[str] = None,
 ) -> str:
+    """Build a stable section identifier from document structure."""
+
     parts = []
     if document_title:
         parts.append(slugify_text(document_title))
@@ -181,7 +201,7 @@ def make_section_id(
         parts.append(slugify_text(chapter))
     if article:
         parts.append(slugify_text(article))
-        
+
     if parts:
         base = "_".join(parts)
         return f"{base}_p{page_start}_{index}"
@@ -192,6 +212,8 @@ def make_section_id(
 
 
 def detect_has_table(content: str) -> bool:
+    """Detect table-like structure in section content."""
+
     lower = content.lower()
 
     table_patterns = [
@@ -207,6 +229,8 @@ def detect_has_table(content: str) -> bool:
 
 
 def detect_has_formula(content: str) -> bool:
+    """Detect mathematical formulas in section content."""
+
     lower = content.lower()
 
     formula_patterns = [
@@ -222,6 +246,8 @@ def detect_has_formula(content: str) -> bool:
 
 
 def detect_has_scoring_rule(content: str) -> bool:
+    """Detect scoring rules in section content."""
+
     lower = content.lower()
 
     scoring_keywords = [
@@ -240,6 +266,8 @@ def detect_has_scoring_rule(content: str) -> bool:
 
 
 def detect_has_thresholds(content: str) -> bool:
+    """Detect threshold conditions in section content."""
+
     lower = content.lower()
 
     threshold_patterns = [
@@ -258,6 +286,8 @@ def detect_has_thresholds(content: str) -> bool:
 
 
 def detect_needs_structured_extraction(content: str, content_type: str) -> bool:
+    """Decide whether a section requires structured extraction."""
+
     return (
         content_type == "scoring_form_table"
         or detect_has_table(content)
@@ -267,6 +297,8 @@ def detect_needs_structured_extraction(content: str, content_type: str) -> bool:
 
 
 def resolve_chapter(chapter: Optional[str]) -> str:
+    """Resolve a chapter label from current parser state."""
+
     return chapter if chapter else NO_CHAPTER
 
 
@@ -282,6 +314,8 @@ def create_section(
     title: str,
     article_number: Optional[int] = None,
 ) -> dict[str, Any]:
+    """Open a normalized section from the current parser state."""
+
     return {
         "section_id": make_section_id(
             section_level=section_level,
@@ -312,6 +346,8 @@ def close_section(
     current_section: Optional[dict[str, Any]],
     sections: list[dict[str, Any]],
 ) -> None:
+    """Finalize an open section and attach content diagnostics."""
+
     if current_section is None:
         return
 
@@ -355,20 +391,27 @@ def reassociate_trailing_amendment_footnotes(
     for index in range(1, len(sections)):
         previous = sections[index - 1]
         current = sections[index]
-        if previous.get("section_level") != "article" or current.get("section_level") != "article":
+        if (
+            previous.get("section_level") != "article"
+            or current.get("section_level") != "article"
+        ):
             continue
 
         content = str(current.get("content") or "")
         moved_blocks: list[str] = []
 
         def move_if_misattached(match: re.Match[str]) -> str:
+            """Move content that belongs to the following structural section."""
+
             number = re.escape(match.group("number"))
             marker = re.compile(
                 rf"(?:^|\n)\s*[a-zđ]\)\s*{number}(?=\s|[A-ZÀ-Ỹ])",
                 flags=re.IGNORECASE,
             )
             prefix = content[: match.start()]
-            if marker.search(str(previous.get("content") or "")) and not marker.search(prefix):
+            if marker.search(str(previous.get("content") or "")) and not marker.search(
+                prefix
+            ):
                 moved_blocks.append(match.group("block").strip())
                 return "\n"
             return match.group(0)
@@ -378,9 +421,7 @@ def reassociate_trailing_amendment_footnotes(
             continue
 
         previous["content"] = (
-            str(previous.get("content") or "").rstrip()
-            + "\n"
-            + "\n".join(moved_blocks)
+            str(previous.get("content") or "").rstrip() + "\n" + "\n".join(moved_blocks)
         ).strip()
         current["content"] = updated
         for section in (previous, current):
@@ -401,6 +442,8 @@ def should_close_on_content_type_change(
     current_section: Optional[dict[str, Any]],
     new_content_type: str,
 ) -> bool:
+    """Decide whether a content-type transition closes the current section."""
+
     if current_section is None:
         return False
 
@@ -411,6 +454,8 @@ def build_structured_sections(
     line_records: list[dict[str, Any]],
     lookup_dict: dict[tuple[int, int], dict[str, Any]],
 ) -> list[dict[str, Any]]:
+    """Convert classified lines into hierarchical document sections."""
+
     sections: list[dict[str, Any]] = []
 
     current_document_title: Optional[str] = None
@@ -463,7 +508,9 @@ def build_structured_sections(
             excel_data = lookup_dict.get(lookup_key)
 
             if not excel_data:
-                print(f"DEBUG: Dropped article {article_number} on page {page_number}. Not found in lookup_dict.")
+                print(
+                    f"DEBUG: Dropped article {article_number} on page {page_number}. Not found in lookup_dict."
+                )
                 current_section = None
                 continue
 
@@ -477,14 +524,16 @@ def build_structured_sections(
                 page_number=page_number,
                 content_type=content_type,
                 index=section_index,
-                document_title=str(excel_data.get("Ten_van_ban", current_document_title)),
+                document_title=str(
+                    excel_data.get("Ten_van_ban", current_document_title)
+                ),
                 part=current_part,
                 chapter=str(excel_data.get("Chuong", current_chapter)),
                 article=article,
                 title=str(excel_data.get("Ten_dieu", title)),
                 article_number=article_number,
             )
-            
+
             current_section["section_id"] = golden_id
 
             current_section["content_lines"].append(line)
@@ -505,6 +554,8 @@ def build_structured_sections(
 
 
 def validate_sections(sections: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Report malformed or suspicious structured sections."""
+
     issues = []
     seen_ids = set()
 
@@ -551,6 +602,8 @@ def validate_sections(sections: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def build_structure_report(sections: list[dict[str, Any]]) -> dict[str, Any]:
+    """Summarize section types, structure, and validation findings."""
+
     content_type_count: dict[str, int] = {}
     section_level_count: dict[str, int] = {}
 
@@ -631,6 +684,8 @@ def build_structure_report(sections: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def main() -> None:
+    """Run structural parsing and persist sections plus diagnostics."""
+
     config = load_yaml(CONFIG_PATH)
 
     pages_path = Path(config["input"]["pages"])

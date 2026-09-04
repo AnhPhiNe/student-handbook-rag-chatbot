@@ -1,1 +1,1 @@
-"""Các entrypoint lệnh mỏng cho pipeline local và tác vụ đánh giá."""
+"""Thin CLI entry points for local pipelines and evaluation tasks."""

@@ -33,7 +33,10 @@ NON_EMBEDDED_CONTENT_TYPES = {
     "reference_directory",
 }
 
+
 def main() -> None:
+    """Run structured extraction and persist records plus audit reports."""
+
     config = load_yaml(CONFIG_PATH)
 
     pages = load_json(Path(config["input"]["pages"]))
@@ -65,7 +68,7 @@ def main() -> None:
         (program_directory, "program_directory"),
         (reference_directory, "reference_directory"),
     ]
-    
+
     for group, content_type in record_groups:
         for record in group:
             record.setdefault("content_type", content_type)

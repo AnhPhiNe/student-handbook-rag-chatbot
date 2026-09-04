@@ -291,8 +291,8 @@ def _extract_blocks_from_docstore_item(item: dict[str, Any]) -> list[dict[str, A
     blocks: list[dict[str, Any]] = []
     block_index = 0
 
-    # Không sinh vector chunk từ item["tables"]. Các dòng bảng còn xuất hiện trong
-    # content sẽ được audit với structured registry trước khi quyết định index.
+        # Do not create vector chunks from item["tables"]. Table rows still present
+        # in content are audited against the structured registry before indexing.
     content = _strip_docstore_preamble(str(item.get("content") or ""))
     for raw_block in _split_text_blocks(content):
         text = raw_block.strip()
@@ -717,7 +717,7 @@ def _split_long_text(text: str, max_chars: int) -> list[str]:
             window.rfind(" "),
         )
 
-        # Không tìm được điểm ngắt hợp lý thì cắt cứng.
+    # Fall back to a hard boundary when no safe split point exists.
         if split_at < max_chars // 2:
             split_at = max_chars
         else:

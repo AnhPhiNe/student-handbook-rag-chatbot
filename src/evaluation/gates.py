@@ -4,6 +4,8 @@ from typing import Any
 
 
 def evaluate_gates(suite: str, summary: dict[str, Any]) -> dict[str, Any]:
+    """Evaluate metric thresholds and return pass/fail gate details."""
+
     checks: dict[str, dict[str, Any]] = {}
 
     def minimum(name: str, threshold: float) -> None:

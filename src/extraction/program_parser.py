@@ -62,12 +62,7 @@ def _looks_like_program_name(program_name: str) -> bool:
 
 
 def _program_heading_at(lines: list[str], index: int) -> tuple[str | None, int]:
-    """Nhận diện tiêu đề ngành, kể cả heading bị ngắt dòng trong PDF.
-
-    Một số sổ tay không đặt tiền tố ``NGÀNH`` cho tiêu đề nhưng giữ bố cục ổn
-    định: heading viết hoa nằm ngay trước ``Cơ hội nghề nghiệp``. Quy tắc này
-    dựa trên cấu trúc tài liệu, không dựa trên tên một ngành cụ thể.
-    """
+    """Detect program headings, including headings split across PDF lines."""
     line = lines[index]
     direct = _program_heading(line)
     next_line = lines[index + 1] if index + 1 < len(lines) else ""
@@ -84,8 +79,8 @@ def _program_heading_at(lines: list[str], index: int) -> tuple[str | None, int]:
 
         alpha_chars = [char for char in joined if char.isalpha()]
         is_upper_heading = bool(alpha_chars) and joined.upper() == joined
-        follows_career_label = normalize_text(after_next).lower().startswith(
-            "cơ hội nghề nghiệp"
+        follows_career_label = (
+            normalize_text(after_next).lower().startswith("cơ hội nghề nghiệp")
         )
         candidate = _clean_program_name(joined)
         if (
@@ -190,7 +185,7 @@ def _append_implicit_programs(
 
 
 def extract_program_directory(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Trích xuất ngành đào tạo từ layout ngành trong từng sổ tay."""
+    """Extract academic programs from each handbook layout."""
     target_pages = [
         page
         for page in get_pages_by_type(pages, "faculty_program_directory")

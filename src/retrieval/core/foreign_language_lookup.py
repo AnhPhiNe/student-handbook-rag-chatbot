@@ -39,6 +39,8 @@ CERTIFICATE_ROW_HINTS = {
 
 
 def normalize_text(value: Any) -> str:
+    """Normalize text for foreign-language equivalency matching."""
+
     text = str(value or "").lower()
     text = unicodedata.normalize("NFD", text)
     text = "".join(ch for ch in text if unicodedata.category(ch) != "Mn")
@@ -52,11 +54,7 @@ def _filter_by_cohort(
     normalized_cohort = normalize_cohort(cohort)
     if not normalized_cohort:
         return tables
-    return [
-        table
-        for table in tables
-        if is_cohort_applicable(table, normalized_cohort)
-    ]
+    return [table for table in tables if is_cohort_applicable(table, normalized_cohort)]
 
 
 def _detect_certificate_keys(query_norm: str) -> list[str]:
@@ -81,7 +79,9 @@ def _has_foreign_language_signal(query_norm: str, certificate_keys: list[str]) -
         "quy doi",
         "tuong duong",
     ]
-    return "ngoai ngu" in query_norm and any(term in query_norm for term in foreign_terms)
+    return "ngoai ngu" in query_norm and any(
+        term in query_norm for term in foreign_terms
+    )
 
 
 def _is_policy_query_without_specific_value(
@@ -285,8 +285,7 @@ def _build_lookup_result(
         ],
         "result_count": len(result_rows),
         "source_pages": table.get("source_pages") or [],
-        "table_name": table.get("table_name")
-        or "Bang quy doi chuan dau ra ngoai ngu",
+        "table_name": table.get("table_name") or "Bang quy doi chuan dau ra ngoai ngu",
         "source_label": "Bang quy doi chuan dau ra ngoai ngu trong So tay sinh vien HCMUE",
         "cohort": effective_cohort or table.get("cohort"),
         "source_cohort": table.get("source_cohort") or table.get("cohort"),

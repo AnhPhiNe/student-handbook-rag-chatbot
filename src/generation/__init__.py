@@ -1,1 +1,1 @@
-"""Lớp sinh câu trả lời."""
+"""Answer-generation package."""

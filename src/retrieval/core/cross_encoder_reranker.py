@@ -1,11 +1,13 @@
 import transformers
 from sentence_transformers import CrossEncoder
 
-# Tắt cảnh báo "overflowing tokens are not returned" của Tokenizer
+# Silence the tokenizer warning for intentionally truncated overflow tokens.
 transformers.logging.set_verbosity_error()
 
 
 class LocalReranker:
+    """Rerank query-document pairs with a local cross-encoder model."""
+
     _instance = None
 
     def __new__(cls, model_name: str = "itdainb/PhoRanker"):
@@ -19,5 +21,8 @@ class LocalReranker:
         self.model = CrossEncoder(model_name, max_length=256)
         print("[Reranker] Model loaded successfully.")
 
+
 def get_local_reranker() -> LocalReranker:
+    """Return the lazily initialized shared local reranker."""
+
     return LocalReranker()

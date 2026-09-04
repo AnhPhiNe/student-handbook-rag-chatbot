@@ -36,7 +36,5 @@ def require_mongo_parent_collection_name(
     values = environ if environ is not None else os.environ
     name = (values.get("MONGODB_PARENT_COLLECTION") or "").strip()
     if not name:
-        raise RuntimeError(
-            "MONGODB_PARENT_COLLECTION must be configured explicitly."
-        )
+        raise RuntimeError("MONGODB_PARENT_COLLECTION must be configured explicitly.")
     return name

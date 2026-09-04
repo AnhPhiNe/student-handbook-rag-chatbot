@@ -13,6 +13,8 @@ def formula_lookup(
     cohort: str | None = None,
     slots: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
+    """Resolve deterministic formula questions from extracted rules."""
+
     cohort = normalize_cohort(cohort)
     if cohort:
         formula_rules = [r for r in formula_rules if is_cohort_applicable(r, cohort)]

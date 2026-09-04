@@ -5,7 +5,7 @@ from typing import TextIO
 
 
 def configure_utf8_stdio() -> None:
-    """Giữ tiếng Việt CLI đọc được trên terminal Windows cũ."""
+    """Keep Unicode CLI output readable on legacy Windows terminals."""
     _configure_stream(sys.stdout)
     _configure_stream(sys.stderr)
 

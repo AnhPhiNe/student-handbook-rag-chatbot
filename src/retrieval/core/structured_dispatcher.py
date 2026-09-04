@@ -31,6 +31,8 @@ _LOOKUP_TOOL_SPECS = load_lookup_registry().get("tools", {})
 
 @dataclass(frozen=True)
 class StructuredResolution:
+    """Carry deterministic lookup output and its supporting evidence."""
+
     lookup_type: str
     strategy: str
     result_kind: str
@@ -54,7 +56,9 @@ def _slot_text(decision: dict[str, Any], *names: str) -> str:
 
 
 def _formula_article_number(result: dict[str, Any]) -> str | None:
-    match = re.search(r"\bĐiều\s+(\d+)\b", str(result.get("source_article") or ""), re.IGNORECASE)
+    match = re.search(
+        r"\bĐiều\s+(\d+)\b", str(result.get("source_article") or ""), re.IGNORECASE
+    )
     return match.group(1) if match else None
 
 
@@ -94,7 +98,9 @@ def _bind_formula_source(
         candidates = [
             table
             for table in registry
-            if str(table.get("source_parent_id") or table.get("source_section_id") or "")
+            if str(
+                table.get("source_parent_id") or table.get("source_section_id") or ""
+            )
             == declared_parent_id
             and is_cohort_applicable(table, cohort)
         ]
@@ -112,7 +118,11 @@ def _bind_formula_source(
             if str(table.get("document_id") or "") == document_id
             and is_cohort_applicable(table, cohort)
             and article_pattern.search(
-                str(table.get("source_parent_id") or table.get("source_section_id") or "")
+                str(
+                    table.get("source_parent_id")
+                    or table.get("source_section_id")
+                    or ""
+                )
             )
         ]
     parent_ids = list(
@@ -130,11 +140,7 @@ def _bind_formula_source(
     bound["source_parent_id"] = parent_ids[0]
     bound["source_section"] = parent_ids[0]
     bound["source_pages"] = sorted(
-        {
-            page
-            for table in candidates
-            for page in table.get("source_pages") or []
-        }
+        {page for table in candidates for page in table.get("source_pages") or []}
     )
     return bound
 
@@ -178,10 +184,7 @@ def _reference_input_clarification(
             )
             if any(
                 candidate_norm
-                and (
-                    candidate_norm in entity_norm
-                    or entity_norm in candidate_norm
-                )
+                and (candidate_norm in entity_norm or entity_norm in candidate_norm)
                 for candidate_norm in map(normalize_text, declared_names)
             ):
                 input_rows.append(row)
@@ -234,8 +237,7 @@ def _reference_input_clarification(
         "missing_slots": [item["slot"] for item in missing],
         "input_requirements": requirements,
         "clarification_question": (
-            "Bạn vui lòng cung cấp điểm riêng cho các kỹ năng còn thiếu: "
-            f"{labels}."
+            f"Bạn vui lòng cung cấp điểm riêng cho các kỹ năng còn thiếu: {labels}."
         ),
         "content_type": "structured_lookup_clarification",
     }
@@ -285,7 +287,7 @@ def _reference_table_lookup(
     if clarification is not None:
         return clarification
 
-    selector = (_LOOKUP_TOOL_SPECS.get(lookup_type, {}).get("table_selector") or {})
+    selector = _LOOKUP_TOOL_SPECS.get(lookup_type, {}).get("table_selector") or {}
     selector_slot = str(selector.get("slot") or "")
     selector_value = str(slots.get(selector_slot) or "") if selector_slot else ""
     selector_spec = (selector.get("values") or {}).get(selector_value)
@@ -298,8 +300,7 @@ def _reference_table_lookup(
             for table in candidates
             if (not selected_types or table.get("table_type") in selected_types)
             and (
-                not selected_subtypes
-                or table.get("table_subtype") in selected_subtypes
+                not selected_subtypes or table.get("table_subtype") in selected_subtypes
             )
             and (
                 not selected_id_suffixes
@@ -378,11 +379,7 @@ def _reference_table_lookup(
         },
         "sub_lookups": leaf_lookups,
         "source_pages": sorted(
-            {
-                page
-                for item in leaf_lookups
-                for page in item.get("source_pages") or []
-            }
+            {page for item in leaf_lookups for page in item.get("source_pages") or []}
         ),
         "table_name": "Các bảng tra cứu áp dụng",
         "source_label": "Dữ liệu có cấu trúc trong Sổ tay sinh viên HCMUE",
@@ -403,11 +400,15 @@ def _unique_reference_resolution(
     """Return a fact-lock candidate only when an existing resolver is unique."""
 
     if lookup_type == "scoring":
-        resolved = structured_lookup_from_slots(
-            slots,
-            scoring_tables,
-            cohort=cohort,
-        ) if slots else None
+        resolved = (
+            structured_lookup_from_slots(
+                slots,
+                scoring_tables,
+                cohort=cohort,
+            )
+            if slots
+            else None
+        )
         if not resolved:
             return None
         items = resolved.get("items")
@@ -556,7 +557,8 @@ def _resolve_single_lookup(
         if result is not None and result.get("resolution_status") == "ambiguous":
             options = result.get("clarification_options") or []
             result["clarification_question"] = (
-                "Câu hỏi của bạn liên quan đến nhiều đơn vị. Bạn cần hỗ trợ cụ thể về mảng nào dưới đây?\n\n" + "\n".join(options)
+                "Câu hỏi của bạn liên quan đến nhiều đơn vị. Bạn cần hỗ trợ cụ thể về mảng nào dưới đây?\n\n"
+                + "\n".join(options)
             )
             return _resolution(
                 lookup_type,
@@ -586,7 +588,9 @@ def _resolve_single_lookup(
             lookup_type,
             strategies[lookup_type],
             result,
-            target_chunk_types=target_content_types.get(lookup_type, ["student_office_profile"]),
+            target_chunk_types=target_content_types.get(
+                lookup_type, ["student_office_profile"]
+            ),
         )
 
     if lookup_type == "program":
@@ -636,7 +640,6 @@ def _resolve_single_lookup(
     return None
 
 
-
 def resolve_structured_decision(
     decision: dict[str, Any],
     *,
@@ -652,6 +655,8 @@ def resolve_structured_decision(
     program_directory: list[dict[str, Any]],
     model: Any | None = None,
 ) -> StructuredResolution | None:
+    """Dispatch a validated structured task to its lookup handler."""
+
     lookup_type = str(decision.get("lookup_type") or "").strip()
     effective_cohort = normalize_cohort(cohort or decision.get("cohort"))
 
@@ -688,7 +693,6 @@ def _resolution(
         strategy=strategy,
         result_kind=result_kind,
         result=result,
-        target_chunk_types=target_chunk_types or [
-            str(result.get("content_type") or "structured_lookup")
-        ],
+        target_chunk_types=target_chunk_types
+        or [str(result.get("content_type") or "structured_lookup")],
     )

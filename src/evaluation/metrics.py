@@ -6,11 +6,15 @@ from typing import Callable, Iterable
 
 
 def safe_mean(values: Iterable[float]) -> float | None:
+    """Return the arithmetic mean, or zero for an empty sequence."""
+
     items = [float(value) for value in values]
     return sum(items) / len(items) if items else None
 
 
 def percentile(values: Iterable[float], percentile_value: float) -> float | None:
+    """Return a linearly interpolated percentile from numeric values."""
+
     items = sorted(float(value) for value in values)
     if not items:
         return None
@@ -28,6 +32,8 @@ def percentile(values: Iterable[float], percentile_value: float) -> float | None
 def wilson_interval(
     successes: int, total: int, z: float = 1.96
 ) -> dict[str, float | None]:
+    """Compute a Wilson confidence interval for a binary proportion."""
+
     if total <= 0:
         return {"low": None, "high": None}
     proportion = successes / total
@@ -50,6 +56,8 @@ def bootstrap_interval(
     samples: int = 2000,
     seed: int = 42,
 ) -> dict[str, float | None]:
+    """Estimate a deterministic bootstrap confidence interval."""
+
     if not values:
         return {"low": None, "high": None}
     statistic = statistic or (lambda items: sum(items) / len(items))
@@ -66,12 +74,16 @@ def bootstrap_interval(
 
 
 def bootstrap_mean_ci(values: list[float]) -> dict[str, float | None]:
+    """Estimate a bootstrap confidence interval for the sample mean."""
+
     return bootstrap_interval(values)
 
 
 def retrieval_metrics(
     grades: list[int], k: int = 5, *, gold_grades: list[int] | None = None
 ) -> dict[str, float]:
+    """Compute retrieval hit, ranking, and coverage metrics."""
+
     binary = [grade > 0 for grade in grades]
     first_relevant = next((index for index, hit in enumerate(binary) if hit), None)
 

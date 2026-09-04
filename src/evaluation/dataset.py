@@ -84,10 +84,14 @@ COMMON_REQUIRED_FIELDS = {
 
 
 def load_json(path: Path) -> Any:
+    """Load a UTF-8 JSON artifact."""
+
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 def write_json(path: Path, value: Any) -> None:
+    """Persist a UTF-8 JSON artifact with stable formatting."""
+
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
         json.dumps(value, ensure_ascii=False, indent=2, default=str) + "\n",
@@ -96,6 +100,8 @@ def write_json(path: Path, value: Any) -> None:
 
 
 def stable_json_hash(value: Any) -> str:
+    """Hash a JSON-compatible value using stable key ordering."""
+
     payload = json.dumps(
         value,
         ensure_ascii=False,
@@ -107,6 +113,8 @@ def stable_json_hash(value: Any) -> str:
 
 
 def file_hash(path: Path) -> str:
+    """Return the SHA-256 digest of one artifact file."""
+
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
@@ -115,6 +123,8 @@ def file_hash(path: Path) -> str:
 
 
 def normalize_query(value: str) -> str:
+    """Normalize query whitespace for deterministic evaluation identity."""
+
     value = re.sub(r"^\s*case\s+\d+\s*:\s*", "", value, flags=re.IGNORECASE)
     text = (
         unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
@@ -213,10 +223,15 @@ def _legacy_structured_record_ids(
         if source_parent_id.startswith("K48-K49_"):
             ids.add(f"{source_parent_id.removeprefix('K48-K49_')}_{table_subtype}")
 
-    if catalog in {"structured_tables_registry", "scoring_tables"} and normalized_cohort:
+    if (
+        catalog in {"structured_tables_registry", "scoring_tables"}
+        and normalized_cohort
+    ):
         scoring_table_id = str(record.get("table_id") or "").strip()
         if scoring_table_id in {"grade_10_to_letter", "grade_10_to_letter_foundation"}:
-            ids.add(f"{normalized_cohort}_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general")
+            ids.add(
+                f"{normalized_cohort}_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"
+            )
         if scoring_table_id in {"conduct_classification", "conduct"}:
             ids.add(
                 f"{normalized_cohort}_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
@@ -249,9 +264,7 @@ def _legacy_structured_record_ids(
     return ids
 
 
-def _structured_catalog_aliases(
-    catalog: str, record: dict[str, Any]
-) -> set[str]:
+def _structured_catalog_aliases(catalog: str, record: dict[str, Any]) -> set[str]:
     aliases = {catalog}
     aliases.update(
         str(record.get(field) or "").strip()
@@ -433,9 +446,7 @@ def _validate_common(case: dict[str, Any], suite: str, errors: list[str]) -> Non
         )
 
 
-def _validate_deterministic_contract(
-    case: dict[str, Any], errors: list[str]
-) -> None:
+def _validate_deterministic_contract(case: dict[str, Any], errors: list[str]) -> None:
     """Fail closed when a deterministic case cannot express its V6 gold contract."""
     case_id = str(case.get("id") or "<missing-id>")
     contract = str(case.get("contract_version") or "").strip()
@@ -458,9 +469,7 @@ def _validate_deterministic_contract(
     }
     missing_plan_fields = sorted(required_plan_fields - set(expected))
     if missing_plan_fields:
-        errors.append(
-            f"{case_id}: expected_plan missing fields {missing_plan_fields}"
-        )
+        errors.append(f"{case_id}: expected_plan missing fields {missing_plan_fields}")
 
     task_count = expected.get("task_count")
     if (
@@ -473,7 +482,9 @@ def _validate_deterministic_contract(
     allowed_task_modes = {"structured", "rag", "clarify"}
     for field in ("allowed_modes", "required_modes", "lookup_types", "cohorts"):
         value = expected.get(field)
-        if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
+        if not isinstance(value, list) or any(
+            not isinstance(item, str) for item in value
+        ):
             errors.append(f"{case_id}: expected_plan.{field} must be a string list")
     allowed_modes_value = expected.get("allowed_modes")
     required_modes_value = expected.get("required_modes")
@@ -582,7 +593,9 @@ def _validate_deterministic_v7_contract(
             errors.append(f"{prefix}.state is invalid")
 
         modes = outcome.get("allowed_modes")
-        if not isinstance(modes, list) or any(mode not in allowed_modes for mode in modes):
+        if not isinstance(modes, list) or any(
+            mode not in allowed_modes for mode in modes
+        ):
             errors.append(f"{prefix}.allowed_modes must contain supported modes")
 
         task_count = outcome.get("task_count")
@@ -601,7 +614,9 @@ def _validate_deterministic_v7_contract(
                     or maximum > 3
                     or minimum > maximum
                 ):
-                    errors.append(f"{prefix}.task_count must satisfy 0 <= min <= max <= 3")
+                    errors.append(
+                        f"{prefix}.task_count must satisfy 0 <= min <= max <= 3"
+                    )
 
         required_tasks = outcome.get("required_tasks") or []
         if not isinstance(required_tasks, list):
@@ -626,7 +641,9 @@ def _validate_deterministic_v7_contract(
             if "slot_value_alternatives" in task and not isinstance(
                 task.get("slot_value_alternatives"), dict
             ):
-                errors.append(f"{task_prefix}.slot_value_alternatives must be an object")
+                errors.append(
+                    f"{task_prefix}.slot_value_alternatives must be an object"
+                )
 
 
 def _validate_grounded_deterministic_contract(
@@ -644,7 +661,9 @@ def _validate_grounded_deterministic_contract(
         expected_contract=expected_contract,
     )
     case_id = str(case.get("id") or "<missing-id>")
-    for outcome_index, outcome in enumerate(case.get("accepted_outcomes") or [], start=1):
+    for outcome_index, outcome in enumerate(
+        case.get("accepted_outcomes") or [], start=1
+    ):
         for task_index, task in enumerate(outcome.get("required_tasks") or [], start=1):
             prefix = (
                 f"{case_id}: accepted_outcomes[{outcome_index}]"
@@ -681,16 +700,17 @@ def _validate_grounded_deterministic_contract(
                         f"{prefix}.resolved_result_required must be true when "
                         "fact_lock_applicable=true"
                     )
-                if not isinstance(task.get("expected_resolved_fields"), dict) or not task.get(
-                    "expected_resolved_fields"
-                ):
+                if not isinstance(
+                    task.get("expected_resolved_fields"), dict
+                ) or not task.get("expected_resolved_fields"):
                     errors.append(
                         f"{prefix}.expected_resolved_fields is required when "
                         "fact_lock_applicable=true"
                     )
-            elif "expected_resolved_fields" in task or task.get(
-                "resolved_result_required"
-            ) is True:
+            elif (
+                "expected_resolved_fields" in task
+                or task.get("resolved_result_required") is True
+            ):
                 errors.append(
                     f"{prefix} must not assert resolved_result when "
                     "fact_lock_applicable=false"
@@ -730,6 +750,8 @@ def validate_bundle(
     require_frozen: bool = True,
     enforce_docstore_hash: bool = True,
 ) -> dict[str, Any]:
+    """Validate dataset structure, identities, and cross-file references."""
+
     errors: list[str] = []
     warnings: list[str] = []
     datasets: dict[str, list[dict[str, Any]]] = {}
@@ -751,7 +773,6 @@ def validate_bundle(
         # The manifest is loaded below, so defer count validation until its
         # versioned contract is available.
         expected_count = None
-
 
     manifest_path = bundle_dir / "manifest.json"
     manifest = load_json(manifest_path) if manifest_path.exists() else {}
@@ -858,10 +879,12 @@ def validate_bundle(
                     actual_cohort = metadata.get("cohort") or doc.get("cohort")
                     from src.common.cohort import is_cohort_applicable
 
-                    if (
-                        expected_cohort not in {None, "", "general", "all"}
-                        and not is_cohort_applicable(doc, expected_cohort)
-                    ):
+                    if expected_cohort not in {
+                        None,
+                        "",
+                        "general",
+                        "all",
+                    } and not is_cohort_applicable(doc, expected_cohort):
                         errors.append(
                             f"{case_id}: source cohort {actual_cohort!r} != {expected_cohort!r}"
                         )
@@ -921,7 +944,9 @@ def validate_bundle(
                         errors.append(f"{case_id}: empty structured source_id")
                         continue
                     if source_id not in structured_ids:
-                        errors.append(f"{case_id}: unknown structured source_id={source_id}")
+                        errors.append(
+                            f"{case_id}: unknown structured source_id={source_id}"
+                        )
                         continue
                     record = structured_source_index.get((catalog, source_id))
                     if catalog and record is None:
@@ -992,15 +1017,11 @@ def validate_bundle(
                 message = (
                     f"unreviewed near duplicate ({ratio:.3f}): {case_id} ~ {other_id}"
                 )
-                if (
-                    manifest.get("schema_version")
-                    in {
-                        "architecture-evaluation-v7",
-                        "architecture-evaluation-v8",
-                        "architecture-evaluation-v9",
-                    }
-                    and not manifest.get("frozen")
-                ):
+                if manifest.get("schema_version") in {
+                    "architecture-evaluation-v7",
+                    "architecture-evaluation-v8",
+                    "architecture-evaluation-v9",
+                } and not manifest.get("frozen"):
                     warnings.append(message)
                 else:
                     errors.append(message)
@@ -1057,9 +1078,7 @@ def validate_bundle(
     )
     expected_positive_groups = manifest.get("deterministic_lookup_group_counts")
     if expected_positive_groups is None:
-        expected_positive_groups = manifest.get(
-            "deterministic_positive_lookup_counts"
-        )
+        expected_positive_groups = manifest.get("deterministic_positive_lookup_counts")
     positive_groups_valid = (
         dict(positive_groups) == expected_positive_groups
         if expected_positive_groups is not None
@@ -1138,9 +1157,7 @@ def validate_bundle(
             if case.get("expected_path") != "regulation_rag":
                 errors.append(f"{case_id}: retrieval case must use regulation_rag")
             if case.get("case_type") != "regulation_true_rag":
-                errors.append(
-                    f"{case_id}: retrieval case must be regulation_true_rag"
-                )
+                errors.append(f"{case_id}: retrieval case must be regulation_true_rag")
             normalized = normalize_query(str(case.get("query") or ""))
             for fragment in forbidden_fragments:
                 if fragment and fragment in normalized:
@@ -1150,7 +1167,7 @@ def validate_bundle(
             for judgment in case.get("relevance_judgments") or []:
                 source_id = str(judgment.get("parent_section_id") or "")
                 source = docs_by_id.get(source_id) or {}
-                content_type = (_doc_metadata(source).get("content_type"))
+                content_type = _doc_metadata(source).get("content_type")
                 if content_type != "regulation_text":
                     errors.append(
                         f"{case_id}: RAG anchor {source_id} is not regulation_text"
@@ -1248,9 +1265,7 @@ def validate_bundle(
 
     production = datasets.get("production", [])
     production_scenarios = Counter(case.get("scenario") for case in production)
-    expected_production_scenarios = manifest.get(
-        "production_scenario_counts"
-    ) or {
+    expected_production_scenarios = manifest.get("production_scenario_counts") or {
         "cold_rag": 20,
         "deterministic": 10,
         "warm_cache": 10,
@@ -1294,7 +1309,10 @@ def validate_bundle(
             errors.append(
                 f"human audit template expected {expected_audit_n} rows, found {len(audit_template)}"
             )
-        if sum(bool(row.get("repeat_for_consistency")) for row in audit_template) != expected_repeat_n:
+        if (
+            sum(bool(row.get("repeat_for_consistency")) for row in audit_template)
+            != expected_repeat_n
+        ):
             errors.append(
                 f"human audit template must mark exactly {expected_repeat_n} repeated scores"
             )

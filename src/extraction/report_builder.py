@@ -10,6 +10,8 @@ def build_report(
     program_directory: list[dict[str, Any]],
     reference_directory: list[dict[str, Any]],
 ) -> dict[str, Any]:
+    """Summarize extracted records and manual-review findings."""
+
     return {
         "tables_extracted": len(scoring_tables),
         "formula_rules_extracted": len(formula_rules),

@@ -265,7 +265,7 @@ Planning, retrieval, generated-answer quality, and transport are intentionally r
 | Judge | `openai/gpt-oss-120b`, fixed project rubric; not RAGAS |
 | QueryPlan / normalizer | schema `v1`; normalizer `v20-grounded-scoring-scope` |
 | Prompt contracts | Planner `structured-regulation-v41-explicit-request-count`; Composer `student-handbook-answer-v3.22-answer-scope` |
-| Answer pipeline | `v62-grounded-fact-locks` |
+| Answer pipeline | `v63-runtime-config-preparation` |
 | Retrieval | `vector_primary_graph_supplement`; no PhoRanker |
 | Storage | Qdrant `student_handbook_semantic_v32`; MongoDB `parent_docs_v32` |
 
@@ -427,11 +427,19 @@ QDRANT_URL=https://your-cluster.qdrant.io
 QDRANT_API_KEY=...
 QDRANT_COLLECTION_NAME=student_handbook_semantic_v32
 MONGODB_URL=mongodb+srv://...
+MONGODB_DB_NAME=chatbotHCMUE
 MONGODB_PARENT_COLLECTION=parent_docs_v32
 STUDENT_RAG_RETRIEVAL_MODE=vector_primary_graph_supplement
 GROQ_API_KEYS=...
 GEMINI_API_KEYS=...
 ```
+
+Current beta boundary:
+
+- Run one replica with one Uvicorn worker. Each process owns one in-memory BM25 index and local admission queue.
+- Set `REDIS_URL`; deployed multi-user environments should also set `STUDENT_RAG_REQUIRE_REDIS=true`. Redis mode never writes the local JSON response cache.
+- Keep `configs/retrieval.yaml` as the retrieval runtime source of truth. `STUDENT_RAG_RETRIEVAL_CONFIG` may point to another explicit file for a deployment.
+- Scale trigger: sustained p95 latency or memory growth, corpus above roughly 20k chunks, or need for multiple replicas. At that point move lexical retrieval and rate-limit state to shared services; do not add them before measured need.
 
 ### Frontend
 

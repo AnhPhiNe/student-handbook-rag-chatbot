@@ -21,6 +21,8 @@ def classify_threshold_priority(
     section: dict[str, Any],
     lines: list[str],
 ) -> str:
+    """Assign a deterministic priority to one threshold rule."""
+
     text = (section.get("title", "") + "\n" + "\n".join(lines)).lower()
 
     high_keywords = [
@@ -52,6 +54,8 @@ def classify_threshold_priority(
 
 
 def extract_threshold_rules(sections: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Extract numeric threshold rules from structured sections."""
+
     rules = []
 
     for section in sections:

@@ -1273,7 +1273,7 @@ def attach_program_faculty_aliases(
     programs: list[dict[str, Any]],
     faculty_profiles: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
-    """Gắn alias khoa đã chuẩn hóa vào từng ngành theo cohort và tên khoa."""
+    """Attach normalized faculty aliases to programs by cohort and faculty name."""
     aliases_by_faculty = {
         (
             compact_text(profile.get("cohort")),

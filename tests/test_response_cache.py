@@ -1,15 +1,29 @@
 from __future__ import annotations
 
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
 
-from src.generation.response_cache import ResponseCache
+from src.generation.response_cache import RedisResponseCache, ResponseCache
 
 
 class ResponseCacheTest(unittest.TestCase):
+    def test_redis_cache_does_not_write_local_json(self) -> None:
+        client = Mock()
+        redis_module = SimpleNamespace(from_url=Mock(return_value=client))
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cache_path = Path(tmpdir) / "cache.json"
+            with patch.dict(sys.modules, {"redis": redis_module}):
+                cache = RedisResponseCache("redis://example", cache_path)
+                cache.set("key", {"answer": "ok"})
+
+            self.assertFalse(cache_path.exists())
+            client.set.assert_called_once()
+
     def test_set_writes_valid_json_and_get_reads_dict_values(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             cache_path = Path(tmpdir) / "cache.json"

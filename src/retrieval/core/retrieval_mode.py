@@ -29,10 +29,14 @@ def resolve_retrieval_mode() -> str:
     """
 
     mode = (
-        os.environ.get("STUDENT_RAG_RETRIEVAL_MODE")
-        or os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE")
-        or DEFAULT_RETRIEVAL_MODE
-    ).strip().lower()
+        (
+            os.environ.get("STUDENT_RAG_RETRIEVAL_MODE")
+            or os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE")
+            or DEFAULT_RETRIEVAL_MODE
+        )
+        .strip()
+        .lower()
+    )
     if mode not in SUPPORTED_RETRIEVAL_MODES:
         raise ValueError(f"Unsupported retrieval mode={mode!r}")
     if mode in RETRIEVAL_ABLATION_MODES and not _env_bool(

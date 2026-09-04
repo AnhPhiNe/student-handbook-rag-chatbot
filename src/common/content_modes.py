@@ -36,7 +36,7 @@ RAG_INDEX_TYPES = {
 
 
 def get_content_mode(content_type: str | None) -> str:
-    """Trả về chế độ xử lý mặc định cho một loại nội dung sổ tay."""
+    """Resolve the default processing mode for one handbook content type."""
     if content_type in STRUCTURED_ONLY_TYPES:
         return STRUCTURED_ONLY
     if content_type in ARCHIVE_ONLY_TYPES:
@@ -54,7 +54,7 @@ def apply_record_defaults(
     source_section: str | None = None,
     content_mode: str | None = None,
 ) -> dict[str, Any]:
-    """Gắn metadata chuẩn cho record để các bước sau không phải đoán."""
+    """Attach canonical routing metadata so downstream stages need no inference."""
     content_type = record.get("content_type")
     record.setdefault("document_id", document_id)
     record.setdefault("cohort", cohort)

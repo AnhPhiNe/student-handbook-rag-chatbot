@@ -18,9 +18,7 @@ EVIDENCE_LABEL_PATTERN = re.compile(
     r"\s*\(\s*S\d+(?:\s*[,;/]\s*S\d+)*\s*\)",
     re.IGNORECASE,
 )
-DANGLING_MARKDOWN_TAIL_PATTERN = re.compile(
-    r"(?:^|(?<=\s))(?:[*_~`]+\s*\(?|\()\s*$"
-)
+DANGLING_MARKDOWN_TAIL_PATTERN = re.compile(r"(?:^|(?<=\s))(?:[*_~`]+\s*\(?|\()\s*$")
 
 
 def _remove_dangling_markdown_tail(text: str) -> str:
@@ -56,6 +54,8 @@ def sources_section_start(text: str) -> int | None:
 
 
 def clean_answer(text: str) -> str:
+    """Normalize generated answer whitespace and formatting artifacts."""
+
     text = (text or "").strip()
     text = re.sub(r"^```(?:\w+)?\s*", "", text)
     text = re.sub(r"\s*```$", "", text)
@@ -63,6 +63,8 @@ def clean_answer(text: str) -> str:
 
 
 def remove_existing_sources_section(answer: str) -> str:
+    """Remove a model-generated source footer handled by citation cards."""
+
     answer = clean_answer(answer)
     source_section = SOURCE_SECTION_PATTERN.search(answer)
     if source_section is None:
@@ -71,20 +73,17 @@ def remove_existing_sources_section(answer: str) -> str:
 
 
 def normalize_unlabeled_enumeration_references(answer: str) -> str:
-    """Keep a list reference readable when the LLM omitted its numeric labels.
-
-    This intentionally handles only the unambiguous "mục 1, 2, 3" phrasing.
-    Rewriting arbitrary legal sub-item references without their source structure
-    could change the rule's meaning.
-    """
+    """Restore numeric labels only for unambiguous list references."""
     return UNNUMBERED_FIRST_THREE_PATTERN.sub("ba trường hợp đầu nêu trên", answer)
 
 
 def format_final_answer(
     answer: str, selected_citations: list[dict[str, Any]] | None
 ) -> str:
-    # UI đã hiển thị nguồn bằng citation card, nên nội dung trả lời không lặp lại
-    # khối "Nguồn:" dạng văn bản thô.
+    # Citation cards already expose sources in the UI, so the answer body
+    # must not repeat a raw source section.
+    """Apply final answer cleanup without changing factual content."""
+
     return remove_existing_sources_section(answer)
 
 
@@ -94,6 +93,8 @@ def format_final_response(
     ambiguity_note: str = "",
     primary_citations: list[dict[str, Any]] | None = None,
 ) -> str:
+    """Format answer text and citations for the public response."""
+
     answer = remove_existing_sources_section(answer)
     answer = normalize_unlabeled_enumeration_references(answer)
 

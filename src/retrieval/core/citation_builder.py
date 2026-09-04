@@ -22,6 +22,8 @@ _NEW_PARAGRAPH_RE = re.compile(
 
 
 def parse_source_pages(value: Any) -> list[int]:
+    """Normalize citation page metadata into sorted page numbers."""
+
     if value is None:
         return []
 
@@ -51,7 +53,7 @@ def _first_value(source: dict[str, Any], keys: tuple[str, ...]) -> Any:
 
 
 def sanitize_citation_content(value: Any) -> str:
-    """Làm sạch nội dung nguồn trước khi gửi về UI citation."""
+    """Remove unsafe or low-value text before exposing citation content."""
     if value is None:
         return ""
 
@@ -211,6 +213,8 @@ def _build_source_label(metadata: dict[str, Any]) -> str | None:
 def build_citations_from_vector_results(
     results: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
+    """Build normalized citation records from retrieval results."""
+
     citations = []
 
     for item in results:

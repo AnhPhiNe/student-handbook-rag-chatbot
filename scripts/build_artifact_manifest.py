@@ -4,10 +4,17 @@ import argparse
 import hashlib
 import json
 import os
+import sys
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from src.retrieval.runtime_config import load_retrieval_runtime_config
 
 
 SCHEMA_VERSION = "student-handbook-build-v1"
@@ -109,9 +116,15 @@ def build_artifact_manifest(
     output_path: Path = DEFAULT_OUTPUT_PATH,
     qdrant_collection: str,
     mongo_collection: str,
-    embedding_model: str = "BAAI/bge-m3",
-    embedding_dimension: int = 1024,
+    embedding_model: str | None = None,
+    embedding_dimension: int | None = None,
 ) -> dict[str, Any]:
+    if embedding_model is None or embedding_dimension is None:
+        embedding_config = load_retrieval_runtime_config()["embedding"]
+        if embedding_model is None:
+            embedding_model = str(embedding_config["model_name"])
+        if embedding_dimension is None:
+            embedding_dimension = int(embedding_config["dimension"])
     qdrant_collection = qdrant_collection.strip()
     mongo_collection = mongo_collection.strip()
     if not qdrant_collection or not mongo_collection:
@@ -165,8 +178,7 @@ def build_artifact_manifest(
 
     parent_id_list = [str(parent.get("_id") or "") for parent in parents]
     child_id_list = [
-        str(child.get("_id") or child.get("chunk_id") or "")
-        for child in children
+        str(child.get("_id") or child.get("chunk_id") or "") for child in children
     ]
     parent_ids = set(parent_id_list)
     child_parent_ids = {
@@ -193,7 +205,8 @@ def build_artifact_manifest(
         )
 
     source_pdf_hashes = {
-        path.name: sha256_file(path) for path in sorted(pdf_paths, key=lambda item: item.name)
+        path.name: sha256_file(path)
+        for path in sorted(pdf_paths, key=lambda item: item.name)
     }
     identity_inputs = {
         "schema_version": SCHEMA_VERSION,
@@ -267,12 +280,8 @@ def build_artifact_manifest(
         manifest["artifacts"]["table_embedding_audit"] = {
             "path": table_embedding_audit_path.as_posix(),
             "sha256": sha256_file(table_embedding_audit_path),
-            "total_table_like_rows": table_embedding_audit[
-                "total_table_like_rows"
-            ],
-            "excluded_as_structured": table_embedding_audit[
-                "excluded_as_structured"
-            ],
+            "total_table_like_rows": table_embedding_audit["total_table_like_rows"],
+            "excluded_as_structured": table_embedding_audit["excluded_as_structured"],
             "retained_unmatched": table_embedding_audit["retained_unmatched"],
             "ignored_non_content": table_embedding_audit["ignored_non_content"],
         }
@@ -281,6 +290,7 @@ def build_artifact_manifest(
 
 
 def parse_args() -> argparse.Namespace:
+    embedding_config = load_retrieval_runtime_config()["embedding"]
     parser = argparse.ArgumentParser(
         description="Attach one deterministic build id and write the artifact manifest."
     )
@@ -305,12 +315,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--embedding-model",
-        default=os.environ.get("STUDENT_RAG_EMBEDDING_MODEL", "BAAI/bge-m3"),
+        default=embedding_config["model_name"],
     )
     parser.add_argument(
         "--embedding-dimension",
         type=int,
-        default=int(os.environ.get("STUDENT_RAG_EMBEDDING_DIMENSION", "1024")),
+        default=int(embedding_config["dimension"]),
     )
     args = parser.parse_args()
     if not args.qdrant_collection or not args.mongo_collection:

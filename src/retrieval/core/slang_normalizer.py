@@ -37,7 +37,10 @@ class SlangNormalizer:
             program_directory_path=program_directory_path,
             program_directory=program_directory,
         )
-        for acronym, replacement in self.acronym_registry.generated_replacements.items():
+        for (
+            acronym,
+            replacement,
+        ) in self.acronym_registry.generated_replacements.items():
             self.replace_dict.setdefault(acronym.lower(), replacement.lower())
         self._load_unique_unit_aliases(unit_alias_config_path)
 
@@ -97,9 +100,11 @@ class SlangNormalizer:
                 if not self._is_safe_unit_alias(alias):
                     continue
                 variants = {alias}
-                if unit_prefix in {"Phòng", "Khoa", "Trạm"} and not alias.casefold().startswith(
-                    unit_prefix.casefold() + " "
-                ):
+                if unit_prefix in {
+                    "Phòng",
+                    "Khoa",
+                    "Trạm",
+                } and not alias.casefold().startswith(unit_prefix.casefold() + " "):
                     variants.add(f"{unit_prefix} {alias}")
                 for variant in variants:
                     key = self._strip_accents(variant).casefold()
@@ -157,15 +162,13 @@ class SlangNormalizer:
     def _build_regex(self, keys):
         if not keys:
             return None
-        # Sort by length descending to match longer phrases first (e.g., "không đăng ký được môn" before "đăng ký")
+        # Match longer phrases before their shorter overlapping aliases.
         sorted_keys = sorted(keys, key=len, reverse=True)
         escaped_keys = [re.escape(k) for k in sorted_keys]
         # Treat common acronym connectors as part of the surrounding token.
         # A short alias such as HSSV must not be rewritten inside CTCT-HSSV,
         # CTCT&HSSV, or CTCT/HSSV unless the complete compound is registered.
-        pattern_str = (
-            r"(?<![\w&/\-])(" + "|".join(escaped_keys) + r")(?![\w&/\-])"
-        )
+        pattern_str = r"(?<![\w&/\-])(" + "|".join(escaped_keys) + r")(?![\w&/\-])"
         return re.compile(pattern_str, re.IGNORECASE | re.UNICODE)
 
     @staticmethod
@@ -199,7 +202,7 @@ class SlangNormalizer:
 
         # 1. Protect exact canonical replacements so shorter expansions inside
         # the same phrase cannot break high-confidence matches such as
-        # "học bổng KKHT" before the generic "học bổng" expansion runs.
+        # Protect specific scholarship abbreviations before generic expansion.
         if self.replace_pattern:
 
             def protect_replace_match(match):

@@ -54,6 +54,8 @@ def _not_configured() -> dict[str, Any]:
 
 
 def probe_qdrant() -> dict[str, Any]:
+    """Probe Qdrant connectivity without exposing credentials."""
+
     url = str(os.environ.get("QDRANT_URL") or "").strip()
     collection = str(
         os.environ.get("STUDENT_RAG_HYBRID_COLLECTION")
@@ -87,6 +89,8 @@ def probe_qdrant() -> dict[str, Any]:
 
 
 def probe_mongodb() -> dict[str, Any]:
+    """Probe MongoDB connectivity and the configured parent collection."""
+
     uri = str(os.environ.get("MONGODB_URL") or "").strip()
     collection = str(os.environ.get("MONGODB_PARENT_COLLECTION") or "").strip()
     if not uri or not collection:

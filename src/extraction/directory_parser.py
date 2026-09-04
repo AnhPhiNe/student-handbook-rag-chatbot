@@ -29,30 +29,31 @@ SECTION_TITLE_PATTERNS = [
 
 
 def is_section_title(line: str) -> bool:
+    """Return whether a line is a directory section title."""
+
     line = line.strip()
     return any(pattern.search(line) for pattern in SECTION_TITLE_PATTERNS)
 
 
 def is_office_heading(line: str) -> bool:
+    """Return whether a line starts an office record."""
+
     return bool(OFFICE_HEADING_PATTERN.match(line.strip()))
 
 
 def is_faculty_heading(line: str) -> bool:
+    """Return whether a line starts a faculty record."""
+
     return bool(FACULTY_HEADING_PATTERN.match(line.strip()))
 
 
 def clean_heading_name(line: str) -> str:
-    """
-    Giữ nguyên số thứ tự + tên đơn vị để dễ trace source.
-    Ví dụ: '3. Phòng Đào tạo'
-    """
+    """Preserve the source ordinal and unit name for traceability."""
     return normalize_text(line)
 
 
 def should_skip_line(line: str) -> bool:
-    """
-    Bỏ những dòng rỗng hoặc title tổng quan, không phải record.
-    """
+    """Reject empty lines and overview titles that are not directory records."""
     clean_line = line.strip()
 
     if not clean_line:
@@ -65,9 +66,7 @@ def should_skip_line(line: str) -> bool:
 
 
 def split_page_to_lines(text: str) -> list[str]:
-    """
-    Chuẩn hóa text page thành lines.
-    """
+    """Normalize extracted page text into non-empty lines."""
     text = normalize_text(clean_text(text))
     return [line.strip() for line in text.splitlines() if line.strip()]
 
@@ -76,6 +75,8 @@ def close_current_record(
     current_record: Optional[dict[str, Any]],
     records: list[dict[str, Any]],
 ) -> None:
+    """Finalize the open directory record and append it when valid."""
+
     if not current_record:
         return
 
@@ -94,9 +95,7 @@ def close_current_record(
 
 
 def detect_needs_manual_review(record: dict[str, Any]) -> bool:
-    """
-    Flag review nếu record quá ngắn hoặc không có mô tả.
-    """
+    """Flag records whose description is absent or unusually short."""
     raw_text = record.get("raw_text", "")
     source_pages = record.get("source_pages", [])
 
@@ -114,6 +113,8 @@ def append_line_to_current_record(
     line: str,
     page_number: int,
 ) -> None:
+    """Append a description line to the currently open record."""
+
     current_record["_raw_lines"].append(line)
 
     if page_number not in current_record["source_pages"]:
@@ -128,6 +129,8 @@ def create_directory_record(
     page_number: int,
     heading_line: str,
 ) -> dict[str, Any]:
+    """Create a normalized directory record from one heading."""
+
     return {
         "record_id": record_id,
         "content_type": content_type,
@@ -142,16 +145,7 @@ def extract_directory_by_heading(
     content_type: str,
     heading_type: str,
 ) -> list[dict[str, Any]]:
-    """
-    Parser chung cho office/faculty.
-
-    Logic:
-    - Chỉ mở record mới khi gặp heading thật:
-      + office: '1. Phòng...', '2. Trung tâm...'
-      + faculty: '1. Khoa...', '2. Tổ...'
-    - Dòng bullet/mô tả sẽ append vào record hiện tại.
-    - Nội dung tiếp qua trang mới vẫn append vào record trước cho đến khi gặp heading mới.
-    """
+    """Parse office or faculty records while carrying descriptions across pages."""
 
     if heading_type not in {"office", "faculty"}:
         raise ValueError("heading_type must be 'office' or 'faculty'")
@@ -195,15 +189,15 @@ def extract_directory_by_heading(
                 record_counter += 1
                 continue
 
-            # Không có heading mới:
-            # Nếu đã có record thì append mô tả/bullet vào record hiện tại.
+            # No new heading: continue the current record when one exists.
+            # Descriptions and bullets belong to the open record.
             if current_record is not None:
                 append_line_to_current_record(current_record, line, page_number)
                 continue
 
-            # Nếu chưa có record mà gặp dòng mô tả đầu trang thì bỏ qua.
-            # Ví dụ: heading tổng quan hoặc dòng rác trước đơn vị đầu tiên.
-            # Không tạo record mới bằng bullet/mô tả.
+            # Ignore leading page text until the first valid record appears.
+            # This includes overview headings and extraction noise.
+            # Never create a record from a bullet or description alone.
             continue
 
     close_current_record(current_record, records)
@@ -212,6 +206,8 @@ def extract_directory_by_heading(
 
 
 def extract_office_directory(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Extract office records from handbook pages."""
+
     return extract_directory_by_heading(
         pages=pages,
         content_type="office_directory",
@@ -222,6 +218,8 @@ def extract_office_directory(pages: list[dict[str, Any]]) -> list[dict[str, Any]
 def extract_faculty_program_directory(
     pages: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
+    """Extract faculty and program directory records from handbook pages."""
+
     return extract_directory_by_heading(
         pages=pages,
         content_type="faculty_program_directory",
@@ -230,10 +228,7 @@ def extract_faculty_program_directory(
 
 
 def extract_reference_directory(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """
-    Reference directory không cố tách từng item vì nhóm này không phải core QA.
-    Giữ theo page để tránh parse sai.
-    """
+    """Preserve non-core reference directories by page to avoid false parsing."""
     reference_pages = get_pages_by_type(pages, "reference_directory")
     records = []
 

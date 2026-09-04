@@ -3,7 +3,7 @@ import hashlib
 import json
 import sys
 from collections import Counter
-# Thêm thư mục gốc vào PYTHONPATH để có thể import src
+# Add the repository root to PYTHONPATH so ``src`` can be imported.
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.retrieval.vectorstore.mongo_store import get_mongo_store

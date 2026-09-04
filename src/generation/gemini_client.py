@@ -17,6 +17,8 @@ from src.common.env_loader import load_project_env
 
 @dataclass(frozen=True)
 class GeminiKeyPoolConfig:
+    """Define quota, cooldown, and persistence settings for Gemini keys."""
+
     rpm_limit_per_key: int = 12
     rpd_limit_per_key: int = 450
     cooldown_on_rate_limit_seconds: float = 65.0
@@ -25,6 +27,8 @@ class GeminiKeyPoolConfig:
 
     @classmethod
     def from_config(cls, config: dict[str, Any] | None) -> "GeminiKeyPoolConfig":
+        """Build Gemini key-pool settings from configuration."""
+
         config = config or {}
         state_path = config.get("state_path", "data/cache/gemini_key_state.json")
         return cls(
@@ -34,7 +38,9 @@ class GeminiKeyPoolConfig:
                 1.0, float(config.get("cooldown_on_rate_limit_seconds", 65.0))
             ),
             state_path=str(state_path),
-            wait_when_all_keys_limited=bool(config.get("wait_when_all_keys_limited", True)),
+            wait_when_all_keys_limited=bool(
+                config.get("wait_when_all_keys_limited", True)
+            ),
         )
 
 
@@ -58,7 +64,9 @@ class GeminiKeyPool:
             else GeminiKeyPoolConfig.from_config(config)
         )
         self._lock = threading.Lock()
-        self._state_path = Path(self.config.state_path) if self.config.state_path else None
+        self._state_path = (
+            Path(self.config.state_path) if self.config.state_path else None
+        )
         self._state: dict[str, Any] = {"keys": {}}
         self._load_state()
         self._ensure_key_states()
@@ -122,6 +130,8 @@ class GeminiKeyPool:
             time.sleep(wait_seconds)
 
     def record_success(self, key_id: str) -> None:
+        """Record successful generation usage and reset failure state."""
+
         with self._lock:
             state = self._key_state(key_id)
             state["failure_count"] = 0
@@ -129,21 +139,31 @@ class GeminiKeyPool:
             self._save_state()
 
     def record_failure(self, key_id: str, error_type: str | None) -> None:
+        """Record a failed generation attempt for cooldown decisions."""
+
         with self._lock:
             state = self._key_state(key_id)
             state["failure_count"] = int(state.get("failure_count", 0)) + 1
             state["last_error_type"] = error_type or "unknown"
             self._save_state()
 
-    def record_rate_limit(self, key_id: str, error_type: str | None = "rate_limit") -> None:
+    def record_rate_limit(
+        self, key_id: str, error_type: str | None = "rate_limit"
+    ) -> None:
+        """Mark a Gemini key unavailable until its retry boundary."""
+
         with self._lock:
             state = self._key_state(key_id)
-            state["cooldown_until"] = time.time() + self.config.cooldown_on_rate_limit_seconds
+            state["cooldown_until"] = (
+                time.time() + self.config.cooldown_on_rate_limit_seconds
+            )
             state["failure_count"] = int(state.get("failure_count", 0)) + 1
             state["last_error_type"] = error_type or "rate_limit"
             self._save_state()
 
     def fingerprint(self, key: str) -> str:
+        """Return a non-secret identifier for one Gemini API key."""
+
         return hashlib.sha256(key.encode("utf-8")).hexdigest()[:12]
 
     def _state_key(self, key_id: str) -> str:
@@ -225,6 +245,8 @@ class GeminiKeyPool:
 
 
 class GeminiClient:
+    """Generate grounded answers through a quota-aware Gemini key pool."""
+
     def __init__(
         self,
         model_name: str = "gemini-3.1-flash-lite",
@@ -246,7 +268,9 @@ class GeminiClient:
                 f"Missing {api_keys_env_var}. Add a comma-separated key pool "
                 "to .env or set this environment variable before running Gemini calls."
             )
-        self.available_keys = [key.strip() for key in keys_str.split(",") if key.strip()]
+        self.available_keys = [
+            key.strip() for key in keys_str.split(",") if key.strip()
+        ]
 
         try:
             from google import genai
@@ -289,6 +313,8 @@ class GeminiClient:
         )
 
     def generate(self, prompt: str) -> dict[str, Any]:
+        """Generate one complete grounded answer with bounded retries."""
+
         attempts = 0
         max_attempts = max(1, (self.max_retries + 1) * len(self.available_keys))
         last_error_type = None
@@ -462,7 +488,9 @@ class GeminiClient:
         client: Any | None = None,
     ) -> Iterator[str]:
         request_client = client or self._client
-        output_queue: queue.Queue[tuple[str, str | dict[str, int] | Exception | None]] = queue.Queue()
+        output_queue: queue.Queue[
+            tuple[str, str | dict[str, int] | Exception | None]
+        ] = queue.Queue()
         self._last_stream_model = self.model_name
         self._last_stream_usage = None
 

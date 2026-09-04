@@ -16,12 +16,14 @@ def build_content_audit(
     pages: list[dict[str, Any]],
     sections: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    """Sinh báo cáo audit nội dung cho một sổ tay sau bước phân vùng trang."""
+    """Build a post-segmentation content audit for one handbook."""
     pages_by_type: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for page in pages:
         pages_by_type[page.get("content_type", "unknown")].append(page)
 
-    section_counts = Counter(section.get("content_type", "unknown") for section in sections)
+    section_counts = Counter(
+        section.get("content_type", "unknown") for section in sections
+    )
     page_mode_counts = Counter(
         get_content_mode(page.get("content_type")) for page in pages
     )
@@ -70,4 +72,3 @@ def build_content_audit(
             "Các section rag_index cần có citation theo cohort/document_id/source_pages.",
         ],
     }
-

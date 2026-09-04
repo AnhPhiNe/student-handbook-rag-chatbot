@@ -8,6 +8,8 @@ BM25RuntimeState = Literal["initializing", "ready", "degraded"]
 
 
 class BM25RuntimeStatus(TypedDict):
+    """Track local BM25 initialization state and failures."""
+
     status: BM25RuntimeState
     attempts: int
     error_type: str | None
@@ -39,6 +41,8 @@ def set_bm25_runtime_status(
 
 
 def get_bm25_runtime_status() -> BM25RuntimeStatus:
+    """Return a serializable snapshot of BM25 runtime health."""
+
     with _BM25_STATUS_LOCK:
         return {
             "status": _BM25_STATUS["status"],

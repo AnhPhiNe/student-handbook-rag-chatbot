@@ -41,13 +41,17 @@ def title_query_match_priority(query: str, chunk: dict[str, Any]) -> int:
         str(metadata.get("title") or metadata.get("source_section") or "")
     )
     query_text = _fold_text(query)
-    # Single-token headings such as "Quyền" are too broad to be anchors.
+    # Single-token headings are too broad to use as lexical anchors.
     if len(title.split()) < 2:
         return 0
-    return int(bool(title and re.search(rf"(?:^| )({re.escape(title)})(?: |$)", query_text)))
+    return int(
+        bool(title and re.search(rf"(?:^| )({re.escape(title)})(?: |$)", query_text))
+    )
 
 
 class BM25Retriever:
+    """Index and score the local lexical corpus with BM25."""
+
     def __init__(
         self,
         *,
@@ -65,10 +69,10 @@ class BM25Retriever:
         self.acronym_whitelist = set(self.acronym_registry.literal_acronyms)
         self._log_acronym_registry(self.acronym_registry)
 
-        # Regex for capturing codes and numbers (e.g., 7480201, 23/QĐ-BGDĐT)
+        # Capture identifiers and document codes as indivisible tokens.
         self.literal_regex = re.compile(
-            r'\b\d{4,}\b|\d+/[A-ZĐ\-]+|IELTS|TOEFL|B1|B2|Goethe-Zertifikat',
-            re.IGNORECASE
+            r"\b\d{4,}\b|\d+/[A-ZĐ\-]+|IELTS|TOEFL|B1|B2|Goethe-Zertifikat",
+            re.IGNORECASE,
         )
 
     @staticmethod
@@ -103,14 +107,14 @@ class BM25Retriever:
         # Layer 1: Literal Extraction
         # Find all literal matches and remove them from the text to be segmented
         literals = []
-        
+
         def literal_replacer(match):
             lit = match.group(0)
             literals.append(lit.lower())
             return " "
-            
+
         text_for_segmentation = self.literal_regex.sub(literal_replacer, text)
-        
+
         # Also extract acronyms from whitelist
         remaining_words = []
         for word in text_for_segmentation.split():
@@ -129,26 +133,34 @@ class BM25Retriever:
         # Layer 2: Word Segmentation (underthesea)
         try:
             if underthesea is not None:
-                segmented_words = underthesea.word_tokenize(text_for_segmentation.lower())
+                segmented_words = underthesea.word_tokenize(
+                    text_for_segmentation.lower()
+                )
                 tokens.extend([w.replace(" ", "_") for w in segmented_words])
             else:
                 tokens.extend(text_for_segmentation.lower().split())
-            
+
             # Bigrams of adjacent segmented syllables (fallback for bad segmentation)
             syllables = text_for_segmentation.lower().split()
-            bigrams = [f"{syllables[i]}_{syllables[i+1]}" for i in range(len(syllables)-1)]
+            bigrams = [
+                f"{syllables[i]}_{syllables[i + 1]}" for i in range(len(syllables) - 1)
+            ]
             tokens.extend(bigrams)
-            
+
         except Exception as e:
-             logger.warning(f"Underthesea tokenization failed: {e}")
-             # Absolute fallback
-             tokens.extend(text_for_segmentation.lower().split())
+            logger.warning(f"Underthesea tokenization failed: {e}")
+            # Absolute fallback
+            tokens.extend(text_for_segmentation.lower().split())
 
         return [t for t in tokens if t.strip()]
 
     def build_bm25_index(self, chunks: list[dict[str, Any]]):
+        """Build a BM25 retriever from normalized chunk records."""
+
         self.chunks = chunks
-        corpus_tokens = [self._tokenize(self._index_text(chunk)) for chunk in self.chunks]
+        corpus_tokens = [
+            self._tokenize(self._index_text(chunk)) for chunk in self.chunks
+        ]
         self.bm25_index = BM25Okapi(corpus_tokens)
         logger.info(f"BM25 index built with {len(self.chunks)} chunks.")
 
@@ -157,7 +169,9 @@ class BM25Retriever:
         """Build a field-aware lexical document without changing result payloads."""
 
         metadata = chunk.get("metadata") or {}
-        title = str(metadata.get("title") or metadata.get("source_section") or "").strip()
+        title = str(
+            metadata.get("title") or metadata.get("source_section") or ""
+        ).strip()
         article = str(metadata.get("article") or "").strip()
         document_title = str(metadata.get("document_title") or "").strip()
         content = str(chunk.get("content") or "")
@@ -167,16 +181,22 @@ class BM25Retriever:
         fields = [title, title, title, article, document_title, content]
         return "\n".join(field for field in fields if field)
 
-    def search_bm25(self, query: str, top_k: int = 24) -> list[tuple[float, dict[str, Any]]]:
+    def search_bm25(
+        self, query: str, top_k: int = 24
+    ) -> list[tuple[float, dict[str, Any]]]:
+        """Return the highest-scoring lexical matches for a query."""
+
         if not self.bm25_index or not self.chunks:
             return []
 
         query_tokens = self._tokenize(query)
         scores = self.bm25_index.get_scores(query_tokens)
-        
+
         # Pair scores with chunks
-        scored_chunks = [(float(score), dict(chunk)) for score, chunk in zip(scores, self.chunks)]
-        
+        scored_chunks = [
+            (float(score), dict(chunk)) for score, chunk in zip(scores, self.chunks)
+        ]
+
         # Filter zero scores and sort
         scored_chunks = [
             item

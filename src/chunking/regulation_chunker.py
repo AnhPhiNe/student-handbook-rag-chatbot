@@ -59,11 +59,13 @@ LOW_VALUE_LINK_TERMS = (
 
 
 def build_regulation_chunk_content(section: dict[str, Any], content: str) -> str:
+    """Render section metadata and source text into retrievable content."""
+
     raw_title = str(section.get("title") or "").strip()
     article = str(section.get("article") or "").strip()
     clean_title = raw_title
     if article and clean_title.lower().startswith(article.lower()):
-        clean_title = clean_title[len(article):].lstrip(" .:-")
+        clean_title = clean_title[len(article) :].lstrip(" .:-")
 
     return join_non_empty(
         [
@@ -124,7 +126,7 @@ def build_parent_doc_content(
     tables: list[dict[str, Any]],
     highlights: list[dict[str, Any]] | None = None,
 ) -> str:
-    """Tạo parent doc có thêm bảng đã chuẩn hóa để LLM không phải đọc bảng bị dính dòng."""
+    """Build parent context with normalized tables and extracted highlights."""
 
     normalized_tables = format_tables_for_parent(tables)
     normalized_highlights = format_highlights_for_parent(highlights or [])
@@ -138,6 +140,8 @@ def build_parent_doc_content(
 
 
 def format_highlights_for_parent(highlights: list[dict[str, Any]]) -> str:
+    """Render extracted highlights as a compact parent-document appendix."""
+
     if not highlights:
         return ""
     lines = ["THÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN:"]
@@ -147,10 +151,7 @@ def format_highlights_for_parent(highlights: list[dict[str, Any]]) -> str:
 
 
 def split_by_clause(content: str) -> list[str]:
-    """
-    Tách theo Khoản: 1. 2. 3.
-    Nếu không tìm thấy khoản thì trả về content gốc.
-    """
+    """Split numbered clauses while preserving their shared introduction."""
     matches = list(CLAUSE_PATTERN.finditer(content))
 
     if len(matches) <= 1:
@@ -177,6 +178,8 @@ def build_regulation_chunks(
     max_tokens: int = 200,
     overlap_tokens: int = 40,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Build searchable child chunks and full parent regulation documents."""
+
     chunks = []
     docstore_items = []
 
@@ -245,7 +248,9 @@ def build_regulation_chunks(
                     chunk_id=f"reg_table_{table['table_id']}",
                     chunk_type="regulation_table",
                     index_mode="semantic",
-                    content=build_regulation_table_chunk_content(cleaned_section, table),
+                    content=build_regulation_table_chunk_content(
+                        cleaned_section, table
+                    ),
                     metadata=table_metadata,
                 )
             )
@@ -267,7 +272,9 @@ def build_regulation_chunks(
                     chunk_id=f"reg_highlight_{highlight['highlight_id']}",
                     chunk_type="regulation_highlight",
                     index_mode="semantic",
-                    content=build_regulation_highlight_chunk_content(cleaned_section, highlight),
+                    content=build_regulation_highlight_chunk_content(
+                        cleaned_section, highlight
+                    ),
                     metadata=highlight_metadata,
                 )
             )

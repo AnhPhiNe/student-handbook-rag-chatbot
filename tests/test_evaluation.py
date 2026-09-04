@@ -136,20 +136,41 @@ def test_legacy_compatibility_provenance_records_both_docstore_hashes() -> None:
     assert provenance["phoranker_used_for_answer_generation"] is False
 
 
-def test_v9_provenance_hashes_every_manifest_config() -> None:
+def test_v9_provenance_reports_runtime_config_drift() -> None:
     provenance = _provenance(
         ROOT / "data" / "eval" / "architecture_v9_deterministic",
         "qdrant",
     )
 
-    assert provenance["config_hashes_match_manifest"] is True
-    assert provenance["config_hashes"].keys() == provenance[
-        "expected_config_hashes"
-    ].keys()
+    assert provenance["config_hashes_match_manifest"] is False
+    assert (
+        provenance["config_hashes"].keys()
+        == provenance["expected_config_hashes"].keys()
+    )
     assert "slang_dictionary" in provenance["config_hashes"]
+    assert set(provenance["config_hash_mismatches"]) == {
+        "ai_router",
+        "answer_generation",
+        "retrieval",
+    }
 
 
 def test_v9_provenance_accepts_evaluator_only_commits(monkeypatch) -> None:
+    manifest = json.loads(
+        (
+            ROOT / "data" / "eval" / "architecture_v9_deterministic" / "manifest.json"
+        ).read_text(encoding="utf-8")
+    )
+    expected_hashes = manifest["config_hashes"]
+    hashes_by_filename = {
+        "ai_router.yaml": expected_hashes["ai_router"],
+        "structured_lookup_registry.yaml": expected_hashes[
+            "structured_lookup_registry"
+        ],
+        "retrieval.yaml": expected_hashes["retrieval"],
+        "answer_generation.yaml": expected_hashes["answer_generation"],
+        "hcmue_slang_dictionary.yaml": expected_hashes["slang_dictionary"],
+    }
     monkeypatch.setattr(
         "scripts.evaluate_system._git_commit",
         lambda: "evaluator-only-commit",
@@ -157,6 +178,10 @@ def test_v9_provenance_accepts_evaluator_only_commits(monkeypatch) -> None:
     monkeypatch.setattr(
         "scripts.evaluate_system._runtime_code_matches_commit",
         lambda _commit: True,
+    )
+    monkeypatch.setattr(
+        "scripts.evaluate_system._normalized_text_hash",
+        lambda path: hashes_by_filename[path.name],
     )
     provenance = _provenance(
         ROOT / "data" / "eval" / "architecture_v9_deterministic",
@@ -490,7 +515,7 @@ def test_production_eval_rejects_terminal_stream_api_error(
             payload = (
                 'event: metadata\ndata: {"status":"streaming"}\n\n'
                 'event: token\ndata: {"text":"fallback"}\n\n'
-                'event: metadata\ndata: '
+                "event: metadata\ndata: "
                 '{"status":"api_error","error_type":"RuntimeError"}\n\n'
                 'event: done\ndata: {"status":"api_error"}\n\n'
             )

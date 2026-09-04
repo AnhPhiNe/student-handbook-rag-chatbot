@@ -30,6 +30,8 @@ LEGAL_NUMBER_PATTERN = re.compile(
 
 @dataclass(frozen=True)
 class SectionRecord:
+    """Represent one source section eligible for graph linking."""
+
     section_id: str
     cohort: str
     document_id: str
@@ -40,6 +42,8 @@ class SectionRecord:
 
 @dataclass(frozen=True)
 class Reference:
+    """Represent one normalized cross-section reference."""
+
     article_number: int
     reference_text: str
     reason: str
@@ -50,6 +54,8 @@ class Reference:
 
 @dataclass
 class SectionIndex:
+    """Index sections by document and article for deterministic resolution."""
+
     by_document_article: dict[tuple[str, str, int], list[SectionRecord]]
     by_cohort_article: dict[tuple[str, int], list[SectionRecord]]
     records_by_id: dict[str, SectionRecord]
@@ -79,7 +85,7 @@ def _document_title(item: dict[str, Any]) -> str:
 
 def _document_key(item: dict[str, Any]) -> str:
     # document_id is the whole handbook in current data. document_title is the
-    # finer regulation/procedure boundary, so it prevents Điều N collisions.
+    # finer regulation/procedure boundary, preventing local article collisions.
     return _document_title(item) or _document_id(item)
 
 
@@ -91,6 +97,8 @@ def _article_number_from_text(text: str) -> int | None:
 
 
 def article_number_for_item(item: dict[str, Any]) -> int | None:
+    """Resolve the canonical article number for one source item."""
+
     metadata = _metadata(item)
     article_number = _article_number_from_text(str(metadata.get("article") or ""))
     if article_number is not None:
@@ -110,7 +118,9 @@ def _clean_text(text: str) -> str:
 
 def _normalize_document_text(text: str) -> str:
     normalized = unicodedata.normalize("NFD", text or "")
-    normalized = "".join(char for char in normalized if unicodedata.category(char) != "Mn")
+    normalized = "".join(
+        char for char in normalized if unicodedata.category(char) != "Mn"
+    )
     normalized = normalized.replace("đ", "d").replace("Đ", "D").lower()
     return _clean_text(re.sub(r"[^a-z0-9/]+", " ", normalized))
 
@@ -125,11 +135,13 @@ def _document_kind(text: str) -> str | None:
 
 def _document_hint_for_match(text: str, match: re.Match[str]) -> str | None:
     # Use a bounded raw-text window rather than the human-readable reason.
-    # PDF extraction frequently wraps "Quy chế này" or a regulation title
+    # PDF extraction frequently wraps self-references or regulation titles
     # onto the following line, while _reason_for_match intentionally stops at
     # line boundaries.
     tail = text[match.end() : match.end() + 320]
-    boundaries = [position for delimiter in (".", ";") if (position := tail.find(delimiter)) >= 0]
+    boundaries = [
+        position for delimiter in (".", ";") if (position := tail.find(delimiter)) >= 0
+    ]
     if boundaries:
         tail = tail[: min(boundaries)]
     marker = DOCUMENT_MARKER_PATTERN.search(tail)
@@ -188,13 +200,22 @@ def _reference_for_article_match(text: str, match: re.Match[str]) -> Reference:
 
 
 def extract_references(content: str) -> list[Reference]:
-    return [_reference_for_article_match(content, match) for match in ARTICLE_PATTERN.finditer(content or "")]
+    """Extract explicit article and document references from source text."""
+
+    return [
+        _reference_for_article_match(content, match)
+        for match in ARTICLE_PATTERN.finditer(content or "")
+    ]
 
 
 def build_section_index(
     docstore_items: list[dict[str, Any]],
 ) -> SectionIndex:
-    by_document_article: dict[tuple[str, str, int], list[SectionRecord]] = defaultdict(list)
+    """Build lookup indexes used to resolve graph-reference targets."""
+
+    by_document_article: dict[tuple[str, str, int], list[SectionRecord]] = defaultdict(
+        list
+    )
     by_cohort_article: dict[tuple[str, int], list[SectionRecord]] = defaultdict(list)
     records_by_id: dict[str, SectionRecord] = {}
     document_contents: dict[tuple[str, str], list[str]] = defaultdict(list)
@@ -248,7 +269,9 @@ def build_section_index(
                 for match in LEGAL_NUMBER_PATTERN.finditer(" ".join(contents))
             )
             aliases.update(alias for alias, count in counts.items() if count >= 2)
-        document_aliases[document_identity] = tuple(sorted(alias for alias in aliases if alias))
+        document_aliases[document_identity] = tuple(
+            sorted(alias for alias in aliases if alias)
+        )
 
     return SectionIndex(
         by_document_article=dict(by_document_article),
@@ -283,7 +306,10 @@ def _has_conflicting_study_level(document_title: str, hint: str) -> bool:
 def _hint_matches_same_document(source: SectionRecord, hint: str) -> bool:
     normalized_hint = _normalize_document_text(hint)
     source_kind = _document_kind(source.document_title)
-    return bool(source_kind and re.search(rf"\b{re.escape(source_kind)}\s+nay\b", normalized_hint))
+    return bool(
+        source_kind
+        and re.search(rf"\b{re.escape(source_kind)}\s+nay\b", normalized_hint)
+    )
 
 
 def _explicit_document_candidates(
@@ -292,15 +318,22 @@ def _explicit_document_candidates(
     reference: Reference,
 ) -> list[SectionRecord]:
     hint = reference.target_document_hint or ""
-    candidates = index.by_cohort_article.get((source.cohort, reference.article_number), [])
+    candidates = index.by_cohort_article.get(
+        (source.cohort, reference.article_number), []
+    )
     scored: list[tuple[int, SectionRecord]] = []
 
     for candidate in candidates:
         if _has_conflicting_study_level(candidate.document_title, hint):
             continue
-        aliases = index.document_aliases.get((candidate.cohort, candidate.document_key), ())
+        aliases = index.document_aliases.get(
+            (candidate.cohort, candidate.document_key), ()
+        )
         normalized_hint = _normalize_document_text(hint)
-        alias_score = max((len(alias.split()) for alias in aliases if alias in normalized_hint), default=0)
+        alias_score = max(
+            (len(alias.split()) for alias in aliases if alias in normalized_hint),
+            default=0,
+        )
         prefix_score = _prefix_match_score(candidate.document_title, hint)
         score = max(alias_score, prefix_score)
         if score >= 3:
@@ -317,14 +350,20 @@ def _resolve_target(
     source: SectionRecord,
     reference: Reference,
 ) -> tuple[SectionRecord | None, str | None, str]:
-    if reference.target_document_hint and not _hint_matches_same_document(source, reference.target_document_hint):
+    if reference.target_document_hint and not _hint_matches_same_document(
+        source, reference.target_document_hint
+    ):
         candidates = _explicit_document_candidates(index, source, reference)
         if not candidates:
             return None, "unresolved_external_document", "unresolved"
         if len(candidates) > 1:
             return None, "ambiguous_document_target", "unresolved"
         target = candidates[0]
-        mode = "same_document" if target.document_key == source.document_key else "explicit_cross_document"
+        mode = (
+            "same_document"
+            if target.document_key == source.document_key
+            else "explicit_cross_document"
+        )
         return target, None, mode
 
     candidates = index.by_document_article.get(
@@ -369,7 +408,11 @@ def _edge_from_reference(
     }
 
 
-def extract_rule_edges(docstore_items: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+def extract_rule_edges(
+    docstore_items: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Resolve references into typed graph edges with provenance."""
+
     index = build_section_index(docstore_items)
     edges_by_key: dict[tuple[str, str, str, str, str], dict[str, Any]] = {}
     skipped: list[dict[str, Any]] = list(index.skipped)
@@ -408,7 +451,13 @@ def extract_rule_edges(docstore_items: list[dict[str, Any]]) -> tuple[list[dict[
                 )
                 continue
 
-            key = (source.cohort, source.document_id, source.section_id, target.section_id, RELATION)
+            key = (
+                source.cohort,
+                source.document_id,
+                source.section_id,
+                target.section_id,
+                RELATION,
+            )
             if key in edges_by_key:
                 skipped.append(
                     {
@@ -419,9 +468,14 @@ def extract_rule_edges(docstore_items: list[dict[str, Any]]) -> tuple[list[dict[
                     }
                 )
                 continue
-            edges_by_key[key] = _edge_from_reference(source, target, reference, resolution_mode)
+            edges_by_key[key] = _edge_from_reference(
+                source, target, reference, resolution_mode
+            )
 
-    edges = sorted(edges_by_key.values(), key=lambda edge: (edge["cohort"], edge["source"], edge["target"]))
+    edges = sorted(
+        edges_by_key.values(),
+        key=lambda edge: (edge["cohort"], edge["source"], edge["target"]),
+    )
     validation = validate_edges(edges, index.parent_ids)
     report = {
         "status": "ok" if validation["is_valid"] else "invalid",
@@ -454,7 +508,9 @@ def extract_rule_edges(docstore_items: list[dict[str, Any]]) -> tuple[list[dict[
     return edges, report
 
 
-def _coverage_by_cohort(edges: list[dict[str, Any]], docstore_items: list[dict[str, Any]]) -> dict[str, Any]:
+def _coverage_by_cohort(
+    edges: list[dict[str, Any]], docstore_items: list[dict[str, Any]]
+) -> dict[str, Any]:
     parent_ids_by_cohort: dict[str, set[str]] = defaultdict(set)
     for item in docstore_items:
         section_id = str(item.get("_id") or "")
@@ -474,12 +530,16 @@ def _coverage_by_cohort(edges: list[dict[str, Any]], docstore_items: list[dict[s
         coverage[cohort] = {
             "parent_sections": len(parent_ids),
             "graph_nodes": len(graph_nodes),
-            "coverage_pct": round((len(graph_nodes) / len(parent_ids)) * 100, 2) if parent_ids else 0.0,
+            "coverage_pct": round((len(graph_nodes) / len(parent_ids)) * 100, 2)
+            if parent_ids
+            else 0.0,
         }
     return coverage
 
 
 def validate_edges(edges: list[dict[str, Any]], parent_ids: set[str]) -> dict[str, Any]:
+    """Report unresolved, duplicate, or malformed graph edges."""
+
     missing_nodes = sorted(
         {
             str(node_id)
@@ -489,14 +549,13 @@ def validate_edges(edges: list[dict[str, Any]], parent_ids: set[str]) -> dict[st
         }
     )
     cross_cohort_edges = [
-        edge
-        for edge in edges
-        if edge.get("source_cohort") != edge.get("target_cohort")
+        edge for edge in edges if edge.get("source_cohort") != edge.get("target_cohort")
     ]
     article_mismatch_edges = [
         edge
         for edge in edges
-        if int(edge.get("reference_article") or -1) != int(edge.get("target_article") or -2)
+        if int(edge.get("reference_article") or -1)
+        != int(edge.get("target_article") or -2)
     ]
     resolution_mode_mismatch_edges = [
         edge
@@ -527,6 +586,8 @@ def validate_edges(edges: list[dict[str, Any]], parent_ids: set[str]) -> dict[st
 
 
 def load_json(path: Path) -> list[dict[str, Any]]:
+    """Load a UTF-8 JSON artifact."""
+
     with path.open("r", encoding="utf-8") as file:
         data = json.load(file)
     if not isinstance(data, list):
@@ -535,6 +596,8 @@ def load_json(path: Path) -> list[dict[str, Any]]:
 
 
 def write_json(path: Path, data: Any) -> None:
+    """Persist a UTF-8 JSON artifact with stable formatting."""
+
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as file:
         json.dump(data, file, ensure_ascii=False, indent=2)
@@ -542,7 +605,11 @@ def write_json(path: Path, data: Any) -> None:
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Build directed document graph edges with rule-based extraction.")
+    """Parse graph-extraction CLI arguments."""
+
+    parser = argparse.ArgumentParser(
+        description="Build directed document graph edges with rule-based extraction."
+    )
     parser.add_argument("--input-file", default=DEFAULT_INPUT_FILE)
     parser.add_argument("--output-file", default=DEFAULT_OUTPUT_FILE)
     parser.add_argument("--report-file", default=DEFAULT_REPORT_FILE)
@@ -550,6 +617,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> None:
+    """Build, validate, and persist the document-reference graph."""
+
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
 
@@ -573,7 +642,9 @@ def main(argv: list[str] | None = None) -> None:
     print(f"Loaded docstore items: {len(docstore_items)}")
     print(f"Extracted rule edges: {len(edges)}")
     print(f"Skipped references: {report['total_skipped']}")
-    print(f"Graph nodes missing in docstore: {report['validation']['graph_nodes_missing_in_docstore']}")
+    print(
+        f"Graph nodes missing in docstore: {report['validation']['graph_nodes_missing_in_docstore']}"
+    )
     print(f"Wrote graph edges to: {output_path}")
     print(f"Wrote extraction report to: {report_path}")
 

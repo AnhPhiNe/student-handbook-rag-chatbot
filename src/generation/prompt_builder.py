@@ -6,13 +6,17 @@ import unicodedata
 from typing import Any
 
 from src.common.cohort import is_validated_source_applicable
-from src.common.legal_reference import article_label_from_heading, normalize_article_label
+from src.common.legal_reference import (
+    article_label_from_heading,
+    normalize_article_label,
+)
 
 from .amendment_precedence import (
     ApplicableAmendment,
     collect_applicable_amendments,
     strip_misattached_amendment_notes,
 )
+
 DEFAULT_MAX_CONTEXT_CHARS = 160000
 ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.22-answer-scope"
 
@@ -98,7 +102,10 @@ def build_authorized_evidence_packet(
 ) -> dict[str, Any]:
     """Group already-authorized primary evidence by logical task and cohort."""
     citations = _resolve_primary_citations(retrieval_result, selected_citations)
-    sources = [_normalize_source(citation, index) for index, citation in enumerate(citations, 1)]
+    sources = [
+        _normalize_source(citation, index)
+        for index, citation in enumerate(citations, 1)
+    ]
     sources = [source for source in sources if source["content"]]
     units = _composition_units(
         retrieval_result,
@@ -108,9 +115,7 @@ def build_authorized_evidence_packet(
     source_groups: list[list[dict[str, Any]]] = []
     for unit in units:
         authorized_sources = [
-            source
-            for source in sources
-            if _source_supports_unit(source, unit)
+            source for source in sources if _source_supports_unit(source, unit)
         ]
         authorized_sources = _assign_evidence_roles(
             authorized_sources,
@@ -144,11 +149,12 @@ def build_authorized_evidence_packet(
         packet_units.append(
             {
                 **unit,
-                "allowed_source_refs": [source["source_ref"] for source in authorized_sources],
+                "allowed_source_refs": [
+                    source["source_ref"] for source in authorized_sources
+                ],
                 "primary_evidence": authorized_sources,
                 "applicable_amendments": [
-                    _amendment_evidence(amendment)
-                    for amendment in amendments
+                    _amendment_evidence(amendment) for amendment in amendments
                 ],
             }
         )
@@ -182,7 +188,11 @@ def _amendment_evidence(amendment: ApplicableAmendment) -> dict[str, Any]:
     }
 
 
-def limit_context(context: str, max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS) -> str:
+def limit_context(
+    context: str, max_context_chars: int = DEFAULT_MAX_CONTEXT_CHARS
+) -> str:
+    """Trim retrieval context to the configured character budget."""
+
     context = (context or "").strip()
     if max_context_chars <= 0:
         return ""
@@ -202,7 +212,9 @@ def _resolve_primary_citations(
         return [dict(citation) for citation in selected_citations]
 
     citations = retrieval_result.get("citations") or []
-    if citations and any(citation.get("content") or citation.get("document") for citation in citations):
+    if citations and any(
+        citation.get("content") or citation.get("document") for citation in citations
+    ):
         return [dict(citation) for citation in citations]
 
     # Forced retrieval evaluation provides retrieved items without a QueryPlan.
@@ -228,7 +240,8 @@ def _resolve_primary_citations(
         return [
             {
                 "chunk_id": "structured-result",
-                "title": structured_result.get("table_name") or "Dữ liệu tra cứu có cấu trúc",
+                "title": structured_result.get("table_name")
+                or "Dữ liệu tra cứu có cấu trúc",
                 "cohort": structured_result.get("cohort"),
                 "content": _to_pretty_json(structured_result),
             }
@@ -255,7 +268,11 @@ def _composition_units(
     for index, task in enumerate(tasks, 1):
         task_id = str(task.get("id") or f"t{index}")
         result = task_results.get(task_id) or {}
-        cohorts = task.get("cohorts") or result.get("cohorts") or [fallback_cohort or "default"]
+        cohorts = (
+            task.get("cohorts")
+            or result.get("cohorts")
+            or [fallback_cohort or "default"]
+        )
         coverage_by_cohort = result.get("coverage_by_cohort") or {}
         for task_cohort in cohorts:
             cohort_key = str(task_cohort or "default")
@@ -277,7 +294,9 @@ def _composition_units(
             units.append(
                 {
                     "task_id": task_id,
-                    "question": str(task.get("question") or result.get("question") or "").strip(),
+                    "question": str(
+                        task.get("question") or result.get("question") or ""
+                    ).strip(),
                     "mode": str(task.get("mode") or result.get("mode") or "rag"),
                     "cohort": cohort_key,
                     "coverage": coverage,
@@ -297,8 +316,12 @@ def _composition_units(
                 or fallback_question
             ).strip(),
             "mode": "rag",
-            "cohort": str(fallback_cohort or retrieval_result.get("selected_cohort") or "default"),
-            "coverage": "covered" if _has_primary_evidence(retrieval_result) else "uncovered",
+            "cohort": str(
+                fallback_cohort or retrieval_result.get("selected_cohort") or "default"
+            ),
+            "coverage": "covered"
+            if _has_primary_evidence(retrieval_result)
+            else "uncovered",
             "clarification_question": retrieval_result.get("clarification_question"),
         }
     ]
@@ -306,8 +329,12 @@ def _composition_units(
 
 def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
     metadata = citation.get("metadata") or {}
-    supports_task_ids = citation.get("supports_task_ids") or metadata.get("supports_task_ids") or []
-    applicable_cohorts = citation.get("applicable_cohorts") or metadata.get("applicable_cohorts") or []
+    supports_task_ids = (
+        citation.get("supports_task_ids") or metadata.get("supports_task_ids") or []
+    )
+    applicable_cohorts = (
+        citation.get("applicable_cohorts") or metadata.get("applicable_cohorts") or []
+    )
     if isinstance(applicable_cohorts, str):
         applicable_cohorts = [applicable_cohorts]
     source_id = str(
@@ -352,7 +379,9 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
             if citation.get("resolved_result") is not None
             else {}
         ),
-        "source_pages": citation.get("source_pages") or metadata.get("source_pages") or [],
+        "source_pages": citation.get("source_pages")
+        or metadata.get("source_pages")
+        or [],
         "supports_task_ids": [str(task_id) for task_id in supports_task_ids],
         "content": strip_misattached_amendment_notes(
             content,
@@ -408,7 +437,9 @@ def _assign_evidence_roles(
 
 def _fold_text(value: Any) -> str:
     text = unicodedata.normalize("NFD", str(value or "").casefold())
-    text = "".join(character for character in text if not unicodedata.combining(character))
+    text = "".join(
+        character for character in text if not unicodedata.combining(character)
+    )
     text = text.replace("đ", "d")
     return " ".join(re.sub(r"[^a-z0-9]+", " ", text).split())
 

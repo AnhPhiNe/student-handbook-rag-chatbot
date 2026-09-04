@@ -25,16 +25,22 @@ JUDGE_METRICS = (
 
 
 def key_fingerprint(key: str) -> str:
+    """Return a non-secret identifier for one provider API key."""
+
     return hashlib.sha256(key.encode("utf-8")).hexdigest()[:10]
 
 
 def estimate_tokens(text: str) -> int:
     # Conservative for Vietnamese and JSON prompts.
+    """Estimate prompt tokens for local quota accounting."""
+
     return max(1, math.ceil(len(text) / 3))
 
 
 @dataclass(frozen=True)
 class JudgeConfig:
+    """Define model and quota settings for automated answer judging."""
+
     model_name: str = PINNED_JUDGE_MODEL
     temperature: float = 0.0
     max_output_tokens: int = 1536
@@ -68,10 +74,14 @@ class JudgeQuotaPool:
 
     @classmethod
     def from_environment(cls, config: JudgeConfig) -> "JudgeQuotaPool":
+        """Build the judge key pool from environment configuration."""
+
         raw = os.environ.get("GROQ_API_KEYS") or ""
         return cls([item.strip() for item in raw.split(",") if item.strip()], config)
 
     def acquire(self, estimated_input_tokens: int) -> tuple[str, str]:
+        """Acquire the next eligible judge API key under quota limits."""
+
         if estimated_input_tokens > self.config.tpm_limit_per_key:
             raise RuntimeError("judge_request_exceeds_per_key_tpm_limit")
         deadline = time.monotonic() + self.config.max_quota_wait_seconds
@@ -129,12 +139,16 @@ class JudgeQuotaPool:
             time.sleep(wait_seconds)
 
     def record_success(self, fingerprint: str, output_tokens: int) -> None:
+        """Record successful judge usage for quota accounting."""
+
         with self._lock:
             state = self._state[fingerprint]
             state["failure_count"] = 0
             self._save_state()
 
     def record_failure(self, fingerprint: str, *, rate_limited: bool) -> None:
+        """Record a failed judge request and apply cooldown."""
+
         with self._lock:
             state = self._state[fingerprint]
             state["failure_count"] += 1
@@ -315,9 +329,7 @@ def compact_judge_packet(
 
 def _split_evidence_units(text: str) -> list[str]:
     return [
-        part.strip()
-        for part in re.split(r"(?<=[.!?;])\s+|\n+", text)
-        if part.strip()
+        part.strip() for part in re.split(r"(?<=[.!?;])\s+|\n+", text) if part.strip()
     ]
 
 
@@ -390,8 +402,7 @@ def _authorized_packet_evidence_units(context: str) -> list[str]:
                 or "unknown"
             )
             prefix = (
-                f"Task: {task_id} | Cohort: {cohort} | "
-                f"Amendment: {amendment_source}"
+                f"Task: {task_id} | Cohort: {cohort} | Amendment: {amendment_source}"
             )
             for field in ("effective_rule", "replacement_text"):
                 value = str(amendment.get(field) or "").strip()
@@ -434,6 +445,8 @@ def _fact_matches_context(fact_norm: str, context_norm: str) -> bool:
 
 
 def build_judge_prompt(packet: dict[str, Any]) -> str:
+    """Build a rubric-grounded prompt for one answer evaluation."""
+
     return (
         "You are the sole evaluator of a Vietnamese student-handbook RAG answer. "
         "Score only from the supplied packet. Return exactly one compact JSON object, no markdown. "
@@ -462,6 +475,8 @@ def build_judge_prompt(packet: dict[str, Any]) -> str:
 
 
 def parse_judge_json(text: str) -> dict[str, Any]:
+    """Parse and validate the structured judge response."""
+
     cleaned = text.strip()
     if cleaned.startswith("```"):
         cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", cleaned, flags=re.IGNORECASE)
@@ -481,6 +496,8 @@ def parse_judge_json(text: str) -> dict[str, Any]:
 
 
 class GroqJudgeClient:
+    """Evaluate generated answers through a quota-aware Groq client."""
+
     def __init__(
         self,
         config: JudgeConfig | None = None,
@@ -494,6 +511,8 @@ class GroqJudgeClient:
         self.request_fn = request_fn or self._request
 
     def judge(self, packet: dict[str, Any]) -> dict[str, Any]:
+        """Judge one answer against its question, evidence, and rubric."""
+
         prompt = build_judge_prompt(packet)
         last_error = "unknown"
         for attempt in range(1, self.config.max_retries + 2):

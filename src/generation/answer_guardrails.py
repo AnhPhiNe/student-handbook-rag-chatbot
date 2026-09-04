@@ -2,7 +2,9 @@ from typing import Any
 
 
 def is_context_empty(retrieval_result: dict[str, Any]) -> bool:
-    # Context rong nghia la retrieval khong co van ban, khong co lookup, cung khong co tool result.
+    # Empty context means retrieval, structured lookup, and tools produced no evidence.
+    """Return whether every grounding channel produced no evidence."""
+
     return not any(
         [
             bool(retrieval_result.get("retrieved_items")),
@@ -14,7 +16,9 @@ def is_context_empty(retrieval_result: dict[str, Any]) -> bool:
 
 
 def is_low_confidence(retrieval_result: dict[str, Any]) -> bool:
-    # Neu da co ket qua deterministic thi khong xem la low-confidence.
+    # Deterministic structured evidence is never treated as low confidence.
+    """Return whether available evidence is too weak for generation."""
+
     if _has_validated_non_rag_outcome(retrieval_result):
         return False
 
@@ -28,7 +32,7 @@ def is_low_confidence(retrieval_result: dict[str, Any]) -> bool:
     ):
         return False
 
-    # Khong co context nao thi LLM khong co nguon de dua vao.
+    # Without context, the LLM has no grounded source to use.
     if is_context_empty(retrieval_result):
         return True
 
@@ -62,6 +66,8 @@ def build_fallback_answer(
     retrieval_result: dict[str, Any] | None = None,
     reason: str | None = None,
 ) -> str:
+    """Build the safe user-facing response for ungrounded requests."""
+
     if reason in {"api_error", "rate_limit", "timeout"}:
         return (
             "Hiện tại mình chưa gọi được mô hình AI để diễn giải câu trả lời. "
@@ -93,7 +99,9 @@ def build_fallback_answer(
 
 def detect_ambiguous_query(query: str, retrieval_result: dict[str, Any]) -> bool:
     """Check whether a query requires clarification before generating an answer."""
-    if _has_result(retrieval_result.get("structured_result")) and retrieval_result.get("deterministic_validated"):
+    if _has_result(retrieval_result.get("structured_result")) and retrieval_result.get(
+        "deterministic_validated"
+    ):
         return False
     if bool(retrieval_result.get("needs_clarification")):
         return True
@@ -110,13 +118,19 @@ def build_clarification_question(query: str, retrieval_result: dict[str, Any]) -
     clarification_q = retrieval_result.get("clarification_question")
     if clarification_q and str(clarification_q).strip():
         return str(clarification_q).strip()
-    return "Bạn có thể nói rõ hơn bạn muốn tra cứu quy định, thủ tục hay đơn vị nào không?"
+    return (
+        "Bạn có thể nói rõ hơn bạn muốn tra cứu quy định, thủ tục hay đơn vị nào không?"
+    )
 
 
 def _has_result(value: Any) -> bool:
     if not isinstance(value, dict):
         return False
-    return value.get("result") is not None or bool(value.get("sub_lookups")) or bool(value.get("items"))
+    return (
+        value.get("result") is not None
+        or bool(value.get("sub_lookups"))
+        or bool(value.get("items"))
+    )
 
 
 def _has_formula_result(value: Any) -> bool:

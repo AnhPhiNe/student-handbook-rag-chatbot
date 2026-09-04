@@ -30,6 +30,8 @@ _IGNORED_ENTITY_SPAN_WORDS = {
 
 
 def normalize_text(text: Any) -> str:
+    """Normalize text for office-name and service matching."""
+
     value = str(text or "").lower()
     value = value.replace("đ", "d").replace("Đ", "d")
     decomposed = unicodedata.normalize("NFD", value)
@@ -78,7 +80,10 @@ def _fuzzy_similarity(left: str, right: str) -> float:
 
 def _lexical_candidate_score(candidate_text: str, record: dict[str, Any]) -> float:
     return max(
-        (_fuzzy_similarity(candidate_text, value) for value in _candidate_values(record)),
+        (
+            _fuzzy_similarity(candidate_text, value)
+            for value in _candidate_values(record)
+        ),
         default=0.0,
     )
 
@@ -230,8 +235,14 @@ def _summarize_office(record: dict[str, Any]) -> dict[str, Any]:
     emails = record.get("emails") or _extract_emails(raw_text)
     phones = record.get("phones") or _extract_phones(raw_text)
     websites = record.get("websites") or _extract_websites(raw_text)
-    internal_numbers = record.get("internal_numbers") or _extract_internal_numbers(raw_text)
-    responsibilities = record.get("responsibilities") or record.get("services") or _extract_responsibilities(raw_text)
+    internal_numbers = record.get("internal_numbers") or _extract_internal_numbers(
+        raw_text
+    )
+    responsibilities = (
+        record.get("responsibilities")
+        or record.get("services")
+        or _extract_responsibilities(raw_text)
+    )
     if record.get("service"):
         responsibilities = [str(record["service"])] + [
             item for item in responsibilities if item != record.get("service")
@@ -308,8 +319,7 @@ def _explicit_ranked_entities(
         return distinct_items, 0
     top_span = span_matches[0]
     tied_span_count = sum(
-        match[1] == top_span[1] and match[2] == top_span[2]
-        for match in span_matches
+        match[1] == top_span[1] and match[2] == top_span[2] for match in span_matches
     )
     return distinct_items, tied_span_count
 
@@ -479,9 +489,7 @@ def office_lookup(
         str(match.get("document_id")) for match in matches if match.get("document_id")
     }
 
-    selected_content_types = {
-        str(match.get("content_type") or "") for match in matches
-    }
+    selected_content_types = {str(match.get("content_type") or "") for match in matches}
     is_service = "student_service_directory" in selected_content_types
     is_faculty = "student_faculty_profile" in selected_content_types
     if is_service:

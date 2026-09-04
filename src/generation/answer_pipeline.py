@@ -4,6 +4,7 @@ import os
 import time
 from contextvars import ContextVar
 from collections.abc import Iterator
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +23,7 @@ from src.retrieval.core.hybrid_pipeline import (
     run_hybrid_retrieval_pipeline,
     select_graph_related_parent_candidates,
 )
+from src.retrieval.runtime_config import load_retrieval_runtime_config
 from src.retrieval.core.vector_retriever import (
     load_embedding_model,
 )
@@ -57,7 +59,7 @@ from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v62-grounded-fact-locks"
+PIPELINE_VERSION = "v63-runtime-config-preparation"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
@@ -117,7 +119,9 @@ def _merge_structured_citation_content(
             table = dict(candidate)
             table.setdefault("table_name", citation.get("title"))
             table.setdefault("applicability", citation.get("applicability"))
-            identity = json.dumps(table, ensure_ascii=False, sort_keys=True, default=str)
+            identity = json.dumps(
+                table, ensure_ascii=False, sort_keys=True, default=str
+            )
             if identity in seen:
                 continue
             seen.add(identity)
@@ -128,7 +132,34 @@ def _merge_structured_citation_content(
     return json.dumps({"tables": tables}, ensure_ascii=False, indent=2, default=str)
 
 
+@dataclass(slots=True)
+class PreparedAnswer:
+    """Carry all retrieval and planning state shared by sync and streaming renderers."""
+
+    query: str
+    effective_query: str
+    cohort: str | None
+    retrieval_result: dict[str, Any] = field(default_factory=dict)
+    selected_citations: list[dict[str, Any]] = field(default_factory=list)
+    all_citations: list[dict[str, Any]] = field(default_factory=list)
+    public_retrieval_citations: list[dict[str, Any]] = field(default_factory=list)
+    related_references: list[dict[str, Any]] = field(default_factory=list)
+    prompt: str = ""
+    context_used: str = ""
+    cache_key: str | None = None
+    cached: dict[str, Any] | None = None
+    terminal_status: str | None = None
+    terminal_answer: str | None = None
+    fallback_reason: str | None = None
+    error_type: str | None = None
+    error_message: str | None = None
+    clarification_needed: bool = False
+    query_type_override: str | None = None
+
+
 class AnswerPipeline:
+    """Orchestrate planning, retrieval, generation, citations, caching, and telemetry."""
+
     def __init__(
         self,
         config_path: str | Path = DEFAULT_CONFIG_PATH,
@@ -136,6 +167,9 @@ class AnswerPipeline:
     ) -> None:
         self.config_path = Path(config_path)
         self.config = load_yaml(self.config_path)
+        self.retrieval_config = load_retrieval_runtime_config(
+            self.config.get("retrieval_config")
+        )
 
         self.scoring_tables = load_json(self.config["input"]["scoring_tables"])
         self.formula_rules = load_json(self.config["input"]["formula_rules"])
@@ -200,15 +234,14 @@ class AnswerPipeline:
             program_directory=self.program_directory,
         )
 
-
-        self.model = load_embedding_model(self.config["embedding"]["model_name"])
+        self.model = load_embedding_model(
+            self.retrieval_config["embedding"]["model_name"]
+        )
 
         llm_config = self.config.get("llm", {})
         self.llm_config = llm_config
         if llm_config.get("provider") != "gemini":
-            raise ValueError(
-                "AnswerPipeline requires llm.provider='gemini'."
-            )
+            raise ValueError("AnswerPipeline requires llm.provider='gemini'.")
 
         if _env_bool("STUDENT_RAG_OFFLINE_EVAL"):
             self.config.setdefault("cache", {})["enabled"] = False
@@ -225,10 +258,204 @@ class AnswerPipeline:
 
         cache_config = self.config.get("cache", {})
         self.response_cache = get_response_cache(
-            path=Path(cache_config.get("path", "data/cache/answer_response_cache.json")),
+            path=Path(
+                cache_config.get("path", "data/cache/answer_response_cache.json")
+            ),
             enabled=cache_config.get("enabled", True),
             ttl_seconds=cache_config.get("ttl_seconds", 86400),
         )
+
+    def _selection_source_limit(self) -> int:
+        citations = self.config.get("citations", {})
+        return max(1, int(citations.get("selection_max_sources", 5)))
+
+    def _public_source_limit(self) -> int:
+        citations = self.config.get("citations", {})
+        return max(1, int(citations.get("public_max_sources", 10)))
+
+    def _retrieval_top_k(self) -> int:
+        retrieval_config = getattr(self, "retrieval_config", {}) or {}
+        retrieval = retrieval_config.get("retrieval", {})
+        return max(1, int(retrieval.get("default_top_k", 5)))
+
+    def prepare_answer(
+        self,
+        query: str,
+        *,
+        chat_history: list[dict[str, str]] | None,
+        cohort: str | None,
+        tracker: Any,
+        router_started_at: str,
+        telemetry: dict[str, Any] | None = None,
+    ) -> PreparedAnswer:
+        """Run shared routing, retrieval, guardrails, prompt, and cache lookup."""
+
+        from datetime import datetime, timezone
+
+        effective_query = query
+        cohort = _normalize_retrieval_cohort(resolve_cohort_from_query(query, cohort))
+        retrieval_started = time.monotonic()
+        try:
+            retrieval_result = self._run_retrieval(
+                query,
+                cohort,
+                chat_history=chat_history,
+            )
+        except Exception as exc:
+            return PreparedAnswer(
+                query=query,
+                effective_query=effective_query,
+                cohort=cohort,
+                terminal_status="retrieval_error",
+                terminal_answer=build_fallback_answer(
+                    query=effective_query,
+                    retrieval_result=None,
+                    reason="retrieval_error",
+                ),
+                fallback_reason="retrieval_error",
+                error_type="retrieval_error",
+                error_message=str(exc),
+            )
+
+        if retrieval_result.get("router_usage"):
+            usage = retrieval_result["router_usage"]
+            tracker.record(
+                step_name="AI Router",
+                model=retrieval_result.get("router_model", ""),
+                input_tokens=usage.get("input", 0),
+                output_tokens=usage.get("output", 0),
+                total_tokens=usage.get("total", 0),
+                start_time=router_started_at,
+                end_time=datetime.now(timezone.utc).isoformat(),
+            )
+        if telemetry is not None:
+            telemetry["routing_retrieval_parent_lookup_ms"] = (
+                time.monotonic() - retrieval_started
+            ) * 1000
+
+        effective_query = str(retrieval_result.get("effective_query") or query).strip()
+        prepared = PreparedAnswer(
+            query=query,
+            effective_query=effective_query,
+            cohort=cohort,
+            retrieval_result=retrieval_result,
+        )
+
+        if retrieval_result.get("needs_clarification"):
+            prepared.terminal_status = "needs_clarification"
+            prepared.terminal_answer = retrieval_result.get(
+                "clarification_question", "Bạn có thể làm rõ câu hỏi được không?"
+            )
+            prepared.fallback_reason = "needs_clarification"
+            prepared.clarification_needed = True
+            return prepared
+
+        if not retrieval_result.get("query_plan") and detect_ambiguous_query(
+            effective_query, retrieval_result
+        ):
+            prepared.terminal_status = "needs_clarification"
+            prepared.terminal_answer = build_clarification_question(
+                effective_query, retrieval_result
+            )
+            prepared.fallback_reason = "ambiguous_query"
+            prepared.clarification_needed = True
+            prepared.query_type_override = "ambiguous"
+            return prepared
+
+        if retrieval_result.get("out_of_domain"):
+            prepared.terminal_status = "out_of_domain"
+            prepared.terminal_answer = (
+                "Câu hỏi này nằm ngoài phạm vi Sổ tay sinh viên nên mình không thể hỗ trợ được. "
+                "Sổ tay chủ yếu bao gồm các nội dung như: quy chế đào tạo, "
+                "thủ tục hành chính, học bổng, rèn luyện, ký túc xá, thông tin phòng ban và khoa/ngành. "
+                "Bạn có thể hỏi lại theo một nội dung liên quan đến sổ tay nhé!"
+            )
+            prepared.fallback_reason = "out_of_domain"
+            return prepared
+
+        if not retrieval_result.get("query_plan") and is_out_of_domain_query(
+            effective_query, retrieval_result
+        ):
+            prepared.terminal_status = "out_of_domain"
+            prepared.terminal_answer = build_fallback_answer(
+                effective_query,
+                retrieval_result,
+                reason="out_of_domain",
+            )
+            prepared.fallback_reason = "out_of_domain"
+            return prepared
+
+        if retrieval_result.get("query_plan"):
+            prepared.selected_citations = list(
+                retrieval_result.get("evidence_citations")
+                or retrieval_result.get("citations")
+                or []
+            )
+        else:
+            prepared.selected_citations = select_relevant_citations(
+                retrieval_result.get("citations"),
+                intent=retrieval_result.get("intent"),
+                retrieval_result=retrieval_result,
+                max_sources=self._selection_source_limit(),
+            )
+
+        guardrails = self.config.get("guardrails", {})
+        if guardrails.get("skip_llm_on_low_confidence", True) and is_low_confidence(
+            retrieval_result
+        ):
+            prepared.terminal_status = "low_confidence"
+            prepared.terminal_answer = format_final_answer(
+                build_fallback_answer(
+                    effective_query,
+                    retrieval_result,
+                    reason="low_confidence",
+                ),
+                prepared.selected_citations,
+            )
+            prepared.fallback_reason = "low_confidence"
+            prepared.error_type = "retrieval"
+            prepared.error_message = "Retrieval returned empty or insufficient context."
+            return prepared
+
+        prepared.all_citations = list(
+            retrieval_result.get("evidence_citations")
+            or retrieval_result.get("citations")
+            or []
+        )
+        prepared.public_retrieval_citations = list(
+            retrieval_result.get("citations") or []
+        )
+        prepared.related_references = list(
+            retrieval_result.get("related_references") or []
+        )
+
+        context_started = time.monotonic()
+        prepared.prompt, prepared.context_used = build_answer_prompt_bundle(
+            query=effective_query,
+            retrieval_result=retrieval_result,
+            selected_citations=prepared.selected_citations,
+            max_context_chars=self.max_context_chars,
+            cohort=cohort,
+        )
+        if telemetry is not None:
+            telemetry["context_build_ms"] = (time.monotonic() - context_started) * 1000
+            telemetry["context_chars"] = len(prepared.context_used)
+            telemetry["source_count"] = len(
+                retrieval_result.get("retrieved_items") or []
+            )
+            telemetry["prompt_chars"] = len(prepared.prompt)
+
+        prepared.cache_key = self.response_cache.make_cache_key(
+            query=effective_query,
+            retrieval_result=retrieval_result,
+            selected_citations=prepared.selected_citations,
+            cohort=cohort,
+            context_fingerprint=_authorized_context_fingerprint(prepared.context_used),
+            pipeline_version=PIPELINE_VERSION,
+            answer_prompt_version=ANSWER_PROMPT_VERSION,
+        )
+        prepared.cached = self.response_cache.get(prepared.cache_key)
+        return prepared
 
     def answer(
         self,
@@ -254,210 +481,49 @@ class AnswerPipeline:
             else None
         )
         _evaluation_telemetry.set(telemetry)
-        effective_query = query
         from src.common.usage_tracker import UsageTracker
         from datetime import datetime, timezone
 
         tracker = UsageTracker()
         start_time_router = datetime.now(timezone.utc).isoformat()
+        prepared = self.prepare_answer(
+            query,
+            chat_history=chat_history,
+            cohort=cohort,
+            tracker=tracker,
+            router_started_at=start_time_router,
+            telemetry=telemetry,
+        )
+        effective_query = prepared.effective_query
+        cohort = prepared.cohort
+        retrieval_result = prepared.retrieval_result
+        selected_citations = prepared.selected_citations
+        context_used = prepared.context_used
+        prompt = prepared.prompt
 
-        # Let an explicit cohort in the query win over the UI selector.
-        cohort = _normalize_retrieval_cohort(resolve_cohort_from_query(query, cohort))
-
-        try:
-            retrieval_started = time.monotonic()
-            retrieval_result = self._run_retrieval(
-                query,
-                cohort,
-                chat_history=chat_history,
-            )
-            if retrieval_result.get("router_usage"):
-                tracker.record(
-                    step_name="AI Router",
-                    model=retrieval_result.get("router_model", ""),
-                    input_tokens=retrieval_result["router_usage"].get("input", 0),
-                    output_tokens=retrieval_result["router_usage"].get("output", 0),
-                    total_tokens=retrieval_result["router_usage"].get("total", 0),
-                    start_time=start_time_router,
-                    end_time=datetime.now(timezone.utc).isoformat(),
-                )
-            if telemetry is not None:
-                telemetry["routing_retrieval_parent_lookup_ms"] = (
-                    time.monotonic() - retrieval_started
-                ) * 1000
-            effective_query = str(
-                retrieval_result.get("effective_query") or query
-            ).strip()
-        except Exception as exc:
-            final_answer = build_fallback_answer(
-                query=effective_query,
-                retrieval_result=None,
-                reason="retrieval_error",
-            )
-            return self._build_output(
-                query=query,
-                retrieval_result={},
-                final_answer=final_answer,
-                context_used="",
-                selected_citations=[],
-                status="retrieval_error",
-                error_type="retrieval_error",
-                error_message=str(exc),
-                llm_called=False,
-                used_cache=False,
-            )
-
-        # This stays empty unless Composer is called.  When it is called below,
-        # it is replaced with the exact authorized evidence JSON in the prompt.
-        context_used = ""
-
-        if retrieval_result.get("needs_clarification"):
+        if prepared.terminal_status:
             return self._build_output(
                 query=query,
                 retrieval_result=retrieval_result,
-                final_answer=retrieval_result.get(
-                    "clarification_question", "Bạn có thể làm rõ câu hỏi được không?"
-                ),
-                context_used=context_used,
-                selected_citations=[],
-                status="needs_clarification",
-                error_type=None,
-                error_message=None,
-                llm_called=False,
-                used_cache=False,
-                clarification_needed=True,
-            )
-
-        # Cau hoi van thuoc domain nhung thieu scope thi hoi lai, khong dua vao LLM tra loi doan.
-        if not retrieval_result.get("query_plan") and detect_ambiguous_query(effective_query, retrieval_result):
-            return self._build_output(
-                query=query,
-                retrieval_result=retrieval_result,
-                final_answer=build_clarification_question(
-                    effective_query, retrieval_result
-                ),
-                context_used=context_used,
-                selected_citations=[],
-                status="needs_clarification",
-                error_type=None,
-                error_message=None,
-                llm_called=False,
-                used_cache=False,
-                clarification_needed=True,
-            )
-
-        # Co out_of_domain tu router thi dung ngay, khong dua context rong vao LLM.
-        if retrieval_result.get("out_of_domain"):
-            return self._build_output(
-                query=query,
-                retrieval_result=retrieval_result,
-                final_answer=(
-                    "Câu hỏi này nằm ngoài phạm vi Sổ tay sinh viên nên mình không thể hỗ trợ được. "
-                    "Sổ tay chủ yếu bao gồm các nội dung như: quy chế đào tạo, "
-                    "thủ tục hành chính, học bổng, rèn luyện, ký túc xá, thông tin phòng ban và khoa/ngành. "
-                    "Bạn có thể hỏi lại theo một nội dung liên quan đến sổ tay nhé!"
-                ),
-                context_used="",
-                selected_citations=[],
-                status="out_of_domain",
-                error_type=None,
-                error_message=None,
-                llm_called=False,
-                used_cache=False,
-            )
-
-        # Lop OOD thu 2: kiem tra chat luong retrieval de bat cac cau ngoai pham vi bi route nham.
-        if not retrieval_result.get("query_plan") and is_out_of_domain_query(effective_query, retrieval_result):
-            final_answer = build_fallback_answer(
-                effective_query,
-                retrieval_result,
-                reason="out_of_domain",
-            )
-            return self._build_output(
-                query=query,
-                retrieval_result=retrieval_result,
-                final_answer=final_answer,
-                context_used="",
-                selected_citations=[],
-                status="out_of_domain",
-                error_type=None,
-                error_message=None,
-                llm_called=False,
-                used_cache=False,
-            )
-        citations_config = self.config.get("citations", {})
-        guardrails_config = self.config.get("guardrails", {})
-
-        if retrieval_result.get("query_plan"):
-            selected_citations = list(
-                retrieval_result.get("evidence_citations")
-                or retrieval_result.get("citations")
-                or []
-            )
-        else:
-            selected_citations = select_relevant_citations(
-                retrieval_result.get("citations"),
-                intent=retrieval_result.get("intent"),
-                retrieval_result=retrieval_result,
-                max_sources=int(citations_config.get("max_sources", 2)),
-            )
-
-        if guardrails_config.get(
-            "skip_llm_on_low_confidence", True
-        ) and is_low_confidence(retrieval_result):
-            final_answer = format_final_answer(
-                build_fallback_answer(
-                    effective_query, retrieval_result, reason="low_confidence"
-                ),
-                selected_citations,
-            )
-            return self._build_output(
-                query=query,
-                retrieval_result=retrieval_result,
-                final_answer=final_answer,
+                final_answer=prepared.terminal_answer or "",
                 context_used=context_used,
                 selected_citations=selected_citations,
-                status="low_confidence",
-                error_type="retrieval",
-                error_message="Retrieval returned empty or insufficient context.",
+                status=prepared.terminal_status,
+                error_type=prepared.error_type,
+                error_message=prepared.error_message,
                 llm_called=False,
                 used_cache=False,
+                clarification_needed=prepared.clarification_needed,
             )
 
-        context_started = time.monotonic()
-        prompt, context_used = build_answer_prompt_bundle(
-            query=effective_query,
-            retrieval_result=retrieval_result,
-            selected_citations=selected_citations,
-            max_context_chars=self.max_context_chars,
-            cohort=cohort,
-        )
-        if telemetry is not None:
-            telemetry["context_build_ms"] = (
-                time.monotonic() - context_started
-            ) * 1000
-            telemetry["context_chars"] = len(context_used)
-            telemetry["source_count"] = len(
-                retrieval_result.get("retrieved_items") or []
-            )
-            telemetry["prompt_chars"] = len(prompt)
-
-        cache_key = self.response_cache.make_cache_key(
-            query=effective_query,
-            retrieval_result=retrieval_result,
-            selected_citations=selected_citations,
-            cohort=cohort,
-            context_fingerprint=_authorized_context_fingerprint(context_used),
-            pipeline_version=PIPELINE_VERSION,
-            answer_prompt_version=ANSWER_PROMPT_VERSION,
-        )
-        cached = self.response_cache.get(cache_key)
+        cache_key = prepared.cache_key
+        cached = prepared.cached
         if cached:
             cached_answer = str(cached.get("answer") or "")
             cached_citations = prioritize_citations_by_answer_anchors(
                 cached.get("citations") or retrieval_result.get("citations") or [],
                 cached_answer,
-                max_sources=10,
+                max_sources=self._public_source_limit(),
             )
             return self._build_output(
                 query=query,
@@ -472,12 +538,8 @@ class AnswerPipeline:
                 used_cache=True,
             )
 
-        all_citations = (
-            retrieval_result.get("evidence_citations")
-            or retrieval_result.get("citations")
-            or []
-        )
-        public_retrieval_citations = retrieval_result.get("citations") or []
+        all_citations = prepared.all_citations
+        public_retrieval_citations = prepared.public_retrieval_citations
 
         try:
             llm_client = self._get_llm_client()
@@ -556,7 +618,7 @@ class AnswerPipeline:
         public_citations = prioritize_citations_by_answer_anchors(
             all_citations,
             final_answer,
-            max_sources=10,
+            max_sources=self._public_source_limit(),
         )
         output = self._build_output(
             query=query,
@@ -603,9 +665,15 @@ class AnswerPipeline:
         """Build standardized metadata chunk for streaming responses dynamically."""
         res = retrieval_result or {}
         router_decision = res.get("router_decision") or {}
-        query_handling = res.get("query_handling") or router_decision.get("query_handling") or {}
+        query_handling = (
+            res.get("query_handling") or router_decision.get("query_handling") or {}
+        )
 
-        execution_mode = res.get("execution_mode") or router_decision.get("execution_mode") or "regulation"
+        execution_mode = (
+            res.get("execution_mode")
+            or router_decision.get("execution_mode")
+            or "regulation"
+        )
         lookup_type = res.get("lookup_type") or router_decision.get("lookup_type")
         query_type = (
             query_type_override
@@ -614,13 +682,23 @@ class AnswerPipeline:
             or query_handling.get("context_mode")
             or "standalone"
         )
-        model_name = (getattr(self, "llm_config", {}) or {}).get("model_name", "gemini-3.1-flash-lite")
+        model_name = (getattr(self, "llm_config", {}) or {}).get(
+            "model_name", "gemini-3.1-flash-lite"
+        )
 
         resolved_fallback = fallback_reason or (
             "none" if status in {"answered", "streaming"} else status
         )
-        resolved_citations = citations_used if citations_used is not None else (res.get("citations_used") or res.get("citations") or [])
-        resolved_related = related_references if related_references is not None else (res.get("related_references") or [])
+        resolved_citations = (
+            citations_used
+            if citations_used is not None
+            else (res.get("citations_used") or res.get("citations") or [])
+        )
+        resolved_related = (
+            related_references
+            if related_references is not None
+            else (res.get("related_references") or [])
+        )
         structured_results = build_structured_results(
             res.get("structured_result"),
             citations=list(res.get("citations") or res.get("citations_used") or []),
@@ -629,7 +707,9 @@ class AnswerPipeline:
         return {
             "type": "metadata",
             "run_id": run_id,
-            "cohort": (res.get("cohort") or (router_decision or {}).get("cohort") or "default"),
+            "cohort": (
+                res.get("cohort") or (router_decision or {}).get("cohort") or "default"
+            ),
             "status": status,
             "intent": res.get("intent") or router_decision.get("intent"),
             "strategy": res.get("strategy") or router_decision.get("strategy"),
@@ -677,187 +757,52 @@ class AnswerPipeline:
         yield {"type": "progress", "message": "Đang phân tích câu hỏi..."}
 
         start_time_router = datetime.now(timezone.utc).isoformat()
-        effective_query = query
-        cohort = _normalize_retrieval_cohort(resolve_cohort_from_query(query, cohort))
-
         yield {"type": "progress", "message": "Đang tìm kiếm thông tin trong Sổ tay..."}
-        try:
-            # Retrieval chạy đồng bộ trước, sau đó mới stream token LLM về frontend.
-            retrieval_result = self._run_retrieval(
-                query,
-                cohort=cohort,
-                chat_history=chat_history,
-            )
+        prepared = self.prepare_answer(
+            query,
+            chat_history=chat_history,
+            cohort=cohort,
+            tracker=tracker,
+            router_started_at=start_time_router,
+        )
+        effective_query = prepared.effective_query
+        cohort = prepared.cohort
+        retrieval_result = prepared.retrieval_result
+        selected_citations = prepared.selected_citations
 
-            if retrieval_result.get("router_usage"):
-                tracker.record(
-                    step_name="AI Router",
-                    model=retrieval_result.get("router_model", ""),
-                    input_tokens=retrieval_result["router_usage"].get("input", 0),
-                    output_tokens=retrieval_result["router_usage"].get("output", 0),
-                    total_tokens=retrieval_result["router_usage"].get("total", 0),
-                    start_time=start_time_router,
-                    end_time=datetime.now(timezone.utc).isoformat(),
-                )
-
-            effective_query = str(
-                retrieval_result.get("effective_query") or query
-            ).strip()
-        except Exception:
-            fallback = build_fallback_answer(
-                query=effective_query, retrieval_result=None, reason="retrieval_error"
+        if prepared.terminal_status:
+            metadata_result = (
+                None
+                if prepared.terminal_status == "retrieval_error"
+                else retrieval_result
             )
             yield self._build_stream_metadata(
-                None,
-                status="retrieval_error",
+                metadata_result,
+                status=prepared.terminal_status,
                 effective_query=effective_query,
-                fallback_reason="retrieval_error",
+                fallback_reason=prepared.fallback_reason,
+                error_type=prepared.error_type,
+                citations_used=selected_citations,
+                query_type_override=prepared.query_type_override,
                 run_id=run_id,
             )
-            yield {"type": "token", "text": fallback}
-            yield {"type": "done", "tracker": tracker}
-            return
-
-        if retrieval_result.get("needs_clarification"):
-            clarification_msg = retrieval_result.get(
-                "clarification_question", "Bạn có thể làm rõ câu hỏi được không?"
-            )
-            yield self._build_stream_metadata(
-                retrieval_result,
-                status="needs_clarification",
-                effective_query=effective_query,
-                fallback_reason="needs_clarification",
-                run_id=run_id,
-            )
-            yield {"type": "token", "text": clarification_msg}
-            yield {"type": "done", "tracker": tracker}
-            return
-
-        # Neu cau hoi mo ho, stream cau hoi lam ro nhu mot token block thay vi goi LLM.
-        if not retrieval_result.get("query_plan") and detect_ambiguous_query(effective_query, retrieval_result):
-            clarification_msg = build_clarification_question(
-                effective_query, retrieval_result
-            )
-            yield self._build_stream_metadata(
-                retrieval_result,
-                status="needs_clarification",
-                effective_query=effective_query,
-                fallback_reason="ambiguous_query",
-                query_type_override="ambiguous",
-                run_id=run_id,
-            )
-            yield {"type": "token", "text": clarification_msg}
-            yield {"type": "done", "tracker": tracker}
-            return
-
-        # Out-of-domain duoc chan truoc khi tao prompt de tranh LLM tra loi ngoai nguon.
-        if retrieval_result.get("out_of_domain"):
-            out_of_domain_msg = (
-                "Câu hỏi này nằm ngoài phạm vi Sổ tay sinh viên nên mình không thể hỗ trợ được. "
-                "Sổ tay chủ yếu bao gồm các nội dung như: quy chế đào tạo, "
-                "thủ tục hành chính, học bổng, rèn luyện, ký túc xá, thông tin phòng ban và khoa/ngành. "
-                "Bạn có thể hỏi lại theo một nội dung liên quan đến sổ tay nhé!"
-            )
-            yield self._build_stream_metadata(
-                retrieval_result,
-                status="out_of_domain",
-                effective_query=effective_query,
-                fallback_reason="out_of_domain",
-                run_id=run_id,
-            )
-            yield {"type": "token", "text": out_of_domain_msg}
-            yield {"type": "done", "tracker": tracker}
-            return
-
-        if not retrieval_result.get("query_plan") and is_out_of_domain_query(effective_query, retrieval_result):
-            out_of_domain_msg = build_fallback_answer(
-                effective_query,
-                retrieval_result,
-                reason="out_of_domain",
-            )
-            yield self._build_stream_metadata(
-                retrieval_result,
-                status="out_of_domain",
-                effective_query=effective_query,
-                fallback_reason="out_of_domain",
-                run_id=run_id,
-            )
-            yield {"type": "token", "text": out_of_domain_msg}
+            yield {"type": "token", "text": prepared.terminal_answer or ""}
             yield {"type": "done", "tracker": tracker}
             return
 
         yield {"type": "progress", "message": "Đang phân tích tài liệu tìm được..."}
-
-        citations_config = self.config.get("citations", {})
-        guardrails_config = self.config.get("guardrails", {})
-
-        if retrieval_result.get("query_plan"):
-            selected_citations = list(
-                retrieval_result.get("evidence_citations")
-                or retrieval_result.get("citations")
-                or []
-            )
-        else:
-            selected_citations = select_relevant_citations(
-                retrieval_result.get("citations"),
-                intent=retrieval_result.get("intent"),
-                retrieval_result=retrieval_result,
-                max_sources=int(citations_config.get("max_sources", 2)),
-            )
-
-        # Low confidence: yield fallback as single chunk
-        if guardrails_config.get(
-            "skip_llm_on_low_confidence", True
-        ) and is_low_confidence(retrieval_result):
-            final_answer = format_final_answer(
-                build_fallback_answer(
-                    effective_query, retrieval_result, reason="low_confidence"
-                ),
-                selected_citations,
-            )
-            yield self._build_stream_metadata(
-                retrieval_result,
-                status="low_confidence",
-                effective_query=effective_query,
-                fallback_reason="low_confidence",
-                citations_used=selected_citations,
-                run_id=run_id,
-            )
-            yield {"type": "token", "text": final_answer}
-            yield {"type": "done", "tracker": tracker}
-            return
-
-        all_citations = (
-            retrieval_result.get("evidence_citations")
-            or retrieval_result.get("citations")
-            or []
-        )
-        public_retrieval_citations = retrieval_result.get("citations") or []
-        related_references = retrieval_result.get("related_references") or []
-
-        prompt, context_used = build_answer_prompt_bundle(
-            query=effective_query,
-            retrieval_result=retrieval_result,
-            selected_citations=selected_citations,
-            max_context_chars=self.max_context_chars,
-            cohort=cohort,
-        )
-        cache_key = self.response_cache.make_cache_key(
-            query=effective_query,
-            retrieval_result=retrieval_result,
-            selected_citations=selected_citations,
-            cohort=cohort,
-            context_fingerprint=_authorized_context_fingerprint(context_used),
-            pipeline_version=PIPELINE_VERSION,
-            answer_prompt_version=ANSWER_PROMPT_VERSION,
-        )
-        cached = self.response_cache.get(cache_key)
+        all_citations = prepared.all_citations
+        public_retrieval_citations = prepared.public_retrieval_citations
+        related_references = prepared.related_references
+        prompt = prepared.prompt
+        cache_key = prepared.cache_key
+        cached = prepared.cached
         if cached:
             cached_answer = str(cached.get("answer") or "")
             cached_citations = prioritize_citations_by_answer_anchors(
                 cached.get("citations") or public_retrieval_citations,
                 cached_answer,
-                max_sources=10,
+                max_sources=self._public_source_limit(),
             )
             yield self._build_stream_metadata(
                 retrieval_result,
@@ -962,7 +907,7 @@ class AnswerPipeline:
         final_citations = prioritize_citations_by_answer_anchors(
             all_citations,
             final_answer_for_citations,
-            max_sources=10,
+            max_sources=self._public_source_limit(),
         )
         yield self._build_stream_metadata(
             retrieval_result,
@@ -1006,6 +951,7 @@ class AnswerPipeline:
         """Run the active QueryPlan and retrieval stack for one cohort context."""
         if not hasattr(self, "router"):
             from src.retrieval.core.ai_router import AIRouter
+
             self.router = AIRouter.from_config()
 
         return self._run_query_plan(
@@ -1049,7 +995,9 @@ class AnswerPipeline:
         query_handling = {
             "raw_query": query,
             "effective_query": effective_query,
-            "mode": "standalone_rewrite" if plan.get("context_mode") == "follow_up" else "normalized",
+            "mode": "standalone_rewrite"
+            if plan.get("context_mode") == "follow_up"
+            else "normalized",
             "context_mode": plan.get("context_mode") or "standalone",
             "source": "query_plan",
             "normalized_query": plan.get("normalized_query"),
@@ -1061,7 +1009,9 @@ class AnswerPipeline:
         }
         base_result = {
             "query": query,
-            "retrieval_query": self.slang_normalizer.normalize_for_retrieval(effective_query),
+            "retrieval_query": self.slang_normalizer.normalize_for_retrieval(
+                effective_query
+            ),
             "effective_query": effective_query,
             "raw_query": query,
             "selected_cohort": cohort,
@@ -1109,18 +1059,23 @@ class AnswerPipeline:
             task_items: list[dict[str, Any]] = []
 
             if mode == "clarify":
-                question = str(task.get("clarification_question") or "Bạn có thể làm rõ yêu cầu này không?")
+                question = str(
+                    task.get("clarification_question")
+                    or "Bạn có thể làm rõ yêu cầu này không?"
+                )
                 clarification_questions.append(question)
                 coverage_by_task[task_id] = "needs_clarification"
-                task_results.append({
-                    "task_id": task_id,
-                    "question": task.get("question"),
-                    "mode": mode,
-                    "coverage": "needs_clarification",
-                    "clarification_question": question,
-                    "cohorts": task_cohorts,
-                    "evidence": [],
-                })
+                task_results.append(
+                    {
+                        "task_id": task_id,
+                        "question": task.get("question"),
+                        "mode": mode,
+                        "coverage": "needs_clarification",
+                        "clarification_question": question,
+                        "cohorts": task_cohorts,
+                        "evidence": [],
+                    }
+                )
                 continue
 
             for task_cohort in task_cohorts:
@@ -1162,29 +1117,33 @@ class AnswerPipeline:
             coverage_by_task[task_id] = coverage
             all_items.extend(task_items)
             all_citations.extend(task_citations)
-            task_results.append({
-                "task_id": task_id,
-                "question": task.get("question"),
-                "mode": mode,
-                "lookup_type": task.get("lookup_type"),
-                "intent": task.get("intent"),
-                "cohorts": task_cohorts,
-                "coverage": coverage,
-                "coverage_by_cohort": cohort_coverage,
-                "clarification_by_cohort": clarification_by_cohort,
-                "evidence": task_evidence,
-                "citation_count": len(task_citations),
-            })
+            task_results.append(
+                {
+                    "task_id": task_id,
+                    "question": task.get("question"),
+                    "mode": mode,
+                    "lookup_type": task.get("lookup_type"),
+                    "intent": task.get("intent"),
+                    "cohorts": task_cohorts,
+                    "coverage": coverage,
+                    "coverage_by_cohort": cohort_coverage,
+                    "clarification_by_cohort": clarification_by_cohort,
+                    "evidence": task_evidence,
+                    "citation_count": len(task_citations),
+                }
+            )
 
         merged_items = self._merge_task_items(all_items)
         merged_citations = self._merge_task_citations(all_citations)
         selected_citations = self._select_task_primary_citations(
             merged_citations,
             coverage_by_task,
-            max_sources=int(self.config.get("planning", {}).get("max_citations", 10)),
+            max_sources=self._public_source_limit(),
         )
         covered_any = any(value == "covered" for value in coverage_by_task.values())
-        clarify_any = any(value == "needs_clarification" for value in coverage_by_task.values())
+        clarify_any = any(
+            value == "needs_clarification" for value in coverage_by_task.values()
+        )
         if len(structured_results) == 1:
             structured_result: dict[str, Any] | None = structured_results[0]
         elif structured_results:
@@ -1209,7 +1168,9 @@ class AnswerPipeline:
             execution_mode = "regulation"
         return {
             **base_result,
-            "intent": "multi_task" if len(task_results) > 1 else (task_results[0].get("intent") if task_results else "open_question"),
+            "intent": "multi_task"
+            if len(task_results) > 1
+            else (task_results[0].get("intent") if task_results else "open_question"),
             "strategy": "query_plan_execution",
             "execution_mode": execution_mode,
             "lookup_type": None,
@@ -1223,12 +1184,17 @@ class AnswerPipeline:
             "task_results": task_results,
             "coverage_by_task": coverage_by_task,
             "supports_task_ids": {
-                str(citation.get("chunk_id") or index): citation.get("supports_task_ids") or []
+                str(citation.get("chunk_id") or index): citation.get(
+                    "supports_task_ids"
+                )
+                or []
                 for index, citation in enumerate(selected_citations)
             },
             "needs_llm_answer": covered_any,
             "needs_clarification": bool(clarify_any and not covered_any),
-            "clarification_question": clarification_questions[0] if clarification_questions else None,
+            "clarification_question": clarification_questions[0]
+            if clarification_questions
+            else None,
             "out_of_domain": False,
             "deterministic_validated": bool(structured_results),
         }
@@ -1240,6 +1206,8 @@ class AnswerPipeline:
         task_id: str,
         cohort: str | None,
     ) -> dict[str, Any]:
+        """Execute one structured lookup task and normalize its evidence packet."""
+
         from src.retrieval.core.structured_dispatcher import resolve_structured_decision
 
         decision = {
@@ -1255,7 +1223,9 @@ class AnswerPipeline:
         }
         resolution = resolve_structured_decision(
             decision,
-            query=self.slang_normalizer.normalize_for_retrieval(str(task.get("question") or "")),
+            query=self.slang_normalizer.normalize_for_retrieval(
+                str(task.get("question") or "")
+            ),
             cohort=cohort,
             scoring_tables=self.scoring_tables,
             formula_rules=self.formula_rules,
@@ -1268,22 +1238,38 @@ class AnswerPipeline:
             model=self.model,
         )
         if not resolution or not resolution.result:
-            return {"coverage": "uncovered", "evidence": [], "citations": [], "retrieved_items": []}
-        if resolution.result_kind == "clarification":
             return {
-                "coverage": "needs_clarification",
-                "clarification_question": resolution.result.get("clarification_question"),
+                "coverage": "uncovered",
                 "evidence": [],
                 "citations": [],
                 "retrieved_items": [],
             }
-        evidence = {**resolution.result, "task_id": task_id, "cohort": resolution.result.get("cohort") or cohort}
+        if resolution.result_kind == "clarification":
+            return {
+                "coverage": "needs_clarification",
+                "clarification_question": resolution.result.get(
+                    "clarification_question"
+                ),
+                "evidence": [],
+                "citations": [],
+                "retrieved_items": [],
+            }
+        evidence = {
+            **resolution.result,
+            "task_id": task_id,
+            "cohort": resolution.result.get("cohort") or cohort,
+        }
         citations = enrich_citations_with_parent_details(
             build_citation_from_lookup(evidence),
             getattr(self, "parent_sources_by_id", {}),
         )
         citations = [
-            {**citation, "task_id": task_id, "supports_task_ids": [task_id], "cohort": citation.get("cohort") or cohort}
+            {
+                **citation,
+                "task_id": task_id,
+                "supports_task_ids": [task_id],
+                "cohort": citation.get("cohort") or cohort,
+            }
             for citation in citations
         ]
         related_references = self._structured_related_references(
@@ -1307,11 +1293,14 @@ class AnswerPipeline:
         task_id: str,
         cohort: str | None,
     ) -> dict[str, Any]:
+        """Execute one RAG task and normalize retrieval evidence for generation."""
+
         task_query = str(task.get("question") or "").strip()
         retrieval_query = self.slang_normalizer.normalize_for_retrieval(task_query)
+        task_top_k = self._retrieval_top_k()
         result = run_hybrid_retrieval_pipeline(
             query=task_query,
-            top_k=int(self.config.get("planning", {}).get("rag_top_k", 5)),
+            top_k=task_top_k,
             cohort=cohort,
             intent=task.get("intent") or "open_question",
             strategy="regulation",
@@ -1323,26 +1312,41 @@ class AnswerPipeline:
                 continue
             copied = dict(item)
             metadata = dict(copied.get("metadata") or {})
-            metadata.update({"task_id": task_id, "supports_task_ids": [task_id], "cohort": metadata.get("cohort") or cohort})
+            metadata.update(
+                {
+                    "task_id": task_id,
+                    "supports_task_ids": [task_id],
+                    "cohort": metadata.get("cohort") or cohort,
+                }
+            )
             copied["metadata"] = metadata
             copied["task_id"] = task_id
             copied["supports_task_ids"] = [task_id]
             items.append(copied)
-            if len(items) >= 5:
+            if len(items) >= task_top_k:
                 break
         citations = [
-            {**citation, "task_id": task_id, "supports_task_ids": [task_id], "cohort": citation.get("cohort") or cohort}
+            {
+                **citation,
+                "task_id": task_id,
+                "supports_task_ids": [task_id],
+                "cohort": citation.get("cohort") or cohort,
+            }
             for citation in (result.get("citations") or [])
             if is_validated_source_applicable(citation, cohort)
         ]
-        citations = citations[:5]
+        citations = citations[:task_top_k]
         coverage = "covered" if items and citations else "uncovered"
-        evidence = [{
-            "task_id": task_id,
-            "cohort": cohort,
-            "retrieval_query": retrieval_query,
-            "source_ids": [str(item.get("chunk_id") or item.get("_id") or "") for item in items],
-        }]
+        evidence = [
+            {
+                "task_id": task_id,
+                "cohort": cohort,
+                "retrieval_query": retrieval_query,
+                "source_ids": [
+                    str(item.get("chunk_id") or item.get("_id") or "") for item in items
+                ],
+            }
+        ]
         return {
             "coverage": coverage,
             "evidence": evidence,
@@ -1396,9 +1400,7 @@ class AnswerPipeline:
                     "content": parent.get("content") or "",
                     "metadata": {
                         **metadata,
-                        "related_source_primary_id": candidate.get(
-                            "source_primary_id"
-                        ),
+                        "related_source_primary_id": candidate.get("source_primary_id"),
                         "related_graph_depth": candidate.get("depth"),
                         "related_rank": rank,
                     },
@@ -1410,6 +1412,8 @@ class AnswerPipeline:
     def _merge_related_references(
         references: list[dict[str, Any]],
     ) -> list[dict[str, Any]]:
+        """Merge related graph references while preserving stable order."""
+
         merged: list[dict[str, Any]] = []
         seen: set[tuple[str, str]] = set()
         for reference in references:
@@ -1435,16 +1439,25 @@ class AnswerPipeline:
 
     @staticmethod
     def _merge_task_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """Merge task outputs by identity without duplicating evidence."""
+
         merged: dict[tuple[str, str], dict[str, Any]] = {}
         for item in items:
             metadata = item.get("metadata") or {}
             key = (
                 str(metadata.get("cohort") or "default"),
-                str(item.get("chunk_id") or item.get("_id") or metadata.get("source_parent_id") or ""),
+                str(
+                    item.get("chunk_id")
+                    or item.get("_id")
+                    or metadata.get("source_parent_id")
+                    or ""
+                ),
             )
             if key not in merged:
                 merged[key] = dict(item)
-                merged[key]["supports_task_ids"] = list(item.get("supports_task_ids") or [])
+                merged[key]["supports_task_ids"] = list(
+                    item.get("supports_task_ids") or []
+                )
             else:
                 supports = merged[key].setdefault("supports_task_ids", [])
                 for task_id in item.get("supports_task_ids") or []:
@@ -1454,6 +1467,8 @@ class AnswerPipeline:
 
     @staticmethod
     def _merge_task_citations(citations: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """Merge task citations and retain their supporting task identities."""
+
         merged: dict[tuple[Any, ...], dict[str, Any]] = {}
         for citation in citations:
             canonical_source_id = (
@@ -1464,10 +1479,15 @@ class AnswerPipeline:
                 or citation.get("source_section")
                 or citation.get("title")
             )
-            key = (str(citation.get("cohort") or "default"), str(canonical_source_id or ""))
+            key = (
+                str(citation.get("cohort") or "default"),
+                str(canonical_source_id or ""),
+            )
             if key not in merged:
                 merged[key] = dict(citation)
-                merged[key]["supports_task_ids"] = list(citation.get("supports_task_ids") or [])
+                merged[key]["supports_task_ids"] = list(
+                    citation.get("supports_task_ids") or []
+                )
             else:
                 supports = merged[key].setdefault("supports_task_ids", [])
                 for task_id in citation.get("supports_task_ids") or []:
@@ -1496,6 +1516,8 @@ class AnswerPipeline:
         *,
         max_sources: int,
     ) -> list[dict[str, Any]]:
+        """Select balanced primary evidence across planned tasks."""
+
         selected: list[dict[str, Any]] = []
         selected_ids: set[int] = set()
         for task_id, coverage in coverage_by_task.items():
@@ -1567,6 +1589,8 @@ class AnswerPipeline:
         model_used: str | None = None,
         tracker: Any = None,
     ) -> dict[str, Any]:
+        """Assemble the canonical answer result consumed by all adapters."""
+
         router_decision = retrieval_result.get("router_decision")
         query_handling = retrieval_result.get("query_handling")
         if not isinstance(query_handling, dict) and isinstance(router_decision, dict):
@@ -1583,7 +1607,9 @@ class AnswerPipeline:
             "effective_query": retrieval_result.get("effective_query")
             or (query_handling or {}).get("effective_query")
             or query,
-            "cohort": retrieval_result.get("cohort") or (router_decision or {}).get("cohort") or "default",
+            "cohort": retrieval_result.get("cohort")
+            or (router_decision or {}).get("cohort")
+            or "default",
             "query_handling": query_handling,
             "router_decision": router_decision,
             "answer": final_answer,
@@ -1592,13 +1618,32 @@ class AnswerPipeline:
             "error_message": error_message,
             "intent": retrieval_result.get("intent"),
             "strategy": retrieval_result.get("strategy"),
-            "execution_mode": retrieval_result.get("execution_mode") or (router_decision or {}).get("execution_mode") or "regulation",
-            "lookup_type": retrieval_result.get("lookup_type") or (router_decision or {}).get("lookup_type"),
-            "query_type": retrieval_result.get("query_type") or (router_decision or {}).get("query_type") or "standalone",
+            "execution_mode": retrieval_result.get("execution_mode")
+            or (router_decision or {}).get("execution_mode")
+            or "regulation",
+            "lookup_type": retrieval_result.get("lookup_type")
+            or (router_decision or {}).get("lookup_type"),
+            "query_type": retrieval_result.get("query_type")
+            or (router_decision or {}).get("query_type")
+            or "standalone",
             "target_chunk_types": retrieval_result.get("target_chunk_types") or [],
             "raw_query": query,
-            "fallback_reason": error_type or (status if status in {"out_of_domain", "needs_clarification", "low_confidence", "retrieval_error", "api_error"} else "none"),
-            "retrieved_chunks_count": len(retrieval_result.get("retrieved_items") or []),
+            "fallback_reason": error_type
+            or (
+                status
+                if status
+                in {
+                    "out_of_domain",
+                    "needs_clarification",
+                    "low_confidence",
+                    "retrieval_error",
+                    "api_error",
+                }
+                else "none"
+            ),
+            "retrieved_chunks_count": len(
+                retrieval_result.get("retrieved_items") or []
+            ),
             "retrieval_query": retrieval_result.get("retrieval_query"),
             "citations": retrieval_result.get("citations", []),
             "citations_used": selected_citations,
@@ -1632,6 +1677,8 @@ class AnswerPipeline:
     def _finalize_evaluation_telemetry(
         *, used_cache: bool, llm_called: bool
     ) -> dict[str, Any] | None:
+        """Finalize request-level metrics from completed task results."""
+
         telemetry = _evaluation_telemetry.get()
         if telemetry is None:
             return None

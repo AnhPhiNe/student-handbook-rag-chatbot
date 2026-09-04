@@ -7,6 +7,8 @@ from typing import Any
 
 
 def write_report_bundle(report: dict[str, Any], output_path: Path) -> dict[str, str]:
+    """Persist machine-readable and Markdown evaluation reports."""
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(
         json.dumps(report, ensure_ascii=False, indent=2, default=str) + "\n",

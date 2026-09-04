@@ -6,8 +6,8 @@
     "languages": ["Python", "TypeScript", "YAML", "React"],
     "frameworks": ["FastAPI", "React", "Vite", "Qdrant", "MongoDB", "Redis"],
     "description": "Trợ lý RAG cho Sổ tay Sinh viên HCMUE, kết hợp retrieval hybrid, deterministic lookup, Gemini generation, citations và SSE streaming.",
-    "analyzedAt": "2026-09-04T00:00:00Z",
-    "gitCommitHash": "65418b02893f66b1c73901895739a44458b588a0"
+    "analyzedAt": "2026-09-04T09:58:22Z",
+    "gitCommitHash": "34d8bdca0068fee88e44e8b5a152b7db7345c895"
   },
   "nodes": [
     {"id":"document:README.md","type":"document","name":"README.md","filePath":"README.md","summary":"Tài liệu nguồn chính mô tả kiến trúc, runtime contract, vận hành, evaluation và triển khai của dự án.","tags":["documentation","architecture","entry-point"],"complexity":"complex"},

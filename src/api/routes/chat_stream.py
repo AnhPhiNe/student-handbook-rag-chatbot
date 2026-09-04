@@ -68,6 +68,7 @@ def chat_stream(
                     yield events.queued(ticket.position)
 
                 if not acquired:
+                    ticket.leave_queue()
                     raise ChatCapacityError("queue_timeout")
 
             try:

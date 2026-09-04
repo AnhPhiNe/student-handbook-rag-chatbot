@@ -647,6 +647,30 @@ class ApiRoutesTest(unittest.TestCase):
         assert done_payload["status"] == "api_error"
         assert done_payload["error_type"] == "server_busy"
 
+    def test_stream_timeout_removes_its_queue_ticket(self) -> None:
+        env = {
+            "STUDENT_RAG_MAX_CONCURRENT_CHAT": "1",
+            "STUDENT_RAG_MAX_QUEUE_SIZE": "1",
+            "STUDENT_RAG_QUEUE_TIMEOUT_SECONDS": "0",
+        }
+        with patch.dict("os.environ", env, clear=False):
+            settings = chat_controls.chat_capacity_settings()
+            limiter = chat_controls._chat_capacity_limiter(settings)
+            with chat_controls.chat_capacity_slot():
+                response = self.client.post(
+                    "/chat/stream",
+                    json={"query": "Câu hỏi hợp lệ", "cohort": "K51"},
+                )
+
+            next_ticket = limiter.enter_queue()
+            try:
+                assert next_ticket.try_acquire(timeout=0.01)
+            finally:
+                next_ticket.leave_queue()
+                limiter.release()
+
+        assert "server_busy" in response.text
+
     def test_chat_rejects_oversized_history_envelope(self) -> None:
         response = self.client.post(
             "/chat",

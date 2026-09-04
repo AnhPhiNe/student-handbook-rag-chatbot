@@ -51,6 +51,12 @@ frontend/.vite/
 /.agents/
 /codebase-memory-mcp-bin/
 
+# Understand Anything generated scratch data
+/.ua/intermediate/
+/.ua/tmp/
+/.ua/.trash-*/
+/.ua/diff-overlay.json
+
 # Root-level investigation files
 /debug*.txt
 /test_*.py

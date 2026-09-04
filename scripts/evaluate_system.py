@@ -37,7 +37,8 @@ from src.generation.answer_pipeline import PIPELINE_VERSION
 from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
 
 
-DEFAULT_DATASET = ROOT / "data" / "eval" / "architecture_v3"
+# Keep the CLI default aligned with the current frozen, headline-eligible bundle.
+DEFAULT_DATASET = ROOT / "data" / "eval" / "architecture_v9_1_corrected"
 DEFAULT_OUTPUT = ROOT / "data" / "eval" / "reports" / "release_candidate"
 DEFAULT_DOCSTORE = ROOT / "data" / "processed" / "chunks" / "all_docstore_items.json"
 AI_ROUTER_CONFIG = ROOT / "configs" / "ai_router.yaml"

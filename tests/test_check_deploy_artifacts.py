@@ -1,7 +1,24 @@
 import hashlib
 import json
+from pathlib import Path
 
 from scripts.check_deploy_artifacts import validate_artifact, validate_build_manifest
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_hf_deploy_allowlist_includes_retrieval_runtime_config() -> None:
+    """Prevent deploys that omit the config required by retrieval health probes."""
+
+    deploy_script = (ROOT / "scripts" / "deploy_hf_backend.ps1").read_text(
+        encoding="utf-8"
+    )
+
+    assert (
+        'Copy-RequiredFile "configs\\retrieval.yaml" "configs\\retrieval.yaml"'
+        in deploy_script
+    )
 
 
 def test_deploy_audit_rejects_repeated_header_in_content(tmp_path) -> None:

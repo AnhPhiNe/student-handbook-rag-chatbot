@@ -9,7 +9,7 @@ from urllib.error import HTTPError
 
 import pytest
 
-from scripts.evaluate_system import _normalized_text_hash, _provenance
+from scripts.evaluate_system import DEFAULT_DATASET, _normalized_text_hash, _provenance
 import src.evaluation.suites as evaluation_suites
 from src.evaluation.dataset import _structured_source_index, validate_bundle
 from src.evaluation.gates import evaluate_gates
@@ -69,6 +69,17 @@ def _valid_judge_payload() -> str:
             "rationale": "supported",
         }
     )
+
+
+def test_evaluation_runner_defaults_to_current_frozen_bundle() -> None:
+    """Keep the CLI default aligned with the published V9.1 evaluation bundle."""
+
+    expected_bundle = ROOT / "data" / "eval" / "architecture_v9_1_corrected"
+    assert DEFAULT_DATASET == expected_bundle
+
+    manifest = json.loads((DEFAULT_DATASET / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["frozen"] is True
+    assert manifest["version"] == "9.1.0-corrected-evaluation"
 
 
 def test_frozen_final_bundle_is_compatible_with_current_sources() -> None:

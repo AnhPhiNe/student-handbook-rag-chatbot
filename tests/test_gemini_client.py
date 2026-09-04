@@ -75,6 +75,11 @@ class _FakePool:
         self.failures.append((key_id, error_type))
 
 
+class _UnavailablePool:
+    def acquire_key(self):
+        raise RuntimeError("all_gemini_keys_daily_quota_exhausted")
+
+
 class GeminiClientTest(unittest.TestCase):
     def test_request_clients_use_sdk_transport_timeout_in_milliseconds(self) -> None:
         client = object.__new__(GeminiClient)
@@ -172,6 +177,48 @@ class GeminiClientTest(unittest.TestCase):
         self.assertEqual(chunks, ["chunk"])
         self.assertEqual(fake_pool.rate_limited, [("fp-one", "rate_limit")])
         self.assertEqual(fake_pool.successes, ["fp-two"])
+
+    def test_generate_stream_does_not_retry_after_emitting_a_chunk(self) -> None:
+        client = object.__new__(GeminiClient)
+        fake_pool = _FakePool()
+        client.available_keys = ["secret-one", "secret-two"]
+        client.model_name = "fake-model"
+        client.max_retries = 1
+        client.retry_base_delay_seconds = 0
+        client.retry_max_delay_seconds = 0
+        client.key_pool = fake_pool
+        client._genai = _FakeGenAI()
+        client._types = _FakeTypes()
+        client.request_timeout_seconds = 1
+        client._config = object()
+
+        def stream_once(prompt: str, *, client=None):
+            yield "partial"
+            raise RuntimeError("Server disconnected without sending a response.")
+
+        client._generate_stream_once = stream_once
+        stream = client.generate_stream("prompt")
+
+        self.assertEqual(next(stream), "partial")
+        with self.assertRaisesRegex(RuntimeError, "disconnected"):
+            next(stream)
+        self.assertEqual(fake_pool.index, 1)
+        self.assertEqual(fake_pool.failures, [("fp-one", "transient_error")])
+
+    def test_generate_returns_structured_failure_when_all_keys_are_exhausted(
+        self,
+    ) -> None:
+        client = object.__new__(GeminiClient)
+        client.available_keys = ["secret-one"]
+        client.model_name = "fake-model"
+        client.max_retries = 3
+        client.key_pool = _UnavailablePool()
+
+        result = client.generate("prompt")
+
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["error_type"], "quota_exhausted")
+        self.assertEqual(result["attempts"], 0)
 
     def test_disconnect_is_classified_as_transient(self) -> None:
         error_type = GeminiClient._classify_error(

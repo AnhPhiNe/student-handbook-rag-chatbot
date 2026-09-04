@@ -15,8 +15,12 @@ from src.api.schemas import (
     ReadinessResponse,
     RetrievalComponentStatus,
 )
-from src.retrieval.core.runtime_health import get_bm25_runtime_status
 from src.retrieval.core.retrieval_mode import resolve_retrieval_mode
+from src.retrieval.core.runtime_health import get_bm25_runtime_status
+from src.retrieval.runtime_config import (
+    DEFAULT_RETRIEVAL_CONFIG_PATH,
+    load_retrieval_build_contract,
+)
 
 
 router = APIRouter(tags=["health"])
@@ -30,27 +34,28 @@ def _artifact(path: str, exists: bool, kind: str) -> ArtifactStatus:
 
 
 def _build_manifest_matches_environment() -> bool:
-    if not BUILD_MANIFEST_PATH.is_file():
-        return False
     try:
-        manifest = json.loads(BUILD_MANIFEST_PATH.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
+        contract = load_retrieval_build_contract(BUILD_MANIFEST_PATH)
+    except (OSError, ValueError, json.JSONDecodeError):
         return False
-    targets = manifest.get("storage_targets") or {}
     qdrant_collection = os.environ.get(
         "STUDENT_RAG_HYBRID_COLLECTION"
     ) or os.environ.get("QDRANT_COLLECTION_NAME")
     mongo_collection = os.environ.get("MONGODB_PARENT_COLLECTION")
     return bool(
-        manifest.get("build_id")
+        contract.get("build_id")
         and qdrant_collection
         and mongo_collection
-        and targets.get("qdrant_collection") == qdrant_collection
-        and targets.get("mongo_parent_collection") == mongo_collection
+        and contract.get("qdrant_collection") == qdrant_collection
+        and contract.get("mongo_parent_collection") == mongo_collection
     )
 
 
 def _required_artifacts() -> list[ArtifactStatus]:
+    retrieval_config_path = Path(
+        os.environ.get("STUDENT_RAG_RETRIEVAL_CONFIG")
+        or DEFAULT_RETRIEVAL_CONFIG_PATH
+    )
     required = [
         _artifact(
             "configs/ai_router.yaml",
@@ -60,6 +65,11 @@ def _required_artifacts() -> list[ArtifactStatus]:
         _artifact(
             "configs/answer_generation.yaml",
             Path("configs/answer_generation.yaml").is_file(),
+            "config",
+        ),
+        _artifact(
+            retrieval_config_path.as_posix(),
+            retrieval_config_path.is_file(),
             "config",
         ),
         _artifact(

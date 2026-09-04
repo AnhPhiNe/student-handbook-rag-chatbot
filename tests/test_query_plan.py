@@ -1690,7 +1690,7 @@ def test_stream_failure_finishes_with_api_error_metadata(monkeypatch) -> None:
 
     class FailingLLM:
         def generate_stream(self, prompt):
-            yield "Một phần chưa hoàn chỉnh"
+            yield "Một phần câu trả lời hợp lệ. " * 20
             raise RuntimeError("stream failed")
 
     pipeline.response_cache = Cache()
@@ -1703,10 +1703,16 @@ def test_stream_failure_finishes_with_api_error_metadata(monkeypatch) -> None:
     events = list(pipeline.answer_stream(task["question"], cohort="K51"))
     statuses = [event["status"] for event in events if event["type"] == "metadata"]
     done = next(event for event in events if event["type"] == "done")
+    streamed_answer = "".join(
+        event["text"] for event in events if event["type"] == "token"
+    )
 
     assert statuses == ["streaming", "api_error"]
     assert done["status"] == "api_error"
     assert done["error_type"] == "RuntimeError"
+    assert streamed_answer
+    assert "Hiện tại mình chưa gọi được mô hình AI" not in streamed_answer
+    assert "Một phần câu trả lời hợp lệ" in streamed_answer
 
 
 def test_execution_mode_ignores_clarification_when_one_task_executes() -> None:

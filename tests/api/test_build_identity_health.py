@@ -14,6 +14,11 @@ def test_build_manifest_identity_matches_both_runtime_collections(
         json.dumps(
             {
                 "build_id": "build-test",
+                "embedding": {
+                    "model": "BAAI/bge-m3",
+                    "dimension": 1024,
+                    "normalize_embeddings": True,
+                },
                 "storage_targets": {
                     "qdrant_collection": "qdrant-v30",
                     "mongo_parent_collection": "parents-v30",
@@ -28,5 +33,18 @@ def test_build_manifest_identity_matches_both_runtime_collections(
     monkeypatch.setenv("MONGODB_PARENT_COLLECTION", "parents-v30")
 
     assert health._build_manifest_matches_environment() is True
+
+    drifted_config = tmp_path / "retrieval-drifted.yaml"
+    drifted_config.write_text(
+        "embedding:\n"
+        "  model_name: other/model\n"
+        "  dimension: 1024\n"
+        "  normalize_embeddings: true\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("STUDENT_RAG_RETRIEVAL_CONFIG", str(drifted_config))
+    assert health._build_manifest_matches_environment() is False
+
+    monkeypatch.delenv("STUDENT_RAG_RETRIEVAL_CONFIG")
     monkeypatch.setenv("MONGODB_PARENT_COLLECTION", "parents-v29")
     assert health._build_manifest_matches_environment() is False

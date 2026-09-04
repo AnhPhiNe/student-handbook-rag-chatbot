@@ -6,6 +6,8 @@ from concurrent.futures import ThreadPoolExecutor
 from threading import Lock
 from typing import Any, Callable
 
+from src.retrieval.runtime_config import load_retrieval_build_contract
+
 
 _PROBE_CACHE_LOCK = Lock()
 _PROBE_CACHE: dict[tuple[str, str, str], tuple[float, dict[str, Any]]] = {}
@@ -53,8 +55,25 @@ def _not_configured() -> dict[str, Any]:
     return {"status": "not_configured", "error_type": None, "latency_ms": None}
 
 
+def _qdrant_vector_size(collection_info: Any) -> int | None:
+    """Extract the unnamed or sole named vector size from Qdrant metadata."""
+
+    config = getattr(collection_info, "config", None)
+    params = getattr(config, "params", None)
+    vectors = getattr(params, "vectors", None)
+    if isinstance(vectors, dict):
+        vectors = next(iter(vectors.values())) if len(vectors) == 1 else None
+    size = getattr(vectors, "size", None)
+    if isinstance(size, bool) or not isinstance(size, (int, float, str)):
+        return None
+    try:
+        return int(size)
+    except (TypeError, ValueError):
+        return None
+
+
 def probe_qdrant() -> dict[str, Any]:
-    """Probe Qdrant connectivity without exposing credentials."""
+    """Probe Qdrant connectivity, content, and local build identity."""
 
     url = str(os.environ.get("QDRANT_URL") or "").strip()
     collection = str(
@@ -79,7 +98,23 @@ def probe_qdrant() -> dict[str, Any]:
             timeout=timeout_seconds,
         )
         try:
-            client.get_collection(collection)
+            identity = load_retrieval_build_contract()
+            collection_info = client.get_collection(collection)
+            vector_size = _qdrant_vector_size(collection_info)
+            if vector_size != identity["embedding_dimension"]:
+                raise RuntimeError("qdrant_embedding_dimension_mismatch")
+
+            records, _ = client.scroll(
+                collection_name=collection,
+                limit=1,
+                with_payload=True,
+                with_vectors=False,
+            )
+            if not records:
+                raise RuntimeError("qdrant_collection_empty")
+            payload = dict(getattr(records[0], "payload", None) or {})
+            if str(payload.get("build_id") or "") != identity["build_id"]:
+                raise RuntimeError("qdrant_build_id_mismatch")
         finally:
             close = getattr(client, "close", None)
             if callable(close):
@@ -89,7 +124,7 @@ def probe_qdrant() -> dict[str, Any]:
 
 
 def probe_mongodb() -> dict[str, Any]:
-    """Probe MongoDB connectivity and the configured parent collection."""
+    """Probe MongoDB content and verify its build identity."""
 
     uri = str(os.environ.get("MONGODB_URL") or "").strip()
     collection = str(os.environ.get("MONGODB_PARENT_COLLECTION") or "").strip()
@@ -112,7 +147,19 @@ def probe_mongodb() -> dict[str, Any]:
             socketTimeoutMS=timeout_ms,
         )
         try:
-            client[database][collection].find_one({}, {"_id": 1})
+            identity = load_retrieval_build_contract()
+            document = client[database][collection].find_one(
+                {},
+                {"_id": 1, "build_id": 1, "metadata.build_id": 1},
+            )
+            if not document:
+                raise RuntimeError("mongodb_parent_collection_empty")
+            metadata = document.get("metadata") or {}
+            remote_build_id = str(
+                document.get("build_id") or metadata.get("build_id") or ""
+            )
+            if remote_build_id != identity["build_id"]:
+                raise RuntimeError("mongodb_build_id_mismatch")
         finally:
             client.close()
 

@@ -16,6 +16,7 @@ from src.retrieval.core.cross_encoder_reranker import get_local_reranker
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from src.retrieval.core.retrieval_mode import resolve_retrieval_mode
 from src.retrieval.core.runtime_health import set_bm25_runtime_status
+from src.retrieval.core.vector_retriever import load_embedding_model
 from src.retrieval.runtime_config import load_retrieval_runtime_config
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
 
@@ -176,9 +177,7 @@ class ChildParentHybridRetriever:
         )
         self.collection_name = collection_name
 
-        from sentence_transformers import SentenceTransformer
-
-        self.embed_model = SentenceTransformer(str(embedding["model_name"]))
+        self.embed_model = load_embedding_model(str(embedding["model_name"]))
         self.normalize_embeddings = bool(embedding.get("normalize_embeddings", True))
         self.graph = NetworkXGraphTraverser()
 

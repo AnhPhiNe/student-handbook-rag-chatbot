@@ -20,6 +20,7 @@ REQUIRED_ARTIFACTS = [
     ("constraints-runtime.txt", "file"),
     ("configs/ai_router.yaml", "file"),
     ("configs/answer_generation.yaml", "file"),
+    ("configs/retrieval.yaml", "file"),
     ("configs/hcmue_slang_dictionary.yaml", "file"),
     ("configs/office_aliases.yaml", "file"),
     ("configs/structured_lookup_registry.yaml", "file"),

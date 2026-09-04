@@ -9,6 +9,7 @@ from src.retrieval.core.hybrid_pipeline import (
     ChildParentHybridRetriever,
 )
 from src.retrieval.runtime_config import load_retrieval_runtime_config
+from src.retrieval.core.vector_retriever import load_embedding_model
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
 
 
@@ -26,6 +27,27 @@ def test_retrieval_runtime_config_uses_explicit_file(
 
     assert config["embedding"]["model_name"] == "test/model"
     assert config["runtime"]["parent_cache_max_entries"] == 3
+
+
+def test_embedding_model_loader_reuses_one_process_instance() -> None:
+    model = object()
+    load_embedding_model.cache_clear()
+    try:
+        with (
+            patch(
+                "src.retrieval.core.vector_retriever.SentenceTransformer",
+                return_value=model,
+            ) as model_class,
+            patch("src.retrieval.core.vector_retriever.get_device", return_value="cpu"),
+        ):
+            first = load_embedding_model("test/model")
+            second = load_embedding_model("test/model")
+
+        assert first is model
+        assert second is model
+        model_class.assert_called_once_with("test/model", device="cpu")
+    finally:
+        load_embedding_model.cache_clear()
 
 
 def test_mongo_store_uses_database_name_from_environment(monkeypatch) -> None:

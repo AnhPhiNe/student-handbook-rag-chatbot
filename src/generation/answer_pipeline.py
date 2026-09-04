@@ -167,9 +167,7 @@ class AnswerPipeline:
     ) -> None:
         self.config_path = Path(config_path)
         self.config = load_yaml(self.config_path)
-        self.retrieval_config = load_retrieval_runtime_config(
-            self.config.get("retrieval_config")
-        )
+        self.retrieval_config = load_retrieval_runtime_config()
 
         self.scoring_tables = load_json(self.config["input"]["scoring_tables"])
         self.formula_rules = load_json(self.config["input"]["formula_rules"])
@@ -838,11 +836,11 @@ class AnswerPipeline:
         final_answer_for_citations = ""
         terminal_status = "answered"
         terminal_error_type: str | None = None
+        emitted_answer_parts: list[str] = []
         try:
             llm_client = self._get_llm_client()
             start_time_llm = datetime.now(timezone.utc).isoformat()
             self._throttle_llm_call()
-            emitted_answer_parts: list[str] = []
             pending_stream_text = ""
             stream_prefix_emitted = False
             suppress_source_tail = False
@@ -898,11 +896,14 @@ class AnswerPipeline:
         except Exception as exc:
             terminal_status = "api_error"
             terminal_error_type = type(exc).__name__
-            fallback = build_fallback_answer(
-                effective_query, retrieval_result, reason="api_error"
-            )
-            final_answer_for_citations = fallback
-            yield {"type": "token", "text": fallback}
+            if emitted_answer_parts:
+                final_answer_for_citations = "".join(emitted_answer_parts)
+            else:
+                fallback = build_fallback_answer(
+                    effective_query, retrieval_result, reason="api_error"
+                )
+                final_answer_for_citations = fallback
+                yield {"type": "token", "text": fallback}
 
         final_citations = prioritize_citations_by_answer_anchors(
             all_citations,

@@ -115,6 +115,7 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertIn(payload["status"], {"ok", "missing_artifacts"})
         paths = {item["path"] for item in payload["required_artifacts"]}
         self.assertIn("configs/answer_generation.yaml", paths)
+        self.assertIn("configs/retrieval.yaml", paths)
         self.assertIn("data/processed/amendments/amendments.json", paths)
         self.assertIn("QDRANT_URL", paths)
         self.assertIn("QDRANT_API_KEY", paths)

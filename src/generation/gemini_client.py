@@ -23,7 +23,7 @@ class GeminiKeyPoolConfig:
     rpd_limit_per_key: int = 450
     cooldown_on_rate_limit_seconds: float = 65.0
     state_path: str = "data/cache/gemini_key_state.json"
-    wait_when_all_keys_limited: bool = True
+    wait_when_all_keys_limited: bool = False
 
     @classmethod
     def from_config(cls, config: dict[str, Any] | None) -> "GeminiKeyPoolConfig":
@@ -39,7 +39,7 @@ class GeminiKeyPoolConfig:
             ),
             state_path=str(state_path),
             wait_when_all_keys_limited=bool(
-                config.get("wait_when_all_keys_limited", True)
+                config.get("wait_when_all_keys_limited", False)
             ),
         )
 
@@ -316,12 +316,17 @@ class GeminiClient:
         """Generate one complete grounded answer with bounded retries."""
 
         attempts = 0
-        max_attempts = max(1, (self.max_retries + 1) * len(self.available_keys))
+        max_attempts = max(1, self.max_retries + 1)
         last_error_type = None
         last_error_message = None
 
         while attempts < max_attempts:
-            current_key, key_id, key_index = self.key_pool.acquire_key()
+            try:
+                current_key, key_id, key_index = self.key_pool.acquire_key()
+            except Exception as exc:
+                last_error_type = self._classify_error(exc)
+                last_error_message = str(exc)
+                break
             attempts += 1
             try:
                 request_client = self._create_client(current_key)
@@ -414,6 +419,8 @@ class GeminiClient:
             return "timeout"
 
         text = f"{type(exc).__name__}: {exc}".lower()
+        if "all_gemini_keys_daily_quota_exhausted" in text:
+            return "quota_exhausted"
         if any(
             token in text
             for token in [
@@ -449,15 +456,19 @@ class GeminiClient:
         return "unknown"
 
     def generate_stream(self, prompt: str) -> Iterator[str]:
-        """Yield Gemini response chunks as they arrive."""
+        """Yield response chunks and retry only before any chunk is emitted."""
+
         attempts = 0
-        max_attempts = max(1, (self.max_retries + 1) * len(self.available_keys))
+        max_attempts = max(1, self.max_retries + 1)
         while attempts < max_attempts:
             current_key, key_id, key_index = self.key_pool.acquire_key()
             attempts += 1
+            emitted_any = False
             try:
                 request_client = self._create_client(current_key)
-                yield from self._generate_stream_once(prompt, client=request_client)
+                for chunk in self._generate_stream_once(prompt, client=request_client):
+                    emitted_any = True
+                    yield chunk
                 self.key_pool.record_success(key_id)
                 return
             except Exception as exc:
@@ -468,10 +479,12 @@ class GeminiClient:
                         f"{key_index}:{key_id} hit rate limit; cooling down."
                     )
                     self.key_pool.record_rate_limit(key_id, error_type)
+                    if emitted_any:
+                        raise
                     continue
 
                 self.key_pool.record_failure(key_id, error_type)
-                if not self._should_retry(error_type):
+                if emitted_any or not self._should_retry(error_type):
                     raise
                 delay = self._retry_delay(attempts)
                 print(

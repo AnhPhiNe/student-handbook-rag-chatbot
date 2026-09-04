@@ -1059,7 +1059,7 @@ def test_gemini_empty_response_is_not_success() -> None:
     client.retry_max_delay_seconds = 0
     client.key_pool = Pool()
     client._create_client = lambda _api_key: object()
-    client._generate_once = lambda _prompt, **_kwargs: ""
+    client._generate_once = lambda _prompt, **_kwargs: ("", {})
     result = client.generate("prompt")
     assert result["ok"] is False
     assert "empty response" in result["error_message"]

@@ -26,6 +26,7 @@ from src.api.langsmith_helper import (
 
 router = APIRouter(tags=["chat"])
 logger = logging.getLogger("student_handbook_rag.api.chat")
+PUBLIC_ERROR_MESSAGE = "Không thể hoàn tất yêu cầu. Vui lòng thử lại sau."
 
 
 def _build_debug_payload(result: dict[str, Any]) -> dict[str, Any]:
@@ -68,6 +69,13 @@ def _to_chat_response(
 ) -> ChatResponse:
     """Convert an internal answer result into the stable public API schema."""
     citations_used = public_regulation_citations(result.get("citations_used") or [])
+    internal_error_message = result.get("error_message")
+    if include_debug:
+        public_error_message = internal_error_message
+    elif internal_error_message:
+        public_error_message = PUBLIC_ERROR_MESSAGE
+    else:
+        public_error_message = None
     if isinstance(citations_used, list) and not include_debug:
         citations_used = [
             {
@@ -97,7 +105,7 @@ def _to_chat_response(
         llm_called=bool(result.get("llm_called", False)),
         used_cache=bool(result.get("used_cache", False)),
         error_type=result.get("error_type"),
-        error_message=result.get("error_message"),
+        error_message=public_error_message,
         debug=_build_debug_payload(result) if include_debug else None,
     )
 

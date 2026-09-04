@@ -42,7 +42,7 @@ def _connection_settings() -> tuple[str, str, str, str]:
     qdrant_url = os.environ.get("QDRANT_URL") or ""
     qdrant_key = os.environ.get("QDRANT_API_KEY") or ""
     mongo_url = os.environ.get("MONGODB_URL") or ""
-    database_name = os.environ.get("MONGODB_DATABASE", "chatbotHCMUE")
+    database_name = os.environ.get("MONGODB_DB_NAME", "chatbotHCMUE")
     if not qdrant_url or not qdrant_key or not mongo_url:
         raise RuntimeError("Qdrant and MongoDB connection settings are required.")
     return qdrant_url, qdrant_key, mongo_url, database_name

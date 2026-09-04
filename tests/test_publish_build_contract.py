@@ -107,6 +107,20 @@ def test_publish_refuses_existing_remote_targets() -> None:
         push_to_mongo.ensure_empty_collection(mongo_collection)
 
 
+def test_remote_verifier_uses_runtime_mongodb_database_name(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("QDRANT_URL", "https://qdrant")
+    monkeypatch.setenv("QDRANT_API_KEY", "key")
+    monkeypatch.setenv("MONGODB_URL", "mongodb://mongo")
+    monkeypatch.setenv("MONGODB_DATABASE", "stale-name")
+    monkeypatch.setenv("MONGODB_DB_NAME", "runtime-name")
+
+    settings = verify_remote_build._connection_settings()
+
+    assert settings[3] == "runtime-name"
+
+
 def test_remote_preflight_requires_both_targets_to_be_available(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

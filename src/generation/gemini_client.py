@@ -6,7 +6,7 @@ import os
 import queue
 import threading
 import time
-from collections.abc import Iterator
+from collections.abc import Generator
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -299,10 +299,6 @@ class GeminiClient:
             temperature=temperature,
             max_output_tokens=max_output_tokens,
         )
-        self._last_stream_usage: dict[str, int] | None = None
-        self._last_stream_model: str = model_name
-        self._last_usage: dict[str, int] | None = None
-
     def _create_client(self, api_key: str) -> Any:
         """Create a request client whose transport enforces the configured timeout."""
 
@@ -330,16 +326,14 @@ class GeminiClient:
             attempts += 1
             try:
                 request_client = self._create_client(current_key)
-                text = self._generate_once(prompt, client=request_client)
+                text, usage_dict = self._generate_once(
+                    prompt,
+                    client=request_client,
+                )
                 if not text:
                     raise RuntimeError("Gemini API returned an empty response.")
 
                 self.key_pool.record_success(key_id)
-                usage_dict = getattr(self, "_last_usage", None) or {
-                    "input": max(1, len(prompt) // 4),
-                    "output": max(1, len(str(text)) // 4),
-                    "total": max(1, len(prompt) // 4) + max(1, len(str(text)) // 4),
-                }
                 return {
                     "ok": True,
                     "text": text,
@@ -382,7 +376,14 @@ class GeminiClient:
             "model_used": self.model_name,
         }
 
-    def _generate_once(self, prompt: str, *, client: Any | None = None) -> str:
+    def _generate_once(
+        self,
+        prompt: str,
+        *,
+        client: Any | None = None,
+    ) -> tuple[str, dict[str, int]]:
+        """Return generated text and usage owned by this invocation."""
+
         request_client = client or self._client
         response = request_client.models.generate_content(
             model=self.model_name,
@@ -396,13 +397,13 @@ class GeminiClient:
             inp = int(getattr(usage_obj, "prompt_token_count", 0) or 0)
             out = int(getattr(usage_obj, "candidates_token_count", 0) or 0)
             tot = int(getattr(usage_obj, "total_token_count", 0) or (inp + out))
-            self._last_usage = {"input": inp, "output": out, "total": tot}
+            usage = {"input": inp, "output": out, "total": tot}
         else:
             inp = max(1, len(prompt) // 4)
             out = max(1, len(text) // 4)
-            self._last_usage = {"input": inp, "output": out, "total": inp + out}
+            usage = {"input": inp, "output": out, "total": inp + out}
 
-        return text
+        return text, usage
 
     def _retry_delay(self, attempt_index: int) -> float:
         capped_attempt = max(0, attempt_index - 1)
@@ -455,8 +456,8 @@ class GeminiClient:
             return "api_error"
         return "unknown"
 
-    def generate_stream(self, prompt: str) -> Iterator[str]:
-        """Yield response chunks and retry only before any chunk is emitted."""
+    def generate_stream(self, prompt: str) -> Generator[str, None, dict[str, Any]]:
+        """Yield chunks and return request-local usage when streaming completes."""
 
         attempts = 0
         max_attempts = max(1, self.max_retries + 1)
@@ -466,11 +467,27 @@ class GeminiClient:
             emitted_any = False
             try:
                 request_client = self._create_client(current_key)
-                for chunk in self._generate_stream_once(prompt, client=request_client):
+                request_stream = self._generate_stream_once(
+                    prompt,
+                    client=request_client,
+                )
+                usage: dict[str, int] = {}
+                while True:
+                    try:
+                        chunk = next(request_stream)
+                    except StopIteration as completed:
+                        if isinstance(completed.value, dict):
+                            usage = completed.value
+                        break
                     emitted_any = True
                     yield chunk
                 self.key_pool.record_success(key_id)
-                return
+                return {
+                    "model_used": self.model_name,
+                    "key_fingerprint": key_id,
+                    "attempts": attempts,
+                    "usage": usage,
+                }
             except Exception as exc:
                 error_type = self._classify_error(exc)
                 if error_type == "rate_limit":
@@ -499,13 +516,14 @@ class GeminiClient:
         prompt: str,
         *,
         client: Any | None = None,
-    ) -> Iterator[str]:
+    ) -> Generator[str, None, dict[str, int]]:
+        """Yield one provider stream and return its request-local usage."""
+
         request_client = client or self._client
         output_queue: queue.Queue[
             tuple[str, str | dict[str, int] | Exception | None]
         ] = queue.Queue()
-        self._last_stream_model = self.model_name
-        self._last_stream_usage = None
+        completed_usage: dict[str, int] | None = None
 
         def worker() -> None:
             captured_usage = None
@@ -557,10 +575,10 @@ class GeminiClient:
                 yield str(payload)
             elif item_type == "usage":
                 if isinstance(payload, dict):
-                    self._last_stream_usage = payload
+                    completed_usage = payload
             elif item_type == "error":
                 if isinstance(payload, Exception):
                     raise payload
                 raise RuntimeError("Unknown Gemini streaming error.")
             elif item_type == "done":
-                return
+                return completed_usage or {}

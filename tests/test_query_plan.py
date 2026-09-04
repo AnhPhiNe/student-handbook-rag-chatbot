@@ -1515,6 +1515,10 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
         def generate_stream(self, prompt):
             yield "**Kết luận:** Theo Điều 16, "
             yield "sinh viên cần đối chiếu điều kiện."
+            return {
+                "model_used": "fake",
+                "usage": {"input": 11, "output": 22, "total": 33},
+            }
 
     captured: list[list[dict[str, Any]]] = []
 
@@ -1558,6 +1562,11 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
         event for event in stream_events if event.get("type") == "done"
     )
     assert stream_done["citations_used"] == sync_output["citations_used"]
+    assert stream_done["tracker"].get_total_usage() == {
+        "input_tokens": 11,
+        "output_tokens": 22,
+        "total_tokens": 33,
+    }
     assert "**Kết luận:**" in stream_answer
     assert "Điều 16" in stream_answer
 

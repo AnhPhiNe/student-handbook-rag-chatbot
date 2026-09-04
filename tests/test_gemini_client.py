@@ -132,11 +132,15 @@ class GeminiClientTest(unittest.TestCase):
 
         calls = {"count": 0}
 
-        def generate_once(prompt: str, *, client=None) -> str:
+        def generate_once(
+            prompt: str,
+            *,
+            client=None,
+        ) -> tuple[str, dict[str, int]]:
             calls["count"] += 1
             if calls["count"] == 1:
                 raise RuntimeError("429 rate limit")
-            return "ok"
+            return "ok", {"input": 1, "output": 1, "total": 2}
 
         client._generate_once = generate_once
 
@@ -251,9 +255,15 @@ class GeminiClientTest(unittest.TestCase):
         client._config = object()
         barrier = Barrier(2)
 
-        def generate_once(prompt: str, *, client=None) -> str:
+        def generate_once(prompt: str, *, client=None) -> tuple[str, dict[str, int]]:
             barrier.wait(timeout=1)
-            return f"{prompt}:{client['api_key']}"
+            text = f"{prompt}:{client['api_key']}"
+            usage = {
+                "input": len(prompt),
+                "output": len(text),
+                "total": len(prompt) + len(text),
+            }
+            return text, usage
 
         client._generate_once = generate_once
 
@@ -264,11 +274,63 @@ class GeminiClientTest(unittest.TestCase):
             "fp-one": "secret-one",
             "fp-two": "secret-two",
         }
-        for result in results:
+        for prompt, result in zip(("first", "second"), results, strict=True):
             self.assertTrue(result["ok"])
             self.assertTrue(
                 result["text"].endswith(key_by_fingerprint[result["key_fingerprint"]])
             )
+            self.assertEqual(result["usage"]["input"], len(prompt))
+
+    def test_concurrent_streams_return_request_local_usage(self) -> None:
+        client = object.__new__(GeminiClient)
+        fake_pool = _FakePool()
+        fake_pool_lock = Lock()
+        original_acquire_key = fake_pool.acquire_key
+
+        def acquire_key():
+            with fake_pool_lock:
+                return original_acquire_key()
+
+        fake_pool.acquire_key = acquire_key
+        client.available_keys = ["secret-one", "secret-two"]
+        client.model_name = "fake-model"
+        client.max_retries = 0
+        client.key_pool = fake_pool
+        client._genai = _FakeGenAI()
+        client._types = _FakeTypes()
+        client.request_timeout_seconds = 1
+        client._config = object()
+        barrier = Barrier(2)
+
+        def stream_once(prompt: str, *, client=None):
+            barrier.wait(timeout=1)
+            yield prompt
+            return {
+                "input": len(prompt),
+                "output": len(prompt) + 1,
+                "total": len(prompt) * 2 + 1,
+            }
+
+        def consume(prompt: str):
+            stream = client.generate_stream(prompt)
+            chunks: list[str] = []
+            while True:
+                try:
+                    chunks.append(next(stream))
+                except StopIteration as completed:
+                    return chunks, completed.value
+
+        client._generate_stream_once = stream_once
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            results = list(executor.map(consume, ["one", "second"]))
+
+        for prompt, (chunks, metadata) in zip(
+            ("one", "second"),
+            results,
+            strict=True,
+        ):
+            self.assertEqual(chunks, [prompt])
+            self.assertEqual(metadata["usage"]["input"], len(prompt))
 
 
 class GeminiKeyPoolTest(unittest.TestCase):

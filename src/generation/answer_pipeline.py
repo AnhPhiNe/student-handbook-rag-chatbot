@@ -1,9 +1,11 @@
 import hashlib
 import json
+import logging
 import os
+import threading
 import time
-from contextvars import ContextVar
 from collections.abc import Iterator
+from contextvars import ContextVar
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -61,6 +63,7 @@ DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
 PIPELINE_VERSION = "v63-runtime-config-preparation"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
+logger = logging.getLogger("student_handbook_rag.generation.answer_pipeline")
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
 )
@@ -247,6 +250,8 @@ class AnswerPipeline:
             # Quality evaluation must exercise retrieval and generation.
             self.config.setdefault("cache", {})["enabled"] = False
 
+        self._component_init_lock = threading.Lock()
+        self.router = None
         self._llm_client = llm_client
         self.max_context_chars = int(
             llm_config.get("max_context_chars", DEFAULT_MAX_CONTEXT_CHARS)
@@ -285,6 +290,7 @@ class AnswerPipeline:
         tracker: Any,
         router_started_at: str,
         telemetry: dict[str, Any] | None = None,
+        trace_id: str | None = None,
     ) -> PreparedAnswer:
         """Run shared routing, retrieval, guardrails, prompt, and cache lookup."""
 
@@ -300,6 +306,14 @@ class AnswerPipeline:
                 chat_history=chat_history,
             )
         except Exception as exc:
+            logger.exception(
+                "answer_retrieval_failed",
+                extra={
+                    "trace_id": trace_id,
+                    "cohort": cohort,
+                    "query_length": len(query),
+                },
+            )
             return PreparedAnswer(
                 query=query,
                 effective_query=effective_query,
@@ -483,6 +497,7 @@ class AnswerPipeline:
         from datetime import datetime, timezone
 
         tracker = UsageTracker()
+        trace_id = str(kwargs.get("trace_id") or "").strip() or None
         start_time_router = datetime.now(timezone.utc).isoformat()
         prepared = self.prepare_answer(
             query,
@@ -491,6 +506,7 @@ class AnswerPipeline:
             tracker=tracker,
             router_started_at=start_time_router,
             telemetry=telemetry,
+            trace_id=trace_id,
         )
         effective_query = prepared.effective_query
         cohort = prepared.cohort
@@ -542,6 +558,10 @@ class AnswerPipeline:
         try:
             llm_client = self._get_llm_client()
         except Exception as exc:
+            logger.exception(
+                "answer_llm_initialization_failed",
+                extra={"trace_id": trace_id},
+            )
             final_answer = format_final_answer(
                 build_fallback_answer(
                     effective_query, retrieval_result, reason="api_error"
@@ -586,6 +606,14 @@ class AnswerPipeline:
 
         if not llm_result.get("ok"):
             error_type = llm_result.get("error_type") or "api_error"
+            logger.warning(
+                "answer_generation_failed",
+                extra={
+                    "trace_id": trace_id,
+                    "error_type": error_type,
+                    "error_message": llm_result.get("error_message"),
+                },
+            )
             final_answer = format_final_answer(
                 build_fallback_answer(
                     effective_query, retrieval_result, reason=error_type
@@ -751,6 +779,7 @@ class AnswerPipeline:
         from datetime import datetime, timezone
 
         tracker = UsageTracker()
+        trace_id = str(kwargs.get("trace_id") or "").strip() or None
 
         yield {"type": "progress", "message": "Đang phân tích câu hỏi..."}
 
@@ -762,6 +791,7 @@ class AnswerPipeline:
             cohort=cohort,
             tracker=tracker,
             router_started_at=start_time_router,
+            trace_id=trace_id,
         )
         effective_query = prepared.effective_query
         cohort = prepared.cohort
@@ -844,7 +874,15 @@ class AnswerPipeline:
             pending_stream_text = ""
             stream_prefix_emitted = False
             suppress_source_tail = False
-            for chunk in llm_client.generate_stream(prompt):
+            stream_result: dict[str, Any] = {}
+            llm_stream = iter(llm_client.generate_stream(prompt))
+            while True:
+                try:
+                    chunk = next(llm_stream)
+                except StopIteration as completed:
+                    if isinstance(completed.value, dict):
+                        stream_result = completed.value
+                    break
                 chunk_text = str(chunk)
                 if suppress_source_tail:
                     continue
@@ -880,20 +918,23 @@ class AnswerPipeline:
             end_time_llm = datetime.now(timezone.utc).isoformat()
             self._last_llm_call_at = time.monotonic()
 
-            if (
-                hasattr(llm_client, "_last_stream_usage")
-                and llm_client._last_stream_usage
-            ):
+            stream_usage = stream_result.get("usage") or {}
+            if stream_usage:
                 tracker.record(
                     step_name="LLM Generation",
-                    model=getattr(llm_client, "_last_stream_model", ""),
-                    input_tokens=llm_client._last_stream_usage.get("input", 0),
-                    output_tokens=llm_client._last_stream_usage.get("output", 0),
-                    total_tokens=llm_client._last_stream_usage.get("total", 0),
+                    model=stream_result.get("model_used")
+                    or getattr(llm_client, "model_name", ""),
+                    input_tokens=stream_usage.get("input", 0),
+                    output_tokens=stream_usage.get("output", 0),
+                    total_tokens=stream_usage.get("total", 0),
                     start_time=start_time_llm,
                     end_time=end_time_llm,
                 )
         except Exception as exc:
+            logger.exception(
+                "answer_stream_generation_failed",
+                extra={"trace_id": trace_id},
+            )
             terminal_status = "api_error"
             terminal_error_type = type(exc).__name__
             if emitted_answer_parts:
@@ -943,6 +984,17 @@ class AnswerPipeline:
             "citations_used": final_citations,
         }
 
+    def _get_router(self) -> Any:
+        """Return the process pipeline's lazily initialized router."""
+
+        if self.router is None:
+            with self._component_init_lock:
+                if self.router is None:
+                    from src.retrieval.core.ai_router import AIRouter
+
+                    self.router = AIRouter.from_config()
+        return self.router
+
     def _run_retrieval(
         self,
         query: str,
@@ -950,10 +1002,7 @@ class AnswerPipeline:
         chat_history: list[dict[str, str]] | None = None,
     ) -> dict[str, Any]:
         """Run the active QueryPlan and retrieval stack for one cohort context."""
-        if not hasattr(self, "router"):
-            from src.retrieval.core.ai_router import AIRouter
-
-            self.router = AIRouter.from_config()
+        self._get_router()
 
         return self._run_query_plan(
             query=query,
@@ -1540,28 +1589,34 @@ class AnswerPipeline:
     def _get_llm_client(self) -> Any:
         """Lazily create the configured LLM client for generated true-RAG answers."""
         if self._llm_client is None:
-            llm_config = self.config["llm"]
-            provider = llm_config.get("provider", "gemini")
-            if provider == "gemini":
-                self._llm_client = GeminiClient(
-                    model_name=llm_config.get("model_name", "gemini-3.1-flash-lite"),
-                    temperature=llm_config.get("temperature", 0.2),
-                    max_output_tokens=llm_config.get("max_output_tokens", 1024),
-                    max_retries=llm_config.get("max_retries", 3),
-                    retry_base_delay_seconds=llm_config.get(
-                        "retry_base_delay_seconds", 2
-                    ),
-                    retry_max_delay_seconds=llm_config.get(
-                        "retry_max_delay_seconds", 20
-                    ),
-                    request_timeout_seconds=llm_config.get(
-                        "request_timeout_seconds", 60
-                    ),
-                    api_keys_env_var=llm_config.get(
-                        "api_keys_env_var", "GEMINI_API_KEYS"
-                    ),
-                    key_pool_config=llm_config.get("key_pool"),
-                )
+            with self._component_init_lock:
+                if self._llm_client is None:
+                    llm_config = self.config["llm"]
+                    provider = llm_config.get("provider", "gemini")
+                    if provider == "gemini":
+                        self._llm_client = GeminiClient(
+                            model_name=llm_config.get(
+                                "model_name", "gemini-3.1-flash-lite"
+                            ),
+                            temperature=llm_config.get("temperature", 0.2),
+                            max_output_tokens=llm_config.get(
+                                "max_output_tokens", 1024
+                            ),
+                            max_retries=llm_config.get("max_retries", 3),
+                            retry_base_delay_seconds=llm_config.get(
+                                "retry_base_delay_seconds", 2
+                            ),
+                            retry_max_delay_seconds=llm_config.get(
+                                "retry_max_delay_seconds", 20
+                            ),
+                            request_timeout_seconds=llm_config.get(
+                                "request_timeout_seconds", 60
+                            ),
+                            api_keys_env_var=llm_config.get(
+                                "api_keys_env_var", "GEMINI_API_KEYS"
+                            ),
+                            key_pool_config=llm_config.get("key_pool"),
+                        )
         return self._llm_client
 
     def _throttle_llm_call(self) -> None:

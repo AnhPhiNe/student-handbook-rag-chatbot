@@ -13,6 +13,7 @@ if TestClient is not None:
     from src.api import chat_controls
     from src.api.deps import get_answer_service
     from src.api.main import app
+    from src.api.routes.chat import PUBLIC_ERROR_MESSAGE, _to_chat_response
     from src.api.schemas import ArtifactHealthResponse
 
 
@@ -83,6 +84,22 @@ class ApiRoutesTest(unittest.TestCase):
         chat_controls._RATE_LIMIT_BUCKETS.clear()
         app.dependency_overrides[get_answer_service] = lambda: FakeAnswerService()
         self.client = TestClient(app)
+
+    def test_public_chat_response_hides_internal_error_details(self) -> None:
+        result = {
+            "answer": "fallback",
+            "status": "api_error",
+            "error_type": "api_error",
+            "error_message": "provider failed at mongodb://internal-host/secret-db",
+        }
+
+        public_response = _to_chat_response(result, include_debug=False)
+        debug_response = _to_chat_response(result, include_debug=True)
+
+        self.assertEqual(public_response.error_message, PUBLIC_ERROR_MESSAGE)
+        self.assertNotIn("internal-host", public_response.error_message)
+        self.assertIn("internal-host", debug_response.error_message)
+        self.assertIn("internal-host", debug_response.debug["error_message"])
 
     def tearDown(self) -> None:
         app.dependency_overrides.clear()

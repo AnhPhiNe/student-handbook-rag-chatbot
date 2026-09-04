@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import logging
+from unittest.mock import Mock
+
 from src.evaluation.suites import _run_pure_regulation_retrieval
 from src.generation.answer_pipeline import AnswerPipeline
 
@@ -54,6 +57,34 @@ def test_answer_output_propagates_query_handling() -> None:
     assert output["effective_query"] == handling["effective_query"]
     assert output["query_handling"] == handling
     assert output["router_decision"]["query_handling"] == handling
+
+
+def test_prepare_answer_logs_retrieval_failure_with_trace_id(caplog) -> None:
+    pipeline = _minimal_pipeline()
+
+    def fail_retrieval(*args, **kwargs):
+        raise RuntimeError("internal retrieval endpoint failed")
+
+    pipeline._run_retrieval = fail_retrieval
+    with caplog.at_level(
+        logging.ERROR,
+        logger="student_handbook_rag.generation.answer_pipeline",
+    ):
+        prepared = pipeline.prepare_answer(
+            "test query",
+            chat_history=[],
+            cohort="K51",
+            tracker=Mock(),
+            router_started_at="",
+            trace_id="trace-test",
+        )
+
+    record = next(
+        item for item in caplog.records if item.message == "answer_retrieval_failed"
+    )
+    assert prepared.terminal_status == "retrieval_error"
+    assert record.trace_id == "trace-test"
+    assert "internal retrieval endpoint failed" in (record.exc_text or "")
 
 
 def test_evaluation_pure_retrieval_bypasses_planner(monkeypatch) -> None:

@@ -255,6 +255,12 @@ def _composition_units(
     fallback_cohort: str | None,
     fallback_question: str,
 ) -> list[dict[str, Any]]:
+    """Expand planned tasks into cohort-specific units for answer composition.
+
+    Coverage and clarification state are retained per task and cohort. Results
+    without a QueryPlan receive one backward-compatible fallback unit.
+    """
+
     plan = retrieval_result.get("query_plan") or {}
     tasks = plan.get("tasks") or []
     task_results = {

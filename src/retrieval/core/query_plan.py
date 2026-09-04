@@ -478,6 +478,13 @@ def _normalize_task(
     grounding_context: str,
     registry: dict[str, Any],
 ) -> tuple[dict[str, Any], list[str]]:
+    """Normalize and validate one planner task without invalidating siblings.
+
+    Invalid structured inputs are narrowed to clarification when user data is
+    missing, or downgraded to regulation RAG when the structured contract is
+    unsafe. The returned errors remain available for planner observability.
+    """
+
     mode = str(raw_task.get("mode") or "").strip().lower()
     question = str(raw_task.get("question") or original_query).strip() or original_query
     errors: list[str] = []

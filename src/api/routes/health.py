@@ -34,6 +34,8 @@ def _artifact(path: str, exists: bool, kind: str) -> ArtifactStatus:
 
 
 def _build_manifest_matches_environment() -> bool:
+    """Check that the build manifest targets the configured runtime stores."""
+
     try:
         contract = load_retrieval_build_contract(BUILD_MANIFEST_PATH)
     except (OSError, ValueError, json.JSONDecodeError):
@@ -52,6 +54,8 @@ def _build_manifest_matches_environment() -> bool:
 
 
 def _required_artifacts() -> list[ArtifactStatus]:
+    """Resolve required files, store identity, and environment configuration."""
+
     retrieval_config_path = Path(
         os.environ.get("STUDENT_RAG_RETRIEVAL_CONFIG")
         or DEFAULT_RETRIEVAL_CONFIG_PATH

@@ -50,17 +50,6 @@ class AnswerService:
             query, chat_history=chat_history, cohort=cohort, **kwargs
         )
 
-    def health(self) -> dict[str, Any]:
-        """Report service identity and lazy pipeline initialization state."""
-
-        return {
-            "status": "ok",
-            "service": self.__class__.__name__,
-            "pipeline_class": AnswerPipeline.__name__,
-            "pipeline_loaded": self._pipeline is not None,
-            "config_path": str(self.config_path),
-        }
-
     def _get_pipeline(self) -> AnswerPipeline:
         """Initialize the shared pipeline once, guarded against concurrent requests."""
 

@@ -474,6 +474,12 @@ def _resolve_single_lookup(
     program_directory: list[dict[str, Any]],
     model: Any | None = None,
 ) -> StructuredResolution | None:
+    """Dispatch one validated lookup and package only grounded results.
+
+    A ``None`` return leaves the caller free to use its existing RAG fallback;
+    ambiguous directory matches instead return an explicit clarification result.
+    """
+
     slots = decision.get("slots") or {}
 
     if lookup_type in _REFERENCE_TABLE_TYPES:

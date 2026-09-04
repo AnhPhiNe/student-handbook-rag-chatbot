@@ -18,6 +18,7 @@ else:
 LOCK_POLL_SECONDS = 0.05
 LOCK_TIMEOUT_SECONDS = 5.0
 DEFAULT_CACHE_TTL_SECONDS = 86400
+DEFAULT_CACHE_MAX_ENTRIES = 1000
 DEFAULT_CACHE_NAMESPACE = "v44-answer-anchor-citation-order"
 
 
@@ -36,10 +37,12 @@ class ResponseCache:
         path: str | Path,
         enabled: bool = True,
         ttl_seconds: int = DEFAULT_CACHE_TTL_SECONDS,
+        max_entries: int = DEFAULT_CACHE_MAX_ENTRIES,
     ) -> None:
         self.path = Path(path)
         self.enabled = bool(enabled)
         self.ttl_seconds = max(1, int(ttl_seconds))
+        self.max_entries = max(1, int(max_entries))
         self._data: dict[str, Any] = {}
         self._lock = threading.RLock()
         self._load()
@@ -50,10 +53,13 @@ class ResponseCache:
         if not self.enabled:
             return None
         with self._lock:
+            changed = self._prune_expired_entries()
             value = self._data.get(key)
             cached = self._unwrap_entry(value)
             if cached is None and key in self._data:
                 self._data.pop(key, None)
+                changed = True
+            if changed:
                 self.save()
         return cached
 
@@ -63,10 +69,12 @@ class ResponseCache:
         if not self.enabled:
             return
         with self._lock:
+            self._prune_expired_entries()
             self._data[key] = {
                 "created_at": time.time(),
                 "value": value,
             }
+            self._evict_oldest_entries()
             self.save()
 
     def save(self) -> None:
@@ -153,6 +161,52 @@ class ResponseCache:
             return
 
         self._data = loaded if isinstance(loaded, dict) else {}
+        with self._lock:
+            changed = self._prune_expired_entries()
+            changed = self._evict_oldest_entries() or changed
+            if changed:
+                self.save()
+
+    def _prune_expired_entries(self) -> bool:
+        """Remove expired or malformed versioned entries from local state."""
+
+        stale_keys = [
+            key
+            for key, entry in self._data.items()
+            if not isinstance(entry, dict)
+            or (
+                "created_at" in entry
+                and "value" in entry
+                and self._unwrap_entry(entry) is None
+            )
+        ]
+        for key in stale_keys:
+            self._data.pop(key, None)
+        return bool(stale_keys)
+
+    def _evict_oldest_entries(self) -> bool:
+        """Keep the local fallback bounded by evicting its oldest entries."""
+
+        evicted = False
+        while len(self._data) > self.max_entries:
+            oldest_key = min(
+                self._data,
+                key=lambda key: self._entry_created_at(self._data[key]),
+            )
+            self._data.pop(oldest_key, None)
+            evicted = True
+        return evicted
+
+    @staticmethod
+    def _entry_created_at(entry: Any) -> float:
+        """Return an entry timestamp, treating legacy entries as the oldest."""
+
+        if not isinstance(entry, dict):
+            return float("-inf")
+        try:
+            return float(entry.get("created_at"))
+        except (TypeError, ValueError):
+            return float("-inf")
 
     def _unwrap_entry(self, entry: Any) -> dict[str, Any] | None:
         """Return the payload only when a cache entry has not expired."""
@@ -224,9 +278,15 @@ class RedisResponseCache(ResponseCache):
         path: str | Path,
         enabled: bool = True,
         ttl_seconds: int = DEFAULT_CACHE_TTL_SECONDS,
+        max_entries: int = DEFAULT_CACHE_MAX_ENTRIES,
     ) -> None:
         # Reuse key/TTL helpers without loading or writing process-local JSON.
-        super().__init__(path=path, enabled=False, ttl_seconds=ttl_seconds)
+        super().__init__(
+            path=path,
+            enabled=False,
+            ttl_seconds=ttl_seconds,
+            max_entries=max_entries,
+        )
         self.enabled = bool(enabled)
         self.redis_url = redis_url
         import redis
@@ -274,6 +334,7 @@ def get_response_cache(
     path: str | Path,
     enabled: bool = True,
     ttl_seconds: int = DEFAULT_CACHE_TTL_SECONDS,
+    max_entries: int = DEFAULT_CACHE_MAX_ENTRIES,
 ) -> ResponseCache:
     """Create the configured Redis cache or the bounded local fallback."""
 
@@ -284,7 +345,7 @@ def get_response_cache(
         "on",
     }:
         print("[Cache] Redis disabled by STUDENT_RAG_DISABLE_REDIS. Using Local JSON.")
-        return ResponseCache(path, enabled, ttl_seconds)
+        return ResponseCache(path, enabled, ttl_seconds, max_entries)
 
     redis_url = os.environ.get("REDIS_URL")
     if redis_url:
@@ -294,11 +355,17 @@ def get_response_cache(
             r = redis.from_url(redis_url)
             r.ping()
             print("[Cache] Connected to Redis. Using Redis-only caching.")
-            return RedisResponseCache(redis_url, path, enabled, ttl_seconds)
+            return RedisResponseCache(
+                redis_url,
+                path,
+                enabled,
+                ttl_seconds,
+                max_entries,
+            )
         except Exception as e:
             if _env_bool("STUDENT_RAG_REQUIRE_REDIS"):
                 raise RuntimeError("Redis is required but unavailable") from e
             print(f"[Cache] Redis connection failed: {e}. Falling back to Local JSON.")
 
     print("[Cache] Using Local JSON Caching.")
-    return ResponseCache(path, enabled, ttl_seconds)
+    return ResponseCache(path, enabled, ttl_seconds, max_entries)

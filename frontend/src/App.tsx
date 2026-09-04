@@ -21,7 +21,6 @@ import { BottomTabBar } from './components/BottomTabBar';
 import { ToastProvider } from './components/Toast';
 import { useMediaQuery } from './hooks/useMediaQuery';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { BugReportModal } from './components/BugReportModal';
 import { VisitorCounter } from './components/VisitorCounter';
 import { CohortSelectionModal } from './components/CohortSelectionModal';
 import { SystemStatusBadge } from './components/SystemStatusBadge';
@@ -51,7 +50,6 @@ function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [isBugModalOpen, setIsBugModalOpen] = useState(false);
   const [isCohortModalDismissed, setIsCohortModalDismissed] = useState(false);
   const contentAreaRef = useRef<HTMLDivElement>(null);
   
@@ -93,7 +91,6 @@ function App() {
             isMobileOpen={isMobileMenuOpen}
             onClose={() => setIsMobileMenuOpen(false)}
             onToggleCollapse={() => setSidebarCollapsed(prev => !prev)}
-            onOpenBugReport={() => setIsBugModalOpen(true)}
             showVisitorCounter={isMobile}
           />
           
@@ -187,8 +184,6 @@ function App() {
             />
           )}
 
-          <BugReportModal isOpen={isBugModalOpen} setIsOpen={setIsBugModalOpen} messages={messages} />
-          
           {!storedCohort && !isCohortModalDismissed && (
             <CohortSelectionModal
               onSelect={setCohort}

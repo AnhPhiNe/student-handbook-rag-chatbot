@@ -31,6 +31,8 @@ llm:
 cache:
   enabled: true
   path: data/cache/answer_response_cache.json
+  ttl_seconds: 86400
+  max_entries: 1000
 
 citations:
   selection_max_sources: 5

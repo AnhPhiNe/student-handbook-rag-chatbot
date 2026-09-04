@@ -1,4 +1,4 @@
-import { Award, Calculator, FileText, GraduationCap, HelpCircle, MessageSquare, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home, Bug, Sparkles } from 'lucide-react';
+import { Award, Calculator, FileText, GraduationCap, HelpCircle, MessageSquare, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home, Sparkles } from 'lucide-react';
 const logoHcmue = '/logo_hcmue.png?v=2';
 import { VisitorCounter } from './VisitorCounter';
 
@@ -9,11 +9,10 @@ interface SidebarProps {
   isMobileOpen: boolean;
   onClose: () => void;
   onToggleCollapse: () => void;
-  onOpenBugReport: () => void;
   showVisitorCounter?: boolean;
 }
 
-export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onClose, onToggleCollapse, onOpenBugReport, showVisitorCounter }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onClose, onToggleCollapse, showVisitorCounter }: SidebarProps) {
   const handleTabClick = (tab: string) => {
     onTabChange(tab);
     onClose(); // close mobile menu on selection
@@ -118,10 +117,6 @@ export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onC
               <VisitorCounter />
             </div>
           )}
-          <button type="button" onClick={onOpenBugReport} className="sidebar-feedback-btn">
-            <Bug size={14} />
-            <span>Báo lỗi / Góp ý</span>
-          </button>
           <p>Dự án cá nhân vì sinh viên HCMUE · Phiên bản 1.0</p>
         </div>
       </aside>

@@ -1,4 +1,4 @@
-import { MessageSquare, Wrench, ShieldAlert, FileText, Bug, CheckCircle2, Zap, Target, Award, GraduationCap, HelpCircle, Calculator } from 'lucide-react';
+import { MessageSquare, Wrench, ShieldAlert, FileText, CheckCircle2, Zap, Target, Award, GraduationCap, HelpCircle, Calculator } from 'lucide-react';
 
 interface GuidePageProps {
   onNavigate?: (tabId: string) => void;
@@ -135,26 +135,6 @@ export function GuidePage({ onNavigate }: GuidePageProps) {
                 <li><strong>Tìm kiếm siêu tốc:</strong> Gõ từ khóa như "đăng ký", "xác nhận" để lọc ngay biểu mẫu bạn cần trong nháy mắt.</li>
                 <li><strong>Tải xuống 1-click:</strong> Hỗ trợ tải trực tiếp các file định dạng chuẩn (.doc, .docx, .pdf) về máy tính/điện thoại ngay lập tức.</li>
               </ul>
-            </div>
-          </section>
-
-          {/* Section 5: Bug Report */}
-          <section className="guide-section">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-              <div style={{ padding: '0.75rem', borderRadius: '12px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
-                <Bug size={28} />
-              </div>
-              <h2 style={{ margin: 0, fontSize: '1.75rem' }}>5. Báo lỗi & Góp ý</h2>
-            </div>
-            
-            <p style={{ fontSize: '1.05rem', lineHeight: '1.7', color: 'var(--text-secondary)' }}>
-              Hệ thống đang trong giai đoạn thử nghiệm (BETA), do đó không tránh khỏi những sai sót. Sự đóng góp của bạn là vô giá để chúng tôi hoàn thiện ứng dụng.
-            </p>
-            
-            <div className="tip-box" style={{ background: 'var(--bg-primary)', borderLeft: '4px solid var(--danger)', margin: '1.5rem 0 0 0', padding: '1.25rem' }}>
-              <p style={{ margin: 0, fontSize: '1rem', lineHeight: '1.6' }}>
-                Bất cứ lúc nào bạn gặp lỗi hiển thị, lỗi tính toán hoặc muốn đóng góp ý tưởng, hãy nhấn vào nút <strong>Báo lỗi / Góp ý (biểu tượng con bọ)</strong> nằm ở góc dưới của thanh menu bên trái. Đội ngũ phát triển luôn sẵn sàng lắng nghe!
-              </p>
             </div>
           </section>
 

@@ -266,6 +266,7 @@ class AnswerPipeline:
             ),
             enabled=cache_config.get("enabled", True),
             ttl_seconds=cache_config.get("ttl_seconds", 86400),
+            max_entries=cache_config.get("max_entries", 1000),
         )
 
     def _selection_source_limit(self) -> int:

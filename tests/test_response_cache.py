@@ -49,6 +49,37 @@ class ResponseCacheTest(unittest.TestCase):
 
             self.assertEqual(json.loads(cache_path.read_text(encoding="utf-8")), {})
 
+    def test_local_cache_prunes_unrelated_expired_entries_before_writing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cache_path = Path(tmpdir) / "cache.json"
+            cache = ResponseCache(cache_path, ttl_seconds=10)
+
+            with patch("src.generation.response_cache.time.time", return_value=1000.0):
+                cache.set("stale", {"answer": "old"})
+
+            with patch("src.generation.response_cache.time.time", return_value=1011.0):
+                cache.set("fresh", {"answer": "new"})
+
+            stored = json.loads(cache_path.read_text(encoding="utf-8"))
+            self.assertEqual(set(stored), {"fresh"})
+
+    def test_local_cache_evicts_oldest_entry_at_max_entries(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cache_path = Path(tmpdir) / "cache.json"
+            cache = ResponseCache(cache_path, max_entries=2)
+
+            with patch("src.generation.response_cache.time.time", return_value=1000.0):
+                cache.set("first", {"answer": "one"})
+            with patch("src.generation.response_cache.time.time", return_value=1001.0):
+                cache.set("second", {"answer": "two"})
+            with patch("src.generation.response_cache.time.time", return_value=1002.0):
+                cache.set("third", {"answer": "three"})
+
+            with patch("src.generation.response_cache.time.time", return_value=1003.0):
+                self.assertIsNone(cache.get("first"))
+                self.assertEqual(cache.get("second"), {"answer": "two"})
+                self.assertEqual(cache.get("third"), {"answer": "three"})
+
     def test_legacy_local_cache_entries_still_read(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             cache_path = Path(tmpdir) / "cache.json"

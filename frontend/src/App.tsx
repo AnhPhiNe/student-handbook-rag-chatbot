@@ -172,7 +172,7 @@ function App() {
               <MobileScrollAffordance
                 activeKey={activeTab}
                 containerRef={contentAreaRef}
-                disabled={activeTab === 'chat'}
+                disabled={activeTab === 'chat' || activeTab === 'gpa'}
               />
             )}
           </div>

@@ -178,6 +178,9 @@ student_handbook_rag/
 └── tests/                           # Unit, integration, and regression tests
 ```
 
+The current runtime/build boundary and intentionally deferred cleanup work are
+documented in [Technical Debt and Maintenance Boundary](./docs/TECHNICAL_DEBT.md).
+
 ### 🔨 Data build pipeline
 
 ```mermaid

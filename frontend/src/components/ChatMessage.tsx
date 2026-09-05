@@ -9,8 +9,8 @@ import { useToast } from './Toast';
 import { RelatedReferenceLink } from './RelatedReference';
 import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 import { StructuredResults } from './StructuredResults';
+import { OwlMascot, type OwlState } from './OwlMascot';
 const userAvatarImg = '/user_avatar.png';
-const botAvatarImg = '/bot_avatar.png';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
@@ -634,13 +634,11 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
     return (
       <div className="message-wrapper user">
         <img src={userAvatarImg} alt="User" className="avatar user" style={{ backgroundColor: 'transparent' }} />
-        <div className="message-content">
-          <div className="message-header">
-            <span className="message-time">{getRelativeTime(message.timestamp)}</span>
-          </div>
-          <div className="message-bubble">
+        <div className="message-content user-message-content">
+          <div className="message-bubble user-bubble">
             {message.content}
           </div>
+          <span className="user-time">{getRelativeTime(message.timestamp)}</span>
         </div>
       </div>
     );
@@ -664,7 +662,7 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
   const structuredSourceCitations = (message.structuredResults ?? []).flatMap((result) => (
     result.provenance.source_reference ? [result.provenance.source_reference] : []
   ));
-  const primaryReferences = deduplicatePrimaryReferences(buildPrimaryArticleReferences([
+const primaryReferences = deduplicatePrimaryReferences(buildPrimaryArticleReferences([
     ...(message.citations ?? []),
     ...structuredSourceCitations,
   ]));
@@ -676,11 +674,12 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
     ))
     : [];
 
+  const mascotState: OwlState = message.isStreaming
+    ? 'reading'
+    : (!isErrorMsg && (displayContent || (message.structuredResults && message.structuredResults.length > 0)) ? 'eureka' : 'idle');
   return (
     <div className="message-wrapper bot" aria-live="polite">
-      <div className={`avatar-container ${message.isStreaming && (!displayContent || !isMinDelayPassed) ? 'halo-breathing' : ''}`}>
-        <img src={botAvatarImg} alt="HCMUE AI" className="avatar bot" />
-      </div>
+      <OwlMascot state={mascotState} size={44} showFrame={true} />
       <div className="message-content">
         <div className={`message-bubble ${message.isStreaming && (!displayContent || !isMinDelayPassed) && !thinkContent ? 'typing-indicator' : ''}`}>
           {message.isStreaming && (!displayContent || !isMinDelayPassed) && !thinkContent ? (
@@ -762,14 +761,16 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
 
           {!message.isStreaming && message.citations && message.citations.length > 0 && (
             <div className="citation-container">
-              <div 
-                className="citation-header" 
+              <button 
+                type="button"
+                className="citation-toggle-chip" 
                 onClick={() => setShowSources(!showSources)}
-                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-secondary)' }}
+                aria-expanded={showSources}
               >
+                <BookOpen size={14} />
                 <span>Nguồn tham khảo ({message.citations.length})</span>
-                {showSources ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-              </div>
+                {showSources ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+              </button>
               
               {showSources && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
@@ -841,87 +842,87 @@ export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestio
               )}
             </div>
           )}
+
+          {!message.isStreaming && !isErrorMsg && (
+            <div className="message-card-footer">
+              <div className="message-card-footer-main">
+                <div className="meta-actions">
+                  <button className="action-btn" title="Chia sẻ" onClick={handleShare}>
+                    <Share2 size={15} />
+                    <span className="action-btn-label">Chia sẻ</span>
+                  </button>
+                  <button 
+                    className={`action-btn ${feedback === 'like' ? 'active' : ''} ${justFinished ? 'pulse-glow' : ''}`} 
+                    title="Hữu ích" 
+                    onClick={() => handleFeedbackClick('like')}
+                    disabled={feedback !== null}
+                  >
+                    <ThumbsUp size={15} />
+                  </button>
+                  <button 
+                    className={`action-btn ${feedback === 'dislike' ? 'active' : ''} ${justFinished ? 'pulse-glow' : ''}`} 
+                    title="Chưa chính xác" 
+                    onClick={() => handleFeedbackClick('dislike')}
+                    disabled={feedback !== null}
+                  >
+                    <ThumbsDown size={15} />
+                  </button>
+                  <button className="action-btn" title="Copy" onClick={handleCopy}>
+                    {copied ? <Check size={15} style={{color: 'var(--success)'}}/> : <Copy size={15} />}
+                    <span className="action-btn-label">{copied ? 'Đã copy' : 'Copy'}</span>
+                  </button>
+                  <button className="action-btn" title="Tạo lại" onClick={() => onRegenerate?.()}>
+                    <RotateCcw size={15} />
+                    <span className="action-btn-label">Tạo lại</span>
+                  </button>
+                </div>
+                
+                <div className="meta-latency-wrapper">
+                  {message.usedCache ? (
+                    <span className="metadata-badge cache" title="Câu trả lời được lấy từ bộ nhớ đệm giúp tốc độ phản hồi tức thì">
+                      ⚡ Từ bộ nhớ đệm
+                    </span>
+                  ) : message.responseTimeMs ? (
+                    <span 
+                      className="metadata-badge latency" 
+                      title={`Tổng thời gian phản hồi: ${(message.responseTimeMs / 1000).toFixed(2)}s${message.ttftMs ? ` (Từ đầu tiên: ${(message.ttftMs / 1000).toFixed(2)}s)` : ''}`}
+                    >
+                      ⏱️ {(message.responseTimeMs / 1000).toFixed(1)}s
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+
+              {showInlineFeedback && (
+                <div className="inline-feedback-container">
+                  <div className="inline-feedback-header">
+                    Câu trả lời sai hoặc thiếu thông tin gì? (Không bắt buộc)
+                  </div>
+                  <textarea 
+                    ref={feedbackInputRef}
+                    className="inline-feedback-input"
+                    value={feedbackText} 
+                    onChange={e => setFeedbackText(e.target.value)} 
+                    placeholder="VD: Trả lời sai điều kiện học bổng K51."
+                    rows={2}
+                    disabled={isSubmitting}
+                  />
+                  <div className="inline-feedback-actions">
+                    <button className="btn-secondary" onClick={() => setShowInlineFeedback(false)} disabled={isSubmitting}>Bỏ qua</button>
+                    <button className="btn-primary" onClick={() => submitFeedbackToApi('dislike', feedbackText)} disabled={isSubmitting}>
+                      {isSubmitting ? "Đang gửi..." : "Gửi góp ý"}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {isErrorMsg && (
           <button className="retry-btn" onClick={() => onRetry?.()}>
             <RotateCcw size={14} /> Thử lại
           </button>
-        )}
-
-        {!message.isStreaming && !isErrorMsg && (
-          <div className="message-metadata" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
-            <div style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
-              <div className="meta-actions">
-                <button className="action-btn" title="Chia sẻ" onClick={handleShare}>
-                  <Share2 size={16} />
-                  <span className="action-btn-label">Chia sẻ</span>
-                </button>
-                <button 
-                  className={`action-btn ${feedback === 'like' ? 'active' : ''} ${justFinished ? 'pulse-glow' : ''}`} 
-                  title="Hữu ích" 
-                  onClick={() => handleFeedbackClick('like')}
-                  disabled={feedback !== null}
-                >
-                  <ThumbsUp size={16} />
-                </button>
-                <button 
-                  className={`action-btn ${feedback === 'dislike' ? 'active' : ''} ${justFinished ? 'pulse-glow' : ''}`} 
-                  title="Chưa chính xác" 
-                  onClick={() => handleFeedbackClick('dislike')}
-                  disabled={feedback !== null}
-                >
-                  <ThumbsDown size={16} />
-                </button>
-                <button className="action-btn" title="Copy" onClick={handleCopy}>
-                  {copied ? <Check size={16} style={{color: 'var(--success)'}}/> : <Copy size={16} />}
-                  <span className="action-btn-label">{copied ? 'Đã copy' : 'Copy'}</span>
-                </button>
-                <button className="action-btn" title="Tạo lại" onClick={() => onRegenerate?.()}>
-                  <RotateCcw size={16} />
-                  <span className="action-btn-label">Tạo lại</span>
-                </button>
-              </div>
-              
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: 'auto' }}>
-                {message.usedCache ? (
-                  <span className="metadata-badge cache" title="Câu trả lời được lấy từ bộ nhớ đệm giúp tốc độ phản hồi tức thì">
-                    ⚡ Từ bộ nhớ đệm
-                  </span>
-                ) : message.responseTimeMs ? (
-                  <span 
-                    className="metadata-badge latency" 
-                    title={`Tổng thời gian phản hồi: ${(message.responseTimeMs / 1000).toFixed(2)}s${message.ttftMs ? ` (Từ đầu tiên: ${(message.ttftMs / 1000).toFixed(2)}s)` : ''}`}
-                  >
-                    ⏱️ {(message.responseTimeMs / 1000).toFixed(1)}s
-                  </span>
-                ) : null}
-              </div>
-            </div>
-
-            {showInlineFeedback && (
-              <div className="inline-feedback-container">
-                <div className="inline-feedback-header">
-                  Câu trả lời sai hoặc thiếu thông tin gì? (Không bắt buộc)
-                </div>
-                <textarea 
-                  ref={feedbackInputRef}
-                  className="inline-feedback-input"
-                  value={feedbackText} 
-                  onChange={e => setFeedbackText(e.target.value)} 
-                  placeholder="VD: Trả lời sai điều kiện học bổng K51."
-                  rows={2}
-                  disabled={isSubmitting}
-                />
-                <div className="inline-feedback-actions">
-                  <button className="btn-secondary" onClick={() => setShowInlineFeedback(false)} disabled={isSubmitting}>Bỏ qua</button>
-                  <button className="btn-primary" onClick={() => submitFeedbackToApi('dislike', feedbackText)} disabled={isSubmitting}>
-                    {isSubmitting ? "Đang gửi..." : "Gửi góp ý"}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
         )}
 
         {!message.isStreaming && !isErrorMsg && message.role === 'bot' && message.suggestions && message.suggestions.length > 0 && (

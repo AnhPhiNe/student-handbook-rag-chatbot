@@ -6,7 +6,7 @@ import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';
 import type { Cohort } from '../utils/gradeScale';
 import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
-const botAvatarImg = '/bot_avatar.png';
+import { OwlMascot } from './OwlMascot';
 
 const IS_MAINTENANCE_MODE = false;
 const CHAT_TIPS_STORAGE_KEY = 'hcmue-chat-question-tips-seen';
@@ -294,7 +294,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
           <div className="empty-state-content">
             {/* Hero - compact */}
             <div className="empty-hero" style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
-              <img src={botAvatarImg} alt="HCMUE AI" className="bot-avatar-animated" style={{ width: '80px', height: '80px', objectFit: 'contain', flexShrink: 0, borderRadius: '50%' }} />
+              <OwlMascot state="idle" size={92} showFrame={false} />
               <h2 className="hero-title" style={{ fontSize: '1.5rem', marginTop: '1rem', color: 'var(--primary)' }}>{greeting}</h2>
               <p className="hero-subtitle" style={{ marginTop: '0.5rem', fontSize: '1.125rem' }}>Mình là trợ lý AI của Đại học Sư phạm TP.HCM</p>
               <p className="hero-desc">Bạn cần tìm gì trong sổ tay sinh viên hôm nay?</p>

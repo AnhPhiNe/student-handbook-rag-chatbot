@@ -1015,7 +1015,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 .message-wrapper {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
@@ -1050,8 +1050,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .scroll-to-bottom-btn:hover { transform: translateY(-2px); color: var(--primary); }
 
 .avatar {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1065,11 +1065,35 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.avatar.user { background: transparent; margin-top: 24px; }
-.avatar.bot { background: transparent; border: 1px solid var(--border-color); margin-top: 4px; }
+.avatar.user { background: transparent; margin-top: 0; }
+.avatar.bot { background: transparent; border: 1px solid var(--border-color); margin-top: 0; }
 [data-theme='dark'] .avatar.bot { background: transparent; }
 
-.message-content { flex: 1; min-width: 0; }
+.owl-mascot-avatar {
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  background: #ffffff !important;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0 !important;
+  transition: all 0.3s ease;
+}
+
+.avatar-frame-idle-white,
+.avatar-frame-reading-white,
+.avatar-frame-eureka-white {
+  border-radius: 50% !important;
+}
+
+.message-content {
+  flex: 1;
+  min-width: 0;
+  margin-top: 14px; /* Natural alignment with avatar face level */
+}
 
 .message-header {
   display: flex;
@@ -1081,9 +1105,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .message-bubble {
   position: relative;
   background-color: var(--bot-msg-bg);
-  padding: 1rem 1.25rem;
+  padding: 0.85rem 1.25rem 0.75rem 1.25rem;
   border-radius: 18px;
-  border-top-left-radius: 4px;
   border: 1px solid var(--border-color);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
   font-size: 0.95rem;
@@ -1091,53 +1114,94 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   color: var(--text-primary);
 }
 
-/* Outer triangle for the border */
-.message-bubble::before {
-  content: '';
-  position: absolute;
-  top: 14px;
-  left: -8px;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 6px 8px 6px 0;
-  border-color: transparent var(--border-color) transparent transparent;
+.message-bubble::before,
+.message-bubble::after {
+  display: none !important;
 }
 
-/* Inner triangle for the background */
-.message-bubble::after {
-  content: '';
-  position: absolute;
-  top: 15px;
-  left: -7px;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 5px 8px 5px 0;
-  border-color: transparent transparent transparent transparent;
+/* Bot Message: Seamless connection to Owl Avatar */
+.message-wrapper.bot {
+  padding-right: calc(40px + 0.5rem);
+}
+
+.message-wrapper.bot .message-content {
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .message-wrapper.bot .message-bubble {
   background: var(--bot-msg-bg);
+  border-radius: 18px;
+  border-top-left-radius: 4px; /* Tapered corner curving directly to Owl Avatar */
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.035);
+  padding: 0.85rem 1.25rem 0.75rem 1.25rem;
+  width: fit-content;
+  max-width: 100%;
 }
-.message-wrapper.bot .message-bubble::after {
-  border-right-color: var(--bot-msg-bg);
+
+.message-wrapper.bot .message-bubble:has(.message-card-footer) {
+  min-width: min(100%, 320px);
 }
 
 [data-theme='dark'] .message-wrapper.bot .message-bubble {
   background: var(--bot-msg-bg);
-}
-[data-theme='dark'] .message-wrapper.bot .message-bubble::after {
-  border-right-color: var(--bot-msg-bg);
+  border-color: var(--border-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
-.message-wrapper.user .message-bubble {
-  background: var(--user-msg-bg);
-  border-top-left-radius: 4px;
-  border-top-right-radius: var(--radius-lg);
+/* User Message: Seamless connection to User Avatar */
+.message-wrapper.user {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  padding-left: calc(44px + 0.5rem);
 }
-.message-wrapper.user .message-bubble::after {
-  border-right-color: var(--user-msg-bg);
+
+.message-wrapper.user .user-message-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: 100%;
+}
+
+.message-wrapper.user .message-header {
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.message-wrapper.user .message-bubble.user-bubble {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  color: #ffffff !important;
+  border-radius: 18px;
+  border-top-right-radius: 4px; /* Tapered corner curving directly to User Avatar */
+  border: 1px solid rgba(37, 99, 235, 0.35);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.22);
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.7rem 1.15rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.message-wrapper.user .message-bubble.user-bubble * {
+  color: #ffffff !important;
+}
+
+[data-theme='dark'] .message-wrapper.user .message-bubble.user-bubble {
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+  border-color: rgba(147, 197, 253, 0.35);
+  box-shadow: 0 4px 16px rgba(30, 64, 175, 0.35);
+}
+
+.user-time {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  margin-right: 4px;
 }
 
 /* Typing Indicator & Animations */
@@ -1148,12 +1212,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   height: 24px;
 }
 
-.typing-indicator {
-  display: flex;
-  gap: 5px;
-  padding: 1rem 1.25rem;
-  align-items: center;
-  width: fit-content;
+.typing-indicator,
+.message-wrapper.bot .message-bubble.typing-indicator {
+  display: flex !important;
+  gap: 6px !important;
+  padding: 0.65rem 1rem !important;
+  align-items: center !important;
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: fit-content !important;
+  border-radius: 18px !important;
+  border-top-left-radius: 4px !important;
 }
 
 .typing-dot {
@@ -1200,22 +1269,41 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   max-width: 100%;
 }
 
-/* Metadata & Actions */
-.message-metadata {
+/* Unified Card Footer & Actions */
+.message-metadata,
+.message-card-footer {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 0.75rem;
+  flex-direction: column;
+  margin-top: 0.9rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+  gap: 0.5rem;
 }
 
-.meta-actions { display: flex; gap: 0.5rem; }
+.message-card-footer-main {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.meta-latency-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.meta-actions { display: flex; gap: 0.4rem; align-items: center; }
 
 .action-btn {
   background: transparent;
   border: 1px solid transparent;
   color: var(--text-secondary);
   cursor: pointer;
-  padding: 0.375rem;
+  padding: 0.35rem 0.5rem;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
@@ -1239,12 +1327,46 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   }
 }
 
-/* Citations Card Based */
+/* Citations Pill Chip & Container */
 .citation-container {
-  margin-top: 1rem;
+  margin-top: 0.85rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.citation-toggle-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.07);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  width: fit-content;
+  user-select: none;
+}
+
+.citation-toggle-chip:hover {
+  background: rgba(37, 99, 235, 0.14);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+[data-theme='dark'] .citation-toggle-chip {
+  background: rgba(96, 165, 250, 0.12);
+  border-color: rgba(96, 165, 250, 0.25);
+  color: #93c5fd;
+}
+
+[data-theme='dark'] .citation-toggle-chip:hover {
+  background: rgba(96, 165, 250, 0.2);
+  border-color: #60a5fa;
 }
 
 .citation-card {
@@ -3516,3 +3638,265 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     gap: 0.2rem;
   }
 }
+
+/* ==========================================================================
+   MASCOT CÚ SƯ PHẠM (HCMUE OWL) & CHAT REDESIGN (3-STATE SYSTEM: 1, 5, 4)
+   ========================================================================== */
+
+/* 1. Mascot SVG Animations */
+@keyframes gentle-breath {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.025) translateY(-1.5px); }
+}
+.anim-body-breath {
+  animation: gentle-breath 3.4s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes anime-blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.08); }
+}
+.anim-blink {
+  animation: anime-blink 3.8s ease-in-out infinite;
+  transform-origin: 50% 48%;
+}
+
+@keyframes pupil-glance {
+  0%, 65%, 100% { transform: translate(0, 0); }
+  70%, 80% { transform: translate(1.5px, -0.8px); }
+  85%, 95% { transform: translate(-1.5px, 0.8px); }
+}
+.anim-pupil {
+  animation: pupil-glance 6s ease-in-out infinite;
+}
+
+@keyframes tassel-motion {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(14deg); }
+}
+.anim-tassel {
+  animation: tassel-motion 2.6s ease-in-out infinite;
+  transform-origin: 65px 23px;
+}
+
+@keyframes glasses-sheen {
+  0%, 70%, 100% { transform: translateX(-25px) skewX(-20deg); opacity: 0; }
+  75% { opacity: 0.85; }
+  85% { transform: translateX(35px) skewX(-20deg); opacity: 0; }
+}
+.anim-glasses-sheen {
+  animation: glasses-sheen 4.5s ease-in-out infinite;
+}
+
+@keyframes ear-twitch {
+  0%, 88%, 100% { transform: rotate(0deg); }
+  92% { transform: rotate(-8deg); }
+  96% { transform: rotate(4deg); }
+}
+.anim-ear-left {
+  animation: ear-twitch 4s ease-in-out infinite;
+  transform-origin: 22px 38px;
+}
+.anim-ear-right {
+  animation: ear-twitch 4s ease-in-out infinite 0.4s;
+  transform-origin: 78px 38px;
+}
+
+/* Sổ tay & Mắt quét (State 5: Reading) */
+@keyframes wing-turn-page {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  40% { transform: translate(-14px, -2px) rotate(-22deg); }
+  70% { transform: translate(-18px, 0) rotate(-10deg); }
+}
+.anim-hand-turn-page {
+  animation: wing-turn-page 1.1s ease-in-out infinite;
+  transform-origin: 66px 68px;
+}
+
+@keyframes page-curl-turn {
+  0% { transform: scaleX(1); opacity: 1; fill: #ffffff; }
+  40% { transform: scaleX(0.1); opacity: 0.9; fill: #e2e8f0; }
+  75% { transform: scaleX(-0.9); opacity: 0.4; fill: #cbd5e1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+.anim-page-curl {
+  animation: page-curl-turn 1.1s ease-in-out infinite;
+  transform-origin: 50px 68px;
+}
+
+@keyframes reading-eyes-scan {
+  0%, 100% { transform: translate(-2.5px, 3px); }
+  45% { transform: translate(3px, 3px); }
+  55% { transform: translate(-2.5px, 4px); }
+  95% { transform: translate(3px, 4px); }
+}
+.anim-eyes-scanning {
+  animation: reading-eyes-scan 1.1s linear infinite;
+}
+
+@keyframes book-glow-pulse {
+  0%, 100% { opacity: 0.4; transform: scaleY(0.8); }
+  50% { opacity: 0.95; transform: scaleY(1.1); filter: drop-shadow(0 -4px 6px rgba(56, 189, 248, 0.8)); }
+}
+.anim-book-glow {
+  animation: book-glow-pulse 1.3s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+@keyframes particle-float-1 {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-16px) translateX(-4px) scale(1); opacity: 0; }
+}
+@keyframes particle-float-2 {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-18px) translateX(5px) scale(1); opacity: 0; }
+}
+.anim-particle-1 { animation: particle-float-1 1.4s ease-out infinite; }
+.anim-particle-2 { animation: particle-float-2 1.7s ease-out infinite 0.5s; }
+
+/* Bóng đèn Eureka (State 4: Eureka 💡) */
+@keyframes bulb-glow-pulse {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+    filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.5));
+  }
+  50% {
+    transform: scale(1.08) translateY(-2px);
+    filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.8));
+  }
+}
+.anim-bulb-glow {
+  animation: bulb-glow-pulse 1.3s ease-in-out infinite;
+  transform-origin: 82px 18px;
+}
+
+@keyframes bulb-rays-flash {
+  0%, 100% { opacity: 0.4; transform: scale(0.85); }
+  50% { opacity: 0.9; transform: scale(1.15); }
+}
+.anim-bulb-rays {
+  animation: bulb-rays-flash 0.9s ease-in-out infinite;
+  transform-origin: 82px 18px;
+}
+
+@keyframes shockwave-ring {
+  0% { r: 8; opacity: 0.8; stroke-width: 2; }
+  100% { r: 22; opacity: 0; stroke-width: 0.5; }
+}
+.anim-shockwave {
+  animation: shockwave-ring 1.5s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+@keyframes star-twinkle {
+  0%, 100% { transform: scale(0.3) rotate(0deg); opacity: 0.2; }
+  50% { transform: scale(1.1) rotate(90deg); opacity: 0.9; }
+}
+.anim-star-1 {
+  animation: star-twinkle 1.2s ease-in-out infinite;
+  transform-origin: 64px 8px;
+}
+.anim-star-2 {
+  animation: star-twinkle 1.4s ease-in-out infinite 0.4s;
+  transform-origin: 94px 28px;
+}
+
+@keyframes wing-pointing-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-5deg) translateY(-2px); }
+}
+.anim-wing-point {
+  animation: wing-pointing-wiggle 1.2s ease-in-out infinite;
+  transform-origin: 74px 48px;
+}
+
+@keyframes eureka-head-nod {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(4deg) translateY(1px); }
+  70% { transform: rotate(-2deg) translateY(-1px); }
+}
+.anim-head-eureka {
+  animation: eureka-head-nod 1.7s ease-in-out infinite;
+  transform-origin: 50px 60px;
+}
+
+.eyes-look-bulb {
+  transform: translate(3.5px, -3px);
+}
+
+/* 2. Hiệu ứng Khung Avatar Tròn Tinh Tế (3 trạng thái) */
+
+/* State 1: LẮNG NGHE - Nền trắng + Viền thở nhẹ Xanh Ngọc */
+@keyframes aura-idle-white {
+  0%, 100% {
+    box-shadow: 0 1px 4px rgba(16, 185, 129, 0.15);
+    border-color: #a7f3d0;
+  }
+  50% {
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.28);
+    border-color: #34d399;
+  }
+}
+.avatar-frame-idle-white {
+  animation: aura-idle-white 2.8s ease-in-out infinite;
+  background: #ffffff !important;
+}
+
+/* State 5: TRA CỨU - Nền trắng + Viền thở nhẹ Xanh Biển */
+@keyframes aura-reading-white {
+  0%, 100% {
+    box-shadow: 0 1px 5px rgba(14, 165, 233, 0.18);
+    border-color: #7dd3fc;
+  }
+  50% {
+    box-shadow: 0 2px 10px rgba(14, 165, 233, 0.35);
+    border-color: #38bdf8;
+  }
+}
+.avatar-frame-reading-white {
+  animation: aura-reading-white 1.4s ease-in-out infinite;
+  background: #ffffff !important;
+}
+
+/* State 4: THÀNH CÔNG - Nền trắng + Viền thở nhẹ Tím AI */
+@keyframes aura-eureka-white {
+  0%, 100% {
+    box-shadow: 0 1px 5px rgba(139, 92, 246, 0.15);
+    border-color: #ddd6fe;
+  }
+  50% {
+    box-shadow: 0 2px 10px rgba(139, 92, 246, 0.3);
+    border-color: #a78bfa;
+  }
+}
+.avatar-frame-eureka-white {
+  animation: aura-eureka-white 2s ease-in-out infinite;
+  background: #ffffff !important;
+}
+
+/* 4. Nâng cấp thiết kế Citation Card dọc */
+.citation-card {
+  border-radius: 14px !important;
+  transition: all 0.2s ease !important;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+.citation-card:hover {
+  border-color: #93c5fd !important;
+  box-shadow: 0 4px 12px rgba(40, 72, 145, 0.08) !important;
+  transform: translateX(2px);
+}
+.citation-card mark {
+  background-color: #fef08a !important;
+  color: #854d0e !important;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+[data-theme='dark'] .citation-card mark {
+  background-color: #854d0e !important;
+  color: #fef08a !important;
+}
+

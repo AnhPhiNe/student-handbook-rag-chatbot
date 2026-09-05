@@ -26,7 +26,7 @@ export type CourseInput = {
   credits: string;
   inputType: 'score10' | 'letter';
   score10: string;
-  letter: LetterGrade;
+  letter: LetterGrade | '';
   courseGroup?: CourseGroup;
 };
 
@@ -62,42 +62,57 @@ function makeRows(passThreshold: number): GradeScaleRow[] {
   }));
 }
 
-const COMMON_SCALE: GradeScaleDefinition = {
-  id: 'foundation',
-  label: 'Bảng quy đổi chung',
-  shortLabel: 'Bảng chung',
-  applicability: 'Áp dụng chung cho các học phần có đánh giá theo thang điểm 10.',
-  passThreshold: 4.0,
-  rows: makeRows(4.0),
-};
-
 export const GRADE_SCALE_BY_COHORT: Record<Cohort, GradeScaleDefinition[]> = {
   'K48-K49': [
     {
-      ...COMMON_SCALE,
-      label: 'Bảng quy đổi chung K48-K49',
+      id: 'foundation',
+      label: 'Môn chung / học phần đại cương',
+      shortLabel: 'Đại cương',
+      applicability: 'Học phần giáo dục đại cương hoặc học phần chung. Đạt từ điểm D (4.0) trở lên.',
+      passThreshold: 4.0,
+      rows: makeRows(4.0),
+    },
+    {
+      id: 'remaining',
+      label: 'Môn chuyên ngành / học phần còn lại',
+      shortLabel: 'Chuyên ngành',
+      applicability: 'Học phần cơ sở ngành, chuyên ngành. Đạt từ điểm D (4.0) trở lên (từ 3.9 trở xuống mới rớt).',
+      passThreshold: 4.0,
+      rows: makeRows(4.0),
     },
   ],
   K50: [
     {
-      ...COMMON_SCALE,
-      label: 'Bảng quy đổi chung K50',
+      id: 'foundation',
+      label: 'Môn chung / học phần đại cương',
+      shortLabel: 'Đại cương',
+      applicability: 'Học phần giáo dục đại cương hoặc học phần chung. Đạt từ điểm D (4.0) trở lên.',
+      passThreshold: 4.0,
+      rows: makeRows(4.0),
+    },
+    {
+      id: 'remaining',
+      label: 'Môn chuyên ngành / học phần còn lại',
+      shortLabel: 'Chuyên ngành',
+      applicability: 'Học phần cơ sở ngành, chuyên ngành. Đạt từ điểm D (4.0) trở lên (từ 3.9 trở xuống mới rớt).',
+      passThreshold: 4.0,
+      rows: makeRows(4.0),
     },
   ],
   K51: [
     {
       id: 'foundation',
       label: 'Môn chung / nhóm học phần nền tảng',
-      shortLabel: 'Môn chung',
-      applicability: 'Học phần giáo dục đại cương hoặc học phần chung thuộc nhóm học phần nền tảng.',
+      shortLabel: 'Đại cương',
+      applicability: 'Học phần giáo dục đại cương hoặc học phần chung thuộc nhóm học phần nền tảng. Đạt từ điểm D (4.0) trở lên.',
       passThreshold: 4.0,
       rows: makeRows(4.0),
     },
     {
       id: 'remaining',
       label: 'Môn chuyên ngành / các học phần còn lại',
-      shortLabel: 'Môn chuyên ngành',
-      applicability: 'Các học phần còn lại. D và D+ vẫn quy đổi hệ 4, nhưng không được xem là đạt học phần.',
+      shortLabel: 'Chuyên ngành',
+      applicability: 'Các học phần còn lại. Đạt từ điểm C (5.5) trở lên. D và D+ (từ 5.4 trở xuống) là không đạt (rớt).',
       passThreshold: 5.5,
       rows: makeRows(5.5),
     },
@@ -120,6 +135,10 @@ export function isSplitGradeCohort(cohort: Cohort): boolean {
   return cohort === 'K51';
 }
 
+export function hasCourseGroup(_cohort?: Cohort): boolean {
+  return true;
+}
+
 export function getDefaultCourseGroup(cohort: Cohort): CourseGroup {
   return isSplitGradeCohort(cohort) ? 'remaining' : 'foundation';
 }
@@ -136,6 +155,20 @@ export function getGradeScale(cohort: Cohort, courseGroup?: CourseGroup): GradeS
   const scales = GRADE_SCALE_BY_COHORT[cohort];
   const fallback = scales[0];
   return scales.find((scale) => scale.id === (courseGroup ?? getDefaultCourseGroup(cohort))) ?? fallback;
+}
+
+export function isCreditsInvalid(rawCredits: string): boolean {
+  const trimmed = rawCredits.trim();
+  if (trimmed === '') return false;
+  const val = Number(trimmed.replace(',', '.'));
+  return !Number.isFinite(val) || val <= 0 || val > 30;
+}
+
+export function isScore10Invalid(rawScore: string): boolean {
+  const trimmed = rawScore.trim();
+  if (trimmed === '') return false;
+  const val = Number(trimmed.replace(',', '.'));
+  return !Number.isFinite(val) || val < 0 || val > 10;
 }
 
 export function convertScore10ToGrade(
@@ -159,13 +192,20 @@ export function convertLetterToScore4(
 
 export function getCourseGrade(course: CourseInput, cohort: Cohort = 'K48-K49'): GradeScaleRow | null {
   if (course.inputType === 'letter') {
-    return convertLetterToScore4(course.letter, cohort, course.courseGroup);
+    if (!course.letter || course.letter.trim() === '') {
+      return null;
+    }
+    return convertLetterToScore4(course.letter as LetterGrade, cohort, course.courseGroup);
   }
   if (course.score10.trim() === '') {
     return null;
   }
-  const score = Math.round(Number(course.score10) * 10) / 10;
-  return convertScore10ToGrade(score, cohort, course.courseGroup);
+  const score = Number(course.score10.trim().replace(',', '.'));
+  if (!Number.isFinite(score) || score < 0 || score > 10) {
+    return null;
+  }
+  const rounded = Math.round(score * 10) / 10;
+  return convertScore10ToGrade(rounded, cohort, course.courseGroup);
 }
 
 export function calculateGpa(courses: CourseInput[], cohort: Cohort = 'K48-K49'): {
@@ -179,20 +219,17 @@ export function calculateGpa(courses: CourseInput[], cohort: Cohort = 'K48-K49')
   let countedCourses = 0;
 
   for (const course of courses) {
-    const credits = Number(course.credits);
-    const grade = getCourseGrade(course, cohort);
-    const hasStarted =
-      course.name.trim() ||
-      course.credits.trim() ||
-      course.score10.trim() ||
-      course.inputType === 'letter';
+    const rawCredits = course.credits.trim();
+    if (!rawCredits) continue;
 
-    if (!hasStarted) continue;
+    const credits = Number(rawCredits.replace(',', '.'));
     if (!Number.isFinite(credits) || credits <= 0) {
-      return { gpa: 0, totalCredits: 0, countedCourses: 0, error: 'Vui lòng nhập số tín chỉ lớn hơn 0 cho các môn cần tính.' };
+      continue;
     }
+
+    const grade = getCourseGrade(course, cohort);
     if (!grade) {
-      return { gpa: 0, totalCredits: 0, countedCourses: 0, error: 'Vui lòng nhập điểm thang 10 từ 0 đến 10 hoặc chọn điểm chữ hợp lệ.' };
+      continue;
     }
 
     totalCredits += credits;
@@ -200,8 +237,8 @@ export function calculateGpa(courses: CourseInput[], cohort: Cohort = 'K48-K49')
     countedCourses += 1;
   }
 
-  if (totalCredits <= 0) {
-    return { gpa: 0, totalCredits: 0, countedCourses: 0, error: 'Vui lòng nhập ít nhất một môn học để tính GPA.' };
+  if (totalCredits <= 0 || countedCourses === 0) {
+    return { gpa: 0, totalCredits: 0, countedCourses: 0 };
   }
 
   return {

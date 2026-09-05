@@ -60,9 +60,9 @@ The project demonstrates:
 
 | Grounded knowledge | Production retrieval | Answer quality | Cohort safety |
 |:---:|:---:|:---:|:---:|
-| **462** parent articles<br>**35** structured catalogs | **149/155** Hit@5<br>**0.9085** MRR | **91.77%** Judge correctness<br>**97.41%** audit score | **0/155** retrieval leaks<br>**0/135** deterministic leaks |
+| **462** parent articles<br>**35** structured catalogs | **149/155** Hit@5<br>**0.9085** MRR | **90.37%** Judge correctness<br>**97.41%** audit score | **0/155** retrieval leaks<br>**0/135** deterministic leaks |
 
-<p align="center"><sub>V9.1 corrected evaluation. Metrics retain their original suite-specific denominators and are not combined into one score.</sub></p>
+<p align="center"><sub>Final post-refactor V9.1 regression on release commit <code>13aef9e6</code>. Metrics retain their suite-specific denominators and are not combined into one score.</sub></p>
 
 ### 🧰 Technology stack
 
@@ -248,21 +248,24 @@ QueryPlan, task results, and evidence diagnostics are returned only when `includ
 
 ## 📊 Evaluation Results
 
-The current report is **Architecture V9.1 corrected evaluation**. V9.1 corrects applicability and denominators in the evaluator while preserving the same frozen runtime outputs. It did **not** change Planner, Composer, retrieval, databases, generated answers, or Judge decisions.
+The release candidate was evaluated with the frozen **Architecture V9.1 corrected** dataset as a **final post-refactor regression**. This is not presented as a new holdout: the runtime evolved after the dataset manifest was frozen, and no metric threshold was changed after observing this run.
 
-- Bundle: [`data/eval/architecture_v9_1_corrected`](./data/eval/architecture_v9_1_corrected)
-- Full report: [`RESULTS.md`](./data/eval/architecture_v9_1_corrected/RESULTS.md)
-- Correction audit: [`CORRECTION_AUDIT.md`](./data/eval/architecture_v9_1_corrected/CORRECTION_AUDIT.md)
+- Frozen dataset: [`data/eval/architecture_v9_1_corrected`](./data/eval/architecture_v9_1_corrected)
+- Detailed release report: [`docs/FINAL_RELEASE_EVALUATION.md`](./docs/FINAL_RELEASE_EVALUATION.md)
+- Original V9.1 results: [`RESULTS.md`](./data/eval/architecture_v9_1_corrected/RESULTS.md)
+- Evaluator correction audit: [`CORRECTION_AUDIT.md`](./data/eval/architecture_v9_1_corrected/CORRECTION_AUDIT.md)
 
-Planning, retrieval, generated-answer quality, and transport are intentionally reported separately. There is no synthetic overall score.
+Planning, retrieval, generated-answer quality, human review, and production behavior are intentionally reported separately. There is no synthetic overall score.
 
 ### 🪪 Evaluation identity
 
 | Item | Recorded value |
 |---|---|
-| Evaluated runtime commit | `7f1fc82bc0d6a02a10cc64f0a7726b3cc7a913a9` |
-| Evaluation harness commit | `943d9b3805842ae764de7e3c893eceb1dbe96e7c` |
-| V9.1 measurement bundle commit | `099075f9` |
+| Release runtime and evaluation checkout | `13aef9e63e4384e0ee1a52cf2cd9327db2e97944` |
+| Deployed Hugging Face artifact | `d26c6f6` |
+| Run kind | `post_fix_regression_not_original_holdout` |
+| Frozen dataset | `9.1.0-corrected-evaluation`, revision `1` |
+| Frozen manifest baseline | runtime `7f1fc82b`; harness `943d9b38` |
 | Planner | `qwen/qwen3.8-27b`, reasoning `low`, native JSON Schema |
 | Composer | `gemini-3.1-flash-lite` |
 | Judge | `openai/gpt-oss-120b`, fixed project rubric; not RAGAS |
@@ -272,41 +275,45 @@ Planning, retrieval, generated-answer quality, and transport are intentionally r
 | Retrieval | `vector_primary_graph_supplement`; no PhoRanker |
 | Storage | Qdrant `student_handbook_semantic_v32`; MongoDB `parent_docs_v32` |
 
+The manifest identity mismatch reported by the evaluator is expected for this regression: it records that the release runtime differs from the original frozen V9.1 baseline. Dataset hashes and the document-store hash remained fixed.
+
 ### 1. 🧭 Deterministic architecture — 135 cases
 
-This suite measures QueryPlan behavior, structured routing, executable evidence, row selection, and fact locks without treating the Composer as the evaluator.
+This suite measures QueryPlan behavior, structured routing, executable evidence, row selection, and fact locks without using the Composer as the evaluator.
 
 | Case type | Passed | Cases | Pass rate |
 |---|---:|---:|---:|
 | Single structured lookup | 53 | 60 | 88.33% |
 | Capability boundary | 24 | 24 | 100.00% |
-| Compound query | 25 | 28 | 89.29% |
+| Compound query | 24 | 28 | 85.71% |
 | Missing or ambiguous | 11 | 12 | 91.67% |
 | Unsupported but in-domain | 3 | 3 | 100.00% |
 | Out of domain | 8 | 8 | 100.00% |
-| **Total** | **124** | **135** | **91.85%** |
+| **Total** | **123** | **135** | **91.11%** |
 
-The realistic split scored **100/107 (93.46%)**; the stress split scored **24/28 (85.71%)**.
+The realistic split scored **99/107 (92.52%)**; the stress split scored **24/28 (85.71%)**.
 
 | Architecture metric | Result |
 |---|---:|
-| Structured-selection precision | **98.85%** |
-| Structured-selection recall | **97.73%** |
+| Structured-selection precision | **98.84%** |
+| Structured-selection recall | **96.59%** |
 | Structured false-positive rate | **2.13%** |
-| Plan-structure accuracy | **96.30%** |
-| Task-semantics accuracy | **96.30%** |
-| Structured-execution accuracy | **96.30%** |
-| Structured-evidence accuracy | **96.59%** |
-| Structured-row accuracy | **94.32%** |
-| Resolved-result accuracy | **41/46 (89.13%)** |
+| Plan-structure accuracy | **95.56%** |
+| Task-semantics accuracy | **95.56%** |
+| Structured-execution accuracy | **95.56%** |
+| Structured-evidence accuracy | **95.45%** |
+| Structured-source accuracy | **89.47%** |
+| Structured-row accuracy | **93.18%** |
+| Resolved-result accuracy | **40/46 (86.96%)** |
+| Outcome-contract accuracy | **123/135 (91.11%)** |
 | Observed cross-cohort leakage | **0/135** |
-| Planner fallback | **0/135** |
+| Planner fallback | **1/135 (0.74%)** |
 
-The 11 failures comprise seven runtime-contract deviations and four missing or incorrect fact locks. The legacy deterministic gate misses only its false-positive threshold: **2.13% observed vs 2.00% required**. Thresholds were not relaxed after seeing results.
+Twelve cases fail at least one outcome assertion. The fixed legacy gate misses only its structured false-positive threshold: **2.13% observed vs 2.00% required**.
 
 ### 2. 🔎 Regulation retrieval — 155 cases
 
-Retrieval was evaluated end to end through the Planner and the production retrieval mode. Five source-ambiguous cases were removed by the documented contract correction; the remaining 155 cases have uniquely defensible targets.
+Retrieval was evaluated end to end through the Planner and the same production retrieval mode used by the deployed application.
 
 | Retrieval metric | Result |
 |---|---:|
@@ -315,91 +322,98 @@ Retrieval was evaluated end to end through the Planner and the production retrie
 | Hit@5 | **149/155 (96.13%)** |
 | Primary-source Hit@5 | **96.13%** |
 | MRR | **0.9085** |
-| nDCG@5 | **0.8704** |
+| nDCG@5 | **0.8697** |
 | Required-source Recall@5 | **91.29%** |
-| Citation binding | **96.13%** |
+| Parent-section and citation binding | **96.13%** |
 | Content-type match | **96.13%** |
 | Cohort match | **100.00%** |
 | Observed cohort leakage | **0/155** |
 | Empty retrieval | **6/155 (3.87%)** |
 | Realistic Hit@5 | **117/123 (95.12%)** |
 | Stress Hit@5 | **32/32 (100.00%)** |
-| Latency p50 / p95 | **2.279 s / 4.458 s** |
+| Latency p50 / p95 | **2.303 s / 3.944 s** |
 
-Six cases are genuine retrieval failures. Hit@5, ranking quality, and cohort isolation are strong, but the legacy retrieval gate remains failed because content-type match is **96.13%** against a **98%** target.
+Six cases are genuine misses. The fixed retrieval gate fails only content-type match: **96.13% observed vs 98% required**.
 
 ### 3. ✍️ Answer generation — 141 cases
 
-All retained answers were generated with the production retrieval mode and without PhoRanker.
+All 141 cases completed through the production retrieval mode without PhoRanker or lost API-error cases.
 
 | Generation metric | Result |
 |---|---:|
 | Literal `answered` status | **126/141 (89.36%)** |
 | `needs_clarification` status | **9/141 (6.38%)** |
 | Out-of-domain status | **6/141 (4.26%)** |
-| Mean latency | **15.532 s** |
-| Latency p50 / p95 | **14.522 s / 33.068 s** |
-| Maximum latency | **39.609 s** |
+| Mean latency | **5.414 s** |
+| Latency p50 / p95 | **5.468 s / 8.087 s** |
+| Maximum latency | **16.618 s** |
 
 The literal `answered` rate is an operational status distribution, not a quality score: clarification and out-of-domain responses can be correct outcomes.
 
 ### 4. ⚖️ LLM Judge — 141 cases
 
-The Judge uses `openai/gpt-oss-120b` with a fixed, source-grounded rubric. V9.1 replayed existing per-case Judge outputs because neither answers nor the Judge prompt changed.
+The Judge uses `openai/gpt-oss-120b` with a fixed, source-grounded rubric. All 141 outputs parsed successfully.
 
 | Judge metric | Result |
 |---|---:|
-| Faithfulness | **90.79%** |
-| Answer relevancy | **94.48%** |
-| Answer correctness | **91.77%** |
-| Context precision | **57.04%** |
-| Context recall | **81.96%** |
-| Citation correctness | **93.23%** |
+| Faithfulness | **89.95%** |
+| Answer relevancy | **94.38%** |
+| Answer correctness | **90.37%** |
+| Context precision | **58.55%** |
+| Context recall | **82.00%** |
+| Citation correctness | **92.37%** |
 | Abstention correctness | **95.74%** |
 | Question-handling correctness | **97.16%** |
-| Raw unsupported-claim flags | **16/141 (11.35%)** |
-| Human-adjudicated unsupported claims | **5/141 (3.55%)** |
+| Raw unsupported-claim flags | **18/141 (12.77%)** |
+| Human-adjudicated meaningful unsupported/scope overreach | **5/141 (3.55%)** |
 | Critical runtime failures | **1** |
 
-`numeric_accuracy` is **N/A (0 applicable cases)** because this dataset does not declare independent numeric assertions. The older number produced by scanning every numeral in long gold passages is not reported as a valid metric.
+The fixed Judge gate passes correctness, citations, abstention, and critical-failure limits. Faithfulness misses its 90% target by **0.05 percentage points**; the raw unsupported-claim gate fails, which is why every flagged case was manually audited.
 
-### 5. 👁️ Source-grounded audit — 40 sampled answers plus all risks
+### 5. 👁️ Source-grounded human audit — 40 sampled answers plus all risks
 
-The stratified 40-answer audit and all 21 retained automatic-risk cases were checked against the query, authorized evidence, and expected scope.
+The stratified 40-answer sample and all 27 automatically flagged answers were checked against the query, frozen gold, citations, and authorized evidence packet.
 
 | Audit metric | Result |
 |---|---:|
-| Completed sample | **40/40** |
+| Completed stratified sample | **40/40** |
 | Mean audit score | **97.41%** |
-| Human–Judge MAE | **0.0571** |
+| Human–Judge MAE | **0.0650** |
 | Agreement within ±0.15 | **87.50%** |
 | Critical false pass in sampled 40 | **0** |
+| Automatically flagged cases reviewed | **27/27** |
 
-Of the 21 automatic-risk cases, 11 were Judge false positives, six were runtime failures, and four were minor quality issues. This is a **single-reviewer audit**; inter-rater agreement and Cohen's kappa are therefore not claimed.
+Of the 27 flagged cases, **16** were Judge false positives or acceptable scope, **6** were runtime failures, and **5** were minor answer-quality issues. The audit used one reviewer, so inter-rater agreement and Cohen's kappa are not claimed.
 
-### 6. 🌐 Production evidence — historical, non-headline
+### 6. 🌐 Production transport — 60 cases
 
-The 60-case production transport suite is retained in the V9.1 bundle for provenance but was **not rerun as a V9.1 metric**. The latest published run is the historical V7 transport evaluation:
+The production suite was rerun against the deployed Hugging Face API after the final Redis and transport hardening changes.
 
-| Production metric | Historical result |
+| Production metric | Result |
 |---|---:|
-| HTTP, payload, and expected-status success | **60/60** |
+| HTTP transport success | **60/60 (100.00%)** |
+| Successful payload | **58/60 (96.67%)** |
+| Expected response status | **57/60 (95.00%)** |
 | HTTP 429 / timeout rate | **0% / 0%** |
-| Overall latency p50 / p95 | **5.445 s / 12.478 s** |
-| Streaming TTFT p50 / p95 | **4.586 s / 5.811 s** |
-| Warm-cache hit rate | **100%** |
-| Source utilization | **76.67%** |
+| Overall latency p50 / p95 | **7.844 s / 11.676 s** |
+| Cold regulation-RAG latency p50 / p95 | **8.720 s / 12.927 s** |
+| Streaming TTFT p50 / p95 | **6.286 s / 10.280 s** |
+| Streaming TTFT coverage | **100.00%** |
+| Warm-cache hit rate | **9/10 (90.00%)** |
+| Warm-cache latency p50 / p95 | **1.885 s / 5.691 s** |
+| Source utilization | **73.33%** |
 
-This bounded smoke/load run is evidence of transport behavior, not a current capacity, security, or real-user traffic benchmark. Its gate remained failed because public responses intentionally omitted internal telemetry and warm-cache p95 exceeded the configured two-second target.
+Cold RAG, structured, warm-cache, and streaming scenarios each completed **10/10 or 20/20**. The two payload failures occurred only in the ten-request burst at concurrency five; both returned HTTP 200 with `retrieval_error`. Public responses expose no internal evaluation telemetry, so telemetry coverage is **N/A for product correctness**, although the legacy gate records it as 0%.
 
 ### 📝 Interpretation and limitations
 
-- V9.1 is a **post-hoc corrected measurement on frozen outputs**, not a newly generated or prospectively registered holdout.
-- Deterministic and retrieval headline scores are strong, with zero observed cross-cohort leakage, but each retains one narrowly missed legacy gate.
-- Automated Judge flags require human review: 11 of 16 unsupported-claim flags were false positives.
-- Context precision is lower than answer and citation quality because evidence packets deliberately preserve supporting context for multi-part regulation questions.
-- Six retrieval misses and seven runtime-contract deviations remain known limitations; the report does not hide them or patch the runtime and rerun the same suite.
-- A future paper should add a new prospective/external test set and independent multi-reviewer annotation. V9.1 is suitable for accurately scoped portfolio or CV claims when the denominator and correction status are stated.
+- These results are a **post-refactor regression on a frozen dataset**, not a prospectively registered new holdout.
+- Dataset and document-store hashes were unchanged, but the frozen manifest correctly reports that the release runtime differs from its original baseline.
+- Deterministic and retrieval headline scores remain above 91% and 96%, with zero observed cross-cohort leakage; each retains one narrowly missed legacy gate.
+- Six answer-level runtime failures remain: two over-splitting/clarification cases, one shared-regulation applicability case, one large scope expansion, one structured table-selection error, and one incomplete live-person abstention.
+- Context precision is lower than answer and citation quality because multi-part regulation tasks retain supporting parent-article context.
+- Production evidence is a bounded smoke/load suite, not a capacity, security, or real-user traffic benchmark. Burst admission and warm-cache tail latency remain deployment limitations.
+- A publication should add a new prospective or external test set and independent multi-reviewer annotation. The current report is suitable for accurately scoped portfolio or CV claims when its denominators and regression status are stated.
 
 <a id="local-development"></a>
 

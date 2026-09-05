@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -8,10 +9,64 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
-from src.generation.response_cache import RedisResponseCache, ResponseCache
+from src.generation.response_cache import (
+    RedisResponseCache,
+    ResponseCache,
+    get_response_cache,
+)
 
 
 class ResponseCacheTest(unittest.TestCase):
+    def test_required_redis_without_url_raises(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with patch.dict(
+                os.environ,
+                {"STUDENT_RAG_REQUIRE_REDIS": "true"},
+                clear=True,
+            ):
+                with self.assertRaisesRegex(RuntimeError, "REDIS_URL is not configured"):
+                    get_response_cache(Path(tmpdir) / "cache.json")
+
+    def test_required_redis_cannot_be_disabled(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with patch.dict(
+                os.environ,
+                {
+                    "STUDENT_RAG_REQUIRE_REDIS": "true",
+                    "STUDENT_RAG_DISABLE_REDIS": "true",
+                },
+                clear=True,
+            ):
+                with self.assertRaisesRegex(RuntimeError, "Redis is required but disabled"):
+                    get_response_cache(Path(tmpdir) / "cache.json")
+
+    def test_optional_redis_without_url_uses_local_cache(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with patch.dict(os.environ, {}, clear=True):
+                cache = get_response_cache(Path(tmpdir) / "cache.json")
+
+            self.assertIsInstance(cache, ResponseCache)
+            self.assertNotIsInstance(cache, RedisResponseCache)
+
+    def test_required_redis_connection_failure_raises(self) -> None:
+        client = Mock()
+        client.ping.side_effect = ConnectionError("unavailable")
+        redis_module = SimpleNamespace(from_url=Mock(return_value=client))
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with (
+                patch.dict(sys.modules, {"redis": redis_module}),
+                patch.dict(
+                    os.environ,
+                    {
+                        "STUDENT_RAG_REQUIRE_REDIS": "true",
+                        "REDIS_URL": "redis://example",
+                    },
+                    clear=True,
+                ),
+            ):
+                with self.assertRaisesRegex(RuntimeError, "Redis is required but unavailable"):
+                    get_response_cache(Path(tmpdir) / "cache.json")
+
     def test_redis_cache_does_not_write_local_json(self) -> None:
         client = Mock()
         redis_module = SimpleNamespace(from_url=Mock(return_value=client))

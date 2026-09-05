@@ -338,16 +338,21 @@ def get_response_cache(
 ) -> ResponseCache:
     """Create the configured Redis cache or the bounded local fallback."""
 
-    if os.environ.get("STUDENT_RAG_DISABLE_REDIS", "").strip().lower() in {
-        "1",
-        "true",
-        "yes",
-        "on",
-    }:
+    require_redis = _env_bool("STUDENT_RAG_REQUIRE_REDIS")
+    redis_disabled = _env_bool("STUDENT_RAG_DISABLE_REDIS")
+    redis_url = os.environ.get("REDIS_URL")
+
+    if require_redis and redis_disabled:
+        raise RuntimeError(
+            "Redis is required but disabled by STUDENT_RAG_DISABLE_REDIS"
+        )
+    if require_redis and not redis_url:
+        raise RuntimeError("Redis is required but REDIS_URL is not configured")
+
+    if redis_disabled:
         print("[Cache] Redis disabled by STUDENT_RAG_DISABLE_REDIS. Using Local JSON.")
         return ResponseCache(path, enabled, ttl_seconds, max_entries)
 
-    redis_url = os.environ.get("REDIS_URL")
     if redis_url:
         try:
             import redis
@@ -363,7 +368,7 @@ def get_response_cache(
                 max_entries,
             )
         except Exception as e:
-            if _env_bool("STUDENT_RAG_REQUIRE_REDIS"):
+            if require_redis:
                 raise RuntimeError("Redis is required but unavailable") from e
             print(f"[Cache] Redis connection failed: {e}. Falling back to Local JSON.")
 

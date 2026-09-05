@@ -1,3 +1,5 @@
+import pytest
+
 from src.retrieval.core.slang_normalizer import SlangNormalizer
 
 
@@ -210,6 +212,68 @@ def test_academic_warning_acronym_is_canonicalized_for_router() -> None:
     )
 
 
+@pytest.mark.parametrize(
+    ("acronym", "expected"),
+    [
+        ("BCH", "Ban Chấp hành"),
+        ("BCS", "Ban Cán sự"),
+        ("CTĐT", "chương trình đào tạo"),
+        ("CTCT&HSSV", "Công tác chính trị và Học sinh, sinh viên"),
+        ("CTCT và HSSV", "Công tác chính trị và Học sinh, sinh viên"),
+        ("CVHT", "cố vấn học tập"),
+        ("ĐH", "đại học"),
+        ("CĐ", "cao đẳng"),
+        ("TCCN", "trung cấp chuyên nghiệp"),
+        ("HBKKHT", "học bổng khuyến khích học tập"),
+        ("HSSV", "học sinh, sinh viên"),
+        ("KTX", "ký túc xá"),
+        ("NCKH", "nghiên cứu khoa học"),
+        ("NVSP", "nghiệp vụ sư phạm"),
+        ("TNCS", "Thanh niên Cộng sản"),
+        ("TBC", "trung bình cộng"),
+        ("THCS", "trung học cơ sở"),
+        ("THPT", "trung học phổ thông"),
+    ],
+)
+def test_handbook_front_matter_acronyms_are_canonicalized(
+    acronym: str,
+    expected: str,
+) -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router(acronym).casefold() == expected.casefold()
+
+
+@pytest.mark.parametrize(
+    ("acronym", "expected"),
+    [
+        ("KH&CN", "khoa học và công nghệ"),
+        ("ĐHCQ", "đại học chính quy"),
+    ],
+)
+def test_defined_body_acronyms_are_canonicalized(
+    acronym: str,
+    expected: str,
+) -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router(acronym) == expected
+
+
+@pytest.mark.parametrize(
+    "legal_reference",
+    [
+        "1410/QĐ-ĐHSP",
+        "81/2021/NĐ-CP",
+        "35/2014/TTLT-BGDĐT-BTC",
+    ],
+)
+def test_legal_reference_acronyms_remain_literal(legal_reference: str) -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router(legal_reference) == legal_reference
+
+
 def test_generic_gpa_is_preserved_for_router_and_expanded_for_retrieval() -> None:
     normalizer = SlangNormalizer(program_directory=[])
     query = "hai kỳ liên tiếp GPA và điểm rèn luyện xuất sắc"
@@ -267,8 +331,8 @@ def test_accentless_slangs_use_same_canonical_mappings() -> None:
     assert "giảm một mức xếp loại tốt nghiệp" in router_query
     assert "khối lượng tín chỉ học lại vượt quá 5%" not in normalized
     assert "kỷ luật cảnh cáo trở lên" not in normalized
-    assert "học phần đã đạt đăng ký học lại để cải thiện điểm" in normalized
-    assert "học phần chưa đạt phải học lại" in normalized
+    assert "học lại học phần đã đạt" in normalized
+    assert "học phần không đạt phải học lại" in normalized
 
 
 def test_program_acronym_replacement_handles_lowercase_user_input() -> None:
@@ -299,7 +363,352 @@ def test_ambiguous_slangs_expand_but_do_not_replace_for_router() -> None:
     assert "đình chỉ học tập có thời hạn" in normalizer.normalize_for_retrieval(
         "treo học"
     )
-    assert "kỷ luật cảnh cáo" in normalizer.normalize_for_retrieval("dính biên bản")
+    discipline_query = normalizer.normalize_for_retrieval("dính biên bản")
+    assert "bị lập biên bản vi phạm" in discipline_query
+    assert "cảnh cáo" not in discipline_query
+
+
+@pytest.mark.parametrize(
+    ("query", "expected"),
+    [
+        (
+            "Học cải thiện tính điểm thế nào?",
+            "học lại học phần đã đạt tính điểm thế nào?",
+        ),
+        (
+            "hoc cai thien tinh diem the nao?",
+            "học lại học phần đã đạt tinh diem the nao?",
+        ),
+        (
+            "học cải thiện môn có bị hạ bằng không?",
+            "học lại học phần đã đạt để cải thiện điểm có bị giảm một mức "
+            "xếp loại tốt nghiệp không?",
+        ),
+    ],
+)
+def test_improvement_study_is_canonicalized_before_routing(
+    query: str,
+    expected: str,
+) -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router(query) == expected
+    assert normalizer.normalize_for_retrieval(query) == expected
+
+
+@pytest.mark.parametrize(
+    ("query", "original_term", "expected_expansion"),
+    [
+        ("kéo điểm bằng cách nào?", "kéo điểm", "nâng điểm trung bình"),
+        ("gỡ điểm bằng cách nào?", "gỡ điểm", "nâng điểm trung bình"),
+        ("điểm phẩy được tính sao?", "điểm phẩy", "điểm số thập phân"),
+        (
+            "nợ ngoại ngữ có tốt nghiệp được không?",
+            "nợ ngoại ngữ",
+            "chưa đạt chuẩn đầu ra ngoại ngữ",
+        ),
+        (
+            "nợ tin học có tốt nghiệp được không?",
+            "nợ tin học",
+            "chưa hoàn thành học phần tin học",
+        ),
+        (
+            "học bổng khuyến học cần điều kiện gì?",
+            "học bổng khuyến học",
+            "học bổng tài trợ",
+        ),
+        (
+            "xin xem lại điểm ở đâu?",
+            "xin xem lại điểm",
+            "phúc khảo điểm thi kết thúc học phần",
+        ),
+        (
+            "coi lại bài thi bằng cách nào?",
+            "coi lại bài thi",
+            "kiểm tra lại điểm học phần",
+        ),
+        (
+            "chấm lại mất bao lâu?",
+            "chấm lại",
+            "phúc khảo điểm thi kết thúc học phần",
+        ),
+    ],
+)
+def test_ambiguous_handbook_terms_only_expand_retrieval(
+    query: str,
+    original_term: str,
+    expected_expansion: str,
+) -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router(query) == query
+    retrieval_query = normalizer.normalize_for_retrieval(query)
+    assert original_term in retrieval_query
+    assert expected_expansion in retrieval_query
+
+
+@pytest.mark.parametrize(
+    ("query", "expected_expansion", "forbidden_assumption"),
+    [
+        (
+            "học lại môn",
+            "học phần không đạt phải học lại hoặc học phần đạt được học lại để "
+            "cải thiện điểm",
+            None,
+        ),
+        (
+            "nợ môn",
+            "học phần chưa hoàn thành hoặc học phần chưa đạt",
+            None,
+        ),
+        (
+            "nợ tín chỉ",
+            "chưa tích lũy đủ tín chỉ hoặc tín chỉ nợ đọng",
+            None,
+        ),
+        (
+            "điểm cuối kỳ",
+            "điểm thi kết thúc học phần hoặc điểm học phần",
+            "điểm trung bình học kỳ",
+        ),
+        ("bỏ thi", "vắng mặt trong buổi thi", "không có lý do chính đáng"),
+        (
+            "dính biên bản",
+            "bị lập biên bản vi phạm hoặc bị xem xét xử lý kỷ luật",
+            "cảnh cáo",
+        ),
+        ("HP", "học phần hoặc học phí", None),
+    ],
+)
+def test_ambiguous_terms_do_not_force_one_meaning_before_planning(
+    query: str,
+    expected_expansion: str,
+    forbidden_assumption: str | None,
+) -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router(query) == query
+    retrieval_query = normalizer.normalize_for_retrieval(query)
+    assert query in retrieval_query
+    assert expected_expansion in retrieval_query
+    if forbidden_assumption is not None:
+        assert forbidden_assumption not in retrieval_query
+
+
+def test_official_failed_course_term_is_not_reexpanded() -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+    query = "học phần chưa đạt"
+
+    assert normalizer.replace_for_router(query) == query
+    assert normalizer.normalize_for_retrieval(query) == query
+
+
+def test_academic_warning_alias_uses_official_handbook_term() -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router("warning học vụ") == "cảnh báo học tập"
+    assert normalizer.replace_for_router("cảnh báo học vụ") == "cảnh báo học tập"
+
+
+def test_specific_improvement_phrase_is_replaced_before_shorter_phrase() -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    normalized = normalizer.replace_for_router("học cải thiện điểm")
+    assert normalized == "học lại học phần đã đạt để cải thiện điểm"
+    assert "điểm điểm" not in normalized
+
+
+@pytest.mark.parametrize(
+    "query",
+    [
+        "skip tiết một buổi bị sao?",
+        "nghỉ chui một buổi bị sao?",
+        "trốn học một buổi bị sao?",
+        "cúp học một buổi bị sao?",
+        "bỏ tiết một buổi bị sao?",
+        "nghi chui mot buoi bi sao?",
+        "tron hoc mot buoi bi sao?",
+        "cup hoc mot buoi bi sao?",
+        "bo tiet mot buoi bi sao?",
+    ],
+)
+def test_session_absence_slang_is_not_rewritten_as_abandoning_study(
+    query: str,
+) -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router(query) == query
+    assert normalizer.normalize_for_retrieval(query) == query
+    assert "tự ý bỏ học" not in normalizer.normalize_for_retrieval(query)
+
+
+def test_generic_unexcused_absence_is_not_narrowed_to_exam_or_study_status() -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+    query = "vắng không phép thì bị xử lý thế nào?"
+
+    assert normalizer.replace_for_router(query) == query
+    assert normalizer.normalize_for_retrieval(query) == query
+    assert "buổi thi" not in normalizer.normalize_for_retrieval(query)
+    assert "tự ý bỏ học" not in normalizer.normalize_for_retrieval(query)
+
+
+@pytest.mark.parametrize(
+    "query",
+    [
+        "học kỳ hè kéo dài bao lâu?",
+        "xin nghỉ học một buổi thì sao?",
+        "bỏ học một buổi có bị trừ điểm không?",
+        "buộc thôi học khi nào?",
+        "học bổng khuyến khích học tập cần điều kiện gì?",
+    ],
+)
+def test_official_or_ambiguous_terms_are_not_overexpanded(query: str) -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router(query) == query
+    assert normalizer.normalize_for_retrieval(query) == query
+
+
+@pytest.mark.parametrize(
+    ("query", "expected_expansion"),
+    [
+        (
+            "học quá hạn có bị đuổi học không?",
+            "thời gian học tập vượt quá giới hạn tối đa",
+        ),
+        (
+            "điểm kỳ này được tính thế nào?",
+            "điểm thi kết thúc học phần",
+        ),
+    ],
+)
+def test_ambiguous_time_and_grade_terms_only_expand_retrieval(
+    query: str,
+    expected_expansion: str,
+) -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    router_query = normalizer.replace_for_router(query)
+    retrieval_query = normalizer.normalize_for_retrieval(query)
+
+    expected_router_query = query.replace("bị đuổi học", "buộc thôi học")
+    assert router_query == expected_router_query
+    assert expected_expansion in retrieval_query
+
+
+@pytest.mark.parametrize(
+    ("query", "expected"),
+    [
+        ("có bị đuổi học không?", "có buộc thôi học không?"),
+        ("trường có đuổi học không?", "trường có buộc thôi học không?"),
+    ],
+)
+def test_dismissal_slang_is_canonicalized_before_routing(
+    query: str,
+    expected: str,
+) -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router(query) == expected
+    assert normalizer.normalize_for_retrieval(query) == expected
+
+
+def test_generic_failure_slang_only_expands_retrieval() -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+    query = "thi rớt 3 môn có bị đuổi học?"
+
+    router_query = normalizer.replace_for_router(query)
+    retrieval_query = normalizer.normalize_for_retrieval(query)
+
+    assert router_query == "thi rớt 3 môn có buộc thôi học?"
+    assert "rớt không đạt" in retrieval_query
+    assert "buộc thôi học" in retrieval_query
+
+
+@pytest.mark.parametrize(
+    ("query", "expected"),
+    [
+        (
+            "Nợ môn Thể chất có xét tốt nghiệp?",
+            "chưa hoàn thành học phần giáo dục thể chất có xét tốt nghiệp?",
+        ),
+        (
+            "nợ môn GDTC có tốt nghiệp được không?",
+            "chưa hoàn thành học phần giáo dục thể chất có tốt nghiệp được không?",
+        ),
+        (
+            "nợ môn quốc phòng có tốt nghiệp được không?",
+            "chưa hoàn thành học phần giáo dục quốc phòng và an ninh có tốt nghiệp "
+            "được không?",
+        ),
+        (
+            "nợ môn GDQP có được ra trường?",
+            "chưa hoàn thành học phần giáo dục quốc phòng và an ninh có được tốt "
+            "nghiệp?",
+        ),
+    ],
+)
+def test_required_subject_debt_uses_handbook_course_names(
+    query: str,
+    expected: str,
+) -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router(query) == expected
+
+
+@pytest.mark.parametrize(
+    ("query", "expected_fragment"),
+    [
+        ("rớt môn thì học lại sao?", "học phần chưa đạt"),
+        ("đăng ký rớt thì xử lý sao?", "đăng ký học phần không thành công"),
+        (
+            "rớt bằng vì học lại?",
+            "không được công nhận tốt nghiệp hoặc bị giảm một mức xếp loại tốt nghiệp",
+        ),
+    ],
+)
+def test_specific_failure_slang_keeps_its_more_precise_mapping(
+    query: str,
+    expected_fragment: str,
+) -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+    retrieval_query = normalizer.normalize_for_retrieval(query)
+
+    assert expected_fragment in retrieval_query
+    assert "rớt không đạt" not in retrieval_query
+
+
+def test_unsupported_exam_ban_phrase_is_not_given_an_invented_policy_mapping() -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+    query = "đóng học phí trễ có bị cấm thi không?"
+
+    assert normalizer.replace_for_router(query) == query
+    assert "cấm thi" in normalizer.normalize_for_retrieval(query)
+    assert "không được dự thi" not in normalizer.normalize_for_retrieval(query)
+
+
+@pytest.mark.parametrize(
+    "query",
+    [
+        "chuẩn đầu ra là gì?",
+        "chuẩn đầu ra của ngành được công bố ở đâu?",
+        "chuan dau ra cua nganh la gi?",
+    ],
+)
+def test_generic_output_standard_is_not_narrowed_to_specific_requirements(
+    query: str,
+) -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_for_router(query) == query
+    assert normalizer.normalize_for_retrieval(query) == query
+
+
+def test_runtime_slang_categories_do_not_overlap() -> None:
+    normalizer = SlangNormalizer(program_directory=[])
+
+    assert normalizer.replace_dict.keys().isdisjoint(normalizer.expand_dict.keys())
 
 
 def test_form_is_not_canonicalized_in_runtime_slang() -> None:

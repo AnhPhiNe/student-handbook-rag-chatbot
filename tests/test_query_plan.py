@@ -8,7 +8,7 @@ import pytest
 
 import src.common.cohort as cohort_module
 from src.common.cohort import is_validated_source_applicable
-from src.generation.answer_pipeline import AnswerPipeline
+from src.generation.answer_pipeline import AnswerPipeline, PreparedAnswer
 from src.api.routes.chat import _to_chat_response
 from src.retrieval.core.office_lookup import office_lookup
 from src.retrieval.core.query_plan import (
@@ -985,6 +985,36 @@ def _pipeline(plan: dict[str, Any]) -> AnswerPipeline:
     return pipeline
 
 
+def test_query_plan_receives_canonical_improvement_study_query() -> None:
+    captured: dict[str, Any] = {}
+    clarification_task = {
+        **_rag_task(1, "Học cải thiện tính điểm thế nào?"),
+        "mode": "clarify",
+        "clarification_question": "Bạn muốn hỏi cách tính điểm học cải thiện?",
+    }
+    plan = _plan([clarification_task])
+    pipeline = _pipeline(plan)
+
+    class CapturingPlanner:
+        def plan(self, query: str, **kwargs: Any) -> dict[str, Any]:
+            captured["query"] = query
+            captured["kwargs"] = kwargs
+            return plan
+
+    pipeline.router = CapturingPlanner()
+
+    pipeline._run_query_plan(
+        query="Học cải thiện tính điểm thế nào?",
+        cohort="K51",
+        chat_history=[],
+    )
+
+    assert captured["query"] == (
+        "học lại học phần đã đạt tính điểm thế nào?"
+    )
+    assert captured["kwargs"]["cohort"] == "K51"
+
+
 def test_execute_task_normalizes_clarification_without_retrieval(monkeypatch) -> None:
     task = {
         **_rag_task(1, "Điều nào?"),
@@ -1714,6 +1744,30 @@ def test_stream_cleans_internal_labels_sources_and_reports_terminal_status(
     assert llm.calls == 1
     assert cached_metadata["used_cache"] is True
     assert cached_done["used_cache"] is True
+
+
+def test_stream_terminal_guardrail_reports_status_in_done_event() -> None:
+    pipeline = _pipeline(_plan([]))
+    clarification = "Bạn muốn hỏi học phí của ngành và hệ đào tạo nào?"
+    pipeline.prepare_answer = lambda *args, **kwargs: PreparedAnswer(
+        query=str(args[0]),
+        effective_query=str(args[0]),
+        cohort=kwargs.get("cohort"),
+        retrieval_result={"execution_mode": "clarify"},
+        terminal_status="needs_clarification",
+        terminal_answer=clarification,
+        fallback_reason="needs_clarification",
+    )
+
+    events = list(pipeline.answer_stream("HP kỳ này bao nhiêu?", cohort="K51"))
+    metadata = next(event for event in events if event["type"] == "metadata")
+    done = next(event for event in events if event["type"] == "done")
+
+    assert metadata["status"] == "needs_clarification"
+    assert done["status"] == "needs_clarification"
+    assert done["error_type"] is None
+    assert done["used_cache"] is False
+    assert done["citations_used"] == []
 
 
 def test_stream_failure_finishes_with_api_error_metadata(monkeypatch) -> None:

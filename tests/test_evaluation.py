@@ -163,6 +163,7 @@ def test_v9_provenance_reports_runtime_config_drift() -> None:
         "ai_router",
         "answer_generation",
         "retrieval",
+        "slang_dictionary",
     }
 
 

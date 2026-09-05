@@ -1,16 +1,20 @@
+# Only meaning-preserving canonicalizations belong here because this text is
+# sent to the Planner. Ambiguous expressions must stay in expand_slangs.
 replace_slangs:
 - match: không đăng ký được môn
   replace_with: đăng ký học phần không thành công
 - match: đủ điều kiện ra trường
   replace_with: đủ điều kiện tốt nghiệp
-- match: học bổng khuyến học
-  replace_with: học bổng khuyến khích học tập
 - match: không add được môn
   replace_with: đăng ký học phần không thành công
 - match: xin giấy sinh viên
   replace_with: xin giấy xác nhận sinh viên
 - match: học cải thiện môn
-  replace_with: đăng ký học lại học phần đã đạt để cải thiện điểm
+  replace_with: học lại học phần đã đạt để cải thiện điểm
+- match: học cải thiện điểm
+  replace_with: học lại học phần đã đạt để cải thiện điểm
+- match: học cải thiện
+  replace_with: học lại học phần đã đạt
 - match: không vô được môn
   replace_with: đăng ký học phần không thành công
 - match: bỏ môn đã đăng ký
@@ -19,8 +23,6 @@ replace_slangs:
   replace_with: điểm học phần
 - match: đóng băng kết quả
   replace_with: bảo lưu kết quả học tập
-- match: xin xem lại điểm
-  replace_with: phúc khảo điểm thi kết thúc học phần
 - match: kick khỏi trường
   replace_with: buộc thôi học
 - match: đóng tiền trường
@@ -33,10 +35,6 @@ replace_slangs:
   replace_with: đăng ký học phần
 - match: môn tương đương
   replace_with: học phần tương đương
-- match: vắng không phép
-  replace_with: vắng mặt không có lý do chính đáng
-- match: coi lại bài thi
-  replace_with: phúc khảo điểm thi kết thúc học phần
 - match: nợ chuẩn đầu ra
   replace_with: chưa đạt chuẩn đầu ra
 - match: môn tiên quyết
@@ -44,7 +42,9 @@ replace_slangs:
 - match: học song ngành
   replace_with: học cùng lúc hai chương trình
 - match: warning học vụ
-  replace_with: cảnh báo học vụ
+  replace_with: cảnh báo học tập
+- match: cảnh báo học vụ
+  replace_with: cảnh báo học tập
 - match: nợ tiền trường
   replace_with: nợ học phí
 - match: tốt nghiệp trễ
@@ -69,6 +69,10 @@ replace_slangs:
   replace_with: giảm học phí
 - match: xét ra trường
   replace_with: xét tốt nghiệp
+- match: nợ môn quốc phòng
+  replace_with: chưa hoàn thành học phần giáo dục quốc phòng và an ninh
+- match: nợ môn GDQP
+  replace_with: chưa hoàn thành học phần giáo dục quốc phòng và an ninh
 - match: nợ quốc phòng
   replace_with: chưa hoàn thành học phần giáo dục quốc phòng và an ninh
 - match: xin bảng điểm
@@ -83,24 +87,18 @@ replace_slangs:
   replace_with: học phần bắt buộc
 - match: môn thay thế
   replace_with: học phần thay thế
-- match: điểm cuối kỳ
-  replace_with: điểm thi kết thúc học phần
 - match: tạm nghỉ học
   replace_with: nghỉ học tạm thời
 - match: quay lại học
   replace_with: tiếp nhận trở lại học
 - match: dính warning
   replace_with: bị cảnh báo học tập
-- match: nợ ngoại ngữ
-  replace_with: chưa đạt chuẩn đầu ra ngoại ngữ
 - match: copy bài thi
   replace_with: gian lận trong thi, kiểm tra
 - match: in bảng điểm
   replace_with: cấp bảng điểm
 - match: môn bị tạch
   replace_with: học phần chưa đạt
-- match: học lại môn
-  replace_with: đăng ký học lại học phần chưa đạt
 - match: đăng ký môn
   replace_with: đăng ký học phần
 - match: đăng ký rớt
@@ -113,12 +111,16 @@ replace_slangs:
   replace_with: thi kết thúc học phần
 - match: bị đuổi học
   replace_with: buộc thôi học
+- match: đuổi học
+  replace_with: buộc thôi học
 - match: tiền trường
   replace_with: học phí
+- match: nợ môn thể chất
+  replace_with: chưa hoàn thành học phần giáo dục thể chất
+- match: nợ môn GDTC
+  replace_with: chưa hoàn thành học phần giáo dục thể chất
 - match: nợ thể chất
   replace_with: chưa hoàn thành học phần giáo dục thể chất
-- match: học quá hạn
-  replace_with: quá thời gian học tập chuẩn
 - match: mail trường
   replace_with: email trường
 - match: đăng ký KTX
@@ -127,34 +129,18 @@ replace_slangs:
   replace_with: điểm trung bình chung học kỳ
 - match: môn bị rớt
   replace_with: học phần chưa đạt
-- match: còn nợ môn
-  replace_with: học phần chưa đạt
-- match: nợ tín chỉ
-  replace_with: tín chỉ nợ đọng
-- match: trả nợ môn
-  replace_with: đăng ký học lại học phần chưa đạt
 - match: điểm hệ 10
   replace_with: điểm theo thang điểm 10
 - match: bị warning
   replace_with: bị cảnh báo học tập
 - match: out trường
   replace_with: buộc thôi học
-- match: nợ tin học
-  replace_with: chưa đạt chuẩn đầu ra công nghệ thông tin
 - match: reset pass
   replace_with: cấp lại mật khẩu tài khoản
 - match: CTCT&HSSV
   replace_with: Công tác chính trị và Học sinh, sinh viên
 - match: trượt môn
   replace_with: học phần chưa đạt
-- match: học kỳ hè
-  replace_with: học kỳ phụ
-- match: skip tiết
-  replace_with: tự ý bỏ học
-- match: nghỉ chui
-  replace_with: tự ý bỏ học
-- match: điểm phẩy
-  replace_with: điểm trung bình
 - match: điểm hệ 4
   replace_with: điểm theo thang điểm 4
 - match: ra trường
@@ -171,8 +157,6 @@ replace_slangs:
   replace_with: học phần chưa đạt
 - match: pass môn
   replace_with: học phần đạt
-- match: kéo điểm
-  replace_with: cải thiện điểm học phần
 - match: săn slot
   replace_with: đăng ký học phần
 - match: full lớp
@@ -183,12 +167,8 @@ replace_slangs:
   replace_with: lớp học phần đã đủ số lượng
 - match: drop môn
   replace_with: rút bớt học phần đã đăng ký
-- match: trốn học
-  replace_with: tự ý bỏ học
 - match: trốn thi
   replace_with: vắng mặt trong buổi thi không có lý do chính đáng
-- match: chấm lại
-  replace_with: phúc khảo điểm thi kết thúc học phần
 - match: điểm môn
   replace_with: điểm học phần
 - match: thang 10
@@ -209,8 +189,6 @@ replace_slangs:
   replace_with: học phần đạt
 - match: đậu môn
   replace_with: học phần đạt
-- match: gỡ điểm
-  replace_with: cải thiện điểm học phần
 - match: đky môn
   replace_with: đăng ký học phần
 - match: add môn
@@ -225,14 +203,8 @@ replace_slangs:
   replace_with: rút bớt học phần đã đăng ký
 - match: xóa môn
   replace_with: rút bớt học phần đã đăng ký
-- match: cúp học
-  replace_with: tự ý bỏ học
-- match: bỏ tiết
-  replace_with: tự ý bỏ học
 - match: cúp thi
   replace_with: vắng mặt trong buổi thi không có lý do chính đáng
-- match: điểm kỳ
-  replace_with: điểm trung bình học kỳ
 - match: thang 4
   replace_with: thang điểm 4
 - match: điểm rl
@@ -245,16 +217,10 @@ replace_slangs:
   replace_with: học bổng khuyến khích học tập
 - match: ĐTBCTL
   replace_with: điểm trung bình chung tích lũy
-- match: nợ môn
-  replace_with: học phần chưa đạt
-- match: môn nợ
-  replace_with: học phần chưa đạt
 - match: đk môn
   replace_with: đăng ký học phần
 - match: dk môn
   replace_with: đăng ký học phần
-- match: bỏ thi
-  replace_with: vắng mặt trong buổi thi không có lý do chính đáng
 - match: ĐTBHK
   replace_with: điểm trung bình học kỳ
 - match: ĐTBTL
@@ -271,6 +237,10 @@ replace_slangs:
   replace_with: số điện thoại
 - match: NCKH
   replace_with: nghiên cứu khoa học
+- match: KH&CN
+  replace_with: khoa học và công nghệ
+- match: ĐHCQ
+  replace_with: đại học chính quy
 - match: NVSP
   replace_with: nghiệp vụ sư phạm
 - match: TNCS
@@ -339,8 +309,6 @@ replace_slangs:
   replace_with: sinh viên
 - match: GV
   replace_with: giảng viên
-- match: HP
-  replace_with: học phần
 - match: HB
   replace_with: học bổng
 - match: hạ bằng
@@ -349,13 +317,57 @@ replace_slangs:
   replace_with: giảm một mức xếp loại tốt nghiệp
 - match: hạ hạng
   replace_with: giảm một mức xếp loại tốt nghiệp
+# Retrieval keeps the original expression and appends every plausible handbook
+# meaning. These expansions must not choose one interpretation for the Planner.
 expand_slangs:
+- match: rớt
+  expand_with: không đạt
+- match: học bổng khuyến học
+  expand_with: học bổng khuyến khích học tập hoặc học bổng tài trợ
+- match: xin xem lại điểm
+  expand_with: phúc khảo điểm thi kết thúc học phần hoặc kiểm tra lại điểm học phần
+- match: coi lại bài thi
+  expand_with: phúc khảo điểm thi kết thúc học phần hoặc kiểm tra lại điểm học phần
+- match: nợ ngoại ngữ
+  expand_with: chưa hoàn thành học phần ngoại ngữ hoặc chưa đạt chuẩn đầu ra ngoại ngữ
+- match: nợ tin học
+  expand_with: chưa hoàn thành học phần tin học hoặc chưa đáp ứng yêu cầu về tin học
+- match: điểm phẩy
+  expand_with: điểm trung bình hoặc điểm số thập phân
+- match: kéo điểm
+  expand_with: cải thiện điểm học phần hoặc nâng điểm trung bình
+- match: gỡ điểm
+  expand_with: cải thiện điểm học phần hoặc nâng điểm trung bình
+- match: chấm lại
+  expand_with: phúc khảo điểm thi kết thúc học phần hoặc kiểm tra lại điểm học phần
 - match: GPA
   expand_with: điểm trung bình học kỳ hoặc điểm trung bình tích lũy
+- match: học quá hạn
+  expand_with: quá thời gian học tập chuẩn hoặc thời gian học tập vượt quá giới hạn tối đa
+- match: điểm kỳ
+  expand_with: điểm trung bình học kỳ hoặc điểm thi kết thúc học phần
+- match: điểm cuối kỳ
+  expand_with: điểm thi kết thúc học phần hoặc điểm học phần
+- match: học lại môn
+  expand_with: học phần không đạt phải học lại hoặc học phần đạt được học lại để cải thiện điểm
+- match: còn nợ môn
+  expand_with: học phần chưa hoàn thành hoặc học phần chưa đạt
+- match: nợ môn
+  expand_with: học phần chưa hoàn thành hoặc học phần chưa đạt
+- match: môn nợ
+  expand_with: học phần chưa hoàn thành hoặc học phần chưa đạt
+- match: trả nợ môn
+  expand_with: hoàn thành học phần còn thiếu hoặc đăng ký học lại học phần chưa đạt
+- match: nợ tín chỉ
+  expand_with: chưa tích lũy đủ tín chỉ hoặc tín chỉ nợ đọng
+- match: bỏ thi
+  expand_with: vắng mặt trong buổi thi
+- match: HP
+  expand_with: học phần hoặc học phí
 - match: học lại sau bảo lưu
   expand_with: tiếp nhận trở lại học sau nghỉ học tạm thời bảo lưu kết quả học tập
 - match: dính biên bản
-  expand_with: vi phạm nội quy quy chế kỷ luật cảnh cáo
+  expand_with: bị lập biên bản vi phạm hoặc bị xem xét xử lý kỷ luật
 - match: chuyển khoa
   expand_with: chuyển ngành chuyển chương trình đào tạo
 - match: thi bù
@@ -364,20 +376,14 @@ expand_slangs:
   expand_with: nghỉ học tạm thời bảo lưu kết quả học tập
 - match: treo học
   expand_with: đình chỉ học tập có thời hạn tạm dừng tiến độ học tập
-- match: học phần chưa đạt
-  expand_with: đăng ký học lại hoặc tín chỉ nợ đọng
 - match: học bổng trường
   expand_with: học bổng khuyến khích học tập hoặc học bổng tài trợ
 - match: điểm rèn luyện
   expand_with: đánh giá và phân loại kết quả rèn luyện
 - match: xét tốt nghiệp
   expand_with: điều kiện, quy trình hoặc đợt xét tốt nghiệp
-- match: học cải thiện
-  expand_with: học phần đã đạt đăng ký học lại để cải thiện điểm
 - match: bảo lưu điểm
   expand_with: bảo lưu kết quả học tập hoặc bảo lưu điểm học phần
-- match: chuẩn đầu ra
-  expand_with: chuẩn đầu ra ngoại ngữ hoặc chuẩn đầu ra công nghệ thông tin
 - match: bảng điểm
   expand_with: kết quả học tập hoặc thủ tục cấp bảng điểm
 - match: miễn giảm
@@ -386,28 +392,18 @@ expand_slangs:
   expand_with: tài khoản Cổng thông tin sinh viên, email trường hoặc hệ thống học tập trực tuyến
 - match: ký túc xá
   expand_with: đăng ký nội trú, nội quy hoặc dịch vụ ký túc xá
-- match: nghỉ học
-  expand_with: vắng học, nghỉ học tạm thời, tự ý bỏ học hoặc thôi học
-- match: thôi học
-  expand_with: thôi học theo nguyện vọng hoặc buộc thôi học
-- match: cảnh báo
-  expand_with: cảnh báo học tập hoặc cảnh báo học vụ
 - match: đình chỉ
   expand_with: đình chỉ học tập có thời hạn hoặc tạm dừng tiến độ học tập
 - match: học vượt
   expand_with: đăng ký học phần học vượt để đẩy nhanh tiến độ học tập
-- match: học bổng
-  expand_with: học bổng khuyến khích học tập, học bổng chính sách, học bổng tài trợ hoặc học bổng phát triển tài năng
 - match: bảo lưu
   expand_with: nghỉ học tạm thời hoặc bảo lưu kết quả học tập
 - match: học lại
-  expand_with: học phần chưa đạt phải học lại
+  expand_with: học phần không đạt phải học lại hoặc học phần đạt được học lại để cải thiện điểm
 - match: điểm F+
   expand_with: điểm học phần không đạt
 - match: học phí
   expand_with: mức thu, nộp, nợ, miễn, giảm hoặc hỗ trợ học phí
-- match: bỏ học
-  expand_with: tự ý bỏ học, thôi học hoặc buộc thôi học
 - match: điểm F
   expand_with: điểm học phần không đạt
 - match: điểm I
@@ -417,4 +413,4 @@ expand_slangs:
 - match: điểm R
   expand_with: điểm học phần được miễn học và công nhận tín chỉ
 - match: rớt bằng
-  expand_with: hạng tốt nghiệp bị giảm đi một mức công nhận tốt nghiệp và cấp bằng tốt nghiệp
+  expand_with: không được công nhận tốt nghiệp hoặc bị giảm một mức xếp loại tốt nghiệp

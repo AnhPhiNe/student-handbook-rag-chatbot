@@ -816,7 +816,14 @@ class AnswerPipeline:
                 run_id=run_id,
             )
             yield {"type": "token", "text": prepared.terminal_answer or ""}
-            yield {"type": "done", "tracker": tracker}
+            yield {
+                "type": "done",
+                "status": prepared.terminal_status,
+                "error_type": prepared.error_type,
+                "used_cache": False,
+                "tracker": tracker,
+                "citations_used": selected_citations,
+            }
             return
 
         yield {"type": "progress", "message": "Đang phân tích tài liệu tìm được..."}

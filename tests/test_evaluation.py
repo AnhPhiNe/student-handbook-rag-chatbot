@@ -159,11 +159,11 @@ def test_v9_provenance_reports_runtime_config_drift() -> None:
         == provenance["expected_config_hashes"].keys()
     )
     assert "slang_dictionary" in provenance["config_hashes"]
+    # The historical manifest remains frozen as runtime configs evolve.
+    # Validate reported drift, not a hard-coded list of changed configs.
     assert set(provenance["config_hash_mismatches"]) == {
-        "ai_router",
-        "answer_generation",
-        "retrieval",
-        "slang_dictionary",
+        name for name, actual in provenance["config_hashes"].items()
+        if actual != provenance["expected_config_hashes"][name]
     }
 
 

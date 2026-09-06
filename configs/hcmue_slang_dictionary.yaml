@@ -51,8 +51,6 @@ replace_slangs:
   replace_with: tốt nghiệp chậm so với thời gian học tập chuẩn
 - match: học bổng KKHT
   replace_with: học bổng khuyến khích học tập
-- match: không qua môn
-  replace_with: học phần chưa đạt
 - match: không đậu môn
   replace_with: học phần chưa đạt
 - match: môn học trước
@@ -185,8 +183,6 @@ replace_slangs:
   replace_with: học bổng khuyến khích học tập
 - match: rớt môn
   replace_with: học phần chưa đạt
-- match: qua môn
-  replace_with: học phần đạt
 - match: đậu môn
   replace_with: học phần đạt
 - match: đky môn

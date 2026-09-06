@@ -192,33 +192,31 @@ def _reference_input_clarification(
     if not input_rows:
         return None
 
-    scalar_value = slots.get("score_or_level")
-    scalar_norm = normalize_text(str(scalar_value or ""))
-    # A list of requested equivalency levels names output columns from one
-    # certificate row; it is not a scalar score standing in for component data.
-    requested_level_columns = bool(
-        re.fullmatch(r"bac\s*[1-6](?:\s*(?:va|,|/)\s*bac\s*[1-6])+", scalar_norm)
-    )
-    scalar_supplied = scalar_value not in (None, "", []) and not requested_level_columns
-    component_supplied = any(
-        slots.get(name) not in (None, "", [])
-        for name in (
-            "listening_score",
-            "reading_score",
-            "speaking_score",
-            "writing_score",
-        )
-    )
-    if not scalar_supplied and not component_supplied:
-        return None
-
     requirements = input_rows[0].get("input_requirements") or {}
     component_slots = requirements.get("component_slots") or {}
+    required_slots = {
+        str(component): str((component_slots.get(component) or {}).get("slot") or f"{component}_score")
+        for component in requirements.get("required_components") or []
+    }
+
+    def has_score(value: Any) -> bool:
+        # Requested field/level names are selectors, not personal operands.
+        # Accept only a scalar number, optionally labelled with the score unit.
+        return bool(re.fullmatch(
+            r"(?:diem\s*)?[+-]?\d+(?:[.,]\d+)?(?:\s*diem)?",
+            normalize_text(str(value).replace(",", ".")) if value is not None else "",
+        ))
+
+    if not has_score(slots.get("score_or_level")) and not any(
+        has_score(slots.get(name)) for name in required_slots.values()
+    ):
+        return None
+
     missing: list[dict[str, str]] = []
     for component in requirements.get("required_components") or []:
         spec = component_slots.get(component) or {}
-        slot_name = str(spec.get("slot") or f"{component}_score")
-        if slots.get(slot_name) in (None, "", []):
+        slot_name = required_slots[str(component)]
+        if not has_score(slots.get(slot_name)):
             missing.append(
                 {
                     "component": str(component),
@@ -241,6 +239,41 @@ def _reference_input_clarification(
         ),
         "content_type": "structured_lookup_clarification",
     }
+
+
+def _select_reference_tables(
+    lookup_type: str, slots: dict[str, Any], tables: list[dict[str, Any]],
+    *, resolver_catalog: bool = False,
+) -> list[dict[str, Any]]:
+    """Apply the same declared operation/scope to display and resolver catalogs."""
+    candidates = tables
+    tool = _LOOKUP_TOOL_SPECS.get(lookup_type, {})
+    for selector_name in ("table_selector", "scope_selector"):
+        selector = tool.get(selector_name) or {}
+        spec = (selector.get("values") or {}).get(str(slots.get(selector.get("slot")) or ""))
+        if not isinstance(spec, dict):
+            continue
+        if resolver_catalog:
+            allowed_ids = spec.get("resolver_table_ids")
+            if allowed_ids is None:
+                continue
+            selected = [table for table in candidates
+                        if any(str(table.get("table_id") or "") == table_id
+                               or str(table.get("table_id") or "").endswith("_" + table_id)
+                               for table_id in allowed_ids)]
+        else:
+            types = spec.get("table_types") or []
+            subtypes = spec.get("table_subtypes") or []
+            suffixes = tuple(spec.get("table_id_suffixes") or [])
+            selected = [table for table in candidates
+                        if (not types or table.get("table_type") in types)
+                        and (not subtypes or table.get("table_subtype") in subtypes)
+                        and (not suffixes or str(table.get("table_id") or "").endswith(suffixes))]
+        # Retain the existing evidence-only fallback for a stale operation.
+        # A fact lock or an explicit scope may never fall through to other tables.
+        if selected or resolver_catalog or selector_name == "scope_selector":
+            candidates = selected
+    return candidates
 
 
 def _reference_table_lookup(
@@ -287,31 +320,9 @@ def _reference_table_lookup(
     if clarification is not None:
         return clarification
 
-    selector = _LOOKUP_TOOL_SPECS.get(lookup_type, {}).get("table_selector") or {}
-    selector_slot = str(selector.get("slot") or "")
-    selector_value = str(slots.get(selector_slot) or "") if selector_slot else ""
-    selector_spec = (selector.get("values") or {}).get(selector_value)
-    if isinstance(selector_spec, dict):
-        selected_types = set(selector_spec.get("table_types") or [])
-        selected_subtypes = set(selector_spec.get("table_subtypes") or [])
-        selected_id_suffixes = tuple(selector_spec.get("table_id_suffixes") or [])
-        selected = [
-            table
-            for table in candidates
-            if (not selected_types or table.get("table_type") in selected_types)
-            and (
-                not selected_subtypes or table.get("table_subtype") in selected_subtypes
-            )
-            and (
-                not selected_id_suffixes
-                or str(table.get("table_id") or "").endswith(selected_id_suffixes)
-            )
-        ]
-        # A stale selector must not turn valid table evidence into uncovered.
-        # Fall back to the complete lookup family when the configured selector
-        # has no matching table in the current dataset.
-        if selected:
-            candidates = selected
+    candidates = _select_reference_tables(lookup_type, slots, candidates)
+    if not candidates:
+        return None
 
     candidates.sort(
         key=lambda table: (
@@ -403,7 +414,7 @@ def _unique_reference_resolution(
         resolved = (
             structured_lookup_from_slots(
                 slots,
-                scoring_tables,
+                _select_reference_tables(lookup_type, slots, scoring_tables, resolver_catalog=True),
                 cohort=cohort,
             )
             if slots

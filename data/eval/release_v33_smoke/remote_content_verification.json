@@ -1,0 +1,24 @@
+{
+  "status": "ok",
+  "verified_at": "2026-09-06T03:58:06.633260+00:00",
+  "build_id": "build-934f1caf384f99ad96e9",
+  "collections": {
+    "qdrant": "student_handbook_semantic_v33",
+    "mongo": "parent_docs_v33"
+  },
+  "parent_count": 462,
+  "child_count": 3121,
+  "parent_payload_sha256": "4653324cb83aa314e91396ca4d829243248df53f9c6d28f21a677b163ec1d07c",
+  "child_payload_sha256": "1ce4925ed24b45f566823ca0e8ac5c6242cac807763c86faeb8a76c1a9d5a302",
+  "parent_cohorts": {
+    "K48-K49": 123,
+    "K50": 166,
+    "K51": 173
+  },
+  "child_cohorts": {
+    "K50": 1082,
+    "K51": 1162,
+    "K48-K49": 877
+  },
+  "verification": "Every full parent and child payload equals the frozen local artifact; vectors not downloaded."
+}

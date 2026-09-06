@@ -41,6 +41,9 @@
 > [!IMPORTANT]
 > HCMUE AI is an independent, non-commercial student project—not an official HCMUE application. Verify cited sources or contact the responsible university office before making important academic decisions.
 
+> [!NOTE]
+> The current checkout is the **v33 release candidate**, using Composer **Gemini 3.1 Flash-Lite**, prompt **v3.24**, and pipeline **v64**. Its local smoke checks have passed; it has **not yet been deployed or fully evaluated**. The V9.1 metrics below remain results of the earlier v32 release. See [current release status](docs/V33_RELEASE_STATUS.md).
+
 <a id="project-overview"></a>
 
 ## ✨ Project Overview
@@ -90,8 +93,8 @@ flowchart LR
     API --> Cache[("Redis<br/>response cache")]
 
     API --> Structured["Structured JSON catalogs"]
-    API --> Qdrant[("Qdrant Cloud<br/>student_handbook_semantic_v32")]
-    API --> Mongo[("MongoDB Atlas<br/>parent_docs_v32")]
+    API --> Qdrant[("Qdrant Cloud<br/>student_handbook_semantic_v33")]
+    API --> Mongo[("MongoDB Atlas<br/>parent_docs_v33")]
     API --> Graph["Local article graph"]
 
     Qdrant -. child-to-parent ID .-> Mongo
@@ -99,7 +102,7 @@ flowchart LR
     Graph -. UI related references .-> API
 ```
 
-The packaged data stores share build ID `build-02a2eed8dae5b4307427`. Readiness checks compare configured collection names with the build manifest so Qdrant, MongoDB, and local artifacts cannot silently come from different builds.
+The current candidate artifacts share build ID `build-934f1caf384f99ad96e9`. Readiness checks compare configured collection names with the build manifest so Qdrant, MongoDB, and local artifacts cannot silently come from different builds. This diagram describes the candidate, not confirmation that the public demo has been updated.
 
 ### 🔄 Runtime flow
 
@@ -147,12 +150,12 @@ flowchart TD
 | Artifact | Count | Purpose |
 |---|---:|---|
 | Parent articles | 462 | Complete context for answers and citations |
-| Child chunks | 3,125 | Fine-grained dense and BM25 retrieval |
+| Child chunks | 3,121 | Fine-grained dense and BM25 retrieval |
 | Structured table catalogs | 35 | Deterministic cohort-aware lookup |
 | Article graph edges | 78 | Related-reference navigation in the UI |
 | Embedding | BAAI/bge-m3, 1,024 dimensions | Semantic dense retrieval |
 
-Structured tables remain available in versioned JSON and MongoDB parent documents. Rows represented by the structured registry are excluded from Qdrant to avoid indexing a duplicated, flattened representation; they are not removed from the system.
+Supported regulation tables remain available in versioned JSON and full MongoDB parent articles. Reviewed physical table regions are removed from the narrative view used for child embedding; policy prose containing numbers is retained. Directory catalogs stay on their structured path. See the [parent/child build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md).
 
 ### 🧭 Repository layout
 
@@ -190,10 +193,11 @@ flowchart LR
     Policy --> Tables["Structured catalogs"]
     Policy --> Parents["462 parent articles"]
     Policy --> Graph["78 validated edges"]
-    Parents --> Chunks["3,125 child chunks"]
+    Parents --> Narrative["Narrative view<br/>reviewed table regions removed"]
+    Narrative --> Chunks["3,121 child chunks"]
     Chunks --> Embed["BGE-M3 embeddings"]
-    Embed --> Qdrant["Qdrant v32"]
-    Parents --> Mongo["MongoDB v32"]
+    Embed --> Qdrant["Qdrant v33"]
+    Parents --> Mongo["MongoDB v33"]
     Tables --> Manifest["Build manifest"]
     Graph --> Manifest
     Qdrant --> Manifest
@@ -442,10 +446,10 @@ Required environment variables:
 ```dotenv
 QDRANT_URL=https://your-cluster.qdrant.io
 QDRANT_API_KEY=...
-QDRANT_COLLECTION_NAME=student_handbook_semantic_v32
+QDRANT_COLLECTION_NAME=student_handbook_semantic_v33
 MONGODB_URL=mongodb+srv://...
 MONGODB_DB_NAME=chatbotHCMUE
-MONGODB_PARENT_COLLECTION=parent_docs_v32
+MONGODB_PARENT_COLLECTION=parent_docs_v33
 STUDENT_RAG_RETRIEVAL_MODE=vector_primary_graph_supplement
 GROQ_API_KEYS=...
 GEMINI_API_KEYS=...
@@ -523,11 +527,11 @@ Legacy `LANGCHAIN_API_KEY` and `LANGCHAIN_PROJECT` variables remain supported fo
 The deployment script uses an explicit allow-list and excludes `.env`, secrets, caches, evaluation reports, and raw PDFs.
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\deploy_hf_backend.ps1 -DryRun
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\deploy_hf_backend.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\deploy_hf_backend.ps1 -DryRun -QdrantCollection student_handbook_semantic_v33 -MongoCollection parent_docs_v33
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\deploy_hf_backend.ps1 -QdrantCollection student_handbook_semantic_v33 -MongoCollection parent_docs_v33
 ```
 
-Before publishing, the packaged manifest must target Qdrant `student_handbook_semantic_v32` and MongoDB `parent_docs_v32`. After deployment, verify `/health`, `/health/readiness`, and representative structured, regulation, compound, clarification, sync, and streaming requests.
+Before publishing this candidate, the packaged manifest and both HF runtime variables must target Qdrant `student_handbook_semantic_v33` and MongoDB `parent_docs_v33`. Pass both script parameters explicitly; the script's legacy defaults are v32 and will reject this manifest. Keep the v32 pair for rollback. After deployment, verify `/health`, `/health/readiness`, and representative structured, regulation, compound, clarification, sync, and streaming requests.
 
 ### Frontend — Vercel
 

@@ -1,0 +1,6 @@
+[
+  {"id":"review_duration_k51_regular","query":"Sinh viên chính quy K51 có thời gian học chuẩn và tối đa bao nhiêu năm?","relevance_judgments":[{"parent_section_id":"K51_QuyCheDaoTao_Chuong1_Dieu3","grade":2,"cohort":"K51"}]},
+  {"id":"review_duration_k51_parttime","query":"K51 hệ vừa làm vừa học, thời gian học tối đa là 9 năm hay đã thay đổi?","relevance_judgments":[{"parent_section_id":"K51_QuyCheDaoTao_Chuong1_Dieu3","grade":2,"cohort":"K51"}]},
+  {"id":"review_foreign_two_columns","query":"Bảng ngoại ngữ K50 quy định TOEIC 4 kỹ năng tương đương bậc 3 và bậc 4 thế nào?","relevance_judgments":[{"parent_section_id":"K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8","grade":2,"cohort":"K50"}]},
+  {"id":"review_scholarship_merged_rows","query":"K51 học bổng loại Giỏi cần xếp loại học tập và rèn luyện thế nào?","relevance_judgments":[{"parent_section_id":"K51_QuyCheCongTacSinhVien_Chuong5_Dieu27","grade":2,"cohort":"K51"}]}
+]

@@ -1,6 +1,10 @@
 param(
     [switch]$DryRun,
-    [string]$CommitMessage = ""
+    [string]$CommitMessage = "",
+    [ValidateNotNullOrEmpty()]
+    [string]$QdrantCollection = "student_handbook_semantic_v32",
+    [ValidateNotNullOrEmpty()]
+    [string]$MongoCollection = "parent_docs_v32"
 )
 
 $ErrorActionPreference = "Stop"
@@ -24,7 +28,8 @@ function Assert-InWorkspace {
     } else {
         [System.IO.Path]::GetFullPath($Path)
     }
-    if (-not $resolvedPath.StartsWith($resolvedRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+    $rootPrefix = $resolvedRoot.TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar
+    if (-not $resolvedPath.StartsWith($rootPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
         throw "Refusing to operate outside workspace: $resolvedPath"
     }
 }
@@ -158,11 +163,16 @@ Copy-RequiredJsonArtifact "data\processed\metadata\build_manifest.json" "data\pr
 
 $packagedManifestPath = Join-Path $TempDir "data\processed\metadata\build_manifest.json"
 $packagedManifest = Get-Content -Raw -LiteralPath $packagedManifestPath | ConvertFrom-Json
-if ($packagedManifest.storage_targets.qdrant_collection -ne "student_handbook_semantic_v32") {
+if ($packagedManifest.storage_targets.qdrant_collection -ne $QdrantCollection) {
     throw "Unexpected Qdrant target in packaged build manifest: $($packagedManifest.storage_targets.qdrant_collection)"
 }
-if ($packagedManifest.storage_targets.mongo_parent_collection -ne "parent_docs_v32") {
+if ($packagedManifest.storage_targets.mongo_parent_collection -ne $MongoCollection) {
     throw "Unexpected Mongo target in packaged build manifest: $($packagedManifest.storage_targets.mongo_parent_collection)"
+}
+
+# Build-only inputs are not deployed; this audit is a manifest-declared artifact.
+if ($packagedManifest.artifacts.table_embedding_audit) {
+    Copy-RequiredJsonArtifact "data\processed\metadata\structured_table_embedding_audit.json" "data\processed\metadata\structured_table_embedding_audit.json"
 }
 
 Write-Host "[4/5] Writing Hugging Face Space metadata..."

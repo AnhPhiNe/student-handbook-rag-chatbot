@@ -8,6 +8,17 @@ from scripts.check_deploy_artifacts import validate_artifact, validate_build_man
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def test_hf_deploy_checks_explicit_targets_and_packages_declared_audit() -> None:
+    script = (ROOT / "scripts" / "deploy_hf_backend.ps1").read_text(encoding="utf-8")
+    assert "storage_targets.qdrant_collection -ne $QdrantCollection" in script
+    assert "storage_targets.mongo_parent_collection -ne $MongoCollection" in script
+    assert "if ($packagedManifest.artifacts.table_embedding_audit)" in script
+    assert (
+        'Copy-RequiredJsonArtifact "data\\processed\\metadata\\structured_table_embedding_audit.json" '
+        '"data\\processed\\metadata\\structured_table_embedding_audit.json"' in script
+    )
+
+
 def test_hf_deploy_allowlist_includes_retrieval_runtime_config() -> None:
     """Prevent deploys that omit the config required by retrieval health probes."""
 

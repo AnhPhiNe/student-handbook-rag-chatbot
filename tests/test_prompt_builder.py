@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pytest
 
+from src.common.cohort import COHORT_REGISTRY
 from src.generation.amendment_precedence import (
     ApplicableAmendment,
     collect_applicable_amendments,
@@ -52,6 +53,73 @@ def test_prompt_bundle_exposes_the_exact_authorized_evidence_context() -> None:
     assert context_used in prompt
     assert "Có ba điều kiện xét học bổng." in context_used
     assert "retrieval_query" not in context_used
+
+
+@pytest.mark.parametrize(
+    ("cohort", "expected_years"),
+    [
+        ("K48-K49", [2022, 2023]),
+        ("K50", [2024]),
+        ("K51", [2025]),
+        ("k50", [2024]),
+        ("K99", []),
+        (None, []),
+    ],
+)
+def test_packet_provides_registry_years_without_guessing(
+    cohort: str | None, expected_years: list[int]
+) -> None:
+    packet = build_authorized_evidence_packet(
+        query="Quy định theo năm tuyển sinh áp dụng thế nào?",
+        retrieval_result={},
+        selected_citations=[],
+        fallback_cohort=cohort,
+        max_context_chars=10000,
+    )
+
+    assert packet["units"][0]["admission_years"] == expected_years
+
+
+def test_packet_uses_each_task_cohort_and_the_shared_registry(monkeypatch) -> None:
+    monkeypatch.setitem(
+        COHORT_REGISTRY,
+        "K_TEST",
+        {"aliases": ("K_TEST",), "admission_years": (2030, 2031)},
+    )
+    packet = build_authorized_evidence_packet(
+        query="So sánh các khóa.",
+        retrieval_result={
+            "query_plan": {
+                "tasks": [_task("t1", "So sánh các khóa.", ["K_TEST", "K50"])]
+            }
+        },
+        selected_citations=[],
+        fallback_cohort="K51",
+        max_context_chars=10000,
+    )
+
+    assert [unit["admission_years"] for unit in packet["units"]] == [
+        [2030, 2031],
+        [2024],
+    ]
+
+
+def test_prompt_binds_table_cells_and_cohort_years_without_overriding_fact_lock() -> None:
+    prompt = _build_prompt_text(
+        query="Mức này có kết quả thế nào?",
+        retrieval_result={},
+        cohort="K51",
+    )
+
+    # These assertions protect instructions, not a claim of LLM compliance.
+    assert "admission_years" in prompt
+    assert "không tự suy năm tuyển sinh từ mã khóa" in prompt
+    assert "không tự chọn một năm" in prompt
+    assert "Khi cần đọc bảng mà chưa có resolved_result" in prompt
+    assert "chọn bảng đúng phạm vi áp dụng" in prompt
+    assert "đúng hàng và cột tương ứng" in prompt
+    assert "Không ghép giá trị giữa các bảng hoặc hàng" in prompt
+    assert "không tự chọn lại hàng hoặc tính lại từ bảng đầy đủ" in prompt
 
 
 def test_prompt_is_compact_and_places_final_task_after_evidence() -> None:
@@ -155,6 +223,16 @@ def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
             "Sinh viên đã hoàn thành chương trình được xem xét tốt nghiệp.",
             "Không xét trong thời gian sinh viên bị truy cứu trách nhiệm hình sự.",
         ),
+        (
+            "Thời hạn hoàn thành theo Điều 4 là bao lâu?",
+            "Thời hạn thông thường là 8 kỳ.",
+            "Người được miễn học phần có thời hạn giảm tương ứng.",
+        ),
+        (
+            "Mức hỗ trợ theo Điều 4 là bao nhiêu?",
+            "Mức hỗ trợ thông thường là 200 đơn vị.",
+            "Người đã được tài trợ toàn phần không nhận khoản hỗ trợ này.",
+        ),
     ],
 )
 def test_material_exceptions_remain_in_scope_across_authorized_articles(
@@ -188,6 +266,8 @@ def test_material_exceptions_remain_in_scope_across_authorized_articles(
     assert "có thể làm thay đổi kết luận" in prompt
     assert "chúng vẫn thuộc phạm vi câu hỏi dù nằm ở Điều khác" in prompt
     assert "Không liệt kê ngoại lệ không liên quan" in prompt
+    assert "Với mọi kết luận" in prompt
+    assert "Yêu cầu trả lời ngắn không được làm mất các điều kiện này" in prompt
     assert "không mượn nguồn của đơn vị khác" in prompt
 
 

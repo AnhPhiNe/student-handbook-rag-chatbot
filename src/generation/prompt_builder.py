@@ -5,7 +5,10 @@ import re
 import unicodedata
 from typing import Any
 
-from src.common.cohort import is_validated_source_applicable
+from src.common.cohort import (
+    admission_years_for_cohort,
+    is_validated_source_applicable,
+)
 from src.common.legal_reference import (
     article_label_from_heading,
     normalize_article_label,
@@ -18,7 +21,7 @@ from .amendment_precedence import (
 )
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.23-material-exceptions"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.24-grounded-table-context"
 
 
 def build_answer_prompt_bundle(
@@ -59,7 +62,7 @@ def build_answer_prompt_bundle(
 QUY TẮC BẮT BUỘC
 1. Trả lời đúng và đầy đủ các ý thực sự được hỏi trong từng đơn vị. Không tóm tắt toàn bộ Điều hoặc mở rộng sang chính sách khác khi câu hỏi chỉ yêu cầu một khía cạnh. Chỉ kết luận dứt khoát khi evidence trực tiếp xác lập kết luận và câu hỏi đã cung cấp đủ điều kiện cần thiết.
 2. Mỗi đơn vị chỉ được dùng evidence và source_ref đã cấp cho đúng task/cohort; không mượn nguồn của đơn vị khác.
-3. Giữ đúng phạm vi ngữ nghĩa mà nguồn trực tiếp xác lập: đối tượng, hành vi, kết quả, điều kiện và hệ quả. Không chuyển thông tin giữa các khái niệm gần nghĩa hoặc coi chúng là tương đương/tên gọi thay thế, kể cả khi đặt trong ngoặc, trừ khi nguồn trực tiếp định nghĩa như vậy; nếu có nhiều cơ chế, trình bày riêng từng phần và giữ đúng điều kiện, ngoại lệ tương ứng. Khi trả lời về điều kiện hoặc đối tượng áp dụng, phải nêu các điều kiện loại trừ và ngoại lệ trong evidence được cấp cho đơn vị có thể làm thay đổi kết luận; chúng vẫn thuộc phạm vi câu hỏi dù nằm ở Điều khác. Không liệt kê ngoại lệ không liên quan.
+3. Giữ đúng phạm vi ngữ nghĩa mà nguồn trực tiếp xác lập: đối tượng, hành vi, kết quả, điều kiện và hệ quả. Không chuyển thông tin giữa các khái niệm gần nghĩa hoặc coi chúng là tương đương/tên gọi thay thế, kể cả khi đặt trong ngoặc, trừ khi nguồn trực tiếp định nghĩa như vậy; nếu có nhiều cơ chế, trình bày riêng từng phần và giữ đúng điều kiện, ngoại lệ tương ứng. Với mọi kết luận, phải nêu các điều kiện loại trừ và ngoại lệ trong evidence được cấp cho đơn vị có thể làm thay đổi kết luận; chúng vẫn thuộc phạm vi câu hỏi dù nằm ở Điều khác. Yêu cầu trả lời ngắn không được làm mất các điều kiện này. Không liệt kê ngoại lệ không liên quan.
 4. Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp, hãy trình bày rõ từng trường hợp có căn cứ và nêu thông tin còn thiếu để xác định trường hợp của người dùng; không tự đoán hoặc trả lời có/không tuyệt đối.
 5. Khi evidence có article_label, nêu đúng article_label tại phần kết luận mà nguồn đó trực tiếp hỗ trợ. Không tự tạo Điều/khoản/điểm và không liệt kê các nguồn không được dùng để trả lời.
 6. Với câu hỏi có/không, chỉ được trả lời có/không khi evidence trực tiếp cho phép hoặc cấm đúng hành vi/kết quả được hỏi. Lịch, thời hạn, điều kiện, quy trình, yêu cầu phê duyệt và việc nguồn không nói "được phép" đều không đủ để suy ra lệnh cấm. Nếu thiếu căn cứ trực tiếp, nói "Nguồn hiện có chưa trực tiếp xác lập..."; không thay câu trả lời bằng một chính sách khác chỉ vì cùng chủ đề.
@@ -69,9 +72,11 @@ QUY TẮC BẮT BUỘC
 
 QUY CÁCH
 - Không dùng kiến thức ngoài AUTHORIZED_EVIDENCE_BY_UNIT.
+- admission_years là năm hoặc tập năm tuyển sinh của cohort do hệ thống cung cấp; dùng metadata này để đối chiếu phạm vi áp dụng, không tự suy năm tuyển sinh từ mã khóa. Nếu tập năm có nhiều phần tử, không tự chọn một năm; nếu chưa xác định được trường hợp áp dụng, trình bày các trường hợp có căn cứ và nêu thông tin còn thiếu.
 - Không chèn mã nguồn như [S1] vào câu trả lời; giao diện hiển thị nguồn riêng.
 - Với đơn vị mode=structured, chỉ nêu kết quả trực tiếp và giải thích cần thiết; không sao chép toàn bộ bảng, danh mục hoặc structured JSON vào Markdown vì giao diện đã hiển thị dữ liệu đó riêng.
 - Nếu structured evidence có resolved_result, phải sao chép chính xác kết quả đó; không tự chọn lại hàng hoặc tính lại từ bảng đầy đủ.
+- Khi cần đọc bảng mà chưa có resolved_result, chọn bảng đúng phạm vi áp dụng rồi lấy kết quả từ đúng hàng và cột tương ứng, giữ nguyên quan hệ giữa các giá trị và nhãn kết quả. Không ghép giá trị giữa các bảng hoặc hàng. Nếu còn nhiều bảng hoặc hàng áp dụng, trình bày các trường hợp có căn cứ, không tự chọn một kết quả duy nhất.
 - Mọi số liệu phải lấy nguyên từ evidence đã được cấp cho đơn vị; không tính lại, nội suy hoặc mượn số liệu từ đơn vị khác.
 - Dùng Markdown có chọn lọc: in đậm kết luận chính, số liệu, thời hạn và điều kiện quan trọng; dùng danh sách khi có nhiều bước, điều kiện hoặc trường hợp. Không in đậm cả đoạn.
 - Với coverage=needs_clarification, chỉ nêu clarification_question của đơn vị đó.
@@ -149,6 +154,7 @@ def build_authorized_evidence_packet(
         packet_units.append(
             {
                 **unit,
+                "admission_years": list(admission_years_for_cohort(unit["cohort"])),
                 "allowed_source_refs": [
                     source["source_ref"] for source in authorized_sources
                 ],

@@ -19,6 +19,15 @@ def test_hf_deploy_checks_explicit_targets_and_packages_declared_audit() -> None
     )
 
 
+def test_docker_context_keeps_the_manifest_declared_table_audit() -> None:
+    rules = (ROOT / ".dockerignore").read_text(encoding="utf-8").splitlines()
+    exclusion = "data/processed/metadata/*"
+    audit = "!data/processed/metadata/structured_table_embedding_audit.json"
+    assert audit in rules
+    assert rules.index(audit) > rules.index(exclusion)
+    assert "work" in rules and "data/eval" in rules and "data/raw" in rules
+
+
 def test_hf_deploy_allowlist_includes_retrieval_runtime_config() -> None:
     """Prevent deploys that omit the config required by retrieval health probes."""
 

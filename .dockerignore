@@ -58,3 +58,4 @@ data/processed/chunks/*
 !data/processed/chunks/child_parent_chunks.json
 data/processed/metadata/*
 !data/processed/metadata/build_manifest.json
+!data/processed/metadata/structured_table_embedding_audit.json

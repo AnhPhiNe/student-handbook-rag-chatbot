@@ -19,6 +19,94 @@ from src.retrieval.core.query_plan import (
 )
 from src.retrieval.core.slang_normalizer import SlangNormalizer
 from src.retrieval.core.structured_dispatcher import StructuredResolution
+from src.retrieval.core.citation_builder import build_citation_from_lookup
+from src.generation.prompt_builder import build_authorized_evidence_packet
+
+
+def _multi_table_fact_lookup(cohort="K51", value="D+"):
+    return {
+        "lookup_type": "scoring", "cohort": cohort,
+        "result": {"tables": [{"table_id": "a"}, {"table_id": "b"}]},
+        "resolved_result": {"result": {"letter": value}},
+        "sub_lookups": [
+            {
+                "lookup_type": "scoring", "cohort": cohort,
+                "source_parent_id": "article-10", "source_cohort": cohort,
+                "result": {"table_id": table},
+            }
+            for table in ("a", "b")
+        ],
+    }
+
+
+def test_fact_locks_survive_source_merge_without_cross_task_or_cohort_leakage():
+    tasks, citations = [], []
+    for task_id, cohort, value in [("t1", "K51", "D+"), ("t2", "K51", "B"), ("t3", "K50", "C")]:
+        tasks.append({"id": task_id, "question": "Tra điểm", "mode": "structured", "cohorts": [cohort]})
+        citations.extend({**c, "supports_task_ids": [task_id]} for c in build_citation_from_lookup(_multi_table_fact_lookup(cohort, value)))
+    tasks.append({"id": "t4", "question": "Quy định", "mode": "rag", "cohorts": ["K51"]})
+    citations.append({"source_parent_id": "article-10", "cohort": "K51", "supports_task_ids": ["t4"], "content": "Policy text"})
+    merged = AnswerPipeline._merge_task_citations(citations)
+    assert len(merged) == 4
+    packet = build_authorized_evidence_packet(
+        query="Tra cứu nhiều yêu cầu", retrieval_result={
+            "query_plan": {"tasks": tasks},
+            "coverage_by_task": {t["id"]: "covered" for t in tasks},
+        }, selected_citations=merged, fallback_cohort="K51", max_context_chars=10000,
+    )
+    by_task = {unit["task_id"]: unit for unit in packet["units"]}
+    for task_id, value in [("t1", "D+"), ("t2", "B"), ("t3", "C")]:
+        evidence = by_task[task_id]["primary_evidence"]
+        assert len(evidence) == 1
+        assert evidence[0]["resolved_result"] == {"result": {"letter": value}}
+    assert all("resolved_result" not in c for c in by_task["t4"]["primary_evidence"])
+
+
+@pytest.mark.parametrize("transport", ["sync", "stream"])
+def test_multi_table_fact_lock_reaches_actual_composer_prompt(monkeypatch, transport):
+    task = {**_rag_task(1, "Tra điểm"), "mode": "structured", "cohorts": ["K51"]}
+    plan = _plan([task])
+    lookup = _multi_table_fact_lookup()
+    citations = AnswerPipeline._merge_task_citations([
+        {**c, "supports_task_ids": ["t1"]} for c in build_citation_from_lookup(lookup)
+    ])
+    pipeline = _pipeline(plan)
+    pipeline.max_context_chars = 10000
+    pipeline._throttle_llm_call = lambda: None
+    pipeline._run_retrieval = lambda *args, **kwargs: {
+        "query_plan": plan, "query": "Tra điểm", "effective_query": "Tra điểm",
+        "coverage_by_task": {"t1": "covered"},
+        "task_results": [{"task_id": "t1", "coverage": "covered"}],
+        "execution_mode": "structured", "selected_cohort": "K51",
+        "citations": citations, "evidence_citations": citations,
+        "structured_result": lookup,
+    }
+    class Cache:
+        def make_cache_key(self, **kwargs): return "key"
+        def get(self, key): return None
+        def set(self, key, value): pass
+
+    captured = []
+    class LLM:
+        def generate(self, prompt):
+            captured.append(prompt)
+            return {"ok": True, "text": "Điểm chữ D+.", "usage": {}, "model_used": "fake"}
+        def generate_stream(self, prompt):
+            captured.append(prompt)
+            yield "Điểm chữ D+."
+            return {"usage": {}, "model_used": "fake"}
+
+    pipeline.response_cache = Cache()
+    pipeline._get_llm_client = lambda: LLM()
+    monkeypatch.setattr("src.generation.answer_pipeline.resolve_cohort_from_query", lambda query, cohort: cohort)
+    if transport == "sync":
+        assert pipeline.answer("Tra điểm", cohort="K51")["status"] == "answered"
+    else:
+        events = list(pipeline.answer_stream("Tra điểm", cohort="K51"))
+        assert next(e for e in events if e["type"] == "done")["status"] == "answered"
+    assert len(captured) == 1
+    assert '"resolved_result": {' in captured[0]
+    assert '"letter": "D+"' in captured[0]
 
 
 def _rag_task(index: int, question: str | None = None) -> dict[str, Any]:

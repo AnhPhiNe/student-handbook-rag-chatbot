@@ -5,6 +5,41 @@ from src.retrieval.core.citation_builder import (
     sanitize_citation_content,
 )
 from src.common.source_identity import canonical_article_source_id
+from copy import deepcopy
+
+
+def test_multi_table_lookup_preserves_parent_fact_lock_without_mutating_input():
+    leaves = [
+        {
+            "lookup_type": "scoring", "source_parent_id": "K51_Dieu10",
+            "cohort": "K51", "source_cohort": "K51", "document_id": "handbook-k51",
+            "table_name": scope, "applicability": scope,
+            "result": {"table_id": scope, "rows": [{"letter": letter}]},
+        }
+        for scope, letter in [("foundation", "D+"), ("remaining", "D+")]
+    ]
+    lock = {"result": {"letter": "D+", "status": "Không đạt"}}
+    lookup = {
+        "lookup_type": "scoring", "cohort": "K51", "table_name": "Applicable tables",
+        "sub_lookups": leaves, "resolved_result": lock,
+        "result": {"tables": [leaf["result"] for leaf in leaves]},
+    }
+    original = deepcopy(lookup)
+    citations = build_citation_from_lookup(lookup)
+    assert len(citations) == 1
+    assert citations[0]["resolved_result"] == lock
+    assert citations[0]["source_parent_id"] == "K51_Dieu10"
+    assert citations[0]["applicability"] is None  # Do not inherit the first table's scope.
+    assert "foundation" in citations[0]["content"] and "remaining" in citations[0]["content"]
+    assert lookup == original
+
+    # A group lock must not be borrowed by a different source or cohort.
+    for field, value in [("source_parent_id", "K51_Dieu11"), ("cohort", "K50")]:
+        mixed = deepcopy(lookup)
+        mixed["sub_lookups"][1][field] = value
+        separate = build_citation_from_lookup(mixed)
+        assert len(separate) == 2
+        assert all(item.get("resolved_result") is None for item in separate)
 
 
 def test_structured_citation_preserves_resolved_result_for_composer():

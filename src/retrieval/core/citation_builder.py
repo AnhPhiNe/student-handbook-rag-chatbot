@@ -302,6 +302,30 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
         for item in sub_lookups:
             if isinstance(item, dict):
                 citations.extend(build_citation_from_lookup(item))
+        # A reference-table group can own a fact lock even though its leaves
+        # only contain full tables. Keep that group intact when all leaves are
+        # anchored to the same source and applicability provenance. Never
+        # attribute a group lock to an arbitrary source in a mixed-source group.
+        if citations and lookup_result.get("resolved_result") is not None:
+            first = citations[0]
+            provenance_fields = (
+                "source_parent_id", "document_id", "cohort", "source_cohort",
+                "applicable_cohorts", "applicability_validated",
+                "applicability_basis_parent_id",
+            )
+            if first.get("source_parent_id") and all(
+                all(citation.get(field) == first.get(field) for field in provenance_fields)
+                for citation in citations
+            ) and lookup_result.get("cohort") in (None, first.get("cohort")):
+                return build_citation_from_lookup({
+                    **lookup_result,
+                    **{field: first.get(field) for field in provenance_fields},
+                    "sub_lookups": [],
+                    "content_type": "structured_lookup",
+                    "source_pages": sorted({
+                        page for citation in citations for page in citation["source_pages"]
+                    }),
+                })
         return citations
 
     lookup_type = str(lookup_result.get("lookup_type") or "structured_lookup")

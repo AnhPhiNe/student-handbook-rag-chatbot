@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pytest
+
 from src.generation.amendment_precedence import (
     ApplicableAmendment,
     collect_applicable_amendments,
@@ -138,6 +140,55 @@ def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
     assert "evidence đã được cấp cho đơn vị" in prompt
     assert "không tính lại, nội suy hoặc mượn số liệu từ đơn vị khác" in prompt
     assert '"article_label": "Điều 16"' in prompt
+
+
+@pytest.mark.parametrize(
+    ("question", "condition", "exclusion"),
+    [
+        (
+            "Điều kiện đăng ký học phần theo Điều 4 là gì?",
+            "Sinh viên phải hoàn thành học phần tiên quyết.",
+            "Sinh viên đang bị đình chỉ học tập không được đăng ký.",
+        ),
+        (
+            "Đối tượng được xét tốt nghiệp theo Điều 4 là ai?",
+            "Sinh viên đã hoàn thành chương trình được xem xét tốt nghiệp.",
+            "Không xét trong thời gian sinh viên bị truy cứu trách nhiệm hình sự.",
+        ),
+    ],
+)
+def test_material_exceptions_remain_in_scope_across_authorized_articles(
+    question: str, condition: str, exclusion: str
+) -> None:
+    # Synthetic policy fixtures: test prompt/evidence contract, not model compliance.
+    prompt, context = build_answer_prompt_bundle(
+        query=question,
+        retrieval_result={
+            "citations": [
+                {
+                    "chunk_id": "policy_conditions",
+                    "title": "Điều 4",
+                    "content": condition,
+                    "cohort": "K51",
+                },
+                {
+                    "chunk_id": "policy_exclusions",
+                    "title": "Điều 5",
+                    "content": exclusion,
+                    "cohort": "K51",
+                },
+            ]
+        },
+        cohort="K51",
+    )
+    assert condition in context and exclusion in context
+    assert '"role": "target"' in context
+    assert '"role": "candidate"' in context
+    assert "điều kiện loại trừ và ngoại lệ trong evidence được cấp cho đơn vị" in prompt
+    assert "có thể làm thay đổi kết luận" in prompt
+    assert "chúng vẫn thuộc phạm vi câu hỏi dù nằm ở Điều khác" in prompt
+    assert "Không liệt kê ngoại lệ không liên quan" in prompt
+    assert "không mượn nguồn của đơn vị khác" in prompt
 
 
 def test_resolved_structured_result_is_explicit_in_authorized_packet() -> None:

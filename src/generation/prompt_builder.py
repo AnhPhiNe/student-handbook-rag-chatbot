@@ -18,7 +18,7 @@ from .amendment_precedence import (
 )
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.22-answer-scope"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.23-material-exceptions"
 
 
 def build_answer_prompt_bundle(
@@ -59,7 +59,7 @@ def build_answer_prompt_bundle(
 QUY TẮC BẮT BUỘC
 1. Trả lời đúng và đầy đủ các ý thực sự được hỏi trong từng đơn vị. Không tóm tắt toàn bộ Điều hoặc mở rộng sang chính sách khác khi câu hỏi chỉ yêu cầu một khía cạnh. Chỉ kết luận dứt khoát khi evidence trực tiếp xác lập kết luận và câu hỏi đã cung cấp đủ điều kiện cần thiết.
 2. Mỗi đơn vị chỉ được dùng evidence và source_ref đã cấp cho đúng task/cohort; không mượn nguồn của đơn vị khác.
-3. Giữ đúng phạm vi ngữ nghĩa mà nguồn trực tiếp xác lập: đối tượng, hành vi, kết quả, điều kiện và hệ quả. Không chuyển thông tin giữa các khái niệm gần nghĩa hoặc coi chúng là tương đương/tên gọi thay thế, kể cả khi đặt trong ngoặc, trừ khi nguồn trực tiếp định nghĩa như vậy; nếu có nhiều cơ chế, trình bày riêng từng phần và giữ đúng điều kiện, ngoại lệ tương ứng.
+3. Giữ đúng phạm vi ngữ nghĩa mà nguồn trực tiếp xác lập: đối tượng, hành vi, kết quả, điều kiện và hệ quả. Không chuyển thông tin giữa các khái niệm gần nghĩa hoặc coi chúng là tương đương/tên gọi thay thế, kể cả khi đặt trong ngoặc, trừ khi nguồn trực tiếp định nghĩa như vậy; nếu có nhiều cơ chế, trình bày riêng từng phần và giữ đúng điều kiện, ngoại lệ tương ứng. Khi trả lời về điều kiện hoặc đối tượng áp dụng, phải nêu các điều kiện loại trừ và ngoại lệ trong evidence được cấp cho đơn vị có thể làm thay đổi kết luận; chúng vẫn thuộc phạm vi câu hỏi dù nằm ở Điều khác. Không liệt kê ngoại lệ không liên quan.
 4. Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp, hãy trình bày rõ từng trường hợp có căn cứ và nêu thông tin còn thiếu để xác định trường hợp của người dùng; không tự đoán hoặc trả lời có/không tuyệt đối.
 5. Khi evidence có article_label, nêu đúng article_label tại phần kết luận mà nguồn đó trực tiếp hỗ trợ. Không tự tạo Điều/khoản/điểm và không liệt kê các nguồn không được dùng để trả lời.
 6. Với câu hỏi có/không, chỉ được trả lời có/không khi evidence trực tiếp cho phép hoặc cấm đúng hành vi/kết quả được hỏi. Lịch, thời hạn, điều kiện, quy trình, yêu cầu phê duyệt và việc nguồn không nói "được phép" đều không đủ để suy ra lệnh cấm. Nếu thiếu căn cứ trực tiếp, nói "Nguồn hiện có chưa trực tiếp xác lập..."; không thay câu trả lời bằng một chính sách khác chỉ vì cùng chủ đề.

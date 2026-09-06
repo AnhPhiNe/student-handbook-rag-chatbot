@@ -65,6 +65,11 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     parents = json.loads(Path(args.docstore).read_text(encoding="utf-8"))
+    if any((p.get('metadata') or {}).get('table_separation_policy') for p in parents):
+        raise RuntimeError(
+            'Refusing to rebuild separated parents via the legacy child CLI. '
+            'Use scripts.build_parent_child_artifacts with original source inputs.'
+        )
     structured_tables = json.loads(
         args.structured_table_registry.read_text(encoding="utf-8")
     )

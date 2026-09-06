@@ -9,6 +9,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
 from src.common.io import load_json
 from pathlib import Path
+from scripts.build_parent_child_artifacts import validate_publish_separation
 
 
 BUILD_MANIFEST_PATH = Path("data/processed/metadata/build_manifest.json")
@@ -32,6 +33,9 @@ def validate_build_contract(
     if not BUILD_MANIFEST_PATH.is_file():
         raise RuntimeError(f"Missing build manifest: {BUILD_MANIFEST_PATH}")
     manifest = json.loads(BUILD_MANIFEST_PATH.read_text(encoding="utf-8"))
+    validate_publish_separation(manifest)
+    if any((p.get('metadata') or {}).get('table_separation_policy') for p in docstore_items) and not manifest.get('index_contract', {}).get('table_separation_policy'):
+        raise RuntimeError('Separated parents require a separation-aware manifest')
     build_id = str(manifest.get("build_id") or "")
     if not build_id:
         raise RuntimeError("Build manifest does not contain build_id.")

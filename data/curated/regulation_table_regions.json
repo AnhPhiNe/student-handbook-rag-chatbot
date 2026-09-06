@@ -1,0 +1,1045 @@
+{
+  "policy": "reviewed-table-separation-v1",
+  "registry_sha256": "2f6b738c1356a020963eebac0e67a8645a13674a4584eb029ccb4fab4208bcc9",
+  "review_basis": "Approved registry plus source-layout review documented in TABLE_TEXT_CANDIDATE.md. Agent-reviewed; not claimed as independent human review.",
+  "source_page_corrections": [
+    {
+      "parent_id": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
+      "content_sha256": "828c0773788acfcc39ff351ce852853f9037b3314604949b00be99992861f892",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "original_source_pages": [152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170],
+      "source_pages": [152],
+      "review_status": "source_checked",
+      "reason": "Article 15 ends on PDF page 152; subsequent notices and procedures are separate documents removed from this parent content."
+    },
+    {
+      "parent_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15",
+      "content_sha256": "936870fb239fdd5a1211e75a8a9b2adac1a92dd8fe161c40c0ef57626c6ff64d",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "original_source_pages": [155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170],
+      "source_pages": [155],
+      "review_status": "source_checked",
+      "reason": "Article 15 and its signature end on PDF page 155; following notices are not part of this article."
+    }
+  ],
+  "parents": [
+    {
+      "parent_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "content_sha256": "ad1eddaf755926b9a4a5000f9a38d0087d621d45f5d02341fb06355a078c73f6",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification": "physical_source_table"
+      },
+      "regions": [
+        {
+          "start": 430,
+          "end": 609,
+          "source_text": "Khung điểm\nXếp loại\nTừ 90 đến 100 điểm\nXuất sắc\nTừ 80 đến dưới 90 điểm\nTốt\nTừ 65 đến dưới 80 điểm\nKhá\nTừ 50 đến dưới 65 điểm\nTrung bình\nTừ 35 đến dưới 50 điểm\nYếu\nDưới 35 điểm\nKém",
+          "kind": "physical_table",
+          "source_pages": [
+            74
+          ],
+          "review_note": "Complete header and all ordered registry rows match source text.",
+          "table": {
+            "columns": [
+              "Khung điểm",
+              "Xếp loại"
+            ],
+            "keys": [
+              "Khung điểm",
+              "Xếp loại"
+            ],
+            "registry_ids": [
+              "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
+            ]
+          }
+        },
+        {
+          "start": 958,
+          "end": 1268,
+          "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Bảng phân loại kết quả rèn luyện\n| Khung điểm | Xếp loại |\n| --- | --- |\n| Từ 90 đến 100 điểm | Xuất sắc |\n| Từ 80 đến dưới 90 điểm | Tốt |\n| Từ 65 đến dưới 80 điểm | Khá |\n| Từ 50 đến dưới 65 điểm | Trung bình |\n| Từ 35 đến dưới 50 điểm | Yếu |\n| Dưới 35 điểm | Kém |",
+          "kind": "generated_table_appendix",
+          "source_pages": [
+            74
+          ],
+          "review_note": "Generated duplicate appendix, not PDF policy prose; original source paragraphs retained."
+        }
+      ]
+    },
+    {
+      "parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "content_sha256": "747200c531e8f62db12468b38605c785c214b617ab48b49c7a2dd0d97da5c7a2",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "scholarship_amount": "prose_derived_keep_original_policy",
+        "scholarship_classification": "prose_derived_keep_original_policy",
+        "scholarship_eligibility": "prose_derived_keep_original_policy",
+        "scholarship_score_formula": "prose_derived_keep_original_policy"
+      },
+      "regions": []
+    },
+    {
+      "parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "content_sha256": "e30b9f029fe7c3888bdb047c7d144fcde1ada90131493efa45ef2dcb3c96dbca",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general": "physical_source_table",
+        "K48_49_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded": "prose_derived_keep_original_policy"
+      },
+      "regions": [
+        {
+          "start": 3513,
+          "end": 3671,
+          "source_text": "Loại\nThang điểm 10\nThang điểm chữ\nĐạt\n8,5 – 10\nA\n7,8 – 8,4\nB+\n7,0 – 7,7\nB\n6,3 – 6,9\nC+\n5,5 – 6,2\nC\n4,8 – 5,4\nD+\n4,0 – 4,7\nD\nKhông đạt\n3,0 – 3,9\nF+\n0,0 – 2,9\nF",
+          "kind": "physical_table",
+          "source_pages": [
+            18,
+            19,
+            20,
+            21
+          ],
+          "review_note": "Merged pass/fail cells expanded per printed layout; original/amended blocks kept separately.",
+          "table": {
+            "columns": [
+              "Loại",
+              "Thang điểm 10",
+              "Thang điểm chữ"
+            ],
+            "keys": [
+              "Loại",
+              "Thang điểm 10",
+              "Thang điểm chữ"
+            ],
+            "registry_ids": [
+              "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"
+            ]
+          }
+        },
+        {
+          "start": 4491,
+          "end": 5231,
+          "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Bảng quy đổi thang điểm 10 sang điểm chữ\n| Loại | Thang điểm 10 | Thang điểm chữ |\n| --- | --- | --- |\n| Đạt | 8,5 - 10 | A |\n| Đạt | 7,8 - 8,4 | B+ |\n| Đạt | 7,0 - 7,7 | B |\n| Đạt | 6,3 - 6,9 | C+ |\n| Đạt | 5,5 - 6,2 | C |\n| Đạt | 4,8 - 5,4 | D+ |\n| Đạt | 4,0 - 4,7 | D |\n| Không đạt | 3,0 - 3,9 | F+ |\n| Không đạt | 0,0 - 2,9 | F |\n\nBảng: Bảng đánh giá học phần đạt/không đạt không phân mức\nPhạm vi áp dụng: Áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập.\n| Kết quả | Thang điểm 10 | Điểm chữ | Tính vào điểm trung bình học tập |\n| --- | --- | --- | --- |\n| Đạt | Từ 5,0 trở lên | P | Không |\n| Chưa đạt | Dưới 5,0 | Không quy đổi thành P | Không |",
+          "kind": "generated_table_appendix",
+          "source_pages": [
+            18,
+            19,
+            20,
+            21
+          ],
+          "review_note": "Generated duplicate appendix, not PDF policy prose; original source paragraphs retained."
+        }
+      ]
+    },
+    {
+      "parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "content_sha256": "2ddbf2f52865275f7d24962173f1c22054ae1ecbe8f7d995f4fcabcf02b55e89",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification": "physical_source_table",
+        "K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4": "physical_source_table"
+      },
+      "regions": [
+        {
+          "start": 1277,
+          "end": 1362,
+          "source_text": "Thang điểm chữ\nThang điểm 4\nA\n4,0\nB+\n3,5\nB\n3,0\nC+\n2,5\nC\n2,0\nD+\n1,5\nD\n1,0\nF+\n0,5\nF\n0,0",
+          "kind": "physical_table",
+          "source_pages": [
+            21,
+            22,
+            23
+          ],
+          "review_note": "Complete header and all ordered registry rows match source text.",
+          "table": {
+            "columns": [
+              "Thang điểm chữ",
+              "Thang điểm 4"
+            ],
+            "keys": [
+              "Thang điểm chữ",
+              "Thang điểm 4"
+            ],
+            "registry_ids": [
+              "K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4"
+            ]
+          }
+        },
+        {
+          "start": 2356,
+          "end": 2518,
+          "source_text": "Xếp loại\nThang điểm 4\nXuất sắc\nTừ 3,6 đến 4,0\nGiỏi\nTừ 3,2 đến dưới 3,6\nKhá\nTừ 2,5 đến dưới 3,2\nTrung bình\nTừ 2,0 đến dưới 2,5\nYếu\nTừ 1,0 đến dưới 2,0\nKém\nDưới 1,0",
+          "kind": "physical_table",
+          "source_pages": [
+            21,
+            22,
+            23
+          ],
+          "review_note": "Complete header and all ordered registry rows match source text.",
+          "table": {
+            "columns": [
+              "Xếp loại",
+              "Thang điểm 4"
+            ],
+            "keys": [
+              "Xếp loại",
+              "Thang điểm 4"
+            ],
+            "registry_ids": [
+              "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification"
+            ]
+          }
+        },
+        {
+          "start": 2951,
+          "end": 3458,
+          "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Bảng quy đổi điểm chữ sang thang điểm 4\n| Thang điểm chữ | Thang điểm 4 |\n| --- | --- |\n| A | 4,0 |\n| B+ | 3,5 |\n| B | 3,0 |\n| C+ | 2,5 |\n| C | 2,0 |\n| D+ | 1,5 |\n| D | 1,0 |\n| F+ | 0,5 |\n| F | 0,0 |\n\nBảng: Bảng xếp loại học lực theo thang điểm 4\n| Xếp loại | Thang điểm 4 |\n| --- | --- |\n| Xuất sắc | Từ 3,6 đến 4,0 |\n| Giỏi | Từ 3,2 đến dưới 3,6 |\n| Khá | Từ 2,5 đến dưới 3,2 |\n| Trung bình | Từ 2,0 đến dưới 2,5 |\n| Yếu | Từ 1,0 đến dưới 2,0 |\n| Kém | Dưới 1,0 |",
+          "kind": "generated_table_appendix",
+          "source_pages": [
+            21,
+            22,
+            23
+          ],
+          "review_note": "Generated duplicate appendix, not PDF policy prose; original source paragraphs retained."
+        }
+      ]
+    },
+    {
+      "parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "content_sha256": "3feddee15b598c4b4c86dfe1457570b176b25c15c348e9c22cb6529f52da11e1",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy": "physical_source_table",
+        "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc": "physical_source_table"
+      },
+      "regions": [
+        {
+          "start": 1831,
+          "end": 2214,
+          "source_text": "Chương trình đào tạo\nThời gian\nhọc tập chuẩn\nThời gian\nhọc tập tối đa\nĐào tạo đại học cấp bằng thứ nhất\n4 năm học\n8 năm học\nĐào tạo liên thông từ trình độ cao đẳng\nlên trình độ đại học\n1,5 năm học\n3 năm học\nĐào tạo liên thông từ trình độ trung cấp\nlên trình độ đại học\n2,5 năm học\n5 năm học\nĐào tạo liên thông trình độ đại học đối\nvới người đã có một bằng đại học\n2 năm học\n4 năm học",
+          "kind": "physical_table",
+          "source_pages": [
+            11,
+            12,
+            13
+          ],
+          "review_note": "Complete header and all ordered registry rows match source text.",
+          "table": {
+            "columns": [
+              "Chương trình đào tạo",
+              "Thời gian học tập chuẩn",
+              "Thời gian học tập tối đa"
+            ],
+            "keys": [
+              "Chương trình đào tạo",
+              "Thời gian học tập chuẩn",
+              "Thời gian học tập tối đa"
+            ],
+            "registry_ids": [
+              "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy"
+            ]
+          }
+        },
+        {
+          "start": 2345,
+          "end": 2726,
+          "source_text": "Chương trình đào tạo\nThời gian\nhọc tập chuẩn\nThời gian\nhọc tập tối đa\nĐào tạo đại học cấp bằng thứ nhất\n5 năm học\n9 năm học\nĐào tạo liên thông từ trình độ cao đẳng\nlên trình độ đại học\n2 năm học\n4 năm học\nĐào tạo liên thông từ trình độ trung cấp\nlên trình độ đại học\n3 năm học\n6 năm học\nĐào tạo liên thông trình độ đại học đối\nvới người đã có một bằng đại học\n2,5 năm học\n5 năm học",
+          "kind": "physical_table",
+          "source_pages": [
+            11,
+            12,
+            13
+          ],
+          "review_note": "Complete header and all ordered registry rows match source text.",
+          "table": {
+            "columns": [
+              "Chương trình đào tạo",
+              "Thời gian học tập chuẩn",
+              "Thời gian học tập tối đa"
+            ],
+            "keys": [
+              "Chương trình đào tạo",
+              "Thời gian học tập chuẩn",
+              "Thời gian học tập tối đa"
+            ],
+            "registry_ids": [
+              "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc"
+            ]
+          }
+        },
+        {
+          "start": 2727,
+          "end": 3851,
+          "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Thời gian học tập chuẩn và tối đa\nPhạm vi áp dụng: Áp dụng cho hình thức đào tạo chính quy.\n| Chương trình đào tạo | Thời gian học tập chuẩn | Thời gian học tập tối đa |\n| --- | --- | --- |\n| Đào tạo đại học cấp bằng thứ nhất | 4 năm học | 8 năm học |\n| Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học | 1,5 năm học | 3 năm học |\n| Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học | 2,5 năm học | 5 năm học |\n| Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học | 2 năm học | 4 năm học |\n\nBảng: Thời gian học tập chuẩn và tối đa\nPhạm vi áp dụng: Áp dụng cho hình thức đào tạo vừa làm vừa học.\n| Chương trình đào tạo | Thời gian học tập chuẩn | Thời gian học tập tối đa |\n| --- | --- | --- |\n| Đào tạo đại học cấp bằng thứ nhất | 5 năm học | 9 năm học |\n| Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học | 2 năm học | 4 năm học |\n| Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học | 3 năm học | 6 năm học |\n| Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học | 2,5 năm học | 5 năm học |",
+          "kind": "generated_table_appendix",
+          "source_pages": [
+            11,
+            12,
+            13
+          ],
+          "review_note": "Generated duplicate appendix, not PDF policy prose; original source paragraphs retained."
+        }
+      ]
+    },
+    {
+      "parent_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "content_sha256": "a9dccd1474d32eccaa4ccf62e850b6ffd0f0114c7b199009cd6f964a4a5c5256",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification": "physical_source_table"
+      },
+      "regions": [
+        {
+          "start": 430,
+          "end": 609,
+          "source_text": "Khung điểm\nXếp loại\nTừ 90 đến 100 điểm\nXuất sắc\nTừ 80 đến dưới 90 điểm\nTốt\nTừ 65 đến dưới 80 điểm\nKhá\nTừ 50 đến dưới 65 điểm\nTrung bình\nTừ 35 đến dưới 50 điểm\nYếu\nDưới 35 điểm\nKém",
+          "kind": "physical_table",
+          "source_pages": [
+            94
+          ],
+          "review_note": "Complete header and all ordered registry rows match source text.",
+          "table": {
+            "columns": [
+              "Khung điểm",
+              "Xếp loại"
+            ],
+            "keys": [
+              "Khung điểm",
+              "Xếp loại"
+            ],
+            "registry_ids": [
+              "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
+            ]
+          }
+        },
+        {
+          "start": 752,
+          "end": 1062,
+          "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Bảng phân loại kết quả rèn luyện\n| Khung điểm | Xếp loại |\n| --- | --- |\n| Từ 90 đến 100 điểm | Xuất sắc |\n| Từ 80 đến dưới 90 điểm | Tốt |\n| Từ 65 đến dưới 80 điểm | Khá |\n| Từ 50 đến dưới 65 điểm | Trung bình |\n| Từ 35 đến dưới 50 điểm | Yếu |\n| Dưới 35 điểm | Kém |",
+          "kind": "generated_table_appendix",
+          "source_pages": [
+            94
+          ],
+          "review_note": "Generated duplicate appendix, not PDF policy prose; original source paragraphs retained."
+        }
+      ]
+    },
+    {
+      "parent_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "content_sha256": "2c38946d2c4ca515cd3e98fee953c771c71030bdcd8d4651d8d153aba91d8bb3",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "K50_foreign_language_equivalency_dieu8": "physical_source_table"
+      },
+      "regions": [
+        {
+          "start": 1274,
+          "end": 2176,
+          "source_text": "TT Ngôn\nngữ\nChứng chỉ/\nVăn bằng\nTrình độ/Thang điểm\nTương đương bậc 3 Tương đương bậc 4\nTiếng\nAnh\nTOEFL iBT\n30 – 45\n46 – 93\nTOEFL ITP\n450 – 499\nIELTS\n4.0 – 5.0\n5.5 – 6.5\nCambridge\nAssessment\nEnglish\nB1 Preliminary/\nB1 Business\nPreliminary/\nLinguaskill.\nThang điểm:\n140 – 159\nB2 First/\nB2 Business\nVantage/Linguaskill.\nThang điểm:\n160 – 179\nTOEIC\n(4 kỹ năng)\nNghe: 275 – 399\nĐọc: 275 – 384\nNói: 120 – 159\nViết: 120 – 149\nNghe: 400 – 489\nĐọc: 385 – 454\nNói: 160 – 179\nViết: 150 – 179\nTiếng\nPháp\nTCF\nDELF\nTCF: 300 – 399\nVăn bằng DELF B1\nTCF: 400 – 499\nVăn bằng DELF B2\nTT Ngôn\nngữ\nChứng chỉ/\nVăn bằng\nTrình độ/Thang điểm\nTương đương bậc 3 Tương đương bậc 4\nTiếng\nTrung\nQuốc\nHanyu\nShuiping\nKaoshi (HSK)\nHSK bậc 3\nHSK bậc 4\nTiếng\nNhật\nJapanese\nLanguage\nProficiency\nTest (JLPT)\nN4\nN3\nTiếng\nNga\nТРКИ - Тест\nпо русскому\nязыку как\nиностранному\nТРКИ-1\nТРКИ-2\nTiếng\nHàn\nQuốc\nTOPIK II\nTOPIK II (120)\nTOPIK II (150)",
+          "kind": "physical_table",
+          "source_pages": [
+            114,
+            115
+          ],
+          "review_note": "Appendix pages 114-115: merged language cells expanded; blank TOEFL ITP level 4 preserved; footnote outside span.",
+          "table": {
+            "columns": [
+              "Ngôn ngữ",
+              "Chứng chỉ/Văn bằng",
+              "Tương đương bậc 3",
+              "Tương đương bậc 4"
+            ],
+            "keys": [
+              "language",
+              "certificate",
+              "equivalent_level_3",
+              "equivalent_level_4"
+            ],
+            "registry_ids": [
+              "K50_foreign_language_equivalency_dieu8"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "parent_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "content_sha256": "1bdd207729634f0fbe957cef31b24c9040f85acd03ec6be6416d7b5cc2f1124d",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "scholarship_amount": "prose_derived_keep_original_policy",
+        "scholarship_classification": "prose_derived_keep_original_policy",
+        "scholarship_eligibility": "prose_derived_keep_original_policy",
+        "scholarship_score_formula": "prose_derived_keep_original_policy"
+      },
+      "regions": []
+    },
+    {
+      "parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu10",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "content_sha256": "7f89c7c63d531e5d02d1ff12850372c5c8cfb38cfab6c95249bcfaf551f276d0",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general": "physical_source_table",
+        "K50_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded": "prose_derived_keep_original_policy"
+      },
+      "regions": [
+        {
+          "start": 3512,
+          "end": 3670,
+          "source_text": "Loại\nThang điểm 10\nThang điểm chữ\nĐạt\n8,5 – 10\nA\n7,8 – 8,4\nB+\n7,0 – 7,7\nB\n6,3 – 6,9\nC+\n5,5 – 6,2\nC\n4,8 – 5,4\nD+\n4,0 – 4,7\nD\nKhông đạt\n3,0 – 3,9\nF+\n0,0 – 2,9\nF",
+          "kind": "physical_table",
+          "source_pages": [
+            16,
+            17,
+            18,
+            19
+          ],
+          "review_note": "Merged pass/fail cells expanded per printed layout; original/amended blocks kept separately.",
+          "table": {
+            "columns": [
+              "Loại",
+              "Thang điểm 10",
+              "Thang điểm chữ"
+            ],
+            "keys": [
+              "Loại",
+              "Thang điểm 10",
+              "Thang điểm chữ"
+            ],
+            "registry_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"
+            ]
+          }
+        },
+        {
+          "start": 4490,
+          "end": 5230,
+          "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Bảng quy đổi thang điểm 10 sang điểm chữ\n| Loại | Thang điểm 10 | Thang điểm chữ |\n| --- | --- | --- |\n| Đạt | 8,5 - 10 | A |\n| Đạt | 7,8 - 8,4 | B+ |\n| Đạt | 7,0 - 7,7 | B |\n| Đạt | 6,3 - 6,9 | C+ |\n| Đạt | 5,5 - 6,2 | C |\n| Đạt | 4,8 - 5,4 | D+ |\n| Đạt | 4,0 - 4,7 | D |\n| Không đạt | 3,0 - 3,9 | F+ |\n| Không đạt | 0,0 - 2,9 | F |\n\nBảng: Bảng đánh giá học phần đạt/không đạt không phân mức\nPhạm vi áp dụng: Áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập.\n| Kết quả | Thang điểm 10 | Điểm chữ | Tính vào điểm trung bình học tập |\n| --- | --- | --- | --- |\n| Đạt | Từ 5,0 trở lên | P | Không |\n| Chưa đạt | Dưới 5,0 | Không quy đổi thành P | Không |",
+          "kind": "generated_table_appendix",
+          "source_pages": [
+            16,
+            17,
+            18,
+            19
+          ],
+          "review_note": "Generated duplicate appendix, not PDF policy prose; original source paragraphs retained."
+        }
+      ]
+    },
+    {
+      "parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "content_sha256": "1c233496f0f66c38d55450fd5c63bb51a069fd99891170bf64dda35bea8d2c04",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "K50_QuyCheDaoTao_Chuong3_Dieu11_academic_classification": "physical_source_table",
+        "K50_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4": "physical_source_table"
+      },
+      "regions": [
+        {
+          "start": 1277,
+          "end": 1362,
+          "source_text": "Thang điểm chữ\nThang điểm 4\nA\n4,0\nB+\n3,5\nB\n3,0\nC+\n2,5\nC\n2,0\nD+\n1,5\nD\n1,0\nF+\n0,5\nF\n0,0",
+          "kind": "physical_table",
+          "source_pages": [
+            19,
+            20,
+            21
+          ],
+          "review_note": "Complete header and all ordered registry rows match source text.",
+          "table": {
+            "columns": [
+              "Thang điểm chữ",
+              "Thang điểm 4"
+            ],
+            "keys": [
+              "Thang điểm chữ",
+              "Thang điểm 4"
+            ],
+            "registry_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4"
+            ]
+          }
+        },
+        {
+          "start": 2324,
+          "end": 2486,
+          "source_text": "Xếp loại\nThang điểm 4\nXuất sắc\nTừ 3,6 đến 4,0\nGiỏi\nTừ 3,2 đến dưới 3,6\nKhá\nTừ 2,5 đến dưới 3,2\nTrung bình\nTừ 2,0 đến dưới 2,5\nYếu\nTừ 1,0 đến dưới 2,0\nKém\nDưới 1,0",
+          "kind": "physical_table",
+          "source_pages": [
+            19,
+            20,
+            21
+          ],
+          "review_note": "Complete header and all ordered registry rows match source text.",
+          "table": {
+            "columns": [
+              "Xếp loại",
+              "Thang điểm 4"
+            ],
+            "keys": [
+              "Xếp loại",
+              "Thang điểm 4"
+            ],
+            "registry_ids": [
+              "K50_QuyCheDaoTao_Chuong3_Dieu11_academic_classification"
+            ]
+          }
+        },
+        {
+          "start": 2920,
+          "end": 3427,
+          "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Bảng quy đổi điểm chữ sang thang điểm 4\n| Thang điểm chữ | Thang điểm 4 |\n| --- | --- |\n| A | 4,0 |\n| B+ | 3,5 |\n| B | 3,0 |\n| C+ | 2,5 |\n| C | 2,0 |\n| D+ | 1,5 |\n| D | 1,0 |\n| F+ | 0,5 |\n| F | 0,0 |\n\nBảng: Bảng xếp loại học lực theo thang điểm 4\n| Xếp loại | Thang điểm 4 |\n| --- | --- |\n| Xuất sắc | Từ 3,6 đến 4,0 |\n| Giỏi | Từ 3,2 đến dưới 3,6 |\n| Khá | Từ 2,5 đến dưới 3,2 |\n| Trung bình | Từ 2,0 đến dưới 2,5 |\n| Yếu | Từ 1,0 đến dưới 2,0 |\n| Kém | Dưới 1,0 |",
+          "kind": "generated_table_appendix",
+          "source_pages": [
+            19,
+            20,
+            21
+          ],
+          "review_note": "Generated duplicate appendix, not PDF policy prose; original source paragraphs retained."
+        }
+      ]
+    },
+    {
+      "parent_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "content_sha256": "a4f05bdcd950ad0094d6780242e3e99af43e3708acc430fd487c3f435618729e",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy": "physical_source_table",
+        "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc": "physical_source_table"
+      },
+      "regions": [
+        {
+          "start": 1831,
+          "end": 2214,
+          "source_text": "Chương trình đào tạo\nThời gian\nhọc tập chuẩn\nThời gian\nhọc tập tối đa\nĐào tạo đại học cấp bằng thứ nhất\n4 năm học\n8 năm học\nĐào tạo liên thông từ trình độ cao đẳng\nlên trình độ đại học\n1,5 năm học\n3 năm học\nĐào tạo liên thông từ trình độ trung cấp\nlên trình độ đại học\n2,5 năm học\n5 năm học\nĐào tạo liên thông trình độ đại học đối\nvới người đã có một bằng đại học\n2 năm học\n4 năm học",
+          "kind": "physical_table",
+          "source_pages": [
+            9,
+            10,
+            11
+          ],
+          "review_note": "Complete header and all ordered registry rows match source text.",
+          "table": {
+            "columns": [
+              "Chương trình đào tạo",
+              "Thời gian học tập chuẩn",
+              "Thời gian học tập tối đa"
+            ],
+            "keys": [
+              "Chương trình đào tạo",
+              "Thời gian học tập chuẩn",
+              "Thời gian học tập tối đa"
+            ],
+            "registry_ids": [
+              "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy"
+            ]
+          }
+        },
+        {
+          "start": 2345,
+          "end": 2726,
+          "source_text": "Chương trình đào tạo\nThời gian\nhọc tập chuẩn\nThời gian\nhọc tập tối đa\nĐào tạo đại học cấp bằng thứ nhất\n5 năm học\n9 năm học\nĐào tạo liên thông từ trình độ cao đẳng\nlên trình độ đại học\n2 năm học\n4 năm học\nĐào tạo liên thông từ trình độ trung cấp\nlên trình độ đại học\n3 năm học\n6 năm học\nĐào tạo liên thông trình độ đại học đối\nvới người đã có một bằng đại học\n2,5 năm học\n5 năm học",
+          "kind": "physical_table",
+          "source_pages": [
+            9,
+            10,
+            11
+          ],
+          "review_note": "Complete header and all ordered registry rows match source text.",
+          "table": {
+            "columns": [
+              "Chương trình đào tạo",
+              "Thời gian học tập chuẩn",
+              "Thời gian học tập tối đa"
+            ],
+            "keys": [
+              "Chương trình đào tạo",
+              "Thời gian học tập chuẩn",
+              "Thời gian học tập tối đa"
+            ],
+            "registry_ids": [
+              "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc"
+            ]
+          }
+        },
+        {
+          "start": 2727,
+          "end": 3851,
+          "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Thời gian học tập chuẩn và tối đa\nPhạm vi áp dụng: Áp dụng cho hình thức đào tạo chính quy.\n| Chương trình đào tạo | Thời gian học tập chuẩn | Thời gian học tập tối đa |\n| --- | --- | --- |\n| Đào tạo đại học cấp bằng thứ nhất | 4 năm học | 8 năm học |\n| Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học | 1,5 năm học | 3 năm học |\n| Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học | 2,5 năm học | 5 năm học |\n| Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học | 2 năm học | 4 năm học |\n\nBảng: Thời gian học tập chuẩn và tối đa\nPhạm vi áp dụng: Áp dụng cho hình thức đào tạo vừa làm vừa học.\n| Chương trình đào tạo | Thời gian học tập chuẩn | Thời gian học tập tối đa |\n| --- | --- | --- |\n| Đào tạo đại học cấp bằng thứ nhất | 5 năm học | 9 năm học |\n| Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học | 2 năm học | 4 năm học |\n| Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học | 3 năm học | 6 năm học |\n| Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học | 2,5 năm học | 5 năm học |",
+          "kind": "generated_table_appendix",
+          "source_pages": [
+            9,
+            10,
+            11
+          ],
+          "review_note": "Generated duplicate appendix, not PDF policy prose; original source paragraphs retained."
+        }
+      ]
+    },
+    {
+      "parent_id": "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "content_sha256": "a9dccd1474d32eccaa4ccf62e850b6ffd0f0114c7b199009cd6f964a4a5c5256",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification": "physical_source_table"
+      },
+      "regions": [
+        {
+          "start": 430,
+          "end": 609,
+          "source_text": "Khung điểm\nXếp loại\nTừ 90 đến 100 điểm\nXuất sắc\nTừ 80 đến dưới 90 điểm\nTốt\nTừ 65 đến dưới 80 điểm\nKhá\nTừ 50 đến dưới 65 điểm\nTrung bình\nTừ 35 đến dưới 50 điểm\nYếu\nDưới 35 điểm\nKém",
+          "kind": "physical_table",
+          "source_pages": [
+            91
+          ],
+          "review_note": "Complete header and all ordered registry rows match source text.",
+          "table": {
+            "columns": [
+              "Khung điểm",
+              "Xếp loại"
+            ],
+            "keys": [
+              "Khung điểm",
+              "Xếp loại"
+            ],
+            "registry_ids": [
+              "K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification"
+            ]
+          }
+        },
+        {
+          "start": 752,
+          "end": 1062,
+          "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Bảng phân loại kết quả rèn luyện\n| Khung điểm | Xếp loại |\n| --- | --- |\n| Từ 90 đến 100 điểm | Xuất sắc |\n| Từ 80 đến dưới 90 điểm | Tốt |\n| Từ 65 đến dưới 80 điểm | Khá |\n| Từ 50 đến dưới 65 điểm | Trung bình |\n| Từ 35 đến dưới 50 điểm | Yếu |\n| Dưới 35 điểm | Kém |",
+          "kind": "generated_table_appendix",
+          "source_pages": [
+            91
+          ],
+          "review_note": "Generated duplicate appendix, not PDF policy prose; original source paragraphs retained."
+        }
+      ]
+    },
+    {
+      "parent_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "content_sha256": "a3306cab5de5ea650efe71062fd7db32da8cf87d820e8fc0e7027af6ab91e238",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "scholarship_amount": "prose_derived_keep_original_policy",
+        "scholarship_classification": "physical_source_table",
+        "scholarship_eligibility": "prose_derived_keep_original_policy",
+        "scholarship_score_formula": "prose_derived_keep_original_policy"
+      },
+      "regions": [
+        {
+          "start": 706,
+          "end": 868,
+          "source_text": "TT\nLoại học bổng\nYêu cầu\nKết quả học tập\nKết quả rèn luyện\nXuất sắc\nXuất sắc\nXuất sắc\nGiỏi\nXuất sắc\nTốt\nGiỏi\nTốt trở lên\nKhá\nXuất sắc\nKhá\nGiỏi\nKhá\nKhá\nKhá trở lên",
+          "kind": "physical_table",
+          "source_pages": [
+            70
+          ],
+          "review_note": "Merged scholarship level cells expanded into six complete combinations; policy continues at c).",
+          "table": {
+            "columns": [
+              "Loại học bổng",
+              "Kết quả học tập",
+              "Kết quả rèn luyện"
+            ],
+            "keys": [
+              "scholarship_level",
+              "academic_classification",
+              "conduct_classification_condition"
+            ],
+            "registry_ids": [
+              "scholarship_classification"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu10",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "content_sha256": "0fb9a53d889a2f1e99508ed142be197938e5a4ec08d9200dd330f7f24951610d",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation": "physical_source_table",
+        "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining": "physical_source_table",
+        "K51_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded": "prose_derived_keep_original_policy"
+      },
+      "regions": [
+        {
+          "start": 4452,
+          "end": 4610,
+          "source_text": "Loại\nThang điểm 10\nThang điểm chữ\nĐạt\n8,5 – 10\nA\n7,8 – 8,4\nB+\n7,0 – 7,7\nB\n6,3 – 6,9\nC+\n5,5 – 6,2\nC\n4,8 – 5,4\nD+\n4,0 – 4,7\nD\nKhông đạt\n3,0 – 3,9\nF+\n0,0 – 2,9\nF",
+          "kind": "physical_table",
+          "source_pages": [
+            16,
+            17,
+            18,
+            19
+          ],
+          "review_note": "Merged pass/fail cells expanded per printed layout; original/amended blocks kept separately.",
+          "table": {
+            "columns": [
+              "Loại",
+              "Thang điểm 10",
+              "Thang điểm chữ"
+            ],
+            "source_only": true,
+            "rows": [
+              [
+                "Đạt",
+                "8,5 - 10",
+                "A"
+              ],
+              [
+                "Đạt",
+                "7,8 - 8,4",
+                "B+"
+              ],
+              [
+                "Đạt",
+                "7,0 - 7,7",
+                "B"
+              ],
+              [
+                "Đạt",
+                "6,3 - 6,9",
+                "C+"
+              ],
+              [
+                "Đạt",
+                "5,5 - 6,2",
+                "C"
+              ],
+              [
+                "Đạt",
+                "4,8 - 5,4",
+                "D+"
+              ],
+              [
+                "Đạt",
+                "4,0 - 4,7",
+                "D"
+              ],
+              [
+                "Không đạt",
+                "3,0 - 3,9",
+                "F+"
+              ],
+              [
+                "Không đạt",
+                "0,0 - 2,9",
+                "F"
+              ]
+            ]
+          }
+        },
+        {
+          "start": 5159,
+          "end": 5317,
+          "source_text": "Loại\nThang điểm 10\nThang điểm chữ\nĐạt\n8,5 – 10\nA\n7,8 – 8,4\nB+\n7,0 – 7,7\nB\n6,3 – 6,9\nC+\n5,5 – 6,2\nC\n4,8 – 5,4\nD+\n4,0 – 4,7\nD\nKhông\nđạt\n3,0 – 3,9\nF+\n0,0 – 2,9\nF",
+          "kind": "physical_table",
+          "source_pages": [
+            16,
+            17,
+            18,
+            19
+          ],
+          "review_note": "Merged pass/fail cells expanded per printed layout; original/amended blocks kept separately.",
+          "table": {
+            "columns": [
+              "Loại",
+              "Thang điểm 10",
+              "Thang điểm chữ"
+            ],
+            "keys": [
+              "Loại",
+              "Thang điểm 10",
+              "Thang điểm chữ"
+            ],
+            "registry_ids": [
+              "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation"
+            ]
+          }
+        },
+        {
+          "start": 5348,
+          "end": 5506,
+          "source_text": "Loại\nThang điểm 10\nThang điểm chữ\nĐạt\n8,5 – 10\nA\n7,8 – 8,4\nB+\n7,0 – 7,7\nB\n6,3 – 6,9\nC+\n5,5 – 6,2\nC\nKhông\nđạt\n4,8 – 5,4\nD+\n4,0 – 4,7\nD\n3,0 – 3,9\nF+\n0,0 – 2,9\nF",
+          "kind": "physical_table",
+          "source_pages": [
+            16,
+            17,
+            18,
+            19
+          ],
+          "review_note": "Merged pass/fail cells expanded per printed layout; original/amended blocks kept separately.",
+          "table": {
+            "columns": [
+              "Loại",
+              "Thang điểm 10",
+              "Thang điểm chữ"
+            ],
+            "keys": [
+              "Loại",
+              "Thang điểm 10",
+              "Thang điểm chữ"
+            ],
+            "registry_ids": [
+              "K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining"
+            ]
+          }
+        },
+        {
+          "start": 6828,
+          "end": 8059,
+          "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Bảng quy đổi điểm học phần nhóm nền tảng\nPhạm vi áp dụng: Áp dụng cho học phần giáo dục đại cương/học phần chung thuộc nhóm nền tảng.\n| Loại | Thang điểm 10 | Thang điểm chữ |\n| --- | --- | --- |\n| Đạt | 8,5 - 10 | A |\n| Đạt | 7,8 - 8,4 | B+ |\n| Đạt | 7,0 - 7,7 | B |\n| Đạt | 6,3 - 6,9 | C+ |\n| Đạt | 5,5 - 6,2 | C |\n| Đạt | 4,8 - 5,4 | D+ |\n| Đạt | 4,0 - 4,7 | D |\n| Không đạt | 3,0 - 3,9 | F+ |\n| Không đạt | 0,0 - 2,9 | F |\n\nBảng: Bảng quy đổi điểm học phần còn lại\nPhạm vi áp dụng: Áp dụng cho các học phần còn lại.\n| Loại | Thang điểm 10 | Thang điểm chữ |\n| --- | --- | --- |\n| Đạt | 8,5 - 10 | A |\n| Đạt | 7,8 - 8,4 | B+ |\n| Đạt | 7,0 - 7,7 | B |\n| Đạt | 6,3 - 6,9 | C+ |\n| Đạt | 5,5 - 6,2 | C |\n| Không đạt | 4,8 - 5,4 | D+ |\n| Không đạt | 4,0 - 4,7 | D |\n| Không đạt | 3,0 - 3,9 | F+ |\n| Không đạt | 0,0 - 2,9 | F |\n\nBảng: Bảng đánh giá học phần đạt/không đạt không phân mức\nPhạm vi áp dụng: Áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập.\n| Kết quả | Thang điểm 10 | Điểm chữ | Tính vào điểm trung bình học tập |\n| --- | --- | --- | --- |\n| Đạt | Từ 5,0 trở lên | P | Không |\n| Chưa đạt | Dưới 5,0 | Không quy đổi thành P | Không |",
+          "kind": "generated_table_appendix",
+          "source_pages": [
+            16,
+            17,
+            18,
+            19
+          ],
+          "review_note": "Generated duplicate appendix, not PDF policy prose; original source paragraphs retained."
+        }
+      ]
+    },
+    {
+      "parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "content_sha256": "6a24ff1ca9b64cf4c29a9523d21ab879227f3110f78bf2d6c97dc95f15dca9b9",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "K51_QuyCheDaoTao_Chuong3_Dieu11_academic_classification": "physical_source_table",
+        "K51_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4": "physical_source_table"
+      },
+      "regions": [
+        {
+          "start": 1277,
+          "end": 1362,
+          "source_text": "Thang điểm chữ\nThang điểm 4\nA\n4,0\nB+\n3,5\nB\n3,0\nC+\n2,5\nC\n2,0\nD+\n1,5\nD\n1,0\nF+\n0,5\nF\n0,0",
+          "kind": "physical_table",
+          "source_pages": [
+            19,
+            20,
+            21
+          ],
+          "review_note": "Complete header and all ordered registry rows match source text.",
+          "table": {
+            "columns": [
+              "Thang điểm chữ",
+              "Thang điểm 4"
+            ],
+            "keys": [
+              "Thang điểm chữ",
+              "Thang điểm 4"
+            ],
+            "registry_ids": [
+              "K51_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4"
+            ]
+          }
+        },
+        {
+          "start": 2324,
+          "end": 2486,
+          "source_text": "Xếp loại\nThang điểm 4\nXuất sắc\nTừ 3,6 đến 4,0\nGiỏi\nTừ 3,2 đến dưới 3,6\nKhá\nTừ 2,5 đến dưới 3,2\nTrung bình\nTừ 2,0 đến dưới 2,5\nYếu\nTừ 1,0 đến dưới 2,0\nKém\nDưới 1,0",
+          "kind": "physical_table",
+          "source_pages": [
+            19,
+            20,
+            21
+          ],
+          "review_note": "Complete header and all ordered registry rows match source text.",
+          "table": {
+            "columns": [
+              "Xếp loại",
+              "Thang điểm 4"
+            ],
+            "keys": [
+              "Xếp loại",
+              "Thang điểm 4"
+            ],
+            "registry_ids": [
+              "K51_QuyCheDaoTao_Chuong3_Dieu11_academic_classification"
+            ]
+          }
+        },
+        {
+          "start": 3286,
+          "end": 3793,
+          "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Bảng quy đổi điểm chữ sang thang điểm 4\n| Thang điểm chữ | Thang điểm 4 |\n| --- | --- |\n| A | 4,0 |\n| B+ | 3,5 |\n| B | 3,0 |\n| C+ | 2,5 |\n| C | 2,0 |\n| D+ | 1,5 |\n| D | 1,0 |\n| F+ | 0,5 |\n| F | 0,0 |\n\nBảng: Bảng xếp loại học lực theo thang điểm 4\n| Xếp loại | Thang điểm 4 |\n| --- | --- |\n| Xuất sắc | Từ 3,6 đến 4,0 |\n| Giỏi | Từ 3,2 đến dưới 3,6 |\n| Khá | Từ 2,5 đến dưới 3,2 |\n| Trung bình | Từ 2,0 đến dưới 2,5 |\n| Yếu | Từ 1,0 đến dưới 2,0 |\n| Kém | Dưới 1,0 |",
+          "kind": "generated_table_appendix",
+          "source_pages": [
+            19,
+            20,
+            21
+          ],
+          "review_note": "Generated duplicate appendix, not PDF policy prose; original source paragraphs retained."
+        }
+      ]
+    },
+    {
+      "parent_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "content_sha256": "9c362f876d7e54d2c92735a6994368b1018b6799cbe20db330ad100dc42a3389",
+      "review_status": "source_checked",
+      "registry_dispositions": {
+        "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy": "physical_amendment_table_with_prose_exception",
+        "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc": "physical_amendment_table_with_prose_exception"
+      },
+      "regions": [
+        {
+          "start": 1832,
+          "end": 2221,
+          "source_text": "Chương trình đào tạo\nThời gian\nhọc tập chuẩn\nThời gian\nhọc tập tối đa\nĐào tạo đại học cấp bằng thứ nhất\n04 năm học\n08 năm học\nĐào tạo liên thông từ trình độ cao đẳng\nlên trình độ đại học\n1,5 năm học\n03 năm học\nĐào tạo liên thông từ trình độ trung cấp\nlên trình độ đại học\n2,5 năm học\n05 năm học\nĐào tạo liên thông trình độ đại học đối\nvới người đã có một bằng đại học\n02 năm học\n04 năm học",
+          "kind": "physical_table",
+          "source_pages": [
+            10
+          ],
+          "review_note": "Original printed table (before amendment); retained in parent only, not current structured facts.",
+          "table": {
+            "columns": [
+              "Chương trình đào tạo",
+              "Thời gian học tập chuẩn",
+              "Thời gian học tập tối đa"
+            ],
+            "source_only": true,
+            "rows": [
+              [
+                "Đào tạo đại học cấp bằng thứ nhất",
+                "04 năm học",
+                "08 năm học"
+              ],
+              [
+                "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
+                "1,5 năm học",
+                "03 năm học"
+              ],
+              [
+                "Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
+                "2,5 năm học",
+                "05 năm học"
+              ],
+              [
+                "Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
+                "02 năm học",
+                "04 năm học"
+              ]
+            ]
+          }
+        },
+        {
+          "start": 2685,
+          "end": 2822,
+          "source_text": "Hình thức đào tạo\nThời gian\nhọc tập chuẩn\nThời gian\nhọc tập tối đa\nChính quy\n04 năm học\n06 năm học\nVừa làm vừa học\n05 năm học\n7,5 năm học",
+          "kind": "physical_table",
+          "source_pages": [
+            10
+          ],
+          "review_note": "Two amendment rows; effective-intake note and bridging exception retained outside the table span.",
+          "table": {
+            "columns": [
+              "Hình thức đào tạo",
+              "Thời gian học tập chuẩn",
+              "Thời gian học tập tối đa"
+            ],
+            "keys": [
+              "Hình thức đào tạo",
+              "Thời gian học tập chuẩn",
+              "Thời gian học tập tối đa"
+            ],
+            "registry_ids": [
+              "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+              "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc"
+            ]
+          }
+        },
+        {
+          "start": 3204,
+          "end": 3592,
+          "source_text": "Chương trình đào tạo\nThời gian\nhọc tập chuẩn\nThời gian\nhọc tập tối đa\nĐào tạo đại học cấp bằng thứ nhất\n05 năm học\n09 năm học\nĐào tạo liên thông từ trình độ cao đẳng\nlên trình độ đại học\n02 năm học\n04 năm học\nĐào tạo liên thông từ trình độ trung cấp\nlên trình độ đại học\n03 năm học\n06 năm học\nĐào tạo liên thông trình độ đại học đối\nvới người đã có một bằng đại học\n2,5 năm học\n05 năm học",
+          "kind": "physical_table",
+          "source_pages": [
+            11
+          ],
+          "review_note": "Original part-time table; keep source chronology, not a replacement for current registry values.",
+          "table": {
+            "columns": [
+              "Chương trình đào tạo",
+              "Thời gian học tập chuẩn",
+              "Thời gian học tập tối đa"
+            ],
+            "source_only": true,
+            "rows": [
+              [
+                "Đào tạo đại học cấp bằng thứ nhất",
+                "05 năm học",
+                "09 năm học"
+              ],
+              [
+                "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
+                "02 năm học",
+                "04 năm học"
+              ],
+              [
+                "Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
+                "03 năm học",
+                "06 năm học"
+              ],
+              [
+                "Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
+                "2,5 năm học",
+                "05 năm học"
+              ]
+            ]
+          }
+        },
+        {
+          "start": 3593,
+          "end": 4846,
+          "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Thời gian học tập chuẩn và tối đa\nPhạm vi áp dụng: Áp dụng cho hình thức đào tạo chính quy theo nội dung sửa đổi, bổ sung có hiệu lực được nêu trong điều khoản nguồn.\n| Hình thức đào tạo | Thời gian học tập chuẩn | Thời gian học tập tối đa | Quy tắc đối với sinh viên liên thông |\n| --- | --- | --- | --- |\n| Chính quy | 04 năm học | 06 năm học | Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ. |\n\nBảng: Thời gian học tập chuẩn và tối đa\nPhạm vi áp dụng: Áp dụng cho hình thức đào tạo vừa làm vừa học theo nội dung sửa đổi, bổ sung có hiệu lực được nêu trong điều khoản nguồn.\n| Hình thức đào tạo | Thời gian học tập chuẩn | Thời gian học tập tối đa | Quy tắc đối với sinh viên liên thông |\n| --- | --- | --- | --- |\n| Vừa làm vừa học | 05 năm học | 7,5 năm học | Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ. |",
+          "kind": "generated_table_appendix",
+          "source_pages": [
+            9,
+            10,
+            11
+          ],
+          "review_note": "Generated duplicate appendix, not PDF policy prose; original source paragraphs retained."
+        }
+      ]
+    }
+  ]
+}

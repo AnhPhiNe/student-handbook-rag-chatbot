@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from src.extraction.formula_rules import extract_formula_rules
+from scripts.build_multi_cohort import merge_structured_data
 from src.retrieval.core.formula_lookup import formula_lookup
 from src.retrieval.core.structured_dispatcher import resolve_structured_decision
 
@@ -25,6 +26,19 @@ def _section(
         "page_start": page_start,
         "page_end": page_end,
     }
+
+
+def test_merge_preserves_parent_namespace_without_double_prefix(tmp_path) -> None:
+    inputs = {}
+    for cohort, parent_id in [("K48-K49", "source_11"), ("K51", "K51_source_11")]:
+        path = tmp_path / f"{cohort}.json"
+        path.write_text(json.dumps([{"source_parent_id": parent_id}]), encoding="utf-8")
+        inputs[cohort] = path
+    output = tmp_path / "merged.json"
+    merge_structured_data(inputs, output)
+    assert [r["source_parent_id"] for r in json.loads(output.read_text())] == [
+        "K48-K49_source_11", "K51_source_11"
+    ]
 
 
 def test_scholarship_formula_is_extracted_from_content_not_article_number() -> None:

@@ -1,11 +1,8 @@
 [
   {
-    "record_id": "program_2",
+    "record_id": "K48-K49_program_2",
     "content_type": "program_directory",
     "program_name": "Công nghệ Thông tin",
-    "legacy_record_ids": [
-      "k48_derived_program_1"
-    ],
     "faculty_name": "Khoa Công nghệ – Thông tin",
     "source_pages": [
       141,
@@ -16,12 +13,16 @@
     "needs_manual_review": false,
     "raw_program_name": "CÔNG NGHỆ THÔNG TIN",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "legacy_record_ids": [
+      "k48_derived_program_1"
+    ],
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_2",
     "faculty_aliases": [
       "Khoa Công nghệ – Thông tin",
       "KCNTT",
@@ -34,18 +35,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_2",
+      "record_id": "K48-K49_program_2",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         141,
         142
       ],
-      "source_record_id": null
+      "source_record_id": "program_2"
     }
   },
   {
-    "record_id": "program_34",
+    "record_id": "K48-K49_program_34",
     "content_type": "program_directory",
     "program_name": "Công tác xã hội",
     "faculty_name": "Khoa Tâm lý học",
@@ -58,28 +59,29 @@
     "needs_manual_review": false,
     "raw_program_name": "CÔNG TÁC XÃ HỘI",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_34",
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_34",
+      "record_id": "K48-K49_program_34",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         155,
         156
       ],
-      "source_record_id": null
+      "source_record_id": "program_34"
     }
   },
   {
-    "record_id": "program_35",
+    "record_id": "K48-K49_program_35",
     "content_type": "program_directory",
     "program_name": "Giáo dục Chính trị",
     "faculty_name": "Khoa Giáo dục Chính trị",
@@ -89,12 +91,13 @@
     "raw_text": "17. Khoa Giáo dục Chính trị\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 125, 126\nEmail\n: khoagdct@hcmue.edu.vn\nWebsite\n: khoagdct.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 4, P.411,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy môn Giáo dục công dân ở các\ntrường THCS và THPT; công tác giáo dục chính trị ở các trường trung\nhọc nghề và các cơ sở giáo dục tương đương;\n– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn thuộc các chuyên ngành: Triết học, Kinh tế chính trị, Chủ\nnghĩa xã hội khoa học, Tư tưởng Hồ Chí Minh, Lịch sử Đảng Cộng sản\nViệt Nam, Chính trị học, Lý luận và phương pháp dạy học bộ môn Lý\nluận chính trị…",
     "summary": "Giáo dục Chính trị",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_35",
     "faculty_aliases": [
       "Khoa Giáo dục Chính trị",
       "KGDCT",
@@ -106,17 +109,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_35",
+      "record_id": "K48-K49_program_35",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         156
       ],
-      "source_record_id": null
+      "source_record_id": "program_35"
     }
   },
   {
-    "record_id": "program_36",
+    "record_id": "K48-K49_program_36",
     "content_type": "program_directory",
     "program_name": "Giáo dục Công dân",
     "faculty_name": "Khoa Giáo dục Chính trị",
@@ -126,12 +129,13 @@
     "raw_text": "17. Khoa Giáo dục Chính trị\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 125, 126\nEmail\n: khoagdct@hcmue.edu.vn\nWebsite\n: khoagdct.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 4, P.411,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy môn Giáo dục công dân ở các\ntrường THCS và THPT; công tác giáo dục chính trị ở các trường trung\nhọc nghề và các cơ sở giáo dục tương đương;\n– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn thuộc các chuyên ngành: Triết học, Kinh tế chính trị, Chủ\nnghĩa xã hội khoa học, Tư tưởng Hồ Chí Minh, Lịch sử Đảng Cộng sản\nViệt Nam, Chính trị học, Lý luận và phương pháp dạy học bộ môn Lý\nluận chính trị…",
     "summary": "Giáo dục Công dân",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_36",
     "faculty_aliases": [
       "Khoa Giáo dục Chính trị",
       "KGDCT",
@@ -143,17 +147,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_36",
+      "record_id": "K48-K49_program_36",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         156
       ],
-      "source_record_id": null
+      "source_record_id": "program_36"
     }
   },
   {
-    "record_id": "program_39",
+    "record_id": "K48-K49_program_39",
     "content_type": "program_directory",
     "program_name": "Giáo dục Mầm non (trình độ cao đẳng và đại học)",
     "faculty_name": "Khoa Giáo dục Mầm non",
@@ -164,12 +168,13 @@
     "raw_text": "20. Khoa Giáo dục Mầm non\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 133\nEmail\n: khoagdmn@hcmue.edu.vn\nWebsite\n: khoagdmn.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 3, P.306, P.307,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Trở thành giáo viên mầm non ở nhiều loại hình trường mầm non\nkhác nhau, kể cả trường mầm non với chương trình quốc tế;\n– Tuỳ thuộc vào năng lực và sự lựa chọn các môn học trong chương\ntrình, SV ra trường có thể trở thành giáo viên mầm non đảm trách chuyên\nmôn sâu về một lĩnh vực nào đó (âm nhạc, tạo hình, múa) hoặc bồi dưỡng\nđể trở thành giảng viên về giáo dục mầm non tại các trường cao đẳng và\nđại học, hoặc các cố vấn chuyên môn, các nghiên cứu viên về giáo dục\nmầm non;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn về chuyên ngành Giáo dục Mầm non.",
     "summary": "Giáo dục Mầm non (trình độ cao đẳng và đại học)",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_39",
     "faculty_aliases": [
       "Khoa Giáo dục Mầm non",
       "KGDMN",
@@ -182,18 +187,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_39",
+      "record_id": "K48-K49_program_39",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         157,
         158
       ],
-      "source_record_id": null
+      "source_record_id": "program_39"
     }
   },
   {
-    "record_id": "program_40",
+    "record_id": "K48-K49_program_40",
     "content_type": "program_directory",
     "program_name": "Giáo dục Quốc phòng – An ninh",
     "faculty_name": "Khoa Giáo dục Quốc phòng",
@@ -203,12 +208,13 @@
     "raw_text": "21. Khoa Giáo dục Quốc phòng\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 165, 167\nEmail\n: khoagdqp@hcmue.edu.vn\nWebsite\n: khoagdqp.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng 1, P.106, P.108,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên dạy môn Giáo dục Quốc phòng và An ninh ở các trường\nTHPT, trung cấp nghề, cao đẳng nghề;\n– Chuyên viên công tác quân sự, quốc phòng địa phương;\n– Chuyên viên ở các tổ chức chính trị – xã hội, đoàn thể;\n– Chuyên viên ở các Trung tâm Giáo dục Quốc phòng và An ninh.",
     "summary": "Giáo dục Quốc phòng – An ninh",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_40",
     "faculty_aliases": [
       "Khoa Giáo dục Quốc phòng",
       "KGDQP",
@@ -221,17 +227,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_40",
+      "record_id": "K48-K49_program_40",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         158
       ],
-      "source_record_id": null
+      "source_record_id": "program_40"
     }
   },
   {
-    "record_id": "program_41",
+    "record_id": "K48-K49_program_41",
     "content_type": "program_directory",
     "program_name": "Giáo dục Thể chất",
     "faculty_name": "Khoa Giáo dục Thể chất",
@@ -241,12 +247,13 @@
     "raw_text": "22. Khoa Giáo dục Thể chất\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 155, 156\nEmail\n: khoagdtc@hcmue.edu.vn\nWebsite\n: khoagdtc.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà thi đấu TDTT, tầng 1,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác và giáo dục giảng dạy bộ môn Giáo dục Thể chất ở\ncác trường THPT, trung cấp chuyên nghiệp và dạy nghề;\n– Làm công tác quản lý, huấn luyện trong ngành Thể dục Thể thao;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành về Thể dục Thể thao.",
     "summary": "Giáo dục Thể chất",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_41",
     "faculty_aliases": [
       "Khoa Giáo dục Thể chất",
       "KGDTC",
@@ -259,17 +266,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_41",
+      "record_id": "K48-K49_program_41",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         159
       ],
-      "source_record_id": null
+      "source_record_id": "program_41"
     }
   },
   {
-    "record_id": "program_38",
+    "record_id": "K48-K49_program_38",
     "content_type": "program_directory",
     "program_name": "Giáo dục Tiểu học",
     "faculty_name": "Khoa Giáo dục Tiểu học",
@@ -279,12 +286,13 @@
     "raw_text": "19. Khoa Giáo dục Tiểu học\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 134, 135\nEmail\n: khoagdth@hcmue.edu.vn\nWebsite\n: khoagdth.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 3, P.308, P.309, P.310,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giảng dạy và giáo dục tại các trường tiểu học hoặc\ncác cơ sở giáo dục tiểu học;\n– Có khả năng trở thành cán bộ làm công tác chuyên môn nghiệp vụ\ntại các trường tiểu học, các cơ sở giáo dục tiểu học và giáo dục phổ\nthông; giảng viên của các trường trung cấp chuyên nghiệp, cao đẳng, đại\nhọc; cán bộ tại các viện nghiên cứu; biên tập viên của Nhà xuất bản Giáo\ndục và các nhà xuất bản khác;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn về chuyên ngành Giáo dục Tiểu học hoặc các chuyên ngành\ngần như Quản lý Giáo dục, Giáo dục Đặc biệt, Giáo dục Mầm non, Giáo\ndục học để nhận học vị thạc sĩ, tiến sĩ.",
     "summary": "Giáo dục Tiểu học",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_38",
     "faculty_aliases": [
       "Khoa Giáo dục Tiểu học",
       "KGDTH",
@@ -296,17 +304,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_38",
+      "record_id": "K48-K49_program_38",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         157
       ],
-      "source_record_id": null
+      "source_record_id": "program_38"
     }
   },
   {
-    "record_id": "program_31",
+    "record_id": "K48-K49_program_31",
     "content_type": "program_directory",
     "program_name": "Giáo dục học",
     "faculty_name": "Khoa Khoa học Giáo dục",
@@ -318,12 +326,13 @@
     "needs_manual_review": false,
     "raw_program_name": "GIÁO DỤC HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_31",
     "faculty_aliases": [
       "Khoa Khoa học Giáo dục",
       "KKHGD",
@@ -335,17 +344,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_31",
+      "record_id": "K48-K49_program_31",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         154
       ],
-      "source_record_id": null
+      "source_record_id": "program_31"
     }
   },
   {
-    "record_id": "program_37",
+    "record_id": "K48-K49_program_37",
     "content_type": "program_directory",
     "program_name": "Giáo dục Đặc biệt",
     "faculty_name": "Khoa Giáo dục Đặc biệt",
@@ -356,12 +365,13 @@
     "raw_text": "18. Khoa Giáo dục Đặc biệt\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ 163, 164\nEmail\n: khoagddb@hcmue.edu.vn\nWebsite\n: khoagddb.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 3, P.301, P.302,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy tại các trường chuyên biệt;\n– Giáo viên hỗ trợ hoà nhập tại các trường mầm non và tiểu học;\n– Giáo dục viên tại các cơ sở y tế;\n– Nhân viên làm việc tại các cơ sở giáo dục trẻ có nhu cầu đặc biệt\nvà các tổ chức phi chính phủ;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành Giáo dục Đặc biệt: Giáo dục trẻ\nkhiếm thính, Giáo dục trẻ khiếm thị, Giáo dục trẻ khuyết tật trí tuệ.",
     "summary": "Giáo dục Đặc biệt",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_37",
     "faculty_aliases": [
       "Khoa Giáo dục Đặc biệt",
       "KGDDB",
@@ -374,18 +384,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_37",
+      "record_id": "K48-K49_program_37",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         156,
         157
       ],
-      "source_record_id": null
+      "source_record_id": "program_37"
     }
   },
   {
-    "record_id": "program_8",
+    "record_id": "K48-K49_program_8",
     "content_type": "program_directory",
     "program_name": "Hoá học",
     "faculty_name": "Khoa Hóa học",
@@ -397,12 +407,13 @@
     "needs_manual_review": false,
     "raw_program_name": "CỬ NHÂN HOÁ HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_8",
     "faculty_aliases": [
       "Khoa Hóa học",
       "KHH",
@@ -415,17 +426,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_8",
+      "record_id": "K48-K49_program_8",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         144
       ],
-      "source_record_id": null
+      "source_record_id": "program_8"
     }
   },
   {
-    "record_id": "program_21",
+    "record_id": "K48-K49_program_21",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Anh",
     "faculty_name": "Khoa Tiếng Anh",
@@ -438,12 +449,13 @@
     "needs_manual_review": false,
     "raw_program_name": "NGÔN NGỮ ANH",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_21",
     "faculty_aliases": [
       "Khoa Tiếng Anh",
       "KTA",
@@ -456,18 +468,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_21",
+      "record_id": "K48-K49_program_21",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         148,
         149
       ],
-      "source_record_id": null
+      "source_record_id": "program_21"
     }
   },
   {
-    "record_id": "program_28",
+    "record_id": "K48-K49_program_28",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Hàn Quốc",
     "faculty_name": "Khoa Tiếng Hàn Quốc",
@@ -477,12 +489,13 @@
     "raw_text": "13. Khoa Tiếng Hàn Quốc\nSố điện thoại liên lạc\n: (028) 38303247\nsố máy nội bộ: 222, 223\nEmail\n: khoatienghan@hcmue.edu.vn\nWebsite\n: khoatienghan.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng 6, P.604, P.606,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác văn phòng và biên – phiên dịch hoặc giao dịch\nthương mại tại các công ty Hàn Quốc hay liên doanh với Hàn Quốc;\n– Làm việc tại các công ty du lịch (hướng dẫn viên du lịch), cơ quan\nvề văn hoá du lịch;\n– Có thể làm công tác giáo dục và giảng dạy bộ môn Tiếng Hàn ở các\ntrường ĐH, CĐ, TCCN, dạy nghề sau khi bổ túc thêm chứng chỉ NVSP;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành tiếng Hàn, văn hoá Hàn Quốc, biên –\nphiên dịch, văn hoá học, du lịch học, ngôn ngữ học.",
     "summary": "Ngôn ngữ Hàn Quốc",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_28",
     "faculty_aliases": [
       "Khoa Tiếng Hàn Quốc",
       "KTHQ",
@@ -494,17 +507,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_28",
+      "record_id": "K48-K49_program_28",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         152
       ],
-      "source_record_id": null
+      "source_record_id": "program_28"
     }
   },
   {
-    "record_id": "program_25",
+    "record_id": "K48-K49_program_25",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Nga",
     "faculty_name": "Khoa Tiếng Nga",
@@ -516,12 +529,13 @@
     "needs_manual_review": false,
     "raw_program_name": "NGÔN NGỮ NGA",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_25",
     "faculty_aliases": [
       "Khoa Tiếng Nga",
       "KTN",
@@ -533,17 +547,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_25",
+      "record_id": "K48-K49_program_25",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         151
       ],
-      "source_record_id": null
+      "source_record_id": "program_25"
     }
   },
   {
-    "record_id": "program_29",
+    "record_id": "K48-K49_program_29",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Nhật",
     "faculty_name": "Khoa Tiếng Nhật",
@@ -553,12 +567,13 @@
     "raw_text": "14. Khoa Tiếng Nhật\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 174\nEmail\n: khoatiengnhat@hcmue.edu.vn\nWebsite\n: khoanhat.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng 6, P.607, P.609,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm việc ở các vị trí như trợ lý, thông dịch… trong các cơ quan\nngoại giao như Đại sứ quán, Lãnh sự quán, các tổ chức phi chính phủ;\n– Làm việc tại các vị trí như biên – phiên dịch, biên tập viên… ở các\nđơn vị xuất bản;\n– Làm việc tại các vị trí như thông dịch, kế toán, tổng vụ... trong các\ncông ty Nhật và các công ty có hợp tác với Nhật Bản;\n– Làm việc tại các vị trí như hướng dẫn viên du lịch, lễ tân, chăm\nsóc khách hàng... trong lĩnh vực dịch vụ như: du lịch, nhà hàng – khách\nsạn, thẩm mỹ;\n– Làm việc tự do như thông dịch, cố vấn đầu tư…",
     "summary": "Ngôn ngữ Nhật",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_29",
     "faculty_aliases": [
       "Khoa Tiếng Nhật",
       "KTN",
@@ -570,17 +585,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_29",
+      "record_id": "K48-K49_program_29",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         153
       ],
-      "source_record_id": null
+      "source_record_id": "program_29"
     }
   },
   {
-    "record_id": "program_23",
+    "record_id": "K48-K49_program_23",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Pháp",
     "faculty_name": "Khoa Tiếng Pháp",
@@ -593,12 +608,13 @@
     "needs_manual_review": false,
     "raw_program_name": "NGÔN NGỮ PHÁP",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_23",
     "faculty_aliases": [
       "Khoa Tiếng Pháp",
       "KTP",
@@ -610,18 +626,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_23",
+      "record_id": "K48-K49_program_23",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         149,
         150
       ],
-      "source_record_id": null
+      "source_record_id": "program_23"
     }
   },
   {
-    "record_id": "program_27",
+    "record_id": "K48-K49_program_27",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Trung Quốc",
     "faculty_name": "Khoa Tiếng Trung Quốc",
@@ -633,12 +649,13 @@
     "needs_manual_review": false,
     "raw_program_name": "NGÔN NGỮ TRUNG QUỐC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_27",
     "faculty_aliases": [
       "Khoa Tiếng Trung Quốc",
       "KTTQ",
@@ -650,17 +667,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_27",
+      "record_id": "K48-K49_program_27",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         152
       ],
-      "source_record_id": null
+      "source_record_id": "program_27"
     }
   },
   {
-    "record_id": "program_30",
+    "record_id": "K48-K49_program_30",
     "content_type": "program_directory",
     "program_name": "Quản lý giáo dục",
     "faculty_name": "Khoa Khoa học Giáo dục",
@@ -673,12 +690,13 @@
     "needs_manual_review": false,
     "raw_program_name": "QUẢN LÝ GIÁO DỤC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_30",
     "faculty_aliases": [
       "Khoa Khoa học Giáo dục",
       "KKHGD",
@@ -690,18 +708,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_30",
+      "record_id": "K48-K49_program_30",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         153,
         154
       ],
-      "source_record_id": null
+      "source_record_id": "program_30"
     }
   },
   {
-    "record_id": "program_16",
+    "record_id": "K48-K49_program_16",
     "content_type": "program_directory",
     "program_name": "Quốc tế học",
     "faculty_name": "Khoa Lịch sử",
@@ -713,12 +731,13 @@
     "needs_manual_review": false,
     "raw_program_name": "QUỐC TẾ HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_16",
     "faculty_aliases": [
       "Khoa Lịch sử",
       "KLS",
@@ -731,17 +750,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_16",
+      "record_id": "K48-K49_program_16",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         147
       ],
-      "source_record_id": null
+      "source_record_id": "program_16"
     }
   },
   {
-    "record_id": "program_6",
+    "record_id": "K48-K49_program_6",
     "content_type": "program_directory",
     "program_name": "Sư phạm Công nghệ",
     "faculty_name": "Khoa Vật lí",
@@ -753,12 +772,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM CÔNG NGHỆ",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_6",
     "faculty_aliases": [
       "Khoa Vật lí",
       "KVL",
@@ -771,17 +791,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_6",
+      "record_id": "K48-K49_program_6",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         143
       ],
-      "source_record_id": null
+      "source_record_id": "program_6"
     }
   },
   {
-    "record_id": "program_7",
+    "record_id": "K48-K49_program_7",
     "content_type": "program_directory",
     "program_name": "Sư phạm Hoá học",
     "faculty_name": "Khoa Hóa học",
@@ -794,12 +814,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM HOÁ HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_7",
     "faculty_aliases": [
       "Khoa Hóa học",
       "KHH",
@@ -812,18 +833,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_7",
+      "record_id": "K48-K49_program_7",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         143,
         144
       ],
-      "source_record_id": null
+      "source_record_id": "program_7"
     }
   },
   {
-    "record_id": "program_9",
+    "record_id": "K48-K49_program_9",
     "content_type": "program_directory",
     "program_name": "Sư phạm Khoa học tự nhiên",
     "faculty_name": "Khoa Hóa học",
@@ -835,12 +856,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM KHOA HỌC TỰ NHIÊN",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_9",
     "faculty_aliases": [
       "Khoa Hóa học",
       "KHH",
@@ -853,17 +875,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_9",
+      "record_id": "K48-K49_program_9",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         144
       ],
-      "source_record_id": null
+      "source_record_id": "program_9"
     }
   },
   {
-    "record_id": "program_15",
+    "record_id": "K48-K49_program_15",
     "content_type": "program_directory",
     "program_name": "Sư phạm Lịch sử",
     "faculty_name": "Khoa Lịch sử",
@@ -875,12 +897,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM LỊCH SỬ",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_15",
     "faculty_aliases": [
       "Khoa Lịch sử",
       "KLS",
@@ -893,17 +916,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_15",
+      "record_id": "K48-K49_program_15",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         146
       ],
-      "source_record_id": null
+      "source_record_id": "program_15"
     }
   },
   {
-    "record_id": "program_19",
+    "record_id": "K48-K49_program_19",
     "content_type": "program_directory",
     "program_name": "Sư phạm Lịch sử – Địa lý",
     "faculty_name": "Khoa Địa lí",
@@ -915,12 +938,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM LỊCH SỬ VÀ ĐỊA LÍ",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_19",
     "faculty_aliases": [
       "Khoa Địa lí",
       "KDL",
@@ -933,17 +957,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_19",
+      "record_id": "K48-K49_program_19",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         148
       ],
-      "source_record_id": null
+      "source_record_id": "program_19"
     }
   },
   {
-    "record_id": "program_11",
+    "record_id": "K48-K49_program_11",
     "content_type": "program_directory",
     "program_name": "Sư phạm Ngữ văn",
     "faculty_name": "Khoa Ngữ văn",
@@ -955,12 +979,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM NGỮ VĂN",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_11",
     "faculty_aliases": [
       "Khoa Ngữ văn",
       "KNV",
@@ -973,17 +998,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_11",
+      "record_id": "K48-K49_program_11",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         145
       ],
-      "source_record_id": null
+      "source_record_id": "program_11"
     }
   },
   {
-    "record_id": "program_10",
+    "record_id": "K48-K49_program_10",
     "content_type": "program_directory",
     "program_name": "Sư phạm Sinh học",
     "faculty_name": "Khoa Sinh học",
@@ -994,12 +1019,13 @@
     "raw_text": "5. Khoa Sinh học\nSố điện thoại liên lạc : (028) 38352020\nsố máy nội bộ: 113, 114\nEmail\n: khoasinhhoc@hcmue.edu.vn\nWebsite\n: khoasinh.hcmue.edu.vn\nVăn phòng làm việc : Nhà B, tầng 5, P.501, P.502,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn Sinh học tại các trường THPT;\n– Có thể trở thành giảng viên ở trường cao đẳng, đại học;\n– Có thể làm cán bộ nghiên cứu tại các trung tâm nghiên cứu, viện\nnghiên cứu thuộc ngành Sinh học và các cơ sở sản xuất kinh doanh có\nliên quan đến lĩnh vực Sinh học;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn thuộc các chuyên ngành Sinh học.",
     "summary": "Sư phạm Sinh học",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_10",
     "faculty_aliases": [
       "Khoa Sinh học",
       "KSH",
@@ -1012,18 +1038,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_10",
+      "record_id": "K48-K49_program_10",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         144,
         145
       ],
-      "source_record_id": null
+      "source_record_id": "program_10"
     }
   },
   {
-    "record_id": "program_1",
+    "record_id": "K48-K49_program_1",
     "content_type": "program_directory",
     "program_name": "Sư phạm Tin học",
     "faculty_name": "Khoa Công nghệ – Thông tin",
@@ -1035,12 +1061,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM TIN HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_1",
     "faculty_aliases": [
       "Khoa Công nghệ – Thông tin",
       "KCNTT",
@@ -1053,17 +1080,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_1",
+      "record_id": "K48-K49_program_1",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         141
       ],
-      "source_record_id": null
+      "source_record_id": "program_1"
     }
   },
   {
-    "record_id": "program_3",
+    "record_id": "K48-K49_program_3",
     "content_type": "program_directory",
     "program_name": "Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)",
     "faculty_name": "Khoa Toán – Tin học",
@@ -1073,12 +1100,13 @@
     "raw_text": "2. Khoa Toán – Tin học\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 111\nEmail\n: khoatoantin@hcmue.edu.vn\nWebsite\n: khoatoantin.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n− Giảng dạy Toán ở các Trường phổ thông, Cao đẳng, Đại học.\nNghiên cứu Toán học tại các Trung tâm, Viện nghiên cứu;\n− Làm việc tại các doanh nghiệp có ứng dụng Toán học.",
     "summary": "Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_3",
     "faculty_aliases": [
       "Khoa Toán – Tin học",
       "KTTH",
@@ -1091,17 +1119,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_3",
+      "record_id": "K48-K49_program_3",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         142
       ],
-      "source_record_id": null
+      "source_record_id": "program_3"
     }
   },
   {
-    "record_id": "program_4",
+    "record_id": "K48-K49_program_4",
     "content_type": "program_directory",
     "program_name": "Sư phạm Vật lý",
     "faculty_name": "Khoa Vật lí",
@@ -1114,12 +1142,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM VẬT LÍ",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_4",
     "faculty_aliases": [
       "Khoa Vật lí",
       "KVL",
@@ -1132,18 +1161,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_4",
+      "record_id": "K48-K49_program_4",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         142,
         143
       ],
-      "source_record_id": null
+      "source_record_id": "program_4"
     }
   },
   {
-    "record_id": "program_20",
+    "record_id": "K48-K49_program_20",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Anh",
     "faculty_name": "Khoa Tiếng Anh",
@@ -1155,12 +1184,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM TIẾNG ANH",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_20",
     "faculty_aliases": [
       "Khoa Tiếng Anh",
       "KTA",
@@ -1173,17 +1203,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_20",
+      "record_id": "K48-K49_program_20",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         148
       ],
-      "source_record_id": null
+      "source_record_id": "program_20"
     }
   },
   {
-    "record_id": "program_24",
+    "record_id": "K48-K49_program_24",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Nga",
     "faculty_name": "Khoa Tiếng Nga",
@@ -1196,12 +1226,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM TIẾNG NGA",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_24",
     "faculty_aliases": [
       "Khoa Tiếng Nga",
       "KTN",
@@ -1213,18 +1244,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_24",
+      "record_id": "K48-K49_program_24",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         150,
         151
       ],
-      "source_record_id": null
+      "source_record_id": "program_24"
     }
   },
   {
-    "record_id": "program_22",
+    "record_id": "K48-K49_program_22",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Pháp",
     "faculty_name": "Khoa Tiếng Pháp",
@@ -1236,12 +1267,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM TIẾNG PHÁP",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_22",
     "faculty_aliases": [
       "Khoa Tiếng Pháp",
       "KTP",
@@ -1253,17 +1285,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_22",
+      "record_id": "K48-K49_program_22",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         149
       ],
-      "source_record_id": null
+      "source_record_id": "program_22"
     }
   },
   {
-    "record_id": "program_26",
+    "record_id": "K48-K49_program_26",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Trung Quốc",
     "faculty_name": "Khoa Tiếng Trung Quốc",
@@ -1276,12 +1308,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM TIẾNG TRUNG QUỐC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_26",
     "faculty_aliases": [
       "Khoa Tiếng Trung Quốc",
       "KTTQ",
@@ -1293,18 +1326,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_26",
+      "record_id": "K48-K49_program_26",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         151,
         152
       ],
-      "source_record_id": null
+      "source_record_id": "program_26"
     }
   },
   {
-    "record_id": "program_17",
+    "record_id": "K48-K49_program_17",
     "content_type": "program_directory",
     "program_name": "Sư phạm Địa lý",
     "faculty_name": "Khoa Địa lí",
@@ -1316,12 +1349,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM ĐỊA LÍ",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_17",
     "faculty_aliases": [
       "Khoa Địa lí",
       "KDL",
@@ -1334,17 +1368,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_17",
+      "record_id": "K48-K49_program_17",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         147
       ],
-      "source_record_id": null
+      "source_record_id": "program_17"
     }
   },
   {
-    "record_id": "program_14",
+    "record_id": "K48-K49_program_14",
     "content_type": "program_directory",
     "program_name": "Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài)",
     "faculty_name": "Khoa Ngữ văn",
@@ -1356,12 +1390,13 @@
     "needs_manual_review": false,
     "raw_program_name": "TIẾNG VIỆT VÀ VĂN HÓA VIỆT NAM (DÀNH CHO SINH VIÊN NƯỚC NGOÀI)",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_14",
     "faculty_aliases": [
       "Khoa Ngữ văn",
       "KNV",
@@ -1374,17 +1409,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_14",
+      "record_id": "K48-K49_program_14",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         146
       ],
-      "source_record_id": null
+      "source_record_id": "program_14"
     }
   },
   {
-    "record_id": "program_32",
+    "record_id": "K48-K49_program_32",
     "content_type": "program_directory",
     "program_name": "Tâm lý học",
     "faculty_name": "Khoa Tâm lý học",
@@ -1397,28 +1432,29 @@
     "needs_manual_review": false,
     "raw_program_name": "TÂM LÍ HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_32",
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_32",
+      "record_id": "K48-K49_program_32",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         154,
         155
       ],
-      "source_record_id": null
+      "source_record_id": "program_32"
     }
   },
   {
-    "record_id": "program_33",
+    "record_id": "K48-K49_program_33",
     "content_type": "program_directory",
     "program_name": "Tâm lý học giáo dục",
     "faculty_name": "Khoa Tâm lý học",
@@ -1430,27 +1466,28 @@
     "needs_manual_review": false,
     "raw_program_name": "TÂM LÍ HỌC GIÁO DỤC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_33",
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_33",
+      "record_id": "K48-K49_program_33",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         155
       ],
-      "source_record_id": null
+      "source_record_id": "program_33"
     }
   },
   {
-    "record_id": "program_12",
+    "record_id": "K48-K49_program_12",
     "content_type": "program_directory",
     "program_name": "Việt Nam học",
     "faculty_name": "Khoa Ngữ văn",
@@ -1462,12 +1499,13 @@
     "needs_manual_review": false,
     "raw_program_name": "VIỆT NAM HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_12",
     "faculty_aliases": [
       "Khoa Ngữ văn",
       "KNV",
@@ -1480,17 +1518,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_12",
+      "record_id": "K48-K49_program_12",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         145
       ],
-      "source_record_id": null
+      "source_record_id": "program_12"
     }
   },
   {
-    "record_id": "program_13",
+    "record_id": "K48-K49_program_13",
     "content_type": "program_directory",
     "program_name": "Văn học",
     "faculty_name": "Khoa Ngữ văn",
@@ -1503,12 +1541,13 @@
     "needs_manual_review": false,
     "raw_program_name": "VĂN HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_13",
     "faculty_aliases": [
       "Khoa Ngữ văn",
       "KNV",
@@ -1521,18 +1560,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_13",
+      "record_id": "K48-K49_program_13",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         145,
         146
       ],
-      "source_record_id": null
+      "source_record_id": "program_13"
     }
   },
   {
-    "record_id": "program_5",
+    "record_id": "K48-K49_program_5",
     "content_type": "program_directory",
     "program_name": "Vật lý học",
     "faculty_name": "Khoa Vật lí",
@@ -1544,12 +1583,13 @@
     "needs_manual_review": false,
     "raw_program_name": "CỬ NHÂN VẬT LÍ HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_5",
     "faculty_aliases": [
       "Khoa Vật lí",
       "KVL",
@@ -1562,17 +1602,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_5",
+      "record_id": "K48-K49_program_5",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         143
       ],
-      "source_record_id": null
+      "source_record_id": "program_5"
     }
   },
   {
-    "record_id": "program_18",
+    "record_id": "K48-K49_program_18",
     "content_type": "program_directory",
     "program_name": "Địa lý học",
     "faculty_name": "Khoa Địa lí",
@@ -1585,12 +1625,13 @@
     "needs_manual_review": false,
     "raw_program_name": "ĐỊA LÍ HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "cohort": "K48-K49",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_18",
     "faculty_aliases": [
       "Khoa Địa lí",
       "KDL",
@@ -1603,18 +1644,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_18",
+      "record_id": "K48-K49_program_18",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "source_pages": [
         147,
         148
       ],
-      "source_record_id": null
+      "source_record_id": "program_18"
     }
   },
   {
-    "record_id": "program_2",
+    "record_id": "K50_program_2",
     "content_type": "program_directory",
     "program_name": "Công nghệ Thông tin",
     "faculty_name": "Khoa Công nghệ Thông tin",
@@ -1627,12 +1668,13 @@
     "needs_manual_review": false,
     "raw_program_name": "CÔNG NGHỆ THÔNG TIN",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_2",
     "faculty_aliases": [
       "Khoa Công nghệ Thông tin",
       "KCNTT",
@@ -1645,18 +1687,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_2",
+      "record_id": "K50_program_2",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         185,
         186
       ],
-      "source_record_id": null
+      "source_record_id": "program_2"
     }
   },
   {
-    "record_id": "program_36",
+    "record_id": "K50_program_36",
     "content_type": "program_directory",
     "program_name": "Công tác xã hội",
     "faculty_name": "Khoa Tâm lý học",
@@ -1669,12 +1711,13 @@
     "needs_manual_review": false,
     "raw_program_name": "CÔNG TÁC XÃ HỘI",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_36",
     "faculty_aliases": [
       "Khoa Tâm lý học",
       "KTLH",
@@ -1687,18 +1730,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_36",
+      "record_id": "K50_program_36",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         201,
         202
       ],
-      "source_record_id": null
+      "source_record_id": "program_36"
     }
   },
   {
-    "record_id": "program_21",
+    "record_id": "K50_program_21",
     "content_type": "program_directory",
     "program_name": "Du lịch",
     "faculty_name": "Khoa Địa lý",
@@ -1711,12 +1754,13 @@
     "needs_manual_review": false,
     "raw_program_name": "DU LỊCH",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_21",
     "faculty_aliases": [
       "Khoa Địa lý",
       "KDL",
@@ -1729,18 +1773,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_21",
+      "record_id": "K50_program_21",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         192,
         193
       ],
-      "source_record_id": null
+      "source_record_id": "program_21"
     }
   },
   {
-    "record_id": "program_37",
+    "record_id": "K50_program_37",
     "content_type": "program_directory",
     "program_name": "Giáo dục Chính trị",
     "faculty_name": "Khoa Giáo dục Chính trị",
@@ -1750,12 +1794,13 @@
     "raw_text": "17. Khoa Giáo dục Chính trị\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 125, 126\nEmail\n: khoagdct@hcmue.edu.vn\nWebsite\n: khoagdct.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 4, P.411,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn Giáo dục công dân ở\ncác trường THCS và Giáo dục kinh tế và pháp luật ở các trường THPT;\ncông tác giáo dục chính trị ở các trường trung học nghề và các cơ sở giáo\ndục tương đương;\n– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn thuộc các chuyên ngành: Triết học, Kinh tế chính trị, Chủ\nnghĩa xã hội khoa học, Tư tưởng Hồ Chí Minh, Lịch sử Đảng Cộng sản\nViệt Nam, Chính trị học, Lý luận và phương pháp dạy học bộ môn Lý\nluận chính trị,…",
     "summary": "Giáo dục Chính trị",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_37",
     "faculty_aliases": [
       "Khoa Giáo dục Chính trị",
       "KGDCT",
@@ -1767,17 +1812,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_37",
+      "record_id": "K50_program_37",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         202
       ],
-      "source_record_id": null
+      "source_record_id": "program_37"
     }
   },
   {
-    "record_id": "program_38",
+    "record_id": "K50_program_38",
     "content_type": "program_directory",
     "program_name": "Giáo dục Công dân",
     "faculty_name": "Khoa Giáo dục Chính trị",
@@ -1787,12 +1832,13 @@
     "raw_text": "17. Khoa Giáo dục Chính trị\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 125, 126\nEmail\n: khoagdct@hcmue.edu.vn\nWebsite\n: khoagdct.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 4, P.411,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn Giáo dục công dân ở\ncác trường THCS và Giáo dục kinh tế và pháp luật ở các trường THPT;\ncông tác giáo dục chính trị ở các trường trung học nghề và các cơ sở giáo\ndục tương đương;\n– Có trình độ và tiềm lực để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn thuộc các chuyên ngành: Triết học, Kinh tế chính trị, Chủ\nnghĩa xã hội khoa học, Tư tưởng Hồ Chí Minh, Lịch sử Đảng Cộng sản\nViệt Nam, Chính trị học, Lý luận và phương pháp dạy học bộ môn Lý\nluận chính trị,…",
     "summary": "Giáo dục Công dân",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_38",
     "faculty_aliases": [
       "Khoa Giáo dục Chính trị",
       "KGDCT",
@@ -1804,17 +1850,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_38",
+      "record_id": "K50_program_38",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         202
       ],
-      "source_record_id": null
+      "source_record_id": "program_38"
     }
   },
   {
-    "record_id": "program_41",
+    "record_id": "K50_program_41",
     "content_type": "program_directory",
     "program_name": "Giáo dục Mầm non (trình độ cao đẳng và đại học)",
     "faculty_name": "Khoa Giáo dục Mầm non",
@@ -1824,12 +1870,13 @@
     "raw_text": "20. Khoa Giáo dục Mầm non\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 133\nEmail\n: khoagdmn@hcmue.edu.vn\nWebsite\n: khoagdmn.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 3, P.306, P.307,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Trở thành giáo viên mầm non ở nhiều loại hình trường mầm non\nkhác nhau, kể cả trường mầm non với chương trình quốc tế;\n– Tuỳ thuộc vào năng lực và sự lựa chọn các môn học trong chương\ntrình, sinh viên ra trường có thể trở thành giáo viên mầm non đảm trách\nchuyên môn sâu về một lĩnh vực nào đó (âm nhạc, tạo hình, múa) hoặc\nbồi dưỡng để trở thành giảng viên về giáo dục mầm non tại các trường\ncao đẳng và đại học, hoặc các cố vấn chuyên môn, các nghiên cứu viên\nvề giáo dục mầm non;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn về chuyên ngành Giáo dục Mầm non.",
     "summary": "Giáo dục Mầm non (trình độ cao đẳng và đại học)",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_41",
     "faculty_aliases": [
       "Khoa Giáo dục Mầm non",
       "KGDMN",
@@ -1842,17 +1889,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_41",
+      "record_id": "K50_program_41",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         204
       ],
-      "source_record_id": null
+      "source_record_id": "program_41"
     }
   },
   {
-    "record_id": "program_42",
+    "record_id": "K50_program_42",
     "content_type": "program_directory",
     "program_name": "Giáo dục Quốc phòng – An ninh",
     "faculty_name": "Khoa Giáo dục Quốc phòng",
@@ -1862,12 +1909,13 @@
     "raw_text": "21. Khoa Giáo dục Quốc phòng\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 165, 167\nEmail\n: khoagdqp@hcmue.edu.vn\nWebsite\n: khoagdqp.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng 1, P.106, P.108,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên dạy bộ môn Giáo dục Quốc phòng và An ninh ở các\ntrường THPT, trung cấp nghề, cao đẳng nghề;\n– Chuyên viên công tác quân sự, quốc phòng địa phương;\n– Chuyên viên ở các tổ chức chính trị – xã hội, đoàn thể;\n– Chuyên viên ở các trung tâm Giáo dục Quốc phòng và An ninh.",
     "summary": "Giáo dục Quốc phòng – An ninh",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_42",
     "faculty_aliases": [
       "Khoa Giáo dục Quốc phòng",
       "KGDQP",
@@ -1880,17 +1928,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_42",
+      "record_id": "K50_program_42",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         204
       ],
-      "source_record_id": null
+      "source_record_id": "program_42"
     }
   },
   {
-    "record_id": "program_43",
+    "record_id": "K50_program_43",
     "content_type": "program_directory",
     "program_name": "Giáo dục Thể chất",
     "faculty_name": "Khoa Giáo dục Thể chất",
@@ -1900,12 +1948,13 @@
     "raw_text": "22. Khoa Giáo dục Thể chất\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 155, 156\nEmail\n: khoagdtc@hcmue.edu.vn\nWebsite\n: khoagdtc.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà thi đấu TDTT, tầng 1,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác và giáo dục giảng dạy bộ môn Giáo dục Thể chất ở\ncác trường THPT, trung cấp chuyên nghiệp và dạy nghề;\n– Làm công tác quản lý, huấn luyện trong ngành Thể dục Thể thao;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành về Thể dục Thể thao.",
     "summary": "Giáo dục Thể chất",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_43",
     "faculty_aliases": [
       "Khoa Giáo dục Thể chất",
       "KGDTC",
@@ -1918,17 +1967,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_43",
+      "record_id": "K50_program_43",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         205
       ],
-      "source_record_id": null
+      "source_record_id": "program_43"
     }
   },
   {
-    "record_id": "program_40",
+    "record_id": "K50_program_40",
     "content_type": "program_directory",
     "program_name": "Giáo dục Tiểu học",
     "faculty_name": "Khoa Giáo dục Tiểu học",
@@ -1938,12 +1987,13 @@
     "raw_text": "19. Khoa Giáo dục Tiểu học\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 134, 135\nEmail\n: khoagdth@hcmue.edu.vn\nWebsite\n: khoagdth.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 3, P.308, P.309, P.310,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên tại các trường tiểu học (công lập, tư thục, quốc tế);\n– Giáo viên dạy bồi dưỡng văn hóa hoặc làm công tác giáo dục tại\ncác cơ sở giáo dục; trung tâm học tập cộng đồng; nghiên cứu viên trong\nlĩnh vực giáo dục tiểu học ở các cơ sở nghiên cứu giáo dục và chuyên\nviên phụ trách Giáo dục tiểu học tại các Phòng, Sở Giáo dục và Đào tạo;\n– Có khả năng tham gia các khóa đào tạo sau đại học chuyên ngành\nGiáo dục học tiểu học hoặc các chuyên ngành về khoa học giáo dục, tham\ngia các khóa bồi dưỡng nghiệp vụ Tổng phụ trách Đội, bồi dưỡng cán bộ\nquản lý.",
     "summary": "Giáo dục Tiểu học",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_40",
     "faculty_aliases": [
       "Khoa Giáo dục Tiểu học",
       "KGDTH",
@@ -1955,17 +2005,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_40",
+      "record_id": "K50_program_40",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         203
       ],
-      "source_record_id": null
+      "source_record_id": "program_40"
     }
   },
   {
-    "record_id": "program_33",
+    "record_id": "K50_program_33",
     "content_type": "program_directory",
     "program_name": "Giáo dục học",
     "faculty_name": "Khoa Khoa học Giáo dục",
@@ -1977,12 +2027,13 @@
     "needs_manual_review": false,
     "raw_program_name": "GIÁO DỤC HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_33",
     "faculty_aliases": [
       "Khoa Khoa học Giáo dục",
       "KKHGD",
@@ -1994,17 +2045,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_33",
+      "record_id": "K50_program_33",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         200
       ],
-      "source_record_id": null
+      "source_record_id": "program_33"
     }
   },
   {
-    "record_id": "program_39",
+    "record_id": "K50_program_39",
     "content_type": "program_directory",
     "program_name": "Giáo dục Đặc biệt",
     "faculty_name": "Khoa Giáo dục Đặc biệt",
@@ -2015,12 +2066,13 @@
     "raw_text": "18. Khoa Giáo dục Đặc biệt\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ 163, 164\nEmail\n: khoagddb@hcmue.edu.vn\nWebsite\n: khoagddb.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 3, P.301, P.302,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy tại các trường chuyên biệt;\n– Giáo viên hỗ trợ hoà nhập tại các trường mầm non và tiểu học;\n– Giáo dục viên tại các cơ sở y tế;\n– Nhân viên làm việc tại các cơ sở giáo dục trẻ có nhu cầu đặc biệt\nvà các tổ chức phi chính phủ;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành Giáo dục Đặc biệt: Giáo dục trẻ\nkhiếm thính, Giáo dục trẻ khiếm thị, Giáo dục trẻ khuyết tật trí tuệ.",
     "summary": "Giáo dục Đặc biệt",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_39",
     "faculty_aliases": [
       "Khoa Giáo dục Đặc biệt",
       "KGDDB",
@@ -2033,18 +2085,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_39",
+      "record_id": "K50_program_39",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         202,
         203
       ],
-      "source_record_id": null
+      "source_record_id": "program_39"
     }
   },
   {
-    "record_id": "program_8",
+    "record_id": "K50_program_8",
     "content_type": "program_directory",
     "program_name": "Hoá học",
     "faculty_name": "Khoa Hóa học",
@@ -2056,12 +2108,13 @@
     "needs_manual_review": false,
     "raw_program_name": "CỬ NHÂN HOÁ HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_8",
     "faculty_aliases": [
       "Khoa Hóa học",
       "KHH",
@@ -2074,17 +2127,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_8",
+      "record_id": "K50_program_8",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         188
       ],
-      "source_record_id": null
+      "source_record_id": "program_8"
     }
   },
   {
-    "record_id": "program_23",
+    "record_id": "K50_program_23",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Anh",
     "faculty_name": "Khoa Tiếng Anh",
@@ -2096,12 +2149,13 @@
     "needs_manual_review": false,
     "raw_program_name": "NGÔN NGỮ ANH",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_23",
     "faculty_aliases": [
       "Khoa Tiếng Anh",
       "KTA",
@@ -2114,17 +2168,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_23",
+      "record_id": "K50_program_23",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         194
       ],
-      "source_record_id": null
+      "source_record_id": "program_23"
     }
   },
   {
-    "record_id": "program_30",
+    "record_id": "K50_program_30",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Hàn Quốc",
     "faculty_name": "Khoa Tiếng Hàn Quốc",
@@ -2134,12 +2188,13 @@
     "raw_text": "13. Khoa Tiếng Hàn Quốc\nSố điện thoại liên lạc\n: (028) 38303247\nsố máy nội bộ: 222, 223\nEmail\n: khoatienghan@hcmue.edu.vn\nWebsite\n: khoatienghan.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng 6, P.604, P.606,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác văn phòng và biên – phiên dịch hoặc giao dịch\nthương mại tại các công ty Hàn Quốc hay liên doanh với Hàn Quốc;\n– Làm việc tại các công ty du lịch (hướng dẫn viên du lịch), cơ quan\nvề văn hoá du lịch;\n– Có thể làm công tác giáo dục và giảng dạy bộ môn Tiếng Hàn\nQuốc ở các trường đại học, cao đẳng, trung cấp chuyên nghiệp, dạy nghề\nsau khi bổ túc thêm chứng chỉ nghiệp vụ sư phạm;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành tiếng Hàn, văn hoá Hàn Quốc, biên –\nphiên dịch, văn hoá học, du lịch học, ngôn ngữ học.",
     "summary": "Ngôn ngữ Hàn Quốc",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_30",
     "faculty_aliases": [
       "Khoa Tiếng Hàn Quốc",
       "KTHQ",
@@ -2151,17 +2206,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_30",
+      "record_id": "K50_program_30",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         198
       ],
-      "source_record_id": null
+      "source_record_id": "program_30"
     }
   },
   {
-    "record_id": "program_27",
+    "record_id": "K50_program_27",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Nga",
     "faculty_name": "Khoa Tiếng Nga",
@@ -2174,12 +2229,13 @@
     "needs_manual_review": false,
     "raw_program_name": "NGÔN NGỮ NGA",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_27",
     "faculty_aliases": [
       "Khoa Tiếng Nga",
       "KTN",
@@ -2191,18 +2247,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_27",
+      "record_id": "K50_program_27",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         196,
         197
       ],
-      "source_record_id": null
+      "source_record_id": "program_27"
     }
   },
   {
-    "record_id": "program_31",
+    "record_id": "K50_program_31",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Nhật",
     "faculty_name": "Khoa Tiếng Nhật",
@@ -2212,12 +2268,13 @@
     "raw_text": "14. Khoa Tiếng Nhật\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 174\nEmail\n: khoatiengnhat@hcmue.edu.vn\nWebsite\n: khoatiengnhat.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng 6, P.607, P.609,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm việc ở các vị trí như trợ lý, thông dịch,… trong các cơ quan\nngoại giao như Đại sứ quán, Lãnh sự quán, các tổ chức phi chính phủ;\n– Làm việc tại các vị trí như biên – phiên dịch, biên tập viên,… ở\ncác đơn vị xuất bản;\n– Làm việc tại các vị trí như thông dịch, kế toán, tổng vụ,... trong các\ncông ty Nhật và các công ty có hợp tác với Nhật Bản;\n– Làm việc tại các vị trí như hướng dẫn viên du lịch, lễ tân, chăm\nsóc khách hàng... trong lĩnh vực dịch vụ như: du lịch, nhà hàng – khách\nsạn, thẩm mỹ;\n– Làm việc tự do như thông dịch, cố vấn đầu tư,…",
     "summary": "Ngôn ngữ Nhật",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_31",
     "faculty_aliases": [
       "Khoa Tiếng Nhật",
       "KTN",
@@ -2229,17 +2286,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_31",
+      "record_id": "K50_program_31",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         199
       ],
-      "source_record_id": null
+      "source_record_id": "program_31"
     }
   },
   {
-    "record_id": "program_25",
+    "record_id": "K50_program_25",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Pháp",
     "faculty_name": "Khoa Tiếng Pháp",
@@ -2252,12 +2309,13 @@
     "needs_manual_review": false,
     "raw_program_name": "NGÔN NGỮ PHÁP",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_25",
     "faculty_aliases": [
       "Khoa Tiếng Pháp",
       "KTP",
@@ -2269,18 +2327,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_25",
+      "record_id": "K50_program_25",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         195,
         196
       ],
-      "source_record_id": null
+      "source_record_id": "program_25"
     }
   },
   {
-    "record_id": "program_29",
+    "record_id": "K50_program_29",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Trung Quốc",
     "faculty_name": "Khoa Tiếng Trung",
@@ -2293,12 +2351,13 @@
     "needs_manual_review": false,
     "raw_program_name": "NGÔN NGỮ TRUNG QUỐC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_29",
     "faculty_aliases": [
       "Khoa Tiếng Trung",
       "KTT",
@@ -2310,18 +2369,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_29",
+      "record_id": "K50_program_29",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         197,
         198
       ],
-      "source_record_id": null
+      "source_record_id": "program_29"
     }
   },
   {
-    "record_id": "program_32",
+    "record_id": "K50_program_32",
     "content_type": "program_directory",
     "program_name": "Quản lý giáo dục",
     "faculty_name": "Khoa Khoa học Giáo dục",
@@ -2334,12 +2393,13 @@
     "needs_manual_review": false,
     "raw_program_name": "QUẢN LÝ GIÁO DỤC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_32",
     "faculty_aliases": [
       "Khoa Khoa học Giáo dục",
       "KKHGD",
@@ -2351,18 +2411,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_32",
+      "record_id": "K50_program_32",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         199,
         200
       ],
-      "source_record_id": null
+      "source_record_id": "program_32"
     }
   },
   {
-    "record_id": "program_17",
+    "record_id": "K50_program_17",
     "content_type": "program_directory",
     "program_name": "Quốc tế học",
     "faculty_name": "Khoa Lịch sử",
@@ -2374,12 +2434,13 @@
     "needs_manual_review": false,
     "raw_program_name": "QUỐC TẾ HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_17",
     "faculty_aliases": [
       "Khoa Lịch sử",
       "KLS",
@@ -2392,17 +2453,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_17",
+      "record_id": "K50_program_17",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         191
       ],
-      "source_record_id": null
+      "source_record_id": "program_17"
     }
   },
   {
-    "record_id": "program_11",
+    "record_id": "K50_program_11",
     "content_type": "program_directory",
     "program_name": "Sinh học ứng dụng",
     "faculty_name": "Khoa Sinh học",
@@ -2414,12 +2475,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SINH HỌC ỨNG DỤNG",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_11",
     "faculty_aliases": [
       "Khoa Sinh học",
       "KSH",
@@ -2432,17 +2494,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_11",
+      "record_id": "K50_program_11",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         189
       ],
-      "source_record_id": null
+      "source_record_id": "program_11"
     }
   },
   {
-    "record_id": "program_6",
+    "record_id": "K50_program_6",
     "content_type": "program_directory",
     "program_name": "Sư phạm Công nghệ",
     "faculty_name": "Khoa Vật lý",
@@ -2454,12 +2516,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM CÔNG NGHỆ",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_6",
     "faculty_aliases": [
       "Khoa Vật lý",
       "KVL",
@@ -2472,17 +2535,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_6",
+      "record_id": "K50_program_6",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         187
       ],
-      "source_record_id": null
+      "source_record_id": "program_6"
     }
   },
   {
-    "record_id": "program_7",
+    "record_id": "K50_program_7",
     "content_type": "program_directory",
     "program_name": "Sư phạm Hoá học",
     "faculty_name": "Khoa Hóa học",
@@ -2495,12 +2558,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM HOÁ HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_7",
     "faculty_aliases": [
       "Khoa Hóa học",
       "KHH",
@@ -2513,18 +2577,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_7",
+      "record_id": "K50_program_7",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         187,
         188
       ],
-      "source_record_id": null
+      "source_record_id": "program_7"
     }
   },
   {
-    "record_id": "program_9",
+    "record_id": "K50_program_9",
     "content_type": "program_directory",
     "program_name": "Sư phạm Khoa học tự nhiên",
     "faculty_name": "Khoa Hóa học",
@@ -2536,12 +2600,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM KHOA HỌC TỰ NHIÊN",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_9",
     "faculty_aliases": [
       "Khoa Hóa học",
       "KHH",
@@ -2554,17 +2619,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_9",
+      "record_id": "K50_program_9",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         188
       ],
-      "source_record_id": null
+      "source_record_id": "program_9"
     }
   },
   {
-    "record_id": "program_16",
+    "record_id": "K50_program_16",
     "content_type": "program_directory",
     "program_name": "Sư phạm Lịch sử",
     "faculty_name": "Khoa Lịch sử",
@@ -2576,12 +2641,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM LỊCH SỬ",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_16",
     "faculty_aliases": [
       "Khoa Lịch sử",
       "KLS",
@@ -2594,17 +2660,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_16",
+      "record_id": "K50_program_16",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         191
       ],
-      "source_record_id": null
+      "source_record_id": "program_16"
     }
   },
   {
-    "record_id": "program_20",
+    "record_id": "K50_program_20",
     "content_type": "program_directory",
     "program_name": "Sư phạm Lịch sử – Địa lý",
     "faculty_name": "Khoa Địa lý",
@@ -2616,12 +2682,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM LỊCH SỬ VÀ ĐỊA LÝ",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_20",
     "faculty_aliases": [
       "Khoa Địa lý",
       "KDL",
@@ -2634,17 +2701,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_20",
+      "record_id": "K50_program_20",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         192
       ],
-      "source_record_id": null
+      "source_record_id": "program_20"
     }
   },
   {
-    "record_id": "program_12",
+    "record_id": "K50_program_12",
     "content_type": "program_directory",
     "program_name": "Sư phạm Ngữ văn",
     "faculty_name": "Khoa Ngữ văn",
@@ -2657,12 +2724,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM NGỮ VĂN",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_12",
     "faculty_aliases": [
       "Khoa Ngữ văn",
       "KNV",
@@ -2675,18 +2743,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_12",
+      "record_id": "K50_program_12",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         189,
         190
       ],
-      "source_record_id": null
+      "source_record_id": "program_12"
     }
   },
   {
-    "record_id": "program_10",
+    "record_id": "K50_program_10",
     "content_type": "program_directory",
     "program_name": "Sư phạm Sinh học",
     "faculty_name": "Khoa Sinh học",
@@ -2699,12 +2767,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM SINH HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_10",
     "faculty_aliases": [
       "Khoa Sinh học",
       "KSH",
@@ -2717,18 +2786,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_10",
+      "record_id": "K50_program_10",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         188,
         189
       ],
-      "source_record_id": null
+      "source_record_id": "program_10"
     }
   },
   {
-    "record_id": "program_1",
+    "record_id": "K50_program_1",
     "content_type": "program_directory",
     "program_name": "Sư phạm Tin học",
     "faculty_name": "Khoa Công nghệ Thông tin",
@@ -2740,12 +2809,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM TIN HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_1",
     "faculty_aliases": [
       "Khoa Công nghệ Thông tin",
       "KCNTT",
@@ -2758,17 +2828,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_1",
+      "record_id": "K50_program_1",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         185
       ],
-      "source_record_id": null
+      "source_record_id": "program_1"
     }
   },
   {
-    "record_id": "program_3",
+    "record_id": "K50_program_3",
     "content_type": "program_directory",
     "program_name": "Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)",
     "faculty_name": "Khoa Toán – Tin học",
@@ -2778,12 +2848,13 @@
     "raw_text": "2. Khoa Toán – Tin học\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 111\nEmail\n: khoatoantin@hcmue.edu.vn\nWebsite\n: khoatoantin.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giảng dạy bộ môn Toán ở các trường phổ thông, cao đẳng, đại\nhọc. Nghiên cứu Toán học tại các trung tâm, viện nghiên cứu;\n– Làm việc tại các doanh nghiệp có ứng dụng Toán học.",
     "summary": "Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)",
     "extraction_method": "implicit_faculty_program_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_3",
     "faculty_aliases": [
       "Khoa Toán – Tin học",
       "KTTH",
@@ -2796,17 +2867,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_3",
+      "record_id": "K50_program_3",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         186
       ],
-      "source_record_id": null
+      "source_record_id": "program_3"
     }
   },
   {
-    "record_id": "program_4",
+    "record_id": "K50_program_4",
     "content_type": "program_directory",
     "program_name": "Sư phạm Vật lý",
     "faculty_name": "Khoa Vật lý",
@@ -2818,12 +2889,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM VẬT LÝ",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_4",
     "faculty_aliases": [
       "Khoa Vật lý",
       "KVL",
@@ -2836,17 +2908,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_4",
+      "record_id": "K50_program_4",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         187
       ],
-      "source_record_id": null
+      "source_record_id": "program_4"
     }
   },
   {
-    "record_id": "program_22",
+    "record_id": "K50_program_22",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Anh",
     "faculty_name": "Khoa Tiếng Anh",
@@ -2859,12 +2931,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM TIẾNG ANH",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_22",
     "faculty_aliases": [
       "Khoa Tiếng Anh",
       "KTA",
@@ -2877,18 +2950,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_22",
+      "record_id": "K50_program_22",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         193,
         194
       ],
-      "source_record_id": null
+      "source_record_id": "program_22"
     }
   },
   {
-    "record_id": "program_26",
+    "record_id": "K50_program_26",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Nga",
     "faculty_name": "Khoa Tiếng Nga",
@@ -2900,12 +2973,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM TIẾNG NGA",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_26",
     "faculty_aliases": [
       "Khoa Tiếng Nga",
       "KTN",
@@ -2917,17 +2991,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_26",
+      "record_id": "K50_program_26",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         196
       ],
-      "source_record_id": null
+      "source_record_id": "program_26"
     }
   },
   {
-    "record_id": "program_24",
+    "record_id": "K50_program_24",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Pháp",
     "faculty_name": "Khoa Tiếng Pháp",
@@ -2939,12 +3013,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM TIẾNG PHÁP",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_24",
     "faculty_aliases": [
       "Khoa Tiếng Pháp",
       "KTP",
@@ -2956,17 +3031,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_24",
+      "record_id": "K50_program_24",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         194
       ],
-      "source_record_id": null
+      "source_record_id": "program_24"
     }
   },
   {
-    "record_id": "program_28",
+    "record_id": "K50_program_28",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Trung Quốc",
     "faculty_name": "Khoa Tiếng Trung",
@@ -2978,12 +3053,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM TIẾNG TRUNG QUỐC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_28",
     "faculty_aliases": [
       "Khoa Tiếng Trung",
       "KTT",
@@ -2995,17 +3071,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_28",
+      "record_id": "K50_program_28",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         197
       ],
-      "source_record_id": null
+      "source_record_id": "program_28"
     }
   },
   {
-    "record_id": "program_18",
+    "record_id": "K50_program_18",
     "content_type": "program_directory",
     "program_name": "Sư phạm Địa lý",
     "faculty_name": "Khoa Địa lý",
@@ -3017,12 +3093,13 @@
     "needs_manual_review": false,
     "raw_program_name": "SƯ PHẠM ĐỊA LÝ",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_18",
     "faculty_aliases": [
       "Khoa Địa lý",
       "KDL",
@@ -3035,17 +3112,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_18",
+      "record_id": "K50_program_18",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         192
       ],
-      "source_record_id": null
+      "source_record_id": "program_18"
     }
   },
   {
-    "record_id": "program_15",
+    "record_id": "K50_program_15",
     "content_type": "program_directory",
     "program_name": "Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài)",
     "faculty_name": "Khoa Ngữ văn",
@@ -3057,12 +3134,13 @@
     "needs_manual_review": false,
     "raw_program_name": "TIẾNG VIỆT VÀ VĂN HÓA VIỆT NAM (DÀNH CHO SINH VIÊN NƯỚC NGOÀI)",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_15",
     "faculty_aliases": [
       "Khoa Ngữ văn",
       "KNV",
@@ -3075,17 +3153,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_15",
+      "record_id": "K50_program_15",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         190
       ],
-      "source_record_id": null
+      "source_record_id": "program_15"
     }
   },
   {
-    "record_id": "program_34",
+    "record_id": "K50_program_34",
     "content_type": "program_directory",
     "program_name": "Tâm lý học",
     "faculty_name": "Khoa Tâm lý học",
@@ -3098,12 +3176,13 @@
     "needs_manual_review": false,
     "raw_program_name": "TÂM LÝ HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_34",
     "faculty_aliases": [
       "Khoa Tâm lý học",
       "KTLH",
@@ -3116,18 +3195,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_34",
+      "record_id": "K50_program_34",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         200,
         201
       ],
-      "source_record_id": null
+      "source_record_id": "program_34"
     }
   },
   {
-    "record_id": "program_35",
+    "record_id": "K50_program_35",
     "content_type": "program_directory",
     "program_name": "Tâm lý học giáo dục",
     "faculty_name": "Khoa Tâm lý học",
@@ -3139,12 +3218,13 @@
     "needs_manual_review": false,
     "raw_program_name": "TÂM LÝ HỌC GIÁO DỤC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_35",
     "faculty_aliases": [
       "Khoa Tâm lý học",
       "KTLH",
@@ -3157,17 +3237,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_35",
+      "record_id": "K50_program_35",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         201
       ],
-      "source_record_id": null
+      "source_record_id": "program_35"
     }
   },
   {
-    "record_id": "program_13",
+    "record_id": "K50_program_13",
     "content_type": "program_directory",
     "program_name": "Việt Nam học",
     "faculty_name": "Khoa Ngữ văn",
@@ -3179,12 +3259,13 @@
     "needs_manual_review": false,
     "raw_program_name": "VIỆT NAM HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_13",
     "faculty_aliases": [
       "Khoa Ngữ văn",
       "KNV",
@@ -3197,17 +3278,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_13",
+      "record_id": "K50_program_13",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         190
       ],
-      "source_record_id": null
+      "source_record_id": "program_13"
     }
   },
   {
-    "record_id": "program_14",
+    "record_id": "K50_program_14",
     "content_type": "program_directory",
     "program_name": "Văn học",
     "faculty_name": "Khoa Ngữ văn",
@@ -3219,12 +3300,13 @@
     "needs_manual_review": false,
     "raw_program_name": "VĂN HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_14",
     "faculty_aliases": [
       "Khoa Ngữ văn",
       "KNV",
@@ -3237,17 +3319,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_14",
+      "record_id": "K50_program_14",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         190
       ],
-      "source_record_id": null
+      "source_record_id": "program_14"
     }
   },
   {
-    "record_id": "program_5",
+    "record_id": "K50_program_5",
     "content_type": "program_directory",
     "program_name": "Vật lý học",
     "faculty_name": "Khoa Vật lý",
@@ -3259,12 +3341,13 @@
     "needs_manual_review": false,
     "raw_program_name": "VẬT LÝ HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_5",
     "faculty_aliases": [
       "Khoa Vật lý",
       "KVL",
@@ -3277,17 +3360,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_5",
+      "record_id": "K50_program_5",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         187
       ],
-      "source_record_id": null
+      "source_record_id": "program_5"
     }
   },
   {
-    "record_id": "program_19",
+    "record_id": "K50_program_19",
     "content_type": "program_directory",
     "program_name": "Địa lý học",
     "faculty_name": "Khoa Địa lý",
@@ -3299,12 +3382,13 @@
     "needs_manual_review": false,
     "raw_program_name": "ĐỊA LÝ HỌC",
     "program_name_source": "canonical_program_name_rule",
-    "cohort": "K50",
-    "document_id": "so_tay_sinh_vien_khoa_50",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_50",
+    "cohort": "K50",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_19",
     "faculty_aliases": [
       "Khoa Địa lý",
       "KDL",
@@ -3317,17 +3401,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_19",
+      "record_id": "K50_program_19",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "source_pages": [
         192
       ],
-      "source_record_id": null
+      "source_record_id": "program_19"
     }
   },
   {
-    "record_id": "program_1",
+    "record_id": "K51_program_1",
     "content_type": "program_directory",
     "program_name": "Công nghệ Giáo dục",
     "faculty_name": "Khoa Công nghệ Thông tin",
@@ -3338,12 +3422,13 @@
     "summary": "Công nghệ Giáo dục",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_1",
     "faculty_aliases": [
       "Khoa Công nghệ Thông tin",
       "KCNTT",
@@ -3356,17 +3441,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_1",
+      "record_id": "K51_program_1",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         178
       ],
-      "source_record_id": null
+      "source_record_id": "program_1"
     }
   },
   {
-    "record_id": "program_2",
+    "record_id": "K51_program_2",
     "content_type": "program_directory",
     "program_name": "Công nghệ Thông tin",
     "faculty_name": "Khoa Công nghệ Thông tin",
@@ -3377,12 +3462,13 @@
     "summary": "Công nghệ Thông tin",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_2",
     "faculty_aliases": [
       "Khoa Công nghệ Thông tin",
       "KCNTT",
@@ -3395,17 +3481,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_2",
+      "record_id": "K51_program_2",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         178
       ],
-      "source_record_id": null
+      "source_record_id": "program_2"
     }
   },
   {
-    "record_id": "program_3",
+    "record_id": "K51_program_3",
     "content_type": "program_directory",
     "program_name": "Công tác xã hội",
     "faculty_name": "Khoa Tâm lý học",
@@ -3415,12 +3501,13 @@
     "raw_text": "3. Ngành Công tác xã hội\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Nhân viên công tác xã hội làm việc trong các lĩnh vực công tác\nxã hội nói chung, đặc biệt trong các lĩnh vực công tác xã hội học đường,\ncông tác xã hội trẻ em và công tác xã hội với các đối tượng dễ bị tổn\nthương khác (tại các cơ sở giáo dục và các trung tâm bảo trợ trẻ em như\ncác trung tâm công tác xã hội, trung tâm tư vấn, tham vấn tâm lý, trung\ntâm bảo trợ xã hội, mái ấm, nhà mở, trường giáo dưỡng, các tổ chức\ncộng đồng, các tổ chức phi chính phủ, các tổ chức Nhà nước), các đoàn\nthể (Đoàn Thanh niên, Hội Liên hiệp Phụ nữ, Hội Chữ thập đỏ,…);\n– Nhân viên công tác xã hội làm việc tại các bệnh viện, các cơ sở\ntôn giáo, Sở Lao động – Thương binh và Xã hội;\n– Giảng dạy và nghiên cứu công tác xã hội tại các trường, các viện\nnghiên cứu.",
     "summary": "Công tác xã hội",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_3",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
       "Khoa Tâm lý học",
@@ -3434,17 +3521,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_3",
+      "record_id": "K51_program_3",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         179
       ],
-      "source_record_id": null
+      "source_record_id": "program_3"
     }
   },
   {
-    "record_id": "program_4",
+    "record_id": "K51_program_4",
     "content_type": "program_directory",
     "program_name": "Du lịch",
     "faculty_name": "Khoa Địa lý",
@@ -3455,12 +3542,13 @@
     "summary": "Du lịch",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_4",
     "faculty_aliases": [
       "Khoa Địa lý",
       "KDL",
@@ -3473,17 +3561,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_4",
+      "record_id": "K51_program_4",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         179
       ],
-      "source_record_id": null
+      "source_record_id": "program_4"
     }
   },
   {
-    "record_id": "program_6",
+    "record_id": "K51_program_6",
     "content_type": "program_directory",
     "program_name": "Giáo dục Chính trị",
     "faculty_name": "Khoa Giáo dục Chính trị",
@@ -3494,12 +3582,13 @@
     "summary": "Giáo dục Chính trị",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_6",
     "faculty_aliases": [
       "Khoa Giáo dục Chính trị",
       "KGDCT",
@@ -3511,17 +3600,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_6",
+      "record_id": "K51_program_6",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         180
       ],
-      "source_record_id": null
+      "source_record_id": "program_6"
     }
   },
   {
-    "record_id": "program_7",
+    "record_id": "K51_program_7",
     "content_type": "program_directory",
     "program_name": "Giáo dục Công dân",
     "faculty_name": "Khoa Giáo dục Chính trị",
@@ -3532,12 +3621,13 @@
     "summary": "Giáo dục Công dân",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_7",
     "faculty_aliases": [
       "Khoa Giáo dục Chính trị",
       "KGDCT",
@@ -3549,17 +3639,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_7",
+      "record_id": "K51_program_7",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         180
       ],
-      "source_record_id": null
+      "source_record_id": "program_7"
     }
   },
   {
-    "record_id": "program_10",
+    "record_id": "K51_program_10",
     "content_type": "program_directory",
     "program_name": "Giáo dục Mầm non (trình độ cao đẳng và đại học)",
     "faculty_name": "Khoa Giáo dục Mầm non",
@@ -3570,12 +3660,13 @@
     "summary": "Giáo dục Mầm non (trình độ cao đẳng và đại học)",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_10",
     "faculty_aliases": [
       "Khoa Giáo dục Mầm non",
       "KGDMN",
@@ -3588,17 +3679,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_10",
+      "record_id": "K51_program_10",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         181
       ],
-      "source_record_id": null
+      "source_record_id": "program_10"
     }
   },
   {
-    "record_id": "program_11",
+    "record_id": "K51_program_11",
     "content_type": "program_directory",
     "program_name": "Giáo dục Quốc phòng – An ninh",
     "faculty_name": "Khoa Giáo dục Quốc phòng",
@@ -3610,12 +3701,13 @@
     "summary": "Giáo dục Quốc phòng – An ninh",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_11",
     "faculty_aliases": [
       "Khoa Giáo dục Quốc phòng",
       "KGDQP",
@@ -3628,18 +3720,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_11",
+      "record_id": "K51_program_11",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         181,
         182
       ],
-      "source_record_id": null
+      "source_record_id": "program_11"
     }
   },
   {
-    "record_id": "program_12",
+    "record_id": "K51_program_12",
     "content_type": "program_directory",
     "program_name": "Giáo dục Thể chất",
     "faculty_name": "Khoa Giáo dục Thể chất",
@@ -3650,12 +3742,13 @@
     "summary": "Giáo dục Thể chất",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_12",
     "faculty_aliases": [
       "Khoa Giáo dục Thể chất",
       "KGDTC",
@@ -3668,17 +3761,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_12",
+      "record_id": "K51_program_12",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         182
       ],
-      "source_record_id": null
+      "source_record_id": "program_12"
     }
   },
   {
-    "record_id": "program_13",
+    "record_id": "K51_program_13",
     "content_type": "program_directory",
     "program_name": "Giáo dục Tiểu học",
     "faculty_name": "Khoa Giáo dục Tiểu học",
@@ -3689,12 +3782,13 @@
     "summary": "Giáo dục Tiểu học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_13",
     "faculty_aliases": [
       "Khoa Giáo dục Tiểu học",
       "KGDTH",
@@ -3706,17 +3800,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_13",
+      "record_id": "K51_program_13",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         182
       ],
-      "source_record_id": null
+      "source_record_id": "program_13"
     }
   },
   {
-    "record_id": "program_9",
+    "record_id": "K51_program_9",
     "content_type": "program_directory",
     "program_name": "Giáo dục học",
     "faculty_name": "Khoa Khoa học Giáo dục",
@@ -3727,12 +3821,13 @@
     "summary": "Giáo dục học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_9",
     "faculty_aliases": [
       "Khoa Khoa học Giáo dục",
       "KKHGD",
@@ -3744,17 +3839,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_9",
+      "record_id": "K51_program_9",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         181
       ],
-      "source_record_id": null
+      "source_record_id": "program_9"
     }
   },
   {
-    "record_id": "program_8",
+    "record_id": "K51_program_8",
     "content_type": "program_directory",
     "program_name": "Giáo dục Đặc biệt",
     "faculty_name": "Khoa Giáo dục Đặc biệt",
@@ -3766,12 +3861,13 @@
     "summary": "Giáo dục Đặc biệt",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_8",
     "faculty_aliases": [
       "Khoa Giáo dục Đặc biệt",
       "KGDDB",
@@ -3784,18 +3880,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_8",
+      "record_id": "K51_program_8",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         180,
         181
       ],
-      "source_record_id": null
+      "source_record_id": "program_8"
     }
   },
   {
-    "record_id": "program_14",
+    "record_id": "K51_program_14",
     "content_type": "program_directory",
     "program_name": "Hoá học",
     "faculty_name": "Khoa Hóa học",
@@ -3806,12 +3902,13 @@
     "summary": "Hoá học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_14",
     "faculty_aliases": [
       "Khoa Hóa học",
       "KHH",
@@ -3824,17 +3921,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_14",
+      "record_id": "K51_program_14",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         182
       ],
-      "source_record_id": null
+      "source_record_id": "program_14"
     }
   },
   {
-    "record_id": "program_15",
+    "record_id": "K51_program_15",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Anh",
     "faculty_name": "Khoa Tiếng Anh",
@@ -3844,12 +3941,13 @@
     "raw_text": "15. Ngành Ngôn ngữ Anh\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Có thể làm công tác biên dịch, lễ tân, thư ký và nhân viên văn phòng\ncho các công ty có yếu tố nước ngoài, các cơ quan văn hoá, giáo dục, kinh tế;\n– Có thể làm công tác giáo dục giảng dạy bộ môn Tiếng Anh ở các\ntrường đại học, cao đẳng, trung cấp chuyên nghiệp, dạy nghề sau khi bổ\ntúc chứng chỉ nghiệp vụ sư phạm;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc học\ncao hơn theo các chuyên ngành Tiếng Anh Thương mại và Quản trị Kinh doanh.",
     "summary": "Ngôn ngữ Anh",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_15",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
       "Khoa Tiếng Anh",
@@ -3863,17 +3961,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_15",
+      "record_id": "K51_program_15",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         183
       ],
-      "source_record_id": null
+      "source_record_id": "program_15"
     }
   },
   {
-    "record_id": "program_16",
+    "record_id": "K51_program_16",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Hàn Quốc",
     "faculty_name": "Khoa Tiếng Hàn Quốc",
@@ -3884,12 +3982,13 @@
     "summary": "Ngôn ngữ Hàn Quốc",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_16",
     "faculty_aliases": [
       "Khoa Tiếng Hàn Quốc",
       "KTHQ",
@@ -3901,17 +4000,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_16",
+      "record_id": "K51_program_16",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         183
       ],
-      "source_record_id": null
+      "source_record_id": "program_16"
     }
   },
   {
-    "record_id": "program_17",
+    "record_id": "K51_program_17",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Nga",
     "faculty_name": "Khoa Tiếng Nga",
@@ -3922,12 +4021,13 @@
     "raw_text": "17. Ngành Ngôn ngữ Nga\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n❖ Định hướng thương mại:\n– Nhân viên văn phòng, thư ký, trợ lý sử dụng tiếng Nga trong các\ndoanh nghiệp;\n– Chuyên viên, nghiên cứu viên tại các viện nghiên cứu ngôn ngữ;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\ncao hơn theo các chuyên ngành Ngôn ngữ Nga, Ngôn ngữ học, Thương\nmại, Báo chí, Quan hệ quốc tế ở các cơ sở giáo dục trong và ngoài nước;\n– Có khả năng và trình độ tiếp tục học các khóa bồi dưỡng theo chuyên\nngành gần để đảm nhận các vị trí thích hợp theo nhu cầu của xã hội.\n❖ Định hướng du lịch:\n– Hướng dẫn viên du lịch, nhân viên điều hành tour;\n– Nhân viên các bộ phận lễ tân, điều phối, chăm sóc khách hàng\ntrong các khách sạn, khu nghỉ dưỡng;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\ncao hơn theo các chuyên ngành Ngôn ngữ Nga, Ngôn ngữ học, Du lịch,\nBáo chí, Quan hệ quốc tế ở các cơ sở giáo dục trong và ngoài nước;\n– Có khả năng và trình độ tiếp tục học các khóa bồi dưỡng theo chuyên\nngành gần để đảm nhận các vị trí thích hợp theo nhu cầu của xã hội.",
     "summary": "Ngôn ngữ Nga",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_17",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
       "Khoa Tiếng Nga",
@@ -3940,18 +4040,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_17",
+      "record_id": "K51_program_17",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         183,
         184
       ],
-      "source_record_id": null
+      "source_record_id": "program_17"
     }
   },
   {
-    "record_id": "program_18",
+    "record_id": "K51_program_18",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Nhật",
     "faculty_name": "Khoa Tiếng Nhật",
@@ -3962,12 +4062,13 @@
     "summary": "Ngôn ngữ Nhật",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_18",
     "faculty_aliases": [
       "Khoa Tiếng Nhật",
       "KTN",
@@ -3979,17 +4080,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_18",
+      "record_id": "K51_program_18",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         184
       ],
-      "source_record_id": null
+      "source_record_id": "program_18"
     }
   },
   {
-    "record_id": "program_19",
+    "record_id": "K51_program_19",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Pháp",
     "faculty_name": "Khoa Tiếng Pháp",
@@ -4000,12 +4101,13 @@
     "raw_text": "19. Ngành Ngôn ngữ Pháp\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n❖ Chuyên ngành Dịch thuật:\n– Biên dịch viên chuyên ngành (dịch công chứng, dịch kỹ thuật, dịch\nbáo chí);\n– Phiên dịch viên: hội thảo, tiếp xúc;\n– Nhân viên làm việc trong các cơ quan đối ngoại hoặc các công ty quốc tế;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc học\ncao hơn theo các chuyên ngành ngôn ngữ và văn hóa hoặc lý luận và phương\npháp dạy và học tiếng Pháp, hoặc tại các trường đại học trong và ngoài nước.\n❖ Chuyên ngành Du lịch:\n– Có khả năng công tác ở các cơ quan khác nhau thuộc lĩnh vực du\nlịch (công ty lữ hành, doanh nghiệp du lịch, nhà hàng, khách sạn, trường,\nviện hoặc các cơ quan xúc tiến và phát triển du lịch), đảm nhận nhiều vị\ntrí công việc khác nhau như điều hành tour, thiết kế tour, marketing, kinh\ndoanh, tư vấn du lịch, hướng dẫn viên du lịch quốc tế,… Sinh viên có cơ\nhội làm việc với các công ty và khách nước ngoài;\n– Có thể tiếp tục học tập văn bằng 2 hoặc theo học thạc sĩ ở các\nchuyên ngành Du lịch, Quản trị – Kinh doanh, Ngôn ngữ học hay Lý luận\nvà phương pháp giảng dạy;\n– Ngoài ra, sinh viên có thể học thêm chứng chỉ nghiệp vụ sư phạm\nhoặc các chứng chỉ liên quan đến các ngành nghề du lịch để đáp ứng yêu\ncầu thực tế đa dạng của nghề nghiệp.\n❖ Chuyên ngành Truyền thông:\n– Nhân viên truyền thông sự kiện đa ngôn ngữ;\n– Nhân viên đối ngoại/phụ trách quan hệ công chúng;\n– Nhân viên làm việc trong các cơ quan, tổ chức đối ngoại/hợp tác\nquốc tế hoặc các doanh nghiệp nước ngoài;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành ngôn ngữ và văn hóa hoặc lý luận và\nphương pháp dạy và học tiếng Pháp, hoặc tại các trường đại học trong và\nngoài nước.",
     "summary": "Ngôn ngữ Pháp",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_19",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
       "Khoa Tiếng Pháp",
@@ -4018,18 +4120,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_19",
+      "record_id": "K51_program_19",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         184,
         185
       ],
-      "source_record_id": null
+      "source_record_id": "program_19"
     }
   },
   {
-    "record_id": "program_20",
+    "record_id": "K51_program_20",
     "content_type": "program_directory",
     "program_name": "Ngôn ngữ Trung Quốc",
     "faculty_name": "Khoa Tiếng Trung Quốc",
@@ -4040,29 +4142,30 @@
     "raw_text": "20. Ngành Ngôn ngữ Trung Quốc\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Có khả năng làm việc trong các lĩnh vực chuyên môn đòi hỏi kiến\nthức văn hoá, xã hội và khả năng giao tiếp bằng tiếng Trung Quốc;\n– Có thể làm công tác giáo dục và giảng dạy bộ môn tiếng Trung\nQuốc ở các trường đại học, cao đẳng, trung cấp chuyên nghiệp, dạy nghề\nsau khi bổ túc chứng chỉ nghiệp vụ sư phạm;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành tiếng Trung Quốc.\nCHƯƠNG TRÌNH LIÊN KẾT QUỐC TẾ SONG NGÀNH 2+2:\nNGÔN NGỮ TRUNG QUỐC, GIÁO DỤC HÁN NGỮ QUỐC TẾ\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Người học sau khi tốt nghiệp có thể làm biên – phiên dịch, trợ lý,\nthương mại,… tại các cơ quan nhà nước, doanh nghiệp trong nước và\nnước ngoài có sử dụng tiếng Trung Quốc;\n– Dạy học bộ môn Tiếng Trung Quốc ở các trường phổ thông, trung\ntâm ngoại ngữ và những cơ sở giáo dục tương đương sau khi bổ túc\nchứng chỉ nghiệp vụ sư phạm.",
     "summary": "Ngôn ngữ Trung Quốc",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_20",
     "faculty_name_source": "matched_existing_program",
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_20",
+      "record_id": "K51_program_20",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         185,
         186
       ],
-      "source_record_id": null
+      "source_record_id": "program_20"
     }
   },
   {
-    "record_id": "program_21",
+    "record_id": "K51_program_21",
     "content_type": "program_directory",
     "program_name": "Quản lý giáo dục",
     "faculty_name": "Khoa Khoa học Giáo dục",
@@ -4073,12 +4176,13 @@
     "summary": "Quản lý giáo dục",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_21",
     "faculty_aliases": [
       "Khoa Khoa học Giáo dục",
       "KKHGD",
@@ -4090,17 +4194,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_21",
+      "record_id": "K51_program_21",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         186
       ],
-      "source_record_id": null
+      "source_record_id": "program_21"
     }
   },
   {
-    "record_id": "program_22",
+    "record_id": "K51_program_22",
     "content_type": "program_directory",
     "program_name": "Quốc tế học",
     "faculty_name": "Khoa Lịch sử",
@@ -4110,12 +4214,13 @@
     "raw_text": "22. Ngành Quốc tế học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác đối ngoại trong các cơ quan Nhà nước, các tổ chức\nphi chính phủ, các công ty, tập đoàn đa quốc gia, quốc tế, các tổ chức xã\nhội nghề nghiệp;\n– Làm các công tác khác có yêu cầu sử dụng kiến thức về quốc tế học\n(báo chí – truyền thông, du lịch, quan hệ công chúng, ngoại thương,…).",
     "summary": "Quốc tế học",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_22",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
       "Khoa Lịch sử",
@@ -4129,17 +4234,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_22",
+      "record_id": "K51_program_22",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         186
       ],
-      "source_record_id": null
+      "source_record_id": "program_22"
     }
   },
   {
-    "record_id": "program_23",
+    "record_id": "K51_program_23",
     "content_type": "program_directory",
     "program_name": "Sinh học ứng dụng",
     "faculty_name": "Khoa Sinh học",
@@ -4150,12 +4255,13 @@
     "summary": "Sinh học ứng dụng",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_23",
     "faculty_aliases": [
       "Khoa Sinh học",
       "KSH",
@@ -4168,17 +4274,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_23",
+      "record_id": "K51_program_23",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         187
       ],
-      "source_record_id": null
+      "source_record_id": "program_23"
     }
   },
   {
-    "record_id": "program_24",
+    "record_id": "K51_program_24",
     "content_type": "program_directory",
     "program_name": "Sư phạm Công nghệ",
     "faculty_name": "Khoa Vật lý",
@@ -4189,12 +4295,13 @@
     "summary": "Sư phạm Công nghệ",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_24",
     "faculty_aliases": [
       "Khoa Vật lý",
       "KVL",
@@ -4207,17 +4314,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_24",
+      "record_id": "K51_program_24",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         187
       ],
-      "source_record_id": null
+      "source_record_id": "program_24"
     }
   },
   {
-    "record_id": "program_26",
+    "record_id": "K51_program_26",
     "content_type": "program_directory",
     "program_name": "Sư phạm Hoá học",
     "faculty_name": "Khoa Hóa học",
@@ -4229,12 +4336,13 @@
     "summary": "Sư phạm Hoá học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_26",
     "faculty_aliases": [
       "Khoa Hóa học",
       "KHH",
@@ -4247,18 +4355,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_26",
+      "record_id": "K51_program_26",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         187,
         188
       ],
-      "source_record_id": null
+      "source_record_id": "program_26"
     }
   },
   {
-    "record_id": "program_27",
+    "record_id": "K51_program_27",
     "content_type": "program_directory",
     "program_name": "Sư phạm Khoa học tự nhiên",
     "faculty_name": "Khoa Hóa học",
@@ -4268,12 +4376,13 @@
     "raw_text": "27. Ngành Sư phạm Khoa học tự nhiên\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm giáo viên môn Khoa học Tự nhiên cấp THCS, giáo viên phụ\ntrách Hoạt động trải nghiệm cấp THCS;\n– Có khả năng tiếp nhận và vận dụng các tri thức mới về chuyên\nmôn và nghề nghiệp đáp ứng các nhu cầu phát triển của giáo dục để tiếp\ntục học tập, nghiên cứu ở các bậc học cao hơn.",
     "summary": "Sư phạm Khoa học tự nhiên",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_27",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
       "Khoa Hóa học",
@@ -4287,17 +4396,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_27",
+      "record_id": "K51_program_27",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         188
       ],
-      "source_record_id": null
+      "source_record_id": "program_27"
     }
   },
   {
-    "record_id": "program_28",
+    "record_id": "K51_program_28",
     "content_type": "program_directory",
     "program_name": "Sư phạm Lịch sử",
     "faculty_name": "Khoa Lịch sử",
@@ -4307,12 +4416,13 @@
     "raw_text": "28. Ngành Sư phạm Lịch sử\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên giảng dạy bộ môn Lịch sử ở các trường THPT, chuyên viên\nphụ trách môn Lịch sử tại các Sở Giáo dục và Đào tạo ở địa phương;\n– Nghiên cứu viên ở các viện nghiên cứu, các cơ quan quản lý giáo\ndục, các cơ sở đào tạo, đặc biệt về lĩnh vực Lịch sử, Lý luận và phương\npháp dạy học bộ môn Lịch sử, Khoa học xã hội.",
     "summary": "Sư phạm Lịch sử",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_28",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
       "Khoa Lịch sử",
@@ -4326,17 +4436,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_28",
+      "record_id": "K51_program_28",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         188
       ],
-      "source_record_id": null
+      "source_record_id": "program_28"
     }
   },
   {
-    "record_id": "program_29",
+    "record_id": "K51_program_29",
     "content_type": "program_directory",
     "program_name": "Sư phạm Lịch sử – Địa lý",
     "faculty_name": "Khoa Địa lý",
@@ -4347,12 +4457,13 @@
     "summary": "Sư phạm Lịch sử – Địa lý",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_29",
     "faculty_aliases": [
       "Khoa Địa lý",
       "KDL",
@@ -4365,17 +4476,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_29",
+      "record_id": "K51_program_29",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         188
       ],
-      "source_record_id": null
+      "source_record_id": "program_29"
     }
   },
   {
-    "record_id": "program_30",
+    "record_id": "K51_program_30",
     "content_type": "program_directory",
     "program_name": "Sư phạm Ngữ văn",
     "faculty_name": "Khoa Ngữ văn",
@@ -4385,12 +4496,13 @@
     "raw_text": "30. Ngành Sư phạm Ngữ văn\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giảng dạy bộ môn Ngữ văn ở các trường THPT, trung cấp\nchuyên nghiệp, trường dạy nghề;\n– Làm công tác chuyên môn trong các cơ quan, tổ chức đòi hỏi\nkiến thức ngữ văn;\n– Có thể tiếp tục học tập ở các bậc học cao hơn thuộc các chuyên\nngành: Phương pháp giảng dạy, Ngôn ngữ học hoặc Văn học.",
     "summary": "Sư phạm Ngữ văn",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_30",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
       "Khoa Ngữ văn",
@@ -4404,17 +4516,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_30",
+      "record_id": "K51_program_30",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         188
       ],
-      "source_record_id": null
+      "source_record_id": "program_30"
     }
   },
   {
-    "record_id": "program_31",
+    "record_id": "K51_program_31",
     "content_type": "program_directory",
     "program_name": "Sư phạm Sinh học",
     "faculty_name": "Khoa Sinh học",
@@ -4425,12 +4537,13 @@
     "summary": "Sư phạm Sinh học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_31",
     "faculty_aliases": [
       "Khoa Sinh học",
       "KSH",
@@ -4443,17 +4556,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_31",
+      "record_id": "K51_program_31",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         189
       ],
-      "source_record_id": null
+      "source_record_id": "program_31"
     }
   },
   {
-    "record_id": "program_36",
+    "record_id": "K51_program_36",
     "content_type": "program_directory",
     "program_name": "Sư phạm Tin học",
     "faculty_name": "Khoa Công nghệ Thông tin",
@@ -4464,12 +4577,13 @@
     "summary": "Sư phạm Tin học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_36",
     "faculty_aliases": [
       "Khoa Công nghệ Thông tin",
       "KCNTT",
@@ -4482,17 +4596,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_36",
+      "record_id": "K51_program_36",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         190
       ],
-      "source_record_id": null
+      "source_record_id": "program_36"
     }
   },
   {
-    "record_id": "program_37",
+    "record_id": "K51_program_37",
     "content_type": "program_directory",
     "program_name": "Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)",
     "faculty_name": "Khoa Toán – Tin học",
@@ -4504,12 +4618,13 @@
     "summary": "Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_37",
     "faculty_aliases": [
       "Khoa Toán – Tin học",
       "KTTH",
@@ -4522,18 +4637,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_37",
+      "record_id": "K51_program_37",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         190,
         191
       ],
-      "source_record_id": null
+      "source_record_id": "program_37"
     }
   },
   {
-    "record_id": "program_38",
+    "record_id": "K51_program_38",
     "content_type": "program_directory",
     "program_name": "Sư phạm Vật lý",
     "faculty_name": "Khoa Vật lý",
@@ -4544,12 +4659,13 @@
     "summary": "Sư phạm Vật lý",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_38",
     "faculty_aliases": [
       "Khoa Vật lý",
       "KVL",
@@ -4562,17 +4678,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_38",
+      "record_id": "K51_program_38",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         191
       ],
-      "source_record_id": null
+      "source_record_id": "program_38"
     }
   },
   {
-    "record_id": "program_32",
+    "record_id": "K51_program_32",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Anh",
     "faculty_name": "Khoa Tiếng Anh",
@@ -4582,12 +4698,13 @@
     "raw_text": "32. Ngành Sư phạm tiếng Anh\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Có thể làm công tác giáo dục và giảng dạy bộ môn tiếng Anh ở\ncác cấp học từ Tiểu học đến Trung học phổ thông tại các cơ sở công lập và\ncác chương trình học tiếng Anh khác tại các tổ chức giáo dục tư nhân;\n– Có thể làm việc trong lĩnh vực chuyên môn khác có đòi hỏi về\nkiến thức văn hoá, xã hội và khả năng giao tiếp bằng tiếng Anh;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn theo các chuyên ngành: Giảng dạy tiếng Anh, Ngôn ngữ\nhọc tiếng Anh và các chuyên ngành liên quan.",
     "summary": "Sư phạm tiếng Anh",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_32",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
       "Khoa Tiếng Anh",
@@ -4601,17 +4718,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_32",
+      "record_id": "K51_program_32",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         189
       ],
-      "source_record_id": null
+      "source_record_id": "program_32"
     }
   },
   {
-    "record_id": "program_33",
+    "record_id": "K51_program_33",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Nga",
     "faculty_name": "Khoa Tiếng Nga",
@@ -4621,12 +4738,13 @@
     "raw_text": "33. Ngành Sư phạm tiếng Nga\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên giảng dạy bộ môn Tiếng Nga ở bậc tiểu học, THCS và\nTHPT hoặc các trung tâm ngoại ngữ, các cơ sở giáo dục quốc tế;\n– Nghiên cứu viên trong các trung tâm nghiên cứu giáo dục, văn\nhoá hoặc ngôn ngữ;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\ncao hơn theo các chuyên ngành Ngôn ngữ Nga, Khoa học giáo dục,\nGiáo dục học, Tâm lý học, Quản lý giáo dục tại các cơ sở giáo dục trong\nvà ngoài nước; các khóa bồi dưỡng theo chuyên ngành gần để đảm nhận\ncác vị trí thích hợp theo nhu cầu của xã hội.",
     "summary": "Sư phạm tiếng Nga",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_33",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
       "Khoa Tiếng Nga",
@@ -4639,17 +4757,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_33",
+      "record_id": "K51_program_33",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         189
       ],
-      "source_record_id": null
+      "source_record_id": "program_33"
     }
   },
   {
-    "record_id": "program_34",
+    "record_id": "K51_program_34",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Pháp",
     "faculty_name": "Khoa Tiếng Pháp",
@@ -4659,12 +4777,13 @@
     "raw_text": "34. Ngành Sư phạm tiếng Pháp\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên tiếng Pháp bậc tiểu học, THCS và THPT, trung tâm\nngoại ngữ, các cơ sở giáo dục quốc tế;\n– Nghiên cứu viên trong các trung tâm nghiên cứu, văn hóa, ngôn ngữ;\n– Có khả năng và trình độ để tiếp tục học tập, nghiên cứu ở các bậc\nhọc cao hơn ở lĩnh vực khoa học ngôn ngữ và khoa học giáo dục.",
     "summary": "Sư phạm tiếng Pháp",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_34",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
       "Khoa Tiếng Pháp",
@@ -4677,17 +4796,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_34",
+      "record_id": "K51_program_34",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         190
       ],
-      "source_record_id": null
+      "source_record_id": "program_34"
     }
   },
   {
-    "record_id": "program_35",
+    "record_id": "K51_program_35",
     "content_type": "program_directory",
     "program_name": "Sư phạm tiếng Trung Quốc",
     "faculty_name": "Khoa Tiếng Trung Quốc",
@@ -4697,28 +4816,29 @@
     "raw_text": "35. Ngành Sư phạm tiếng Trung Quốc\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác giáo dục và giảng dạy bộ môn Tiếng Trung Quốc ở\ncác trường THPT, các cơ sở đào tạo;\n– Làm việc trong các lĩnh vực chuyên môn đòi hỏi kiến thức văn\nhoá, xã hội và khả năng giao tiếp bằng tiếng Trung Quốc;\n– Có khả năng và trình độ để tiếp tục học tập và nghiên cứu ở các\nbậc học cao hơn theo các chuyên ngành giảng dạy tiếng Trung Quốc,\nNgôn ngữ học tiếng Trung Quốc; văn hoá, văn học, lịch sử Trung Quốc.",
     "summary": "Sư phạm tiếng Trung Quốc",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_35",
     "faculty_name_source": "matched_existing_program",
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_35",
+      "record_id": "K51_program_35",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         190
       ],
-      "source_record_id": null
+      "source_record_id": "program_35"
     }
   },
   {
-    "record_id": "program_25",
+    "record_id": "K51_program_25",
     "content_type": "program_directory",
     "program_name": "Sư phạm Địa lý",
     "faculty_name": "Khoa Địa lý",
@@ -4729,12 +4849,13 @@
     "summary": "Sư phạm Địa lý",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_25",
     "faculty_aliases": [
       "Khoa Địa lý",
       "KDL",
@@ -4747,17 +4868,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_25",
+      "record_id": "K51_program_25",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         187
       ],
-      "source_record_id": null
+      "source_record_id": "program_25"
     }
   },
   {
-    "record_id": "program_41",
+    "record_id": "K51_program_41",
     "content_type": "program_directory",
     "program_name": "Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài)",
     "faculty_name": "Khoa Ngữ văn",
@@ -4768,12 +4889,13 @@
     "summary": "Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài)",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_41",
     "faculty_aliases": [
       "Khoa Ngữ văn",
       "KNV",
@@ -4786,17 +4908,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_41",
+      "record_id": "K51_program_41",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         192
       ],
-      "source_record_id": null
+      "source_record_id": "program_41"
     }
   },
   {
-    "record_id": "program_42",
+    "record_id": "K51_program_42",
     "content_type": "program_directory",
     "program_name": "Toán ứng dụng",
     "faculty_name": "Khoa Toán – Tin học",
@@ -4808,12 +4930,13 @@
     "summary": "Toán ứng dụng",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_42",
     "faculty_aliases": [
       "Khoa Toán – Tin học",
       "KTTH",
@@ -4826,18 +4949,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_42",
+      "record_id": "K51_program_42",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         192,
         193
       ],
-      "source_record_id": null
+      "source_record_id": "program_42"
     }
   },
   {
-    "record_id": "program_39",
+    "record_id": "K51_program_39",
     "content_type": "program_directory",
     "program_name": "Tâm lý học",
     "faculty_name": "Khoa Tâm lý học",
@@ -4848,12 +4971,13 @@
     "summary": "Tâm lý học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_39",
     "faculty_aliases": [
       "Khoa Tâm lý học",
       "KTLH",
@@ -4866,17 +4990,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_39",
+      "record_id": "K51_program_39",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         191
       ],
-      "source_record_id": null
+      "source_record_id": "program_39"
     }
   },
   {
-    "record_id": "program_40",
+    "record_id": "K51_program_40",
     "content_type": "program_directory",
     "program_name": "Tâm lý học giáo dục",
     "faculty_name": "Khoa Tâm lý học",
@@ -4887,12 +5011,13 @@
     "summary": "Tâm lý học giáo dục",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_40",
     "faculty_aliases": [
       "Khoa Tâm lý học",
       "KTLH",
@@ -4905,17 +5030,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_40",
+      "record_id": "K51_program_40",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         192
       ],
-      "source_record_id": null
+      "source_record_id": "program_40"
     }
   },
   {
-    "record_id": "program_45",
+    "record_id": "K51_program_45",
     "content_type": "program_directory",
     "program_name": "Việt Nam học",
     "faculty_name": "Khoa Ngữ văn",
@@ -4926,12 +5051,13 @@
     "raw_text": "45. Ngành Việt Nam học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm việc tại các công ty du lịch lữ hành với tư cách hướng dẫn\nviên du lịch, người thiết kế và điều hành tour;\n– Giảng dạy một số môn thuộc lĩnh vực Văn hoá hay Du lịch lữ\nhành tại các trường cao đẳng và dạy nghề sau khi bổ túc các chứng chỉ\nnghiệp vụ sư phạm;\n– Có thể học ở bậc Thạc sĩ ngành Việt Nam học sau khi học bổ\nsung một số tín chỉ bậc đại học thuộc các chuyên ngành liên quan.\nCÁC KHOA VÀ TỔ TRỰC THUỘC TẠI CƠ SỞ CHÍNH",
     "summary": "Việt Nam học",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_45",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
       "Khoa Ngữ văn",
@@ -4945,18 +5071,18 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_45",
+      "record_id": "K51_program_45",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         193,
         207
       ],
-      "source_record_id": null
+      "source_record_id": "program_45"
     }
   },
   {
-    "record_id": "program_43",
+    "record_id": "K51_program_43",
     "content_type": "program_directory",
     "program_name": "Văn học",
     "faculty_name": "Khoa Ngữ văn",
@@ -4966,12 +5092,13 @@
     "raw_text": "43. Ngành Văn học\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác nghiên cứu ngôn ngữ học hoặc văn học;\n– Làm công tác chuyên môn trong các lĩnh vực liên quan đến ngữ\nvăn: báo chí, xuất bản, quản lý văn hoá…;\n– Có thể giảng dạy bộ môn Ngữ văn ở các trường đại học, cao\nđẳng, trung cấp chuyên nghiệp, dạy nghề sau khi bổ túc chứng chỉ\nnghiệp vụ sư phạm;\n– Có thể tiếp tục học ở các bậc học cao hơn thuộc các chuyên\nngành: Ngôn ngữ học hoặc Văn học.",
     "summary": "Văn học",
     "needs_manual_review": false,
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_43",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
       "Khoa Ngữ văn",
@@ -4985,17 +5112,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_43",
+      "record_id": "K51_program_43",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         193
       ],
-      "source_record_id": null
+      "source_record_id": "program_43"
     }
   },
   {
-    "record_id": "program_44",
+    "record_id": "K51_program_44",
     "content_type": "program_directory",
     "program_name": "Vật lý học",
     "faculty_name": "Khoa Vật lý",
@@ -5006,12 +5133,13 @@
     "summary": "Vật lý học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_44",
     "faculty_aliases": [
       "Khoa Vật lý",
       "KVL",
@@ -5024,17 +5152,17 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_44",
+      "record_id": "K51_program_44",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         193
       ],
-      "source_record_id": null
+      "source_record_id": "program_44"
     }
   },
   {
-    "record_id": "program_5",
+    "record_id": "K51_program_5",
     "content_type": "program_directory",
     "program_name": "Địa lý học",
     "faculty_name": "Khoa Địa lý",
@@ -5046,12 +5174,13 @@
     "summary": "Địa lý học",
     "needs_manual_review": false,
     "faculty_name_source": "manual_program_faculty_rule",
-    "cohort": "K51",
-    "document_id": "so_tay_sinh_vien_khoa_51",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
+    "document_id": "so_tay_sinh_vien_khoa_51",
+    "cohort": "K51",
     "source_section": "program_directory",
     "content_mode": "rag_index",
+    "source_record_id": "program_5",
     "faculty_aliases": [
       "Khoa Địa lý",
       "KDL",
@@ -5064,14 +5193,14 @@
     "quality_status": "approved",
     "source_provenance": {
       "catalog": "program_directory",
-      "record_id": "program_5",
+      "record_id": "K51_program_5",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "source_pages": [
         179,
         180
       ],
-      "source_record_id": null
+      "source_record_id": "program_5"
     }
   }
 ]

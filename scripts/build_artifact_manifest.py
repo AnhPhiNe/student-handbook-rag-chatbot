@@ -15,6 +15,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.retrieval.runtime_config import load_retrieval_runtime_config
+from scripts.build_parent_child_artifacts import validate_separation_contract
 
 
 SCHEMA_VERSION = "student-handbook-build-v1"
@@ -172,9 +173,12 @@ def build_artifact_manifest(
                 "ignored_non_content",
             )
         )
-        if status_total != int(loaded_audit.get("total_table_like_rows") or -1):
+        if status_total != int(loaded_audit.get("total_table_like_rows", -1)):
             raise RuntimeError("Table embedding audit status counts are incomplete.")
         table_embedding_audit = loaded_audit
+
+    separation = (table_embedding_audit or {}).get("separation")
+    validate_separation_contract(parents, children, separation)
 
     parent_id_list = [str(parent.get("_id") or "") for parent in parents]
     child_id_list = [
@@ -223,6 +227,10 @@ def build_artifact_manifest(
             "normalize_embeddings": True,
         },
     }
+    if separation:
+        identity_inputs["table_separation"] = {
+            "policy": separation["policy"], "review_sha256": separation["review_sha256"],
+        }
     build_id = "build-" + _canonical_digest(identity_inputs)[:20]
     _attach_build_id(parents, children, build_id)
     _write_json_atomic(parent_path, parents)
@@ -276,6 +284,13 @@ def build_artifact_manifest(
             "covered_table_rows_indexed_in_qdrant": False,
         },
     }
+    if separation:
+        manifest["index_contract"].update(
+            table_separation_policy=separation["policy"],
+            source_review_sha256=separation["review_sha256"],
+            parent_representation="full_article_with_reviewed_tables",
+            child_representation="narrative_without_reviewed_table_regions",
+        )
     if table_embedding_audit is not None and table_embedding_audit_path is not None:
         manifest["artifacts"]["table_embedding_audit"] = {
             "path": table_embedding_audit_path.as_posix(),

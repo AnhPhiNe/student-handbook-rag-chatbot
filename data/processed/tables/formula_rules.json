@@ -17,6 +17,7 @@
       22,
       23
     ],
+    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
     "review_status": "needs_human_verified",
     "raw_excerpt": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học\n1. Kết quả học tập của sinh viên được đánh giá sau từng học kỳ\nchính hoặc sau từng năm học dựa trên kết quả các học phần nằm trong\nyêu cầu của CTĐT mà sinh viên đã học và có điểm theo các tiêu chí\nsau đây:\na) Tổng số tín chỉ của các học phần mà sinh viên không đạt trong\nmột học kỳ, trong một năm học, hoặc nợ đọng từ đầu khoá học;\nb) Tổng số tín chỉ của các học phần mà sinh viên đã đạt từ đầu khóa\nhọc (số tín chỉ tích lũy), tính cả các học phần được miễn học, được công\nnhận tín chỉ;\nc) Điểm trung bình của những học phần mà sinh viên đã học trong\nmột học kỳ (điểm trung bình học kỳ), trong một năm học (điểm trung\nbình năm học) hoặc tính từ đầu khóa học (điểm trung bình tích lũy),\ntính theo điểm chính thức của học phần và trọng số là số tín chỉ của học\nphần đó.\n2. Kết quả học tập trong học kỳ phụ được gộp vào kết quả học tập\ntrong học kỳ chính ngay trước học kỳ phụ để đánh giá.\n3. Để tính điểm trung bình, điểm chữ của học phần được quy đổi về\nđiểm số như dưới đây:\nThang điểm chữ\nThang điểm 4\nA\n4,0\nB+\n3,5\nB\n3,0\nC+\n2,5\nC\n2,0\nD+\n1,5\nD\n1,0\nF+\n0,5\nF\n0,0\n4. Những điểm chữ không được quy định tại khoản 3 Điều này\nkhông được tính vào các điểm trung bình học kỳ, năm học hoặc tích lũy.\nNhững học phần không nằm trong yêu cầu của CTĐT không được tính\nvào các tiêu chí đánh giá kết quả học tập của sinh viên.\n5. Điểm trung bình chung học kỳ, năm học và điểm trung bình chung\ntích lũy được tính theo công thức sau và được làm tròn đến 2 chữ số",
     "content_type": "formula_rule",
@@ -26,8 +27,7 @@
     "cohort": "K48-K49",
     "source_section": "formula_rule",
     "content_mode": "structured_only",
-    "record_id": "K48-K49_K48-K49_formula_rules_1",
-    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11"
+    "record_id": "K48-K49_K48-K49_formula_rules_1"
   },
   {
     "rule_id": "scholarship_score",
@@ -45,6 +45,7 @@
       52,
       53
     ],
+    "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
     "review_status": "needs_human_verified",
     "raw_excerpt": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên đại học chính quy tại Trường theo kế hoạch của\nkhóa học; không xét HBKKHT đối với sinh viên học quá thời gian học\ntập chuẩn được quy định tại khoản 6, Điều 3 của Quy chế đào tạo trình độ\nđại học chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021\ncủa Hiệu trưởng;\nb) Trong học kỳ, sinh viên có kết quả học tập, rèn luyện từ loại khá\ntrở lên, không bị kỷ luật từ mức khiển trách trở lên sẽ được xét, cấp\nHBKKHT trong phạm vi quỹ HBKKHT của Trường;\nc) Tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn\nhoặc bằng 15 tín chỉ theo kế hoạch trong CTĐT của khóa học (tất cả các\ntín chỉ đều phải đạt, không bao gồm các tín chỉ trả nợ, cải thiện, tương\nđương…). Do đó, các khoa cần xây dựng chương trình học phù hợp và\nCVHT cần tư vấn, hướng dẫn sinh viên xây dựng lịch học đảm bảo quyền\nlợi cho sinh viên;\nd) Đối với sinh viên năm cuối, học bổng được xét:\n− Quy định xét học bổng đối với học kỳ I thực hiện theo Điểm a, b,\nc, khoản 1, Điều này.\n− Quy định xét học bổng đối với học kỳ II:\n+ Sinh viên đăng ký từ 6 tín chỉ trở lên;\n+ Trình tự xét HBKKHT cho sinh viên năm cuối theo thứ tự các đối\ntượng như sau:\n• Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện xuất sắc.\n• Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện tốt.\n• Sinh viên còn lại.\n− Điểm học bổng được tính theo Điểm đ, khoản 1, Điều này.\nđ) Điểm học bổng: là điểm để xét học bổng cho sinh viên được xếp\nloại từ cao xuống thấp, tính theo công thức:\n− Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện /25 x 20) /100.\n(Điểm rèn luyện /25 là quy đổi về thang điểm 4)\n− Xếp loại học bổng được ",
     "content_type": "formula_rule",
@@ -54,8 +55,7 @@
     "cohort": "K48-K49",
     "source_section": "formula_rule",
     "content_mode": "structured_only",
-    "record_id": "K48-K49_K48-K49_formula_rules_2",
-    "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28"
+    "record_id": "K48-K49_K48-K49_formula_rules_2"
   },
   {
     "rule_id": "gpa_weighted_average",
@@ -75,6 +75,7 @@
       20,
       21
     ],
+    "source_parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
     "review_status": "needs_human_verified",
     "raw_excerpt": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học\n1. Kết quả học tập của sinh viên được đánh giá sau từng học kỳ\nchính hoặc sau từng năm học dựa trên kết quả các học phần nằm trong\nyêu cầu của CTĐT mà sinh viên đã học và có điểm theo các tiêu chí\nsau đây:\na) Tổng số tín chỉ của các học phần mà sinh viên không đạt trong\nmột học kỳ, trong một năm học, hoặc nợ đọng từ đầu khóa học;\nb) Tổng số tín chỉ của các học phần mà sinh viên đã đạt từ đầu khóa\nhọc (số tín chỉ tích lũy), tính cả các học phần được miễn học, được công\nnhận tín chỉ;\nc) Điểm trung bình của những học phần mà sinh viên đã học trong\nmột học kỳ (điểm trung bình học kỳ), trong một năm học (điểm trung\nbình năm học) hoặc tính từ đầu khóa học (điểm trung bình tích lũy),\ntính theo điểm chính thức của học phần và trọng số là số tín chỉ của học\nphần đó.\n2. Kết quả học tập trong học kỳ phụ được gộp vào kết quả học tập\ntrong học kỳ chính ngay trước học kỳ phụ để đánh giá.\n3. Để tính điểm trung bình, điểm chữ của học phần được quy đổi về\nđiểm số như dưới đây:\nThang điểm chữ\nThang điểm 4\nA\n4,0\nB+\n3,5\nB\n3,0\nC+\n2,5\nC\n2,0\nD+\n1,5\nD\n1,0\nF+\n0,5\nF\n0,0\n4. Những điểm chữ không được quy định tại khoản 3 Điều này\nkhông được tính vào các điểm trung bình học kỳ, năm học hoặc tích lũy.\nNhững học phần không nằm trong yêu cầu của CTĐT không được tính\nvào các tiêu chí đánh giá kết quả học tập của sinh viên.\n5. Điểm trung bình chung học kỳ, năm học và điểm trung bình chung\ntích lũy được tính theo công thức sau và được làm tròn đến 2 chữ số",
     "content_type": "formula_rule",
@@ -84,8 +85,7 @@
     "cohort": "K50",
     "source_section": "formula_rule",
     "content_mode": "structured_only",
-    "record_id": "K50_K50_formula_rules_1",
-    "source_parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu11"
+    "record_id": "K50_K50_formula_rules_1"
   },
   {
     "rule_id": "scholarship_score",
@@ -104,6 +104,7 @@
       72,
       73
     ],
+    "source_parent_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
     "review_status": "needs_human_verified",
     "raw_excerpt": "Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên hệ chính quy tại Trường theo kế hoạch đào tạo\ncủa khóa học; không xét HBKKHT đối với sinh viên quá thời gian học\ntập chuẩn được quy định tại khoản 6 Điều 3 Quy chế đào tạo trình độ đại\nhọc chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021\ncủa Hiệu trưởng (đối với sinh viên đào tạo trình độ đại học) hoặc tại\nkhoản 6 Điều 3 Quy chế đào tạo trình độ cao đẳng ngành Giáo dục Mầm\nnon tại phân hiệu của Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 3533/QĐ-ĐHSP ngày 07/12/2023\ncủa Hiệu trưởng (đối với sinh viên đào tạo trình độ cao đẳng ngành Giáo\ndục Mầm non);\nb) Trong học kỳ, sinh viên có kết quả học tập, rèn luyện từ loại khá\ntrở lên, không bị kỷ luật từ mức khiển trách trở lên sẽ được xem xét, cấp\nHBKKHT trong phạm vi quỹ HBKKHT của Trường;\nc) Tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn\nhoặc bằng 15 tín chỉ theo kế hoạch trong CTĐT của khóa học (không bao\ngồm các tín chỉ trả nợ, cải thiện, tương đương,… Tất cả các tín chỉ đều\nphải đạt). Các khoa và phân hiệu xây dựng chương trình học phù hợp và\nCVHT cần tư vấn, hướng dẫn sinh viên xây dựng lịch học đảm bảo quyền\nlợi cho sinh viên;\nd) Đối với sinh viên năm cuối, học bổng được xét:\n– Quy định xét học bổng đối với học kỳ I thực hiện theo điểm a, b, c\nkhoản 1 Điều này.\n– Quy định xét học bổng đối với học kỳ II:\n+ Sinh viên đăng ký từ 6 tín chỉ trở lên;\n+ Trình tự xét HBKKHT cho sinh viên năm cuối theo thứ tự các đối\ntượng như sau:\n Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện xuất sắc.\n Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện",
     "content_type": "formula_rule",
@@ -113,8 +114,7 @@
     "cohort": "K50",
     "source_section": "formula_rule",
     "content_mode": "structured_only",
-    "record_id": "K50_K50_formula_rules_2",
-    "source_parent_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27"
+    "record_id": "K50_K50_formula_rules_2"
   },
   {
     "rule_id": "gpa_weighted_average",
@@ -134,8 +134,9 @@
       20,
       21
     ],
+    "source_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
     "review_status": "needs_human_verified",
-    "raw_excerpt": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học\n1. Kết quả học tập của sinh viên được đánh giá sau từng học kỳ\nchính hoặc sau từng năm học dựa trên kết quả các học phần nằm trong\nyêu cầu của CTĐT mà sinh viên đã học và có điểm theo các tiêu chí\nsau đây:\na) Tổng số tín chỉ của các học phần mà sinh viên không đạt trong\nmột học kỳ, trong một năm học, hoặc nợ đọng từ đầu khóa học;\nb) Tổng số tín chỉ của các học phần mà sinh viên đã đạt từ đầu khóa\nhọc (số tín chỉ tích lũy), tính cả các học phần được miễn học, được công\nnhận tín chỉ;\nc) Điểm trung bình của những học phần mà sinh viên đã học trong\nmột học kỳ (điểm trung bình học kỳ), trong một năm học (điểm trung\nbình năm học) hoặc tính từ đầu khóa học (điểm trung bình tích lũy),\ntính theo điểm chính thức của học phần và trọng số là số tín chỉ của học\nphần đó.\n2. Kết quả học tập trong học kỳ phụ được gộp vào kết quả học tập\ntrong học kỳ chính ngay trước học kỳ phụ để đánh giá.\n3. Để tính điểm trung bình, điểm chữ của học phần được quy đổi về\nđiểm số như dưới đây:\nThang điểm chữ\nThang điểm 4\nA\n4,0\nB+\n3,5\nB\n3,0\nC+\n2,5\nC\n2,0\nD+\n1,5\nD\n1,0\nF+\n0,5\nF\n0,0\n4. Những điểm chữ không được quy định tại khoản 3 Điều này\nkhông được tính vào các điểm trung bình học kỳ, năm học hoặc tích lũy.\nNhững học phần không nằm trong yêu cầu của CTĐT không được tính\nvào các tiêu chí đánh giá kết quả học tập của sinh viên.\n5. Điểm trung bình chung học kỳ, năm học và điểm trung bình chung\ntích lũy được tính theo công thức sau và được làm tròn đến 2 chữ số",
+    "raw_excerpt": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học\n1. Kết quả học tập của sinh viên được đánh giá sau từng học kỳ\nchính hoặc sau từng năm học dựa trên kết quả các học phần nằm trong\nyêu cầu của CTĐT mà sinh viên đã học và có điểm theo các tiêu chí\nsau đây:\na) Tổng số tín chỉ của các học phần mà sinh viên không đạt trong\nmột học kỳ, trong một năm học, hoặc nợ đọng từ đầu khóa học;\nb) Tổng số tín chỉ của các học phần mà sinh viên đã đạt từ đầu khóa\nhọc (số tín chỉ tích lũy), tính cả các học phần được miễn học, được công\nnhận tín chỉ;\nc) Điểm trung bình của những học phần mà sinh viên đã học trong\nmột học kỳ (điểm trung bình học kỳ), trong một năm học (điểm trung\nbình năm học) hoặc tính từ đầu khóa học (điểm trung bình tích lũy),\ntính theo điểm chính thức của học phần và trọng số là số tín chỉ của học\nphần đó.\n\n2. Kết quả học tập trong học kỳ phụ được gộp vào kết quả học tập\ntrong học kỳ chính ngay trước học kỳ phụ để đánh giá.\n3. Để tính điểm trung bình, điểm chữ của học phần được quy đổi về\nđiểm số như dưới đây:\nThang điểm chữ\nThang điểm 4\nA\n4,0\nB+\n3,5\nB\n3,0\nC+\n2,5\nC\n2,0\nD+\n1,5\nD\n1,0\nF+\n0,5\nF\n0,0\n4. Những điểm chữ không được quy định tại khoản 3 Điều này\nkhông được tính vào các điểm trung bình học kỳ, năm học hoặc tích lũy.\nNhững học phần không nằm trong yêu cầu của CTĐT không được tính\nvào các tiêu chí đánh giá kết quả học tập của sinh viên.\n5. Điểm trung bình chung học kỳ, năm học và điểm trung bình chung\ntích lũy được tính theo công thức sau và được làm tròn đến 2 chữ s",
     "content_type": "formula_rule",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
@@ -143,8 +144,7 @@
     "cohort": "K51",
     "source_section": "formula_rule",
     "content_mode": "structured_only",
-    "record_id": "K51_K51_formula_rules_1",
-    "source_parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu11"
+    "record_id": "K51_K51_formula_rules_1"
   },
   {
     "rule_id": "scholarship_score",
@@ -163,6 +163,7 @@
       71,
       72
     ],
+    "source_parent_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
     "review_status": "needs_human_verified",
     "raw_excerpt": "Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên hệ chính quy tại Trường theo kế hoạch đào tạo\ncủa khoá học; không xét HBKKHT đối với sinh viên đã quá thời gian học\ntập chuẩn theo khóa tuyển sinh;\nb) Về học tập và rèn luyện: Trong học kỳ, sinh viên phải có kết quả\nhọc tập, rèn luyện từ loại khá trở lên, không bị kỷ luật từ mức khiển trách\ntrở lên sẽ được xem xét, cấp HBKKHT.\nCụ thể:\nTT\nLoại học bổng\nYêu cầu\nKết quả học tập\nKết quả rèn luyện\nXuất sắc\nXuất sắc\nXuất sắc\nGiỏi\nXuất sắc\nTốt\nGiỏi\nTốt trở lên\nKhá\nXuất sắc\nKhá\nGiỏi\nKhá\nKhá\nKhá trở lên\nc) Tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn hoặc\nbằng 15 tín chỉ theo kế hoạch trong chương trình đào tạo của khóa học\n(không bao gồm các tín chỉ trả nợ, cải thiện, tương đương…). Tất cả các tín\nchỉ đã đăng ký trong học kỳ xét học bổng phải có kết quả loại đạt. Các khoa\nvà phân hiệu xây dựng chương trình học phù hợp; cố vấn học tập tư vấn,\nhướng dẫn sinh viên xây dựng lịch học đảm bảo quyền lợi cho sinh viên;\nd) Đối với học kỳ cuối theo thiết kế chương trình chuẩn:\n– Đối với các khóa tuyển sinh từ năm 2022 về sau, sinh viên phải\ntích luỹ từ 11 tín chỉ trở lên. Đối với các khóa tuyển sinh từ năm 2021 về\ntrước, sinh viên phải tích luỹ từ 06 tín chỉ trở lên;\n– Trình tự xét học bổng khuyến khích học tập cho sinh viên ở học kỳ\ncuối (theo thiết kế chương trình chuẩn) như sau:\n+ Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất sắc\nvà rèn luyện xuất sắc;\n+ Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất sắc\nvà rèn luyện tốt;\n+ Sinh viên còn lại.\nđ) Trường hợp sinh viên tốt nghiệp sớm so với thời gian học tập chuẩn,\ntổng số tín chỉ tích luỹ đã học ở học kỳ cuối để xét học bổng khuyến khích\nhọc tập được phép nhỏ hơn 15 tín chỉ;\ne) Điểm học",
     "content_type": "formula_rule",
@@ -172,7 +173,6 @@
     "cohort": "K51",
     "source_section": "formula_rule",
     "content_mode": "structured_only",
-    "record_id": "K51_K51_formula_rules_2",
-    "source_parent_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27"
+    "record_id": "K51_K51_formula_rules_2"
   }
 ]

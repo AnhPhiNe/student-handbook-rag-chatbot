@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from scripts.build_child_parent_index import build_child_parent_chunks
+from scripts.build_parent_child_artifacts import validate_publish_separation
 
 
 def _parent(content: str) -> dict:
@@ -97,6 +98,20 @@ def test_cohort_or_source_parent_mismatch_never_suppresses_row() -> None:
 
 
 def test_current_registry_covers_every_contentful_table_row() -> None:
+    manifest = json.loads(
+        Path("data/processed/metadata/build_manifest.json").read_text(encoding="utf-8")
+    )
+    if manifest.get("index_contract", {}).get("table_separation_policy"):
+        # The official builder removes reviewed regions BEFORE chunking. The
+        # legacy row matcher must not be run directly on full display parents.
+        validate_publish_separation(manifest)
+        children = json.loads(
+            Path("data/processed/chunks/child_parent_chunks.json").read_text(encoding="utf-8")
+        )
+        assert children
+        assert all(c["metadata"]["corpus_role"] == "narrative_child" for c in children)
+        assert not any(c["metadata"].get("block_type") == "table_like_row" for c in children)
+        return
     parents = json.loads(
         Path("data/processed/chunks/all_docstore_items.json").read_text(
             encoding="utf-8"

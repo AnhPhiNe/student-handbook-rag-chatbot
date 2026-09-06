@@ -1,7 +1,7 @@
 {
   "schema_version": "student-handbook-build-v1",
-  "build_id": "build-02a2eed8dae5b4307427",
-  "created_at": "2026-08-30T08:40:42.998366+00:00",
+  "build_id": "build-934f1caf384f99ad96e9",
+  "created_at": "2026-09-06T03:30:51.025839+00:00",
   "source_pdfs": {
     "so-tay-sinh-vien-khoa-48-49.pdf": "4bf7b510b66e6ed8ce60008d48efd05723f06899171cbf89e4494f4b277739db",
     "so-tay-sinh-vien-khoa-50.pdf": "bbae270b9821c71eeede660e3168c868bde07f458f07b648645c14584bdeb8b0",
@@ -10,7 +10,7 @@
   "artifacts": {
     "parent_docstore": {
       "path": "data/processed/chunks/all_docstore_items.json",
-      "sha256": "4d410553cfaddeaef51fc096ffd0025d52e585b4c5dfe7ee0807e73570648143",
+      "sha256": "2b9bacb4105ed78ec017872ea3fbe53945c997fc0eef75ce9510e2b6abea9c14",
       "count": 462,
       "cohort_counts": {
         "K48-K49": 123,
@@ -20,12 +20,12 @@
     },
     "child_chunks": {
       "path": "data/processed/chunks/child_parent_chunks.json",
-      "sha256": "acb78cd5a2f4db3d4ddc4d5c548ad9cc6823cebb4c20c67cecd8e5c1220ce26c",
-      "count": 3125,
+      "sha256": "c951db540eeca6ade7d66a96bf5f0ac457c87f6f79fad9be54c93420a674630d",
+      "count": 3121,
       "cohort_counts": {
         "K48-K49": 877,
-        "K50": 1084,
-        "K51": 1164
+        "K50": 1082,
+        "K51": 1162
       }
     },
     "structured_tables": {
@@ -50,11 +50,11 @@
     },
     "table_embedding_audit": {
       "path": "data/processed/metadata/structured_table_embedding_audit.json",
-      "sha256": "b5b65d7a2f79aa9bd7a7e0ad2a688c6613bdde827fc897304970272eb6d52d5c",
-      "total_table_like_rows": 167,
-      "excluded_as_structured": 145,
+      "sha256": "6493740ece3a455bb5dcb668ab733291f45fdc911bde9a0626e93d4753d5cbaa",
+      "total_table_like_rows": 0,
+      "excluded_as_structured": 0,
       "retained_unmatched": 0,
-      "ignored_non_content": 22
+      "ignored_non_content": 0
     }
   },
   "embedding": {
@@ -63,13 +63,17 @@
     "normalize_embeddings": true
   },
   "storage_targets": {
-    "qdrant_collection": "student_handbook_semantic_v32",
-    "mongo_parent_collection": "parent_docs_v32"
+    "qdrant_collection": "student_handbook_semantic_v33",
+    "mongo_parent_collection": "parent_docs_v33"
   },
   "index_contract": {
     "embedding_input": "data/processed/chunks/child_parent_chunks.json",
     "parent_input": "data/processed/chunks/all_docstore_items.json",
     "structured_json_indexed_in_qdrant": false,
-    "covered_table_rows_indexed_in_qdrant": false
+    "covered_table_rows_indexed_in_qdrant": false,
+    "table_separation_policy": "reviewed-table-separation-v1",
+    "source_review_sha256": "f3ce49946bfc67f628b881c1eb22f44239ebcb6b5f94f707dcdfd9153c038b8a",
+    "parent_representation": "full_article_with_reviewed_tables",
+    "child_representation": "narrative_without_reviewed_table_regions"
   }
 }

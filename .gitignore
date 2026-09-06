@@ -33,6 +33,9 @@ frontend/.vite/
 /.pytest_tmp/
 /.pytest_tmp_*/
 /data/vectorstore/
+# Intermediate views; published identity is in metadata/build_manifest.json.
+/data/processed/chunks/narrative_docstore_items.json
+/data/processed/chunks/audit.json
 /data/eval/reports/
 /data/eval/v7_new/
 /data/eval/v9_final_holdout/

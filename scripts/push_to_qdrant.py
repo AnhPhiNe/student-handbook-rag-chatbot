@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
 
 from src.common.storage_config import require_qdrant_collection_name
 from src.retrieval.runtime_config import load_retrieval_runtime_config
+from scripts.build_parent_child_artifacts import validate_publish_separation
 
 
 DATA_PATH = Path("data/processed/chunks/child_parent_chunks.json")
@@ -46,6 +47,9 @@ def validate_build_contract(
     if not BUILD_MANIFEST_PATH.is_file():
         raise RuntimeError(f"Missing build manifest: {BUILD_MANIFEST_PATH}")
     manifest = json.loads(BUILD_MANIFEST_PATH.read_text(encoding="utf-8"))
+    validate_publish_separation(manifest)
+    if any((c.get('metadata') or {}).get('table_separation_policy') for c in chunks) and not manifest.get('index_contract', {}).get('table_separation_policy'):
+        raise RuntimeError('Separated children require a separation-aware manifest')
     build_id = str(manifest.get("build_id") or "")
     if not build_id:
         raise RuntimeError("Build manifest does not contain build_id.")

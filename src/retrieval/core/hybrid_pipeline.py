@@ -154,10 +154,12 @@ def select_graph_related_parent_candidates(
 class ChildParentHybridRetriever:
     """Child-parent retriever for regulation_text.
 
-    Qdrant stores small section_heading/child/table_like chunks. Mongo/docstore keeps
-    the full parent section. Returned items are parent-bound: ``content`` is focused
-    child/table context for the LLM, while ``document`` is the full parent text for
-    citation display.
+    Retrieval ranks small indexed chunks and groups them by parent section.
+    MongoDB supplies the full parent. Returned ``content`` contains focused matches;
+    ``document`` contains the full article, including tables when present, for
+    source display and downstream evidence preparation. The prompt builder prefers
+    available parent text for authorized RAG sources, subject to task/cohort checks
+    and the context budget; Composer is not restricted to matched child text.
     """
 
     def __init__(
@@ -693,10 +695,10 @@ class ChildParentHybridRetriever:
                 for _, chunk in focused_chunks
                 if str(chunk.get("content") or "").strip()
             )
-            # The composer receives only directly matched child evidence.  The
-            # complete parent remains available in ``document`` for citation
-            # display and source inspection, so adjacent clauses cannot become
-            # answer evidence merely because they share an article parent.
+            # Preserve both focused matches and the complete parent article.
+            # Downstream evidence preparation can use ``document`` (including
+            # tables) for authorized RAG sources, subject to task/cohort checks
+            # and the context budget; it is not limited to citation display.
             doc["content"] = focused_content or parent.get("content") or ""
             doc["document"] = parent.get("content") or ""
             doc["metadata"] = {

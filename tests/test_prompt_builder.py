@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import pytest
 
 from src.common.cohort import COHORT_REGISTRY
@@ -10,10 +11,24 @@ from src.generation.amendment_precedence import (
 )
 from src.generation.prompt_builder import (
     ANSWER_PROMPT_VERSION,
+    _normalize_source,
     _amendment_evidence,
     build_answer_prompt_bundle,
     build_authorized_evidence_packet,
 )
+
+
+def test_compact_packet_lock_preserves_facts_and_does_not_mutate_api_data():
+    lock = {"input_value": 6.1, "cohort": "K51", "result": {"letter": "C"},
+            "applicability": "remaining", "display_rows": [{"letter": "A"}],
+            "items": [{"letter": "C"}], "table_name": "Grade scale", "source_pages": [20]}
+    citation = {"cohort": "K51", "source_parent_id": "article-10", "content": "Full table",
+                "resolved_result": lock}
+    before = copy.deepcopy(citation)
+    source = _normalize_source(citation, 1)
+    assert source["resolved_result"] == {k: v for k, v in lock.items() if k not in {"display_rows", "items"}}
+    assert source["content"] == "Full table"
+    assert citation == before
 
 
 def _task(task_id: str, question: str, cohorts: list[str]) -> dict:

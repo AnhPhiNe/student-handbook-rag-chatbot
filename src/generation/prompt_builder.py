@@ -8,6 +8,7 @@ from typing import Any
 from src.common.cohort import (
     admission_years_for_cohort,
     is_validated_source_applicable,
+    normalize_cohort,
 )
 from src.common.legal_reference import (
     article_label_from_heading,
@@ -387,7 +388,15 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
         ),
         "applicability": citation.get("applicability") or metadata.get("applicability"),
         **(
-            {"resolved_result": citation["resolved_result"]}
+            {
+                # Keep the exact selected result, inputs and provenance; full
+                # display rows and duplicate items remain in API/UI evidence.
+                "resolved_result": {
+                    key: value for key, value in citation["resolved_result"].items()
+                    if key not in {"display_rows", "items"}
+                } if isinstance(citation["resolved_result"], dict) and "result" in citation["resolved_result"] else citation["resolved_result"],
+                "resolved_result_cohort": citation.get("cohort") or metadata.get("cohort"),
+            }
             if citation.get("resolved_result") is not None
             else {}
         ),
@@ -413,6 +422,11 @@ def _source_supports_unit(source: dict[str, Any], unit: dict[str, Any]) -> bool:
         return False
 
     target_cohort = None if unit["cohort"] == "default" else unit["cohort"]
+    # Source applicability permits sharing a document, not a lookup result
+    # computed for a different execution cohort of the same task.
+    result_cohort = normalize_cohort(source.get("resolved_result_cohort"))
+    if result_cohort and result_cohort != normalize_cohort(target_cohort):
+        return False
     return is_validated_source_applicable(source, target_cohort)
 
 

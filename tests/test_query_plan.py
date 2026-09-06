@@ -1440,6 +1440,43 @@ def test_normalizer_preserves_grounded_score_and_component_guard() -> None:
     }
 
 
+@pytest.mark.parametrize("shared_source", [False, True])
+def test_same_task_multicohort_fact_locks_keep_execution_scope(monkeypatch, shared_source):
+    task = {
+        **_rag_task(1, "So sánh kết quả tra ở K50 và K51"),
+        "mode": "structured", "lookup_type": "scoring", "intent": "direct_value",
+        "cohorts": ["K50", "K51"],
+    }
+    expected = {"K50": "result-for-K50", "K51": "result-for-K51"}
+
+    def resolve(decision, **kwargs):
+        cohort = kwargs["cohort"]
+        lookup = _multi_table_fact_lookup(cohort, expected[cohort])
+        lookup["resolved_result"]["input"] = {"score": 5.2, "cohort": cohort}
+        for leaf in lookup["sub_lookups"]:
+            leaf.update({
+                "source_parent_id": "K50_Dieu10" if shared_source else f"{cohort}_Dieu10",
+                "source_cohort": "K50" if shared_source else cohort,
+                "applicable_cohorts": ["K50", "K51"] if shared_source else [],
+                "applicability_validated": shared_source,
+            })
+        return StructuredResolution("scoring", "reference_table_lookup", "structured", lookup, ["structured_lookup"])
+
+    monkeypatch.setattr("src.retrieval.core.structured_dispatcher.resolve_structured_decision", resolve)
+    pipeline = _pipeline(_plan([task]))
+    retrieval = pipeline._run_query_plan(query=task["question"], cohort="K51", chat_history=[])
+    packet = build_authorized_evidence_packet(
+        query=task["question"], retrieval_result=retrieval,
+        selected_citations=retrieval["citations"], fallback_cohort="K51", max_context_chars=20000,
+    )
+    assert len(packet["units"]) == 2
+    for unit in packet["units"]:
+        assert unit["task_id"] == "t1"
+        locks = [s["resolved_result"]["result"]["letter"] for s in unit["primary_evidence"] if s.get("resolved_result")]
+        assert locks == [expected[unit["cohort"]]]
+        assert unit["primary_evidence"][0]["resolved_result"]["input"] == {"score": 5.2, "cohort": unit["cohort"]}
+
+
 def test_runtime_clarification_stays_on_its_task_and_cohort(monkeypatch) -> None:
     from src.generation.prompt_builder import build_authorized_evidence_packet
 

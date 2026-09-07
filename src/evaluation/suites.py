@@ -6,6 +6,7 @@ import os
 import re
 import statistics
 import time
+import traceback
 import unicodedata
 from uuid import NAMESPACE_URL, uuid5
 from collections import Counter, defaultdict
@@ -912,9 +913,9 @@ def _v7_task_matches(gold: dict[str, Any], actual: dict[str, Any]) -> bool:
     for key, alternatives in (gold.get("slot_value_alternatives") or {}).items():
         if not isinstance(alternatives, list):
             alternatives = [alternatives]
-        if key not in slots or _normalized_contract_value(slots[key]) not in {
+        if key not in slots or _normalized_contract_value(slots[key]) not in [
             _normalized_contract_value(item) for item in alternatives
-        }:
+        ]:
             return False
     return True
 
@@ -1126,14 +1127,33 @@ def _v8_task_execution_checks(
 ) -> dict[str, bool | None]:
     """Check only grounded structured assertions declared by one V8 task gold."""
 
+    if expected.get("execution_units"):
+        checks = []
+        for unit in expected["execution_units"]:
+            cohort = unit["cohorts"][0]
+            scoped_results = []
+            for task in task_results:
+                if task.get("mode") != expected.get("mode") or task.get("lookup_type") != expected.get("lookup_type"):
+                    continue
+                # Only the execution envelope establishes which cohort was
+                # looked up. Document applicability is not result provenance.
+                evidence = [item for item in task.get("evidence", [])
+                            if isinstance(item, dict) and item.get("cohort") == cohort]
+                scoped_results.append({**task, "cohorts": [cohort], "evidence": evidence})
+            checks.append(_v8_task_execution_checks(unit, scoped_results))
+        return {key: (all(values) if values else None)
+                for key in ("source", "evidence_fields", "resolved_result")
+                for values in [[c[key] for c in checks if c[key] is not None]]}
+
     source_ids = set(expected.get("expected_source_ids") or [])
     evidence_fields = expected.get("expected_evidence_fields")
+    evidence_rows = expected.get("expected_evidence_rows") or []
     resolved_fields = expected.get("expected_resolved_fields")
     resolved_required = expected.get("resolved_result_required")
     if expected.get("fact_lock_applicable") is False:
         resolved_fields = None
         resolved_required = None
-    applicable = bool(source_ids or evidence_fields or resolved_fields) or (
+    applicable = bool(source_ids or evidence_fields or evidence_rows or resolved_fields) or (
         resolved_required is not None
     )
     if not applicable:
@@ -1146,6 +1166,11 @@ def _v8_task_execution_checks(
         and (
             not expected.get("lookup_type")
             or task.get("lookup_type") == expected.get("lookup_type")
+        )
+        and (
+            not expected.get("cohorts") or not task.get("cohorts")
+            or _normalized_contract_value(task["cohorts"])
+            == _normalized_contract_value(expected["cohorts"])
         )
     ]
     # Formula, office/faculty profiles, and program rows intentionally expose
@@ -1175,8 +1200,16 @@ def _v8_task_execution_checks(
         if evidence_fields
         else None
     )
+    if evidence_rows:
+        rows_ok = any(
+            all(_mapping_contains_fields(task.get("evidence") or [], row,
+                                         lookup_type=expected.get("lookup_type"))
+                for row in evidence_rows)
+            for task in candidates
+        )
+        evidence_ok = rows_ok if evidence_ok is None else evidence_ok and rows_ok
     resolved_values = [
-        mapping.get("resolved_result")
+        _resolved_fact_payload(mapping.get("resolved_result"))
         for task in candidates
         for mapping in _nested_mappings(task.get("evidence") or [])
         if mapping.get("resolved_result") is not None
@@ -1201,6 +1234,23 @@ def _v8_task_execution_checks(
     }
 
 
+def _resolved_fact_payload(value: Any) -> Any:
+    """Exclude full display tables from a fact-lock correctness assertion."""
+    if isinstance(value, dict):
+        return {key: _resolved_fact_payload(child) for key, child in value.items()
+                if key not in {"display_rows", "display_items", "sub_lookups"}}
+    if isinstance(value, list):
+        return [_resolved_fact_payload(child) for child in value]
+    return value
+
+
+def _bound_execution_results(expected, tasks, task_results):
+    """Bind execution to semantic plan matches, never to another task's payload."""
+    ids = {task.get("id") for task in tasks
+           if task.get("id") and _v7_task_matches(expected, task)}
+    return [result for result in task_results if result.get("task_id") in ids]
+
+
 def _evaluate_v7_outcome_case(
     case: dict[str, Any], result: dict[str, Any], *, started: float
 ) -> dict[str, Any]:
@@ -1210,6 +1260,20 @@ def _evaluate_v7_outcome_case(
     tasks = plan.get("tasks") if isinstance(plan, dict) else []
     tasks = tasks if isinstance(tasks, list) else []
     task_results = result.get("task_results") or []
+    # Execution may discover missing input after a valid structured plan.
+    # Accept clarification only when bound to this task and every target cohort,
+    # with an actual question; a bare status or sibling question is insufficient.
+    executed_clarifications = {
+        task.get("id") for task in tasks if task.get("id") and task.get("cohorts")
+        and any(execution.get("task_id") == task["id"]
+                and execution.get("coverage") == "needs_clarification"
+                and all(execution.get("coverage_by_cohort", {}).get(cohort) == "needs_clarification"
+                        and str(execution.get("clarification_by_cohort", {}).get(cohort) or "").strip()
+                        for cohort in task["cohorts"])
+                for execution in task_results)
+    }
+    tasks = [{**task, "mode": "clarify"} if task.get("id") in executed_clarifications else task
+             for task in tasks]
     actual_modes = [str(task.get("mode") or "") for task in tasks]
     actual_lookup_types = sorted(
         {
@@ -1299,7 +1363,11 @@ def _evaluate_v7_outcome_case(
         )
         task_execution_checks = (
             [
-                _v8_task_execution_checks(task, task_results)
+                _v8_task_execution_checks(
+                    task,
+                    _bound_execution_results(task, tasks, task_results)
+                    if case.get("bind_execution_to_plan") else task_results,
+                )
                 for task in required_structured
             ]
             if grounded_contract
@@ -1440,6 +1508,7 @@ def _evaluate_deterministic_v2_uncached(
         if case["id"] in completed_ids:
             continue
         started = time.perf_counter()
+        result = None
         try:
             result = pipeline._run_retrieval(
                 case["query"], cohort=case.get("cohort"), **_case_history_kwargs(case)
@@ -1670,6 +1739,10 @@ def _evaluate_deterministic_v2_uncached(
                     **case,
                     "passed": False,
                     "error": str(exc),
+                    "error_type": type(exc).__name__,
+                    "error_stage": "runtime" if result is None else "evaluator",
+                    "raw_result": result,
+                    "traceback": traceback.format_exc(),
                     "latency_ms": (time.perf_counter() - started) * 1000,
                 }
             )
@@ -2396,14 +2469,28 @@ def _retrieval_metrics_for_execution_units(
     def score(ids: list[str], relevance: dict[str, int]) -> dict[str, float]:
         # Score unique parent sections, not repeated chunks/tasks from a parent.
         ids = list(dict.fromkeys(ids))
+        aliases = {}
+        for group in case.get("equivalent_source_groups") or []:
+            members = [parent for parent in group if parent in relevance]
+            if members:
+                aliases.update({parent: members[0] for parent in members})
+        relevance = {aliases.get(parent, parent): grade for parent, grade in relevance.items()}
+        # Equivalent sources satisfy one requirement. A duplicate still consumes
+        # its retrieval rank but earns no second gain; never shift rank six to five.
+        seen = set()
+        ranked_units = []
+        for parent in ids:
+            unit = aliases.get(parent, parent)
+            ranked_units.append(unit if unit not in seen else None)
+            seen.add(unit)
         metrics = retrieval_metrics(
-            [relevance.get(parent_id, 0) for parent_id in ids],
+            [relevance.get(parent_id, 0) for parent_id in ranked_units],
             gold_grades=list(relevance.values()),
         )
         required_ids = {
             parent_id for parent_id, grade in relevance.items() if grade == 2
         }
-        found = required_ids & set(ids[:5])
+        found = required_ids & set(ranked_units[:5])
         metrics["primary_hit_at_5"] = float(bool(found))
         metrics["required_source_recall_at_5"] = (
             len(found) / len(required_ids) if required_ids else 0.0
@@ -2899,6 +2986,9 @@ def _answer_checks(case: dict[str, Any], answer: dict[str, Any]) -> dict[str, An
     required_fact_hit = (
         all(_soft_fact_match(fact, text) for fact in required) if required else True
     )
+    # Semantic reference prose is not a lexical assertion. Preserve legacy
+    # behavior unless the authored suite explicitly marks this check N/A.
+    lexical_applicable = case.get("lexical_fact_check_applicable", True)
     answer_success = answer.get("status") in {
         "answered",
         "needs_clarification",
@@ -2907,7 +2997,7 @@ def _answer_checks(case: dict[str, Any], answer: dict[str, Any]) -> dict[str, An
     behavior = str(case.get("expected_answer_behavior") or "direct_answer")
     expects_no_direct_answer = behavior in {"abstain", "clarify_or_scope"}
     return {
-        "required_fact_hit": required_fact_hit,
+        "required_fact_hit": required_fact_hit if lexical_applicable else None,
         "numeric_accuracy": (
             numeric_assertions <= answer_numeric if numeric_assertions else None
         ),
@@ -2923,7 +3013,7 @@ def _answer_checks(case: dict[str, Any], answer: dict[str, Any]) -> dict[str, An
             citation_exact_match=citation_exact_match,
             abstained=abstained,
             has_citations=bool(actual_ids),
-        ),
+        ) if lexical_applicable else None,
     }
 
 

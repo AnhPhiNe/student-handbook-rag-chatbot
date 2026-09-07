@@ -669,6 +669,24 @@ def _validate_grounded_deterministic_contract(
                 f"{case_id}: accepted_outcomes[{outcome_index}]"
                 f".required_tasks[{task_index}]"
             )
+            if "execution_units" in task:
+                units = task["execution_units"]
+                if (not isinstance(units, list) or not units
+                        or any(not isinstance(unit, dict) or "execution_units" in unit for unit in units)):
+                    errors.append(f"{prefix}.execution_units must be non-empty flat task objects")
+                else:
+                    unit_cohorts = [c for unit in units for c in unit.get("cohorts", [])]
+                    if (any(len(unit.get("cohorts", [])) != 1 or unit.get("mode") != "structured"
+                            or unit.get("lookup_type") != task.get("lookup_type") for unit in units)
+                            or sorted(unit_cohorts) != sorted(task.get("cohorts", []))):
+                        errors.append(f"{prefix}.execution_units must cover each declared cohort once")
+                    _validate_grounded_deterministic_contract(
+                        {**case, "id": prefix, "accepted_outcomes": [{
+                            "name": "execution-units", "state": "answer", "allowed_modes": ["structured"],
+                            "task_count": {"min": len(units), "max": len(units)}, "required_tasks": units}]},
+                        errors, expected_contract=expected_contract,
+                        require_fact_lock_scope=require_fact_lock_scope,
+                    )
             if "expected_source_ids" in task and (
                 not isinstance(task.get("expected_source_ids"), list)
                 or not task["expected_source_ids"]
@@ -685,6 +703,12 @@ def _validate_grounded_deterministic_contract(
                     not isinstance(task.get(field), dict) or not task[field]
                 ):
                     errors.append(f"{prefix}.{field} must be a non-empty object")
+            if "expected_evidence_rows" in task and (
+                not isinstance(task["expected_evidence_rows"], list)
+                or not task["expected_evidence_rows"]
+                or any(not isinstance(row, dict) or not row for row in task["expected_evidence_rows"])
+            ):
+                errors.append(f"{prefix}.expected_evidence_rows must contain non-empty objects")
             if "resolved_result_required" in task and not isinstance(
                 task.get("resolved_result_required"), bool
             ):

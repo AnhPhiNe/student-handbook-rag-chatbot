@@ -280,6 +280,7 @@ def compact_judge_packet(
         "question_style": case.get("question_style"),
         "question_specificity": case.get("question_specificity"),
         "expected_answer_behavior": case.get("expected_answer_behavior"),
+        "evaluation_notes": str(case.get("evaluation_notes") or "")[:2_000],
         "ground_truth": str(case.get("ground_truth") or "")[:4_000],
         "required_facts": required,
         "forbidden_claims": case.get("forbidden_claims") or [],
@@ -451,6 +452,7 @@ def build_judge_prompt(packet: dict[str, Any]) -> str:
         "You are the sole evaluator of a Vietnamese student-handbook RAG answer. "
         "Score only from the supplied packet. Return exactly one compact JSON object, no markdown. "
         "Each metric is a number from 0 to 1. Do not reward fluent wording over factual correctness.\n"
+        "Apply evaluation_notes as case-scoped grading guidance, not as answer evidence. "
         "Rubric: answer_correctness measures whether the final answer correctly answers the query and required facts. "
         "faithfulness only penalizes material answer claims that are absent from retrieved_context, STRUCTURED_RESULT, FORMULA_RESULT, TOOL_RESULT, or citation metadata. "
         "Treat paraphrases, concise summaries, and natural Vietnamese reformulations as supported when the same meaning is present in the packet. "

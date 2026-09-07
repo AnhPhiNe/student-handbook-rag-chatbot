@@ -1,0 +1,510 @@
+# Hand-authored questions and catalog selectors. No runtime outputs used as gold.
+# Cohorts rotate K48-K49, K50, K51 in file order; each group has 45 cases.
+# table: [subtype, row index or all, operation, optional course scope]
+# Other selectors identify source records, never call the production matcher.
+cases:
+  # Scoring: 18
+  - query: "7,3 điểm thì được chữ gì vậy?"
+    category: scoring
+    table: [grade_scale, 2, grade_10_to_letter]
+    input_slots: {score_or_grade: 7.3}
+  - query: "em dc 6,7 thì điểm chữ là gì"
+    category: scoring
+    table: [grade_scale, 3, grade_10_to_letter]
+    input_slots: {score_or_grade: 6.7}
+  - query: "Môn đại cương 8,8 được A chưa?"
+    category: scoring
+    table: [grade_scale, 0, grade_10_to_letter, foundation]
+    input_slots: {score_or_grade: 8.8}
+  - query: "C+ là mấy điểm hệ 4?"
+    category: scoring
+    table: [letter_to_grade4, 3, letter_to_grade_4]
+    input_slots: {score_or_grade: C+}
+  - query: "F+ đổi sang hệ 4 được bao nhiêu?"
+    category: scoring
+    table: [letter_to_grade4, 7, letter_to_grade_4]
+    input_slots: {score_or_grade: F+}
+  - query: "điểm B sang hệ 4 là mấy"
+    category: scoring
+    table: [letter_to_grade4, 2, letter_to_grade_4]
+    input_slots: {score_or_grade: B}
+  - query: "GPA 2,76 là loại gì?"
+    category: scoring
+    table: [academic_classification, 2, academic_classification]
+    input_slots: {score_or_grade: 2.76}
+  - query: "GPA em 3,43 được loại giỏi chưa?"
+    category: scoring
+    table: [academic_classification, 1, academic_classification]
+    input_slots: {score_or_grade: 3.43}
+  - query: "GPA 1,72 thì xếp loại gì vậy?"
+    category: scoring
+    table: [academic_classification, 4, academic_classification]
+    input_slots: {score_or_grade: 1.72}
+  - query: "Điểm chữ đổi sang hệ 4 như thế nào?"
+    category: scoring
+    table: [letter_to_grade4, all, letter_to_grade_4]
+  - query: "GPA bao nhiêu thì khá, giỏi, xuất sắc?"
+    category: scoring
+    table: [academic_classification, all, academic_classification]
+    output_rows: [0, 1, 2]
+  - query: "Môn chỉ xét đạt hay trượt, không tính GPA, em được 6,4 thì qua chưa?"
+    category: scoring
+    table: [pass_fail_ungraded, 0, pass_fail_ungraded, pass_fail_ungraded]
+    input_slots: {score_or_grade: 6.4}
+  - query: "Môn tính GPA em được 3,6/10 thì có qua không?"
+    category: scoring
+    table: [grade_scale, 7, pass_threshold]
+    input_slots: {score_or_grade: 3.6}
+  - query: "Môn tính GPA 4,3 có qua ko?"
+    category: scoring
+    table: [grade_scale, 6, pass_threshold]
+    input_slots: {score_or_grade: 4.3}
+  - query: "Em được 4,6 thì qua môn chưa?"
+    category: scoring
+    stress: true
+    uncertain_course: 4.6
+    input_slots: {score_or_grade: 4.6}
+  - query: "GPA vừa đúng 3,20 là khá hay giỏi?"
+    category: scoring
+    stress: true
+    table: [academic_classification, 1, academic_classification]
+    input_slots: {score_or_grade: 3.2}
+  - query: "Cho em email khoa Tiếng Anh và khoa Tiếng Pháp để hỏi về hai ngành."
+    category: compound
+    stress: true
+    coverage_features: [multi_entity_same_type, structured_structured]
+    tasks: [{faculty: [Khoa Tiếng Anh, email], input_slots: {faculty: Khoa Tiếng Anh}}, {faculty: [Khoa Tiếng Pháp, email], input_slots: {faculty: Khoa Tiếng Pháp}}]
+    alternative_tasks:
+      - [{directory_group: [{faculty: [Khoa Tiếng Anh, email]}, {faculty: [Khoa Tiếng Pháp, email]}]}]
+  - query: "Môn không tính GPA, chỉ xét đạt hay trượt, 4,9 có qua không?"
+    category: scoring
+    stress: true
+    table: [pass_fail_ungraded, 1, pass_fail_ungraded, pass_fail_ungraded]
+    input_slots: {score_or_grade: 4.9}
+  # Conduct: 9
+  - query: "Em có 87 điểm rèn luyện, vậy được xếp loại gì?"
+    category: conduct
+    table: [conduct_classification, 1, conduct_classification]
+    input_slots: {score_or_grade: 87}
+  - query: "73 điểm rèn luyện được loại gì"
+    category: conduct
+    table: [conduct_classification, 2, conduct_classification]
+    input_slots: {score_or_grade: 73}
+  - query: "Em được 96 điểm rèn luyện thì loại gì?"
+    category: conduct
+    table: [conduct_classification, 0, conduct_classification]
+    input_slots: {score_or_grade: 96}
+  - query: "58 điểm rèn luyện thì xếp Trung bình hay Yếu?"
+    category: conduct
+    table: [conduct_classification, 3, conduct_classification]
+    input_slots: {score_or_grade: 58}
+  - query: "Em được tổng 41 điểm rèn luyện thì thuộc loại gì?"
+    category: conduct
+    table: [conduct_classification, 4, conduct_classification]
+    input_slots: {score_or_grade: 41}
+  - query: "Rèn luyện 29 điểm thuộc mức nào vậy?"
+    category: conduct
+    table: [conduct_classification, 5, conduct_classification]
+    input_slots: {score_or_grade: 29}
+  - query: "Điểm rèn luyện chia thành những mức nào?"
+    category: conduct
+    table: [conduct_classification, all, conduct_classification]
+  - query: "Rèn luyện bao nhiêu điểm thì khá, tốt, xuất sắc?"
+    category: conduct
+    table: [conduct_classification, all, conduct_classification]
+    output_rows: [0, 1, 2]
+  - query: "Tổng rèn luyện vừa đúng 65 thì thuộc Khá hay vẫn Trung bình?"
+    category: conduct
+    stress: true
+    table: [conduct_classification, 2, conduct_classification]
+    input_slots: {score_or_grade: 65}
+  # Foreign language: 12; row reads, not personal-score calculations.
+  - query: "IELTS mấy chấm thì tương đương bậc 4?"
+    category: foreign_language
+    foreign: [IELTS, equivalent_level_4]
+  - query: "TOEFL iBT bao nhiêu điểm thì tương đương bậc 3?"
+    category: foreign_language
+    foreign: [TOEFL iBT, equivalent_level_3]
+  - query: "JLPT N mấy thì tương đương bậc 4?"
+    category: foreign_language
+    foreign: [Japanese Language Proficiency Test (JLPT), equivalent_level_4]
+  - query: "HSK mấy thì tương đương bậc 3 vậy?"
+    category: foreign_language
+    foreign: [Hanyu Shuiping Kaoshi (HSK), equivalent_level_3]
+  - query: "TOPIK II bao nhiêu điểm thì tương đương bậc 3 và bậc 4?"
+    category: foreign_language
+    foreign: [TOPIK II, both]
+  - query: "TCF hay DELF cần mức nào để tương đương bậc 3?"
+    category: foreign_language
+    foreign: [TCF / DELF, equivalent_level_3]
+  - query: "Linguaskill bao nhiêu điểm tương đương bậc 4?"
+    category: foreign_language
+    foreign: [Cambridge Assessment English / Linguaskill, equivalent_level_4]
+  - query: "TOEFL ITP bao nhiêu điểm tương đương bậc 3?"
+    category: foreign_language
+    foreign: [TOEFL ITP, equivalent_level_3]
+  - query: "TOEIC 4 kỹ năng muốn tương đương bậc 4 thì từng kỹ năng cần bao nhiêu?"
+    category: foreign_language
+    foreign: [TOEIC (4 kỹ năng), equivalent_level_4]
+  - query: "Các chứng chỉ ngoại ngữ được quy đổi sang bậc 3, bậc 4 thế nào?"
+    category: foreign_language
+    foreign: [all, all]
+  - query: "TOEFL iBT cần bao nhiêu điểm để tương đương bậc 3, bậc 4?"
+    category: foreign_language
+    stress: true
+    foreign: [TOEFL iBT, both]
+  - query: "K50 với K51 học cải thiện lấy điểm lần cuối hay điểm cao nhất vậy?"
+    category: compound
+    stress: true
+    coverage_features: [multi_cohort, regulation_regulation]
+    tasks:
+      - {cohort: K50, policy: [QuyCheDaoTao_Chuong3_Dieu10, "cải thiện điểm"]}
+      - {cohort: K51, policy: [QuyCheDaoTao_Chuong3_Dieu10, "cải thiện điểm"]}
+    alternative_tasks:
+      - [{cohorts: [K50, K51], policy: [QuyCheDaoTao_Chuong3_Dieu10, "cải thiện điểm"]}]
+  # Study duration: 9
+  - query: "Em học bằng đại học đầu tiên hệ chính quy thì mấy năm xong, được kéo dài tối đa bao lâu?"
+    category: study_duration
+    duration: [chinh_quy, 0]
+  - query: "Liên thông cao đẳng lên đại học chính quy được học tối đa mấy năm?"
+    category: study_duration
+    duration: [chinh_quy, 1]
+    resolved_output_fields: [Thời gian học tập tối đa]
+  - query: "Vừa làm vừa học lấy bằng đại học đầu tiên thường học mấy năm?"
+    category: study_duration
+    duration: [vua_lam_vua_hoc, 0]
+    resolved_output_fields: [Thời gian học tập chuẩn]
+  - query: "Học văn bằng hai chính quy thường mất mấy năm?"
+    category: study_duration
+    duration: [chinh_quy, 3]
+    resolved_output_fields: [Thời gian học tập chuẩn]
+  - query: "Liên thông trung cấp vừa làm vừa học thường mấy năm, tối đa được bao lâu?"
+    category: study_duration
+    duration: [vua_lam_vua_hoc, 2]
+  - query: "Hệ chính quy học bao lâu và được kéo dài tối đa mấy năm?"
+    category: study_duration
+    duration: [chinh_quy, all]
+  - query: "Văn bằng hai vừa làm vừa học học mấy năm, được kéo dài tối đa bao lâu?"
+    category: study_duration
+    duration: [vua_lam_vua_hoc, 3]
+  - query: "Chính quy học mới, liên thông và văn bằng hai thì thời gian học khác nhau thế nào?"
+    category: study_duration
+    duration: [chinh_quy, all]
+  - query: "Em muốn bảo lưu vì bệnh, cần giấy tờ gì và sau này muốn chuyển ngành thì cần điều kiện nào?"
+    category: compound
+    stress: true
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyCheDaoTao_Chuong4_Dieu16, "cơ sở khám bệnh"]}
+      - {policy: [QuyCheDaoTao_Chuong4_Dieu17, "điều kiện"]}
+  # Scholarship: 12
+  - query: "Học bổng khá nhân hệ số mấy?"
+    category: scholarship
+    scholarship: [scholarship_amount, 0]
+    resolved_output_fields: [scholarship_level, multiplier]
+  - query: "Học bổng giỏi dùng hệ số bao nhiêu?"
+    category: scholarship
+    scholarship: [scholarship_amount, 1]
+    resolved_output_fields: [scholarship_level, multiplier]
+  - query: "Tiền học bổng xuất sắc tính thế nào?"
+    category: scholarship
+    scholarship: [scholarship_amount, 2]
+  - query: "Hệ số tiền học bổng khá, giỏi, xuất sắc khác nhau thế nào?"
+    category: scholarship
+    scholarship: [scholarship_amount, all]
+  - query: "Học bổng loại khá cần điểm học tập bao nhiêu?"
+    category: scholarship
+    scholarship: [scholarship_classification, 0]
+    resolved_output_fields: [label, academic_score_range]
+  - query: "Học bổng xuất sắc cần học tập và rèn luyện loại gì?"
+    category: scholarship
+    scholarship: [scholarship_classification, 0]
+  - query: "Học bổng giỏi cần rèn luyện ít nhất mấy điểm?"
+    category: scholarship
+    scholarship: [scholarship_classification, 1]
+    resolved_output_fields: [label, conduct_score_condition]
+  - query: "Học bổng được xếp loại khá, giỏi, xuất sắc như thế nào?"
+    category: scholarship
+    scholarship: [scholarship_classification, all]
+  - query: "Muốn học bổng giỏi thì học tập với rèn luyện phải loại gì?"
+    category: scholarship
+    scholarship: [scholarship_classification, giỏi]
+  - query: "Tiền học bổng giỏi dựa trên mức học phí nào?"
+    category: scholarship
+    scholarship: [scholarship_amount, 1]
+    resolved_output_fields: [scholarship_level, tuition_basis]
+  - query: "Học tập và rèn luyện bao nhiêu điểm mới được xếp học bổng xuất sắc?"
+    category: scholarship
+    scholarship: [scholarship_classification, 2]
+    resolved_output_fields: [label, academic_score_range, conduct_score_condition]
+  - query: "Học bổng chia loại thế nào, mỗi loại được tính tiền ra sao?"
+    category: scholarship
+    stress: true
+    scholarship: [both, all]
+  # Formula lookup, not calculator: 6
+  - query: "GPA tính theo tín chỉ thế nào?"
+    category: formula
+    formula: gpa_weighted_average
+  - query: "Điểm học bổng tính từ học tập và rèn luyện thế nào?"
+    category: formula
+    formula: scholarship_score
+  - query: "Công thức tính điểm trung bình chung là gì?"
+    category: formula
+    formula: gpa_weighted_average
+  - query: "Phần rèn luyện được đưa vào công thức điểm học bổng như thế nào?"
+    category: formula
+    formula: scholarship_score
+  - query: "Tính GPA thì môn nhiều tín chỉ được tính thế nào?"
+    category: formula
+    formula: gpa_weighted_average
+  - query: "Điểm dùng xếp hạng học bổng kết hợp học tập và rèn luyện bằng công thức nào?"
+    category: formula
+    formula: scholarship_score
+  # Offices: 9
+  - query: "Email ký túc xá là gì vậy?"
+    category: office
+    office: [Ký túc xá, email]
+  - query: "Xin địa chỉ email Phòng Hợp tác Quốc tế để liên hệ."
+    category: office
+    office: [Phòng Hợp tác Quốc tế, email]
+  - query: "Trạm y tế ở đâu vậy?"
+    category: office
+    office: [Trạm Y tế, office]
+  - query: "cho em sdt thư viện"
+    category: office
+    office: [Thư viện, phone]
+  - query: "Em cần email của Phòng Công nghệ Thông tin."
+    category: office
+    office: [Phòng Công nghệ Thông tin, email]
+  - query: "Web phòng khảo thí là gì?"
+    category: office
+    office: [Phòng Khảo thí và Đảm bảo chất lượng, website]
+  - query: "Liên hệ Trung tâm Ngoại ngữ qua email nào vậy?"
+    category: office
+    office: [Trung tâm Ngoại ngữ, email]
+  - query: "phòng đào tạo ở đâu"
+    category: office
+    office: [Phòng Đào tạo, office]
+  - query: "Email Phòng Thanh tra Đào tạo là gì?"
+    category: office
+    office: [Phòng Thanh tra Đào tạo, email]
+  # Faculties: 6
+  - query: "Email khoa Vật lý là gì?"
+    category: faculty
+    faculty: [Khoa Vật lí, email]
+  - query: "Cho em sđt Khoa Tiếng Anh."
+    category: faculty
+    faculty: [Khoa Tiếng Anh, phone]
+  - query: "Em cần email để liên hệ Khoa Giáo dục Tiểu học."
+    category: faculty
+    faculty: [Khoa Giáo dục Tiểu học, email]
+  - query: "Văn phòng Khoa Ngữ văn ở đâu?"
+    category: faculty
+    faculty: [Khoa Ngữ văn, office]
+  - query: "Em cần email Khoa Tâm lý học để hỏi thông tin học tập."
+    category: faculty
+    faculty: [Khoa Tâm lý học, email]
+  - query: "Xin email Khoa Tiếng Nhật của trường."
+    category: faculty
+    faculty: [Khoa Tiếng Nhật, email]
+  # Programs: 9
+  - query: "Ngành Công tác xã hội do khoa nào phụ trách?"
+    category: program
+    program: Công tác xã hội
+  - query: "Du lịch thuộc khoa nào?"
+    category: program
+    program: Du lịch
+  - query: "Công nghệ Giáo dục thuộc khoa nào?"
+    category: program
+    program: Công nghệ Giáo dục
+  - query: "Quốc tế học thuộc khoa nào vậy?"
+    category: program
+    program: Quốc tế học
+  - query: "Tâm lý học giáo dục thuộc khoa nào vậy?"
+    category: program
+    program: Tâm lý học giáo dục
+  - query: "Sinh học ứng dụng nằm trong khoa nào của trường?"
+    category: program
+    program: Sinh học ứng dụng
+  - query: "Em muốn biết ngành Việt Nam học do khoa nào phụ trách."
+    category: program
+    program: Việt Nam học
+  - query: "Ngôn ngữ Pháp thuộc khoa nào?"
+    category: program
+    program: Ngôn ngữ Pháp
+  - query: "Sư phạm Công nghệ thuộc khoa nào?"
+    category: program
+    program: Sư phạm Công nghệ
+  # Service directory: 9
+  - query: "Muốn mượn amply và micro cho lớp thì tìm đơn vị nào?"
+    category: student_service
+    service: [micro, unit_name]
+  - query: "Tài khoản đăng ký môn bị lỗi thì liên hệ phòng nào?"
+    category: student_service
+    service: [Hỗ trợ về tài khoản sinh viên, unit_name]
+  - query: "Xin giấy chứng nhận điểm ở phòng nào?"
+    category: student_service
+    service: [Cấp các loại giấy chứng nhận điểm, unit_name]
+  - query: "Làm thẻ bảo hiểm y tế thì liên hệ đâu?"
+    category: student_service
+    service: [Làm thẻ và phát thẻ BHYT, unit_name]
+  - query: "Chưa biết sử dụng thư viện thì nhờ ai hướng dẫn?"
+    category: student_service
+    service: [Hướng dẫn sinh viên sử dụng thư viện, unit_name]
+  - query: "Nhận bằng tốt nghiệp ở phòng nào?"
+    category: student_service
+    service: [Cấp phát giấy chứng nhận hoàn thành, unit_name]
+  - query: "Muốn in giáo trình thì liên hệ đơn vị nào?"
+    category: student_service
+    service: [In ấn giáo trình, unit_name]
+  - query: "Phòng nào quản lý thiết bị trình chiếu trong lớp học?"
+    category: student_service
+    service: [Quản lý thiết bị trình chiếu, unit_name]
+  - query: "Muốn đăng ký chỗ ở nội trú thì liên hệ đâu?"
+    category: student_service
+    service: [Tiếp nhận sinh viên, unit_name]
+  # Policy / structured boundary: 12
+  - query: "Học cải thiện lấy điểm lần sau hay điểm cao hơn?"
+    category: policy
+    policy: [QuyCheDaoTao_Chuong3_Dieu10, "Học lại và học cải thiện điểm"]
+  - query: "Em xin nghỉ học tạm vì bệnh dài ngày thì cần giấy tờ chứng minh gì?"
+    category: policy
+    policy: [QuyCheDaoTao_Chuong4_Dieu16, "có chứng nhận của cơ sở khám bệnh"]
+  - query: "Sắp hết bảo lưu, em làm gì để học lại?"
+    category: policy
+    policy: [QuyCheDaoTao_Chuong4_Dieu16, "Hai tuần trước khi hết thời gian"]
+  - query: "Học lại có giữ điểm quá trình cũ không?"
+    category: policy
+    policy: [QuyCheDaoTao_Chuong3_Dieu10, "Điểm đánh giá quá trình không được bảo lưu"]
+  - query: "Muốn chuyển ngành thì ngoài điểm trúng tuyển còn cần điều kiện nào?"
+    category: policy
+    policy: [QuyCheDaoTao_Chuong4_Dieu17, "khi có đủ các điều kiện sau"]
+  - query: "Em bị ốm có giấy bệnh viện nên lỡ buổi thi, giờ phải làm sao?"
+    category: policy
+    policy: [QuyCheDaoTao_Chuong3_Dieu10, "Sinh viên vắng mặt có lý do chính đáng"]
+  - query: "Hệ chính quy bị cảnh báo mấy lần thì thuộc diện buộc thôi học?"
+    category: policy
+    policy: [QuyCheDaoTao_Chuong3_Dieu12, "Bị cảnh báo học tập"]
+  - query: "Nghỉ tạm vì nhu cầu cá nhân có tính vào thời gian học chính thức không?"
+    category: policy
+    policy: [QuyCheDaoTao_Chuong4_Dieu16, "Thời gian nghỉ học tạm thời vì nhu cầu cá nhân"]
+  - query: "Bao giờ giảng viên phải báo cách chia điểm quá trình với cuối kỳ?"
+    category: policy
+    policy: [QuyCheDaoTao_Chuong3_Dieu10, "trọng số của mỗi điểm thành phần"]
+  - query: "Muốn rút môn đã đăng ký thì cần điều kiện gì?"
+    category: policy
+    policy: [QuyCheDaoTao_Chuong2_Dieu9, "Việc rút bớt học phần đã đăng ký"]
+  - query: "Đã thôi học vì việc riêng mà muốn trở lại thì có phải dự tuyển đầu vào không?"
+    category: policy
+    policy: [QuyCheDaoTao_Chuong4_Dieu16, "phải dự tuyển đầu vào như những thí sinh khác"]
+  - query: "Hệ vừa làm vừa học bị cảnh báo vì nợ tín chỉ thì được đăng ký học tiếp ra sao?"
+    category: policy
+    policy: [QuyCheDaoTao_Chuong3_Dieu13, "Sinh viên chỉ được đăng ký học tập"]
+  # Compound: 12. User-related tasks; no arbitrary three-topic bundles.
+  - query: "GPA 3,28 xếp loại gì, tính GPA theo công thức nào, và học cải thiện thì lấy điểm lần nào?"
+    category: compound
+    stress: true
+    coverage_features: [three_requests, structured_structured_regulation]
+    tasks: [{table: [academic_classification, 1, academic_classification], input_slots: {score_or_grade: 3.28}}, {formula: gpa_weighted_average}, {policy: [QuyCheDaoTao_Chuong3_Dieu10, "cải thiện điểm"]}]
+  - query: "Học bổng xuất sắc của K50 và K51 yêu cầu học tập với rèn luyện thế nào?"
+    category: compound
+    stress: true
+    coverage_features: [multi_cohort, structured_structured]
+    tasks: [{cohort: K50, scholarship: [scholarship_classification, 2]}, {cohort: K51, scholarship: [scholarship_classification, 0]}]
+    alternative_tasks:
+      - - execution_units:
+            - {cohort: K50, scholarship: [scholarship_classification, 2]}
+            - {cohort: K51, scholarship: [scholarship_classification, 0]}
+  - query: "Ngành Công tác xã hội thuộc khoa nào, cho em email của khoa đó nữa."
+    category: compound
+    stress: true
+    tasks: [{program: Công tác xã hội}, {faculty: [Khoa Tâm lý học, email]}]
+  - query: "Cho em email trung tâm ngoại ngữ, địa chỉ thư viện và số điện thoại khoa Tiếng Anh."
+    category: compound
+    stress: true
+    coverage_features: [three_requests, multi_entity, structured_structured]
+    tasks: [{office: [Trung tâm Ngoại ngữ, email]}, {office: [Thư viện, office]}, {faculty: [Khoa Tiếng Anh, phone]}]
+    alternative_tasks:
+      - [{directory_group: [{office: [Trung tâm Ngoại ngữ, email]}, {office: [Thư viện, office]}]}, {faculty: [Khoa Tiếng Anh, phone]}]
+  - query: "Điểm thi cuối kỳ có phúc khảo được không, em gửi mail cho phòng khảo thí ở đâu?"
+    category: compound
+    stress: true
+    tasks: [{office: [Phòng Khảo thí và Đảm bảo chất lượng, email]}, {policy: [QuyCheDaoTao_Chuong3_Dieu10, "Điểm thi kết thúc học phần có thể được phúc khảo"]}]
+  - query: "Học bổng giỏi nhân hệ số mấy và điểm xét học bổng tính thế nào?"
+    category: compound
+    stress: true
+    tasks: [{scholarship: [scholarship_amount, 1], resolved_output_fields: [scholarship_level, multiplier]}, {formula: scholarship_score}]
+  - query: "Bằng thứ nhất chính quy được học tối đa bao lâu, và nghỉ tạm vì việc riêng có tính vào thời gian đó không?"
+    category: compound
+    stress: true
+    tasks: [{duration: [chinh_quy, 0], resolved_output_fields: [Thời gian học tập tối đa]}, {policy: [QuyCheDaoTao_Chuong4_Dieu16, "Thời gian nghỉ học tạm thời vì nhu cầu cá nhân"]}]
+  - query: "Ngôn ngữ Pháp thuộc khoa nào, em liên hệ khoa qua email nào?"
+    category: compound
+    stress: true
+    tasks: [{program: Ngôn ngữ Pháp}, {faculty: [Khoa Tiếng Pháp, email]}]
+  - query: "Điểm chữ C đổi ra hệ 4 là bao nhiêu, còn GPA 2,83 thì xếp loại học lực gì?"
+    category: compound
+    stress: true
+    tasks: [{table: [letter_to_grade4, 4, letter_to_grade_4], input_slots: {score_or_grade: C}}, {table: [academic_classification, 2, academic_classification], input_slots: {score_or_grade: 2.83}}]
+  - query: "Em muốn bảo lưu thì cần giấy tờ gì, cho em email phòng công tác sinh viên nữa."
+    category: compound
+    stress: true
+    tasks: [{policy: [QuyCheDaoTao_Chuong4_Dieu16, "Sinh viên muốn tạm dừng việc học tập"]}, {office: ["Phòng Công tác chính trị và Học sinh, sinh viên", email]}]
+  - query: "Giấy chứng nhận điểm do đơn vị nào cấp, và em gửi email cho đơn vị đó ở địa chỉ nào?"
+    category: compound
+    stress: true
+    tasks: [{service: [Cấp các loại giấy chứng nhận điểm, email]}]
+    alternative_tasks:
+      - [{service: [Cấp các loại giấy chứng nhận điểm, unit_name]}, {office: [Phòng Khảo thí và Đảm bảo chất lượng, email]}]
+  - query: "Cho em email và địa chỉ văn phòng Khoa Tiếng Nhật để đến liên hệ."
+    category: compound
+    stress: true
+    tasks: [{faculty: [Khoa Tiếng Nhật, all]}]
+    alternative_tasks:
+      - [{faculty: [Khoa Tiếng Nhật, email]}, {faculty: [Khoa Tiếng Nhật, office]}]
+  # Genuinely missing input: 6
+  - query: "Cho em email khoa Tiếng Anh, còn GPA của em được loại gì?"
+    category: insufficient_input
+    stress: true
+    partial_clarification: true
+    coverage_features: [partial_clarification]
+    tasks: [{faculty: [Khoa Tiếng Anh, email]}, {clarify_task: "Thiếu giá trị GPA"}]
+  - query: "Cho em số điện thoại khoa với."
+    category: insufficient_input
+    stress: true
+    clarify: "Thiếu tên khoa; không chọn khoa tùy ý."
+  - query: "Em có điểm TOEIC bốn kỹ năng Nghe 410, Đọc 420; vậy kết quả của em đạt bậc mấy?"
+    category: insufficient_input
+    stress: true
+    clarify: "Thiếu điểm Nói và Viết để đánh giá cá nhân bốn kỹ năng."
+  - query: "Rèn luyện của em được loại gì?"
+    category: insufficient_input
+    stress: true
+    clarify: "Thiếu tổng điểm rèn luyện; không tự xác định loại."
+  - query: "Cho em email phòng phụ trách với."
+    category: insufficient_input
+    stress: true
+    clarify: "Chưa có đơn vị hoặc dịch vụ để tra liên hệ."
+  - query: "Điểm môn này của em đổi ra chữ gì?"
+    category: insufficient_input
+    stress: true
+    clarify: "Thiếu điểm đầu vào; không tự chọn hàng điểm chữ."
+  # Out of domain: 6; ordinary unsupported requests, no adversarial prompts.
+  - query: "Gợi ý cho em cách ướp cá để nướng bằng nồi chiên."
+    category: out_of_domain
+    out_of_domain: true
+  - query: "Viết giúp em lời chúc sinh nhật cho mẹ bằng tiếng Anh."
+    category: out_of_domain
+    out_of_domain: true
+  - query: "Em cần hướng dẫn thay lốp xe đạp ở nhà."
+    category: out_of_domain
+    out_of_domain: true
+  - query: "Tóm tắt nội dung truyện Hoàng tử bé giúp em."
+    category: out_of_domain
+    out_of_domain: true
+  - query: "Chỉ em cách chăm cây húng quế trồng trên ban công."
+    category: out_of_domain
+    out_of_domain: true
+  - query: "Soạn một bài tập Python về sắp xếp danh sách số nguyên."
+    category: out_of_domain
+    out_of_domain: true

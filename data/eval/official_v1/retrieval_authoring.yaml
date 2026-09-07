@@ -1,0 +1,343 @@
+# Source-driven drafts. Each group has four ordinary questions and one
+# contextual/compound question. Cohorts rotate globally, not by topic.
+# Entries: [question, literal source anchor]. No inference used for authoring.
+equivalent_sources:
+  107: [QuyCheDaoTao_Chuong4_Dieu16, "có xác nhận của Trưởng khoa"]
+  113: [QuyCheCongTacSinhVien_Chuong6_Dieu37, "đề nghị Hiệu trưởng ra quyết định"]
+  150: [QuyCheCongTacSinhVien_Chuong5_Dieu31, "hai học kỳ liên tiếp lần thứ hai"]
+replacements:
+  5:
+    query: "Môn tiên quyết khác môn học trước thế nào, còn trượt môn tự chọn thì có đổi môn khác được không?"
+    features: [regulation_regulation, multi_source]
+    sources:
+      - [QuyCheDaoTao_Chuong1_Dieu2, "Học phần tiên quyết"]
+      - [QuyCheDaoTao_Chuong1_Dieu4, "tự chọn"]
+  20:
+    query: "Kỳ đầu trường xếp môn cho em hay em tự đăng ký, nếu lớp môn quá ít người thì xử lý sao?"
+    features: [regulation_regulation, multi_source]
+    sources:
+      - [QuyCheDaoTao_Chuong2_Dieu9, "học kỳ đầu tiên"]
+      - [QuyCheDaoTao_Chuong2_Dieu8, "số sinh viên đăng ký"]
+  35:
+    query: "K50 với K51 học cải thiện lấy điểm cao nhất hay lần cuối, hai khóa có giống nhau không?"
+    features: [multi_cohort, multi_source]
+    sources:
+      - [QuyCheDaoTao_Chuong3_Dieu10, "cải thiện điểm", K50]
+      - [QuyCheDaoTao_Chuong3_Dieu10, "cải thiện điểm", K51]
+  45:
+    query: "Chính quy và vừa làm vừa học bị cảnh báo do nợ tín chỉ có được đăng ký học tiếp như nhau không?"
+    features: [multi_applicability, multi_source]
+    source_grades: [1, 2, 2]
+    review_note: "Điều 9 quy định đăng ký chính quy; Điều 13 giới hạn đăng ký vừa làm vừa học khi cảnh báo do nợ tín chỉ. Điều 12 là bối cảnh cảnh báo, không phải nguồn bắt buộc cho quyền đăng ký."
+    sources:
+      - [QuyCheDaoTao_Chuong3_Dieu12, "cảnh báo"]
+      - [QuyCheDaoTao_Chuong3_Dieu13, "chỉ được đăng ký"]
+      - [QuyCheDaoTao_Chuong2_Dieu9, "học phần mới"]
+  55:
+    query: "Xin bảo lưu cần giấy tờ gì, trở lại học thì làm sao, và nếu muốn chuyển ngành cần điều kiện gì?"
+    features: [three_requests, multi_source]
+    sources:
+      - [QuyCheDaoTao_Chuong4_Dieu16, "trở lại"]
+      - [QuyCheDaoTao_Chuong4_Dieu17, "điều kiện"]
+      - [QuyCheCongTacSinhVien_Chuong5_Dieu31, "Hồ sơ"]
+  65:
+    query: "Học hai chương trình thì khi nào được xét tốt nghiệp ngành thứ hai, nếu học lại nhiều có hạ bằng không?"
+    features: [regulation_regulation, multi_source]
+    sources:
+      - [QuyCheDaoTao_Chuong4_Dieu19, "tốt nghiệp chương trình thứ hai"]
+      - [QuyCheDaoTao_Chuong3_Dieu15, "5%"]
+  75:
+    query: "Sinh viên K48–K49 và K51 học cải thiện thì điểm chính thức được lấy thế nào?"
+    features: [multi_cohort, multi_source]
+    sources:
+      - [QuyCheDaoTao_Chuong3_Dieu10, "cải thiện điểm", K48-K49]
+      - [QuyCheDaoTao_Chuong3_Dieu10, "cải thiện điểm", K51]
+  90:
+    query: "Em học liên thông chính quy, điểm khá và đủ tín chỉ thì có được xét học bổng khuyến khích không?"
+    features: [cross_article_exception, multi_source]
+    source_grades: [2, 1]
+    review_note: "Điều 26 đủ kết luận không xét người học liên thông; Điều 27 là bối cảnh tiêu chuẩn, không bắt buộc để trả lời câu này."
+    sources:
+      - [QuyCheCongTacSinhVien_Chuong5_Dieu26, "liên thông"]
+      - [QuyCheCongTacSinhVien_Chuong5_Dieu27, "Tiêu chuẩn"]
+  100:
+    query: "Điểm khá có chắc được học bổng không, nếu hai bạn bằng điểm mà hết quỹ thì ưu tiên thế nào?"
+    features: [regulation_regulation, multi_source]
+    sources:
+      - [QuyCheCongTacSinhVien_Chuong5_Dieu28, "quỹ"]
+      - [QuyCheCongTacSinhVien_Chuong5_Dieu29, "bằng nhau"]
+  120:
+    query: "Em bị khiển trách thì rèn luyện tối đa loại gì, và khi nào quyết định khiển trách hết hiệu lực?"
+    features: [cross_article_exception, multi_source]
+    sources:
+      - [QuyCheDanhGiaRenLuyen_Chuong3_Dieu10, "khiển trách"]
+      - [QuyCheCongTacSinhVien_Chuong6_Dieu36, "3 tháng"]
+  140:
+    query: "Chấm rèn luyện phải họp lớp không, sai điểm thì khiếu nại ở đâu và hạn gửi đơn là bao lâu?"
+    features: [three_requests, multi_source]
+    sources:
+      - [QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11, "họp lớp"]
+      - [QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15, "07 ngày"]
+groups:
+  - source: QuyCheDaoTao_Chuong1_Dieu2
+    topic: diem
+    cases:
+      - ["Một tín chỉ lý thuyết gồm cả tự học không?", "30 giờ tự học"]
+      - ["Môn tiên quyết là phải học qua rồi mới đăng ký môn sau hả?", "Học phần tiên quyết"]
+      - ["Môn song hành có bắt buộc đăng ký cùng nhau không?", "Học phần song hành"]
+      - ["Một tiết học ở trường dài bao nhiêu phút?", "50 phút"]
+      - ["Môn học trước với môn tiên quyết có khác nhau không, em mới học chứ chưa qua thì sao?", "Học phần học trước"]
+  - source: QuyCheDaoTao_Chuong1_Dieu4
+    topic: diem
+    cases:
+      - ["Rớt môn bắt buộc thì phải học lại đúng môn đó à?", "học phần bắt buộc"]
+      - ["Rớt môn tự chọn bắt buộc có đổi môn khác cùng nhóm được không?", "cùng nhóm học phần"]
+      - ["Môn tự chọn tự do bị trượt thì có thể đăng ký môn khác không?", "tự chọn tự do"]
+      - ["Vừa làm vừa học có đào tạo theo tín chỉ không?", "đào tạo theo tín chỉ"]
+      - ["Môn bắt buộc em rớt giờ không còn mở nữa thì phải học gì để trả nợ?", "học phần thay thế"]
+  - source: QuyCheDaoTao_Chuong1_Dieu5
+    topic: khac
+    cases:
+      - ["Chính quy có học vào thứ bảy không?", "thứ 7"]
+      - ["Giờ học chính quy được xếp trong khung giờ nào?", "20 giờ"]
+      - ["Hệ vừa làm vừa học có được học tại cơ sở liên kết không?", "cơ sở phối hợp đào tạo"]
+      - ["Thời gian học vừa làm vừa học có linh hoạt không?", "linh hoạt"]
+      - ["Em học chính quy mà đi thực tập ngoài trường có trái quy định nơi học không?", "thực tập"]
+  - source: QuyCheDaoTao_Chuong2_Dieu7
+    topic: khac
+    cases:
+      - ["Một năm chính quy có mấy học kỳ chính?", "hai học kỳ chính"]
+      - ["Học kỳ phụ kéo dài ít nhất bao nhiêu tuần?", "học kỳ phụ"]
+      - ["Kế hoạch học kỳ có công bố lịch thi luôn không?", "lịch thi"]
+      - ["Trường báo kế hoạch năm học vào lúc nào?", "trước khi bắt đầu năm học"]
+      - ["Môn học dồn lịch thì một ngày được xếp tối đa bao nhiêu giờ, một tuần bao nhiêu?", "4 giờ/ngày"]
+  - source: QuyCheDaoTao_Chuong2_Dieu8
+    topic: khac
+    cases:
+      - ["Lớp môn học ít người đăng ký quá thì có bị hủy không?", "số sinh viên đăng ký"]
+      - ["Ai giúp em lập kế hoạch học từng kỳ?", "lập kế hoạch học tập"]
+      - ["Buổi đầu giảng viên phải giới thiệu đề cương môn học không?", "buổi học đầu tiên"]
+      - ["Chương trình được học online tối đa bao nhiêu phần trăm?", "30%"]
+      - ["Lớp môn em đăng ký không đủ người nên không mở, em có phải đăng ký lớp khác cho đủ tín chỉ không?", "lớp học phần khác"]
+  - source: QuyCheDaoTao_Chuong2_Dieu9
+    topic: khac
+    cases:
+      - ["Tân sinh viên học kỳ đầu có tự đăng ký môn không?", "học kỳ đầu tiên"]
+      - ["Từ kỳ mấy em phải tự đăng ký học phần?", "học kỳ thứ hai"]
+      - ["Lịch đăng ký môn được báo trước bao lâu?", "01 tuần"]
+      - ["Vừa làm vừa học được đăng ký lớp chính quy không?", "một số học phần được tổ chức"]
+      - ["Qua hạn rút môn rồi em không đi học nữa thì có tự được xóa môn không?", "tự ý bỏ học"]
+  - source: QuyCheDaoTao_Chuong3_Dieu10
+    topic: diem
+    cases:
+      - ["Điểm quá trình có được phúc khảo không?", "không được phúc khảo"]
+      - ["Đi thi vắng không có lý do thì bị tính điểm sao?", "phải nhận điểm 0"]
+      - ["Ai chấm bài thi cuối kỳ, có bắt buộc hai giảng viên không?", "hai giảng viên"]
+      - ["Em học lại để nâng điểm thì trường lấy lần mới hay lần cao nhất?", "cải thiện điểm"]
+      - ["Em có giấy chứng nhận bị bệnh vào ngày thi, muốn thi bù thì nộp đơn qua những đâu?", "lý do chính đáng"]
+  - source: QuyCheDaoTao_Chuong3_Dieu12
+    topic: diem
+    cases:
+      - ["Vì sao sinh viên chính quy bị cảnh báo học tập?", "cảnh báo học tập"]
+      - ["Nợ nhiều tín chỉ có bị cảnh báo học tập không?", "24"]
+      - ["Học quá thời gian tối đa có bị buộc thôi học không?", "giới hạn tối đa"]
+      - ["Bị buộc thôi học rồi có xin giấy chứng nhận các môn đã qua được không?", "giấy chứng nhận điểm"]
+      - ["Cảnh báo liên tiếp và cảnh báo cộng dồn cả khóa có dẫn tới buộc thôi học theo cùng một mốc không?", "lần liên tiếp"]
+  - source: QuyCheDaoTao_Chuong3_Dieu13
+    topic: diem
+    cases:
+      - ["Hệ vừa làm vừa học xét cảnh báo vào cuối kỳ hay cuối năm?", "Cuối mỗi năm học"]
+      - ["Vừa làm vừa học bị cảnh báo do nợ tín chỉ thì được học môn mới không?", "trả nợ và cải thiện điểm"]
+      - ["Vừa làm vừa học bị buộc thôi học thì điểm đã tích lũy có mất không?", "được bảo lưu"]
+      - ["Hệ vừa làm vừa học cảnh báo mấy lần sẽ bị thôi học?", "buộc thôi học"]
+      - ["Em vừa làm vừa học bị cảnh báo vì nợ môn, có được đăng ký bất kỳ môn nào như trước không?", "chỉ được đăng ký"]
+  - source: QuyCheDaoTao_Chuong3_Dieu14
+    topic: diem
+    cases:
+      - ["Điểm đã học ở trường khác có được chuyển về đây không?", "cơ sở đào tạo khác"]
+      - ["Ai quyết định công nhận tín chỉ em đã học?", "Hội đồng chuyên môn"]
+      - ["Trường dựa vào đâu để xét hai môn được chuyển đổi tín chỉ?", "chuẩn đầu ra"]
+      - ["Có thể xét công nhận cả nhóm môn thay vì từng môn không?", "nhóm học phần"]
+      - ["Được chuyển tối đa nửa chương trình đúng không, ngành đào tạo giáo viên có quy định riêng không?", "50%"]
+  - source: QuyCheDaoTao_Chuong3_Dieu15
+    topic: tot_nghiep
+    cases:
+      - ["Đủ tín chỉ rồi còn cần gì để tốt nghiệp?", "điều kiện"]
+      - ["Đủ điều kiện tốt nghiệp thì bao lâu được cấp bằng?", "03 tháng"]
+      - ["Học lại nhiều có làm hạ hạng bằng không?", "5%"]
+      - ["Kết quả xét tốt nghiệp dự kiến bị sai thì em phản hồi cho ai?", "Phòng Đào tạo"]
+      - ["Hết thời gian học nhưng còn thiếu chuẩn ngoại ngữ thì em còn cơ hội bổ sung để tốt nghiệp không?", "03 năm"]
+  - source: QuyCheDaoTao_Chuong4_Dieu16
+    topic: nghi_hoc
+    cases:
+      - ["Bảo lưu vì nhập ngũ có tính vào thời gian đào tạo không?", "nghỉ học tạm thời"]
+      - ["Mới nhập học có được bảo lưu vì lý do cá nhân ngay không?", "01 học kỳ"]
+      - ["Chưa thể quay lại sau bảo lưu thì phải xin gia hạn à?", "xin gia hạn"]
+      - ["Thôi học tự nguyện rồi muốn quay lại có cần thi tuyển lại không?", "dự tuyển đầu vào"]
+      - ["Em nghỉ vì việc riêng chứ không phải bệnh, thời gian nghỉ có bị tính vào thời gian học không?", "vì nhu cầu cá nhân"]
+  - source: QuyCheDaoTao_Chuong4_Dieu17
+    topic: nganh_hoc
+    cases:
+      - ["Sinh viên năm nhất chuyển ngành được không?", "năm thứ nhất"]
+      - ["Muốn chuyển trường phải được những bên nào đồng ý?", "chuyển cơ sở đào tạo"]
+      - ["Đang bị xem xét buộc thôi học có được chuyển ngành không?", "buộc thôi học"]
+      - ["Chuyển sang ngành khác có cần đạt điểm trúng tuyển ngành đó không?", "điều kiện trúng tuyển"]
+      - ["Điểm đầu vào đủ rồi nhưng em đang năm cuối, vậy có được chuyển ngành không?", "năm cuối khóa"]
+  - source: QuyCheDaoTao_Chuong4_Dieu18
+    topic: diem
+    cases:
+      - ["Học trao đổi ở trường khác có được công nhận tín chỉ không?", "công nhận kết quả học tập"]
+      - ["Tín chỉ học ở trường phối hợp được công nhận tối đa bao nhiêu?", "25%"]
+      - ["Trường có công khai thông tin hợp tác đào tạo cho sinh viên không?", "Cổng thông tin điện tử"]
+      - ["Học môn ở trường đối tác phải căn cứ thỏa thuận nào?", "nội dung hợp tác"]
+      - ["Em muốn học thể chất hoặc quốc phòng ở trường đối tác theo diện trao đổi thì có được không?", "không bao gồm"]
+  - source: QuyCheDaoTao_Chuong4_Dieu19
+    topic: nganh_hoc
+    cases:
+      - ["Năm mấy được đăng ký học ngành thứ hai?", "năm thứ hai"]
+      - ["Học lực trung bình có được đăng ký chương trình thứ hai không?", "xếp loại trung bình"]
+      - ["Học hai chương trình có được kéo dài thời gian học thêm không?", "chương trình thứ nhất"]
+      - ["Học ngành hai có được công nhận các môn trùng ngành đầu không?", "tương đương"]
+      - ["Em đang học hai chương trình mà chương trình đầu bị cảnh báo, có được tiếp tục chương trình thứ hai không?", "học kỳ tiếp theo"]
+  - source: QuyCheDaoTao_Chuong4_Dieu20
+    topic: nganh_hoc
+    cases:
+      - ["Có bằng cao đẳng rồi muốn liên thông đại học thì theo thông báo nào?", "thông báo tuyển sinh"]
+      - ["Đã có bằng đại học được học thêm một bằng ngành khác không?", "ngành đào tạo khác"]
+      - ["Sinh viên liên thông đăng ký học theo kế hoạch riêng hay kế hoạch chung?", "kế hoạch chung"]
+      - ["Liên thông có được miễn những môn đã tích lũy không?", "miễn trừ"]
+      - ["Có bằng đại học rồi đăng ký bằng thứ hai thì các môn đã học có tự động phải học lại hết không?", "công nhận và chuyển đổi tín chỉ"]
+  - source: QuyCheDaoTao_Chuong4_Dieu21
+    topic: diem
+    cases:
+      - ["Nhờ người thi hộ lần đầu bị xử lý thế nào?", "thi hộ"]
+      - ["Đi thi hộ bạn thì có bị kỷ luật không?", "thi hộ"]
+      - ["Dùng chứng chỉ giả để đủ điều kiện tốt nghiệp bị xử lý sao?", "chứng chỉ giả"]
+      - ["Gian lận kiểm tra được xử lý theo từng môn hay không?", "từng học phần"]
+      - ["Bằng đã cấp rồi mới phát hiện hồ sơ tốt nghiệp giả thì có bị thu hồi bằng không?", "thu hồi"]
+  - source: QuyCheCongTacSinhVien_Chuong5_Dieu26
+    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong5_Dieu27}
+    topic: hoc_bong
+    cases:
+      - ["Học liên thông có được học bổng khuyến khích học tập không?", "liên thông"]
+      - ["Học bổng tài trợ do ai thông báo cho sinh viên?", "Học bổng tài trợ"]
+      - ["Học bổng chính sách cho diện cử tuyển dựa trên gì?", "hợp đồng"]
+      - ["Học bổng tài trợ có điều kiện riêng của nhà tài trợ không?", "điều kiện và quy trình riêng"]
+      - ["Em học liên thông chính quy, có phải cứ chính quy là được xét học bổng khuyến khích không?", "không được xét"]
+  - source: QuyCheCongTacSinhVien_Chuong5_Dieu27
+    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong5_Dieu28}
+    topic: hoc_bong
+    cases:
+      - ["Tín chỉ học cải thiện có được tính vào số tín chỉ xét học bổng không?", "cải thiện"]
+      - ["Đang bị khiển trách thì có được xét học bổng không?", "khiển trách"]
+      - ["Học quá thời gian chuẩn có còn được xét học bổng không?", "thời gian học tập chuẩn"]
+      - ["Học bổng xét chung cả trường hay chia theo ngành và khóa?", "ngành học"]
+      - ["Điểm học tập với rèn luyện đều khá rồi thì chắc chắn nhận học bổng hay còn phụ thuộc quỹ?", "quỹ"]
+  - source: QuyCheCongTacSinhVien_Chuong5_Dieu28
+    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong5_Dieu29}
+    topic: hoc_bong
+    cases:
+      - ["Bằng điểm học bổng nhau thì ưu tiên ai?", "bằng nhau"]
+      - ["Học bổng chuyển vào tài khoản sinh viên hay nhận tiền mặt?", "tài khoản cá nhân"]
+      - ["Ai chi trả học bổng sau khi có quyết định?", "Kế hoạch"]
+      - ["Quỹ học bổng ngành còn dư thì xử lý thế nào?", "còn dư"]
+      - ["Hai bạn bằng cả điểm học tập và rèn luyện mà quỹ không đủ thì chia học bổng dựa vào đâu?", "số tín chỉ"]
+  - source: QuyCheCongTacSinhVien_Chuong5_Dieu29
+    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong5_Dieu30}
+    topic: hoc_phi
+    cases:
+      - ["Hồ sơ xin miễn giảm học phí nộp ở đâu?", "nộp hồ sơ"]
+      - ["Học phí đóng theo số tín chỉ đăng ký hay theo năm?", "số tín chỉ"]
+      - ["Sinh viên khuyết tật được hỗ trợ đồ dùng học tập theo quy định nào?", "khuyết tật"]
+      - ["Sinh viên dân tộc thiểu số được hỗ trợ chi phí học tập theo văn bản nào?", "dân tộc thiểu số"]
+      - ["Em thuộc diện miễn giảm học phí thì có tự được áp dụng hay vẫn phải nộp hồ sơ đúng hạn?", "từng học kỳ"]
+  - source: QuyCheCongTacSinhVien_Chuong5_Dieu30
+    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong5_Dieu31}
+    topic: nghi_hoc
+    cases:
+      - ["Đang nợ học phí có làm hồ sơ nghỉ học tạm thời được không?", "không nợ học phí"]
+      - ["Xin nghỉ học tạm thời phải có xác nhận của khoa không?", "Trưởng khoa"]
+      - ["Muốn trở lại sau nghỉ tạm thì cần mang quyết định nghỉ học cũ không?", "quyết định nghỉ học tạm thời"]
+      - ["Hồ sơ bảo lưu gửi muộn nhất trước kỳ thi bao lâu?", "04 tuần"]
+      - ["Em định học lại ngay kỳ tới sau bảo lưu, cần làm thủ tục trước lúc đăng ký môn bao lâu?", "2 tuần"]
+  - source: QuyCheCongTacSinhVien_Chuong6_Dieu35
+    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong6_Dieu36}
+    topic: khac
+    cases:
+      - ["Sinh viên vi phạm có phải viết bản kiểm điểm không?", "bản tự kiểm điểm"]
+      - ["Hồ sơ xét kỷ luật gồm giấy tờ nào?", "Hồ sơ"]
+      - ["Ai ra quyết định kỷ luật sinh viên?", "Hiệu trưởng"]
+      - ["Họp xét kỷ luật có sinh viên vi phạm tham dự không?", "sinh viên có hành vi vi phạm"]
+      - ["Không đến họp xét kỷ luật dù đã được mời thì hội đồng có phải hoãn lại không?", "không đến dự"]
+  - source: QuyCheCongTacSinhVien_Chuong6_Dieu36
+    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong6_Dieu37}
+    topic: khac
+    cases:
+      - ["Khiển trách bao lâu thì hết hiệu lực?", "3 tháng"]
+      - ["Kỷ luật cảnh cáo có tự hết hiệu lực sau một thời gian không?", "6 tháng"]
+      - ["Hết đình chỉ học tập cần giấy xác nhận nào để trở lại?", "địa phương"]
+      - ["Hết hiệu lực kỷ luật có được hưởng lại quyền lợi sinh viên không?", "quyền lợi"]
+      - ["Em bị khiển trách nhưng lại tái phạm trong thời gian đó, có đương nhiên hết kỷ luật sau ba tháng không?", "không tái phạm"]
+  - source: QuyCheCongTacSinhVien_Chuong6_Dieu37
+    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong6_Dieu38}
+    topic: khac
+    cases:
+      - ["Hội đồng khen thưởng kỷ luật có vai trò gì?", "tư vấn"]
+      - ["Ai làm chủ tịch hội đồng kỷ luật sinh viên?", "Chủ tịch"]
+      - ["CVHT được mời dự hội đồng có quyền biểu quyết không?", "không được biểu quyết"]
+      - ["Xử lý sinh viên nội trú thì hội đồng có đại diện ký túc xá không?", "KTX"]
+      - ["Lớp trưởng được mời họp kỷ luật thì có được đề xuất mức xử lý và bỏ phiếu luôn không?", "phát biểu ý kiến"]
+  - source: QuyCheCongTacSinhVien_Chuong6_Dieu38
+    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong6_Dieu39}
+    topic: khac
+    cases:
+      - ["Không đồng ý quyết định kỷ luật thì khiếu nại ai?", "Hiệu trưởng"]
+      - ["Thấy mức khen thưởng chưa thỏa đáng thì có được khiếu nại không?", "khen thưởng"]
+      - ["Cả lớp có quyền khiếu nại kết quả thi đua không?", "tập thể"]
+      - ["Hiệu trưởng giải quyết khiếu nại rồi mà em vẫn không đồng ý thì gửi lên đâu?", "cấp có thẩm quyền"]
+      - ["Em không đồng ý mức kỷ luật, có phải chỉ được khiếu nại một lần trong trường rồi hết quyền không?", "xem xét lại"]
+  - source: QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10
+    source_by_cohort: {K51: QuyCheDanhGiaRenLuyen_Chuong3_Dieu10}
+    topic: ren_luyen
+    cases:
+      - ["Bị khiển trách thì rèn luyện cao nhất được loại nào?", "khiển trách"]
+      - ["Không tự chấm rèn luyện có bị điểm không không?", "điểm 0"]
+      - ["Học hai chương trình thì khoa nào đánh giá rèn luyện?", "chương trình thứ nhất"]
+      - ["Đang bị đình chỉ có được chấm rèn luyện không?", "đình chỉ"]
+      - ["Em học xong chương trình rồi đang chờ xét tốt nghiệp, có tiếp tục được chấm rèn luyện không?", "chờ xét tốt nghiệp"]
+  - source: QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11
+    source_by_cohort: {K51: QuyCheDanhGiaRenLuyen_Chuong3_Dieu11}
+    topic: ren_luyen
+    cases:
+      - ["Tự chấm rèn luyện có cần gửi minh chứng không?", "minh chứng"]
+      - ["Điểm tự chấm rèn luyện có phải họp lớp thông qua không?", "họp lớp"]
+      - ["Ai quyết định công nhận kết quả rèn luyện cuối cùng?", "Hiệu trưởng"]
+      - ["Kết quả rèn luyện được báo trước quyết định chính thức bao lâu?", "20 ngày"]
+      - ["Chỉ vài bạn trong lớp đồng ý điểm tự chấm của em thì đã đủ thông qua chưa?", "50%"]
+  - source: QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu13
+    source_by_cohort: {K51: QuyCheDanhGiaRenLuyen_Chuong4_Dieu13}
+    topic: ren_luyen
+    cases:
+      - ["Điểm rèn luyện cả năm được lấy thế nào?", "trung bình cộng"]
+      - ["Rèn luyện được đánh giá mỗi kỳ hay chỉ cuối năm?", "học kỳ, năm học"]
+      - ["Hoạt động kỳ trước có được dùng chấm rèn luyện kỳ này không?", "học kỳ đó"]
+      - ["Bao lâu sau khi công bố điểm thi thì khoa triển khai chấm rèn luyện?", "2 tuần"]
+      - ["Điểm rèn luyện toàn khóa lấy trung bình những kỳ thực tế tham gia hay tính cả kỳ không đánh giá?", "thực tế"]
+  - source: QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14
+    source_by_cohort: {K51: QuyCheDanhGiaRenLuyen_Chuong4_Dieu14}
+    topic: ren_luyen
+    cases:
+      - ["Điểm rèn luyện có dùng để xét ở ký túc xá không?", "KTX"]
+      - ["Rèn luyện toàn khóa có ghi vào bảng điểm tốt nghiệp không?", "bảng điểm"]
+      - ["Rèn luyện xuất sắc có được xem xét khen thưởng không?", "biểu dương"]
+      - ["Rèn luyện yếu hai kỳ liên tiếp thì bị xử lý sao?", "hai học kỳ liên tiếp"]
+      - ["Em học đại học, đã từng ngừng học vì rèn luyện yếu mà lại yếu hai kỳ liên tiếp lần nữa thì sao?", "lần thứ hai"]
+  - source: QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15
+    source_by_cohort: {K51: QuyCheDanhGiaRenLuyen_Chuong4_Dieu15}
+    topic: ren_luyen
+    cases:
+      - ["Điểm rèn luyện bị chấm sai thì gửi đơn ở đâu?", "đơn khiếu nại"]
+      - ["Em có mấy ngày để khiếu nại điểm rèn luyện?", "07 ngày"]
+      - ["Sau khi nhận đơn khiếu nại rèn luyện thì bao lâu có phản hồi?", "phản hồi"]
+      - ["Ai giải quyết khiếu nại kết quả rèn luyện?", "Hội đồng"]
+      - ["Hạn khiếu nại rèn luyện tính từ ngày công bố điểm hay từ lúc em đọc được thông báo?", "kể từ ngày công bố"]

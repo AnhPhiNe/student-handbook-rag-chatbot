@@ -1,0 +1,242 @@
+# Answer gold is authored from source clauses, not model outputs.
+# Each item: [natural question, required answer meaning, literal source anchor].
+# All sections are drafts; source-backed selectors do not constitute semantic review.
+additional_cases:
+  # 61-75: numeric/letter classification. Gold comes from selected catalog fields.
+  - {query: "GPA 3,75 thì em xếp loại nào?", table: [academic_classification, 0, academic_classification]}
+  - {query: "Em có GPA 2,86 thì được khá không?", table: [academic_classification, 2, academic_classification]}
+  - {query: "Môn đại cương em được 7,6 thì ra chữ gì?", table: [grade_scale, 2, grade_10_to_letter, foundation], answer_fields: [Thang điểm chữ]}
+  - {query: "Tích lũy 1,45 trên thang 4 là loại gì?", table: [academic_classification, 4, academic_classification]}
+  - {query: "Môn học em được 5,8 thì điểm chữ là gì?", table: [grade_scale, 4, grade_10_to_letter], answer_fields: [Thang điểm chữ]}
+  - {query: "Em vừa đủ GPA 3,6 thì đã xuất sắc chưa?", table: [academic_classification, 0, academic_classification], stress: true}
+  - {query: "A được tính bao nhiêu trên thang 4?", table: [letter_to_grade4, 0, letter_to_grade_4]}
+  - {query: "Em có D+ thì hệ 4 là bao nhiêu?", table: [letter_to_grade4, 5, letter_to_grade_4]}
+  - {query: "Môn chuyên ngành em được 5,1 thì qua chưa?", table: [grade_scale, 5, pass_threshold, remaining], answer_fields: [Loại, Thang điểm chữ]}
+  - {query: "B+ có phải 3,5 không vậy?", table: [letter_to_grade4, 1, letter_to_grade_4]}
+  - {query: "Điểm F thì hệ 4 tính mấy?", table: [letter_to_grade4, 8, letter_to_grade_4]}
+  - {query: "D và D+ mỗi mức là bao nhiêu điểm hệ 4?", tasks: [{table: [letter_to_grade4, 6, letter_to_grade_4]}, {table: [letter_to_grade4, 5, letter_to_grade_4]}], stress: true}
+  - {query: "GPA 3,31 thì em thuộc giỏi phải không?", table: [academic_classification, 1, academic_classification]}
+  - {query: "GPA loại khá nằm trong khoảng nào?", table: [academic_classification, 2, academic_classification], answer_fields: [Xếp loại, Thang điểm 4]}
+  - {query: "GPA 2,5 vừa chạm mốc thì trung bình hay khá?", table: [academic_classification, 2, academic_classification]}
+  # 76-84: conduct scores.
+  - {query: "Em được 96 điểm rèn luyện, loại gì ạ?", table: [conduct_classification, 0, conduct_classification]}
+  - {query: "Rèn luyện 84 điểm có được tốt không?", table: [conduct_classification, 1, conduct_classification]}
+  - {query: "Rèn luyện 73 thuộc mức nào?", table: [conduct_classification, 2, conduct_classification]}
+  - {query: "Em chỉ có 58 điểm rèn luyện thì xếp loại gì?", table: [conduct_classification, 3, conduct_classification]}
+  - {query: "Rèn luyện 42 là yếu hay kém?", table: [conduct_classification, 4, conduct_classification]}
+  - {query: "Môn chỉ xét đạt, không tính GPA, em được 4,9 thì đạt không?", table: [pass_fail_ungraded, 1, pass_fail_ungraded, pass_fail_ungraded], answer_fields: [status]}
+  - {query: "Đúng 80 điểm rèn luyện đã lên tốt chưa?", table: [conduct_classification, 1, conduct_classification], stress: true}
+  - {query: "Rèn luyện xuất sắc nằm trong khoảng điểm nào?", table: [conduct_classification, 0, conduct_classification], answer_fields: [Khung điểm, Xếp loại]}
+  - {query: "Rèn luyện mức trung bình nằm trong khoảng nào?", table: [conduct_classification, 3, conduct_classification], answer_fields: [Khung điểm, Xếp loại]}
+  # 85-93: certificate equivalence, not personal-score calculation.
+  - {query: "Bậc 3 ngoại ngữ yêu cầu IELTS mức nào?", foreign: [IELTS, equivalent_level_3]}
+  - {query: "Nếu dùng TOEFL iBT cho bậc 4 thì cần mức nào?", foreign: [TOEFL iBT, equivalent_level_4]}
+  - {query: "JLPT tương đương bậc 3 là N mấy?", foreign: [Japanese Language Proficiency Test (JLPT), equivalent_level_3]}
+  - {query: "HSK muốn tương đương bậc 4 thì cần cấp nào?", foreign: [Hanyu Shuiping Kaoshi (HSK), equivalent_level_4]}
+  - {query: "TOPIK II bậc 4 yêu cầu bao nhiêu điểm?", foreign: [TOPIK II, equivalent_level_4]}
+  - {query: "DELF hoặc TCF được quy sang bậc 4 ở mức nào?", foreign: [TCF / DELF, equivalent_level_4]}
+  - {query: "Chứng chỉ Linguaskill bậc 3 cần bao nhiêu?", foreign: [Cambridge Assessment English / Linguaskill, equivalent_level_3], answer_meaning: "Linguaskill 140–159 tương đương bậc 3; không bắt buộc liệt kê các chứng chỉ Cambridge khác trong cùng hàng."}
+  - {query: "TOEIC bốn kỹ năng ở bậc 3 yêu cầu từng phần thế nào?", foreign: [TOEIC (4 kỹ năng), equivalent_level_3]}
+  - {query: "Cho em mức TOEIC bốn kỹ năng của cả bậc 3 lẫn bậc 4 để so sánh.", foreign: [TOEIC (4 kỹ năng), both], stress: true}
+  # 94-99: duration, with explicit training mode and entry route.
+  - {query: "Đại học chính quy bằng đầu tiên được học tối đa bao lâu?", duration: [chinh_quy, 0], resolved_output_fields: [Thời gian học tập tối đa]}
+  - {query: "Liên thông cao đẳng chính quy học theo chuẩn mất bao lâu?", duration: [chinh_quy, 1], resolved_output_fields: [Thời gian học tập chuẩn]}
+  - {query: "Bằng đầu tiên vừa làm vừa học thì thời hạn tối đa thế nào?", duration: [vua_lam_vua_hoc, 0], resolved_output_fields: [Thời gian học tập tối đa]}
+  - {query: "Văn bằng hai chính quy thời gian tối đa là mấy năm?", duration: [chinh_quy, 3], resolved_output_fields: [Thời gian học tập tối đa]}
+  - {query: "Em liên thông trung cấp vừa làm vừa học, thời gian chuẩn là bao lâu?", duration: [vua_lam_vua_hoc, 2], resolved_output_fields: [Thời gian học tập chuẩn]}
+  - {query: "Hệ vừa làm vừa học bằng đầu tiên có thời gian chuẩn và tối đa như thế nào?", duration: [vua_lam_vua_hoc, 0]}
+  # 100-105: scholarship amounts; do not infer actual award entitlement.
+  - {query: "Xếp học bổng giỏi thì điểm học tập và rèn luyện cần mức nào?", scholarship: [scholarship_classification, 1], resolved_output_fields: [label, academic_score_range, conduct_score_condition]}
+  - {query: "Tiền học bổng giỏi nhân với hệ số nào?", scholarship: [scholarship_amount, 1], resolved_output_fields: [scholarship_level, multiplier]}
+  - {query: "Muốn xếp học bổng giỏi thì học tập và rèn luyện cần loại gì?", scholarship: [scholarship_classification, giỏi]}
+  - {query: "Mức học bổng khá tính tiền theo công thức nào?", scholarship: [scholarship_amount, 0]}
+  - {query: "Em muốn biết cách tính số tiền học bổng giỏi, chưa cần tính số cụ thể.", scholarship: [scholarship_amount, 1]}
+  - {query: "Học bổng khá, giỏi, xuất sắc dùng cùng hệ số hay khác, mỗi loại mấy?", scholarship: [scholarship_amount, all], answer_fields: [scholarship_level, multiplier], stress: true}
+  # 106-108: formula lookup only.
+  - {query: "Cho em cách viết công thức GPA có trọng số tín chỉ.", formula: gpa_weighted_average}
+  - {query: "Muốn xếp hạng học bổng thì ghép điểm học tập với rèn luyện ra sao?", formula: scholarship_score}
+  - {query: "GPA có phải lấy trung bình đều các môn bất kể tín chỉ không, công thức đúng là gì?", formula: gpa_weighted_average, stress: true}
+  # 109-120: office/faculty/program/service.
+  - {query: "Gửi mail hỏi chỗ ở ký túc xá qua địa chỉ nào?", office: [Ký túc xá, email]}
+  - {query: "Em muốn gọi thư viện, số điện thoại là gì?", office: [Thư viện, phone]}
+  - {query: "Muốn đến trạm y tế thì tới đâu?", office: [Trạm Y tế, office]}
+  - {query: "Khoa Vật lí nhận email ở địa chỉ nào?", faculty: [Khoa Vật lí, email]}
+  - {query: "Liên lạc Khoa Tiếng Anh bằng điện thoại số nào?", faculty: [Khoa Tiếng Anh, phone]}
+  - {query: "Khoa Giáo dục Tiểu học có email gì để em liên hệ?", faculty: [Khoa Giáo dục Tiểu học, email]}
+  - {query: "Em học Công tác xã hội thì thuộc khoa nào quản lý?", program: Công tác xã hội}
+  - {query: "Khoa nào phụ trách sinh viên ngành Du lịch?", program: Du lịch}
+  - {query: "Sinh học ứng dụng do đơn vị khoa nào quản lý?", program: Sinh học ứng dụng}
+  - {query: "Em cần in giáo trình, nhờ bộ phận nào?", service: [In ấn giáo trình, unit_name]}
+  - {query: "Tài khoản sinh viên bị trục trặc thì bên nào hỗ trợ?", service: [Hỗ trợ về tài khoản sinh viên, unit_name]}
+  - {query: "Em cần giấy chứng nhận điểm, đơn vị nào cấp?", service: [Cấp các loại giấy chứng nhận điểm, unit_name]}
+  # 121-132: compound and multi-cohort. Every requested part needs its own gold.
+  - query: "Em muốn email thư viện và email Khoa Tiếng Anh, ghi riêng giúp em nhé."
+    stress: true
+    tasks: [{office: [Thư viện, email]}, {faculty: [Khoa Tiếng Anh, email]}]
+  - query: "GPA 3,7 và rèn luyện 86 thì mỗi cái xếp loại gì?"
+    stress: true
+    tasks: [{table: [academic_classification, 0, academic_classification]}, {table: [conduct_classification, 1, conduct_classification]}]
+  - query: "IELTS và TOEFL iBT muốn tương đương bậc 3 thì mỗi chứng chỉ cần mức nào?"
+    stress: true
+    tasks: [{foreign: [IELTS, equivalent_level_3]}, {foreign: [TOEFL iBT, equivalent_level_3]}]
+  - query: "K50 và K51 học cải thiện thì điểm chính thức có lấy giống nhau không?"
+    stress: true
+    tasks:
+      - {cohort: K50, policy: [QuyCheDaoTao_Chuong3_Dieu10, "điểm lần học cuối"], fact: "K50 lấy điểm lần học cuối khi học cải thiện."}
+      - {cohort: K51, policy: [QuyCheDaoTao_Chuong3_Dieu10, "Điểm đánh giá cao nhất"], fact: "K51 theo nội dung sửa đổi áp dụng từ tuyển sinh 2025 lấy điểm cao nhất đã đạt của học phần khi cải thiện."}
+  - query: "Hệ số học bổng xuất sắc của K48–K49 và K51 là bao nhiêu?"
+    stress: true
+    tasks:
+      - {cohort: K48-K49, scholarship: [scholarship_amount, 2], resolved_output_fields: [scholarship_level, multiplier]}
+      - {cohort: K51, scholarship: [scholarship_amount, 2], resolved_output_fields: [scholarship_level, multiplier]}
+  - query: "Em được rèn luyện 78, nhưng đang khiển trách thì bị giới hạn loại nào?"
+    stress: true
+    tasks:
+      - {table: [conduct_classification, 2, conduct_classification]}
+      - {policy: [QuyCheDanhGiaRenLuyen_Chuong3_Dieu10, "khiển trách"], fact: "Trong thời gian bị khiển trách, rèn luyện không vượt quá Khá."}
+  - query: "Email Khoa Tiếng Anh, số điện thoại thư viện và ngành Công tác xã hội thuộc khoa nào?"
+    stress: true
+    tasks: [{faculty: [Khoa Tiếng Anh, email]}, {office: [Thư viện, phone]}, {program: Công tác xã hội}]
+  - query: "B+ đổi hệ 4 thế nào, còn học lại có giữ điểm quá trình cũ không?"
+    stress: true
+    tasks:
+      - {table: [letter_to_grade4, 1, letter_to_grade_4]}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu10, "Điểm đánh giá quá trình không được bảo lưu"], fact: "Điểm đánh giá quá trình không được bảo lưu khi học lại."}
+  - query: "Học hai ngành thì GPA tính công thức nào và thời gian học tối đa theo ngành nào?"
+    stress: true
+    tasks:
+      - {formula: gpa_weighted_average}
+      - {policy: [QuyCheDaoTao_Chuong4_Dieu19, "thời gian tối đa quy định cho chương trình thứ nhất"], fact: "Thời gian tối đa căn cứ chương trình thứ nhất; không tự cộng thời gian hai chương trình."}
+  - query: "Cho em email trung tâm ngoại ngữ; GPA của em thuộc loại nào vậy?"
+    stress: true
+    behavior: partial_clarification
+    tasks: [{office: [Trung tâm Ngoại ngữ, email]}]
+    facts: ["Trả lời email đã biết; hỏi thêm GPA cụ thể để xếp loại, không tự đặt điểm và không bỏ qua yêu cầu email."]
+  - query: "Em muốn biết điều kiện chuyển ngành và hồ sơ chứng minh khi bảo lưu vì bệnh."
+    stress: true
+    tasks:
+      - {policy: [QuyCheDaoTao_Chuong4_Dieu17, "đủ các điều kiện"], fact: "Nêu điều kiện năm học, không thuộc diện thôi học, thời gian, đầu vào, năng lực đào tạo và chấp thuận."}
+      - {policy: [QuyCheDaoTao_Chuong4_Dieu16, "cơ sở khám bệnh"], fact: "Nghỉ vì bệnh dài ngày cần chứng nhận cơ sở khám chữa bệnh có thẩm quyền và giấy tờ minh chứng theo quy định."}
+  - query: "K48–K49 với K51, lần đầu thi hộ và lần đầu nhờ thi hộ có khác mức xử lý không?"
+    stress: true
+    tasks:
+      - {cohort: K48-K49, policy: [QuyCheDaoTao_Chuong4_Dieu21, "một năm"], fact: "K48–K49: cả thi hộ và nhờ thi hộ lần đầu đều đình chỉ một năm."}
+      - {cohort: K51, policy: [QuyCheDaoTao_Chuong4_Dieu21, "một năm"], fact: "K51: cả thi hộ và nhờ thi hộ lần đầu đều đình chỉ một năm."}
+  # 133-144: conditions and procedural limits.
+  - {query: "Tín chỉ học cải thiện có được dùng xét học bổng không?", tasks: [{policy: [QuyCheCongTacSinhVien_Chuong5_Dieu28, "cải thiện"], fact: "Tín chỉ trả nợ, cải thiện, tương đương không tính vào số tín chỉ dùng xét học bổng."}]}
+  - {query: "Em vẫn đang khiển trách, được xét học bổng khuyến khích không?", tasks: [{policy: [QuyCheCongTacSinhVien_Chuong5_Dieu27, "khiển trách"], fact: "Không đáp ứng điều kiện không bị kỷ luật từ khiển trách trở lên trong học kỳ xét học bổng."}]}
+  - {query: "Liên thông chính quy có nằm trong diện học bổng khuyến khích không?", tasks: [{policy: [QuyCheCongTacSinhVien_Chuong5_Dieu26, "liên thông"], fact: "Người học liên thông không được xét cấp học bổng khuyến khích học tập."}]}
+  - {query: "Học bổng tài trợ có phải theo điều kiện riêng không?", tasks: [{policy: [QuyCheCongTacSinhVien_Chuong5_Dieu27, "điều kiện và quy trình riêng"], fact: "Tổ chức, cá nhân tài trợ có điều kiện và quy trình riêng."}]}
+  - {query: "Em đang nợ học phí thì hồ sơ bảo lưu có đáp ứng điều kiện không?", tasks: [{policy: [QuyCheCongTacSinhVien_Chuong5_Dieu30, "không nợ học phí"], fact: "Điều kiện yêu cầu không nợ học phí và xác nhận của Phòng Kế hoạch–Tài chính tại thời điểm làm hồ sơ."}]}
+  - {query: "Sau bảo lưu trở lại trường, em có cần nộp quyết định nghỉ học không?", tasks: [{policy: [QuyCheCongTacSinhVien_Chuong5_Dieu30, "quyết định nghỉ học tạm thời"], fact: "Có; hồ sơ gồm đơn xin học lại được xác nhận và quyết định nghỉ học tạm thời, nộp Phòng CTCT&HSSV."}]}
+  - {query: "Được mời mà không đi họp kỷ luật thì hội đồng có vẫn xử lý không?", tasks: [{policy: [QuyCheCongTacSinhVien_Chuong6_Dieu36, "không đến dự"], fact: "Nếu vắng không lý do chính đáng, hội đồng vẫn họp và xét thêm khuyết điểm thiếu ý thức tổ chức kỷ luật."}]}
+  - {query: "Em hết thời gian đình chỉ rồi, phải có xác nhận nơi cư trú gì?", tasks: [{policy: [QuyCheCongTacSinhVien_Chuong6_Dieu36, "địa phương"], fact: "Xuất trình xác nhận địa phương về chấp hành tốt nghĩa vụ công dân để trường xem xét tiếp nhận."}]}
+  - {query: "Lớp trưởng được mời họp hội đồng kỷ luật có được biểu quyết không?", tasks: [{policy: [QuyCheCongTacSinhVien_Chuong6_Dieu37, "không được biểu quyết"], fact: "Được phát biểu, đề xuất nhưng không được biểu quyết."}]}
+  - {query: "Rèn luyện thấp do em không tự chấm thì trường cho bao nhiêu điểm?", tasks: [{policy: [QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10, "điểm 0"], fact: "Không tự đánh giá theo quy định nhận điểm 0, xếp loại kém theo học kỳ."}]}
+  - {query: "Em học hết chương trình đang đợi xét tốt nghiệp, còn chấm rèn luyện không?", tasks: [{policy: [QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10, "chờ xét tốt nghiệp"], fact: "Đã hoàn thành chương trình trong thời gian chờ xét tốt nghiệp không được chấm rèn luyện."}]}
+  - {query: "Rèn luyện tốt có được dùng để xét chỗ ở ký túc xá không?", tasks: [{policy: [QuyCheDanhGiaRenLuyen_Chuong4_Dieu14, "KTX"], fact: "Kết quả rèn luyện là căn cứ xét lưu trú ký túc xá; không bảo đảm chắc chắn được chỗ ở."}]}
+  # 145-150: insufficient input, live data and out of scope.
+  - {query: "GPA em xếp loại gì?", behavior: clarify, facts: ["Hỏi GPA cụ thể trước khi xếp loại; không tự giả định điểm."]}
+  - {query: "TOEIC em có nghe đọc 600, đủ bậc 3 chưa?", behavior: clarify, facts: ["Chưa đủ dữ liệu để kết luận TOEIC bốn kỹ năng; cần điểm Nghe và Đọc riêng, thêm điểm Nói và Viết. Không suy ra từng kỹ năng từ tổng Nghe–Đọc."]}
+  - {query: "Học kỳ này em có tên trong danh sách nhận học bổng chưa?", behavior: unanswerable, facts: ["Không có quyền truy cập danh sách cá nhân hiện hành; không bịa trạng thái đã nhận học bổng, hướng dẫn kiểm tra thông báo hoặc đơn vị phụ trách."]}
+  - {query: "Ngày mai phòng đào tạo có mở cửa không?", behavior: unanswerable, facts: ["Không xác nhận lịch mở cửa ngày mai từ sổ tay tĩnh; hướng dẫn kiểm tra thông báo hoặc liên hệ đơn vị."]}
+  - {query: "Viết cho em một bài quảng cáo bán điện thoại nhé.", behavior: out_of_domain, facts: ["Nêu phạm vi hỗ trợ thông tin sinh viên; không biến câu trả lời thành bài quảng cáo."]}
+  - {query: "Em quên mật khẩu ngân hàng, cho em lấy lại qua đây được không?", behavior: out_of_domain, facts: ["Không thể khôi phục tài khoản ngân hàng; không yêu cầu mật khẩu hay OTP, hướng dẫn liên hệ kênh ngân hàng chính thức."]}
+policy_groups:
+  - source: QuyCheDaoTao_Chuong1_Dieu4
+    topic: diem
+    cases:
+      - ["Em trượt môn bắt buộc, đăng ký môn khác bù được chứ?", "Phải học lại môn đó hoặc học phần tương đương theo CTĐT, hoặc học phần thay thế nếu môn không còn được giảng dạy; không tự chọn bất kỳ môn nào để bù.", "học phần bắt buộc"]
+      - ["Môn tự chọn bắt buộc em không qua, có cách nào học môn khác thay không?", "Có thể học lại hoặc chọn học phần khác trong cùng nhóm học phần tự chọn bắt buộc theo quy định.", "cùng nhóm học phần"]
+      - ["Em muốn bỏ môn tự chọn tự do đã rớt để học môn khác, được không?", "Được đăng ký học lại hoặc đổi sang học phần tự chọn tự do khác theo quy định.", "tự chọn tự do"]
+      - ["Vừa làm vừa học là niên chế hay tín chỉ vậy?", "Đào tạo theo tín chỉ.", "đào tạo theo tín chỉ"]
+      - ["Môn bắt buộc còn nợ nhưng trường ngừng dạy rồi, em có được tự chọn môn thay thế không?", "Áp dụng học phần thay thế theo quy định của trường; không kết luận sinh viên được tự ý chọn bất kỳ môn nào.", "học phần thay thế"]
+  - source: QuyCheDaoTao_Chuong2_Dieu9
+    topic: khac
+    cases:
+      - ["Mới vào trường kỳ đầu ai xếp lịch học cho em?", "Học kỳ đầu học theo thời khóa biểu trường ấn định.", "Trường ấn định"]
+      - ["Sang kỳ hai em phải tự đăng ký môn trên hệ thống hả?", "Từ học kỳ thứ hai sinh viên chính quy tự đăng ký học phần trên hệ thống theo kế hoạch.", "học kỳ thứ hai"]
+      - ["Trường phải báo đợt đăng ký môn trước ít nhất mấy ngày?", "Lịch đăng ký học phần được công bố chậm nhất một tuần trước khi bắt đầu mở hệ thống.", "01 tuần"]
+      - ["Em hệ vừa làm vừa học, có được ghép học một số môn với chính quy không?", "Có thể đăng ký một số học phần tổ chức chính quy nhưng phải phù hợp quy định tại khoản 1; không phải quyền đăng ký mọi môn vô điều kiện.", "một số học phần được tổ chức"]
+      - ["Em hết hạn rút môn mà cứ nghỉ luôn thì môn đó có biến mất khỏi đăng ký không?", "Danh sách lớp vẫn giữ nguyên; không đi học bị xem như tự ý bỏ học, không tự xóa môn.", "tự ý bỏ học"]
+  - source: QuyCheDaoTao_Chuong3_Dieu12
+    topic: diem
+    cases:
+      - ["Em chính quy nợ hơn 24 tín chỉ thì có bị cảnh báo không?", "Có, tổng tín chỉ nợ đọng từ đầu khóa vượt quá 24 là một điều kiện cảnh báo học tập.", "vượt quá 24"]
+      - ["Kỳ đầu chính quy GPA học kỳ dưới 0,8 có sao không?", "Điểm trung bình học kỳ dưới 0,8 ở học kỳ đầu là một điều kiện cảnh báo học tập.", "dưới 0,8"]
+      - ["Bị thôi học do kết quả học tập thì em còn xin giấy xác nhận điểm được không?", "Kết quả đã tích lũy được bảo lưu; sinh viên có quyền yêu cầu giấy chứng nhận điểm các học phần đã tích lũy.", "giấy chứng nhận điểm"]
+      - ["Chính quy học quá hạn tối đa có bị cho thôi học không?", "Vượt giới hạn thời gian học tập tối đa là trường hợp buộc thôi học.", "giới hạn tối đa"]
+      - ["Em chính quy bị cảnh báo bốn lần nhưng không liền nhau, vậy có tránh được thôi học không?", "Không: cảnh báo đến lần thứ tư tính từ đầu khóa là một trường hợp buộc thôi học, không đòi hỏi bốn lần liên tiếp.", "lần thứ tư"]
+  - source: QuyCheDaoTao_Chuong3_Dieu13
+    topic: diem
+    cases:
+      - ["Vừa làm vừa học kiểm tra diện cảnh báo khi hết năm học phải không?", "Xét cảnh báo vào cuối mỗi năm học.", "Cuối mỗi năm học"]
+      - ["Em vừa làm vừa học bị cảnh báo vì nợ nhiều môn, giờ chỉ được học trả nợ thôi à?", "Chỉ được đăng ký học phần nhằm trả nợ và cải thiện điểm khi bị cảnh báo do nợ tín chỉ theo điểm b khoản 1.", "chỉ được đăng ký"]
+      - ["Vừa làm vừa học bị cảnh báo hai lần liền thì thế nào?", "Hai lần cảnh báo liên tiếp trong một khóa học là trường hợp buộc thôi học.", "02 lần liên tiếp"]
+      - ["Hệ vừa làm vừa học bị thôi học còn giữ được kết quả đã học không?", "Kết quả đã tích lũy được bảo lưu; được yêu cầu giấy chứng nhận điểm.", "được bảo lưu"]
+      - ["Em vừa làm vừa học bị cảnh báo ba lần rải rác, không phải liên tiếp, có bị thôi học không?", "Có: ba lần không liên tiếp trong một khóa học là trường hợp buộc thôi học.", "03 lần không liên tiếp"]
+  - source: QuyCheDaoTao_Chuong3_Dieu14
+    topic: diem
+    cases:
+      - ["Em đã học vài môn ở đại học khác, trường mình có xem xét công nhận không?", "Kết quả ở cơ sở đào tạo khác có thể được xem xét công nhận, chuyển đổi; không tự động công nhận.", "cơ sở đào tạo khác"]
+      - ["Ai xem xét việc chuyển tín chỉ từ chương trình cũ của em?", "Hội đồng chuyên môn của trường xem xét công nhận và chuyển đổi tín chỉ.", "Hội đồng chuyên môn"]
+      - ["Hai môn cùng tên là được miễn học luôn hả?", "Không chỉ dựa tên môn; đối sánh chuẩn đầu ra, nội dung, khối lượng học tập, cách đánh giá và điều kiện bảo đảm chất lượng.", "chuẩn đầu ra"]
+      - ["Có xét chuyển đổi nguyên một nhóm học phần không?", "Có hình thức công nhận, chuyển đổi theo nhóm học phần, không chỉ từng học phần.", "nhóm học phần"]
+      - ["Em ngành đào tạo giáo viên thì cũng mặc định chuyển được 50% chương trình sao?", "Mức chung không vượt quá 50%; riêng ngành đào tạo giáo viên thực hiện theo hướng dẫn Bộ GDĐT, không mặc định áp dụng mức chung.", "riêng đối với ngành đào tạo giáo viên"]
+  - source: QuyCheDaoTao_Chuong3_Dieu15
+    topic: tot_nghiep
+    cases:
+      - ["Em tích lũy đủ môn rồi là trường cho tốt nghiệp ngay phải không?", "Còn phải đạt chuẩn đầu ra và nội dung bắt buộc, GPA toàn khóa từ trung bình, không bị truy cứu trách nhiệm hình sự hoặc đang đình chỉ tại thời điểm xét.", "điều kiện"]
+      - ["Đã đủ chuẩn và hoàn thành nghĩa vụ với trường thì tối đa bao lâu có quyết định tốt nghiệp?", "Trong thời hạn ba tháng từ khi đáp ứng đầy đủ điều kiện và hoàn thành nghĩa vụ với trường.", "03 tháng"]
+      - ["Bằng giỏi có bị hạ nếu em học lại quá nhiều tín chỉ không?", "Hạng giỏi hoặc xuất sắc giảm một mức nếu tín chỉ phải học lại vượt quá 5% tổng tín chỉ quy định toàn chương trình.", "5%"]
+      - ["Trường đăng kết quả tốt nghiệp dự kiến nhầm thông tin của em thì báo ai?", "Sinh viên rà soát và phản hồi Phòng Đào tạo trong thời gian quy định; quá hạn không được tiếp nhận giải quyết.", "Phòng Đào tạo"]
+      - ["Em đã hết thời gian học, chỉ còn thiếu chuẩn ngoại ngữ, có được bổ sung sau không?", "Có thể hoàn thiện điều kiện còn thiếu và đề nghị xét tốt nghiệp trong ba năm tính từ khi thôi học theo trường hợp quy định; không suy ra được học lại toàn bộ chương trình vô hạn.", "03 năm"]
+  - source: QuyCheDaoTao_Chuong4_Dieu16
+    topic: nghi_hoc
+    cases:
+      - ["Em bảo lưu do đi nghĩa vụ thì thời gian đó có trừ vào thời hạn học không?", "Thời gian nghỉ vì được điều động vào lực lượng vũ trang không tính vào thời gian đào tạo chính thức.", "không tính vào thời gian đào tạo chính thức"]
+      - ["Chưa học hết kỳ đầu mà muốn nghỉ vì việc riêng thì được không?", "Nghỉ vì lý do cá nhân phải học tối thiểu một học kỳ và không thuộc diện bị xem xét buộc thôi học hoặc kỷ luật.", "01 học kỳ"]
+      - ["Em xin nghỉ vì chuyện gia đình thì thời gian bảo lưu vẫn tính vào khóa học à?", "Thời gian nghỉ vì nhu cầu cá nhân được tính vào thời gian học tập chính thức.", "vì nhu cầu cá nhân"]
+      - ["Đến hạn trở lại mà em vẫn chưa học được thì cần làm gì?", "Làm đơn xin gia hạn; không trở lại khi quá thời gian tạm dừng bị xem như tự ý bỏ học.", "xin gia hạn"]
+      - ["Em đã tự thôi học hẳn, giờ muốn vào học lại có giống hết bảo lưu không?", "Không đồng nhất hai việc: thôi học vì lý do cá nhân muốn quay lại phải dự tuyển đầu vào như thí sinh khác; kết quả đã tích lũy được bảo lưu/công nhận theo quy định.", "dự tuyển đầu vào"]
+  - source: QuyCheDaoTao_Chuong4_Dieu17
+    topic: nganh_hoc
+    cases:
+      - ["Mới năm nhất em xin đổi ngành được chứ?", "Không được xét chuyển ngành khi đang ở trình độ năm thứ nhất theo điều kiện quy định.", "năm thứ nhất"]
+      - ["Em năm cuối rồi còn xin chuyển ngành được không?", "Không được xét chuyển ngành khi đang năm cuối khóa.", "năm cuối khóa"]
+      - ["Muốn đổi ngành có phải đủ điểm đầu vào ngành muốn sang không?", "Phải đáp ứng điều kiện trúng tuyển của chương trình/ngành/trường trong cùng khóa tuyển sinh.", "điều kiện trúng tuyển"]
+      - ["Em đang bị xem xét buộc thôi học, xin chuyển ngành để học tiếp được không?", "Không đáp ứng điều kiện chuyển ngành vì đang thuộc diện bị xem xét buộc thôi học.", "buộc thôi học"]
+      - ["Em đủ điểm vào ngành mới rồi thì chắc chắn được chuyển chứ?", "Chưa chắc: còn điều kiện năm học, không thuộc diện thôi học, thời gian còn lại, năng lực đào tạo và sự đồng ý của các bên có thẩm quyền.", "đủ các điều kiện"]
+  - source: QuyCheDaoTao_Chuong4_Dieu18
+    topic: diem
+    cases:
+      - ["Trường hợp tác đào tạo thì sinh viên được học một số môn bên trường bạn hả?", "Có trên cơ sở nội dung hợp tác do Hiệu trưởng quyết định; không phải tùy ý học bất kỳ trường nào.", "nội dung hợp tác"]
+      - ["Học theo trao đổi thì được công nhận tối đa bao nhiêu phần trăm chương trình?", "Không vượt quá 25% tổng khối lượng chương trình đào tạo.", "25%"]
+      - ["Thông tin hợp tác để học môn bên trường khác được đăng ở đâu?", "Nội dung hợp tác được công khai trên cổng thông tin điện tử.", "thông tin điện tử"]
+      - ["Ai quyết định việc hợp tác học phần với trường khác?", "Hiệu trưởng quyết định nội dung hợp tác trên cơ sở đối sánh các điều kiện quy định.", "Hiệu trưởng quyết định"]
+      - ["Em muốn qua trường đối tác học quốc phòng theo diện trao đổi tín chỉ thì có nằm trong quy định này không?", "Không: quy định trao đổi này không bao gồm giáo dục thể chất và giáo dục quốc phòng–an ninh.", "không bao gồm"]
+  - source: QuyCheDaoTao_Chuong4_Dieu19
+    topic: nganh_hoc
+    cases:
+      - ["Em vừa lên năm hai, đã có thể đăng ký ngành thứ hai chưa?", "Sớm nhất khi được xếp trình độ năm hai chương trình thứ nhất; vẫn phải đáp ứng điều kiện học lực và đầu vào cùng điều kiện bổ sung.", "năm thứ hai"]
+      - ["Học lực trung bình là hết cơ hội học song bằng hả?", "Không; có nhánh học lực trung bình kèm đáp ứng điều kiện trúng tuyển chương trình thứ hai và các điều kiện quy định khác.", "xếp loại trung bình"]
+      - ["Em học song bằng thì môn hai ngành giống nhau có được công nhận không?", "Được công nhận học phần có nội dung và khối lượng kiến thức tương đương trong chương trình thứ nhất.", "tương đương"]
+      - ["Học thêm ngành thứ hai có cho em một thời hạn học tối đa mới không?", "Thời gian tối đa là thời gian tối đa quy định cho chương trình thứ nhất, không tự kéo dài vì học hai chương trình.", "thời gian tối đa quy định cho chương trình thứ nhất"]
+      - ["Ngành đầu bị cảnh báo nhưng ngành hai điểm tốt, em vẫn học tiếp ngành hai được chứ?", "Nếu chương trình thứ nhất dưới trung bình hoặc thuộc diện cảnh báo thì bị buộc thôi học chương trình thứ hai ở học kỳ tiếp theo.", "học kỳ tiếp theo"]
+  - source: QuyCheDaoTao_Chuong4_Dieu21
+    topic: diem
+    cases:
+      - ["Lần đầu em nhờ bạn thi giúp sẽ bị đuổi học luôn không?", "Vi phạm lần thứ nhất bị đình chỉ học tập một năm; lần thứ hai buộc thôi học.", "một năm"]
+      - ["Người đi thi thay có bị xử lý giống người nhờ thi không?", "Cả thi hộ và nhờ thi hộ đều chịu mức đình chỉ một năm lần đầu và buộc thôi học lần hai.", "đều bị kỷ luật"]
+      - ["Nộp chứng chỉ giả để xét tốt nghiệp có bị thôi học không?", "Sử dụng chứng chỉ giả làm điều kiện tốt nghiệp bị buộc thôi học; bằng đã cấp bị thu hồi, hủy bỏ.", "chứng chỉ giả"]
+      - ["Gian lận trong bài kiểm tra của một môn có bị xử lý không?", "Bị xử lý kỷ luật đối với học phần vi phạm theo quy định; không gán mức cụ thể khi nguồn không nêu cho hành vi đó.", "từng học phần"]
+      - ["Nếu đã nhận bằng rồi mới phát hiện em dùng hồ sơ giả thì bằng còn giá trị không?", "Văn bằng tốt nghiệp đã cấp bị thu hồi, hủy bỏ khi dùng hồ sơ/văn bằng/chứng chỉ giả làm điều kiện theo quy định.", "thu hồi"]
+  - source: QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15
+    source_by_cohort: {K51: QuyCheDanhGiaRenLuyen_Chuong4_Dieu15}
+    topic: ren_luyen
+    cases:
+      - ["Điểm rèn luyện chưa đúng thì em gửi khiếu nại cho phòng nào?", "Gửi đơn về Phòng Công tác chính trị và Học sinh, sinh viên.", "đơn khiếu nại"]
+      - ["Công bố điểm rèn luyện rồi em còn bao lâu để khiếu nại?", "Trong vòng bảy ngày kể từ ngày công bố kết quả điểm đã được Hội đồng cấp Trường thông qua.", "07 ngày"]
+      - ["Em nộp đơn khiếu nại điểm rèn luyện thì hạn giải quyết là mấy ngày?", "Trong vòng bảy ngày khi nhận đơn, Hội đồng cấp khoa/cơ sở và cấp Trường giải quyết và phản hồi.", "phản hồi"]
+      - ["Hội đồng nào xử lý đơn khiếu nại điểm rèn luyện vậy?", "Hội đồng cấp khoa/cơ sở và Hội đồng cấp Trường có nhiệm vụ giải quyết, phản hồi.", "Hội đồng"]
+      - ["Em đọc thông báo điểm rèn luyện muộn, hạn khiếu nại có tính từ ngày em đọc không?", "Không; mốc quy định là ngày công bố kết quả điểm được Hội đồng cấp Trường thông qua, không phải ngày cá nhân đọc.", "kể từ ngày công bố"]

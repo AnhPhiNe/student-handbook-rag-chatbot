@@ -475,7 +475,7 @@ def test_invalid_lookup_is_clarified_but_reference_table_slots_are_optional() ->
     assert errors == []
     assert plan["tasks"][0]["mode"] == "structured"
     assert plan["tasks"][0]["lookup_type"] == "foreign_language"
-    assert plan["tasks"][0]["slots"] == {"certificate_or_language": "IELTS"}
+    assert plan["tasks"][0]["slots"] == {}
 
 
 def test_explicit_multi_cohort_is_preserved_over_ui_cohort() -> None:
@@ -699,7 +699,7 @@ def test_table_first_drops_optional_slot_whose_span_describes_another_value() ->
     assert plan["tasks"][0]["slot_spans"] == {"operation": "điểm chữ gì"}
 
 
-def test_scoring_literals_preserve_planner_selector_and_infer_course_scope() -> None:
+def test_scoring_literals_preserve_planner_selector_without_inventing_scope() -> None:
     query = "Học phần còn lại được 5,2: bảng K51 ghi D+ và trạng thái đạt hay không đạt?"
     task = {
         **_rag_task(1, query),
@@ -727,16 +727,12 @@ def test_scoring_literals_preserve_planner_selector_and_infer_course_scope() -> 
     assert plan["tasks"][0]["slots"] == {
         "operation": "pass_fail_ungraded",
         "score_or_grade": "5,2",
-        "course_scope": "remaining",
     }
     assert plan["tasks"][0]["slot_spans"]["operation"] == "đạt hay không đạt"
-    assert plan["tasks"][0]["slot_spans"]["course_scope"] in {
-        "học phần còn lại",
-        "Học phần còn lại",
-    }
+    assert "course_scope" not in plan["tasks"][0]["slot_spans"]
 
 
-def test_scoring_explicit_ungraded_scope_keeps_ungraded_selector() -> None:
+def test_scoring_query_scope_does_not_fill_a_missing_planner_selector() -> None:
     query = "Học phần chỉ yêu cầu đạt được 5,2 thì có đạt không?"
     task = {
         **_rag_task(1, query),
@@ -762,7 +758,7 @@ def test_scoring_explicit_ungraded_scope_keeps_ungraded_selector() -> None:
 
     assert errors == []
     assert plan["tasks"][0]["slots"]["operation"] == "pass_threshold"
-    assert plan["tasks"][0]["slots"]["course_scope"] == "pass_fail_ungraded"
+    assert "course_scope" not in plan["tasks"][0]["slots"]
 
 
 def test_scoring_facets_preserve_distinct_operations_and_inputs() -> None:

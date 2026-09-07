@@ -149,7 +149,7 @@ def test_present_result_input_repairs_only_same_value_span() -> None:
     assert decision["slot_spans"]["program_type"] == "bằng thứ nhất"
 
 
-def test_present_result_input_never_adopts_conflicting_alias() -> None:
+def test_semantic_enum_meaning_is_not_reinterpreted_from_alias() -> None:
     query = "K51 học chương trình văn bằng hai tối đa bao lâu?"
     decision = normalize_router_decision(
         {
@@ -166,11 +166,13 @@ def test_present_result_input_never_adopts_conflicting_alias() -> None:
 
     assert decision["slots"]["program_type"] == "first_degree"
     assert decision["slot_spans"]["program_type"] == "văn bằng hai"
-    assert "slot_span_mismatch:program_type" in validate_router_decision(
+    # Source/schema validation is not a second semantic classifier. A wrong
+    # semantic interpretation remains a Planner error, not an alias repair.
+    assert validate_router_decision(
         decision,
         query=query,
         selected_cohort="K51",
-    )
+    ) == []
 
 
 @pytest.mark.parametrize(
@@ -519,7 +521,7 @@ def test_reversed_compound_scoring_tasks_also_keep_distinct_operations() -> None
     ]
 
 
-def test_missing_operation_is_inferred_from_its_task_question_only() -> None:
+def test_missing_operation_is_not_inferred_from_either_task_question() -> None:
     query = "GPA 2,83 thì xếp loại học lực gì, còn điểm chữ C đổi sang thang 4 là bao nhiêu?"
     plan = _normalize(
         [
@@ -545,7 +547,7 @@ def test_missing_operation_is_inferred_from_its_task_question_only() -> None:
         query,
     )
 
-    assert plan["tasks"][0]["slots"]["operation"] == "letter_to_grade_4"
+    assert "operation" not in plan["tasks"][0]["slots"]
     assert plan["tasks"][1]["slots"]["operation"] == "academic_classification"
 
 

@@ -77,7 +77,7 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
         ),
     ],
 )
-def test_reference_table_selectors_are_grounded_from_registry_metadata(
+def test_supplied_reference_table_selectors_recover_only_their_source_spans(
     query: str,
     lookup_type: str,
     expected_slots: dict[str, str],
@@ -87,7 +87,7 @@ def test_reference_table_selectors_are_grounded_from_registry_metadata(
             "route": "structured",
             "lookup_type": lookup_type,
             "intent": "direct_value",
-            "slots": {},
+            "slots": expected_slots,
             "slot_spans": {},
         },
         query=query,
@@ -109,10 +109,12 @@ def test_scoring_course_scope_accepts_natural_course_synonym() -> None:
             "slots": {
                 "operation": "pass_threshold",
                 "score_or_grade": "5.0",
+                "course_scope": "remaining",
             },
             "slot_spans": {
                 "operation": "có đạt không",
                 "score_or_grade": "5,0",
+                "course_scope": "Môn còn lại",
             },
         },
         query=query,
@@ -609,7 +611,7 @@ def test_from_config_accepts_model_environment_override(
     assert router.max_output_tokens == 1024
 
 
-def test_router_normalization_infers_explicit_jlpt_level_slot() -> None:
+def test_router_normalization_does_not_infer_missing_jlpt_level_slot() -> None:
     query = "K50 JLPT N3 tương đương bậc mấy?"
     decision = normalize_router_decision(
         {
@@ -625,7 +627,7 @@ def test_router_normalization_infers_explicit_jlpt_level_slot() -> None:
         selected_cohort="K50",
     )
 
-    assert decision["slots"]["score_or_level"] == "N3"
+    assert "score_or_level" not in decision["slots"]
     assert validate_router_decision(
         decision,
         query=query,
@@ -633,7 +635,7 @@ def test_router_normalization_infers_explicit_jlpt_level_slot() -> None:
     ) == []
 
 
-def test_router_normalization_grounds_literals_for_another_registry_tool() -> None:
+def test_router_normalization_leaves_missing_duration_inputs_absent() -> None:
     query = "K51 hệ vừa làm vừa học văn bằng hai tối đa bao lâu?"
     decision = normalize_router_decision(
         {
@@ -649,14 +651,8 @@ def test_router_normalization_grounds_literals_for_another_registry_tool() -> No
         selected_cohort="K51",
     )
 
-    assert decision["slots"] == {
-        "training_mode": "vua_lam_vua_hoc",
-        "program_type": "second_degree",
-    }
-    assert decision["slot_spans"] == {
-        "training_mode": "vừa làm vừa học",
-        "program_type": "văn bằng hai",
-    }
+    assert decision["slots"] == {}
+    assert decision["slot_spans"] == {}
 
 
 def test_router_normalization_does_not_choose_between_two_declared_literals() -> None:
@@ -677,7 +673,7 @@ def test_router_normalization_does_not_choose_between_two_declared_literals() ->
     assert "certificate_or_language" not in decision["slots"]
 
 
-def test_router_normalization_grounds_requested_field_from_registry() -> None:
+def test_router_normalization_does_not_infer_missing_requested_field() -> None:
     query = "Tài khoản sinh viên bị lỗi thì đơn vị nào hỗ trợ?"
     decision = normalize_router_decision(
         {
@@ -692,11 +688,11 @@ def test_router_normalization_grounds_requested_field_from_registry() -> None:
         selected_cohort="K51",
     )
 
-    assert decision["slots"]["requested_field"] == "unit"
-    assert decision["slot_spans"]["requested_field"] == "đơn vị"
+    assert "requested_field" not in decision["slots"]
+    assert "requested_field" not in decision["slot_spans"]
 
 
-def test_router_normalization_infers_program_list_scope_from_faculty_query() -> None:
+def test_router_normalization_does_not_infer_program_list_scope() -> None:
     query = "Khoa Công nghệ Thông tin có những ngành nào?"
     decision = normalize_router_decision(
         {
@@ -712,7 +708,7 @@ def test_router_normalization_infers_program_list_scope_from_faculty_query() -> 
         selected_cohort="K51",
     )
 
-    assert decision["slots"]["scope"] == "faculty"
+    assert "scope" not in decision["slots"]
 
 
 def test_router_normalization_grounds_student_service_in_full_query() -> None:

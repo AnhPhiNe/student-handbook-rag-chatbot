@@ -20,7 +20,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v25-no-semantic-slot-overwrite"
+QUERY_PLAN_NORMALIZER_VERSION = "v26-planner-owned-semantics"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
@@ -600,10 +600,9 @@ def _normalize_task(
             "slot_spans": spans,
             "retrieval_query": question,
         },
-        # Infer declared aliases from this task's self-contained question.
-        # Keep the complete user query below for grounding validation so a
-        # task-local paraphrase cannot introduce values absent from the
-        # original/history context.
+        # Prepare only values/spans supplied by this task. Keep the complete
+        # user query below for grounding validation so a task-local paraphrase
+        # cannot introduce factual values absent from the original context.
         query=question,
         selected_cohort=cohorts[0] if cohorts else selected_cohort,
         registry=registry,

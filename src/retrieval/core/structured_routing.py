@@ -38,6 +38,24 @@ def _slot_verification_role(slot_spec: dict[str, Any] | None) -> str:
     return role if role in SLOT_VERIFICATION_ROLES else DEFAULT_SLOT_VERIFICATION_ROLE
 
 
+def _is_semantic_result_input_slot(slot_spec: dict[str, Any] | None) -> bool:
+    """Identify canonical string selectors whose meaning belongs to the planner."""
+
+    slot_spec = slot_spec or {}
+    expected_types = slot_spec.get("type") or []
+    if isinstance(expected_types, str):
+        string_only = expected_types == "string"
+    elif isinstance(expected_types, (list, tuple, set)):
+        string_only = set(expected_types) == {"string"}
+    else:
+        string_only = False
+    return (
+        _slot_verification_role(slot_spec) == "result_input"
+        and string_only
+        and bool(slot_spec.get("enum") or slot_spec.get("canonical_values"))
+    )
+
+
 def _normalize_text(value: Any) -> str:
     text = str(value or "").lower().replace("đ", "d")
     text = unicodedata.normalize("NFD", text)
@@ -115,35 +133,16 @@ def _ground_declared_literal_slots(
                     same_value_matches = []
                     break
                 same_value_matches.extend(item_matches)
-            if same_value_matches and (
-                not _is_present(current_span)
-                or not _span_matches_slot_value(current_value, current_span, slot_spec)
-            ):
+            if same_value_matches and not _is_present(current_span):
                 spans[slot_name] = max(same_value_matches, key=len)
             continue
 
-        matches: list[tuple[str, str]] = []
-        for canonical_value, aliases in aliases_by_value.items():
-            literal_aliases = [canonical_value, *(_as_values(aliases))]
-            for alias in literal_aliases:
-                literal_span = _literal_query_span(query, alias)
-                if literal_span:
-                    matches.append((str(canonical_value), literal_span))
-                    break
-
-        matched_values = {canonical_value for canonical_value, _ in matches}
-        if len(matched_values) != 1:
-            continue
-        canonical_value = next(iter(matched_values))
-        literal_span = max(
-            (span for value, span in matches if value == canonical_value),
-            key=len,
-        )
-        slots[slot_name] = canonical_value
-        spans[slot_name] = literal_span
+        # Missing values are not inferred from query aliases.  The planner
+        # owns the meaning of every slot; only the service-specific fallback
+        # below may use a trusted source query for a directory identity.
 
 
-def _infer_explicit_structured_slots(
+def _prepare_structured_slots(
     query: str,
     *,
     lookup_type: str | None,
@@ -153,7 +152,7 @@ def _infer_explicit_structured_slots(
     spans: dict[str, Any],
     source_query: str | None = None,
 ) -> None:
-    """Fill explicit slots while keeping planner tasks isolated.
+    """Prepare supplied slot spans while keeping planner tasks isolated.
 
     ``source_query`` is an optional trusted source for the student-service
     fallback.  Callers should provide it only when the source belongs to this
@@ -386,7 +385,7 @@ def normalize_router_decision(
     if not isinstance(referenced_turns, list):
         referenced_turns = []
 
-    _infer_explicit_structured_slots(
+    _prepare_structured_slots(
         query,
         lookup_type=lookup_type,
         intent=intent,
@@ -513,6 +512,37 @@ def _span_matches_slot_value(value: Any, span: Any, schema: dict[str, Any]) -> b
     return True
 
 
+def _span_satisfies_source_contract(
+    value: Any,
+    span: Any,
+    schema: dict[str, Any],
+) -> bool:
+    """Validate a slot span without making the normalizer own semantic meaning."""
+
+    if _span_matches_slot_value(value, span, schema):
+        return True
+    return _is_semantic_result_input_slot(schema)
+
+
+def _slot_span_error(
+    value: Any,
+    span: Any,
+    schema: dict[str, Any],
+    source_text: str,
+) -> str | None:
+    """Return the first source-grounding error for a supplied slot value."""
+
+    if not _is_present(span):
+        return "missing_slot_span"
+    if not _span_is_grounded(span, source_text):
+        return "ungrounded_slot"
+    if _span_is_only_cohort(span):
+        return "misgrounded_slot"
+    if not _span_satisfies_source_contract(value, span, schema):
+        return "slot_span_mismatch"
+    return None
+
+
 def _matches_type(value: Any, expected: str) -> bool:
     if expected == "string":
         if isinstance(value, str):
@@ -607,14 +637,14 @@ def validate_fact_lock_inputs(
             continue
         grounded_value_slots += 1
         span = spans.get(slot_name)
-        if not _is_present(span):
-            errors.append(f"missing_slot_span:{slot_name}")
-        elif not _span_is_grounded(span, query):
-            errors.append(f"ungrounded_slot:{slot_name}")
-        elif _span_is_only_cohort(span):
-            errors.append(f"misgrounded_slot:{slot_name}")
-        elif not _span_matches_slot_value(value, span, slot_schema[slot_name]):
-            errors.append(f"slot_span_mismatch:{slot_name}")
+        span_error = _slot_span_error(
+            value,
+            span,
+            slot_schema[slot_name],
+            query,
+        )
+        if span_error:
+            errors.append(f"{span_error}:{slot_name}")
     if grounded_value_slots == 0:
         errors.append("missing_fact_lock_value")
     return list(dict.fromkeys(errors))
@@ -702,16 +732,14 @@ def validate_router_decision(
             continue
         if _slot_verification_role(slot_schema.get(slot_name)) == "reading_intent":
             continue
-        if not _is_present(spans.get(slot_name)):
-            errors.append(f"missing_slot_span:{slot_name}")
-        elif not _span_is_grounded(spans[slot_name], source_text):
-            errors.append(f"ungrounded_slot:{slot_name}")
-        elif _span_is_only_cohort(spans[slot_name]):
-            errors.append(f"misgrounded_slot:{slot_name}")
-        elif not _span_matches_slot_value(
-            slots[slot_name], spans[slot_name], slot_schema[slot_name]
-        ):
-            errors.append(f"slot_span_mismatch:{slot_name}")
+        span_error = _slot_span_error(
+            slots[slot_name],
+            spans.get(slot_name),
+            slot_schema[slot_name],
+            source_text,
+        )
+        if span_error:
+            errors.append(f"{span_error}:{slot_name}")
 
     for slot_name, value in slots.items():
         if (
@@ -722,14 +750,14 @@ def validate_router_decision(
         ):
             continue
         span = spans.get(slot_name)
-        if not _is_present(span):
-            errors.append(f"missing_slot_span:{slot_name}")
-        elif not _span_is_grounded(span, source_text):
-            errors.append(f"ungrounded_slot:{slot_name}")
-        elif _span_is_only_cohort(span):
-            errors.append(f"misgrounded_slot:{slot_name}")
-        elif not _span_matches_slot_value(value, span, slot_schema[slot_name]):
-            errors.append(f"slot_span_mismatch:{slot_name}")
+        span_error = _slot_span_error(
+            value,
+            span,
+            slot_schema[slot_name],
+            source_text,
+        )
+        if span_error:
+            errors.append(f"{span_error}:{slot_name}")
 
     errors.extend(_validate_slot_contract(slots, spec))
 

@@ -60,6 +60,10 @@ service_aliases:
     aliases: [đóng học phí, thu học phí, biên lai học phí]
   - match: email sinh viên
     aliases: [tài khoản sinh viên, email trường, hệ thống phần mềm]
+  - match: giấy chứng nhận điểm
+    aliases: [chứng nhận điểm]
+  - match: in ấn giáo trình
+    aliases: [in giáo trình]
 
 unit_service_aliases:
   Phòng Công tác chính trị và Học sinh, sinh viên:

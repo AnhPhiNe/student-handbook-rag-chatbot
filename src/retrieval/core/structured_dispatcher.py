@@ -16,7 +16,7 @@ from .office_lookup import normalize_text, office_lookup
 from .program_lookup import program_lookup
 from .scholarship_lookup import scholarship_table_lookup
 from .study_duration_lookup import study_duration_lookup
-from .structured_lookup import structured_lookup_from_slots
+from .structured_lookup import scoring_lookup_from_reference
 from .structured_routing import load_lookup_registry, validate_fact_lock_inputs
 
 
@@ -38,6 +38,13 @@ class StructuredResolution:
     result_kind: str
     result: dict[str, Any]
     target_chunk_types: list[str]
+
+    @property
+    def resolution_status(self) -> str:
+        """Separate evidence availability from a uniquely resolved value."""
+        if self.result_kind == "clarification":
+            return "needs_clarification"
+        return "resolved" if self.result.get("resolved_result") else "evidence_only"
 
 
 def _slot_text(decision: dict[str, Any], *names: str) -> str:
@@ -243,9 +250,8 @@ def _reference_input_clarification(
 
 def _select_reference_tables(
     lookup_type: str, slots: dict[str, Any], tables: list[dict[str, Any]],
-    *, resolver_catalog: bool = False,
 ) -> list[dict[str, Any]]:
-    """Apply the same declared operation/scope to display and resolver catalogs."""
+    """Select canonical tables once for both evidence and value resolution."""
     candidates = tables
     tool = _LOOKUP_TOOL_SPECS.get(lookup_type, {})
     for selector_name in ("table_selector", "scope_selector"):
@@ -253,26 +259,13 @@ def _select_reference_tables(
         spec = (selector.get("values") or {}).get(str(slots.get(selector.get("slot")) or ""))
         if not isinstance(spec, dict):
             continue
-        if resolver_catalog:
-            allowed_ids = spec.get("resolver_table_ids")
-            if allowed_ids is None:
-                continue
-            selected = [table for table in candidates
-                        if any(str(table.get("table_id") or "") == table_id
-                               or str(table.get("table_id") or "").endswith("_" + table_id)
-                               for table_id in allowed_ids)]
-        else:
-            types = spec.get("table_types") or []
-            subtypes = spec.get("table_subtypes") or []
-            suffixes = tuple(spec.get("table_id_suffixes") or [])
-            selected = [table for table in candidates
-                        if (not types or table.get("table_type") in types)
-                        and (not subtypes or table.get("table_subtype") in subtypes)
-                        and (not suffixes or str(table.get("table_id") or "").endswith(suffixes))]
-        # Retain the existing evidence-only fallback for a stale operation.
-        # A fact lock or an explicit scope may never fall through to other tables.
-        if selected or resolver_catalog or selector_name == "scope_selector":
-            candidates = selected
+        types = spec.get("table_types") or []
+        subtypes = spec.get("table_subtypes") or []
+        suffixes = tuple(spec.get("table_id_suffixes") or [])
+        candidates = [table for table in candidates
+                      if (not types or table.get("table_type") in types)
+                      and (not subtypes or table.get("table_subtype") in subtypes)
+                      and (not suffixes or str(table.get("table_id") or "").endswith(suffixes))]
     return candidates
 
 
@@ -280,7 +273,7 @@ def _reference_table_lookup(
     lookup_type: str,
     *,
     query: str,
-    registry: list[dict[str, Any]],
+    candidates: list[dict[str, Any]],
     cohort: str | None,
     slots: dict[str, Any],
 ) -> dict[str, Any] | None:
@@ -293,20 +286,7 @@ def _reference_table_lookup(
     shortlist.
     """
 
-    table_types = _REFERENCE_TABLE_TYPES.get(lookup_type)
-    if not table_types:
-        return None
-
     effective_cohort = normalize_cohort(cohort)
-    candidates = [
-        table
-        for table in registry
-        if table.get("data_category") == "regulation_table"
-        and str(table.get("table_type") or "") in table_types
-        and is_validated_source_applicable(table, effective_cohort)
-        and isinstance(table.get("rows"), list)
-        and bool(table.get("rows"))
-    ]
     if not candidates:
         return None
 
@@ -320,11 +300,7 @@ def _reference_table_lookup(
     if clarification is not None:
         return clarification
 
-    candidates = _select_reference_tables(lookup_type, slots, candidates)
-    if not candidates:
-        return None
-
-    candidates.sort(
+    candidates = sorted(candidates,
         key=lambda table: (
             str(table.get("cohort") or ""),
             str(table.get("table_subtype") or ""),
@@ -404,19 +380,16 @@ def _unique_reference_resolution(
     query: str,
     slots: dict[str, Any],
     cohort: str | None,
-    scoring_tables: list[dict[str, Any]],
-    foreign_language_tables: list[dict[str, Any]],
-    structured_tables_registry: list[dict[str, Any]],
+    selected_tables: list[dict[str, Any]],
 ) -> dict[str, Any] | None:
-    """Return a fact-lock candidate only when an existing resolver is unique."""
+    """Resolve only inside the single canonical table selected for evidence."""
+
+    if len(selected_tables) != 1:
+        return None
 
     if lookup_type == "scoring":
         resolved = (
-            structured_lookup_from_slots(
-                slots,
-                _select_reference_tables(lookup_type, slots, scoring_tables, resolver_catalog=True),
-                cohort=cohort,
-            )
+            scoring_lookup_from_reference(slots, selected_tables[0], cohort=cohort)
             if slots
             else None
         )
@@ -432,7 +405,7 @@ def _unique_reference_resolution(
     if lookup_type == "foreign_language":
         resolved = foreign_language_lookup(
             query,
-            foreign_language_tables,
+            selected_tables,
             cohort=cohort,
             slots=slots,
         )
@@ -441,7 +414,7 @@ def _unique_reference_resolution(
     if lookup_type == "study_duration":
         resolved = study_duration_lookup(
             query,
-            structured_tables_registry,
+            selected_tables,
             cohort=cohort,
             slots=slots,
         )
@@ -459,7 +432,7 @@ def _unique_reference_resolution(
             return None
         resolved = scholarship_table_lookup(
             query,
-            structured_tables_registry,
+            selected_tables,
             cohort=cohort,
             slots=slots,
             table_id=table_id,
@@ -494,10 +467,17 @@ def _resolve_single_lookup(
     slots = decision.get("slots") or {}
 
     if lookup_type in _REFERENCE_TABLE_TYPES:
+        candidates = _select_reference_tables(lookup_type, slots, [
+            table for table in structured_tables_registry
+            if table.get("data_category") == "regulation_table"
+            and table.get("table_type") in _REFERENCE_TABLE_TYPES[lookup_type]
+            and is_validated_source_applicable(table, effective_cohort)
+            and isinstance(table.get("rows"), list) and table["rows"]
+        ])
         result = _reference_table_lookup(
             lookup_type,
             query=query,
-            registry=structured_tables_registry,
+            candidates=candidates,
             cohort=effective_cohort,
             slots=slots,
         )
@@ -515,13 +495,33 @@ def _resolve_single_lookup(
                 query=query,
                 slots=slots,
                 cohort=effective_cohort,
-                scoring_tables=scoring_tables,
-                foreign_language_tables=foreign_language_tables,
-                structured_tables_registry=structured_tables_registry,
+                selected_tables=candidates,
             )
             if resolved_result is not None:
+                source = candidates[0]
+                resolved_result = {
+                    **resolved_result,
+                    "cohort": effective_cohort,
+                    "source_cohort": source.get("source_cohort") or source.get("cohort"),
+                    "table_id": source.get("table_id"),
+                    "source_parent_id": source.get("source_parent_id") or source.get("source_section_id"),
+                }
                 result = dict(result)
                 result["resolved_result"] = resolved_result
+        # A planner-supplied request for missing information is not a resolved
+        # lookup merely because a reference table can be displayed. Do not
+        # infer personal intent from keywords or make list requests clarify.
+        clarification = decision.get("clarification_question")
+        if (result is not None and not result.get("needs_clarification")
+                and not result.get("resolved_result")
+                and decision.get("intent") == "direct_value"
+                and isinstance(clarification, str) and clarification.strip()):
+            result = {
+                "lookup_type": lookup_type, "cohort": effective_cohort,
+                "needs_clarification": True,
+                "clarification_question": clarification.strip(),
+                "content_type": "structured_lookup_clarification",
+            }
         return _resolution(
             lookup_type,
             "reference_table_lookup",

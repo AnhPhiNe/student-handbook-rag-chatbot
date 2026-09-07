@@ -93,6 +93,55 @@ def _ground_declared_literal_slots(
         ):
             continue
 
+        # Control selectors (for example scoring ``operation``) describe how
+        # to read a table, rather than a user-provided fact.  A planner can
+        # classify a paraphrase correctly even when that paraphrase is not in
+        # the registry's small alias list.  Preserve a valid canonical value
+        # in that case.  The existing local-repair contract still allows a
+        # supplied span to correct it when that span uniquely names another
+        # canonical value; importantly, this only inspects the task's span,
+        # never the compound query or a sibling task.
+        allowed_values = slot_spec.get("enum") or slot_spec.get("canonical_values") or []
+        if (
+            slot_name in UNGROUNDED_SCHEMA_SLOTS
+            and _is_present(current_value)
+            and allowed_values
+            and all(item in allowed_values for item in _as_values(current_value))
+        ):
+            if not _is_present(current_span):
+                same_value_matches: list[str] = []
+                for canonical_value, aliases in aliases_by_value.items():
+                    if str(canonical_value) not in {
+                        str(item) for item in _as_values(current_value)
+                    }:
+                        continue
+                    literal_aliases = [canonical_value, *(_as_values(aliases))]
+                    same_value_matches.extend(
+                        literal_span
+                        for alias in literal_aliases
+                        if (literal_span := _literal_query_span(query, alias))
+                    )
+                if same_value_matches:
+                    spans[slot_name] = max(same_value_matches, key=len)
+                continue
+            if not _span_is_grounded(current_span, query):
+                continue
+            span_matches: list[str] = []
+            for canonical_value, aliases in aliases_by_value.items():
+                literal_aliases = [canonical_value, *(_as_values(aliases))]
+                if any(
+                    _normalized_phrase_in_text(alias, literal_span)
+                    for alias in literal_aliases
+                    for literal_span in _as_values(current_span)
+                ):
+                    span_matches.append(str(canonical_value))
+            matched_span_values = set(span_matches)
+            if len(matched_span_values) != 1 or str(current_value) in matched_span_values:
+                continue
+            canonical_value = next(iter(matched_span_values))
+            slots[slot_name] = canonical_value
+            continue
+
         matches: list[tuple[str, str]] = []
         for canonical_value, aliases in aliases_by_value.items():
             literal_aliases = [canonical_value, *(_as_values(aliases))]

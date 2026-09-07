@@ -61,7 +61,7 @@ from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v66-scoring-selection-compact-facts"
+PIPELINE_VERSION = "v69-task-local-selector-grounding"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
 logger = logging.getLogger("student_handbook_rag.generation.answer_pipeline")
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
@@ -1151,6 +1151,7 @@ class AnswerPipeline:
 
         task_evidence: list[dict[str, Any]] = []
         cohort_coverage: dict[str, str] = {}
+        resolution_by_cohort: dict[str, str] = {}
         clarification_by_cohort: dict[str, str] = {}
         task_citations: list[dict[str, Any]] = []
         task_items: list[dict[str, Any]] = []
@@ -1173,6 +1174,8 @@ class AnswerPipeline:
                 )
             cohort_key = str(task_cohort or "default")
             cohort_coverage[cohort_key] = sub_result["coverage"]
+            if mode == "structured":
+                resolution_by_cohort[cohort_key] = sub_result.get("resolution_status", "unavailable")
             task_evidence.extend(sub_result.get("evidence") or [])
             task_citations.extend(sub_result.get("citations") or [])
             task_items.extend(sub_result.get("retrieved_items") or [])
@@ -1204,6 +1207,7 @@ class AnswerPipeline:
                 "cohorts": task_cohorts,
                 "coverage": coverage,
                 "coverage_by_cohort": cohort_coverage,
+                "resolution_by_cohort": resolution_by_cohort,
                 "clarification_by_cohort": clarification_by_cohort,
                 "evidence": task_evidence,
                 "citation_count": len(task_citations),
@@ -1341,6 +1345,7 @@ class AnswerPipeline:
             "cohort": cohort,
             "cohorts": [cohort] if cohort else [],
             "retrieval_query": task.get("question"),
+            "clarification_question": task.get("clarification_question"),
         }
         resolution = resolve_structured_decision(
             decision,
@@ -1360,6 +1365,7 @@ class AnswerPipeline:
         )
         if not resolution or not resolution.result:
             return {
+                "resolution_status": "unavailable",
                 "coverage": "uncovered",
                 "evidence": [],
                 "citations": [],
@@ -1367,6 +1373,7 @@ class AnswerPipeline:
             }
         if resolution.result_kind == "clarification":
             return {
+                "resolution_status": "needs_clarification",
                 "coverage": "needs_clarification",
                 "clarification_question": resolution.result.get(
                     "clarification_question"
@@ -1401,6 +1408,7 @@ class AnswerPipeline:
         return {
             "coverage": coverage,
             "evidence": [evidence],
+            "resolution_status": resolution.resolution_status if citations else "unavailable",
             "structured_result": evidence,
             "citations": citations,
             "related_references": related_references,

@@ -2,7 +2,7 @@ import re
 import unicodedata
 from typing import Any, Optional
 
-from src.common.cohort import normalize_cohort
+from src.common.cohort import is_validated_source_applicable, normalize_cohort
 
 
 def extract_number(query: str) -> Optional[float]:
@@ -86,6 +86,9 @@ def in_range(value: float, range_text: str) -> bool:
 
     text = range_text.lower().replace(",", ".").strip()
     nums = extract_numbers_from_text(text)
+
+    if "trở lên" in text and len(nums) == 1:
+        return value >= nums[0]
 
     # Handbook intervals may provide only an upper bound or both bounds.
     if "dưới" in text:
@@ -301,6 +304,59 @@ def _contains_letter_grade(text: str, grade: str) -> bool:
     normalized_grade = normalize_text(grade).upper()
     pattern = rf"(?<![A-Z0-9]){re.escape(normalized_grade)}(?![A-Z0-9+])"
     return re.search(pattern, normalized_text) is not None
+
+
+def scoring_lookup_from_reference(
+    slots: dict[str, Any], table: dict[str, Any], cohort: str | None = None,
+) -> Optional[dict[str, Any]]:
+    """Adapt one selected canonical table to the existing scoring operations.
+
+    This translates column names, not table selection or query meaning. Values
+    come only from the same rows used for evidence; the legacy scoring catalog
+    is deliberately not consulted.
+    """
+    if not is_validated_source_applicable(table, cohort):
+        return None
+    layouts = {
+        "grade_scale": ("grade_10_to_letter", {
+            "Loại": "status", "Thang điểm 10": "score_10_range", "Thang điểm chữ": "letter_grade"}),
+        "pass_fail_ungraded": ("grade_10_to_letter", {
+            "Kết quả": "status", "Thang điểm 10": "score_10_range", "Điểm chữ": "letter_grade"}),
+        "letter_to_grade4": ("letter_to_grade_4", {
+            "Thang điểm chữ": "letter_grade", "Thang điểm 4": "score_4"}),
+        "academic_classification": ("academic_classification", {
+            "Thang điểm 4": "range", "Xếp loại": "label"}),
+        "conduct_classification": ("conduct_classification", {
+            "Khung điểm": "range", "Xếp loại": "label"}),
+    }
+    layout = layouts.get(table.get("table_subtype"))
+    if layout is None:
+        return None
+    operation, fields = layout
+    rows = [{fields.get(key, key): value for key, value in row.items()}
+            for row in table.get("rows", []) if isinstance(row, dict)]
+    if operation == "letter_to_grade_4":
+        for row in rows:
+            try:
+                row["score_4"] = float(str(row["score_4"]).replace(",", "."))
+            except (KeyError, TypeError, ValueError):
+                return None
+    adapted = {**table, "table_id": operation, "lookup_group": operation, "rows": rows,
+               "cohort": normalize_cohort(cohort) or table.get("cohort"),
+               "source_section": table.get("source_parent_id") or table.get("source_section_id")}
+    effective_slots = dict(slots)
+    if table.get("table_subtype") == "pass_fail_ungraded" and slots.get("operation") == "pass_fail_ungraded":
+        effective_slots["operation"] = "pass_threshold"
+    resolved = structured_lookup_from_slots(effective_slots, [adapted], cohort=cohort)
+    if resolved is None:
+        return None
+    # Replace the private operation identifier with the actual source identity.
+    for item in resolved.get("items") or []:
+        if isinstance(item, dict) and "table_id" in item:
+            item["table_id"] = table.get("table_id")
+    return {**resolved, "table_id": table.get("table_id"),
+            "source_parent_id": table.get("source_parent_id") or table.get("source_section_id"),
+            "source_cohort": table.get("source_cohort") or table.get("cohort")}
 
 
 def structured_lookup_from_slots(

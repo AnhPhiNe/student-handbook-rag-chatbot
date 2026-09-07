@@ -313,6 +313,7 @@ def _composition_units(
                     "mode": str(task.get("mode") or result.get("mode") or "rag"),
                     "cohort": cohort_key,
                     "coverage": coverage,
+                    "resolution_status": (result.get("resolution_by_cohort") or {}).get(cohort_key),
                     "clarification_question": clarification_question,
                 }
             )

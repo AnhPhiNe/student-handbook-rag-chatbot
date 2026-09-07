@@ -765,7 +765,7 @@ def test_scoring_explicit_ungraded_scope_keeps_ungraded_selector() -> None:
     assert plan["tasks"][0]["slots"]["course_scope"] == "pass_fail_ungraded"
 
 
-def test_scoring_facets_merge_without_losing_grounded_scope_and_score() -> None:
+def test_scoring_facets_preserve_distinct_operations_and_inputs() -> None:
     query = "Học phần còn lại được 5,2: bảng K51 ghi D+ và trạng thái đạt hay không đạt?"
     first = {
         **_rag_task(1, "Học phần còn lại được 5,2 tương ứng điểm chữ gì?"),
@@ -807,12 +807,10 @@ def test_scoring_facets_merge_without_losing_grounded_scope_and_score() -> None:
     )
 
     assert errors == []
-    assert len(plan["tasks"]) == 1
-    assert plan["tasks"][0]["slots"] == {
-        "operation": "pass_threshold",
-        "score_or_grade": "5,2",
-        "course_scope": "remaining",
-    }
+    assert len(plan["tasks"]) == 2
+    assert plan["tasks"][0]["slots"]["score_or_grade"] == "5,2"
+    assert plan["tasks"][0]["slots"]["course_scope"] == "remaining"
+    assert plan["tasks"][1]["slots"]["operation"] == "pass_threshold"
 
 
 def test_table_first_drops_optional_slot_outside_declared_domain() -> None:

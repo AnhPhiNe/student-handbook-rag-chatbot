@@ -20,7 +20,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v20-grounded-scoring-scope"
+QUERY_PLAN_NORMALIZER_VERSION = "v22-task-local-selector-grounding"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
@@ -515,6 +515,7 @@ def _normalize_task(
     lookup_type = str(lookup_type).strip().lower() if lookup_type else None
     intent = str(raw_task.get("intent") or "open_question").strip().lower()
     clarification = str(raw_task.get("clarification_question") or "").strip() or None
+    normalization_warnings: list[str] = []
     slots = (
         dict(raw_task.get("slots")) if isinstance(raw_task.get("slots"), dict) else {}
     )
@@ -596,7 +597,11 @@ def _normalize_task(
             "slot_spans": spans,
             "retrieval_query": question,
         },
-        query=original_query,
+        # Infer declared aliases from this task's self-contained question.
+        # Keep the complete user query below for grounding validation so a
+        # task-local paraphrase cannot introduce values absent from the
+        # original/history context.
+        query=question,
         selected_cohort=cohorts[0] if cohorts else selected_cohort,
         registry=registry,
     )
@@ -630,6 +635,13 @@ def _normalize_task(
             and error.partition(":")[2] not in required_slots
         }
         if optional_invalid:
+            normalization_warnings = list(
+                dict.fromkeys(
+                    error
+                    for error in validation_errors
+                    if error.partition(":")[2] in optional_invalid
+                )
+            )
             # Optional row hints must never discard an otherwise valid small
             # reference table. Drop invalid or ungrounded hints and let the
             # composer select from the complete applicable table.
@@ -678,6 +690,7 @@ def _normalize_task(
                 clarification=clarification
                 or "Bạn có thể bổ sung thông tin còn thiếu để mình tra đúng bảng không?",
                 validation_errors=errors,
+                normalization_warnings=normalization_warnings,
             ), errors
 
         # A structured task must never reach the executor with unresolved
@@ -696,6 +709,11 @@ def _normalize_task(
             "cohorts": cohorts,
             "clarification_question": None,
             "validation_errors": errors.copy(),
+            **(
+                {"normalization_warnings": normalization_warnings}
+                if normalization_warnings
+                else {}
+            ),
         }, errors
 
     return {
@@ -709,6 +727,11 @@ def _normalize_task(
         "cohorts": decision.get("cohorts") or cohorts,
         "clarification_question": clarification,
         "validation_errors": errors.copy(),
+        **(
+            {"normalization_warnings": normalization_warnings}
+            if normalization_warnings
+            else {}
+        ),
     }, errors
 
 
@@ -753,8 +776,9 @@ def _clarify_task(
     cohorts: list[str] | None = None,
     clarification: str | None = None,
     validation_errors: list[str] | None = None,
+    normalization_warnings: list[str] | None = None,
 ) -> dict[str, Any]:
-    return {
+    task = {
         "id": task_id,
         "question": question,
         "mode": "clarify",
@@ -767,6 +791,9 @@ def _clarify_task(
         or "Bạn có thể nói rõ hơn phần thông tin cần tra cứu không?",
         "validation_errors": validation_errors or [],
     }
+    if normalization_warnings:
+        task["normalization_warnings"] = list(dict.fromkeys(normalization_warnings))
+    return task
 
 
 def _normalize_span_value(value: Any, source_text: str) -> Any:
@@ -803,7 +830,7 @@ def _merge_compatible_structured_tasks(
     original_query: str,
     registry: dict[str, Any],
 ) -> list[dict[str, Any]]:
-    """Keep multiple entities in one logical task without adding recursive planning."""
+    """Deduplicate identical lookups without discarding distinct input slots."""
     merged: list[dict[str, Any]] = []
     index_by_key: dict[tuple[Any, ...], int] = {}
     for task in tasks:
@@ -821,53 +848,26 @@ def _merge_compatible_structured_tasks(
             merged.append(task)
             continue
         existing = merged[existing_index]
-        existing["question"] = original_query
-        existing["cohorts"] = list(
-            dict.fromkeys((existing.get("cohorts") or []) + (task.get("cohorts") or []))
-        )
-        # Keep facts that do not conflict across facets of the same lookup.
-        # Conflicting scalar selectors are dropped, then grounded again from
-        # the complete query. Multi-entity lookups still lose their conflicting
-        # scalar values and therefore keep the existing full-table behavior.
-        existing_slots = dict(existing.get("slots") or {})
-        existing_spans = dict(existing.get("slot_spans") or {})
-        incoming_slots = dict(task.get("slots") or {})
-        incoming_spans = dict(task.get("slot_spans") or {})
-        for slot_name in set(existing_slots) | set(incoming_slots):
-            existing_present = _task_slot_is_present(existing_slots.get(slot_name))
-            incoming_present = _task_slot_is_present(incoming_slots.get(slot_name))
-            if existing_present and incoming_present:
-                if existing_slots[slot_name] != incoming_slots[slot_name]:
-                    existing_slots.pop(slot_name, None)
-                    existing_spans.pop(slot_name, None)
-                continue
-            if incoming_present:
-                existing_slots[slot_name] = incoming_slots[slot_name]
-                if slot_name in incoming_spans:
-                    existing_spans[slot_name] = incoming_spans[slot_name]
-
-        regrounded = normalize_router_decision(
-            {
-                "route": "structured",
-                "execution_mode": "structured",
-                "intent": existing.get("intent"),
-                "lookup_type": existing.get("lookup_type"),
-                "cohorts": existing.get("cohorts") or [],
-                "slots": existing_slots,
-                "slot_spans": existing_spans,
-            },
-            query=original_query,
-            selected_cohort=(existing.get("cohorts") or [None])[0],
-            registry=registry,
-        )
-        existing["slots"] = regrounded.get("slots") or {}
-        existing["slot_spans"] = regrounded.get("slot_spans") or {}
+        # Missing and conflicting selectors are both meaningful. Never repair
+        # a merge by deleting operands and re-reading the compound question.
+        if (existing.get("slots") or {}) != (task.get("slots") or {}):
+            merged.append(task)
+            continue
+        # With identical selectors, retain the first grounded task unchanged.
         existing["validation_errors"] = list(
             dict.fromkeys(
                 (existing.get("validation_errors") or [])
                 + (task.get("validation_errors") or [])
             )
         )
+        warnings = list(
+            dict.fromkeys(
+                (existing.get("normalization_warnings") or [])
+                + (task.get("normalization_warnings") or [])
+            )
+        )
+        if warnings:
+            existing["normalization_warnings"] = warnings
     return merged
 
 

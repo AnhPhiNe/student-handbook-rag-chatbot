@@ -1,4 +1,4 @@
-version: 5
+version: 6
 
 tools:
   foreign_language:
@@ -14,6 +14,7 @@ tools:
     slot_schema:
       certificate_or_language:
         type: string
+        verification_role: directory_entity
         examples: [IELTS, TOEFL, JLPT, HSK, TOPIK]
         span_aliases:
           IELTS: [IELTS]
@@ -26,6 +27,7 @@ tools:
           TCF_DELF: [TCF, DELF, TCF DELF]
       score_or_level:
         type: [string, number]
+        verification_role: result_input
         examples: [5.5, N3, HSK4, TOPIK3]
         span_aliases:
           N1: [N1]
@@ -33,10 +35,18 @@ tools:
           N3: [N3]
           N4: [N4]
           N5: [N5]
-      listening_score: {type: [string, number]}
-      reading_score: {type: [string, number]}
-      speaking_score: {type: [string, number]}
-      writing_score: {type: [string, number]}
+      listening_score:
+        type: [string, number]
+        verification_role: result_input
+      reading_score:
+        type: [string, number]
+        verification_role: result_input
+      speaking_score:
+        type: [string, number]
+        verification_role: result_input
+      writing_score:
+        type: [string, number]
+        verification_role: result_input
     strategy: foreign_language_lookup
     response_intent: foreign_language_lookup_query
     target_chunk_types: [structured_lookup]
@@ -54,12 +64,14 @@ tools:
     slot_schema:
       training_mode:
         type: string
+        verification_role: result_input
         enum: [chinh_quy, vua_lam_vua_hoc]
         span_aliases:
           chinh_quy: [chính quy]
           vua_lam_vua_hoc: [vừa làm vừa học, VLVH]
       program_type:
         type: string
+        verification_role: result_input
         canonical_values: [first_degree, college_bridge, secondary_bridge, second_degree]
         span_aliases:
           first_degree: [cấp bằng thứ nhất, bằng thứ nhất, cử nhân, first degree]
@@ -90,6 +102,7 @@ tools:
     slot_schema:
       aspect:
         type: string
+        verification_role: reading_intent
         enum: [amount, classification]
         description: Khía cạnh học bổng được hỏi; để trống khi câu hỏi yêu cầu tổng quan.
         span_aliases:
@@ -97,6 +110,7 @@ tools:
           classification: [xếp loại, loại học bổng]
       score_or_label:
         type: [string, number]
+        verification_role: result_input
         description: Điểm hoặc tên mức xếp loại được hỏi.
     table_selector:
       slot: aspect
@@ -124,6 +138,7 @@ tools:
     slot_schema:
       operation:
         type: string
+        verification_role: reading_intent
         enum: [grade_10_to_letter, pass_fail_ungraded, letter_to_grade_4, academic_classification, conduct_classification, pass_threshold]
         span_aliases:
           grade_10_to_letter: [quy đổi điểm chữ, đổi sang điểm chữ, điểm chữ gì]
@@ -132,9 +147,12 @@ tools:
           academic_classification: [xếp loại học lực, loại học lực]
           conduct_classification: [xếp loại rèn luyện, loại rèn luyện]
           pass_threshold: [qua môn, qua học phần, học phần đạt, học phần chưa đạt, đạt hay không đạt, có đạt không, rớt môn, trượt môn, điểm tối thiểu]
-      score_or_grade: {type: [string, number]}
+      score_or_grade:
+        type: [string, number]
+        verification_role: result_input
       course_scope:
         type: string
+        verification_role: result_input
         enum: [foundation, remaining, pass_fail_ungraded]
         span_aliases:
           foundation: [học phần nền tảng, học phần chung, học phần giáo dục đại cương]
@@ -186,9 +204,11 @@ tools:
     slot_schema:
       service:
         type: string
+        verification_role: directory_entity
         description: Dịch vụ cần hỗ trợ, không phải tên đơn vị.
       requested_field:
         type: string
+        verification_role: reading_intent
         enum: [unit, phone, email, office, website, all]
         span_aliases:
           unit: [đơn vị, don vi, bộ phận, bo phan]
@@ -213,9 +233,12 @@ tools:
     required_slots:
       contact: [office, requested_field]
     slot_schema:
-      office: {type: string}
+      office:
+        type: string
+        verification_role: directory_entity
       requested_field:
         type: string
+        verification_role: reading_intent
         enum: [phone, email, office, website, services, all]
         span_aliases:
           phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, sđt, sdt, phone]
@@ -240,9 +263,12 @@ tools:
     required_slots:
       contact: [faculty, requested_field]
     slot_schema:
-      faculty: {type: string}
+      faculty:
+        type: string
+        verification_role: directory_entity
       requested_field:
         type: string
+        verification_role: reading_intent
         enum: [phone, email, office, website, all]
         span_aliases:
           phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, sđt, sdt, phone]
@@ -267,12 +293,16 @@ tools:
       list_items: [scope]
       exists: [program_or_faculty]
     slot_schema:
-      program_or_faculty: {type: string}
+      program_or_faculty:
+        type: string
+        verification_role: directory_entity
       requested_field:
         type: string
+        verification_role: reading_intent
         enum: [faculty, programs, exists, all]
       scope:
         type: string
+        verification_role: reading_intent
         enum: [school, faculty]
         grounding_intents: [list_items]
         span_aliases:
@@ -291,6 +321,7 @@ tools:
     slot_schema:
       formula_type:
         type: string
+        verification_role: reading_intent
         enum: [scholarship_score, gpa_weighted_average]
     strategy: formula_lookup
     response_intent: formula_query

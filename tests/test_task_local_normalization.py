@@ -7,6 +7,11 @@ from typing import Any
 import pytest
 
 from src.retrieval.core.query_plan import normalize_query_plan
+from src.retrieval.core.structured_routing import (
+    load_lookup_registry,
+    normalize_router_decision,
+    validate_router_decision,
+)
 
 
 def _plan(tasks: list[dict[str, Any]]) -> dict[str, Any]:
@@ -27,16 +32,19 @@ def _structured(
     *,
     slots: dict[str, Any],
     slot_spans: dict[str, Any],
+    lookup_type: str = "scoring",
+    intent: str = "direct_value",
+    cohorts: list[str] | None = None,
 ) -> dict[str, Any]:
     return {
         "id": task_id,
         "question": question,
         "mode": "structured",
-        "intent": "direct_value",
-        "lookup_type": "scoring",
+        "intent": intent,
+        "lookup_type": lookup_type,
         "slots": slots,
         "slot_spans": slot_spans,
-        "cohorts": ["K51"],
+        "cohorts": cohorts or ["K51"],
     }
 
 
@@ -48,6 +56,331 @@ def _normalize(tasks: list[dict[str, Any]], query: str) -> dict[str, Any]:
     )
     assert errors == []
     return plan
+
+
+def test_registry_declares_slot_verification_roles_without_name_allowlist() -> None:
+    registry = load_lookup_registry()
+
+    assert registry["version"] == 6
+    assert registry["tools"]["scholarship_classification"]["slot_schema"]["aspect"][
+        "verification_role"
+    ] == "reading_intent"
+    assert registry["tools"]["scoring"]["slot_schema"]["score_or_grade"][
+        "verification_role"
+    ] == "result_input"
+    assert registry["tools"]["student_service"]["slot_schema"]["service"][
+        "verification_role"
+    ] == "directory_entity"
+
+
+@pytest.mark.parametrize(
+    ("value", "error"),
+    [(42, "invalid_slot_type:aspect"), ("invented_aspect", "invalid_slot_value:aspect")],
+)
+def test_reading_intent_selector_still_enforces_type_and_enum(
+    value: Any, error: str,
+) -> None:
+    query = "Học bổng xuất sắc cần thông tin gì?"
+    decision = normalize_router_decision(
+        {
+            "route": "structured",
+            "execution_mode": "structured",
+            "intent": "direct_value",
+            "lookup_type": "scholarship_classification",
+            "slots": {"aspect": value, "score_or_label": "xuất sắc"},
+            "slot_spans": {"score_or_label": "xuất sắc"},
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert error in validate_router_decision(
+        decision,
+        query=query,
+        selected_cohort="K51",
+    )
+
+
+@pytest.mark.parametrize(
+    ("query", "aspect", "aspect_span"),
+    [
+        (
+            "Khoản hỗ trợ học bổng xuất sắc tính như thế nào?",
+            "amount",
+            "khoản hỗ trợ",
+        ),
+        (
+            "Mức xếp hạng học bổng xuất sắc cần gì?",
+            "classification",
+            "mức xếp hạng",
+        ),
+    ],
+)
+def test_reading_intent_selector_preserves_unseen_paraphrase(
+    query: str, aspect: str, aspect_span: str,
+) -> None:
+    task = {
+        **_structured(
+            "t1",
+            query,
+            lookup_type="scholarship_classification",
+            slots={"aspect": aspect, "score_or_label": "xuất sắc"},
+            slot_spans={
+                "aspect": aspect_span,
+                "score_or_label": "xuất sắc",
+            },
+        ),
+    }
+
+    plan, errors = normalize_query_plan(_plan([task]), query=query)
+
+    assert errors == []
+    assert plan["tasks"][0]["mode"] == "structured"
+    assert plan["tasks"][0]["slots"] == {
+        "aspect": aspect,
+        "score_or_label": "xuất sắc",
+    }
+    assert plan["tasks"][0]["slot_spans"]["aspect"] == aspect_span
+
+
+def test_undeclared_slot_role_defaults_to_source_grounding() -> None:
+    registry = {
+        "tools": {
+            "custom": {
+                "intents": ["direct_value"],
+                "required_slots": {"direct_value": ["value"]},
+                "slot_schema": {
+                    "value": {
+                        "type": "string",
+                        "enum": ["known"],
+                        "span_aliases": {"known": ["known"]},
+                    }
+                },
+            }
+        }
+    }
+    query = "A paraphrased request without the literal."
+    decision = normalize_router_decision(
+        {
+            "route": "structured",
+            "execution_mode": "structured",
+            "intent": "direct_value",
+            "lookup_type": "custom",
+            "slots": {"value": "known"},
+            "slot_spans": {},
+        },
+        query=query,
+        registry=registry,
+    )
+
+    assert validate_router_decision(decision, query=query, registry=registry) == [
+        "missing_slot_span:value"
+    ]
+
+
+def test_negated_selector_in_sibling_query_does_not_leak_into_task() -> None:
+    query = "Không hỏi mức tiền học bổng; học bổng xuất sắc cần điều kiện gì?"
+    task = {
+        **_structured(
+            "t1",
+            "Học bổng xuất sắc cần điều kiện gì?",
+            lookup_type="scholarship_classification",
+            slots={"score_or_label": "xuất sắc"},
+            slot_spans={"score_or_label": "xuất sắc"},
+        ),
+    }
+
+    plan, errors = normalize_query_plan(_plan([task]), query=query)
+
+    assert errors == []
+    assert plan["tasks"][0]["mode"] == "structured"
+    assert "aspect" not in plan["tasks"][0]["slots"]
+
+
+def test_single_rewritten_service_task_uses_original_source_for_fallback() -> None:
+    query = "Chưa biết sử dụng thư viện thì nhờ ai hướng dẫn?"
+    task = _structured(
+        "t1",
+        "Đơn vị nào phụ trách hướng dẫn sử dụng thư viện cho sinh viên chưa biết sử dụng?",
+        lookup_type="student_service",
+        intent="contact",
+        slots={
+            "service": "Hướng dẫn sinh viên sử dụng thư viện",
+            "requested_field": "unit",
+        },
+        slot_spans={},
+        cohorts=["K50"],
+    )
+
+    plan, errors = normalize_query_plan(_plan([task]), query=query)
+
+    assert errors == []
+    normalized = plan["tasks"][0]
+    assert normalized["mode"] == "structured"
+    assert normalized["slots"]["service"] == query
+    assert normalized["slot_spans"]["service"] == query
+    assert normalized["slots"]["requested_field"] == "unit"
+
+
+@pytest.mark.parametrize(
+    ("query", "task_question", "service", "service_span"),
+    [
+        (
+            "Chưa biết sử dụng thư viện thì nhờ ai hướng dẫn?",
+            "Đơn vị nào phụ trách hướng dẫn sử dụng thư viện cho sinh viên?",
+            "Hướng dẫn sinh viên sử dụng thư viện",
+            "Hướng dẫn sinh viên sử dụng thư viện",
+        ),
+        (
+            "Mình muốn đăng ký mượn phòng học, hỏi đơn vị nào hỗ trợ?",
+            "Đơn vị nào phụ trách đặt phòng học cho sinh viên?",
+            "Đặt phòng học",
+            "Đặt phòng học",
+        ),
+    ],
+)
+def test_single_rewritten_service_paraphrase_span_is_checked_against_original(
+    query: str,
+    task_question: str,
+    service: str,
+    service_span: str,
+) -> None:
+    task = _structured(
+        "t1",
+        task_question,
+        lookup_type="student_service",
+        intent="contact",
+        slots={"service": service, "requested_field": "unit"},
+        slot_spans={"service": service_span},
+        cohorts=["K51"],
+    )
+
+    plan, errors = normalize_query_plan(_plan([task]), query=query)
+
+    assert errors == []
+    normalized = plan["tasks"][0]
+    assert normalized["mode"] == "structured"
+    assert normalized["slots"]["service"] == query
+    assert normalized["slot_spans"]["service"] == query
+
+
+def test_single_rewritten_service_keeps_faithful_original_phrase_absent_from_task() -> None:
+    query = "Mình muốn mượn phòng học, xin hỏi đơn vị nào hỗ trợ?"
+    task = _structured(
+        "t1",
+        "Đơn vị nào phụ trách việc đặt chỗ cho sinh viên?",
+        lookup_type="student_service",
+        intent="contact",
+        slots={"service": "mượn phòng học", "requested_field": "unit"},
+        slot_spans={"service": "mượn phòng học"},
+        cohorts=["K51"],
+    )
+
+    plan, errors = normalize_query_plan(_plan([task]), query=query)
+
+    assert errors == []
+    normalized = plan["tasks"][0]
+    assert normalized["mode"] == "structured"
+    assert normalized["slots"]["service"] == "mượn phòng học"
+    assert normalized["slot_spans"]["service"] == "mượn phòng học"
+
+
+def test_single_rewritten_service_hallucinated_span_falls_back_to_original() -> None:
+    query = "Mình muốn mượn phòng học, xin hỏi đơn vị nào hỗ trợ?"
+    task = _structured(
+        "t1",
+        "Đơn vị nào phụ trách việc đặt chỗ cho sinh viên?",
+        lookup_type="student_service",
+        intent="contact",
+        slots={"service": "Cấp bảng điểm", "requested_field": "unit"},
+        slot_spans={"service": "Cấp bảng điểm"},
+        cohorts=["K51"],
+    )
+
+    plan, errors = normalize_query_plan(_plan([task]), query=query)
+
+    assert errors == []
+    normalized = plan["tasks"][0]
+    assert normalized["mode"] == "structured"
+    assert normalized["slots"]["service"] == query
+    assert normalized["slot_spans"]["service"] == query
+
+
+def test_compound_rewritten_service_task_does_not_receive_whole_query() -> None:
+    query = (
+        "Chưa biết sử dụng thư viện thì nhờ ai hướng dẫn, còn muốn in giáo trình "
+        "thì liên hệ đâu?"
+    )
+    first = _structured(
+        "t1",
+        "Đơn vị nào phụ trách hướng dẫn sử dụng thư viện cho sinh viên chưa biết sử dụng?",
+        lookup_type="student_service",
+        intent="contact",
+        slots={
+            "service": "Hướng dẫn sinh viên sử dụng thư viện",
+            "requested_field": "unit",
+        },
+        slot_spans={"service": "Hướng dẫn sinh viên sử dụng thư viện"},
+        cohorts=["K50"],
+    )
+    second = _structured(
+        "t2",
+        "Muốn in giáo trình thì liên hệ đâu?",
+        lookup_type="student_service",
+        intent="contact",
+        slots={
+            "service": "In ấn giáo trình",
+            "requested_field": "unit",
+        },
+        slot_spans={},
+        cohorts=["K50"],
+    )
+
+    plan, errors = normalize_query_plan(_plan([first, second]), query=query)
+
+    assert len(errors) == 1
+    assert "t1:ungrounded_slot:service" in errors
+    assert [task["mode"] for task in plan["tasks"]] == ["clarify", "structured"]
+    assert plan["tasks"][1]["slots"]["service"] == second["question"]
+    assert plan["tasks"][1]["slots"]["service"] != query
+
+
+def test_multi_cohort_service_fallback_keeps_source_and_cohorts() -> None:
+    query = "K50 và K51 muốn mượn phòng học thì hỏi đơn vị nào?"
+    task = _structured(
+        "t1",
+        "Đơn vị nào phụ trách cho mượn phòng học?",
+        lookup_type="student_service",
+        intent="contact",
+        slots={"service": "Mượn phòng học", "requested_field": "unit"},
+        slot_spans={},
+        cohorts=["K50", "K51"],
+    )
+
+    plan, errors = normalize_query_plan(_plan([task]), query=query)
+
+    assert errors == []
+    normalized = plan["tasks"][0]
+    assert normalized["mode"] == "structured"
+    assert normalized["cohorts"] == ["K50", "K51"]
+    assert normalized["slots"]["service"] == query
+
+
+def test_unsupported_directory_entity_still_requires_grounded_source() -> None:
+    query = "Email Khoa Toán là gì?"
+    task = _structured(
+        "t1",
+        query,
+        lookup_type="faculty",
+        intent="contact",
+        slots={"faculty": "Khoa Không tồn tại", "requested_field": "email"},
+        slot_spans={"faculty": "Khoa Không tồn tại"},
+    )
+
+    plan, errors = normalize_query_plan(_plan([task]), query=query)
+
+    assert "t1:ungrounded_slot:faculty" in errors
+    assert plan["tasks"][0]["mode"] == "clarify"
 
 
 def test_compound_scoring_tasks_keep_distinct_operations() -> None:

@@ -25,15 +25,17 @@ COHORT_SCOPED_LOOKUPS = {
     "scoring",
     "formula",
 }
-UNGROUNDED_SCHEMA_SLOTS = {
-    "action",
-    "formula_type",
-    "operation",
-    "requested_field",
-    "scope",
-    "source_scale",
-    "target_scale",
-}
+SLOT_VERIFICATION_ROLES = frozenset(
+    {"reading_intent", "result_input", "directory_entity"}
+)
+DEFAULT_SLOT_VERIFICATION_ROLE = "result_input"
+
+
+def _slot_verification_role(slot_spec: dict[str, Any] | None) -> str:
+    """Return a registry-declared slot role, defaulting to strict grounding."""
+
+    role = str((slot_spec or {}).get("verification_role") or "").strip().lower()
+    return role if role in SLOT_VERIFICATION_ROLES else DEFAULT_SLOT_VERIFICATION_ROLE
 
 
 def _normalize_text(value: Any) -> str:
@@ -93,21 +95,23 @@ def _ground_declared_literal_slots(
         ):
             continue
 
-        # Control selectors (for example scoring ``operation``) describe how
-        # to read a table, rather than a user-provided fact.  A planner can
-        # classify a paraphrase correctly even when that paraphrase is not in
-        # the registry's small alias list.  Preserve a valid canonical value
-        # in that case.  The existing local-repair contract still allows a
-        # supplied span to correct it when that span uniquely names another
-        # canonical value; importantly, this only inspects the task's span,
-        # never the compound query or a sibling task.
+        # Reading-intent selectors (for example scoring ``operation`` or
+        # scholarship ``aspect``) describe how to read a table, rather than a
+        # user-provided fact.  A planner can classify a paraphrase correctly
+        # even when that paraphrase is not in the registry's small alias list.
+        # Preserve a valid canonical value in that case.  The existing
+        # local-repair contract still allows a supplied span to correct it
+        # when that span uniquely names another canonical value; importantly,
+        # this only inspects the task's span, never the compound query or a
+        # sibling task.
         allowed_values = slot_spec.get("enum") or slot_spec.get("canonical_values") or []
         if (
-            slot_name in UNGROUNDED_SCHEMA_SLOTS
+            _slot_verification_role(slot_spec) == "reading_intent"
             and _is_present(current_value)
-            and allowed_values
-            and all(item in allowed_values for item in _as_values(current_value))
+            and _slot_value_matches_contract(current_value, slot_spec)
         ):
+            if not allowed_values:
+                continue
             if not _is_present(current_span):
                 same_value_matches: list[str] = []
                 for canonical_value, aliases in aliases_by_value.items():
@@ -171,10 +175,18 @@ def _infer_explicit_structured_slots(
     spec: dict[str, Any] | None,
     slots: dict[str, Any],
     spans: dict[str, Any],
+    source_query: str | None = None,
 ) -> None:
-    """Fill slots that are explicitly present in the query but missed by the router."""
+    """Fill explicit slots while keeping planner tasks isolated.
+
+    ``source_query`` is an optional trusted source for the student-service
+    fallback.  Callers should provide it only when the source belongs to this
+    task; a compound query must not be copied into every task's service slot.
+    """
 
     raw_query = str(query or "")
+    trusted_source_query = str(source_query or "").strip()
+    service_grounding_query = trusted_source_query or raw_query
     _ground_declared_literal_slots(
         query,
         intent=intent,
@@ -185,8 +197,11 @@ def _infer_explicit_structured_slots(
 
     if lookup_type == "student_service":
         # Preserve a compact service phrase only when the planner copied it
-        # faithfully from the query. Otherwise use the complete query instead
-        # of accepting an invented paraphrase as the retrieval identity.
+        # faithfully from the trusted source. When a single-task caller has
+        # supplied the original user query, the planner's task question may be
+        # a paraphrase and cannot be the grounding authority. Otherwise use
+        # the complete trusted source instead of accepting an invented
+        # paraphrase as the retrieval identity.
         service = slots.get("service")
         service_span = spans.get("service")
         grounded_service = (
@@ -194,11 +209,12 @@ def _infer_explicit_structured_slots(
             and isinstance(service_span, str)
             and bool(_normalize_text(service))
             and _normalize_text(service) == _normalize_text(service_span)
-            and _normalize_text(service_span) in _normalize_text(raw_query)
+            and _normalize_text(service_span) in _normalize_text(service_grounding_query)
         )
         if not grounded_service:
-            slots["service"] = raw_query
-            spans["service"] = raw_query
+            fallback_query = trusted_source_query or raw_query
+            slots["service"] = fallback_query
+            spans["service"] = fallback_query
 
 
 @lru_cache(maxsize=4)
@@ -257,8 +273,15 @@ def normalize_router_decision(
     query: str,
     selected_cohort: str | None = None,
     registry: dict[str, Any] | None = None,
+    source_query: str | None = None,
 ) -> dict[str, Any]:
-    """Normalize a raw router decision to the stable contract."""
+    """Normalize a raw router decision to the stable contract.
+
+    ``query`` remains the task-local text used for selector/entity inference.
+    ``source_query`` is reserved for a caller that can prove the original
+    source belongs to this task and is used only by the student-service
+    fallback.
+    """
 
     raw_route = str(payload.get("route") or "rag").strip().lower()
     raw_execution_mode = str(payload.get("execution_mode") or "").strip().lower()
@@ -394,6 +417,7 @@ def normalize_router_decision(
         spec=spec,
         slots=slots,
         spans=spans,
+        source_query=source_query,
     )
 
     return {
@@ -537,6 +561,20 @@ def _matches_type(value: Any, expected: str) -> bool:
     return True
 
 
+def _slot_value_matches_contract(value: Any, schema: dict[str, Any]) -> bool:
+    """Check type and enum validity without requiring a source span."""
+
+    expected_types = schema.get("type") or []
+    if isinstance(expected_types, str):
+        expected_types = [expected_types]
+    if expected_types and not any(
+        _matches_type(value, expected) for expected in expected_types
+    ):
+        return False
+    allowed = schema.get("enum") or schema.get("canonical_values") or []
+    return not allowed or all(item in allowed for item in _as_values(value))
+
+
 def _validate_slot_contract(slots: dict[str, Any], spec: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     slot_schema = spec.get("slot_schema") or {}
@@ -586,7 +624,7 @@ def validate_fact_lock_inputs(
     grounded_value_slots = 0
     for slot_name, value in slots.items():
         if (
-            slot_name in UNGROUNDED_SCHEMA_SLOTS
+            _slot_verification_role(slot_schema.get(slot_name)) == "reading_intent"
             or slot_name not in slot_schema
             or not _is_present(value)
         ):
@@ -686,7 +724,7 @@ def validate_router_decision(
         if not _is_present(slots.get(slot_name)):
             errors.append(f"missing_slot:{slot_name}")
             continue
-        if slot_name in UNGROUNDED_SCHEMA_SLOTS:
+        if _slot_verification_role(slot_schema.get(slot_name)) == "reading_intent":
             continue
         if not _is_present(spans.get(slot_name)):
             errors.append(f"missing_slot_span:{slot_name}")
@@ -702,7 +740,7 @@ def validate_router_decision(
     for slot_name, value in slots.items():
         if (
             slot_name in required
-            or slot_name in UNGROUNDED_SCHEMA_SLOTS
+            or _slot_verification_role(slot_schema.get(slot_name)) == "reading_intent"
             or slot_name not in declared_slots
             or not _is_present(value)
         ):

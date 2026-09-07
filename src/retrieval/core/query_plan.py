@@ -20,7 +20,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v22-task-local-selector-grounding"
+QUERY_PLAN_NORMALIZER_VERSION = "v24-trusted-service-source-grounding"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
@@ -410,6 +410,7 @@ def normalize_query_plan(
 
     errors: list[str] = []
     tasks: list[dict[str, Any]] = []
+    service_source_query = query if len(raw_tasks) == 1 else None
     for index, raw_task in enumerate(raw_tasks, start=1):
         if not isinstance(raw_task, dict):
             errors.append(f"task_{index}:invalid_object")
@@ -421,6 +422,7 @@ def normalize_query_plan(
             selected_cohort=default_cohort,
             grounding_context=grounding_context,
             registry=registry,
+            service_source_query=service_source_query,
         )
         tasks.append(task)
         errors.extend(f"{task['id']}:{error}" for error in task_errors)
@@ -477,6 +479,7 @@ def _normalize_task(
     selected_cohort: str | None,
     grounding_context: str,
     registry: dict[str, Any],
+    service_source_query: str | None = None,
 ) -> tuple[dict[str, Any], list[str]]:
     """Normalize and validate one planner task without invalidating siblings.
 
@@ -604,6 +607,7 @@ def _normalize_task(
         query=question,
         selected_cohort=cohorts[0] if cohorts else selected_cohort,
         registry=registry,
+        source_query=service_source_query,
     )
     validation_errors = validate_router_decision(
         decision,

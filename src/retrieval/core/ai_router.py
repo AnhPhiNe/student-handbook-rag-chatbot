@@ -6,6 +6,10 @@ import os
 import re
 import threading
 import time
+from collections.abc import Iterator
+from contextlib import contextmanager
+from contextvars import ContextVar
+from copy import deepcopy
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from email.utils import parsedate_to_datetime
@@ -25,6 +29,7 @@ from .structured_routing import (
 )
 from .query_plan import (
     QUERY_PLAN_NORMALIZER_VERSION,
+    QUERY_PLAN_SCHEMA_VERSION,
     safe_rag_fallback_plan,
     normalize_query_plan,
     query_plan_json_schema,
@@ -34,6 +39,226 @@ from .query_plan import (
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.8-27b"
 ROUTER_PROMPT_VERSION = "structured-regulation-v41-explicit-request-count"
+PLANNER_DIAGNOSTIC_SCHEMA_VERSION = "planner-decision-diagnostics-v1"
+_planner_diagnostics_scope: ContextVar[bool] = ContextVar(
+    "planner_diagnostics_scope", default=False
+)
+
+
+@contextmanager
+def planner_diagnostics_scope(enabled: bool) -> Iterator[None]:
+    """Enable planner capture only inside an explicit evaluation scope."""
+    token = _planner_diagnostics_scope.set(bool(enabled))
+    try:
+        yield
+    finally:
+        _planner_diagnostics_scope.reset(token)
+
+_PLANNER_DIAGNOSTIC_DECISION_FIELDS = (
+    "route",
+    "execution_mode",
+    "mode",
+    "intent",
+    "lookup_type",
+    "context_mode",
+    "schema_version",
+    "out_of_domain",
+)
+_PLANNER_DIAGNOSTIC_TASK_FIELDS = (
+    "id",
+    "task_id",
+    "mode",
+    "execution_mode",
+    "intent",
+    "lookup_type",
+    "cohort",
+    "cohorts",
+    "slots",
+    "slot_spans",
+)
+_DIAGNOSTIC_MISSING = object()
+
+
+def _diagnostic_copy(value: Any) -> Any:
+    """Copy JSON-compatible diagnostic values without retaining live aliases."""
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, (list, tuple)):
+        return [_diagnostic_copy(item) for item in value]
+    if isinstance(value, dict):
+        return {
+            str(key): _diagnostic_copy(item)
+            for key, item in value.items()
+            if isinstance(key, str)
+        }
+    return None
+
+
+def _diagnostic_leaf(value: Any) -> Any:
+    """Copy a slot/span leaf while rejecting arbitrary nested payloads."""
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, (list, tuple)):
+        copied = []
+        for item in value:
+            leaf = _diagnostic_leaf(item)
+            if leaf is _DIAGNOSTIC_MISSING:
+                return _DIAGNOSTIC_MISSING
+            copied.append(leaf)
+        return copied
+    return _DIAGNOSTIC_MISSING
+
+
+def _diagnostic_slot_map(
+    value: Any,
+    *,
+    allowed_keys: set[str],
+) -> dict[str, Any]:
+    """Copy only declared slot names and scalar/list leaves."""
+    if not isinstance(value, dict):
+        return {}
+    copied: dict[str, Any] = {}
+    for key, item in value.items():
+        if not isinstance(key, str) or key not in allowed_keys:
+            continue
+        leaf = _diagnostic_leaf(item)
+        if leaf is not _DIAGNOSTIC_MISSING:
+            copied[key] = leaf
+    return copied
+
+
+def _diagnostic_allowed_slot_keys(
+    lookup_type: Any,
+    registry: dict[str, Any] | None,
+) -> set[str]:
+    """Return registry-declared slot keys for a planner task."""
+    if not isinstance(lookup_type, str) or not isinstance(registry, dict):
+        return set()
+    tools = registry.get("tools")
+    spec = tools.get(lookup_type) if isinstance(tools, dict) else None
+    schema = spec.get("slot_schema") if isinstance(spec, dict) else None
+    if not isinstance(schema, dict):
+        return set()
+    return {key for key in schema if isinstance(key, str)}
+
+
+def _diagnostic_messages(value: Any) -> list[str]:
+    values = value if isinstance(value, (list, tuple)) else [value]
+    return [
+        item[:500]
+        for item in values
+        if isinstance(item, str) and item.strip()
+    ]
+
+
+def _planner_decision_snapshot(
+    payload: Any,
+    *,
+    errors: Any = None,
+    warnings: Any = None,
+    registry: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Keep only structural planner fields for an explicit eval diagnostic."""
+    if registry is None:
+        registry = load_lookup_registry()
+    decision = payload if isinstance(payload, dict) else {}
+    snapshot: dict[str, Any] = {}
+    for field in _PLANNER_DIAGNOSTIC_DECISION_FIELDS:
+        if field in decision:
+            snapshot[field] = _diagnostic_copy(decision[field])
+
+    raw_tasks = decision.get("tasks")
+    if isinstance(raw_tasks, list):
+        tasks: list[dict[str, Any]] = []
+        for raw_task in raw_tasks:
+            if not isinstance(raw_task, dict):
+                continue
+            task = {
+                field: _diagnostic_copy(raw_task[field])
+                for field in _PLANNER_DIAGNOSTIC_TASK_FIELDS
+                if field in raw_task
+            }
+            allowed_slot_keys = _diagnostic_allowed_slot_keys(
+                raw_task.get("lookup_type"), registry
+            )
+            for field in ("slots", "slot_spans"):
+                if field in raw_task:
+                    task[field] = _diagnostic_slot_map(
+                        raw_task[field], allowed_keys=allowed_slot_keys
+                    )
+            task_errors = raw_task.get("errors")
+            if task_errors is None:
+                task_errors = raw_task.get("validation_errors")
+            task_warnings = raw_task.get("warnings")
+            if task_warnings is None:
+                task_warnings = raw_task.get("normalization_warnings")
+            if task_errors is not None:
+                task["errors"] = _diagnostic_messages(task_errors)
+            if task_warnings is not None:
+                task["warnings"] = _diagnostic_messages(task_warnings)
+            tasks.append(task)
+        snapshot["tasks"] = tasks
+
+    if errors is None:
+        errors = decision.get("errors")
+    if errors is None:
+        errors = decision.get("planner_validation_errors")
+    if errors is None:
+        errors = decision.get("validation_errors")
+    if warnings is None:
+        warnings = decision.get("warnings")
+    if warnings is None:
+        warnings = decision.get("normalization_warnings")
+    snapshot["errors"] = _diagnostic_messages(errors)
+    snapshot["warnings"] = _diagnostic_messages(warnings)
+    return snapshot
+
+
+def _build_planner_diagnostics(
+    attempts: list[dict[str, Any]],
+    final_plan: Any,
+    *,
+    final_errors: Any = None,
+    cache_hit: bool = False,
+    registry: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build an evaluation-only raw/normalized planner decision envelope."""
+    return {
+        "schema_version": PLANNER_DIAGNOSTIC_SCHEMA_VERSION,
+        "versions": {
+            "router_prompt_version": ROUTER_PROMPT_VERSION,
+            "query_plan_schema_version": QUERY_PLAN_SCHEMA_VERSION,
+            "query_plan_normalizer_version": QUERY_PLAN_NORMALIZER_VERSION,
+        },
+        "cache_hit": bool(cache_hit),
+        "attempts": deepcopy(attempts),
+        "final": _planner_decision_snapshot(
+            final_plan,
+            errors=final_errors,
+            registry=registry,
+        ),
+    }
+
+
+def _attach_planner_diagnostics(
+    result: dict[str, Any],
+    *,
+    enabled: bool,
+    attempts: list[dict[str, Any]],
+    final_plan: Any,
+    final_errors: Any = None,
+    cache_hit: bool = False,
+    registry: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    if enabled:
+        result["planner_diagnostics"] = _build_planner_diagnostics(
+            attempts,
+            final_plan,
+            final_errors=final_errors,
+            cache_hit=cache_hit,
+            registry=registry,
+        )
+    return result
 
 
 _EXPLICIT_REQUEST_MARKERS = (
@@ -703,6 +928,10 @@ class AIRouter:
         routing_hint: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Create a bounded, validated QueryPlan for one user message."""
+        capture_planner_diagnostics = _planner_diagnostics_scope.get() and not bool(
+            chat_history
+        )
+        diagnostic_attempts: list[dict[str, Any]] = []
         dynamic_prompt = self._build_plan_prompt(
             query,
             cohort=cohort,
@@ -720,13 +949,20 @@ class AIRouter:
             routing_hint=routing_hint,
         )
         if self.cache and (cached := self.cache.get(cache_key)):
-            return {
-                **cached,
-                "model_used": self.model_name,
-                "usage": None,
-                "router_cache_hit": True,
-                "prompt_stats": prompt_stats,
-            }
+            return _attach_planner_diagnostics(
+                {
+                    **cached,
+                    "model_used": self.model_name,
+                    "usage": None,
+                    "router_cache_hit": True,
+                    "prompt_stats": prompt_stats,
+                },
+                enabled=capture_planner_diagnostics,
+                attempts=diagnostic_attempts,
+                final_plan=cached,
+                cache_hit=True,
+                registry=self.registry,
+            )
 
         explicit_request_count = _explicit_request_count(query)
         max_output_tokens = self._planner_output_token_limit(explicit_request_count)
@@ -766,6 +1002,11 @@ class AIRouter:
                     for item in (chat_history or [])[-4:]
                     if isinstance(item, dict)
                 )
+                raw_snapshot = (
+                    _planner_decision_snapshot(parsed, registry=self.registry)
+                    if capture_planner_diagnostics
+                    else None
+                )
                 plan, validation_errors = normalize_query_plan(
                     parsed,
                     query=query,
@@ -773,6 +1014,18 @@ class AIRouter:
                     grounding_context=grounding_context,
                     registry=self.registry,
                 )
+                if capture_planner_diagnostics:
+                    diagnostic_attempts.append(
+                        {
+                            "label": "initial",
+                            "raw": raw_snapshot,
+                            "normalized": _planner_decision_snapshot(
+                                plan,
+                                errors=validation_errors,
+                                registry=self.registry,
+                            ),
+                        }
+                    )
                 planner_repairs = 0
                 if (
                     explicit_request_count is not None
@@ -811,6 +1064,14 @@ class AIRouter:
                         key: int(usage.get(key, 0)) + int(repair_usage.get(key, 0))
                         for key in ("input", "output", "total")
                     }
+                    repair_raw_snapshot = (
+                        _planner_decision_snapshot(
+                            repair_parsed,
+                            registry=self.registry,
+                        )
+                        if capture_planner_diagnostics
+                        else None
+                    )
                     plan, validation_errors = normalize_query_plan(
                         repair_parsed,
                         query=query,
@@ -818,6 +1079,18 @@ class AIRouter:
                         grounding_context=grounding_context,
                         registry=self.registry,
                     )
+                    if capture_planner_diagnostics:
+                        diagnostic_attempts.append(
+                            {
+                                "label": "repair",
+                                "raw": repair_raw_snapshot,
+                                "normalized": _planner_decision_snapshot(
+                                    plan,
+                                    errors=validation_errors,
+                                    registry=self.registry,
+                                ),
+                            }
+                        )
                     if len(plan.get("tasks") or []) != explicit_request_count:
                         actual_count = len(plan.get("tasks") or [])
                         plan = safe_rag_fallback_plan(
@@ -855,16 +1128,23 @@ class AIRouter:
                     plan["planner_validation_errors"] = validation_errors
                 if self.cache:
                     self.cache.set(cache_key, plan)
-                return {
-                    **plan,
-                    "model_used": self.model_name,
-                    "usage": usage,
-                    "key_fingerprint": key_id,
-                    "router_cache_hit": False,
-                    "attempts": attempts,
-                    "planner_repairs": planner_repairs,
-                    "prompt_stats": prompt_stats,
-                }
+                return _attach_planner_diagnostics(
+                    {
+                        **plan,
+                        "model_used": self.model_name,
+                        "usage": usage,
+                        "key_fingerprint": key_id,
+                        "router_cache_hit": False,
+                        "attempts": attempts,
+                        "planner_repairs": planner_repairs,
+                        "prompt_stats": prompt_stats,
+                    },
+                    enabled=capture_planner_diagnostics,
+                    attempts=diagnostic_attempts,
+                    final_plan=plan,
+                    final_errors=validation_errors,
+                    registry=self.registry,
+                )
             except Exception as exc:
                 last_error = exc
                 error_type = self._classify_error(exc)
@@ -887,17 +1167,23 @@ class AIRouter:
 
         if last_error is not None:
             fallback = safe_rag_fallback_plan(query, cohort, reason="safe_rag")
-            return {
-                **fallback,
-                "model_used": self.model_name,
-                "usage": None,
-                "key_fingerprint": None,
-                "router_cache_hit": False,
-                "attempts": attempts,
-                "prompt_stats": prompt_stats,
-                "planner_error_type": self._classify_error(last_error),
-                "planner_error": str(last_error),
-            }
+            return _attach_planner_diagnostics(
+                {
+                    **fallback,
+                    "model_used": self.model_name,
+                    "usage": None,
+                    "key_fingerprint": None,
+                    "router_cache_hit": False,
+                    "attempts": attempts,
+                    "prompt_stats": prompt_stats,
+                    "planner_error_type": self._classify_error(last_error),
+                    "planner_error": str(last_error),
+                },
+                enabled=capture_planner_diagnostics,
+                attempts=diagnostic_attempts,
+                final_plan=fallback,
+                registry=self.registry,
+            )
         raise RuntimeError("ai_planner_failed: no_attempts")
 
     def _build_plan_prompt(

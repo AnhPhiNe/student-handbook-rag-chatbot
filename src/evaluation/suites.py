@@ -1497,6 +1497,11 @@ def _evaluate_deterministic_v2_uncached(
     rows = _load_eval_checkpoint(checkpoint_path, resume=resume, identity=identity)
     completed_ids = {row["id"] for row in rows}
     pipeline = pipeline_factory()
+    capture_planner_diagnostics = bool(
+        (checkpoint_context or {}).get("capture_planner_diagnostics")
+    )
+    from src.retrieval.core.ai_router import planner_diagnostics_scope
+
     if uses_default_pipeline:
         from src.retrieval.core.hybrid_pipeline import initialize_hybrid_retriever
 
@@ -1510,9 +1515,15 @@ def _evaluate_deterministic_v2_uncached(
         started = time.perf_counter()
         result = None
         try:
-            result = pipeline._run_retrieval(
-                case["query"], cohort=case.get("cohort"), **_case_history_kwargs(case)
+            retrieval_kwargs = {
+                "cohort": case.get("cohort"),
+                **_case_history_kwargs(case),
+            }
+            capture_case_diagnostics = capture_planner_diagnostics and not bool(
+                retrieval_kwargs.get("chat_history")
             )
+            with planner_diagnostics_scope(capture_case_diagnostics):
+                result = pipeline._run_retrieval(case["query"], **retrieval_kwargs)
             plan = result.get("query_plan") or {}
             tasks = plan.get("tasks") if isinstance(plan, dict) else []
             tasks = tasks if isinstance(tasks, list) else []
@@ -1522,6 +1533,8 @@ def _evaluate_deterministic_v2_uncached(
                 "query-plan-grounded-outcome-v9",
             }:
                 row = _evaluate_v7_outcome_case(case, result, started=started)
+                if capture_case_diagnostics:
+                    row["planner_diagnostics"] = result.get("planner_diagnostics")
                 rows.append(row)
                 progress.set_postfix(
                     {
@@ -1729,6 +1742,8 @@ def _evaluate_deterministic_v2_uncached(
                 "passed": passed,
                 "latency_ms": (time.perf_counter() - started) * 1000,
             }
+            if capture_case_diagnostics:
+                row["planner_diagnostics"] = result.get("planner_diagnostics")
             rows.append(row)
             progress.set_postfix(
                 {"case": case.get("id"), "pass": int(passed)}, refresh=False

@@ -1079,6 +1079,8 @@ class AnswerPipeline:
             "router_usage": raw_plan.get("usage"),
             "router_model": raw_plan.get("model_used"),
         }
+        if raw_plan.get("planner_diagnostics") is not None:
+            base_result["planner_diagnostics"] = raw_plan["planner_diagnostics"]
         if plan.get("out_of_domain"):
             return {
                 **base_result,

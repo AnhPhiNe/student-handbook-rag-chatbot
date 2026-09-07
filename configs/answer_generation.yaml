@@ -18,7 +18,7 @@ llm:
   max_retries: 3
   retry_base_delay_seconds: 2
   retry_max_delay_seconds: 20
-  request_timeout_seconds: 60
+  request_timeout_seconds: 20
   request_sleep_seconds: 0
   max_context_chars: 160000
   key_pool:

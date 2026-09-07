@@ -102,6 +102,78 @@ def test_reading_intent_selector_still_enforces_type_and_enum(
 
 
 @pytest.mark.parametrize(
+    ("value", "error"),
+    [(42, "invalid_slot_type:aspect"), ("invented_aspect", "invalid_slot_value:aspect")],
+)
+def test_invalid_reading_intent_value_is_not_repaired_from_alias(
+    value: Any, error: str,
+) -> None:
+    query = "Mức tiền học bổng xuất sắc là bao nhiêu?"
+    decision = normalize_router_decision(
+        {
+            "route": "structured",
+            "execution_mode": "structured",
+            "intent": "direct_value",
+            "lookup_type": "scholarship_classification",
+            "slots": {"aspect": value, "score_or_label": "xuất sắc"},
+            "slot_spans": {"score_or_label": "xuất sắc"},
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert decision["slots"]["aspect"] == value
+    assert error in validate_router_decision(
+        decision,
+        query=query,
+        selected_cohort="K51",
+    )
+
+
+def test_present_result_input_repairs_only_same_value_span() -> None:
+    query = "K51 học chương trình bằng thứ nhất tối đa bao lâu?"
+    decision = normalize_router_decision(
+        {
+            "route": "structured",
+            "execution_mode": "structured",
+            "intent": "direct_value",
+            "lookup_type": "study_duration",
+            "slots": {"program_type": "first_degree"},
+            "slot_spans": {},
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert decision["slots"]["program_type"] == "first_degree"
+    assert decision["slot_spans"]["program_type"] == "bằng thứ nhất"
+
+
+def test_present_result_input_never_adopts_conflicting_alias() -> None:
+    query = "K51 học chương trình văn bằng hai tối đa bao lâu?"
+    decision = normalize_router_decision(
+        {
+            "route": "structured",
+            "execution_mode": "structured",
+            "intent": "direct_value",
+            "lookup_type": "study_duration",
+            "slots": {"program_type": "first_degree"},
+            "slot_spans": {"program_type": "văn bằng hai"},
+        },
+        query=query,
+        selected_cohort="K51",
+    )
+
+    assert decision["slots"]["program_type"] == "first_degree"
+    assert decision["slot_spans"]["program_type"] == "văn bằng hai"
+    assert "slot_span_mismatch:program_type" in validate_router_decision(
+        decision,
+        query=query,
+        selected_cohort="K51",
+    )
+
+
+@pytest.mark.parametrize(
     ("query", "aspect", "aspect_span"),
     [
         (

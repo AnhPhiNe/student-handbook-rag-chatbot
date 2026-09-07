@@ -699,7 +699,7 @@ def test_table_first_drops_optional_slot_whose_span_describes_another_value() ->
     assert plan["tasks"][0]["slot_spans"] == {"operation": "điểm chữ gì"}
 
 
-def test_scoring_literals_repair_selector_and_infer_course_scope() -> None:
+def test_scoring_literals_preserve_planner_selector_and_infer_course_scope() -> None:
     query = "Học phần còn lại được 5,2: bảng K51 ghi D+ và trạng thái đạt hay không đạt?"
     task = {
         **_rag_task(1, query),
@@ -725,7 +725,7 @@ def test_scoring_literals_repair_selector_and_infer_course_scope() -> None:
 
     assert errors == []
     assert plan["tasks"][0]["slots"] == {
-        "operation": "pass_threshold",
+        "operation": "pass_fail_ungraded",
         "score_or_grade": "5,2",
         "course_scope": "remaining",
     }

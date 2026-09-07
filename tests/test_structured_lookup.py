@@ -1004,7 +1004,7 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertFalse(resolution.result.get("needs_clarification", False))
         self.assertIn("resolved_result", resolution.result)
 
-    def test_study_duration_uses_grounded_query_text_for_unique_row(self) -> None:
+    def test_study_duration_does_not_infer_missing_program_from_query(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
             resolve_structured_decision,
         )
@@ -1038,10 +1038,8 @@ class StructuredLookupTest(unittest.TestCase):
         )
 
         self.assertIsNotNone(resolution)
-        resolved = resolution.result["resolved_result"]
-        rows = resolved["result"]["tables"][0]["rows"]
-        self.assertEqual(len(rows), 1)
-        self.assertEqual(rows[0]["Thời gian học tập chuẩn"], "2,5 năm học")
+        self.assertNotIn("resolved_result", resolution.result)
+        self.assertEqual(len(resolution.result["items"]), 4)
 
     def test_reference_table_keeps_full_rows_without_untrusted_fact_lock(self) -> None:
         from src.retrieval.core.structured_dispatcher import (

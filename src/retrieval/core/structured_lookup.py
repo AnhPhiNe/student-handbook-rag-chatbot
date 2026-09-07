@@ -81,6 +81,18 @@ def _with_metadata(
     return result | _metadata_from_tables(tables)
 
 
+def _single_slot_value(value: Any) -> Any | None:
+    """Return one explicit slot value, rejecting distinct list choices."""
+
+    if not isinstance(value, list):
+        return value
+    values = [item for item in value if item is not None and str(item).strip()]
+    if not values:
+        return None
+    normalized = {normalize_text(item) for item in values}
+    return values[0] if len(normalized) == 1 else None
+
+
 def in_range(value: float, range_text: str) -> bool:
     """Return whether a value satisfies optional lower and upper bounds."""
 
@@ -369,7 +381,10 @@ def structured_lookup_from_slots(
     if normalized_cohort:
         tables = [table for table in tables if table.get("cohort") == normalized_cohort]
 
-    course_scope = normalize_text(slots.get("course_scope")).replace(" ", "_")
+    course_scope_value = _single_slot_value(slots.get("course_scope"))
+    if slots.get("course_scope") is not None and course_scope_value is None:
+        return None
+    course_scope = normalize_text(course_scope_value).replace(" ", "_")
     if course_scope:
         scoped_tables = [
             table
@@ -383,15 +398,19 @@ def structured_lookup_from_slots(
         if scoped_tables or any(table.get("course_scope") for table in tables):
             tables = scoped_tables
 
-    operation = normalize_text(slots.get("operation"))
-    value = slots.get("score_or_grade")
+    operation_value = _single_slot_value(slots.get("operation"))
+    if operation_value is None or not str(operation_value).strip():
+        # Operation is a planner-owned selector.  Never infer it from the
+        # operand (for example, a letter grade or a value containing "qua
+        # môn").
+        return None
+    operation = normalize_text(operation_value)
+    value = _single_slot_value(slots.get("score_or_grade"))
 
     if value is None:
         return None
 
     value_text = str(value).strip()
-    normalized_value = normalize_text(value_text)
-
     operation_aliases = {
         "conduct classification": "conduct_classification",
         "academic classification": "academic_classification",
@@ -429,25 +448,10 @@ def structured_lookup_from_slots(
 
         return _lookup_grade_10_value(score, tables)
 
-    # Resolve course pass/fail threshold questions.
-    pass_threshold_signals = [
-        "qua mon",
-        "qua hoc phan",
-        "rot mon",
-        "truot mon",
-        "khong dat",
-        "diem toi thieu",
-        "may diem",
-        "bao nhieu diem",
-    ]
-
-    asks_pass_threshold = (
-        canonical == "pass_threshold"
-        or any(signal in normalized_value for signal in pass_threshold_signals)
-        or bool(re.fullmatch(r"[abcdf]\+?", normalized_value))
-    )
-
-    if asks_pass_threshold:
+    # Resolve course pass/fail threshold questions only when the planner
+    # supplied that operation explicitly.  The operand may still be numeric
+    # or a grade label; its meaning is not inferred from its text.
+    if canonical == "pass_threshold":
         try:
             score = float(value_text.replace(",", "."))
         except ValueError:

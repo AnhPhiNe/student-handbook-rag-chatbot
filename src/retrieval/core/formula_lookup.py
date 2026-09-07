@@ -19,6 +19,29 @@ def formula_lookup(
     if cohort:
         formula_rules = [r for r in formula_rules if is_cohort_applicable(r, cohort)]
 
+    # A supplied slot mapping is the planner/normalizer contract.  Even an
+    # empty mapping is meaningful here: do not re-read the task question to
+    # invent a formula family (or expand a single task into several formulas).
+    if slots is not None:
+        requested_types = _slot_values(slots.get("formula_type"))
+        if not requested_types:
+            return _all_formulas_result(query, formula_rules, cohort)
+
+        matched: list[dict[str, Any]] = []
+        for formula_type in requested_types:
+            resolved = _find_formula_by_data(formula_rules, str(formula_type))
+            if resolved is None:
+                # A malformed/unknown requested choice must not silently turn
+                # into a partial multi-formula answer.
+                return None
+            matched.append(resolved)
+        matched = _dedupe_formula_results(matched)
+        if not matched:
+            return None
+        if len(matched) == 1:
+            return matched[0]
+        return _multi_formula_result(query, matched, cohort)
+
     ascii_query = _ascii_text(query)
     explicit_rule_ids = _requested_rule_ids(ascii_query, formula_rules)
     if len(explicit_rule_ids) > 1 and _asks_for_multiple_formulas(ascii_query):
@@ -37,10 +60,6 @@ def formula_lookup(
                 "content_type": "multi_formula",
             }
 
-    if slots:
-        formula_type = str(slots.get("formula_type") or "").strip()
-        return _find_formula_by_data(formula_rules, formula_type)
-
     if not _asks_for_formula(ascii_query):
         return None
 
@@ -49,6 +68,67 @@ def formula_lookup(
         return _find_formula(formula_rules, preferred_rule_id)
 
     return None
+
+
+def _slot_values(value: Any) -> list[Any]:
+    """Return supplied slot choices without collapsing a list to one value."""
+
+    if isinstance(value, list):
+        return [item for item in value if item is not None and str(item).strip()]
+    if value is None or not str(value).strip():
+        return []
+    return [value]
+
+
+def _all_formulas_result(
+    query: str,
+    formula_rules: list[dict[str, Any]],
+    cohort: str | None,
+) -> dict[str, Any] | None:
+    matched = [
+        resolved
+        for rule in formula_rules
+        if (resolved := _find_formula(formula_rules, str(rule.get("rule_id") or "")))
+        is not None
+    ]
+    matched = _dedupe_formula_results(matched)
+    if not matched:
+        return None
+    return _multi_formula_result(query, matched, cohort)
+
+
+def _dedupe_formula_results(
+    matched: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    seen: set[str] = set()
+    deduped: list[dict[str, Any]] = []
+    for item in matched:
+        key = str(item.get("rule_id") or "")
+        if key and key in seen:
+            continue
+        if key:
+            seen.add(key)
+        deduped.append(item)
+    return deduped
+
+
+def _multi_formula_result(
+    query: str,
+    matched: list[dict[str, Any]],
+    cohort: str | None,
+) -> dict[str, Any]:
+    # Keep every requested formula as a separate leaf.  The dispatcher can
+    # bind provenance for each leaf and, importantly, cannot treat this packet
+    # as one uniquely resolved formula.
+    return {
+        "lookup_type": "multi_formula",
+        "formula_count": len(matched),
+        "result": matched,
+        "sub_lookups": matched,
+        "input_value": query,
+        "cohort": cohort,
+        "content_type": "multi_formula",
+    }
 
 
 def _find_formula_by_data(

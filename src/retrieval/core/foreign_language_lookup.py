@@ -169,6 +169,16 @@ def _strip_cohort_numbers(text: str) -> str:
     return text
 
 
+def _slot_values(value: Any) -> list[Any]:
+    """Return all non-empty slot choices without coercing a list to one string."""
+
+    if isinstance(value, list):
+        return [item for item in value if item is not None and str(item).strip()]
+    if value is None or not str(value).strip():
+        return []
+    return [value]
+
+
 def _parse_range(value: Any) -> tuple[float, float] | None:
     nums = _extract_numbers(normalize_text(value))
     if len(nums) >= 2:
@@ -305,14 +315,17 @@ def foreign_language_lookup(
 ) -> dict[str, Any] | None:
     """Deterministically answer clear foreign-language equivalency queries."""
 
-    has_relevant_slots = slots and (
-        slots.get("certificate_or_language") or slots.get("score_or_level")
-    )
-    if has_relevant_slots:
-        certificate_value = str(slots.get("certificate_or_language") or "")
-        level_value = slots.get("score_or_level")
-        query_norm = normalize_text(f"{certificate_value} {level_value}")
-        certificate_keys: list[str] = []
+    if slots is not None:
+        # A supplied mapping is authoritative, including an empty mapping.
+        # Query text remains display metadata and cannot add a certificate or
+        # level that the normalizer did not provide.
+        certificate_values = _slot_values(slots.get("certificate_or_language"))
+        level_values = _slot_values(slots.get("score_or_level"))
+        query_norm = normalize_text(
+            " ".join(str(value) for value in [*certificate_values, *level_values])
+        )
+        certificate_keys = _detect_certificate_keys(query_norm)
+        effective_cohort = normalize_cohort(cohort)
     else:
         query_norm = normalize_text(query)
         certificate_keys = _detect_certificate_keys(query_norm)
@@ -322,8 +335,8 @@ def foreign_language_lookup(
             return None
         if certificate_keys and not _has_direct_equivalency_signal(query_norm):
             return None
+        effective_cohort = normalize_cohort(cohort) or resolve_cohort_from_query(query)
 
-    effective_cohort = normalize_cohort(cohort) or resolve_cohort_from_query(query)
     candidates = _filter_by_cohort(tables, effective_cohort)
     if not candidates:
         return None
@@ -333,24 +346,33 @@ def foreign_language_lookup(
     if not rows:
         return None
 
-    if slots and slots.get("certificate_or_language"):
-        wanted = normalize_text(slots.get("certificate_or_language"))
-        wanted_tokens = set(wanted.split())
-        scored_rows = []
-        for row in rows:
-            searchable = normalize_text(
-                " ".join(
-                    str(row.get(key) or "")
-                    for key in ("certificate", "level_or_scale", "language")
+    if slots is not None and _slot_values(slots.get("certificate_or_language")):
+        wanted_values = [
+            normalize_text(value)
+            for value in _slot_values(slots.get("certificate_or_language"))
+        ]
+        matched_rows = []
+        for wanted in wanted_values:
+            scored_rows = []
+            wanted_tokens = set(wanted.split())
+            for row in rows:
+                searchable = normalize_text(
+                    " ".join(
+                        str(row.get(key) or "")
+                        for key in ("certificate", "level_or_scale", "language")
+                    )
                 )
-            )
-            score = len(wanted_tokens & set(searchable.split()))
-            if wanted and (wanted in searchable or searchable in wanted):
-                score += 8
-            if score > 0:
-                scored_rows.append((score, row))
-        max_score = max((score for score, _ in scored_rows), default=0)
-        matched_rows = [row for score, row in scored_rows if score == max_score]
+                score = len(wanted_tokens & set(searchable.split()))
+                if wanted and (wanted in searchable or searchable in wanted):
+                    score += 8
+                if score > 0:
+                    scored_rows.append((score, row))
+            max_score = max((score for score, _ in scored_rows), default=0)
+            # Select the best row(s) for each explicit entity independently;
+            # one global maximum would drop a lower-scoring requested entity.
+            for score, row in scored_rows:
+                if score == max_score and row not in matched_rows:
+                    matched_rows.append(row)
     elif certificate_keys:
         matched_rows = [
             row
@@ -363,16 +385,29 @@ def foreign_language_lookup(
     if not matched_rows:
         return None
 
-    numbers = _extract_numbers(_strip_cohort_numbers(query_norm))
+    if slots is not None:
+        # Certificate names such as HSK4 can contain digits; only explicit
+        # level/score slots are operands for numeric equivalency matching.
+        level_text = " ".join(
+            str(value) for value in _slot_values(slots.get("score_or_level"))
+        )
+        numbers = _extract_numbers(_strip_cohort_numbers(normalize_text(level_text)))
+    else:
+        numbers = _extract_numbers(_strip_cohort_numbers(query_norm))
     matched_level = None
     matched_value = None
 
     if len(matched_rows) == 1:
         row = matched_rows[0]
-        text_level = _level_from_text(row, query_norm)
-        numeric_level = _level_from_numeric(row, numbers)
+        multiple_levels = slots is not None and len(
+            _slot_values(slots.get("score_or_level"))
+        ) > 1
+        text_level = None if multiple_levels else _level_from_text(row, query_norm)
+        numeric_level = (
+            _level_from_numeric(row, numbers) if len(numbers) == 1 else None
+        )
         matched_level = text_level or numeric_level
-        if numeric_level and not text_level:
+        if numeric_level and not text_level and len(numbers) == 1:
             matched_value = numbers[-1] if numbers else None
 
     return _build_lookup_result(

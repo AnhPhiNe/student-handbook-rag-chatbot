@@ -158,7 +158,7 @@ def _reference_input_clarification(
     query: str,
     candidates: list[dict[str, Any]],
     cohort: str | None,
-    slots: dict[str, Any],
+    slots: dict[str, Any] | None,
 ) -> dict[str, Any] | None:
     """Validate conditional table inputs declared by the selected data row.
 
@@ -170,7 +170,16 @@ def _reference_input_clarification(
     if lookup_type != "foreign_language":
         return None
 
-    entity_text = str(slots.get("certificate_or_language") or query or "")
+    if slots is None:
+        entity_text = query
+    else:
+        entity_values = slots.get("certificate_or_language")
+        if isinstance(entity_values, list):
+            entity_text = " ".join(
+                str(value).strip() for value in entity_values if str(value).strip()
+            )
+        else:
+            entity_text = str(entity_values or "")
     entity_norm = normalize_text(entity_text)
     input_rows: list[dict[str, Any]] = []
     for table in candidates:
@@ -214,8 +223,9 @@ def _reference_input_clarification(
             normalize_text(str(value).replace(",", ".")) if value is not None else "",
         ))
 
-    if not has_score(slots.get("score_or_level")) and not any(
-        has_score(slots.get(name)) for name in required_slots.values()
+    runtime_slots = slots or {}
+    if not has_score(runtime_slots.get("score_or_level")) and not any(
+        has_score(runtime_slots.get(name)) for name in required_slots.values()
     ):
         return None
 
@@ -223,7 +233,7 @@ def _reference_input_clarification(
     for component in requirements.get("required_components") or []:
         spec = component_slots.get(component) or {}
         slot_name = required_slots[str(component)]
-        if not has_score(slots.get(slot_name)):
+        if not has_score(runtime_slots.get(slot_name)):
             missing.append(
                 {
                     "component": str(component),
@@ -249,23 +259,48 @@ def _reference_input_clarification(
 
 
 def _select_reference_tables(
-    lookup_type: str, slots: dict[str, Any], tables: list[dict[str, Any]],
+    lookup_type: str,
+    slots: dict[str, Any] | None,
+    tables: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     """Select canonical tables once for both evidence and value resolution."""
     candidates = tables
+    runtime_slots = slots or {}
     tool = _LOOKUP_TOOL_SPECS.get(lookup_type, {})
     for selector_name in ("table_selector", "scope_selector"):
         selector = tool.get(selector_name) or {}
-        spec = (selector.get("values") or {}).get(str(slots.get(selector.get("slot")) or ""))
-        if not isinstance(spec, dict):
+        slot_values = runtime_slots.get(selector.get("slot"))
+        if isinstance(slot_values, list):
+            selector_values = [str(value) for value in slot_values if str(value).strip()]
+        elif slot_values is None or not str(slot_values).strip():
+            selector_values = []
+        else:
+            selector_values = [str(slot_values)]
+        specs = [
+            (selector.get("values") or {}).get(value)
+            for value in selector_values
+        ]
+        specs = [spec for spec in specs if isinstance(spec, dict)]
+        if not specs:
             continue
-        types = spec.get("table_types") or []
-        subtypes = spec.get("table_subtypes") or []
-        suffixes = tuple(spec.get("table_id_suffixes") or [])
-        candidates = [table for table in candidates
-                      if (not types or table.get("table_type") in types)
-                      and (not subtypes or table.get("table_subtype") in subtypes)
-                      and (not suffixes or str(table.get("table_id") or "").endswith(suffixes))]
+        def matches_spec(table: dict[str, Any], spec: dict[str, Any]) -> bool:
+            table_types = spec.get("table_types") or []
+            if table_types and table.get("table_type") not in table_types:
+                return False
+            table_subtypes = spec.get("table_subtypes") or []
+            if table_subtypes and table.get("table_subtype") not in table_subtypes:
+                return False
+            suffixes = tuple(spec.get("table_id_suffixes") or [])
+            if suffixes and not str(table.get("table_id") or "").endswith(suffixes):
+                return False
+            return True
+
+        # A list of selector values means the union of complete selector
+        # specifications.  Combining each field independently would create a
+        # cross-product and could select a table that matches no real value.
+        candidates = [
+            table for table in candidates if any(matches_spec(table, spec) for spec in specs)
+        ]
     return candidates
 
 
@@ -386,6 +421,10 @@ def _unique_reference_resolution(
 
     if len(selected_tables) != 1:
         return None
+    if _has_multiple_result_choices(lookup_type, slots):
+        # A list represents several explicit choices.  Keep the complete table
+        # evidence, but do not collapse those choices into one fact lock.
+        return None
 
     if lookup_type == "scoring":
         resolved = (
@@ -442,6 +481,36 @@ def _unique_reference_resolution(
     return None
 
 
+def _has_multiple_result_choices(
+    lookup_type: str,
+    slots: dict[str, Any] | None,
+) -> bool:
+    """Return whether result-affecting slots contain distinct choices.
+
+    Reading-intent fields (for example scholarship ``aspect`` or program
+    ``scope``) are deliberately excluded.  This is an eligibility guard for a
+    fact lock, not a second schema validator.
+    """
+
+    if not isinstance(slots, dict):
+        return False
+    slot_schema = (_LOOKUP_TOOL_SPECS.get(lookup_type) or {}).get("slot_schema") or {}
+    for slot_name, slot_value_spec in slot_schema.items():
+        if str((slot_value_spec or {}).get("verification_role") or "result_input") == "reading_intent":
+            continue
+        value = slots.get(slot_name)
+        if not isinstance(value, list):
+            continue
+        choices = {
+            normalize_text(item).strip()
+            for item in value
+            if item is not None and normalize_text(item).strip()
+        }
+        if len(choices) > 1:
+            return True
+    return False
+
+
 def _resolve_single_lookup(
     lookup_type: str,
     *,
@@ -464,7 +533,12 @@ def _resolve_single_lookup(
     ambiguous directory matches instead return an explicit clarification result.
     """
 
+    # The dispatcher executes the normalized runtime payload.  Missing and
+    # explicitly empty mappings are both authoritative; leaf helpers retain
+    # their ``slots=None`` legacy mode for direct callers only.
     slots = decision.get("slots") or {}
+    if not isinstance(slots, dict):
+        slots = {}
 
     if lookup_type in _REFERENCE_TABLE_TYPES:
         candidates = _select_reference_tables(lookup_type, slots, [

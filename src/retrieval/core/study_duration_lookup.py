@@ -77,6 +77,27 @@ def _wanted_training_mode(query_norm: str) -> str | None:
     return None
 
 
+def _slot_values(value: Any) -> list[Any]:
+    """Return all non-empty slot choices without collapsing list input."""
+
+    if isinstance(value, list):
+        return [item for item in value if item is not None and str(item).strip()]
+    if value is None or not str(value).strip():
+        return []
+    return [value]
+
+
+def _wanted_training_modes(value: Any) -> set[str]:
+    modes: set[str] = set()
+    for item in _slot_values(value):
+        normalized = normalize_text(item)
+        if "vua lam vua hoc" in normalized or normalized == "vlvh":
+            modes.add("vua_lam_vua_hoc")
+        elif "chinh quy" in normalized:
+            modes.add("chinh_quy")
+    return modes
+
+
 def _table_mode(table: dict[str, Any]) -> str | None:
     table_id = normalize_text(table.get("table_id"))
     if "vua lam vua hoc" in table_id:
@@ -136,33 +157,29 @@ def study_duration_lookup(
 ) -> dict[str, Any] | None:
     """Resolve program duration rules from normalized tables."""
 
-    has_relevant_slots = slots and (
-        slots.get("training_mode") or slots.get("program_type")
-    )
-    if has_relevant_slots:
-        query_norm = normalize_text(
-            f"{query} {slots.get('training_mode', '')} {slots.get('program_type', '')}"
-        )
+    if slots is not None:
+        # Runtime execution consumes only validated selectors.  An empty slot
+        # mapping intentionally yields complete table evidence; the query may
+        # not supply a missing mode or program type.
+        program_values = _slot_values(slots.get("program_type"))
+        query_norm = normalize_text(" ".join(str(value) for value in program_values))
+        wanted_modes = _wanted_training_modes(slots.get("training_mode"))
+        effective_cohort = normalize_cohort(cohort)
     else:
         query_norm = normalize_text(query)
         if not _is_study_duration_query(query_norm):
             return None
+        wanted_mode = _wanted_training_mode(query_norm)
+        wanted_modes = {wanted_mode} if wanted_mode else set()
+        effective_cohort = normalize_cohort(cohort) or resolve_cohort_from_query(query)
 
-    effective_cohort = normalize_cohort(cohort) or resolve_cohort_from_query(query)
     candidates = _filter_by_cohort(tables, effective_cohort)
     if not candidates:
         return None
 
-    wanted_mode = _wanted_training_mode(query_norm)
-    if slots and slots.get("training_mode"):
-        mode_value = normalize_text(slots["training_mode"])
-        if "vua lam vua hoc" in mode_value or mode_value == "vlvh":
-            wanted_mode = "vua_lam_vua_hoc"
-        elif "chinh quy" in mode_value:
-            wanted_mode = "chinh_quy"
-    if wanted_mode:
+    if wanted_modes:
         candidates = [
-            table for table in candidates if _table_mode(table) == wanted_mode
+            table for table in candidates if _table_mode(table) in wanted_modes
         ]
     if not candidates:
         return None

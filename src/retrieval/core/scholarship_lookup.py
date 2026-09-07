@@ -106,6 +106,48 @@ def _requested_labels(query_norm: str) -> list[str]:
     return labels
 
 
+def _slot_values(value: Any) -> list[Any]:
+    """Return all non-empty slot choices without coercing list input."""
+
+    if isinstance(value, list):
+        return [item for item in value if item is not None and str(item).strip()]
+    if value is None or not str(value).strip():
+        return []
+    return [value]
+
+
+def _rows_for_slots(
+    value: Any,
+    table: dict[str, Any],
+) -> tuple[list[dict[str, Any]], float | None]:
+    """Select the union of every explicitly supplied score/label choice."""
+
+    rows = list(table.get("rows") or [])
+    values = _slot_values(value)
+    if not values:
+        return rows, None
+
+    matched_rows: list[dict[str, Any]] = []
+    numeric_values: list[float] = []
+    for item in values:
+        item_norm = normalize_text(item)
+        labels = _requested_labels(item_norm)
+        numbers = _extract_numbers(_strip_cohort_numbers(item_norm))
+        if not labels and len(numbers) != 1:
+            # Invalid values are normally rejected by the central contract;
+            # do not let a direct resolver call turn one into all rows.
+            continue
+        item_rows, item_score = _rows_for_query(item_norm, table)
+        if item_score is not None:
+            numeric_values.append(item_score)
+        for row in item_rows:
+            if row not in matched_rows:
+                matched_rows.append(row)
+
+    matched_score = numeric_values[0] if len(numeric_values) == 1 else None
+    return matched_rows, matched_score
+
+
 def _rows_for_query(
     query_norm: str,
     table: dict[str, Any],
@@ -144,20 +186,27 @@ def scholarship_table_lookup(
 ) -> dict[str, Any] | None:
     """Resolve scholarship thresholds from normalized tables."""
 
-    if slots and slots.get("score_or_label"):
-        query_norm = normalize_text(slots.get("score_or_label"))
+    if slots is not None:
+        score_or_label = slots.get("score_or_label")
+        query_norm = normalize_text(
+            " ".join(str(value) for value in _slot_values(score_or_label))
+        )
+        effective_cohort = normalize_cohort(cohort)
     else:
         query_norm = normalize_text(query)
         if not _is_scholarship_lookup_query(query_norm):
             return None
+        effective_cohort = normalize_cohort(cohort) or resolve_cohort_from_query(query)
 
-    effective_cohort = normalize_cohort(cohort) or resolve_cohort_from_query(query)
     candidates = _filter_tables(tables, effective_cohort, table_id=table_id)
     if not candidates:
         return None
 
     table = candidates[0]
-    rows, score = _rows_for_query(query_norm, table)
+    if slots is not None:
+        rows, score = _rows_for_slots(slots.get("score_or_label"), table)
+    else:
+        rows, score = _rows_for_query(query_norm, table)
     if not rows:
         return None
 

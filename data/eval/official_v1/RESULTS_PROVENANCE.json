@@ -1,0 +1,217 @@
+{
+  "artifact_type": "official_v1_results_provenance",
+  "schema_version": "official-v1-results-provenance-v1",
+  "created_on": "2026-09-08",
+  "purpose": "Minimal, tracked index for the three evaluation reports, their audits, and the supplemental quota retry.",
+  "source_document": "data/eval/official_v1/RESULTS_AND_LIMITATIONS.md",
+  "evaluation_disclaimer": {
+    "reports_are": "draft_current_worktree development measurements",
+    "not": [
+      "a production certification",
+      "an independent holdout",
+      "a claim that this documentation commit was the evaluated runtime commit"
+    ],
+    "raw_report_policy": "Raw reports and caches remain in ignored local paths. This manifest records paths and SHA-256 values without force-adding large outputs or secrets."
+  },
+  "worktree_identity": {
+    "evaluated_base_commit": "2a293721ff7998ba5ace0d81ca194d10f67581f3",
+    "current_dataset_change_is_separate_from_runtime": true,
+    "shared_pipeline_version": "v73-planner-owned-structured-inputs",
+    "normalizer_version": "v26-planner-owned-semantics",
+    "planner": {
+      "model": "qwen/qwen3.8-27b",
+      "prompt_version": "structured-regulation-v41-explicit-request-count"
+    },
+    "composer": {
+      "model": "gemini-3.1-flash-lite",
+      "prompt_version": "student-handbook-answer-v3.24-grounded-table-context"
+    },
+    "judge_model": "openai/gpt-oss-120b",
+    "retrieval_mode": "vector_primary_graph_supplement",
+    "reranker_enabled": false,
+    "quality_caches": {
+      "router": false,
+      "response": false
+    },
+    "corpus": {
+      "build_id": "build-934f1caf384f99ad96e9",
+      "qdrant_collection": "student_handbook_semantic_v33",
+      "qdrant_points": 3121,
+      "mongo_parent_collection": "parent_docs_v33",
+      "mongo_parents": 462
+    }
+  },
+  "current_input_hashes": {
+    "data/eval/official_v1/deterministic_tool_cases.json": "151ad17b08f11a814fe10183c9297754ce9a85d202f1c81d6f4c74a542db5afd",
+    "data/eval/official_v1/retrieval_cases.json": "8b0f474d1036fb9fa25f1e901e4562ff8c067f82384959d078747a0a08171026",
+    "data/eval/official_v1/generated_answer_cases.json": "0bdefd8a4a541363e9ea9f43721169f965bd2d7227aa9003ac050f7faa5fc49e"
+  },
+  "approved_dataset_change": {
+    "path": "data/eval/official_v1/generated_answer_cases.json",
+    "case_id": "official_ans_081",
+    "field_count": 3,
+    "fields": [
+      "ground_truth",
+      "required_facts[0]",
+      "answer_units[0].required_meaning"
+    ],
+    "old_value": "[K51] Kết quả: Không đạt",
+    "new_value": "[K51] Kết quả: Chưa đạt",
+    "scope": "Source-faithful wording correction only; no evaluator, runtime, metric, or case-selection change."
+  },
+  "suite_reports": {
+    "deterministic": {
+      "report": "data/eval/reports/official_v1_deterministic_20260908T022556375610Z_2a293721/deterministic.json",
+      "report_sha256": "ac8ca3fcc8979880eb0a3862c46b3427e69ebbd0feeac2d36a87425bcff4ecfa",
+      "run_identity": {
+        "runtime_base_commit": "2a293721ff7998ba5ace0d81ca194d10f67581f3",
+        "case_count": 135,
+        "unique_case_ids": 135,
+        "history_case_count": 0,
+        "generated_answer_cases_hash_recorded_by_run": "6f4308b09bacdecd5b1ae93123c63abc599d057749dc4cfb04e8cbc82d9300bf"
+      },
+      "metric_snapshot": {
+        "passed": 124,
+        "n": 135,
+        "contract_accuracy": 0.9185185185185185,
+        "resolved_result": "44/50",
+        "resolved_result_accuracy": 0.88
+      },
+      "input_hash_note": "The deterministic snapshot predates the approved official_ans_081 wording correction; current generated_answer_cases.json is recorded above and is not substituted into this report."
+    },
+    "retrieval": {
+      "report": "data/eval/reports/official_v1_retrieval_20260908T030848974357Z_2a293721/retrieval_end_to_end_qdrant_vector_primary_graph_supplement_full.json",
+      "report_sha256": "366ae6b8355cd70356f54ab149f099bed9a1147c76d716742a9cb4207ec0be27",
+      "run_identity": {
+        "git_commit": "2a293721ff7998ba5ace0d81ca194d10f67581f3",
+        "dataset_sha256": "8b0f474d1036fb9fa25f1e901e4562ff8c067f82384959d078747a0a08171026",
+        "dataset_case_count": 155,
+        "dataset_unique_case_ids": 155,
+        "reranker_enabled": false,
+        "composer_called": false,
+        "judge_called": false
+      },
+      "metric_snapshot": {
+        "hit_at_1": "120/155",
+        "hit_at_3": "139/155",
+        "hit_at_5": "141/155",
+        "mrr": 0.8333333333333333,
+        "ndcg_at_5": 0.8443159259547722,
+        "required_source_recall_at_5": 0.9010752688172042,
+        "content_type_match": "148/155",
+        "gate_status": "FAIL: content_type_match 0.9548387096774194 is below the 0.98 threshold"
+      }
+    },
+    "generate_judge": {
+      "report": "data/eval/reports/official_v1_generate_judge_20260908T054713Z_2a293721/generated_answer_judge_full.json",
+      "report_sha256": "6e32e84fb72e051af79fed8e4ad1213989159a24e3ae64290846023d2a762dc3",
+      "summary": "data/eval/reports/official_v1_generate_judge_20260908T054713Z_2a293721/final_summary.json",
+      "summary_sha256": "2c1505ea0dba85dd35a3488a19c73598143e9da4b6a791aa02baf58c8f3b14e0",
+      "run_identity": {
+        "git_head": "2a293721ff7998ba5ace0d81ca194d10f67581f3",
+        "dataset_sha256": "0bdefd8a4a541363e9ea9f43721169f965bd2d7227aa9003ac050f7faa5fc49e",
+        "dataset_case_count": 150,
+        "dataset_unique_case_ids": 150,
+        "dataset_frozen": false,
+        "independent_holdout": false,
+        "resume": false,
+        "judge_model": "openai/gpt-oss-120b"
+      },
+      "metric_snapshot": {
+        "judged_n": 150,
+        "answer_correctness": 0.9305333333333334,
+        "faithfulness": 0.9590666666666667,
+        "answer_relevancy": 0.9542666666666666,
+        "citation_correctness": 0.9355333333333334,
+        "context_precision": 0.5815333333333333,
+        "context_recall": 0.8844666666666666,
+        "status_counts": {
+          "answered": 141,
+          "low_confidence": 2,
+          "api_error": 3,
+          "needs_clarification": 2,
+          "out_of_domain": 2
+        },
+        "gate_status": "Draft metrics only; no production gate or independent holdout claim."
+      }
+    }
+  },
+  "audit_artifacts": [
+    {
+      "path": "data/eval/reports/official_v1_generate_judge_20260908T054713Z_2a293721/answer_failure_audit.json",
+      "sha256": "cc45381c6a1257c05c55828c4d2b6c07bb30457c427039fb3c62e10496e5acda",
+      "purpose": "Automatic failure/critical-flag audit attached to the Generate+Judge run."
+    },
+    {
+      "path": "data/eval/reports/official_v1_generate_judge_20260908T054713Z_2a293721/answer_quality_audit_seed20260906.json",
+      "sha256": "0947795b15b6c265b227c3eb39a1b99940973cdb614c38f60b73348c94e31a51",
+      "purpose": "AI-assisted seeded audit; not an independent human review."
+    },
+    {
+      "path": "data/eval/reports/official_v1_generate_judge_20260908T054713Z_2a293721/answer_failure_findings_luna20260908.json",
+      "sha256": "9d9c3d4a025e4e51e19266bda7ed139ad14e7936b600a692fcea3eebf8cd01a9",
+      "purpose": "AI-assisted case findings; interpretation only, not replacement metrics."
+    },
+    {
+      "path": "data/eval/reports/official_v1_generate_judge_20260908T054713Z_2a293721/answer_failure_decision_luna20260908.json",
+      "sha256": "15f3cdbe351de17a73c37effaa47174b1de9c0d1a6d1eec91d7e60eb37973977",
+      "purpose": "AI-assisted decision artifact for quota cases and disputed Judge flags."
+    },
+    {
+      "path": "scratch/luna_answer_quality_audit_20260908.md",
+      "sha256": "3d6d43eccddb0d32beb72994cb9dadbedd42c4dee455e34a7a94326bb7da75f2",
+      "purpose": "Scratch audit notes retained for provenance; not a metric source."
+    }
+  ],
+  "quota_retry_120_122": {
+    "directory": "data/eval/reports/official_v1_generate_retry_quota3_20260908T1402Z_2a293721",
+    "run_identity": {
+      "run_at": "2026-09-08T14:14:52.963735+07:00",
+      "parent_run": "official_v1_generate_judge_20260908T054713Z_2a293721",
+      "git_head": "2a293721ff7998ba5ace0d81ca194d10f67581f3",
+      "dataset_sha256": "0bdefd8a4a541363e9ea9f43721169f965bd2d7227aa9003ac050f7faa5fc49e",
+      "case_ids": [
+        "official_ans_120",
+        "official_ans_121",
+        "official_ans_122"
+      ],
+      "one_pass_each": true,
+      "judge_called": false,
+      "metric_replacement": false
+    },
+    "artifacts": [
+      {
+        "path": "data/eval/reports/official_v1_generate_retry_quota3_20260908T1402Z_2a293721/answer_generation_retry_quota3.json",
+        "sha256": "5eb81a2c3b9b9451fd8ccc6d2cccffb292067ff049a81b0c1403c990bf72e97b"
+      },
+      {
+        "path": "data/eval/reports/official_v1_generate_retry_quota3_20260908T1402Z_2a293721/answer_cache_retry_quota3.json",
+        "sha256": "879f714a64476c3a82ed0a38d6f91af3887ed4c11891b2df3261728bb0100c68"
+      },
+      {
+        "path": "data/eval/reports/official_v1_generate_retry_quota3_20260908T1402Z_2a293721/answer_cache_retry_quota3.json.identity.json",
+        "sha256": "e717869ada96b984147d1fefc116e647ca880a0dc8246fdbd072001779fbac1b"
+      },
+      {
+        "path": "data/eval/reports/official_v1_generate_retry_quota3_20260908T1402Z_2a293721/retry_offline_review_luna20260908.json",
+        "sha256": "292130469b9dffe40a38f01b76683c511cf8dea78f6784eabf82fc30721fa1af"
+      }
+    ],
+    "offline_review": {
+      "answered": "3/3",
+      "api_errors": 0,
+      "offline_pass": "3/3",
+      "interpretation": "Supplemental source-faithfulness check only; do not merge into or rescore Generate+Judge150."
+    }
+  },
+  "commit_scope": {
+    "tracked_files_intended": [
+      "data/eval/official_v1/generated_answer_cases.json",
+      "data/eval/official_v1/RESULTS_AND_LIMITATIONS.md",
+      "data/eval/official_v1/RESULTS_PROVENANCE.json"
+    ],
+    "ignored_raw_outputs_not_committed": true,
+    "unrelated_user_drafts_preserved_unstaged": true,
+    "runtime_or_evaluator_changes": false
+  }
+}

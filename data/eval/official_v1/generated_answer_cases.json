@@ -7566,9 +7566,9 @@
       "official_v1",
       "realistic"
     ],
-    "ground_truth": "[K51] Kết quả: Không đạt",
+    "ground_truth": "[K51] Kết quả: Chưa đạt",
     "required_facts": [
-      "[K51] Kết quả: Không đạt"
+      "[K51] Kết quả: Chưa đạt"
     ],
     "forbidden_claims": [],
     "relevance_judgments": [],
@@ -7639,7 +7639,7 @@
     "answer_units": [
       {
         "cohort": "K51",
-        "required_meaning": "[K51] Kết quả: Không đạt",
+        "required_meaning": "[K51] Kết quả: Chưa đạt",
         "mode": "structured"
       }
     ],

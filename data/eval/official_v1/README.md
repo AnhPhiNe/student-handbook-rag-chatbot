@@ -1,11 +1,18 @@
-# Official evaluation v1 — ready for owner review
+# Official evaluation v1 — local results and retained authoring record
 
-**Not runnable, not dataset-frozen, no official results yet.**
+The three quality suites have now been run locally. See
+[RESULTS_AND_LIMITATIONS.md](RESULTS_AND_LIMITATIONS.md) for the measured
+deterministic, retrieval, and Generate + Judge results, and
+[RESULTS_PROVENANCE.json](RESULTS_PROVENANCE.json) for runtime, dataset, and
+report hashes. These are development measurements, not an independent holdout
+or production certification.
 
-Runtime baseline: `7d9dc3ca87f124be1282c2f01d7a42983badbad2`, v66,
-Gemini 3.1 Flash Lite, Composer prompt v3.24, corpus v33.
-
-See [REVIEW_FOR_APPROVAL.md](REVIEW_FOR_APPROVAL.md) for the consolidated handoff and Production protocol. All four casebooks are authored; approval and joint freeze are still required.
+Measured runtime identity: evaluated base `2a293721ff7998ba5ace0d81ca194d10f67581f3`,
+pipeline `v73-planner-owned-structured-inputs`, Gemini 3.1 Flash-Lite, Composer
+prompt v3.24, corpus build v33. Production60 was **not run** in this scope, so
+there is no current production metric. The authoring and review documents below
+are retained as original protocol/reference material, not as a next required
+step.
 
 ## Authored suites
 
@@ -16,12 +23,20 @@ See [REVIEW_FOR_APPROVAL.md](REVIEW_FOR_APPROVAL.md) for the consolidated handof
 | Generate + Judge | 150 | 120 | 30 |
 | Production | 60 | 48 | 12 |
 
+The table records authored casebook sizes. Only the first three rows are
+represented in the current official-v1 local results; the Production casebook
+was not executed for a current Production60 metric.
+
 Balance the three cohort groups within each suite. Questions must arise from
 handbook content and student needs, not previous failures. Shared topics are
 allowed. Historical overlap screening is omitted by owner decision. This is
 a system evaluation benchmark, not a claim of independent research holdout.
 
-## Before execution
+## Original authoring and execution protocol
+
+The following instructions are retained from the original draft protocol for
+provenance; they do not describe a pending gate after the completed local
+quality-suite run.
 
 1. Author source-grounded questions and gold from the source inventory. Include
    cohort, applicability, exceptions and equivalent acceptable sources.
@@ -46,17 +61,21 @@ Report x/n, percentages, cohort/type/style breakdown and limitations, no combine
 score. Infrastructure/evaluator-invalid runs need a recorded reason before retry.
 Do not change runtime because of low metrics.
 
-Only after local evaluation/audit: push/deploy candidate to HF, verify build and
-readiness, then run Production 60 with separate cold/warm measurements. Tag the
-historical state before deleting old evaluation artifacts. Keep current evaluator,
-regression fixtures and build provenance. Update README only with actual measured
-results, then final tests/packaging and release tag.
+Original protocol reference: after local evaluation/audit, a later release may
+push/deploy a candidate to HF, verify build/readiness, and run Production 60
+with separate cold/warm measurements. Tag the historical state before deleting
+old evaluation artifacts, keep evaluator/regression fixtures and provenance,
+and update README only with measured results.
 
 `runtime_freeze.json` freezes the local runtime only. `prior_eval_inventory.json`
 is a hash inventory, **not an overlap audit**. `source_inventory.json` identifies
-source articles, **not reviewed gold answers**. No casebook has yet been approved.
+source articles, **not reviewed gold answers**. These caveats remain part of the
+authoring provenance; see the measured-results report for current status.
 
-## Current authoring progress
+## Original authoring record
+
+The entries below describe the authored casebooks retained for provenance, not
+unfinished current release gates.
 
 The previous 66 retrieval drafts were discarded at the owner's request.
 `deterministic_authoring.yaml` now contains all 135 deterministic questions;
@@ -84,7 +103,7 @@ units; allocation is not a claim that all requests are single-cohort. Gold uses
 complete parents and selected catalog fields, not retrieval previews or model
 outputs. Compound cases retain separate required meanings, including partial
 clarification. Literal anchors, cohort identity, semantic gold and evaluator compatibility have been reviewed offline. Review is AI-assisted, not independent human audit.
-`production_authoring.yaml` and `production_cases.json` contain all 60 measured requests: 20 cold RAG, 10 structured, 10 warm-cache, 10 streaming and 10 burst. Repeated requests are deliberate transport/cache probes, not independent answer questions. Do not run these files for official metrics before approval and freeze.
+`production_authoring.yaml` and `production_cases.json` contain 60 authored transport requests: 20 cold RAG, 10 structured, 10 warm-cache, 10 streaming and 10 burst. Repeated requests are deliberate transport/cache probes, not independent answer questions. The casebook was not run for a current Production60 metric.
 
 Questions use student-facing wording, not internal table, row, column or routing
 instructions. Removing such hints must also trigger a gold review: missing
@@ -93,6 +112,6 @@ for a table are not inherently invalid, but artificial table vocabulary must
 not be used to steer otherwise ordinary student questions.
 
 Contract self-tests use synthetic fixtures, not model responses. Complete gold
-review has been recorded in the consolidated handoff; owner approval and dataset freeze remain prerequisites
-for an official run. Older stratification/authoring scaffolding is superseded and is not evidence
-that these steps have been completed.
+review and the measured-run provenance are recorded in the linked report and
+manifest. Older stratification/authoring scaffolding is superseded and is not
+evidence for additional current metrics.

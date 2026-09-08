@@ -4,13 +4,13 @@
   <p><strong>Student Handbook RAG Assistant</strong></p>
   <p>
     A cohort-aware assistant for the HCMUE student handbooks: K48–K49, K50, and K51.<br>
-    Multi-request planning, deterministic structured lookup, hybrid RAG, citations, and a production-oriented React interface.
+    Multi-request planning, deterministic structured lookup, hybrid RAG, citations, and a React interface.
   </p>
 
   <p>
-    <a href="https://www.hcmuebot.id.vn"><img src="https://img.shields.io/badge/Live_Demo-hcmuebot.id.vn-2563EB?style=for-the-badge" alt="Live demo"></a>
-    <a href="https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api"><img src="https://img.shields.io/badge/API-Hugging_Face-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black" alt="Hugging Face backend"></a>
-    <a href="#evaluation-results"><img src="https://img.shields.io/badge/Evaluation-V9.1-7C3AED?style=for-the-badge" alt="Architecture V9.1 evaluation"></a>
+    <a href="https://www.hcmuebot.id.vn"><img src="https://img.shields.io/badge/Demo_Link-hcmuebot.id.vn-2563EB?style=for-the-badge" alt="Demo link; deployment status is not verified here"></a>
+    <a href="https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api"><img src="https://img.shields.io/badge/Backend_Link-Hugging_Face-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black" alt="Backend link; deployment status is not verified here"></a>
+    <a href="#evaluation-results"><img src="https://img.shields.io/badge/Evaluation-official--v1-7C3AED?style=for-the-badge" alt="Official v1 local evaluation"></a>
   </p>
 
   <p>
@@ -42,7 +42,7 @@
 > HCMUE AI is an independent, non-commercial student project—not an official HCMUE application. Verify cited sources or contact the responsible university office before making important academic decisions.
 
 > [!NOTE]
-> The current checkout is the **v33 release candidate**, using Composer **Gemini 3.1 Flash-Lite**, prompt **v3.24**, and pipeline **v64**. Its local smoke checks have passed; it has **not yet been deployed or fully evaluated**. The V9.1 metrics below remain results of the earlier v32 release. See [current release status](docs/V33_RELEASE_STATUS.md).
+> The current local runtime is the **v33 candidate**, using Composer **Gemini 3.1 Flash-Lite**, prompt **v3.24**, pipeline **v73**, and build `build-934f1caf384f99ad96e9`. The three official-v1 quality suites have completed locally; see [results and limitations](data/eval/official_v1/RESULTS_AND_LIMITATIONS.md) and [provenance](data/eval/official_v1/RESULTS_PROVENANCE.json). Production60 was **not run** for this scope, so there is no current production metric or production certification. The V9.1 block below is a historical v32 regression; [V33 release status](docs/V33_RELEASE_STATUS.md) is retained as a historical candidate record.
 
 <a id="project-overview"></a>
 
@@ -56,12 +56,12 @@ The project demonstrates:
 - **Deterministic structured lookup:** cohort-aware catalogs cover grade scales, scholarships, study duration, foreign-language equivalency, formulas, programs, faculties, offices, and student services.
 - **Hybrid regulation RAG:** BGE-M3 dense search and BM25 are fused with Reciprocal Rank Fusion (RRF), then mapped from child chunks to complete parent articles.
 - **Evidence-bound generation:** the Gemini composer receives only evidence authorized for the corresponding task and cohort. A unique, grounded table row may also be supplied as a fact lock through `resolved_result`.
-- **Production delivery:** FastAPI supports synchronous and SSE streaming responses; React renders citations and structured data in dedicated source drawers.
+- **Delivery surfaces:** FastAPI supports synchronous and SSE streaming responses; React renders citations and structured data in dedicated source drawers.
 - **Reproducible evaluation:** planning, retrieval, answer quality, human audit, and transport behavior are reported separately with explicit denominators and provenance.
 
-### 📌 At a glance
+### 📌 Historical V9.1 snapshot
 
-| Grounded knowledge | Production retrieval | Answer quality | Cohort safety |
+| Historical grounded knowledge | Historical retrieval | Historical answer quality | Historical cohort safety |
 |:---:|:---:|:---:|:---:|
 | **462** parent articles<br>**35** structured catalogs | **149/155** Hit@5<br>**0.9085** MRR | **90.37%** Judge correctness<br>**97.41%** audit score | **0/155** retrieval leaks<br>**0/135** deterministic leaks |
 
@@ -222,7 +222,7 @@ For structured tasks, runtime—not the Planner—selects the applicable catalog
 
 ### 🔎 Retrieval and grounding
 
-Production retrieval uses `vector_primary_graph_supplement`:
+The default retrieval path uses `vector_primary_graph_supplement`:
 
 1. Qdrant and BM25 apply cohort filters before top-k selection.
 2. Each branch returns at most 24 child candidates.
@@ -231,7 +231,7 @@ Production retrieval uses `vector_primary_graph_supplement`:
 5. The evidence packet applies task/cohort/source guards, deduplication, and bounded context allocation.
 6. The Composer cannot retrieve additional sources or promote UI-only graph references into answer evidence.
 
-PhoRanker remains available for controlled experiments but is **disabled in production and in the reported V9.1 retrieval run**.
+PhoRanker remains available for controlled experiments but is **disabled in the default runtime and in the official-v1 retrieval run**.
 
 <a id="api"></a>
 
@@ -252,16 +252,31 @@ QueryPlan, task results, and evidence diagnostics are returned only when `includ
 
 ## 📊 Evaluation Results
 
-The release candidate was evaluated with the frozen **Architecture V9.1 corrected** dataset as a **final post-refactor regression**. This is not presented as a new holdout: the runtime evolved after the dataset manifest was frozen, and no metric threshold was changed after observing this run.
+### Official v1 local evaluation
+
+The current official-v1 report covers three local quality suites. These are development measurements, not an independent holdout or production certification; the evaluated runtime identity and input/report hashes are recorded in the [provenance manifest](./data/eval/official_v1/RESULTS_PROVENANCE.json).
+
+| Suite | Sample | Current result |
+|---|---:|---:|
+| Deterministic | 135 | **124/135 (91.85%)** contract pass; not final-answer accuracy |
+| Retrieval | 155 | **141/155 (90.97%)** Hit@5; MRR **0.8333**; content-type **148/155 (95.48%)** vs 98% gate |
+| Generate + Judge | 150 | Mean Judge correctness **0.9305**; a 0–1 rubric mean, not exact-answer accuracy or pass rate |
+| Production60 | 60 authored cases | **Not run** in this scope; no current production metric |
+
+See the full [official-v1 results and limitations](./data/eval/official_v1/RESULTS_AND_LIMITATIONS.md) for denominators, status counts, and local latency (mean 4.68 s; p50 3.97 s; p95 8.11 s).
+
+### Historical V9.1 regression (v32)
+
+The detailed sections below preserve the frozen **Architecture V9.1 corrected** post-refactor regression. They are historical measurements, not current v33 or official-v1 headline metrics.
 
 - Frozen dataset: [`data/eval/architecture_v9_1_corrected`](./data/eval/architecture_v9_1_corrected)
 - Detailed release report: [`docs/FINAL_RELEASE_EVALUATION.md`](./docs/FINAL_RELEASE_EVALUATION.md)
 - Original V9.1 results: [`RESULTS.md`](./data/eval/architecture_v9_1_corrected/RESULTS.md)
 - Evaluator correction audit: [`CORRECTION_AUDIT.md`](./data/eval/architecture_v9_1_corrected/CORRECTION_AUDIT.md)
 
-Planning, retrieval, generated-answer quality, human review, and production behavior are intentionally reported separately. There is no synthetic overall score.
+Planning, retrieval, generated-answer quality, human review, and transport behavior remain intentionally separate. There is no synthetic overall score.
 
-### 🪪 Evaluation identity
+### 🪪 Historical V9.1 evaluation identity
 
 | Item | Recorded value |
 |---|---|
@@ -535,7 +550,7 @@ Before publishing this candidate, the packaged manifest and both HF runtime vari
 
 ### Frontend — Vercel
 
-The Vite frontend reads `VITE_API_BASE_URL` and is published at [https://www.hcmuebot.id.vn](https://www.hcmuebot.id.vn). A manual CLI deployment should link the existing Vercel project before publishing to avoid creating a duplicate project.
+The Vite frontend reads `VITE_API_BASE_URL`. This repository documents the frontend deployment configuration; the current public deployment is not verified by the local official-v1 evaluation.
 
 <a id="evaluation-governance-and-release-policy"></a>
 

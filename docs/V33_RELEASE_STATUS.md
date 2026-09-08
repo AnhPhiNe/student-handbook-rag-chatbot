@@ -1,11 +1,15 @@
 # V33 release status
 
-Updated 2026-09-06. This is an upload-verified candidate, **not yet a deployed
-release or a completed final evaluation**.
+Updated 2026-09-09. This page retains the historical v64 upload-verified
+candidate record. The current local v33 runtime uses pipeline `v73`; the three
+official-v1 quality-suite results are recorded in [RESULTS_AND_LIMITATIONS.md](../data/eval/official_v1/RESULTS_AND_LIMITATIONS.md)
+with hashes and run identity in [RESULTS_PROVENANCE.json](../data/eval/official_v1/RESULTS_PROVENANCE.json).
+This is not a production certification or a claim that the public deployment
+has been updated.
 
-- Current runtime: `90df81d5`; packaging fix: `0f3bc23a`.
-- Composer remains `gemini-3.1-flash-lite`; prompt v3.24: `cdf0c0e5`.
-- Pipeline/cache version: `v64-preserve-group-fact-lock`.
+- Historical v64 candidate runtime: `90df81d5`; packaging fix: `0f3bc23a`.
+- Historical candidate Composer: `gemini-3.1-flash-lite`; prompt v3.24: `cdf0c0e5`.
+- Historical pipeline/cache version: `v64-preserve-group-fact-lock`.
 - Historical v3.23 freeze manifest commit: `053e96e5`, against runtime/evaluator
   `1a71c971f1713d730baef4885cd92f9480bdd40b`. That manifest was not rewritten
   to claim evaluation of the current candidate.
@@ -25,7 +29,14 @@ release or a completed final evaluation**.
 - Full verification record: `data/eval/release_v33_smoke/remote_content_verification.json`.
 - No v32 collection was changed or deleted.
 
-## Review and model decision
+## Current local status
+
+- Runtime identity: Gemini 3.1 Flash-Lite, Composer prompt v3.24, pipeline `v73`, corpus build `build-934f1caf384f99ad96e9`.
+- Deterministic: **124/135** contract pass; retrieval: **141/155** Hit@5, MRR **0.8333**.
+- Generate + Judge: **150** rows; mean Judge correctness **0.9305**, a 0–1 rubric mean rather than exact-answer accuracy or a pass rate.
+- Production60 was **not run** in the official-v1 scope; there is no current production metric, HF load/TTFT/SLA result, or verified public rollout here.
+
+## Historical v64 review and model decision
 
 The pre-fix full-pipeline comparison completed 20 requests per model (19 unique
 questions), with identical paired plans/prompts. Median end-to-end latency was
@@ -55,7 +66,11 @@ identified as safely removable in this scoped diff review. The Docker allowlist
 now retains the manifest-declared table audit; staging verification confirmed its
 hash matches the source artifact.
 
-## Remaining release gates
+## Historical v64 release-gate record
+
+The checklist below is retained as an audit trail for the v64 candidate. It is
+not the current official-v1 status or a next-step requirement for the completed
+three local quality suites; Production60 remains outside that scope.
 
 1. Authenticate HF management access. API access returned 401; reusing a Git
    credential for the API was not approved. Do not switch only one storage
@@ -71,5 +86,6 @@ hash matches the source artifact.
    and label this as a post-fix regression, not a fresh holdout.
 5. Publish the separate metrics, update README and tag only after those gates.
 
-The README's existing final-evaluation metrics still describe the previous
-runtime/corpus. No new headline metric has been asserted for v33.
+The root README retains the previous V9.1 metrics as historical. Current
+official-v1 metrics and their limitations are linked above; no current
+Production60 metric is asserted.

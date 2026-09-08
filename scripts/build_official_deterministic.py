@@ -124,8 +124,13 @@ def compile_task(spec, cohort, catalogs):
             candidates = [t for t in candidates if t["table_id"].endswith(scope[0])]
         table = one(candidates)
         selected = [table]
+        operations = [operation]
+        if subtype == "pass_fail_ungraded":
+            # Both labels are valid ways to ask for the source-defined
+            # pass/fail threshold; keep the authored operation first.
+            operations.append("pass_threshold")
         task.update(lookup_type="scoring", required_slot_keys=["operation"],
-                    slot_value_alternatives={"operation": [operation]})
+                    slot_value_alternatives={"operation": list(dict.fromkeys(operations))})
         if scope:
             task["slot_value_alternatives"]["course_scope"] = scope
         chosen = rows(table) if row_index == "all" else [rows(table)[row_index]]
@@ -232,9 +237,8 @@ def compile_task(spec, cohort, catalogs):
                 key: copy.deepcopy(fields[key]) for key in spec["resolved_output_fields"]
             }
         if spec.get("table", [None])[0] == "pass_fail_ungraded":
-            # The source says 'Chưa đạt / Không quy đổi thành P', while the
-            # resolver uses 'Không đạt'. Do not demand or legitimize its F label.
-            task["expected_resolved_fields"] = {"status": "Đạt" if spec["table"][1] == 0 else "Không đạt"}
+            # Preserve the source-defined public status label.
+            task["expected_resolved_fields"] = {"status": "Đạt" if spec["table"][1] == 0 else "Chưa đạt"}
     return task, gold
 
 

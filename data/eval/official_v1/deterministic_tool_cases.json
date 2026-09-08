@@ -1838,7 +1838,8 @@
             ],
             "slot_value_alternatives": {
               "operation": [
-                "pass_fail_ungraded"
+                "pass_fail_ungraded",
+                "pass_threshold"
               ],
               "course_scope": [
                 "pass_fail_ungraded"
@@ -3025,7 +3026,8 @@
             ],
             "slot_value_alternatives": {
               "operation": [
-                "pass_fail_ungraded"
+                "pass_fail_ungraded",
+                "pass_threshold"
               ],
               "course_scope": [
                 "pass_fail_ungraded"
@@ -3050,7 +3052,7 @@
             },
             "resolved_result_required": true,
             "expected_resolved_fields": {
-              "status": "Không đạt"
+              "status": "Chưa đạt"
             }
           }
         ],

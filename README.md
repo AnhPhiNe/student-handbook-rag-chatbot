@@ -42,7 +42,7 @@
 > HCMUE AI is an independent, non-commercial student project—not an official HCMUE application. Verify cited sources or contact the responsible university office before making important academic decisions.
 
 > [!NOTE]
-> The current local runtime is the **v33 candidate**, using Composer **Gemini 3.1 Flash-Lite**, prompt **v3.24**, pipeline **v73**, and build `build-934f1caf384f99ad96e9`. The three official-v1 quality suites have completed locally; see [results and limitations](data/eval/official_v1/RESULTS_AND_LIMITATIONS.md) and [provenance](data/eval/official_v1/RESULTS_PROVENANCE.json). Production60 was **not run** for this scope, so there is no current production metric or production certification. The V9.1 block below is a historical v32 regression; [V33 release status](docs/V33_RELEASE_STATUS.md) is retained as a historical candidate record.
+> The current local runtime is the **v33 candidate**, using Composer **Gemini 3.1 Flash-Lite**, prompt **v3.24**, pipeline **v73**, and build `build-934f1caf384f99ad96e9`. The three official-v1 quality suites have completed locally; see [results and limitations](data/eval/official_v1/RESULTS_AND_LIMITATIONS.md) and [provenance](data/eval/official_v1/RESULTS_PROVENANCE.json). Production60 was **not run** for this scope, so there is no current production metric or production certification. The public deployment has not been verified against this local version.
 
 <a id="project-overview"></a>
 
@@ -57,15 +57,16 @@ The project demonstrates:
 - **Hybrid regulation RAG:** BGE-M3 dense search and BM25 are fused with Reciprocal Rank Fusion (RRF), then mapped from child chunks to complete parent articles.
 - **Evidence-bound generation:** the Gemini composer receives only evidence authorized for the corresponding task and cohort. A unique, grounded table row may also be supplied as a fact lock through `resolved_result`.
 - **Delivery surfaces:** FastAPI supports synchronous and SSE streaming responses; React renders citations and structured data in dedicated source drawers.
-- **Reproducible evaluation:** planning, retrieval, answer quality, human audit, and transport behavior are reported separately with explicit denominators and provenance.
+- **Reproducible evaluation:** planning, retrieval, and answer quality are reported separately with explicit denominators and provenance; source-grounded review is AI-assisted.
 
-### 📌 Historical V9.1 snapshot
+### 📌 At a glance
 
-| Historical grounded knowledge | Historical retrieval | Historical answer quality | Historical cohort safety |
+| Deterministic contract | Retrieval Hit@5 | Mean Judge correctness | Corpus |
 |:---:|:---:|:---:|:---:|
-| **462** parent articles<br>**35** structured catalogs | **149/155** Hit@5<br>**0.9085** MRR | **90.37%** Judge correctness<br>**97.41%** audit score | **0/155** retrieval leaks<br>**0/135** deterministic leaks |
+| **124/135 · 91.85%** | **141/155 · 90.97%** | **0.9305 / 1 · 150 cases** | **462 parents · 3,121 children** |
 
-<p align="center"><sub>Final post-refactor V9.1 regression on release commit <code>13aef9e6</code>. Metrics retain their suite-specific denominators and are not combined into one score.</sub></p>
+These are separate official-v1 local measurements, not one overall accuracy score.
+Retrieval's content-type gate did not pass; see [evaluation details](#evaluation-results).
 
 ### 🧰 Technology stack
 
@@ -83,54 +84,66 @@ The project demonstrates:
 
 ## 🏗️ System Architecture
 
+The API delegates to the answer service/pipeline; storage systems do not call one another. The retrieval component resolves child IDs to parent articles.
+
 ```mermaid
 flowchart LR
-    Student["Student"] --> UI["React + Vite UI<br/>Vercel"]
-    UI -->|"HTTPS / SSE"| API["FastAPI API<br/>Hugging Face Spaces"]
-
-    API --> Planner["Query Planner<br/>Qwen 3.8 27B · Groq"]
-    API --> Composer["Answer Composer<br/>Gemini 3.1 Flash-Lite"]
-    API --> Cache[("Redis<br/>response cache")]
-
-    API --> Structured["Structured JSON catalogs"]
-    API --> Qdrant[("Qdrant Cloud<br/>student_handbook_semantic_v33")]
-    API --> Mongo[("MongoDB Atlas<br/>parent_docs_v33")]
-    API --> Graph["Local article graph"]
-
-    Qdrant -. child-to-parent ID .-> Mongo
-    Structured -. source and cohort binding .-> API
-    Graph -. UI related references .-> API
+    UI["React + Vite"] -->|"POST /chat or /chat/stream"| API["FastAPI routes"]
+    API --> Service["AnswerService / AnswerPipeline"]
+    Service --> Router["AI Router<br/>Qwen Planner + plan validation"]
+    Service --> Lookup["Structured execution"]
+    Lookup --> JSON["Versioned JSON catalogs"]
+    Service --> Retrieval["Hybrid retrieval<br/>BGE-M3 + BM25 + RRF"]
+    Retrieval --> Qdrant[("Qdrant: narrative children")]
+    Retrieval --> BM25["In-process BM25 index"]
+    Retrieval --> Mongo[("MongoDB: full parents")]
+    Service --> Packet["Task/cohort evidence packet"]
+    Packet --> Composer["Gemini 3.1 Flash-Lite"]
+    Service --> Cache["Response cache<br/>Redis or local JSON"]
+    Service --> Graph["Article graph: UI references"]
+    Composer --> Service
+    Service --> API
+    API --> UI
 ```
 
-The current candidate artifacts share build ID `build-934f1caf384f99ad96e9`. Readiness checks compare configured collection names with the build manifest so Qdrant, MongoDB, and local artifacts cannot silently come from different builds. This diagram describes the candidate, not confirmation that the public demo has been updated.
+Current local artifacts use build ID `build-934f1caf384f99ad96e9`, Qdrant `student_handbook_semantic_v33`, and MongoDB `parent_docs_v33`. Build/upload validation and readiness checks enforce declared artifact and collection identities; a matching collection name alone is not proof of remote content equality. Hosting targets are HF Spaces and Vercel; the diagram does not certify the currently deployed revision.
 
 ### 🔄 Runtime flow
 
 ```mermaid
 flowchart TD
-    Request["Query + selected cohort + history"] --> Plan["QueryPlan<br/>1–3 tasks"]
-    Plan --> S["Structured"]
-    Plan --> R["Regulation RAG"]
-    Plan --> C["Clarification / OOD"]
-
-    S --> Lookup["Applicable catalog<br/>+ optional unique-row fact lock"]
-    R --> Dense["Qdrant dense search<br/>cohort filter before top-k"]
-    R --> Sparse["BM25 lexical search<br/>cohort filter before top-k"]
-    Dense --> RRF["RRF fusion"]
-    Sparse --> RRF
-    RRF --> Parents["Top five parent articles"]
-    Parents --> Packet["Task/cohort-bound evidence packet"]
-    Lookup --> Packet
-    C --> Packet
-
-    Parents --> Graph["Validated related references<br/>UI only"]
-    Packet --> Ready{"Executable evidence?"}
-    Ready -->|"No"| Safe["Clarify / abstain / OOD<br/>0 composer calls"]
-    Ready -->|"Yes"| Answer["Gemini composer<br/>≤ 1 call per request"]
-    Answer --> Response["Markdown + citations + data cards"]
+    Request["Query + selected cohort + history"] --> Input["Input/cohort normalization"]
+    Input --> Router["Router normalization + plan cache<br/>Qwen Planner on cache miss"]
+    Router --> Validate["Canonicalize and validate QueryPlan"]
+    Validate --> Tasks["Execute each task and requested cohort"]
+    Tasks --> S["Structured catalog lookup<br/>optional grounded resolved_result"]
+    Tasks --> R["Regulation retrieval"]
+    Tasks --> C["Clarification / OOD / uncovered task"]
+    R --> Search["Cohort-filtered dense + BM25"]
+    Search --> RRF["RRF: up to 24 fused children"]
+    RRF --> Parents["Group children; resolve up to 5 parents<br/>per retrieval call"]
+    Parents --> Merge["Aggregate task results + coverage"]
+    S --> Merge
+    C --> Merge
+    Merge --> Gate{"Request-level guardrails"}
+    Gate -->|"Terminal outcome"| Safe["Clarify / abstain / error / OOD<br/>without Composer"]
+    Gate -->|"Answerable evidence"| Packet["Build bounded task/cohort packet"]
+    Packet --> Cache{"Evidence-bound response cache"}
+    Cache -->|"Hit"| Cached["Reuse answer; skip Composer"]
+    Cache -->|"Miss"| Compose["One composition stage<br/>Gemini sync or streaming"]
+    Compose --> Final["Format answer, citations and status<br/>cache successful result"]
+    Merge -.-> Graph["Related references for UI only"]
+    Final --> Response["JSON or SSE response"]
     Safe --> Response
+    Cached --> Response
     Graph --> Response
 ```
+
+- Sync and streaming share `prepare_answer`; their generation/delivery adapters remain separate.
+- Response-cache lookup happens **after planning/retrieval and evidence construction**. Its key includes evidence and version identity; it is not a shortcut around all retrieval.
+- Mixed questions can preserve answerable tasks alongside a clarification need. Task-level missing information does not necessarily terminate the entire request.
+- “One composition stage” means one composed answer across tasks, not a guarantee of one provider HTTP attempt: retries/key rotation can occur.
+- RRF and parent selection operate per retrieval call; aggregation can contain sources from multiple tasks/cohorts before context limits are applied.
 
 ### 🛡️ Core contracts
 
@@ -166,7 +179,7 @@ student_handbook_rag/
 │   ├── raw/                         # Source handbooks (not deployed)
 │   ├── processed/                   # Tables, parents, chunks, graph, and build manifest
 │   └── eval/
-│       └── architecture_v9_1_corrected/  # Current corrected evaluation bundle
+│       └── official_v1/             # Current system evaluation, results, and provenance
 ├── docs/                            # Architecture and historical evaluation reports
 ├── frontend/                        # React + TypeScript + Vite application
 ├── scripts/                         # Build, audit, evaluation, publishing, and deployment tools
@@ -184,25 +197,54 @@ student_handbook_rag/
 The current runtime/build boundary and intentionally deferred cleanup work are
 documented in [Technical Debt and Maintenance Boundary](./docs/TECHNICAL_DEBT.md).
 
-### 🔨 Data build pipeline
+### 🔨 Preprocessing and data build pipeline
+
+The build is source-driven and cohort-specific, with curated section boundaries, catalog metadata, and reviewed table regions. It is not an unrestricted automatic OCR/table-understanding pipeline.
 
 ```mermaid
-flowchart LR
-    PDFs["Three handbook PDFs"] --> Parse["Extract and parse<br/>chapter → article → clause"]
-    Parse --> Policy["Cohort applicability<br/>and provenance"]
-    Policy --> Tables["Structured catalogs"]
-    Policy --> Parents["462 parent articles"]
-    Policy --> Graph["78 validated edges"]
-    Parents --> Narrative["Narrative view<br/>reviewed table regions removed"]
-    Narrative --> Chunks["3,121 child chunks"]
-    Chunks --> Embed["BGE-M3 embeddings"]
-    Embed --> Qdrant["Qdrant v33"]
-    Parents --> Mongo["MongoDB v33"]
-    Tables --> Manifest["Build manifest"]
-    Graph --> Manifest
-    Qdrant --> Manifest
-    Mongo --> Manifest
+flowchart TD
+    PDF["Handbook PDFs + cohort-specific section config"] --> Pages["Extract page text"]
+    Pages --> Sections["Parse selected document / chapter / article sections"]
+    Sections --> Extract["Extract structured records + initial chunks/docstore"]
+    Extract --> Merge["Merge cohorts; namespace IDs and parent references<br/>validate metadata and program-directory mapping"]
+    Merge --> Catalog["Build structured table layer and directory profiles"]
+    Catalog --> Review["Validate curated table regions<br/>source hashes + exact spans + JSON projections"]
+    Review --> Full["Full parent articles<br/>prose + reviewed readable tables"]
+    Review --> Narrative["Narrative view<br/>remove reviewed physical table regions only"]
+    Narrative --> Child["Build narrative child chunks + parent links"]
+    Full --> Graph["Extract article-reference graph"]
+    Full --> Audit["Separation audit + manifest/build ID<br/>table quality + deploy-artifact checks"]
+    Child --> Audit
+    Catalog --> Audit
+    Graph --> Audit
+    Audit --> Ready["Validated local artifacts"]
+    Ready --> Publish{"PUSH_REMOTE enabled?"}
+    Publish -->|"No"| Local["Local build only"]
+    Publish -->|"Yes"| Preflight["Remote preflight"]
+    Preflight --> Vector["Embed narrative children with BGE-M3<br/>upload Qdrant"]
+    Vector --> ParentUpload["Upload full parents to MongoDB"]
+    ParentUpload --> Verify["Verify remote build and parent-child links"]
 ```
+
+| Stage | Entry point / contract | Output or responsibility |
+|---|---|---|
+| Per-PDF extraction | `scripts.extract_pdf_pages`, `scripts.parse_structure` | Page text and selected structured sections using each cohort's config |
+| Initial extraction/chunking | `scripts.extract_structured_data`, `scripts.build_chunks` | Source records, initial chunks and parent docstore |
+| Multi-cohort consolidation | `scripts.build_multi_cohort` | Cohort-qualified IDs, source-parent references, directory enrichment and validation |
+| Structured artifacts | `scripts.build_structured_table_layer` | Lookup tables, registry and runtime directory profiles |
+| Parent/child separation | `scripts.build_parent_child_artifacts --publish-artifacts` | Final local parents, narrative children and separation audit; this flag does **not** upload |
+| Graph and identity | `src.ingestion.graph_extractor`, `scripts.build_artifact_manifest` | Related-reference edges, file hashes and shared build identity |
+| Publication | `scripts.push_to_qdrant`, `scripts.push_to_mongo`, `scripts.verify_remote_build` | Validated versioned remote stores; no automatic runtime promotion |
+
+**Three representations, three purposes:**
+
+- `all_docstore_items.json` → MongoDB: complete supported articles, including reviewed tables.
+- `child_parent_chunks.json` → Qdrant and local lexical retrieval: narrative children, not full tables or table-summary fallback chunks.
+- Structured JSON tables/directories → deterministic lookup: authoritative rows, fields, source binding and applicability.
+
+`narrative_docstore_items.json` is a build intermediate, **not** the MongoDB upload input. Numeric policy prose stays in narrative text; only explicitly reviewed physical table regions are removed. Image-based or malformed tables are not assumed to be recovered automatically: supported table projections depend on reviewed source/JSON metadata. Source or registry drift fails validation instead of guessing new boundaries.
+
+The manifest is built **before uploads**. Publication is not a cross-database transaction: if either store fails, do not switch the application to the partial pair. Keep the previous version until both stores are verified. See the [full build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md) and [publishing commands](#data-build-and-publishing).
 
 <a id="runtime-design"></a>
 
@@ -210,11 +252,11 @@ flowchart LR
 
 ### 🧠 Planning and structured lookup
 
-The Planner distinguishes a table value from the policy governing that value. Native JSON Schema constrains the plan structure; the normalizer validates grounded slots, repairs harmless optional metadata, and prevents invalid structured tasks from executing.
+The Planner distinguishes a table value from the policy governing that value. Native JSON Schema constrains the plan structure; the normalizer canonicalizes and validates the plan before execution. Schema-valid slots do not guarantee that the Planner interpreted the question correctly.
 
 For structured tasks, runtime—not the Planner—selects the applicable catalog and resolves data:
 
-1. validate cohort and applicability;
+1. validate the task inputs, cohort, and applicability;
 2. select the declared structured capability;
 3. expose the applicable table or records to the UI and Composer;
 4. create `resolved_result` only for a uniquely resolved, evidence-grounded row;
@@ -231,7 +273,7 @@ The default retrieval path uses `vector_primary_graph_supplement`:
 5. The evidence packet applies task/cohort/source guards, deduplication, and bounded context allocation.
 6. The Composer cannot retrieve additional sources or promote UI-only graph references into answer evidence.
 
-PhoRanker remains available for controlled experiments but is **disabled in the default runtime and in the official-v1 retrieval run**.
+**No reranker is enabled in the default runtime or the official-v1 evaluation.** RRF is the release path; experimental reranker results are not official headline metrics.
 
 <a id="api"></a>
 
@@ -265,174 +307,48 @@ The current official-v1 report covers three local quality suites. These are deve
 
 See the full [official-v1 results and limitations](./data/eval/official_v1/RESULTS_AND_LIMITATIONS.md) for denominators, status counts, and local latency (mean 4.68 s; p50 3.97 s; p95 8.11 s).
 
-### Historical V9.1 regression (v32)
+### 🔎 Retrieval quality
 
-The detailed sections below preserve the frozen **Architecture V9.1 corrected** post-refactor regression. They are historical measurements, not current v33 or official-v1 headline metrics.
-
-- Frozen dataset: [`data/eval/architecture_v9_1_corrected`](./data/eval/architecture_v9_1_corrected)
-- Detailed release report: [`docs/FINAL_RELEASE_EVALUATION.md`](./docs/FINAL_RELEASE_EVALUATION.md)
-- Original V9.1 results: [`RESULTS.md`](./data/eval/architecture_v9_1_corrected/RESULTS.md)
-- Evaluator correction audit: [`CORRECTION_AUDIT.md`](./data/eval/architecture_v9_1_corrected/CORRECTION_AUDIT.md)
-
-Planning, retrieval, generated-answer quality, human review, and transport behavior remain intentionally separate. There is no synthetic overall score.
-
-### 🪪 Historical V9.1 evaluation identity
-
-| Item | Recorded value |
-|---|---|
-| Release runtime and evaluation checkout | `13aef9e63e4384e0ee1a52cf2cd9327db2e97944` |
-| Deployed Hugging Face artifact | `d26c6f6` |
-| Run kind | `post_fix_regression_not_original_holdout` |
-| Frozen dataset | `9.1.0-corrected-evaluation`, revision `1` |
-| Frozen manifest baseline | runtime `7f1fc82b`; harness `943d9b38` |
-| Planner | `qwen/qwen3.8-27b`, reasoning `low`, native JSON Schema |
-| Composer | `gemini-3.1-flash-lite` |
-| Judge | `openai/gpt-oss-120b`, fixed project rubric; not RAGAS |
-| QueryPlan / normalizer | schema `v1`; normalizer `v20-grounded-scoring-scope` |
-| Prompt contracts | Planner `structured-regulation-v41-explicit-request-count`; Composer `student-handbook-answer-v3.22-answer-scope` |
-| Answer pipeline | `v63-runtime-config-preparation` |
-| Retrieval | `vector_primary_graph_supplement`; no PhoRanker |
-| Storage | Qdrant `student_handbook_semantic_v32`; MongoDB `parent_docs_v32` |
-
-The manifest identity mismatch reported by the evaluator is expected for this regression: it records that the release runtime differs from the original frozen V9.1 baseline. Dataset hashes and the document-store hash remained fixed.
-
-### 1. 🧭 Deterministic architecture — 135 cases
-
-This suite measures QueryPlan behavior, structured routing, executable evidence, row selection, and fact locks without using the Composer as the evaluator.
-
-| Case type | Passed | Cases | Pass rate |
-|---|---:|---:|---:|
-| Single structured lookup | 53 | 60 | 88.33% |
-| Capability boundary | 24 | 24 | 100.00% |
-| Compound query | 24 | 28 | 85.71% |
-| Missing or ambiguous | 11 | 12 | 91.67% |
-| Unsupported but in-domain | 3 | 3 | 100.00% |
-| Out of domain | 8 | 8 | 100.00% |
-| **Total** | **123** | **135** | **91.11%** |
-
-The realistic split scored **99/107 (92.52%)**; the stress split scored **24/28 (85.71%)**.
-
-| Architecture metric | Result |
+| Metric | Result |
 |---|---:|
-| Structured-selection precision | **98.84%** |
-| Structured-selection recall | **96.59%** |
-| Structured false-positive rate | **2.13%** |
-| Plan-structure accuracy | **95.56%** |
-| Task-semantics accuracy | **95.56%** |
-| Structured-execution accuracy | **95.56%** |
-| Structured-evidence accuracy | **95.45%** |
-| Structured-source accuracy | **89.47%** |
-| Structured-row accuracy | **93.18%** |
-| Resolved-result accuracy | **40/46 (86.96%)** |
-| Outcome-contract accuracy | **123/135 (91.11%)** |
-| Observed cross-cohort leakage | **0/135** |
-| Planner fallback | **1/135 (0.74%)** |
+| Hit@1 / Hit@3 / Hit@5 | 120/155 · 139/155 · 141/155 |
+| MRR / nDCG@5 | 0.8333 / 0.8443 |
+| Required-source recall@5 (case mean) | 0.9011 |
+| Observed cohort leakage | 0/155 |
+| Content-type match | 148/155 · 95.48% |
 
-Twelve cases fail at least one outcome assertion. The fixed legacy gate misses only its structured false-positive threshold: **2.13% observed vs 2.00% required**.
+This is end-to-end retrieval, including routing effects—not an isolated dense-search benchmark. The evaluator's overall retrieval gate is **FAIL** because content-type match is below 98%. Zero observed leakage is not a guarantee for unseen questions.
 
-### 2. 🔎 Regulation retrieval — 155 cases
+### ✍️ Answer quality and operational outcomes
 
-Retrieval was evaluated end to end through the Planner and the same production retrieval mode used by the deployed application.
-
-| Retrieval metric | Result |
+| Judge dimension | Mean, n = 150 |
 |---|---:|
-| Hit@1 | **134/155 (86.45%)** |
-| Hit@3 | **146/155 (94.19%)** |
-| Hit@5 | **149/155 (96.13%)** |
-| Primary-source Hit@5 | **96.13%** |
-| MRR | **0.9085** |
-| nDCG@5 | **0.8697** |
-| Required-source Recall@5 | **91.29%** |
-| Parent-section and citation binding | **96.13%** |
-| Content-type match | **96.13%** |
-| Cohort match | **100.00%** |
-| Observed cohort leakage | **0/155** |
-| Empty retrieval | **6/155 (3.87%)** |
-| Realistic Hit@5 | **117/123 (95.12%)** |
-| Stress Hit@5 | **32/32 (100.00%)** |
-| Latency p50 / p95 | **2.303 s / 3.944 s** |
+| Answer correctness | 0.9305 |
+| Faithfulness | 0.9591 |
+| Answer relevancy | 0.9543 |
+| Citation correctness | 0.9355 |
+| Context precision | 0.5815 |
+| Context recall | 0.8845 |
 
-Six cases are genuine misses. The fixed retrieval gate fails only content-type match: **96.13% observed vs 98% required**.
+The Judge is `openai/gpt-oss-120b`, using the project's fixed rubric. These are 0–1 rubric means, not percentages of fully correct answers.
 
-### 3. ✍️ Answer generation — 141 cases
+- Generation statuses: **141 answered**, 2 low-confidence, 3 API errors, 2 clarification requests, and 2 out-of-domain responses.
+- Local pipeline latency: mean **4.68 s**, p50 **3.97 s**, p95 **8.11 s**. These are not HF load measurements or streaming TTFT.
+- All 22 automatically flagged cases and 40 stratified samples were reviewed, with four overlapping cases: **58 unique answers**, using AI-assisted review—not independent human adjudication.
+- Judge flags included 13 unsupported-claim and 2 critical flags. Packet checks found false positives; flags are not confirmed error counts. Original scores were not replaced with audit scores.
+- A separate retry answered the three API-error cases successfully; those retries were not substituted into the official 150-case metrics.
 
-All 141 cases completed through the production retrieval mode without PhoRanker or lost API-error cases.
+### 📝 Limitations and interpretation
 
-| Generation metric | Result |
-|---|---:|
-| Literal `answered` status | **126/141 (89.36%)** |
-| `needs_clarification` status | **9/141 (6.38%)** |
-| Out-of-domain status | **6/141 (4.26%)** |
-| Mean latency | **5.414 s** |
-| Latency p50 / p95 | **5.468 s / 8.087 s** |
-| Maximum latency | **16.618 s** |
+- The benchmark was used during development and is **not an independent holdout**. Runtime identity, dataset hashes, and report hashes are recorded separately.
+- Deterministic contract checks passed 124/135; applicable fact-lock assertions passed **44/50**. A failed routing assertion does not by itself prove a wrong final answer.
+- Planner omissions, scope selection, multi-task dependencies, and multi-cohort requests remain limitations. A correct lookup on the selected table does not prove that table applies to the question.
+- Retrieval can miss required sources or include excess context. Structured directory evidence and regulation-source assertions must not be conflated.
+- The Composer can omit conditions or add unsupported interpretations even with full tables and fact locks.
+- Provider throttling and tail latency remain operational risks. Production60 was not run; no current HF load, TTFT, SLA, or scaling metric is claimed.
+- Research claims require additional baselines, ablations, independent review, and a prospective or external test set.
 
-The literal `answered` rate is an operational status distribution, not a quality score: clarification and out-of-domain responses can be correct outcomes.
-
-### 4. ⚖️ LLM Judge — 141 cases
-
-The Judge uses `openai/gpt-oss-120b` with a fixed, source-grounded rubric. All 141 outputs parsed successfully.
-
-| Judge metric | Result |
-|---|---:|
-| Faithfulness | **89.95%** |
-| Answer relevancy | **94.38%** |
-| Answer correctness | **90.37%** |
-| Context precision | **58.55%** |
-| Context recall | **82.00%** |
-| Citation correctness | **92.37%** |
-| Abstention correctness | **95.74%** |
-| Question-handling correctness | **97.16%** |
-| Raw unsupported-claim flags | **18/141 (12.77%)** |
-| Human-adjudicated meaningful unsupported/scope overreach | **5/141 (3.55%)** |
-| Critical runtime failures | **1** |
-
-The fixed Judge gate passes correctness, citations, abstention, and critical-failure limits. Faithfulness misses its 90% target by **0.05 percentage points**; the raw unsupported-claim gate fails, which is why every flagged case was manually audited.
-
-### 5. 👁️ Source-grounded human audit — 40 sampled answers plus all risks
-
-The stratified 40-answer sample and all 27 automatically flagged answers were checked against the query, frozen gold, citations, and authorized evidence packet.
-
-| Audit metric | Result |
-|---|---:|
-| Completed stratified sample | **40/40** |
-| Mean audit score | **97.41%** |
-| Human–Judge MAE | **0.0650** |
-| Agreement within ±0.15 | **87.50%** |
-| Critical false pass in sampled 40 | **0** |
-| Automatically flagged cases reviewed | **27/27** |
-
-Of the 27 flagged cases, **16** were Judge false positives or acceptable scope, **6** were runtime failures, and **5** were minor answer-quality issues. The audit used one reviewer, so inter-rater agreement and Cohen's kappa are not claimed.
-
-### 6. 🌐 Production transport — 60 cases
-
-The production suite was rerun against the deployed Hugging Face API after the final Redis and transport hardening changes.
-
-| Production metric | Result |
-|---|---:|
-| HTTP transport success | **60/60 (100.00%)** |
-| Successful payload | **58/60 (96.67%)** |
-| Expected response status | **57/60 (95.00%)** |
-| HTTP 429 / timeout rate | **0% / 0%** |
-| Overall latency p50 / p95 | **7.844 s / 11.676 s** |
-| Cold regulation-RAG latency p50 / p95 | **8.720 s / 12.927 s** |
-| Streaming TTFT p50 / p95 | **6.286 s / 10.280 s** |
-| Streaming TTFT coverage | **100.00%** |
-| Warm-cache hit rate | **9/10 (90.00%)** |
-| Warm-cache latency p50 / p95 | **1.885 s / 5.691 s** |
-| Source utilization | **73.33%** |
-
-Cold RAG, structured, warm-cache, and streaming scenarios each completed **10/10 or 20/20**. The two payload failures occurred only in the ten-request burst at concurrency five; both returned HTTP 200 with `retrieval_error`. Public responses expose no internal evaluation telemetry, so telemetry coverage is **N/A for product correctness**, although the legacy gate records it as 0%.
-
-### 📝 Interpretation and limitations
-
-- These results are a **post-refactor regression on a frozen dataset**, not a prospectively registered new holdout.
-- Dataset and document-store hashes were unchanged, but the frozen manifest correctly reports that the release runtime differs from its original baseline.
-- Deterministic and retrieval headline scores remain above 91% and 96%, with zero observed cross-cohort leakage; each retains one narrowly missed legacy gate.
-- Six answer-level runtime failures remain: two over-splitting/clarification cases, one shared-regulation applicability case, one large scope expansion, one structured table-selection error, and one incomplete live-person abstention.
-- Context precision is lower than answer and citation quality because multi-part regulation tasks retain supporting parent-article context.
-- Production evidence is a bounded smoke/load suite, not a capacity, security, or real-user traffic benchmark. Burst admission and warm-cache tail latency remain deployment limitations.
-- A publication should add a new prospective or external test set and independent multi-reviewer annotation. The current report is suitable for accurately scoped portfolio or CV claims when its denominators and regression status are stated.
+For complete breakdowns, case-level limitations and provenance, see the [official report](data/eval/official_v1/RESULTS_AND_LIMITATIONS.md). Earlier measurements remain in the [historical evaluation report](docs/FINAL_RELEASE_EVALUATION.md), not in the current metric tables.
 
 <a id="local-development"></a>
 

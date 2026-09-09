@@ -44,7 +44,6 @@ def test_local_index_runs_production_fusion_without_crossing_cohorts(monkeypatch
         assert result[0]['content'] == 'K51'
         assert result[0]['document'] == 'full parent'
         assert result[0]['metadata']['retrieval_telemetry']['ranking_method'] == 'rrf'
-        assert not result[0]['metadata']['retrieval_telemetry']['phoranker_used']
     finally:
         index.qdrant_client.close()
 

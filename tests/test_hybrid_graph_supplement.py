@@ -212,12 +212,6 @@ def _retriever_stub() -> ChildParentHybridRetriever:
     retriever.embed_model.encode.return_value = SimpleNamespace(
         tolist=lambda: [0.1, 0.2]
     )
-    retriever._rerank_chunks = Mock(
-        side_effect=lambda _query, chunks: [
-            (1.0 - index / 100, chunk)
-            for index, chunk in enumerate(chunks)
-        ]
-    )
     primary = [{"chunk_id": "P0", "metadata": {}}]
     retriever._group_parent_results = Mock(return_value=primary)
     retriever._graph_related_parent_results = Mock(
@@ -251,7 +245,6 @@ def test_default_retrieval_groups_twenty_four_vector_chunks_before_graph() -> No
             cohort="K50",
         )
 
-    retriever._rerank_chunks.assert_not_called()
     scored_chunks = retriever._group_parent_results.call_args.kwargs["scored_chunks"]
     assert len(scored_chunks) == 24
     assert [chunk["chunk_id"] for _, chunk in scored_chunks] == [
@@ -261,12 +254,14 @@ def test_default_retrieval_groups_twenty_four_vector_chunks_before_graph() -> No
         "retrieval_telemetry"
     ]
     assert telemetry["ranking_method"] == "rrf"
-    assert telemetry["phoranker_used"] is False
+    assert "phoranker_used" not in telemetry
+    assert "phoranker_candidate_chunks" not in telemetry
+    assert "phoranker_candidate_parents" not in telemetry
     retriever._graph_related_parent_results.assert_called_once()
     assert result == retriever._group_parent_results.return_value
 
 
-def test_full_ablation_reranks_the_same_twenty_four_vector_chunks() -> None:
+def test_full_ablation_keeps_rrf_without_a_reranker() -> None:
     hits = _vector_hits()
     retriever = _retriever_stub()
 
@@ -292,19 +287,19 @@ def test_full_ablation_reranks_the_same_twenty_four_vector_chunks() -> None:
             cohort="K50",
         )
 
-    reranked_chunks = retriever._rerank_chunks.call_args.args[1]
-    assert len(reranked_chunks) == 24
-    assert [chunk["chunk_id"] for chunk in reranked_chunks] == [
+    scored_chunks = retriever._group_parent_results.call_args.kwargs["scored_chunks"]
+    assert len(scored_chunks) == 24
+    assert [chunk["chunk_id"] for _, chunk in scored_chunks] == [
         f"c{index}" for index in range(24)
     ]
     telemetry = retriever._group_parent_results.call_args.kwargs[
         "retrieval_telemetry"
     ]
-    assert telemetry["ranking_method"] == "phoranker"
-    assert telemetry["phoranker_used"] is True
+    assert telemetry["ranking_method"] == "rrf"
+    assert "phoranker_used" not in telemetry
 
 
-def test_parent_grouping_keeps_phoranker_order_and_top_k() -> None:
+def test_parent_grouping_preserves_scored_order_and_top_k() -> None:
     retriever = ChildParentHybridRetriever.__new__(ChildParentHybridRetriever)
     retriever.collection_name = "test"
     retriever.parent_cache = {}

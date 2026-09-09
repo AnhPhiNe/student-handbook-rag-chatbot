@@ -12,7 +12,6 @@ from src.common.cohort import is_cohort_applicable, normalize_cohort
 from src.common.legal_reference import normalize_article_label
 from src.common.source_identity import canonical_article_source_id
 from src.common.storage_config import require_qdrant_collection_name
-from src.retrieval.core.cross_encoder_reranker import get_local_reranker
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from src.retrieval.core.retrieval_mode import resolve_retrieval_mode
 from src.retrieval.core.runtime_health import set_bm25_runtime_status
@@ -20,12 +19,9 @@ from src.retrieval.core.vector_retriever import load_embedding_model
 from src.retrieval.runtime_config import load_retrieval_runtime_config
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
 
-os.environ["TRANSFORMERS_VERBOSITY"] = "error"
-
 logger = logging.getLogger("hybrid_pipeline")
 
 GRAPH_SUPPLEMENT_PARENT_LIMIT = 5
-PHORANKER_EVAL_MODES = {"full", "no_graph"}
 BM25_INIT_MAX_ATTEMPTS = 3
 BM25_INIT_BACKOFF_SECONDS = 0.5
 
@@ -182,9 +178,6 @@ class ChildParentHybridRetriever:
         self.embed_model = load_embedding_model(str(embedding["model_name"]))
         self.normalize_embeddings = bool(embedding.get("normalize_embeddings", True))
         self.graph = NetworkXGraphTraverser()
-
-        # PhoRanker is evaluation-only and is loaded lazily by its ablation modes.
-        self.reranker = None
 
         # Full parent content comes from MongoDB.
         self.mongo_store = get_mongo_store()
@@ -343,9 +336,9 @@ class ChildParentHybridRetriever:
     ) -> list[dict[str, Any]]:
         """Retrieve parent-bound regulation sources using child/table chunks.
 
-        Production ranks parents using hybrid retrieval (BM25 + dense) combined with RRF, then attaches
-        outbound graph neighbors as context-only related sources. PhoRanker is
-        reserved for controlled evaluation modes over the same vector pool.
+        Production ranks parents using hybrid retrieval (BM25 + dense) combined with
+        RRF, then attaches outbound graph neighbors as context-only related sources.
+        Retrieval modes only control graph scope; ranking always uses RRF.
         """
         eval_mode = resolve_retrieval_mode()
         if eval_mode in {"no_graph", "vector_only"}:
@@ -467,28 +460,12 @@ class ChildParentHybridRetriever:
         }
         # -----------------------------------------------------
 
-        phoranker_used = eval_mode in PHORANKER_EVAL_MODES
-        if phoranker_used:
-            rerank_started = time.perf_counter()
-            primary_scored = self._rerank_chunks(query, seed_chunks)
-            phoranker_latency_ms = (time.perf_counter() - rerank_started) * 1000
-        else:
-            phoranker_latency_ms = 0.0
-
         retrieval_telemetry = {
             "retrieval_mode": eval_mode,
             "qdrant_search_limit": search_limit,
             "qdrant_seed_chunks": qdrant_seed_chunk_count,
             "qdrant_seed_parents": len(seed_parent_ids),
-            "ranking_method": "phoranker" if phoranker_used else "rrf",
-            "phoranker_used": phoranker_used,
-            "phoranker_candidate_chunks": (
-                qdrant_seed_chunk_count if phoranker_used else 0
-            ),
-            "phoranker_candidate_parents": (
-                len(seed_parent_ids) if phoranker_used else 0
-            ),
-            "phoranker_latency_ms": phoranker_latency_ms,
+            "ranking_method": "rrf",
         }
         primary_results = self._group_parent_results(
             query=query,
@@ -618,28 +595,6 @@ class ChildParentHybridRetriever:
             "related_source_count": len(related_results),
         }
         return related_results, telemetry
-
-    def _rerank_chunks(
-        self,
-        query: str,
-        chunks: list[dict[str, Any]],
-    ) -> list[tuple[float, dict[str, Any]]]:
-        """Score the fixed vector candidate set with PhoRanker."""
-        pairs = [[query, str(chunk.get("content") or "")] for chunk in chunks]
-        scores = self._get_reranker_model().predict(pairs)
-        scored = [
-            (float(scores[index]), dict(chunk)) for index, chunk in enumerate(chunks)
-        ]
-        scored.sort(key=lambda pair: pair[0], reverse=True)
-        return scored
-
-    def _get_reranker_model(self):
-        """Lazily initialize the shared cross-encoder reranker."""
-
-        if self.reranker is None:
-            logger.info("Loading shared PhoRanker singleton for retrieval ablation...")
-            self.reranker = get_local_reranker().model
-        return self.reranker
 
     def _group_parent_results(
         self,

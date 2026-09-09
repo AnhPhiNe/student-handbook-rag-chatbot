@@ -17,8 +17,9 @@ inputs, or evaluation-only capabilities for dead production code.
 - `configs/retrieval.yaml` is an active runtime dependency. It defines the
   embedding/build contract loaded by `src/retrieval/runtime_config.py` and must
   remain in readiness and deployment packaging.
-- `LocalReranker` is not dead code. Production mode keeps it disabled, while
-  explicit evaluation ablations can still call it.
+- The PhoRanker loader and its runtime ranking branch have been removed.
+  Retrieval uses RRF; historical evaluator fields and reports are retained for
+  compatibility, not as evidence that the model can still be enabled.
 - FastAPI route handlers and dependencies, plus executor callbacks used by
   LangSmith telemetry, may have no ordinary static caller. Framework or
   callback registration invokes them at runtime, so they must not be removed
